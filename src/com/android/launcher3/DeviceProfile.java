@@ -97,16 +97,13 @@ public class DeviceProfile {
     private static final float TALL_DEVICE_EXTRA_SPACE_THRESHOLD_DP = 252;
     private static final float TALL_DEVICE_MORE_EXTRA_SPACE_THRESHOLD_DP = 268;
 
-    // To evenly space the icons, increase the left/right margins for tablets in portrait mode.
-    private static final int PORTRAIT_TABLET_LEFT_RIGHT_PADDING_MULTIPLIER = 4;
-
     // Workspace
     public final int desiredWorkspaceHorizontalMarginOriginalPx;
     public int desiredWorkspaceHorizontalMarginPx;
     public Point cellLayoutBorderSpaceOriginalPx;
     public Point cellLayoutBorderSpacePx;
-    public final int cellLayoutPaddingLeftRightPx;
-    public final int cellLayoutBottomPaddingPx;
+    public Rect cellLayoutPaddingPx = new Rect();
+
     public final int edgeMarginPx;
     public float workspaceSpringLoadShrunkTop;
     public float workspaceSpringLoadShrunkBottom;
@@ -328,23 +325,6 @@ public class DeviceProfile {
         folderCellLayoutBorderSpacePx = new Point(folderCellLayoutBorderSpaceOriginalPx,
                 folderCellLayoutBorderSpaceOriginalPx);
 
-        int cellLayoutPaddingLeftRightMultiplier = !isVerticalBarLayout() && isTablet
-                ? PORTRAIT_TABLET_LEFT_RIGHT_PADDING_MULTIPLIER : 1;
-        int cellLayoutPadding = isScalableGrid
-                ? 0
-                : res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
-
-        if (isTwoPanels) {
-            cellLayoutPaddingLeftRightPx = 0;
-            cellLayoutBottomPaddingPx = 0;
-        } else if (isLandscape) {
-            cellLayoutPaddingLeftRightPx = 0;
-            cellLayoutBottomPaddingPx = cellLayoutPadding;
-        } else {
-            cellLayoutPaddingLeftRightPx = cellLayoutPaddingLeftRightMultiplier * cellLayoutPadding;
-            cellLayoutBottomPaddingPx = 0;
-        }
-
         workspacePageIndicatorHeight = res.getDimensionPixelSize(
                 R.dimen.workspace_page_indicator_height);
         mWorkspacePageIndicatorOverlapWorkspace =
@@ -498,6 +478,12 @@ public class DeviceProfile {
             // Recalculate the available dimensions using the new hotseat size.
             updateAvailableDimensions(res);
         }
+
+        int cellLayoutPadding =
+                isTwoPanels ? cellLayoutBorderSpacePx.x / 2 : res.getDimensionPixelSize(
+                        R.dimen.cell_layout_padding);
+        cellLayoutPaddingPx = new Rect(cellLayoutPadding, cellLayoutPadding, cellLayoutPadding,
+                cellLayoutPadding);
         updateWorkspacePadding();
 
         flingToDeleteThresholdVelocity = res.getDimensionPixelSize(
@@ -610,7 +596,6 @@ public class DeviceProfile {
         float appWidgetScaleX = (float) profile.getCellSize().x / getCellSize().x;
         float appWidgetScaleY = (float) profile.getCellSize().y / getCellSize().y;
         profile.appWidgetScale.set(appWidgetScaleX, appWidgetScaleY);
-        profile.updateWorkspacePadding();
 
         return profile;
     }
@@ -645,18 +630,19 @@ public class DeviceProfile {
     }
 
     private void updateAllAppsContainerWidth(Resources res) {
-
+        int cellLayoutHorizontalPadding =
+                (cellLayoutPaddingPx.left + cellLayoutPaddingPx.right) / 2;
         if (isTablet) {
             allAppsLeftRightPadding =
-                    res.getDimensionPixelSize(R.dimen.all_apps_bottom_sheet_horizontal_padding)
-                            + cellLayoutPaddingLeftRightPx;
+                    res.getDimensionPixelSize(R.dimen.all_apps_bottom_sheet_horizontal_padding);
+
             int usedWidth = (allAppsCellWidthPx * numShownAllAppsColumns)
                     + (allAppsBorderSpacePx.x * (numShownAllAppsColumns - 1))
                     + allAppsLeftRightPadding * 2;
             allAppsLeftRightMargin = Math.max(1, (availableWidthPx - usedWidth) / 2);
         } else {
             allAppsLeftRightPadding =
-                    desiredWorkspaceHorizontalMarginPx + cellLayoutPaddingLeftRightPx;
+                    desiredWorkspaceHorizontalMarginPx + cellLayoutHorizontalPadding;
         }
     }
 
@@ -666,11 +652,12 @@ public class DeviceProfile {
     private int updateAvailableDimensions(Resources res) {
         updateIconSize(1f, res);
 
+        updateWorkspacePadding();
         Point workspacePadding = getTotalWorkspacePadding();
 
         // Check to see if the icons fit within the available height.
         float usedHeight = getCellLayoutHeight();
-        final int maxHeight = availableHeightPx - workspacePadding.y;
+        final int maxHeight = getWorkspaceHeight(workspacePadding);
         float extraHeight = Math.max(0, maxHeight - usedHeight);
         float scaleY = maxHeight / usedHeight;
         boolean shouldScale = scaleY < 1f;
@@ -680,10 +667,7 @@ public class DeviceProfile {
             // We scale to fit the cellWidth and cellHeight in the available space.
             // The benefit of scalable grids is that we can get consistent aspect ratios between
             // devices.
-            int numColumns = isTwoPanels ? inv.numColumns * 2 : inv.numColumns;
-            float usedWidth = (cellWidthPx * numColumns)
-                    + (cellLayoutBorderSpacePx.x * (numColumns - 1))
-                    + (desiredWorkspaceHorizontalMarginPx * 2);
+            float usedWidth = getCellLayoutWidth() + (desiredWorkspaceHorizontalMarginPx * 2);
             // We do not subtract padding here, as we also scale the workspace padding if needed.
             scaleX = availableWidthPx / usedWidth;
             shouldScale = true;
@@ -700,7 +684,14 @@ public class DeviceProfile {
     }
 
     private int getCellLayoutHeight() {
-        return (cellHeightPx * inv.numRows) + (cellLayoutBorderSpacePx.y * (inv.numRows - 1));
+        return (cellHeightPx * inv.numRows) + (cellLayoutBorderSpacePx.y * (inv.numRows - 1))
+                + cellLayoutPaddingPx.top + cellLayoutPaddingPx.bottom;
+    }
+
+    private int getCellLayoutWidth() {
+        int numColumns = isTwoPanels ? inv.numColumns * 2 : inv.numColumns;
+        return (cellWidthPx * numColumns) + (cellLayoutBorderSpacePx.x * (numColumns - 1))
+                + cellLayoutPaddingPx.left + cellLayoutPaddingPx.right;
     }
 
     /**
@@ -869,7 +860,6 @@ public class DeviceProfile {
 
     public void updateInsets(Rect insets) {
         mInsets.set(insets);
-        updateWorkspacePadding();
     }
 
     /**
@@ -896,8 +886,8 @@ public class DeviceProfile {
         int numColumns = isTwoPanels ? inv.numColumns * 2 : inv.numColumns;
         int screenWidthPx = getWorkspaceWidth(padding);
         result.x = calculateCellWidth(screenWidthPx, cellLayoutBorderSpacePx.x, numColumns);
-        result.y = calculateCellHeight(availableHeightPx - padding.y
-                - cellLayoutBottomPaddingPx, cellLayoutBorderSpacePx.y, inv.numRows);
+        int screenHeightPx = getWorkspaceHeight(padding);
+        result.y = calculateCellHeight(screenHeightPx, cellLayoutBorderSpacePx.y, inv.numRows);
         return result;
     }
 
@@ -942,12 +932,16 @@ public class DeviceProfile {
 
     public int getWorkspaceWidth(Point workspacePadding) {
         int cellLayoutTotalPadding =
-                isTwoPanels ? 4 * cellLayoutPaddingLeftRightPx : 2 * cellLayoutPaddingLeftRightPx;
+                (isTwoPanels ? 2 : 1) * (cellLayoutPaddingPx.left + cellLayoutPaddingPx.right);
         return availableWidthPx - workspacePadding.x - cellLayoutTotalPadding;
     }
 
+    private int getWorkspaceHeight(Point workspacePadding) {
+        return availableHeightPx - workspacePadding.y - (cellLayoutPaddingPx.top
+                + cellLayoutPaddingPx.bottom);
+    }
+
     public Point getTotalWorkspacePadding() {
-        updateWorkspacePadding();
         return new Point(workspacePadding.left + workspacePadding.right,
                 workspacePadding.top + workspacePadding.bottom);
     }
@@ -973,12 +967,26 @@ public class DeviceProfile {
             int hotseatTop = hotseatBarSizePx;
             int paddingBottom = hotseatTop + workspacePageIndicatorHeight
                     + workspaceBottomPadding - mWorkspacePageIndicatorOverlapWorkspace;
+            int paddingTop = workspaceTopPadding + (isScalableGrid ? 0 : edgeMarginPx);
+            int paddingSide = desiredWorkspaceHorizontalMarginPx;
 
-            padding.set(desiredWorkspaceHorizontalMarginPx,
-                    workspaceTopPadding + (isScalableGrid ? 0 : edgeMarginPx),
-                    desiredWorkspaceHorizontalMarginPx,
-                    paddingBottom);
+            padding.set(paddingSide, paddingTop, paddingSide, paddingBottom);
         }
+        insetPadding(workspacePadding, cellLayoutPaddingPx);
+    }
+
+    private void insetPadding(Rect paddings, Rect insets) {
+        insets.left = Math.min(insets.left, paddings.left);
+        paddings.left -= insets.left;
+
+        insets.top = Math.min(insets.top, paddings.top);
+        paddings.top -= insets.top;
+
+        insets.right = Math.min(insets.right, paddings.right);
+        paddings.right -= insets.right;
+
+        insets.bottom = Math.min(insets.bottom, paddings.bottom);
+        paddings.bottom -= insets.bottom;
     }
 
     /**
@@ -992,16 +1000,17 @@ public class DeviceProfile {
             // Workspace icons are moved up by a small factor. The variable diffOverlapFactor
             // is set to account for that difference.
             float diffOverlapFactor = iconSizePx * (ICON_OVERLAP_FACTOR - 1) / 2;
-            int paddingTop = Math.max((int) (mInsets.top - diffOverlapFactor), 0);
-            int paddingBottom = Math.max((int) (mInsets.bottom + cellLayoutBottomPaddingPx
+            int paddingTop = Math.max((int) (mInsets.top + cellLayoutPaddingPx.top
+                    - diffOverlapFactor), 0);
+            int paddingBottom = Math.max((int) (mInsets.bottom + cellLayoutPaddingPx.bottom
                     + diffOverlapFactor), 0);
 
             if (isSeascape()) {
-                mHotseatPadding.set(mInsets.left + hotseatBarSidePaddingStartPx,
-                        mInsets.top, hotseatBarSidePaddingEndPx, mInsets.bottom);
+                mHotseatPadding.set(mInsets.left + hotseatBarSidePaddingStartPx, paddingTop,
+                        hotseatBarSidePaddingEndPx, paddingBottom);
             } else {
-                mHotseatPadding.set(hotseatBarSidePaddingEndPx, mInsets.top,
-                        mInsets.right + hotseatBarSidePaddingStartPx, mInsets.bottom);
+                mHotseatPadding.set(hotseatBarSidePaddingEndPx, paddingTop,
+                        mInsets.right + hotseatBarSidePaddingStartPx, paddingBottom);
             }
         } else if (isTaskbarPresent) {
             int hotseatHeight = workspacePadding.bottom;
@@ -1040,14 +1049,12 @@ public class DeviceProfile {
             float workspaceCellWidth = (float) widthPx / inv.numColumns;
             float hotseatCellWidth = (float) widthPx / numShownHotseatIcons;
             int hotseatAdjustment = Math.round((workspaceCellWidth - hotseatCellWidth) / 2);
-            mHotseatPadding.set(
-                    hotseatAdjustment + workspacePadding.left + cellLayoutPaddingLeftRightPx
-                            + mInsets.left,
-                    hotseatBarTopPaddingPx,
-                    hotseatAdjustment + workspacePadding.right + cellLayoutPaddingLeftRightPx
+            mHotseatPadding.set(hotseatAdjustment + workspacePadding.left + cellLayoutPaddingPx.left
+                            + mInsets.left, hotseatBarTopPaddingPx,
+                    hotseatAdjustment + workspacePadding.right + cellLayoutPaddingPx.right
                             + mInsets.right,
                     hotseatBarSizePx - hotseatCellHeightPx - hotseatBarTopPaddingPx
-                            + cellLayoutBottomPaddingPx + mInsets.bottom);
+                            + mInsets.bottom);
         }
         return mHotseatPadding;
     }
@@ -1131,6 +1138,8 @@ public class DeviceProfile {
                     .getInfo().rotation == Surface.ROTATION_270;
             if (mIsSeascape != isSeascape) {
                 mIsSeascape = isSeascape;
+                // Hotseat changing sides requires updating workspace left/right paddings
+                updateWorkspacePadding();
                 return true;
             }
         }
@@ -1208,6 +1217,11 @@ public class DeviceProfile {
                 cellLayoutBorderSpacePx.x));
         writer.println(prefix + pxToDpStr("cellLayoutBorderSpacePx Vertical",
                 cellLayoutBorderSpacePx.y));
+        writer.println(prefix + pxToDpStr("cellLayoutPaddingPx.left", cellLayoutPaddingPx.left));
+        writer.println(prefix + pxToDpStr("cellLayoutPaddingPx.top", cellLayoutPaddingPx.top));
+        writer.println(prefix + pxToDpStr("cellLayoutPaddingPx.right", cellLayoutPaddingPx.right));
+        writer.println(
+                prefix + pxToDpStr("cellLayoutPaddingPx.bottom", cellLayoutPaddingPx.bottom));
 
         writer.println(prefix + pxToDpStr("iconSizePx", iconSizePx));
         writer.println(prefix + pxToDpStr("iconTextSizePx", iconTextSizePx));
