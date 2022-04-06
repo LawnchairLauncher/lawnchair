@@ -265,6 +265,10 @@ public final class FeatureFlags {
             "USE_LOCAL_ICON_OVERRIDES", true,
             "Use inbuilt monochrome icons if app doesn't provide one");
 
+    public static final BooleanFlag ENABLE_DISMISS_PREDICTION_UNDO = getDebugFlag(
+            "ENABLE_DISMISS_PREDICTION_UNDO", false,
+            "Show an 'Undo' snackbar when users dismiss a predicted hotseat item");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
