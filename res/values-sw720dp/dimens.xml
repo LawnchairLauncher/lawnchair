@@ -16,7 +16,11 @@
 
 <resources>
 <!-- AllApps -->
-    <dimen name="all_apps_bottom_sheet_horizontal_padding">65dp</dimen>
+    <dimen name="all_apps_bottom_sheet_horizontal_padding">28dp</dimen>
+
+<!-- Dynamic grid -->
+    <dimen name="dynamic_grid_edge_margin">27.59dp</dimen>
+    <dimen name="cell_layout_padding">36dp</dimen>
 
 <!-- Dragging -->
     <dimen name="drop_target_text_size">20sp</dimen>
