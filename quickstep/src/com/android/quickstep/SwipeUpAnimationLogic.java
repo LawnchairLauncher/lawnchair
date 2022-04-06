@@ -184,14 +184,6 @@ public abstract class SwipeUpAnimationLogic implements
         public void onCancel() { }
 
         /**
-         * @return {@code true} if this factory supports animating an Activity to PiP window on
-         * swiping up to home.
-         */
-        public boolean supportSwipePipToHome() {
-            return false;
-        }
-
-        /**
          * @param progress The progress of the animation to the home screen.
          * @return The current alpha to set on the animating app window.
          */

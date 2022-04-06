@@ -19,6 +19,7 @@ import android.content.pm.ActivityInfo.Config;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsController;
 import com.android.systemui.shared.rotation.RotationButtonController;
@@ -116,7 +117,8 @@ public class TaskbarControllers {
         taskbarEduController.init(this);
         taskbarPopupController.init(this);
         taskbarForceVisibleImmersiveController.init(this);
-        taskbarAllAppsController.init(this);
+        taskbarAllAppsController.init(this, sharedState);
+        navButtonController.init(this);
 
         mControllersToLog = new LoggableTaskbarController[] {
                 taskbarDragController, navButtonController, navbarButtonsViewController,
@@ -152,6 +154,8 @@ public class TaskbarControllers {
         taskbarAutohideSuspendController.onDestroy();
         taskbarPopupController.onDestroy();
         taskbarForceVisibleImmersiveController.onDestroy();
+        taskbarAllAppsController.onDestroy();
+        navButtonController.onDestroy();
 
         mControllersToLog = null;
     }
@@ -182,6 +186,12 @@ public class TaskbarControllers {
             controller.dumpLogs(prefix + "\t", pw);
         }
         rotationButtonController.dumpLogs(prefix + "\t", pw);
+    }
+
+    @VisibleForTesting
+    TaskbarActivityContext getTaskbarActivityContext() {
+        // Used to mock
+        return taskbarActivityContext;
     }
 
     protected interface LoggableTaskbarController {

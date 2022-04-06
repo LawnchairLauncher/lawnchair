@@ -37,8 +37,8 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d өргөн %2$d өндөр"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> жижиг хэрэгсэл"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Жижиг хэрэгслийг Үндсэн нүүрний эргэн тойронд зөөхийн тулд түүнд хүрээд, удаан дарна уу"</string>
-    <string name="add_to_home_screen" msgid="8631549138215492708">"Үндсэн нүүрэнд нэмэх"</string>
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Виджетийг үндсэн нүүрний эргэн тойронд зөөхийн тулд түүнд хүрээд, удаан дарна уу"</string>
+    <string name="add_to_home_screen" msgid="9168649446635919791">"Үндсэн нүүрэнд нэмэх"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> виджетийг үндсэн нүүрэнд нэмсэн"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# виджет}other{# виджет}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# товчлол}other{# товчлол}}"</string>
@@ -52,7 +52,7 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Ажил"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Харилцан яриа"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Хэрэгтэй мэдээллээ хурууныхаа үзүүрээр аваарай"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"Аппуудыг нээлгүйгээр мэдээлэл авахын тулд та Үндсэн нүүрэндээ виджет нэмэх боломжтой"</string>
+    <string name="widget_education_content" msgid="1731667670753497052">"Аппуудыг нээлгүйгээр мэдээлэл авахын тулд та үндсэн нүүрэндээ виджетүүд нэмэх боломжтой"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Жижиг хэрэгслийн тохиргоог өөрчлөхийн тулд товшино уу"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"Ойлголоо"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Жижиг хэрэгслийн тохиргоог өөрчлөх"</string>
@@ -65,7 +65,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"Мэдэгдэл"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Товчлолыг зөөхийн тулд хүрээд, удаан дарна уу."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Товчлолыг зөөх эсвэл захиалгат үйлдлийг ашиглахын тулд хоёр товшоод, удаан дарна уу."</string>
-    <string name="out_of_space" msgid="6692471482459245734">"Энэ үндсэн нүүрэнд зай байхгүй байна"</string>
+    <string name="out_of_space" msgid="6455557115204099579">"Энэ үндсэн нүүрэнд зай байхгүй байна"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"\"Дуртай\" трей дээр өөр зай байхгүй байна"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Апп-н жагсаалт"</string>
     <string name="all_apps_search_results" msgid="5889367432531296759">"Хайлтын илэрц"</string>
@@ -79,10 +79,10 @@
     <string name="pin_prediction" msgid="4196423321649756498">"Таамаглалыг бэхлэх"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"товчлол суулгах"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Апп нь хэрэглэгчийн оролцоогүйгээр товчлолыг нэмэж чадна"</string>
-    <string name="permlab_read_settings" msgid="1941457408239617576">"Нүүрний тохиргоо болон товчлолыг унших"</string>
-    <string name="permdesc_read_settings" msgid="5833423719057558387">"Апп нь Нүүрэндэх товчлол болон тохиргоог уншиж чадна."</string>
-    <string name="permlab_write_settings" msgid="3574213698004620587">"Нүүрний тохиргоо болон товчлолыг бичих"</string>
-    <string name="permdesc_write_settings" msgid="5440712911516509985">"Апп нь Нүүрэндэх товчлол болон тохиргоог өөрчилж чадна."</string>
+    <string name="permlab_read_settings" msgid="5136500343007704955">"нүүрний тохиргоо болон товчлолыг унших"</string>
+    <string name="permdesc_read_settings" msgid="4208061150510996676">"Аппад нүүрэн дэх тохиргоо болон товчлолыг уншихыг зөвшөөрнө."</string>
+    <string name="permlab_write_settings" msgid="4820028712156303762">"нүүрний тохиргоо болон товчлолыг бичих"</string>
+    <string name="permdesc_write_settings" msgid="726859348127868466">"Аппад нүүрэн дэх тохиргоо болон товчлолыг өөрчлөхийг зөвшөөрнө."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> утасны дуудлага хийх боломжгүй"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Жижиг хэрэгслийг ачаалах боломжгүй"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Виджетийн тохиргоо"</string>
@@ -105,7 +105,7 @@
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Дэлгэцийн зураг, загвар"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Нүүр хуудасны тохиргоо"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Таны админ идэвхгүй болгосон"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"Нүүр дэлгэцийг эргүүлэхийг зөвшөөрөх"</string>
+    <string name="allow_rotation_title" msgid="7222049633713050106">"Үндсэн нүүрийг эргүүлэхийг зөвшөөрөх"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Утсыг эргүүлсэн үед"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Мэдэгдлийн цэг"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Асаалттай"</string>
@@ -114,7 +114,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Мэдэгдлийн цэгийг харуулахын тулд <xliff:g id="NAME">%1$s</xliff:g>-д аппын мэдэгдлийг асаана уу"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Тохиргоог өөрчлөх"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Мэдэгдлийн цэгийг харуулах"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Аппын дүрс тэмдгийг Үндсэн нүүрэнд нэмэх"</string>
+    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Үндсэн нүүрэнд аппын дүрс тэмдгүүдийг нэмэх"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Шинэ аппад зориулсан"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Тодорхойгүй"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Хасах"</string>
@@ -126,7 +126,7 @@
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> нь суулгахыг хүлээж байна"</string>
     <string name="widgets_list" msgid="796804551140113767">"Жижиг хэрэгслийн жагсаалт"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Жижиг хэрэгслийн жагсаалтыг хаасан"</string>
-    <string name="action_add_to_workspace" msgid="8902165848117513641">"Нүүр дэлгэцэд нэмэх"</string>
+    <string name="action_add_to_workspace" msgid="215894119683164916">"Үндсэн нүүрэнд нэмэх"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Энд байршуулах"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Нүүр дэлгэцэнд нэмсэн зүйл"</string>
     <string name="item_removed" msgid="851119963877842327">"Зүйлийг устгалаа"</string>
@@ -141,7 +141,7 @@
     <string name="added_to_folder" msgid="4793259502305558003">"Хавтсанд нэмэгдсэн зүйл"</string>
     <string name="create_folder_with" msgid="4050141361160214248">"Хавтсыг: <xliff:g id="NAME">%1$s</xliff:g> нэрээр үүсгэ"</string>
     <string name="folder_created" msgid="6409794597405184510">"Үүсгэсэн хавтас"</string>
-    <string name="action_move_to_workspace" msgid="1603837886334246317">"Нүүр дэлгэц рүү зөөх"</string>
+    <string name="action_move_to_workspace" msgid="39528912300293768">"Үндсэн нүүр лүү зөөх"</string>
     <string name="action_resize" msgid="1802976324781771067">"Хэмжээг өөрчлөх"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"Өргөсгөх"</string>
     <string name="action_increase_height" msgid="459390020612501122">"Өндөрсгөх"</string>

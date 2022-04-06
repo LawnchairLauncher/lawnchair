@@ -374,6 +374,12 @@ public class LauncherSettings {
 
         public static final String METHOD_CREATE_EMPTY_DB = "create_empty_db";
 
+        public static final String METHOD_SET_USE_TEST_WORKSPACE_LAYOUT_FLAG =
+                "set_use_test_workspace_layout_flag";
+
+        public static final String METHOD_CLEAR_USE_TEST_WORKSPACE_LAYOUT_FLAG =
+                "clear_use_test_workspace_layout_flag";
+
         public static final String METHOD_LOAD_DEFAULT_FAVORITES = "load_default_favorites";
 
         public static final String METHOD_REMOVE_GHOST_WIDGETS = "remove_ghost_widgets";

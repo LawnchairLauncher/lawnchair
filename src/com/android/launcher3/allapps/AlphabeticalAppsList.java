@@ -18,7 +18,7 @@ package com.android.launcher3.allapps;
 
 import android.content.Context;
 
-import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
+import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -81,10 +81,10 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
     private final List<FastScrollSectionInfo> mFastScrollerSections = new ArrayList<>();
 
     // The of ordered component names as a result of a search query
-    private ArrayList<AdapterItem> mSearchResults;
-    private AllAppsGridAdapter<T> mAdapter;
+    private final ArrayList<AdapterItem> mSearchResults = new ArrayList<>();
+    private BaseAllAppsAdapter<T> mAdapter;
     private AppInfoComparator mAppNameComparator;
-    private final int mNumAppsPerRow;
+    private final int mNumAppsPerRowAllApps;
     private int mNumAppRowsInAdapter;
     private ItemInfoMatcher mItemFilter;
 
@@ -94,7 +94,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         mActivityContext = ActivityContext.lookupContext(context);
         mAppNameComparator = new AppInfoComparator(context);
         mWorkAdapterProvider = adapterProvider;
-        mNumAppsPerRow = mActivityContext.getDeviceProfile().inv.numColumns;
+        mNumAppsPerRowAllApps = mActivityContext.getDeviceProfile().inv.numAllAppsColumns;
         mAllAppsStore.addUpdateListener(this);
     }
 
@@ -106,7 +106,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
     /**
      * Sets the adapter to notify when this dataset changes.
      */
-    public void setAdapter(AllAppsGridAdapter<T> adapter) {
+    public void setAdapter(BaseAllAppsAdapter<T> adapter) {
         mAdapter = adapter;
     }
 
@@ -171,30 +171,33 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
      * Returns whether there are is a filter set.
      */
     public boolean hasFilter() {
-        return (mSearchResults != null);
+        return !mSearchResults.isEmpty();
     }
 
     /**
      * Returns whether there are no filtered results.
      */
     public boolean hasNoFilteredResults() {
-        return (mSearchResults != null) && mAccessibilityResultsCount == 0;
+        return hasFilter() && mAccessibilityResultsCount == 0;
     }
 
     /**
      * Sets results list for search
      */
     public boolean setSearchResults(ArrayList<AdapterItem> results) {
-        if (!Objects.equals(results, mSearchResults)) {
-            mSearchResults = results;
-            updateAdapterItems();
-            return true;
+        if (Objects.equals(results, mSearchResults)) {
+            return false;
         }
-        return false;
+        mSearchResults.clear();
+        if (results != null) {
+            mSearchResults.addAll(results);
+        }
+        updateAdapterItems();
+        return true;
     }
 
     public boolean appendSearchResults(ArrayList<AdapterItem> results) {
-        if (mSearchResults != null && results != null && results.size() > 0) {
+        if (hasFilter() && results != null && results.size() > 0) {
             updateSearchAdapterItems(results, mSearchResults.size());
             refreshRecyclerView();
             return true;
@@ -259,7 +262,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         }
 
         // Recompose the set of adapter items from the current set of apps
-        if (mSearchResults == null) {
+        if (mSearchResults.isEmpty()) {
             updateAdapterItems();
         }
     }
@@ -333,7 +336,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
 
             }
         }
-        if (mNumAppsPerRow != 0) {
+        if (mNumAppsPerRowAllApps != 0) {
             // Update the number of rows in the adapter after we do all the merging (otherwise, we
             // would have to shift the values again)
             int numAppsInSection = 0;
@@ -341,10 +344,10 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
             int rowIndex = -1;
             for (AdapterItem item : mAdapterItems) {
                 item.rowIndex = 0;
-                if (AllAppsGridAdapter.isDividerViewType(item.viewType)) {
+                if (BaseAllAppsAdapter.isDividerViewType(item.viewType)) {
                     numAppsInSection = 0;
-                } else if (AllAppsGridAdapter.isIconViewType(item.viewType)) {
-                    if (numAppsInSection % mNumAppsPerRow == 0) {
+                } else if (BaseAllAppsAdapter.isIconViewType(item.viewType)) {
+                    if (numAppsInSection % mNumAppsPerRowAllApps == 0) {
                         numAppsInRow = 0;
                         rowIndex++;
                     }
@@ -362,12 +365,13 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                     float rowFraction = 1f / mNumAppRowsInAdapter;
                     for (FastScrollSectionInfo info : mFastScrollerSections) {
                         AdapterItem item = info.fastScrollToItem;
-                        if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
+                        if (!BaseAllAppsAdapter.isIconViewType(item.viewType)) {
                             info.touchFraction = 0f;
                             continue;
                         }
 
-                        float subRowFraction = item.rowAppIndex * (rowFraction / mNumAppsPerRow);
+                        float subRowFraction =
+                                item.rowAppIndex * (rowFraction / mNumAppsPerRowAllApps);
                         info.touchFraction = item.rowIndex * rowFraction + subRowFraction;
                     }
                     break;
@@ -376,7 +380,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                     float cumulativeTouchFraction = 0f;
                     for (FastScrollSectionInfo info : mFastScrollerSections) {
                         AdapterItem item = info.fastScrollToItem;
-                        if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
+                        if (!BaseAllAppsAdapter.isIconViewType(item.viewType)) {
                             info.touchFraction = 0f;
                             continue;
                         }

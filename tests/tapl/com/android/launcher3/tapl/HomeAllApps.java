@@ -35,8 +35,14 @@ public class HomeAllApps extends AllApps {
         return (AllAppsAppIcon) super.getAppIcon(appName);
     }
 
+    @NonNull
     @Override
     protected HomeAppIcon createAppIcon(UiObject2 icon) {
         return new AllAppsAppIcon(mLauncher, icon);
+    }
+
+    @Override
+    protected boolean hasSearchBox() {
+        return true;
     }
 }

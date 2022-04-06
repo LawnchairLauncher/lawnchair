@@ -83,7 +83,7 @@ public class ViewUtils {
         }
 
         private boolean schedule() {
-            if (mViewRoot.getView() != null) {
+            if (mViewRoot != null && mViewRoot.getView() != null) {
                 mViewRoot.registerRtFrameCallback(this);
                 mViewRoot.getView().invalidate();
                 return true;

@@ -19,14 +19,14 @@
     <dimen name="click_shadow_elevation">4dp</dimen>
 
     <!-- Dynamic Grid -->
-    <dimen name="dynamic_grid_edge_margin">8dp</dimen>
+    <dimen name="dynamic_grid_edge_margin">10.77dp</dimen>
     <dimen name="dynamic_grid_left_right_margin">8dp</dimen>
     <dimen name="dynamic_grid_icon_drawable_padding">7dp</dimen>
     <!-- Minimum space between workspace and hotseat in spring loaded mode -->
     <dimen name="dynamic_grid_min_spring_loaded_space">8dp</dimen>
 
     <dimen name="dynamic_grid_cell_border_spacing">16dp</dimen>
-    <dimen name="dynamic_grid_cell_layout_padding">5.5dp</dimen>
+    <dimen name="cell_layout_padding">10.77dp</dimen>
     <dimen name="dynamic_grid_cell_padding_x">8dp</dimen>
 
     <!-- Hotseat -->
@@ -34,6 +34,7 @@
     <dimen name="dynamic_grid_hotseat_bottom_padding">2dp</dimen>
     <dimen name="dynamic_grid_hotseat_bottom_tall_padding">0dp</dimen>
     <dimen name="inline_qsb_bottom_margin">0dp</dimen>
+    <dimen name="spring_loaded_hotseat_top_margin">76dp</dimen>
 
     <!-- Qsb -->
     <!-- Used for adjusting the position of QSB when placed in hotseat. This is a ratio and a higher
@@ -55,8 +56,10 @@
     <dimen name="workspace_page_indicator_overlap_workspace">0dp</dimen>
 
 <!-- Drop target bar -->
-    <dimen name="dynamic_grid_drop_target_size">52dp</dimen>
+    <dimen name="dynamic_grid_drop_target_size">56dp</dimen>
     <dimen name="drop_target_vertical_gap">20dp</dimen>
+    <dimen name="drop_target_top_margin">36dp</dimen>
+    <dimen name="drop_target_bottom_margin">16dp</dimen>
 
 <!-- App Widget resize frame -->
     <dimen name="widget_handle_margin">13dp</dimen>
@@ -94,7 +97,6 @@
 
     <!-- All Apps -->
     <dimen name="all_apps_starting_vertical_translate">320dp</dimen>
-    <dimen name="all_apps_top_padding">0dp</dimen>
     <dimen name="all_apps_search_bar_field_height">48dp</dimen>
     <!-- all_apps_search_bar_field_height / 2 -->
     <dimen name="all_apps_search_bar_content_overlap">24dp</dimen>
@@ -107,6 +109,7 @@
     <dimen name="all_apps_header_pill_corner_radius">12dp</dimen>
     <dimen name="all_apps_header_tab_height">48dp</dimen>
     <dimen name="all_apps_tabs_indicator_height">2dp</dimen>
+    <dimen name="all_apps_header_top_margin">33dp</dimen>
     <dimen name="all_apps_header_top_padding">36dp</dimen>
     <dimen name="all_apps_header_bottom_padding">6dp</dimen>
     <dimen name="all_apps_work_profile_tab_footer_top_padding">16dp</dimen>
@@ -207,6 +210,9 @@
     <dimen name="drop_target_shadow_elevation">2dp</dimen>
     <dimen name="drop_target_bar_margin_horizontal">4dp</dimen>
     <dimen name="drop_target_button_drawable_padding">8dp</dimen>
+    <dimen name="drop_target_button_drawable_horizontal_padding">16dp</dimen>
+    <dimen name="drop_target_button_drawable_vertical_padding">8dp</dimen>
+    <dimen name="drop_target_button_gap">22dp</dimen>
 
     <!-- the distance an icon must be dragged before button drop targets accept it -->
     <dimen name="drag_distanceThreshold">30dp</dimen>
@@ -345,6 +351,7 @@
     <dimen name="task_thumbnail_icon_drawable_size_grid">0dp</dimen>
     <dimen name="overview_task_margin">0dp</dimen>
     <dimen name="overview_task_margin_grid">0dp</dimen>
+    <dimen name="overview_actions_height">0dp</dimen>
     <dimen name="overview_actions_button_spacing">0dp</dimen>
     <dimen name="overview_actions_margin_gesture">0dp</dimen>
     <dimen name="overview_actions_top_margin_gesture">0dp</dimen>
@@ -353,7 +360,9 @@
     <dimen name="overview_grid_side_margin">0dp</dimen>
     <dimen name="overview_grid_row_spacing">0dp</dimen>
     <dimen name="overview_page_spacing">0dp</dimen>
-    <dimen name="split_placeholder_size">110dp</dimen>
+    <dimen name="split_placeholder_size">72dp</dimen>
+    <dimen name="split_placeholder_inset">16dp</dimen>
+    <dimen name="split_placeholder_icon_size">44dp</dimen>
     <dimen name="task_menu_width_grid">200dp</dimen>
 
 
@@ -367,6 +376,7 @@
     <dimen name="padded_rounded_button_padding">8dp</dimen>
 
 <!-- Bottom sheet related parameters -->
+    <dimen name="bottom_sheet_extra_top_padding">0dp</dimen>
     <dimen name="bottom_sheet_handle_width">32dp</dimen>
     <dimen name="bottom_sheet_handle_height">4dp</dimen>
     <dimen name="bottom_sheet_handle_margin">16dp</dimen>

@@ -233,11 +233,13 @@ public class LauncherSwipeHandlerV2 extends
 
         return mActivity.getFirstMatchForAppClose(launchCookieItemId,
                 runningTaskView.getTask().key.getComponent().getPackageName(),
-                UserHandle.of(runningTaskView.getTask().key.userId));
+                UserHandle.of(runningTaskView.getTask().key.userId),
+                false /* supportsAllAppsState */);
     }
 
     @Override
     protected void finishRecentsControllerToHome(Runnable callback) {
+        mRecentsView.cleanupRemoteTargets();
         mRecentsAnimationController.finish(
                 true /* toRecents */, callback, true /* sendUserLeaveHint */);
     }
@@ -282,11 +284,6 @@ public class LauncherSwipeHandlerV2 extends
             new StaggeredWorkspaceAnim(mActivity, velocity, true /* animateOverviewScrim */,
                     getViewIgnoredInWorkspaceRevealAnimation())
                     .start();
-        }
-
-        @Override
-        public boolean supportSwipePipToHome() {
-            return true;
         }
     }
 }

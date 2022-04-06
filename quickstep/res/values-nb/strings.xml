@@ -76,6 +76,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Alt er klart!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Sveip opp for å gå til startskjermen"</string>
     <string name="allset_description" msgid="6350320429953234580">"Du er klar til å begynne å bruke telefonen"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"Du er klar til å begynne å bruke nettbrettet"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Innstillinger for systemnavigasjon"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Del"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Skjermdump"</string>

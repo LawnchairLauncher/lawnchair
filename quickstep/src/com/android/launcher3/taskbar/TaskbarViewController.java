@@ -20,13 +20,15 @@ import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.AnimatedFloat.VALUE;
 
+import android.annotation.NonNull;
 import android.graphics.Rect;
 import android.util.FloatProperty;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.ViewTreeObserver.OnPreDrawListener;
+
+import androidx.core.graphics.ColorUtils;
+import androidx.core.view.OneShotPreDrawListener;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
@@ -36,6 +38,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.icons.ThemedIconDrawable;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
@@ -70,6 +73,9 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             this::updateTranslationY);
     private AnimatedFloat mTaskbarNavButtonTranslationY;
 
+    private final AnimatedFloat mThemeIconsBackground = new AnimatedFloat(
+            this::updateIconsBackground);
+
     private final TaskbarModelCallbacks mModelCallbacks;
 
     // Initialized in init.
@@ -79,6 +85,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     // active only during the animation and does not need to worry about layout changes.
     private AnimatorPlaybackController mIconAlignControllerLazy = null;
     private Runnable mOnControllerPreCreateCallback = NO_OP;
+
+    private int mThemeIconsColor;
 
     public TaskbarViewController(TaskbarActivityContext activity, TaskbarView taskbarView) {
         mActivity = activity;
@@ -92,6 +100,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         mControllers = controllers;
         mTaskbarView.init(new TaskbarViewCallbacks());
         mTaskbarView.getLayoutParams().height = mActivity.getDeviceProfile().taskbarSize;
+        mThemeIconsColor = ThemedIconDrawable.getColors(mTaskbarView.getContext())[0];
 
         mTaskbarIconScaleForStash.updateValue(1f);
 
@@ -143,18 +152,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
      * drawing a frame and invoked only once
      * @param listener callback that will be invoked before drawing the next frame
      */
-    public void addOneTimePreDrawListener(Runnable listener) {
-        mTaskbarView.getViewTreeObserver().addOnPreDrawListener(new OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                final ViewTreeObserver viewTreeObserver = mTaskbarView.getViewTreeObserver();
-                if (viewTreeObserver.isAlive()) {
-                    listener.run();
-                    viewTreeObserver.removeOnPreDrawListener(this);
-                }
-                return true;
-            }
-        });
+    public void addOneTimePreDrawListener(@NonNull Runnable listener) {
+        OneShotPreDrawListener.add(mTaskbarView, listener);
     }
 
     public Rect getIconLayoutBounds() {
@@ -191,6 +190,15 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                 + mTaskbarIconTranslationYForStash.value);
     }
 
+    private void updateIconsBackground() {
+        mTaskbarView.setThemedIconsBackgroundColor(
+                ColorUtils.blendARGB(
+                        mThemeIconsColor,
+                        mTaskbarView.mThemeIconsBackground,
+                        mThemeIconsBackground.value
+                ));
+    }
+
     /**
      * Sets the taskbar icon alignment relative to Launcher hotseat icons
      * @param alignmentRatio [0, 1]
@@ -225,6 +233,10 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         int offsetY = launcherDp.getTaskbarOffsetY();
         setter.setFloat(mTaskbarIconTranslationYForHome, VALUE, -offsetY, LINEAR);
         setter.setFloat(mTaskbarNavButtonTranslationY, VALUE, -offsetY, LINEAR);
+
+        if (Utilities.isDarkTheme(mTaskbarView.getContext())) {
+            setter.addFloat(mThemeIconsBackground, VALUE, 0f, 1f, LINEAR);
+        }
 
         int collapsedHeight = mActivity.getDefaultTaskbarWindowHeight();
         int expandedHeight = Math.max(collapsedHeight,

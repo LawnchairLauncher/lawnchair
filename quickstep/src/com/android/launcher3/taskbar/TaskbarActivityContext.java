@@ -22,6 +22,7 @@ import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_M
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
+import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.ResourceUtils.getBoolByName;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
@@ -49,11 +50,13 @@ import android.view.Gravity;
 import android.view.RoundedCorner;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.WindowManagerGlobal;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
@@ -64,12 +67,15 @@ import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsController;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.NavigationMode;
@@ -185,8 +191,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new TaskbarDragLayerController(this, mDragLayer),
                 new TaskbarViewController(this, taskbarView),
                 new TaskbarScrimViewController(this, taskbarScrimView),
-                new TaskbarUnfoldAnimationController(unfoldTransitionProgressProvider,
-                        mWindowManager),
+                new TaskbarUnfoldAnimationController(this, unfoldTransitionProgressProvider,
+                        mWindowManager, WindowManagerGlobal.getWindowManagerService()),
                 new TaskbarKeyguardController(this),
                 new StashedHandleViewController(this, stashedHandleView),
                 new TaskbarStashController(this),
@@ -224,6 +230,11 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     public void updateDeviceProfile(DeviceProfile dp) {
         mDeviceProfile = dp;
         updateIconSize(getResources());
+
+        AbstractFloatingView.closeAllOpenViewsExcept(this, false, TYPE_REBIND_SAFE);
+        // Reapply fullscreen to take potential new screen size into account.
+        setTaskbarWindowFullscreen(mIsFullscreen);
+
         dispatchDeviceProfileChanged();
     }
 
@@ -233,6 +244,13 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         float iconScale = taskbarIconSize / mDeviceProfile.iconSizePx;
         mDeviceProfile.updateIconSize(iconScale, resources);
         mDeviceProfile.updateAllAppsIconSize(1, resources); // Leave all apps unscaled.
+    }
+
+    @VisibleForTesting
+    @Override
+    public StatsLogManager getStatsLogManager() {
+        // Used to mock, can't mock a default interface method directly
+        return super.getStatsLogManager();
     }
 
     /** Creates LayoutParams for adding a view directly to WindowManager as a new window */
@@ -439,7 +457,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mControllers.stashedHandleViewController.setIsHomeButtonDisabled(
                 mControllers.navbarButtonsViewController.isHomeDisabled());
         mControllers.taskbarKeyguardController.updateStateForSysuiFlags(systemUiStateFlags);
-        mControllers.taskbarStashController.updateStateForSysuiFlags(systemUiStateFlags, fromInit);
+        mControllers.taskbarStashController.updateStateForSysuiFlags(
+                systemUiStateFlags, fromInit || !isUserSetupComplete());
         mControllers.taskbarScrimViewController.updateStateForSysuiFlags(systemUiStateFlags,
                 fromInit);
         mControllers.navButtonController.updateSysuiFlags(systemUiStateFlags);
@@ -645,12 +664,16 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                         Toast.makeText(this, R.string.safemode_shortcut_error,
                                 Toast.LENGTH_SHORT).show();
                     } else  if (info.isPromise()) {
+                        TestLogging.recordEvent(
+                                TestProtocol.SEQUENCE_MAIN, "start: taskbarPromiseIcon");
                         intent = new PackageManagerHelper(this)
                                 .getMarketIntent(info.getTargetPackage())
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
 
                     } else if (info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+                        TestLogging.recordEvent(
+                                TestProtocol.SEQUENCE_MAIN, "start: taskbarDeepShortcut");
                         String id = info.getDeepShortcutId();
                         String packageName = intent.getPackage();
                         getSystemService(LauncherApps.class)
@@ -679,6 +702,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         Intent intent = new Intent(info.getIntent())
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try {
+            TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "start: taskbarAppIcon");
             if (info.user.equals(Process.myUserHandle())) {
                 // TODO(b/216683257): Use startActivityForResult for search results that require it.
                 startActivity(intent);

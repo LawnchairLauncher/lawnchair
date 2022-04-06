@@ -41,8 +41,8 @@ public abstract class AppIconMenuItem extends Launchable {
     }
 
     @Override
-    protected String getLongPressIndicator() {
-        return "drop_target_bar";
+    protected void waitForLongPressConfirmation() {
+        mLauncher.waitForLauncherObject("drop_target_bar");
     }
 
     @Override

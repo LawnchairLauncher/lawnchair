@@ -49,9 +49,9 @@ import java.util.HashMap;
 
 public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAnimationListener {
     public static final boolean ENABLE_SHELL_TRANSITIONS =
-            SystemProperties.getBoolean("persist.debug.shell_transit", false);
+            SystemProperties.getBoolean("persist.wm.debug.shell_transit", false);
     public static final boolean SHELL_TRANSITIONS_ROTATION = ENABLE_SHELL_TRANSITIONS
-            && SystemProperties.getBoolean("persist.debug.shell_transit_rotate", false);
+            && SystemProperties.getBoolean("persist.wm.debug.shell_transit_rotate", false);
 
     private RecentsAnimationController mController;
     private RecentsAnimationCallbacks mCallbacks;
@@ -202,6 +202,24 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                         mLastGestureState.updateLastAppearedTaskTarget(mLastAppearedTaskTarget);
                     }
                 }
+            }
+
+            @Override
+            public boolean onSwitchToScreenshot(Runnable onFinished) {
+                if (!ENABLE_QUICKSTEP_LIVE_TILE.get() || !activityInterface.isInLiveTileMode()
+                        || activityInterface.getCreatedActivity() == null) {
+                    // No need to switch since tile is already a screenshot.
+                    onFinished.run();
+                } else {
+                    final RecentsView recentsView =
+                            activityInterface.getCreatedActivity().getOverviewPanel();
+                    if (recentsView != null) {
+                        recentsView.switchToScreenshot(onFinished);
+                    } else {
+                        onFinished.run();
+                    }
+                }
+                return true;
             }
         });
         final long eventTime = gestureState.getSwipeUpStartTimeMs();

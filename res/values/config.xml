@@ -22,9 +22,6 @@
     <item type="id" name="drag_event_parity" />
 
     <!-- AllApps & Launcher transitions -->
-    <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
-    <integer name="config_workspaceSpringLoadShrinkPercentage">85</integer>
-
     <!-- The duration of the animation from search hint to text entry -->
     <integer name="config_searchHintAnimationDuration">50</integer>
 
@@ -69,6 +66,7 @@
     <string name="test_information_handler_class" translatable="false"></string>
     <string name="launcher_activity_logic_class" translatable="false"></string>
     <string name="model_delegate_class" translatable="false"></string>
+    <string name="window_manager_proxy_class" translatable="false"></string>
 
     <!-- View ID to use for QSB widget -->
     <item type="id" name="qsb_widget" />
@@ -90,6 +88,7 @@
     <string name="custom_activity_picker" translatable="false">
         com.android.customization.picker.CustomizationPickerActivity</string>
     <string name="local_colors_extraction_class" translatable="false"></string>
+    <string name="search_session_manager_class" translatable="false"></string>
 
     <!-- Accessibility actions -->
     <item type="id" name="action_remove" />
@@ -165,4 +164,8 @@
     <!-- Name of the class used to generate colors from the wallpaper colors. Must be implementing the LauncherAppWidgetHostView.ColorGenerator interface. -->
     <string name="color_generator_class" translatable="false"/>
 
+    <!-- Swipe back to home related -->
+    <dimen name="swipe_back_window_scale_x_margin">10dp</dimen>
+    <dimen name="swipe_back_window_scale_y_margin">80dp</dimen>
+    <dimen name="swipe_back_window_corner_radius">40dp</dimen>
 </resources>

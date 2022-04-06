@@ -51,7 +51,7 @@ public abstract class AppIcon extends Launchable {
     public AppIconMenu openMenu() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             return createMenu(mLauncher.clickAndGet(
-                    mObject, "popup_container", getLongClickEvent()));
+                    mObject, /* resName= */ "popup_container", getLongClickEvent()));
         }
     }
 
@@ -61,7 +61,7 @@ public abstract class AppIcon extends Launchable {
     public AppIconMenu openDeepShortcutMenu() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             return createMenu(mLauncher.clickAndGet(
-                    mObject, "deep_shortcuts_container", getLongClickEvent()));
+                    mObject, /* resName= */ "deep_shortcuts_container", getLongClickEvent()));
         }
     }
 
@@ -73,8 +73,8 @@ public abstract class AppIcon extends Launchable {
     }
 
     @Override
-    protected String getLongPressIndicator() {
-        return "popup_container";
+    protected void waitForLongPressConfirmation() {
+        mLauncher.waitForLauncherObject("popup_container");
     }
 
     @Override

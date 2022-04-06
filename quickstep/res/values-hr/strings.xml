@@ -76,6 +76,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Sve je spremno!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Prijeđite prstom prema gore da biste otvorili početni zaslon"</string>
     <string name="allset_description" msgid="6350320429953234580">"Spremni ste za početak upotrebe telefona"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"Spremni ste za početak upotrebe tableta"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Postavke navigacije sustavom"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Podijeli"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Snimka zaslona"</string>

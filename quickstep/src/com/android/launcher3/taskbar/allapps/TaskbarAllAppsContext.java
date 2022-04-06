@@ -19,11 +19,13 @@ import static android.view.KeyEvent.ACTION_UP;
 import static android.view.KeyEvent.KEYCODE_BACK;
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo.TOUCHABLE_INSETS_REGION;
 
 import android.content.Context;
 import android.graphics.Insets;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
 
@@ -31,6 +33,9 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.allapps.ActivityAllAppsContainerView;
+import com.android.launcher3.allapps.search.DefaultSearchAdapterProvider;
+import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.PopupDataProvider;
@@ -38,6 +43,8 @@ import com.android.launcher3.taskbar.BaseTaskbarContext;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarDragController;
 import com.android.launcher3.taskbar.TaskbarStashController;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
@@ -137,6 +144,9 @@ class TaskbarAllAppsContext extends BaseTaskbarContext {
     @Override
     public void updateDeviceProfile(DeviceProfile dp) {
         mDeviceProfile = dp;
+
+        AbstractFloatingView.closeAllOpenViewsExcept(this, false, TYPE_REBIND_SAFE);
+
         dispatchDeviceProfileChanged();
     }
 
@@ -150,6 +160,12 @@ class TaskbarAllAppsContext extends BaseTaskbarContext {
 
     @Override
     public void onPopupVisibilityChanged(boolean isVisible) {}
+
+    @Override
+    public SearchAdapterProvider<?> createSearchAdapterProvider(
+            ActivityAllAppsContainerView<?> appsView) {
+        return new DefaultSearchAdapterProvider(this);
+    }
 
     /** Root drag layer for this context. */
     private static class TaskbarAllAppsDragLayer extends
@@ -166,7 +182,6 @@ class TaskbarAllAppsContext extends BaseTaskbarContext {
             super.onAttachedToWindow();
             ViewTreeObserverWrapper.addOnComputeInsetsListener(
                     getViewTreeObserver(), this);
-            mActivity.mAllAppsViewController.show();
         }
 
         @Override
@@ -178,6 +193,12 @@ class TaskbarAllAppsContext extends BaseTaskbarContext {
         @Override
         public void recreateControllers() {
             mControllers = new TouchController[]{mActivity.mDragController};
+        }
+
+        @Override
+        public boolean dispatchTouchEvent(MotionEvent ev) {
+            TestLogging.recordMotionEvent(TestProtocol.SEQUENCE_MAIN, "Touch event", ev);
+            return super.dispatchTouchEvent(ev);
         }
 
         @Override

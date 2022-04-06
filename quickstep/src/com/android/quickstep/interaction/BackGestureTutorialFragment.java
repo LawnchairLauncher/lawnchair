@@ -22,15 +22,19 @@ import android.animation.ObjectAnimator;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 
 import java.util.ArrayList;
 
 /** Shows the Back gesture interactive tutorial. */
 public class BackGestureTutorialFragment extends TutorialFragment {
+
+    public BackGestureTutorialFragment() {}
 
     @Nullable
     @Override
@@ -116,5 +120,17 @@ public class BackGestureTutorialFragment extends TutorialFragment {
             mTutorialController.setRippleHotspot(motionEvent.getX(), motionEvent.getY());
         }
         return super.onTouch(view, motionEvent);
+    }
+
+    @Override
+    void logTutorialStepShown(@NonNull StatsLogManager statsLogManager) {
+        statsLogManager.logger().log(
+                StatsLogManager.LauncherEvent.LAUNCHER_GESTURE_TUTORIAL_BACK_STEP_SHOWN);
+    }
+
+    @Override
+    void logTutorialStepCompleted(@NonNull StatsLogManager statsLogManager) {
+        statsLogManager.logger().log(
+                StatsLogManager.LauncherEvent.LAUNCHER_GESTURE_TUTORIAL_BACK_STEP_COMPLETED);
     }
 }

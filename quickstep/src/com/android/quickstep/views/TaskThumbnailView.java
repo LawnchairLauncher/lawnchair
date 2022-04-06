@@ -50,7 +50,6 @@ import androidx.core.graphics.ColorUtils;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SystemUiController;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
@@ -162,23 +161,6 @@ public class TaskThumbnailView extends View {
         setThumbnail(task, thumbnailData, true /* refreshNow */);
     }
 
-    /**
-     * By combining the two in a single bitmap then we only have to do a single draw
-     * call in the onDraw function. Also, this fixes a bug where the background was
-     * visible in the corners because of anti-aliasing.
-     */
-    public Bitmap combineThumbnailAndBackground(Bitmap bm) {
-        return BitmapRenderer.createHardwareBitmap(bm.getWidth(), bm.getHeight(), c -> {
-            final boolean drawBackgroundOnly = mTask == null || mTask.isLocked;
-            if (drawBackgroundOnly) {
-                c.drawPaint(mBackgroundPaint);
-            } else {
-                c.drawPaint(mBackgroundPaint);
-                c.drawBitmap(bm, 0, 0, null);
-            }
-        });
-    }
-
     /** Updates the shader, paint, matrix to redraw. */
     public void refresh() {
         refresh(false);
@@ -191,7 +173,6 @@ public class TaskThumbnailView extends View {
     private void refresh(boolean shouldRefreshOverlay) {
         if (mThumbnailData != null && mThumbnailData.thumbnail != null) {
             Bitmap bm = mThumbnailData.thumbnail;
-            bm = combineThumbnailAndBackground(bm);
             bm.prepareToDraw();
             mBitmapShader = new BitmapShader(bm, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
             mPaint.setShader(mBitmapShader);
@@ -213,6 +194,7 @@ public class TaskThumbnailView extends View {
      * <p>
      * If dimAlpha is 0, no dimming is applied; if dimAlpha is 1, the thumbnail will be the
      * extracted background color.
+     *
      */
     public void setDimAlpha(float dimAlpha) {
         mDimAlpha = dimAlpha;
@@ -314,6 +296,19 @@ public class TaskThumbnailView extends View {
                 return;
             }
         }
+
+        // Always draw the background since the snapshots might be translucent or partially empty
+        // (For example, tasks been reparented out of dismissing split root when drag-to-dismiss
+        // split screen).
+        canvas.drawRoundRect(x, y + 1, width, height - 1, cornerRadius,
+                cornerRadius, mBackgroundPaint);
+
+        final boolean drawBackgroundOnly = mTask == null || mTask.isLocked || mBitmapShader == null
+                || mThumbnailData == null;
+        if (drawBackgroundOnly) {
+            return;
+        }
+
         canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mPaint);
     }
 
@@ -344,6 +339,7 @@ public class TaskThumbnailView extends View {
 
     private void updateThumbnailPaintFilter() {
         ColorFilter filter = getColorFilter(mDimAlpha);
+        mBackgroundPaint.setColorFilter(filter);
         int alpha = (int) (mDimAlpha * 255);
         mDimmingPaintAfterClearing.setAlpha(alpha);
         if (mBitmapShader != null) {

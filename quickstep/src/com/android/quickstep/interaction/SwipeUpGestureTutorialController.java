@@ -280,6 +280,15 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
             super(context, deviceState, gestureState);
             mRemoteTargetHandles[0] = new RemoteTargetGluer.RemoteTargetHandle(
                     mRemoteTargetHandles[0].getTaskViewSimulator(), new FakeTransformParams());
+
+            for (RemoteTargetGluer.RemoteTargetHandle handle
+                    : mTargetGluer.getRemoteTargetHandles()) {
+                // Override home screen rotation preference so that home and overview animations
+                // work properly
+                handle.getTaskViewSimulator()
+                        .getOrientationState()
+                        .ignoreAllowHomeRotationPreference();
+            }
         }
 
         void initDp(DeviceProfile dp) {
@@ -336,8 +345,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
                             1f - SHAPE_PROGRESS_DURATION /* shapeProgressStart */,
                             radius, 255,
                             false, /* isOpening */
-                            mFakeIconView, mDp,
-                            false /* isVerticalBarLayout */);
+                            mFakeIconView, mDp);
                     mFakeIconView.setAlpha(1);
                     mFakeTaskView.setAlpha(getWindowAlpha(progress));
                     mFakePreviousTaskView.setAlpha(getWindowAlpha(progress));

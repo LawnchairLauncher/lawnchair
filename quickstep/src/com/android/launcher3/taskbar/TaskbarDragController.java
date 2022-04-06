@@ -36,6 +36,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewRootImpl;
+import android.window.SurfaceSyncer;
 
 import androidx.annotation.Nullable;
 
@@ -63,6 +64,8 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.systemui.shared.recents.model.Task;
@@ -128,7 +131,7 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         if (!(view instanceof BubbleTextView)) {
             return false;
         }
-
+        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onTaskbarItemLongClick");
         BubbleTextView btv = (BubbleTextView) view;
         mActivity.onDragStart();
         btv.post(() -> {
@@ -164,30 +167,39 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         dragLayerY += dragRect.top;
 
         DragOptions dragOptions = new DragOptions();
-        dragOptions.preDragCondition = new DragOptions.PreDragCondition() {
-            private DragView mDragView;
-
-            @Override
-            public boolean shouldStartDrag(double distanceDragged) {
-                return mDragView != null && mDragView.isAnimationFinished();
-            }
-
-            @Override
-            public void onPreDragStart(DropTarget.DragObject dragObject) {
-                mDragView = dragObject.dragView;
-            }
-
-            @Override
-            public void onPreDragEnd(DropTarget.DragObject dragObject, boolean dragStarted) {
-                mDragView = null;
-            }
-        };
+        dragOptions.preDragCondition = null;
         if (FeatureFlags.ENABLE_TASKBAR_POPUP_MENU.get()) {
             PopupContainerWithArrow<BaseTaskbarContext> popupContainer =
                     mControllers.taskbarPopupController.showForIcon(btv);
             if (popupContainer != null) {
                 dragOptions.preDragCondition = popupContainer.createPreDragCondition(false);
             }
+        }
+        if (dragOptions.preDragCondition == null) {
+            dragOptions.preDragCondition = new DragOptions.PreDragCondition() {
+                private DragView mDragView;
+
+                @Override
+                public boolean shouldStartDrag(double distanceDragged) {
+                    return mDragView != null && mDragView.isAnimationFinished();
+                }
+
+                @Override
+                public void onPreDragStart(DropTarget.DragObject dragObject) {
+                    mDragView = dragObject.dragView;
+
+                    if (FeatureFlags.ENABLE_TASKBAR_POPUP_MENU.get()
+                            && !shouldStartDrag(0)) {
+                        // Immediately close the popup menu.
+                        mDragView.setOnAnimationEndCallback(() -> callOnDragStart());
+                    }
+                }
+
+                @Override
+                public void onPreDragEnd(DropTarget.DragObject dragObject, boolean dragStarted) {
+                    mDragView = null;
+                }
+            };
         }
 
         return startDrag(
@@ -465,6 +477,7 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                 tx.setScale(dragSurface, scale, scale);
                 tx.setAlpha(dragSurface, alpha);
                 tx.apply();
+                tx.close();
             }
         });
         mReturnAnimator.addListener(new AnimatorListenerAdapter() {
@@ -488,12 +501,14 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                 maybeOnDragEnd();
                 // Synchronize removing the drag surface with the next draw after calling
                 // maybeOnDragEnd()
-                viewRoot.consumeNextDraw((transaction) -> {
-                    transaction.remove(dragSurface);
-                    transaction.apply();
-                    tx.close();
-                });
-                viewRoot.getView().invalidate();
+                SurfaceControl.Transaction transaction = new SurfaceControl.Transaction();
+                transaction.remove(dragSurface);
+                SurfaceSyncer syncer = new SurfaceSyncer();
+                int syncId = syncer.setupSync(transaction::close);
+                syncer.addToSync(syncId, viewRoot.getView());
+                syncer.addTransactionToSync(syncId, transaction);
+                syncer.markSyncReady(syncId);
+
                 mReturnAnimator = null;
             }
         });

@@ -57,6 +57,7 @@ import static com.android.launcher3.popup.SystemShortcut.INSTALL;
 import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
 import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
+import static com.android.launcher3.testing.TestProtocol.BAD_STATE;
 import static com.android.launcher3.util.ItemInfoMatcher.forFolderMatch;
 
 import android.animation.Animator;
@@ -228,6 +229,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -500,6 +502,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
         if (!mModel.addCallbacksAndLoad(this)) {
             if (!internalStateHandled) {
+                Log.d(BAD_STATE, "Launcher onCreate not binding sync, setting DragLayer alpha "
+                        + "ALPHA_INDEX_LAUNCHER_LOAD to 0");
                 // If we are not binding synchronously, show a fade in animation when
                 // the first page bind completes.
                 mDragLayer.getAlphaProperty(ALPHA_INDEX_LAUNCHER_LOAD).setValue(0);
@@ -518,6 +522,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                         final AlphaProperty property =
                                 mDragLayer.getAlphaProperty(ALPHA_INDEX_LAUNCHER_LOAD);
                         if (property.getValue() == 0) {
+                            Log.d(BAD_STATE, "Launcher onPreDraw ALPHA_INDEX_LAUNCHER_LOAD not"
+                                    + " started yet, cancelling draw.");
                             // Animation haven't started yet; suspend.
                             return false;
                         } else {
@@ -645,7 +651,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         mDragLayer.onOneHandedModeStateChanged(activated);
     }
 
-    private void initDeviceProfile(InvariantDeviceProfile idp) {
+    protected void initDeviceProfile(InvariantDeviceProfile idp) {
         // Load configuration-specific DeviceProfile
         mDeviceProfile = idp.getDeviceProfile(this);
         if (isInMultiWindowMode()) {
@@ -1108,21 +1114,23 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 && mAllAppsSessionLogId == null) {
             // creates new instance ID since new all apps session is started.
             mAllAppsSessionLogId = new InstanceIdSequence().newInstanceId();
-            getStatsLogManager().logger().withContainerInfo(
-                    ContainerInfo.newBuilder().setWorkspace(
-                            WorkspaceContainer.newBuilder().setPageIndex(
-                                    getWorkspace().getCurrentPage())).build())
-                    .log(getAllAppsEntryEvent());
+            if (getAllAppsEntryEvent().isPresent()) {
+                getStatsLogManager().logger()
+                        .withContainerInfo(ContainerInfo.newBuilder()
+                                .setWorkspace(WorkspaceContainer.newBuilder()
+                                        .setPageIndex(getWorkspace().getCurrentPage())).build())
+                        .log(getAllAppsEntryEvent().get());
+            }
         }
     }
 
     /**
      * Returns {@link EventEnum} that should be logged when Launcher enters into AllApps state.
      */
-    protected EventEnum getAllAppsEntryEvent() {
-        return FeatureFlags.ENABLE_DEVICE_SEARCH.get()
+    protected Optional<EventEnum> getAllAppsEntryEvent() {
+        return Optional.of(FeatureFlags.ENABLE_DEVICE_SEARCH.get()
                 ? LAUNCHER_ALLAPPS_ENTRY_WITH_DEVICE_SEARCH
-                : LAUNCHER_ALLAPPS_ENTRY;
+                : LAUNCHER_ALLAPPS_ENTRY);
     }
 
     @Override
@@ -1151,15 +1159,16 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 // Making sure mAllAppsSessionLogId is not null to avoid double logging.
                 && mAllAppsSessionLogId != null) {
             getAppsView().reset(false);
-            getStatsLogManager().logger()
-                    .withContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
-                            .setWorkspace(
-                                    LauncherAtom.WorkspaceContainer.newBuilder()
-                                            .setPageIndex(getWorkspace().getCurrentPage()))
-                            .build())
-                    .log(LAUNCHER_ALLAPPS_EXIT);
+            getAllAppsExitEvent().ifPresent(getStatsLogManager().logger()::log);
             mAllAppsSessionLogId = null;
         }
+    }
+
+    /**
+     * Returns {@link EventEnum} that should be logged when Launcher exists from AllApps state.
+     */
+    protected Optional<EventEnum> getAllAppsExitEvent() {
+        return Optional.of(LAUNCHER_ALLAPPS_EXIT);
     }
 
     @Override
@@ -2056,7 +2065,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
-    protected boolean onErrorStartingShortcut(Intent intent, ItemInfo info) {
+    public boolean onErrorStartingShortcut(Intent intent, ItemInfo info) {
         // Due to legacy reasons, direct call shortcuts require Launchers to have the
         // corresponding permission. Show the appropriate permission prompt if that
         // is the case.
@@ -2681,6 +2690,28 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         AlphaProperty property = mDragLayer.getAlphaProperty(ALPHA_INDEX_LAUNCHER_LOAD);
         if (property.getValue() < 1) {
             ObjectAnimator anim = ObjectAnimator.ofFloat(property, MultiValueAlpha.VALUE, 1);
+
+            Log.d(BAD_STATE, "Launcher onInitialBindComplete toAlpha=" + 1);
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    Log.d(BAD_STATE, "Launcher onInitialBindComplete onStart");
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    float alpha = mDragLayer == null
+                            ? -1
+                            : mDragLayer.getAlphaProperty(ALPHA_INDEX_LAUNCHER_LOAD).getValue();
+                    Log.d(BAD_STATE, "Launcher onInitialBindComplete onCancel, alpha=" + alpha);
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    Log.d(BAD_STATE, "Launcher onInitialBindComplete onEnd");
+                }
+            });
+
             anim.addListener(AnimatorListeners.forEndCallback(executor::onLoadAnimationCompleted));
             anim.start();
         } else {
@@ -2743,8 +2774,11 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
      * @param preferredItemId The id of the preferred item to match to if it exists.
      * @param packageName The package name of the app to match.
      * @param user The user of the app to match.
+     * @param supportsAllAppsState If true and we are in All Apps state, looks for view in All Apps.
+     *                             Else we only looks on the workspace.
      */
-    public View getFirstMatchForAppClose(int preferredItemId, String packageName, UserHandle user) {
+    public View getFirstMatchForAppClose(int preferredItemId, String packageName, UserHandle user,
+            boolean supportsAllAppsState) {
         final ItemInfoMatcher preferredItem = (info, cn) ->
                 info != null && info.id == preferredItemId;
         final ItemInfoMatcher packageAndUserAndApp = (info, cn) ->
@@ -2755,7 +2789,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                         && TextUtils.equals(info.getTargetComponent().getPackageName(),
                         packageName);
 
-        if (isInState(LauncherState.ALL_APPS)) {
+        if (supportsAllAppsState && isInState(LauncherState.ALL_APPS)) {
             return getFirstMatch(Collections.singletonList(mAppsView.getActiveRecyclerView()),
                     preferredItem, packageAndUserAndApp);
         } else {

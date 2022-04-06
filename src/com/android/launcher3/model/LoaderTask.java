@@ -615,7 +615,13 @@ public class LoaderTask implements Runnable {
                             }
 
                             if (info != null) {
-                                iconRequestInfos.add(c.createIconRequestInfo(info, useLowResIcon));
+                                if (info.itemType
+                                        != LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+                                    // Skip deep shortcuts; their title and icons have already been
+                                    // loaded above.
+                                    iconRequestInfos.add(
+                                            c.createIconRequestInfo(info, useLowResIcon));
+                                }
 
                                 c.applyCommonProperties(info);
 

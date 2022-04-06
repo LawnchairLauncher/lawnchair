@@ -39,6 +39,7 @@ peanutbutter@google.com
 xuqiu@google.com
 sreyasr@google.com
 thiruram@google.com
+brianji@google.com
 
 per-file FeatureFlags.java, globs = set noparent
 per-file FeatureFlags.java = sunnygoyal@google.com, winsonc@google.com, zakcohen@google.com, mrcasey@google.com, adamcohen@google.com, hyunyoungs@google.com

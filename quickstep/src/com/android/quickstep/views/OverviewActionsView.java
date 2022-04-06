@@ -58,7 +58,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             HIDDEN_NON_ZERO_ROTATION,
             HIDDEN_NO_TASKS,
             HIDDEN_NO_RECENTS,
-            HIDDEN_FOCUSED_SCROLL,
             HIDDEN_SPLIT_SCREEN})
     @Retention(RetentionPolicy.SOURCE)
     public @interface ActionsHiddenFlags { }
@@ -66,8 +65,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     public static final int HIDDEN_NON_ZERO_ROTATION = 1 << 0;
     public static final int HIDDEN_NO_TASKS = 1 << 1;
     public static final int HIDDEN_NO_RECENTS = 1 << 2;
-    public static final int HIDDEN_FOCUSED_SCROLL = 1 << 3;
-    public static final int HIDDEN_SPLIT_SCREEN = 1 << 4;
+    public static final int HIDDEN_SPLIT_SCREEN = 1 << 3;
 
     @IntDef(flag = true, value = {
             DISABLED_SCROLLING,
@@ -216,14 +214,12 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
             // Align vertically, using taskbar height + mDp.taskbarOffsetY() to estimate where
             // the button nav top is.
-            View startActionView = findViewById(R.id.action_screenshot);
             int marginBottom = getOverviewActionsBottomMarginPx(
                     DisplayController.getNavigationMode(getContext()), mDp);
             int actionsTop =
-                    (mDp.heightPx - marginBottom - mInsets.bottom) - startActionView.getHeight();
+                    (mDp.heightPx - marginBottom - mInsets.bottom) - mDp.overviewActionsHeight;
             int navTop = mDp.heightPx - (mDp.taskbarSize + mDp.getTaskbarOffsetY());
-            int transY = navTop - actionsTop
-                    + ((mDp.taskbarSize - startActionView.getHeight()) / 2);
+            int transY = navTop - actionsTop + ((mDp.taskbarSize - mDp.overviewActionsHeight) / 2);
             setTranslationY(transY);
         } else {
             setPadding(mInsets.left, 0, mInsets.right, 0);

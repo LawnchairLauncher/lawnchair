@@ -19,10 +19,7 @@ import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
-import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
-import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
-import static com.android.launcher3.util.DisplayController.CHANGE_SUPPORTED_BOUNDS;
 
 import android.content.ComponentCallbacks;
 import android.content.Context;
@@ -42,6 +39,7 @@ import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.taskbar.unfold.NonDestroyableScopedUnfoldTransitionProgressProvider;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.SettingsCache;
@@ -74,8 +72,11 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
     private final SimpleBroadcastReceiver mShutdownReceiver;
 
     // The source for this provider is set when Launcher is available
+    // We use 'non-destroyable' version here so the original provider won't be destroyed
+    // as it is tied to the activity lifecycle, not the taskbar lifecycle.
+    // It's destruction/creation will be managed by the activity.
     private final ScopedUnfoldTransitionProgressProvider mUnfoldProgressProvider =
-            new ScopedUnfoldTransitionProgressProvider();
+            new NonDestroyableScopedUnfoldTransitionProgressProvider();
 
     private TaskbarActivityContext mTaskbarActivityContext;
     private StatefulActivity mActivity;
@@ -85,8 +86,13 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
      */
     private final TaskbarSharedState mSharedState = new TaskbarSharedState();
 
-    private static final int CHANGE_FLAGS = CHANGE_ACTIVE_SCREEN | CHANGE_DENSITY
-            | CHANGE_SUPPORTED_BOUNDS | CHANGE_NAVIGATION_MODE;
+    /**
+     * We use WindowManager's ComponentCallbacks() for most of the config changes, however for
+     * navigation mode, that callback gets called too soon, before it's internal navigation mode
+     * reflects the current one.
+     * DisplayController's callback is delayed enough to get the correct nav mode value
+     */
+    private static final int CHANGE_FLAGS = CHANGE_NAVIGATION_MODE;
 
     private boolean mUserUnlocked = false;
 
@@ -104,19 +110,34 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
 
             @Override
             public void onConfigurationChanged(Configuration newConfig) {
+                DeviceProfile dp = mUserUnlocked
+                        ? LauncherAppState.getIDP(mContext).getDeviceProfile(mContext)
+                        : null;
                 int configDiff = mOldConfig.diff(newConfig);
                 int configsRequiringRecreate = ActivityInfo.CONFIG_ASSETS_PATHS
-                        | ActivityInfo.CONFIG_LAYOUT_DIRECTION | ActivityInfo.CONFIG_UI_MODE;
-                if ((configDiff & configsRequiringRecreate) != 0) {
-                    // Color has changed, recreate taskbar to reload background color & icons.
+                        | ActivityInfo.CONFIG_LAYOUT_DIRECTION | ActivityInfo.CONFIG_UI_MODE
+                        | ActivityInfo.CONFIG_DENSITY | ActivityInfo.CONFIG_SCREEN_SIZE;
+                boolean requiresRecreate = (configDiff & configsRequiringRecreate) != 0;
+                if ((configDiff & ActivityInfo.CONFIG_SCREEN_SIZE) != 0
+                        && mTaskbarActivityContext != null && dp != null) {
+                    // Additional check since this callback gets fired multiple times w/o
+                    // screen size changing, or when simply rotating the device.
+                    DeviceProfile oldDp = mTaskbarActivityContext.getDeviceProfile();
+                    boolean isOrientationChange =
+                            (configDiff & ActivityInfo.CONFIG_ORIENTATION) != 0;
+                    int oldWidth = isOrientationChange ? oldDp.heightPx : oldDp.widthPx;
+                    int oldHeight = isOrientationChange ? oldDp.widthPx : oldDp.heightPx;
+                    if (dp.widthPx == oldWidth && dp.heightPx == oldHeight) {
+                        configDiff &= ~ActivityInfo.CONFIG_SCREEN_SIZE;
+                        requiresRecreate = (configDiff & configsRequiringRecreate) != 0;
+                    }
+                }
+
+                if (requiresRecreate) {
                     recreateTaskbar();
                 } else {
                     // Config change might be handled without re-creating the taskbar
                     if (mTaskbarActivityContext != null) {
-                        DeviceProfile dp = mUserUnlocked
-                                ? LauncherAppState.getIDP(mContext).getDeviceProfile(mContext)
-                                : null;
-
                         if (dp != null && dp.isTaskbarPresent) {
                             mTaskbarActivityContext.updateDeviceProfile(dp.copy(mContext));
                         }
