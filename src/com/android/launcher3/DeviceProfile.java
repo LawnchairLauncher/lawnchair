@@ -246,6 +246,7 @@ public class DeviceProfile {
         windowX = windowBounds.bounds.left;
         windowY = windowBounds.bounds.top;
         this.rotationHint = windowBounds.rotationHint;
+        mInsets.set(windowBounds.insets);
 
         isScalableGrid = inv.isScalable && !isVerticalBarLayout() && !isMultiWindowMode;
 
@@ -298,7 +299,7 @@ public class DeviceProfile {
         desiredWorkspaceHorizontalMarginPx = getHorizontalMarginPx(inv, res);
         desiredWorkspaceHorizontalMarginOriginalPx = desiredWorkspaceHorizontalMarginPx;
 
-        bottomSheetTopPadding = windowBounds.insets.top // statusbar height
+        bottomSheetTopPadding = mInsets.top // statusbar height
                 + res.getDimensionPixelSize(R.dimen.bottom_sheet_extra_top_padding)
                 + (isTablet ? 0 : edgeMarginPx); // phones need edgeMarginPx additional padding
 
@@ -567,6 +568,7 @@ public class DeviceProfile {
         WindowBounds bounds = new WindowBounds(
                 widthPx, heightPx, availableWidthPx, availableHeightPx, rotationHint);
         bounds.bounds.offsetTo(windowX, windowY);
+        bounds.insets.set(mInsets);
         return new Builder(context, inv, mInfo)
                 .setWindowBounds(bounds)
                 .setUseTwoPanels(isTwoPanels)
@@ -1144,9 +1146,12 @@ public class DeviceProfile {
         writer.println(prefix + pxToDpStr("windowY", windowY));
         writer.println(prefix + pxToDpStr("widthPx", widthPx));
         writer.println(prefix + pxToDpStr("heightPx", heightPx));
-
         writer.println(prefix + pxToDpStr("availableWidthPx", availableWidthPx));
         writer.println(prefix + pxToDpStr("availableHeightPx", availableHeightPx));
+        writer.println(prefix + pxToDpStr("mInsets.left", mInsets.left));
+        writer.println(prefix + pxToDpStr("mInsets.top", mInsets.top));
+        writer.println(prefix + pxToDpStr("mInsets.right", mInsets.right));
+        writer.println(prefix + pxToDpStr("mInsets.bottom", mInsets.bottom));
 
         writer.println(prefix + "\taspectRatio:" + aspectRatio);
 
@@ -1187,6 +1192,10 @@ public class DeviceProfile {
         writer.println(prefix + pxToDpStr("folderCellLayoutBorderSpacePx Vertical",
                 folderCellLayoutBorderSpacePx.y));
 
+        writer.println(prefix + pxToDpStr("bottomSheetTopPadding", bottomSheetTopPadding));
+
+        writer.println(prefix + pxToDpStr("allAppsShiftRange", allAppsShiftRange));
+        writer.println(prefix + pxToDpStr("allAppsTopPadding", allAppsTopPadding));
         writer.println(prefix + pxToDpStr("allAppsIconSizePx", allAppsIconSizePx));
         writer.println(prefix + pxToDpStr("allAppsIconTextSizePx", allAppsIconTextSizePx));
         writer.println(prefix + pxToDpStr("allAppsIconDrawablePaddingPx",
