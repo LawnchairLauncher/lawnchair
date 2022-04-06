@@ -579,7 +579,10 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_TASKBAR_OVERVIEW_BUTTON_LONGPRESS(1010),
 
         @UiEvent(doc = "User tapped taskbar a11y button")
-        LAUNCHER_TASKBAR_A11Y_BUTTON_LONGPRESS(1011);
+        LAUNCHER_TASKBAR_A11Y_BUTTON_LONGPRESS(1011),
+
+        @UiEvent(doc = "Show an 'Undo' snackbar when users dismiss a predicted hotseat item")
+        LAUNCHER_DISMISS_PREDICTION_UNDO(1035);
 
         // ADD MORE
 
