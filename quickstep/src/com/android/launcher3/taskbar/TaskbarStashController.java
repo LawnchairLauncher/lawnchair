@@ -65,6 +65,9 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             | FLAG_STASHED_IN_APP_PINNED | FLAG_STASHED_IN_APP_EMPTY | FLAG_STASHED_IN_APP_SETUP
             | FLAG_STASHED_IN_APP_IME | FLAG_STASHED_IN_APP_ALL_APPS;
 
+    private static final int FLAGS_STASHED_IN_APP_IGNORING_IME =
+            FLAGS_STASHED_IN_APP & ~FLAG_STASHED_IN_APP_IME;
+
     // If any of these flags are enabled, inset apps by our stashed height instead of our unstashed
     // height. This way the reported insets are consistent even during transitions out of the app.
     // Currently any flag that causes us to stash in an app is included, except for IME or All Apps
@@ -236,6 +239,13 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      */
     public boolean isStashedInApp() {
         return hasAnyFlag(FLAGS_STASHED_IN_APP);
+    }
+
+    /**
+     * Returns whether the taskbar should be stashed in apps regardless of the IME visibility.
+     */
+    public boolean isStashedInAppIgnoringIme() {
+        return hasAnyFlag(FLAGS_STASHED_IN_APP_IGNORING_IME);
     }
 
     /**
@@ -586,7 +596,11 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
     private void notifyStashChange(boolean visible, boolean stashed) {
         mSystemUiProxy.notifyTaskbarStatus(visible, stashed);
-        mControllers.taskbarActivityContext.updateInsetRoundedCornerFrame(visible && !stashed);
+        // If stashing taskbar is caused by IME visibility, we could just skip updating rounded
+        // corner insets since the rounded corners will be covered by IME during IME is showing and
+        // taskbar will be restored back to unstashed when IME is hidden.
+        mControllers.taskbarActivityContext.updateInsetRoundedCornerFrame(
+                    visible && !isStashedInAppIgnoringIme());
         mControllers.rotationButtonController.onTaskbarStateChange(visible, stashed);
     }
 
