@@ -785,5 +785,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         pw.println(String.format(
                 "%s\tmBindInProgress=%b", prefix, mBindingItems));
         mControllers.dumpLogs(prefix + "\t", pw);
+        mDeviceProfile.dump(prefix, pw);
     }
 }
