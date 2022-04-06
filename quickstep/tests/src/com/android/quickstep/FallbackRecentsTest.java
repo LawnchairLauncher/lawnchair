@@ -79,6 +79,8 @@ import java.util.function.Function;
 @RunWith(AndroidJUnit4.class)
 public class FallbackRecentsTest {
 
+    private static final String FALLBACK_LAUNCHER_TITLE = "Test launcher";
+
     private final UiDevice mDevice;
     private final LauncherInstrumentation mLauncher;
     private final ActivityInfo mOtherLauncherActivity;
@@ -169,7 +171,7 @@ public class FallbackRecentsTest {
     public void goToOverviewFromHome() {
         mDevice.pressHome();
         assertTrue("Fallback Launcher not visible", mDevice.wait(Until.hasObject(By.pkg(
-                mOtherLauncherActivity.packageName)), WAIT_TIME_MS));
+                mOtherLauncherActivity.packageName).text(FALLBACK_LAUNCHER_TITLE)), WAIT_TIME_MS));
 
         mLauncher.getLaunchedAppState().switchToOverview();
     }
@@ -258,7 +260,7 @@ public class FallbackRecentsTest {
         // Test dismissing all tasks.
         pressHomeAndGoToOverview().dismissAllTasks();
         assertTrue("Fallback Launcher not visible", TestHelpers.wait(Until.hasObject(By.pkg(
-                mOtherLauncherActivity.packageName)), WAIT_TIME_MS));
+                mOtherLauncherActivity.packageName).text(FALLBACK_LAUNCHER_TITLE)), WAIT_TIME_MS));
     }
 
     private int getCurrentOverviewPage(RecentsActivity recents) {
