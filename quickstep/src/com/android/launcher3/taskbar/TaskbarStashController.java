@@ -28,10 +28,12 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.annotation.Nullable;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.ViewConfiguration;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.SystemUiProxy;
@@ -566,6 +568,10 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      *                unstashed.
      */
     public void updateStateForFlag(int flag, boolean enabled) {
+        if (flag == FLAG_IN_APP && TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.TASKBAR_IN_APP_STATE, String.format(
+                    "setting flag FLAG_IN_APP to: %b", enabled), new Exception());
+        }
         if (enabled) {
             mState |= flag;
         } else {
@@ -667,6 +673,14 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             }
             boolean isStashed = mStashCondition.test(flags);
             if (mIsStashed != isStashed) {
+                if (TestProtocol.sDebugTracing) {
+                    Log.d(TestProtocol.TASKBAR_IN_APP_STATE, String.format(
+                            "setState: mIsStashed=%b, isStashed=%b, duration=%d, start=:%b",
+                            mIsStashed,
+                            isStashed,
+                            duration,
+                            start));
+                }
                 mIsStashed = isStashed;
 
                 // This sets mAnimator.
