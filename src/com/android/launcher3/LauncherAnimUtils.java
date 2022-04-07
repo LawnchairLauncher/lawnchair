@@ -38,6 +38,7 @@ public class LauncherAnimUtils {
 
     // Progress after which the transition is assumed to be a success
     public static final float SUCCESS_TRANSITION_PROGRESS = 0.5f;
+    public static final float TABLET_BOTTOM_SHEET_SUCCESS_TRANSITION_PROGRESS = 0.3f;
 
     public static final IntProperty<Drawable> DRAWABLE_ALPHA =
             new IntProperty<Drawable>("drawableAlpha") {
