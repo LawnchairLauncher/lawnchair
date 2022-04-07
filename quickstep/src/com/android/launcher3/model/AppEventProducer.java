@@ -18,6 +18,7 @@ package com.android.launcher3.model;
 import static android.app.prediction.AppTargetEvent.ACTION_DISMISS;
 import static android.app.prediction.AppTargetEvent.ACTION_LAUNCH;
 import static android.app.prediction.AppTargetEvent.ACTION_PIN;
+import static android.app.prediction.AppTargetEvent.ACTION_UNDISMISS;
 import static android.app.prediction.AppTargetEvent.ACTION_UNPIN;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
@@ -25,6 +26,7 @@ import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PREDICT
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_PREDICTION;
 import static com.android.launcher3.logger.LauncherAtomExtensions.ExtendedContainers.ContainerCase.DEVICE_SEARCH_RESULT_CONTAINER;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_DISMISS_PREDICTION_UNDO;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_CONVERTED_TO_ICON;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_PREDICTION_PINNED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DRAG_STARTED;
@@ -176,6 +178,8 @@ public class AppEventProducer implements StatsLogConsumer {
                     mContext.getPackageName(), Process.myUserHandle())
                     .build();
             sendEvent(target, atomInfo, ACTION_LAUNCH, CONTAINER_PREDICTION);
+        } else if (event == LAUNCHER_DISMISS_PREDICTION_UNDO) {
+            sendEvent(atomInfo, ACTION_UNDISMISS, CONTAINER_HOTSEAT_PREDICTION);
         }
     }
 
