@@ -61,6 +61,10 @@
     <dimen name="drop_target_top_margin">36dp</dimen>
     <dimen name="drop_target_bottom_margin">16dp</dimen>
 
+    <!-- Button drop target bar -->
+    <dimen name="button_drop_target_min_text_size">10sp</dimen>
+    <dimen name="button_drop_target_resize_text_increment">1sp</dimen>
+
 <!-- App Widget resize frame -->
     <dimen name="widget_handle_margin">13dp</dimen>
     <dimen name="resize_frame_background_padding">24dp</dimen>
