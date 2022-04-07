@@ -90,7 +90,8 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Esta aplicación es del sistema y no se puede desinstalar."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Editar nombre"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Se ha inhabilitado <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
-    <string name="dotted_app_label" msgid="1704091277755818896">"{count,plural,offset:1 =1{{app_name} tiene # notificación}other{{app_name} tiene # notificaciones}}"</string>
+    <!-- no translation found for dotted_app_label (1865617679843363410) -->
+    <skip />
     <string name="default_scroll_format" msgid="7475544710230993317">"Página %1$d de %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Pantalla de inicio %1$d de %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Nueva página de pantalla de inicio"</string>
