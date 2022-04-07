@@ -17,6 +17,8 @@ package com.android.launcher3.views;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
+import static com.android.launcher3.LauncherAnimUtils.SUCCESS_TRANSITION_PROGRESS;
+import static com.android.launcher3.LauncherAnimUtils.TABLET_BOTTOM_SHEET_SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 
 import android.animation.Animator;
@@ -184,7 +186,10 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
 
     @Override
     public void onDragEnd(float velocity) {
-        if ((mSwipeDetector.isFling(velocity) && velocity > 0) || mTranslationShift > 0.5f) {
+        float successfulShiftThreshold = mActivityContext.getDeviceProfile().isTablet
+                ? TABLET_BOTTOM_SHEET_SUCCESS_TRANSITION_PROGRESS : SUCCESS_TRANSITION_PROGRESS;
+        if ((mSwipeDetector.isFling(velocity) && velocity > 0)
+                || mTranslationShift > successfulShiftThreshold) {
             mScrollInterpolator = scrollInterpolatorForVelocity(velocity);
             mOpenCloseAnimator.setDuration(BaseSwipeDetector.calculateDuration(
                     velocity, TRANSLATION_SHIFT_CLOSED - mTranslationShift));
