@@ -58,7 +58,6 @@ import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.launcher3.util.rule.ScreenRecordRule;
-import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.quickstep.views.RecentsView;
 
 import org.junit.After;
@@ -167,7 +166,6 @@ public class FallbackRecentsTest {
     // b/143488140
     //@NavigationModeSwitch
     @Test
-    @ScreenRecord // b/223278795
     public void goToOverviewFromHome() {
         mDevice.pressHome();
         assertTrue("Fallback Launcher not visible", mDevice.wait(Until.hasObject(By.pkg(
