@@ -90,7 +90,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"हा सिस्टम अ‍ॅप आहे आणि अनइंस्टॉल केला जाऊ शकत नाही."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"नाव संपादित करा"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> अक्षम केला आहे"</string>
-    <string name="dotted_app_label" msgid="1704091277755818896">"{count,plural,offset:1 =1{{app_name} साठी # सूचना आहे}other{{app_name} साठी # सूचना आहेत}}"</string>
+    <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} संबंधित # सूचना आहे}other{{app_name} संबंधित # सूचना आहेत}}"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"%2$d पैकी %1$d पृष्ठ"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%2$d पैकी %1$d मुख्य स्क्रीन"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"नवीन मुख्य स्क्रीन पृष्ठ"</string>
@@ -106,7 +106,7 @@
     <string name="settings_button_text" msgid="8873672322605444408">"होम सेटिंग्‍ज"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपल्या प्रशासकाने अक्षम केले"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"होम स्क्रीन फिरवण्‍याची अनुमती द्या"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"फोन फिरविला जातो तेव्हा"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"फोन फिरवला जातो तेव्हा"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"सूचना बिंदू"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"सुरू"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"बंद"</string>
