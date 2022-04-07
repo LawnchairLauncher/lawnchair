@@ -49,7 +49,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.icons.FastBitmapDrawable;
@@ -413,8 +412,7 @@ public class FloatingIconView extends FrameLayout implements
     @WorkerThread
     @SuppressWarnings("WrongThread")
     private static int getOffsetForIconBounds(Launcher l, Drawable drawable, RectF position) {
-        if (!(drawable instanceof AdaptiveIconDrawable)
-                || (drawable instanceof FolderAdaptiveIcon)) {
+        if (!(drawable instanceof AdaptiveIconDrawable)) {
             return 0;
         }
         int blurSizeOutline =
