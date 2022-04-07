@@ -140,7 +140,7 @@ public abstract class ButtonDropTarget extends TextView
                 y = -getMeasuredHeight();
                 message.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
                 if (mToolTipLocation == TOOLTIP_LEFT) {
-                    x = - getMeasuredWidth() - message.getMeasuredWidth() / 2;
+                    x = -getMeasuredWidth() - message.getMeasuredWidth() / 2;
                 } else {
                     x = getMeasuredWidth() / 2 + message.getMeasuredWidth() / 2;
                 }
@@ -322,6 +322,40 @@ public abstract class ButtonDropTarget extends TextView
     public void setToolTipLocation(int location) {
         mToolTipLocation = location;
         hideTooltip();
+    }
+
+
+    /**
+     * Reduce the size of the text until it fits or reaches a minimum.
+     *
+     * The minimum size is defined by {@code R.dimen.button_drop_target_min_text_size} and
+     * it diminishes by intervals defined by
+     * {@code R.dimen.button_drop_target_resize_text_increment}
+     * This functionality is very similar to the option
+     * {@link TextView#setAutoSizeTextTypeWithDefaults(int)} but can't be used in this view because
+     * the layout width is {@code WRAP_CONTENT}.
+     *
+     * @param availableWidth Available width in the button to fit the text, used in
+     *        {@code ButtonDropTarget#isTextTruncated(int)}
+     * @return The biggest text size in SP that makes the text fit or if the text can't fit returns
+     *         the min available value
+     */
+    public float resizeTextToFit(int availableWidth) {
+        float minSize = Utilities.pxToSp(getResources()
+                .getDimensionPixelSize(R.dimen.button_drop_target_min_text_size));
+        float step = Utilities.pxToSp(getResources()
+                .getDimensionPixelSize(R.dimen.button_drop_target_resize_text_increment));
+        float textSize = Utilities.pxToSp(getTextSize());
+
+        while (textSize > minSize) {
+            if (isTextTruncated(availableWidth)) {
+                textSize -= step;
+                setTextSize(textSize);
+            } else {
+                return textSize;
+            }
+        }
+        return minSize;
     }
 
     public boolean isTextTruncated(int availableWidth) {
