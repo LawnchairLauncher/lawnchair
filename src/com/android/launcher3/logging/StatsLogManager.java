@@ -582,7 +582,11 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_TASKBAR_A11Y_BUTTON_LONGPRESS(1011),
 
         @UiEvent(doc = "Show an 'Undo' snackbar when users dismiss a predicted hotseat item")
-        LAUNCHER_DISMISS_PREDICTION_UNDO(1035);
+        LAUNCHER_DISMISS_PREDICTION_UNDO(1035),
+
+        @UiEvent(doc = "User clicked on IME quicksearch button.")
+        LAUNCHER_ALLAPPS_QUICK_SEARCH_WITH_IME(1047),
+        ;
 
         // ADD MORE
 

@@ -16,6 +16,7 @@
 package com.android.launcher3.touch;
 
 import static com.android.launcher3.LauncherAnimUtils.SUCCESS_TRANSITION_PROGRESS;
+import static com.android.launcher3.LauncherAnimUtils.TABLET_BOTTOM_SHEET_SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.LauncherAnimUtils.newCancelListener;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -285,8 +286,13 @@ public abstract class AbstractStateChangeTouchController
                             ? mToState : mFromState;
             // snap to top or bottom using the release velocity
         } else {
+            float successTransitionProgress =
+                    mLauncher.getDeviceProfile().isTablet
+                            && (mToState == ALL_APPS || mFromState == ALL_APPS)
+                            ? TABLET_BOTTOM_SHEET_SUCCESS_TRANSITION_PROGRESS
+                            : SUCCESS_TRANSITION_PROGRESS;
             targetState =
-                    (interpolatedProgress > SUCCESS_TRANSITION_PROGRESS) ? mToState : mFromState;
+                    (interpolatedProgress > successTransitionProgress) ? mToState : mFromState;
         }
 
         final float endProgress;

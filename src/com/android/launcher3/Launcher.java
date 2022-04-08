@@ -604,7 +604,13 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     public void onEnterAnimationComplete() {
         super.onEnterAnimationComplete();
         mRotationHelper.setCurrentTransitionRequest(REQUEST_NONE);
-        AbstractFloatingView.closeOpenViews(this, false, TYPE_ICON_SURFACE);
+        // Starting with Android S, onEnterAnimationComplete is sent immediately
+        // causing the surface to get removed before the animation completed (b/175345344).
+        // Instead we rely on next user touch event to remove the view and optionally a callback
+        // from system from Android T onwards.
+        if (!Utilities.ATLEAST_S) {
+            AbstractFloatingView.closeOpenViews(this, false, TYPE_ICON_SURFACE);
+        }
     }
 
     @Override
@@ -1183,6 +1189,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             mOverlayManager.onActivityResumed(this);
         }
 
+        AbstractFloatingView.closeOpenViews(this, false, TYPE_ALL & ~TYPE_REBIND_SAFE);
         TraceHelper.INSTANCE.endSection(traceToken);
     }
 
@@ -1686,9 +1693,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             outState.remove(RUNTIME_STATE_WIDGET_PANEL);
         }
 
-        // We close any open folders and shortcut containers that are not safe for rebind,
-        // and we need to make sure this state is reflected.
-        AbstractFloatingView.closeOpenViews(this, false, TYPE_ALL & ~TYPE_REBIND_SAFE);
         finishAutoCancelActionMode();
 
         if (mPendingRequestArgs != null) {
