@@ -66,7 +66,8 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             TYPE_PIN_WIDGET_FROM_EXTERNAL_POPUP,
             TYPE_WIDGETS_EDUCATION_DIALOG,
             TYPE_TASKBAR_EDUCATION_DIALOG,
-            TYPE_TASKBAR_ALL_APPS
+            TYPE_TASKBAR_ALL_APPS,
+            TYPE_OPTIONS_POPUP_DIALOG
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface FloatingViewType {}
@@ -86,6 +87,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_TASK_MENU = 1 << 11;
     public static final int TYPE_OPTIONS_POPUP = 1 << 12;
     public static final int TYPE_ICON_SURFACE = 1 << 13;
+    public static final int TYPE_OPTIONS_POPUP_DIALOG = 1 << 18;
 
     public static final int TYPE_PIN_WIDGET_FROM_EXTERNAL_POPUP = 1 << 14;
     public static final int TYPE_WIDGETS_EDUCATION_DIALOG = 1 << 15;
@@ -97,13 +99,14 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE | TYPE_TASK_MENU
             | TYPE_OPTIONS_POPUP | TYPE_SNACKBAR | TYPE_LISTENER | TYPE_ALL_APPS_EDU
             | TYPE_ICON_SURFACE | TYPE_DRAG_DROP_POPUP | TYPE_PIN_WIDGET_FROM_EXTERNAL_POPUP
-            | TYPE_WIDGETS_EDUCATION_DIALOG | TYPE_TASKBAR_EDUCATION_DIALOG | TYPE_TASKBAR_ALL_APPS;
+            | TYPE_WIDGETS_EDUCATION_DIALOG | TYPE_TASKBAR_EDUCATION_DIALOG | TYPE_TASKBAR_ALL_APPS
+            | TYPE_OPTIONS_POPUP_DIALOG;
 
     // Type of popups which should be kept open during launcher rebind
     public static final int TYPE_REBIND_SAFE = TYPE_WIDGETS_FULL_SHEET
             | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE
             | TYPE_ALL_APPS_EDU | TYPE_ICON_SURFACE | TYPE_WIDGETS_EDUCATION_DIALOG
-            | TYPE_TASKBAR_EDUCATION_DIALOG | TYPE_TASKBAR_ALL_APPS;
+            | TYPE_TASKBAR_EDUCATION_DIALOG | TYPE_TASKBAR_ALL_APPS | TYPE_OPTIONS_POPUP_DIALOG;
 
     // Usually we show the back button when a floating view is open. Instead, hide for these types.
     public static final int TYPE_HIDE_BACK_BUTTON = TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE
