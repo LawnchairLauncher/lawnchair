@@ -92,8 +92,6 @@ public class WorkAdapterProvider extends BaseAdapterProvider {
         TextView title = view.findViewById(R.id.work_apps_paused_title);
         title.setText(cache.workProfileEdu);
 
-        Button button = view.findViewById(R.id.action_btn);
-        button.setText(cache.workProfileEduAccept);
     }
 
     /**

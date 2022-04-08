@@ -90,7 +90,8 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Dette er en systemapp som ikke kan avinstalleres."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Rediger navn"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Slo av <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
-    <string name="dotted_app_label" msgid="1704091277755818896">"{count,plural,offset:1 =1{{app_name} har # varsel}other{{app_name} har # varsler}}"</string>
+    <!-- no translation found for dotted_app_label (1865617679843363410) -->
+    <skip />
     <string name="default_scroll_format" msgid="7475544710230993317">"Side %1$d av %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Startside %1$d av %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Ny side på startskjermen"</string>
@@ -105,7 +106,7 @@
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Bakgrunn og stil"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Startsideinnstillinger"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Administratoren har slått av funksjonen"</string>
-    <string name="allow_rotation_title" msgid="7222049633713050106">"Tillat rotasjon av startskjermen"</string>
+    <string name="allow_rotation_title" msgid="7222049633713050106">"Tillat at startskjermen roterer"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Når telefonen roteres"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Varselsprikker"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"På"</string>

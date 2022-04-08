@@ -63,7 +63,6 @@ import android.os.UserManager;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.MotionEvent;
-import android.view.Surface;
 
 import androidx.annotation.BinderThread;
 
@@ -557,8 +556,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
         if (mIsOneHandedModeEnabled) {
             final Info displayInfo = mDisplayController.getInfo();
             return (mRotationTouchHelper.touchInOneHandedModeRegion(ev)
-                && displayInfo.rotation != Surface.ROTATION_90
-                && displayInfo.rotation != Surface.ROTATION_270);
+                    && (displayInfo.currentSize.x < displayInfo.currentSize.y));
         }
         return false;
     }
