@@ -113,6 +113,7 @@ public final class LauncherInstrumentation {
 
     static final Pattern EVENT_TOUCH_DOWN_TIS = getTouchEventPatternTIS("ACTION_DOWN");
     static final Pattern EVENT_TOUCH_UP_TIS = getTouchEventPatternTIS("ACTION_UP");
+    static final Pattern EVENT_TOUCH_CANCEL_TIS = getTouchEventPatternTIS("ACTION_CANCEL");
 
     static final Pattern EVENT_KEY_BACK_DOWN = getKeyEventPattern("ACTION_DOWN", "KEYCODE_BACK");
     static final Pattern EVENT_KEY_BACK_UP = getKeyEventPattern("ACTION_UP", "KEYCODE_BACK");
@@ -135,6 +136,8 @@ public final class LauncherInstrumentation {
     public enum GestureScope {
         OUTSIDE_WITHOUT_PILFER, OUTSIDE_WITH_PILFER, INSIDE, INSIDE_TO_OUTSIDE,
         INSIDE_TO_OUTSIDE_WITHOUT_PILFER,
+        INSIDE_TO_OUTSIDE_WITH_KEYCODE, // For gestures that will trigger a keycode from TIS.
+        OUTSIDE_WITH_KEYCODE,
     }
 
     // Base class for launcher containers.
@@ -967,9 +970,11 @@ public final class LauncherInstrumentation {
             if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
                 final Point displaySize = getRealDisplaySize();
                 final GestureScope gestureScope =
-                        launcherVisible ? GestureScope.INSIDE_TO_OUTSIDE_WITHOUT_PILFER
-                                : GestureScope.OUTSIDE_WITHOUT_PILFER;
-                linearGesture(0, displaySize.y / 2, displaySize.x / 2, displaySize.y / 2,
+                        launcherVisible ? GestureScope.INSIDE_TO_OUTSIDE_WITH_KEYCODE
+                                : GestureScope.OUTSIDE_WITH_KEYCODE;
+                // TODO(b/225505986): change startY and endY back to displaySize.y / 2 once the
+                //  issue is solved.
+                linearGesture(0, displaySize.y / 4, displaySize.x / 2, displaySize.y / 4,
                         10, false, gestureScope);
             } else {
                 waitForNavigationUiObject("back").click();
@@ -1505,7 +1510,8 @@ public final class LauncherInstrumentation {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 if (gestureScope != GestureScope.OUTSIDE_WITH_PILFER
-                        && gestureScope != GestureScope.OUTSIDE_WITHOUT_PILFER) {
+                        && gestureScope != GestureScope.OUTSIDE_WITHOUT_PILFER
+                        && gestureScope != GestureScope.OUTSIDE_WITH_KEYCODE) {
                     expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
                 }
                 if (notLauncher3 && getNavigationModel() != NavigationModel.THREE_BUTTON) {
@@ -1520,14 +1526,18 @@ public final class LauncherInstrumentation {
                     expectEvent(TestProtocol.SEQUENCE_PILFER, EVENT_PILFER_POINTERS);
                 }
                 if (gestureScope != GestureScope.OUTSIDE_WITH_PILFER
-                        && gestureScope != GestureScope.OUTSIDE_WITHOUT_PILFER) {
+                        && gestureScope != GestureScope.OUTSIDE_WITHOUT_PILFER
+                        && gestureScope != GestureScope.OUTSIDE_WITH_KEYCODE) {
                     expectEvent(TestProtocol.SEQUENCE_MAIN,
                             gestureScope == GestureScope.INSIDE
                                     || gestureScope == GestureScope.OUTSIDE_WITHOUT_PILFER
                                     ? EVENT_TOUCH_UP : EVENT_TOUCH_CANCEL);
                 }
                 if (notLauncher3 && getNavigationModel() != NavigationModel.THREE_BUTTON) {
-                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
+                    expectEvent(TestProtocol.SEQUENCE_TIS,
+                            gestureScope == GestureScope.INSIDE_TO_OUTSIDE_WITH_KEYCODE
+                                    || gestureScope == GestureScope.OUTSIDE_WITH_KEYCODE
+                                    ? EVENT_TOUCH_CANCEL_TIS : EVENT_TOUCH_UP_TIS);
                 }
                 break;
         }
