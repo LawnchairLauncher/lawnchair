@@ -583,7 +583,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         } else {
             runningTasks = new ActivityManager.RunningTaskInfo[]{mGestureState.getRunningTask()};
         }
-        mRecentsView.onGestureAnimationStart(runningTasks);
+        mRecentsView.onGestureAnimationStart(runningTasks, mDeviceState.getRotationTouchHelper());
     }
 
     private void launcherFrameDrawn() {
