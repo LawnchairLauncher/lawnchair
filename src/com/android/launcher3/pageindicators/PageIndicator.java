@@ -25,4 +25,24 @@ public interface PageIndicator {
     void setActiveMarker(int activePage);
 
     void setMarkersCount(int numMarkers);
+
+    /**
+     * Sets the flag if the Page Indicator should autohide.
+     * @param shouldAutoHide
+     */
+    default void setShouldAutoHide(boolean shouldAutoHide) {
+        //No-op by default
+    }
+    /**
+     * Pauses all currently running animations.
+     */
+    default void pauseAnimations() {
+        //No-op by default
+    }
+    /**
+     * Force-ends all currently running or paused animations.
+     */
+    default void skipAnimationsToEnd() {
+        //No-op by default
+    }
 }

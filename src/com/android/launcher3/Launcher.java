@@ -237,8 +237,8 @@ import java.util.stream.Stream;
 /**
  * Default launcher application.
  */
-public class Launcher extends StatefulActivity<LauncherState> implements LauncherExterns,
-        Callbacks, InvariantDeviceProfile.OnIDPChangeListener,
+public class Launcher extends StatefulActivity<LauncherState>
+        implements LauncherExterns, Callbacks, InvariantDeviceProfile.OnIDPChangeListener,
         PluginListener<LauncherOverlayPlugin>, LauncherOverlayCallbacks {
     public static final String TAG = "Launcher";
 
@@ -304,7 +304,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     private Configuration mOldConfig;
 
     @Thunk
-    Workspace mWorkspace;
+    Workspace<?> mWorkspace;
     @Thunk
     DragLayer mDragLayer;
     private DragController mDragController;
@@ -1527,7 +1527,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         return mAppsView;
     }
 
-    public Workspace getWorkspace() {
+    public Workspace<?> getWorkspace() {
         return mWorkspace;
     }
 
@@ -3226,11 +3226,12 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     /** Pauses view updates that should not be run during the app launch animation. */
     public void pauseExpensiveViewUpdates() {
         // Pause page indicator animations as they lead to layer trashing.
-        getWorkspace().getPageIndicator().pauseAnimations();
+        mWorkspace.getPageIndicator().pauseAnimations();
     }
 
     /** Resumes view updates at the end of the app launch animation. */
     public void resumeExpensiveViewUpdates() {
-        getWorkspace().getPageIndicator().skipAnimationsToEnd();
+        mWorkspace.getPageIndicator().skipAnimationsToEnd();
     }
+
 }
