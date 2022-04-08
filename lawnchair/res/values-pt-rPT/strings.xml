@@ -34,10 +34,10 @@
     <string name="dock_icons">Ícones da Doca</string>
     <string name="max_folder_columns">Max. de Colunas da Pasta</string>
     <string name="max_folder_rows">Max. de Linhas da Pasta</string>
-    <string name="home_screen_grid">Grelha do Ecrã Inicial</string>
+    <string name="home_screen_grid">Grelha da Tela Inicial</string>
     <string name="columns">Colunas</string>
     <string name="grid">Grelha</string>
-    <string name="rows">Filas</string>
+    <string name="rows">Linhas</string>
     <string name="icons">Ícones</string>
     <string name="icon_size">Tamanho do Ícone</string>
     <string name="label_size">Tamanho da Etiqueta</string>
