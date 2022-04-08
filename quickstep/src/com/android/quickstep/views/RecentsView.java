@@ -154,6 +154,7 @@ import com.android.quickstep.RecentsModel.TaskVisualsChangeListener;
 import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.RemoteTargetGluer;
 import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
+import com.android.quickstep.RotationTouchHelper;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
@@ -2084,11 +2085,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     /**
      * Called when a gesture from an app is starting.
      */
-    public void onGestureAnimationStart(RunningTaskInfo[] runningTaskInfo) {
+    public void onGestureAnimationStart(RunningTaskInfo[] runningTaskInfo,
+            RotationTouchHelper rotationTouchHelper) {
         mGestureActive = true;
         // This needs to be called before the other states are set since it can create the task view
         if (mOrientationState.setGestureActive(true)) {
-            updateOrientationHandler();
+            setLayoutRotation(rotationTouchHelper.getCurrentActiveRotation(),
+                    rotationTouchHelper.getDisplayRotation());
         }
 
         showCurrentTask(runningTaskInfo);
