@@ -263,15 +263,13 @@ public class FallbackSwipeHandler extends
             } else {
                 mHomeAlpha = new AnimatedFloat(this::updateHomeAlpha);
                 mHomeAlpha.value = 0;
-                runActionOnRemoteHandles(remoteTargetHandle ->
-                        remoteTargetHandle.getTransformParams().setHomeBuilderProxy(
-                                FallbackHomeAnimationFactory.this
-                                        ::updateHomeActivityTransformDuringHomeAnim));
+                mHomeAlphaParams.setHomeBuilderProxy(
+                        this::updateHomeActivityTransformDuringHomeAnim);
             }
 
             mRecentsAlpha.value = 1;
             runActionOnRemoteHandles(remoteTargetHandle ->
-                    remoteTargetHandle.getTransformParams().setHomeBuilderProxy(
+                    remoteTargetHandle.getTransformParams().setBaseBuilderProxy(
                             FallbackHomeAnimationFactory.this
                                     ::updateRecentsActivityTransformDuringHomeAnim));
         }
