@@ -52,7 +52,7 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Professionnels"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Conversations"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Infos utiles à portée de main"</string>
-    <string name="widget_education_content" msgid="1731667670753497052">"Pour obtenir des informations sans ouvrir d\'applications, vous pouvez ajouter des widgets à votre écran d\'accueil"</string>
+    <string name="widget_education_content" msgid="1731667670753497052">"Pour obtenir des infos sans ouvrir d\'applis, vous pouvez ajouter des widgets à votre écran d\'accueil"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Appuyez pour modifier les paramètres du widget"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"OK"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Modifier les paramètres du widget"</string>
@@ -90,7 +90,8 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Impossible de désinstaller cette application, car il s\'agit d\'une application système."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Modifier le nom"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> est désactivé."</string>
-    <string name="dotted_app_label" msgid="1704091277755818896">"{count,plural,offset:1 =1{{app_name} a # notification}one{{app_name} a # notification}other{{app_name} a # notifications}}"</string>
+    <!-- no translation found for dotted_app_label (1865617679843363410) -->
+    <skip />
     <string name="default_scroll_format" msgid="7475544710230993317">"Page %1$d sur %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Écran d\'accueil %1$d sur %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Nouvelle page d\'écran d\'accueil"</string>

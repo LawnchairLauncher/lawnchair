@@ -121,7 +121,7 @@ message TaskBarContainer {
   optional int32 cardinality = 2;
 }
 
-// Next value 39
+// Next value 40
 enum Attribute {
   UNKNOWN = 0;
   DEFAULT_LAYOUT = 1;       // icon automatically placed in workspace, folder, hotseat
@@ -165,6 +165,9 @@ enum Attribute {
   ALL_APPS_SEARCH_RESULT_PEOPLE_TILE = 27;
   ALL_APPS_SEARCH_RESULT_LEGACY_SHORTCUT = 30;
   ALL_APPS_SEARCH_RESULT_ASSISTANT_MEMORY = 31;
+
+  // Web suggestions provided by AGA
+  ALL_APPS_SEARCH_RESULT_WEB_SUGGEST = 39;
 
   // Suggestion Type provided by AGA
   WEB_SEARCH_RESULT_QUERY = 32;

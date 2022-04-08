@@ -90,7 +90,8 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Šī ir sistēmas lietotne, un to nevar atinstalēt."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Nosaukuma rediģēšana"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Lietotne <xliff:g id="APP_NAME">%1$s</xliff:g> ir atspējota"</string>
-    <string name="dotted_app_label" msgid="1704091277755818896">"{count,plural,offset:1 =1{Lietotnē {app_name} ir # paziņojums}zero{Lietotnē {app_name} ir # paziņojumi}one{Lietotnē {app_name} ir # paziņojums}other{Lietotnē {app_name} ir # paziņojumi}}"</string>
+    <!-- no translation found for dotted_app_label (1865617679843363410) -->
+    <skip />
     <string name="default_scroll_format" msgid="7475544710230993317">"%1$d. lapa no %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Sākuma ekrāns: %1$d no %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Jauna sākuma ekrāna lapa"</string>
