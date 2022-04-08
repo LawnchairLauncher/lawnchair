@@ -101,6 +101,13 @@ public class OverviewInputConsumer<S extends BaseState<S>, T extends StatefulAct
     }
 
     @Override
+    public void onHoverEvent(MotionEvent ev) {
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            mActivity.dispatchGenericMotionEvent(ev);
+        }
+    }
+
+    @Override
     public void onKeyEvent(KeyEvent ev) {
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             switch (ev.getKeyCode()) {
