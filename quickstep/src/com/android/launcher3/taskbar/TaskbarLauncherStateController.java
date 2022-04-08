@@ -444,7 +444,8 @@ import java.util.function.Supplier;
 
         @Override
         public void onRecentsAnimationCanceled(HashMap<Integer, ThumbnailData> thumbnailDatas) {
-            endGestureStateOverride(true);
+            boolean isInOverview = mLauncher.isInState(LauncherState.OVERVIEW);
+            endGestureStateOverride(!isInOverview);
         }
 
         @Override
