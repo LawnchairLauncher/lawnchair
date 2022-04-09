@@ -154,6 +154,7 @@ import com.android.quickstep.RecentsModel.TaskVisualsChangeListener;
 import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.RemoteTargetGluer;
 import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
+import com.android.quickstep.RotationTouchHelper;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
@@ -374,8 +375,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     // OverScroll constants
     private static final int OVERSCROLL_PAGE_SNAP_ANIMATION_DURATION = 270;
-
-    private static final int DEFAULT_ACTIONS_VIEW_ALPHA_ANIMATION_DURATION = 300;
 
     private static final int DISMISS_TASK_DURATION = 300;
     private static final int ADDITION_TASK_DURATION = 200;
@@ -650,8 +649,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private TaskView mMovingTaskView;
 
     private OverviewActionsView mActionsView;
-    private ObjectAnimator mActionsViewAlphaAnimator;
-    private float mActionsViewAlphaAnimatorFinalValue;
 
     private MultiWindowModeChangedListener mMultiWindowModeChangedListener =
             new MultiWindowModeChangedListener() {
@@ -1137,11 +1134,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         return getScrollForPage(taskIndex) == getPagedOrientationHandler().getPrimaryScroll(this);
     }
 
-    private boolean isFocusedTaskInExpectedScrollPosition() {
-        TaskView focusedTask = getFocusedTaskView();
-        return focusedTask != null && isTaskInExpectedScrollPosition(indexOfChild(focusedTask));
-    }
-
     /**
      * Returns a {@link TaskView} that has taskId matching {@code taskId} or null if no match.
      */
@@ -1188,15 +1180,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Override
     protected void onPageBeginTransition() {
         super.onPageBeginTransition();
-        if (!mActivity.getDeviceProfile().isTablet) {
-            mActionsView.updateDisabledFlags(OverviewActionsView.DISABLED_SCROLLING, true);
-        }
+        mActionsView.updateDisabledFlags(OverviewActionsView.DISABLED_SCROLLING, true);
     }
 
     @Override
     protected void onPageEndTransition() {
         super.onPageEndTransition();
-        if (isClearAllHidden() && !mActivity.getDeviceProfile().isTablet) {
+        if (isClearAllHidden()) {
             mActionsView.updateDisabledFlags(OverviewActionsView.DISABLED_SCROLLING, false);
         }
         if (getNextPage() > 0) {
@@ -1797,24 +1787,16 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     private void updateActionsViewFocusedScroll() {
+        boolean hiddenFocusedScroll;
         if (showAsGrid()) {
-            float actionsViewAlphaValue = isFocusedTaskInExpectedScrollPosition() ? 1 : 0;
-            // If animation is already in progress towards the same end value, do not restart.
-            if (mActionsViewAlphaAnimator == null || !mActionsViewAlphaAnimator.isStarted()
-                    || (mActionsViewAlphaAnimator.isStarted()
-                    && mActionsViewAlphaAnimatorFinalValue != actionsViewAlphaValue)) {
-                animateActionsViewAlpha(actionsViewAlphaValue,
-                        DEFAULT_ACTIONS_VIEW_ALPHA_ANIMATION_DURATION);
-            }
+            TaskView focusedTaskView = getFocusedTaskView();
+            hiddenFocusedScroll = focusedTaskView == null
+                    || !isTaskInExpectedScrollPosition(indexOfChild(focusedTaskView));
+        } else {
+            hiddenFocusedScroll = false;
         }
-    }
-
-    private void animateActionsViewAlpha(float alphaValue, long duration) {
-        mActionsViewAlphaAnimator = ObjectAnimator.ofFloat(
-                mActionsView.getVisibilityAlpha(), MultiValueAlpha.VALUE, alphaValue);
-        mActionsViewAlphaAnimatorFinalValue = alphaValue;
-        mActionsViewAlphaAnimator.setDuration(duration);
-        mActionsViewAlphaAnimator.start();
+        mActionsView.updateHiddenFlags(OverviewActionsView.HIDDEN_FOCUSED_SCROLL,
+                hiddenFocusedScroll);
     }
 
     /**
@@ -2084,11 +2066,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     /**
      * Called when a gesture from an app is starting.
      */
-    public void onGestureAnimationStart(RunningTaskInfo[] runningTaskInfo) {
+    public void onGestureAnimationStart(RunningTaskInfo[] runningTaskInfo,
+            RotationTouchHelper rotationTouchHelper) {
         mGestureActive = true;
         // This needs to be called before the other states are set since it can create the task view
         if (mOrientationState.setGestureActive(true)) {
-            updateOrientationHandler();
+            setLayoutRotation(rotationTouchHelper.getCurrentActiveRotation(),
+                    rotationTouchHelper.getDisplayRotation());
         }
 
         showCurrentTask(runningTaskInfo);
@@ -2343,9 +2327,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     private void animateActionsViewIn() {
-        if (!showAsGrid() || isFocusedTaskInExpectedScrollPosition()) {
-            animateActionsViewAlpha(1, TaskView.SCALE_ICON_DURATION);
-        }
+        ObjectAnimator anim = ObjectAnimator.ofFloat(
+                mActionsView.getVisibilityAlpha(), MultiValueAlpha.VALUE, 0, 1);
+        anim.setDuration(TaskView.SCALE_ICON_DURATION);
+        anim.start();
     }
 
     public void animateUpTaskIconScale() {
@@ -3281,7 +3266,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         // Update various scroll-dependent UI.
                         dispatchScrollChanged();
                         updateActionsViewFocusedScroll();
-                        if (isClearAllHidden() && !mActivity.getDeviceProfile().isTablet) {
+                        if (isClearAllHidden()) {
                             mActionsView.updateDisabledFlags(OverviewActionsView.DISABLED_SCROLLING,
                                     false);
                         }
