@@ -27,7 +27,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widgets im abgesicherten Modus deaktiviert"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Verknüpfung nicht verfügbar"</string>
     <string name="home_screen" msgid="5629429142036709174">"Startbildschirm"</string>
-    <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Splitscreen"</string>
+    <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Geteilter Bildschirm"</string>
     <string name="split_screen_position_top" msgid="1504965011158689649">"Oben teilen"</string>
     <string name="split_screen_position_left" msgid="7537793098851830883">"Links teilen"</string>
     <string name="split_screen_position_right" msgid="1569377524925193369">"Rechts teilen"</string>
@@ -90,8 +90,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Dies ist eine Systemanwendung, die nicht deinstalliert werden kann."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Name bearbeiten"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> deaktiviert"</string>
-    <!-- no translation found for dotted_app_label (1865617679843363410) -->
-    <skip />
+    <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} hat # Benachrichtigung}other{{app_name} hat # Benachrichtigungen}}"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Seite %1$d von %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Startbildschirm %1$d von %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Neue Startbildschirmseite"</string>
