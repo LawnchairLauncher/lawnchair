@@ -15,14 +15,19 @@
  */
 package com.android.launcher3.taskbar;
 
+import android.content.Intent;
+import android.content.pm.LauncherApps;
 import android.graphics.Point;
 import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
@@ -38,7 +43,9 @@ import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.views.ActivityContext;
+import com.android.quickstep.SystemUiProxy;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -151,7 +158,7 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
                 mPopupDataProvider.getShortcutCountForItem(item),
                 mPopupDataProvider.getNotificationKeysForItem(item),
                 // TODO (b/198438631): add support for INSTALL shortcut factory
-                Stream.of(APP_INFO)
+                getSystemShortcuts()
                         .map(s -> s.getShortcut(context, item))
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList()));
@@ -165,6 +172,18 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
         });
 
         return container;
+    }
+
+    // Create a Stream of all applicable system shortcuts
+    // TODO(b/227800345): Add "Split bottom" option when tablet is in portrait mode.
+    private Stream<SystemShortcut.Factory> getSystemShortcuts() {
+        // concat a Stream of split options with a Stream of APP_INFO
+        return Stream.concat(
+                Utilities.getSplitPositionOptions(mContext.getDeviceProfile())
+                        .stream()
+                        .map(this::createSplitShortcutFactory),
+                Stream.of(APP_INFO)
+        );
     }
 
     @Override
@@ -213,4 +232,56 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
             return false;
         }
     }
+
+    /**
+     * Creates a factory function representing a single "split position" menu item ("Split left,"
+     * "Split right," or "Split top").
+     * @param position A SplitPositionOption representing whether we are splitting top, left, or
+     *                 right.
+     * @return A factory function to be used in populating the long-press menu.
+     */
+    private SystemShortcut.Factory<BaseTaskbarContext> createSplitShortcutFactory(
+            SplitPositionOption position) {
+        return (context, itemInfo) -> new TaskbarSplitShortcut(context, itemInfo, position);
+    }
+
+     /**
+     * A single menu item ("Split left," "Split right," or "Split top") that executes a split
+     * from the taskbar, as if the user performed a drag and drop split.
+     * Includes an onClick method that initiates the actual split.
+     */
+    private static class TaskbarSplitShortcut extends SystemShortcut<BaseTaskbarContext> {
+        private final SplitPositionOption mPosition;
+
+        TaskbarSplitShortcut(BaseTaskbarContext context, ItemInfo itemInfo,
+                SplitPositionOption position) {
+            super(position.iconResId, position.textResId, context, itemInfo);
+            mPosition = position;
+        }
+
+        @Override
+        public void onClick(View view) {
+            AbstractFloatingView.closeAllOpenViews(mTarget);
+
+            if (mItemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+                WorkspaceItemInfo workspaceItemInfo = (WorkspaceItemInfo) mItemInfo;
+                SystemUiProxy.INSTANCE.get(mTarget).startShortcut(
+                        workspaceItemInfo.getIntent().getPackage(),
+                        workspaceItemInfo.getDeepShortcutId(),
+                        mPosition.stagePosition,
+                        null,
+                        workspaceItemInfo.user);
+            } else {
+                SystemUiProxy.INSTANCE.get(mTarget).startIntent(
+                        mTarget.getSystemService(LauncherApps.class).getMainActivityLaunchIntent(
+                                mItemInfo.getIntent().getComponent(),
+                                null,
+                                mItemInfo.user),
+                        new Intent(),
+                        mPosition.stagePosition,
+                        null);
+            }
+        }
+    }
 }
+
