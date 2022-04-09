@@ -52,7 +52,7 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Lavoro"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Conversazioni"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Informazioni utili a portata di mano"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"Per ricevere informazioni senza aprire app, puoi aggiungere widget alla schermata Home"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"Per ricevere informazioni senza aprire le app, puoi aggiungere dei widget alla schermata Home"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Tocca per modificare le impostazioni del widget"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"OK"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Modifica le impostazioni del widget"</string>

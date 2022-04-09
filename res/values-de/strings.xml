@@ -27,7 +27,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widgets im abgesicherten Modus deaktiviert"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Verknüpfung nicht verfügbar"</string>
     <string name="home_screen" msgid="5629429142036709174">"Startbildschirm"</string>
-    <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Splitscreen"</string>
+    <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Geteilter Bildschirm"</string>
     <string name="split_screen_position_top" msgid="1504965011158689649">"Oben teilen"</string>
     <string name="split_screen_position_left" msgid="7537793098851830883">"Links teilen"</string>
     <string name="split_screen_position_right" msgid="1569377524925193369">"Rechts teilen"</string>

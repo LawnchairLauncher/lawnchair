@@ -51,7 +51,7 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Osobiste"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Służbowe"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Rozmowy"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"Użyteczne informacje w zasięgu ręki"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"Użyteczne informacje w zasięgu ręki"</string>
     <string name="widget_education_content" msgid="745542879510751525">"Aby uzyskać informacje bez otwierania aplikacji, możesz dodać widżety do ekranu głównego"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Kliknij, aby zmienić ustawienia widżetu"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"OK"</string>
