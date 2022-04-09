@@ -18,6 +18,9 @@ package com.android.launcher3;
 
 import static com.android.launcher3.icons.BitmapInfo.FLAG_THEMED;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_ICON_BADGED;
+import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
+import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
+import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MAIN;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
@@ -86,12 +89,14 @@ import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -875,5 +880,40 @@ public final class Utilities {
         int[] pos = new int[2];
         v.getLocationOnScreen(pos);
         return new Rect(pos[0], pos[1], pos[0] + v.getWidth(), pos[1] + v.getHeight());
+    }
+
+    /**
+     * Returns a list of screen-splitting options depending on the device orientation (split top for
+     * portrait, split left for landscape, split left and right for landscape tablets, etc.)
+     */
+    public static List<SplitPositionOption> getSplitPositionOptions(
+            DeviceProfile dp) {
+        List<SplitPositionOption> options = new ArrayList<>();
+        // Add both left and right options if we're in tablet mode
+        if (dp.isTablet && dp.isLandscape) {
+            options.add(new SplitPositionOption(
+                    R.drawable.ic_split_left, R.string.split_screen_position_left,
+                    STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
+            options.add(new SplitPositionOption(
+                    R.drawable.ic_split_right, R.string.split_screen_position_right,
+                    STAGE_POSITION_BOTTOM_OR_RIGHT, STAGE_TYPE_MAIN));
+        } else {
+            if (dp.isSeascape()) {
+                // Add left/right options
+                options.add(new SplitPositionOption(
+                        R.drawable.ic_split_right, R.string.split_screen_position_right,
+                        STAGE_POSITION_BOTTOM_OR_RIGHT, STAGE_TYPE_MAIN));
+            } else if (dp.isLandscape) {
+                options.add(new SplitPositionOption(
+                        R.drawable.ic_split_left, R.string.split_screen_position_left,
+                        STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
+            } else {
+                // Only add top option
+                options.add(new SplitPositionOption(
+                        R.drawable.ic_split_top, R.string.split_screen_position_top,
+                        STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
+            }
+        }
+        return options;
     }
 }
