@@ -90,8 +90,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Impossible de désinstaller cette application, car il s\'agit d\'une application système."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Modifier le nom"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> est désactivé."</string>
-    <!-- no translation found for dotted_app_label (1865617679843363410) -->
-    <skip />
+    <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} a # notification}one{{app_name} a # notification}other{{app_name} a # notifications}}"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Page %1$d sur %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Écran d\'accueil %1$d sur %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Nouvelle page d\'écran d\'accueil"</string>
