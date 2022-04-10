@@ -71,8 +71,8 @@
     <string name="hidden_apps_label">Versteekte toepassings</string>
     <string name="hidden_apps_label_with_count">Versteekte programme (%1$d)</string>
     <plurals name="apps_count">
-        <item quantity="one">%1$d App</item>
-        <item quantity="other">%1$d Apps</item>
+        <item quantity="one">%1$d toepassing</item>
+        <item quantity="other">%1$d toepassings</item>
     </plurals>
     <string name="hotseat_qsb_label">Wys soekbalk</string>
     <string name="dt2s_admin_hint_title">Admin Toestemmings vereis</string>
@@ -190,7 +190,7 @@
     <string name="font_picker_description">Sommige teks bly onveranderd.</string>
     <string name="search_provider_app_search">App Soek</string>
     <string name="always_open_website_label">Maak altyd webwerf oop</string>
-    <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
-    <string name="search_provider">Search Provider</string>
+    <string name="always_open_website_description">Maak soekverskaffer se webwerf oop, selfs al is hul toepassing geïnstalleer.</string>
+    <string name="search_provider">Soek Verskaffer</string>
     <string name="status_bar_label">Status Bar</string>
 </resources>
