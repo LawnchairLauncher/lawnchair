@@ -40,16 +40,12 @@ public interface QuickstepSystemShortcut {
 
     class SplitSelectSystemShortcut extends SystemShortcut<BaseQuickstepLauncher> {
 
-        private final BaseQuickstepLauncher mLauncher;
-        private final ItemInfo mItemInfo;
         private final SplitPositionOption mPosition;
 
         public SplitSelectSystemShortcut(BaseQuickstepLauncher launcher, ItemInfo itemInfo,
                 SplitPositionOption position) {
             super(position.iconResId, position.textResId, launcher, itemInfo);
 
-            mLauncher = launcher;
-            mItemInfo = itemInfo;
             mPosition = position;
         }
 
@@ -71,7 +67,7 @@ public interface QuickstepSystemShortcut {
                 return;
             }
 
-            RecentsView recentsView = mLauncher.getOverviewPanel();
+            RecentsView recentsView = mTarget.getOverviewPanel();
             recentsView.initiateSplitSelect(
                     new SplitSelectSource(view, new BitmapDrawable(bitmap), intent, mPosition));
         }
