@@ -458,29 +458,29 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void updateStagedSplitIconParams(FrameLayout.LayoutParams out, float onScreenRectCenterX,
+    public void updateStagedSplitIconParams(View out, float onScreenRectCenterX,
             float onScreenRectCenterY, float fullscreenScaleX, float fullscreenScaleY,
             int drawableWidth, int drawableHeight, DeviceProfile dp,
             @StagePosition int stagePosition) {
         boolean pinToRight = stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT;
         if (!dp.isLandscape) {
             float inset = dp.getInsets().top;
-            out.leftMargin = Math.round(onScreenRectCenterX / fullscreenScaleX
-                    - 1.0f * drawableWidth / 2);
-            out.topMargin = Math.round((onScreenRectCenterY + (inset / 2f)) / fullscreenScaleY
-                    - 1.0f * drawableHeight / 2);
+            out.setX(Math.round(onScreenRectCenterX / fullscreenScaleX
+                    - 1.0f * drawableWidth / 2));
+            out.setY(Math.round((onScreenRectCenterY + (inset / 2f)) / fullscreenScaleY
+                    - 1.0f * drawableHeight / 2));
         } else {
             if (pinToRight) {
                 float inset = dp.getInsets().right;
-                out.leftMargin = Math.round((onScreenRectCenterX - (inset / 2f)) / fullscreenScaleX
-                        - 1.0f * drawableWidth / 2);
+                out.setX(Math.round((onScreenRectCenterX - (inset / 2f)) / fullscreenScaleX
+                        - 1.0f * drawableWidth / 2));
             } else {
                 float inset = dp.getInsets().left;
-                out.leftMargin = Math.round((onScreenRectCenterX + (inset / 2f)) / fullscreenScaleX
-                        - 1.0f * drawableWidth / 2);
+                out.setX(Math.round((onScreenRectCenterX + (inset / 2f)) / fullscreenScaleX
+                        - 1.0f * drawableWidth / 2));
             }
-            out.topMargin = Math.round(onScreenRectCenterY / fullscreenScaleY
-                    - 1.0f * drawableHeight / 2);
+            out.setY(Math.round(onScreenRectCenterY / fullscreenScaleY
+                    - 1.0f * drawableHeight / 2));
         }
     }
 
