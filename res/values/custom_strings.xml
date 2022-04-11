@@ -30,4 +30,7 @@
     <string name="pref_suggestions_title">Suggestions</string>
     <string name="pref_suggestions_summary">For all apps and Home screen</string>
 
+    <string name="pref_allow_phone_taskbar">Use taskbar</string>
+    <string name="pref_allow_phone_taskbar_desc">For opening and switching apps anywhere</string>
+
 </resources>
