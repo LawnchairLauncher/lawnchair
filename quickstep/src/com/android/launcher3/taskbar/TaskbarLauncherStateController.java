@@ -257,7 +257,10 @@ import java.util.function.Supplier;
         if (hasAnyFlag(changedFlags, FLAG_RESUMED)
                 || launcherStateChangedDuringAnimToResumeAlignment) {
             boolean isResumed = isResumed();
-            float toAlignmentForResumedState = isResumed && goingToUnstashedLauncherState() ? 1 : 0;
+            // If launcher is resumed, we show the icons when going to an unstashed launcher state
+            // or launcher state is not changed (e.g. in overview, launcher is paused and resumed).
+            float toAlignmentForResumedState = isResumed && (goingToUnstashedLauncherState()
+                    || !goingToUnstashedLauncherStateChanged) ? 1 : 0;
             // If we're already animating to the value, just leave it be instead of restarting it.
             if (!mIconAlignmentForResumedState.isAnimatingToValue(toAlignmentForResumedState)) {
                 ObjectAnimator resumeAlignAnim = mIconAlignmentForResumedState
