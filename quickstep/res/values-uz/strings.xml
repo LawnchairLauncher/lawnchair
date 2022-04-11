@@ -40,7 +40,7 @@
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Kerak emas"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Sozlamalar"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Faol ishlatiladigan ilovalar bu yerda chiqadi va oxirgi faoliyatingiz asosida almashadi"</string>
-    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Tavsiyalar olish uchun ilovalarni pastki qatordan tashqariga oling"</string>
+    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Ilova tavsiyalarini olish uchun ilovalarni pastki qatordan tashqariga ushlab torting"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Tavsiya etilgan ilovalarni ochiq joylarga kiriting"</string>
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Ilova tavsiyalari yoqildi"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Endi ilova takliflari chiqmaydi"</string>
