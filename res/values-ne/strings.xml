@@ -111,7 +111,7 @@
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"सक्रिय"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"निष्क्रिय"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"सूचनासम्बन्धी पहुँच आवश्यक हुन्छ"</string>
-    <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचनाको प्रतीक जनाउने थोप्लाहरू देखाउन <xliff:g id="NAME">%1$s</xliff:g> को एपसम्बन्धी सूचनाहरूलाई सक्रिय गर्नुहोस्"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचनाको प्रतीक जनाउने थोप्लाहरू देखाउन <xliff:g id="NAME">%1$s</xliff:g> को एपसम्बन्धी सूचनाहरूलाई अन गर्नुहोस्"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिङहरू बदल्नुहोस्"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"सूचनाको प्रतीक जनाउने थोप्लाहरू देखाउनुहोस्"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"एपका आइकनहरू होम स्क्रिनमा राखियोस्"</string>
