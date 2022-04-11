@@ -342,7 +342,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
             Rect to = finalRect;
             if (to == null) {
                 to = new Rect();
-                Workspace workspace = launcher.getWorkspace();
+                Workspace<?> workspace = launcher.getWorkspace();
                 // Set cellLayout and this to it's final state to compute final animation locations
                 workspace.setFinalTransitionTransform();
                 float scaleX = getScaleX();

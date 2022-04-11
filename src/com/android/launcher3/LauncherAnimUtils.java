@@ -72,8 +72,8 @@ public class LauncherAnimUtils {
      * of all the ones set, to have a smooth experience even in the case of overlapping scaling
      * animation.
      */
-    public static final MultiScalePropertyFactory<Workspace> WORKSPACE_SCALE_PROPERTY_FACTORY =
-            new MultiScalePropertyFactory<Workspace>("workspace_scale_property");
+    public static final MultiScalePropertyFactory<Workspace<?>> WORKSPACE_SCALE_PROPERTY_FACTORY =
+            new MultiScalePropertyFactory<Workspace<?>>("workspace_scale_property");
 
     /** Property to set the scale of hotseat. */
     public static final MultiScalePropertyFactory<Hotseat> HOTSEAT_SCALE_PROPERTY_FACTORY =

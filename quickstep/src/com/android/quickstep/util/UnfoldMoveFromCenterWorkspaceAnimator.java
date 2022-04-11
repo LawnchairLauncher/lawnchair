@@ -37,7 +37,7 @@ public class UnfoldMoveFromCenterWorkspaceAnimator extends BaseUnfoldMoveFromCen
 
     @Override
     protected void onPrepareViewsForAnimation() {
-        Workspace workspace = mLauncher.getWorkspace();
+        Workspace<?> workspace = mLauncher.getWorkspace();
 
         // App icons and widgets
         workspace

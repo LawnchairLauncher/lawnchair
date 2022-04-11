@@ -179,7 +179,7 @@ public class DropTargetBar extends FrameLayout
         }
 
         Launcher launcher = Launcher.getLauncher(getContext());
-        Workspace workspace = launcher.getWorkspace();
+        Workspace<?> workspace = launcher.getWorkspace();
         DeviceProfile dp = launcher.getDeviceProfile();
         int buttonHorizontalPadding = dp.dropTargetHorizontalPaddingPx;
         int buttonVerticalPadding = dp.dropTargetVerticalPaddingPx;
