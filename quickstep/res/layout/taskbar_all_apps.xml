@@ -34,6 +34,10 @@
             android:visibility="gone" />
 
         <include
+            layout="@layout/search_results_rv_layout"
+            android:visibility="gone" />
+
+        <include
             layout="@layout/all_apps_rv_layout"
             android:visibility="gone" />
 
