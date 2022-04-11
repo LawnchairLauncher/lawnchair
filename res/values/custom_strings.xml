@@ -33,4 +33,7 @@
     <string name="pref_allow_phone_taskbar">Use taskbar</string>
     <string name="pref_allow_phone_taskbar_desc">For opening and switching apps anywhere</string>
 
+    <string name="pref_allow_phone_overview_grid">Show grid of recent apps</string>
+    <string name="pref_allow_phone_overview_grid_desc">More recent apps in Overview</string>
+
 </resources>
