@@ -1289,10 +1289,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     return;
                 }
                 TaskView taskView = getTaskViewAt(mNextPage);
-                // Only snap to fully visible focused task.
-                if (taskView == null
-                        || !taskView.isFocusedTask()
-                        || !isTaskViewFullyVisible(taskView)) {
+                // Snap to fully visible focused task and clear all button.
+                boolean shouldSnapToFocusedTask = taskView != null && taskView.isFocusedTask()
+                        && isTaskViewFullyVisible(taskView);
+                boolean shouldSnapToClearAll = mNextPage == indexOfChild(mClearAllButton);
+                if (!shouldSnapToFocusedTask && !shouldSnapToClearAll) {
                     return;
                 }
             }
@@ -4535,7 +4536,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 ? getClearAllExtraPageSpacing() : 0;
     }
 
-    private int getClearAllExtraPageSpacing() {
+    protected int getClearAllExtraPageSpacing() {
         return showAsGrid()
                 ? Math.max(mActivity.getDeviceProfile().overviewGridSideMargin - mPageSpacing, 0)
                 : 0;
