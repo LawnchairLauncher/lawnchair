@@ -37,4 +37,7 @@
     <dimen name="drop_target_button_drawable_vertical_padding">2dp</dimen>
     <dimen name="drop_target_top_margin">6dp</dimen>
     <dimen name="drop_target_bottom_margin">6dp</dimen>
+
+    <!-- Workspace grid visualization parameters -->
+    <dimen name="grid_visualization_horizontal_cell_spacing">24dp</dimen>
 </resources>
