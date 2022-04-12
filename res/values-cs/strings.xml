@@ -37,7 +37,7 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"šířka %1$d, výška %2$d"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> widget"</string>
-    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Pokud widgetem chcete pohybovat po ploše, podržte ho"</string>
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Pokud chcete widgetem pohybovat po ploše, podržte ho"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"Přidat na plochu"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g> byl přidán na plochu"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{ # widget}few{# widgety}many{# widgetu}other{# widgetů}}"</string>
@@ -90,8 +90,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Toto je systémová aplikace a nelze ji odinstalovat."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Upravit název"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> je zakázána"</string>
-    <!-- no translation found for dotted_app_label (1865617679843363410) -->
-    <skip />
+    <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{Aplikace {app_name} má # oznámení}few{Aplikace {app_name} má # oznámení}many{Aplikace {app_name} má # oznámení}other{Aplikace {app_name} má # oznámení}}"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Strana %1$d z %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Plocha %1$d z %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Nová stránka plochy"</string>
