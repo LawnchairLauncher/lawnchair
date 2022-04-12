@@ -34,7 +34,7 @@ import java.util.Optional;
 public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarAllAppsContext>
         implements Insettable, DeviceProfile.OnDeviceProfileChangeListener {
     static final int DEFAULT_OPEN_DURATION = 500;
-    static final int DEFAULT_CLOSE_DURATION = 200;
+    public static final int DEFAULT_CLOSE_DURATION = 200;
 
     private TaskbarAllAppsContainerView mAppsView;
     private OnCloseListener mOnCloseBeginListener;
