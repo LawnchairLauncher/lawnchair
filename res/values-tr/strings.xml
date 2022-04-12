@@ -52,7 +52,7 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"İş"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Görüşmeler"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Faydalı bilgiler parmaklarınızın ucunda"</string>
-    <string name="widget_education_content" msgid="1731667670753497052">"Uygulamaları açmadan bilgi almak için ana ekranınıza widget\'lar ekleyebilirsiniz"</string>
+    <string name="widget_education_content" msgid="1731667670753497052">"Uygulama açmadan bilgi almak için ana ekranınıza widget ekleyebilirsiniz"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Widget ayarlarını değiştirmek için dokunun"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"Anladım"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Widget ayarlarını değiştir"</string>
