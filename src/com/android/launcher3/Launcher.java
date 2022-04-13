@@ -2360,7 +2360,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         // Get the list of added items and intersect them with the set of items here
         final Collection<Animator> bounceAnims = new ArrayList<>();
         boolean canAnimatePageChange = canAnimatePageChange();
-        Workspace workspace = mWorkspace;
+        Workspace<?> workspace = mWorkspace;
         int newItemsScreenId = -1;
         int end = items.size();
         View newView = null;
