@@ -1195,8 +1195,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         mAllowOverScroll = enable;
     }
 
-    protected float getSignificantMoveThreshold() {
-        return SIGNIFICANT_MOVE_THRESHOLD;
+    protected boolean isSignificantMove(float absoluteDelta, int pageOrientedSize) {
+        return absoluteDelta > pageOrientedSize * SIGNIFICANT_MOVE_THRESHOLD;
     }
 
     @Override
@@ -1322,13 +1322,12 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
 
                 int velocity = (int) mOrientationHandler.getPrimaryVelocity(velocityTracker,
-                    mActivePointerId);
+                        mActivePointerId);
                 float delta = primaryDirection - mDownMotionPrimary;
-                delta /= mOrientationHandler.getPrimaryScale(this);
-                int pageOrientedSize = mOrientationHandler.getMeasuredSize(getPageAt(mCurrentPage));
-
-                boolean isSignificantMove = Math.abs(delta)
-                        > pageOrientedSize * getSignificantMoveThreshold();
+                int pageOrientedSize = (int) (mOrientationHandler.getMeasuredSize(
+                        getPageAt(mCurrentPage))
+                        * mOrientationHandler.getPrimaryScale(this));
+                boolean isSignificantMove = isSignificantMove(Math.abs(delta), pageOrientedSize);
 
                 mTotalMotion += Math.abs(mLastMotion + mLastMotionRemainder - primaryDirection);
                 boolean passedSlop = mAllowEasyFling || mTotalMotion > mPageSlop;
