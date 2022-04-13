@@ -383,7 +383,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private static final float ANIMATION_DISMISS_PROGRESS_MIDPOINT = 0.5f;
     private static final float END_DISMISS_TRANSLATION_INTERPOLATION_OFFSET = 0.75f;
 
-    private static final float SIGNIFICANT_MOVE_THRESHOLD_TABLET = 0.15f;
+    private static final float SIGNIFICANT_MOVE_SCREEN_WIDTH_PERCENTAGE = 0.15f;
 
     protected final RecentsOrientedState mOrientationState;
     protected final BaseActivityInterface<STATE_TYPE, ACTIVITY_TYPE> mSizeStrategy;
@@ -1195,9 +1195,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     @Override
-    protected float getSignificantMoveThreshold() {
-        return mActivity.getDeviceProfile().isTablet ? SIGNIFICANT_MOVE_THRESHOLD_TABLET
-                : super.getSignificantMoveThreshold();
+    protected boolean isSignificantMove(float absoluteDelta, int pageOrientedSize) {
+        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+        if (!deviceProfile.isTablet) {
+            return super.isSignificantMove(absoluteDelta, pageOrientedSize);
+        }
+
+        return absoluteDelta
+                > deviceProfile.availableWidthPx * SIGNIFICANT_MOVE_SCREEN_WIDTH_PERCENTAGE;
     }
 
     @Override
