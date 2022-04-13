@@ -16,7 +16,6 @@
 package com.android.launcher3.taskbar.allapps;
 
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_STASHED_IN_APP_ALL_APPS;
-import static com.android.launcher3.taskbar.allapps.TaskbarAllAppsSlideInView.DEFAULT_CLOSE_DURATION;
 import static com.android.launcher3.taskbar.allapps.TaskbarAllAppsSlideInView.DEFAULT_OPEN_DURATION;
 import static com.android.launcher3.util.OnboardingPrefs.ALL_APPS_VISITED_COUNT;
 
@@ -86,9 +85,9 @@ final class TaskbarAllAppsViewController {
         mSlideInView.setOnCloseBeginListener(() -> {
             AbstractFloatingView.closeOpenContainer(
                     mContext, AbstractFloatingView.TYPE_ACTION_POPUP);
-            mTaskbarStashController.updateStateForFlag(
-                    FLAG_STASHED_IN_APP_ALL_APPS, false);
-            mTaskbarStashController.applyState(DEFAULT_CLOSE_DURATION);
+            // Post in case view is closing due to gesture navigation. If a gesture is in progress,
+            // wait to unstash until after the gesture is finished.
+            mSlideInView.post(mTaskbarStashController::maybeResetStashedInAppAllApps);
         });
     }
 }
