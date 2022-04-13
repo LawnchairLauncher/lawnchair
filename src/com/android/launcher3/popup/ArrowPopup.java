@@ -351,7 +351,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         if (mColorExtractors == null) {
             return;
         }
-        Workspace workspace = launcher.getWorkspace();
+        Workspace<?> workspace = launcher.getWorkspace();
         if (workspace == null) {
             return;
         }
