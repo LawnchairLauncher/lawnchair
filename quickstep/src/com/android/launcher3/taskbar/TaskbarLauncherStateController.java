@@ -26,6 +26,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseQuickstepLauncher;
@@ -73,6 +74,8 @@ import java.util.function.Supplier;
     private Integer mPrevState;
     private int mState;
     private LauncherState mLauncherState = LauncherState.NORMAL;
+
+    private @Nullable TaskBarRecentsAnimationListener mTaskBarRecentsAnimationListener;
 
     private boolean mIsAnimatingToLauncherViaGesture;
     private boolean mIsAnimatingToLauncherViaResume;
@@ -163,12 +166,11 @@ import java.util.function.Supplier;
         animatorSet.play(stashController.applyStateWithoutStart(duration));
         animatorSet.play(applyState(duration, false));
 
-        TaskBarRecentsAnimationListener listener = new TaskBarRecentsAnimationListener(callbacks);
-        callbacks.addListener(listener);
+        mTaskBarRecentsAnimationListener = new TaskBarRecentsAnimationListener(callbacks);
+        callbacks.addListener(mTaskBarRecentsAnimationListener);
         RecentsView recentsView = mLauncher.getOverviewPanel();
         recentsView.setTaskLaunchListener(() -> {
-            listener.endGestureStateOverride(true);
-            callbacks.removeListener(listener);
+            mTaskBarRecentsAnimationListener.endGestureStateOverride(true);
         });
         return animatorSet;
     }
@@ -257,7 +259,10 @@ import java.util.function.Supplier;
         if (hasAnyFlag(changedFlags, FLAG_RESUMED)
                 || launcherStateChangedDuringAnimToResumeAlignment) {
             boolean isResumed = isResumed();
-            float toAlignmentForResumedState = isResumed && goingToUnstashedLauncherState() ? 1 : 0;
+            // If launcher is resumed, we show the icons when going to an unstashed launcher state
+            // or launcher state is not changed (e.g. in overview, launcher is paused and resumed).
+            float toAlignmentForResumedState = isResumed && (goingToUnstashedLauncherState()
+                    || !goingToUnstashedLauncherStateChanged) ? 1 : 0;
             // If we're already animating to the value, just leave it be instead of restarting it.
             if (!mIconAlignmentForResumedState.isAnimatingToValue(toAlignmentForResumedState)) {
                 ObjectAnimator resumeAlignAnim = mIconAlignmentForResumedState
@@ -379,7 +384,7 @@ import java.util.function.Supplier;
     }
 
     private void onIconAlignmentRatioChangedForStateTransition() {
-        if (!isResumed()) {
+        if (!isResumed() && mTaskBarRecentsAnimationListener == null) {
             return;
         }
         onIconAlignmentRatioChanged(this::getCurrentIconAlignmentRatioForLauncherState);
@@ -455,6 +460,7 @@ import java.util.function.Supplier;
 
         private void endGestureStateOverride(boolean finishedToApp) {
             mCallbacks.removeListener(this);
+            mTaskBarRecentsAnimationListener = null;
 
             // Update the resumed state immediately to ensure a seamless handoff
             boolean launcherResumed = !finishedToApp;

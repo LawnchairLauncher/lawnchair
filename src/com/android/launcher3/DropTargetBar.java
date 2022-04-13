@@ -252,8 +252,7 @@ public class DropTargetBar extends FrameLayout
                 int overlap = start + leftButton.getMeasuredWidth() + rightButton.getMeasuredWidth()
                         - end;
                 if (overlap > 0) {
-                    start -= overlap / 2;
-                    end += overlap / 2;
+                    end += overlap;
                 }
 
                 leftButton.layout(start, 0, start + leftButton.getMeasuredWidth(),
