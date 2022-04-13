@@ -53,7 +53,7 @@ public class WorkspaceRevealAnim {
 
     // Should be used for animations running alongside this WorkspaceRevealAnim.
     public static final int DURATION_MS = 350;
-    private static final FloatProperty<Workspace> WORKSPACE_SCALE_PROPERTY =
+    private static final FloatProperty<Workspace<?>> WORKSPACE_SCALE_PROPERTY =
             WORKSPACE_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_REVEAL_ANIM);
 
     private static final FloatProperty<Hotseat> HOTSEAT_SCALE_PROPERTY =
@@ -68,7 +68,7 @@ public class WorkspaceRevealAnim {
         ResourceProvider rp = DynamicResource.provider(launcher);
         mScaleStart = rp.getFloat(R.dimen.swipe_up_scale_start);
 
-        Workspace workspace = launcher.getWorkspace();
+        Workspace<?> workspace = launcher.getWorkspace();
         workspace.setPivotToScaleWithSelf(launcher.getHotseat());
 
         // Add reveal animations.

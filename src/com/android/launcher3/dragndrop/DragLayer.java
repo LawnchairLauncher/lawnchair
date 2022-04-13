@@ -104,7 +104,10 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
     }
 
-    public void setup(DragController dragController, Workspace workspace) {
+    /**
+     * Set up the drag layer with the parameters.
+     */
+    public void setup(DragController dragController, Workspace<?> workspace) {
         mDragController = dragController;
         recreateControllers();
         mWorkspaceDragScrim = new Scrim(this);
