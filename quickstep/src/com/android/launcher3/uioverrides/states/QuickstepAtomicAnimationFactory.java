@@ -118,7 +118,7 @@ public class QuickstepAtomicAnimationFactory extends
             config.duration = Math.max(config.duration, scrollDuration);
             overview.snapToPage(DEFAULT_PAGE, Math.toIntExact(config.duration));
 
-            Workspace workspace = mActivity.getWorkspace();
+            Workspace<?> workspace = mActivity.getWorkspace();
             // Start from a higher workspace scale, but only if we're invisible so we don't jump.
             boolean isWorkspaceVisible = workspace.getVisibility() == VISIBLE;
             if (isWorkspaceVisible) {

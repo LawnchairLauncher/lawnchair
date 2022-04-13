@@ -46,7 +46,7 @@ public class SpringLoadedState extends LauncherState {
     @Override
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
         DeviceProfile grid = launcher.getDeviceProfile();
-        Workspace ws = launcher.getWorkspace();
+        Workspace<?> ws = launcher.getWorkspace();
         if (ws.getChildCount() == 0) {
             return super.getWorkspaceScaleAndTranslation(launcher);
         }

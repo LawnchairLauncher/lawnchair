@@ -178,7 +178,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
 
             case TestProtocol.REQUEST_WORKSPACE_CELL_LAYOUT_SIZE:
                 return getLauncherUIProperty(Bundle::putIntArray, launcher -> {
-                    final Workspace workspace = launcher.getWorkspace();
+                    final Workspace<?> workspace = launcher.getWorkspace();
                     final int screenId = workspace.getScreenIdForPageIndex(
                             workspace.getCurrentPage());
                     final CellLayout cellLayout = workspace.getScreenWithId(screenId);
@@ -189,7 +189,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 final WorkspaceCellCenterRequest request = extra.getParcelable(
                         TestProtocol.TEST_INFO_REQUEST_FIELD);
                 return getLauncherUIProperty(Bundle::putParcelable, launcher -> {
-                    final Workspace workspace = launcher.getWorkspace();
+                    final Workspace<?> workspace = launcher.getWorkspace();
                     // TODO(b/216387249): allow caller selecting different pages.
                     CellLayout cellLayout = (CellLayout) workspace.getPageAt(
                             workspace.getCurrentPage());
