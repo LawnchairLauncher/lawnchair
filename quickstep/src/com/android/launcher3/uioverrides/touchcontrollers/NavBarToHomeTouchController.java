@@ -48,8 +48,8 @@ import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.TaskUtils;
+import com.android.quickstep.TopTaskTracker;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
-import com.android.quickstep.util.AssistantUtilities;
 import com.android.quickstep.util.OverviewToHomeAnim;
 import com.android.quickstep.views.RecentsView;
 
@@ -112,7 +112,8 @@ public class NavBarToHomeTouchController implements TouchController,
             return true;
         }
         if (FeatureFlags.ASSISTANT_GIVES_LAUNCHER_FOCUS.get()
-                && AssistantUtilities.isExcludedAssistantRunning()) {
+                && TopTaskTracker.INSTANCE.get(mLauncher).getCachedTopTask(false)
+                        .isExcludedAssistant()) {
             return true;
         }
         return false;
