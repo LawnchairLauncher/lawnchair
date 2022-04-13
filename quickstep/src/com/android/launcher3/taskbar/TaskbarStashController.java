@@ -33,6 +33,7 @@ import android.view.ViewConfiguration;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.taskbar.allapps.TaskbarAllAppsSlideInView;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.AnimatedFloat;
@@ -518,10 +519,37 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      */
     public void setSystemGestureInProgress(boolean inProgress) {
         mIsSystemGestureInProgress = inProgress;
-        // Only update FLAG_STASHED_IN_APP_IME when system gesture is not in progress.
-        if (!mIsSystemGestureInProgress) {
+        if (mIsSystemGestureInProgress) {
+            return;
+        }
+
+        // Only update the following flags when system gesture is not in progress.
+        maybeResetStashedInAppAllApps(hasAnyFlag(FLAG_STASHED_IN_APP_IME) == mIsImeShowing);
+        if (hasAnyFlag(FLAG_STASHED_IN_APP_IME) != mIsImeShowing) {
             updateStateForFlag(FLAG_STASHED_IN_APP_IME, mIsImeShowing);
             applyState(TASKBAR_STASH_DURATION_FOR_IME, getTaskbarStashStartDelayForIme());
+        }
+    }
+
+    /**
+     * Reset stashed in all apps only if no system gesture is in progress.
+     * <p>
+     * Otherwise, the reset should be deferred until after the gesture is finished.
+     *
+     * @see #setSystemGestureInProgress
+     */
+    public void maybeResetStashedInAppAllApps() {
+        maybeResetStashedInAppAllApps(true);
+    }
+
+    private void maybeResetStashedInAppAllApps(boolean applyState) {
+        if (mIsSystemGestureInProgress) {
+            return;
+        }
+
+        updateStateForFlag(FLAG_STASHED_IN_APP_ALL_APPS, false);
+        if (applyState) {
+            applyState(TaskbarAllAppsSlideInView.DEFAULT_CLOSE_DURATION);
         }
     }
 

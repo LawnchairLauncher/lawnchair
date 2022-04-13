@@ -381,8 +381,9 @@
 
 
 <!-- Workspace grid visualization parameters -->
-    <dimen name="grid_visualization_rounding_radius">22dp</dimen>
-    <dimen name="grid_visualization_cell_spacing">6dp</dimen>
+    <dimen name="grid_visualization_rounding_radius">28dp</dimen>
+    <dimen name="grid_visualization_horizontal_cell_spacing">6dp</dimen>
+    <dimen name="grid_visualization_vertical_cell_spacing">6dp</dimen>
 
 <!-- Search results related parameters -->
     <dimen name="search_row_icon_size">48dp</dimen>
