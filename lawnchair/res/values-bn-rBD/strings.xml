@@ -183,7 +183,7 @@
     <string name="recents_actions_label">তড়িৎ কার্যক্রম</string>
     <string name="recents_clear_all">সব মুছে ফেলুন</string>
     <string name="pick_icon_from_label">Pick Icon From</string>
-    <string name="experimental_features_label">Experimental Features</string>
+    <string name="experimental_features_label">পরীক্ষামূলক বৈশিষ্ট্য সমূহ</string>
     <string name="icon_picker_label">Per-App Icon Customization</string>
     <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
     <string name="font_picker_label">Font Customization</string>
