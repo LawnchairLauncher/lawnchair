@@ -147,7 +147,7 @@
     <string name="suggestion_pref_screen_title">পরামর্শ</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">নাম</string>
-    <string name="presets">Presets</string>
+    <string name="presets">পূর্বনির্ধারিত অবস্থাগুলো</string>
     <string name="colors">রং</string>
     <string name="dynamic">পরিবর্তনশীল</string>
     <string name="all_apps_search_market_message">আরো অ্যাপ খোঁজ করুন</string>
