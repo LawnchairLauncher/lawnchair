@@ -28,21 +28,22 @@ public interface PageIndicator {
 
     /**
      * Sets the flag if the Page Indicator should autohide.
-     * @param shouldAutoHide
      */
     default void setShouldAutoHide(boolean shouldAutoHide) {
-        //No-op by default
+        // No-op by default
     }
+
     /**
      * Pauses all currently running animations.
      */
     default void pauseAnimations() {
-        //No-op by default
+        // No-op by default
     }
+
     /**
      * Force-ends all currently running or paused animations.
      */
     default void skipAnimationsToEnd() {
-        //No-op by default
+        // No-op by default
     }
 }
