@@ -268,4 +268,9 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         super.initiateSplitSelect(splitSelectSource);
         mActivity.getStateManager().goToState(OVERVIEW_SPLIT_SELECT);
     }
+
+    @Override
+    protected boolean canLaunchFullscreenTask() {
+        return !mActivity.isInState(OVERVIEW_SPLIT_SELECT);
+    }
 }
