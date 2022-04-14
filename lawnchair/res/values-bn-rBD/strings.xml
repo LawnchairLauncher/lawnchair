@@ -105,7 +105,7 @@
     <string name="quickstep_description">Clear All বাটনের কোণার ব্যাসার্ধ</string>
     <string name="wallpaper_scrolling_label">স্ক্রোল ওয়ালপেপার</string>
     <string name="show_sys_ui_scrim">শীর্ষ ছায়া</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_status_bar">স্ট্যাটাস বার দেখান</string>
     <string name="what_to_show">কি দেখাতে হবে</string>
     <string name="missing_notification_access_label">বিজ্ঞপ্তি অ্যাক্সেস প্রয়োজন</string>
     <string name="missing_notification_access_description">বিজ্ঞপ্তি অ্যাক্সেস প্রয়োজন.</string>
@@ -144,9 +144,9 @@
     <string name="hide_from_drawer">অ্যাপ ড্রয়ার থেকে লুকান</string>
     <string name="action_lens">লেন্স</string>
     <string name="force_rounded_widgets">গোলাকার কোণ</string>
-    <string name="suggestion_pref_screen_title">Suggestions</string>
+    <string name="suggestion_pref_screen_title">পরামর্শ</string>
     <string name="n_percent">%1$d%%</string>
-    <string name="label">Label</string>
+    <string name="label">নাম</string>
     <string name="presets">Presets</string>
     <string name="colors">Colors</string>
     <string name="dynamic">Dynamic</string>
