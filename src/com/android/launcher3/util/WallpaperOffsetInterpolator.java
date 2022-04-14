@@ -32,7 +32,7 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
     // Don't use all the wallpaper for parallax until you have at least this many pages
     private static final int MIN_PARALLAX_PAGE_SPAN = 4;
 
-    private final Workspace mWorkspace;
+    private final Workspace<?> mWorkspace;
     private final boolean mIsRtl;
     private final Handler mHandler;
 
@@ -43,7 +43,7 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
     private boolean mLockedToDefaultPage;
     private int mNumScreens;
 
-    public WallpaperOffsetInterpolator(Workspace workspace) {
+    public WallpaperOffsetInterpolator(Workspace<?> workspace) {
         mWorkspace = workspace;
         mIsRtl = Utilities.isRtl(workspace.getResources());
         mHandler = new OffsetHandler(workspace.getContext());
