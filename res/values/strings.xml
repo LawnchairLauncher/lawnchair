@@ -303,6 +303,17 @@
     <!-- Title for an app whose download has been started. -->
     <string name="app_waiting_download_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> waiting to install</string>
 
+
+    <!-- Title shown on the alert dialog prompting the user to update the application in market
+     in order to re-enable the disabled shortcuts -->
+    <string name="dialog_update_title">App update required</string>
+    <!-- Message shown on the alert dialog prompting the user to update the application -->
+    <string name="dialog_update_message">The app for this icon isn\'t updated. You can update manually to re-enable this shortcut, or remove the icon.</string>
+    <!-- Message for the update button in the alert dialog, will bring the user to market -->
+    <string name="dialog_update">Update</string>
+    <!-- Message for the remove button in the alert dialog -->
+    <string name="dialog_remove">Remove</string>
+
     <!-- Strings for widgets & more in the popup container/bottom sheet -->
 
     <!-- Accessibility title for the popup containing a list of widgets. [CHAR_LIMIT=50] -->
