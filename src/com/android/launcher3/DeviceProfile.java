@@ -928,6 +928,13 @@ public class DeviceProfile {
         return workspaceSpringLoadShrunkBottom;
     }
 
+    /**
+     * Gets the minimum visible amount of the next workspace page when in the spring-loaded state.
+     */
+    public float getWorkspaceSpringLoadedMinimumNextPageVisible() {
+        return getCellSize().x / 2f;
+    }
+
     public int getWorkspaceWidth() {
         return getWorkspaceWidth(getTotalWorkspacePadding());
     }
