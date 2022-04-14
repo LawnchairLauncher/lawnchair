@@ -210,7 +210,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                 0, 1));
         // Center nav buttons in new height for IME.
         float transForIme = (mContext.getDeviceProfile().taskbarSize
-                - mContext.getTaskbarHeightForIme()) / 2f;
+                - mControllers.taskbarInsetsController.getTaskbarHeightForIme()) / 2f;
         // For gesture nav, nav buttons only show for IME anyway so keep them translated down.
         float defaultButtonTransY = alwaysShowButtons ? 0 : transForIme;
         mPropertyHolders.add(new StatePropertyHolder(mTaskbarNavButtonTranslationYForIme,
