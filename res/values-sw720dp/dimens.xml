@@ -28,11 +28,11 @@
     <dimen name="drop_target_button_drawable_horizontal_padding">24dp</dimen>
     <dimen name="drop_target_button_drawable_vertical_padding">20dp</dimen>
     <dimen name="drop_target_button_gap">32dp</dimen>
-    <dimen name="drop_target_top_margin">32dp</dimen>
-    <dimen name="drop_target_bottom_margin">32dp</dimen>
+    <dimen name="drop_target_top_margin">110dp</dimen>
+    <dimen name="drop_target_bottom_margin">48dp</dimen>
 
 <!-- Hotseat -->
-    <dimen name="spring_loaded_hotseat_top_margin">164dp</dimen>
+    <dimen name="spring_loaded_hotseat_top_margin">108dp</dimen>
 
 <!-- Widget picker-->
     <dimen name="widget_list_horizontal_margin">30dp</dimen>
