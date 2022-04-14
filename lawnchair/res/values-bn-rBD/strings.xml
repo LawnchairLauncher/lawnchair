@@ -148,8 +148,8 @@
     <string name="n_percent">%1$d%%</string>
     <string name="label">নাম</string>
     <string name="presets">Presets</string>
-    <string name="colors">Colors</string>
-    <string name="dynamic">Dynamic</string>
+    <string name="colors">রং</string>
+    <string name="dynamic">পরিবর্তনশীল</string>
     <string name="all_apps_search_market_message">Search for More Apps</string>
     <string name="show_app_search_bar">সার্চ বার দেখান</string>
     <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
