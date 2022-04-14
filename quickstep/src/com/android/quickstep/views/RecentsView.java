@@ -878,6 +878,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         return mSplitSelectStateController.isSplitSelectActive();
     }
 
+    /**
+     * See overridden implementations
+     * @return {@code true} if child TaskViews can be launched when user taps on them
+     */
+    protected boolean canLaunchFullscreenTask() {
+        return true;
+    }
+
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -3991,15 +3999,25 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     /**
      * Confirms the selection of the next split task. The extra data is passed through because the
      * user may be selecting a subtask in a group.
+     *
+     * @return true if waiting for confirmation of second app or if split animations are running,
+     *          false otherwise
      */
-    public void confirmSplitSelect(TaskView containerTaskView, Task task, IconView iconView,
+    public boolean confirmSplitSelect(TaskView containerTaskView, Task task, IconView iconView,
             TaskThumbnailView thumbnailView) {
+        if (canLaunchFullscreenTask()) {
+            return false;
+        }
+        if (mSplitSelectStateController.isBothSplitAppsConfirmed()) {
+            return true;
+        }
         mSplitToast.cancel();
         if (!task.isDockable) {
             // Task not split screen supported
             mSplitUnsupportedToast.show();
-            return;
+            return true;
         }
+        mSplitSelectStateController.setSecondTask(task);
         RectF secondTaskStartingBounds = new RectF();
         Rect secondTaskEndingBounds = new Rect();
         // TODO(194414938) starting bounds seem slightly off, investigate
@@ -4027,8 +4045,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSecondFloatingTaskView.addAnimation(pendingAnimation, secondTaskStartingBounds,
                 secondTaskEndingBounds, true /* fadeWithThumbnail */, false /* isStagedTask */);
         pendingAnimation.addEndListener(aBoolean ->
-                mSplitSelectStateController.setSecondTask(
-                        task, aBoolean1 -> RecentsView.this.resetFromSplitSelectionState()));
+                mSplitSelectStateController.launchSplitTasks(
+                        aBoolean1 -> RecentsView.this.resetFromSplitSelectionState()));
         if (containerTaskView.containsMultipleTasks()) {
             // If we are launching from a child task, then only hide the thumbnail itself
             mSecondSplitHiddenView = thumbnailView;
@@ -4037,6 +4055,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
         mSecondSplitHiddenView.setVisibility(INVISIBLE);
         pendingAnimation.buildAnim().start();
+        return true;
     }
 
     /** TODO(b/181707736) More gracefully handle exiting split selection state */
