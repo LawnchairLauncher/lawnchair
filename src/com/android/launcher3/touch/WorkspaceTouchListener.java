@@ -64,7 +64,7 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
     private final Rect mTempRect = new Rect();
     private final Launcher mLauncher;
-    private final Workspace mWorkspace;
+    private final Workspace<?> mWorkspace;
     private final PointF mTouchDownPoint = new PointF();
     private final float mTouchSlop;
 
@@ -72,7 +72,7 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
     private final GestureDetector mGestureDetector;
 
-    public WorkspaceTouchListener(Launcher launcher, Workspace workspace) {
+    public WorkspaceTouchListener(Launcher launcher, Workspace<?> workspace) {
         mLauncher = launcher;
         mWorkspace = workspace;
         // Use twice the touch slop as we are looking for long press which is more

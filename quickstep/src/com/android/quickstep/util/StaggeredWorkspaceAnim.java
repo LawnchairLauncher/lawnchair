@@ -92,7 +92,7 @@ public class StaggeredWorkspaceAnim {
 
         if (staggerWorkspace) {
             DeviceProfile grid = launcher.getDeviceProfile();
-            Workspace workspace = launcher.getWorkspace();
+            Workspace<?> workspace = launcher.getWorkspace();
             Hotseat hotseat = launcher.getHotseat();
 
             // Hotseat and QSB takes up two additional rows.

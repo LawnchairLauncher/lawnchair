@@ -41,7 +41,7 @@ public class Hotseat extends CellLayout implements Insettable {
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mHasVerticalHotseat;
-    private Workspace mWorkspace;
+    private Workspace<?> mWorkspace;
     private boolean mSendTouchToWorkspace;
     @Nullable
     private Consumer<Boolean> mOnVisibilityAggregatedCallback;
@@ -122,7 +122,7 @@ public class Hotseat extends CellLayout implements Insettable {
         InsettableFrameLayout.dispatchInsets(this, insets);
     }
 
-    public void setWorkspace(Workspace w) {
+    public void setWorkspace(Workspace<?> w) {
         mWorkspace = w;
     }
 

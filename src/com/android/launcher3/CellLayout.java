@@ -1203,7 +1203,7 @@ public class CellLayout extends ViewGroup {
             return getContext().getString(R.string.move_to_hotseat_position,
                     Math.max(cellX, cellY) + 1);
         } else {
-            Workspace workspace = getWorkspace();
+            Workspace<?> workspace = getWorkspace();
             int row = cellY + 1;
             int col = workspace.mIsRtl ? mCountX - cellX : cellX + 1;
             int panelCount = workspace.getPanelCount();
@@ -1217,7 +1217,7 @@ public class CellLayout extends ViewGroup {
         }
     }
 
-    private Workspace getWorkspace() {
+    private Workspace<?> getWorkspace() {
         return Launcher.cast(mActivity).getWorkspace();
     }
 

@@ -526,7 +526,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             endListener = composeViewContentAnimator(launcherAnimator, alphas, scales);
         } else {
             List<View> viewsToAnimate = new ArrayList<>();
-            Workspace workspace = mLauncher.getWorkspace();
+            Workspace<?> workspace = mLauncher.getWorkspace();
             workspace.forEachVisiblePage(
                     view -> viewsToAnimate.add(((CellLayout) view).getShortcutsAndWidgets()));
 
