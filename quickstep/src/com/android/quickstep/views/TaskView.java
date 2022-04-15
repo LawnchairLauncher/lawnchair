@@ -698,14 +698,10 @@ public class TaskView extends FrameLayout implements Reusable {
      *         second app. {@code false} otherwise
      */
     private boolean confirmSecondSplitSelectApp() {
-        boolean isSelectingSecondSplitApp = getRecentsView().isSplitSelectionActive();
-        if (isSelectingSecondSplitApp) {
-            int index = getChildTaskIndexAtPosition(mLastTouchDownPosition);
-            TaskIdAttributeContainer container = mTaskIdAttributeContainer[index];
-            getRecentsView().confirmSplitSelect(this, container.getTask(), container.getIconView(),
-                    container.getThumbnailView());
-        }
-        return isSelectingSecondSplitApp;
+        int index = getChildTaskIndexAtPosition(mLastTouchDownPosition);
+        TaskIdAttributeContainer container = mTaskIdAttributeContainer[index];
+        return getRecentsView().confirmSplitSelect(this, container.getTask(),
+                container.getIconView(), container.getThumbnailView());
     }
 
     /**
@@ -855,7 +851,7 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     private boolean showTaskMenu(IconView iconView) {
-        if (getRecentsView().mActivity.isInState(OVERVIEW_SPLIT_SELECT)) {
+        if (!getRecentsView().canLaunchFullscreenTask()) {
             // Don't show menu when selecting second split screen app
             return true;
         }

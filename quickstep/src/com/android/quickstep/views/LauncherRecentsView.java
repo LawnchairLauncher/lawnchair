@@ -181,4 +181,9 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
         super.initiateSplitSelect(splitSelectSource);
         mActivity.getStateManager().goToState(LauncherState.OVERVIEW_SPLIT_SELECT);
     }
+
+    @Override
+    protected boolean canLaunchFullscreenTask() {
+        return !mActivity.isInState(OVERVIEW_SPLIT_SELECT);
+    }
 }
