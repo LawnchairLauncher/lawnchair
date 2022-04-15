@@ -106,6 +106,7 @@ import android.view.animation.Interpolator;
 import android.widget.ListView;
 import android.widget.OverScroller;
 import android.widget.Toast;
+import android.window.PictureInPictureSurfaceTransaction;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -161,6 +162,7 @@ import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.ViewUtils;
 import com.android.quickstep.util.GroupTask;
+import com.android.quickstep.util.LauncherSplitScreenListener;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.SplitScreenBounds;
@@ -4507,6 +4509,18 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             final SystemUiProxy systemUiProxy = SystemUiProxy.INSTANCE.get(getContext());
             systemUiProxy.notifySwipeToHomeFinished();
             systemUiProxy.setShelfHeight(true, mActivity.getDeviceProfile().hotseatBarSizePx);
+            // Transaction to hide the task to avoid flicker for entering PiP from split-screen.
+            // See also {@link AbsSwipeUpHandler#maybeFinishSwipeToHome}.
+            PictureInPictureSurfaceTransaction tx =
+                    new PictureInPictureSurfaceTransaction.Builder()
+                            .setAlpha(0f)
+                            .build();
+            int[] taskIds =
+                    LauncherSplitScreenListener.INSTANCE.getNoCreate().getRunningSplitTaskIds();
+            for (int taskId : taskIds) {
+                mRecentsAnimationController.setFinishTaskTransaction(taskId,
+                        tx, null /* overlay */);
+            }
         }
         mRecentsAnimationController.finish(toRecents, () -> {
             if (onFinishComplete != null) {
