@@ -19,8 +19,10 @@ package app.lawnchair.preferences2
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -30,6 +32,7 @@ import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.theme.color.ColorOption
+import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.preferencemanager.PreferenceManager
@@ -39,6 +42,17 @@ import kotlinx.coroutines.launch
 import app.lawnchair.preferences.PreferenceManager as LawnchairPreferenceManager
 
 class PreferenceManager2(private val context: Context) : PreferenceManager {
+
+    private fun idpPreference(
+        key: Preferences.Key<Int>,
+        defaultSelector: InvariantDeviceProfile.GridOption.() -> Int,
+        onSet: (Int) -> Unit = {},
+    ): IdpPreference = IdpPreference(
+        key = key,
+        defaultSelector = defaultSelector,
+        preferencesDataStore = preferencesDataStore,
+        onSet = onSet,
+    )
 
     override val preferencesDataStore = context.preferencesDataStore
     private val reloadHelper = ReloadHelper(context)
@@ -219,6 +233,12 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
     val showComponentNames = preference(
         key = booleanPreferencesKey(name = "show_component_names"),
         defaultValue = false,
+    )
+
+    val drawerColumns = idpPreference(
+        key = intPreferencesKey(name = "drawer_columns"),
+        defaultSelector = { numAllAppsColumns },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     companion object {

@@ -45,7 +45,6 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val workspaceRows = IdpIntPref("pref_workspaceRows", { numRows }, reloadGrid)
     val folderColumns = IdpIntPref("pref_folderColumns", { numFolderColumns }, reloadGrid)
     val folderRows = IdpIntPref("pref_folderRows", { numFolderRows }, reloadGrid)
-    val allAppsColumns = IdpIntPref("pref_allAppsColumns", { numAllAppsColumns }, reloadGrid)
 
     val drawerOpacity = FloatPref("pref_drawerOpacity", 1F, reloadGrid)
     val coloredBackgroundLightness = FloatPref("pref_coloredBackgroundLightness", 0.9F, reloadIcons)

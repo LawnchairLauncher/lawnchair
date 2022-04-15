@@ -27,9 +27,11 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.PreferenceCollectorScope
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.preferences2.state
 import app.lawnchair.search.LawnchairSearchAlgorithm
 import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.util.ifNotNull
+import app.lawnchair.util.rememberGridOption
 import com.android.launcher3.R
 import com.patrykmichalik.preferencemanager.state
 
@@ -53,11 +55,13 @@ interface AppDrawerPreferenceCollectorScope : PreferenceCollectorScope {
     val drawerIconLabelSizeFactor: Float
     val drawerCellHeightFactor: Float
     val enableFuzzySearch: Boolean
+    val drawerColumns: Int
 }
 
 @Composable
 fun AppDrawerPreferenceCollector(content: @Composable AppDrawerPreferenceCollectorScope.() -> Unit) {
     val preferenceManager = preferenceManager2()
+    val gridOption = rememberGridOption()
     val hiddenApps by preferenceManager.hiddenApps.state()
     val hideAppDrawerSearchBar by preferenceManager.hideAppDrawerSearchBar.state()
     val autoShowKeyboardInDrawer by preferenceManager.autoShowKeyboardInDrawer.state()
@@ -66,11 +70,13 @@ fun AppDrawerPreferenceCollector(content: @Composable AppDrawerPreferenceCollect
     val drawerIconLabelSizeFactor by preferenceManager.drawerIconLabelSizeFactor.state()
     val drawerCellHeightFactor by preferenceManager.drawerCellHeightFactor.state()
     val enableFuzzySearch by preferenceManager.enableFuzzySearch.state()
+    val drawerColumns by preferenceManager.drawerColumns.state(gridOption = gridOption)
     ifNotNull(
         hiddenApps, hideAppDrawerSearchBar,
         autoShowKeyboardInDrawer, drawerIconSizeFactor,
         showIconLabelsInDrawer, drawerIconLabelSizeFactor,
         drawerCellHeightFactor, enableFuzzySearch,
+        drawerColumns,
     ) {
         object : AppDrawerPreferenceCollectorScope {
             override val hiddenApps = it[0] as Set<String>
@@ -81,6 +87,7 @@ fun AppDrawerPreferenceCollector(content: @Composable AppDrawerPreferenceCollect
             override val drawerIconLabelSizeFactor = it[5] as Float
             override val drawerCellHeightFactor = it[6] as Float
             override val enableFuzzySearch = it[7] as Boolean
+            override val drawerColumns = it[8] as Int
             override val coroutineScope = rememberCoroutineScope()
             override val preferenceManager = preferenceManager
         }.content()
@@ -161,9 +168,10 @@ fun AppDrawerPreferences() {
                 }
             }
             PreferenceGroup(heading = stringResource(id = R.string.grid)) {
-                SliderPreference(
+                SliderPreference2(
                     label = stringResource(id = R.string.app_drawer_columns),
-                    adapter = prefs.allAppsColumns.getAdapter(),
+                    value = drawerColumns,
+                    edit = { drawerColumns.set(value = it) },
                     step = 1,
                     valueRange = 3..10,
                 )

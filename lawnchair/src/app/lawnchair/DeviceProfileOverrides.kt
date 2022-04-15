@@ -3,6 +3,7 @@ package app.lawnchair
 import android.content.Context
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.firstBlocking
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.preferencemanager.firstBlocking
@@ -45,7 +46,7 @@ class DeviceProfileOverrides(context: Context) {
             numHotseatColumns = prefs.hotseatColumns.get(defaultGrid),
             numRows = prefs.workspaceRows.get(defaultGrid),
             numColumns = prefs.workspaceColumns.get(defaultGrid),
-            numAllAppsColumns = prefs.allAppsColumns.get(defaultGrid),
+            numAllAppsColumns = preferenceManager2.drawerColumns.firstBlocking(gridOption = defaultGrid),
             numFolderRows = prefs.folderRows.get(defaultGrid),
             numFolderColumns = prefs.folderColumns.get(defaultGrid),
 

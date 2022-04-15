@@ -29,6 +29,27 @@ import com.android.launcher3.R
 import kotlin.math.roundToInt
 
 @Composable
+fun PreferenceCollectorScope.SliderPreference2(
+    label: String,
+    value: Int,
+    edit: suspend PreferenceManager2.(Int) -> Unit,
+    valueRange: ClosedRange<Int>,
+    step: Int,
+    showAsPercentage: Boolean = false,
+    showDivider: Boolean = false,
+) {
+    SliderPreference2(
+        label = label,
+        value = value,
+        onValueChange = { edit { this.edit(it) } },
+        valueRange = valueRange,
+        step = step,
+        showAsPercentage = showAsPercentage,
+        showDivider = showDivider,
+    )
+}
+
+@Composable
 fun SliderPreference2(
     label: String,
     value: Int,
