@@ -156,14 +156,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         updateIconSize(resources);
         mTaskbarHeightForIme = resources.getDimensionPixelSize(R.dimen.taskbar_ime_size);
 
-        // Inflate views.
-        mDragLayer = (TaskbarDragLayer) mLayoutInflater.inflate(
-                R.layout.taskbar, null, false);
-        TaskbarView taskbarView = mDragLayer.findViewById(R.id.taskbar_view);
-        TaskbarScrimView taskbarScrimView = mDragLayer.findViewById(R.id.taskbar_scrim);
-        FrameLayout navButtonsView = mDragLayer.findViewById(R.id.navbuttons_view);
-        StashedHandleView stashedHandleView = mDragLayer.findViewById(R.id.stashed_handle);
-
+        // Get display and corners first, as views might use them in constructor.
         Display display = windowContext.getDisplay();
         Context c = display.getDisplayId() == Display.DEFAULT_DISPLAY
                 ? windowContext.getApplicationContext()
@@ -171,6 +164,14 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mWindowManager = c.getSystemService(WindowManager.class);
         mLeftCorner = display.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_LEFT);
         mRightCorner = display.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_RIGHT);
+
+        // Inflate views.
+        mDragLayer = (TaskbarDragLayer) mLayoutInflater.inflate(
+                R.layout.taskbar, null, false);
+        TaskbarView taskbarView = mDragLayer.findViewById(R.id.taskbar_view);
+        TaskbarScrimView taskbarScrimView = mDragLayer.findViewById(R.id.taskbar_scrim);
+        FrameLayout navButtonsView = mDragLayer.findViewById(R.id.navbuttons_view);
+        StashedHandleView stashedHandleView = mDragLayer.findViewById(R.id.stashed_handle);
 
         mAccessibilityDelegate = new TaskbarShortcutMenuAccessibilityDelegate(this);
 
