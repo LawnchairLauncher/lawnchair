@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.ui.widget;
 
+import static android.app.PendingIntent.FLAG_MUTABLE;
+import static android.app.PendingIntent.FLAG_ONE_SHOT;
+
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 
 import static org.junit.Assert.assertNotNull;
@@ -144,7 +147,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
 
         // Set callback
         PendingIntent callback = PendingIntent.getBroadcast(mTargetContext, 0,
-                new Intent(mCallbackAction), PendingIntent.FLAG_ONE_SHOT);
+                new Intent(mCallbackAction), FLAG_ONE_SHOT | FLAG_MUTABLE);
         mTargetContext.sendBroadcast(RequestPinItemActivity.getCommandIntent(
                 RequestPinItemActivity.class, "setCallback").putExtra(
                 RequestPinItemActivity.EXTRA_PARAM + "0", callback));

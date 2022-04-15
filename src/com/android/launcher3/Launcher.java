@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static android.app.PendingIntent.FLAG_IMMUTABLE;
+import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
 import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
 import static android.content.pm.ActivityInfo.CONFIG_UI_MODE;
@@ -434,8 +436,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                 shareIntent.putExtra(Intent.EXTRA_TEXT, stackTrace);
                 shareIntent = Intent.createChooser(shareIntent, null);
                 PendingIntent sharePendingIntent = PendingIntent.getActivity(
-                        this, 0, shareIntent, PendingIntent.FLAG_UPDATE_CURRENT
-                );
+                        this, 0, shareIntent, FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE);
 
                 Notification notification = new Notification.Builder(this, notificationChannelId)
                         .setSmallIcon(android.R.drawable.ic_menu_close_clear_cancel)
