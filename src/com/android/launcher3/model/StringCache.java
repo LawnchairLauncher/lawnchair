@@ -16,6 +16,7 @@
 
 package com.android.launcher3.model;
 
+import android.annotation.SuppressLint;
 import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 import android.os.Build;
@@ -215,6 +216,7 @@ public class StringCache {
                 context, DISABLED_BY_ADMIN_MESSAGE, R.string.msg_disabled_by_admin);
     }
 
+    @SuppressLint("NewApi")
     private String getEnterpriseString(
             Context context, String updatableStringId, int defaultStringId) {
         return Utilities.ATLEAST_T
