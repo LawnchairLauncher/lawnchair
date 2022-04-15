@@ -107,7 +107,6 @@ android_library {
         "androidx.cardview_cardview",
         "com.google.android.material_material",
         "iconloader_base",
-        "modules-utils-build",
     ],
     manifest: "AndroidManifest-common.xml",
     sdk_version: "current",
