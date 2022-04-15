@@ -44,6 +44,7 @@ import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.views.ScrimView;
 
 /**
@@ -75,6 +76,21 @@ public class AllAppsTransitionController
                 }
             };
 
+    public static final FloatProperty<AllAppsTransitionController> ALL_APPS_PULL_BACK_PROGRESS =
+            new FloatProperty<AllAppsTransitionController>("allAppsPullBackProgress") {
+
+                @Override
+                public Float get(AllAppsTransitionController controller) {
+                    return controller.mPullBackProgress;
+                }
+
+                @Override
+                public void setValue(AllAppsTransitionController controller, float progress) {
+                    controller.setPullBackProgress(progress);
+                }
+            };
+
+
     private ActivityAllAppsContainerView<Launcher> mAppsView;
 
     private final Launcher mLauncher;
@@ -88,15 +104,17 @@ public class AllAppsTransitionController
     // When {@link mProgress} is 1, all apps container is pulled down.
     private float mShiftRange;      // changes depending on the orientation
     private float mProgress;        // [0, 1], mShiftRange * mProgress = shiftCurrent
+    private float mPullBackProgress;  // [0, 1], mShiftRange * mPullBackProgress = shiftCurrent
 
     private ScrimView mScrimView;
+    private View mPullBackView;
 
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
         DeviceProfile dp = mLauncher.getDeviceProfile();
         setShiftRange(dp.allAppsShiftRange);
         mProgress = 1f;
-
+        mPullBackProgress = 1f;
         mIsVerticalLayout = dp.isVerticalBarLayout();
         mLauncher.addOnDeviceProfileChangeListener(this);
     }
@@ -114,6 +132,8 @@ public class AllAppsTransitionController
             mLauncher.getHotseat().setTranslationY(0);
             mLauncher.getWorkspace().getPageIndicator().setTranslationY(0);
         }
+
+        mPullBackView = dp.isTablet ? mAppsView.getRecyclerViewContainer() : mAppsView;
     }
 
     /**
@@ -133,12 +153,19 @@ public class AllAppsTransitionController
         return mProgress;
     }
 
+    private void setPullBackProgress(float progress) {
+        mPullBackProgress = progress;
+        mPullBackView.setTranslationY(mPullBackProgress * mShiftRange);
+    }
+
     /**
      * Sets the vertical transition progress to {@param state} and updates all the dependent UI
      * accordingly.
      */
     @Override
     public void setState(LauncherState state) {
+        // Always reset pull back progress when switching states.
+        setPullBackProgress(0f);
         setProgress(state.getVerticalProgress(mLauncher));
         setAlphas(state, new StateAnimationConfig(), NO_ANIM_PROPERTY_SETTER);
         onProgressAnimationEnd();
@@ -151,6 +178,12 @@ public class AllAppsTransitionController
     @Override
     public void setStateWithAnimation(LauncherState toState,
             StateAnimationConfig config, PendingAnimation builder) {
+        if (NORMAL.equals(toState) && mLauncher.isInState(ALL_APPS)) {
+            UiThreadHelper.hideKeyboardAsync(mLauncher, mLauncher.getAppsView().getWindowToken());
+        }
+
+        // Always reset pull back progress when switching states.
+        setPullBackProgress(0f);
         float targetProgress = toState.getVerticalProgress(mLauncher);
         if (Float.compare(mProgress, targetProgress) == 0) {
             setAlphas(toState, config, builder);
@@ -212,6 +245,8 @@ public class AllAppsTransitionController
                             | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         }
         mAppsView.setScrimView(scrimView);
+        mPullBackView = mLauncher.getDeviceProfile().isTablet
+                ? mAppsView.getRecyclerViewContainer() : mAppsView;
     }
 
     /**

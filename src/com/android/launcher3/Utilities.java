@@ -74,7 +74,6 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.core.graphics.ColorUtils;
-import androidx.core.os.BuildCompat;
 
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
 import com.android.launcher3.graphics.GridCustomizationsProvider;
@@ -94,6 +93,7 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
+import com.android.modules.utils.build.SdkLevel;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -126,11 +126,11 @@ public final class Utilities {
 
     public static final boolean ATLEAST_Q = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
-    public static final boolean ATLEAST_R = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
+    public static final boolean ATLEAST_R = SdkLevel.isAtLeastR();
 
-    public static final boolean ATLEAST_S = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
+    public static final boolean ATLEAST_S = SdkLevel.isAtLeastS();
 
-    public static final boolean ATLEAST_T = BuildCompat.isAtLeastT();
+    public static final boolean ATLEAST_T = SdkLevel.isAtLeastT();
 
     /**
      * Set on a motion event dispatched from the nav bar. See {@link MotionEvent#setEdgeFlags(int)}.

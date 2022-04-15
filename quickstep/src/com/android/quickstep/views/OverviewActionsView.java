@@ -155,7 +155,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     public void setInsets(Rect insets) {
         mInsets.set(insets);
         updateVerticalMargin(DisplayController.getNavigationMode(getContext()));
-        updatePaddingAndTranslations();
+        updatePadding();
     }
 
     public void updateHiddenFlags(@ActionsHiddenFlags int visibilityFlags, boolean enable) {
@@ -199,10 +199,9 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     }
 
     /**
-     * Aligns OverviewActionsView vertically with and offsets horizontal position based on
-     * 3 button nav container in taskbar.
+     * Offsets OverviewActionsView horizontal position based on 3 button nav container in taskbar.
      */
-    private void updatePaddingAndTranslations() {
+    private void updatePadding() {
         boolean alignFor3ButtonTaskbar = mDp.isTaskbarPresent &&
                 DisplayController.getNavigationMode(getContext()) == THREE_BUTTONS;
         if (alignFor3ButtonTaskbar) {
@@ -213,20 +212,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             } else {
                 setPadding(mInsets.left, 0, mInsets.right + additionalPadding, 0);
             }
-
-            // Align vertically, using taskbar height + mDp.taskbarOffsetY() to estimate where
-            // the button nav top is.
-            int marginBottom = getOverviewActionsBottomMarginPx(
-                    DisplayController.getNavigationMode(getContext()), mDp);
-            int actionsTop =
-                    (mDp.heightPx - marginBottom - mInsets.bottom) - mDp.overviewActionsHeight;
-            int navTop = mDp.heightPx - (mDp.taskbarSize + mDp.getTaskbarOffsetY());
-            int transY = navTop - actionsTop + ((mDp.taskbarSize - mDp.overviewActionsHeight) / 2);
-            setTranslationY(transY);
         } else {
             setPadding(mInsets.left, 0, mInsets.right, 0);
-            setTranslationX(0);
-            setTranslationY(0);
         }
     }
 
@@ -287,19 +274,28 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     /** Get the bottom margin associated with the action buttons in Overview. */
     public static int getOverviewActionsBottomMarginPx(NavigationMode mode, DeviceProfile dp) {
-        int inset = dp.getInsets().bottom;
+        int bottomInset = dp.getInsets().bottom;
 
         if (dp.isVerticalBarLayout()) {
-            return inset;
+            return bottomInset;
         }
 
-        // Actions button will be aligned with nav buttons in updatePaddingAndTranslations().
         if (mode == NavigationMode.THREE_BUTTONS) {
-            return dp.overviewActionsMarginThreeButtonPx + inset;
+            int bottomMargin = dp.overviewActionsMarginThreeButtonPx + bottomInset;
+            if (dp.isTaskbarPresent) {
+                // Align vertically, using taskbar height + mDp.taskbarOffsetY() to estimate where
+                // the button nav top is.
+                int actionsTop = (dp.heightPx - bottomMargin - bottomInset)
+                        - dp.overviewActionsHeight;
+                int navTop = dp.heightPx - (dp.taskbarSize + dp.getTaskbarOffsetY());
+                bottomMargin -=
+                        navTop - actionsTop + ((dp.taskbarSize - dp.overviewActionsHeight) / 2);
+            }
+            return bottomMargin;
         }
 
         // There is no bottom inset when taskbar is present, use stashed taskbar as padding instead.
         return dp.overviewActionsBottomMarginGesturePx
-                + (dp.isTaskbarPresent ? dp.stashedTaskbarSize : inset);
+                + (dp.isTaskbarPresent ? dp.stashedTaskbarSize : bottomInset);
     }
 }
