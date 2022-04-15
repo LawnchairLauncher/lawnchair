@@ -166,13 +166,13 @@
     <string name="bugreport_group_summary">%d new reports.</string>
     <string name="bugreport_group_summary_multiple">একাধিক নতুন রিপোর্ট।</string>
     <string name="themed_icon_title">আবহ অনুযায়ী প্রতীক</string>
-    <string name="corner_radius_label">Corner Radius</string>
+    <string name="corner_radius_label">কোণের ব্যাসার্ধ</string>
     <string name="search_bar_label">সার্চ বার</string>
     <string name="apply_accent_color_label">অ্যাকসেন্ট রং ব্যবহার করুন</string>
     <string name="show_search_result_types">সার্চ ফলাফলে দেখান</string>
     <string name="search_pref_result_people_title">জনগণ</string>
     <string name="search_pref_result_shortcuts_title">অ্যাপ শর্টকাট</string>
-    <string name="search_pref_result_tips_title">Pixel Tips</string>
+    <string name="search_pref_result_tips_title">পিক্সেল সম্পর্কিত পরামর্শ</string>
     <string name="row_height_label">সারির উচ্চতা</string>
     <string name="all_apps_device_search_hint">অনুসন্ধান করুন</string>
     <string name="dark_status_bar_label">কালো স্ট্যাটাস বার</string>
@@ -182,7 +182,7 @@
     <string name="icon_pack_external_picker">বাহ্যিক বাছাইকারী চালু করুন</string>
     <string name="recents_actions_label">তড়িৎ কার্যক্রম</string>
     <string name="recents_clear_all">সব মুছে ফেলুন</string>
-    <string name="pick_icon_from_label">Pick Icon From</string>
+    <string name="pick_icon_from_label">এখানে থেকে প্রতীক বাছাই করুন</string>
     <string name="experimental_features_label">পরীক্ষামূলক বৈশিষ্ট্য সমূহ</string>
     <string name="icon_picker_label">Per-App Icon Customization</string>
     <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
