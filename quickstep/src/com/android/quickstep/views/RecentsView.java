@@ -106,6 +106,7 @@ import android.view.animation.Interpolator;
 import android.widget.ListView;
 import android.widget.OverScroller;
 import android.widget.Toast;
+import android.window.PictureInPictureSurfaceTransaction;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -161,6 +162,7 @@ import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.ViewUtils;
 import com.android.quickstep.util.GroupTask;
+import com.android.quickstep.util.LauncherSplitScreenListener;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.SplitScreenBounds;
@@ -876,6 +878,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     public boolean isSplitSelectionActive() {
         return mSplitSelectStateController.isSplitSelectActive();
+    }
+
+    /**
+     * See overridden implementations
+     * @return {@code true} if child TaskViews can be launched when user taps on them
+     */
+    protected boolean canLaunchFullscreenTask() {
+        return true;
     }
 
     @Override
@@ -3991,15 +4001,25 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     /**
      * Confirms the selection of the next split task. The extra data is passed through because the
      * user may be selecting a subtask in a group.
+     *
+     * @return true if waiting for confirmation of second app or if split animations are running,
+     *          false otherwise
      */
-    public void confirmSplitSelect(TaskView containerTaskView, Task task, IconView iconView,
+    public boolean confirmSplitSelect(TaskView containerTaskView, Task task, IconView iconView,
             TaskThumbnailView thumbnailView) {
+        if (canLaunchFullscreenTask()) {
+            return false;
+        }
+        if (mSplitSelectStateController.isBothSplitAppsConfirmed()) {
+            return true;
+        }
         mSplitToast.cancel();
         if (!task.isDockable) {
             // Task not split screen supported
             mSplitUnsupportedToast.show();
-            return;
+            return true;
         }
+        mSplitSelectStateController.setSecondTask(task);
         RectF secondTaskStartingBounds = new RectF();
         Rect secondTaskEndingBounds = new Rect();
         // TODO(194414938) starting bounds seem slightly off, investigate
@@ -4027,8 +4047,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSecondFloatingTaskView.addAnimation(pendingAnimation, secondTaskStartingBounds,
                 secondTaskEndingBounds, true /* fadeWithThumbnail */, false /* isStagedTask */);
         pendingAnimation.addEndListener(aBoolean ->
-                mSplitSelectStateController.setSecondTask(
-                        task, aBoolean1 -> RecentsView.this.resetFromSplitSelectionState()));
+                mSplitSelectStateController.launchSplitTasks(
+                        aBoolean1 -> RecentsView.this.resetFromSplitSelectionState()));
         if (containerTaskView.containsMultipleTasks()) {
             // If we are launching from a child task, then only hide the thumbnail itself
             mSecondSplitHiddenView = thumbnailView;
@@ -4037,6 +4057,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
         mSecondSplitHiddenView.setVisibility(INVISIBLE);
         pendingAnimation.buildAnim().start();
+        return true;
     }
 
     /** TODO(b/181707736) More gracefully handle exiting split selection state */
@@ -4488,6 +4509,18 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             final SystemUiProxy systemUiProxy = SystemUiProxy.INSTANCE.get(getContext());
             systemUiProxy.notifySwipeToHomeFinished();
             systemUiProxy.setShelfHeight(true, mActivity.getDeviceProfile().hotseatBarSizePx);
+            // Transaction to hide the task to avoid flicker for entering PiP from split-screen.
+            // See also {@link AbsSwipeUpHandler#maybeFinishSwipeToHome}.
+            PictureInPictureSurfaceTransaction tx =
+                    new PictureInPictureSurfaceTransaction.Builder()
+                            .setAlpha(0f)
+                            .build();
+            int[] taskIds =
+                    LauncherSplitScreenListener.INSTANCE.getNoCreate().getRunningSplitTaskIds();
+            for (int taskId : taskIds) {
+                mRecentsAnimationController.setFinishTaskTransaction(taskId,
+                        tx, null /* overlay */);
+            }
         }
         mRecentsAnimationController.finish(toRecents, () -> {
             if (onFinishComplete != null) {
