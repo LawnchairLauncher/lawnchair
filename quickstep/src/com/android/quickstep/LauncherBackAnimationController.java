@@ -25,6 +25,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.graphics.Matrix;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
@@ -33,11 +34,12 @@ import android.util.MathUtils;
 import android.util.Pair;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
+import android.view.animation.AnimationUtils;
+import android.view.animation.Interpolator;
 import android.window.BackEvent;
 import android.window.IOnBackInvokedCallback;
 
 import com.android.launcher3.BaseQuickstepLauncher;
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -62,34 +64,36 @@ import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
  *
  */
 public class LauncherBackAnimationController {
-    private static final int CANCEL_TRANSITION_DURATION = 150;
+    private static final int CANCEL_TRANSITION_DURATION = 233;
+    private static final float MIN_WINDOW_SCALE = 0.7f;
     private static final String TAG = "LauncherBackAnimationController";
-    private final DeviceProfile mDeviceProfile;
     private final QuickstepTransitionManager mQuickstepTransitionManager;
     private final Matrix mTransformMatrix = new Matrix();
-    private final RectF mTargetRectF = new RectF();
-    private final RectF mStartRectF = new RectF();
+    /** The window position at the beginning of the back animation. */
+    private final Rect mStartRect = new Rect();
+    /** The window position when the back gesture is cancelled. */
+    private final RectF mCancelRect = new RectF();
+    /** The current window position. */
     private final RectF mCurrentRect = new RectF();
     private final BaseQuickstepLauncher mLauncher;
     private final int mWindowScaleMarginX;
-    private final int mWindowScaleMarginY;
+    /** Max window translation in the Y axis. */
+    private final int mWindowMaxDeltaY;
     private final float mWindowScaleEndCornerRadius;
     private final float mWindowScaleStartCornerRadius;
+    private final Interpolator mCancelInterpolator;
+    private final PointF mInitialTouchPos = new PointF();
 
     private RemoteAnimationTargetCompat mBackTarget;
     private SurfaceControl.Transaction mTransaction = new SurfaceControl.Transaction();
     private boolean mSpringAnimationInProgress = false;
     private boolean mAnimatorSetInProgress = false;
-    @BackEvent.SwipeEdge
-    private int mSwipeEdge;
     private float mBackProgress = 0;
     private boolean mBackInProgress = false;
 
     public LauncherBackAnimationController(
-            DeviceProfile deviceProfile,
             BaseQuickstepLauncher launcher,
             QuickstepTransitionManager quickstepTransitionManager) {
-        mDeviceProfile = deviceProfile;
         mLauncher = launcher;
         mQuickstepTransitionManager = quickstepTransitionManager;
         mWindowScaleEndCornerRadius = QuickStepContract.supportsRoundedCornersOnWindows(
@@ -100,8 +104,10 @@ public class LauncherBackAnimationController {
         mWindowScaleStartCornerRadius = QuickStepContract.getWindowCornerRadius(mLauncher);
         mWindowScaleMarginX = mLauncher.getResources().getDimensionPixelSize(
                 R.dimen.swipe_back_window_scale_x_margin);
-        mWindowScaleMarginY = mLauncher.getResources().getDimensionPixelSize(
-                R.dimen.swipe_back_window_scale_y_margin);
+        mWindowMaxDeltaY = mLauncher.getResources().getDimensionPixelSize(
+                R.dimen.swipe_back_window_max_delta_y);
+        mCancelInterpolator =
+                AnimationUtils.loadInterpolator(mLauncher, R.interpolator.back_cancel);
     }
 
     /**
@@ -136,7 +142,7 @@ public class LauncherBackAnimationController {
                         if (!mBackInProgress) {
                             startBack(backEvent);
                         } else {
-                            updateBackProgress(mBackProgress);
+                            updateBackProgress(mBackProgress, backEvent);
                         }
                     }
 
@@ -145,11 +151,13 @@ public class LauncherBackAnimationController {
     }
 
     private void resetPositionAnimated() {
-        ValueAnimator cancelAnimator = ValueAnimator.ofFloat(mBackProgress, 0);
+        ValueAnimator cancelAnimator = ValueAnimator.ofFloat(0, 1);
+        mCancelRect.set(mCurrentRect);
         cancelAnimator.setDuration(CANCEL_TRANSITION_DURATION);
+        cancelAnimator.setInterpolator(mCancelInterpolator);
         cancelAnimator.addUpdateListener(
                 animation -> {
-                    updateBackProgress((float) animation.getAnimatedValue());
+                    updateCancelProgress((float) animation.getAnimatedValue());
                 });
         cancelAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -179,50 +187,70 @@ public class LauncherBackAnimationController {
         mTransaction.show(appTarget.leash).apply();
         mTransaction.setAnimationTransaction();
         mBackTarget = new RemoteAnimationTargetCompat(appTarget);
-        mSwipeEdge = backEvent.getSwipeEdge();
-        float screenWidth = mDeviceProfile.widthPx;
-        float screenHeight = mDeviceProfile.heightPx;
-        float targetHeight = screenHeight - 2 * mWindowScaleMarginY;
-        float targetWidth = targetHeight * screenWidth / screenHeight;
-        float left;
-        if (mSwipeEdge == BackEvent.EDGE_LEFT) {
-            left = screenWidth - targetWidth - mWindowScaleMarginX;
-        } else {
-            left = mWindowScaleMarginX;
-        }
-        float top = mWindowScaleMarginY;
+        mInitialTouchPos.set(backEvent.getTouchX(), backEvent.getTouchY());
+
         // TODO(b/218916755): Offset start rectangle in multiwindow mode.
-        mStartRectF.set(0, 0, screenWidth, screenHeight);
-        mTargetRectF.set(left, top, targetWidth + left, targetHeight + top);
+        mStartRect.set(mBackTarget.windowConfiguration.getMaxBounds());
     }
 
-    private void updateBackProgress(float progress) {
+    private void updateBackProgress(float progress, BackEvent event) {
         if (mBackTarget == null) {
             return;
         }
+        float screenWidth = mStartRect.width();
+        float screenHeight = mStartRect.height();
+        float dX = Math.abs(event.getTouchX() - mInitialTouchPos.x);
+        // The 'follow width' is the width of the window if it completely matches
+        // the gesture displacement.
+        float followWidth = screenWidth - dX;
+        // The 'progress width' is the width of the window if it strictly linearly interpolates
+        // to minimum scale base on progress.
+        float progressWidth = MathUtils.lerp(1, MIN_WINDOW_SCALE, progress) * screenWidth;
+        // The final width is derived from interpolating between the follow with and progress width
+        // using gesture progress.
+        float width = MathUtils.lerp(followWidth, progressWidth, progress);
+        float height = screenHeight / screenWidth * width;
+        float deltaYRatio = (event.getTouchY() - mInitialTouchPos.y) / screenHeight;
+        // Base the window movement in the Y axis on the touch movement in the Y axis.
+        float deltaY = (float) Math.sin(deltaYRatio * Math.PI * 0.5f) * mWindowMaxDeltaY;
+        // Move the window along the Y axis.
+        float top = (screenHeight - height) * 0.5f + deltaY;
+        // Move the window along the X axis.
+        float left = event.getSwipeEdge() == BackEvent.EDGE_RIGHT
+                ? progress * mWindowScaleMarginX
+                : screenWidth - progress * mWindowScaleMarginX - width;
 
-        mCurrentRect.set(
-                MathUtils.lerp(mStartRectF.left, mTargetRectF.left, progress),
-                MathUtils.lerp(mStartRectF.top, mTargetRectF.top, progress),
-                MathUtils.lerp(mStartRectF.right, mTargetRectF.right, progress),
-                MathUtils.lerp(mStartRectF.bottom, mTargetRectF.bottom, progress));
-        SyncRtSurfaceTransactionApplierCompat.SurfaceParams.Builder builder =
-                new SyncRtSurfaceTransactionApplierCompat.SurfaceParams.Builder(mBackTarget.leash);
-
-        Rect currentRect = new Rect();
-        mCurrentRect.round(currentRect);
-
-        // Scale the target window to match the currentRectF.
-        final float scale = mCurrentRect.width() / mStartRectF.width();
-        mTransformMatrix.reset();
-        mTransformMatrix.setScale(scale, scale);
-        mTransformMatrix.postTranslate(mCurrentRect.left, mCurrentRect.top);
-        Rect startRect = new Rect();
-        mStartRectF.round(startRect);
+        mCurrentRect.set(left, top, left + width, top + height);
         float cornerRadius = Utilities.mapRange(
                 progress, mWindowScaleStartCornerRadius, mWindowScaleEndCornerRadius);
+        applyTransform(mCurrentRect, cornerRadius);
+    }
+
+    private void updateCancelProgress(float progress) {
+        if (mBackTarget == null) {
+            return;
+        }
+        mCurrentRect.set(
+                MathUtils.lerp(mCancelRect.left, mStartRect.left, progress),
+                MathUtils.lerp(mCancelRect.top, mStartRect.top, progress),
+                MathUtils.lerp(mCancelRect.right, mStartRect.right, progress),
+                MathUtils.lerp(mCancelRect.bottom, mStartRect.bottom, progress));
+
+        float cornerRadius = Utilities.mapRange(
+                progress, mWindowScaleEndCornerRadius, mWindowScaleStartCornerRadius);
+        applyTransform(mCurrentRect, cornerRadius);
+    }
+
+    /** Transform the target window to match the target rect. */
+    private void applyTransform(RectF targetRect, float cornerRadius) {
+        SyncRtSurfaceTransactionApplierCompat.SurfaceParams.Builder builder =
+                new SyncRtSurfaceTransactionApplierCompat.SurfaceParams.Builder(mBackTarget.leash);
+        final float scale = targetRect.width() / mStartRect.width();
+        mTransformMatrix.reset();
+        mTransformMatrix.setScale(scale, scale);
+        mTransformMatrix.postTranslate(targetRect.left, targetRect.top);
         builder.withMatrix(mTransformMatrix)
-                .withWindowCrop(startRect)
+                .withWindowCrop(mStartRect)
                 .withCornerRadius(cornerRadius);
         SyncRtSurfaceTransactionApplierCompat.SurfaceParams surfaceParams = builder.build();
 
@@ -263,11 +291,11 @@ public class LauncherBackAnimationController {
         mBackTarget = null;
         mBackInProgress = false;
         mBackProgress = 0;
-        mSwipeEdge = BackEvent.EDGE_LEFT;
         mTransformMatrix.reset();
-        mTargetRectF.setEmpty();
+        mCancelRect.setEmpty();
         mCurrentRect.setEmpty();
-        mStartRectF.setEmpty();
+        mStartRect.setEmpty();
+        mInitialTouchPos.set(0, 0);
         mAnimatorSetInProgress = false;
         mSpringAnimationInProgress = false;
         SystemUiProxy systemUiProxy = SystemUiProxy.INSTANCE.getNoCreate();
