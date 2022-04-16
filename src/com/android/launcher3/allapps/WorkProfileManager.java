@@ -27,6 +27,7 @@ import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.Log;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
@@ -147,6 +148,9 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
             workFabMarginBottom +=
                     mWorkModeSwitch.getResources().getDimensionPixelSize(R.dimen.qsb_widget_height);
         }
+        if (!mAllApps.mActivityContext.getDeviceProfile().isGestureMode){
+            workFabMarginBottom += mAllApps.mActivityContext.getDeviceProfile().getInsets().bottom;
+        }
         ((ViewGroup.MarginLayoutParams) mWorkModeSwitch.getLayoutParams()).bottomMargin =
                 workFabMarginBottom;
         if (mWorkModeSwitch.getParent() != mAllApps) {
@@ -158,7 +162,6 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
         mWorkModeSwitch.updateCurrentState(mCurrentState == STATE_ENABLED);
         return true;
     }
-
     /**
      * Removes work profile toggle button from {@link BaseAllAppsContainerView}
      */
