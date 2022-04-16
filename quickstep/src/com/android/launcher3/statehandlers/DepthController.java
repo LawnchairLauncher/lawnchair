@@ -53,6 +53,7 @@ import java.util.function.Consumer;
 public class DepthController implements StateHandler<LauncherState>,
         BaseActivity.MultiWindowModeChangedListener {
 
+    private static final boolean OVERLAY_SCROLL_ENABLED = false;
     public static final FloatProperty<DepthController> DEPTH =
             new FloatProperty<DepthController>("depth") {
                 @Override
@@ -294,6 +295,9 @@ public class DepthController implements StateHandler<LauncherState>,
     }
 
     public void onOverlayScrollChanged(float progress) {
+        if (!OVERLAY_SCROLL_ENABLED) {
+            return;
+        }
         // Add some padding to the progress, such we don't change the depth on the last frames of
         // the animation. It's possible that a user flinging the feed quickly would scroll
         // horizontally by accident, causing the device to enter client composition unnecessarily.
