@@ -26,11 +26,13 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.PreferenceCollectorScope
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.preferences2.state
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
 import app.lawnchair.ui.preferences.components.SliderPreference2
 import app.lawnchair.util.ifNotNull
+import app.lawnchair.util.rememberGridOption
 import com.android.launcher3.R
 import com.patrykmichalik.preferencemanager.state
 
@@ -41,15 +43,19 @@ fun NavGraphBuilder.folderGraph(route: String) {
 
 interface FolderPreferenceCollectorScope : PreferenceCollectorScope {
     val folderPreviewBackgroundOpacity: Float
+    val folderColumns: Int
 }
 
 @Composable
 fun FolderPreferenceCollector(content: @Composable FolderPreferenceCollectorScope.() -> Unit) {
     val preferenceManager = preferenceManager2()
+    val gridOption = rememberGridOption()
     val folderPreviewBackgroundOpacity by preferenceManager.folderPreviewBackgroundOpacity.state()
-    ifNotNull(folderPreviewBackgroundOpacity) {
+    val folderColumns by preferenceManager.folderColumns.state(gridOption = gridOption)
+    ifNotNull(folderPreviewBackgroundOpacity, folderColumns) {
         object : FolderPreferenceCollectorScope {
             override val folderPreviewBackgroundOpacity = it[0] as Float
+            override val folderColumns = it[1] as Int
             override val coroutineScope = rememberCoroutineScope()
             override val preferenceManager = preferenceManager
         }.content()
@@ -76,9 +82,10 @@ fun FolderPreferences() {
                 )
             }
             PreferenceGroup(heading = stringResource(id = R.string.grid)) {
-                SliderPreference(
+                SliderPreference2(
                     label = stringResource(id = R.string.max_folder_columns),
-                    adapter = prefs.folderColumns.getAdapter(),
+                    value = folderColumns,
+                    edit = { folderColumns.set(value = it) },
                     step = 1,
                     valueRange = 2..5,
                 )

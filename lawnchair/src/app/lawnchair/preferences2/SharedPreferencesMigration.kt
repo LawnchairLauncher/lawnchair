@@ -40,6 +40,7 @@ class SharedPreferencesMigration(private val context: Context) {
         "pref_useFuzzySearch" to "enable_fuzzy_search", "pref_smartSpaceEnable" to "enable_smartspace",
         "pref_enableMinusOne" to "enable_feed", "pref_enableIconSelection" to "enable_icon_selection",
         "pref_showComponentName" to "show_component_names", "pref_allAppsColumns" to "drawer_columns",
+        "pref_folderColumns" to "folder_columns",
     )
 
     fun produceMigration() = androidx.datastore.migrations.SharedPreferencesMigration(

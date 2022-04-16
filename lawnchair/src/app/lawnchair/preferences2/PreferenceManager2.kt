@@ -241,6 +241,12 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    val folderColumns = idpPreference(
+        key = intPreferencesKey(name = "folder_columns"),
+        defaultSelector = { numFolderColumns },
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     companion object {
         private val Context.preferencesDataStore by preferencesDataStore(
             name = "preferences",
