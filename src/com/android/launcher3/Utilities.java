@@ -53,6 +53,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Build.VERSION_CODES;
 import android.os.DeadObjectException;
 import android.os.Handler;
 import android.os.Message;
@@ -72,6 +73,7 @@ import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 
+import androidx.annotation.ChecksSdkIntAtLeast;
 import androidx.annotation.NonNull;
 import androidx.core.graphics.ColorUtils;
 
@@ -93,7 +95,6 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
-import com.android.modules.utils.build.SdkLevel;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -122,15 +123,20 @@ public final class Utilities {
     public static final String[] EMPTY_STRING_ARRAY = new String[0];
     public static final Person[] EMPTY_PERSON_ARRAY = new Person[0];
 
+    @ChecksSdkIntAtLeast(api = VERSION_CODES.P)
     public static final boolean ATLEAST_P = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
 
+    @ChecksSdkIntAtLeast(api = VERSION_CODES.Q)
     public static final boolean ATLEAST_Q = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
-    public static final boolean ATLEAST_R = SdkLevel.isAtLeastR();
+    @ChecksSdkIntAtLeast(api = VERSION_CODES.R)
+    public static final boolean ATLEAST_R = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
 
-    public static final boolean ATLEAST_S = SdkLevel.isAtLeastS();
+    @ChecksSdkIntAtLeast(api = VERSION_CODES.S)
+    public static final boolean ATLEAST_S = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
 
-    public static final boolean ATLEAST_T = SdkLevel.isAtLeastT();
+    @ChecksSdkIntAtLeast(api = VERSION_CODES.TIRAMISU, codename = "T")
+    public static final boolean ATLEAST_T = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU;
 
     /**
      * Set on a motion event dispatched from the nav bar. See {@link MotionEvent#setEdgeFlags(int)}.

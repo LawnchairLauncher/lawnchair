@@ -477,7 +477,6 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                 tx.setScale(dragSurface, scale, scale);
                 tx.setAlpha(dragSurface, alpha);
                 tx.apply();
-                tx.close();
             }
         });
         mReturnAnimator.addListener(new AnimatorListenerAdapter() {
@@ -498,6 +497,7 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
             }
 
             private void cleanUpSurface() {
+                tx.close();
                 maybeOnDragEnd();
                 // Synchronize removing the drag surface with the next draw after calling
                 // maybeOnDragEnd()
@@ -508,7 +508,6 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                 syncer.addToSync(syncId, viewRoot.getView());
                 syncer.addTransactionToSync(syncId, transaction);
                 syncer.markSyncReady(syncId);
-
                 mReturnAnimator = null;
             }
         });

@@ -54,7 +54,7 @@ import java.util.function.Consumer;
  * Singleton class to load and manage recents model.
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class RecentsModel extends TaskStackChangeListener implements IconChangeListener {
+public class RecentsModel implements IconChangeListener, TaskStackChangeListener {
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<RecentsModel> INSTANCE =

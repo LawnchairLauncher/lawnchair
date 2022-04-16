@@ -73,6 +73,7 @@ public class SplitSelectStateController {
     private Intent mInitialTaskIntent;
     private int mInitialTaskId = INVALID_TASK_ID;
     private int mSecondTaskId = INVALID_TASK_ID;
+    private String mSecondTaskPackageName;
     private boolean mRecentsAnimationRunning;
     /** If not null, this is the TaskView we want to launch from */
     @Nullable
@@ -103,15 +104,15 @@ public class SplitSelectStateController {
     }
 
     /**
-     * To be called after second task selected
+     * To be called when the actual tasks ({@link #mInitialTaskId}, {@link #mSecondTaskId}) are
+     * to be launched. Call after launcher side animations are complete.
      */
-    public void setSecondTask(Task task, Consumer<Boolean> callback) {
-        mSecondTaskId = task.key.id;
+    public void launchSplitTasks(Consumer<Boolean> callback) {
         final Intent fillInIntent;
         if (mInitialTaskIntent != null) {
             fillInIntent = new Intent();
             if (TextUtils.equals(mInitialTaskIntent.getComponent().getPackageName(),
-                    task.getTopComponent().getPackageName())) {
+                    mSecondTaskPackageName)) {
                 fillInIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             }
         } else {
@@ -122,6 +123,18 @@ public class SplitSelectStateController {
                         mInitialTaskIntent, FLAG_MUTABLE);
         launchTasks(mInitialTaskId, pendingIntent, fillInIntent, mSecondTaskId, mStagePosition,
                 callback, false /* freezeTaskList */, DEFAULT_SPLIT_RATIO);
+    }
+
+
+    /**
+     * To be called as soon as user selects the second task (even if animations aren't complete)
+     * @param task The second task that will be launched.
+     */
+    public void setSecondTask(Task task) {
+        mSecondTaskId = task.key.id;
+        if (mInitialTaskIntent != null) {
+            mSecondTaskPackageName = task.getTopComponent().getPackageName();
+        }
     }
 
     /**
@@ -303,7 +316,18 @@ public class SplitSelectStateController {
      *         chosen
      */
     public boolean isSplitSelectActive() {
-        return (mInitialTaskId != INVALID_TASK_ID || mInitialTaskIntent != null)
-                && mSecondTaskId == INVALID_TASK_ID;
+        return isInitialTaskIntentSet() && mSecondTaskId == INVALID_TASK_ID;
+    }
+
+    /**
+     * @return {@code true} if the first and second task have been chosen and split is waiting to
+     *          be launched
+     */
+    public boolean isBothSplitAppsConfirmed() {
+        return isInitialTaskIntentSet() && mSecondTaskId != INVALID_TASK_ID;
+    }
+
+    private boolean isInitialTaskIntentSet() {
+        return (mInitialTaskId != INVALID_TASK_ID || mInitialTaskIntent != null);
     }
 }

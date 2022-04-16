@@ -74,7 +74,6 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
 
         @Override
         public void onActivityRotation(int displayId) {
-            super.onActivityRotation(displayId);
             // This always gets called before onDisplayInfoChanged() so we know how to process
             // the rotation in that method. This is done to avoid having a race condition between
             // the sensor readings and onDisplayInfoChanged() call
