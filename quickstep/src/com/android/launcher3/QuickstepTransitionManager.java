@@ -244,8 +244,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         mDragLayerAlpha = mDragLayer.getAlphaProperty(ALPHA_INDEX_TRANSITIONS);
         mHandler = new Handler(Looper.getMainLooper());
         mDeviceProfile = mLauncher.getDeviceProfile();
-        mBackAnimationController = new LauncherBackAnimationController(
-                mDeviceProfile, mLauncher, this);
+        mBackAnimationController = new LauncherBackAnimationController(mLauncher, this);
 
         Resources res = mLauncher.getResources();
         mContentScale = res.getFloat(R.dimen.content_scale);
@@ -1441,6 +1440,10 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 }
             };
             anim.addOnUpdateListener(runner);
+        } else {
+            // If no floating icon or widget is present, animate the to the default window
+            // target rect.
+            anim.addOnUpdateListener(new SpringAnimRunner(targets, targetRect, windowTargetBounds));
         }
 
         // Use a fixed velocity to start the animation.
