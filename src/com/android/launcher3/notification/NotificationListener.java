@@ -35,6 +35,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.AnyThread;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
@@ -154,14 +155,9 @@ public class NotificationListener extends NotificationListenerService {
             case MSG_NOTIFICATION_FULL_REFRESH:
                 List<StatusBarNotification> activeNotifications = null;
                 if (sIsConnected) {
-                    try {
-                        activeNotifications = Arrays.stream(getActiveNotifications())
-                                .filter(this::notificationIsValidForUI)
-                                .collect(Collectors.toList());
-                    } catch (SecurityException ex) {
-                        Log.e(TAG, "SecurityException: failed to fetch notifications");
-                        activeNotifications = new ArrayList<>();
-                    }
+                    activeNotifications = Arrays.stream(getActiveNotificationsSafely(null))
+                            .filter(this::notificationIsValidForUI)
+                            .collect(Collectors.toList());
                 } else {
                     activeNotifications = new ArrayList<>();
                 }
@@ -175,7 +171,7 @@ public class NotificationListener extends NotificationListenerService {
             }
             case MSG_RANKING_UPDATE: {
                 String[] keys = ((RankingMap) message.obj).getOrderedKeys();
-                for (StatusBarNotification sbn : getActiveNotifications(keys)) {
+                for (StatusBarNotification sbn : getActiveNotificationsSafely(keys)) {
                     updateGroupKeyIfNecessary(sbn);
                 }
                 return true;
@@ -212,6 +208,16 @@ public class NotificationListener extends NotificationListenerService {
                 break;
         }
         return true;
+    }
+
+    private @NonNull StatusBarNotification[] getActiveNotificationsSafely(@Nullable String[] keys) {
+        StatusBarNotification[] result = null;
+        try {
+            result = getActiveNotifications(keys);
+        } catch (SecurityException e) {
+            Log.e(TAG, "SecurityException: failed to fetch notifications");
+        }
+        return result == null ? new StatusBarNotification[0] : result;
     }
 
     @Override
@@ -313,9 +319,8 @@ public class NotificationListener extends NotificationListenerService {
      */
     @WorkerThread
     public List<StatusBarNotification> getNotificationsForKeys(List<NotificationKeyData> keys) {
-        StatusBarNotification[] notifications = getActiveNotifications(
-                keys.stream().map(n -> n.notificationKey).toArray(String[]::new));
-        return notifications == null ? Collections.emptyList() : Arrays.asList(notifications);
+        return Arrays.asList(getActiveNotificationsSafely(
+                keys.stream().map(n -> n.notificationKey).toArray(String[]::new)));
     }
 
     /**
