@@ -165,7 +165,7 @@
     <string name="status_channel_name">Yükleme Durumu</string>
     <string name="bugreport_group_summary">%d yeni bildiriler.</string>
     <string name="bugreport_group_summary_multiple">Birden fazla yeni bildiri.</string>
-    <string name="themed_icon_title">Temalı İkonlar</string>
+    <string name="themed_icon_title">Temalı Simgeler</string>
     <string name="corner_radius_label">Köşe Yarıçapı</string>
     <string name="search_bar_label">Arama Kutusu</string>
     <string name="apply_accent_color_label">Vurgu Rengini Uygula</string>
