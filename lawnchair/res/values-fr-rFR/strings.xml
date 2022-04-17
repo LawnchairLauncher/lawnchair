@@ -92,7 +92,7 @@
     <string name="theme_follow_wallpaper">Fais correspondre au fond d\'écran</string>
     <string name="quickstep_label">Récents</string>
     <string name="clear_all_as_action_label">Bouton \"Tout effacer\" en bas</string>
-    <string name="window_corner_radius_label">Courbure des coins d\'écran</string>
+    <string name="window_corner_radius_label">Rayon d\'angle de l\'écran</string>
     <string name="override_window_corner_radius_label">Rayon d\'angle de l\'écran personnalisé</string>
     <string name="window_corner_radius_description">Lorsque vous faites glisser vers le haut pour ouvrir Récents, l\'application actuelle suit votre doigt et se replie sur une carte. Utilisez ce curseur pour régler le rayon d\'angle de la carte quand il est presque en plein écran de telle sorte qu\'il corresponde aux coins de votre écran.</string>
     <string name="system_icons">Icônes système</string>
@@ -109,7 +109,7 @@
     <string name="what_to_show">Qu\'afficher</string>
     <string name="missing_notification_access_label">Accès aux notifications requis</string>
     <string name="missing_notification_access_description">Accès aux notifications requis.</string>
-    <string name="msg_missing_notification_access">Pour utiliser les points de notification, accordez <xliff:g id="name" example="My App">%1$s</xliff:g> l\'accès aux notifications.</string>
+    <string name="msg_missing_notification_access">Pour utiliser les pastilles de notification, accordez <xliff:g id="name" example="My App">%1$s</xliff:g> l\'accès aux notifications.</string>
     <string name="title_change_settings">Modifier les réglages</string>
     <string name="debug_restart_launcher">Redémarrer Lawnchair</string>
     <string name="pref_fonts_missing_font">Police introuvable.</string>
@@ -154,7 +154,7 @@
     <string name="show_app_search_bar">Afficher la barre de recherche</string>
     <string name="lawnchair_bug_report">Rapport de bug Lawnchair</string>
     <string name="crash_report_notif_title">%1$s a planté</string>
-    <string name="action_upload">Télécharger à Dogbin</string>
+    <string name="action_upload">Télécharger vers Dogbin</string>
     <string name="action_copy_link">Copier le lien</string>
     <string name="action_copy">Copier</string>
     <string name="copied_toast">Copié dans le presse-papiers.</string>
