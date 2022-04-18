@@ -22,7 +22,6 @@ import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 
 import android.annotation.Nullable;
 import android.annotation.TargetApi;
-import android.app.ActivityManager;
 import android.content.Intent;
 import android.os.Build;
 
@@ -30,6 +29,7 @@ import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.tracing.GestureStateProto;
 import com.android.launcher3.tracing.SwipeHandlerProto;
+import com.android.quickstep.TopTaskTracker.CachedTaskInfo;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -135,8 +135,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     private final MultiStateCallback mStateCallback;
     private final int mGestureId;
 
-    private ActivityManager.RunningTaskInfo mRunningTask;
-    private ActivityManager.RunningTaskInfo[] mRunningTasks;
+    private CachedTaskInfo mRunningTask;
     private GestureEndTarget mEndTarget;
     private RemoteAnimationTargetCompat mLastAppearedTaskTarget;
     private Set<Integer> mPreviouslyAppearedTaskIds = new HashSet<>();
@@ -232,39 +231,22 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     /**
      * @return the running task for this gesture.
      */
-    public ActivityManager.RunningTaskInfo getRunningTask() {
+    public CachedTaskInfo getRunningTask() {
         return mRunningTask;
-    }
-
-    /**
-     * This will array will contain the task returned by {@link #getRunningTask()}
-     * @return the running tasks for this gesture.
-     */
-    public ActivityManager.RunningTaskInfo[] getRunningTasks() {
-        return mRunningTasks;
     }
 
     /**
      * @return the running task id for this gesture.
      */
     public int getRunningTaskId() {
-        return mRunningTask != null ? mRunningTask.taskId : -1;
+        return mRunningTask != null ? mRunningTask.getTaskId() : -1;
     }
 
     /**
      * Updates the running task for the gesture to be the given {@param runningTask}.
      */
-    public void updateRunningTask(ActivityManager.RunningTaskInfo runningTask) {
+    public void updateRunningTask(CachedTaskInfo runningTask) {
         mRunningTask = runningTask;
-    }
-
-    /**
-     * TODO(b/210903248) refactor to consolidate w/ method above
-     * Updates the running task for the gesture to be the given {@param runningTask}.
-     */
-    public void updateRunningTasks(ActivityManager.RunningTaskInfo[] runningTasks) {
-        mRunningTasks = runningTasks;
-        updateRunningTask(runningTasks[0]);
     }
 
     /**
@@ -339,7 +321,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
      * user controlled gesture.
      */
     public void setHandlingAtomicEvent(boolean handlingAtomicEvent) {
-        mHandlingAtomicEvent = true;
+        mHandlingAtomicEvent = handlingAtomicEvent;
     }
 
     /**
