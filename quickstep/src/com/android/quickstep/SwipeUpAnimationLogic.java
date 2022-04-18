@@ -37,7 +37,6 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
-import com.android.quickstep.util.LauncherSplitScreenListener;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
@@ -82,8 +81,7 @@ public abstract class SwipeUpAnimationLogic implements
         mGestureState = gestureState;
 
         mIsSwipeForStagedSplit = ENABLE_SPLIT_SELECT.get() &&
-                LauncherSplitScreenListener.INSTANCE.getNoCreate()
-                        .getRunningSplitTaskIds().length > 1;
+                TopTaskTracker.INSTANCE.get(context).getRunningSplitTaskIds().length > 1;
 
         mTargetGluer = new RemoteTargetGluer(mContext, mGestureState.getActivityInterface());
         mRemoteTargetHandles = mTargetGluer.getRemoteTargetHandles();

@@ -30,7 +30,7 @@ import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACT
 
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
-import android.app.ActivityManager;
+import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -69,7 +69,6 @@ import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.TransformParams.BuilderProxy;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
-import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
@@ -109,7 +108,7 @@ public class FallbackSwipeHandler extends
         super(context, deviceState, taskAnimationManager, gestureState, touchTimeMs,
                 continuingLastGesture, inputConsumer);
 
-        mRunningOverHome = ActivityManagerWrapper.isHomeTask(mGestureState.getRunningTask());
+        mRunningOverHome = mGestureState.getRunningTask().isHomeTask();
         if (mRunningOverHome) {
             runActionOnRemoteHandles(remoteTargetHandle ->
                     remoteTargetHandle.getTransformParams().setHomeBuilderProxy(
@@ -150,16 +149,17 @@ public class FallbackSwipeHandler extends
             return new FallbackPipToHomeAnimationFactory();
         }
         mActiveAnimationFactory = new FallbackHomeAnimationFactory(duration);
-        startHomeIntent(mActiveAnimationFactory);
+        startHomeIntent(mActiveAnimationFactory, runningTaskTarget);
         return mActiveAnimationFactory;
     }
 
     private void startHomeIntent(
-            @Nullable FallbackHomeAnimationFactory gestureContractAnimationFactory) {
+            @Nullable FallbackHomeAnimationFactory gestureContractAnimationFactory,
+            @Nullable RemoteAnimationTargetCompat runningTaskTarget) {
         ActivityOptions options = ActivityOptions.makeCustomAnimation(mContext, 0, 0);
         Intent intent = new Intent(mGestureState.getHomeIntent());
-        if (gestureContractAnimationFactory != null) {
-            gestureContractAnimationFactory.addGestureContract(intent);
+        if (gestureContractAnimationFactory != null && runningTaskTarget != null) {
+            gestureContractAnimationFactory.addGestureContract(intent, runningTaskTarget.taskInfo);
         }
         try {
             mContext.startActivity(intent, options.toBundle());
@@ -187,7 +187,8 @@ public class FallbackSwipeHandler extends
             // the PiP task appearing.
             recentsCallback = () -> {
                 callback.run();
-                startHomeIntent(null /* gestureContractAnimationFactory */);
+                startHomeIntent(
+                        null /* gestureContractAnimationFactory */, null /* runningTaskTarget */);
             };
         } else {
             recentsCallback = callback;
@@ -212,7 +213,7 @@ public class FallbackSwipeHandler extends
         if (mRunningOverHome) {
             if (DisplayController.getNavigationMode(mContext).hasGestures) {
                 mRecentsView.onGestureAnimationStartOnHome(
-                        new ActivityManager.RunningTaskInfo[]{mGestureState.getRunningTask()},
+                        mGestureState.getRunningTask().getPlaceholderTasks(),
                         mDeviceState.getRotationTouchHelper());
             }
         } else {
@@ -396,12 +397,12 @@ public class FallbackSwipeHandler extends
             }
         }
 
-        private void addGestureContract(Intent intent) {
-            if (mRunningOverHome || mGestureState.getRunningTask() == null) {
+        private void addGestureContract(Intent intent, RunningTaskInfo runningTaskInfo) {
+            if (mRunningOverHome || runningTaskInfo == null) {
                 return;
             }
 
-            TaskKey key = new TaskKey(mGestureState.getRunningTask());
+            TaskKey key = new TaskKey(runningTaskInfo);
             if (key.getComponent() != null) {
                 if (sMessageReceiver == null) {
                     sMessageReceiver = new StaticMessageReceiver();
