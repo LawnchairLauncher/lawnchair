@@ -102,6 +102,7 @@ import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.InputConsumerProxy;
 import com.android.quickstep.util.InputProxyHandlerFactory;
+import com.android.quickstep.util.LauncherSplitScreenListener;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.ProtoTracer;
 import com.android.quickstep.util.RecentsOrientedState;
@@ -113,7 +114,6 @@ import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.VibratorWrapper;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
-import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputConsumerController;
@@ -564,12 +564,24 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     protected void notifyGestureAnimationStartToRecents() {
-        Task[] runningTasks;
+        ActivityManager.RunningTaskInfo[] runningTasks;
         if (mIsSwipeForStagedSplit) {
-            int[] splitTaskIds = TopTaskTracker.INSTANCE.get(mContext).getRunningSplitTaskIds();
-            runningTasks = mGestureState.getRunningTask().getPlaceholderTasks(splitTaskIds);
+            int[] splitTaskIds =
+                    LauncherSplitScreenListener.INSTANCE.getNoCreate().getRunningSplitTaskIds();
+            runningTasks = new ActivityManager.RunningTaskInfo[splitTaskIds.length];
+            for (int i = 0; i < splitTaskIds.length; i++) {
+                int taskId = splitTaskIds[i];
+                // Order matters here, we want first indexed RunningTaskInfo to be leftTop task
+                for (ActivityManager.RunningTaskInfo rti : mGestureState.getRunningTasks()) {
+                    if (taskId == rti.taskId) {
+                        runningTasks[i] = rti;
+                        break;
+                    }
+
+                }
+            }
         } else {
-            runningTasks = mGestureState.getRunningTask().getPlaceholderTasks();
+            runningTasks = new ActivityManager.RunningTaskInfo[]{mGestureState.getRunningTask()};
         }
         mRecentsView.onGestureAnimationStart(runningTasks, mDeviceState.getRotationTouchHelper());
     }
@@ -789,7 +801,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             RecentsAnimationTargets targets) {
         super.onRecentsAnimationStart(controller, targets);
         ActiveGestureLog.INSTANCE.addLog("startRecentsAnimationCallback", targets.apps.length);
-        mRemoteTargetHandles = mTargetGluer.assignTargetsForSplitScreen(mContext, targets);
+        mRemoteTargetHandles = mTargetGluer.assignTargetsForSplitScreen(targets);
         mRecentsAnimationController = controller;
         mRecentsAnimationTargets = targets;
 
@@ -1368,7 +1380,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private SwipePipToHomeAnimator createWindowAnimationToPip(HomeAnimationFactory homeAnimFactory,
             RemoteAnimationTargetCompat runningTaskTarget, float startProgress) {
         // Directly animate the app to PiP (picture-in-picture) mode
-        final ActivityManager.RunningTaskInfo taskInfo = runningTaskTarget.taskInfo;
+        final ActivityManager.RunningTaskInfo taskInfo = mGestureState.getRunningTask();
         final RecentsOrientedState orientationState = mRemoteTargetHandles[0].getTaskViewSimulator()
                 .getOrientationState();
         final int windowRotation = calculateWindowRotation(runningTaskTarget, orientationState);
@@ -1770,7 +1782,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     new PictureInPictureSurfaceTransaction.Builder()
                             .setAlpha(0f)
                             .build();
-            int[] taskIds = TopTaskTracker.INSTANCE.get(mContext).getRunningSplitTaskIds();
+            int[] taskIds =
+                        LauncherSplitScreenListener.INSTANCE.getNoCreate().getRunningSplitTaskIds();
             for (int taskId : taskIds) {
                 mRecentsAnimationController.setFinishTaskTransaction(taskId,
                         tx, null /* overlay */);
