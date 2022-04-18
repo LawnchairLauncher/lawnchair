@@ -32,7 +32,7 @@
     <string name="split_screen_position_left" msgid="7537793098851830883">"Rozdělit vlevo"</string>
     <string name="split_screen_position_right" msgid="1569377524925193369">"Rozdělit vpravo"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Informace o aplikaci %1$s"</string>
-    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Klepnutím a podržením přesunete widget."</string>
+    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Widget přesunete klepnutím a podržením."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Dvojitým klepnutím a podržením přesunete widget, případně použijte vlastní akce."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"šířka %1$d, výška %2$d"</string>
@@ -156,7 +156,7 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Osobní"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Pracovní"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Pracovní profil"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Pracovní aplikace jsou označené a viditelné vašemu administrátorovi IT"</string>
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Pracovní aplikace jsou označené a váš administrátor IT je vidí"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Rozumím"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Pracovní aplikace jsou pozastaveny"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Pracovní aplikace vám nemohou zasílat oznámení, používat vaši baterii ani získat přístup k vaší poloze"</string>
