@@ -15,7 +15,6 @@
  */
 package com.android.quickstep;
 
-import static android.content.Intent.ACTION_CHOOSER;
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
@@ -41,7 +40,6 @@ import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.app.RemoteAction;
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -95,8 +93,6 @@ import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
 import com.android.quickstep.inputconsumers.SysUiOverlayInputConsumer;
 import com.android.quickstep.inputconsumers.TaskbarStashInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
-import com.android.quickstep.util.AssistantUtilities;
-import com.android.quickstep.util.LauncherSplitScreenListener;
 import com.android.quickstep.util.ProtoTracer;
 import com.android.quickstep.util.ProxyScreenStatusProvider;
 import com.android.quickstep.util.SplitScreenBounds;
@@ -314,6 +310,13 @@ public class TouchInteractionService extends Service
         public void setSwipeUpProxy(Function<GestureState, AnimatedFloat> proxy) {
             mSwipeUpProxyProvider = proxy != null ? proxy : (i -> null);
         }
+
+        /**
+         * Sets the task id where gestures should be blocked
+         */
+        public void setGestureBlockedTaskId(int taskId) {
+            mDeviceState.setGestureBlockingTaskId(taskId);
+        }
     }
 
     private static boolean sConnected = false;
@@ -369,7 +372,6 @@ public class TouchInteractionService extends Service
         mDeviceState.addNavigationModeChangedCallback(this::onNavigationModeChanged);
 
         ProtoTracer.INSTANCE.get(this).add(this);
-        LauncherSplitScreenListener.INSTANCE.get(this).init();
         sConnected = true;
     }
 
@@ -418,6 +420,9 @@ public class TouchInteractionService extends Service
         mInputConsumer.registerInputConsumer();
         onSystemUiFlagsChanged(mDeviceState.getSystemUiStateFlags());
         onAssistantVisibilityChanged();
+
+        // Initialize the task tracker
+        TopTaskTracker.INSTANCE.get(this);
 
         // Temporarily disable model preload
         // new ModelPreload().start(this);
@@ -531,7 +536,6 @@ public class TouchInteractionService extends Service
         getSystemService(AccessibilityManager.class)
                 .unregisterSystemAction(SYSTEM_ACTION_ID_ALL_APPS);
 
-        LauncherSplitScreenListener.INSTANCE.get(this).destroy();
         mTaskbarManager.destroy();
         sConnected = false;
         super.onDestroy();
@@ -633,7 +637,7 @@ public class TouchInteractionService extends Service
 
     private InputConsumer tryCreateAssistantInputConsumer(InputConsumer base,
             GestureState gestureState, MotionEvent motionEvent) {
-        return mDeviceState.isGestureBlockedActivity(gestureState.getRunningTask())
+        return mDeviceState.isGestureBlockedTask(gestureState.getRunningTask())
                 ? base
                 : new AssistantInputConsumer(this, gestureState, base, mInputMonitorCompat,
                         mDeviceState, motionEvent);
@@ -648,8 +652,8 @@ public class TouchInteractionService extends Service
             gestureState.updatePreviouslyAppearedTaskIds(
                     previousGestureState.getPreviouslyAppearedTaskIds());
         } else {
-            gestureState.updateRunningTasks(TraceHelper.allowIpcs("getRunningTask.0",
-                    () -> mAM.getRunningTasks(false /* filterOnlyVisibleRecents */)));
+            gestureState.updateRunningTask(
+                    TopTaskTracker.INSTANCE.get(this).getCachedTopTask(false));
         }
         return gestureState;
     }
@@ -743,17 +747,14 @@ public class TouchInteractionService extends Service
         // Use overview input consumer for sharesheets on top of home.
         boolean forceOverviewInputConsumer = gestureState.getActivityInterface().isStarted()
                 && gestureState.getRunningTask() != null
-                && ACTION_CHOOSER.equals(gestureState.getRunningTask().baseIntent.getAction());
-        if (AssistantUtilities.isExcludedAssistant(gestureState.getRunningTask())) {
+                && gestureState.getRunningTask().isRootChooseActivity();
+        if (gestureState.getRunningTask() != null
+                && gestureState.getRunningTask().isExcludedAssistant()) {
             // In the case where we are in the excluded assistant state, ignore it and treat the
             // running activity as the task behind the assistant
-            gestureState.updateRunningTask(TraceHelper.allowIpcs("getRunningTask.assistant",
-                    () -> mAM.getRunningTask(true /* filterOnlyVisibleRecents */)));
-            ComponentName homeComponent = mOverviewComponentObserver.getHomeIntent().getComponent();
-            ComponentName runningComponent =
-                    gestureState.getRunningTask().baseIntent.getComponent();
-            forceOverviewInputConsumer =
-                    runningComponent != null && runningComponent.equals(homeComponent);
+            gestureState.updateRunningTask(TopTaskTracker.INSTANCE.get(this)
+                    .getCachedTopTask(true /* filterOnlyVisibleRecents */));
+            forceOverviewInputConsumer = gestureState.getRunningTask().isHomeTask();
         }
 
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()
@@ -770,7 +771,7 @@ public class TouchInteractionService extends Service
                 || forceOverviewInputConsumer) {
             return createOverviewInputConsumer(
                     previousGestureState, gestureState, event, forceOverviewInputConsumer);
-        } else if (mDeviceState.isGestureBlockedActivity(gestureState.getRunningTask())) {
+        } else if (mDeviceState.isGestureBlockedTask(gestureState.getRunningTask())) {
             return getDefaultInputConsumer();
         } else {
             return createOtherActivityInputConsumer(gestureState, event);
