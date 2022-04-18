@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
+import com.android.quickstep.util.LauncherSplitScreenListener;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -49,7 +50,8 @@ public class RemoteTargetGluer {
      * running tasks
      */
     public RemoteTargetGluer(Context context, BaseActivityInterface sizingStrategy) {
-        int[] splitIds = TopTaskTracker.INSTANCE.get(context).getRunningSplitTaskIds();
+        int[] splitIds = LauncherSplitScreenListener.INSTANCE.getNoCreate()
+                .getRunningSplitTaskIds();
         mRemoteTargetHandles = createHandles(context, sizingStrategy, splitIds.length == 2 ? 2 : 1);
     }
 
@@ -71,7 +73,7 @@ public class RemoteTargetGluer {
      * Length of targets.apps should match that of {@link #mRemoteTargetHandles}.
      *
      * If split screen may be active when this is called, you might want to use
-     * {@link #assignTargetsForSplitScreen(Context, RemoteAnimationTargets)}
+     * {@link #assignTargetsForSplitScreen(RemoteAnimationTargets)}
      */
     public RemoteTargetHandle[] assignTargets(RemoteAnimationTargets targets) {
         for (int i = 0; i < mRemoteTargetHandles.length; i++) {
@@ -88,9 +90,9 @@ public class RemoteTargetGluer {
      * apps in targets.apps to that of the _active_ split screened tasks.
      * See {@link #assignTargetsForSplitScreen(RemoteAnimationTargets, int[])}
      */
-    public RemoteTargetHandle[] assignTargetsForSplitScreen(
-            Context context, RemoteAnimationTargets targets) {
-        int[] splitIds = TopTaskTracker.INSTANCE.get(context).getRunningSplitTaskIds();
+    public RemoteTargetHandle[] assignTargetsForSplitScreen(RemoteAnimationTargets targets) {
+        int[] splitIds = LauncherSplitScreenListener.INSTANCE.getNoCreate()
+                .getRunningSplitTaskIds();
         return assignTargetsForSplitScreen(targets, splitIds);
     }
 
