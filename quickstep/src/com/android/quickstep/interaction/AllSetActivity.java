@@ -21,6 +21,7 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import android.animation.Animator;
 import android.app.Activity;
+import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -223,7 +224,8 @@ public class AllSetActivity extends Activity {
         if (!state.getHomeIntent().getComponent().getPackageName().equals(getPackageName())) {
             return null;
         }
-        if (state.getRunningTaskId() != getTaskId()) {
+        RunningTaskInfo rti = state.getRunningTask();
+        if (rti == null || !rti.topActivity.equals(getComponentName())) {
             return null;
         }
         mSwipeProgress.updateValue(0);
