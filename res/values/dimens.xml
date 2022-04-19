@@ -291,15 +291,15 @@
     <!-- popup_padding_start + deep_shortcut_icon_size / 2 -->
     <dimen name="popup_arrow_horizontal_center_offset">26dp</dimen>
     <dimen name="popup_arrow_corner_radius">2dp</dimen>
-    <!-- popup_padding_start + icon_size + 10dp -->
+    <!-- popup_padding_start + deep_shortcut_icon_size + 10dp -->
     <dimen name="deep_shortcuts_text_padding_start">52dp</dimen>
-    <dimen name="system_shortcut_icon_size">24dp</dimen>
+    <dimen name="system_shortcut_icon_size">20dp</dimen>
     <!-- popup_arrow_horizontal_center_offset - system_shortcut_icon_size / 2 -->
     <dimen name="system_shortcut_margin_start">16dp</dimen>
     <dimen name="system_shortcut_header_height">56dp</dimen>
     <dimen name="system_shortcut_header_icon_touch_size">48dp</dimen>
-    <!-- (touch_size - icon_size) / 2 -->
-    <dimen name="system_shortcut_header_icon_padding">12dp</dimen>
+    <!-- (system_shortcut_header_icon_touch_size - system_shortcut_icon_size) / 2 -->
+    <dimen name="system_shortcut_header_icon_padding">14dp</dimen>
 
 <!-- Notifications -->
     <dimen name="bg_round_rect_radius">8dp</dimen>
@@ -377,7 +377,7 @@
     <dimen name="split_placeholder_size">72dp</dimen>
     <dimen name="split_placeholder_inset">16dp</dimen>
     <dimen name="split_placeholder_icon_size">44dp</dimen>
-    <dimen name="task_menu_width_grid">200dp</dimen>
+    <dimen name="task_menu_width_grid">216dp</dimen>
 
 
 <!-- Workspace grid visualization parameters -->
