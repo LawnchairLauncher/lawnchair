@@ -32,7 +32,7 @@
     <string name="split_screen_position_left" msgid="7537793098851830883">"Dividir parte izquierda"</string>
     <string name="split_screen_position_right" msgid="1569377524925193369">"Dividir parte derecha"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Información de la aplicación %1$s"</string>
-    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Mantén pulsado un widget para moverlo."</string>
+    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Mantén pulsado un widget para moverlo"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Toca dos veces y mantén pulsado un widget para moverlo o usar acciones personalizadas."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d de ancho por %2$d de alto"</string>
@@ -41,7 +41,7 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"Añadir a pantalla de inicio"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g> añadido a la pantalla de inicio"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# widget}other{# widgets}}"</string>
-    <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# combinación de teclas}other{# combinaciones de teclas}}"</string>
+    <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# acceso directo}other{# accesos directos}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Buscar"</string>
@@ -124,6 +124,14 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Instalando <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> completado"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Descargando <xliff:g id="NAME">%1$s</xliff:g> (<xliff:g id="PROGRESS">%2$s</xliff:g> completado)"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Esperando para instalar <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <!-- no translation found for dialog_update_title (114234265740994042) -->
+    <skip />
+    <!-- no translation found for dialog_update_message (4176784553982226114) -->
+    <skip />
+    <!-- no translation found for dialog_update (2178028071796141234) -->
+    <skip />
+    <!-- no translation found for dialog_remove (6510806469849709407) -->
+    <skip />
     <string name="widgets_list" msgid="796804551140113767">"Lista de widgets"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Lista de widgets cerrada"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Añadir a pantalla de inicio"</string>
