@@ -1015,29 +1015,32 @@ public class DeviceProfile {
                         mInsets.right + hotseatBarSidePaddingStartPx, paddingBottom);
             }
         } else if (isTaskbarPresent) {
+            boolean isRtl = Utilities.isRtl(context.getResources());
             int hotseatHeight = workspacePadding.bottom;
             int taskbarOffset = getTaskbarOffsetY();
-            int additionalLeftSpace = 0;
+            // Push icons to the side
+            int additionalQsbSpace = isQsbInline ? qsbWidth + hotseatBorderSpace : 0;
 
-            // Center the QSB with hotseat and push icons to the right
-            if (isQsbInline) {
-                additionalLeftSpace = qsbWidth + hotseatBorderSpace;
-            }
-
+            // Center the QSB vertically with hotseat
             int hotseatTopPadding = hotseatHeight - taskbarOffset - hotseatCellHeightPx;
 
             int endOffset = ApiWrapper.getHotseatEndOffset(context);
             int requiredWidth = iconSizePx * numShownHotseatIcons
                     + hotseatBorderSpace * (numShownHotseatIcons - 1)
-                    + additionalLeftSpace;
+                    + additionalQsbSpace;
 
-            int hotseatSize = Math.min(requiredWidth, availableWidthPx - endOffset);
-            int sideSpacing = (availableWidthPx - hotseatSize) / 2;
-            mHotseatPadding.set(sideSpacing + additionalLeftSpace, hotseatTopPadding, sideSpacing,
-                    taskbarOffset);
+            int hotseatWidth = Math.min(requiredWidth, availableWidthPx - endOffset);
+            int sideSpacing = (availableWidthPx - hotseatWidth) / 2;
+            mHotseatPadding.set(sideSpacing, hotseatTopPadding, sideSpacing, taskbarOffset);
+
+            if (isRtl) {
+                mHotseatPadding.right += additionalQsbSpace;
+            } else {
+                mHotseatPadding.left += additionalQsbSpace;
+            }
 
             if (endOffset > sideSpacing) {
-                int diff = Utilities.isRtl(context.getResources())
+                int diff = isRtl
                         ? sideSpacing - endOffset
                         : endOffset - sideSpacing;
                 mHotseatPadding.left -= diff;
@@ -1087,7 +1090,7 @@ public class DeviceProfile {
      */
     public int getTaskbarOffsetY() {
         if (isQsbInline) {
-            return getQsbOffsetY() + (Math.abs(hotseatQsbHeight - iconSizePx) / 2);
+            return getQsbOffsetY() - (Math.abs(hotseatQsbHeight - hotseatCellHeightPx) / 2);
         } else {
             return (getQsbOffsetY() - taskbarSize) / 2;
         }
