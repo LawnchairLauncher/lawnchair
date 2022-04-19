@@ -602,6 +602,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         mIsAboveIcon = y > dragLayer.getTop() + insets.top;
         if (!mIsAboveIcon) {
             y = mTempRect.top + iconHeight + extraVerticalSpace;
+            height -= extraVerticalSpace;
         }
 
         // Insets are added later, so subtract them now.
@@ -609,7 +610,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         y -= insets.top;
 
         mGravity = 0;
-        if (y + height > dragLayer.getBottom() - insets.bottom) {
+        if ((insets.top + y + height) > (dragLayer.getBottom() - insets.bottom)) {
             // The container is opening off the screen, so just center it in the drag layer instead.
             mGravity = Gravity.CENTER_VERTICAL;
             // Put the container next to the icon, preferring the right side in ltr (left in rtl).
