@@ -45,14 +45,11 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_Q
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED;
 
-import android.app.ActivityManager;
 import android.app.ActivityTaskManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.graphics.Region;
 import android.inputmethodservice.InputMethodService;
 import android.net.Uri;
@@ -61,18 +58,17 @@ import android.os.RemoteException;
 import android.os.SystemProperties;
 import android.os.UserManager;
 import android.provider.Settings;
-import android.text.TextUtils;
 import android.view.MotionEvent;
 
 import androidx.annotation.BinderThread;
 
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.DisplayController.NavigationMode;
 import com.android.launcher3.util.SettingsCache;
+import com.android.quickstep.TopTaskTracker.CachedTaskInfo;
 import com.android.quickstep.util.NavBarPosition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -83,7 +79,6 @@ import com.android.systemui.shared.system.TaskStackChangeListeners;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Manages the state of the system during a swipe up gesture.
@@ -97,7 +92,6 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
     private final int mDisplayId;
     private final RotationTouchHelper mRotationTouchHelper;
     private final TaskStackChangeListener mPipListener;
-    private final List<ComponentName> mGestureBlockedActivities;
     // Cache for better performance since it doesn't change at runtime.
     private final boolean mCanImeRenderGesturalNavButtons =
             InputMethodService.canImeRenderGesturalNavButtons();
@@ -129,6 +123,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
         }
     };
 
+    private int mGestureBlockingTaskId = -1;
     private Region mExclusionRegion;
     private SystemGestureExclusionListenerCompat mExclusionListener;
 
@@ -177,22 +172,6 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
         mDisplayController.addChangeListener(this);
         onDisplayInfoChanged(context, mDisplayController.getInfo(), CHANGE_ALL);
         runOnDestroy(() -> mDisplayController.removeChangeListener(this));
-
-        // Add any blocked activities
-        String[] blockingActivities;
-        try {
-            blockingActivities =
-                    context.getResources().getStringArray(R.array.gesture_blocking_activities);
-        } catch (Resources.NotFoundException e) {
-            blockingActivities = new String[0];
-        }
-        mGestureBlockedActivities = new ArrayList<>(blockingActivities.length);
-        for (String blockingActivity : blockingActivities) {
-            if (!TextUtils.isEmpty(blockingActivity)) {
-                mGestureBlockedActivities.add(
-                        ComponentName.unflattenFromString(blockingActivity));
-            }
-        }
 
         SettingsCache settingsCache = SettingsCache.INSTANCE.get(mContext);
         if (mIsOneHandedModeSupported) {
@@ -367,11 +346,17 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
     }
 
     /**
-     * @return whether the given running task info matches the gesture-blocked activity.
+     * Sets the task id where gestures should be blocked
      */
-    public boolean isGestureBlockedActivity(ActivityManager.RunningTaskInfo runningTaskInfo) {
-        return runningTaskInfo != null
-                && mGestureBlockedActivities.contains(runningTaskInfo.topActivity);
+    public void setGestureBlockingTaskId(int taskId) {
+        mGestureBlockingTaskId = taskId;
+    }
+
+    /**
+     * @return whether the given running task info matches the gesture-blocked task.
+     */
+    public boolean isGestureBlockedTask(CachedTaskInfo taskInfo) {
+        return taskInfo != null && taskInfo.getTaskId() == mGestureBlockingTaskId;
     }
 
     /**
