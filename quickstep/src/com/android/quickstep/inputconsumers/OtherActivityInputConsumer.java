@@ -84,6 +84,9 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     public static final float QUICKSTEP_TOUCH_SLOP_RATIO_TWO_BUTTON = 9;
     public static final float QUICKSTEP_TOUCH_SLOP_RATIO_GESTURAL = 2;
 
+    // Minimum angle of a gesture's coordinate where a release goes to overview.
+    public static final int OVERVIEW_MIN_DEGREES = 15;
+
     private final RecentsAnimationDeviceState mDeviceState;
     private final NavBarPosition mNavBarPosition;
     private final TaskAnimationManager mTaskAnimationManager;
@@ -291,8 +294,9 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 // the gesture (in which case mPassedPilferInputSlop starts as true).
                 boolean haveNotPassedSlopOnContinuedGesture =
                         !mPassedSlopOnThisGesture && mPassedPilferInputSlop;
+                double degrees = Math.toDegrees(Math.atan(upDist / horizontalDist));
                 boolean isLikelyToStartNewTask = haveNotPassedSlopOnContinuedGesture
-                        || horizontalDist > upDist;
+                        || degrees <= OVERVIEW_MIN_DEGREES;
 
                 if (!mPassedPilferInputSlop) {
                     if (passedSlop) {
