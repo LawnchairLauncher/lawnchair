@@ -46,7 +46,8 @@ public class DigitalWellBeingToastTest extends AbstractQuickStepTest {
             runWithShellPermission(() ->
                     usageStatsManager.registerAppUsageLimitObserver(observerId, packages,
                             Duration.ofSeconds(600), Duration.ofSeconds(300),
-                            PendingIntent.getActivity(mTargetContext, -1, new Intent(), 0)));
+                            PendingIntent.getActivity(mTargetContext, -1, new Intent(),
+                                    PendingIntent.FLAG_MUTABLE)));
 
             mLauncher.goHome();
             final DigitalWellBeingToast toast = getToast();
