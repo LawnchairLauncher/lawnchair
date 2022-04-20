@@ -76,6 +76,9 @@ message ContainerInfo {
 
 // Represents the apps list sorted alphabetically inside the all-apps view.
 message AllAppsContainer {
+  oneof ParentContainer {
+    TaskBarContainer taskbar_container = 1;
+  }
 }
 
 message WidgetsContainer {
@@ -83,6 +86,9 @@ message WidgetsContainer {
 
 // Represents the predicted apps row(top row) in the all-apps view.
 message PredictionContainer {
+  oneof ParentContainer {
+    TaskBarContainer taskbar_container = 1;
+  }
 }
 
 // Represents the apps container within search results.

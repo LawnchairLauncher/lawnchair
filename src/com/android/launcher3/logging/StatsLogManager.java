@@ -586,6 +586,9 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "User clicked on IME quicksearch button.")
         LAUNCHER_ALLAPPS_QUICK_SEARCH_WITH_IME(1047),
+
+        @UiEvent(doc = "User tapped taskbar All Apps button.")
+        LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP(1057),
         ;
 
         // ADD MORE
