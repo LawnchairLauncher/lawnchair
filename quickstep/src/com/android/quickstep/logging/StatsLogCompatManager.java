@@ -20,6 +20,7 @@ import static androidx.core.util.Preconditions.checkNotNull;
 import static androidx.core.util.Preconditions.checkState;
 
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_NON_ACTIONABLE;
+import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.ALL_APPS_CONTAINER;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.EXTENDED_CONTAINERS;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.FOLDER;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.SEARCH_RESULT_CONTAINER;
@@ -92,6 +93,7 @@ public class StatsLogCompatManager extends StatsLogManager {
     private static final int FOLDER_HIERARCHY_OFFSET = 100;
     private static final int SEARCH_RESULT_HIERARCHY_OFFSET = 200;
     private static final int EXTENDED_CONTAINERS_HIERARCHY_OFFSET = 300;
+    private static final int ALL_APPS_HIERARCHY_OFFSET = 400;
 
     /**
      * Flags for converting SearchAttribute to integer value.
@@ -632,6 +634,9 @@ public class StatsLogCompatManager extends StatsLogManager {
         } else if (info.getContainerInfo().getContainerCase() == EXTENDED_CONTAINERS) {
             return info.getContainerInfo().getExtendedContainers().getContainerCase().getNumber()
                     + EXTENDED_CONTAINERS_HIERARCHY_OFFSET;
+        } else if (info.getContainerInfo().getContainerCase() == ALL_APPS_CONTAINER) {
+            return info.getContainerInfo().getAllAppsContainer().getParentContainerCase()
+                    .getNumber() + ALL_APPS_HIERARCHY_OFFSET;
         } else {
             return info.getContainerInfo().getContainerCase().getNumber();
         }
