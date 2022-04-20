@@ -42,8 +42,10 @@ import android.os.Trace;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.SparseArray;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 
 import com.android.launcher3.InvariantDeviceProfile;
@@ -94,6 +96,8 @@ public class IconCache extends BaseIconCache {
     private final InstantAppResolver mInstantAppResolver;
     private final IconProvider mIconProvider;
 
+    private final SparseArray<BitmapInfo> mWidgetCategoryBitmapInfos;
+
     private int mPendingIconRequestCount = 0;
 
     public IconCache(Context context, InvariantDeviceProfile idp) {
@@ -111,6 +115,7 @@ public class IconCache extends BaseIconCache {
         mUserManager = UserCache.INSTANCE.get(mContext);
         mInstantAppResolver = InstantAppResolver.newInstance(mContext);
         mIconProvider = iconProvider;
+        mWidgetCategoryBitmapInfos = new SparseArray<>();
     }
 
     @Override
@@ -477,13 +482,39 @@ public class IconCache extends BaseIconCache {
         CacheEntry entry = getEntryForPackageLocked(
                 infoInOut.packageName, infoInOut.user, useLowResIcon);
         applyCacheEntry(entry, infoInOut);
-        if (infoInOut.widgetCategory != NO_CATEGORY) {
-            WidgetSection widgetSection = WidgetSections.getWidgetSections(mContext)
-                    .get(infoInOut.widgetCategory);
-            infoInOut.title = mContext.getString(widgetSection.mSectionTitle);
-            infoInOut.contentDescription = mPackageManager.getUserBadgedLabel(
-                    infoInOut.title, infoInOut.user);
+        if (infoInOut.widgetCategory == NO_CATEGORY) {
+            return;
         }
+
+        WidgetSection widgetSection = WidgetSections.getWidgetSections(mContext)
+                .get(infoInOut.widgetCategory);
+        infoInOut.title = mContext.getString(widgetSection.mSectionTitle);
+        infoInOut.contentDescription = mPackageManager.getUserBadgedLabel(
+                infoInOut.title, infoInOut.user);
+        final BitmapInfo cachedBitmap = mWidgetCategoryBitmapInfos.get(infoInOut.widgetCategory);
+        if (cachedBitmap != null) {
+            infoInOut.bitmap = getBadgedIcon(cachedBitmap, infoInOut.user);
+            return;
+        }
+
+        try (LauncherIcons li = LauncherIcons.obtain(mContext)) {
+            final BitmapInfo tempBitmap = li.createBadgedIconBitmap(
+                    mContext.getDrawable(widgetSection.mSectionDrawable),
+                    new BaseIconFactory.IconOptions().setShrinkNonAdaptiveIcons(false));
+            mWidgetCategoryBitmapInfos.put(infoInOut.widgetCategory, tempBitmap);
+            infoInOut.bitmap = getBadgedIcon(tempBitmap, infoInOut.user);
+        } catch (Exception e) {
+            Log.e(TAG, "Error initializing bitmap for icons with widget category", e);
+        }
+
+    }
+
+    private synchronized BitmapInfo getBadgedIcon(@Nullable final BitmapInfo bitmap,
+            @NonNull final UserHandle user) {
+        if (bitmap == null) {
+            return getDefaultIcon(user);
+        }
+        return bitmap.withFlags(getUserFlagOpLocked(user));
     }
 
     protected void applyCacheEntry(CacheEntry entry, ItemInfoWithIcon info) {
