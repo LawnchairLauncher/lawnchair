@@ -18,6 +18,7 @@ package com.android.launcher3.taskbar
 import android.graphics.Insets
 import android.view.WindowManager
 import com.android.launcher3.AbstractFloatingView
+import com.android.launcher3.AbstractFloatingView.TYPE_TASKBAR_ALL_APPS
 import com.android.launcher3.R
 import com.android.launcher3.anim.AlphaUpdateListener
 import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarController
@@ -60,6 +61,8 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
 
         windowLayoutParams.insetsRoundedCornerFrame = true
     }
+
+    fun onDestroy() {}
 
     fun onTaskbarWindowHeightOrInsetsChanged() {
         var reducingSize = getReducingInsetsForTaskbarInsetsHeight(
@@ -106,18 +109,11 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
         } else if (controllers.taskbarDragController.isSystemDragInProgress) {
             // Let touches pass through us.
             insetsInfo.setTouchableInsets(InsetsInfo.TOUCHABLE_INSETS_REGION)
-        } else if (AbstractFloatingView.getOpenView<AbstractFloatingView?>(
-                context,
-                AbstractFloatingView.TYPE_TASKBAR_ALL_APPS
-            ) != null
-        ) {
+        } else if (AbstractFloatingView.hasOpenView(context, TYPE_TASKBAR_ALL_APPS)) {
             // Let touches pass through us.
             insetsInfo.setTouchableInsets(InsetsInfo.TOUCHABLE_INSETS_REGION)
         } else if (controllers.taskbarViewController.areIconsVisible()
-            || AbstractFloatingView.getOpenView<AbstractFloatingView?>(
-                context,
-                AbstractFloatingView.TYPE_ALL
-            ) != null
+            || AbstractFloatingView.hasOpenView(context, AbstractFloatingView.TYPE_ALL)
             || context.isNavBarKidsModeActive
         ) {
             // Taskbar has some touchable elements, take over the full taskbar area
