@@ -313,7 +313,7 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
      * Find empty space on the workspace and returns the screenId.
      */
     protected int findSpaceOnWorkspace(ItemInfo info, int[] outCoordinates) {
-        Workspace workspace = mContext.getWorkspace();
+        Workspace<?> workspace = mContext.getWorkspace();
         IntArray workspaceScreens = workspace.getScreenOrder();
         int screenId;
 
