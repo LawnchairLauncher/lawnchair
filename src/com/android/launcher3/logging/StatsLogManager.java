@@ -731,7 +731,8 @@ public class StatsLogManager implements ResourceBasedOverride {
         enum LatencyType {
             UNKNOWN(0),
             COLD(1),
-            HOT(2);
+            HOT(2),
+            TIMEOUT(3);
 
             private final int mId;
 
