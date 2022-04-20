@@ -45,6 +45,8 @@ import app.lawnchair.preferences.PreferenceManager as LawnchairPreferenceManager
 
 class PreferenceManager2(private val context: Context) : PreferenceManager {
 
+    private val resourceProvider = DynamicResource.provider(context)
+
     private fun idpPreference(
         key: Preferences.Key<Int>,
         defaultSelector: InvariantDeviceProfile.GridOption.() -> Int,
@@ -156,13 +158,13 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
 
     val homeIconSizeFactor = preference(
         key = floatPreferencesKey(name = "home_icon_size_factor"),
-        defaultValue = DynamicResource.provider(context).getFloat(R.dimen.config_default_home_icon_size_factor),
+        defaultValue = resourceProvider.getFloat(R.dimen.config_default_home_icon_size_factor),
         onSet = { reloadHelper.reloadIcons() },
     )
 
     val folderPreviewBackgroundOpacity = preference(
         key = floatPreferencesKey(name = "folder_preview_background_opacity"),
-        defaultValue = DynamicResource.provider(context).getFloat(R.dimen.config_default_folder_preview_background_opacity),
+        defaultValue = resourceProvider.getFloat(R.dimen.config_default_folder_preview_background_opacity),
         onSet = { reloadHelper.reloadIcons() },
     )
 
@@ -174,7 +176,7 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
 
     val drawerIconSizeFactor = preference(
         key = floatPreferencesKey(name = "drawer_icon_size_factor"),
-        defaultValue = DynamicResource.provider(context).getFloat(R.dimen.config_default_drawer_icon_size_factor),
+        defaultValue = resourceProvider.getFloat(R.dimen.config_default_drawer_icon_size_factor),
         onSet = { reloadHelper.reloadIcons() },
     )
 
@@ -186,19 +188,19 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
 
     val homeIconLabelSizeFactor = preference(
         key = floatPreferencesKey(name = "home_icon_label_size_factor"),
-        defaultValue = DynamicResource.provider(context).getFloat(R.dimen.config_default_home_icon_label_size_factor),
+        defaultValue = resourceProvider.getFloat(R.dimen.config_default_home_icon_label_size_factor),
         onSet = { reloadHelper.reloadGrid() },
     )
 
     val drawerIconLabelSizeFactor = preference(
         key = floatPreferencesKey(name = "drawer_icon_label_size_factor"),
-        defaultValue = DynamicResource.provider(context).getFloat(R.dimen.config_default_drawer_icon_label_size_factor),
+        defaultValue = resourceProvider.getFloat(R.dimen.config_default_drawer_icon_label_size_factor),
         onSet = { reloadHelper.reloadGrid() },
     )
 
     val drawerCellHeightFactor = preference(
         key = floatPreferencesKey(name = "drawer_cell_height_factor"),
-        defaultValue = DynamicResource.provider(context).getFloat(R.dimen.config_default_drawer_cell_height_factor),
+        defaultValue = resourceProvider.getFloat(R.dimen.config_default_drawer_cell_height_factor),
         onSet = { reloadHelper.reloadGrid() },
     )
 
