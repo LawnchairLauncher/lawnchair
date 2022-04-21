@@ -1006,8 +1006,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         return false;
     }
 
-    private GestureEndTarget calculateEndTarget(PointF velocity, float endVelocity, boolean isFling,
-            boolean isCancel) {
+    private GestureEndTarget calculateEndTarget(PointF velocity, float endVelocity,
+            boolean isFlingY, boolean isCancel) {
         if (mGestureState.isHandlingAtomicEvent()) {
             // Button mode, this is only used to go to recents
             return RECENTS;
@@ -1028,11 +1028,17 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             goingToNewTask = false;
         }
         final boolean reachedOverviewThreshold = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW;
-        if (!isFling) {
+        final boolean isFlingX = Math.abs(velocity.x) > mContext.getResources()
+                .getDimension(R.dimen.quickstep_fling_threshold_speed);
+        if (!isFlingY) {
             if (isCancel) {
                 endTarget = LAST_TASK;
             } else if (mDeviceState.isFullyGesturalNavMode()) {
-                if (mIsMotionPaused) {
+                if (goingToNewTask && isFlingX) {
+                    // Flinging towards new task takes precedence over mIsMotionPaused (which only
+                    // checks y-velocity).
+                    endTarget = NEW_TASK;
+                } else if (mIsMotionPaused) {
                     endTarget = RECENTS;
                 } else if (goingToNewTask) {
                     endTarget = NEW_TASK;
