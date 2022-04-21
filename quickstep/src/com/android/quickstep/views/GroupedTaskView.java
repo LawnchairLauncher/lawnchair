@@ -26,6 +26,7 @@ import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
 import java.util.HashMap;
 import java.util.function.Consumer;
@@ -171,8 +172,14 @@ public class GroupedTaskView extends TaskView {
         RunnableList endCallback = new RunnableList();
         RecentsView recentsView = getRecentsView();
         // Callbacks run from remote animation when recents animation not currently running
+        InteractionJankMonitorWrapper.begin(this,
+                InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER, "Enter form GroupedTaskView");
         recentsView.getSplitPlaceholder().launchTasks(this /*groupedTaskView*/,
-                success -> endCallback.executeAllAndDestroy(),
+                success -> {
+                    endCallback.executeAllAndDestroy();
+                    InteractionJankMonitorWrapper.end(
+                            InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
+                },
                 false /* freezeTaskList */);
 
         // Callbacks get run from recentsView for case when recents animation already running
