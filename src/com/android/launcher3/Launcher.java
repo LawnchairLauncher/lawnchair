@@ -3235,12 +3235,12 @@ public class Launcher extends StatefulActivity<LauncherState>
     /** Pauses view updates that should not be run during the app launch animation. */
     public void pauseExpensiveViewUpdates() {
         // Pause page indicator animations as they lead to layer trashing.
-        mWorkspace.getPageIndicator().pauseAnimations();
+        getWorkspace().getPageIndicator().pauseAnimations();
     }
 
     /** Resumes view updates at the end of the app launch animation. */
     public void resumeExpensiveViewUpdates() {
-        mWorkspace.getPageIndicator().skipAnimationsToEnd();
+        getWorkspace().getPageIndicator().skipAnimationsToEnd();
     }
 
 }
