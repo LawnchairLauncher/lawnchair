@@ -31,6 +31,7 @@ public class KtR {
     public static final class dimen {
         public static int task_menu_spacing = R.dimen.task_menu_spacing;
         public static int task_menu_horizontal_padding = R.dimen.task_menu_horizontal_padding;
+        public static int taskbar_ime_size = R.dimen.taskbar_ime_size;
     }
 
     public static final class layout {
