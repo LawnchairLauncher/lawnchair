@@ -72,7 +72,7 @@
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"വ്യക്തിഗത ആപ്പുകളുടെ ലിസ്റ്റ്"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"ഔദ്യോഗിക ആപ്പുകളുടെ ലിസ്റ്റ്"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"നീക്കംചെയ്യുക"</string>
-    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"അൺഇൻസ്റ്റാളുചെയ്യുക"</string>
+    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"അൺഇൻസ്റ്റാൾ"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ആപ്പ് വിവരങ്ങൾ"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ഇൻസ്‌റ്റാൾ ചെയ്യുക"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"ആപ്പ് നിർദ്ദേശിക്കരുത്"</string>
