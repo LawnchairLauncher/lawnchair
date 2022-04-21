@@ -307,6 +307,7 @@ public class RecentsOrientedState implements
     private void initMultipleOrientationListeners() {
         mSharedPrefs.registerOnSharedPreferenceChangeListener(this);
         mSettingsCache.register(ROTATION_SETTING_URI, mRotationChangeListener);
+        updateAutoRotateSetting();
     }
 
     private void destroyMultipleOrientationListeners() {
