@@ -380,6 +380,14 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             folderBuilder.clearHotseat();
             itemInfoBuilder.setContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
                     .setFolder(folderBuilder));
+        } else if (oldContainer.hasAllAppsContainer()) {
+            itemInfoBuilder.setContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
+                    .setAllAppsContainer(oldContainer.getAllAppsContainer().toBuilder()
+                            .setTaskbarContainer(LauncherAtom.TaskBarContainer.newBuilder())));
+        } else if (oldContainer.hasPredictionContainer()) {
+            itemInfoBuilder.setContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
+                    .setPredictionContainer(oldContainer.getPredictionContainer().toBuilder()
+                            .setTaskbarContainer(LauncherAtom.TaskBarContainer.newBuilder())));
         }
     }
 
@@ -703,6 +711,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             }
         } else if (tag instanceof AppInfo) {
             startItemInfoActivity((AppInfo) tag);
+            mControllers.uiController.onTaskbarIconLaunched((AppInfo) tag);
         } else {
             Log.e(TAG, "Unknown type clicked: " + tag);
         }

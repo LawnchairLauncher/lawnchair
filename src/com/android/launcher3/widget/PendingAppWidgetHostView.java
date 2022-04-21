@@ -18,7 +18,6 @@ package com.android.launcher3.widget;
 
 import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
 import static com.android.launcher3.icons.FastBitmapDrawable.getDisabledColorFilter;
-import static com.android.launcher3.widget.WidgetSections.getWidgetSections;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -341,8 +340,6 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         if (mInfo.pendingItemInfo.widgetCategory == WidgetSections.NO_CATEGORY) {
             return null;
         }
-        Context context = getContext();
-        return context.getDrawable(getWidgetSections(context).get(
-                mInfo.pendingItemInfo.widgetCategory).mSectionDrawable);
+        return mInfo.pendingItemInfo.newIcon(getContext());
     }
 }
