@@ -1396,6 +1396,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (taskGroups == null || taskGroups.isEmpty()) {
             removeTasksViewsAndClearAllButton();
             onTaskStackUpdated();
+            // With all tasks removed, touch handling in PagedView is disabled and we need to reset
+            // touch state or otherwise values will be obsolete.
+            resetTouchState();
             return;
         }
 
