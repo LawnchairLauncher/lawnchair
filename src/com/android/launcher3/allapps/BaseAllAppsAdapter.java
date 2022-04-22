@@ -36,6 +36,7 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.views.ActivityContext;
 
 import java.util.Arrays;
@@ -93,21 +94,31 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
         // The type of this item
         public int viewType;
 
+        // The section name of this item.  Note that there can be multiple items with different
+        // sectionNames in the same section
+        public String sectionName = null;
         // The row that this item shows up on
         public int rowIndex;
         // The index of this app in the row
         public int rowAppIndex;
         // The associated ItemInfoWithIcon for the item
-        public AppInfo itemInfo = null;
+        public ItemInfoWithIcon itemInfo = null;
+        // The index of this app not including sections
+        public int appIndex = -1;
+        // Search section associated to result
+        public DecorationInfo decorationInfo = null;
 
         /**
          * Factory method for AppIcon AdapterItem
          */
-        public static AdapterItem asApp(int pos, AppInfo appInfo) {
+        public static AdapterItem asApp(int pos, String sectionName, AppInfo appInfo,
+                int appIndex) {
             AdapterItem item = new AdapterItem();
             item.viewType = VIEW_TYPE_ICON;
             item.position = pos;
+            item.sectionName = sectionName;
             item.itemInfo = appInfo;
+            item.appIndex = appIndex;
             return item;
         }
 
@@ -143,23 +154,6 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
 
         protected boolean isCountedForAccessibility() {
             return viewType == VIEW_TYPE_ICON || viewType == VIEW_TYPE_SEARCH_MARKET;
-        }
-
-        public long getStableId() {
-            return viewType;
-        }
-
-        /**
-         * Called to check if the content of the item is same as the other item. This is called only
-         * if the {@link #getStableId()} matches for both the items.
-         */
-        public boolean isContentSame(AdapterItem other) {
-            // We can use itemInfo for diff, but since ItemInfo objects are singleton per Model,
-            // this could prevent updates within this itemInfo object itself (like title change
-            // or flag changes). We can create a better diffing logic if we store a clone a snapshot
-            // of the itemInfo, but that would cause icons to be loaded lazily on the cloned object
-            // instead of the singleton object.
-            return false;
         }
     }
 
@@ -273,7 +267,11 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 AdapterItem adapterItem = mApps.getAdapterItems().get(position);
                 BubbleTextView icon = (BubbleTextView) holder.itemView;
                 icon.reset();
-                icon.applyFromApplicationInfo(adapterItem.itemInfo);
+                if (adapterItem.itemInfo instanceof AppInfo) {
+                    icon.applyFromApplicationInfo((AppInfo) adapterItem.itemInfo);
+                } else {
+                    icon.applyFromItemInfoWithIcon(adapterItem.itemInfo);
+                }
                 break;
             case VIEW_TYPE_EMPTY_SEARCH:
                 TextView emptyViewText = (TextView) holder.itemView;
