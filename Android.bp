@@ -228,7 +228,7 @@ filegroup {
     ],
 }
 
-// Common source files used to build go launcher
+// Common source files used to build go launcher except go/src files
 filegroup {
     name: "launcher-go-src-no-build-config",
     srcs: [
@@ -236,8 +236,6 @@ filegroup {
         "src/**/*.kt",
         "quickstep/src/**/*.java",
         "quickstep/src/**/*.kt",
-        "go/src/**/*.java",
-        "go/src/**/*.kt",
         "go/quickstep/src/**/*.java",
         "go/quickstep/src/**/*.kt",
     ],
