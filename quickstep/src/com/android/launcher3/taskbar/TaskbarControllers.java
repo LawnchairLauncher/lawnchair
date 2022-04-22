@@ -160,6 +160,7 @@ public class TaskbarControllers {
         taskbarForceVisibleImmersiveController.onDestroy();
         taskbarAllAppsController.onDestroy();
         navButtonController.onDestroy();
+        taskbarInsetsController.onDestroy();
 
         mControllersToLog = null;
     }
