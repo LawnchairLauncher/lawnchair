@@ -176,7 +176,8 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
         return revealAnim;
     }
 
-    public void onIsStashed(boolean isStashed) {
+    /** Called when taskbar is stashed or unstashed. */
+    public void onIsStashedChanged(boolean isStashed) {
         mRegionSamplingHelper.setWindowVisible(isStashed);
         if (isStashed) {
             mStashedHandleView.updateSampledRegion(mStashedHandleBounds);
