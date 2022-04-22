@@ -65,9 +65,7 @@ import java.util.ArrayList;
 public class DragLayer extends BaseDragLayer<Launcher> {
 
     public static final int ALPHA_INDEX_OVERLAY = 0;
-    public static final int ALPHA_INDEX_LAUNCHER_LOAD = 1;
-    public static final int ALPHA_INDEX_TRANSITIONS = 2;
-    private static final int ALPHA_CHANNEL_COUNT = 3;
+    private static final int ALPHA_CHANNEL_COUNT = 1;
 
     public static final int ANIMATION_END_DISAPPEAR = 0;
     public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
