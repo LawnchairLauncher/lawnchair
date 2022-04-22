@@ -27,9 +27,6 @@ import static com.android.launcher3.ResourceUtils.getBoolByName;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
-import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_BOTTOM_TAPPABLE_ELEMENT;
-import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_EXTRA_NAVIGATION_BAR;
-import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_SIZE;
 
 import android.animation.AnimatorSet;
 import android.app.ActivityOptions;
@@ -39,7 +36,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo.Config;
 import android.content.pm.LauncherApps;
 import android.content.res.Resources;
-import android.graphics.Insets;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Process;
@@ -88,7 +84,6 @@ import com.android.launcher3.views.ActivityContext;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.rotation.RotationButtonController;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.WindowManagerWrapper;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
 import java.io.PrintWriter;
@@ -113,7 +108,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
     private final WindowManager mWindowManager;
     private final @Nullable RoundedCorner mLeftCorner, mRightCorner;
-    private final int mTaskbarHeightForIme;
     private WindowManager.LayoutParams mWindowLayoutParams;
     private boolean mIsFullscreen;
     // The size we should return to when we call setTaskbarWindowFullscreen(false)
@@ -154,7 +148,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 Settings.Secure.getUriFor(Settings.Secure.NAV_BAR_KIDS_MODE), 0);
 
         updateIconSize(resources);
-        mTaskbarHeightForIme = resources.getDimensionPixelSize(R.dimen.taskbar_ime_size);
 
         // Get display and corners first, as views might use them in constructor.
         Display display = windowContext.getDisplay();
@@ -202,28 +195,13 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new TaskbarAutohideSuspendController(this),
                 new TaskbarPopupController(this),
                 new TaskbarForceVisibleImmersiveController(this),
-                new TaskbarAllAppsController(this));
+                new TaskbarAllAppsController(this),
+                new TaskbarInsetsController(this));
     }
 
     public void init(TaskbarSharedState sharedState) {
         mLastRequestedNonFullscreenHeight = getDefaultTaskbarWindowHeight();
         mWindowLayoutParams = createDefaultWindowLayoutParams();
-
-        WindowManagerWrapper wmWrapper = WindowManagerWrapper.getInstance();
-        wmWrapper.setProvidesInsetsTypes(
-                mWindowLayoutParams,
-                new int[] { ITYPE_EXTRA_NAVIGATION_BAR, ITYPE_BOTTOM_TAPPABLE_ELEMENT }
-        );
-        // Adjust the frame by the rounded corners (ie. leaving just the bar as the inset) when
-        // the IME is showing
-        mWindowLayoutParams.providedInternalImeInsets = new Insets[ITYPE_SIZE];
-        final Insets reducingSize = Insets.of(0,
-                getDefaultTaskbarWindowHeight() - mTaskbarHeightForIme, 0, 0);
-        mWindowLayoutParams.providedInternalImeInsets[ITYPE_EXTRA_NAVIGATION_BAR] = reducingSize;
-        mWindowLayoutParams.providedInternalImeInsets[ITYPE_BOTTOM_TAPPABLE_ELEMENT] =
-                reducingSize;
-
-        mWindowLayoutParams.insetsRoundedCornerFrame = true;
 
         // Initialize controllers after all are constructed.
         mControllers.init(sharedState);
@@ -302,6 +280,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
     public int getRightCornerRadius() {
         return mRightCorner == null ? 0 : mRightCorner.getRadius();
+    }
+
+    public WindowManager.LayoutParams getWindowLayoutParams() {
+        return mWindowLayoutParams;
     }
 
     @Override
@@ -577,14 +559,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             }
         }
         mWindowLayoutParams.height = height;
-        final Insets reducingSize =
-                Insets.of(0, height - mTaskbarHeightForIme, 0, 0);
-        if (mWindowLayoutParams.providedInternalImeInsets == null) {
-            mWindowLayoutParams.providedInternalImeInsets = new Insets[ITYPE_SIZE];
-        }
-        mWindowLayoutParams.providedInternalImeInsets[ITYPE_EXTRA_NAVIGATION_BAR] = reducingSize;
-        mWindowLayoutParams.providedInternalImeInsets[ITYPE_BOTTOM_TAPPABLE_ELEMENT] =
-                reducingSize;
+        mControllers.taskbarInsetsController.onTaskbarWindowHeightChanged();
         mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
     }
 
@@ -593,13 +568,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      */
     public int getDefaultTaskbarWindowHeight() {
         return mDeviceProfile.taskbarSize + Math.max(getLeftCornerRadius(), getRightCornerRadius());
-    }
-
-    /**
-     * Returns the bottom insets taskbar provides to the IME when IME is visible.
-     */
-    public int getTaskbarHeightForIme() {
-        return mTaskbarHeightForIme;
     }
 
     /**

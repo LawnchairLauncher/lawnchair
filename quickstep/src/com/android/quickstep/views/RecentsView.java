@@ -175,6 +175,7 @@ import com.android.systemui.plugins.ResourceProvider;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
@@ -2744,9 +2745,16 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             mFirstFloatingTaskView.addAnimation(anim, startingTaskRect,
                     mTempRect, true /* fadeWithThumbnail */, true /* isStagedTask */);
         }
+        InteractionJankMonitorWrapper.begin(this,
+                InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER, "First tile selected");
         anim.addEndListener(success -> {
             if (success) {
                 mSplitToast.show();
+                InteractionJankMonitorWrapper.end(
+                        InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
+            } else {
+                InteractionJankMonitorWrapper.cancel(
+                        InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
             }
         });
     }
@@ -4040,9 +4048,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSecondFloatingTaskView.setAlpha(1);
         mSecondFloatingTaskView.addAnimation(pendingAnimation, secondTaskStartingBounds,
                 secondTaskEndingBounds, true /* fadeWithThumbnail */, false /* isStagedTask */);
-        pendingAnimation.addEndListener(aBoolean ->
-                mSplitSelectStateController.launchSplitTasks(
-                        aBoolean1 -> RecentsView.this.resetFromSplitSelectionState()));
+        pendingAnimation.addEndListener(aBoolean -> {
+            mSplitSelectStateController.launchSplitTasks(
+                    aBoolean1 -> RecentsView.this.resetFromSplitSelectionState());
+            InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
+        });
         if (containerTaskView.containsMultipleTasks()) {
             // If we are launching from a child task, then only hide the thumbnail itself
             mSecondSplitHiddenView = thumbnailView;
@@ -4050,6 +4060,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             mSecondSplitHiddenView = containerTaskView;
         }
         mSecondSplitHiddenView.setVisibility(INVISIBLE);
+        InteractionJankMonitorWrapper.begin(this,
+                InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER, "Second tile selected");
         pendingAnimation.buildAnim().start();
         return true;
     }
@@ -4486,10 +4498,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // Reset the minimized state since we force-toggled the minimized state when entering
             // overview, but never actually finished the recents animation.  This is a catch all for
             // cases where we haven't already reset it.
-            SystemUiProxy p = SystemUiProxy.INSTANCE.getNoCreate();
-            if (p != null) {
-                p.setSplitScreenMinimized(false);
-            }
+            SystemUiProxy.INSTANCE.get(getContext()).setSplitScreenMinimized(false);
         }
 
         if (mRecentsAnimationController == null) {
