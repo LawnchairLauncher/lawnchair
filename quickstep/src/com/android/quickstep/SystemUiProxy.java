@@ -676,16 +676,25 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
      * Call this when going to recents so that shell can set-up and provide appropriate leashes
      * for animation (eg. DividerBar).
      *
-     * @param cancel true if recents starting is being cancelled.
      * @return RemoteAnimationTargets of windows that need to animate but only exist in shell.
      */
-    public RemoteAnimationTarget[] onGoingToRecentsLegacy(boolean cancel,
-            RemoteAnimationTarget[] apps) {
+    public RemoteAnimationTarget[] onGoingToRecentsLegacy(RemoteAnimationTarget[] apps) {
         if (mSplitScreen != null) {
             try {
-                return mSplitScreen.onGoingToRecentsLegacy(cancel, apps);
+                return mSplitScreen.onGoingToRecentsLegacy(apps);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call onGoingToRecentsLegacy");
+            }
+        }
+        return null;
+    }
+
+    public RemoteAnimationTarget[] onStartingSplitLegacy(RemoteAnimationTarget[] apps) {
+        if (mSplitScreen != null) {
+            try {
+                return mSplitScreen.onStartingSplitLegacy(apps);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call onStartingSplitLegacy");
             }
         }
         return null;
