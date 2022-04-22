@@ -42,7 +42,6 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_BACK_SWIPE_HOME_A
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SCRIM_FOR_APP_LAUNCH;
 import static com.android.launcher3.config.FeatureFlags.KEYGUARD_ANIMATION;
 import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVITY;
-import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_TRANSITIONS;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
 import static com.android.launcher3.testing.TestProtocol.BAD_STATE;
@@ -105,7 +104,6 @@ import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.DynamicResource;
-import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.ObjectWrapper;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.Themes;
@@ -195,9 +193,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     private static final int WIDGET_CROSSFADE_DURATION_MILLIS = 125;
 
     protected final BaseQuickstepLauncher mLauncher;
-
     private final DragLayer mDragLayer;
-    private final AlphaProperty mDragLayerAlpha;
 
     final Handler mHandler;
 
@@ -241,7 +237,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     public QuickstepTransitionManager(Context context) {
         mLauncher = Launcher.cast(Launcher.getLauncher(context));
         mDragLayer = mLauncher.getDragLayer();
-        mDragLayerAlpha = mDragLayer.getAlphaProperty(ALPHA_INDEX_TRANSITIONS);
         mHandler = new Handler(Looper.getMainLooper());
         mDeviceProfile = mLauncher.getDeviceProfile();
         mBackAnimationController = new LauncherBackAnimationController(mLauncher, this);
