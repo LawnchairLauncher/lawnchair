@@ -18,9 +18,6 @@ package com.android.launcher3.allapps;
 
 import android.content.Context;
 
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.DiffUtil.DiffResult;
-
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
@@ -46,6 +43,10 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
 
     public static final String TAG = "AlphabeticalAppsList";
 
+    private static final int FAST_SCROLL_FRACTION_DISTRIBUTE_BY_ROWS_FRACTION = 0;
+    private static final int FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS = 1;
+
+    private final int mFastScrollDistributionMode = FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS;
     private final WorkAdapterProvider mWorkAdapterProvider;
 
     /**
@@ -197,11 +198,8 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
 
     public boolean appendSearchResults(ArrayList<AdapterItem> results) {
         if (hasFilter() && results != null && results.size() > 0) {
-            int pos = mSearchResults.size();
-            updateSearchAdapterItems(results, pos);
-            if (mAdapter != null) {
-                mAdapter.notifyItemRangeInserted(pos, results.size());
-            }
+            updateSearchAdapterItems(results, mSearchResults.size());
+            refreshRecyclerView();
             return true;
         }
         return false;
@@ -275,6 +273,10 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
      */
     public void updateAdapterItems() {
         refillAdapterItems();
+        refreshRecyclerView();
+    }
+
+    private void refreshRecyclerView() {
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }
@@ -284,9 +286,9 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         String lastSectionName = null;
         FastScrollSectionInfo lastFastScrollerSectionInfo = null;
         int position = 0;
+        int appIndex = 0;
 
         // Prepare to update the list of sections, filtered apps, etc.
-        ArrayList<AdapterItem> oldList = new ArrayList<>(mAdapterItems);
         mAccessibilityResultsCount = 0;
         mFastScrollerSections.clear();
         mAdapterItems.clear();
@@ -313,7 +315,8 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                 }
 
                 // Create an app item
-                AdapterItem appItem = AdapterItem.asApp(position++, info);
+                AdapterItem appItem = AdapterItem.asApp(position++, sectionName, info,
+                        appIndex++);
                 if (lastFastScrollerSectionInfo.fastScrollToItem == null) {
                     lastFastScrollerSectionInfo.fastScrollToItem = appItem;
                 }
@@ -339,7 +342,6 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
             int numAppsInSection = 0;
             int numAppsInRow = 0;
             int rowIndex = -1;
-
             for (AdapterItem item : mAdapterItems) {
                 item.rowIndex = 0;
                 if (BaseAllAppsAdapter.isDividerViewType(item.viewType)) {
@@ -358,50 +360,35 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
             mNumAppRowsInAdapter = rowIndex + 1;
 
             // Pre-calculate all the fast scroller fractions
-            float perSectionTouchFraction = 1f / mFastScrollerSections.size();
-            float cumulativeTouchFraction = 0f;
-            for (FastScrollSectionInfo info : mFastScrollerSections) {
-                AdapterItem item = info.fastScrollToItem;
-                if (!BaseAllAppsAdapter.isIconViewType(item.viewType)) {
-                    info.touchFraction = 0f;
-                    continue;
-                }
-                info.touchFraction = cumulativeTouchFraction;
-                cumulativeTouchFraction += perSectionTouchFraction;
+            switch (mFastScrollDistributionMode) {
+                case FAST_SCROLL_FRACTION_DISTRIBUTE_BY_ROWS_FRACTION:
+                    float rowFraction = 1f / mNumAppRowsInAdapter;
+                    for (FastScrollSectionInfo info : mFastScrollerSections) {
+                        AdapterItem item = info.fastScrollToItem;
+                        if (!BaseAllAppsAdapter.isIconViewType(item.viewType)) {
+                            info.touchFraction = 0f;
+                            continue;
+                        }
+
+                        float subRowFraction =
+                                item.rowAppIndex * (rowFraction / mNumAppsPerRowAllApps);
+                        info.touchFraction = item.rowIndex * rowFraction + subRowFraction;
+                    }
+                    break;
+                case FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS:
+                    float perSectionTouchFraction = 1f / mFastScrollerSections.size();
+                    float cumulativeTouchFraction = 0f;
+                    for (FastScrollSectionInfo info : mFastScrollerSections) {
+                        AdapterItem item = info.fastScrollToItem;
+                        if (!BaseAllAppsAdapter.isIconViewType(item.viewType)) {
+                            info.touchFraction = 0f;
+                            continue;
+                        }
+                        info.touchFraction = cumulativeTouchFraction;
+                        cumulativeTouchFraction += perSectionTouchFraction;
+                    }
+                    break;
             }
-        }
-
-        DiffResult result = DiffUtil.calculateDiff(new DiffCallback(oldList, mAdapterItems));
-    }
-
-    private static class DiffCallback extends DiffUtil.Callback {
-        private final List<AdapterItem> mOldItems;
-        private final List<AdapterItem> mNewItems;
-
-        DiffCallback(List<AdapterItem> oldItems, List<AdapterItem> newItems) {
-            mOldItems = oldItems;
-            mNewItems = newItems;
-        }
-
-        @Override
-        public int getOldListSize() {
-            return mOldItems.size();
-        }
-
-        @Override
-        public int getNewListSize() {
-            return mNewItems.size();
-        }
-
-        @Override
-        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-            return mOldItems.get(oldItemPosition).getStableId()
-                    == mNewItems.get(newItemPosition).getStableId();
-        }
-
-        @Override
-        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-            return mOldItems.get(oldItemPosition).isContentSame(mNewItems.get(newItemPosition));
         }
     }
 }
