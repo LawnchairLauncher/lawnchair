@@ -154,7 +154,7 @@
     <string name="dynamic">Dynamic</string>
     <string name="all_apps_search_market_message">חפש עוד יישומים</string>
     <string name="show_app_search_bar">הצגת סרגל חיפוש</string>
-    <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
+    <string name="lawnchair_bug_report">דיווח על תקלה</string>
     <string name="crash_report_notif_title">%1$s קרס</string>
     <string name="action_upload">העלה לDogbin</string>
     <string name="action_copy_link">העתקת קישור</string>
