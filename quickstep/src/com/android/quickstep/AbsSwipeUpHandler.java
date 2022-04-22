@@ -1013,19 +1013,19 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             return RECENTS;
         }
         final GestureEndTarget endTarget;
-        final boolean goingToNewTask;
+        final boolean canGoToNewTask;
         if (mRecentsView != null) {
             if (!hasTargets()) {
                 // If there are no running tasks, then we can assume that this is a continuation of
                 // the last gesture, but after the recents animation has finished
-                goingToNewTask = true;
+                canGoToNewTask = true;
             } else {
                 final int runningTaskIndex = mRecentsView.getRunningTaskIndex();
                 final int taskToLaunch = mRecentsView.getNextPage();
-                goingToNewTask = runningTaskIndex >= 0 && taskToLaunch != runningTaskIndex;
+                canGoToNewTask = runningTaskIndex >= 0 && taskToLaunch != runningTaskIndex;
             }
         } else {
-            goingToNewTask = false;
+            canGoToNewTask = false;
         }
         final boolean reachedOverviewThreshold = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW;
         final boolean isFlingX = Math.abs(velocity.x) > mContext.getResources()
@@ -1034,13 +1034,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             if (isCancel) {
                 endTarget = LAST_TASK;
             } else if (mDeviceState.isFullyGesturalNavMode()) {
-                if (goingToNewTask && isFlingX) {
+                if (canGoToNewTask && isFlingX) {
                     // Flinging towards new task takes precedence over mIsMotionPaused (which only
                     // checks y-velocity).
                     endTarget = NEW_TASK;
                 } else if (mIsMotionPaused) {
                     endTarget = RECENTS;
-                } else if (goingToNewTask) {
+                } else if (canGoToNewTask) {
                     endTarget = NEW_TASK;
                 } else {
                     endTarget = !reachedOverviewThreshold ? LAST_TASK : HOME;
@@ -1048,26 +1048,22 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             } else {
                 endTarget = reachedOverviewThreshold && mGestureStarted
                         ? RECENTS
-                        : goingToNewTask
+                        : canGoToNewTask
                                 ? NEW_TASK
                                 : LAST_TASK;
             }
         } else {
             // If swiping at a diagonal, base end target on the faster velocity.
             boolean isSwipeUp = endVelocity < 0;
-            boolean willGoToNewTaskOnSwipeUp =
-                    goingToNewTask && Math.abs(velocity.x) > Math.abs(endVelocity);
+            boolean willGoToNewTask =
+                    canGoToNewTask && Math.abs(velocity.x) > Math.abs(endVelocity);
 
-            if (mDeviceState.isFullyGesturalNavMode() && isSwipeUp && !willGoToNewTaskOnSwipeUp) {
-                endTarget = HOME;
-            } else if (mDeviceState.isFullyGesturalNavMode() && isSwipeUp) {
-                // If swiping at a diagonal, base end target on the faster velocity.
-                endTarget = NEW_TASK;
+            if (mDeviceState.isFullyGesturalNavMode() && isSwipeUp) {
+                endTarget = willGoToNewTask ? NEW_TASK : HOME;
             } else if (isSwipeUp) {
-                endTarget = !reachedOverviewThreshold && willGoToNewTaskOnSwipeUp
-                        ? NEW_TASK : RECENTS;
+                endTarget = (!reachedOverviewThreshold && willGoToNewTask) ? NEW_TASK : RECENTS;
             } else {
-                endTarget = goingToNewTask ? NEW_TASK : LAST_TASK;
+                endTarget = willGoToNewTask ? NEW_TASK : LAST_TASK; // Swipe is downward.
             }
         }
 
@@ -1145,6 +1141,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     duration = Math.max(duration, mRecentsView.getScroller().getDuration());
                 }
             }
+        } else if (endTarget == LAST_TASK && mRecentsView != null) {
+            mRecentsView.snapToPage(mRecentsView.getCurrentPage(), Math.toIntExact(duration));
         }
 
         // Let RecentsView handle the scrolling to the task, which we launch in startNewTask()
