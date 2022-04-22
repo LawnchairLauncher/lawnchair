@@ -1440,7 +1440,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         return Math.abs(velocity) > threshold;
     }
 
-    private void resetTouchState() {
+    protected void resetTouchState() {
         releaseVelocityTracker();
         mIsBeingDragged = false;
         mActivePointerId = INVALID_POINTER;
