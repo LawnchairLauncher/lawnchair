@@ -104,7 +104,8 @@ public class RecentsAnimationCallbacks implements
                 .map(RemoteAnimationTargetCompat::unwrap)
                 .toArray(RemoteAnimationTarget[]::new);
 
-        RemoteAnimationTarget[] nonAppTargets = mSystemUiProxy.onGoingToRecentsLegacy(nonHomeApps);
+        RemoteAnimationTarget[] nonAppTargets =
+                mSystemUiProxy.onGoingToRecentsLegacy(mCancelled, nonHomeApps);
 
         RecentsAnimationTargets targets = new RecentsAnimationTargets(appTargets,
                 wallpaperTargets, RemoteAnimationTargetCompat.wrap(nonAppTargets),
