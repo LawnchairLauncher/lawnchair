@@ -45,7 +45,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.DeviceProfileListenable;
@@ -728,12 +727,6 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
                             : new BaseAdapterProvider[]{mMainAdapterProvider};
 
             adapter = getAdapter(mAppsList, adapterProviders);
-            adapter.registerAdapterDataObserver(new AdapterDataObserver() {
-                @Override
-                public void onChanged() {
-                    Log.e("Hello", "On changed", new Exception());
-                }
-            });
             mAppsList.setAdapter(adapter);
             mLayoutManager = adapter.getLayoutManager();
         }
