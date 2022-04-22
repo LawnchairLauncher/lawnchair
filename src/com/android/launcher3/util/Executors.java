@@ -15,17 +15,12 @@
  */
 package com.android.launcher3.util;
 
-import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
-
-import static java.util.concurrent.Executors.newSingleThreadExecutor;
-
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Process;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -42,7 +37,7 @@ public class Executors {
     private static final int KEEP_ALIVE = 1;
 
     /** Dedicated executor instances for work depending on other packages. */
-    private static final Map<String, ExecutorService> PACKAGE_EXECUTORS = new ConcurrentHashMap<>();
+    private static final Map<String, LooperExecutor> PACKAGE_EXECUTORS = new ConcurrentHashMap<>();
 
     /**
      * An {@link ThreadPoolExecutor} to be used with async task with no limit on the queue size.
@@ -90,11 +85,10 @@ public class Executors {
      *
      * @param packageName Package associated with the executor.
      */
-    public static ExecutorService getPackageExecutor(String packageName) {
+    public static LooperExecutor getPackageExecutor(String packageName) {
         return PACKAGE_EXECUTORS.computeIfAbsent(
-                packageName,
-                p -> newSingleThreadExecutor(
-                        new SimpleThreadFactory(p, THREAD_PRIORITY_BACKGROUND)));
+                packageName, p -> new LooperExecutor(
+                        createAndStartNewLooper(p, Process.THREAD_PRIORITY_DEFAULT)));
     }
 
     /**
