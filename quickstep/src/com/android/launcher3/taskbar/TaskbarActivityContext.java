@@ -559,7 +559,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             }
         }
         mWindowLayoutParams.height = height;
-        mControllers.taskbarInsetsController.onTaskbarWindowHeightChanged();
+        mControllers.taskbarInsetsController.onTaskbarWindowHeightOrInsetsChanged();
         mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
     }
 
