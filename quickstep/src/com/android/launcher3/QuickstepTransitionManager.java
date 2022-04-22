@@ -1161,7 +1161,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     new LauncherAnimationRunner(mHandler, mWallpaperOpenTransitionRunner,
                             false /* startAtFrontOfQueue */), mLauncher.getIApplicationThread());
             mLauncherOpenTransition.addHomeOpenCheck(mLauncher.getComponentName());
-            SystemUiProxy.INSTANCE.getNoCreate().registerRemoteTransition(mLauncherOpenTransition);
+            SystemUiProxy.INSTANCE.get(mLauncher).registerRemoteTransition(mLauncherOpenTransition);
         }
         if (mBackAnimationController != null) {
             mBackAnimationController.registerBackCallbacks(mHandler);
@@ -1172,7 +1172,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         unregisterRemoteAnimations();
         unregisterRemoteTransitions();
         mStartingWindowListener.setTransitionManager(null);
-        SystemUiProxy.INSTANCE.getNoCreate().setStartingWindowListener(null);
+        SystemUiProxy.INSTANCE.get(mLauncher).setStartingWindowListener(null);
     }
 
     private void unregisterRemoteAnimations() {
@@ -1196,7 +1196,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
         if (hasControlRemoteAppTransitionPermission()) {
             if (mLauncherOpenTransition == null) return;
-            SystemUiProxy.INSTANCE.getNoCreate().unregisterRemoteTransition(
+            SystemUiProxy.INSTANCE.get(mLauncher).unregisterRemoteTransition(
                     mLauncherOpenTransition);
             mLauncherOpenTransition = null;
             mWallpaperOpenTransitionRunner = null;

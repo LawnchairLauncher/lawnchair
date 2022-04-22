@@ -19,6 +19,7 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
 
+import android.content.Context;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.IRecentsAnimationController;
@@ -97,24 +98,20 @@ public class RecentsAnimationController {
      * Indicates that the gesture has crossed the window boundary threshold and we should minimize
      * if we are in splitscreen.
      */
-    public void setSplitScreenMinimized(boolean splitScreenMinimized) {
+    public void setSplitScreenMinimized(Context context, boolean splitScreenMinimized) {
         if (!mAllowMinimizeSplitScreen) {
             return;
         }
         if (mSplitScreenMinimized != splitScreenMinimized) {
             mSplitScreenMinimized = splitScreenMinimized;
-            UI_HELPER_EXECUTOR.execute(() -> {
-                SystemUiProxy p = SystemUiProxy.INSTANCE.getNoCreate();
-                if (p != null) {
-                    p.setSplitScreenMinimized(splitScreenMinimized);
-                }
-            });
+            UI_HELPER_EXECUTOR.execute(() -> SystemUiProxy.INSTANCE.get(context)
+                    .setSplitScreenMinimized(splitScreenMinimized));
         }
     }
 
     /**
      * Remove task remote animation target from
-     * {@link RecentsAnimationCallbacks#onTaskAppeared(RemoteAnimationTargetCompat)}}.
+     * {@link RecentsAnimationCallbacks#onTasksAppeared}}.
      */
     @UiThread
     public void removeTaskTarget(@NonNull RemoteAnimationTargetCompat target) {

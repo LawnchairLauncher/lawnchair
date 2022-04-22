@@ -177,9 +177,8 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                     ((RecentsActivity) activityInterface.getCreatedActivity()).startHome();
                     return;
                 }
-                RemoteAnimationTarget[] nonAppTargets =
-                        SystemUiProxy.INSTANCE.getNoCreate()
-                                .onGoingToRecentsLegacy(false, nonHomeApps);
+                RemoteAnimationTarget[] nonAppTargets = SystemUiProxy.INSTANCE.get(mCtx)
+                        .onGoingToRecentsLegacy(false, nonHomeApps);
 
                 if (ENABLE_QUICKSTEP_LIVE_TILE.get() && activityInterface.isInLiveTileMode()
                         && activityInterface.getCreatedActivity() != null) {

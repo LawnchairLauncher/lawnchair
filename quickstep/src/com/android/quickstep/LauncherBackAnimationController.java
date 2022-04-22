@@ -29,7 +29,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
-import android.util.Log;
 import android.util.MathUtils;
 import android.util.Pair;
 import android.view.RemoteAnimationTarget;
@@ -55,7 +54,7 @@ import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
  * the app window and plays the rest of app close transitions in one go.
  *
  * This animation is used only for apps that enable back dispatching via
- * {@link android.view.OnBackInvokedDispatcher}. The controller registers
+ * {@link android.window.OnBackInvokedDispatcher}. The controller registers
  * an {@link IOnBackInvokedCallback} with WM Shell and receives back dispatches when a back
  * navigation to launcher starts.
  *
@@ -66,7 +65,6 @@ import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 public class LauncherBackAnimationController {
     private static final int CANCEL_TRANSITION_DURATION = 233;
     private static final float MIN_WINDOW_SCALE = 0.7f;
-    private static final String TAG = "LauncherBackAnimationController";
     private final QuickstepTransitionManager mQuickstepTransitionManager;
     private final Matrix mTransformMatrix = new Matrix();
     /** The window position at the beginning of the back animation. */
@@ -115,12 +113,7 @@ public class LauncherBackAnimationController {
      * @param handler Handler to the thread to run the animations on.
      */
     public void registerBackCallbacks(Handler handler) {
-        SystemUiProxy systemUiProxy = SystemUiProxy.INSTANCE.getNoCreate();
-        if (systemUiProxy == null) {
-            Log.e(TAG, "SystemUiProxy is null. Skip registering back invocation callbacks");
-            return;
-        }
-        systemUiProxy.setBackToLauncherCallback(
+        SystemUiProxy.INSTANCE.get(mLauncher).setBackToLauncherCallback(
                 new IOnBackInvokedCallback.Stub() {
                     @Override
                     public void onBackCancelled() {
@@ -170,10 +163,7 @@ public class LauncherBackAnimationController {
 
     /** Unregisters the back to launcher callback in shell. */
     public void unregisterBackCallbacks() {
-        SystemUiProxy systemUiProxy = SystemUiProxy.INSTANCE.getNoCreate();
-        if (systemUiProxy != null) {
-            systemUiProxy.clearBackToLauncherCallback();
-        }
+        SystemUiProxy.INSTANCE.get(mLauncher).clearBackToLauncherCallback();
     }
 
     private void startBack(BackEvent backEvent) {
@@ -298,10 +288,7 @@ public class LauncherBackAnimationController {
         mInitialTouchPos.set(0, 0);
         mAnimatorSetInProgress = false;
         mSpringAnimationInProgress = false;
-        SystemUiProxy systemUiProxy = SystemUiProxy.INSTANCE.getNoCreate();
-        if (systemUiProxy != null) {
-            SystemUiProxy.INSTANCE.getNoCreate().onBackToLauncherAnimationFinished();
-        }
+        SystemUiProxy.INSTANCE.get(mLauncher).onBackToLauncherAnimationFinished();
     }
 
     private void startTransitionAnimations(RectFSpringAnim springAnim, AnimatorSet anim) {
