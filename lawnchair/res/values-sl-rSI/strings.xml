@@ -139,8 +139,13 @@
     <string name="icon_shape_label">Oblika ikone</string>
     <string name="icon_shape_system">Sistem</string>
     <string name="icon_shape_circle">Krog</string>
+    <string name="icon_shape_square">Square</string>
     <string name="icon_shape_rounded_square">Zaobljen kvadrat</string>
     <string name="icon_shape_squircle">Squircle</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_teardrop">Teardrop</string>
+    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_cupertino">Cupertino</string>
     <string name="customize_button_text">Prilagodi</string>
     <string name="app_title_label">Naslov</string>
     <string name="hide_from_drawer">Hide from App Drawer</string>
