@@ -139,8 +139,13 @@
     <string name="icon_shape_label">Форма значка</string>
     <string name="icon_shape_system">Системна</string>
     <string name="icon_shape_circle">Коло</string>
+    <string name="icon_shape_square">Square</string>
     <string name="icon_shape_rounded_square">Закруглений квадрат</string>
     <string name="icon_shape_squircle">Квадрокруг</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_teardrop">Teardrop</string>
+    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_cupertino">Cupertino</string>
     <string name="customize_button_text">Налаштувати</string>
     <string name="app_title_label">Заголовок</string>
     <string name="hide_from_drawer">Сховати з панелі програм</string>
