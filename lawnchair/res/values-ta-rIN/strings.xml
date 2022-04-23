@@ -137,8 +137,13 @@
     <string name="icon_shape_label">சின்னத்தின் வடிவம்</string>
     <string name="icon_shape_system">இயங்குதளம்</string>
     <string name="icon_shape_circle">வட்டம்</string>
+    <string name="icon_shape_square">Square</string>
     <string name="icon_shape_rounded_square">வட்டமான சதுரம்</string>
     <string name="icon_shape_squircle">சதுரவட்டம்</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_teardrop">Teardrop</string>
+    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_cupertino">Cupertino</string>
     <string name="customize_button_text">தனிப்பயனாக்கு</string>
     <string name="app_title_label">தலைப்பு</string>
     <string name="hide_from_drawer">செயலி இழுப்பறையிலிருந்து மறை</string>
