@@ -137,8 +137,13 @@
     <string name="icon_shape_label">Hugis ng Icon</string>
     <string name="icon_shape_system">System</string>
     <string name="icon_shape_circle">Bilog</string>
+    <string name="icon_shape_square">Square</string>
     <string name="icon_shape_rounded_square">Bilugan Square</string>
     <string name="icon_shape_squircle">Squircle</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_teardrop">Teardrop</string>
+    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_cupertino">Cupertino</string>
     <string name="customize_button_text">I-customize</string>
     <string name="app_title_label">Pamagat</string>
     <string name="hide_from_drawer">Itago mula sa App Drawer</string>
