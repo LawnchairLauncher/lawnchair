@@ -138,8 +138,13 @@
     <string name="icon_shape_label">Облик икона</string>
     <string name="icon_shape_system">Систем</string>
     <string name="icon_shape_circle">Круг</string>
+    <string name="icon_shape_square">Square</string>
     <string name="icon_shape_rounded_square">Заобљени квадрат</string>
     <string name="icon_shape_squircle">Заокругљени квадрат</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_teardrop">Teardrop</string>
+    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_cupertino">Cupertino</string>
     <string name="customize_button_text">Прилагоди</string>
     <string name="app_title_label">Назив</string>
     <string name="hide_from_drawer">Сакриј са листе апликација</string>
