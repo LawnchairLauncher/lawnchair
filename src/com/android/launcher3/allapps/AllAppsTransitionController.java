@@ -44,6 +44,8 @@ import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.util.MultiAdditivePropertyFactory;
+import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.views.ScrimView;
 
@@ -76,20 +78,56 @@ public class AllAppsTransitionController
                 }
             };
 
-    public static final FloatProperty<AllAppsTransitionController> ALL_APPS_PULL_BACK_PROGRESS =
-            new FloatProperty<AllAppsTransitionController>("allAppsPullBackProgress") {
+    public static final FloatProperty<AllAppsTransitionController> ALL_APPS_PULL_BACK_TRANSLATION =
+            new FloatProperty<AllAppsTransitionController>("allAppsPullBackTranslation") {
 
                 @Override
                 public Float get(AllAppsTransitionController controller) {
-                    return controller.mPullBackProgress;
+                    if (controller.mIsTablet) {
+                        return controller.mAppsView.getRecyclerViewContainer().getTranslationY();
+                    } else {
+                        return controller.getAppsViewPullbackTranslationY().get(
+                                controller.mAppsView);
+                    }
                 }
 
                 @Override
-                public void setValue(AllAppsTransitionController controller, float progress) {
-                    controller.setPullBackProgress(progress);
+                public void setValue(AllAppsTransitionController controller, float translation) {
+                    if (controller.mIsTablet) {
+                        controller.mAppsView.getRecyclerViewContainer().setTranslationY(
+                                translation);
+                    } else {
+                        controller.getAppsViewPullbackTranslationY().set(controller.mAppsView,
+                                translation);
+                    }
                 }
             };
 
+    public static final FloatProperty<AllAppsTransitionController> ALL_APPS_PULL_BACK_ALPHA =
+            new FloatProperty<AllAppsTransitionController>("allAppsPullBackAlpha") {
+
+                @Override
+                public Float get(AllAppsTransitionController controller) {
+                    if (controller.mIsTablet) {
+                        return controller.mAppsView.getRecyclerViewContainer().getAlpha();
+                    } else {
+                        return controller.getAppsViewPullbackAlpha().getValue();
+                    }
+                }
+
+                @Override
+                public void setValue(AllAppsTransitionController controller, float alpha) {
+                    if (controller.mIsTablet) {
+                        controller.mAppsView.getRecyclerViewContainer().setAlpha(alpha);
+                    } else {
+                        controller.getAppsViewPullbackAlpha().setValue(alpha);
+                    }
+                }
+            };
+
+    private static final int INDEX_APPS_VIEW_PROGRESS = 0;
+    private static final int INDEX_APPS_VIEW_PULLBACK = 1;
+    private static final int APPS_VIEW_INDEX_COUNT = 2;
 
     private ActivityAllAppsContainerView<Launcher> mAppsView;
 
@@ -104,18 +142,23 @@ public class AllAppsTransitionController
     // When {@link mProgress} is 1, all apps container is pulled down.
     private float mShiftRange;      // changes depending on the orientation
     private float mProgress;        // [0, 1], mShiftRange * mProgress = shiftCurrent
-    private float mPullBackProgress;  // [0, 1], mShiftRange * mPullBackProgress = shiftCurrent
 
     private ScrimView mScrimView;
-    private View mPullBackView;
+
+    private final MultiAdditivePropertyFactory<View>
+            mAppsViewTranslationYPropertyFactory = new MultiAdditivePropertyFactory<>(
+            "appsViewTranslationY", View.TRANSLATION_Y);
+    private MultiValueAlpha mAppsViewAlpha;
+
+    private boolean mIsTablet;
 
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
         DeviceProfile dp = mLauncher.getDeviceProfile();
         setShiftRange(dp.allAppsShiftRange);
         mProgress = 1f;
-        mPullBackProgress = 1f;
         mIsVerticalLayout = dp.isVerticalBarLayout();
+        mIsTablet = dp.isTablet;
         mLauncher.addOnDeviceProfileChangeListener(this);
     }
 
@@ -133,7 +176,7 @@ public class AllAppsTransitionController
             mLauncher.getWorkspace().getPageIndicator().setTranslationY(0);
         }
 
-        mPullBackView = dp.isTablet ? mAppsView.getRecyclerViewContainer() : mAppsView;
+        mIsTablet = dp.isTablet;
     }
 
     /**
@@ -146,16 +189,27 @@ public class AllAppsTransitionController
      */
     public void setProgress(float progress) {
         mProgress = progress;
-        mAppsView.setTranslationY(mProgress * mShiftRange);
+        getAppsViewProgressTranslationY().set(mAppsView, mProgress * mShiftRange);
     }
 
     public float getProgress() {
         return mProgress;
     }
 
-    private void setPullBackProgress(float progress) {
-        mPullBackProgress = progress;
-        mPullBackView.setTranslationY(mPullBackProgress * mShiftRange);
+    private FloatProperty<View> getAppsViewProgressTranslationY() {
+        return mAppsViewTranslationYPropertyFactory.get(INDEX_APPS_VIEW_PROGRESS);
+    }
+
+    private FloatProperty<View> getAppsViewPullbackTranslationY() {
+        return mAppsViewTranslationYPropertyFactory.get(INDEX_APPS_VIEW_PULLBACK);
+    }
+
+    private MultiValueAlpha.AlphaProperty getAppsViewProgressAlpha() {
+        return mAppsViewAlpha.getProperty(INDEX_APPS_VIEW_PROGRESS);
+    }
+
+    private MultiValueAlpha.AlphaProperty getAppsViewPullbackAlpha() {
+        return mAppsViewAlpha.getProperty(INDEX_APPS_VIEW_PULLBACK);
     }
 
     /**
@@ -164,8 +218,6 @@ public class AllAppsTransitionController
      */
     @Override
     public void setState(LauncherState state) {
-        // Always reset pull back progress when switching states.
-        setPullBackProgress(0f);
         setProgress(state.getVerticalProgress(mLauncher));
         setAlphas(state, new StateAnimationConfig(), NO_ANIM_PROPERTY_SETTER);
         onProgressAnimationEnd();
@@ -180,10 +232,13 @@ public class AllAppsTransitionController
             StateAnimationConfig config, PendingAnimation builder) {
         if (NORMAL.equals(toState) && mLauncher.isInState(ALL_APPS)) {
             UiThreadHelper.hideKeyboardAsync(mLauncher, mLauncher.getAppsView().getWindowToken());
+            builder.addEndListener(success -> {
+                // Reset pull back progress and alpha after switching states.
+                ALL_APPS_PULL_BACK_TRANSLATION.set(this, 0f);
+                ALL_APPS_PULL_BACK_ALPHA.set(this, 1f);
+            });
         }
 
-        // Always reset pull back progress when switching states.
-        setPullBackProgress(0f);
         float targetProgress = toState.getVerticalProgress(mLauncher);
         if (Float.compare(mProgress, targetProgress) == 0) {
             setAlphas(toState, config, builder);
@@ -222,7 +277,8 @@ public class AllAppsTransitionController
         boolean hasAllAppsContent = (visibleElements & ALL_APPS_CONTENT) != 0;
 
         Interpolator allAppsFade = config.getInterpolator(ANIM_ALL_APPS_FADE, LINEAR);
-        setter.setViewAlpha(mAppsView, hasAllAppsContent ? 1 : 0, allAppsFade);
+        setter.setFloat(getAppsViewProgressAlpha(), MultiValueAlpha.VALUE,
+                hasAllAppsContent ? 1 : 0, allAppsFade);
 
         boolean shouldProtectHeader =
                 ALL_APPS == state || mLauncher.getStateManager().getState() == ALL_APPS;
@@ -245,8 +301,8 @@ public class AllAppsTransitionController
                             | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         }
         mAppsView.setScrimView(scrimView);
-        mPullBackView = mLauncher.getDeviceProfile().isTablet
-                ? mAppsView.getRecyclerViewContainer() : mAppsView;
+        mAppsViewAlpha = new MultiValueAlpha(mAppsView, APPS_VIEW_INDEX_COUNT);
+        mAppsViewAlpha.setUpdateVisibility(true);
     }
 
     /**
