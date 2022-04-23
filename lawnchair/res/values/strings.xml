@@ -151,8 +151,13 @@
     <string name="icon_shape_label">Icon Shape</string>
     <string name="icon_shape_system">System</string>
     <string name="icon_shape_circle">Circle</string>
+    <string name="icon_shape_square">Square</string>
     <string name="icon_shape_rounded_square">Rounded Square</string>
     <string name="icon_shape_squircle">Squircle</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_teardrop">Teardrop</string>
+    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_cupertino">Cupertino</string>
 
     <string name="customize_button_text">Customize</string>
     <string name="app_title_label">Title</string>
