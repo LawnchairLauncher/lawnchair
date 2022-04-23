@@ -117,7 +117,22 @@ final class BackGestureTutorialController extends TutorialController {
                 mTutorialFragment.closeTutorial();
             }
         } else if (mTutorialType == BACK_NAVIGATION) {
-            showFeedback(R.string.back_gesture_feedback_swipe_in_nav_bar);
+            switch (result) {
+                case HOME_NOT_STARTED_TOO_FAR_FROM_EDGE:
+                case OVERVIEW_NOT_STARTED_TOO_FAR_FROM_EDGE:
+                case HOME_OR_OVERVIEW_CANCELLED:
+                    showFeedback(R.string.back_gesture_feedback_swipe_too_far_from_edge);
+                    break;
+                case HOME_GESTURE_COMPLETED:
+                case OVERVIEW_GESTURE_COMPLETED:
+                case HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION:
+                case ASSISTANT_COMPLETED:
+                case ASSISTANT_NOT_STARTED_BAD_ANGLE:
+                case ASSISTANT_NOT_STARTED_SWIPE_TOO_SHORT:
+                default:
+                    showFeedback(R.string.back_gesture_feedback_swipe_in_nav_bar);
+
+            }
         }
     }
 }
