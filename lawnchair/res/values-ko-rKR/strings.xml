@@ -136,8 +136,13 @@
     <string name="icon_shape_label">아이콘 모양</string>
     <string name="icon_shape_system">시스템</string>
     <string name="icon_shape_circle">동그라미</string>
+    <string name="icon_shape_square">Square</string>
     <string name="icon_shape_rounded_square">둥근 모서리 사각형</string>
     <string name="icon_shape_squircle">둥근 사각형</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_teardrop">Teardrop</string>
+    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_cupertino">Cupertino</string>
     <string name="customize_button_text">개인화</string>
     <string name="app_title_label">이름</string>
     <string name="hide_from_drawer">앱 서랍에서 숨기기</string>
