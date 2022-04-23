@@ -39,9 +39,14 @@ fun PreferenceCollectorScope.IconShapePreference(
         listOf<ListPreferenceEntry2<IconShape>>(
             ListPreferenceEntry2(systemShape) { stringResource(id = R.string.icon_shape_system) },
             ListPreferenceEntry2(IconShape.Circle) { stringResource(id = R.string.icon_shape_circle) },
-            ListPreferenceEntry2(IconShape.Cupertino) { stringResource(id = R.string.icon_shape_rounded_square) },
+            ListPreferenceEntry2(IconShape.Square) { stringResource(id = R.string.icon_shape_square) },
+            ListPreferenceEntry2(IconShape.RoundedSquare) { stringResource(id = R.string.icon_shape_rounded_square) },
             ListPreferenceEntry2(IconShape.Squircle) { stringResource(id = R.string.icon_shape_squircle) },
-        )
+            ListPreferenceEntry2(IconShape.Sammy) { stringResource(id = R.string.icon_shape_sammy) },
+            ListPreferenceEntry2(IconShape.Teardrop) { stringResource(id = R.string.icon_shape_teardrop) },
+            ListPreferenceEntry2(IconShape.Cylinder) { stringResource(id = R.string.icon_shape_cylinder) },
+            ListPreferenceEntry2(IconShape.Cupertino) { stringResource(id = R.string.icon_shape_cupertino) },
+            )
     }
 
     ListPreference2(
