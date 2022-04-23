@@ -137,8 +137,13 @@
     <string name="icon_shape_label">Forme d\'icône</string>
     <string name="icon_shape_system">Système</string>
     <string name="icon_shape_circle">Cercle</string>
+    <string name="icon_shape_square">Square</string>
     <string name="icon_shape_rounded_square">Carré arrondi</string>
     <string name="icon_shape_squircle">Carré rond</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_teardrop">Teardrop</string>
+    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_cupertino">Cupertino</string>
     <string name="customize_button_text">Personnaliser</string>
     <string name="app_title_label">Titre</string>
     <string name="hide_from_drawer">Masquer dans le tiroir d\'applications</string>
