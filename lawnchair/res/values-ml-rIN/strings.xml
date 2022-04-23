@@ -137,8 +137,13 @@
     <string name="icon_shape_label">ഐകോണുകളുടെ ആകൃതി</string>
     <string name="icon_shape_system">സിസ്റ്റം</string>
     <string name="icon_shape_circle">വട്ടം</string>
+    <string name="icon_shape_square">Square</string>
     <string name="icon_shape_rounded_square">വൃത്താകൃതിയിലുള്ള ചതുരം</string>
     <string name="icon_shape_squircle">ചതുരാകൃതിയിലുള്ള വൃത്തം</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_teardrop">Teardrop</string>
+    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_cupertino">Cupertino</string>
     <string name="customize_button_text">ഇഷ്ടാനുസൃതമാക്കുക</string>
     <string name="app_title_label">തലക്കെട്ട്</string>
     <string name="hide_from_drawer">ആപ്പ് ഡ്രോയറിൽ നിന്ന് മറയ്ക്കുക</string>
