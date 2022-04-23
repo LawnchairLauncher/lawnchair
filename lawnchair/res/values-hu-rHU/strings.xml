@@ -137,8 +137,13 @@
     <string name="icon_shape_label">Ikon alak</string>
     <string name="icon_shape_system">Rendszer</string>
     <string name="icon_shape_circle">Kör</string>
+    <string name="icon_shape_square">Square</string>
     <string name="icon_shape_rounded_square">Lekerekített négyszög</string>
     <string name="icon_shape_squircle">Squircle</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_teardrop">Teardrop</string>
+    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_cupertino">Cupertino</string>
     <string name="customize_button_text">Testreszabás</string>
     <string name="app_title_label">Cím</string>
     <string name="hide_from_drawer">Hide from App Drawer</string>
