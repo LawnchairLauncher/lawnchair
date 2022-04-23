@@ -137,8 +137,13 @@
     <string name="icon_shape_label">Kuvakkeen Muoto</string>
     <string name="icon_shape_system">Järjestelmä</string>
     <string name="icon_shape_circle">Ympyrä</string>
+    <string name="icon_shape_square">Square</string>
     <string name="icon_shape_rounded_square">Pyöristetty Neliö</string>
     <string name="icon_shape_squircle">Ympyrä</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_teardrop">Teardrop</string>
+    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_cupertino">Cupertino</string>
     <string name="customize_button_text">Mukauta</string>
     <string name="app_title_label">Otsikko</string>
     <string name="hide_from_drawer">Piilota sovellusvalikosta</string>
