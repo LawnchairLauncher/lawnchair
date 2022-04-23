@@ -208,6 +208,13 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     }
 
     /**
+     * Returns whether there is at least one view of the given type where {@link #isOpen()} == true.
+     */
+    public static boolean hasOpenView(ActivityContext activity, @FloatingViewType int type) {
+        return getOpenView(activity, type) != null;
+    }
+
+    /**
      * Returns a view matching FloatingViewType, and {@link #isOpen()} may be false (if animating
      * closed).
      */
