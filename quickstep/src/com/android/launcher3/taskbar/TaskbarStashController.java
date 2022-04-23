@@ -30,6 +30,7 @@ import android.annotation.Nullable;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.ViewConfiguration;
+import android.view.WindowInsets;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
@@ -280,6 +281,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
     /**
      * Returns the height that taskbar will inset when inside apps.
+     * @see WindowInsets.Type#navigationBars()
+     * @see WindowInsets.Type#systemBars()
      */
     public int getContentHeightToReportToApps() {
         if (supportsVisualStashing() && hasAnyFlag(FLAGS_REPORT_STASHED_INSETS_TO_APP)) {
@@ -302,6 +305,15 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             return mStashedHeight;
         }
         return mUnstashedHeight;
+    }
+
+    /**
+     * Returns the height that taskbar will inset when inside apps.
+     * @see WindowInsets.Type#tappableElement()
+     */
+    public int getTappableHeightToReportToApps() {
+        int contentHeight = getContentHeightToReportToApps();
+        return contentHeight <= mStashedHeight ? 0 : contentHeight;
     }
 
     public int getStashedHeight() {
@@ -442,7 +454,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             @Override
             public void onAnimationStart(Animator animation) {
                 mIsStashed = isStashed;
-                onIsStashed(mIsStashed);
+                onIsStashedChanged(mIsStashed);
             }
 
             @Override
@@ -489,8 +501,9 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                 .setDuration(TASKBAR_HINT_STASH_DURATION).start();
     }
 
-    private void onIsStashed(boolean isStashed) {
-        mControllers.stashedHandleViewController.onIsStashed(isStashed);
+    private void onIsStashedChanged(boolean isStashed) {
+        mControllers.stashedHandleViewController.onIsStashedChanged(isStashed);
+        mControllers.taskbarInsetsController.onTaskbarWindowHeightOrInsetsChanged();
     }
 
     public void applyState() {

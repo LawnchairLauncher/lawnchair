@@ -83,7 +83,6 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     private void onComputeTaskbarInsets(InsetsInfo insetsInfo) {
         if (mControllerCallbacks != null) {
             mControllerCallbacks.updateInsetsTouchability(insetsInfo);
-            mControllerCallbacks.updateContentInsets(insetsInfo.contentInsets);
         }
     }
 
