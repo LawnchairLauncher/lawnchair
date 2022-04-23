@@ -137,8 +137,13 @@
     <string name="icon_shape_label">Forma de la icona</string>
     <string name="icon_shape_system">Sistema</string>
     <string name="icon_shape_circle">Cercle</string>
+    <string name="icon_shape_square">Square</string>
     <string name="icon_shape_rounded_square">Quadrat arrodonit</string>
     <string name="icon_shape_squircle">Quadrat Superellipse</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_teardrop">Teardrop</string>
+    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_cupertino">Cupertino</string>
     <string name="customize_button_text">Personalitza</string>
     <string name="app_title_label">Títol</string>
     <string name="hide_from_drawer">Oculta del calaix d\'aplicacions</string>
