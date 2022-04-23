@@ -57,10 +57,29 @@ open class QsbSearchProvider(
         fun fromId(id: String): QsbSearchProvider =
             values().firstOrNull { it.id == id } ?: AppSearch
 
-        fun resolveDefault(context: Context): QsbSearchProvider =
-            values()
+        /**
+         * Resolve the default search provider.
+         */
+        fun resolveDefault(context: Context): QsbSearchProvider {
+            val defaultProviderId = context.getString(R.string.config_default_qsb_search_provider_id)
+            val defaultProvider = fromId(defaultProviderId)
+            val isDefaultProviderIntentResolved = QsbLayout.resolveIntent(context, defaultProvider.createSearchIntent())
+
+            // Return the default value from config.xml if the value is valid
+            if (isDefaultProviderIntentResolved) {
+                if (defaultProvider != AppSearch ||
+                    (defaultProvider == AppSearch && defaultProviderId == AppSearch.id)) {
+                    return defaultProvider
+                }
+            }
+
+            // Return the best default option if the config.xml value is invalid
+            return values()
                 .filterNot { it == AppSearch }
                 .firstOrNull { QsbLayout.resolveIntent(context, it.createSearchIntent()) }
                 ?: AppSearch
+
+        }
+
     }
 }

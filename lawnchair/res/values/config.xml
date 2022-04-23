@@ -33,4 +33,37 @@
         <!-- Lawnchair -->
         <item>@string/launcher_component</item>
     </string-array>
+
+    <!-- Which QSB search provider to use by default -->
+    <string name="config_default_qsb_search_provider_id" translatable="false">google</string>
+
+    <!-- Which icon shape to use by default -->
+    <string name="config_default_icon_shape" translatable="false">circle</string>
+
+    <bool name="config_default_dark_status_bar">false</bool>
+    <bool name="config_default_dock_search_bar">true</bool>
+    <bool name="config_default_themed_hotseat_qsb">false</bool>
+    <bool name="config_default_dock_search_bar_force_website">false</bool>
+    <bool name="config_default_rounded_widgets">true</bool>
+    <bool name="config_default_show_status_bar">true</bool>
+    <bool name="config_default_show_top_shadow">true</bool>
+    <bool name="config_default_hide_app_drawer_search_bar">false</bool>
+    <bool name="config_default_enable_font_selection">true</bool>
+    <bool name="config_default_dts2">true</bool>
+    <bool name="config_default_auto_show_keyboard_in_drawer">false</bool>
+    <bool name="config_default_show_icon_labels_on_home_screen">true</bool>
+    <bool name="config_default_show_icon_labels_in_drawer">true</bool>
+    <bool name="config_default_enable_fuzzy_search">false</bool>
+    <bool name="config_default_enable_smartspace">true</bool>
+    <bool name="config_default_enable_feed">true</bool>
+    <bool name="config_default_enable_icon_selection">false</bool>
+    <bool name="config_default_show_component_names">false</bool>
+
+    <item name="config_default_home_icon_size_factor" type="dimen" format="float">1.0</item>
+    <item name="config_default_folder_preview_background_opacity" type="dimen" format="float">1.0</item>
+    <item name="config_default_drawer_icon_size_factor" type="dimen" format="float">1.0</item>
+    <item name="config_default_home_icon_label_size_factor" type="dimen" format="float">1.0</item>
+    <item name="config_default_drawer_icon_label_size_factor" type="dimen" format="float">1.0</item>
+    <item name="config_default_drawer_cell_height_factor" type="dimen" format="float">1.0</item>
+
 </resources>
