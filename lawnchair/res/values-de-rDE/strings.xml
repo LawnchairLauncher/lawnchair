@@ -137,12 +137,12 @@
     <string name="icon_shape_label">Symbolform</string>
     <string name="icon_shape_system">System</string>
     <string name="icon_shape_circle">Kreis</string>
-    <string name="icon_shape_square">Square</string>
+    <string name="icon_shape_square">Quadrat</string>
     <string name="icon_shape_rounded_square">Abgerundetes Quadrat</string>
     <string name="icon_shape_squircle">Quadreis</string>
     <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_teardrop">Teardrop</string>
-    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_teardrop">Tropfen</string>
+    <string name="icon_shape_cylinder">Zylinder</string>
     <string name="icon_shape_cupertino">Cupertino</string>
     <string name="customize_button_text">Anpassen</string>
     <string name="app_title_label">Name</string>
