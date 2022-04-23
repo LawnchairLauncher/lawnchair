@@ -136,8 +136,13 @@
     <string name="icon_shape_label">Hình dạng biểu tượng</string>
     <string name="icon_shape_system">Hệ thống</string>
     <string name="icon_shape_circle">Tròn</string>
+    <string name="icon_shape_square">Square</string>
     <string name="icon_shape_rounded_square">Vuông bo góc</string>
     <string name="icon_shape_squircle">Vuông tròn</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_teardrop">Teardrop</string>
+    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_cupertino">Cupertino</string>
     <string name="customize_button_text">Tùy chỉnh</string>
     <string name="app_title_label">Tiêu đề</string>
     <string name="hide_from_drawer">Ẩn khỏi ngăn kéo ứng dụng</string>
