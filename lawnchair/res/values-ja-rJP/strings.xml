@@ -136,8 +136,13 @@
     <string name="icon_shape_label">アイコンの形状</string>
     <string name="icon_shape_system">システム</string>
     <string name="icon_shape_circle">円</string>
+    <string name="icon_shape_square">Square</string>
     <string name="icon_shape_rounded_square">角丸四角形</string>
     <string name="icon_shape_squircle">スクワークル</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_teardrop">Teardrop</string>
+    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_cupertino">Cupertino</string>
     <string name="customize_button_text">カスタマイズ</string>
     <string name="app_title_label">タイトル</string>
     <string name="hide_from_drawer">アプリドロワーから隠す</string>
