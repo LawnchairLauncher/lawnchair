@@ -141,8 +141,13 @@
     <string name="icon_shape_label">شكل الأيقونة</string>
     <string name="icon_shape_system">نظام</string>
     <string name="icon_shape_circle">دائرة</string>
+    <string name="icon_shape_square">Square</string>
     <string name="icon_shape_rounded_square">مربع ذو زوايا دائرية</string>
     <string name="icon_shape_squircle">سوكلي</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_teardrop">Teardrop</string>
+    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_cupertino">Cupertino</string>
     <string name="customize_button_text">تخصيص</string>
     <string name="app_title_label">عنوان</string>
     <string name="hide_from_drawer">إخفاء من قائمة التطبيقات</string>
