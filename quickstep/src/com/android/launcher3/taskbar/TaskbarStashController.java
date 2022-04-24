@@ -502,8 +502,10 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     }
 
     private void onIsStashedChanged(boolean isStashed) {
-        mControllers.stashedHandleViewController.onIsStashedChanged(isStashed);
-        mControllers.taskbarInsetsController.onTaskbarWindowHeightOrInsetsChanged();
+        mControllers.runAfterInit(() -> {
+            mControllers.stashedHandleViewController.onIsStashedChanged(isStashed);
+            mControllers.taskbarInsetsController.onTaskbarWindowHeightOrInsetsChanged();
+        });
     }
 
     public void applyState() {

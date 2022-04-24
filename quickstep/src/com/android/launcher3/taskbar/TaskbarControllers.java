@@ -165,6 +165,7 @@ public class TaskbarControllers {
         taskbarAllAppsController.onDestroy();
         taskbarRecentAppsController.onDestroy();
         navButtonController.onDestroy();
+        taskbarInsetsController.onDestroy();
 
         mControllersToLog = null;
     }

@@ -108,7 +108,7 @@
     <string name="allow_rotation_title" msgid="7222049633713050106">"होम स्क्रीन घुमाने की अनुमति दें"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फ़ोन घुुमाए जाने पर"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"सूचनाएं बताने वाला डॉट"</string>
-    <string name="notification_dots_desc_on" msgid="1679848116452218908">"चालू"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"चालू है"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"चालू"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"सूचना के ऐक्सेस की ज़रूरत है"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचना बिंदु दिखाने के लिए, <xliff:g id="NAME">%1$s</xliff:g> के ऐप्लिकेशन सूचना चालू करें"</string>
