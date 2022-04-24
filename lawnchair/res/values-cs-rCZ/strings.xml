@@ -139,12 +139,12 @@
     <string name="icon_shape_label">Tvar ikon</string>
     <string name="icon_shape_system">Systém</string>
     <string name="icon_shape_circle">Kruh</string>
-    <string name="icon_shape_square">Square</string>
+    <string name="icon_shape_square">Čtverec</string>
     <string name="icon_shape_rounded_square">Zaoblený čtverec</string>
     <string name="icon_shape_squircle">Zaoblený čtverec</string>
     <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_teardrop">Teardrop</string>
-    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_teardrop">Slza</string>
+    <string name="icon_shape_cylinder">Válec</string>
     <string name="icon_shape_cupertino">Cupertino</string>
     <string name="customize_button_text">Přizpůsobit</string>
     <string name="app_title_label">Název</string>
