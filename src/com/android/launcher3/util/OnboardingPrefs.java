@@ -38,8 +38,9 @@ public class OnboardingPrefs<T extends ActivityContext> {
     public static final String HOME_BOUNCE_COUNT = "launcher.home_bounce_count";
     public static final String HOTSEAT_DISCOVERY_TIP_COUNT = "launcher.hotseat_discovery_tip_count";
     public static final String HOTSEAT_LONGPRESS_TIP_SEEN = "launcher.hotseat_longpress_tip_seen";
-    public static final String SEARCH_EDU_SEEN = "launcher.search_edu_seen";
+    public static final String SEARCH_KEYBOARD_EDU_SEEN = "launcher.search_edu_seen";
     public static final String SEARCH_SNACKBAR_COUNT = "launcher.keyboard_snackbar_count";
+    public static final String SEARCH_ONBOARDING_COUNT = "launcher.search_onboarding_count";
     public static final String TASKBAR_EDU_SEEN = "launcher.taskbar_edu_seen";
     public static final String ALL_APPS_VISITED_COUNT = "launcher.all_apps_visited_count";
     // When adding a new key, add it here as well, to be able to reset it from Developer Options.
@@ -47,7 +48,8 @@ public class OnboardingPrefs<T extends ActivityContext> {
             "All Apps Bounce", new String[] { HOME_BOUNCE_SEEN, HOME_BOUNCE_COUNT },
             "Hybrid Hotseat Education", new String[] { HOTSEAT_DISCOVERY_TIP_COUNT,
                     HOTSEAT_LONGPRESS_TIP_SEEN },
-            "Search Education", new String[] { SEARCH_EDU_SEEN, SEARCH_SNACKBAR_COUNT },
+            "Search Education", new String[] { SEARCH_KEYBOARD_EDU_SEEN, SEARCH_SNACKBAR_COUNT,
+                    SEARCH_ONBOARDING_COUNT},
             "Taskbar Education", new String[] { TASKBAR_EDU_SEEN },
             "All Apps Visited Count", new String[] {ALL_APPS_VISITED_COUNT}
     );
@@ -58,12 +60,11 @@ public class OnboardingPrefs<T extends ActivityContext> {
     @StringDef(value = {
             HOME_BOUNCE_SEEN,
             HOTSEAT_LONGPRESS_TIP_SEEN,
-            SEARCH_EDU_SEEN,
+            SEARCH_KEYBOARD_EDU_SEEN,
             TASKBAR_EDU_SEEN
     })
     @Retention(RetentionPolicy.SOURCE)
-    public @interface EventBoolKey {
-    }
+    public @interface EventBoolKey {}
 
     /**
      * Events that occur multiple times, which we count up to a max defined in {@link #MAX_COUNTS}.
@@ -72,19 +73,21 @@ public class OnboardingPrefs<T extends ActivityContext> {
             HOME_BOUNCE_COUNT,
             HOTSEAT_DISCOVERY_TIP_COUNT,
             SEARCH_SNACKBAR_COUNT,
+            SEARCH_ONBOARDING_COUNT,
             ALL_APPS_VISITED_COUNT
     })
     @Retention(RetentionPolicy.SOURCE)
-    public @interface EventCountKey {
-    }
+    public @interface EventCountKey {}
 
     private static final Map<String, Integer> MAX_COUNTS;
 
     static {
-        Map<String, Integer> maxCounts = new ArrayMap<>(4);
+        Map<String, Integer> maxCounts = new ArrayMap<>(5);
         maxCounts.put(HOME_BOUNCE_COUNT, 3);
         maxCounts.put(HOTSEAT_DISCOVERY_TIP_COUNT, 5);
         maxCounts.put(SEARCH_SNACKBAR_COUNT, 3);
+        // This is the sum of all onboarding cards. Currently there is only 1 card shown 3 times.
+        maxCounts.put(SEARCH_ONBOARDING_COUNT, 3);
         maxCounts.put(ALL_APPS_VISITED_COUNT, 20);
         MAX_COUNTS = Collections.unmodifiableMap(maxCounts);
     }
