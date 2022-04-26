@@ -409,11 +409,11 @@ public class HotseatPredictionController implements DragController.DragListener,
     @Nullable
     @Override
     public SystemShortcut<QuickstepLauncher> getShortcut(QuickstepLauncher activity,
-            ItemInfo itemInfo) {
+            ItemInfo itemInfo, View originalView) {
         if (itemInfo.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
             return null;
         }
-        return new PinPrediction(activity, itemInfo);
+        return new PinPrediction(activity, itemInfo, originalView);
     }
 
     private void preparePredictionInfo(WorkspaceItemInfo itemInfo, int rank) {
@@ -498,9 +498,9 @@ public class HotseatPredictionController implements DragController.DragListener,
 
     private class PinPrediction extends SystemShortcut<QuickstepLauncher> {
 
-        private PinPrediction(QuickstepLauncher target, ItemInfo itemInfo) {
+        private PinPrediction(QuickstepLauncher target, ItemInfo itemInfo, View originalView) {
             super(R.drawable.ic_pin, R.string.pin_prediction, target,
-                    itemInfo);
+                    itemInfo, originalView);
         }
 
         @Override
