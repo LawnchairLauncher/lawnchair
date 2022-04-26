@@ -108,7 +108,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
 
             case TestProtocol.REQUEST_APPS_LIST_SCROLL_Y: {
                 return getLauncherUIProperty(Bundle::putInt,
-                        l -> l.getAppsView().getActiveRecyclerView().getCurrentScrollY());
+                        l -> l.getAppsView().getActiveAppsRecyclerView().getCurrentScrollY());
             }
 
             case TestProtocol.REQUEST_WIDGETS_SCROLL_Y: {

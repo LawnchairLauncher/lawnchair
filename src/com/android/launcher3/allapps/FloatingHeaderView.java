@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
+import com.android.launcher3.allapps.BaseAllAppsContainerView.AdapterHolder;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.views.ActivityContext;
@@ -90,8 +91,8 @@ public class FloatingHeaderView extends LinearLayout implements
     protected ViewGroup mTabLayout;
     private AllAppsRecyclerView mMainRV;
     private AllAppsRecyclerView mWorkRV;
+    private SearchRecyclerView mSearchRV;
     private AllAppsRecyclerView mCurrentRV;
-    private ViewGroup mParent;
     public boolean mHeaderCollapsed;
     protected int mSnappedScrolledY;
     private int mTranslationY;
@@ -100,7 +101,6 @@ public class FloatingHeaderView extends LinearLayout implements
 
     protected boolean mTabsHidden;
     protected int mMaxTranslation;
-    private boolean mMainRVActive = true;
 
     private boolean mCollapsed = false;
 
@@ -232,7 +232,8 @@ public class FloatingHeaderView extends LinearLayout implements
         return super.getFocusedChild();
     }
 
-    void setup(AllAppsRecyclerView mainRV, AllAppsRecyclerView workRV, boolean tabsHidden) {
+    void setup(AllAppsRecyclerView mainRV, AllAppsRecyclerView workRV, SearchRecyclerView searchRV,
+            int activeRV, boolean tabsHidden) {
         for (FloatingHeaderRow row : mAllRows) {
             row.setup(this, mAllRows, tabsHidden);
         }
@@ -242,8 +243,8 @@ public class FloatingHeaderView extends LinearLayout implements
         mTabLayout.setVisibility(tabsHidden ? View.GONE : View.VISIBLE);
         mMainRV = setupRV(mMainRV, mainRV);
         mWorkRV = setupRV(mWorkRV, workRV);
-        mParent = (ViewGroup) mMainRV.getParent();
-        setMainActive(mMainRVActive || mWorkRV == null);
+        mSearchRV = (SearchRecyclerView) setupRV(mSearchRV, searchRV);
+        setActiveRV(activeRV);
         reset(false);
     }
 
@@ -267,9 +268,10 @@ public class FloatingHeaderView extends LinearLayout implements
         }
     }
 
-    public void setMainActive(boolean active) {
-        mCurrentRV = active ? mMainRV : mWorkRV;
-        mMainRVActive = active;
+    public void setActiveRV(int rvType) {
+        mCurrentRV =
+                rvType == AdapterHolder.MAIN ? mMainRV
+                : rvType == AdapterHolder.WORK ? mWorkRV : mSearchRV;
     }
 
     public int getMaxTranslation() {
@@ -332,9 +334,14 @@ public class FloatingHeaderView extends LinearLayout implements
         mHeaderClip.top = clipTop;
         // clipping on a draw might cause additional redraw
         setClipBounds(mHeaderClip);
-        mMainRV.setClipBounds(mRVClip);
+        if (mMainRV != null) {
+            mMainRV.setClipBounds(mRVClip);
+        }
         if (mWorkRV != null) {
             mWorkRV.setClipBounds(mRVClip);
+        }
+        if (mSearchRV != null) {
+            mSearchRV.setClipBounds(mRVClip);
         }
     }
 
@@ -402,8 +409,8 @@ public class FloatingHeaderView extends LinearLayout implements
     }
 
     private void calcOffset(Point p) {
-        p.x = getLeft() - mCurrentRV.getLeft() - mParent.getLeft();
-        p.y = getTop() - mCurrentRV.getTop() - mParent.getTop();
+        p.x = getLeft() - mCurrentRV.getLeft() - ((ViewGroup) mCurrentRV.getParent()).getLeft();
+        p.y = getTop() - mCurrentRV.getTop() - ((ViewGroup) mCurrentRV.getParent()).getTop();
     }
 
     public boolean hasVisibleContent() {
