@@ -218,7 +218,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
                 popupDataProvider.getShortcutCountForItem(item),
                 popupDataProvider.getNotificationKeysForItem(item),
                 launcher.getSupportedShortcuts()
-                        .map(s -> s.getShortcut(launcher, item))
+                        .map(s -> s.getShortcut(launcher, item, icon))
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList()));
         launcher.refreshAndBindWidgetsForPackageUser(PackageUserKey.fromItemInfo(item));
