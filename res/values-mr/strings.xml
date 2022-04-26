@@ -106,7 +106,7 @@
     <string name="settings_button_text" msgid="8873672322605444408">"होम सेटिंग्‍ज"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपल्या प्रशासकाने अक्षम केले"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"मुख्य स्क्रीन फिरविण्‍यास अनुमती द्या"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"फोन फिरविला जातो तेव्हा"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"फोन फिरवला जातो तेव्हा"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"सूचना बिंदू"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"सुरू"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"बंद"</string>
