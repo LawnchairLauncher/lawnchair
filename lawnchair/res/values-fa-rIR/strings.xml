@@ -165,7 +165,7 @@
     <string name="copied_toast">Copied to clipboard.</string>
     <string name="action_share">Share</string>
     <string name="action_upload_error">Upload failed</string>
-    <string name="dogbin_uploading">Uploading…</string>
+    <string name="dogbin_uploading">درحال آپلود…</string>
     <string name="bugreport_channel_name">Bug Reports</string>
     <string name="status_channel_name">Upload Status</string>
     <string name="bugreport_group_summary">%d new reports.</string>
