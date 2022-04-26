@@ -45,8 +45,9 @@ public class LauncherPopupLiveUpdateHandler extends PopupLiveUpdateHandler<Launc
 
     @Override
     public void onWidgetsBound() {
-        ItemInfo itemInfo = (ItemInfo) mPopupContainerWithArrow.getOriginalIcon().getTag();
-        SystemShortcut widgetInfo = SystemShortcut.WIDGETS.getShortcut(mContext, itemInfo);
+        BubbleTextView originalIcon = mPopupContainerWithArrow.getOriginalIcon();
+        SystemShortcut widgetInfo = SystemShortcut.WIDGETS.getShortcut(mContext,
+                (ItemInfo) originalIcon.getTag(), originalIcon);
         View widgetsView = getWidgetsView(mPopupContainerWithArrow);
         if (widgetsView == null && mPopupContainerWithArrow.getWidgetContainer() != null) {
             widgetsView = getWidgetsView(mPopupContainerWithArrow.getWidgetContainer());
