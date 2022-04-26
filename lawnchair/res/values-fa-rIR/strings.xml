@@ -35,7 +35,7 @@
     <string name="max_folder_columns">Max. Folder Columns</string>
     <string name="max_folder_rows">Max. Folder Rows</string>
     <string name="home_screen_grid">Home Screen Grid</string>
-    <string name="columns">Columns</string>
+    <string name="columns">ستون‌ها</string>
     <string name="grid">Grid</string>
     <string name="rows">Rows</string>
     <string name="icons">Icons</string>
@@ -136,12 +136,12 @@
     <string name="folder_preview_bg_opacity_label">Icon Background Opacity</string>
     <string name="icon_shape_label">Icon Shape</string>
     <string name="icon_shape_system">System</string>
-    <string name="icon_shape_circle">Circle</string>
-    <string name="icon_shape_square">Square</string>
+    <string name="icon_shape_circle">دایره</string>
+    <string name="icon_shape_square">مربع</string>
     <string name="icon_shape_rounded_square">Rounded Square</string>
     <string name="icon_shape_squircle">Squircle</string>
     <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_teardrop">Teardrop</string>
+    <string name="icon_shape_teardrop">اشک</string>
     <string name="icon_shape_cylinder">Cylinder</string>
     <string name="icon_shape_cupertino">Cupertino</string>
     <string name="customize_button_text">Customize</string>
@@ -153,7 +153,7 @@
     <string name="n_percent">%1$d%%</string>
     <string name="label">Label</string>
     <string name="presets">Presets</string>
-    <string name="colors">Colors</string>
+    <string name="colors">رنگ‌ها</string>
     <string name="dynamic">Dynamic</string>
     <string name="all_apps_search_market_message">Search for More Apps</string>
     <string name="show_app_search_bar">Show Search Bar</string>
