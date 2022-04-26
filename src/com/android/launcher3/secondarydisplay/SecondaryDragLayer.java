@@ -193,8 +193,8 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
         container.populateAndShow((BubbleTextView) v,
                 popupDataProvider.getShortcutCountForItem(item),
                 Collections.emptyList(),
-                Arrays.asList(mPinnedAppsAdapter.getSystemShortcut(item),
-                        APP_INFO.getShortcut(mActivity, item)));
+                Arrays.asList(mPinnedAppsAdapter.getSystemShortcut(item, v),
+                        APP_INFO.getShortcut(mActivity, item, v)));
         v.getParent().requestDisallowInterceptTouchEvent(true);
         return true;
     }
