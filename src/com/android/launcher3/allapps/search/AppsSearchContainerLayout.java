@@ -57,7 +57,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     private final AllAppsSearchBarController mSearchBarController;
     private final SpannableStringBuilder mSearchQueryBuilder;
 
-    private AlphabeticalAppsList<?> mApps;
+    private AlphabeticalAppsList<?> mSearchResultsList;
     private ActivityAllAppsContainerView<?> mAppsView;
 
     // The amount of pixels to shift down and overlap with the rest of the content.
@@ -102,8 +102,8 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         // Update the width to match the grid padding
         DeviceProfile dp = mLauncher.getDeviceProfile();
         int myRequestedWidth = getSize(widthMeasureSpec);
-        int rowWidth = myRequestedWidth - mAppsView.getActiveRecyclerView().getPaddingLeft()
-                - mAppsView.getActiveRecyclerView().getPaddingRight();
+        int rowWidth = myRequestedWidth - mAppsView.getActiveAppsRecyclerView().getPaddingLeft()
+                - mAppsView.getActiveAppsRecyclerView().getPaddingRight();
 
         int cellWidth = DeviceProfile.calculateCellWidth(rowWidth,
                 dp.cellLayoutBorderSpacePx.x, dp.numShownHotseatIcons);
@@ -131,7 +131,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
 
     @Override
     public void initializeSearch(ActivityAllAppsContainerView<?> appsView) {
-        mApps = appsView.getApps();
+        mSearchResultsList = appsView.getSearchResultList();
         mAppsView = appsView;
         mSearchBarController.initialize(
                 new DefaultAppSearchAlgorithm(getContext()),
@@ -170,7 +170,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     @Override
     public void onSearchResult(String query, ArrayList<AdapterItem> items) {
         if (items != null) {
-            mApps.setSearchResults(items);
+            mSearchResultsList.setSearchResults(items);
             notifyResultChanged();
             mAppsView.setLastSearchQuery(query);
         }
@@ -179,14 +179,14 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     @Override
     public void onAppendSearchResult(String query, ArrayList<AdapterItem> items) {
         if (items != null) {
-            mApps.appendSearchResults(items);
+            mSearchResultsList.appendSearchResults(items);
             notifyResultChanged();
         }
     }
 
     @Override
     public void clearSearchResult() {
-        if (mApps.setSearchResults(null)) {
+        if (mSearchResultsList.setSearchResults(null)) {
             notifyResultChanged();
         }
 
