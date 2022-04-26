@@ -40,6 +40,7 @@ import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.Nullable;
@@ -193,7 +194,7 @@ public final class WellbeingModel extends BgObjectWithLooper {
 
     @MainThread
     private SystemShortcut getShortcutForApp(String packageName, int userId,
-            BaseDraggingActivity activity, ItemInfo info) {
+            BaseDraggingActivity activity, ItemInfo info, View originalView) {
         Preconditions.assertUIThread();
         // Work profile apps are not recognized by digital wellbeing.
         if (userId != UserHandle.myUserId()) {
@@ -217,7 +218,7 @@ public final class WellbeingModel extends BgObjectWithLooper {
                         "getShortcutForApp [" + packageName + "]: action: '" + action.getTitle()
                                 + "'");
             }
-            return new RemoteActionShortcut(action, activity, info);
+            return new RemoteActionShortcut(action, activity, info, originalView);
         }
     }
 
@@ -378,8 +379,8 @@ public final class WellbeingModel extends BgObjectWithLooper {
      * Shortcut factory for generating wellbeing action
      */
     public static final SystemShortcut.Factory<BaseDraggingActivity> SHORTCUT_FACTORY =
-            (activity, info) -> (info.getTargetComponent() == null) ? null : INSTANCE.get(activity)
-                    .getShortcutForApp(
+            (activity, info, originalView) -> (info.getTargetComponent() == null) ? null
+                    : INSTANCE.get(activity).getShortcutForApp(
                             info.getTargetComponent().getPackageName(), info.user.getIdentifier(),
-                            activity, info);
+                            activity, info, originalView);
 }
