@@ -45,10 +45,6 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
 
     public static final String TAG = "AlphabeticalAppsList";
 
-    private static final int FAST_SCROLL_FRACTION_DISTRIBUTE_BY_ROWS_FRACTION = 0;
-    private static final int FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS = 1;
-
-    private final int mFastScrollDistributionMode = FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS;
     private final WorkAdapterProvider mWorkAdapterProvider;
 
     /**
@@ -334,8 +330,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                 }
 
                 // Create an app item
-                AdapterItem appItem = AdapterItem.asApp(position++, sectionName, info,
-                        appIndex++);
+                AdapterItem appItem = AdapterItem.asApp(position++, info);
                 if (lastFastScrollerSectionInfo.fastScrollToItem == null) {
                     lastFastScrollerSectionInfo.fastScrollToItem = appItem;
                 }
@@ -367,34 +362,16 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
             mNumAppRowsInAdapter = rowIndex + 1;
 
             // Pre-calculate all the fast scroller fractions
-            switch (mFastScrollDistributionMode) {
-                case FAST_SCROLL_FRACTION_DISTRIBUTE_BY_ROWS_FRACTION:
-                    float rowFraction = 1f / mNumAppRowsInAdapter;
-                    for (FastScrollSectionInfo info : mFastScrollerSections) {
-                        AdapterItem item = info.fastScrollToItem;
-                        if (!BaseAllAppsAdapter.isIconViewType(item.viewType)) {
-                            info.touchFraction = 0f;
-                            continue;
-                        }
-
-                        float subRowFraction =
-                                item.rowAppIndex * (rowFraction / mNumAppsPerRowAllApps);
-                        info.touchFraction = item.rowIndex * rowFraction + subRowFraction;
-                    }
-                    break;
-                case FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS:
-                    float perSectionTouchFraction = 1f / mFastScrollerSections.size();
-                    float cumulativeTouchFraction = 0f;
-                    for (FastScrollSectionInfo info : mFastScrollerSections) {
-                        AdapterItem item = info.fastScrollToItem;
-                        if (!BaseAllAppsAdapter.isIconViewType(item.viewType)) {
-                            info.touchFraction = 0f;
-                            continue;
-                        }
-                        info.touchFraction = cumulativeTouchFraction;
-                        cumulativeTouchFraction += perSectionTouchFraction;
-                    }
-                    break;
+            float perSectionTouchFraction = 1f / mFastScrollerSections.size();
+            float cumulativeTouchFraction = 0f;
+            for (FastScrollSectionInfo info : mFastScrollerSections) {
+                AdapterItem item = info.fastScrollToItem;
+                if (!BaseAllAppsAdapter.isIconViewType(item.viewType)) {
+                    info.touchFraction = 0f;
+                    continue;
+                }
+                info.touchFraction = cumulativeTouchFraction;
+                cumulativeTouchFraction += perSectionTouchFraction;
             }
         }
     }
