@@ -137,12 +137,12 @@
     <string name="icon_shape_label">Forma del icono</string>
     <string name="icon_shape_system">Sistema</string>
     <string name="icon_shape_circle">Circular</string>
-    <string name="icon_shape_square">Square</string>
+    <string name="icon_shape_square">Cuadrado</string>
     <string name="icon_shape_rounded_square">Cuadrado Redondeado</string>
     <string name="icon_shape_squircle">Círculo Cuadrado</string>
-    <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_teardrop">Teardrop</string>
-    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_sammy">OneUI</string>
+    <string name="icon_shape_teardrop">lágrima</string>
+    <string name="icon_shape_cylinder">Cilindro</string>
     <string name="icon_shape_cupertino">Cupertino</string>
     <string name="customize_button_text">Personalizar</string>
     <string name="app_title_label">Título</string>
