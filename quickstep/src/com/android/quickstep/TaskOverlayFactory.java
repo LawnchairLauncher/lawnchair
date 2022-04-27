@@ -118,8 +118,8 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
      * * There aren't at least 2 tasks in overview to show split options for
      * * Device is in "Lock task mode"
      * * The taskView to show split options for is the focused task AND we haven't started
-     *   scrolling in overview (if we haven't scrolled, there's a split overview action button so
-     *   we don't need this menu option)
+     * scrolling in overview (if we haven't scrolled, there's a split overview action button so
+     * we don't need this menu option)
      */
     private static void addSplitOptions(List<SystemShortcut> outShortcuts,
             BaseDraggingActivity activity, TaskView taskView, DeviceProfile deviceProfile) {
@@ -156,13 +156,15 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
      * Subclasses can attach any system listeners in this method, must be paired with
      * {@link #removeListeners()}
      */
-    public void initListeners() { }
+    public void initListeners() {
+    }
 
     /**
      * Subclasses should remove any system listeners in this method, must be paired with
      * {@link #initListeners()}
      */
-    public void removeListeners() { }
+    public void removeListeners() {
+    }
 
     /** Note that these will be shown in order from top to bottom, if available for the task. */
     private static final TaskShortcutFactory[] MENU_OPTIONS = new TaskShortcutFactory[]{
@@ -189,7 +191,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             mApplicationContext = taskThumbnailView.getContext().getApplicationContext();
             mThumbnailView = taskThumbnailView;
             mImageApi = new ImageActionsApi(
-                mApplicationContext, mThumbnailView::getThumbnail);
+                    mApplicationContext, mThumbnailView::getThumbnail);
         }
 
         protected T getActionsView() {
@@ -263,7 +265,8 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         /**
          * Gets the modal state system shortcut.
          */
-        public SystemShortcut getModalStateSystemShortcut(WorkspaceItemInfo itemInfo) {
+        public SystemShortcut getModalStateSystemShortcut(WorkspaceItemInfo itemInfo,
+                View original) {
             return null;
         }
 
@@ -277,9 +280,10 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
          * Gets the system shortcut for the screenshot that will be added to the task menu.
          */
         public SystemShortcut getScreenshotShortcut(BaseDraggingActivity activity,
-                ItemInfo iteminfo) {
-            return new ScreenshotSystemShortcut(activity, iteminfo);
+                ItemInfo iteminfo, View originalView) {
+            return new ScreenshotSystemShortcut(activity, iteminfo, originalView);
         }
+
         /**
          * Gets the task snapshot as it is displayed on the screen.
          *
@@ -320,8 +324,10 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
 
             private final BaseDraggingActivity mActivity;
 
-            ScreenshotSystemShortcut(BaseDraggingActivity activity, ItemInfo itemInfo) {
-                super(R.drawable.ic_screenshot, R.string.action_screenshot, activity, itemInfo);
+            ScreenshotSystemShortcut(BaseDraggingActivity activity, ItemInfo itemInfo,
+                    View originalView) {
+                super(R.drawable.ic_screenshot, R.string.action_screenshot, activity, itemInfo,
+                        originalView);
                 mActivity = activity;
             }
 
