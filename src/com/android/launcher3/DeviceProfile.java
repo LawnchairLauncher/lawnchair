@@ -195,9 +195,7 @@ public class DeviceProfile {
     public int overviewTaskIconDrawableSizeGridPx;
     public int overviewTaskThumbnailTopMarginPx;
     public final int overviewActionsHeight;
-    public final int overviewActionsMarginThreeButtonPx;
-    public final int overviewActionsTopMarginGesturePx;
-    public final int overviewActionsBottomMarginGesturePx;
+    public final int overviewActionsTopMarginPx;
     public final int overviewActionsButtonSpacing;
     public int overviewPageSpacing;
     public int overviewRowSpacing;
@@ -408,16 +406,14 @@ public class DeviceProfile {
         overviewTaskIconDrawableSizeGridPx =
                 res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_drawable_size_grid);
         overviewTaskThumbnailTopMarginPx = overviewTaskIconSizePx + overviewTaskMarginPx * 2;
-        overviewActionsTopMarginGesturePx = res.getDimensionPixelSize(
-                R.dimen.overview_actions_top_margin_gesture);
-        overviewActionsBottomMarginGesturePx = res.getDimensionPixelSize(
-                R.dimen.overview_actions_bottom_margin_gesture);
+        // In vertical bar, use the smaller task margin for the top regardless of mode.
+        overviewActionsTopMarginPx = isVerticalBarLayout()
+                ? overviewTaskMarginPx
+                : res.getDimensionPixelSize(R.dimen.overview_actions_top_margin);
         overviewPageSpacing = res.getDimensionPixelSize(R.dimen.overview_page_spacing);
         overviewActionsButtonSpacing = res.getDimensionPixelSize(
                 R.dimen.overview_actions_button_spacing);
         overviewActionsHeight = res.getDimensionPixelSize(R.dimen.overview_actions_height);
-        overviewActionsMarginThreeButtonPx = res.getDimensionPixelSize(
-                R.dimen.overview_actions_margin_three_button);
         // Grid task's top margin is only overviewTaskIconSizePx + overviewTaskMarginGridPx, but
         // overviewTaskThumbnailTopMarginPx is applied to all TaskThumbnailView, so exclude the
         // extra  margin when calculating row spacing.
@@ -1104,6 +1100,24 @@ public class DeviceProfile {
     }
 
     /**
+     * Returns the number of pixels required below OverviewActions excluding insets.
+     */
+    public int getOverviewActionsClaimedSpaceBelow() {
+        if (isTaskbarPresent && !isGestureMode) {
+            // Align vertically to where nav buttons are.
+            return  ((taskbarSize - overviewActionsHeight) / 2) + getTaskbarOffsetY();
+        }
+
+        return 0;
+    }
+
+    /** Gets the space that the overview actions will take, including bottom margin. */
+    public int getOverviewActionsClaimedSpace() {
+        return overviewActionsTopMarginPx + overviewActionsHeight
+                + getOverviewActionsClaimedSpaceBelow();
+    }
+
+    /**
      * @return the bounds for which the open folders should be contained within
      */
     public Rect getAbsoluteOpenFolderBounds() {
@@ -1323,12 +1337,10 @@ public class DeviceProfile {
                 overviewTaskIconDrawableSizeGridPx));
         writer.println(prefix + pxToDpStr("overviewTaskThumbnailTopMarginPx",
                 overviewTaskThumbnailTopMarginPx));
-        writer.println(prefix + pxToDpStr("overviewActionsMarginThreeButtonPx",
-                overviewActionsMarginThreeButtonPx));
-        writer.println(prefix + pxToDpStr("overviewActionsTopMarginGesturePx",
-                overviewActionsTopMarginGesturePx));
-        writer.println(prefix + pxToDpStr("overviewActionsBottomMarginGesturePx",
-                overviewActionsBottomMarginGesturePx));
+        writer.println(prefix + pxToDpStr("overviewActionsTopMarginPx",
+                overviewActionsTopMarginPx));
+        writer.println(prefix + pxToDpStr("overviewActionsHeight",
+                overviewActionsHeight));
         writer.println(prefix + pxToDpStr("overviewActionsButtonSpacing",
                 overviewActionsButtonSpacing));
         writer.println(prefix + pxToDpStr("overviewPageSpacing", overviewPageSpacing));
