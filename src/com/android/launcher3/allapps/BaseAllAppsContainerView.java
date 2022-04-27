@@ -597,13 +597,6 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         }
     }
 
-    /** @see View#setVerticalFadingEdgeEnabled(boolean). */
-    public void setRecyclerViewVerticalFadingEdgeEnabled(boolean enabled) {
-        for (int i = 0; i < mAH.size(); i++) {
-            mAH.get(i).applyVerticalFadingEdgeEnabled(enabled);
-        }
-    }
-
     public boolean isHeaderVisible() {
         return mHeader != null && mHeader.getVisibility() == View.VISIBLE;
     }
@@ -714,7 +707,6 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         final AlphabeticalAppsList<T> mAppsList;
         final Rect mPadding = new Rect();
         AllAppsRecyclerView mRecyclerView;
-        boolean mVerticalFadingEdge;
 
         AdapterHolder(boolean isWork) {
             mIsWork = isWork;
@@ -745,7 +737,6 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
             FocusedItemDecorator focusedItemDecorator = new FocusedItemDecorator(mRecyclerView);
             mRecyclerView.addItemDecoration(focusedItemDecorator);
             adapter.setIconFocusListener(focusedItemDecorator.getFocusListener());
-            applyVerticalFadingEdgeEnabled(mVerticalFadingEdge);
             applyPadding();
         }
 
@@ -758,12 +749,6 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
                 mRecyclerView.setPadding(mPadding.left, mPadding.top, mPadding.right,
                         mPadding.bottom + bottomOffset);
             }
-        }
-
-        private void applyVerticalFadingEdgeEnabled(boolean enabled) {
-            mVerticalFadingEdge = enabled;
-            mAH.get(AdapterHolder.MAIN).mRecyclerView.setVerticalFadingEdgeEnabled(!mUsingTabs
-                    && mVerticalFadingEdge);
         }
     }
 
