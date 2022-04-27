@@ -237,10 +237,8 @@ public class DropTargetBar extends FrameLayout
                         rightButton.getMeasuredHeight());
             } else if (dp.isPhone) {
                 // Buttons aligned to outer edges of scaled workspace.
-                float shrunkTop = dp.getWorkspaceSpringLoadShrunkTop();
-                float shrunkBottom = dp.getWorkspaceSpringLoadShrunkBottom();
-                float scale =
-                        (shrunkBottom - shrunkTop) / launcher.getWorkspace().getNormalChildHeight();
+                float scale = dp.getWorkspaceSpringLoadScale();
+
                 int workspaceWidth = (int) (launcher.getWorkspace().getNormalChildWidth() * scale);
                 int start = barCenter - (workspaceWidth / 2);
                 int end = barCenter + (workspaceWidth / 2);
