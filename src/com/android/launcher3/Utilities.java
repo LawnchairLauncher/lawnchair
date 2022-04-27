@@ -273,6 +273,16 @@ public final class Utilities {
     }
 
     /**
+     * Similar to {@link #mapCoordInSelfToDescendant(View descendant, View root, float[] coord)}
+     * but accepts a Rect instead of float[].
+     */
+    public static void mapRectInSelfToDescendant(View descendant, View root, Rect rect) {
+        float[] coords = new float[]{rect.left, rect.top, rect.right, rect.bottom};
+        mapCoordInSelfToDescendant(descendant, root, coords);
+        rect.set((int) coords[0], (int) coords[1], (int) coords[2], (int) coords[3]);
+    }
+
+    /**
      * Inverse of {@link #getDescendantCoordRelativeToAncestor(View, View, float[], boolean)}.
      */
     public static void mapCoordInSelfToDescendant(View descendant, View root, float[] coord) {
