@@ -84,7 +84,8 @@ public class AllAppsTransitionController
                 @Override
                 public Float get(AllAppsTransitionController controller) {
                     if (controller.mIsTablet) {
-                        return controller.mAppsView.getRecyclerViewContainer().getTranslationY();
+                        return controller.mAppsView.getAppsRecyclerViewContainer()
+                                .getTranslationY();
                     } else {
                         return controller.getAppsViewPullbackTranslationY().get(
                                 controller.mAppsView);
@@ -94,7 +95,7 @@ public class AllAppsTransitionController
                 @Override
                 public void setValue(AllAppsTransitionController controller, float translation) {
                     if (controller.mIsTablet) {
-                        controller.mAppsView.getRecyclerViewContainer().setTranslationY(
+                        controller.mAppsView.getAppsRecyclerViewContainer().setTranslationY(
                                 translation);
                     } else {
                         controller.getAppsViewPullbackTranslationY().set(controller.mAppsView,
@@ -109,7 +110,7 @@ public class AllAppsTransitionController
                 @Override
                 public Float get(AllAppsTransitionController controller) {
                     if (controller.mIsTablet) {
-                        return controller.mAppsView.getRecyclerViewContainer().getAlpha();
+                        return controller.mAppsView.getAppsRecyclerViewContainer().getAlpha();
                     } else {
                         return controller.getAppsViewPullbackAlpha().getValue();
                     }
@@ -118,7 +119,7 @@ public class AllAppsTransitionController
                 @Override
                 public void setValue(AllAppsTransitionController controller, float alpha) {
                     if (controller.mIsTablet) {
-                        controller.mAppsView.getRecyclerViewContainer().setAlpha(alpha);
+                        controller.mAppsView.getAppsRecyclerViewContainer().setAlpha(alpha);
                     } else {
                         controller.getAppsViewPullbackAlpha().setValue(alpha);
                     }
