@@ -159,7 +159,7 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
                 mPopupDataProvider.getNotificationKeysForItem(item),
                 // TODO (b/198438631): add support for INSTALL shortcut factory
                 getSystemShortcuts()
-                        .map(s -> s.getShortcut(context, item))
+                        .map(s -> s.getShortcut(context, item, icon))
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList()));
         container.requestFocus();
@@ -242,7 +242,8 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
      */
     private SystemShortcut.Factory<BaseTaskbarContext> createSplitShortcutFactory(
             SplitPositionOption position) {
-        return (context, itemInfo) -> new TaskbarSplitShortcut(context, itemInfo, position);
+        return (context, itemInfo, originalView) -> new TaskbarSplitShortcut(context, itemInfo,
+                originalView, position);
     }
 
      /**
@@ -253,9 +254,9 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
     private static class TaskbarSplitShortcut extends SystemShortcut<BaseTaskbarContext> {
         private final SplitPositionOption mPosition;
 
-        TaskbarSplitShortcut(BaseTaskbarContext context, ItemInfo itemInfo,
+        TaskbarSplitShortcut(BaseTaskbarContext context, ItemInfo itemInfo, View originalView,
                 SplitPositionOption position) {
-            super(position.iconResId, position.textResId, context, itemInfo);
+            super(position.iconResId, position.textResId, context, itemInfo, originalView);
             mPosition = position;
         }
 
