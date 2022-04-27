@@ -200,6 +200,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     private final int[] mTempXY = new int[2];
     private final float[] mTempFXY = new float[2];
+    private final Rect mTempRect = new Rect();
     @Thunk float[] mDragViewVisualCenter = new float[2];
 
     private SpringLoadedDragController mSpringLoadedDragController;
@@ -906,7 +907,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      * two panel UI is enabled.
      */
     public int getScreenPair(int screenId) {
-        if (screenId % 2 == 0) {
+        if (screenId == EXTRA_EMPTY_SCREEN_ID) {
+            return EXTRA_EMPTY_SCREEN_SECOND_ID;
+        } else if (screenId == EXTRA_EMPTY_SCREEN_SECOND_ID) {
+            return EXTRA_EMPTY_SCREEN_ID;
+        } else if (screenId % 2 == 0) {
             return screenId + 1;
         } else {
             return screenId - 1;
@@ -1730,7 +1735,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         // If it's an external drop (e.g. from All Apps), check if it should be accepted
         CellLayout dropTargetLayout = mDropToLayout;
         if (d.dragSource != this) {
-            // Don't accept the drop if we're not over a screen at time of drop
+            // Don't accept the drop if we're not over a valid drop target at time of drop
             if (dropTargetLayout == null) {
                 return false;
             }
@@ -2331,17 +2336,6 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         xy[1] = xy[1] - v.getTop();
     }
 
-    boolean isPointInSelfOverHotseat(int x, int y) {
-        mTempFXY[0] = x;
-        mTempFXY[1] = y;
-        mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, mTempFXY, true);
-        View hotseat = mLauncher.getHotseat();
-        return mTempFXY[0] >= hotseat.getLeft()
-                && mTempFXY[0] <= hotseat.getRight()
-                && mTempFXY[1] >= hotseat.getTop()
-                && mTempFXY[1] <= hotseat.getBottom();
-    }
-
     /**
      * Updates the point in {@param xy} to point to the co-ordinate space of {@param layout}
      * @param layout either hotseat of a page in workspace
@@ -2379,7 +2373,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
         final View child = (mDragInfo == null) ? null : mDragInfo.cell;
         if (setDropLayoutForDragObject(d, mDragViewVisualCenter[0], mDragViewVisualCenter[1])) {
-            if (mLauncher.isHotseatLayout(mDragTargetLayout)) {
+            if (mDragTargetLayout == null || mLauncher.isHotseatLayout(mDragTargetLayout)) {
                 mSpringLoadedDragController.cancel();
             } else {
                 mSpringLoadedDragController.setAlarm(mDragTargetLayout);
@@ -2458,58 +2452,94 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      */
     private boolean setDropLayoutForDragObject(DragObject d, float centerX, float centerY) {
         CellLayout layout = null;
-        // Test to see if we are over the hotseat first
-        if (mLauncher.getHotseat() != null && !isDragWidget(d)) {
-            if (isPointInSelfOverHotseat(d.x, d.y)) {
-                layout = mLauncher.getHotseat();
+        if (shouldUseHotseatAsDropLayout(d)) {
+            layout = mLauncher.getHotseat();
+        } else if (!isDragObjectOverSmartSpace(d)) {
+            // If the object is over qsb/smartspace, we don't want to highlight anything.
+
+            // Check neighbour pages
+            layout = checkDragObjectIsOverNeighbourPages(d, centerX);
+
+            if (layout == null) {
+                // Check visible pages
+                IntSet visiblePageIndices = getVisiblePageIndices();
+                for (int visiblePageIndex : visiblePageIndices) {
+                    layout = verifyInsidePage(visiblePageIndex, d.x, d.y);
+                    if (layout != null) break;
+                }
             }
         }
 
-        // Note, centerX represents the center of the object that is being dragged, visually. d.x
-        // represents the location of the finger within the dragged item.
-        float touchX;
-        float touchY = d.y;
-
-        // Go through the pages and check if the dragged item is inside one of them. This block
-        // is responsible for  determining whether we need to snap to a different screen.
-        int nextPage = getNextPage();
-        IntSet pageIndexesToVerify = IntSet.wrap(nextPage - 1, nextPage
-                + (isTwoPanelEnabled() ? 2 : 1));
-        for (int pageIndex : pageIndexesToVerify) {
-            if (layout != null || isPageInTransition()) {
-                break;
-            }
-
-            // When deciding whether to perform a page switch, we need to consider the most extreme
-            // X coordinate between the finger location and the center of the object being dragged.
-            // This is either the max or the min of the two depending on whether dragging to the
-            // left / right, respectively.
-            touchX = ((((pageIndex < nextPage) && !mIsRtl) || pageIndex > nextPage && mIsRtl)
-                    ? Math.min(d.x, centerX) : Math.max(d.x, centerX));
-            layout = verifyInsidePage(pageIndex, touchX, touchY);
-        }
-
-        // If the dragged item isn't located in one of the pages above, the icon will stay on the
-        // current screen. For two panel pick the closest panel on the current screen,
-        // on one panel just choose the current page.
-        if (layout == null && nextPage >= 0 && nextPage < getPageCount()) {
-            if (isTwoPanelEnabled()) {
-                // When determining which panel to use within a single screen, we always use
-                // the centroid of the object rather than the finger.
-                touchX = centerX;
-                nextPage = getScreenCenter(getScrollX()) > touchX
-                        ? (mIsRtl ? nextPage + 1 : nextPage) // left side
-                        : (mIsRtl ? nextPage : nextPage + 1); // right side
-            }
-            layout = (CellLayout) getChildAt(nextPage);
-        }
-
+        // Update the current drop layout if the target changed
         if (layout != mDragTargetLayout) {
             setCurrentDropLayout(layout);
             setCurrentDragOverlappingLayout(layout);
             return true;
         }
         return false;
+    }
+
+    private boolean shouldUseHotseatAsDropLayout(DragObject dragObject) {
+        if (mLauncher.getHotseat() == null
+                || mLauncher.getHotseat().getShortcutsAndWidgets() == null
+                || isDragWidget(dragObject)) {
+            return false;
+        }
+        View hotseatShortcuts = mLauncher.getHotseat().getShortcutsAndWidgets();
+        getViewBoundsRelativeToWorkspace(hotseatShortcuts, mTempRect);
+        return mTempRect.contains(dragObject.x, dragObject.y);
+    }
+
+    private boolean isDragObjectOverSmartSpace(DragObject dragObject) {
+        if (mQsb == null) {
+            return false;
+        }
+        getViewBoundsRelativeToWorkspace(mQsb, mTempRect);
+        return mTempRect.contains(dragObject.x, dragObject.y);
+    }
+
+    private CellLayout checkDragObjectIsOverNeighbourPages(DragObject d, float centerX) {
+        if (isPageInTransition()) {
+            return null;
+        }
+
+        // Check the workspace pages whether the object is over any of them
+
+        // Note, centerX represents the center of the object that is being dragged, visually.
+        // d.x represents the location of the finger within the dragged item.
+        float touchX;
+        float touchY = d.y;
+
+        // Go through the pages and check if the dragged item is inside one of them. This block
+        // is responsible for determining whether we need to snap to a different screen.
+        int nextPage = getNextPage();
+        IntSet pageIndexesToVerify = IntSet.wrap(nextPage - 1,
+                nextPage + (isTwoPanelEnabled() ? 2 : 1));
+
+        for (int pageIndex : pageIndexesToVerify) {
+            // When deciding whether to perform a page switch, we need to consider the most
+            // extreme X coordinate between the finger location and the center of the object
+            // being dragged. This is either the max or the min of the two depending on whether
+            // dragging to the left / right, respectively.
+            touchX = (((pageIndex < nextPage) && !mIsRtl) || (pageIndex > nextPage && mIsRtl))
+                    ? Math.min(d.x, centerX) : Math.max(d.x, centerX);
+            CellLayout layout = verifyInsidePage(pageIndex, touchX, touchY);
+            if (layout != null) {
+                return layout;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets the given view's bounds relative to Workspace
+     */
+    private void getViewBoundsRelativeToWorkspace(View view, Rect outRect) {
+        mLauncher.getDragLayer()
+                .getDescendantRectRelativeToSelf(view, mTempRect);
+        // map draglayer relative bounds to workspace
+        mLauncher.getDragLayer().mapRectInSelfToDescendant(this, mTempRect);
+        outRect.set(mTempRect);
     }
 
     /**
