@@ -137,12 +137,12 @@
     <string name="icon_shape_label">Simge Şekli</string>
     <string name="icon_shape_system">Sistem</string>
     <string name="icon_shape_circle">Yuvarlak</string>
-    <string name="icon_shape_square">Square</string>
+    <string name="icon_shape_square">Kare</string>
     <string name="icon_shape_rounded_square">Yuvarlak Kare</string>
     <string name="icon_shape_squircle">Yuvarlatılmış Kare</string>
     <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_teardrop">Teardrop</string>
-    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_teardrop">Damla</string>
+    <string name="icon_shape_cylinder">Silindir</string>
     <string name="icon_shape_cupertino">Cupertino</string>
     <string name="customize_button_text">Özelleştir</string>
     <string name="app_title_label">Başlık</string>
