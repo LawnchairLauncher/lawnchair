@@ -368,9 +368,7 @@
     <dimen name="overview_actions_height">0dp</dimen>
     <dimen name="overview_actions_button_spacing">0dp</dimen>
     <dimen name="overview_actions_margin_gesture">0dp</dimen>
-    <dimen name="overview_actions_top_margin_gesture">0dp</dimen>
-    <dimen name="overview_actions_bottom_margin_gesture">0dp</dimen>
-    <dimen name="overview_actions_margin_three_button">0dp</dimen>
+    <dimen name="overview_actions_top_margin">0dp</dimen>
     <dimen name="overview_grid_side_margin">0dp</dimen>
     <dimen name="overview_grid_row_spacing">0dp</dimen>
     <dimen name="overview_page_spacing">0dp</dimen>
