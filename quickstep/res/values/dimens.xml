@@ -35,13 +35,12 @@
     <dimen name="overview_task_margin">16dp</dimen>
     <dimen name="overview_task_margin_grid">0dp</dimen>
     <item name="overview_max_scale" format="float" type="dimen">0.7</item>
+    <item name="overview_modal_max_scale" format="float" type="dimen">1.1</item>
 
     <!-- Overrideable in overlay that provides the Overview Actions. -->
     <dimen name="overview_actions_height">48dp</dimen>
     <dimen name="overview_actions_button_spacing">32dp</dimen>
-    <dimen name="overview_actions_top_margin_gesture">28dp</dimen>
-    <dimen name="overview_actions_bottom_margin_gesture">28dp</dimen>
-    <dimen name="overview_actions_margin_three_button">8dp</dimen>
+    <dimen name="overview_actions_top_margin">24dp</dimen>
     <dimen name="overview_actions_horizontal_margin">16dp</dimen>
 
     <dimen name="overview_page_spacing">16dp</dimen>
