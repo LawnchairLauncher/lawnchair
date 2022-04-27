@@ -16,8 +16,6 @@
 
 package com.android.quickstep.views;
 
-import static com.android.launcher3.util.DisplayController.NavigationMode.THREE_BUTTONS;
-
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
@@ -99,6 +97,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     @Nullable
     protected DeviceProfile mDp;
+    private final Rect mTaskSize = new Rect();
 
     public OverviewActionsView(Context context) {
         this(context, null);
@@ -202,8 +201,10 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
      * Offsets OverviewActionsView horizontal position based on 3 button nav container in taskbar.
      */
     private void updatePadding() {
-        boolean alignFor3ButtonTaskbar = mDp.isTaskbarPresent &&
-                DisplayController.getNavigationMode(getContext()) == THREE_BUTTONS;
+        if (mDp == null) {
+            return;
+        }
+        boolean alignFor3ButtonTaskbar = mDp.isTaskbarPresent && !mDp.isGestureMode;
         if (alignFor3ButtonTaskbar) {
             // Add extra horizontal spacing
             int additionalPadding = ApiWrapper.getHotseatEndOffset(getContext());
@@ -225,15 +226,34 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         LayoutParams actionParams = (LayoutParams) findViewById(
                 R.id.action_buttons).getLayoutParams();
         actionParams.setMargins(
-                actionParams.leftMargin, getOverviewActionsTopMarginPx(mode, mDp),
-                actionParams.rightMargin, getOverviewActionsBottomMarginPx(mode, mDp));
+                actionParams.leftMargin, mDp.overviewActionsTopMarginPx,
+                actionParams.rightMargin, getBottomMargin());
+    }
+
+    private int getBottomMargin() {
+        if (mDp == null) {
+            return 0;
+        }
+
+        if (mDp.isVerticalBarLayout()) {
+            return mDp.getInsets().bottom;
+        }
+
+        if (!mDp.isGestureMode && mDp.isTaskbarPresent) {
+            return mDp.getOverviewActionsClaimedSpaceBelow();
+        }
+
+        // Align to bottom of task Rect.
+        return mDp.heightPx - mTaskSize.bottom - mDp.overviewActionsTopMarginPx
+                - mDp.overviewActionsHeight;
     }
 
     /**
-     * Set the device profile for this view to draw with.
+     * Updates device profile and task size for this view to draw with.
      */
-    public void setDp(DeviceProfile dp) {
+    public void updateDimension(DeviceProfile dp, Rect taskSize) {
         mDp = dp;
+        mTaskSize.set(taskSize);
         updateVerticalMargin(DisplayController.getNavigationMode(getContext()));
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -256,46 +276,5 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
         mSplitButton.setVisibility(visible ? VISIBLE : GONE);
         findViewById(R.id.action_split_space).setVisibility(visible ? VISIBLE : GONE);
-    }
-
-    /** Get the top margin associated with the action buttons in Overview. */
-    public static int getOverviewActionsTopMarginPx(NavigationMode mode, DeviceProfile dp) {
-        // In vertical bar, use the smaller task margin for the top regardless of mode
-        if (dp.isVerticalBarLayout()) {
-            return dp.overviewTaskMarginPx;
-        }
-
-        if (mode == NavigationMode.THREE_BUTTONS) {
-            return dp.overviewActionsMarginThreeButtonPx;
-        }
-
-        return dp.overviewActionsTopMarginGesturePx;
-    }
-
-    /** Get the bottom margin associated with the action buttons in Overview. */
-    public static int getOverviewActionsBottomMarginPx(NavigationMode mode, DeviceProfile dp) {
-        int bottomInset = dp.getInsets().bottom;
-
-        if (dp.isVerticalBarLayout()) {
-            return bottomInset;
-        }
-
-        if (mode == NavigationMode.THREE_BUTTONS) {
-            int bottomMargin = dp.overviewActionsMarginThreeButtonPx + bottomInset;
-            if (dp.isTaskbarPresent) {
-                // Align vertically, using taskbar height + mDp.taskbarOffsetY() to estimate where
-                // the button nav top is.
-                int actionsTop = (dp.heightPx - bottomMargin - bottomInset)
-                        - dp.overviewActionsHeight;
-                int navTop = dp.heightPx - (dp.taskbarSize + dp.getTaskbarOffsetY());
-                bottomMargin -=
-                        navTop - actionsTop + ((dp.taskbarSize - dp.overviewActionsHeight) / 2);
-            }
-            return bottomMargin;
-        }
-
-        // There is no bottom inset when taskbar is present, use stashed taskbar as padding instead.
-        return dp.overviewActionsBottomMarginGesturePx
-                + (dp.isTaskbarPresent ? dp.stashedTaskbarSize : bottomInset);
     }
 }

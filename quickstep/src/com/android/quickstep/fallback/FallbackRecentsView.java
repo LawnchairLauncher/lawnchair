@@ -221,6 +221,9 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         setOverviewStateEnabled(true);
         setOverviewGridEnabled(toState.displayOverviewTasksAsGrid(mActivity.getDeviceProfile()));
         setOverviewFullscreenEnabled(toState.isFullScreen());
+        if (toState == MODAL_TASK) {
+            setOverviewSelectEnabled(true);
+        }
         Log.d(BAD_STATE, "FRV onStateTransitionStart setFreezeVisibility=true, toState=" + toState);
         setFreezeViewVisibility(true);
     }
@@ -236,6 +239,9 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         Log.d(BAD_STATE, "FRV onStateTransitionComplete setFreezeVisibility=false, finalState="
                 + finalState);
         setFreezeViewVisibility(false);
+        if (finalState != MODAL_TASK) {
+            setOverviewSelectEnabled(false);
+        }
 
         if (isOverlayEnabled) {
             runActionOnRemoteHandles(remoteTargetHandle ->
