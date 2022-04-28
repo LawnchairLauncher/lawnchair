@@ -32,7 +32,7 @@
     </device-padding>
 
     <device-padding
-        launcher:maxEmptySpace="80dp">
+        launcher:maxEmptySpace="170dp">
         <workspaceTopPadding
             launcher:a="0"
             launcher:b="20dp"/>
@@ -47,7 +47,7 @@
     </device-padding>
 
     <device-padding
-        launcher:maxEmptySpace="280dp">
+        launcher:maxEmptySpace="410dp">
         <workspaceTopPadding
             launcher:a="0"
             launcher:b="112dp"/>
