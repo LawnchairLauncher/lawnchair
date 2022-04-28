@@ -36,7 +36,6 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
-import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.views.ActivityContext;
 
 import java.util.Arrays;
@@ -94,31 +93,21 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
         // The type of this item
         public int viewType;
 
-        // The section name of this item.  Note that there can be multiple items with different
-        // sectionNames in the same section
-        public String sectionName = null;
         // The row that this item shows up on
         public int rowIndex;
         // The index of this app in the row
         public int rowAppIndex;
         // The associated ItemInfoWithIcon for the item
-        public ItemInfoWithIcon itemInfo = null;
-        // The index of this app not including sections
-        public int appIndex = -1;
-        // Search section associated to result
-        public DecorationInfo decorationInfo = null;
+        public AppInfo itemInfo = null;
 
         /**
          * Factory method for AppIcon AdapterItem
          */
-        public static AdapterItem asApp(int pos, String sectionName, AppInfo appInfo,
-                int appIndex) {
+        public static AdapterItem asApp(int pos, AppInfo appInfo) {
             AdapterItem item = new AdapterItem();
             item.viewType = VIEW_TYPE_ICON;
             item.position = pos;
-            item.sectionName = sectionName;
             item.itemInfo = appInfo;
-            item.appIndex = appIndex;
             return item;
         }
 
@@ -267,11 +256,7 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 AdapterItem adapterItem = mApps.getAdapterItems().get(position);
                 BubbleTextView icon = (BubbleTextView) holder.itemView;
                 icon.reset();
-                if (adapterItem.itemInfo instanceof AppInfo) {
-                    icon.applyFromApplicationInfo((AppInfo) adapterItem.itemInfo);
-                } else {
-                    icon.applyFromItemInfoWithIcon(adapterItem.itemInfo);
-                }
+                icon.applyFromApplicationInfo(adapterItem.itemInfo);
                 break;
             case VIEW_TYPE_EMPTY_SEARCH:
                 TextView emptyViewText = (TextView) holder.itemView;
