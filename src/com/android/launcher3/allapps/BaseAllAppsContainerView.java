@@ -80,7 +80,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         OnDeviceProfileChangeListener, OnActivePageChangedListener,
         ScrimView.ScrimDrawingController {
 
-    protected static final String BUNDLE_KEY_CURRENT_PAGE = "launcher.allapps.current_page";
+    private static final String BUNDLE_KEY_CURRENT_PAGE = "launcher.allapps.current_page";
 
     public static final float PULL_MULTIPLIER = .02f;
     public static final float FLING_VELOCITY_MULTIPLIER = 1200f;
@@ -109,7 +109,6 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
     private int mNavBarScrimHeight = 0;
 
     private AllAppsPagedView mViewPager;
-    private SearchRecyclerView mSearchRecyclerView;
 
     protected FloatingHeaderView mHeader;
     private View mBottomSheetBackground;
@@ -142,10 +141,9 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
                 mActivityContext.getSystemService(UserManager.class),
                 this,
                 Utilities.getPrefs(mActivityContext));
-        mAH = Arrays.asList(null, null, null);
-        mAH.set(AdapterHolder.MAIN, new AdapterHolder(AdapterHolder.MAIN));
-        mAH.set(AdapterHolder.WORK, new AdapterHolder(AdapterHolder.WORK));
-        mAH.set(AdapterHolder.SEARCH, new AdapterHolder(AdapterHolder.SEARCH));
+        mAH = Arrays.asList(null, null);
+        mAH.set(AdapterHolder.MAIN, new AdapterHolder(false /* isWork */));
+        mAH.set(AdapterHolder.WORK, new AdapterHolder(true /* isWork */));
 
         mNavBarScrimPaint = new Paint();
         mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
@@ -177,7 +175,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         Bundle state = (Bundle) sparseArray.get(R.id.work_tab_state_id, null);
         if (state != null) {
             int currentPage = state.getInt(BUNDLE_KEY_CURRENT_PAGE, 0);
-            if (currentPage == AdapterHolder.WORK && mViewPager != null) {
+            if (currentPage != 0 && mViewPager != null) {
                 mViewPager.setCurrentPage(currentPage);
                 rebindAdapters();
             } else {
@@ -200,7 +198,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
      */
     public void setOnIconLongClickListener(OnLongClickListener listener) {
         for (AdapterHolder holder : mAH) {
-            holder.mAdapter.setOnIconLongClickListener(listener);
+            holder.adapter.setOnIconLongClickListener(listener);
         }
     }
 
@@ -215,7 +213,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
     @Override
     public void onDeviceProfileChanged(DeviceProfile dp) {
         for (AdapterHolder holder : mAH) {
-            holder.mAdapter.setAppsPerRow(dp.numShownAllAppsColumns);
+            holder.adapter.setAppsPerRow(dp.numShownAllAppsColumns);
             if (holder.mRecyclerView != null) {
                 // Remove all views and clear the pool, while keeping the data same. After this
                 // call, all the viewHolders will be recreated.
@@ -239,7 +237,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
             }
         }
         mHasWorkApps = hasWorkApps;
-        if (!mAH.get(AdapterHolder.MAIN).mAppsList.hasSearchResults()) {
+        if (!mAH.get(AdapterHolder.MAIN).mAppsList.hasFilter()) {
             rebindAdapters();
             if (hasWorkApps) {
                 mWorkManager.reset();
@@ -258,11 +256,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         if (mActivityContext.getDragLayer().isEventOverView(mBottomSheetHandleArea, ev)) {
             return true;
         }
-        if (isSearching()) {
-            return mAH.get(AdapterHolder.SEARCH).mRecyclerView
-                    .shouldContainerScroll(ev, mActivityContext.getDragLayer());
-        }
-        AllAppsRecyclerView rv = getActiveAppsRecyclerView();
+        AllAppsRecyclerView rv = getActiveRecyclerView();
         if (rv == null) {
             return true;
         }
@@ -276,7 +270,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            AllAppsRecyclerView rv = getActiveAppsRecyclerView();
+            AllAppsRecyclerView rv = getActiveRecyclerView();
             if (rv != null && rv.getScrollbar().isHitInParent(ev.getX(), ev.getY(),
                     mFastScrollerOffset)) {
                 mTouchHandler = rv.getScrollbar();
@@ -293,7 +287,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            AllAppsRecyclerView rv = getActiveAppsRecyclerView();
+            AllAppsRecyclerView rv = getActiveRecyclerView();
             if (rv != null && rv.getScrollbar().isHitInParent(ev.getX(), ev.getY(),
                     mFastScrollerOffset)) {
                 mTouchHandler = rv.getScrollbar();
@@ -326,8 +320,8 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         return getContext().getString(R.string.all_apps_button_label);
     }
 
-    /** The current apps recycler view in the container (may be hidden for search results). */
-    public AllAppsRecyclerView getActiveAppsRecyclerView() {
+    /** The current recycler view visible in the container. */
+    public AllAppsRecyclerView getActiveRecyclerView() {
         if (!mUsingTabs || isPersonalTab()) {
             return mAH.get(AdapterHolder.MAIN).mRecyclerView;
         } else {
@@ -376,15 +370,12 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         // This is a focus listener that proxies focus from a view into the list view.  This is to
         // work around the search box from getting first focus and showing the cursor.
         setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus && getActiveAppsRecyclerView() != null) {
-                getActiveAppsRecyclerView().requestFocus();
+            if (hasFocus && getActiveRecyclerView() != null) {
+                getActiveRecyclerView().requestFocus();
             }
         });
 
         mHeader = findViewById(R.id.all_apps_header);
-        mSearchRecyclerView = findViewById(R.id.search_results_list_view);
-        mAH.get(AdapterHolder.SEARCH).setup(mSearchRecyclerView,
-                /* Filter out A-Z apps */ (itemInfo, componentName) -> false);
         rebindAdapters(true /* force */);
 
         mBottomSheetBackground = findViewById(R.id.bottom_sheet_background);
@@ -447,19 +438,13 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
     }
 
     protected void rebindAdapters(boolean force) {
-        updateSearchResultsVisibility();
-
-        boolean showTabs = shouldShowTabs();
+        boolean showTabs = showTabs();
         if (showTabs == mUsingTabs && !force) {
             return;
         }
         mUsingTabs = showTabs;
+        replaceRVContainer(mUsingTabs);
 
-        if (isSearching()) {
-            return;
-        }
-
-        replaceAppsRVContainer(mUsingTabs);
         mAllAppsStore.unregisterIconContainer(mAH.get(AdapterHolder.MAIN).mRecyclerView);
         mAllAppsStore.unregisterIconContainer(mAH.get(AdapterHolder.WORK).mRecyclerView);
 
@@ -494,17 +479,6 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         mAllAppsStore.registerIconContainer(mAH.get(AdapterHolder.WORK).mRecyclerView);
     }
 
-    private void updateSearchResultsVisibility() {
-        if (isSearching()) {
-            getSearchRecyclerView().setVisibility(VISIBLE);
-            getAppsRecyclerViewContainer().setVisibility(GONE);
-        } else {
-            getSearchRecyclerView().setVisibility(GONE);
-            getAppsRecyclerViewContainer().setVisibility(VISIBLE);
-        }
-        mHeader.setActiveRV(getCurrentPage());
-    }
-
     private void setDeviceManagementResources() {
         if (mActivityContext.getStringCache() != null) {
             Button personalTab = findViewById(R.id.tab_personal);
@@ -515,23 +489,18 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         }
     }
 
-    protected boolean shouldShowTabs() {
+    protected boolean showTabs() {
         return mHasWorkApps;
     }
 
-    protected boolean isSearching() {
-        return false;
-    }
-
-    protected View replaceAppsRVContainer(boolean showTabs) {
-        for (int i = AdapterHolder.MAIN; i <= AdapterHolder.WORK; i++) {
-            AdapterHolder adapterHolder = mAH.get(i);
+    protected View replaceRVContainer(boolean showTabs) {
+        for (AdapterHolder adapterHolder : mAH) {
             if (adapterHolder.mRecyclerView != null) {
                 adapterHolder.mRecyclerView.setLayoutManager(null);
                 adapterHolder.mRecyclerView.setAdapter(null);
             }
         }
-        View oldView = getAppsRecyclerViewContainer();
+        View oldView = getRecyclerViewContainer();
         int index = indexOfChild(oldView);
         removeView(oldView);
         int layout = showTabs ? R.layout.all_apps_tabs : R.layout.all_apps_rv_layout;
@@ -552,17 +521,13 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         return newView;
     }
 
-    public View getAppsRecyclerViewContainer() {
+    public View getRecyclerViewContainer() {
         return mViewPager != null ? mViewPager : findViewById(R.id.apps_list_view);
-    }
-
-    public SearchRecyclerView getSearchRecyclerView() {
-        return mSearchRecyclerView;
     }
 
     @Override
     public void onActivePageChanged(int currentActivePage) {
-        mHeader.setActiveRV(currentActivePage);
+        mHeader.setMainActive(currentActivePage == AdapterHolder.MAIN);
         if (mAH.get(currentActivePage).mRecyclerView != null) {
             mAH.get(currentActivePage).mRecyclerView.bindFastScrollbar();
         }
@@ -591,8 +556,8 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         return isDescendantViewVisible(R.id.tab_work);
     }
 
-    public AlphabeticalAppsList<T> getSearchResultList() {
-        return mAH.get(AdapterHolder.SEARCH).mAppsList;
+    public AlphabeticalAppsList<T> getApps() {
+        return mAH.get(AdapterHolder.MAIN).mAppsList;
     }
 
     public FloatingHeaderView getFloatingHeaderView() {
@@ -601,19 +566,17 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
 
     @VisibleForTesting
     public View getContentView() {
-        return mViewPager == null ? getActiveAppsRecyclerView() : mViewPager;
+        return mViewPager == null ? getActiveRecyclerView() : mViewPager;
     }
 
     /** The current page visible in all apps. */
     public int getCurrentPage() {
-        return isSearching()
-                ? AdapterHolder.SEARCH
-                : mViewPager == null ? AdapterHolder.MAIN : mViewPager.getCurrentPage();
+        return mViewPager != null ? mViewPager.getCurrentPage() : AdapterHolder.MAIN;
     }
 
     /** The scroll bar for the active recycler view. */
     public RecyclerViewFastScroller getScrollBar() {
-        AllAppsRecyclerView rv = getActiveAppsRecyclerView();
+        AllAppsRecyclerView rv = getActiveRecyclerView();
         return rv == null ? null : rv.getScrollbar();
     }
 
@@ -622,9 +585,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         mHeader.setup(
                 mAH.get(AdapterHolder.MAIN).mRecyclerView,
                 mAH.get(AdapterHolder.WORK).mRecyclerView,
-                (SearchRecyclerView) mAH.get(AdapterHolder.SEARCH).mRecyclerView,
-                getCurrentPage(),
-                /* tabsHidden= */ mAH.get(AdapterHolder.WORK).mRecyclerView == null);
+                mAH.get(AdapterHolder.WORK).mRecyclerView == null);
 
         int padding = mHeader.getMaxTranslation();
         for (int i = 0; i < mAH.size(); i++) {
@@ -735,48 +696,39 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         return ColorUtils.blendARGB(mScrimColor, mHeaderProtectionColor, blendRatio);
     }
 
-    protected abstract BaseAllAppsAdapter<T> createAdapter(AlphabeticalAppsList<T> mAppsList,
+    protected abstract BaseAllAppsAdapter getAdapter(AlphabeticalAppsList<T> mAppsList,
             BaseAdapterProvider[] adapterProviders);
 
     protected int getHeaderBottom() {
         return (int) getTranslationY();
     }
 
-    /**
-     * Returns a view that denotes the visible part of all apps container view.
-     */
-    public View getVisibleContainerView() {
-        return mActivityContext.getDeviceProfile().isTablet ? mBottomSheetBackground : this;
-    }
-
     /** Holds a {@link BaseAllAppsAdapter} and related fields. */
     public class AdapterHolder {
         public static final int MAIN = 0;
         public static final int WORK = 1;
-        public static final int SEARCH = 2;
 
-        private final int mType;
-        public final BaseAllAppsAdapter<T> mAdapter;
+        private final boolean mIsWork;
+        public final BaseAllAppsAdapter<T> adapter;
         final RecyclerView.LayoutManager mLayoutManager;
         final AlphabeticalAppsList<T> mAppsList;
         final Rect mPadding = new Rect();
         AllAppsRecyclerView mRecyclerView;
         boolean mVerticalFadingEdge;
 
-        AdapterHolder(int type) {
-            mType = type;
-            mAppsList = new AlphabeticalAppsList<>(mActivityContext,
-                    isSearch() ? null : mAllAppsStore,
-                    isWork() ? mWorkManager.getAdapterProvider() : null);
+        AdapterHolder(boolean isWork) {
+            mIsWork = isWork;
+            mAppsList = new AlphabeticalAppsList<>(mActivityContext, mAllAppsStore,
+                    isWork ? mWorkManager.getAdapterProvider() : null);
 
             BaseAdapterProvider[] adapterProviders =
-                    isWork() ? new BaseAdapterProvider[]{mMainAdapterProvider,
+                    isWork ? new BaseAdapterProvider[]{mMainAdapterProvider,
                             mWorkManager.getAdapterProvider()}
                             : new BaseAdapterProvider[]{mMainAdapterProvider};
 
-            mAdapter = createAdapter(mAppsList, adapterProviders);
-            mAppsList.setAdapter(mAdapter);
-            mLayoutManager = mAdapter.getLayoutManager();
+            adapter = getAdapter(mAppsList, adapterProviders);
+            mAppsList.setAdapter(adapter);
+            mLayoutManager = adapter.getLayoutManager();
         }
 
         void setup(@NonNull View rv, @Nullable ItemInfoMatcher matcher) {
@@ -785,14 +737,14 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
             mRecyclerView.setEdgeEffectFactory(createEdgeEffectFactory());
             mRecyclerView.setApps(mAppsList);
             mRecyclerView.setLayoutManager(mLayoutManager);
-            mRecyclerView.setAdapter(mAdapter);
+            mRecyclerView.setAdapter(adapter);
             mRecyclerView.setHasFixedSize(true);
             // No animations will occur when changes occur to the items in this RecyclerView.
             mRecyclerView.setItemAnimator(null);
             mRecyclerView.addOnScrollListener(mScrollListener);
             FocusedItemDecorator focusedItemDecorator = new FocusedItemDecorator(mRecyclerView);
             mRecyclerView.addItemDecoration(focusedItemDecorator);
-            mAdapter.setIconFocusListener(focusedItemDecorator.getFocusListener());
+            adapter.setIconFocusListener(focusedItemDecorator.getFocusListener());
             applyVerticalFadingEdgeEnabled(mVerticalFadingEdge);
             applyPadding();
         }
@@ -800,7 +752,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         void applyPadding() {
             if (mRecyclerView != null) {
                 int bottomOffset = 0;
-                if (isWork() && mWorkManager.getWorkModeSwitch() != null) {
+                if (mIsWork && mWorkManager.getWorkModeSwitch() != null) {
                     bottomOffset = mInsets.bottom + mWorkManager.getWorkModeSwitch().getHeight();
                 }
                 mRecyclerView.setPadding(mPadding.left, mPadding.top, mPadding.right,
@@ -810,15 +762,15 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
 
         private void applyVerticalFadingEdgeEnabled(boolean enabled) {
             mVerticalFadingEdge = enabled;
-            mRecyclerView.setVerticalFadingEdgeEnabled(!mUsingTabs && mVerticalFadingEdge);
+            mAH.get(AdapterHolder.MAIN).mRecyclerView.setVerticalFadingEdgeEnabled(!mUsingTabs
+                    && mVerticalFadingEdge);
         }
+    }
 
-        private boolean isWork() {
-            return mType == WORK;
-        }
-
-        private boolean isSearch() {
-            return mType == SEARCH;
-        }
+    /**
+     * Returns a view that denotes the visible part of all apps container view.
+     */
+    public View getVisibleContainerView() {
+        return mActivityContext.getDeviceProfile().isTablet ? mBottomSheetBackground : this;
     }
 }
