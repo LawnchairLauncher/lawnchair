@@ -96,7 +96,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private static final int MAX_SEARCH_LOOP_COUNT = 20;
 
     private static final int[] STATE_PRESSED = new int[]{android.R.attr.state_pressed};
-    private static final float HIGHLIGHT_SCALE = 1.16f;
 
     private final PointF mTranslationForReorderBounce = new PointF(0, 0);
     private final PointF mTranslationForReorderPreview = new PointF(0, 0);
@@ -259,6 +258,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         mDotParams.scale = 0f;
         mForceHideDot = false;
         setBackground(null);
+
+        setTag(null);
+        if (mIconLoadRequest != null) {
+            mIconLoadRequest.cancel();
+            mIconLoadRequest = null;
+        }
     }
 
     private void cancelDotScaleAnim() {
@@ -363,8 +368,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         }
     }
 
-    public void setBubbleTextHolder(
-            BubbleTextHolder bubbleTextHolder) {
+    public void setBubbleTextHolder(BubbleTextHolder bubbleTextHolder) {
         mBubbleTextHolder = bubbleTextHolder;
     }
 
@@ -1020,19 +1024,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         getIconBounds(mIconSize, bounds);
     }
 
-    private int getIconSizeForDisplay(int display) {
-        DeviceProfile grid = mActivity.getDeviceProfile();
-        switch (display) {
-            case DISPLAY_ALL_APPS:
-                return grid.allAppsIconSizePx;
-            case DISPLAY_FOLDER:
-                return grid.folderChildIconSizePx;
-            case DISPLAY_WORKSPACE:
-            default:
-                return grid.iconSizePx;
-        }
-    }
-
     public void getSourceVisualDragBounds(Rect bounds) {
         getIconBounds(mIconSize, bounds);
     }
@@ -1045,8 +1036,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     }
 
     private void resetIconScale() {
-        if (mIcon instanceof FastBitmapDrawable) {
-            ((FastBitmapDrawable) mIcon).resetScale();
+        if (mIcon != null) {
+            mIcon.resetScale();
         }
     }
 

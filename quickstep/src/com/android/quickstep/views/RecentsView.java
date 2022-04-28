@@ -455,6 +455,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected boolean mFreezeViewVisibility;
     private boolean mOverviewGridEnabled;
     private boolean mOverviewFullscreenEnabled;
+    private boolean mOverviewSelectEnabled;
 
     private float mAdjacentPageHorizontalOffset = 0;
     protected float mTaskViewsSecondaryTranslation = 0;
@@ -1637,11 +1638,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // Propagate DeviceProfile change event.
         runActionOnRemoteHandles(
                 remoteTargetHandle -> remoteTargetHandle.getTaskViewSimulator().setDp(dp));
-        mActionsView.setDp(dp);
         mOrientationState.setDeviceProfile(dp);
 
         // Update RecentsView and TaskView's DeviceProfile dependent layout.
         updateOrientationHandler();
+        mActionsView.updateDimension(dp, mLastComputedTaskSize);
     }
 
     private void updateOrientationHandler() {
@@ -1706,7 +1707,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 dp.widthPx - mInsets.right - mTempRect.right,
                 dp.heightPx - mInsets.bottom - mTempRect.bottom);
 
-        mSizeStrategy.calculateGridSize(mActivity, mActivity.getDeviceProfile(),
+        mSizeStrategy.calculateGridSize(mActivity.getDeviceProfile(),
                 mLastComputedGridSize);
         mSizeStrategy.calculateGridTaskSize(mActivity, mActivity.getDeviceProfile(),
                 mLastComputedGridTaskSize, mOrientationHandler);
@@ -1764,7 +1765,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Returns the size of task selected to enter modal state.
      */
     public Point getSelectedTaskSize() {
-        mSizeStrategy.calculateTaskSize(mActivity, mActivity.getDeviceProfile(), mTempRect);
+        mSizeStrategy.calculateTaskSize(mActivity, mActivity.getDeviceProfile(),
+                mTempRect);
         return new Point(mTempRect.width(), mTempRect.height());
     }
 
@@ -3689,10 +3691,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         // Update the pivots such that when the task is scaled, it fills the full page
         getTaskSize(mTempRect);
-        getPagedViewOrientedState().getFullScreenScaleAndPivot(mTempRect,
-                mActivity.getDeviceProfile(), mTempPointF);
-        setPivotX(mTempPointF.x);
-        setPivotY(mTempPointF.y);
+        updatePivots();
         setTaskModalness(mTaskModalness);
         mLastComputedTaskStartPushOutDistance = null;
         mLastComputedTaskEndPushOutDistance = null;
@@ -3702,6 +3701,18 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         .setScroll(getScrollOffset()));
         setImportantForAccessibility(isModal() ? IMPORTANT_FOR_ACCESSIBILITY_NO
                 : IMPORTANT_FOR_ACCESSIBILITY_AUTO);
+    }
+
+    private void updatePivots() {
+        if (mOverviewSelectEnabled) {
+            setPivotX(mLastComputedTaskSize.centerX());
+            setPivotY(mLastComputedTaskSize.bottom);
+        } else {
+            getPagedViewOrientedState().getFullScreenScaleAndPivot(mTempRect,
+                    mActivity.getDeviceProfile(), mTempPointF);
+            setPivotX(mTempPointF.x);
+            setPivotY(mTempPointF.y);
+        }
     }
 
     private void updatePageOffsets() {
@@ -4862,6 +4873,17 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // Request layout to ensure scroll position is recalculated with updated
             // mFullscreenProgress.
             requestLayout();
+        }
+    }
+
+    /**
+     * Update whether RecentsView is in select mode. Should be enabled before transitioning to
+     * select mode, and only disabled after transitioning from select mode.
+     */
+    public void setOverviewSelectEnabled(boolean overviewSelectEnabled) {
+        if (mOverviewSelectEnabled != overviewSelectEnabled) {
+            mOverviewSelectEnabled = overviewSelectEnabled;
+            updatePivots();
         }
     }
 
