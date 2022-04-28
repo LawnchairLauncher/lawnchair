@@ -29,7 +29,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
-import android.util.MathUtils;
 import android.util.Pair;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
@@ -195,10 +194,10 @@ public class LauncherBackAnimationController {
         float followWidth = screenWidth - dX;
         // The 'progress width' is the width of the window if it strictly linearly interpolates
         // to minimum scale base on progress.
-        float progressWidth = MathUtils.lerp(1, MIN_WINDOW_SCALE, progress) * screenWidth;
+        float progressWidth = Utilities.mapRange(progress, 1, MIN_WINDOW_SCALE) * screenWidth;
         // The final width is derived from interpolating between the follow with and progress width
         // using gesture progress.
-        float width = MathUtils.lerp(followWidth, progressWidth, progress);
+        float width = Utilities.mapRange(progress, followWidth, progressWidth);
         float height = screenHeight / screenWidth * width;
         float deltaYRatio = (event.getTouchY() - mInitialTouchPos.y) / screenHeight;
         // Base the window movement in the Y axis on the touch movement in the Y axis.
@@ -221,13 +220,15 @@ public class LauncherBackAnimationController {
             return;
         }
         mCurrentRect.set(
-                MathUtils.lerp(mCancelRect.left, mStartRect.left, progress),
-                MathUtils.lerp(mCancelRect.top, mStartRect.top, progress),
-                MathUtils.lerp(mCancelRect.right, mStartRect.right, progress),
-                MathUtils.lerp(mCancelRect.bottom, mStartRect.bottom, progress));
+                Utilities.mapRange(progress, mCancelRect.left, mStartRect.left),
+                Utilities.mapRange(progress, mCancelRect.top, mStartRect.top),
+                Utilities.mapRange(progress, mCancelRect.right, mStartRect.right),
+                Utilities.mapRange(progress, mCancelRect.bottom, mStartRect.bottom));
 
+        float endCornerRadius = Utilities.mapRange(
+                mBackProgress, mWindowScaleStartCornerRadius, mWindowScaleEndCornerRadius);
         float cornerRadius = Utilities.mapRange(
-                progress, mWindowScaleEndCornerRadius, mWindowScaleStartCornerRadius);
+                progress, endCornerRadius, mWindowScaleStartCornerRadius);
         applyTransform(mCurrentRect, cornerRadius);
     }
 
@@ -267,12 +268,15 @@ public class LauncherBackAnimationController {
             mLauncher.getStateManager().moveToRestState();
         }
 
+        float cornerRadius = Utilities.mapRange(
+                mBackProgress, mWindowScaleStartCornerRadius, mWindowScaleEndCornerRadius);
         Pair<RectFSpringAnim, AnimatorSet> pair =
                 mQuickstepTransitionManager.createWallpaperOpenAnimations(
                     new RemoteAnimationTargetCompat[]{mBackTarget},
                     new RemoteAnimationTargetCompat[]{},
                     false /* fromUnlock */,
-                    mCurrentRect);
+                    mCurrentRect,
+                    cornerRadius);
         startTransitionAnimations(pair.first, pair.second);
         mLauncher.clearForceInvisibleFlag(INVISIBLE_ALL);
     }
