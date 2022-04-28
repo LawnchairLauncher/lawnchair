@@ -80,7 +80,7 @@ public class ActivityAllAppsContainerView<T extends Context & AppLauncher
         OnClickListener marketSearchClickListener = (v) -> mActivityContext.startActivitySafely(v,
                 marketSearchIntent, null);
         for (int i = 0; i < mAH.size(); i++) {
-            mAH.get(i).mAdapter.setLastSearchQuery(query, marketSearchClickListener);
+            mAH.get(i).adapter.setLastSearchQuery(query, marketSearchClickListener);
         }
         mIsSearching = true;
         rebindAdapters();
@@ -142,7 +142,7 @@ public class ActivityAllAppsContainerView<T extends Context & AppLauncher
 
     @Override
     public String getDescription() {
-        if (!mUsingTabs && isSearching()) {
+        if (!mUsingTabs && mIsSearching) {
             return getContext().getString(R.string.all_apps_search_results);
         } else {
             return super.getDescription();
@@ -150,13 +150,8 @@ public class ActivityAllAppsContainerView<T extends Context & AppLauncher
     }
 
     @Override
-    protected boolean shouldShowTabs() {
-        return super.shouldShowTabs() && !isSearching();
-    }
-
-    @Override
-    public boolean isSearching() {
-        return mIsSearching;
+    protected boolean showTabs() {
+        return super.showTabs() && !mIsSearching;
     }
 
     @Override
@@ -178,19 +173,15 @@ public class ActivityAllAppsContainerView<T extends Context & AppLauncher
     }
 
     @Override
-    protected View replaceAppsRVContainer(boolean showTabs) {
-        View rvContainer = super.replaceAppsRVContainer(showTabs);
+    protected View replaceRVContainer(boolean showTabs) {
+        View rvContainer = super.replaceRVContainer(showTabs);
 
         removeCustomRules(rvContainer);
-        removeCustomRules(getSearchRecyclerView());
         if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
             alignParentTop(rvContainer, showTabs);
-            alignParentTop(getSearchRecyclerView(), showTabs);
             layoutAboveSearchContainer(rvContainer);
-            layoutAboveSearchContainer(getSearchRecyclerView());
         } else {
             layoutBelowSearchContainer(rvContainer, showTabs);
-            layoutBelowSearchContainer(getSearchRecyclerView(), showTabs);
         }
 
         return rvContainer;
@@ -217,7 +208,7 @@ public class ActivityAllAppsContainerView<T extends Context & AppLauncher
 
         float prog = Utilities.boundToRange((float) scrolledOffset / mHeaderThreshold, 0f, 1f);
         boolean bgVisible = mSearchUiManager.getBackgroundVisibility();
-        if (scrolledOffset == 0 && !isSearching()) {
+        if (scrolledOffset == 0 && !mIsSearching) {
             bgVisible = true;
         } else if (scrolledOffset > mHeaderThreshold) {
             bgVisible = false;
@@ -251,7 +242,7 @@ public class ActivityAllAppsContainerView<T extends Context & AppLauncher
         int topMargin = getContext().getResources().getDimensionPixelSize(
                 R.dimen.all_apps_header_top_margin);
         if (includeTabsMargin) {
-            topMargin += getContext().getResources().getDimensionPixelSize(
+            topMargin = topMargin + getContext().getResources().getDimensionPixelSize(
                     R.dimen.all_apps_header_pill_height);
         }
         layoutParams.topMargin = topMargin;
@@ -292,9 +283,9 @@ public class ActivityAllAppsContainerView<T extends Context & AppLauncher
     }
 
     @Override
-    protected BaseAllAppsAdapter<T> createAdapter(AlphabeticalAppsList<T> appsList,
+    protected BaseAllAppsAdapter getAdapter(AlphabeticalAppsList<T> mAppsList,
             BaseAdapterProvider[] adapterProviders) {
-        return new AllAppsGridAdapter<>(mActivityContext, getLayoutInflater(), appsList,
+        return new AllAppsGridAdapter<>(mActivityContext, getLayoutInflater(), mAppsList,
                 adapterProviders);
     }
 }
