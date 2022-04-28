@@ -132,7 +132,9 @@ public class FailureWatcher extends TestWatcher {
         dumpCommand("logcat -d -s TestRunner", diagFile(description, "FilteredLogcat", "txt"));
 
         // Dump bugreport
-        if (launcher.getSystemAnomalyMessage(false, false) != null) {
+        final String systemAnomalyMessage = launcher.getSystemAnomalyMessage(false, false);
+        if (systemAnomalyMessage != null) {
+            Log.d(TAG, "Saving bugreport, system anomaly message: " + systemAnomalyMessage, e);
             dumpCommand("bugreportz -s", diagFile(description, "Bugreport", "zip"));
         }
     }
