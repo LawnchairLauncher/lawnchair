@@ -208,7 +208,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
          * This method parses and adds a deep shortcut.
          * @return item id if the shortcut is successfully added else -1
          */
-        public int parseAndAddDeepShortcut(String shortcutId, String packageName) {
+        private int parseAndAddDeepShortcut(String shortcutId, String packageName) {
             try {
                 LauncherApps launcherApps = mContext.getSystemService(LauncherApps.class);
                 launcherApps.pinShortcuts(packageName, Collections.singletonList(shortcutId),
