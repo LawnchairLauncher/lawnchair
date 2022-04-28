@@ -124,14 +124,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Instalace aplikace <xliff:g id="NAME">%1$s</xliff:g>, dokončeno <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Stahování aplikace <xliff:g id="NAME">%1$s</xliff:g> (dokončeno <xliff:g id="PROGRESS">%2$s</xliff:g>)"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Instalace aplikace <xliff:g id="NAME">%1$s</xliff:g> čeká na zahájení"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"Je nutná aktualizace aplikace"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"Aplikace pro tuto ikonu není nainstalována. Můžete ji ručně aktualizovat, aby zkratka znovu fungovala, případně můžete ikonu odstranit."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"Aktualizovat"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"Odstranit"</string>
     <string name="widgets_list" msgid="796804551140113767">"Seznam widgetů"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Seznam widgetů zavřen"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Přidat na plochu"</string>

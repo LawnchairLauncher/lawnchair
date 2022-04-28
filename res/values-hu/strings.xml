@@ -124,14 +124,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Folyamatban van a(z) <xliff:g id="NAME">%1$s</xliff:g> telepítése, <xliff:g id="PROGRESS">%2$s</xliff:g> kész"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"A(z) <xliff:g id="NAME">%1$s</xliff:g> letöltése, <xliff:g id="PROGRESS">%2$s</xliff:g> kész"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"A(z) <xliff:g id="NAME">%1$s</xliff:g> telepítésre vár"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"Alkalmazásfrissítés szükséges"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"Az ikonhoz tartozó alkalmazás nincs frissítve. A parancsikon újbóli engedélyezéséhez frissítse az alkalmazást, vagy távolítsa ez az ikont."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"Frissítés"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"Eltávolítás"</string>
     <string name="widgets_list" msgid="796804551140113767">"Widgetlista"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Widgetlista bezárva"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Hozzáadás a kezdőképernyőhöz"</string>

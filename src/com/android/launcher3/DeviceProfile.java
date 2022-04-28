@@ -195,9 +195,7 @@ public class DeviceProfile {
     public int overviewTaskIconDrawableSizeGridPx;
     public int overviewTaskThumbnailTopMarginPx;
     public final int overviewActionsHeight;
-    public final int overviewActionsMarginThreeButtonPx;
-    public final int overviewActionsTopMarginGesturePx;
-    public final int overviewActionsBottomMarginGesturePx;
+    public final int overviewActionsTopMarginPx;
     public final int overviewActionsButtonSpacing;
     public int overviewPageSpacing;
     public int overviewRowSpacing;
@@ -408,16 +406,14 @@ public class DeviceProfile {
         overviewTaskIconDrawableSizeGridPx =
                 res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_drawable_size_grid);
         overviewTaskThumbnailTopMarginPx = overviewTaskIconSizePx + overviewTaskMarginPx * 2;
-        overviewActionsTopMarginGesturePx = res.getDimensionPixelSize(
-                R.dimen.overview_actions_top_margin_gesture);
-        overviewActionsBottomMarginGesturePx = res.getDimensionPixelSize(
-                R.dimen.overview_actions_bottom_margin_gesture);
+        // In vertical bar, use the smaller task margin for the top regardless of mode.
+        overviewActionsTopMarginPx = isVerticalBarLayout()
+                ? overviewTaskMarginPx
+                : res.getDimensionPixelSize(R.dimen.overview_actions_top_margin);
         overviewPageSpacing = res.getDimensionPixelSize(R.dimen.overview_page_spacing);
         overviewActionsButtonSpacing = res.getDimensionPixelSize(
                 R.dimen.overview_actions_button_spacing);
         overviewActionsHeight = res.getDimensionPixelSize(R.dimen.overview_actions_height);
-        overviewActionsMarginThreeButtonPx = res.getDimensionPixelSize(
-                R.dimen.overview_actions_margin_three_button);
         // Grid task's top margin is only overviewTaskIconSizePx + overviewTaskMarginGridPx, but
         // overviewTaskThumbnailTopMarginPx is applied to all TaskThumbnailView, so exclude the
         // extra  margin when calculating row spacing.
@@ -658,7 +654,7 @@ public class DeviceProfile {
         Point workspacePadding = getTotalWorkspacePadding();
 
         // Check to see if the icons fit within the available height.
-        float usedHeight = getCellLayoutHeight();
+        float usedHeight = getCellLayoutHeightSpecification();
         final int maxHeight = getWorkspaceHeight(workspacePadding);
         float extraHeight = Math.max(0, maxHeight - usedHeight);
         float scaleY = maxHeight / usedHeight;
@@ -669,7 +665,8 @@ public class DeviceProfile {
             // We scale to fit the cellWidth and cellHeight in the available space.
             // The benefit of scalable grids is that we can get consistent aspect ratios between
             // devices.
-            float usedWidth = getCellLayoutWidth() + (desiredWorkspaceHorizontalMarginPx * 2);
+            float usedWidth =
+                    getCellLayoutWidthSpecification() + (desiredWorkspaceHorizontalMarginPx * 2);
             // We do not subtract padding here, as we also scale the workspace padding if needed.
             scaleX = availableWidthPx / usedWidth;
             shouldScale = true;
@@ -678,19 +675,19 @@ public class DeviceProfile {
         if (shouldScale) {
             float scale = Math.min(scaleX, scaleY);
             updateIconSize(scale, res);
-            extraHeight = Math.max(0, maxHeight - getCellLayoutHeight());
+            extraHeight = Math.max(0, maxHeight - getCellLayoutHeightSpecification());
         }
 
         updateAvailableFolderCellDimensions(res);
         return Math.round(extraHeight);
     }
 
-    private int getCellLayoutHeight() {
+    private int getCellLayoutHeightSpecification() {
         return (cellHeightPx * inv.numRows) + (cellLayoutBorderSpacePx.y * (inv.numRows - 1))
                 + cellLayoutPaddingPx.top + cellLayoutPaddingPx.bottom;
     }
 
-    private int getCellLayoutWidth() {
+    private int getCellLayoutWidthSpecification() {
         int numColumns = isTwoPanels ? inv.numColumns * 2 : inv.numColumns;
         return (cellWidthPx * numColumns) + (cellLayoutBorderSpacePx.x * (numColumns - 1))
                 + cellLayoutPaddingPx.left + cellLayoutPaddingPx.right;
@@ -920,7 +917,7 @@ public class DeviceProfile {
     /**
      * Gets the scaled bottom of the workspace in px for the spring-loaded edit state.
      */
-    public float getWorkspaceSpringLoadShrunkBottom() {
+    private float getWorkspaceSpringLoadShrunkBottom() {
         int topOfHotseat = hotseatBarSizePx + springLoadedHotseatBarTopMarginPx;
         workspaceSpringLoadShrunkBottom =
                 heightPx - (isVerticalBarLayout() ? getVerticalHotseatLastItemBottomOffset()
@@ -931,8 +928,28 @@ public class DeviceProfile {
     /**
      * Gets the minimum visible amount of the next workspace page when in the spring-loaded state.
      */
-    public float getWorkspaceSpringLoadedMinimumNextPageVisible() {
+    private float getWorkspaceSpringLoadedMinimumNextPageVisible() {
         return getCellSize().x / 2f;
+    }
+
+    /**
+     * Gets the scale of the workspace for the spring-loaded edit state.
+     */
+    public float getWorkspaceSpringLoadScale() {
+        float cellLayoutHeight = availableHeightPx - workspacePadding.top - workspacePadding.bottom;
+        float scale = (getWorkspaceSpringLoadShrunkBottom() - getWorkspaceSpringLoadShrunkTop())
+                / cellLayoutHeight;
+        scale = Math.min(scale, 1f);
+
+        // Reduce scale if next pages would not be visible after scaling the workspace
+        int workspaceWidth = getWorkspaceWidth();
+        float scaledWorkspaceWidth = workspaceWidth * scale;
+        float maxAvailableWidth =
+                workspaceWidth - (2 * getWorkspaceSpringLoadedMinimumNextPageVisible());
+        if (scaledWorkspaceWidth > maxAvailableWidth) {
+            scale *= maxAvailableWidth / scaledWorkspaceWidth;
+        }
+        return scale;
     }
 
     public int getWorkspaceWidth() {
@@ -1101,6 +1118,24 @@ public class DeviceProfile {
         } else {
             return (getQsbOffsetY() - taskbarSize) / 2;
         }
+    }
+
+    /**
+     * Returns the number of pixels required below OverviewActions excluding insets.
+     */
+    public int getOverviewActionsClaimedSpaceBelow() {
+        if (isTaskbarPresent && !isGestureMode) {
+            // Align vertically to where nav buttons are.
+            return  ((taskbarSize - overviewActionsHeight) / 2) + getTaskbarOffsetY();
+        }
+
+        return 0;
+    }
+
+    /** Gets the space that the overview actions will take, including bottom margin. */
+    public int getOverviewActionsClaimedSpace() {
+        return overviewActionsTopMarginPx + overviewActionsHeight
+                + getOverviewActionsClaimedSpaceBelow();
     }
 
     /**
@@ -1323,12 +1358,10 @@ public class DeviceProfile {
                 overviewTaskIconDrawableSizeGridPx));
         writer.println(prefix + pxToDpStr("overviewTaskThumbnailTopMarginPx",
                 overviewTaskThumbnailTopMarginPx));
-        writer.println(prefix + pxToDpStr("overviewActionsMarginThreeButtonPx",
-                overviewActionsMarginThreeButtonPx));
-        writer.println(prefix + pxToDpStr("overviewActionsTopMarginGesturePx",
-                overviewActionsTopMarginGesturePx));
-        writer.println(prefix + pxToDpStr("overviewActionsBottomMarginGesturePx",
-                overviewActionsBottomMarginGesturePx));
+        writer.println(prefix + pxToDpStr("overviewActionsTopMarginPx",
+                overviewActionsTopMarginPx));
+        writer.println(prefix + pxToDpStr("overviewActionsHeight",
+                overviewActionsHeight));
         writer.println(prefix + pxToDpStr("overviewActionsButtonSpacing",
                 overviewActionsButtonSpacing));
         writer.println(prefix + pxToDpStr("overviewPageSpacing", overviewPageSpacing));
@@ -1344,6 +1377,8 @@ public class DeviceProfile {
                 prefix + pxToDpStr("workspaceSpringLoadShrunkTop", workspaceSpringLoadShrunkTop));
         writer.println(prefix + pxToDpStr("workspaceSpringLoadShrunkBottom",
                 workspaceSpringLoadShrunkBottom));
+        writer.println(
+                prefix + pxToDpStr("getWorkspaceSpringLoadScale()", getWorkspaceSpringLoadScale()));
     }
 
     private static Context getContext(Context c, Info info, int orientation, WindowBounds bounds) {

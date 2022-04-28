@@ -124,14 +124,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> installerer, <xliff:g id="PROGRESS">%2$s</xliff:g> er fullført"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Laster ned <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> er fullført"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Venter på å installere <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"Appen må oppdateres"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"Appen for dette ikonet er ikke oppdatert. Du kan oppdatere manuelt for å aktivere denne snarveien igjen, eller du kan fjerne ikonet."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"Oppdater"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"Fjern"</string>
     <string name="widgets_list" msgid="796804551140113767">"Modulliste"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Modullisten er lukket"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Legg til på startskjermen"</string>

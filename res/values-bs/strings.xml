@@ -124,14 +124,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Instaliranje aplikacije <xliff:g id="NAME">%1$s</xliff:g>, završeno je <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> se preuzima, završeno <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> čeka da se instalira"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"Potrebno je ažurirati aplikaciju"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"Aplikacija za ovu ikonu nije ažurirana. Možete je ažurirati ručno da ponovo omogućite ovu prečicu ili možete ukloniti ikonu."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"Ažuriraj"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"Ukloni"</string>
     <string name="widgets_list" msgid="796804551140113767">"Spisak vidžeta"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Spisak vidžeta je zatvoren"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Dodavanje na početni ekran"</string>
