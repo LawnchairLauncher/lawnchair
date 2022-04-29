@@ -2750,7 +2750,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                         packageName);
 
         if (supportsAllAppsState && isInState(LauncherState.ALL_APPS)) {
-            return getFirstMatch(Collections.singletonList(mAppsView.getActiveAppsRecyclerView()),
+            return getFirstMatch(Collections.singletonList(mAppsView.getActiveRecyclerView()),
                     preferredItem, packageAndUserAndApp);
         } else {
             List<ViewGroup> containers = new ArrayList<>(mWorkspace.getPanelCount() + 1);
