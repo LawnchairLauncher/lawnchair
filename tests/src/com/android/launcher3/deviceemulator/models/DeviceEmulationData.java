@@ -135,7 +135,7 @@ public class DeviceEmulationData {
             resourceOverrides.put(s, getDimenByName(s, context.getResources(), 0));
         }
         return new DeviceEmulationData(info.currentSize.x, info.currentSize.y,
-                info.densityDpi, info.cutout, code, grids, resourceOverrides);
+                info.getDensityDpi(), info.cutout, code, grids, resourceOverrides);
     }
 
     public static DeviceEmulationData getDevice(String deviceCode) throws Exception {
