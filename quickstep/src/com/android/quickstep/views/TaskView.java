@@ -20,7 +20,6 @@ import static android.view.Display.DEFAULT_DISPLAY;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_TASK_MENU;
-import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.Utilities.comp;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
@@ -1026,7 +1025,7 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     public float getTaskCornerRadius() {
-        return TaskCornerRadius.get(mActivity);
+        return mCurrentFullscreenParams.mCornerRadius;
     }
 
     @Override
