@@ -18,8 +18,6 @@ package com.android.launcher3.allapps;
 
 import android.content.Context;
 
-import androidx.annotation.Nullable;
-
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
@@ -69,7 +67,6 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
 
     // The set of apps from the system
     private final List<AppInfo> mApps = new ArrayList<>();
-    @Nullable
     private final AllAppsStore mAllAppsStore;
 
     // The number of results in current adapter
@@ -87,16 +84,14 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
     private int mNumAppRowsInAdapter;
     private ItemInfoMatcher mItemFilter;
 
-    public AlphabeticalAppsList(Context context, @Nullable AllAppsStore appsStore,
+    public AlphabeticalAppsList(Context context, AllAppsStore appsStore,
             WorkAdapterProvider adapterProvider) {
         mAllAppsStore = appsStore;
         mActivityContext = ActivityContext.lookupContext(context);
         mAppNameComparator = new AppInfoComparator(context);
         mWorkAdapterProvider = adapterProvider;
         mNumAppsPerRowAllApps = mActivityContext.getDeviceProfile().inv.numAllAppsColumns;
-        if (mAllAppsStore != null) {
-            mAllAppsStore.addUpdateListener(this);
-        }
+        mAllAppsStore.addUpdateListener(this);
     }
 
     public void updateItemFilter(ItemInfoMatcher itemFilter) {
@@ -169,9 +164,9 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
     }
 
     /**
-     * Returns whether there are search results which will hide the A-Z list.
+     * Returns whether there are is a filter set.
      */
-    public boolean hasSearchResults() {
+    public boolean hasFilter() {
         return !mSearchResults.isEmpty();
     }
 
@@ -179,7 +174,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
      * Returns whether there are no filtered results.
      */
     public boolean hasNoFilteredResults() {
-        return hasSearchResults() && mAccessibilityResultsCount == 0;
+        return hasFilter() && mAccessibilityResultsCount == 0;
     }
 
     /**
@@ -197,13 +192,13 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         return true;
     }
 
-    /** Appends results to search. */
-    public void appendSearchResults(ArrayList<AdapterItem> results) {
-        if (hasSearchResults() && results != null && results.size() > 0) {
+    public boolean appendSearchResults(ArrayList<AdapterItem> results) {
+        if (hasFilter() && results != null && results.size() > 0) {
             updateSearchAdapterItems(results, mSearchResults.size());
-            mSearchResults.addAll(results);
             refreshRecyclerView();
+            return true;
         }
+        return false;
     }
 
     void updateSearchAdapterItems(ArrayList<AdapterItem> list, int offset) {
@@ -223,14 +218,11 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
      */
     @Override
     public void onAppsUpdated() {
-        if (mAllAppsStore == null) {
-            return;
-        }
         // Sort the list of apps
         mApps.clear();
 
         for (AppInfo app : mAllAppsStore.getApps()) {
-            if (mItemFilter == null || mItemFilter.matches(app, null) || hasSearchResults()) {
+            if (mItemFilter == null || mItemFilter.matches(app, null) || hasFilter()) {
                 mApps.add(app);
             }
         }
@@ -300,18 +292,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
         // ordered set of sections
 
-        if (hasSearchResults()) {
-            if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
-                // Append the search market item
-                if (hasNoFilteredResults()) {
-                    mSearchResults.add(AdapterItem.asEmptySearch(position++));
-                } else {
-                    mSearchResults.add(AdapterItem.asAllAppsDivider(position++));
-                }
-                mSearchResults.add(AdapterItem.asMarketSearch(position++));
-            }
-            updateSearchAdapterItems(mSearchResults, 0);
-        } else {
+        if (!hasFilter()) {
             mAccessibilityResultsCount = mApps.size();
             if (mWorkAdapterProvider != null) {
                 position += mWorkAdapterProvider.addWorkItems(mAdapterItems);
@@ -336,6 +317,18 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                 }
 
                 mAdapterItems.add(appItem);
+            }
+        } else {
+            updateSearchAdapterItems(mSearchResults, 0);
+            if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
+                // Append the search market item
+                if (hasNoFilteredResults()) {
+                    mAdapterItems.add(AdapterItem.asEmptySearch(position++));
+                } else {
+                    mAdapterItems.add(AdapterItem.asAllAppsDivider(position++));
+                }
+                mAdapterItems.add(AdapterItem.asMarketSearch(position++));
+
             }
         }
         if (mNumAppsPerRowAllApps != 0) {
