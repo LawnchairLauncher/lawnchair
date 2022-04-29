@@ -1022,7 +1022,7 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     public float getTaskCornerRadius() {
-        return TaskCornerRadius.get(mActivity);
+        return mCurrentFullscreenParams.mCornerRadius;
     }
 
     @Override
