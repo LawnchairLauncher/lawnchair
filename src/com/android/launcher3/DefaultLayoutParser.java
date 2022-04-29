@@ -7,15 +7,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Process;
 import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.Log;
 
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -23,6 +27,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -43,6 +48,8 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     private static final String ATTR_CONTAINER = "container";
     private static final String ATTR_SCREEN = "screen";
     private static final String ATTR_FOLDER_ITEMS = "folderItems";
+    private static final String ATTR_SHORTCUT_ID = "shortcutId";
+    private static final String ATTR_PACKAGE_NAME = "packageName";
 
     // TODO: Remove support for this broadcast, instead use widget options to send bind time options
     private static final String ACTION_APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE =
@@ -178,7 +185,6 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
         }
     }
 
-
     /**
      * Shortcut parser which allows any uri and not just web urls.
      */
@@ -186,6 +192,35 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
 
         public UriShortcutParser(Resources iconRes) {
             super(iconRes);
+        }
+
+        @Override
+        public int parseAndAdd(XmlPullParser parser) {
+            final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
+            final String shortcutId = getAttributeValue(parser, ATTR_SHORTCUT_ID);
+            if (!TextUtils.isEmpty(packageName) && !TextUtils.isEmpty(shortcutId)) {
+                return parseAndAddDeepShortcut(shortcutId, packageName);
+            }
+            return super.parseAndAdd(parser);
+        }
+
+        /**
+         * This method parses and adds a deep shortcut.
+         * @return item id if the shortcut is successfully added else -1
+         */
+        private int parseAndAddDeepShortcut(String shortcutId, String packageName) {
+            try {
+                LauncherApps launcherApps = mContext.getSystemService(LauncherApps.class);
+                launcherApps.pinShortcuts(packageName, Collections.singletonList(shortcutId),
+                        Process.myUserHandle());
+                Intent intent = ShortcutKey.makeIntent(shortcutId, packageName);
+                mValues.put(Favorites.RESTORED, WorkspaceItemInfo.FLAG_RESTORED_ICON);
+                return addShortcut(null, intent, Favorites.ITEM_TYPE_DEEP_SHORTCUT);
+            } catch (Exception e) {
+                Log.e(TAG, "Unable to pin the shortcut for shortcut id = " + shortcutId
+                        + " and package name = " + packageName);
+            }
+            return -1;
         }
 
         @Override
