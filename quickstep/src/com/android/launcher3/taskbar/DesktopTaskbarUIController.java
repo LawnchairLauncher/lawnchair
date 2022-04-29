@@ -45,7 +45,7 @@ public class DesktopTaskbarUIController extends TaskbarUIController {
 
     @Override
     /** Disable taskbar stashing in desktop environment. */
-    protected boolean supportsVisualStashing() {
+    public boolean supportsVisualStashing() {
         return false;
     }
 }

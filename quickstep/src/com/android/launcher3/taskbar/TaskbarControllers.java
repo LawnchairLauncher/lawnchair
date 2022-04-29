@@ -62,6 +62,8 @@ public class TaskbarControllers {
     private boolean mAreAllControllersInitialized;
     private final List<Runnable> mPostInitCallbacks = new ArrayList<>();
 
+    @Nullable private TaskbarSharedState mSharedState = null;
+
     public TaskbarControllers(TaskbarActivityContext taskbarActivityContext,
             TaskbarDragController taskbarDragController,
             TaskbarNavButtonController navButtonController,
@@ -107,8 +109,9 @@ public class TaskbarControllers {
      * TaskbarControllers instance, but should be careful to only access things that were created
      * in constructors for now, as some controllers may still be waiting for init().
      */
-    public void init(TaskbarSharedState sharedState) {
+    public void init(@NonNull TaskbarSharedState sharedState) {
         mAreAllControllersInitialized = false;
+        mSharedState = sharedState;
 
         taskbarDragController.init(this);
         navbarButtonsViewController.init(this);
@@ -119,11 +122,11 @@ public class TaskbarControllers {
         taskbarUnfoldAnimationController.init(this);
         taskbarKeyguardController.init(navbarButtonsViewController);
         stashedHandleViewController.init(this);
-        taskbarStashController.init(this, sharedState);
+        taskbarStashController.init(this, sharedState.setupUIVisible);
         taskbarEduController.init(this);
         taskbarPopupController.init(this);
         taskbarForceVisibleImmersiveController.init(this);
-        taskbarAllAppsController.init(this, sharedState);
+        taskbarAllAppsController.init(this, sharedState.allAppsVisible);
         taskbarRecentAppsController.init(this);
         navButtonController.init(this);
         taskbarInsetsController.init(this);
@@ -143,6 +146,12 @@ public class TaskbarControllers {
         mPostInitCallbacks.clear();
     }
 
+    @Nullable
+    public TaskbarSharedState getSharedState() {
+        // This should only be null if called before init() and after destroy().
+        return mSharedState;
+    }
+
     public void onConfigurationChanged(@Config int configChanges) {
         navbarButtonsViewController.onConfigurationChanged(configChanges);
     }
@@ -151,6 +160,8 @@ public class TaskbarControllers {
      * Cleans up all controllers.
      */
     public void onDestroy() {
+        mSharedState = null;
+
         navbarButtonsViewController.onDestroy();
         uiController.onDestroy();
         rotationButtonController.onDestroy();
@@ -192,9 +203,12 @@ public class TaskbarControllers {
             return;
         }
 
+        pw.println(String.format(
+                "%s\tmAreAllControllersInitialized=%b", prefix, mAreAllControllersInitialized));
         for (LoggableTaskbarController controller : mControllersToLog) {
             controller.dumpLogs(prefix + "\t", pw);
         }
+        uiController.dumpLogs(prefix + "\t", pw);
         rotationButtonController.dumpLogs(prefix + "\t", pw);
     }
 

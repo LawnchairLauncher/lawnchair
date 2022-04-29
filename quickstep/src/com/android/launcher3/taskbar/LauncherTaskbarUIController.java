@@ -22,6 +22,7 @@ import android.animation.Animator;
 import android.annotation.ColorInt;
 import android.os.RemoteException;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.TaskTransitionSpec;
 import android.view.WindowManagerGlobal;
@@ -43,6 +44,7 @@ import com.android.launcher3.util.OnboardingPrefs;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.RecentsAnimationCallbacks;
 
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -54,25 +56,28 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
     private static final String TAG = "TaskbarUIController";
 
+    public static final int MINUS_ONE_PAGE_PROGRESS_INDEX = 0;
+    public static final int ALL_APPS_PAGE_PROGRESS_INDEX = 1;
+    public static final int WIDGETS_PAGE_PROGRESS_INDEX = 2;
+    public static final int SYSUI_SURFACE_PROGRESS_INDEX = 3;
+
+    private final SparseArray<Float> mTaskbarInAppDisplayProgress = new SparseArray<>(4);
+
     private final BaseQuickstepLauncher mLauncher;
 
     private final DeviceProfile.OnDeviceProfileChangeListener mOnDeviceProfileChangeListener =
-            this::onStashedInAppChanged;
+            dp -> {
+                onStashedInAppChanged(dp);
+                if (mControllers != null && mControllers.taskbarViewController != null) {
+                    mControllers.taskbarViewController.onRotationChanged(dp);
+                }
+            };
 
     // Initialized in init.
     private AnimatedFloat mTaskbarOverrideBackgroundAlpha;
     private TaskbarKeyguardController mKeyguardController;
     private final TaskbarLauncherStateController
             mTaskbarLauncherStateController = new TaskbarLauncherStateController();
-
-    private final DeviceProfile.OnDeviceProfileChangeListener mProfileChangeListener =
-            new DeviceProfile.OnDeviceProfileChangeListener() {
-                @Override
-                public void onDeviceProfileChanged(DeviceProfile dp) {
-                    mControllers.taskbarViewController.onRotationChanged(
-                            mLauncher.getDeviceProfile());
-                }
-            };
 
     public LauncherTaskbarUIController(BaseQuickstepLauncher launcher) {
         mLauncher = launcher;
@@ -93,7 +98,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
         onStashedInAppChanged(mLauncher.getDeviceProfile());
         mLauncher.addOnDeviceProfileChangeListener(mOnDeviceProfileChangeListener);
-        mLauncher.addOnDeviceProfileChangeListener(mProfileChangeListener);
     }
 
     @Override
@@ -102,9 +106,8 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         onLauncherResumedOrPaused(false);
         mTaskbarLauncherStateController.onDestroy();
 
-        mLauncher.removeOnDeviceProfileChangeListener(mOnDeviceProfileChangeListener);
         mLauncher.setTaskbarUIController(null);
-        mLauncher.removeOnDeviceProfileChangeListener(mProfileChangeListener);
+        mLauncher.removeOnDeviceProfileChangeListener(mOnDeviceProfileChangeListener);
         updateTaskTransitionSpec(true);
     }
 
@@ -270,5 +273,86 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         // Launcher's ScrimView will draw the background throughout the gesture. But once the
         // gesture ends, start drawing taskbar's background again since launcher might stop drawing.
         forceHideBackground(inProgress);
+    }
+
+    /**
+     * Animates Taskbar elements during a transition to a Launcher state that should use in-app
+     * layouts.
+     *
+     * @param progress [0, 1]
+     *                 0 => use home layout
+     *                 1 => use in-app layout
+     */
+    public void onTaskbarInAppDisplayProgressUpdate(float progress, int progressIndex) {
+        if (mControllers == null) {
+            // This method can be called before init() is called.
+            return;
+        }
+        mTaskbarInAppDisplayProgress.put(progressIndex, progress);
+        if (!mControllers.taskbarStashController.isInApp()
+                && !mTaskbarLauncherStateController.isAnimatingToLauncher()) {
+            // Only animate the nav buttons while home and not animating home, otherwise let
+            // the TaskbarViewController handle it.
+            mControllers.navbarButtonsViewController
+                    .getTaskbarNavButtonTranslationYForInAppDisplay()
+                    .updateValue(mLauncher.getDeviceProfile().getTaskbarOffsetY()
+                            * getInAppDisplayProgress());
+        }
+    }
+
+    /** Returns true iff any in-app display progress > 0. */
+    public boolean shouldUseInAppLayout() {
+        return getInAppDisplayProgress() > 0;
+    }
+
+    private float getInAppDisplayProgress(int index) {
+        if (!mTaskbarInAppDisplayProgress.contains(index)) {
+            mTaskbarInAppDisplayProgress.put(index, 0f);
+        }
+        return mTaskbarInAppDisplayProgress.get(index);
+    }
+
+    private float getInAppDisplayProgress() {
+        return Stream.of(
+                getInAppDisplayProgress(MINUS_ONE_PAGE_PROGRESS_INDEX),
+                getInAppDisplayProgress(ALL_APPS_PAGE_PROGRESS_INDEX),
+                getInAppDisplayProgress(WIDGETS_PAGE_PROGRESS_INDEX),
+                getInAppDisplayProgress(SYSUI_SURFACE_PROGRESS_INDEX))
+                .max(Float::compareTo)
+                .get();
+    }
+
+    @Override
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        super.dumpLogs(prefix, pw);
+
+        pw.println(String.format(
+                "%s\tmTaskbarOverrideBackgroundAlpha=%.2f",
+                prefix,
+                mTaskbarOverrideBackgroundAlpha.value));
+
+        pw.println(String.format("%s\tTaskbar in-app display progress:", prefix));
+        if (mControllers == null) {
+            pw.println(String.format("%s\t\tMissing mControllers", prefix));
+        } else {
+            pw.println(String.format(
+                    "%s\t\tprogress at MINUS_ONE_PAGE_PROGRESS_INDEX=%.2f",
+                    prefix,
+                    getInAppDisplayProgress(MINUS_ONE_PAGE_PROGRESS_INDEX)));
+            pw.println(String.format(
+                    "%s\t\tprogress at ALL_APPS_PAGE_PROGRESS_INDEX=%.2f",
+                    prefix,
+                    getInAppDisplayProgress(ALL_APPS_PAGE_PROGRESS_INDEX)));
+            pw.println(String.format(
+                    "%s\t\tprogress at WIDGETS_PAGE_PROGRESS_INDEX=%.2f",
+                    prefix,
+                    getInAppDisplayProgress(WIDGETS_PAGE_PROGRESS_INDEX)));
+            pw.println(String.format(
+                    "%s\t\tprogress at SYSUI_SURFACE_PROGRESS_INDEX=%.2f",
+                    prefix,
+                    getInAppDisplayProgress(SYSUI_SURFACE_PROGRESS_INDEX)));
+        }
+
+        mTaskbarLauncherStateController.dumpLogs(prefix + "\t", pw);
     }
 }

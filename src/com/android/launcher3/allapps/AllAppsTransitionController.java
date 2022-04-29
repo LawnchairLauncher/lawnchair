@@ -190,6 +190,7 @@ public class AllAppsTransitionController
     public void setProgress(float progress) {
         mProgress = progress;
         getAppsViewProgressTranslationY().set(mAppsView, mProgress * mShiftRange);
+        mLauncher.onAllAppsTransition(1 - progress);
     }
 
     public float getProgress() {

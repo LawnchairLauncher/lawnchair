@@ -3168,6 +3168,24 @@ public class Launcher extends StatefulActivity<LauncherState>
         return new DragOptions();
     }
 
+    /**
+     * Animates Launcher elements during a transition to the All Apps page.
+     *
+     * @param progress Transition progress from 0 to 1; where 0 => home and 1 => all apps.
+     */
+    public void onAllAppsTransition(float progress) {
+        // No-Op
+    }
+
+    /**
+     * Animates Launcher elements during a transition to the Widgets pages.
+     *
+     * @param progress Transition progress from 0 to 1; where 0 => home and 1 => widgets.
+     */
+    public void onWidgetsTransition(float progress) {
+        // No-Op
+    }
+
     private static class NonConfigInstance {
         public Configuration config;
         public Bitmap snapshot;
