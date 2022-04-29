@@ -283,6 +283,7 @@ public class TaskThumbnailView extends View {
 
     public void setFullscreenParams(TaskView.FullscreenDrawParams fullscreenParams) {
         mFullscreenParams = fullscreenParams;
+        getTaskOverlay().setFullscreenParams(fullscreenParams);
         invalidate();
     }
 
