@@ -320,6 +320,10 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
                     Toast.LENGTH_LONG).show();
         }
 
+        /** Called when the snapshot has updated its full screen drawing parameters. */
+        public void setFullscreenParams(TaskView.FullscreenDrawParams fullscreenParams) {
+        }
+
         private class ScreenshotSystemShortcut extends SystemShortcut {
 
             private final BaseDraggingActivity mActivity;
