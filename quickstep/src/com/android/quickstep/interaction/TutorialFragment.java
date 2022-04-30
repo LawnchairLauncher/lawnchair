@@ -15,6 +15,8 @@
  */
 package com.android.quickstep.interaction;
 
+import static android.view.View.NO_ID;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
@@ -211,13 +213,31 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
         if (isGestureComplete()) {
             mTutorialController.showSuccessFeedback();
         } else if (!mIntroductionShown) {
-            Integer introTileStringResId = mTutorialController.getIntroductionTitle();
-            Integer introSubtitleResId = mTutorialController.getIntroductionSubtitle();
-            if (introTileStringResId != null && introSubtitleResId != null) {
-                mTutorialController.showFeedback(
-                        introTileStringResId, introSubtitleResId, false, true);
-                mIntroductionShown = true;
+            int introTitleResId = mTutorialController.getIntroductionTitle();
+            int introSubtitleResId = mTutorialController.getIntroductionSubtitle();
+            if (introTitleResId == NO_ID) {
+                // Allow crash since this should never be reached with a tutorial controller used in
+                // production.
+                Log.e(LOG_TAG,
+                        "Cannot show introduction feedback for tutorial step: " + mTutorialType
+                                + ", no introduction feedback title",
+                        new IllegalStateException());
             }
+            if (introTitleResId == NO_ID) {
+                // Allow crash since this should never be reached with a tutorial controller used in
+                // production.
+                Log.e(LOG_TAG,
+                        "Cannot show introduction feedback for tutorial step: " + mTutorialType
+                                + ", no introduction feedback subtitle",
+                        new IllegalStateException());
+            }
+            mTutorialController.showFeedback(
+                    introTitleResId,
+                    introSubtitleResId,
+                    mTutorialController.getSpokenIntroductionSubtitle(),
+                    false,
+                    true);
+            mIntroductionShown = true;
         }
     }
 
