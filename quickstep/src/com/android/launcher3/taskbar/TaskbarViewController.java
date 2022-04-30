@@ -73,6 +73,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     private final AnimatedFloat mTaskbarIconTranslationYForStash = new AnimatedFloat(
             this::updateTranslationY);
     private AnimatedFloat mTaskbarNavButtonTranslationY;
+    private AnimatedFloat mTaskbarNavButtonTranslationYForInAppDisplay;
 
     private final AnimatedFloat mThemeIconsBackground = new AnimatedFloat(
             this::updateIconsBackground);
@@ -112,6 +113,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         }
         mTaskbarNavButtonTranslationY =
                 controllers.navbarButtonsViewController.getTaskbarNavButtonTranslationY();
+        mTaskbarNavButtonTranslationYForInAppDisplay = controllers.navbarButtonsViewController
+                .getTaskbarNavButtonTranslationYForInAppDisplay();
     }
 
     public void onDestroy() {
@@ -243,6 +246,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         int offsetY = launcherDp.getTaskbarOffsetY();
         setter.setFloat(mTaskbarIconTranslationYForHome, VALUE, -offsetY, LINEAR);
         setter.setFloat(mTaskbarNavButtonTranslationY, VALUE, -offsetY, LINEAR);
+        setter.setFloat(mTaskbarNavButtonTranslationYForInAppDisplay, VALUE, offsetY, LINEAR);
 
         if (Utilities.isDarkTheme(mTaskbarView.getContext())) {
             setter.addFloat(mThemeIconsBackground, VALUE, 0f, 1f, LINEAR);
@@ -290,10 +294,12 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     }
 
     public void onRotationChanged(DeviceProfile deviceProfile) {
-        if (areIconsVisible()) {
+        if (mControllers.taskbarStashController.isInApp()) {
             // We only translate on rotation when on home
             return;
         }
+        mActivity.setTaskbarWindowHeight(
+                deviceProfile.taskbarSize + deviceProfile.getTaskbarOffsetY());
         mTaskbarNavButtonTranslationY.updateValue(-deviceProfile.getTaskbarOffsetY());
     }
 
