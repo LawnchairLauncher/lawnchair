@@ -124,14 +124,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> በመጫን ላይ፣ <xliff:g id="PROGRESS">%2$s</xliff:g> ተጠናቅቋል"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> በመውረድ ላይ፣ <xliff:g id="PROGRESS">%2$s</xliff:g> ተጠናቋል"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ለመጫን በመጠበቅ ላይ"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"መተግበሪያ ማዘመን አስፈላጊ ነው"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"የዚህ አዶ መተግበሪያ አልተዘመነም። ይህን አቋራጭ ዳግም ለማንቃት በራስዎ ማዘመን ወይም አዶውን ማስወገድ ይችላሉ።"</string>
+    <string name="dialog_update" msgid="2178028071796141234">"አዘምን"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"አስወግድ"</string>
     <string name="widgets_list" msgid="796804551140113767">"የመግብሮች ዝርዝር"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"የመግብሮች ዝርዝር ተዘግቷል"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"ወደ መነሻ ማያ ገጽ አክል"</string>
