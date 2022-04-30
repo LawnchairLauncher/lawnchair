@@ -80,6 +80,9 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public static final int FLAG_CLOSE_POPUPS = BaseState.getFlag(6);
     public static final int FLAG_OVERVIEW_UI = BaseState.getFlag(7);
 
+    // Flag indicating that hotseat and its contents are not accessible.
+    public static final int FLAG_HOTSEAT_INACCESSIBLE = BaseState.getFlag(8);
+
 
     public static final float NO_OFFSET = 0;
     public static final float NO_SCALE = 1;

@@ -30,7 +30,8 @@ import com.android.launcher3.util.Themes;
  */
 public class AllAppsState extends LauncherState {
 
-    private static final int STATE_FLAGS = FLAG_WORKSPACE_INACCESSIBLE | FLAG_CLOSE_POPUPS;
+    private static final int STATE_FLAGS =
+            FLAG_WORKSPACE_INACCESSIBLE | FLAG_CLOSE_POPUPS | FLAG_HOTSEAT_INACCESSIBLE;
 
     public AllAppsState(int id) {
         super(id, LAUNCHER_STATE_ALLAPPS, STATE_FLAGS);
@@ -88,7 +89,9 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public int getVisibleElements(Launcher launcher) {
-        return ALL_APPS_CONTENT | HOTSEAT_ICONS;
+        // Don't add HOTSEAT_ICONS for phones in ALL_APPS state.
+        return launcher.getDeviceProfile().isPhone ? ALL_APPS_CONTENT
+                : ALL_APPS_CONTENT | HOTSEAT_ICONS;
     }
 
     @Override
