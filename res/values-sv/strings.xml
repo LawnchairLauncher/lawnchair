@@ -124,14 +124,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> installeras. <xliff:g id="PROGRESS">%2$s</xliff:g> har slutförts"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> laddas ned, <xliff:g id="PROGRESS">%2$s</xliff:g> klart"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> väntar på installation"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"Du måste uppdatera appen"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"Appen för den här ikonen har inte uppdaterats. Du kan uppdatera den manuellt för att återaktivera genvägen eller ta bort ikonen."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"Uppdatera"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"Ta bort"</string>
     <string name="widgets_list" msgid="796804551140113767">"Widgetlista"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Widgetslistan har stängts"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Lägg till på startskärmen"</string>

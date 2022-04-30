@@ -124,20 +124,16 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> se namešča, dokončano: <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Prenašanje aplikacije <xliff:g id="NAME">%1$s</xliff:g>; preneseno <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Aplikacija <xliff:g id="NAME">%1$s</xliff:g> čaka na namestitev"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"Zahtevana je posodobitev aplikacije"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"Aplikacija za to ikono ni posodobljena. Lahko jo ročno posodobite, da znova omogočite to bližnjico, ali pa odstranite ikono."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"Posodobi"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"Odstrani"</string>
     <string name="widgets_list" msgid="796804551140113767">"Seznam pripomočkov"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Seznam pripomočkov se je zaprl"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Dodajanje na začetni zaslon"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Premik elementa sem"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Element je bil dodan na začetni zaslon"</string>
-    <string name="item_removed" msgid="851119963877842327">"Element je bil odstranjen"</string>
+    <string name="item_removed" msgid="851119963877842327">"Element je bil odstranjen."</string>
     <string name="undo" msgid="4151576204245173321">"Razveljavi"</string>
     <string name="action_move" msgid="4339390619886385032">"Premik elementa"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"Premik v <xliff:g id="NUMBER_0">%1$s</xliff:g>. vrstico <xliff:g id="NUMBER_1">%2$s</xliff:g>. stolpca"</string>
