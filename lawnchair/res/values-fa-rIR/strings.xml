@@ -19,10 +19,10 @@
     <string name="settings">تنظیمات</string>
     <string name="home_screen_label">صفحه اصلی</string>
     <string name="home_screen_description">Feed, At a Glance, Grid, Icons</string>
-    <string name="general_label">General</string>
+    <string name="general_label">عمومی</string>
     <string name="general_description">Colors, Icon Pack, Notification Dots</string>
     <string name="home_screen_rotation_label">Home Screen Rotation</string>
-    <string name="home_screen_rotaton_description">When device is rotated.</string>
+    <string name="home_screen_rotaton_description">هنگام چرخش دستگاه.</string>
     <string name="auto_add_shortcuts_label">Add New Apps to Home Screen</string>
     <string name="dock_label">Dock</string>
     <string name="dock_description">Search Bar, Icon Count</string>
@@ -39,7 +39,7 @@
     <string name="grid">Grid</string>
     <string name="rows">ردیف‌ها</string>
     <string name="icons">Icons</string>
-    <string name="icon_size">Icon Size</string>
+    <string name="icon_size">سایز آیکون</string>
     <string name="label_size">Label Size</string>
     <string name="show_home_labels">Show Labels</string>
     <string name="notification_dots">Notification Dots</string>
@@ -50,9 +50,9 @@
     <string name="acknowledgements">Acknowledgements</string>
     <string name="devops">DevOps</string>
     <string name="quickswitch_maintenance">QuickSwitch Maintenance</string>
-    <string name="all_apps_search_bar_hint">Search Apps</string>
+    <string name="all_apps_search_bar_hint">اپلیکیشنهای جستجو</string>
     <string name="settings_button_text">Home Settings</string>
-    <string name="development">Development</string>
+    <string name="development">توسعه</string>
     <string name="app_info_drop_target_label">اطلاعات برنامه</string>
     <string name="item_removed">Item removed.</string>
     <string name="all_apps_no_search_results">No apps found matching “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
@@ -66,8 +66,8 @@
     <string name="workspace_dt2s">Double-Tap to Sleep</string>
     <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">Design &amp; Development</string>
-    <string name="translate">Translate</string>
-    <string name="product">Product</string>
+    <string name="translate">ترجمه</string>
+    <string name="product">محصول</string>
     <string name="hidden_apps_label">Hidden Apps</string>
     <string name="hidden_apps_label_with_count">Hidden Apps (%1$d)</string>
     <plurals name="apps_count">
@@ -131,7 +131,7 @@
     <string name="label_search">Search</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">جستوجو صوتی</string>
-    <string name="apply_grid">Apply</string>
+    <string name="apply_grid">اعمال</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="folder_preview_bg_opacity_label">Icon Background Opacity</string>
     <string name="icon_shape_label">شکل آیکن</string>
@@ -145,7 +145,7 @@
     <string name="icon_shape_cylinder">سیلندر</string>
     <string name="icon_shape_cupertino">کوپرتینو</string>
     <string name="customize_button_text">شخصی‌سازی</string>
-    <string name="app_title_label">Title</string>
+    <string name="app_title_label">عنوان</string>
     <string name="hide_from_drawer">Hide from App Drawer</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Rounded Corners</string>
@@ -163,7 +163,7 @@
     <string name="action_copy_link">کپی لینک</string>
     <string name="action_copy">کپی</string>
     <string name="copied_toast">Copied to clipboard.</string>
-    <string name="action_share">Share</string>
+    <string name="action_share">اشتراک گذاری</string>
     <string name="action_upload_error">Upload failed</string>
     <string name="dogbin_uploading">درحال آپلود…</string>
     <string name="bugreport_channel_name">Bug Reports</string>
@@ -175,7 +175,7 @@
     <string name="search_bar_label">Search Bar</string>
     <string name="apply_accent_color_label">Apply Accent Color</string>
     <string name="show_search_result_types">Show in Search Results</string>
-    <string name="search_pref_result_people_title">People</string>
+    <string name="search_pref_result_people_title">مردم</string>
     <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
     <string name="search_pref_result_tips_title">Pixel Tips</string>
     <string name="row_height_label">Row Height</string>
