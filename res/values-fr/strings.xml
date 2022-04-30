@@ -124,20 +124,16 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Installation de <xliff:g id="NAME">%1$s</xliff:g>… (<xliff:g id="PROGRESS">%2$s</xliff:g> terminés)"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> en cours de téléchargement, <xliff:g id="PROGRESS">%2$s</xliff:g> effectué(s)"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> en attente d\'installation"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"Mise à jour de l\'appli requise"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"L\'appli correspondant à cette icône n\'est pas mise à jour. Vous pouvez la mettre à jour manuellement pour réactiver le raccourci ou supprimer l\'icône."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"Modifier"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"Supprimer"</string>
     <string name="widgets_list" msgid="796804551140113767">"Liste des widgets"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"La liste des widgets est fermée"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Ajouter à l\'écran d\'accueil"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Déplacer l\'élément ici"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"L\'élément a bien été ajouté à l\'écran d\'accueil."</string>
-    <string name="item_removed" msgid="851119963877842327">"L\'élément a bien été supprimé."</string>
+    <string name="item_removed" msgid="851119963877842327">"Élément supprimé"</string>
     <string name="undo" msgid="4151576204245173321">"Annuler"</string>
     <string name="action_move" msgid="4339390619886385032">"Déplacer l\'élément"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"Déplacer vers la ligne <xliff:g id="NUMBER_0">%1$s</xliff:g>, colonne <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>

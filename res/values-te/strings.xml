@@ -72,7 +72,7 @@
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"వ్యక్తిగత యాప్‌ల లిస్ట్‌"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"కార్యాలయ యాప్‌ల లిస్ట్‌"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"తీసివేయి"</string>
-    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"అన్ఇన్‌స్టాల్ చేయి"</string>
+    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"అన్ఇన్‌స్టాల్ చేయండి"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"యాప్ సమాచారం"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ఇన్‌స్టాల్ చేయండి"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"యాప్‌ను సూచించవద్దు"</string>
@@ -124,14 +124,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g>‌ను ఇన్‌స్టాల్ చేయడం, <xliff:g id="PROGRESS">%2$s</xliff:g> పూర్తయింది"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> డౌన్‌లోడ్ అవుతోంది, <xliff:g id="PROGRESS">%2$s</xliff:g> పూర్తయింది"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ఇన్‌స్టాల్ కావడానికి వేచి ఉంది"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"యాప్‌ను అప్‌డేట్ చేయడం అవసరం"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"ఈ చిహ్నం కోసం యాప్ అప్‌డేట్ చేయబడలేదు. మీరు ఈ షార్ట్‌కట్‌ను మళ్లీ ఎనేబుల్ చేయడానికి మాన్యువల్‌గా అప్‌డేట్ చేయవచ్చు లేదా చిహ్నాన్ని తీసివేయవచ్చు."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"అప్‌డేట్ చేయండి"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"తీసివేయండి"</string>
     <string name="widgets_list" msgid="796804551140113767">"విడ్జెట్‌ల లిస్ట్‌"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"విడ్జెట్‌ల లిస్ట్‌ మూసివేయబడింది"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"మొదటి స్క్రీన్‌కు జోడించండి"</string>

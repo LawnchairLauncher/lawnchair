@@ -108,7 +108,7 @@
     <string name="allow_rotation_title" msgid="7222049633713050106">"होम स्क्रीन घुमाने की अनुमति दें"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फ़ोन घुुमाए जाने पर"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"सूचनाएं बताने वाला डॉट"</string>
-    <string name="notification_dots_desc_on" msgid="1679848116452218908">"चालू"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"चालू है"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"चालू"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"सूचना के ऐक्सेस की ज़रूरत है"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचना बिंदु दिखाने के लिए, <xliff:g id="NAME">%1$s</xliff:g> के ऐप्लिकेशन सूचना चालू करें"</string>
@@ -124,14 +124,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> इंस्टॉल किया जा रहा है, <xliff:g id="PROGRESS">%2$s</xliff:g> पूरा हो गया"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> डाउनलोड हो रहा है, <xliff:g id="PROGRESS">%2$s</xliff:g> पूरी हुई"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> के इंस्टॉल होने की प्रतीक्षा की जा रही है"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"ऐप्लिकेशन को अपडेट करना ज़रूरी है"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"इस आइकॉन का ऐप्लिकेशन अपडेट नहीं है. इस शॉर्टकट को फिर से चालू करने या आइकॉन को हटाने के लिए, ऐप्लिकेशन को मैन्युअल रूप से अपडेट किया जा सकता है."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"अपडेट करें"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"हटाएं"</string>
     <string name="widgets_list" msgid="796804551140113767">"विजेट की सूची"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"विजेट की सूची बंद हो गई है"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"होम स्क्रीन पर जोड़ें"</string>

@@ -78,11 +78,11 @@
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Թաքցնել առաջարկը"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Ամրացնել առաջարկվող հավելվածը"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"Դյուրանցումների տեղադրում"</string>
-    <string name="permdesc_install_shortcut" msgid="923466509822011139">"Ծրագրին թույլ է տալիս ավելացնել դյուրանցումներ՝ առանց օգտագործողի միջամտության:"</string>
+    <string name="permdesc_install_shortcut" msgid="923466509822011139">"Հավելվածին թույլ է տալիս ավելացնել դյուրանցումներ՝ առանց օգտագործողի միջամտության:"</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"կարդալ հիմնական էկրանի կարգավորումներն ու դյուրանցումները"</string>
-    <string name="permdesc_read_settings" msgid="4208061150510996676">"Ծրագրին թույլ է տալիս կարդալ հիմնական էկրանի կարգավորումներն ու դյուրանցումները։"</string>
+    <string name="permdesc_read_settings" msgid="4208061150510996676">"Հավելվածին թույլ է տալիս կարդալ հիմնական էկրանի կարգավորումներն ու դյուրանցումները։"</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"փոփոխել հիմնական էկրանի կարգավորումներն ու դյուրանցումները"</string>
-    <string name="permdesc_write_settings" msgid="726859348127868466">"Ծրագրին թույլ է տալիս փոփոխել հիմնական էկրանի կարգավորումներն ու դյուրանցումները։"</string>
+    <string name="permdesc_write_settings" msgid="726859348127868466">"Հավելվածին թույլ է տալիս փոփոխել հիմնական էկրանի կարգավորումներն ու դյուրանցումները։"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին չի թույլատրվում հեռախոսազանգեր կատարել"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Չհաջողվեց բեռնել վիջեթը"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Վիջեթի կարգավորումներ"</string>
@@ -124,14 +124,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> հավելվածը տեղադրվում է, կատարված է <xliff:g id="PROGRESS">%2$s</xliff:g>-ը"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g>–ի ներբեռնում (<xliff:g id="PROGRESS">%2$s</xliff:g>)"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g>-ի տեղադրման սպասում"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"Պահանջվում է թարմացնել հավելվածը"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"Հավելվածը հնացել է։ Թարմացրեք այն ձեռքով, որպեսզի շարունակեք օգտագործել դյուրանցումը, կամ հեռացրեք հավելվածի պատկերակը։"</string>
+    <string name="dialog_update" msgid="2178028071796141234">"Թարմացնել"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"Հեռացնել"</string>
     <string name="widgets_list" msgid="796804551140113767">"Վիջեթների ցանկ"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Վիջեթների ցանկը փակվեց"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Ավելացնել հիմնական էկրանին"</string>
