@@ -25,6 +25,7 @@ import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherAnimUtils.WORKSPACE_SCALE_PROPERTY_FACTORY;
 import static com.android.launcher3.LauncherState.FLAG_HAS_SYS_UI_SCRIM;
+import static com.android.launcher3.LauncherState.FLAG_HOTSEAT_INACCESSIBLE;
 import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -150,6 +151,12 @@ public class WorkspaceStateTransitionAnimation {
         float workspacePageIndicatorAlpha = (elements & WORKSPACE_PAGE_INDICATOR) != 0 ? 1 : 0;
         propertySetter.setViewAlpha(mLauncher.getWorkspace().getPageIndicator(),
                 workspacePageIndicatorAlpha, fadeInterpolator);
+
+        // Update the accessibility flags for hotseat based on launcher state.
+        hotseat.setImportantForAccessibility(
+                state.hasFlag(FLAG_HOTSEAT_INACCESSIBLE)
+                        ? View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+                        : View.IMPORTANT_FOR_ACCESSIBILITY_AUTO);
 
         Interpolator translationInterpolator =
                 config.getInterpolator(ANIM_WORKSPACE_TRANSLATE, ZOOM_OUT);
