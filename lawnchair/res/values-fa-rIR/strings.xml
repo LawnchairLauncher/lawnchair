@@ -129,7 +129,7 @@
     <string name="pref_category_search">Search</string>
     <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
     <string name="label_search">Search</string>
-    <string name="label_lens">Google Lens</string>
+    <string name="label_lens">گوگل لنز</string>
     <string name="label_voice_search">جستوجو صوتی</string>
     <string name="apply_grid">اعمال</string>
     <string name="x_by_y">%1$d × %2$d</string>
@@ -139,7 +139,7 @@
     <string name="icon_shape_circle">دایره</string>
     <string name="icon_shape_square">مربع</string>
     <string name="icon_shape_rounded_square">مربع گرد</string>
-    <string name="icon_shape_squircle">Squircle</string>
+    <string name="icon_shape_squircle">مربع دایره‌ای</string>
     <string name="icon_shape_sammy">وان یو‌آی</string>
     <string name="icon_shape_teardrop">اشک</string>
     <string name="icon_shape_cylinder">سیلندر</string>
@@ -147,7 +147,7 @@
     <string name="customize_button_text">شخصی‌سازی</string>
     <string name="app_title_label">عنوان</string>
     <string name="hide_from_drawer">Hide from App Drawer</string>
-    <string name="action_lens">Lens</string>
+    <string name="action_lens">لنز</string>
     <string name="force_rounded_widgets">Rounded Corners</string>
     <string name="suggestion_pref_screen_title">Suggestions</string>
     <string name="n_percent">%1$d%%</string>
