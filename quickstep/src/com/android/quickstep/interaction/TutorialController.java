@@ -62,7 +62,7 @@ import java.util.ArrayList;
 abstract class TutorialController implements BackGestureAttemptCallback,
         NavBarGestureAttemptCallback {
 
-    private static final String TAG = "TutorialController";
+    private static final String LOG_TAG = "TutorialController";
 
     private static final float FINGER_DOT_VISIBLE_ALPHA = 0.7f;
     private static final float FINGER_DOT_SMALL_SCALE = 0.7f;
@@ -217,18 +217,23 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     }
 
     @StringRes
-    public Integer getIntroductionTitle() {
-        return null;
+    public int getIntroductionTitle() {
+        return NO_ID;
     }
 
     @StringRes
-    public Integer getIntroductionSubtitle() {
-        return null;
+    public int getIntroductionSubtitle() {
+        return NO_ID;
     }
 
     @StringRes
-    public Integer getSuccessFeedbackSubtitle() {
-        return null;
+    public int getSpokenIntroductionSubtitle() {
+        return NO_ID;
+    }
+
+    @StringRes
+    public int getSuccessFeedbackSubtitle() {
+        return NO_ID;
     }
 
     void showFeedback() {
@@ -247,7 +252,16 @@ abstract class TutorialController implements BackGestureAttemptCallback,
      * Show feedback reflecting a successful gesture attempt.
      **/
     void showSuccessFeedback() {
-        showFeedback(getSuccessFeedbackSubtitle(), true);
+        int successSubtitleResId = getSuccessFeedbackSubtitle();
+        if (successSubtitleResId == NO_ID) {
+            // Allow crash since this should never be reached with a tutorial controller used in
+            // production.
+            Log.e(LOG_TAG,
+                    "Cannot show success feedback for tutorial step: " + mTutorialType
+                            + ", no success feedback subtitle",
+                    new IllegalStateException());
+        }
+        showFeedback(successSubtitleResId, true);
     }
 
     /**
@@ -269,6 +283,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                 isGestureSuccessful
                         ? R.string.gesture_tutorial_nice : R.string.gesture_tutorial_try_again,
                 subtitleResId,
+                NO_ID,
                 isGestureSuccessful,
                 false);
     }
@@ -276,6 +291,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     void showFeedback(
             int titleResId,
             int subtitleResId,
+            int spokenSubtitleResId,
             boolean isGestureSuccessful,
             boolean useGestureAnimationDelay) {
         mFeedbackTitleView.removeCallbacks(mTitleViewCallback);
@@ -287,7 +303,10 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         mFeedbackTitleView.setText(titleResId);
         TextView subtitle =
                 mFeedbackView.findViewById(R.id.gesture_tutorial_fragment_feedback_subtitle);
-        subtitle.setText(subtitleResId);
+        subtitle.setText(spokenSubtitleResId == NO_ID
+                ? mContext.getText(subtitleResId)
+                : Utilities.wrapForTts(
+                        mContext.getText(subtitleResId), mContext.getString(spokenSubtitleResId)));
         if (isGestureSuccessful) {
             if (mTutorialFragment.isAtFinalStep()) {
                 showActionButton();
@@ -580,7 +599,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                         packageManager.getApplicationInfo(
                                 PIXEL_TIPS_APP_PACKAGE_NAME, PackageManager.GET_META_DATA));
             } catch (PackageManager.NameNotFoundException e) {
-                Log.e(TAG,
+                Log.e(LOG_TAG,
                         "Could not find app label for package name: "
                                 + PIXEL_TIPS_APP_PACKAGE_NAME
                                 + ". Defaulting to 'Pixel Tips.'",
@@ -593,7 +612,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                 subtitleTextView.setText(
                         mContext.getString(R.string.skip_tutorial_dialog_subtitle, tipsAppName));
             } else {
-                Log.w(TAG, "No subtitle view in the skip tutorial dialog to update.");
+                Log.w(LOG_TAG, "No subtitle view in the skip tutorial dialog to update.");
             }
 
             Button cancelButton = (Button) contentView.findViewById(
@@ -602,7 +621,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                 cancelButton.setOnClickListener(
                         v -> tutorialDialog.dismiss());
             } else {
-                Log.w(TAG, "No cancel button in the skip tutorial dialog to update.");
+                Log.w(LOG_TAG, "No cancel button in the skip tutorial dialog to update.");
             }
 
             Button confirmButton = contentView.findViewById(
@@ -613,7 +632,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                     tutorialDialog.dismiss();
                 });
             } else {
-                Log.w(TAG, "No confirm button in the skip tutorial dialog to update.");
+                Log.w(LOG_TAG, "No confirm button in the skip tutorial dialog to update.");
             }
 
             tutorialDialog.getWindow().setBackgroundDrawable(
