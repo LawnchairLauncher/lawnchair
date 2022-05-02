@@ -192,27 +192,6 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         return true;
     }
 
-    public boolean appendSearchResults(ArrayList<AdapterItem> results) {
-        if (hasFilter() && results != null && results.size() > 0) {
-            updateSearchAdapterItems(results, mSearchResults.size());
-            refreshRecyclerView();
-            return true;
-        }
-        return false;
-    }
-
-    void updateSearchAdapterItems(ArrayList<AdapterItem> list, int offset) {
-        for (int i = 0; i < list.size(); i++) {
-            AdapterItem adapterItem = list.get(i);
-            adapterItem.position = offset + i;
-            mAdapterItems.add(adapterItem);
-
-            if (adapterItem.isCountedForAccessibility()) {
-                mAccessibilityResultsCount++;
-            }
-        }
-    }
-
     /**
      * Updates internals when the set of apps are updated.
      */
@@ -282,7 +261,6 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         String lastSectionName = null;
         FastScrollSectionInfo lastFastScrollerSectionInfo = null;
         int position = 0;
-        int appIndex = 0;
 
         // Prepare to update the list of sections, filtered apps, etc.
         mAccessibilityResultsCount = 0;
@@ -319,7 +297,16 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                 mAdapterItems.add(appItem);
             }
         } else {
-            updateSearchAdapterItems(mSearchResults, 0);
+            int count = mSearchResults.size();
+            for (int i = 0; i < count; i++) {
+                AdapterItem adapterItem = mSearchResults.get(i);
+                adapterItem.position = i;
+                mAdapterItems.add(adapterItem);
+
+                if (adapterItem.isCountedForAccessibility()) {
+                    mAccessibilityResultsCount++;
+                }
+            }
             if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
                 // Append the search market item
                 if (hasNoFilteredResults()) {
