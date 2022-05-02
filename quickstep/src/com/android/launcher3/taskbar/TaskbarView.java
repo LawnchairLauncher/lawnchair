@@ -41,11 +41,12 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.uioverrides.ApiWrapper;
-import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.AllAppsButton;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
+
+import java.util.function.Predicate;
 
 /**
  * Hosts the Taskbar content such as Hotseat and Recent Apps. Drawn on top of other apps.
@@ -424,8 +425,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
      * Finds the first icon to match one of the given matchers, from highest to lowest priority.
      * @return The first match, or All Apps button if no match was found.
      */
-    public View getFirstMatch(ItemInfoMatcher... matchers) {
-        for (ItemInfoMatcher matcher : matchers) {
+    public View getFirstMatch(Predicate<ItemInfo>... matchers) {
+        for (Predicate<ItemInfo> matcher : matchers) {
             for (int i = 0; i < getChildCount(); i++) {
                 View item = getChildAt(i);
                 if (!(item.getTag() instanceof ItemInfo)) {
@@ -433,7 +434,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                     continue;
                 }
                 ItemInfo info = (ItemInfo) item.getTag();
-                if (matcher.matchesInfo(info)) {
+                if (matcher.test(info)) {
                     return item;
                 }
             }
