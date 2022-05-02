@@ -109,6 +109,8 @@
     <string name="back_gesture_intro_title">Swipe to go back</string>
     <!-- Introduction subtitle for the Back gesture tutorial. [CHAR LIMIT=200] -->
     <string name="back_gesture_intro_subtitle">To go back to the last screen, swipe from the left or right edge to the middle of the screen.</string>
+    <!-- Introduction subtitle for the Back gesture tutorial that will be spoken by screen readers. [CHAR LIMIT=200] -->
+    <string name="back_gesture_spoken_intro_subtitle">To go back to the last screen, swipe with 2 fingers from the left or right edge to the middle of the screen.</string>
 
     <string name="home_gesture_feedback_swipe_too_far_from_edge">Make sure you swipe up from the bottom edge of the screen.</string>
     <!-- Feedback shown during interactive parts of Home gesture tutorial when the Overview gesture is detected. [CHAR LIMIT=100] -->
@@ -123,6 +125,8 @@
     <string name="home_gesture_intro_title">Swipe to go home</string>
     <!-- Introduction subtitle for the Home gesture tutorial. [CHAR LIMIT=100] -->
     <string name="home_gesture_intro_subtitle">Swipe up from the bottom of your screen. This gesture always takes you to the Home screen.</string>
+    <!-- Introduction subtitle for the Home gesture tutorial that will be spoken by screen readers. [CHAR LIMIT=100] -->
+    <string name="home_gesture_spoken_intro_subtitle">Swipe up with 2 fingers from the bottom of the screen. This gesture always takes you to the Home screen.</string>
 
     <!-- Feedback shown during interactive parts of Overview gesture tutorial when the gesture is started too far from the edge. [CHAR LIMIT=100] -->
     <string name="overview_gesture_feedback_swipe_too_far_from_edge">Make sure you swipe up from the bottom edge of the screen.</string>
@@ -138,6 +142,8 @@
     <string name="overview_gesture_intro_title">Swipe to switch apps</string>
     <!-- Introduction subtitle for the Overview gesture tutorial. [CHAR LIMIT=100] -->
     <string name="overview_gesture_intro_subtitle">To switch between apps, swipe up from the bottom of your screen, hold, then release.</string>
+    <!-- Introduction subtitle for the Overview gesture tutorial that will be spoken by screen readers. [CHAR LIMIT=100] -->
+    <string name="overview_gesture_spoken_intro_subtitle">To switch between apps, swipe up with 2 fingers from the bottom of your screen, hold, then release.</string>
 
     <!-- Title shown during interactive part of Assistant gesture tutorial. [CHAR LIMIT=30] -->
     <string name="assistant_gesture_tutorial_playground_title" translatable="false">Tutorial: Assistant</string>

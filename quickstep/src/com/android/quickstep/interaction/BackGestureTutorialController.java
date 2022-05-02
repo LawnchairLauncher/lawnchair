@@ -33,17 +33,22 @@ final class BackGestureTutorialController extends TutorialController {
     }
 
     @Override
-    public Integer getIntroductionTitle() {
+    public int getIntroductionTitle() {
         return R.string.back_gesture_intro_title;
     }
 
     @Override
-    public Integer getIntroductionSubtitle() {
+    public int getIntroductionSubtitle() {
         return R.string.back_gesture_intro_subtitle;
     }
 
     @Override
-    public Integer getSuccessFeedbackSubtitle() {
+    public int getSpokenIntroductionSubtitle() {
+        return R.string.back_gesture_spoken_intro_subtitle;
+    }
+
+    @Override
+    public int getSuccessFeedbackSubtitle() {
         return mTutorialFragment.isAtFinalStep()
                 ? R.string.back_gesture_feedback_complete_without_follow_up
                 : R.string.back_gesture_feedback_complete_with_overview_follow_up;
