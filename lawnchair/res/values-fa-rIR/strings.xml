@@ -159,7 +159,7 @@
     <string name="show_app_search_bar">Show Search Bar</string>
     <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
     <string name="crash_report_notif_title">%1$s Crashed</string>
-    <string name="action_upload">Upload to Dogbin</string>
+    <string name="action_upload">آپلود در Dogbin</string>
     <string name="action_copy_link">کپی لینک</string>
     <string name="action_copy">کپی</string>
     <string name="copied_toast">Copied to clipboard.</string>
