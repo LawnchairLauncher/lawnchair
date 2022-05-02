@@ -36,6 +36,7 @@ import static com.android.launcher3.anim.Interpolators.ZOOM_OUT;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.graphics.Scrim.SCRIM_PROGRESS;
 import static com.android.launcher3.graphics.SysUiScrim.SYSUI_PROGRESS;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_TRANSLATE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_SCRIM_FADE;
@@ -117,8 +118,6 @@ public class WorkspaceStateTransitionAnimation {
         }
 
         int elements = state.getVisibleElements(mLauncher);
-        Interpolator fadeInterpolator = config.getInterpolator(ANIM_WORKSPACE_FADE,
-                pageAlphaProvider.interpolator);
         Hotseat hotseat = mWorkspace.getHotseat();
         Interpolator scaleInterpolator = config.getInterpolator(ANIM_WORKSPACE_SCALE, ZOOM_OUT);
         LauncherState fromState = mLauncher.getStateManager().getState();
@@ -146,11 +145,15 @@ public class WorkspaceStateTransitionAnimation {
                     hotseatScaleInterpolator);
         }
 
-        float hotseatIconsAlpha = (elements & HOTSEAT_ICONS) != 0 ? 1 : 0;
-        propertySetter.setViewAlpha(hotseat, hotseatIconsAlpha, fadeInterpolator);
+        Interpolator workspaceFadeInterpolator = config.getInterpolator(ANIM_WORKSPACE_FADE,
+                pageAlphaProvider.interpolator);
         float workspacePageIndicatorAlpha = (elements & WORKSPACE_PAGE_INDICATOR) != 0 ? 1 : 0;
         propertySetter.setViewAlpha(mLauncher.getWorkspace().getPageIndicator(),
-                workspacePageIndicatorAlpha, fadeInterpolator);
+                workspacePageIndicatorAlpha, workspaceFadeInterpolator);
+        Interpolator hotseatFadeInterpolator = config.getInterpolator(ANIM_HOTSEAT_FADE,
+                workspaceFadeInterpolator);
+        float hotseatIconsAlpha = (elements & HOTSEAT_ICONS) != 0 ? 1 : 0;
+        propertySetter.setViewAlpha(hotseat, hotseatIconsAlpha, hotseatFadeInterpolator);
 
         // Update the accessibility flags for hotseat based on launcher state.
         hotseat.setImportantForAccessibility(
