@@ -847,8 +847,14 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
         }
     }
 
-    /** Clears the previously registered {@link IOnBackInvokedCallback}. */
-    public void clearBackToLauncherCallback() {
+    /** Clears the previously registered {@link IOnBackInvokedCallback}.
+     *
+     * @param callback The previously registered callback instance.
+     */
+    public void clearBackToLauncherCallback(IOnBackInvokedCallback callback) {
+        if (mBackToLauncherCallback != callback) {
+            return;
+        }
         mBackToLauncherCallback = null;
         if (mBackAnimation == null) {
             return;
