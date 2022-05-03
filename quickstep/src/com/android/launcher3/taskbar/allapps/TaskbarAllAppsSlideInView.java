@@ -15,13 +15,16 @@
  */
 package com.android.launcher3.taskbar.allapps;
 
+import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
+import static com.android.systemui.animation.Interpolators.EMPHASIZED_ACCELERATE;
 
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.animation.Interpolator;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
@@ -33,9 +36,6 @@ import java.util.Optional;
 /** Wrapper for taskbar all apps with slide-in behavior. */
 public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarAllAppsContext>
         implements Insettable, DeviceProfile.OnDeviceProfileChangeListener {
-    static final int DEFAULT_OPEN_DURATION = 500;
-    public static final int DEFAULT_CLOSE_DURATION = 200;
-
     private TaskbarAllAppsContainerView mAppsView;
     private OnCloseListener mOnCloseBeginListener;
     private float mShiftRange;
@@ -61,7 +61,8 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarAllApp
             mOpenCloseAnimator.setValues(
                     PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
             mOpenCloseAnimator.setInterpolator(AGGRESSIVE_EASE);
-            mOpenCloseAnimator.setDuration(DEFAULT_OPEN_DURATION).start();
+            mOpenCloseAnimator.setDuration(
+                    ALL_APPS.getTransitionDuration(mContext, true /* isToState */)).start();
         } else {
             mTranslationShift = TRANSLATION_SHIFT_OPENED;
         }
@@ -80,7 +81,12 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarAllApp
     @Override
     protected void handleClose(boolean animate) {
         Optional.ofNullable(mOnCloseBeginListener).ifPresent(OnCloseListener::onSlideInViewClosed);
-        handleClose(animate, DEFAULT_CLOSE_DURATION);
+        handleClose(animate, ALL_APPS.getTransitionDuration(mContext, false /* isToState */));
+    }
+
+    @Override
+    protected Interpolator getIdleInterpolator() {
+        return EMPHASIZED_ACCELERATE;
     }
 
     @Override

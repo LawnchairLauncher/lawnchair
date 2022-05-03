@@ -58,7 +58,7 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public int getTransitionDuration(Context context) {
+    public int getTransitionDuration(Context context, boolean isToState) {
         // In gesture modes, overview comes in all the way from the side, so give it more time.
         return DisplayController.getNavigationMode(context).hasGestures ? 380 : 250;
     }
