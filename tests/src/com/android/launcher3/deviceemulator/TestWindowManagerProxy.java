@@ -43,9 +43,14 @@ public class TestWindowManagerProxy extends WindowManagerProxy {
     }
 
     @Override
-    protected int getDimenByName(String resName, Resources res) {
+    protected int getDimenByName(Resources res, String resName) {
         Integer mock = mDevice.resourceOverrides.get(resName);
-        return mock != null ? mock : super.getDimenByName(resName, res);
+        return mock != null ? mock : super.getDimenByName(res, resName);
+    }
+
+    @Override
+    protected int getDimenByName(Resources res, String resName, String fallback) {
+        return getDimenByName(res, resName);
     }
 
     @Override
