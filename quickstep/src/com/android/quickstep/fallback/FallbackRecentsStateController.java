@@ -112,7 +112,7 @@ public class FallbackRecentsStateController implements StateHandler<RecentsState
         RecentsState currentState = mActivity.getStateManager().getState();
         if (isSplitSelectionState(state) && !isSplitSelectionState(currentState)) {
             setter.add(mRecentsView.createSplitSelectInitAnimation(
-                    state.getTransitionDuration(mActivity)).buildAnim());
+                    state.getTransitionDuration(mActivity, true /* isToState */)).buildAnim());
         }
 
         Pair<FloatProperty, FloatProperty> taskViewsFloat =
