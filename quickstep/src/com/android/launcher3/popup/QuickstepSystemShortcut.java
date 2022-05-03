@@ -70,7 +70,8 @@ public interface QuickstepSystemShortcut {
 
             RecentsView recentsView = mTarget.getOverviewPanel();
             recentsView.initiateSplitSelect(
-                    new SplitSelectSource(view, new BitmapDrawable(bitmap), intent, mPosition));
+                    new SplitSelectSource(mOriginalView, new BitmapDrawable(bitmap), intent,
+                            mPosition));
         }
     }
 
