@@ -77,7 +77,7 @@
     <string name="install_drop_target_label" msgid="2539096853673231757">"Инсталирај"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Не предлагај апликација"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Закачи го предвидувањето"</string>
-    <string name="permlab_install_shortcut" msgid="5632423390354674437">"инсталирај кратенки"</string>
+    <string name="permlab_install_shortcut" msgid="5632423390354674437">"инсталирање кратенки"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Овозможува апликацијата да додава кратенки без интервенција на корисникот."</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"да чита поставки и кратенки на почетна страница"</string>
     <string name="permdesc_read_settings" msgid="4208061150510996676">"Овозможува апликацијата да ги чита поставките и кратенките на почетната страница."</string>
@@ -124,14 +124,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> се инсталира, <xliff:g id="PROGRESS">%2$s</xliff:g> завршено"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Се презема <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> завршено"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> чека да се инсталира"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"Потребно е ажурирање на апликацијата"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"Апликацијата за оваа икона не е ажурирана. Може да ажурирате рачно за да повторно се овозможи кратенкава или отстранете ја иконата."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"Ажурирај"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"Отстрани"</string>
     <string name="widgets_list" msgid="796804551140113767">"Список со виџети"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Списокот со виџети е затворен"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Додај на почетниот екран"</string>
