@@ -231,11 +231,15 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
         if (mSwipeDetector.isIdleState()) {
             mOpenCloseAnimator
                     .setDuration(defaultDuration)
-                    .setInterpolator(Interpolators.ACCEL);
+                    .setInterpolator(getIdleInterpolator());
         } else {
             mOpenCloseAnimator.setInterpolator(mScrollInterpolator);
         }
         mOpenCloseAnimator.start();
+    }
+
+    protected Interpolator getIdleInterpolator() {
+        return Interpolators.ACCEL;
     }
 
     protected void onCloseComplete() {

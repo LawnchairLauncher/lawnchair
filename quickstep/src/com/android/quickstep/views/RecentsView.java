@@ -2757,16 +2757,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     mSplitHiddenTaskView.getThumbnail().getThumbnail(),
                     mSplitHiddenTaskView.getIconView().getDrawable(), startingTaskRect);
             mFirstFloatingTaskView.setAlpha(1);
-            mFirstFloatingTaskView.addAnimation(anim, startingTaskRect,
-                    mTempRect, true /* fadeWithThumbnail */, true /* isStagedTask */);
+            mFirstFloatingTaskView.addAnimation(anim, startingTaskRect, mTempRect,
+                    true /* fadeWithThumbnail */, true /* isStagedTask */);
         } else {
-            mSplitSelectSource.view.setVisibility(INVISIBLE);
             mFirstFloatingTaskView = FloatingTaskView.getFloatingTaskView(mActivity,
-                    mSplitSelectSource.view, null,
+                    mSplitSelectSource.view, null /* thumbnail */,
                     mSplitSelectSource.drawable, startingTaskRect);
             mFirstFloatingTaskView.setAlpha(1);
-            mFirstFloatingTaskView.addAnimation(anim, startingTaskRect,
-                    mTempRect, true /* fadeWithThumbnail */, true /* isStagedTask */);
+            mFirstFloatingTaskView.addAnimation(anim, startingTaskRect, mTempRect,
+                    false /* fadeWithThumbnail */, true /* isStagedTask */);
         }
         InteractionJankMonitorWrapper.begin(this,
                 InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER, "First tile selected");
@@ -4059,7 +4058,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // TODO(194414938) starting bounds seem slightly off, investigate
         Rect firstTaskStartingBounds = new Rect();
         Rect firstTaskEndingBounds = mTempRect;
-        int duration = mActivity.getStateManager().getState().getTransitionDuration(getContext());
+        int duration = mActivity.getStateManager().getState().getTransitionDuration(getContext(),
+                false /* isToState */);
         PendingAnimation pendingAnimation = new PendingAnimation(duration);
 
         int halfDividerSize = getResources()

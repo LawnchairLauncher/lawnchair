@@ -16,6 +16,7 @@
 package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
+import static com.android.launcher3.taskbar.LauncherTaskbarUIController.SYSUI_SURFACE_PROGRESS_INDEX;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_A11Y;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_BACK;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_HOME;
@@ -126,11 +127,13 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
 
     private final AnimatedFloat mTaskbarNavButtonTranslationY = new AnimatedFloat(
             this::updateNavButtonTranslationY);
+    private final AnimatedFloat mTaskbarNavButtonTranslationYForInAppDisplay = new AnimatedFloat(
+            this::updateNavButtonTranslationY);
     private final AnimatedFloat mTaskbarNavButtonTranslationYForIme = new AnimatedFloat(
             this::updateNavButtonTranslationY);
-    // Only applies to mTaskbarNavButtonTranslationY
-    private final AnimatedFloat mNavButtonTranslationYMultiplier = new AnimatedFloat(
-            this::updateNavButtonTranslationY);
+    // Used for System UI state updates that should translate the nav button for in-app display.
+    private final AnimatedFloat mNavButtonInAppDisplayProgressForSysui = new AnimatedFloat(
+            this::updateNavButtonInAppDisplayProgressForSysui);
     private final AnimatedFloat mTaskbarNavButtonDarkIntensity = new AnimatedFloat(
             this::updateNavButtonDarkIntensity);
     private final AnimatedFloat mNavButtonDarkIntensityMultiplier = new AnimatedFloat(
@@ -173,7 +176,6 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     public void init(TaskbarControllers controllers) {
         mControllers = controllers;
         mNavButtonsView.getLayoutParams().height = mContext.getDeviceProfile().taskbarSize;
-        mNavButtonTranslationYMultiplier.value = 1;
 
         boolean isThreeButtonNav = mContext.isThreeButtonNav();
         mIsImeRenderingNavButtons =
@@ -205,9 +207,9 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         // Make sure to remove nav bar buttons translation when notification shade is expanded or
         // IME is showing (add separate translation for IME).
         int flagsToRemoveTranslation = FLAG_NOTIFICATION_SHADE_EXPANDED | FLAG_IME_VISIBLE;
-        mPropertyHolders.add(new StatePropertyHolder(mNavButtonTranslationYMultiplier,
+        mPropertyHolders.add(new StatePropertyHolder(mNavButtonInAppDisplayProgressForSysui,
                 flags -> (flags & flagsToRemoveTranslation) != 0, AnimatedFloat.VALUE,
-                0, 1));
+                1, 0));
         // Center nav buttons in new height for IME.
         float transForIme = (mContext.getDeviceProfile().taskbarSize
                 - mControllers.taskbarInsetsController.getTaskbarHeightForIme()) / 2f;
@@ -526,6 +528,11 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         return mTaskbarNavButtonTranslationY;
     }
 
+    /** Use to set the translationY for the all nav+contextual buttons when in Launcher */
+    public AnimatedFloat getTaskbarNavButtonTranslationYForInAppDisplay() {
+        return mTaskbarNavButtonTranslationYForInAppDisplay;
+    }
+
     /** Use to set the dark intensity for the all nav+contextual buttons */
     public AnimatedFloat getTaskbarNavButtonDarkIntensity() {
         return mTaskbarNavButtonDarkIntensity;
@@ -554,11 +561,26 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         }
     }
 
+    private void updateNavButtonInAppDisplayProgressForSysui() {
+        TaskbarUIController uiController = mControllers.uiController;
+        if (uiController instanceof LauncherTaskbarUIController) {
+            ((LauncherTaskbarUIController) uiController).onTaskbarInAppDisplayProgressUpdate(
+                    mNavButtonInAppDisplayProgressForSysui.value, SYSUI_SURFACE_PROGRESS_INDEX);
+        }
+    }
+
     private void updateNavButtonTranslationY() {
-        float normalTranslationY = mTaskbarNavButtonTranslationY.value
-                * mNavButtonTranslationYMultiplier.value;
-        float otherTranslationY = mTaskbarNavButtonTranslationYForIme.value;
-        mNavButtonsView.setTranslationY(normalTranslationY + otherTranslationY);
+        final float normalTranslationY = mTaskbarNavButtonTranslationY.value;
+        final float imeAdjustmentTranslationY = mTaskbarNavButtonTranslationYForIme.value;
+        TaskbarUIController uiController = mControllers.uiController;
+        final float inAppDisplayAdjustmentTranslationY =
+                (uiController instanceof LauncherTaskbarUIController
+                        && ((LauncherTaskbarUIController) uiController).shouldUseInAppLayout())
+                        ? mTaskbarNavButtonTranslationYForInAppDisplay.value : 0;
+
+        mNavButtonsView.setTranslationY(normalTranslationY
+                + imeAdjustmentTranslationY
+                + inAppDisplayAdjustmentTranslationY);
     }
 
     private void updateNavButtonDarkIntensity() {

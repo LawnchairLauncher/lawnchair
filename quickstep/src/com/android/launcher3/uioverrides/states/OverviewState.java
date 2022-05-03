@@ -22,10 +22,12 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.os.SystemProperties;
 
+import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
+import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.util.LayoutUtils;
@@ -56,7 +58,7 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public int getTransitionDuration(Context context) {
+    public int getTransitionDuration(Context context, boolean isToState) {
         // In gesture modes, overview comes in all the way from the side, so give it more time.
         return DisplayController.getNavigationMode(context).hasGestures ? 380 : 250;
     }
@@ -93,7 +95,13 @@ public class OverviewState extends LauncherState {
 
     @Override
     public boolean isTaskbarStashed(Launcher launcher) {
-        return true;
+        if (launcher instanceof BaseQuickstepLauncher) {
+            LauncherTaskbarUIController uiController =
+                    ((BaseQuickstepLauncher) launcher).getTaskbarUIController();
+
+            return uiController != null && uiController.supportsVisualStashing();
+        }
+        return super.isTaskbarStashed(launcher);
     }
 
     @Override

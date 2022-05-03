@@ -47,13 +47,6 @@ public class Interpolators {
     public static final Interpolator DEACCEL_2_5 = new DecelerateInterpolator(2.5f);
     public static final Interpolator DEACCEL_3 = new DecelerateInterpolator(3f);
 
-    /**
-     * The decelerating emphasized interpolator. Used for hero / emphasized movement of content that
-     * is appearing e.g. when coming from off screen
-     */
-    public static final Interpolator EMPHASIZED_DECELERATE = new PathInterpolator(
-            0.05f, 0.7f, 0.1f, 1f);
-
     public static final Interpolator ACCEL_DEACCEL = new AccelerateDecelerateInterpolator();
 
     public static final Interpolator FAST_OUT_SLOW_IN = new PathInterpolator(0.4f, 0f, 0.2f, 1f);
