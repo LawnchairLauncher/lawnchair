@@ -199,7 +199,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new TaskbarInsetsController(this));
     }
 
-    public void init(TaskbarSharedState sharedState) {
+    public void init(@NonNull TaskbarSharedState sharedState) {
         mLastRequestedNonFullscreenHeight = getDefaultTaskbarWindowHeight();
         mWindowLayoutParams = createDefaultWindowLayoutParams();
 
