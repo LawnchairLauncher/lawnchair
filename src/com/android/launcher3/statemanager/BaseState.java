@@ -36,7 +36,7 @@ public interface BaseState<T extends BaseState> {
     /**
      * @return How long the animation to this state should take (or from this state to NORMAL).
      */
-    int getTransitionDuration(Context context);
+    int getTransitionDuration(Context context, boolean isToState);
 
     /**
      * Returns the state to go back to from this state
