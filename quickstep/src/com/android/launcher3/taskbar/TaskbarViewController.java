@@ -262,12 +262,14 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             View child = mTaskbarView.getChildAt(i);
 
             int positionInHotseat = -1;
-            if (FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get() && i == count - 1) {
+            boolean isRtl = Utilities.isRtl(child.getResources());
+            if (FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get()
+                    && ((isRtl && i == 0) || (!isRtl && i == count - 1))) {
                 // Note that there is no All Apps button in the hotseat, this position is only used
                 // as its convenient for animation purposes.
-                positionInHotseat = Utilities.isRtl(child.getResources())
+                positionInHotseat = isRtl
                         ? -1
-                        : mActivity.getDeviceProfile().inv.numShownHotseatIcons;
+                        : mActivity.getDeviceProfile().numShownHotseatIcons;
 
                 setter.setViewAlpha(child, 0, LINEAR);
             } else if (child.getTag() instanceof ItemInfo) {
