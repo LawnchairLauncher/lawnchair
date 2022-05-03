@@ -2118,7 +2118,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     final Runnable onCompleteCallback = onCompleteRunnable;
                     mLauncher.getDragController().animateDragViewToOriginalPosition(
                             /* onComplete= */ callbackList::executeAllAndDestroy, cell,
-                            SPRING_LOADED.getTransitionDuration(mLauncher));
+                            SPRING_LOADED.getTransitionDuration(mLauncher, true /* isToState */));
                     mLauncher.getStateManager().goToState(NORMAL, /* delay= */ 0,
                             onCompleteCallback == null
                                     ? null
