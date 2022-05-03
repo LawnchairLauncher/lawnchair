@@ -29,17 +29,16 @@ import org.junit.runner.RunWith
 class InlineQsbTest : DeviceProfileBaseTest() {
 
     @Test
-    fun qsbWidth_is_match_parent_for_phones() {
+    fun qsb_is_not_inline_for_phones() {
         initializeVarsForPhone()
 
         val dp = newDP()
 
         assertThat(dp.isQsbInline).isFalse()
-        assertThat(dp.qsbWidth).isEqualTo(0)
     }
 
     @Test
-    fun qsbWidth_is_match_parent_for_tablet_portrait() {
+    fun qsb_is_inline_for_tablet_portrait() {
         initializeVarsForTablet()
         inv = newScalableInvariantDeviceProfile().apply {
             inlineQsb = booleanArrayOf(
@@ -62,11 +61,10 @@ class InlineQsbTest : DeviceProfileBaseTest() {
         )
 
         assertThat(dp.isQsbInline).isFalse()
-        assertThat(dp.qsbWidth).isEqualTo(0)
     }
 
     @Test
-    fun qsbWidth_has_size_for_tablet_landscape() {
+    fun qsb_is_inline_for_tablet_landscape() {
         initializeVarsForTablet(isLandscape = true)
         inv = newScalableInvariantDeviceProfile().apply {
             inlineQsb = booleanArrayOf(
@@ -75,16 +73,17 @@ class InlineQsbTest : DeviceProfileBaseTest() {
                 false,
                 false
             )
+            numColumns = 6
+            numRows = 5
+            numShownHotseatIcons = 6
         }
 
         val dp = newDP()
 
         if (dp.hotseatQsbHeight > 0) {
             assertThat(dp.isQsbInline).isTrue()
-            assertThat(dp.qsbWidth).isGreaterThan(0)
         } else { // Launcher3 doesn't have QSB height
             assertThat(dp.isQsbInline).isFalse()
-            assertThat(dp.qsbWidth).isEqualTo(0)
         }
     }
 
@@ -92,14 +91,13 @@ class InlineQsbTest : DeviceProfileBaseTest() {
      * This test is to make sure that a tablet doesn't inline the QSB if the layout doesn't support
      */
     @Test
-    fun qsbWidth_is_match_parent_for_tablet_landscape_without_inline() {
+    fun qsb_is_not_inline_for_tablet_landscape_without_inline() {
         initializeVarsForTablet(isLandscape = true)
         useTwoPanels = true
 
         val dp = newDP()
 
         assertThat(dp.isQsbInline).isFalse()
-        assertThat(dp.qsbWidth).isEqualTo(0)
     }
 
 }
