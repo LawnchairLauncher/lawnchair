@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">لجميع الأيقونات غير المتكيفة.</string>
     <string name="support_and_pr">الدعم &amp; و العلاقات العامة</string>
     <string name="workspace_dt2s">المس مرتين لإغلاق الشاشة</string>
-    <string name="smart_space_enable">شريط \"في لمحة\"</string>
+    <string name="smart_space_enable">شريط \'\'في لمحة\'\'</string>
     <string name="design_and_development">التصميم والتطوير</string>
     <string name="translate">ترجمة</string>
     <string name="product">منتج</string>
@@ -197,9 +197,9 @@
     <string name="icon_picker_description">قد يدفع Lawnchair إلى التوقف.</string>
     <string name="font_picker_label">تخصيص الخط</string>
     <string name="font_picker_description">لا يزال بعض النص دون تغيير.</string>
-    <string name="search_provider_app_search">App Search</string>
-    <string name="always_open_website_label">Always Open Website</string>
-    <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
-    <string name="search_provider">Search Provider</string>
+    <string name="search_provider_app_search">بحث التطبيقات</string>
+    <string name="always_open_website_label">أفتح الموقع دائماً</string>
+    <string name="always_open_website_description">افتح موقع الويب لموفر البحث حتى لو تم تثبيت تطبيقهم.</string>
+    <string name="search_provider">مزود البحث</string>
     <string name="status_bar_label">شريط الحالة</string>
 </resources>
