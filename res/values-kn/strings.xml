@@ -47,7 +47,7 @@
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"ಹುಡುಕಿ"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"ಹುಡುಕಾಟ ಪೆಟ್ಟಿಗೆಯಿಂದ ಪಠ್ಯವನ್ನು ತೆರವುಗೊಳಿಸಿ"</string>
     <string name="no_widgets_available" msgid="4337693382501046170">"ವಿಜೆಟ್‌ಗಳು ಮತ್ತು ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು ಲಭ್ಯವಿಲ್ಲ"</string>
-    <string name="no_search_results" msgid="3787956167293097509">"ಯಾವುದೇ ವಿಜೆಟ್‌ಗಳು ಅಥವಾ ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ"</string>
+    <string name="no_search_results" msgid="3787956167293097509">"ಯಾವುದೇ ವಿಜೆಟ್‌ಗಳು ಅಥವಾ ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು ಪತ್ತೆಯಾಗಿಲ್ಲ"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"ವೈಯಕ್ತಿಕ"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ಕೆಲಸ"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"ಸಂಭಾಷಣೆಗಳು"</string>
@@ -124,14 +124,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಲಾಗುತ್ತಿದೆ, <xliff:g id="PROGRESS">%2$s</xliff:g> ಪೂರ್ಣಗೊಂಡಿದೆ"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ಡೌನ್‌ಲೋಡ್‌ ಮಾಡಲಾಗುತ್ತಿದೆ, <xliff:g id="PROGRESS">%2$s</xliff:g> ಪೂರ್ಣಗೊಂಡಿದೆ"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ಸ್ಥಾಪಿಸಲು ಕಾಯಲಾಗುತ್ತಿದೆ"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"ಆ್ಯಪ್ ಅಪ್‌ಡೇಟ್ ಅಗತ್ಯವಿದೆ"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"ಈ ಐಕಾನ್‌ಗಾಗಿ ಆ್ಯಪ್ ಅನ್ನು ಅಪ್‌ಡೇಟ್ ಮಾಡಲಾಗಿಲ್ಲ. ಈ ಶಾರ್ಟ್‌ಕಟ್ ಅನ್ನು ಮರು-ಸಕ್ರಿಯಗೊಳಿಸಲು ನೀವು ಹಸ್ತಚಾಲಿತವಾಗಿ ಅಪ್‌ಡೇಟ್ ಮಾಡಬಹುದು ಅಥವಾ ಐಕಾನ್ ಅನ್ನು ತೆಗೆದುಹಾಕಬಹುದು."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"ಅಪ್‌ಡೇಟ್ ಮಾಡಿ"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"ತೆಗೆದುಹಾಕಿ"</string>
     <string name="widgets_list" msgid="796804551140113767">"ವಿಜೆಟ್ ಪಟ್ಟಿ"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"ವಿಜೆಟ್ ಪಟ್ಟಿಯನ್ನು ಮುಚ್ಚಲಾಗಿದೆ"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"ಹೋಮ್ ಸ್ಕ್ರೀನ್‌ಗೆ ಸೇರಿಸಿ"</string>

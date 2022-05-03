@@ -72,7 +72,7 @@
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"व्यक्तिगत अनुप्रयोगहरूको सूची"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"कार्यसम्बन्धी अनुप्रयोगहरूको सूची"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"हटाउनुहोस्"</string>
-    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"विस्थापित गर्नुहोस्"</string>
+    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"अनइन्स्टल गर्नुहोस्"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"एपसम्बन्धी जानकारी"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"स्थापना गर्नुहोस्"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"यो एप सिफारिस नगरियोस्"</string>
@@ -124,14 +124,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> इन्स्टल गरिँदै छ, <xliff:g id="PROGRESS">%2$s</xliff:g> पूरा भयो"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> डाउनलोड गर्दै, <xliff:g id="PROGRESS">%2$s</xliff:g> सम्पन्‍न"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> स्थापना गर्न प्रतीक्षा गर्दै"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"एप अपडेट गरिनु पर्छ"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"यो आइकनले जनाउने एप अपडेट गरिएको छैन। तपाईं यो सर्टकट फेरि अन गर्न म्यानुअल रूपमा अपडेट गर्न सक्नुहुन्छ वा आइकन नै हटाउनुहोस्।"</string>
+    <string name="dialog_update" msgid="2178028071796141234">"अपडेट गर्नुहोस्"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"हटाउनुहोस्"</string>
     <string name="widgets_list" msgid="796804551140113767">"विजेटहरूको सूची"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"विजेटहरूको सूची बन्द गरियो"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"होम स्क्रिनमा राख्नुहोस्"</string>
