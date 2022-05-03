@@ -73,6 +73,7 @@ import com.android.systemui.shared.recents.model.Task;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.function.Predicate;
 
 /**
  * Handles long click on Taskbar items to start a system drag and drop operation.
@@ -439,12 +440,12 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                 target = taskbarViewController.getAllAppsButtonView();
             } else if (item.container >= 0) {
                 // Since folders close when the drag starts, target the folder icon instead.
-                ItemInfoMatcher matcher = ItemInfoMatcher.forFolderMatch(
+                Predicate<ItemInfo> matcher = ItemInfoMatcher.forFolderMatch(
                         ItemInfoMatcher.ofItemIds(IntSet.wrap(item.id)));
                 target = taskbarViewController.getFirstIconMatch(matcher);
             } else if (item.itemType == ITEM_TYPE_DEEP_SHORTCUT) {
                 // Find first icon with same package/user as the deep shortcut.
-                ItemInfoMatcher packageUserMatcher = ItemInfoMatcher.ofPackages(
+                Predicate<ItemInfo> packageUserMatcher = ItemInfoMatcher.ofPackages(
                         Collections.singleton(item.getTargetPackage()), item.user);
                 target = taskbarViewController.getFirstIconMatch(packageUserMatcher);
             }
