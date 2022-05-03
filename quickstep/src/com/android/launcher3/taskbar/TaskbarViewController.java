@@ -47,6 +47,7 @@ import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.AnimatedFloat;
 
 import java.io.PrintWriter;
+import java.util.function.Predicate;
 
 /**
  * Handles properties/data collection, then passes the results to TaskbarView to render.
@@ -317,8 +318,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
      * 2) FolderIcon of the Folder containing the given icon
      * 3) All Apps button
      */
-    public View getFirstIconMatch(ItemInfoMatcher matcher) {
-        ItemInfoMatcher folderMatcher = ItemInfoMatcher.forFolderMatch(matcher);
+    public View getFirstIconMatch(Predicate<ItemInfo> matcher) {
+        Predicate<ItemInfo> folderMatcher = ItemInfoMatcher.forFolderMatch(matcher);
         return mTaskbarView.getFirstMatch(matcher, folderMatcher);
     }
 

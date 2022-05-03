@@ -36,9 +36,9 @@ import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.util.FlagOp;
-import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SafeCloseable;
 
@@ -47,6 +47,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 
 /**
@@ -257,11 +258,11 @@ public class AllAppsList {
     /**
      * Updates the disabled flags of apps matching {@param matcher} based on {@param op}.
      */
-    public void updateDisabledFlags(ItemInfoMatcher matcher, FlagOp op) {
+    public void updateDisabledFlags(Predicate<ItemInfo> matcher, FlagOp op) {
         final List<AppInfo> data = this.data;
         for (int i = data.size() - 1; i >= 0; i--) {
             AppInfo info = data.get(i);
-            if (matcher.matches(info, info.componentName)) {
+            if (matcher.test(info)) {
                 info.runtimeStatusFlags = op.apply(info.runtimeStatusFlags);
                 mDataChanged = true;
             }
