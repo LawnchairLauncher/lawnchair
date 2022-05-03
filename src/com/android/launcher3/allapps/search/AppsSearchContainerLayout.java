@@ -177,14 +177,6 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     }
 
     @Override
-    public void onAppendSearchResult(String query, ArrayList<AdapterItem> items) {
-        if (items != null) {
-            mApps.appendSearchResults(items);
-            notifyResultChanged();
-        }
-    }
-
-    @Override
     public void clearSearchResult() {
         if (mApps.setSearchResults(null)) {
             notifyResultChanged();
