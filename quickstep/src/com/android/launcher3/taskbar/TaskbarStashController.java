@@ -167,7 +167,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         mStashedHeight = mActivity.getDeviceProfile().stashedTaskbarSize;
     }
 
-    public void init(TaskbarControllers controllers, TaskbarSharedState sharedState) {
+    public void init(TaskbarControllers controllers, boolean setupUIVisible) {
         mControllers = controllers;
 
         TaskbarDragLayerController dragLayerController = controllers.taskbarDragLayerController;
@@ -188,7 +188,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
         boolean isManuallyStashedInApp = supportsManualStashing()
                 && mPrefs.getBoolean(SHARED_PREFS_STASHED_KEY, DEFAULT_STASHED_PREF);
-        boolean isInSetup = !mActivity.isUserSetupComplete() || sharedState.setupUIVisible;
+        boolean isInSetup = !mActivity.isUserSetupComplete() || setupUIVisible;
         updateStateForFlag(FLAG_STASHED_IN_APP_MANUAL, isManuallyStashedInApp);
         updateStateForFlag(FLAG_STASHED_IN_APP_SETUP, isInSetup);
         updateStateForFlag(FLAG_IN_SETUP, isInSetup);
@@ -202,7 +202,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * state.
      */
     public boolean supportsVisualStashing() {
-        return !mActivity.isThreeButtonNav();
+        return mControllers.uiController.supportsVisualStashing();
     }
 
     /**
