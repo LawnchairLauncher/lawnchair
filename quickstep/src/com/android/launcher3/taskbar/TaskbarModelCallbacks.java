@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Launcher model Callbacks for rendering taskbar.
@@ -126,16 +127,16 @@ public class TaskbarModelCallbacks implements
     }
 
     @Override
-    public void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher) {
+    public void bindWorkspaceComponentsRemoved(Predicate<ItemInfo> matcher) {
         if (handleItemsRemoved(matcher)) {
             commitItemsToUI();
         }
     }
 
-    private boolean handleItemsRemoved(ItemInfoMatcher matcher) {
+    private boolean handleItemsRemoved(Predicate<ItemInfo> matcher) {
         boolean modified = false;
         for (int i = mHotseatItems.size() - 1; i >= 0; i--) {
-            if (matcher.matchesInfo(mHotseatItems.valueAt(i))) {
+            if (matcher.test(mHotseatItems.valueAt(i))) {
                 modified = true;
                 mHotseatItems.removeAt(i);
             }

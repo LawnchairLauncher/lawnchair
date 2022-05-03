@@ -27,7 +27,6 @@ import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.Log;
 import android.view.ViewGroup;
-import android.view.WindowInsets;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
@@ -35,11 +34,12 @@ import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.function.Predicate;
 
 /**
  * Companion class for {@link BaseAllAppsContainerView} to manage work tab and personal tab
@@ -70,7 +70,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
 
     private final BaseAllAppsContainerView<?> mAllApps;
     private final WorkAdapterProvider mAdapterProvider;
-    private final ItemInfoMatcher mMatcher;
+    private final Predicate<ItemInfo> mMatcher;
 
     private WorkModeSwitch mWorkModeSwitch;
 
@@ -176,7 +176,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
         return mAdapterProvider;
     }
 
-    public ItemInfoMatcher getMatcher() {
+    public Predicate<ItemInfo> getMatcher() {
         return mMatcher;
     }
 
