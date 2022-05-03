@@ -124,14 +124,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Instaluję aplikację <xliff:g id="NAME">%1$s</xliff:g>, postęp: <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Pobieranie elementu <xliff:g id="NAME">%1$s</xliff:g>, ukończono: <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> oczekuje na instalację"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"Wymagana aktualizacja aplikacji"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"Aplikacja z tą ikoną nie jest aktualizowana. Możesz zaktualizować ją ręcznie, aby ponownie uruchomić ten skrót, lub usunąć ikonę."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"Aktualizuj"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"Usuń"</string>
     <string name="widgets_list" msgid="796804551140113767">"Lista widgetów"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Lista widgetów zamknięta"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Dodaj do ekranu głównego"</string>
@@ -161,7 +157,7 @@
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Zamknij"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"Zamknij"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Powiadomienie odrzucone"</string>
-    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Prywatne"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Osobiste"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Służbowe"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profil służbowy"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Aplikacje służbowe mają plakietki i są widoczne dla administratora IT"</string>

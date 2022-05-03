@@ -124,14 +124,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> நிறுவப்படுகிறது, <xliff:g id="PROGRESS">%2$s</xliff:g> முடிந்தது"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g>ஐப் பதிவிறக்குகிறது, <xliff:g id="PROGRESS">%2$s</xliff:g> முடிந்தது"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g>ஐ நிறுவுவதற்காகக் காத்திருக்கிறது"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"ஆப்ஸைப் புதுப்பியுங்கள்"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"இந்த ஐகானுக்கான ஆப்ஸ் புதுப்பிக்கப்படவில்லை. இந்த ஷார்ட்கட்டை மீண்டும் இயக்கவோ ஐகானை அகற்றவோ நீங்களாகவே புதுப்பிக்கலாம்."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"புதுப்பி"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"அகற்று"</string>
     <string name="widgets_list" msgid="796804551140113767">"விட்ஜெட்கள் பட்டியல்"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"விட்ஜெட்கள் பட்டியல் மூடப்பட்டது"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"முகப்புத் திரையில் சேர்"</string>

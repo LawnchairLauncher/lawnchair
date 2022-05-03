@@ -72,7 +72,7 @@
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"వ్యక్తిగత యాప్‌ల లిస్ట్‌"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"కార్యాలయ యాప్‌ల లిస్ట్‌"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"తీసివేయి"</string>
-    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"అన్ఇన్‌స్టాల్ చేయి"</string>
+    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"అన్ఇన్‌స్టాల్ చేయండి"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"యాప్ సమాచారం"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ఇన్‌స్టాల్ చేయండి"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"యాప్‌ను సూచించవద్దు"</string>
