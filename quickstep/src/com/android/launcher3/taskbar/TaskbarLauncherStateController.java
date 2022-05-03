@@ -42,7 +42,9 @@ import com.android.quickstep.views.RecentsView;
 import com.android.systemui.animation.ViewRootSync;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
+import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.StringJoiner;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -475,5 +477,49 @@ import java.util.function.Supplier;
             controller.updateStateForFlag(FLAG_IN_APP, finishedToApp);
             controller.applyState();
         }
+    }
+
+    private static String getStateString(int flags) {
+        StringJoiner str = new StringJoiner("|");
+        str.add((flags & FLAG_RESUMED) != 0 ? "FLAG_RESUMED" : "");
+        str.add((flags & FLAG_RECENTS_ANIMATION_RUNNING) != 0
+                ? "FLAG_RECENTS_ANIMATION_RUNNING" : "");
+        str.add((flags & FLAG_TRANSITION_STATE_RUNNING) != 0
+                ? "FLAG_TRANSITION_STATE_RUNNING" : "");
+        return str.toString();
+    }
+
+    protected void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarLauncherStateController:");
+
+        pw.println(String.format(
+                "%s\tmIconAlignmentForResumedState=%.2f",
+                prefix,
+                mIconAlignmentForResumedState.value));
+        pw.println(String.format(
+                "%s\tmIconAlignmentForGestureState=%.2f",
+                prefix,
+                mIconAlignmentForGestureState.value));
+        pw.println(String.format(
+                "%s\tmIconAlignmentForLauncherState=%.2f",
+                prefix,
+                mIconAlignmentForLauncherState.value));
+        pw.println(String.format(
+                "%s\tmTaskbarBackgroundAlpha=%.2f", prefix, mTaskbarBackgroundAlpha.value));
+        pw.println(String.format(
+                "%s\tmIconAlphaForHome=%.2f", prefix, mIconAlphaForHome.getValue()));
+        pw.println(String.format("%s\tmPrevState=%s", prefix, getStateString(mPrevState)));
+        pw.println(String.format("%s\tmState=%s", prefix, getStateString(mState)));
+        pw.println(String.format("%s\tmLauncherState=%s", prefix, mLauncherState));
+        pw.println(String.format(
+                "%s\tmIsAnimatingToLauncherViaGesture=%b",
+                prefix,
+                mIsAnimatingToLauncherViaGesture));
+        pw.println(String.format(
+                "%s\tmIsAnimatingToLauncherViaResume=%b",
+                prefix,
+                mIsAnimatingToLauncherViaResume));
+        pw.println(String.format(
+                "%s\tmShouldDelayLauncherStateAnim=%b", prefix, mShouldDelayLauncherStateAnim));
     }
 }
