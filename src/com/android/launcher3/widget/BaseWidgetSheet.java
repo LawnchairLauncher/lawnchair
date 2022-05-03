@@ -44,6 +44,7 @@ import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.AbstractSlideInView;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.ArrowTipView;
 
 /**
@@ -305,5 +306,12 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     protected boolean hasSeenEducationTip() {
         return mActivityContext.getSharedPrefs().getBoolean(KEY_WIDGETS_EDUCATION_TIP_SEEN, false)
                 || Utilities.IS_RUNNING_IN_TEST_HARNESS;
+    }
+
+    @Override
+    protected void setTranslationShift(float translationShift) {
+        super.setTranslationShift(translationShift);
+        Launcher launcher = ActivityContext.lookupContext(getContext());
+        launcher.onWidgetsTransition(1 - translationShift);
     }
 }
