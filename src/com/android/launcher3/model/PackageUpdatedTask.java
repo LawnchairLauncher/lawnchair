@@ -57,6 +57,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Handles updates due to changes in package manager (app installed/updated/removed)
@@ -95,7 +96,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
         final int N = packages.length;
         final FlagOp flagOp;
         final HashSet<String> packageSet = new HashSet<>(Arrays.asList(packages));
-        final ItemInfoMatcher matcher = mOp == OP_USER_AVAILABILITY_CHANGE
+        final Predicate<ItemInfo> matcher = mOp == OP_USER_AVAILABILITY_CHANGE
                 ? ItemInfoMatcher.ofUser(mUser) // We want to update all packages for this user
                 : ItemInfoMatcher.ofPackages(packageSet, mUser);
         final HashSet<ComponentName> removedComponents = new HashSet<>();
@@ -206,7 +207,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                     }
 
                     ComponentName cn = si.getTargetComponent();
-                    if (cn != null && matcher.matches(si, cn)) {
+                    if (cn != null && matcher.test(si)) {
                         String packageName = cn.getPackageName();
 
                         if (si.hasStatusFlag(WorkspaceItemInfo.FLAG_SUPPORTS_WEB_UI)) {
@@ -336,7 +337,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
         }
 
         if (!removedPackages.isEmpty() || !removedComponents.isEmpty()) {
-            ItemInfoMatcher removeMatch = ItemInfoMatcher.ofPackages(removedPackages, mUser)
+            Predicate<ItemInfo> removeMatch = ItemInfoMatcher.ofPackages(removedPackages, mUser)
                     .or(ItemInfoMatcher.ofComponents(removedComponents, mUser))
                     .and(ItemInfoMatcher.ofItemIds(forceKeepShortcuts).negate());
             deleteAndBindComponentsRemoved(removeMatch);
