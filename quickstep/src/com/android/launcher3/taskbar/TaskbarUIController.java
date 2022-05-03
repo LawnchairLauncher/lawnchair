@@ -22,6 +22,7 @@ import androidx.annotation.CallSuper;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 
+import java.io.PrintWriter;
 import java.util.stream.Stream;
 
 /**
@@ -85,5 +86,13 @@ public class TaskbarUIController {
             stashController.updateStateForFlag(TaskbarStashController.FLAG_IN_APP, true);
             stashController.applyState();
         }
+    }
+
+    @CallSuper
+    protected void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(String.format(
+                "%sTaskbarUIController: using an instance of %s",
+                prefix,
+                getClass().getSimpleName()));
     }
 }
