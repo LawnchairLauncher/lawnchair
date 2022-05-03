@@ -194,6 +194,9 @@ public class TaskbarManager {
      * Sets a {@link StatefulActivity} to act as taskbar callback
      */
     public void setActivity(@NonNull StatefulActivity activity) {
+        if (mActivity == activity) {
+            return;
+        }
         mActivity = activity;
         mUnfoldProgressProvider.setSourceProvider(getUnfoldTransitionProgressProviderForActivity(
                 activity));
