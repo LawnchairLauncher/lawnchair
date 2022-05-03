@@ -43,6 +43,7 @@ import com.android.launcher3.util.OnboardingPrefs;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.RecentsAnimationCallbacks;
 
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -57,22 +58,18 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     private final BaseQuickstepLauncher mLauncher;
 
     private final DeviceProfile.OnDeviceProfileChangeListener mOnDeviceProfileChangeListener =
-            this::onStashedInAppChanged;
+            dp -> {
+                onStashedInAppChanged(dp);
+                if (mControllers != null && mControllers.taskbarViewController != null) {
+                    mControllers.taskbarViewController.onRotationChanged(dp);
+                }
+            };
 
     // Initialized in init.
     private AnimatedFloat mTaskbarOverrideBackgroundAlpha;
     private TaskbarKeyguardController mKeyguardController;
     private final TaskbarLauncherStateController
             mTaskbarLauncherStateController = new TaskbarLauncherStateController();
-
-    private final DeviceProfile.OnDeviceProfileChangeListener mProfileChangeListener =
-            new DeviceProfile.OnDeviceProfileChangeListener() {
-                @Override
-                public void onDeviceProfileChanged(DeviceProfile dp) {
-                    mControllers.taskbarViewController.onRotationChanged(
-                            mLauncher.getDeviceProfile());
-                }
-            };
 
     public LauncherTaskbarUIController(BaseQuickstepLauncher launcher) {
         mLauncher = launcher;
@@ -93,7 +90,10 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
         onStashedInAppChanged(mLauncher.getDeviceProfile());
         mLauncher.addOnDeviceProfileChangeListener(mOnDeviceProfileChangeListener);
-        mLauncher.addOnDeviceProfileChangeListener(mProfileChangeListener);
+    }
+
+    public boolean supportsVisualStashing() {
+        return mControllers.taskbarStashController.supportsVisualStashing();
     }
 
     @Override
@@ -102,9 +102,8 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         onLauncherResumedOrPaused(false);
         mTaskbarLauncherStateController.onDestroy();
 
-        mLauncher.removeOnDeviceProfileChangeListener(mOnDeviceProfileChangeListener);
         mLauncher.setTaskbarUIController(null);
-        mLauncher.removeOnDeviceProfileChangeListener(mProfileChangeListener);
+        mLauncher.removeOnDeviceProfileChangeListener(mOnDeviceProfileChangeListener);
         updateTaskTransitionSpec(true);
     }
 
@@ -270,5 +269,17 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         // Launcher's ScrimView will draw the background throughout the gesture. But once the
         // gesture ends, start drawing taskbar's background again since launcher might stop drawing.
         forceHideBackground(inProgress);
+    }
+
+    @Override
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        super.dumpLogs(prefix, pw);
+
+        pw.println(String.format(
+                "%s\tmTaskbarOverrideBackgroundAlpha=%.2f",
+                prefix,
+                mTaskbarOverrideBackgroundAlpha.value));
+
+        mTaskbarLauncherStateController.dumpLogs(prefix + "\t", pw);
     }
 }
