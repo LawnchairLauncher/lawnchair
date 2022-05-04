@@ -239,21 +239,6 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
         mHeaderViewDimensionsProvider = headerViewDimensionsProvider;
     }
 
-    @Override
-    public void scrollToTop() {
-        if (mScrollbar != null) {
-            mScrollbar.reattachThumbToScroll();
-        }
-
-        if (getLayoutManager() instanceof LinearLayoutManager) {
-            if (getCurrentScrollY() == 0) {
-                // We are at the top, so don't scrollToPosition (would cause unnecessary relayout).
-                return;
-            }
-        }
-        scrollToPosition(0);
-    }
-
     /**
      * Returns the sum of the height, in pixels, of this list adapter's items from index 0 until
      * {@code untilIndex}.

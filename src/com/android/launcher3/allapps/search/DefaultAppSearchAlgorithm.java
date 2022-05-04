@@ -85,8 +85,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm<AdapterItem> {
         for (int i = 0; i < total && resultCount < MAX_RESULTS_COUNT; i++) {
             AppInfo info = apps.get(i);
             if (StringMatcherUtility.matches(queryTextLower, info.title.toString(), matcher)) {
-                AdapterItem appItem = AdapterItem.asApp(resultCount, info);
-                result.add(appItem);
+                result.add(AdapterItem.asApp(info));
                 resultCount++;
             }
         }
