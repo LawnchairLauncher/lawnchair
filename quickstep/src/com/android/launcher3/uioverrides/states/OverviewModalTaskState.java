@@ -40,7 +40,7 @@ public class OverviewModalTaskState extends OverviewState {
     }
 
     @Override
-    public int getTransitionDuration(Context launcher) {
+    public int getTransitionDuration(Context launcher, boolean isToState) {
         return 300;
     }
 

@@ -17,6 +17,7 @@ package com.android.launcher3.taskbar;
 
 import static android.view.HapticFeedbackConstants.LONG_PRESS;
 
+import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_SHOW;
 import static com.android.launcher3.taskbar.Utilities.appendFlag;
@@ -34,7 +35,6 @@ import android.view.WindowInsets;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.taskbar.allapps.TaskbarAllAppsSlideInView;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.AnimatedFloat;
@@ -564,7 +564,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
         updateStateForFlag(FLAG_STASHED_IN_APP_ALL_APPS, false);
         if (applyState) {
-            applyState(TaskbarAllAppsSlideInView.DEFAULT_CLOSE_DURATION);
+            applyState(ALL_APPS.getTransitionDuration(
+                    mControllers.taskbarActivityContext, false /* isToState */));
         }
     }
 

@@ -77,7 +77,7 @@ public class RecentsState implements BaseState<RecentsState> {
     }
 
     @Override
-    public int getTransitionDuration(Context context) {
+    public int getTransitionDuration(Context context, boolean isToState) {
         return 250;
     }
 
