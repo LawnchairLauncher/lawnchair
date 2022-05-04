@@ -124,14 +124,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Installation de l\'application <xliff:g id="NAME">%1$s</xliff:g> en cours, <xliff:g id="PROGRESS">%2$s</xliff:g> terminée"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Téléchargement de <xliff:g id="NAME">%1$s</xliff:g> : <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> en attente d\'installation"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"Mise à jour de l\'application requise"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"L\'application pour cette icône n\'est pas à jour. Vous pouvez soit la mettre à jour manuellement pour réactiver ce raccourci, soit retirer l\'icône."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"Mettre à jour"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"Retirer"</string>
     <string name="widgets_list" msgid="796804551140113767">"Liste des widgets"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Liste des widgets fermée"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Ajouter à l\'écran d\'accueil"</string>
