@@ -39,8 +39,8 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public int getTransitionDuration(Context context) {
-        return 320;
+    public int getTransitionDuration(Context context, boolean isToState) {
+        return isToState ? 500 : 300;
     }
 
     @Override

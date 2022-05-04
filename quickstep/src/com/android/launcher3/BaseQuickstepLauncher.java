@@ -24,6 +24,9 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TI
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
 import static com.android.launcher3.popup.QuickstepSystemShortcut.getSplitSelectShortcutByPosition;
+import static com.android.launcher3.taskbar.LauncherTaskbarUIController.ALL_APPS_PAGE_PROGRESS_INDEX;
+import static com.android.launcher3.taskbar.LauncherTaskbarUIController.MINUS_ONE_PAGE_PROGRESS_INDEX;
+import static com.android.launcher3.taskbar.LauncherTaskbarUIController.WIDGETS_PAGE_PROGRESS_INDEX;
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.DisplayController.NavigationMode.TWO_BUTTONS;
@@ -229,6 +232,28 @@ public abstract class BaseQuickstepLauncher extends Launcher {
     public void onScrollChanged(float progress) {
         super.onScrollChanged(progress);
         mDepthController.onOverlayScrollChanged(progress);
+        onTaskbarInAppDisplayProgressUpdate(progress, MINUS_ONE_PAGE_PROGRESS_INDEX);
+    }
+
+    @Override
+    public void onAllAppsTransition(float progress) {
+        super.onAllAppsTransition(progress);
+        onTaskbarInAppDisplayProgressUpdate(progress, ALL_APPS_PAGE_PROGRESS_INDEX);
+    }
+
+    @Override
+    public void onWidgetsTransition(float progress) {
+        super.onWidgetsTransition(progress);
+        onTaskbarInAppDisplayProgressUpdate(progress, WIDGETS_PAGE_PROGRESS_INDEX);
+    }
+
+    private void onTaskbarInAppDisplayProgressUpdate(float progress, int flag) {
+        if (mTaskbarManager == null
+                || mTaskbarManager.getCurrentActivityContext() == null
+                || mTaskbarUIController == null) {
+            return;
+        }
+        mTaskbarUIController.onTaskbarInAppDisplayProgressUpdate(progress, flag);
     }
 
     @Override

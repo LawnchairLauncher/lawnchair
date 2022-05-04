@@ -39,7 +39,7 @@ public class SpringLoadedState extends LauncherState {
     }
 
     @Override
-    public int getTransitionDuration(Context context) {
+    public int getTransitionDuration(Context context, boolean isToState) {
         return 150;
     }
 

@@ -190,6 +190,7 @@ public class AllAppsTransitionController
     public void setProgress(float progress) {
         mProgress = progress;
         getAppsViewProgressTranslationY().set(mAppsView, mProgress * mShiftRange);
+        mLauncher.onAllAppsTransition(1 - progress);
     }
 
     public float getProgress() {
@@ -254,8 +255,6 @@ public class AllAppsTransitionController
         anim.setInterpolator(verticalProgressInterpolator);
         anim.addListener(getProgressAnimatorListener());
         builder.add(anim);
-        // Use ANIM_VERTICAL_PROGRESS's interpolator to determine state transition threshold.
-        builder.setInterpolator(verticalProgressInterpolator);
 
         setAlphas(toState, config, builder);
 

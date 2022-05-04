@@ -38,7 +38,6 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarControllers;
-import com.android.launcher3.taskbar.TaskbarSharedState;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 
@@ -72,7 +71,6 @@ public final class TaskbarAllAppsController implements OnDeviceProfileChangeList
     };
 
     private TaskbarControllers mControllers;
-    private TaskbarSharedState mSharedState;
     /** Window context for all apps if it is open. */
     private @Nullable TaskbarAllAppsContext mAllAppsContext;
 
@@ -88,18 +86,17 @@ public final class TaskbarAllAppsController implements OnDeviceProfileChangeList
     }
 
     /** Initialize the controller. */
-    public void init(TaskbarControllers controllers, TaskbarSharedState sharedState) {
+    public void init(TaskbarControllers controllers, boolean allAppsVisible) {
         if (!FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get()) {
             return;
         }
         mControllers = controllers;
-        mSharedState = sharedState;
 
         /*
          * Recreate All Apps if it was open in the previous Taskbar instance (e.g. the configuration
          * changed).
          */
-        if (mSharedState.allAppsVisible) {
+        if (allAppsVisible) {
             show(false);
         }
     }
@@ -141,7 +138,9 @@ public final class TaskbarAllAppsController implements OnDeviceProfileChangeList
             return;
         }
         mProxyView.show();
-        mSharedState.allAppsVisible = true;
+        // mControllers and getSharedState should never be null here. Do not handle null-pointer
+        // to catch invalid states.
+        mControllers.getSharedState().allAppsVisible = true;
 
         mAllAppsContext = new TaskbarAllAppsContext(mTaskbarContext,
                 this,
@@ -176,7 +175,9 @@ public final class TaskbarAllAppsController implements OnDeviceProfileChangeList
             return;
         }
         mProxyView.close(false);
-        mSharedState.allAppsVisible = false;
+        // mControllers and getSharedState should never be null here. Do not handle null-pointer
+        // to catch invalid states.
+        mControllers.getSharedState().allAppsVisible = false;
         onDestroy();
     }
 

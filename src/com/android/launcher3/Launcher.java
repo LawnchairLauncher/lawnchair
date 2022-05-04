@@ -182,7 +182,6 @@ import com.android.launcher3.util.ActivityTracker;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
-import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
@@ -2739,9 +2738,9 @@ public class Launcher extends StatefulActivity<LauncherState>
      */
     public View getFirstMatchForAppClose(int preferredItemId, String packageName, UserHandle user,
             boolean supportsAllAppsState) {
-        final ItemInfoMatcher preferredItem = (info, cn) ->
+        final Predicate<ItemInfo> preferredItem = info ->
                 info != null && info.id == preferredItemId;
-        final ItemInfoMatcher packageAndUserAndApp = (info, cn) ->
+        final Predicate<ItemInfo> packageAndUserAndApp = info ->
                 info != null
                         && info.itemType == ITEM_TYPE_APPLICATION
                         && info.user.equals(user)
@@ -2770,8 +2769,8 @@ public class Launcher extends StatefulActivity<LauncherState>
      * @param operators List of operators, in order starting from best matching operator.
      */
     private static View getFirstMatch(Iterable<ViewGroup> containers,
-            final ItemInfoMatcher... operators) {
-        for (ItemInfoMatcher operator : operators) {
+            final Predicate<ItemInfo>... operators) {
+        for (Predicate<ItemInfo> operator : operators) {
             for (ViewGroup container : containers) {
                 View match = mapOverViewGroup(container, operator);
                 if (match != null) {
@@ -2786,11 +2785,11 @@ public class Launcher extends StatefulActivity<LauncherState>
      * Returns the first view matching the operator in the given ViewGroups, or null if none.
      * Forward iteration matters.
      */
-    private static View mapOverViewGroup(ViewGroup container, ItemInfoMatcher op) {
+    private static View mapOverViewGroup(ViewGroup container, Predicate<ItemInfo> op) {
         final int itemCount = container.getChildCount();
         for (int itemIdx = 0; itemIdx < itemCount; itemIdx++) {
             View item = container.getChildAt(itemIdx);
-            if (op.matchesInfo((ItemInfo) item.getTag())) {
+            if (op.test((ItemInfo) item.getTag())) {
                 return item;
             }
         }
@@ -2887,7 +2886,7 @@ public class Launcher extends StatefulActivity<LauncherState>
      * package-removal should clear all items by package name.
      */
     @Override
-    public void bindWorkspaceComponentsRemoved(final ItemInfoMatcher matcher) {
+    public void bindWorkspaceComponentsRemoved(Predicate<ItemInfo> matcher) {
         mWorkspace.removeItemsByMatcher(matcher);
         mDragController.onAppsRemoved(matcher);
         PopupContainerWithArrow.dismissInvalidPopup(this);
@@ -3166,6 +3165,24 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     public DragOptions getDefaultWorkspaceDragOptions() {
         return new DragOptions();
+    }
+
+    /**
+     * Animates Launcher elements during a transition to the All Apps page.
+     *
+     * @param progress Transition progress from 0 to 1; where 0 => home and 1 => all apps.
+     */
+    public void onAllAppsTransition(float progress) {
+        // No-Op
+    }
+
+    /**
+     * Animates Launcher elements during a transition to the Widgets pages.
+     *
+     * @param progress Transition progress from 0 to 1; where 0 => home and 1 => widgets.
+     */
+    public void onWidgetsTransition(float progress) {
+        // No-Op
     }
 
     private static class NonConfigInstance {

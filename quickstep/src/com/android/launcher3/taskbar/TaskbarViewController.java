@@ -47,6 +47,7 @@ import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.AnimatedFloat;
 
 import java.io.PrintWriter;
+import java.util.function.Predicate;
 
 /**
  * Handles properties/data collection, then passes the results to TaskbarView to render.
@@ -73,6 +74,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     private final AnimatedFloat mTaskbarIconTranslationYForStash = new AnimatedFloat(
             this::updateTranslationY);
     private AnimatedFloat mTaskbarNavButtonTranslationY;
+    private AnimatedFloat mTaskbarNavButtonTranslationYForInAppDisplay;
 
     private final AnimatedFloat mThemeIconsBackground = new AnimatedFloat(
             this::updateIconsBackground);
@@ -112,6 +114,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         }
         mTaskbarNavButtonTranslationY =
                 controllers.navbarButtonsViewController.getTaskbarNavButtonTranslationY();
+        mTaskbarNavButtonTranslationYForInAppDisplay = controllers.navbarButtonsViewController
+                .getTaskbarNavButtonTranslationYForInAppDisplay();
     }
 
     public void onDestroy() {
@@ -242,6 +246,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         int offsetY = launcherDp.getTaskbarOffsetY();
         setter.setFloat(mTaskbarIconTranslationYForHome, VALUE, -offsetY, LINEAR);
         setter.setFloat(mTaskbarNavButtonTranslationY, VALUE, -offsetY, LINEAR);
+        setter.setFloat(mTaskbarNavButtonTranslationYForInAppDisplay, VALUE, offsetY, LINEAR);
 
         if (Utilities.isDarkTheme(mTaskbarView.getContext())) {
             setter.addFloat(mThemeIconsBackground, VALUE, 0f, 1f, LINEAR);
@@ -258,12 +263,14 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             View child = mTaskbarView.getChildAt(i);
 
             int positionInHotseat = -1;
-            if (FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get() && i == count - 1) {
+            boolean isRtl = Utilities.isRtl(child.getResources());
+            if (FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get()
+                    && ((isRtl && i == 0) || (!isRtl && i == count - 1))) {
                 // Note that there is no All Apps button in the hotseat, this position is only used
                 // as its convenient for animation purposes.
-                positionInHotseat = Utilities.isRtl(child.getResources())
+                positionInHotseat = isRtl
                         ? -1
-                        : mActivity.getDeviceProfile().inv.numShownHotseatIcons;
+                        : mActivity.getDeviceProfile().numShownHotseatIcons;
 
                 setter.setViewAlpha(child, 0, LINEAR);
             } else if (child.getTag() instanceof ItemInfo) {
@@ -289,10 +296,12 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     }
 
     public void onRotationChanged(DeviceProfile deviceProfile) {
-        if (areIconsVisible()) {
+        if (mControllers.taskbarStashController.isInApp()) {
             // We only translate on rotation when on home
             return;
         }
+        mActivity.setTaskbarWindowHeight(
+                deviceProfile.taskbarSize + deviceProfile.getTaskbarOffsetY());
         mTaskbarNavButtonTranslationY.updateValue(-deviceProfile.getTaskbarOffsetY());
     }
 
@@ -309,8 +318,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
      * 2) FolderIcon of the Folder containing the given icon
      * 3) All Apps button
      */
-    public View getFirstIconMatch(ItemInfoMatcher matcher) {
-        ItemInfoMatcher folderMatcher = ItemInfoMatcher.forFolderMatch(matcher);
+    public View getFirstIconMatch(Predicate<ItemInfo> matcher) {
+        Predicate<ItemInfo> folderMatcher = ItemInfoMatcher.forFolderMatch(matcher);
         return mTaskbarView.getFirstMatch(matcher, folderMatcher);
     }
 
