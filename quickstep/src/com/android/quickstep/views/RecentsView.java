@@ -2704,13 +2704,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             PendingAnimation anim) {
         // Use setFloat instead of setViewAlpha as we want to keep the view visible even when it's
         // alpha is set to 0 so that it can be recycled in the view pool properly
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && taskView.isRunningTask()) {
-            runActionOnRemoteHandles(remoteTargetHandle -> {
-                TransformParams params = remoteTargetHandle.getTransformParams();
-                anim.setFloat(params, TransformParams.TARGET_ALPHA, 0,
-                        clampToProgress(FINAL_FRAME, 0, 0.5f));
-            });
-        }
         anim.setFloat(taskView, VIEW_ALPHA, 0,
                 clampToProgress(isOnGridBottomRow(taskView) ? ACCEL : FINAL_FRAME, 0, 0.5f));
         FloatProperty<TaskView> secondaryViewTranslate =
