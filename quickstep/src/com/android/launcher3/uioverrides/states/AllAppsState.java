@@ -89,9 +89,9 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public int getVisibleElements(Launcher launcher) {
-        // Don't add HOTSEAT_ICONS for phones in ALL_APPS state.
-        return launcher.getDeviceProfile().isPhone ? ALL_APPS_CONTENT
-                : ALL_APPS_CONTENT | HOTSEAT_ICONS;
+        // Don't add HOTSEAT_ICONS for non-tablets in ALL_APPS state.
+        return launcher.getDeviceProfile().isTablet ? ALL_APPS_CONTENT | HOTSEAT_ICONS
+                : ALL_APPS_CONTENT;
     }
 
     @Override
