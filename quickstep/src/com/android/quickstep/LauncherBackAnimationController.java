@@ -16,6 +16,7 @@
 
 package com.android.quickstep;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.BaseActivity.INVISIBLE_ALL;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_PENDING_FLAGS;
 import static com.android.launcher3.BaseActivity.PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION;
@@ -37,6 +38,7 @@ import android.view.animation.Interpolator;
 import android.window.BackEvent;
 import android.window.IOnBackInvokedCallback;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
@@ -274,6 +276,10 @@ public class LauncherBackAnimationController {
             mLauncher.getStateManager().moveToRestState();
         }
 
+        // Explicitly close opened floating views (which is typically called from
+        // Launcher#onResumed, but in the predictive back flow launcher is not resumed until
+        // the transition is fully finished.)
+        AbstractFloatingView.closeAllOpenViewsExcept(mLauncher, false, TYPE_REBIND_SAFE);
         float cornerRadius = Utilities.mapRange(
                 mBackProgress, mWindowScaleStartCornerRadius, mWindowScaleEndCornerRadius);
         Pair<RectFSpringAnim, AnimatorSet> pair =
