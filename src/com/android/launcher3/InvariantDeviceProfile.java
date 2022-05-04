@@ -61,6 +61,8 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -628,8 +630,21 @@ public class InvariantDeviceProfile {
 
         float screenWidth = config.screenWidthDp * res.getDisplayMetrics().density;
         float screenHeight = config.screenHeightDp * res.getDisplayMetrics().density;
-        return getBestMatch(screenWidth, screenHeight,
-                WindowManagerProxy.INSTANCE.get(context).getRotation(context));
+        int rotation = WindowManagerProxy.INSTANCE.get(context).getRotation(context);
+
+        if (Utilities.IS_DEBUG_DEVICE) {
+            StringWriter stringWriter = new StringWriter();
+            PrintWriter printWriter = new PrintWriter(stringWriter);
+            DisplayController.INSTANCE.get(context).dump(printWriter);
+            printWriter.flush();
+            Log.d("b/231312158", "getDeviceProfile -"
+                            + "\nconfig: " + config
+                            + "\ndisplayMetrics: " + res.getDisplayMetrics()
+                            + "\nrotation: " + rotation
+                            + "\n" + stringWriter.toString(),
+                    new Exception());
+        }
+        return getBestMatch(screenWidth, screenHeight, rotation);
     }
 
     /**
