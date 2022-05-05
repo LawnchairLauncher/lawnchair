@@ -18,6 +18,8 @@ package com.android.launcher3.ui;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -54,11 +56,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.IOException;
+import java.util.Map;
+
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     private static final String APP_NAME = "LauncherTestApp";
     private static final String DUMMY_APP_NAME = "Aardwolf";
+    private static final String MAPS_APP_NAME = "Maps";
+    private static final String STORE_APP_NAME = "Play Store";
 
     @Before
     public void setUp() throws Exception {
@@ -462,15 +469,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @Test
     @PortraitLandscape
     public void testDragAppIconToWorkspaceCell() throws Exception {
-        final Point dimensions = mLauncher.getWorkspace().getIconGridDimensions();
-
-        Point[] targets = {
-                new Point(0, 1),
-                new Point(0, dimensions.y - 2),
-                new Point(dimensions.x - 1, 1),
-                new Point(dimensions.x - 1, dimensions.y - 2),
-                new Point(dimensions.x / 2, dimensions.y / 2)
-        };
+        Point[] targets = getCornersAndCenterPositions();
 
         for (Point target : targets) {
             final HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
@@ -489,6 +488,48 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         for (Point target : targets) {
             launcherTestAppIcon.dragToWorkspace(target.x, target.y);
         }
+    }
+
+    @Test
+    public void getIconsPosition_afterIconRemoved_notContained() throws IOException {
+        Point[] gridPositions = getCornersAndCenterPositions();
+        createShortcutIfNotExist(STORE_APP_NAME, gridPositions[0]);
+        createShortcutIfNotExist(MAPS_APP_NAME, gridPositions[1]);
+        TestUtil.installDummyApp();
+        try {
+            createShortcutIfNotExist(DUMMY_APP_NAME, gridPositions[2]);
+            Map<String, Point> initialPositions =
+                    mLauncher.getWorkspace().getWorkspaceIconsPositions();
+            assertThat(initialPositions.keySet())
+                    .containsAtLeast(DUMMY_APP_NAME, MAPS_APP_NAME, STORE_APP_NAME);
+
+            mLauncher.getWorkspace().getWorkspaceAppIcon(DUMMY_APP_NAME).uninstall();
+
+            assertNull(
+                    DUMMY_APP_NAME + " app was found after being uninstalled",
+                    mLauncher.getWorkspace().tryGetWorkspaceAppIcon(DUMMY_APP_NAME));
+
+            Map<String, Point> finalPositions =
+                    mLauncher.getWorkspace().getWorkspaceIconsPositions();
+            assertThat(finalPositions).doesNotContainKey(DUMMY_APP_NAME);
+        } finally {
+            TestUtil.uninstallDummyApp();
+        }
+    }
+
+    /**
+     * @return List of workspace grid coordinates. Those are not pixels. See {@link
+     *     Workspace#getIconGridDimensions()}
+     */
+    private Point[] getCornersAndCenterPositions() {
+        final Point dimensions = mLauncher.getWorkspace().getIconGridDimensions();
+        return new Point[] {
+            new Point(0, 1),
+            new Point(0, dimensions.y - 2),
+            new Point(dimensions.x - 1, 1),
+            new Point(dimensions.x - 1, dimensions.y - 2),
+            new Point(dimensions.x / 2, dimensions.y / 2)
+        };
     }
 
     public static String getAppPackageName() {
