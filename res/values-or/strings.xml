@@ -124,14 +124,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> ଇନଷ୍ଟଲ୍ କରାଯାଉଛି, <xliff:g id="PROGRESS">%2$s</xliff:g> ସମ୍ପୂର୍ଣ୍ଣ ହୋଇଛି"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ଡାଉନଲୋଡ୍‌ ହେଉଛି, <xliff:g id="PROGRESS">%2$s</xliff:g> ସମ୍ପୂର୍ଣ୍ଣ"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ଇନଷ୍ଟଲ୍‌ ହେବାକୁ ଅପେକ୍ଷା କରିଛି"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"ଆପକୁ ଅପଡେଟ କରିବା ଆବଶ୍ୟକ"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"ଏହି ଆଇକନ ପାଇଁ ଆପକୁ ଅପଡେଟ କରାଯାଇନାହିଁ। ଏହି ସର୍ଟକଟକୁ ପୁଣି-ସକ୍ଷମ କରିବା ପାଇଁ ଆପଣ ମାନୁଆଲୀ ଅପଡେଟ କରିପାରିବେ କିମ୍ବା ଆଇକନଟିକୁ କାଢ଼ି ଦେଇପାରିବେ।"</string>
+    <string name="dialog_update" msgid="2178028071796141234">"ଅପଡେଟ କରନ୍ତୁ"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"କାଢ଼ି ଦିଅନ୍ତୁ"</string>
     <string name="widgets_list" msgid="796804551140113767">"ୱିଜେଟ୍ ତାଲିକା"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"ୱିଜେଟ୍ ତାଲିକା ବନ୍ଦ ହୋଇଛି"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"ମୂଳସ୍କ୍ରିନରେ ଯୋଗ କରନ୍ତୁ"</string>
