@@ -613,6 +613,10 @@ public abstract class AbstractLauncherUiTest {
         return createShortcutIfNotExist(name, dimension.x / 2, dimension.y / 2);
     }
 
+    protected HomeAppIcon createShortcutIfNotExist(String name, Point cellPosition) {
+        return createShortcutIfNotExist(name, cellPosition.x, cellPosition.y);
+    }
+
     protected HomeAppIcon createShortcutIfNotExist(String name, int cellX, int cellY) {
         HomeAppIcon homeAppIcon = mLauncher.getWorkspace().tryGetWorkspaceAppIcon(name);
         if (homeAppIcon == null) {
