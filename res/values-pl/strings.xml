@@ -157,7 +157,7 @@
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Zamknij"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"Zamknij"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Powiadomienie odrzucone"</string>
-    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Prywatne"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Osobiste"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Służbowe"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profil służbowy"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Aplikacje służbowe mają plakietki i są widoczne dla administratora IT"</string>

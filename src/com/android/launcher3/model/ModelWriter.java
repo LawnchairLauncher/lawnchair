@@ -53,6 +53,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -278,10 +279,9 @@ public class ModelWriter {
     /**
      * Removes all the items from the database matching {@param matcher}.
      */
-    public void deleteItemsFromDatabase(ItemInfoMatcher matcher) {
+    public void deleteItemsFromDatabase(Predicate<ItemInfo> matcher) {
         deleteItemsFromDatabase(StreamSupport.stream(mBgDataModel.itemsIdMap.spliterator(), false)
-                        .filter(matcher::matchesInfo)
-                        .collect(Collectors.toList()));
+                        .filter(matcher).collect(Collectors.toList()));
     }
 
     /**
