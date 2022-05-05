@@ -4051,7 +4051,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // TODO(194414938) starting bounds seem slightly off, investigate
         Rect firstTaskStartingBounds = new Rect();
         Rect firstTaskEndingBounds = mTempRect;
-        int duration = mActivity.getStateManager().getState().getTransitionDuration(getContext(),
+        int duration = mActivity.getStateManager().getState().getTransitionDuration(mActivity,
                 false /* isToState */);
         PendingAnimation pendingAnimation = new PendingAnimation(duration);
 
