@@ -29,11 +29,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.launcher3.DeviceProfile.DeviceProfileListenable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.views.AppLauncher;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -95,11 +97,15 @@ public class ActivityAllAppsContainerView<T extends Context & AppLauncher
         mHeader.reset(false);
     }
 
-    /** Invoke when the search results change. */
-    public void onSearchResultsChanged() {
-        for (int i = 0; i < mAH.size(); i++) {
-            if (mAH.get(i).mRecyclerView != null) {
-                mAH.get(i).mRecyclerView.onSearchResultsChanged();
+    /**
+     * Sets results list for search
+     */
+    public void setSearchResults(ArrayList<AdapterItem> results) {
+        if (getApps().setSearchResults(results)) {
+            for (int i = 0; i < mAH.size(); i++) {
+                if (mAH.get(i).mRecyclerView != null) {
+                    mAH.get(i).mRecyclerView.onSearchResultsChanged();
+                }
             }
         }
     }

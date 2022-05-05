@@ -19,10 +19,10 @@ import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.launcher3.R;
+import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
 import com.android.launcher3.model.StringCache;
 import com.android.launcher3.views.ActivityContext;
 
@@ -107,13 +107,9 @@ public class WorkAdapterProvider extends BaseAdapterProvider {
     public int addWorkItems(ArrayList<AllAppsGridAdapter.AdapterItem> adapterItems) {
         if (mState == WorkProfileManager.STATE_DISABLED) {
             //add disabled card here.
-            AllAppsGridAdapter.AdapterItem disabledCard = new AllAppsGridAdapter.AdapterItem();
-            disabledCard.viewType = VIEW_TYPE_WORK_DISABLED_CARD;
-            adapterItems.add(disabledCard);
+            adapterItems.add(new AdapterItem(VIEW_TYPE_WORK_DISABLED_CARD));
         } else if (mState == WorkProfileManager.STATE_ENABLED && !isEduSeen()) {
-            AllAppsGridAdapter.AdapterItem eduCard = new AllAppsGridAdapter.AdapterItem();
-            eduCard.viewType = VIEW_TYPE_WORK_EDU_CARD;
-            adapterItems.add(eduCard);
+            adapterItems.add(new AdapterItem(VIEW_TYPE_WORK_EDU_CARD));
         }
 
         return adapterItems.size();

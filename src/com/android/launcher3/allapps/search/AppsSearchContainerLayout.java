@@ -38,7 +38,6 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsStore;
-import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
 import com.android.launcher3.allapps.SearchUiManager;
 import com.android.launcher3.search.SearchCallback;
@@ -57,7 +56,6 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     private final AllAppsSearchBarController mSearchBarController;
     private final SpannableStringBuilder mSearchQueryBuilder;
 
-    private AlphabeticalAppsList<?> mApps;
     private ActivityAllAppsContainerView<?> mAppsView;
 
     // The amount of pixels to shift down and overlap with the rest of the content.
@@ -131,7 +129,6 @@ public class AppsSearchContainerLayout extends ExtendedEditText
 
     @Override
     public void initializeSearch(ActivityAllAppsContainerView<?> appsView) {
-        mApps = appsView.getApps();
         mAppsView = appsView;
         mSearchBarController.initialize(
                 new DefaultAppSearchAlgorithm(getContext()),
@@ -170,27 +167,20 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     @Override
     public void onSearchResult(String query, ArrayList<AdapterItem> items) {
         if (items != null) {
-            mApps.setSearchResults(items);
-            notifyResultChanged();
+            mAppsView.setSearchResults(items);
             mAppsView.setLastSearchQuery(query);
         }
     }
 
     @Override
     public void clearSearchResult() {
-        if (mApps.setSearchResults(null)) {
-            notifyResultChanged();
-        }
+        mAppsView.setSearchResults(null);
 
         // Clear the search query
         mSearchQueryBuilder.clear();
         mSearchQueryBuilder.clearSpans();
         Selection.setSelection(mSearchQueryBuilder, 0);
         mAppsView.onClearSearchResult();
-    }
-
-    private void notifyResultChanged() {
-        mAppsView.onSearchResultsChanged();
     }
 
     @Override
