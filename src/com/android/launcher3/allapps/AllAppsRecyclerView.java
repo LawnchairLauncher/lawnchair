@@ -289,12 +289,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     }
 
     @Override
-    protected float getBottomFadingEdgeStrength() {
-        // No bottom fading edge.
-        return 0;
-    }
-
-    @Override
     protected boolean isPaddingOffsetRequired() {
         return true;
     }
