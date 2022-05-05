@@ -261,7 +261,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
     @Override
     protected void onReachedFinalState(LauncherState toState) {
-        super.onReinitToState(toState);
+        super.onReachedFinalState(toState);
         if (toState == ALL_APPS) {
             InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_OPEN_ALL_APPS);
         }
