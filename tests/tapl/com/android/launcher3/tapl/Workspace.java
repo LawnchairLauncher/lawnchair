@@ -43,6 +43,7 @@ import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.testing.WorkspaceCellCenterRequest;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -222,6 +223,21 @@ public final class Workspace extends Home {
                 mHotseat, AppIcon.getAppIconSelector(appName, mLauncher)));
     }
 
+    /**
+     * @return map of text -> center of the view. In case of icons with the same name, the one with
+     *     lower x coordinate is selected.
+     */
+    public Map<String, Point> getWorkspaceIconsPositions() {
+        final UiObject2 workspace = verifyActiveContainer();
+        List<UiObject2> workspaceIcons =
+                mLauncher.waitForObjectsInContainer(workspace, AppIcon.getAnyAppIconSelector());
+        return workspaceIcons.stream()
+                .collect(
+                        Collectors.toMap(
+                                /* keyMapper= */ UiObject2::getText,
+                                /* valueMapper= */ UiObject2::getVisibleCenter,
+                                /* mergeFunction= */ (p1, p2) -> p1.x < p2.x ? p1 : p2));
+    }
     /*
      * Get the center point of the delete/uninstall icon in the drop target bar.
      */
