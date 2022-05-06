@@ -83,6 +83,7 @@ import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.uioverrides.PredictedAppIconInflater;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.MainThreadInitializedObject.SandboxContext;
@@ -129,7 +130,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
             super(base, UserCache.INSTANCE, InstallSessionHelper.INSTANCE,
                     LauncherAppState.INSTANCE, InvariantDeviceProfile.INSTANCE,
                     CustomWidgetManager.INSTANCE, PluginManagerWrapper.INSTANCE,
-                    WindowManagerProxy.INSTANCE);
+                    WindowManagerProxy.INSTANCE, DisplayController.INSTANCE);
             mIdp = idp;
             mObjectMap.put(InvariantDeviceProfile.INSTANCE, idp);
             mObjectMap.put(LauncherAppState.INSTANCE,
