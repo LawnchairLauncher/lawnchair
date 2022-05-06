@@ -130,7 +130,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         if (IS_VERBOSE) {
             Log.d(TAG, String.format("\nwriteSnapshot(%d):\n%s", instanceId.getId(), info));
         }
-        if (!Utilities.ATLEAST_R) {
+        if (!Utilities.ATLEAST_R || Utilities.IS_RUNNING_IN_TEST_HARNESS) {
             return;
         }
         SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_SNAPSHOT,
@@ -415,6 +415,10 @@ public class StatsLogCompatManager extends StatsLogManager {
                 consumer.consume(event, atomInfo);
             }
 
+            // TODO: remove this when b/231648228 is fixed.
+            if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                return;
+            }
             SysUiStatsLog.write(
                     SysUiStatsLog.LAUNCHER_EVENT,
                     SysUiStatsLog.LAUNCHER_UICHANGED__ACTION__DEFAULT_ACTION /* deprecated */,
@@ -510,6 +514,9 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     private static int getCardinality(LauncherAtom.ItemInfo info) {
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            return 0;
+        }
         switch (info.getContainerInfo().getContainerCase()) {
             case PREDICTED_HOTSEAT_CONTAINER:
                 return info.getContainerInfo().getPredictedHotseatContainer().getCardinality();
@@ -625,6 +632,9 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     private static int getHierarchy(LauncherAtom.ItemInfo info) {
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            return 0;
+        }
         if (info.getContainerInfo().getContainerCase() == FOLDER) {
             return info.getContainerInfo().getFolder().getParentContainerCase().getNumber()
                     + FOLDER_HIERARCHY_OFFSET;
@@ -665,6 +675,9 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     private static int getSearchAttributes(LauncherAtom.ItemInfo info) {
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            return 0;
+        }
         ContainerInfo containerInfo = info.getContainerInfo();
         if (containerInfo.getContainerCase() == EXTENDED_CONTAINERS
                 && containerInfo.getExtendedContainers().getContainerCase()
