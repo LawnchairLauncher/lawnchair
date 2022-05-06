@@ -95,7 +95,7 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
         mTitle = findViewById(R.id.app_title);
         mSubtitle = findViewById(R.id.app_subtitle);
         mExpandToggle = findViewById(R.id.toggle);
-        findViewById(R.id.app_container).setAccessibilityDelegate(new AccessibilityDelegate() {
+        setAccessibilityDelegate(new AccessibilityDelegate() {
 
             @Override
             public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfo info) {
