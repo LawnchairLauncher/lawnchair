@@ -62,6 +62,7 @@ import androidx.annotation.AnyThread;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.logger.LauncherAtom.FolderContainer;
@@ -116,7 +117,8 @@ public class AppEventProducer implements StatsLogConsumer {
     @AnyThread
     private void sendEvent(AppTarget target, LauncherAtom.ItemInfo locationInfo, int eventId,
             int targetPredictor) {
-        if (target != null) {
+        // TODO: remove the running test check when b/231648228 is fixed.
+        if (target != null && !Utilities.IS_RUNNING_IN_TEST_HARNESS) {
             AppTargetEvent event = new AppTargetEvent.Builder(target, eventId)
                     .setLaunchLocation(getContainer(locationInfo))
                     .build();
