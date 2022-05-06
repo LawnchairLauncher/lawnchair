@@ -946,7 +946,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 mHasVisibleTaskData.delete(i);
             }
             if (child instanceof GroupedTaskView) {
-                mGroupedTaskViewPool.recycle((GroupedTaskView)taskView);
+                mGroupedTaskViewPool.recycle((GroupedTaskView) taskView);
             } else {
                 mTaskViewPool.recycle(taskView);
             }
@@ -1855,17 +1855,18 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (!mActivity.getDeviceProfile().isTablet) {
             return super.getDestinationPage(scaledScroll);
         }
-
-        final int childCount = getChildCount();
-        if (mPageScrolls == null || childCount != mPageScrolls.length) {
-            return -1;
+        if (!pageScrollsInitialized()) {
+            Log.e(TAG,
+                    "Cannot get destination page: RecentsView not properly initialized",
+                    new IllegalStateException());
+            return INVALID_PAGE;
         }
 
         // When in tablet with variable task width, return the page which scroll is closest to
         // screenStart instead of page nearest to center of screen.
         int minDistanceFromScreenStart = Integer.MAX_VALUE;
-        int minDistanceFromScreenStartIndex = -1;
-        for (int i = 0; i < childCount; ++i) {
+        int minDistanceFromScreenStartIndex = INVALID_PAGE;
+        for (int i = 0; i < getChildCount(); ++i) {
             int distanceFromScreenStart = Math.abs(mPageScrolls[i] - scaledScroll);
             if (distanceFromScreenStart < minDistanceFromScreenStart) {
                 minDistanceFromScreenStart = distanceFromScreenStart;
