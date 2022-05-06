@@ -142,7 +142,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         mWorkManager = new WorkProfileManager(
                 mActivityContext.getSystemService(UserManager.class),
                 this,
-                Utilities.getPrefs(mActivityContext));
+                Utilities.getPrefs(mActivityContext), mActivityContext.getDeviceProfile());
         mAH = Arrays.asList(null, null);
         mAH.set(AdapterHolder.MAIN, new AdapterHolder(false /* isWork */));
         mAH.set(AdapterHolder.WORK, new AdapterHolder(true /* isWork */));

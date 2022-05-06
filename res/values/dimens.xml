@@ -129,6 +129,7 @@
     <dimen name="all_apps_height_extra">6dp</dimen>
     <dimen name="all_apps_bottom_sheet_horizontal_padding">0dp</dimen>
     <dimen name="all_apps_paged_view_top_padding">40dp</dimen>
+    <dimen name="all_apps_personal_work_tabs_vertical_margin">16dp</dimen>
 
     <!-- The size of corner radius of the arrow in the arrow toast. -->
     <dimen name="arrow_toast_corner_radius">2dp</dimen>
@@ -148,10 +149,12 @@
     <dimen name="work_card_padding_horizontal">10dp</dimen>
     <dimen name="work_card_button_height">52dp</dimen>
     <dimen name="work_fab_margin">16dp</dimen>
+    <dimen name="work_fab_margin_bottom">20dp</dimen>
     <dimen name="work_mode_fab_padding">16dp</dimen>
     <dimen name="work_profile_footer_padding">20dp</dimen>
     <dimen name="work_edu_card_margin">16dp</dimen>
     <dimen name="work_edu_card_radius">16dp</dimen>
+    <dimen name="work_edu_card_bottom_margin">26dp</dimen>
 
     <dimen name="work_card_margin">24dp</dimen>
     <!-- (x) icon button inside work edu card -->
