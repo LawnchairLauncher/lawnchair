@@ -156,14 +156,18 @@ public class Interpolators {
                     String.format("upperBound (%f) must be greater than lowerBound (%f)",
                             upperBound, lowerBound));
         }
-        return t -> clampToProgress(t, lowerBound, upperBound);
+        return t -> clampToProgress(interpolator, t, lowerBound, upperBound);
     }
 
     /**
      * Returns the progress value's progress between the lower and upper bounds. That is, the
      * progress will be 0f from 0f to lowerBound, and reach 1f by upperBound.
+     *
+     * Between lowerBound and upperBound, the progress value will be interpolated using the provided
+     * interpolator.
      */
-    public static float clampToProgress(float progress, float lowerBound, float upperBound) {
+    public static float clampToProgress(
+            Interpolator interpolator, float progress, float lowerBound, float upperBound) {
         if (upperBound < lowerBound) {
             throw new IllegalArgumentException(
                     String.format("upperBound (%f) must be greater than lowerBound (%f)",
@@ -179,7 +183,15 @@ public class Interpolators {
         if (progress > upperBound) {
             return 1;
         }
-        return (progress - lowerBound) / (upperBound - lowerBound);
+        return interpolator.getInterpolation((progress - lowerBound) / (upperBound - lowerBound));
+    }
+
+    /**
+     * Returns the progress value's progress between the lower and upper bounds. That is, the
+     * progress will be 0f from 0f to lowerBound, and reach 1f by upperBound.
+     */
+    public static float clampToProgress(float progress, float lowerBound, float upperBound) {
+        return clampToProgress(Interpolators.LINEAR, progress, lowerBound, upperBound);
     }
 
     /**
