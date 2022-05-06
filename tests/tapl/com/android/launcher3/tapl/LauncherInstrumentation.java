@@ -1499,9 +1499,14 @@ public final class LauncherInstrumentation {
                 0, 0, 1.0f, 1.0f, 0, 0, InputDevice.SOURCE_TOUCHSCREEN, 0);
     }
 
+    private boolean hasTIS() {
+        return getTestInfo(TestProtocol.REQUEST_HAS_TIS).getBoolean(TestProtocol.REQUEST_HAS_TIS);
+    }
+
+
     public void sendPointer(long downTime, long currentTime, int action, Point point,
             GestureScope gestureScope) {
-        final boolean notLauncher3 = !isLauncher3();
+        final boolean hasTIS = hasTIS();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 if (gestureScope != GestureScope.OUTSIDE_WITH_PILFER
@@ -1509,12 +1514,12 @@ public final class LauncherInstrumentation {
                         && gestureScope != GestureScope.OUTSIDE_WITH_KEYCODE) {
                     expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
                 }
-                if (notLauncher3 && getNavigationModel() != NavigationModel.THREE_BUTTON) {
+                if (hasTIS && getNavigationModel() != NavigationModel.THREE_BUTTON) {
                     expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if (notLauncher3 && gestureScope != GestureScope.INSIDE
+                if (hasTIS && gestureScope != GestureScope.INSIDE
                         && gestureScope != GestureScope.INSIDE_TO_OUTSIDE_WITHOUT_PILFER
                         && (gestureScope == GestureScope.OUTSIDE_WITH_PILFER
                         || gestureScope == GestureScope.INSIDE_TO_OUTSIDE)) {
@@ -1528,7 +1533,7 @@ public final class LauncherInstrumentation {
                                     || gestureScope == GestureScope.OUTSIDE_WITHOUT_PILFER
                                     ? EVENT_TOUCH_UP : EVENT_TOUCH_CANCEL);
                 }
-                if (notLauncher3 && getNavigationModel() != NavigationModel.THREE_BUTTON) {
+                if (hasTIS && getNavigationModel() != NavigationModel.THREE_BUTTON) {
                     expectEvent(TestProtocol.SEQUENCE_TIS,
                             gestureScope == GestureScope.INSIDE_TO_OUTSIDE_WITH_KEYCODE
                                     || gestureScope == GestureScope.OUTSIDE_WITH_KEYCODE
