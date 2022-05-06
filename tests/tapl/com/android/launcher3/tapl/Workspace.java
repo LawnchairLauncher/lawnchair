@@ -112,6 +112,18 @@ public final class Workspace extends Home {
     }
 
     /**
+     * Returns the home qsb.
+     *
+     * The qsb must already be visible when calling this method.
+     */
+    public HomeQsb getQsb() {
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to get the home qsb")) {
+            return new HomeQsb(mLauncher);
+        }
+    }
+
+    /**
      * Returns an icon for the app, if currently visible.
      *
      * @param appName name of the app
