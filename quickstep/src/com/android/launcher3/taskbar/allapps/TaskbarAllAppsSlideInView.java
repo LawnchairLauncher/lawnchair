@@ -62,7 +62,7 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarAllApp
                     PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
             mOpenCloseAnimator.setInterpolator(AGGRESSIVE_EASE);
             mOpenCloseAnimator.setDuration(
-                    ALL_APPS.getTransitionDuration(mContext, true /* isToState */)).start();
+                    ALL_APPS.getTransitionDuration(mActivityContext, true /* isToState */)).start();
         } else {
             mTranslationShift = TRANSLATION_SHIFT_OPENED;
         }
@@ -81,7 +81,8 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarAllApp
     @Override
     protected void handleClose(boolean animate) {
         Optional.ofNullable(mOnCloseBeginListener).ifPresent(OnCloseListener::onSlideInViewClosed);
-        handleClose(animate, ALL_APPS.getTransitionDuration(mContext, false /* isToState */));
+        handleClose(animate,
+                ALL_APPS.getTransitionDuration(mActivityContext, false /* isToState */));
     }
 
     @Override
