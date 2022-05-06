@@ -66,6 +66,12 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                         mDeviceProfile.overviewPageSpacing);
                 return response;
             }
+
+            case TestProtocol.REQUEST_HAS_TIS: {
+                response.putBoolean(
+                        TestProtocol.REQUEST_HAS_TIS, true);
+                return response;
+            }
         }
 
         return super.call(method, arg, extras);
