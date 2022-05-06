@@ -32,6 +32,7 @@ import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.ItemInfo;
@@ -73,15 +74,17 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
     private final Predicate<ItemInfo> mMatcher;
 
     private WorkModeSwitch mWorkModeSwitch;
+    private final DeviceProfile mDeviceProfile;
 
     @WorkProfileState
     private int mCurrentState;
 
 
     public WorkProfileManager(UserManager userManager, BaseAllAppsContainerView<?> allApps,
-            SharedPreferences preferences) {
+            SharedPreferences preferences, DeviceProfile deviceProfile) {
         mUserManager = userManager;
         mAllApps = allApps;
+        mDeviceProfile = deviceProfile;
         mAdapterProvider = new WorkAdapterProvider(allApps.mActivityContext, preferences);
         mMatcher = mAllApps.mPersonalMatcher.negate();
     }
@@ -141,8 +144,11 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
             mWorkModeSwitch = (WorkModeSwitch) mAllApps.getLayoutInflater().inflate(
                     R.layout.work_mode_fab, mAllApps, false);
         }
+        ViewGroup.MarginLayoutParams lp =
+                (ViewGroup.MarginLayoutParams) mWorkModeSwitch.getLayoutParams();
         int workFabMarginBottom =
-                mWorkModeSwitch.getResources().getDimensionPixelSize(R.dimen.work_fab_margin);
+                mWorkModeSwitch.getResources().getDimensionPixelSize(
+                        R.dimen.work_fab_margin_bottom);
         if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
             workFabMarginBottom <<= 1;  // Double margin to add space above search bar.
             workFabMarginBottom +=
@@ -151,8 +157,11 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
         if (!mAllApps.mActivityContext.getDeviceProfile().isGestureMode){
             workFabMarginBottom += mAllApps.mActivityContext.getDeviceProfile().getInsets().bottom;
         }
-        ((ViewGroup.MarginLayoutParams) mWorkModeSwitch.getLayoutParams()).bottomMargin =
-                workFabMarginBottom;
+        lp.bottomMargin = workFabMarginBottom;
+        int totalScreenWidth = mDeviceProfile.widthPx;
+        int personalWorkTabWidth =
+                mAllApps.mActivityContext.getAppsView().getActiveRecyclerView().getTabWidth();
+        lp.rightMargin = lp.leftMargin = (totalScreenWidth - personalWorkTabWidth) / 2;
         if (mWorkModeSwitch.getParent() != mAllApps) {
             mAllApps.addView(mWorkModeSwitch);
         }
