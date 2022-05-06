@@ -84,6 +84,8 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
     private STATE_TYPE mTargetState;
 
+    @Nullable private Runnable mOnInitBackgroundStateUICallback = null;
+
     protected BaseActivityInterface(boolean rotationSupportedByActivity,
             STATE_TYPE overviewState, STATE_TYPE backgroundState) {
         this.rotationSupportedByActivity = rotationSupportedByActivity;
@@ -408,6 +410,21 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         return null;
     }
 
+    protected void runOnInitBackgroundStateUI(Runnable callback) {
+        mOnInitBackgroundStateUICallback = callback;
+        ACTIVITY_TYPE activity = getCreatedActivity();
+        if (activity != null && activity.getStateManager().getState() == mBackgroundState) {
+            onInitBackgroundStateUI();
+        }
+    }
+
+    private void onInitBackgroundStateUI() {
+        if (mOnInitBackgroundStateUICallback != null) {
+            mOnInitBackgroundStateUICallback.run();
+            mOnInitBackgroundStateUICallback = null;
+        }
+    }
+
     public interface AnimationFactory {
 
         void createActivityInterface(long transitionLength);
@@ -447,13 +464,14 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             mStartState = mActivity.getStateManager().getState();
         }
 
-        protected ACTIVITY_TYPE initUI() {
+        protected ACTIVITY_TYPE initBackgroundStateUI() {
             STATE_TYPE resetState = mStartState;
             if (mStartState.shouldDisableRestore()) {
                 resetState = mActivity.getStateManager().getRestState();
             }
             mActivity.getStateManager().setRestState(resetState);
             mActivity.getStateManager().goToState(mBackgroundState, false);
+            onInitBackgroundStateUI();
             return mActivity;
         }
 
