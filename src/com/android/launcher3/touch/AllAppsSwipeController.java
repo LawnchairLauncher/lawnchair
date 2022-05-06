@@ -26,6 +26,7 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_DEPTH;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_TRANSLATE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_SCRIM_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
@@ -66,6 +67,7 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
                     EMPHASIZED_DECELERATE, WORKSPACE_MOTION_START, ALL_APPS_STATE_TRANSITION);
     public static final Interpolator HOTSEAT_FADE =
             Interpolators.clampToProgress(FINAL_FRAME, 0f, ALL_APPS_STATE_TRANSITION);
+    public static final Interpolator HOTSEAT_SCALE = HOTSEAT_FADE;
     public static final Interpolator HOTSEAT_TRANSLATE =
             Interpolators.clampToProgress(
                     EMPHASIZED_ACCELERATE, WORKSPACE_MOTION_START, ALL_APPS_STATE_TRANSITION);
@@ -163,6 +165,7 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
             config.setInterpolator(ANIM_DEPTH, BLUR);
             config.setInterpolator(ANIM_WORKSPACE_SCALE, WORKSPACE_SCALE);
             config.setInterpolator(ANIM_HOTSEAT_FADE, HOTSEAT_FADE);
+            config.setInterpolator(ANIM_HOTSEAT_SCALE, HOTSEAT_SCALE);
             config.setInterpolator(ANIM_HOTSEAT_TRANSLATE, HOTSEAT_TRANSLATE);
             config.setInterpolator(ANIM_SCRIM_FADE, SCRIM_FADE);
             config.setInterpolator(ANIM_ALL_APPS_FADE, ALL_APPS_FADE);
