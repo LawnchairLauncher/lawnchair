@@ -71,6 +71,26 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         public void onChanged() {
             mCachedScrollPositions.clear();
         }
+
+        @Override
+        public void onItemRangeChanged(int positionStart, int itemCount) {
+            onChanged();
+        }
+
+        @Override
+        public void onItemRangeInserted(int positionStart, int itemCount) {
+            onChanged();
+        }
+
+        @Override
+        public void onItemRangeRemoved(int positionStart, int itemCount) {
+            onChanged();
+        }
+
+        @Override
+        public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+            onChanged();
+        }
     };
 
     // The empty-search result background
@@ -241,17 +261,14 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         // Find the fastscroll section that maps to this touch fraction
         List<AlphabeticalAppsList.FastScrollSectionInfo> fastScrollSections =
                 mApps.getFastScrollerSections();
-        AlphabeticalAppsList.FastScrollSectionInfo lastInfo = fastScrollSections.get(0);
-        for (int i = 1; i < fastScrollSections.size(); i++) {
-            AlphabeticalAppsList.FastScrollSectionInfo info = fastScrollSections.get(i);
-            if (info.touchFraction > touchFraction) {
-                break;
-            }
-            lastInfo = info;
+        int count = fastScrollSections.size();
+        if (count == 0) {
+            return "";
         }
-
-        mFastScrollHelper.smoothScrollToSection(lastInfo);
-        return lastInfo.sectionName;
+        int index = Utilities.boundToRange((int) (touchFraction * count), 0, count - 1);
+        AlphabeticalAppsList.FastScrollSectionInfo section = fastScrollSections.get(index);
+        mFastScrollHelper.smoothScrollToSection(section);
+        return section.sectionName;
     }
 
     @Override
@@ -269,12 +286,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         if (adapter != null) {
             adapter.registerAdapterDataObserver(mObserver);
         }
-    }
-
-    @Override
-    protected float getBottomFadingEdgeStrength() {
-        // No bottom fading edge.
-        return 0;
     }
 
     @Override

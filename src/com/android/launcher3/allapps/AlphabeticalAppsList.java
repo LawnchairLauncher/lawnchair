@@ -15,8 +15,13 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_ALL_APPS_DIVIDER;
+import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_EMPTY_SEARCH;
+import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_SEARCH_MARKET;
 
 import android.content.Context;
+
+import androidx.recyclerview.widget.DiffUtil;
 
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
 import com.android.launcher3.config.FeatureFlags;
@@ -52,14 +57,13 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
      */
     public static class FastScrollSectionInfo {
         // The section name
-        public String sectionName;
-        // The AdapterItem to scroll to for this section
-        public AdapterItem fastScrollToItem;
-        // The touch fraction that should map to this fast scroll section info
-        public float touchFraction;
+        public final String sectionName;
+        // The item position
+        public final int position;
 
-        public FastScrollSectionInfo(String sectionName) {
+        public FastScrollSectionInfo(String sectionName, int position) {
             this.sectionName = sectionName;
+            this.position = position;
         }
     }
 
@@ -105,13 +109,6 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
      */
     public void setAdapter(BaseAllAppsAdapter<T> adapter) {
         mAdapter = adapter;
-    }
-
-    /**
-     * Returns all the apps.
-     */
-    public List<AppInfo> getApps() {
-        return mApps;
     }
 
     /**
@@ -235,77 +232,49 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
      * mCachedSectionNames to have been calculated for the set of all apps in mApps.
      */
     public void updateAdapterItems() {
-        refillAdapterItems();
-        refreshRecyclerView();
-    }
-
-    private void refreshRecyclerView() {
-        if (mAdapter != null) {
-            mAdapter.notifyDataSetChanged();
-        }
-    }
-
-    private void refillAdapterItems() {
-        String lastSectionName = null;
-        FastScrollSectionInfo lastFastScrollerSectionInfo = null;
-        int position = 0;
-
+        List<AdapterItem> oldItems = new ArrayList<>(mAdapterItems);
         // Prepare to update the list of sections, filtered apps, etc.
-        mAccessibilityResultsCount = 0;
         mFastScrollerSections.clear();
         mAdapterItems.clear();
+        mAccessibilityResultsCount = 0;
 
         // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
         // ordered set of sections
-
         if (!hasFilter()) {
-            mAccessibilityResultsCount = mApps.size();
+            int position = 0;
             if (mWorkAdapterProvider != null) {
                 position += mWorkAdapterProvider.addWorkItems(mAdapterItems);
                 if (!mWorkAdapterProvider.shouldShowWorkApps()) {
                     return;
                 }
             }
+            String lastSectionName = null;
             for (AppInfo info : mApps) {
-                String sectionName = info.sectionName;
+                mAdapterItems.add(AdapterItem.asApp(info));
 
+                String sectionName = info.sectionName;
                 // Create a new section if the section names do not match
                 if (!sectionName.equals(lastSectionName)) {
                     lastSectionName = sectionName;
-                    lastFastScrollerSectionInfo = new FastScrollSectionInfo(sectionName);
-                    mFastScrollerSections.add(lastFastScrollerSectionInfo);
+                    mFastScrollerSections.add(new FastScrollSectionInfo(sectionName, position));
                 }
-
-                // Create an app item
-                AdapterItem appItem = AdapterItem.asApp(position++, info);
-                if (lastFastScrollerSectionInfo.fastScrollToItem == null) {
-                    lastFastScrollerSectionInfo.fastScrollToItem = appItem;
-                }
-
-                mAdapterItems.add(appItem);
+                position++;
             }
         } else {
-            int count = mSearchResults.size();
-            for (int i = 0; i < count; i++) {
-                AdapterItem adapterItem = mSearchResults.get(i);
-                adapterItem.position = i;
-                mAdapterItems.add(adapterItem);
-
-                if (adapterItem.isCountedForAccessibility()) {
-                    mAccessibilityResultsCount++;
-                }
-            }
+            mAdapterItems.addAll(mSearchResults);
             if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
                 // Append the search market item
                 if (hasNoFilteredResults()) {
-                    mAdapterItems.add(AdapterItem.asEmptySearch(position++));
+                    mAdapterItems.add(new AdapterItem(VIEW_TYPE_EMPTY_SEARCH));
                 } else {
-                    mAdapterItems.add(AdapterItem.asAllAppsDivider(position++));
+                    mAdapterItems.add(new AdapterItem(VIEW_TYPE_ALL_APPS_DIVIDER));
                 }
-                mAdapterItems.add(AdapterItem.asMarketSearch(position++));
-
+                mAdapterItems.add(new AdapterItem(VIEW_TYPE_SEARCH_MARKET));
             }
         }
+        mAccessibilityResultsCount = (int) mAdapterItems.stream()
+                .filter(AdapterItem::isCountedForAccessibility).count();
+
         if (mNumAppsPerRowAllApps != 0) {
             // Update the number of rows in the adapter after we do all the merging (otherwise, we
             // would have to shift the values again)
@@ -328,19 +297,43 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                 }
             }
             mNumAppRowsInAdapter = rowIndex + 1;
+        }
 
-            // Pre-calculate all the fast scroller fractions
-            float perSectionTouchFraction = 1f / mFastScrollerSections.size();
-            float cumulativeTouchFraction = 0f;
-            for (FastScrollSectionInfo info : mFastScrollerSections) {
-                AdapterItem item = info.fastScrollToItem;
-                if (!BaseAllAppsAdapter.isIconViewType(item.viewType)) {
-                    info.touchFraction = 0f;
-                    continue;
-                }
-                info.touchFraction = cumulativeTouchFraction;
-                cumulativeTouchFraction += perSectionTouchFraction;
-            }
+        if (mAdapter != null) {
+            DiffUtil.calculateDiff(new MyDiffCallback(oldItems, mAdapterItems), false)
+                    .dispatchUpdatesTo(mAdapter);
         }
     }
+
+    private static class MyDiffCallback extends DiffUtil.Callback {
+
+        private final List<AdapterItem> mOldList;
+        private final List<AdapterItem> mNewList;
+
+        MyDiffCallback(List<AdapterItem> oldList, List<AdapterItem> newList) {
+            mOldList = oldList;
+            mNewList = newList;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return mOldList.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return mNewList.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            return mOldList.get(oldItemPosition).isSameAs(mNewList.get(newItemPosition));
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            return mOldList.get(oldItemPosition).isContentSame(mNewList.get(newItemPosition));
+        }
+    }
+
 }

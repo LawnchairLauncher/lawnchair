@@ -88,10 +88,8 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
      */
     public static class AdapterItem {
         /** Common properties */
-        // The index of this adapter item in the list
-        public int position;
         // The type of this item
-        public int viewType;
+        public final int viewType;
 
         // The row that this item shows up on
         public int rowIndex;
@@ -100,49 +98,36 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
         // The associated ItemInfoWithIcon for the item
         public AppInfo itemInfo = null;
 
+        public AdapterItem(int viewType) {
+            this.viewType = viewType;
+        }
+
         /**
          * Factory method for AppIcon AdapterItem
          */
-        public static AdapterItem asApp(int pos, AppInfo appInfo) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = VIEW_TYPE_ICON;
-            item.position = pos;
+        public static AdapterItem asApp(AppInfo appInfo) {
+            AdapterItem item = new AdapterItem(VIEW_TYPE_ICON);
             item.itemInfo = appInfo;
-            return item;
-        }
-
-        /**
-         * Factory method for empty search results view
-         */
-        public static AdapterItem asEmptySearch(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = VIEW_TYPE_EMPTY_SEARCH;
-            item.position = pos;
-            return item;
-        }
-
-        /**
-         * Factory method for a dividerView in AllAppsSearch
-         */
-        public static AdapterItem asAllAppsDivider(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = VIEW_TYPE_ALL_APPS_DIVIDER;
-            item.position = pos;
-            return item;
-        }
-
-        /**
-         * Factory method for a market search button
-         */
-        public static AdapterItem asMarketSearch(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = VIEW_TYPE_SEARCH_MARKET;
-            item.position = pos;
             return item;
         }
 
         protected boolean isCountedForAccessibility() {
             return viewType == VIEW_TYPE_ICON || viewType == VIEW_TYPE_SEARCH_MARKET;
+        }
+
+        /**
+         * Returns true if the items represent the same object
+         */
+        public boolean isSameAs(AdapterItem other) {
+            return (other.viewType != viewType) && (other.getClass() == getClass());
+        }
+
+        /**
+         * This is called only if {@link #isSameAs} returns true to check if the contents are same
+         * as well. Returning true will prevent redrawing of thee item.
+         */
+        public boolean isContentSame(AdapterItem other) {
+            return itemInfo == null && other.itemInfo == null;
         }
     }
 
