@@ -1279,13 +1279,16 @@ public class Launcher extends StatefulActivity<LauncherState>
      * @param info The data structure describing the shortcut.
      */
     View createShortcut(WorkspaceItemInfo info) {
-        return createShortcut((ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentPage()), info);
+        // This can be called before PagedView#pageScrollsInitialized returns true, so use the
+        // first page, which we always assume to be present.
+        return createShortcut((ViewGroup) mWorkspace.getChildAt(0), info);
     }
 
     /**
      * Creates a view representing a shortcut inflated from the specified resource.
      *
-     * @param parent The group the shortcut belongs to.
+     * @param parent The group the shortcut belongs to. This is not necessarily the group where
+     *               the shortcut should be added.
      * @param info   The data structure describing the shortcut.
      * @return A View inflated from layoutResId.
      */
