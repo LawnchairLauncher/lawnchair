@@ -198,6 +198,12 @@ public class TestInformationHandler implements ResourceBasedOverride {
                     return new Point(cellRect.centerX(), cellRect.centerY());
                 });
 
+            case TestProtocol.REQUEST_HAS_TIS: {
+                response.putBoolean(
+                        TestProtocol.REQUEST_HAS_TIS, false);
+                return response;
+            }
+
             default:
                 return null;
         }
