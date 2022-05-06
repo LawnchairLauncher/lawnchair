@@ -33,7 +33,7 @@ import com.android.launcher3.testing.TestProtocol;
 /**
  * Ancestor for AppIcon and AppMenuItem.
  */
-abstract class Launchable {
+public abstract class Launchable {
 
     protected static final int DEFAULT_DRAG_STEPS = 10;
 
