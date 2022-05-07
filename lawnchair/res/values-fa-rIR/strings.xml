@@ -105,7 +105,7 @@
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
     <string name="show_sys_ui_scrim">Top Shadow</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_status_bar">نشان‌دادن نوار وضعیت</string>
     <string name="what_to_show">What to Show</string>
     <string name="missing_notification_access_label">Notification Access Needed</string>
     <string name="missing_notification_access_description">Notification access needed.</string>
@@ -167,7 +167,7 @@
     <string name="action_upload_error">Upload failed</string>
     <string name="dogbin_uploading">درحال آپلود…</string>
     <string name="bugreport_channel_name">Bug Reports</string>
-    <string name="status_channel_name">Upload Status</string>
+    <string name="status_channel_name">وضعیت آپلود</string>
     <string name="bugreport_group_summary">%d new reports.</string>
     <string name="bugreport_group_summary_multiple">Multiple new reports.</string>
     <string name="themed_icon_title">Themed Icons</string>
@@ -191,7 +191,7 @@
     <string name="experimental_features_label">Experimental Features</string>
     <string name="icon_picker_label">Per-App Icon Customization</string>
     <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
-    <string name="font_picker_label">Font Customization</string>
+    <string name="font_picker_label">شخصی‌سازی قلم</string>
     <string name="font_picker_description">Some text remains unchanged.</string>
     <string name="search_provider_app_search">جست‌وجو برنامه</string>
     <string name="always_open_website_label">Always Open Website</string>
