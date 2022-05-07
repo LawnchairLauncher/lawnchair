@@ -89,7 +89,7 @@ public final class FallbackActivityInterface extends
             boolean activityVisible, Consumer<AnimatorControllerWithResistance> callback) {
         notifyRecentsOfOrientation(deviceState.getRotationTouchHelper());
         DefaultAnimationFactory factory = new DefaultAnimationFactory(callback);
-        factory.initUI();
+        factory.initBackgroundStateUI();
         return factory;
     }
 

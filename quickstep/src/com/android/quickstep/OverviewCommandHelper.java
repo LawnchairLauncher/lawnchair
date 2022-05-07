@@ -217,7 +217,8 @@ public class OverviewCommandHelper {
             @Override
             public void onRecentsAnimationStart(RecentsAnimationController controller,
                     RecentsAnimationTargets targets) {
-                interactionHandler.onGestureEnded(0, new PointF(), new PointF());
+                activityInterface.runOnInitBackgroundStateUI(() ->
+                        interactionHandler.onGestureEnded(0, new PointF(), new PointF()));
                 cmd.removeListener(this);
             }
 
