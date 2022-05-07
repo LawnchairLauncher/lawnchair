@@ -27,6 +27,7 @@ import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_QUICKSWITCH_RIGHT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_UNKNOWN_SWIPEDOWN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_UNKNOWN_SWIPEUP;
 import static com.android.launcher3.logging.StatsLogManager.getLauncherAtomEvent;
@@ -451,9 +452,11 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
                 .withSrcState(LAUNCHER_STATE_HOME)
                 .withDstState(targetState.statsLogOrdinal)
                 .log(getLauncherAtomEvent(mStartState.statsLogOrdinal, targetState.statsLogOrdinal,
-                        targetState.ordinal > mStartState.ordinal
-                                ? LAUNCHER_UNKNOWN_SWIPEUP
-                                : LAUNCHER_UNKNOWN_SWIPEDOWN));
+                        targetState == QUICK_SWITCH
+                                ? LAUNCHER_QUICKSWITCH_RIGHT
+                                : targetState.ordinal > mStartState.ordinal
+                                        ? LAUNCHER_UNKNOWN_SWIPEUP
+                                        : LAUNCHER_UNKNOWN_SWIPEDOWN));
         mLauncher.getStateManager().goToState(targetState, false, forEndCallback(this::clearState));
     }
 

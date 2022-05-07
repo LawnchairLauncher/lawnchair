@@ -21,6 +21,7 @@ import static com.android.launcher3.LauncherAnimUtils.newCancelListener;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_ALLAPPS;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
@@ -330,9 +331,6 @@ public abstract class AbstractStateChangeTouchController
                         Math.min(progress, 1) - endProgress) * durationMultiplier;
             }
         }
-        if (targetState != mStartState) {
-            logReachedState(targetState);
-        }
         mCurrentAnimation.setEndAction(() -> onSwipeInteractionCompleted(targetState));
         ValueAnimator anim = mCurrentAnimation.getAnimationPlayer();
         anim.setFloatValues(startProgress, endProgress);
@@ -361,6 +359,8 @@ public abstract class AbstractStateChangeTouchController
         boolean shouldGoToTargetState = mGoingBetweenStates || (mToState != targetState);
         if (shouldGoToTargetState) {
             goToTargetState(targetState);
+        } else {
+            logReachedState(mToState);
         }
     }
 
@@ -368,13 +368,19 @@ public abstract class AbstractStateChangeTouchController
         if (!mLauncher.isInState(targetState)) {
             // If we're already in the target state, don't jump to it at the end of the animation in
             // case the user started interacting with it before the animation finished.
-            mLauncher.getStateManager().goToState(targetState, false /* animated */);
+            mLauncher.getStateManager().goToState(targetState, false /* animated */,
+                    forEndCallback(() -> logReachedState(targetState)));
+        } else {
+            logReachedState(targetState);
         }
         mLauncher.getRootView().getSysUiScrim().createSysuiMultiplierAnim(
                 1f).setDuration(0).start();
     }
 
     private void logReachedState(LauncherState targetState) {
+        if (mStartState == targetState) {
+            return;
+        }
         // Transition complete. log the action
         mLauncher.getStatsLogManager().logger()
                 .withSrcState(mStartState.statsLogOrdinal)

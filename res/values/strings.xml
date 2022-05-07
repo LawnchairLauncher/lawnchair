@@ -428,7 +428,7 @@
     <string name="work_apps_paused_edu_accept">Got it</string>
 
     <!-- button string shown pause work profile -->
-    <string name="work_apps_pause_btn_text">Turn off work apps</string>
+    <string name="work_apps_pause_btn_text">Pause work apps</string>
     <!-- button string shown enable work profile -->
     <string name="work_apps_enable_btn_text">Turn on work apps</string>
 
