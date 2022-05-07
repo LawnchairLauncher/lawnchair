@@ -52,6 +52,8 @@ import org.junit.runner.RunWith;
 public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     private static final String APP_NAME = "LauncherTestApp";
+    private static final String CALCULATOR_APP_PACKAGE =
+            resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR);
 
     @Before
     public void setUp() throws Exception {
@@ -73,7 +75,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     public static void startTestApps() throws Exception {
         startAppFast(getAppPackageName());
-        startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
+        startAppFast(CALCULATOR_APP_PACKAGE);
         startTestActivity(2);
     }
 
@@ -207,7 +209,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @NavigationModeSwitch
     @PortraitLandscape
     public void testBackground() throws Exception {
-        startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
+        startAppFast(CALCULATOR_APP_PACKAGE);
         final LaunchedAppState launchedAppState = getAndAssertLaunchedApp();
 
         assertNotNull("Background.switchToOverview() returned null",
@@ -302,7 +304,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         mLauncher.getWorkspace();
         waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
 
-        startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
+        startAppFast(CALCULATOR_APP_PACKAGE);
         mLauncher.pressBack();
         mLauncher.getWorkspace();
         waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
