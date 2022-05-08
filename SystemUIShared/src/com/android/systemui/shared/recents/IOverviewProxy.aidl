@@ -77,8 +77,27 @@ oneway interface IOverviewProxy {
     void onSplitScreenSecondaryBoundsChanged(in Rect bounds, in Rect insets) = 17;
 
     /**
-     * Sent IME status changes
+     * Sent when suggested rotation button could be shown
      */
-    void onImeWindowStatusChanged(int displayId, IBinder token, int vis, int backDisposition,
-                         boolean showImeSwitcher) = 18;
+    void onRotationProposal(int rotation, boolean isValid) = 18;
+
+    /**
+     * Sent when disable flags change
+     */
+    void disable(int displayId, int state1, int state2, boolean animate) = 19;
+
+    /**
+     * Sent when behavior changes. See WindowInsetsController#@Behavior
+     */
+    void onSystemBarAttributesChanged(int displayId, int behavior) = 20;
+
+    /**
+     * Sent when screen turned on and ready to use (blocker scrim is hidden)
+     */
+    void onScreenTurnedOn() = 21;
+
+    /**
+     * Sent when the desired dark intensity of the nav buttons has changed
+     */
+    void onNavButtonsDarkIntensityChanged(float darkIntensity) = 22;
 }

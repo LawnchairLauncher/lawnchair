@@ -27,10 +27,12 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.util.Log;
+import android.view.InsetsController;
 import android.view.InsetsState;
 import android.view.SurfaceControl;
 import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
+import android.view.animation.Interpolator;
 
 import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecsFuture;
 import com.android.systemui.shared.recents.view.RecentsTransition;
@@ -88,6 +90,9 @@ public class WindowManagerWrapper {
     public static final int ITYPE_RIGHT_TAPPABLE_ELEMENT = InsetsState.ITYPE_RIGHT_TAPPABLE_ELEMENT;
     public static final int ITYPE_BOTTOM_TAPPABLE_ELEMENT =
             InsetsState.ITYPE_BOTTOM_TAPPABLE_ELEMENT;
+
+    public static final int ANIMATION_DURATION_RESIZE = InsetsController.ANIMATION_DURATION_RESIZE;
+    public static final Interpolator RESIZE_INTERPOLATOR = InsetsController.RESIZE_INTERPOLATOR;
 
     private static final WindowManagerWrapper sInstance = new WindowManagerWrapper();
 

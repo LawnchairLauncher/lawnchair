@@ -23,21 +23,20 @@ import android.app.ActivityManager.TaskDescription;
 import android.app.TaskInfo;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.ViewDebug;
 
-import com.android.systemui.shared.recents.utilities.Utilities;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Objects;
 
 /**
  * A task in the recent tasks list.
+ * TODO: Move this into Launcher or see if we can remove now
  */
 public class Task {
 
@@ -52,6 +51,7 @@ public class Task {
         @ViewDebug.ExportedProperty(category="recents")
         public int windowingMode;
         @ViewDebug.ExportedProperty(category="recents")
+        @NonNull
         public final Intent baseIntent;
         @ViewDebug.ExportedProperty(category="recents")
         public final int userId;
@@ -85,7 +85,7 @@ public class Task {
             updateHashCode();
         }
 
-        public TaskKey(int id, int windowingMode, Intent intent,
+        public TaskKey(int id, int windowingMode, @NonNull Intent intent,
                 ComponentName sourceComponent, int userId, long lastActiveTime) {
             this.id = id;
             this.windowingMode = windowingMode;
@@ -97,7 +97,7 @@ public class Task {
             updateHashCode();
         }
 
-        public TaskKey(int id, int windowingMode, Intent intent,
+        public TaskKey(int id, int windowingMode, @NonNull Intent intent,
                 ComponentName sourceComponent, int userId, long lastActiveTime, int displayId) {
             this.id = id;
             this.windowingMode = windowingMode;
@@ -201,8 +201,8 @@ public class Task {
      * The icon is the task description icon (if provided), which falls back to the activity icon,
      * which can then fall back to the application icon.
      */
-    public Drawable icon;
-    public ThumbnailData thumbnail;
+    @Nullable public Drawable icon;
+    @Nullable public ThumbnailData thumbnail;
     @ViewDebug.ExportedProperty(category="recents")
     @Deprecated
     public String title;

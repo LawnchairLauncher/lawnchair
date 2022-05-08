@@ -68,10 +68,15 @@ public class RemoteAnimationTargetCompat {
     public final boolean isNotInRecents;
     public final Rect contentInsets;
     public final ActivityManager.RunningTaskInfo taskInfo;
+    public final boolean allowEnterPip;
     public final int rotationChange;
     public final int windowType;
+    public final WindowConfiguration windowConfiguration;
 
     private final SurfaceControl mStartLeash;
+
+    // Fields used only to unrap into RemoteAnimationTarget
+    private final Rect startBounds;
 
     public RemoteAnimationTargetCompat(RemoteAnimationTarget app) {
         taskId = app.taskId;
@@ -88,10 +93,13 @@ public class RemoteAnimationTargetCompat {
         contentInsets = app.contentInsets;
         activityType = app.windowConfiguration.getActivityType();
         taskInfo = app.taskInfo;
+        allowEnterPip = app.allowEnterPip;
         rotationChange = 0;
 
         mStartLeash = app.startLeash;
         windowType = app.windowType;
+        windowConfiguration = app.windowConfiguration;
+        startBounds = app.startBounds;
     }
 
     private static int newModeToLegacyMode(int newMode) {
@@ -105,6 +113,14 @@ public class RemoteAnimationTargetCompat {
             default:
                 return 2; // MODE_CHANGING
         }
+    }
+
+    public RemoteAnimationTarget unwrap() {
+        return new RemoteAnimationTarget(
+                taskId, mode, leash.getSurfaceControl(), isTranslucent, clipRect, contentInsets,
+                prefixOrderIndex, position, localBounds, screenSpaceBounds, windowConfiguration,
+                isNotInRecents, mStartLeash, startBounds, taskInfo, allowEnterPip, windowType
+        );
     }
 
 
@@ -214,9 +230,15 @@ public class RemoteAnimationTargetCompat {
             activityType = ACTIVITY_TYPE_UNDEFINED;
         }
         taskInfo = change.getTaskInfo();
+        allowEnterPip = change.getAllowEnterPip();
         mStartLeash = null;
         rotationChange = change.getEndRotation() - change.getStartRotation();
         windowType = INVALID_WINDOW_TYPE;
+
+        windowConfiguration = change.getTaskInfo() != null
+            ? change.getTaskInfo().configuration.windowConfiguration
+            : new WindowConfiguration();
+        startBounds = change.getStartAbsBounds();
     }
 
     public static RemoteAnimationTargetCompat[] wrap(RemoteAnimationTarget[] apps) {
@@ -256,7 +278,9 @@ public class RemoteAnimationTargetCompat {
      * @see SurfaceControl#release()
      */
     public void release() {
-        leash.mSurfaceControl.release();
+        if (leash.mSurfaceControl != null) {
+            leash.mSurfaceControl.release();
+        }
         if (mStartLeash != null) {
             mStartLeash.release();
         }

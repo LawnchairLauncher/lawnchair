@@ -27,18 +27,18 @@ public interface PluginManager {
     // must be one of the channels created in NotificationChannels.java
     String NOTIFICATION_CHANNEL_ID = "ALR";
 
-    String[] getWhitelistedPlugins();
+    /** Returns plugins that don't get disabled when an exceptoin occurs. */
+    String[] getPrivilegedPlugins();
 
-    <T extends Plugin> T getOneShotPlugin(Class<T> cls);
-    <T extends Plugin> T getOneShotPlugin(String action, Class<?> cls);
-
-    <T extends Plugin> void addPluginListener(PluginListener<T> listener, Class<?> cls);
-    <T extends Plugin> void addPluginListener(PluginListener<T> listener, Class<?> cls,
+    /** */
+    <T extends Plugin> void addPluginListener(PluginListener<T> listener, Class<T> cls);
+    /** */
+    <T extends Plugin> void addPluginListener(PluginListener<T> listener, Class<T> cls,
             boolean allowMultiple);
     <T extends Plugin> void addPluginListener(String action, PluginListener<T> listener,
-            Class<?> cls);
+            Class<T> cls);
     <T extends Plugin> void addPluginListener(String action, PluginListener<T> listener,
-            Class cls, boolean allowMultiple);
+            Class<T> cls, boolean allowMultiple);
 
     void removePluginListener(PluginListener<?> listener);
 

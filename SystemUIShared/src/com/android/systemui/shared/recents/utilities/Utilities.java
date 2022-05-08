@@ -16,12 +16,25 @@
 
 package com.android.systemui.shared.recents.utilities;
 
+import static android.app.StatusBarManager.NAVIGATION_HINT_BACK_ALT;
+import static android.app.StatusBarManager.NAVIGATION_HINT_IME_SHOWN;
+
+import android.annotation.TargetApi;
+import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Rect;
+import android.inputmethodservice.InputMethodService;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
+import android.view.Surface;
+import android.view.WindowManager;
 
 /* Common code */
 public class Utilities {
+
+    private static final float TABLET_MIN_DPS = 600;
 
     /**
      * Posts a runnable on a handler at the front of the queue ignoring any sync barriers.
@@ -29,6 +42,23 @@ public class Utilities {
     public static void postAtFrontOfQueueAsynchronously(Handler h, Runnable r) {
         Message msg = h.obtainMessage().setCallback(r);
         h.sendMessageAtFrontOfQueue(msg);
+    }
+
+    public static boolean isRotationAnimationCCW(int from, int to) {
+        // All 180deg WM rotation animations are CCW, match that
+        if (from == Surface.ROTATION_0 && to == Surface.ROTATION_90) return false;
+        if (from == Surface.ROTATION_0 && to == Surface.ROTATION_180) return true; //180d so CCW
+        if (from == Surface.ROTATION_0 && to == Surface.ROTATION_270) return true;
+        if (from == Surface.ROTATION_90 && to == Surface.ROTATION_0) return true;
+        if (from == Surface.ROTATION_90 && to == Surface.ROTATION_180) return false;
+        if (from == Surface.ROTATION_90 && to == Surface.ROTATION_270) return true; //180d so CCW
+        if (from == Surface.ROTATION_180 && to == Surface.ROTATION_0) return true; //180d so CCW
+        if (from == Surface.ROTATION_180 && to == Surface.ROTATION_90) return true;
+        if (from == Surface.ROTATION_180 && to == Surface.ROTATION_270) return false;
+        if (from == Surface.ROTATION_270 && to == Surface.ROTATION_0) return false;
+        if (from == Surface.ROTATION_270 && to == Surface.ROTATION_90) return true; //180d so CCW
+        if (from == Surface.ROTATION_270 && to == Surface.ROTATION_180) return true;
+        return false; // Default
     }
 
     /** Calculates the constrast between two colors, using the algorithm provided by the WCAG v2. */
@@ -57,5 +87,51 @@ public class Utilities {
      */
     public static float clamp(float value, float min, float max) {
         return Math.max(min, Math.min(max, value));
+    }
+
+    /**
+     * @return updated set of flags from InputMethodService based off {@param oldHints}
+     *          Leaves original hints unmodified
+     */
+    public static int calculateBackDispositionHints(int oldHints, int backDisposition,
+            boolean imeShown, boolean showImeSwitcher) {
+        int hints = oldHints;
+        switch (backDisposition) {
+            case InputMethodService.BACK_DISPOSITION_DEFAULT:
+            case InputMethodService.BACK_DISPOSITION_WILL_NOT_DISMISS:
+            case InputMethodService.BACK_DISPOSITION_WILL_DISMISS:
+                if (imeShown) {
+                    hints |= NAVIGATION_HINT_BACK_ALT;
+                } else {
+                    hints &= ~NAVIGATION_HINT_BACK_ALT;
+                }
+                break;
+            case InputMethodService.BACK_DISPOSITION_ADJUST_NOTHING:
+                hints &= ~NAVIGATION_HINT_BACK_ALT;
+                break;
+        }
+        if (showImeSwitcher) {
+            hints |= NAVIGATION_HINT_IME_SHOWN;
+        } else {
+            hints &= ~NAVIGATION_HINT_IME_SHOWN;
+        }
+
+        return hints;
+    }
+
+    /** @return whether or not {@param context} represents that of a large screen device or not */
+    @TargetApi(Build.VERSION_CODES.R)
+    public static boolean isTablet(Context context) {
+        final WindowManager windowManager = context.getSystemService(WindowManager.class);
+        final Rect bounds = windowManager.getCurrentWindowMetrics().getBounds();
+
+        float smallestWidth = dpiFromPx(Math.min(bounds.width(), bounds.height()),
+                context.getResources().getConfiguration().densityDpi);
+        return smallestWidth >= TABLET_MIN_DPS;
+    }
+
+    public static float dpiFromPx(float size, int densityDpi) {
+        float densityRatio = (float) densityDpi / DisplayMetrics.DENSITY_DEFAULT;
+        return (size / densityRatio);
     }
 }
