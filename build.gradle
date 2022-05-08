@@ -270,7 +270,7 @@ android {
         }
     }
 
-    addFrameworkJar('framework-12.jar')
+    addFrameworkJar('framework-12l.jar')
 }
 
 allprojects {
@@ -289,7 +289,7 @@ dependencies {
     implementation "androidx.preference:preference-ktx:${ANDROID_X_VERSION}"
     implementation project(':iconloaderlib')
     implementation project(':searchuilib')
-    implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'sysui_statslog.jar')
+    implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'SystemUI-statsd.jar')
 
     // Recents lib dependency
     withQuickstepImplementation project(':SystemUIShared')

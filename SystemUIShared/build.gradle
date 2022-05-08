@@ -38,7 +38,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    addFrameworkJar('framework-12.jar')
+    addFrameworkJar('framework-12l.jar')
 }
 
 dependencies {
