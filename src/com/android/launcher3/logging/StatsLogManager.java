@@ -33,6 +33,7 @@ import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ResourceBasedOverride;
+import com.android.launcher3.views.ActivityContext;
 
 /**
  * Handles the user event logging in R+.
@@ -53,6 +54,9 @@ public class StatsLogManager implements ResourceBasedOverride {
     public static final int LAUNCHER_STATE_UNCHANGED = 5;
 
     private InstanceId mInstanceId;
+
+    protected @Nullable ActivityContext mActivityContext = null;
+
     /**
      * Returns event enum based on the two state transition information when swipe
      * gesture happens(to be removed during UserEventDispatcher cleanup).
@@ -76,6 +80,22 @@ public class StatsLogManager implements ResourceBasedOverride {
     }
 
     public interface EventEnum {
+
+        /**
+         * Tag used to request new UI Event IDs via presubmit analysis.
+         *
+         * <p>Use RESERVE_NEW_UI_EVENT_ID as the constructor parameter for a new {@link EventEnum}
+         * to signal the presubmit analyzer to reserve a new ID for the event. The new ID will be
+         * returned as a Gerrit presubmit finding.  Do not submit {@code RESERVE_NEW_UI_EVENT_ID} as
+         * the constructor parameter for any event.
+         *
+         * <pre>
+         * &#064;UiEvent(doc = "Briefly describe the interaction when this event will be logged")
+         * UNIQUE_EVENT_NAME(RESERVE_NEW_UI_EVENT_ID);
+         * </pre>
+         */
+        int RESERVE_NEW_UI_EVENT_ID = Integer.MIN_VALUE; // Negative IDs are ignored by the logger.
+
         int getId();
     }
 
@@ -264,6 +284,9 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "User tapped on the share button on overview")
         LAUNCHER_OVERVIEW_ACTIONS_SHARE(582),
+
+        @UiEvent(doc = "User tapped on the split screen button on overview")
+        LAUNCHER_OVERVIEW_ACTIONS_SPLIT(895),
 
         @UiEvent(doc = "User tapped on the close button in select mode")
         LAUNCHER_SELECT_MODE_CLOSE(583),
@@ -486,8 +509,19 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_TURN_ON_WORK_APPS_TAP(838),
 
         @UiEvent(doc = "User tapped on 'Turn off work apps' button in all apps window.")
-        LAUNCHER_TURN_OFF_WORK_APPS_TAP(839)
-        ;
+        LAUNCHER_TURN_OFF_WORK_APPS_TAP(839),
+
+        @UiEvent(doc = "Launcher item drop failed since there was not enough room on the screen.")
+        LAUNCHER_ITEM_DROP_FAILED_INSUFFICIENT_SPACE(872),
+
+        @UiEvent(doc = "User long pressed on the taskbar background to hide the taskbar")
+        LAUNCHER_TASKBAR_LONGPRESS_HIDE(896),
+
+        @UiEvent(doc = "User long pressed on the taskbar gesture handle to show the taskbar")
+        LAUNCHER_TASKBAR_LONGPRESS_SHOW(897),
+
+        @UiEvent(doc = "User clicks on the search icon on header to launch search in app.")
+        LAUNCHER_ALLAPPS_SEARCHINAPP_LAUNCH(913);
 
         // ADD MORE
 
@@ -627,7 +661,7 @@ public class StatsLogManager implements ResourceBasedOverride {
     public StatsLogger logger() {
         StatsLogger logger = createLogger();
         if (mInstanceId != null) {
-            return logger.withInstanceId(mInstanceId);
+            logger.withInstanceId(mInstanceId);
         }
         return logger;
     }
@@ -650,7 +684,9 @@ public class StatsLogManager implements ResourceBasedOverride {
      * Creates a new instance of {@link StatsLogManager} based on provided context.
      */
     public static StatsLogManager newInstance(Context context) {
-        return Overrides.getObject(StatsLogManager.class,
+        StatsLogManager manager = Overrides.getObject(StatsLogManager.class,
                 context.getApplicationContext(), R.string.stats_log_manager_class);
+        manager.mActivityContext = ActivityContext.lookupContextNoThrow(context);
+        return manager;
     }
 }

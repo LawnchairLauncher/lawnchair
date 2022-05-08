@@ -41,9 +41,7 @@ public class TestStabilityRule implements TestRule {
             Pattern.compile("^("
                     + "(?<local>(BuildFromAndroidStudio|"
                     + "([0-9]+|[A-Z])-eng\\.[a-z]+\\.[0-9]+\\.[0-9]+))|"
-                    + "(?<presubmit>([0-9]+|[A-Z])-P[0-9]+)|"
-                    + "(?<postsubmit>([0-9]+|[A-Z])-[0-9]+)|"
-                    + "(?<platform>[0-9]+|[A-Z])"
+                    + "(?<platform>([A-Z][a-z]*[0-9]*|[0-9]+)*)"
                     + ")$");
     private static final Pattern PLATFORM_BUILD =
             Pattern.compile("^("

@@ -1,1 +1,0 @@
-Common source code used by both android tests and robolectric tests

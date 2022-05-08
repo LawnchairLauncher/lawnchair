@@ -15,20 +15,26 @@
  */
 package com.android.launcher3.widget.picker;
 
+import android.graphics.Bitmap;
 import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.android.launcher3.R;
+import com.android.launcher3.model.WidgetItem;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /** A {@link ViewHolder} for showing widgets of an app in the full widget picker. */
 public final class WidgetsRowViewHolder extends ViewHolder {
 
-    public final WidgetsListTableView mTableContainer;
+    public final WidgetsListTableView tableContainer;
+    public final Map<WidgetItem, Bitmap> previewCache = new HashMap<>();
 
     public WidgetsRowViewHolder(View v) {
         super(v);
 
-        mTableContainer = v.findViewById(R.id.widgets_table);
+        tableContainer = v.findViewById(R.id.widgets_table);
     }
 }

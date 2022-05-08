@@ -135,6 +135,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                                         .collect(Collectors.toList()),
                                 mLauncher.getVisibleBounds(searchBox).bottom
                                         - mLauncher.getVisibleBounds(allAppsContainer).top);
+                        verifyActiveContainer();
                         final int newScroll = getAllAppsScroll();
                         mLauncher.assertTrue(
                                 "Scrolled in a wrong direction in AllApps: from " + scroll + " to "
@@ -144,7 +145,6 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                         mLauncher.assertTrue(
                                 "Exceeded max scroll attempts: " + MAX_SCROLL_ATTEMPTS,
                                 ++attempts <= MAX_SCROLL_ATTEMPTS);
-                        verifyActiveContainer();
                         scroll = newScroll;
                     }
                 }

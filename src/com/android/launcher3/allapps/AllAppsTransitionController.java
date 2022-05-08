@@ -17,6 +17,7 @@ package com.android.launcher3.allapps;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
+import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
@@ -28,6 +29,7 @@ import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.ObjectAnimator;
 import android.util.FloatProperty;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.animation.Interpolator;
 
@@ -37,7 +39,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorListeners;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.config.FeatureFlags;
@@ -59,7 +60,6 @@ public class AllAppsTransitionController
         implements StateHandler<LauncherState>, OnDeviceProfileChangeListener {
     // This constant should match the second derivative of the animator interpolator.
     public static final float INTERP_COEFF = 1.7f;
-    private static final float CONTENT_VISIBLE_MAX_THRESHOLD = 0.5f;
 
     public static final FloatProperty<AllAppsTransitionController> ALL_APPS_PROGRESS =
             new FloatProperty<AllAppsTransitionController>("allAppsProgress") {
@@ -168,6 +168,11 @@ public class AllAppsTransitionController
         builder.add(anim);
 
         setAlphas(toState, config, builder);
+
+        if (ALL_APPS.equals(toState) && mLauncher.isInState(NORMAL)) {
+            mLauncher.getAppsView().performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
+                    HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+        }
     }
 
     public Animator createSpringAnimation(float... progressValues) {
@@ -181,8 +186,7 @@ public class AllAppsTransitionController
         int visibleElements = state.getVisibleElements(mLauncher);
         boolean hasAllAppsContent = (visibleElements & ALL_APPS_CONTENT) != 0;
 
-        Interpolator allAppsFade = config.getInterpolator(ANIM_ALL_APPS_FADE,
-                Interpolators.clampToProgress(LINEAR, 0, CONTENT_VISIBLE_MAX_THRESHOLD));
+        Interpolator allAppsFade = config.getInterpolator(ANIM_ALL_APPS_FADE, LINEAR);
         setter.setViewAlpha(mAppsView, hasAllAppsContent ? 1 : 0, allAppsFade);
 
         boolean shouldProtectHeader =

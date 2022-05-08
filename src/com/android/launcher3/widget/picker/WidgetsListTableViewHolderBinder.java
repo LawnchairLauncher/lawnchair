@@ -20,7 +20,7 @@ import static com.android.launcher3.widget.picker.WidgetsListDrawableState.MIDDL
 
 import android.graphics.Bitmap;
 import android.util.Log;
-import android.util.Size;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +33,6 @@ import android.widget.TableRow;
 import com.android.launcher3.R;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.recyclerview.ViewHolderBinder;
-import com.android.launcher3.widget.CachingWidgetPreviewLoader;
 import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.util.WidgetsTableUtils;
@@ -53,32 +52,16 @@ public final class WidgetsListTableViewHolderBinder
     private final OnClickListener mIconClickListener;
     private final OnLongClickListener mIconLongClickListener;
     private final WidgetsListDrawableFactory mListDrawableFactory;
-    private final CachingWidgetPreviewLoader mWidgetPreviewLoader;
-    private final WidgetsListAdapter mWidgetsListAdapter;
-    private boolean mApplyBitmapDeferred = false;
 
     public WidgetsListTableViewHolderBinder(
             LayoutInflater layoutInflater,
             OnClickListener iconClickListener,
             OnLongClickListener iconLongClickListener,
-            CachingWidgetPreviewLoader widgetPreviewLoader,
-            WidgetsListDrawableFactory listDrawableFactory,
-            WidgetsListAdapter listAdapter) {
+            WidgetsListDrawableFactory listDrawableFactory) {
         mLayoutInflater = layoutInflater;
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
-        mWidgetPreviewLoader = widgetPreviewLoader;
         mListDrawableFactory = listDrawableFactory;
-        mWidgetsListAdapter = listAdapter;
-    }
-
-    /**
-     * Defers applying bitmap on all the {@link WidgetCell} at
-     * {@link #bindViewHolder(WidgetsRowViewHolder, WidgetsListContentEntry, int)} if
-     * {@code applyBitmapDeferred} is {@code true}.
-     */
-    public void setApplyBitmapDeferred(boolean applyBitmapDeferred) {
-        mApplyBitmapDeferred = applyBitmapDeferred;
     }
 
     @Override
@@ -90,27 +73,30 @@ public final class WidgetsListTableViewHolderBinder
         WidgetsRowViewHolder viewHolder =
                 new WidgetsRowViewHolder(mLayoutInflater.inflate(
                         R.layout.widgets_table_container, parent, false));
-        viewHolder.mTableContainer.setBackgroundDrawable(
+        viewHolder.tableContainer.setBackgroundDrawable(
                 mListDrawableFactory.createContentBackgroundDrawable());
         return viewHolder;
     }
 
     @Override
     public void bindViewHolder(WidgetsRowViewHolder holder, WidgetsListContentEntry entry,
-            int position) {
-        WidgetsListTableView table = holder.mTableContainer;
+            @ListPosition int position, List<Object> payloads) {
+        for (Object payload : payloads) {
+            Pair<WidgetItem, Bitmap> pair = (Pair) payload;
+            holder.previewCache.put(pair.first, pair.second);
+        }
+
+        WidgetsListTableView table = holder.tableContainer;
         if (DEBUG) {
             Log.d(TAG, String.format("onBindViewHolder [widget#=%d, table.getChildCount=%d]",
                     entry.mWidgets.size(), table.getChildCount()));
         }
-
-        table.setListDrawableState(
-                position == mWidgetsListAdapter.getItemCount() - 1 ? LAST : MIDDLE);
-
+        table.setListDrawableState(((position & POSITION_LAST) != 0) ? LAST : MIDDLE);
         List<ArrayList<WidgetItem>> widgetItemsTable =
-                WidgetsTableUtils.groupWidgetItemsIntoTable(
+                WidgetsTableUtils.groupWidgetItemsIntoTableWithReordering(
                         entry.mWidgets, entry.getMaxSpanSizeInCells());
         recycleTableBeforeBinding(table, widgetItemsTable);
+
         // Bind the widget items.
         for (int i = 0; i < widgetItemsTable.size(); i++) {
             List<WidgetItem> widgetItemsPerRow = widgetItemsTable.get(i);
@@ -120,16 +106,17 @@ public final class WidgetsListTableViewHolderBinder
                 WidgetCell widget = (WidgetCell) row.getChildAt(j);
                 widget.clear();
                 WidgetItem widgetItem = widgetItemsPerRow.get(j);
-                Size previewSize = widget.setPreviewSize(widgetItem);
-                widget.applyFromCellItem(widgetItem, mWidgetPreviewLoader);
-                widget.setApplyBitmapDeferred(mApplyBitmapDeferred);
-                Bitmap preview = mWidgetPreviewLoader.getPreview(widgetItem, previewSize);
-                if (preview == null) {
-                    widget.ensurePreview();
-                } else {
-                    widget.applyPreview(preview);
-                }
                 widget.setVisibility(View.VISIBLE);
+
+                // When preview loads, notify adapter to rebind the item and possibly animate
+                widget.applyFromCellItem(widgetItem, 1f,
+                        bitmap -> {
+                        if (holder.getBindingAdapter() != null) {
+                            holder.getBindingAdapter().notifyItemChanged(
+                                    holder.getBindingAdapterPosition(),
+                                    Pair.create(widgetItem, bitmap));
+                            }
+                        }, holder.previewCache.get(widgetItem));
             }
         }
     }
@@ -170,6 +157,7 @@ public final class WidgetsListTableViewHolderBinder
                     View preview = widget.findViewById(R.id.widget_preview_container);
                     preview.setOnClickListener(mIconClickListener);
                     preview.setOnLongClickListener(mIconLongClickListener);
+                    widget.setAnimatePreview(false);
                     tableRow.addView(widget);
                 }
             }
@@ -178,9 +166,10 @@ public final class WidgetsListTableViewHolderBinder
 
     @Override
     public void unbindViewHolder(WidgetsRowViewHolder holder) {
-        int numOfRows = holder.mTableContainer.getChildCount();
+        int numOfRows = holder.tableContainer.getChildCount();
+        holder.previewCache.clear();
         for (int i = 0; i < numOfRows; i++) {
-            TableRow tableRow = (TableRow) holder.mTableContainer.getChildAt(i);
+            TableRow tableRow = (TableRow) holder.tableContainer.getChildAt(i);
             int numOfCols = tableRow.getChildCount();
             for (int j = 0; j < numOfCols; j++) {
                 WidgetCell widget = (WidgetCell) tableRow.getChildAt(j);

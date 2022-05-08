@@ -59,11 +59,10 @@ public class SpringLoadedState extends LauncherState {
 
         float scale = grid.workspaceSpringLoadShrinkFactor;
         Rect insets = launcher.getDragLayer().getInsets();
-        int insetsBottom = grid.isTaskbarPresent ? grid.taskbarSize : insets.bottom;
 
         float scaledHeight = scale * ws.getNormalChildHeight();
         float shrunkTop = insets.top + grid.dropTargetBarSizePx;
-        float shrunkBottom = ws.getMeasuredHeight() - insetsBottom
+        float shrunkBottom = ws.getMeasuredHeight() - insets.bottom
                 - grid.workspacePadding.bottom
                 - grid.workspaceSpringLoadedBottomSpace;
         float totalShrunkSpace = shrunkBottom - shrunkTop;
@@ -90,10 +89,5 @@ public class SpringLoadedState extends LauncherState {
     @Override
     public float getWorkspaceBackgroundAlpha(Launcher launcher) {
         return 0.2f;
-    }
-
-    @Override
-    public int getVisibleElements(Launcher launcher) {
-        return (super.getVisibleElements(launcher) | HOTSEAT_ICONS) & ~TASKBAR;
     }
 }

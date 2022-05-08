@@ -9,7 +9,6 @@ import android.annotation.TargetApi;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
-import android.content.res.XmlResourceParser;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
@@ -23,22 +22,12 @@ import android.os.Message;
 import android.os.Messenger;
 import android.util.ArrayMap;
 import android.util.Log;
-import android.util.Xml;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile.GridOption;
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Executors;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Exposes various launcher grid options and allows the caller to change them.
@@ -94,7 +83,7 @@ public class GridCustomizationsProvider extends ContentProvider {
                 MatrixCursor cursor = new MatrixCursor(new String[] {
                         KEY_NAME, KEY_ROWS, KEY_COLS, KEY_PREVIEW_COUNT, KEY_IS_DEFAULT});
                 InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(getContext());
-                for (GridOption gridOption : parseAllGridOptions()) {
+                for (GridOption gridOption : idp.parseAllGridOptions(getContext())) {
                     cursor.newRow()
                             .add(KEY_NAME, gridOption.name)
                             .add(KEY_ROWS, gridOption.numRows)
@@ -114,25 +103,6 @@ public class GridCustomizationsProvider extends ContentProvider {
             default:
                 return null;
         }
-    }
-
-    private List<GridOption> parseAllGridOptions() {
-        List<GridOption> result = new ArrayList<>();
-        try (XmlResourceParser parser = getContext().getResources().getXml(R.xml.device_profiles)) {
-            final int depth = parser.getDepth();
-            int type;
-            while (((type = parser.next()) != XmlPullParser.END_TAG ||
-                    parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
-                if ((type == XmlPullParser.START_TAG)
-                        && GridOption.TAG_NAME.equals(parser.getName())) {
-                    result.add(new GridOption(getContext(), Xml.asAttributeSet(parser)));
-                }
-            }
-        } catch (IOException | XmlPullParserException e) {
-            Log.e(TAG, "Error parsing device profile", e);
-            return Collections.emptyList();
-        }
-        return result;
     }
 
     @Override
@@ -155,9 +125,10 @@ public class GridCustomizationsProvider extends ContentProvider {
         switch (uri.getPath()) {
             case KEY_DEFAULT_GRID: {
                 String gridName = values.getAsString(KEY_NAME);
+                InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(getContext());
                 // Verify that this is a valid grid option
                 GridOption match = null;
-                for (GridOption option : parseAllGridOptions()) {
+                for (GridOption option : idp.parseAllGridOptions(getContext())) {
                     if (option.name.equals(gridName)) {
                         match = option;
                         break;
@@ -167,8 +138,7 @@ public class GridCustomizationsProvider extends ContentProvider {
                     return 0;
                 }
 
-                InvariantDeviceProfile.INSTANCE.get(getContext())
-                        .setCurrentGrid(getContext(), gridName);
+                idp.setCurrentGrid(getContext(), gridName);
                 return 1;
             }
             case ICON_THEMED:

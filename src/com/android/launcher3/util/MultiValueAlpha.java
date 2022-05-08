@@ -16,12 +16,15 @@
 
 package com.android.launcher3.util;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.util.FloatProperty;
 import android.view.View;
 
 import com.android.launcher3.anim.AlphaUpdateListener;
 
 import java.util.Arrays;
+import java.util.function.Consumer;
 
 /**
  * Utility class to handle separating a single value as a factor of multiple values
@@ -83,6 +86,8 @@ public class MultiValueAlpha {
         // Factor of all other alpha channels, only valid if mMyMask is present in mValidMask.
         private float mOthers = 1;
 
+        private Consumer<Float> mConsumer;
+
         AlphaProperty(int myMask) {
             mMyMask = myMask;
         }
@@ -107,9 +112,13 @@ public class MultiValueAlpha {
             mValidMask = mMyMask;
             mValue = value;
 
-            mView.setAlpha(mOthers * mValue);
+            final float alpha = mOthers * mValue;
+            mView.setAlpha(alpha);
             if (mUpdateVisibility) {
                 AlphaUpdateListener.updateVisibility(mView);
+            }
+            if (mConsumer != null) {
+                mConsumer.accept(mValue);
             }
         }
 
@@ -117,9 +126,26 @@ public class MultiValueAlpha {
             return mValue;
         }
 
+        public void setConsumer(Consumer<Float> consumer) {
+            mConsumer = consumer;
+            if (mConsumer != null) {
+                mConsumer.accept(mValue);
+            }
+        }
+
         @Override
         public String toString() {
             return Float.toString(mValue);
+        }
+
+        /**
+         * Creates and returns an Animator from the current value to the given value. Future
+         * animator on the same target automatically cancels the previous one.
+         */
+        public Animator animateToValue(float value) {
+            ObjectAnimator animator = ObjectAnimator.ofFloat(this, VALUE, value);
+            animator.setAutoCancel(true);
+            return animator;
         }
     }
 }

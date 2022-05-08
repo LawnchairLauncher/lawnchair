@@ -29,7 +29,6 @@ import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.util.TraceHelper.FLAG_CHECK_FOR_RACE_CONDITIONS;
 import static com.android.launcher3.util.VelocityUtils.PX_PER_MS;
-import static com.android.quickstep.GestureState.STATE_OVERSCROLL_WINDOW_CREATED;
 import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
 
 import android.annotation.TargetApi;
@@ -490,7 +489,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
     @Override
     public boolean allowInterceptByParent() {
-        return !mPassedPilferInputSlop || mGestureState.hasState(STATE_OVERSCROLL_WINDOW_CREATED);
+        return !mPassedPilferInputSlop;
     }
 
     @Override

@@ -21,14 +21,11 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERV
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.SystemProperties;
-import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.launcher3.Workspace;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
@@ -69,10 +66,7 @@ public class OverviewState extends LauncherState {
     @Override
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
         RecentsView recentsView = launcher.getOverviewPanel();
-        Workspace workspace = launcher.getWorkspace();
-        View workspacePage = workspace.getPageAt(workspace.getCurrentPage());
-        float workspacePageWidth = workspacePage != null && workspacePage.getWidth() != 0
-                ? workspacePage.getWidth() : launcher.getDeviceProfile().availableWidthPx;
+        float workspacePageWidth = launcher.getDeviceProfile().getWorkspaceWidth();
         recentsView.getTaskSize(sTempRect);
         float scale = (float) sTempRect.width() / workspacePageWidth;
         float parallaxFactor = 0.5f;
@@ -82,16 +76,6 @@ public class OverviewState extends LauncherState {
     @Override
     public float[] getOverviewScaleAndOffset(Launcher launcher) {
         return new float[] {NO_SCALE, NO_OFFSET};
-    }
-
-    @Override
-    public float getTaskbarScale(Launcher launcher) {
-        return 1f;
-    }
-
-    @Override
-    public float getTaskbarTranslationY(Launcher launcher) {
-        return 0f;
     }
 
     @Override
@@ -113,13 +97,18 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
+    public boolean isTaskbarStashed(Launcher launcher) {
+        return true;
+    }
+
+    @Override
     public int getWorkspaceScrimColor(Launcher launcher) {
         return ColorTokens.OverviewScrim.resolveColor(launcher);
     }
 
     @Override
     public boolean displayOverviewTasksAsGrid(DeviceProfile deviceProfile) {
-        return deviceProfile.isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get();
+        return deviceProfile.overviewShowAsGrid;
     }
 
     @Override

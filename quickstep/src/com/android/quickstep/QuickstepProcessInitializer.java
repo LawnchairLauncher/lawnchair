@@ -24,8 +24,6 @@ import android.util.Log;
 
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.MainProcessInitializer;
-import com.android.launcher3.util.Executors;
-import com.android.quickstep.logging.SettingsChangeLogger;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.ThreadedRendererCompat;
 
@@ -62,9 +60,5 @@ public class QuickstepProcessInitializer extends MainProcessInitializer {
         // Elevate GPU priority for Quickstep and Remote animations.
         ThreadedRendererCompat.setContextPriority(
                 ThreadedRendererCompat.EGL_CONTEXT_PRIORITY_HIGH_IMG);
-
-        // Initialize settings logger after a default timeout
-        Executors.MAIN_EXECUTOR.getHandler()
-                .postDelayed(() -> new SettingsChangeLogger(context), SETUP_DELAY_MILLIS);
     }
 }

@@ -42,7 +42,9 @@
     <attr name="popupNotificationDotColor" format="color" />
 
     <attr name="folderDotColor" format="color" />
-    <attr name="folderFillColor" format="color" />
+    <attr name="folderPaginationColor" format="color" />
+    <attr name="folderPreviewColor" format="color" />
+    <attr name="folderBackgroundColor" format="color" />
     <attr name="folderIconRadius" format="float" />
     <attr name="folderIconBorderColor" format="color" />
     <attr name="folderTextColor" format="color" />
@@ -71,7 +73,7 @@
 
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="FolderIconPreview">
-        <attr name="folderFillColor" />
+        <attr name="folderPreviewColor" />
         <attr name="folderIconBorderColor" />
         <attr name="folderDotColor" />
     </declare-styleable>
@@ -148,9 +150,19 @@
 
         <attr name="dbFile" format="string" />
         <attr name="defaultLayoutId" format="reference" />
+        <attr name="defaultSplitDisplayLayoutId" format="reference" />
         <attr name="demoModeLayoutId" format="reference" />
         <attr name="isScalable" format="boolean" />
         <attr name="devicePaddingId" format="reference" />
+        <!-- By default all categories are enabled -->
+        <attr name="deviceCategory" format="integer" >
+            <!-- Enable on phone only -->
+            <flag name="phone" value="1" />
+            <!-- Enable on tablets only -->
+            <flag name="tablet" value="2" />
+            <!-- Enable on multi display devices only -->
+            <flag name="multi_display" value="4" />
+        </attr>
 
     </declare-styleable>
 
@@ -169,31 +181,77 @@
         <attr name="minWidthDps" format="float" />
         <attr name="minHeightDps" format="float" />
 
-        <!-- These min cell values are only used if GridDisplayOption#isScalable is true-->
+        <!-- These min cell values are only used if GridDisplayOption#isScalable is true -->
         <attr name="minCellHeightDps" format="float" />
         <attr name="minCellWidthDps" format="float" />
+        <!-- twoPanelPortraitMinCellWidthDps defaults to minCellHeightDps, if not specified -->
+        <attr name="twoPanelPortraitMinCellHeightDps" format="float" />
+        <!-- twoPanelPortraitMinCellHeightDps defaults to minCellWidthDps, if not specified -->
+        <attr name="twoPanelPortraitMinCellWidthDps" format="float" />
+        <!-- twoPanelLandscapeMinCellHeightDps defaults to minCellHeightDps, if not specified -->
+        <attr name="twoPanelLandscapeMinCellHeightDps" format="float" />
+        <!-- twoPanelLandscapeMinCellWidthDps defaults to minCellWidthDps, if not specified -->
+        <attr name="twoPanelLandscapeMinCellWidthDps" format="float" />
 
-        <attr name="borderSpacingDps" format="float" />
+        <!-- These border spaces are only used if GridDisplayOption#isScalable is true -->
+        <!-- space to be used horizontally and vertically -->
+        <attr name="borderSpaceDps" format="float" />
+        <!-- space to the right of the cell, defaults to borderSpaceDps if not specified -->
+        <attr name="borderSpaceHorizontalDps" format="float" />
+        <!-- space below the cell, defaults to borderSpaceDps if not specified -->
+        <attr name="borderSpaceVerticalDps" format="float" />
+        <!-- space to be used horizontally and vertically in two panels,
+        defaults to borderSpaceDps if not specified -->
+        <attr name="twoPanelPortraitBorderSpaceDps" format="float" />
+        <!-- space to the right of the cell in two panels, defaults to
+        twoPanelPortraitBorderSpaceDps if not specified -->
+        <attr name="twoPanelPortraitBorderSpaceHorizontalDps" format="float" />
+        <!-- space below the cell in two panels, defaults to twoPanelPortraitBorderSpaceDps
+        if not specified -->
+        <attr name="twoPanelPortraitBorderSpaceVerticalDps" format="float" />
+        <!-- space to be used horizontally and vertically in two panels,
+        defaults to borderSpaceDps if not specified -->
+        <attr name="twoPanelLandscapeBorderSpaceDps" format="float" />
+        <!-- space to the right of the cell in two panels, defaults to
+        twoPanelLandscapeBorderSpaceDps if not specified -->
+        <attr name="twoPanelLandscapeBorderSpaceHorizontalDps" format="float" />
+        <!-- space below the cell in two panels, defaults to twoPanelLandscapeBorderSpaceDps
+        if not specified -->
+        <attr name="twoPanelLandscapeBorderSpaceVerticalDps" format="float" />
 
-        <attr name="iconImageSize" format="float" />
-        <!-- landscapeIconSize defaults to iconSize, if not specified -->
-        <attr name="landscapeIconSize" format="float" />
-        <attr name="iconTextSize" format="float" />
-        <!-- landscapeIconTextSize defaults to iconTextSize, if not specified -->
-        <attr name="landscapeIconTextSize" format="float" />
-
-        <!-- If set, this display option is used to determine the default grid -->
-        <attr name="canBeDefault" format="boolean|integer" >
-            <!-- The profile can be default on split display devices -->
-            <flag name="split_display" value="0x2" />
-        </attr>
-
+        <!-- allAppsCellSpacingDps defaults to borderSpaceDps, if not specified -->
+        <attr name="allAppsCellSpacingDps" format="float" />
         <!-- The following values are only enabled if grid is supported. -->
         <!-- allAppsIconSize defaults to iconSize, if not specified -->
         <attr name="allAppsIconSize" format="float" />
         <!-- allAppsIconTextSize defaults to iconTextSize, if not specified -->
         <attr name="allAppsIconTextSize" format="float" />
 
+        <attr name="iconImageSize" format="float" />
+        <!-- landscapeIconSize defaults to iconImageSize, if not specified -->
+        <attr name="landscapeIconSize" format="float" />
+        <!-- twoPanelPortraitIconSize defaults to iconImageSize, if not specified -->
+        <attr name="twoPanelPortraitIconSize" format="float" />
+        <!-- twoPanelLandscapeIconSize defaults to iconImageSize, if not specified -->
+        <attr name="twoPanelLandscapeIconSize" format="float" />
+
+        <attr name="iconTextSize" format="float" />
+        <!-- landscapeIconTextSize defaults to iconTextSize, if not specified -->
+        <attr name="landscapeIconTextSize" format="float" />
+        <!-- twoPanelPortraitIconTextSize defaults to iconTextSize, if not specified -->
+        <attr name="twoPanelPortraitIconTextSize" format="float" />
+        <!-- twoPanelLandscapeIconTextSize defaults to iconTextSize, if not specified -->
+        <attr name="twoPanelLandscapeIconTextSize" format="float" />
+
+        <!-- If set, this display option is used to determine the default grid -->
+        <attr name="canBeDefault" format="boolean" />
+
+        <!-- Margin on left and right of the workspace when GridDisplayOption#isScalable is true -->
+        <attr name="horizontalMargin" format="float"/>
+        <!-- twoPanelLandscapeHorizontalMargin defaults to horizontalMargin if not specified -->
+        <attr name="twoPanelLandscapeHorizontalMargin" format="float"/>
+        <!-- twoPanelPortraitHorizontalMargin defaults to horizontalMargin if not specified -->
+        <attr name="twoPanelPortraitHorizontalMargin" format="float"/>
     </declare-styleable>
 
     <declare-styleable name="CellLayout">
@@ -230,5 +288,19 @@
 
     <declare-styleable name="WidgetsListRowHeader">
         <attr name="appIconSize" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="WidgetSections">
+        <!-- Component name of an app widget provider. -->
+        <attr name="provider" format="string" />
+        <!-- If true, keep the app widget under its app listing in addition to the widget category
+             in the widget picker. Defaults to false if not specified. -->
+        <attr name="alsoKeepInApp" format="boolean" />
+        <!-- The category of an app widget provider. Defaults to -1 if not specified. -->
+        <attr name="category" format="integer" />
+        <!-- The title name of a widget category. -->
+        <attr name="sectionTitle" format="reference" />
+        <!-- The icon drawable of a widget category. -->
+        <attr name="sectionDrawable" format="reference" />
     </declare-styleable>
 </resources>

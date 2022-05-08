@@ -189,10 +189,18 @@ public class AddItemActivity extends BaseActivity
         if (appWidgetHostView != null) {
             bounds = new Rect();
             appWidgetHostView.getSourceVisualDragBounds(bounds);
-            bounds.offset(appWidgetHostView.getLeft() - (int) mLastTouchPos.x,
-                    appWidgetHostView.getTop() - (int) mLastTouchPos.y);
-            listener = new PinItemDragListener(mRequest, bounds,
-                    appWidgetHostView.getMeasuredWidth(), appWidgetHostView.getMeasuredWidth());
+            float appWidgetHostViewScale = mWidgetCell.getAppWidgetHostViewScale();
+            int xOffset =
+                    appWidgetHostView.getLeft() - (int) (mLastTouchPos.x * appWidgetHostViewScale);
+            int yOffset =
+                    appWidgetHostView.getTop() - (int) (mLastTouchPos.y * appWidgetHostViewScale);
+            bounds.offset(xOffset, yOffset);
+            listener = new PinItemDragListener(
+                    mRequest,
+                    bounds,
+                    appWidgetHostView.getMeasuredWidth(),
+                    appWidgetHostView.getMeasuredWidth(),
+                    appWidgetHostViewScale);
         } else {
             bounds = img.getBitmapBounds();
             bounds.offset(img.getLeft() - (int) mLastTouchPos.x,
@@ -278,9 +286,7 @@ public class AddItemActivity extends BaseActivity
 
             @Override
             protected void onPostExecute(WidgetItem item) {
-                mWidgetCell.setPreviewSize(item);
-                mWidgetCell.applyFromCellItem(item, mApp.getWidgetCache());
-                mWidgetCell.ensurePreview();
+                mWidgetCell.applyFromCellItem(item);
             }
         }.executeOnExecutor(MODEL_EXECUTOR);
         // TODO: Create a worker looper executor and reuse that everywhere.

@@ -48,12 +48,19 @@ public class PinItemDragListener extends BaseItemDragListener {
 
     private final PinItemRequest mRequest;
     private final CancellationSignal mCancelSignal;
+    private final float mPreviewScale;
 
     public PinItemDragListener(PinItemRequest request, Rect previewRect,
             int previewBitmapWidth, int previewViewWidth) {
+        this(request, previewRect, previewBitmapWidth, previewViewWidth, /* previewScale= */ 1f);
+    }
+
+    public PinItemDragListener(PinItemRequest request, Rect previewRect,
+            int previewBitmapWidth, int previewViewWidth, float previewScale) {
         super(previewRect, previewBitmapWidth, previewViewWidth);
         mRequest = request;
         mCancelSignal = new CancellationSignal();
+        mPreviewScale = previewScale;
     }
 
     @Override
@@ -98,7 +105,7 @@ public class PinItemDragListener extends BaseItemDragListener {
 
         PendingItemDragHelper dragHelper = new PendingItemDragHelper(view);
         if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_APPWIDGET) {
-            dragHelper.setRemoteViewsPreview(getPreview(mRequest));
+            dragHelper.setRemoteViewsPreview(getPreview(mRequest), mPreviewScale);
         }
         return dragHelper;
     }

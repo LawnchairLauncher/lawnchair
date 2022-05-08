@@ -13,12 +13,13 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
 <com.android.launcher3.taskbar.TaskbarDragLayer
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/taskbar_container"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clipChildren="false">
 
     <com.android.launcher3.taskbar.TaskbarView
         android:id="@+id/taskbar_view"
@@ -26,30 +27,59 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:forceHasOverlappingRendering="false"
+        android:layout_gravity="bottom"
+        android:clipChildren="false" />
+
+    <com.android.launcher3.taskbar.TaskbarScrimView
+        android:id="@+id/taskbar_scrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <FrameLayout
+        android:id="@+id/navbuttons_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom" >
 
-        <LinearLayout
-            android:id="@+id/system_button_layout"
+        <FrameLayout
+            android:id="@+id/start_contextual_buttons"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:paddingLeft="@dimen/taskbar_nav_buttons_spacing"
             android:paddingRight="@dimen/taskbar_nav_buttons_spacing"
-            android:forceHasOverlappingRendering="false"
-            android:gravity="center" />
+            android:paddingTop="@dimen/taskbar_contextual_padding_top"
+            android:gravity="center_vertical"
+            android:layout_gravity="start"/>
 
         <LinearLayout
-            android:id="@+id/hotseat_icons_layout"
+            android:id="@+id/end_nav_buttons"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:forceHasOverlappingRendering="false"
-            android:gravity="center" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/taskbar_nav_buttons_spacing"
+            android:paddingRight="@dimen/taskbar_nav_buttons_spacing"
+            android:layout_marginEnd="@dimen/taskbar_contextual_button_margin"
+            android:gravity="center_vertical"
+            android:layout_gravity="end"/>
 
-    </com.android.launcher3.taskbar.TaskbarView>
+        <FrameLayout
+            android:id="@+id/end_contextual_buttons"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/taskbar_nav_buttons_spacing"
+            android:paddingRight="@dimen/taskbar_nav_buttons_spacing"
+            android:paddingTop="@dimen/taskbar_contextual_padding_top"
+            android:gravity="center_vertical"
+            android:layout_gravity="end"/>
+    </FrameLayout>
 
-    <com.android.launcher3.taskbar.ImeBarView
-        android:id="@+id/ime_bar_view"
-        android:layout_width="wrap_content"
+    <com.android.launcher3.taskbar.StashedHandleView
+        android:id="@+id/stashed_handle"
+        tools:comment1="The actual size and shape will be set as a ViewOutlineProvider at runtime"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"/>
+        android:background="@color/taskbar_stashed_handle_dark_color"
+        android:clipToOutline="true"
+        android:layout_gravity="bottom"/>
 
 </com.android.launcher3.taskbar.TaskbarDragLayer>

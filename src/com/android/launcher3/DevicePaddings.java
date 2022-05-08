@@ -36,12 +36,12 @@ import java.util.ArrayList;
  * The unused or "extra" height is allocated to three different variable heights:
  * - The space above the workspace
  * - The space between the workspace and hotseat
- * - The espace below the hotseat
+ * - The space below the hotseat
  */
 public class DevicePaddings {
 
-    private static final String DEVICE_PADDING = "device-paddings";
-    private static final String DEVICE_PADDINGS = "device-padding";
+    private static final String DEVICE_PADDINGS = "device-paddings";
+    private static final String DEVICE_PADDING = "device-padding";
 
     private static final String WORKSPACE_TOP_PADDING = "workspaceTopPadding";
     private static final String WORKSPACE_BOTTOM_PADDING = "workspaceBottomPadding";
@@ -58,13 +58,13 @@ public class DevicePaddings {
             int type;
             while (((type = parser.next()) != XmlPullParser.END_TAG ||
                     parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
-                if ((type == XmlPullParser.START_TAG) && DEVICE_PADDING.equals(parser.getName())) {
+                if ((type == XmlPullParser.START_TAG) && DEVICE_PADDINGS.equals(parser.getName())) {
                     final int displayDepth = parser.getDepth();
                     while (((type = parser.next()) != XmlPullParser.END_TAG ||
                             parser.getDepth() > displayDepth)
                             && type != XmlPullParser.END_DOCUMENT) {
                         if ((type == XmlPullParser.START_TAG)
-                                && DEVICE_PADDINGS.equals(parser.getName())) {
+                                && DEVICE_PADDING.equals(parser.getName())) {
                             TypedArray a = context.obtainStyledAttributes(
                                     Xml.asAttributeSet(parser), R.styleable.DevicePadding);
                             int maxWidthPx = a.getDimensionPixelSize(

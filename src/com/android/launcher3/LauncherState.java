@@ -57,10 +57,9 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public static final int ALL_APPS_CONTENT = 1 << 1;
     public static final int VERTICAL_SWIPE_INDICATOR = 1 << 2;
     public static final int OVERVIEW_ACTIONS = 1 << 3;
-    public static final int TASKBAR = 1 << 4;
-    public static final int CLEAR_ALL_BUTTON = 1 << 5;
-    public static final int WORKSPACE_PAGE_INDICATOR = 1 << 6;
-    public static final int SPLIT_PLACHOLDER_VIEW = 1 << 7;
+    public static final int CLEAR_ALL_BUTTON = 1 << 4;
+    public static final int WORKSPACE_PAGE_INDICATOR = 1 << 5;
+    public static final int SPLIT_PLACHOLDER_VIEW = 1 << 6;
 
     // Flag indicating workspace has multiple pages visible.
     public static final int FLAG_MULTI_PAGE = BaseState.getFlag(0);
@@ -181,20 +180,12 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         return launcher.getNormalOverviewScaleAndOffset();
     }
 
-    public float getTaskbarScale(Launcher launcher) {
-        return launcher.getNormalTaskbarScale();
-    }
-
-    public float getTaskbarTranslationY(Launcher launcher) {
-        return -launcher.getHotseat().getTaskbarOffsetY();
-    }
-
     public float getOverviewFullscreenProgress() {
         return 0;
     }
 
     public int getVisibleElements(Launcher launcher) {
-        return HOTSEAT_ICONS | WORKSPACE_PAGE_INDICATOR | VERTICAL_SWIPE_INDICATOR | TASKBAR;
+        return HOTSEAT_ICONS | WORKSPACE_PAGE_INDICATOR | VERTICAL_SWIPE_INDICATOR;
     }
 
     /**
@@ -203,6 +194,16 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      */
     public boolean areElementsVisible(Launcher launcher, int elements) {
         return (getVisibleElements(launcher) & elements) == elements;
+    }
+
+    /** Returns whether taskbar is stashed and thus should replace hotseat with a handle */
+    public boolean isTaskbarStashed(Launcher launcher) {
+        return false;
+    }
+
+    /** Returns whether taskbar is aligned with the hotseat vs position inside apps */
+    public boolean isTaskbarAlignedWithHotseat(Launcher launcher) {
+        return !isTaskbarStashed(launcher);
     }
 
     /**

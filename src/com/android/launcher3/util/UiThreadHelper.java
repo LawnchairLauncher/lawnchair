@@ -28,7 +28,7 @@ import android.os.Message;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import com.android.launcher3.Launcher;
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.views.ActivityContext;
 
 /**
@@ -56,7 +56,7 @@ public class UiThreadHelper {
                 STATS_LOGGER_KEY,
                 Message.obtain(
                         HANDLER.get(root.getContext()),
-                        () -> Launcher.cast(activityContext)
+                        () -> BaseActivity.fromContext(root.getContext())
                                 .getStatsLogManager()
                                 .logger()
                                 .log(LAUNCHER_ALLAPPS_KEYBOARD_CLOSED)

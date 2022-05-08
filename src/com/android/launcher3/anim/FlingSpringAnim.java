@@ -40,8 +40,8 @@ public class FlingSpringAnim {
     private float mTargetPosition;
 
     public <K> FlingSpringAnim(K object, Context context, FloatPropertyCompat<K> property,
-            float startPosition, float targetPosition, float startVelocity, float minVisChange,
-            float minValue, float maxValue, float springVelocityFactor,
+            float startPosition, float targetPosition, float startVelocityPxPerS,
+            float minVisChange, float minValue, float maxValue,
             OnAnimationEndListener onEndListener) {
         ResourceProvider rp = DynamicResource.provider(context);
         float damping = rp.getFloat(R.dimen.swipe_up_rect_xy_damping_ratio);
@@ -53,19 +53,19 @@ public class FlingSpringAnim {
                 // Have the spring pull towards the target if we've slowed down too much before
                 // reaching it.
                 .setMinimumVisibleChange(minVisChange)
-                .setStartVelocity(startVelocity)
+                .setStartVelocity(startVelocityPxPerS)
                 .setMinValue(minValue)
                 .setMaxValue(maxValue);
         mTargetPosition = targetPosition;
 
         // We are already past the fling target, so skip it to avoid losing a frame of the spring.
-        mSkipFlingAnim = startPosition <= minValue && startVelocity < 0
-                || startPosition >= maxValue && startVelocity > 0;
+        mSkipFlingAnim = startPosition <= minValue && startVelocityPxPerS < 0
+                || startPosition >= maxValue && startVelocityPxPerS > 0;
 
         mFlingAnim.addEndListener(((animation, canceled, value, velocity) -> {
             mSpringAnim = new SpringAnimation(object, property)
                     .setStartValue(value)
-                    .setStartVelocity(velocity * springVelocityFactor)
+                    .setStartVelocity(velocity)
                     .setSpring(new SpringForce(mTargetPosition)
                             .setStiffness(stiffness)
                             .setDampingRatio(damping));

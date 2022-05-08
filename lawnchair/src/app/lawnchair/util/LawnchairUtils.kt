@@ -100,7 +100,7 @@ fun getWindowCornerRadius(context: Context): Float {
     if (prefs != null && prefs.overrideWindowCornerRadius.get()) {
         return prefs.windowCornerRadius.get().toFloat()
     }
-    return QuickStepContract.getWindowCornerRadius(context.resources)
+    return QuickStepContract.getWindowCornerRadius(context)
 }
 
 fun supportsRoundedCornersOnWindows(context: Context): Boolean {

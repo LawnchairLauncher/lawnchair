@@ -25,13 +25,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
+        <FrameLayout
             android:id="@+id/gesture_tutorial_fake_hotseat_view"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="70dp"/>
+            android:layout_alignParentBottom="true"/>
 
     </RelativeLayout>
 
@@ -41,15 +40,56 @@
         android:layout_height="20dp"
         android:visibility="invisible" />
 
-    <View
+    <com.android.quickstep.interaction.AnimatedTaskView
         android:id="@+id/gesture_tutorial_fake_previous_task_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleX="0.98"
         android:scaleY="0.98"
-        android:visibility="invisible" />
+        android:visibility="invisible">
 
-    <View
+        <View
+            android:id="@+id/full_task_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/top_task_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="invisible"
+            android:layout_marginBottom="@dimen/gesture_tutorial_multi_row_task_view_spacing"
+
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_small_task_view_corner_radius"
+            app:layout_constraintVertical_chainStyle="spread"
+            app:layout_constraintTop_toTopOf="@id/full_task_view"
+            app:layout_constraintBottom_toTopOf="@id/bottom_task_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/bottom_task_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="invisible"
+
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_small_task_view_corner_radius"
+            app:layout_constraintTop_toBottomOf="@id/top_task_view"
+            app:layout_constraintBottom_toBottomOf="@id/full_task_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </com.android.quickstep.interaction.AnimatedTaskView>
+
+    <FrameLayout
         android:id="@+id/gesture_tutorial_fake_task_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -61,8 +101,17 @@
         android:layout_height="match_parent"
         android:background="@drawable/gesture_tutorial_ripple"/>
 
+    <include
+        layout="@layout/gesture_tutorial_foldable_mock_taskbar"
+        android:id="@+id/gesture_tutorial_fake_taskbar_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/gesture_tutorial_mock_taskbar_height"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
     <ImageView
-        android:id="@+id/gesture_tutorial_feedback_video"
+        android:id="@+id/gesture_tutorial_edge_gesture_video"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
@@ -73,14 +122,12 @@
         android:visibility="gone"/>
 
     <ImageView
-        android:id="@+id/gesture_tutorial_gesture_video"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:scaleType="fitXY"
+        android:id="@+id/gesture_tutorial_finger_dot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/gesture_tutorial_finger_dot"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:visibility="gone"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -89,8 +136,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="@dimen/gesture_tutorial_feedback_margin_start_end"
-        android:layout_marginEnd="@dimen/gesture_tutorial_feedback_margin_start_end"
         android:layout_marginTop="24dp"
         android:paddingTop="24dp"
         android:paddingBottom="16dp"

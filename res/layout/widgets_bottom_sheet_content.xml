@@ -18,7 +18,7 @@
         android:id="@+id/widgets_bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/widgets_bottom_sheet_background"
+        android:background="@drawable/bg_rounded_corner_bottom_sheet"
         android:paddingTop="16dp"
         android:orientation="vertical">
         <View
@@ -47,6 +47,7 @@
             <include layout="@layout/widgets_table_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
                 android:layout_gravity="center_horizontal" />
         </ScrollView>
     </LinearLayout>

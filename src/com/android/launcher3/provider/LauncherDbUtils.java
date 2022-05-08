@@ -16,89 +16,26 @@
 
 package com.android.launcher3.provider;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Binder;
 import android.os.Process;
-import android.util.Log;
 
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.IntArray;
-
-import java.util.Locale;
 
 /**
  * A set of utility methods for Launcher DB used for DB updates and migration.
  */
 public class LauncherDbUtils {
 
-    private static final String TAG = "LauncherDbUtils";
-
-    /**
-     * Makes the first screen as screen 0 (if screen 0 already exists,
-     * renames it to some other number).
-     * If the first row of screen 0 is non empty, runs a 'lossy' GridMigrationTask to clear
-     * the first row. The items in the first screen are moved and resized but the carry-forward
-     * items are simply deleted.
-     */
-    public static boolean prepareScreenZeroToHostQsb(Context context, SQLiteDatabase db) {
-        try (SQLiteTransaction t = new SQLiteTransaction(db)) {
-            // Get the first screen
-            final int firstScreenId;
-            try (Cursor c = db.rawQuery(String.format(Locale.ENGLISH,
-                    "SELECT MIN(%1$s) from %2$s where %3$s = %4$d",
-                    Favorites.SCREEN, Favorites.TABLE_NAME, Favorites.CONTAINER,
-                    Favorites.CONTAINER_DESKTOP), null)) {
-
-                if (!c.moveToNext()) {
-                    // No update needed
-                    t.commit();
-                    return true;
-                }
-
-                firstScreenId = c.getInt(0);
-            }
-
-            if (firstScreenId != 0) {
-                // Rename the first screen to 0.
-                renameScreen(db, firstScreenId, 0);
-            }
-
-            // Check if the first row is empty
-            if (DatabaseUtils.queryNumEntries(db, Favorites.TABLE_NAME,
-                    "container = -100 and screen = 0 and cellY = 0") == 0) {
-                // First row is empty, no need to migrate.
-                t.commit();
-                return true;
-            }
-
-            new LossyScreenMigrationTask(context, LauncherAppState.getIDP(context), db)
-                    .migrateScreen0();
-            t.commit();
-            return true;
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to update workspace size", e);
-            return false;
-        }
-    }
-
-    private static void renameScreen(SQLiteDatabase db, int oldScreen, int newScreen) {
-        String[] whereParams = new String[] { Integer.toString(oldScreen) };
-        ContentValues values = new ContentValues();
-        values.put(Favorites.SCREEN, newScreen);
-        db.update(Favorites.TABLE_NAME, values, "container = -100 and screen = ?", whereParams);
-    }
-
-    public static IntArray queryIntArray(SQLiteDatabase db, String tableName, String columnName,
-            String selection, String groupBy, String orderBy) {
+    public static IntArray queryIntArray(boolean distinct, SQLiteDatabase db, String tableName,
+            String columnName, String selection, String groupBy, String orderBy) {
         IntArray out = new IntArray();
-        try (Cursor c = db.query(tableName, new String[] { columnName }, selection, null,
-                groupBy, null, orderBy)) {
+        try (Cursor c = db.query(distinct, tableName, new String[] { columnName }, selection, null,
+                groupBy, null, orderBy, null)) {
             while (c.moveToNext()) {
                 out.add(c.getInt(0));
             }

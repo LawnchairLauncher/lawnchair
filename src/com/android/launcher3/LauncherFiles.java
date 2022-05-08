@@ -1,5 +1,6 @@
 package com.android.launcher3;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +16,7 @@ public class LauncherFiles {
     private static final String XML = ".xml";
 
     public static final String LAUNCHER_DB = "launcher.db";
+    public static final String LAUNCHER_6_BY_5_DB = "launcher_6_by_5.db";
     public static final String LAUNCHER_4_BY_5_DB = "launcher_4_by_5.db";
     public static final String LAUNCHER_4_BY_4_DB = "launcher_4_by_4.db";
     public static final String LAUNCHER_3_BY_3_DB = "launcher_3_by_3.db";
@@ -29,16 +31,25 @@ public class LauncherFiles {
     public static final String WIDGET_PREVIEWS_DB = "widgetpreviews.db";
     public static final String APP_ICONS_DB = "app_icons.db";
 
-    public static final List<String> ALL_FILES = Collections.unmodifiableList(Arrays.asList(
+    public static final List<String> GRID_DB_FILES = Collections.unmodifiableList(Arrays.asList(
             LAUNCHER_DB,
+            LAUNCHER_6_BY_5_DB,
             LAUNCHER_4_BY_5_DB,
             LAUNCHER_4_BY_4_DB,
             LAUNCHER_3_BY_3_DB,
-            LAUNCHER_2_BY_2_DB,
+            LAUNCHER_2_BY_2_DB));
+
+    public static final List<String> OTHER_FILES = Collections.unmodifiableList(Arrays.asList(
             BACKUP_DB,
             SHARED_PREFERENCES_KEY + XML,
             WIDGET_PREVIEWS_DB,
             MANAGED_USER_PREFERENCES_KEY + XML,
             DEVICE_PREFERENCES_KEY + XML,
             APP_ICONS_DB));
+
+    public static final List<String> ALL_FILES = Collections.unmodifiableList(
+            new ArrayList<String>() {{
+                addAll(GRID_DB_FILES);
+                addAll(OTHER_FILES);
+            }});
 }

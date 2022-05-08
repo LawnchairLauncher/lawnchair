@@ -38,6 +38,15 @@ public class OnboardingPrefs<T extends Launcher> {
     public static final String HOTSEAT_LONGPRESS_TIP_SEEN = "launcher.hotseat_longpress_tip_seen";
     public static final String SEARCH_EDU_SEEN = "launcher.search_edu_seen";
     public static final String SEARCH_SNACKBAR_COUNT = "launcher.keyboard_snackbar_count";
+    public static final String TASKBAR_EDU_SEEN = "launcher.taskbar_edu_seen";
+    // When adding a new key, add it here as well, to be able to reset it from Developer Options.
+    public static final Map<String, String[]> ALL_PREF_KEYS = Map.of(
+            "All Apps Bounce", new String[] { HOME_BOUNCE_SEEN, HOME_BOUNCE_COUNT },
+            "Hybrid Hotseat Education", new String[] { HOTSEAT_DISCOVERY_TIP_COUNT,
+                    HOTSEAT_LONGPRESS_TIP_SEEN },
+            "Search Education", new String[] { SEARCH_EDU_SEEN, SEARCH_SNACKBAR_COUNT },
+            "Taskbar Education", new String[] { TASKBAR_EDU_SEEN }
+    );
 
     /**
      * Events that either have happened or have not (booleans).
@@ -45,7 +54,8 @@ public class OnboardingPrefs<T extends Launcher> {
     @StringDef(value = {
             HOME_BOUNCE_SEEN,
             HOTSEAT_LONGPRESS_TIP_SEEN,
-            SEARCH_EDU_SEEN
+            SEARCH_EDU_SEEN,
+            TASKBAR_EDU_SEEN
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface EventBoolKey {

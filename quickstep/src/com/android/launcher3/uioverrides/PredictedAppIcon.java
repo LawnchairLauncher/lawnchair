@@ -15,6 +15,16 @@
  */
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
+
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ArgbEvaluator;
+import android.animation.Keyframe;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
+import android.annotation.Nullable;
 import android.content.Context;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
@@ -23,8 +33,10 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Process;
 import android.util.AttributeSet;
+import android.util.FloatProperty;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -35,6 +47,8 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.AnimatorListeners;
+import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.IconNormalizer;
 import com.android.launcher3.icons.LauncherIcons;
@@ -45,6 +59,10 @@ import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * A BubbleTextView with a ring around it's drawable
  */
@@ -52,6 +70,9 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
 
     private static final int RING_SHADOW_COLOR = 0x99000000;
     private static final float RING_EFFECT_RATIO = 0.095f;
+
+    private static final long ICON_CHANGE_ANIM_DURATION = 360;
+    private static final long ICON_CHANGE_ANIM_STAGGER = 50;
 
     boolean mIsDrawingDot = false;
     private final DeviceProfile mDeviceProfile;
@@ -66,6 +87,25 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
     private boolean mIsPinned = false;
     private int mPlateColor;
     boolean mDrawForDrag = false;
+
+    // Used for the "slot-machine" education animation.
+    private List<Drawable> mSlotMachineIcons;
+    private Animator mSlotMachineAnim;
+    private float mSlotMachineIconTranslationY;
+
+    private static final FloatProperty<PredictedAppIcon> SLOT_MACHINE_TRANSLATION_Y =
+            new FloatProperty<PredictedAppIcon>("slotMachineTranslationY") {
+        @Override
+        public void setValue(PredictedAppIcon predictedAppIcon, float transY) {
+            predictedAppIcon.mSlotMachineIconTranslationY = transY;
+            predictedAppIcon.invalidate();
+        }
+
+        @Override
+        public Float get(PredictedAppIcon predictedAppIcon) {
+            return predictedAppIcon.mSlotMachineIconTranslationY;
+        }
+    };
 
     public PredictedAppIcon(Context context) {
         this(context, null, 0);
@@ -88,13 +128,36 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
     @Override
     public void onDraw(Canvas canvas) {
         int count = canvas.save();
+        boolean isSlotMachineAnimRunning = mSlotMachineAnim != null;
         if (!mIsPinned) {
             drawEffect(canvas);
+            if (isSlotMachineAnimRunning) {
+                // Clip to to outside of the ring during the slot machine animation.
+                canvas.clipPath(mRingPath);
+            }
             canvas.translate(getWidth() * RING_EFFECT_RATIO, getHeight() * RING_EFFECT_RATIO);
             canvas.scale(1 - 2 * RING_EFFECT_RATIO, 1 - 2 * RING_EFFECT_RATIO);
         }
-        super.onDraw(canvas);
+        if (isSlotMachineAnimRunning) {
+            drawSlotMachineIcons(canvas);
+        } else {
+            super.onDraw(canvas);
+        }
         canvas.restoreToCount(count);
+    }
+
+    private void drawSlotMachineIcons(Canvas canvas) {
+        canvas.translate((getWidth() - getIconSize()) / 2f,
+                (getHeight() - getIconSize()) / 2f + mSlotMachineIconTranslationY);
+        for (Drawable icon : mSlotMachineIcons) {
+            icon.setBounds(0, 0, getIconSize(), getIconSize());
+            icon.draw(canvas);
+            canvas.translate(0, getSlotMachineIconPlusSpacingSize());
+        }
+    }
+
+    private float getSlotMachineIconPlusSpacingSize() {
+        return getIconSize() + getOutlineOffsetY();
     }
 
     @Override
@@ -109,9 +172,17 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
     }
 
     @Override
-    public void applyFromWorkspaceItem(WorkspaceItemInfo info) {
-        super.applyFromWorkspaceItem(info);
-        mPlateColor = ColorUtils.setAlphaComponent(mDotParams.color, 200);
+    public void applyFromWorkspaceItem(WorkspaceItemInfo info, boolean animate, int staggerIndex) {
+        // Create the slot machine animation first, since it uses the current icon to start.
+        Animator slotMachineAnim = animate
+                ? createSlotMachineAnim(Collections.singletonList(info.bitmap), false)
+                : null;
+        super.applyFromWorkspaceItem(info, animate, staggerIndex);
+        int oldPlateColor = mPlateColor;
+        int newPlateColor = ColorUtils.setAlphaComponent(mDotParams.color, 200);
+        if (!animate) {
+            mPlateColor = newPlateColor;
+        }
         if (mIsPinned) {
             setContentDescription(info.contentDescription);
         } else {
@@ -119,6 +190,76 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
                     getContext().getString(R.string.hotseat_prediction_content_description,
                             info.contentDescription));
         }
+
+        if (animate) {
+            ValueAnimator plateColorAnim = ValueAnimator.ofObject(new ArgbEvaluator(),
+                    oldPlateColor, newPlateColor);
+            plateColorAnim.addUpdateListener(valueAnimator -> {
+                mPlateColor = (int) valueAnimator.getAnimatedValue();
+                invalidate();
+            });
+            AnimatorSet changeIconAnim = new AnimatorSet();
+            if (slotMachineAnim != null) {
+                changeIconAnim.play(slotMachineAnim);
+            }
+            changeIconAnim.play(plateColorAnim);
+            changeIconAnim.setStartDelay(staggerIndex * ICON_CHANGE_ANIM_STAGGER);
+            changeIconAnim.setDuration(ICON_CHANGE_ANIM_DURATION).start();
+        }
+    }
+
+    /**
+     * Returns an Animator that translates the given icons in a "slot-machine" fashion, beginning
+     * and ending with the original icon.
+     */
+    public @Nullable Animator createSlotMachineAnim(List<BitmapInfo> iconsToAnimate) {
+        return createSlotMachineAnim(iconsToAnimate, true);
+    }
+
+    /**
+     * Returns an Animator that translates the given icons in a "slot-machine" fashion, beginning
+     * with the original icon, then cycling through the given icons, optionally ending back with
+     * the original icon.
+     * @param endWithOriginalIcon Whether we should land back on the icon we started with, rather
+     *                            than the last item in iconsToAnimate.
+     */
+    public @Nullable Animator createSlotMachineAnim(List<BitmapInfo> iconsToAnimate,
+            boolean endWithOriginalIcon) {
+        if (mIsPinned || iconsToAnimate == null || iconsToAnimate.isEmpty()) {
+            return null;
+        }
+        if (mSlotMachineAnim != null) {
+            mSlotMachineAnim.end();
+        }
+
+        // Bookend the other animating icons with the original icon on both ends.
+        mSlotMachineIcons = new ArrayList<>(iconsToAnimate.size() + 2);
+        mSlotMachineIcons.add(getIcon());
+        iconsToAnimate.stream()
+                .map(iconInfo -> iconInfo.newThemedIcon(mContext))
+                .forEach(mSlotMachineIcons::add);
+        if (endWithOriginalIcon) {
+            mSlotMachineIcons.add(getIcon());
+        }
+
+        float finalTrans = -getSlotMachineIconPlusSpacingSize() * (mSlotMachineIcons.size() - 1);
+        Keyframe[] keyframes = new Keyframe[] {
+                Keyframe.ofFloat(0f, 0f),
+                Keyframe.ofFloat(0.82f, finalTrans - getOutlineOffsetY() / 2f), // Overshoot
+                Keyframe.ofFloat(1f, finalTrans) // Ease back into the final position
+        };
+        keyframes[1].setInterpolator(ACCEL_DEACCEL);
+        keyframes[2].setInterpolator(ACCEL_DEACCEL);
+
+        mSlotMachineAnim = ObjectAnimator.ofPropertyValuesHolder(this,
+                PropertyValuesHolder.ofKeyframe(SLOT_MACHINE_TRANSLATION_Y, keyframes));
+        mSlotMachineAnim.addListener(AnimatorListeners.forEndCallback(() -> {
+            mSlotMachineIcons = null;
+            mSlotMachineAnim = null;
+            mSlotMachineIconTranslationY = 0;
+            invalidate();
+        }));
+        return mSlotMachineAnim;
     }
 
     /**

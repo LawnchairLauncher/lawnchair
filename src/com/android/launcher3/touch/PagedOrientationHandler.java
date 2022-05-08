@@ -24,15 +24,19 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.ShapeDrawable;
 import android.util.FloatProperty;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
+import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
 
 import java.util.List;
 
@@ -62,9 +66,10 @@ public interface PagedOrientationHandler {
     Float2DAction<Canvas> CANVAS_TRANSLATE = Canvas::translate;
     Float2DAction<Matrix> MATRIX_POST_TRANSLATE = Matrix::postTranslate;
 
-    <T> void set(T target, Int2DAction<T> action, int param);
-    <T> void set(T target, Float2DAction<T> action, float param);
+    <T> void setPrimary(T target, Int2DAction<T> action, int param);
+    <T> void setPrimary(T target, Float2DAction<T> action, float param);
     <T> void setSecondary(T target, Float2DAction<T> action, float param);
+    <T> void set(T target, Int2DAction<T> action, int primaryParam, int secondaryParam);
     float getPrimaryDirection(MotionEvent event, int pointerIndex);
     float getPrimaryVelocity(VelocityTracker velocityTracker, int pointerId);
     int getMeasuredSize(View view);
@@ -78,27 +83,27 @@ public interface PagedOrientationHandler {
     FloatProperty<View> getSecondaryViewTranslate();
 
     /**
-     * @param splitPosition The position where the view to be split will go
+     * @param stagePosition The position where the view to be split will go
      * @return {@link #SPLIT_TRANSLATE_*} constants to indicate which direction the
      * dismissal should happen
      */
-    int getSplitTaskViewDismissDirection(SplitPositionOption splitPosition, DeviceProfile dp);
+    int getSplitTaskViewDismissDirection(@StagePosition int stagePosition, DeviceProfile dp);
     int getPrimaryScroll(View view);
     float getPrimaryScale(View view);
     int getChildStart(View view);
-    float getChildStartWithTranslation(View view);
     int getCenterForPage(View view, Rect insets);
     int getScrollOffsetStart(View view, Rect insets);
     int getScrollOffsetEnd(View view, Rect insets);
-    int getPrimaryTranslationDirectionFactor();
     int getSecondaryTranslationDirectionFactor();
-    int getSplitTranslationDirectionFactor(@StagePosition int stagePosition);
-    int getSplitAnimationTranslation(int translationOffset, DeviceProfile dp);
+    int getSplitTranslationDirectionFactor(@StagePosition int stagePosition,
+            DeviceProfile deviceProfile);
     ChildBounds getChildBounds(View child, int childStart, int pageCenter, boolean layoutChild);
     void setMaxScroll(AccessibilityEvent event, int maxScroll);
     boolean getRecentsRtlSetting(Resources resources);
     float getDegreesRotated();
     int getRotation();
+    void setPrimaryScale(View view, float scale);
+    void setSecondaryScale(View view, float scale);
 
     <T> T getPrimaryValue(T x, T y);
     <T> T getSecondaryValue(T x, T y);
@@ -110,15 +115,58 @@ public interface PagedOrientationHandler {
     float getSecondaryValue(float x, float y);
 
     boolean isLayoutNaturalToLauncher();
-    FloatProperty getSplitSelectTaskOffset(FloatProperty primary, FloatProperty secondary,
-            DeviceProfile deviceProfile);
+    Pair<FloatProperty, FloatProperty> getSplitSelectTaskOffset(FloatProperty primary,
+            FloatProperty secondary, DeviceProfile deviceProfile);
     int getDistanceToBottomOfRect(DeviceProfile dp, Rect rect);
     List<SplitPositionOption> getSplitPositionOptions(DeviceProfile dp);
+    /**
+     * @param splitholderSize height of placeholder view in portrait, width in landscape
+     */
+    void getInitialSplitPlaceholderBounds(int splitholderSize, DeviceProfile dp,
+            @StagePosition int stagePosition, Rect out);
+
+    /**
+     * @param splitDividerSize height of split screen drag handle in portrait, width in landscape
+     * @param stagePosition the split position option (top/left, bottom/right) of the first
+     *                           task selected for entering split
+     * @param out1 the bounds for where the first selected app will be
+     * @param out2 the bounds for where the second selected app will be, complimentary to
+     *             {@param out1} based on {@param initialSplitOption}
+     */
+    void getFinalSplitPlaceholderBounds(int splitDividerSize, DeviceProfile dp,
+            @StagePosition int stagePosition, Rect out1, Rect out2);
+
+    int getDefaultSplitPosition(DeviceProfile deviceProfile);
+
+    /**
+     * @param outRect This is expected to be the rect that has the dimensions for a non-split,
+     *                fullscreen task in overview. This will directly be modified.
+     * @param desiredStagePosition Which stage position (topLeft/rightBottom) we want to resize
+     *                           outRect for
+     */
+    void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect, StagedSplitBounds splitInfo,
+            @SplitConfigurationOptions.StagePosition int desiredStagePosition);
+
+    void measureGroupedTaskViewThumbnailBounds(View primarySnapshot, View secondarySnapshot,
+            int parentWidth, int parentHeight,
+            StagedSplitBounds splitBoundsConfig, DeviceProfile dp);
 
     // Overview TaskMenuView methods
-    float getTaskMenuX(float x, View thumbnailView, int overScroll);
+    void setIconAndSnapshotParams(View iconView, int taskIconMargin, int taskIconHeight,
+            FrameLayout.LayoutParams snapshotParams, boolean isRtl);
+    void setSplitIconParams(View primaryIconView, View secondaryIconView,
+            int taskIconHeight, int primarySnapshotWidth, int primarySnapshotHeight,
+            boolean isRtl, DeviceProfile deviceProfile, StagedSplitBounds splitConfig);
+
+    /*
+     * The following two methods try to center the TaskMenuView in landscape by finding the center
+     * of the thumbnail view and then subtracting half of the taskMenu width. In this case, the
+     * taskMenu width is the same size as the thumbnail width (what got set below in
+     * getTaskMenuWidth()), so we directly use that in the calculations.
+     */
+    float getTaskMenuX(float x, View thumbnailView, int overScroll, DeviceProfile deviceProfile);
     float getTaskMenuY(float y, View thumbnailView, int overScroll);
-    int getTaskMenuWidth(View view);
+    int getTaskMenuWidth(View view, DeviceProfile deviceProfile);
     /**
      * Sets linear layout orientation for {@link com.android.launcher3.popup.SystemShortcut} items
      * inside task menu view.
@@ -142,6 +190,10 @@ public interface PagedOrientationHandler {
      * additional adjustments to the positioning based on fake land/seascape
      */
     PointF getAdditionalInsetForTaskMenu(float margin);
+
+    Pair<Float, Float> setDwbLayoutParamsAndGetTranslations(int taskViewWidth,
+            int taskViewHeight, StagedSplitBounds splitBounds, DeviceProfile deviceProfile,
+            View[] thumbnailViews, int desiredTaskId, View banner);
 
     // The following are only used by TaskViewTouchHandler.
     /** @return Either VERTICAL or HORIZONTAL. */

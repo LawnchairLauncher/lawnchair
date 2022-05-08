@@ -25,11 +25,12 @@
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Instellingen voor app-gebruik"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Alles wissen"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Recente apps"</string>
+    <!-- no translation found for task_view_closed (9170038230110856166) -->
+    <skip />
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 minuut"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"Nog <xliff:g id="TIME">%1$s</xliff:g> vandaag"</string>
     <string name="title_app_suggestions" msgid="4185902664111965088">"App-suggesties"</string>
-    <string name="all_apps_label" msgid="8542784161730910663">"Alle apps"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Je voorspelde apps"</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"App-suggesties ontvangen op de onderste rij van je startscherm"</string>
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"App-suggesties ontvangen op de rij met favorieten op het startscherm"</string>
@@ -42,8 +43,8 @@
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"De meestgebruikte apps worden hier weergegeven en kunnen veranderen op basis van je routines"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Sleep apps weg van de onderste rij om app-suggesties te ontvangen"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"App-suggesties toegevoegd aan lege ruimte"</string>
-    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"App-suggesties zijn ingeschakeld"</string>
-    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"App-suggesties zijn uitgeschakeld"</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"App-suggesties staan aan"</string>
+    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"App-suggesties staan uit"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Voorspelde app: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Swipe helemaal vanaf de linkerrand."</string>
     <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Swipe vanaf de linkerrand naar het midden van het scherm en laat los."</string>
@@ -76,9 +77,22 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Tutorial <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Delen"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Screenshot"</string>
+    <string name="action_split" msgid="2098009717623550676">"Splitsen"</string>
+    <string name="toast_split_select_app" msgid="5453865907322018352">"Tik op nog een app om je scherm te splitsen"</string>
+    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"App ondersteunt geen gesplitst scherm."</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Deze actie wordt niet toegestaan door de app of je organisatie"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Navigatietutorial overslaan?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Je vindt dit later terug in de app <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Annuleren"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Overslaan"</string>
+    <string name="accessibility_rotate_button" msgid="4771825231336502943">"Scherm draaien"</string>
+    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Uitleg van taakbalk geopend"</string>
+    <string name="taskbar_edu_closed" msgid="126643734478892862">"Uitleg van taakbalk gesloten"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Gebruik de taakbalk om van app te wisselen"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Sleep naar de zijkant om 2 apps tegelijk te gebruiken"</string>
+    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Tik en houd vast om de taakbalk te verbergen"</string>
+    <string name="taskbar_edu_next" msgid="4007618274426775841">"Volgende"</string>
+    <string name="taskbar_edu_previous" msgid="459202320127201702">"Terug"</string>
+    <string name="taskbar_edu_close" msgid="887022990168191073">"Sluiten"</string>
+    <string name="taskbar_edu_done" msgid="6880178093977704569">"Klaar"</string>
 </resources>

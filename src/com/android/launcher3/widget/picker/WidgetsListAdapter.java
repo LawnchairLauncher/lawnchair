@@ -16,19 +16,20 @@
 package com.android.launcher3.widget.picker;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_APP_EXPANDED;
+import static com.android.launcher3.recyclerview.ViewHolderBinder.POSITION_DEFAULT;
+import static com.android.launcher3.recyclerview.ViewHolderBinder.POSITION_FIRST;
+import static com.android.launcher3.recyclerview.ViewHolderBinder.POSITION_LAST;
 
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Process;
 import android.util.Log;
-import android.util.Size;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.widget.TableRow;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,32 +39,27 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.LayoutParams;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import com.android.launcher3.BaseActivity;
-import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.recyclerview.ViewHolderBinder;
 import com.android.launcher3.util.LabelComparator;
 import com.android.launcher3.util.PackageUserKey;
-import com.android.launcher3.widget.CachingWidgetPreviewLoader;
-import com.android.launcher3.widget.DatabaseWidgetPreviewLoader;
-import com.android.launcher3.widget.WidgetCell;
-import com.android.launcher3.widget.WidgetPreviewLoader.WidgetPreviewLoadedCallback;
+import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.widget.model.WidgetListSpaceEntry;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
-import com.android.launcher3.widget.util.WidgetSizes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
+import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -84,67 +80,59 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     private static final boolean DEBUG = false;
 
     /** Uniquely identifies widgets list view type within the app. */
+    private static final int VIEW_TYPE_WIDGETS_SPACE = R.id.view_type_widgets_space;
     private static final int VIEW_TYPE_WIDGETS_LIST = R.id.view_type_widgets_list;
     private static final int VIEW_TYPE_WIDGETS_HEADER = R.id.view_type_widgets_header;
     private static final int VIEW_TYPE_WIDGETS_SEARCH_HEADER = R.id.view_type_widgets_search_header;
 
     private final Context mContext;
-    private final Launcher mLauncher;
-    private final CachingWidgetPreviewLoader mCachingPreviewLoader;
     private final WidgetsDiffReporter mDiffReporter;
     private final SparseArray<ViewHolderBinder> mViewHolderBinders = new SparseArray<>();
-    private final WidgetsListTableViewHolderBinder mWidgetsListTableViewHolderBinder;
     private final WidgetListBaseRowEntryComparator mRowComparator =
             new WidgetListBaseRowEntryComparator();
 
-    private List<WidgetsListBaseEntry> mAllEntries = new ArrayList<>();
+    private final List<WidgetsListBaseEntry> mAllEntries = new ArrayList<>();
     private ArrayList<WidgetsListBaseEntry> mVisibleEntries = new ArrayList<>();
     @Nullable private PackageUserKey mWidgetsContentVisiblePackageUserKey = null;
 
     private Predicate<WidgetsListBaseEntry> mHeaderAndSelectedContentFilter = entry ->
             entry instanceof WidgetsListHeaderEntry
                     || entry instanceof WidgetsListSearchHeaderEntry
-                    || new PackageUserKey(entry.mPkgItem.packageName, entry.mPkgItem.user)
+                    || PackageUserKey.fromPackageItemInfo(entry.mPkgItem)
                             .equals(mWidgetsContentVisiblePackageUserKey);
     @Nullable private Predicate<WidgetsListBaseEntry> mFilter = null;
     @Nullable private RecyclerView mRecyclerView;
     @Nullable private PackageUserKey mPendingClickHeader;
-    private final int mShortcutPreviewPadding;
     private final int mSpacingBetweenEntries;
     private int mMaxSpanSize = 4;
 
-    private final WidgetPreviewLoadedCallback mPreviewLoadedCallback =
-            ignored -> updateVisibleEntries();
-
     public WidgetsListAdapter(Context context, LayoutInflater layoutInflater,
-            DatabaseWidgetPreviewLoader widgetPreviewLoader, IconCache iconCache,
+            IconCache iconCache, IntSupplier emptySpaceHeightProvider,
             OnClickListener iconClickListener, OnLongClickListener iconLongClickListener) {
         mContext = context;
-        mLauncher = Launcher.getLauncher(context);
-        mCachingPreviewLoader = new CachingWidgetPreviewLoader(widgetPreviewLoader);
         mDiffReporter = new WidgetsDiffReporter(iconCache, this);
         WidgetsListDrawableFactory listDrawableFactory = new WidgetsListDrawableFactory(context);
-        mWidgetsListTableViewHolderBinder = new WidgetsListTableViewHolderBinder(
-                layoutInflater, iconClickListener, iconLongClickListener,
-                mCachingPreviewLoader, listDrawableFactory, /* listAdapter= */ this);
-        mViewHolderBinders.put(VIEW_TYPE_WIDGETS_LIST, mWidgetsListTableViewHolderBinder);
+
+        mViewHolderBinders.put(
+                VIEW_TYPE_WIDGETS_LIST,
+                new WidgetsListTableViewHolderBinder(
+                        layoutInflater, iconClickListener, iconLongClickListener,
+                        listDrawableFactory));
         mViewHolderBinders.put(
                 VIEW_TYPE_WIDGETS_HEADER,
                 new WidgetsListHeaderViewHolderBinder(
                         layoutInflater,
                         /* onHeaderClickListener= */ this,
-                        listDrawableFactory,
-                        /* listAdapter= */ this));
+                        listDrawableFactory));
         mViewHolderBinders.put(
                 VIEW_TYPE_WIDGETS_SEARCH_HEADER,
                 new WidgetsListSearchHeaderViewHolderBinder(
                         layoutInflater,
                         /* onHeaderClickListener= */ this,
-                        listDrawableFactory,
-                        /* listAdapter= */ this));
-        mShortcutPreviewPadding =
-                2 * context.getResources()
-                        .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
+                        listDrawableFactory));
+        mViewHolderBinders.put(
+                VIEW_TYPE_WIDGETS_SPACE,
+                new WidgetsSpaceViewHolderBinder(emptySpaceHeightProvider));
         mSpacingBetweenEntries =
                 context.getResources().getDimensionPixelSize(R.dimen.widget_list_entry_spacing);
     }
@@ -178,31 +166,17 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         mFilter = filter;
     }
 
-    /**
-     * Defers applying bitmap on all the {@link WidgetCell} in the {@param rv}.
-     *
-     * @see WidgetCell#setApplyBitmapDeferred(boolean)
-     */
-    public void setApplyBitmapDeferred(boolean isDeferred, RecyclerView rv) {
-        mWidgetsListTableViewHolderBinder.setApplyBitmapDeferred(isDeferred);
-
-        for (int i = rv.getChildCount() - 1; i >= 0; i--) {
-            ViewHolder viewHolder = rv.getChildViewHolder(rv.getChildAt(i));
-            if (viewHolder.getItemViewType() == VIEW_TYPE_WIDGETS_LIST) {
-                WidgetsRowViewHolder holder = (WidgetsRowViewHolder) viewHolder;
-                for (int j = holder.mTableContainer.getChildCount() - 1; j >= 0; j--) {
-                    TableRow row =  (TableRow) holder.mTableContainer.getChildAt(j);
-                    for (int k = row.getChildCount() - 1; k >= 0; k--) {
-                        ((WidgetCell) row.getChildAt(k)).setApplyBitmapDeferred(isDeferred);
-                    }
-                }
-            }
-        }
-    }
-
     @Override
     public int getItemCount() {
         return mVisibleEntries.size();
+    }
+
+    /**
+     * Returns true if the adapter has entries which will be visible to the user
+     */
+    public boolean hasVisibleEntries() {
+        // Account for the 1st space entry
+        return getItemCount() > 1;
     }
 
     /** Returns all items that will be drawn in a recycler view. */
@@ -217,9 +191,9 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
 
     /** Updates the widget list based on {@code tempEntries}. */
     public void setWidgets(List<WidgetsListBaseEntry> tempEntries) {
-        mCachingPreviewLoader.clearAll();
-        mAllEntries = tempEntries.stream().sorted(mRowComparator)
-                .collect(Collectors.toList());
+        mAllEntries.clear();
+        mAllEntries.add(new WidgetListSpaceEntry());
+        tempEntries.stream().sorted(mRowComparator).forEach(mAllEntries::add);
         if (shouldClearVisibleEntries()) {
             mVisibleEntries.clear();
         }
@@ -230,15 +204,10 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     public void setWidgetsOnSearch(List<WidgetsListBaseEntry> searchResults) {
         // Forget the expanded package every time widget list is refreshed in search mode.
         mWidgetsContentVisiblePackageUserKey = null;
-        cancelLoadingPreviews();
         setWidgets(searchResults);
     }
 
     private void updateVisibleEntries() {
-        // If not all previews are ready, then defer this update and try again after the preview
-        // loads.
-        if (!ensureAllPreviewsReady()) return;
-
         // Get the current top of the header with the matching key before adjusting the visible
         // entries.
         OptionalInt previousPositionForPackageUserKey =
@@ -247,8 +216,9 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
                 getOffsetForPosition(previousPositionForPackageUserKey);
 
         List<WidgetsListBaseEntry> newVisibleEntries = mAllEntries.stream()
-                .filter(entry -> (mFilter == null || mFilter.test(entry))
+                .filter(entry -> ((mFilter == null || mFilter.test(entry))
                         && mHeaderAndSelectedContentFilter.test(entry))
+                        || entry instanceof WidgetListSpaceEntry)
                 .map(entry -> {
                     if (entry instanceof WidgetsListBaseEntry.Header<?>
                             && matchesKey(entry, mWidgetsContentVisiblePackageUserKey)) {
@@ -275,54 +245,6 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         }
     }
 
-    /**
-     * Checks that all preview images are loaded and starts loading for those that aren't ready.
-     *
-     * @return true if all previews are ready and the data can be updated, false otherwise.
-     */
-    private boolean ensureAllPreviewsReady() {
-        boolean allReady = true;
-        BaseActivity activity = BaseActivity.fromContext(mContext);
-        for (WidgetsListBaseEntry entry : mAllEntries) {
-            if (!(entry instanceof WidgetsListContentEntry)) continue;
-
-            WidgetsListContentEntry contentEntry = (WidgetsListContentEntry) entry;
-            if (!matchesKey(entry, mWidgetsContentVisiblePackageUserKey)) {
-                // If the entry isn't visible, clear any loaded previews.
-                mCachingPreviewLoader.clearPreviews(contentEntry.mWidgets);
-                continue;
-            }
-
-            for (int i = 0; i < entry.mWidgets.size(); i++) {
-                WidgetItem widgetItem = entry.mWidgets.get(i);
-                DeviceProfile deviceProfile = activity.getDeviceProfile();
-                Size widgetSize = WidgetSizes.getWidgetItemSizePx(mContext, deviceProfile,
-                        widgetItem);
-                if (widgetItem.isShortcut()) {
-                    widgetSize =
-                            new Size(
-                                    widgetSize.getWidth() + mShortcutPreviewPadding,
-                                    widgetSize.getHeight() + mShortcutPreviewPadding);
-                }
-
-                if (widgetItem.hasPreviewLayout()
-                        || mCachingPreviewLoader.isPreviewLoaded(widgetItem, widgetSize)) {
-                    // The widget is ready if it can be rendered with a preview layout or if its
-                    // preview bitmap is in the cache.
-                    continue;
-                }
-
-                // If we've reached this point, we should load the preview for the widget.
-                allReady = false;
-                mCachingPreviewLoader.loadPreview(
-                        activity,
-                        widgetItem,
-                        widgetSize,
-                        mPreviewLoadedCallback);
-            }
-        }
-        return allReady;
-    }
 
     /** Returns whether {@code entry} matches {@code key}. */
     private static boolean isHeaderForPackageUserKey(
@@ -330,10 +252,11 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         return entry instanceof WidgetsListBaseEntry.Header && matchesKey(entry, key);
     }
 
-    private static boolean matchesKey(
-            @NonNull WidgetsListBaseEntry entry, @Nullable PackageUserKey key) {
+    private static boolean matchesKey(@NonNull WidgetsListBaseEntry entry,
+            @Nullable PackageUserKey key) {
         if (key == null) return false;
         return entry.mPkgItem.packageName.equals(key.mPackageName)
+                && entry.mPkgItem.widgetCategory == key.mWidgetCategory
                 && entry.mPkgItem.user.equals(key.mUser);
     }
 
@@ -343,16 +266,26 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     public void resetExpandedHeader() {
         if (mWidgetsContentVisiblePackageUserKey != null) {
             mWidgetsContentVisiblePackageUserKey = null;
-            cancelLoadingPreviews();
             updateVisibleEntries();
         }
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int pos) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        onBindViewHolder(holder, position, Collections.EMPTY_LIST);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int pos, List<Object> payloads) {
         ViewHolderBinder viewHolderBinder = mViewHolderBinders.get(getItemViewType(pos));
         WidgetsListBaseEntry entry = mVisibleEntries.get(pos);
-        viewHolderBinder.bindViewHolder(holder, mVisibleEntries.get(pos), pos);
+
+        // The first entry has an empty space, count from second entries.
+        int listPos = (pos > 1) ? POSITION_DEFAULT : POSITION_FIRST;
+        if (pos == (getItemCount() - 1)) {
+            listPos |= POSITION_LAST;
+        }
+        viewHolderBinder.bindViewHolder(holder, mVisibleEntries.get(pos), listPos, payloads);
         holder.itemView.setTag(R.id.tag_widget_entry, entry);
     }
 
@@ -395,6 +328,8 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
             return VIEW_TYPE_WIDGETS_HEADER;
         } else if (entry instanceof WidgetsListSearchHeaderEntry) {
             return VIEW_TYPE_WIDGETS_SEARCH_HEADER;
+        } else if (entry instanceof WidgetListSpaceEntry) {
+            return VIEW_TYPE_WIDGETS_SPACE;
         }
         throw new UnsupportedOperationException("ViewHolderBinder not found for " + entry);
     }
@@ -404,11 +339,10 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         // Ignore invalid clicks, such as collapsing a package that isn't currently expanded.
         if (!showWidgets && !packageUserKey.equals(mWidgetsContentVisiblePackageUserKey)) return;
 
-        cancelLoadingPreviews();
-
         if (showWidgets) {
             mWidgetsContentVisiblePackageUserKey = packageUserKey;
-            mLauncher.getStatsLogManager().logger().log(LAUNCHER_WIDGETSTRAY_APP_EXPANDED);
+            ActivityContext.lookupContext(mContext)
+                    .getStatsLogManager().logger().log(LAUNCHER_WIDGETSTRAY_APP_EXPANDED);
         } else {
             mWidgetsContentVisiblePackageUserKey = null;
         }
@@ -418,16 +352,6 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         mPendingClickHeader = packageUserKey;
 
         updateVisibleEntries();
-    }
-
-    private void cancelLoadingPreviews() {
-        mCachingPreviewLoader.clearAll();
-    }
-
-    /** Returns the position of the currently expanded header, or empty if it's not present. */
-    public OptionalInt getSelectedHeaderPosition() {
-        if (mWidgetsContentVisiblePackageUserKey == null) return OptionalInt.empty();
-        return getPositionForPackageUserKey(mWidgetsContentVisiblePackageUserKey);
     }
 
     /**
@@ -511,11 +435,10 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
                         .filter(entry -> entry instanceof WidgetsListHeaderEntry)
                         .map(entry -> entry.mPkgItem)
                         .collect(Collectors.toMap(
-                                entry -> new PackageUserKey(entry.packageName, entry.user),
+                                entry -> PackageUserKey.fromPackageItemInfo(entry),
                                 entry -> entry));
         for (WidgetsListBaseEntry visibleEntry: mVisibleEntries) {
-            PackageUserKey key = new PackageUserKey(visibleEntry.mPkgItem.packageName,
-                    visibleEntry.mPkgItem.user);
+            PackageUserKey key = PackageUserKey.fromPackageItemInfo(visibleEntry.mPkgItem);
             PackageItemInfo packageItemInfo = packagesInfo.get(key);
             if (packageItemInfo != null
                     && !visibleEntry.mPkgItem.title.equals(packageItemInfo.title)) {

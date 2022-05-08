@@ -78,4 +78,8 @@ class LawnchairOverviewActionsView @JvmOverloads constructor(
             layoutParams = LinearLayout.LayoutParams(0, 1).apply { weight = 1f }
         }
     }
+
+    override fun setClearAllClickListener(clearAllClickListener: OnClickListener?) {
+        clearAllAction.setOnClickListener(clearAllClickListener)
+    }
 }

@@ -19,9 +19,9 @@ import static androidx.test.InstrumentationRegistry.getContext;
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 import static androidx.test.InstrumentationRegistry.getTargetContext;
 
-import static com.android.launcher3.common.WidgetUtils.createWidgetInfo;
 import static com.android.launcher3.testcomponent.TestCommandReceiver.EXTRA_VALUE;
 import static com.android.launcher3.testcomponent.TestCommandReceiver.SET_LIST_VIEW_SERVICE_BINDER;
+import static com.android.launcher3.util.WidgetUtils.createWidgetInfo;
 import static com.android.quickstep.NavigationModeSwitchRule.Mode.ZERO_BUTTON;
 
 import static org.junit.Assert.assertEquals;

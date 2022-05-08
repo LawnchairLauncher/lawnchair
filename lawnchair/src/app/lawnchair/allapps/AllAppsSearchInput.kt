@@ -217,7 +217,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
         lp.topMargin = max(-allAppsSearchVerticalOffset, insets.top - qsbMarginTopAdjusting)
 
         val dp = launcher.deviceProfile
-        val horizontalPadding = dp.desiredWorkspaceLeftRightMarginPx + dp.cellLayoutPaddingLeftRightPx
+        val horizontalPadding = dp.desiredWorkspaceHorizontalMarginPx + dp.cellLayoutPaddingLeftRightPx
         setPadding(horizontalPadding, paddingTop, horizontalPadding, paddingBottom)
         requestLayout()
     }

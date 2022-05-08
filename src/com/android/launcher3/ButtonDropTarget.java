@@ -72,6 +72,8 @@ public abstract class ButtonDropTarget extends TextView
     private final int mDragDistanceThreshold;
     /** The size of the drawable shown in the drop target. */
     private final int mDrawableSize;
+    /** The padding, in pixels, between the text and drawable. */
+    private final int mDrawablePadding;
 
     protected CharSequence mText;
     protected Drawable mDrawable;
@@ -79,8 +81,6 @@ public abstract class ButtonDropTarget extends TextView
 
     private PopupWindow mToolTip;
     private int mToolTipLocation;
-
-    private int mDrawablePadding;
 
     public ButtonDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -93,7 +93,8 @@ public abstract class ButtonDropTarget extends TextView
         Resources resources = getResources();
         mDragDistanceThreshold = resources.getDimensionPixelSize(R.dimen.drag_distanceThreshold);
         mDrawableSize = resources.getDimensionPixelSize(R.dimen.drop_target_text_size);
-        mDrawablePadding = getCompoundDrawablePadding();
+        mDrawablePadding = resources.getDimensionPixelSize(
+                R.dimen.drop_target_button_drawable_padding);
     }
 
     @Override
@@ -124,8 +125,8 @@ public abstract class ButtonDropTarget extends TextView
         // We do not set the drawable in the xml as that inflates two drawables corresponding to
         // drawableLeft and drawableStart.
         mDrawable = getContext().getDrawable(resId).mutate();
-        mDrawable.setBounds(0, 0, mDrawableSize, mDrawableSize);
         mDrawable.setTintList(getTextColors());
+        centerIcon();
         setCompoundDrawablesRelative(mDrawable, null, null, null);
     }
 
@@ -231,12 +232,8 @@ public abstract class ButtonDropTarget extends TextView
         }
         final DragLayer dragLayer = mLauncher.getDragLayer();
         final DragView dragView = d.dragView;
-        final Rect from = new Rect();
-        dragLayer.getViewRectRelativeToSelf(d.dragView, from);
-
         final Rect to = getIconRect(d);
-        final float scale = (float) to.width() / from.width();
-        dragView.disableColorExtraction();
+        final float scale = (float) to.width() / dragView.getMeasuredWidth();
         dragView.detachContentView(/* reattachToPreviousParent= */ true);
         mDropTargetBar.deferOnDragEnd();
 
@@ -244,14 +241,11 @@ public abstract class ButtonDropTarget extends TextView
             completeDrop(d);
             mDropTargetBar.onDragEnd();
             mLauncher.getStateManager().goToState(NORMAL);
-            // Only re-enable updates once the workspace is back to normal, which will be after the
-            // current frame.
-            post(dragView::resumeColorExtraction);
         };
 
-        dragLayer.animateView(d.dragView, from, to, scale, 1f, 1f, 0.1f, 0.1f,
+        dragLayer.animateView(d.dragView, to, scale, 0.1f, 0.1f,
                 DRAG_VIEW_DROP_DURATION,
-                Interpolators.DEACCEL_2, Interpolators.LINEAR, onAnimationEndRunnable,
+                Interpolators.DEACCEL_2, onAnimationEndRunnable,
                 DragLayer.ANIMATION_END_DISAPPEAR, null);
     }
 
@@ -300,7 +294,7 @@ public abstract class ButtonDropTarget extends TextView
         }
 
         final int top = to.top + (getMeasuredHeight() - height) / 2;
-        final int bottom = top +  height;
+        final int bottom = top + height;
 
         to.set(left, top, right, bottom);
 
@@ -310,6 +304,12 @@ public abstract class ButtonDropTarget extends TextView
         to.offset(xOffset, yOffset);
 
         return to;
+    }
+
+    private void centerIcon() {
+        int x = mTextVisible ? 0
+                : (getWidth() - getPaddingLeft() - getPaddingRight()) / 2 - mDrawableSize / 2;
+        mDrawable.setBounds(x, 0, x + mDrawableSize, mDrawableSize);
     }
 
     @Override
@@ -322,9 +322,17 @@ public abstract class ButtonDropTarget extends TextView
         if (mTextVisible != isVisible || !TextUtils.equals(newText, getText())) {
             mTextVisible = isVisible;
             setText(newText);
+            centerIcon();
             setCompoundDrawablesRelative(mDrawable, null, null, null);
-            setCompoundDrawablePadding(isVisible ? mDrawablePadding : 0);
+            int drawablePadding = mTextVisible ? mDrawablePadding : 0;
+            setCompoundDrawablePadding(drawablePadding);
         }
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        centerIcon();
     }
 
     public void setToolTipLocation(int location) {

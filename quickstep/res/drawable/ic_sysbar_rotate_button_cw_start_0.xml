@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2020 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector android:name="root"
+                android:width="28dp"
+                android:height="28dp"
+                android:viewportWidth="28.0"
+                android:viewportHeight="28.0">
+            <!-- Use scaleX to flip icon so arrows always point in the direction of motion -->
+            <group android:name="icon" android:pivotX="14" android:pivotY="14"
+                   android:scaleX="-1">
+                <!-- Tint color to be set directly -->
+                <path android:fillColor="#FFFFFFFF"
+                      android:pathData="M12.02,10.83L9.25,8.06l2.77,-2.77l1.12,1.12l-0.85,0.86h5.16c0.72,0 1.31,0.56 1.31,1.26v9.16l-1.58,-1.58V8.85h-4.89l0.86,0.86L12.02,10.83zM15.98,17.17l-1.12,1.12l0.85,0.86h-4.88v-7.26L9.25,10.3v9.17c0,0.7 0.59,1.26 1.31,1.26h5.16v0.01l-0.85,0.85l1.12,1.12l2.77,-2.77L15.98,17.17z"/>
+            </group>
+        </vector>
+    </aapt:attr>
+
+    <!-- Repeat all animations 5 times but don't fade out at the end -->
+    <target android:name="root">
+        <aapt:attr name="android:animation">
+            <set android:ordering="sequentially">
+                <!-- Linear fade in-->
+                <objectAnimator android:propertyName="alpha"
+                                android:duration="100"
+                                android:valueFrom="0"
+                                android:valueTo="1"
+                                android:interpolator="@android:anim/linear_interpolator" />
+                <!-- Linear fade out -->
+                <objectAnimator android:propertyName="alpha"
+                                android:duration="100"
+                                android:startOffset="1700"
+                                android:valueFrom="1"
+                                android:valueTo="0"
+                                android:interpolator="@android:anim/linear_interpolator"/>
+                <!-- Linear fade in-->
+                <objectAnimator android:propertyName="alpha"
+                                android:duration="100"
+                                android:startOffset="100"
+                                android:valueFrom="0"
+                                android:valueTo="1"
+                                android:interpolator="@android:anim/linear_interpolator" />
+                <!-- Linear fade out -->
+                <objectAnimator android:propertyName="alpha"
+                                android:duration="100"
+                                android:startOffset="1700"
+                                android:valueFrom="1"
+                                android:valueTo="0"
+                                android:interpolator="@android:anim/linear_interpolator"/>
+                <!-- Linear fade in-->
+                <objectAnimator android:propertyName="alpha"
+                                android:duration="100"
+                                android:startOffset="100"
+                                android:valueFrom="0"
+                                android:valueTo="1"
+                                android:interpolator="@android:anim/linear_interpolator" />
+                <!-- Linear fade out -->
+                <objectAnimator android:propertyName="alpha"
+                                android:duration="100"
+                                android:startOffset="1700"
+                                android:valueFrom="1"
+                                android:valueTo="0"
+                                android:interpolator="@android:anim/linear_interpolator"/>
+                <!-- Linear fade in-->
+                <objectAnimator android:propertyName="alpha"
+                                android:duration="100"
+                                android:startOffset="100"
+                                android:valueFrom="0"
+                                android:valueTo="1"
+                                android:interpolator="@android:anim/linear_interpolator" />
+                <!-- Linear fade out -->
+                <objectAnimator android:propertyName="alpha"
+                                android:duration="100"
+                                android:startOffset="1700"
+                                android:valueFrom="1"
+                                android:valueTo="0"
+                                android:interpolator="@android:anim/linear_interpolator"/>
+                <!-- Linear fade in-->
+                <objectAnimator android:propertyName="alpha"
+                                android:duration="100"
+                                android:startOffset="100"
+                                android:valueFrom="0"
+                                android:valueTo="1"
+                                android:interpolator="@android:anim/linear_interpolator" />
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="icon">
+        <aapt:attr name="android:animation">
+            <set android:ordering="sequentially">
+                <!-- Icon rotation with start timing offset after fade in -->
+                <objectAnimator android:propertyName="rotation"
+                                android:startOffset="100"
+                                android:duration="600"
+                                android:valueFrom="0"
+                                android:valueTo="90">
+                    <aapt:attr name="android:interpolator">
+                        <pathInterpolator android:pathData="M 0.0,0.0 c0.408,1.181 0.674,1.08 1.0,1.0"/>
+                    </aapt:attr>
+                </objectAnimator>
+
+                <!-- Reset rotation position for fade in -->
+                <objectAnimator android:propertyName="rotation"
+                                android:startOffset="1300"
+                                android:duration="100"
+                                android:valueFrom="0"
+                                android:valueTo="0"/>
+
+                <!-- Icon rotation with start timing offset after fade in -->
+                <objectAnimator android:propertyName="rotation"
+                                android:duration="600"
+                                android:valueFrom="0"
+                                android:valueTo="90">
+                    <aapt:attr name="android:interpolator">
+                        <pathInterpolator android:pathData="M 0.0,0.0 c0.408,1.181 0.674,1.08 1.0,1.0"/>
+                    </aapt:attr>
+                </objectAnimator>
+
+                <!-- Reset rotation position for fade in -->
+                <objectAnimator android:propertyName="rotation"
+                                android:startOffset="1300"
+                                android:duration="100"
+                                android:valueFrom="0"
+                                android:valueTo="0"/>
+
+                <!-- Icon rotation with start timing offset after fade in -->
+                <objectAnimator android:propertyName="rotation"
+                                android:duration="600"
+                                android:valueFrom="0"
+                                android:valueTo="90">
+                    <aapt:attr name="android:interpolator">
+                        <pathInterpolator android:pathData="M 0.0,0.0 c0.408,1.181 0.674,1.08 1.0,1.0"/>
+                    </aapt:attr>
+                </objectAnimator>
+
+                <!-- Reset rotation position for fade in -->
+                <objectAnimator android:propertyName="rotation"
+                                android:startOffset="1300"
+                                android:duration="100"
+                                android:valueFrom="0"
+                                android:valueTo="0"/>
+
+                <!-- Icon rotation with start timing offset after fade in -->
+                <objectAnimator android:propertyName="rotation"
+                                android:duration="600"
+                                android:valueFrom="0"
+                                android:valueTo="90">
+                    <aapt:attr name="android:interpolator">
+                        <pathInterpolator android:pathData="M 0.0,0.0 c0.408,1.181 0.674,1.08 1.0,1.0"/>
+                    </aapt:attr>
+                </objectAnimator>
+
+                <!-- Reset rotation position for fade in -->
+                <objectAnimator android:propertyName="rotation"
+                                android:startOffset="1300"
+                                android:duration="100"
+                                android:valueFrom="0"
+                                android:valueTo="0"/>
+
+                <!-- Icon rotation with start timing offset after fade in -->
+                <objectAnimator android:propertyName="rotation"
+                                android:duration="600"
+                                android:valueFrom="0"
+                                android:valueTo="90">
+                    <aapt:attr name="android:interpolator">
+                        <pathInterpolator android:pathData="M 0.0,0.0 c0.408,1.181 0.674,1.08 1.0,1.0"/>
+                    </aapt:attr>
+                </objectAnimator>
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>

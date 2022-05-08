@@ -28,17 +28,20 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.uioverrides.PredictedAppIcon;
 import com.android.launcher3.views.AbstractSlideInView;
 
@@ -77,6 +80,11 @@ public class HotseatEduDialog extends AbstractSlideInView<Launcher> implements I
         mContent = this;
     }
 
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        setTranslationShift(TRANSLATION_SHIFT_CLOSED);
+    }
 
     @Override
     protected void onFinishInflate() {
@@ -84,8 +92,9 @@ public class HotseatEduDialog extends AbstractSlideInView<Launcher> implements I
         mHotseatWrapper = findViewById(R.id.hotseat_wrapper);
         mSampleHotseat = findViewById(R.id.sample_prediction);
 
+        Context context = getContext();
         DeviceProfile grid = mActivityContext.getDeviceProfile();
-        Rect padding = grid.getHotseatLayoutPadding();
+        Rect padding = grid.getHotseatLayoutPadding(context);
 
         mSampleHotseat.getLayoutParams().height = grid.cellHeightPx;
         mSampleHotseat.setGridSize(grid.numShownHotseatIcons, 1);
@@ -96,6 +105,15 @@ public class HotseatEduDialog extends AbstractSlideInView<Launcher> implements I
 
         mDismissBtn = findViewById(R.id.no_thanks);
         mDismissBtn.setOnClickListener(this::onDismiss);
+
+        LinearLayout buttonContainer = findViewById(R.id.button_container);
+        int adjustedMarginEnd = ApiWrapper.getHotseatEndOffset(context)
+                - buttonContainer.getPaddingEnd();
+        if (InvariantDeviceProfile.INSTANCE.get(context)
+                .getDeviceProfile(context).isTaskbarPresent && adjustedMarginEnd > 0) {
+            ((LinearLayout.LayoutParams) buttonContainer.getLayoutParams()).setMarginEnd(
+                    adjustedMarginEnd);
+        }
 
         // update ui to reflect which migration method is going to be used
         if (FeatureFlags.HOTSEAT_MIGRATE_TO_FOLDER.get()) {
@@ -200,9 +218,9 @@ public class HotseatEduDialog extends AbstractSlideInView<Launcher> implements I
         }
         AbstractFloatingView.closeAllOpenViews(mActivityContext);
         attachToContainer();
-        mActivityContext.getStatsLogManager().logger().log(LAUNCHER_HOTSEAT_EDU_SEEN);
         animateOpen();
         populatePreview(predictions);
+        mActivityContext.getStatsLogManager().logger().log(LAUNCHER_HOTSEAT_EDU_SEEN);
     }
 
     /**

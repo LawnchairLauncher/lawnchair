@@ -24,7 +24,6 @@ import com.android.launcher3.widget.LauncherAppWidgetHostView;
 /** A drag listener of {@link LauncherAppWidgetHostView}. */
 public final class AppWidgetHostViewDragListener implements DragController.DragListener {
     private final Launcher mLauncher;
-    private DropTarget.DragObject mDragObject;
     private LauncherAppWidgetHostView mAppWidgetHostView;
 
     public AppWidgetHostViewDragListener(Launcher launcher) {
@@ -34,9 +33,8 @@ public final class AppWidgetHostViewDragListener implements DragController.DragL
     @Override
     public void onDragStart(DropTarget.DragObject dragObject, DragOptions unused) {
         if (dragObject.dragView.getContentView() instanceof LauncherAppWidgetHostView) {
-            mDragObject = dragObject;
             mAppWidgetHostView = (LauncherAppWidgetHostView) dragObject.dragView.getContentView();
-            mAppWidgetHostView.startDrag(this);
+            mAppWidgetHostView.startDrag();
         } else {
             mLauncher.getDragController().removeDragListener(this);
         }
@@ -46,12 +44,5 @@ public final class AppWidgetHostViewDragListener implements DragController.DragL
     public void onDragEnd() {
         mAppWidgetHostView.endDrag();
         mLauncher.getDragController().removeDragListener(this);
-    }
-
-    /** Notifies when there is a content change in the drag view. */
-    public void onDragContentChanged() {
-        if (mDragObject.dragView != null) {
-            mDragObject.dragView.invalidate();
-        }
     }
 }

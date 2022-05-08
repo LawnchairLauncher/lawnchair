@@ -17,6 +17,7 @@ package com.android.launcher3.touch;
 
 import static com.android.launcher3.Launcher.REQUEST_BIND_PENDING_APPWIDGET;
 import static com.android.launcher3.Launcher.REQUEST_RECONFIGURE_APPWIDGET;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_SEARCHINAPP_LAUNCH;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_BY_PUBLISHER;
@@ -46,6 +47,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.logging.InstanceId;
+import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
@@ -284,7 +287,13 @@ public class ItemClickHandler {
                         Toast.LENGTH_SHORT).show();
             }
         }
-        launcher.getStatsLogManager().logger().withItemInfo(itemInfo).log(LAUNCHER_APP_LAUNCH_TAP);
+        if (itemInfo.hasFlags(SearchActionItemInfo.FLAG_SEARCH_IN_APP)) {
+            launcher.getStatsLogManager().logger().withItemInfo(itemInfo).log(
+                    LAUNCHER_ALLAPPS_SEARCHINAPP_LAUNCH);
+        } else {
+            launcher.getStatsLogManager().logger().withItemInfo(itemInfo).log(
+                    LAUNCHER_APP_LAUNCH_TAP);
+        }
     }
 
     private static void startAppShortcutOrInfoActivity(View v, ItemInfo item, Launcher launcher) {
@@ -313,6 +322,12 @@ public class ItemClickHandler {
                 // web ui. This only works though if the package isn't set
                 intent = new Intent(intent);
                 intent.setPackage(null);
+            }
+            if ((si.options & WorkspaceItemInfo.FLAG_START_FOR_RESULT) != 0) {
+                launcher.startActivityForResult(item.getIntent(), 0);
+                InstanceId instanceId = new InstanceIdSequence().newInstanceId();
+                launcher.logAppLaunch(launcher.getStatsLogManager(), item, instanceId);
+                return;
             }
         }
         if (v != null && launcher.supportsAdaptiveIconAnimation(v)) {

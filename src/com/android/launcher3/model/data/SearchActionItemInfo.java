@@ -25,8 +25,15 @@ import android.os.UserHandle;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel;
+import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logger.LauncherAtom.ItemInfo;
 import com.android.launcher3.logger.LauncherAtom.SearchActionItem;
+import com.android.launcher3.model.AllAppsList;
+import com.android.launcher3.model.BaseModelUpdateTask;
+import com.android.launcher3.model.BgDataModel;
 
 /**
  * Represents a SearchAction with in launcher
@@ -38,13 +45,15 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
     public static final int FLAG_BADGE_WITH_PACKAGE = 1 << 3;
     public static final int FLAG_PRIMARY_ICON_FROM_TITLE = 1 << 4;
     public static final int FLAG_BADGE_WITH_COMPONENT_NAME = 1 << 5;
+    public static final int FLAG_ALLOW_PINNING = 1 << 6;
+    public static final int FLAG_SEARCH_IN_APP = 1 << 7;
 
-    private final String mFallbackPackageName;
+    private String mFallbackPackageName;
     private int mFlags = 0;
-    private final Icon mIcon;
+    private Icon mIcon;
 
     // If true title does not contain any personal info and eligible for logging.
-    private final boolean mIsPersonalTitle;
+    private boolean mIsPersonalTitle;
     private Intent mIntent;
 
     private PendingIntent mPendingIntent;
@@ -52,6 +61,7 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
     public SearchActionItemInfo(Icon icon, String packageName, UserHandle user,
             CharSequence title, boolean isPersonalTitle) {
         mIsPersonalTitle = isPersonalTitle;
+        this.itemType = LauncherSettings.Favorites.ITEM_TYPE_SEARCH_ACTION;
         this.user = user == null ? Process.myUserHandle() : user;
         this.title = title;
         this.container = EXTENDED_CONTAINERS;
@@ -59,14 +69,18 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
         mIcon = icon;
     }
 
-    public SearchActionItemInfo(SearchActionItemInfo info) {
+    private SearchActionItemInfo(SearchActionItemInfo info) {
         super(info);
-        mIcon = info.mIcon;
-        mFallbackPackageName = info.mFallbackPackageName;
-        mFlags = info.mFlags;
-        title = info.title;
-        this.container = EXTENDED_CONTAINERS;
-        this.mIsPersonalTitle = info.mIsPersonalTitle;
+    }
+
+    @Override
+    public void copyFrom(com.android.launcher3.model.data.ItemInfo info) {
+        super.copyFrom(info);
+        SearchActionItemInfo itemInfo = (SearchActionItemInfo) info;
+        this.mFallbackPackageName = itemInfo.mFallbackPackageName;
+        this.mIcon = itemInfo.mIcon;
+        this.mFlags = itemInfo.mFlags;
+        this.mIsPersonalTitle = itemInfo.mIsPersonalTitle;
     }
 
     /**
@@ -77,7 +91,7 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
     }
 
     public void setFlags(int flags) {
-        mFlags |= flags ;
+        mFlags |= flags;
     }
 
     @Override
@@ -133,5 +147,51 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
                 .setSearchActionItem(itemBuilder)
                 .setContainerInfo(getContainerInfo())
                 .build();
+    }
+
+    /**
+     * Returns true if result supports drag/drop to home screen
+     */
+    public boolean supportsPinning() {
+        return hasFlags(FLAG_ALLOW_PINNING) && getIntentPackageName() != null;
+    }
+
+    /**
+     * Creates a {@link WorkspaceItemInfo} coorsponding to search action to be stored in launcher db
+     */
+    public WorkspaceItemInfo createWorkspaceItem(LauncherModel model) {
+        WorkspaceItemInfo info = new WorkspaceItemInfo();
+        info.title = title;
+        info.bitmap = bitmap;
+        info.intent = mIntent;
+
+        if (hasFlags(FLAG_SHOULD_START_FOR_RESULT)) {
+            info.options |= WorkspaceItemInfo.FLAG_START_FOR_RESULT;
+        }
+
+        model.enqueueModelUpdateTask(new BaseModelUpdateTask() {
+            @Override
+            public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+
+                model.updateAndBindWorkspaceItem(() -> {
+                    PackageItemInfo pkgInfo = new PackageItemInfo(getIntentPackageName(), user);
+                    app.getIconCache().getTitleAndIconForApp(pkgInfo, false);
+                    try (LauncherIcons li = LauncherIcons.obtain(app.getContext())) {
+                        info.bitmap = li.badgeBitmap(info.bitmap.icon, pkgInfo.bitmap);
+                    }
+                    return info;
+                });
+            }
+        });
+        return info;
+    }
+
+    @Nullable
+    private String getIntentPackageName() {
+        if (mIntent != null) {
+            if (mIntent.getPackage() != null) return mIntent.getPackage();
+            return mFallbackPackageName;
+        }
+        return null;
     }
 }

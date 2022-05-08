@@ -17,11 +17,15 @@ package com.android.launcher3.statemanager;
 
 import static com.android.launcher3.LauncherState.FLAG_NON_INTERACTIVE;
 
+import android.graphics.Insets;
+import android.os.Build;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowInsets;
 
 import androidx.annotation.CallSuper;
+import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.LauncherRootView;
@@ -172,5 +176,20 @@ public abstract class StatefulActivity<STATE_TYPE extends BaseState<STATE_TYPE>>
 
         mHandler.removeCallbacks(mHandleDeferredResume);
         Utilities.postAsyncCallback(mHandler, mHandleDeferredResume);
+    }
+
+    /**
+     * Gives subclasses a chance to override some window insets (via
+     * {@link android.view.WindowInsets.Builder#setInsets(int, Insets)}).
+     */
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    public void updateWindowInsets(WindowInsets.Builder updatedInsetsBuilder,
+            WindowInsets oldInsets) { }
+
+    /**
+     * Runs the given {@param r} runnable when this activity binds to the touch interaction service.
+     */
+    public void runOnBindToTouchInteractionService(Runnable r) {
+        r.run();
     }
 }

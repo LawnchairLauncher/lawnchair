@@ -348,6 +348,8 @@ dependencies {
 
     implementation 'com.google.protobuf:protobuf-javalite:3.8.0'
     implementation 'com.github.LawnchairLauncher:oss-notices:1.0.2'
+
+    api 'com.airbnb.android:lottie:3.3.0'
 }
 
 protobuf {

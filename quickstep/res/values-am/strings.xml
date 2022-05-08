@@ -25,11 +25,12 @@
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"የመተግበሪያ አጠቃቀም ቅንብሮች"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"ሁሉንም አጽዳ"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"የቅርብ ጊዜ መተግበሪያዎች"</string>
+    <!-- no translation found for task_view_closed (9170038230110856166) -->
+    <skip />
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>፣ <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 ደቂቃ"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"ዛሬ <xliff:g id="TIME">%1$s</xliff:g> ቀርቷል"</string>
     <string name="title_app_suggestions" msgid="4185902664111965088">"የመተግበሪያ አስተያየቶች"</string>
-    <string name="all_apps_label" msgid="8542784161730910663">"ሁሉም መተግበሪያዎች"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"የእርስዎ የሚገመቱ መተግበሪያዎች"</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"በመነሻ ገጽዎ ታችኛው ረድፍ ላይ የመተግበሪያ አስተያየት ጥቆማዎችን ያግኙ"</string>
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"በመነሻ ማያ ገጽዎ የተወዳጆች ረድፍ ላይ የመተግበሪያ አስተያየት ጥቆማዎችን ያግኙ"</string>
@@ -76,9 +77,22 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"አጋዥ ሥልጠና <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"አጋራ"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ቅጽበታዊ ገጽ እይታ"</string>
+    <string name="action_split" msgid="2098009717623550676">"ክፈል"</string>
+    <string name="toast_split_select_app" msgid="5453865907322018352">"የተከፈለ ማያን ለመጠቀም ሌላ መተግበሪያ መታ ያድርጉ"</string>
+    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"መተግበሪያው የተከፈለ ማያ ገጽን አይደግፍም።"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ይህ ድርጊት በመተግበሪያው ወይም በእርስዎ ድርጅት አይፈቀድም"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"የአሰሳ አጋዥ ሥልጠናን ይዝለሉ?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"ይህን በኋላ በ<xliff:g id="NAME">%1$s</xliff:g> መተግበሪያው ውስጥ ማግኘት ይችላሉ"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"ይቅር"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ዝለል"</string>
+    <string name="accessibility_rotate_button" msgid="4771825231336502943">"ማያ ገጹን አዙር"</string>
+    <string name="taskbar_edu_opened" msgid="3950252793551919129">"የተግባር አሞሌ ትምህርት ይታያል"</string>
+    <string name="taskbar_edu_closed" msgid="126643734478892862">"የተግባር አሞሌ ትምህርት ተዘግቷል"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"መተግበሪያዎችን ለመቀየር የተግባር አሞሌውን ይጠቀሙ"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"በአንድ ጊዜ ሁለት መተግበሪያዎችን ለመጠቀም ወደ ጎን ይጎትቱ"</string>
+    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"የተግባር አሞሌውን ለመደበቅ ነክተው ይያዙት"</string>
+    <string name="taskbar_edu_next" msgid="4007618274426775841">"ቀጣይ"</string>
+    <string name="taskbar_edu_previous" msgid="459202320127201702">"ተመለስ"</string>
+    <string name="taskbar_edu_close" msgid="887022990168191073">"ዝጋ"</string>
+    <string name="taskbar_edu_done" msgid="6880178093977704569">"ተጠናቅቋል"</string>
 </resources>

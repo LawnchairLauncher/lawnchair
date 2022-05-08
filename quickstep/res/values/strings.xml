@@ -39,6 +39,9 @@
     <!-- Accessibility title for the list of recent apps [CHAR_LIMIT=none] -->
     <string name="accessibility_recent_apps">Recent apps</string>
 
+    <!-- Accessibility confirmation for task closed -->
+    <string name="task_view_closed">Task Closed</string>
+
     <!-- Accessibility title for an app card in Recents for apps that have time limit set
      [CHAR_LIMIT=none] -->
     <string name="task_contents_description_with_remaining_time"><xliff:g id="task_description" example="GMail">%1$s</xliff:g>, <xliff:g id="remaining_time" example="7 minutes left today">%2$s</xliff:g></string>
@@ -53,8 +56,6 @@
 
     <!-- Accessibility title for the row of all-apps containing app predictions. [CHAR LIMIT=50] -->
     <string name="title_app_suggestions">App suggestions</string>
-    <!-- Label for the header text of the All Apps section in All Apps view, used to separate Predicted Apps and Actions section from All Apps section. [CHAR_LIMIT=50] -->
-    <string name="all_apps_label">All apps</string>
     <!-- Text of the tip when user lands in all apps view for the first time, indicating where the tip toast points to is the predicted apps section. [CHAR_LIMIT=50] -->
     <string name="all_apps_prediction_tip">Your predicted apps</string>
 
@@ -191,6 +192,12 @@
     <string name="action_share">Share</string>
     <!-- Label for a button that causes a screen shot of the current app to be taken. [CHAR_LIMIT=40] -->
     <string name="action_screenshot">Screenshot</string>
+    <!-- Label for a button that enters split screen selection mode. [CHAR_LIMIT=20] -->
+    <string name="action_split">Split</string>
+    <!-- Label for toast with instructions for split screen selection mode. [CHAR_LIMIT=50] -->
+    <string name="toast_split_select_app">Tap another app to use splitscreen</string>
+    <!-- Label for toast when app selected for split isn't supported. [CHAR_LIMIT=50] -->
+    <string name="toast_split_app_unsupported">App does not support split-screen.</string>
     <!-- Message shown when an action is blocked by a policy enforced by the app or the organization managing the device. [CHAR_LIMIT=NONE] -->
     <string name="blocked_by_policy">This action isn\'t allowed by the app or your organization</string>
 
@@ -203,4 +210,30 @@
     <string name="gesture_tutorial_action_button_label_cancel">Cancel</string>
     <!-- Button text shown on a button on the tutorial skip dialog to exit the tutorial. [CHAR LIMIT=14] -->
     <string name="gesture_tutorial_action_button_label_skip">Skip</string>
+
+    <!-- Accessibility label for the rotation suggestion button -->
+    <string name="accessibility_rotate_button">Rotate screen</string>
+
+    <!-- ******* Taskbar Edu ******* -->
+    <!-- Accessibility text spoken when the taskbar education panel appears [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_edu_opened">Taskbar education appeared</string>
+    <!-- Accessibility text spoken when the taskbar education panel disappears [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_edu_closed">Taskbar education closed</string>
+    <!-- Text in dialog that lets a user know how they can use the taskbar to switch apps on their device.
+         [CHAR_LIMIT=60] -->
+    <string name="taskbar_edu_switch_apps">Use the taskbar to switch apps</string>
+    <!-- Text in dialog that lets a user know how they can use the taskbar to use multiple apps at once on their device.
+         [CHAR_LIMIT=60] -->
+    <string name="taskbar_edu_splitscreen">Drag to the side to use two apps at once</string>
+    <!-- Text in dialog that lets a user know how they can hide the taskbar on their device.
+         [CHAR_LIMIT=60] -->
+    <string name="taskbar_edu_stashing">Touch &amp; hold to hide the taskbar</string>
+    <!-- Text on button to go to the next screen of a tutorial [CHAR_LIMIT=16] -->
+    <string name="taskbar_edu_next">Next</string>
+    <!-- Text on button to go to the previous screen of a tutorial [CHAR_LIMIT=16] -->
+    <string name="taskbar_edu_previous">Back</string>
+    <!-- Text on button to exit a tutorial [CHAR_LIMIT=16] -->
+    <string name="taskbar_edu_close">Close</string>
+    <!-- Text on button to finish a tutorial [CHAR_LIMIT=16] -->
+    <string name="taskbar_edu_done">Done</string>
 </resources>

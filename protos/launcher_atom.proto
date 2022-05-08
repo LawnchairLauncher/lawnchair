@@ -59,6 +59,8 @@ message ContainerInfo {
     SettingsContainer settings_container = 9;
     PredictedHotseatContainer predicted_hotseat_container = 10;
     TaskSwitcherContainer task_switcher_container = 11;
+    TaskBarContainer task_bar_container = 12;
+    WallpapersContainer wallpapers_container = 13;
     ExtendedContainers extended_containers = 20;
   }
 }
@@ -98,6 +100,16 @@ message SettingsContainer {
 }
 
 message TaskSwitcherContainer {
+}
+
+// Container for taskbar.
+// Configured to show up on large screens(tablet-sized) such as foldables in expanded state, within
+// an app view(not in launcher screen).
+message TaskBarContainer {
+  optional int32 index = 1;
+
+  // Bit encoded value to capture pinned and predicted taskbar positions.
+  optional int32 cardinality = 2;
 }
 
 enum Attribute {
@@ -141,6 +153,8 @@ enum Attribute {
   ALL_APPS_SEARCH_RESULT_NAVVYSITE = 25;
   ALL_APPS_SEARCH_RESULT_TIPS = 26;
   ALL_APPS_SEARCH_RESULT_PEOPLE_TILE = 27;
+  ALL_APPS_SEARCH_RESULT_LEGACY_SHORTCUT = 30;
+  ALL_APPS_SEARCH_RESULT_ASSISTANT_MEMORY = 31;
 
   WIDGETS_BOTTOM_TRAY = 28;
   WIDGETS_TRAY_PREDICTION = 29;
@@ -230,7 +244,14 @@ message FolderContainer {
   oneof ParentContainer {
     WorkspaceContainer workspace = 4;
     HotseatContainer hotseat = 5;
+    TaskBarContainer taskbar = 6;
   }
+}
+
+// Represents wallpapers container for quick switching.
+message WallpapersContainer {
+  // Number of wallpapers in the container.
+  optional int32 cardinality = 1;
 }
 
 // Represents state of EditText field before update.

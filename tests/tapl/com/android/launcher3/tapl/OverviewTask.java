@@ -24,7 +24,9 @@ import androidx.test.uiautomator.UiObject2;
 
 import com.android.launcher3.testing.TestProtocol;
 
+import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * A recent task in the overview panel carousel.
@@ -47,22 +49,79 @@ public final class OverviewTask {
         mOverview.verifyActiveContainer();
     }
 
+    int getVisibleHeight() {
+        return mTask.getVisibleBounds().height();
+    }
+
+    int getVisibleWidth() {
+        return mTask.getVisibleBounds().width();
+    }
+
+    int getTaskCenterX() {
+        return mTask.getVisibleCenter().x;
+    }
+
     /**
-     * Swipes the task up.
+     * Dismisses the task by swiping up.
      */
     public void dismiss() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                     "want to dismiss a task")) {
+                     "want to dismiss an overview task")) {
             verifyActiveContainer();
-            // Dismiss the task via flinging it up.
-            final Rect taskBounds = mLauncher.getVisibleBounds(mTask);
-            final int centerX = taskBounds.centerX();
-            final int centerY = taskBounds.centerY();
-            mLauncher.linearGesture(centerX, centerY, centerX, 0, 10, false,
-                    LauncherInstrumentation.GestureScope.INSIDE);
-            mLauncher.waitForIdle();
+            int taskCountBeforeDismiss = mOverview.getTaskCount();
+            mLauncher.assertNotEquals("Unable to find a task", 0, taskCountBeforeDismiss);
+            if (taskCountBeforeDismiss == 1) {
+                dismissBySwipingUp();
+                return;
+            }
+
+            boolean taskWasFocused = mLauncher.isTablet() && getVisibleHeight() == mLauncher
+                    .getFocusedTaskHeightForTablet();
+            List<Integer> originalTasksCenterX = getCurrentTasksCenterXList();
+            boolean isClearAllVisibleBeforeDismiss = mOverview.isClearAllVisible();
+
+            dismissBySwipingUp();
+
+            try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("dismissed")) {
+                if (taskWasFocused) {
+                    mLauncher.assertNotNull("No task became focused",
+                            mOverview.getFocusedTaskForTablet());
+                }
+                if (!isClearAllVisibleBeforeDismiss) {
+                    List<Integer> currentTasksCenterX = getCurrentTasksCenterXList();
+                    if (originalTasksCenterX.size() == currentTasksCenterX.size()) {
+                        // Check for the same number of visible tasks before and after to
+                        // avoid asserting on cases of shifting all tasks to close the distance
+                        // between clear all and tasks at the end of the grid.
+                        mLauncher.assertTrue("Task centers not aligned",
+                                originalTasksCenterX.equals(currentTasksCenterX));
+                    }
+                }
+            }
         }
+    }
+
+    private void dismissBySwipingUp() {
+        verifyActiveContainer();
+        // Dismiss the task via flinging it up.
+        final Rect taskBounds = mLauncher.getVisibleBounds(mTask);
+        final int centerX = taskBounds.centerX();
+        final int centerY = taskBounds.centerY();
+        mLauncher.executeAndWaitForLauncherEvent(
+                () -> mLauncher.linearGesture(centerX, centerY, centerX, 0, 10, false,
+                        LauncherInstrumentation.GestureScope.INSIDE),
+                event -> TestProtocol.DISMISS_ANIMATION_ENDS_MESSAGE.equals(event.getClassName()),
+                () -> "Didn't receive a dismiss animation ends message: " + centerX + ", "
+                        + centerY, "swiping to dismiss");
+    }
+
+    private List<Integer> getCurrentTasksCenterXList() {
+        return mLauncher.isTablet()
+                ? mOverview.getCurrentTasksForTablet().stream()
+                    .map(OverviewTask::getTaskCenterX)
+                    .collect(Collectors.toList())
+                : List.of(mOverview.getCurrentTask().getTaskCenterX());
     }
 
     /**

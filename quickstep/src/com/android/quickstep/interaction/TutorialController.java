@@ -16,25 +16,33 @@
 package com.android.quickstep.interaction;
 
 import static android.view.View.GONE;
+import static android.view.View.NO_ID;
+import static android.view.View.inflate;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.annotation.ColorRes;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Animatable2;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.DrawableRes;
+import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -48,18 +56,25 @@ import com.android.launcher3.views.ClipIconView;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureAttemptCallback;
 import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureAttemptCallback;
 
+import java.util.ArrayList;
+
 abstract class TutorialController implements BackGestureAttemptCallback,
         NavBarGestureAttemptCallback {
 
     private static final String TAG = "TutorialController";
 
+    private static final float FINGER_DOT_VISIBLE_ALPHA = 0.6f;
+    private static final float FINGER_DOT_SMALL_SCALE = 0.7f;
+    private static final int FINGER_DOT_ANIMATION_DURATION_MILLIS = 500;
+
     private static final String PIXEL_TIPS_APP_PACKAGE_NAME = "com.google.android.apps.tips";
     private static final CharSequence DEFAULT_PIXEL_TIPS_APP_NAME = "Pixel Tips";
 
-    private static final int FEEDBACK_ANIMATION_MS = 250;
+    private static final int FEEDBACK_ANIMATION_MS = 133;
     private static final int RIPPLE_VISIBLE_MS = 300;
     private static final int GESTURE_ANIMATION_DELAY_MS = 1500;
     private static final int ADVANCE_TUTORIAL_TIMEOUT_MS = 4000;
+    private static final long GESTURE_ANIMATION_PAUSE_DURATION_MILLIS = 1000;
 
     final TutorialFragment mTutorialFragment;
     TutorialType mTutorialType;
@@ -68,26 +83,30 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     final TextView mCloseButton;
     final ViewGroup mFeedbackView;
     final TextView mFeedbackTitleView;
-    final ImageView mFeedbackVideoView;
-    final ImageView mGestureVideoView;
+    final ImageView mEdgeGestureVideoView;
     final RelativeLayout mFakeLauncherView;
-    final ImageView mFakeHotseatView;
+    final FrameLayout mFakeHotseatView;
+    @Nullable View mHotseatIconView;
     final ClipIconView mFakeIconView;
-    final View mFakeTaskView;
-    final View mFakePreviousTaskView;
+    final FrameLayout mFakeTaskView;
+    final AnimatedTaskbarView mFakeTaskbarView;
+    final AnimatedTaskView mFakePreviousTaskView;
     final View mRippleView;
     final RippleDrawable mRippleDrawable;
     final Button mActionButton;
     final TutorialStepIndicator mTutorialStepView;
+    final ImageView mFingerDotView;
     private final AlertDialog mSkipTutorialDialog;
 
-    protected boolean mGestureCompleted = false;
+    private boolean mGestureCompleted = false;
 
     // These runnables  should be used when posting callbacks to their views and cleared from their
     // views before posting new callbacks.
     private final Runnable mTitleViewCallback;
     @Nullable private Runnable mFeedbackViewCallback;
-    @Nullable private Runnable mFeedbackVideoViewCallback;
+    @Nullable private Runnable mFakeTaskViewCallback;
+    @Nullable private Runnable mFakeTaskbarViewCallback;
+    private final Runnable mShowFeedbackRunnable;
 
     TutorialController(TutorialFragment tutorialFragment, TutorialType tutorialType) {
         mTutorialFragment = tutorialFragment;
@@ -100,12 +119,12 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         mFeedbackView = rootView.findViewById(R.id.gesture_tutorial_fragment_feedback_view);
         mFeedbackTitleView = mFeedbackView.findViewById(
                 R.id.gesture_tutorial_fragment_feedback_title);
-        mFeedbackVideoView = rootView.findViewById(R.id.gesture_tutorial_feedback_video);
-        mGestureVideoView = rootView.findViewById(R.id.gesture_tutorial_gesture_video);
+        mEdgeGestureVideoView = rootView.findViewById(R.id.gesture_tutorial_edge_gesture_video);
         mFakeLauncherView = rootView.findViewById(R.id.gesture_tutorial_fake_launcher_view);
         mFakeHotseatView = rootView.findViewById(R.id.gesture_tutorial_fake_hotseat_view);
         mFakeIconView = rootView.findViewById(R.id.gesture_tutorial_fake_icon_view);
         mFakeTaskView = rootView.findViewById(R.id.gesture_tutorial_fake_task_view);
+        mFakeTaskbarView = rootView.findViewById(R.id.gesture_tutorial_fake_taskbar_view);
         mFakePreviousTaskView =
                 rootView.findViewById(R.id.gesture_tutorial_fake_previous_task_view);
         mRippleView = rootView.findViewById(R.id.gesture_tutorial_ripple_view);
@@ -113,10 +132,34 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         mActionButton = rootView.findViewById(R.id.gesture_tutorial_fragment_action_button);
         mTutorialStepView =
                 rootView.findViewById(R.id.gesture_tutorial_fragment_feedback_tutorial_step);
+        mFingerDotView = rootView.findViewById(R.id.gesture_tutorial_finger_dot);
         mSkipTutorialDialog = createSkipTutorialDialog();
 
         mTitleViewCallback = () -> mFeedbackTitleView.sendAccessibilityEvent(
                 AccessibilityEvent.TYPE_VIEW_FOCUSED);
+        mShowFeedbackRunnable = () -> {
+            mFeedbackView.setAlpha(0f);
+            mFeedbackView.setScaleX(0.95f);
+            mFeedbackView.setScaleY(0.95f);
+            mFeedbackView.setVisibility(View.VISIBLE);
+            mFeedbackView.animate()
+                    .setDuration(FEEDBACK_ANIMATION_MS)
+                    .alpha(1f)
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .withEndAction(() -> {
+                        if (mGestureCompleted && !mTutorialFragment.isAtFinalStep()) {
+                            if (mFeedbackViewCallback != null) {
+                                mFeedbackView.removeCallbacks(mFeedbackViewCallback);
+                            }
+                            mFeedbackViewCallback = mTutorialFragment::continueTutorial;
+                            mFeedbackView.postDelayed(mFeedbackViewCallback,
+                                    ADVANCE_TUTORIAL_TIMEOUT_MS);
+                        }
+                    })
+                    .start();
+            mFeedbackTitleView.postDelayed(mTitleViewCallback, FEEDBACK_ANIMATION_MS);
+        };
     }
 
     private void showSkipTutorialDialog() {
@@ -125,23 +168,35 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         }
     }
 
+    public int getHotseatIconTop() {
+        return mHotseatIconView == null
+                ? 0 : mFakeHotseatView.getTop() + mHotseatIconView.getTop();
+    }
+
+    public int getHotseatIconLeft() {
+        return mHotseatIconView == null
+                ? 0 : mFakeHotseatView.getLeft() + mHotseatIconView.getLeft();
+    }
+
     void setTutorialType(TutorialType tutorialType) {
         mTutorialType = tutorialType;
     }
 
-    @DrawableRes
+    @LayoutRes
     protected int getMockHotseatResId() {
-        return R.drawable.default_sandbox_mock_launcher;
+        return mTutorialFragment.isLargeScreen()
+                ? R.layout.gesture_tutorial_foldable_mock_hotseat
+                : R.layout.gesture_tutorial_mock_hotseat;
     }
 
-    @DrawableRes
-    protected int getMockAppTaskThumbnailResId(boolean forDarkMode) {
-        return R.drawable.default_sandbox_app_task_thumbnail;
+    @LayoutRes
+    protected int getMockAppTaskLayoutResId() {
+        return View.NO_ID;
     }
 
-    @DrawableRes
-    protected int getMockPreviousAppTaskThumbnailResId() {
-        return R.drawable.default_sandbox_app_previous_task_thumbnail;
+    @ColorRes
+    protected int getMockPreviousAppTaskThumbnailColorResId() {
+        return R.color.gesture_tutorial_fake_previous_task_view_color;
     }
 
     @DrawableRes
@@ -168,23 +223,28 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         return null;
     }
 
+    @StringRes
+    public Integer getSuccessFeedbackSubtitle() {
+        return null;
+    }
+
     void showFeedback() {
         if (mGestureCompleted) {
             mFeedbackView.setTranslationY(0);
             return;
         }
-        AnimatedVectorDrawable tutorialAnimation = mTutorialFragment.getTutorialAnimation();
-        AnimatedVectorDrawable gestureAnimation = mTutorialFragment.getGestureAnimation();
-
-        if (tutorialAnimation != null && gestureAnimation != null) {
-            TextView title = mFeedbackView.findViewById(
-                    R.id.gesture_tutorial_fragment_feedback_title);
-
-            playFeedbackVideo(tutorialAnimation, gestureAnimation, () -> {
-                mFeedbackView.setTranslationY(0);
-                title.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED);
-            }, true);
+        Animator gestureAnimation = mTutorialFragment.getGestureAnimation();
+        AnimatedVectorDrawable edgeAnimation = mTutorialFragment.getEdgeAnimation();
+        if (gestureAnimation != null && edgeAnimation != null) {
+            playFeedbackAnimation(gestureAnimation, edgeAnimation, mShowFeedbackRunnable, true);
         }
+    }
+
+    /**
+     * Show feedback reflecting a successful gesture attempt.
+     **/
+    void showSuccessFeedback() {
+        showFeedback(getSuccessFeedbackSubtitle(), true);
     }
 
     /**
@@ -215,88 +275,91 @@ abstract class TutorialController implements BackGestureAttemptCallback,
             int subtitleResId,
             boolean isGestureSuccessful,
             boolean useGestureAnimationDelay) {
-        mFeedbackTitleView.setText(titleResId);
         mFeedbackTitleView.removeCallbacks(mTitleViewCallback);
+        if (mFeedbackViewCallback != null) {
+            mFeedbackView.removeCallbacks(mFeedbackViewCallback);
+            mFeedbackViewCallback = null;
+        }
+
+        mFeedbackTitleView.setText(titleResId);
         TextView subtitle =
                 mFeedbackView.findViewById(R.id.gesture_tutorial_fragment_feedback_subtitle);
         subtitle.setText(subtitleResId);
         if (isGestureSuccessful) {
-            hideCloseButton();
             if (mTutorialFragment.isAtFinalStep()) {
                 showActionButton();
             }
 
-            if (mFeedbackVideoViewCallback != null) {
-                mFeedbackVideoView.removeCallbacks(mFeedbackVideoViewCallback);
-                mFeedbackVideoViewCallback = null;
+            if (mFakeTaskViewCallback != null) {
+                mFakeTaskView.removeCallbacks(mFakeTaskViewCallback);
+                mFakeTaskViewCallback = null;
             }
         }
         mGestureCompleted = isGestureSuccessful;
 
-        AnimatedVectorDrawable tutorialAnimation = mTutorialFragment.getTutorialAnimation();
-        AnimatedVectorDrawable gestureAnimation = mTutorialFragment.getGestureAnimation();
-        if (tutorialAnimation != null && gestureAnimation != null) {
-            if (!isGestureSuccessful) {
-                playFeedbackVideo(tutorialAnimation, gestureAnimation, () -> {
-                    mFeedbackView.setTranslationY(
-                            -mFeedbackView.getHeight() - mFeedbackView.getTop());
-                    mFeedbackView.setVisibility(View.VISIBLE);
-                    mFeedbackView.animate()
-                            .setDuration(FEEDBACK_ANIMATION_MS)
-                            .translationY(0)
-                            .start();
-                    mFeedbackTitleView.postDelayed(mTitleViewCallback, FEEDBACK_ANIMATION_MS);
-                }, useGestureAnimationDelay);
-                return;
-            } else {
-                mTutorialFragment.releaseFeedbackVideoView();
-            }
+        Animator gestureAnimation = mTutorialFragment.getGestureAnimation();
+        AnimatedVectorDrawable edgeAnimation = mTutorialFragment.getEdgeAnimation();
+        if (!isGestureSuccessful && gestureAnimation != null && edgeAnimation != null) {
+            playFeedbackAnimation(
+                    gestureAnimation,
+                    edgeAnimation,
+                    mShowFeedbackRunnable,
+                    useGestureAnimationDelay);
+            return;
+        } else {
+            mTutorialFragment.releaseFeedbackAnimation();
         }
-        mFeedbackView.setTranslationY(-mFeedbackView.getHeight() - mFeedbackView.getTop());
-        mFeedbackView.setVisibility(View.VISIBLE);
-        mFeedbackView.animate()
-                .setDuration(FEEDBACK_ANIMATION_MS)
-                .translationY(0)
-                .withEndAction(() -> {
-                    if (isGestureSuccessful && !mTutorialFragment.isAtFinalStep()) {
-                        if (mFeedbackViewCallback != null) {
-                            mFeedbackView.removeCallbacks(mFeedbackViewCallback);
-                        }
-                        mFeedbackViewCallback = mTutorialFragment::continueTutorial;
-                        mFeedbackView.postDelayed(mFeedbackViewCallback,
-                                ADVANCE_TUTORIAL_TIMEOUT_MS);
-                    }
-                })
-                .start();
-        mFeedbackTitleView.postDelayed(mTitleViewCallback, FEEDBACK_ANIMATION_MS);
+        mFeedbackViewCallback = mShowFeedbackRunnable;
+
+        mFeedbackView.post(mFeedbackViewCallback);
     }
 
-    void hideFeedback(boolean releaseFeedbackVideo) {
+    public boolean isGestureCompleted() {
+        return mGestureCompleted;
+    }
+
+    void hideFeedback() {
+        cancelQueuedGestureAnimation();
         mFeedbackView.clearAnimation();
         mFeedbackView.setVisibility(View.INVISIBLE);
-        if (releaseFeedbackVideo) {
-            mTutorialFragment.releaseFeedbackVideoView();
-        }
     }
 
-    private void playFeedbackVideo(
-            @NonNull AnimatedVectorDrawable tutorialAnimation,
-            @NonNull AnimatedVectorDrawable gestureAnimation,
+    void cancelQueuedGestureAnimation() {
+        if (mFeedbackViewCallback != null) {
+            mFeedbackView.removeCallbacks(mFeedbackViewCallback);
+            mFeedbackViewCallback = null;
+        }
+        if (mFakeTaskViewCallback != null) {
+            mFakeTaskView.removeCallbacks(mFakeTaskViewCallback);
+            mFakeTaskViewCallback = null;
+        }
+        if (mFakeTaskbarViewCallback != null) {
+            mFakeTaskbarView.removeCallbacks(mFakeTaskbarViewCallback);
+            mFakeTaskbarViewCallback = null;
+        }
+        mFeedbackTitleView.removeCallbacks(mTitleViewCallback);
+    }
+
+    private void playFeedbackAnimation(
+            @NonNull Animator gestureAnimation,
+            @NonNull AnimatedVectorDrawable edgeAnimation,
             @NonNull Runnable onStartRunnable,
             boolean useGestureAnimationDelay) {
 
-        if (tutorialAnimation.isRunning()) {
-            tutorialAnimation.reset();
+        if (gestureAnimation.isRunning()) {
+            gestureAnimation.cancel();
         }
-        tutorialAnimation.registerAnimationCallback(new Animatable2.AnimationCallback() {
-
+        if (edgeAnimation.isRunning()) {
+            edgeAnimation.reset();
+        }
+        gestureAnimation.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationStart(Drawable drawable) {
-                super.onAnimationStart(drawable);
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
 
-                mGestureVideoView.setVisibility(GONE);
-                if (gestureAnimation.isRunning()) {
-                    gestureAnimation.stop();
+                mEdgeGestureVideoView.setVisibility(GONE);
+                if (edgeAnimation.isRunning()) {
+                    edgeAnimation.stop();
                 }
 
                 if (!useGestureAnimationDelay) {
@@ -305,37 +368,25 @@ abstract class TutorialController implements BackGestureAttemptCallback,
             }
 
             @Override
-            public void onAnimationEnd(Drawable drawable) {
-                super.onAnimationEnd(drawable);
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
 
-                mGestureVideoView.setVisibility(View.VISIBLE);
-                gestureAnimation.start();
+                mEdgeGestureVideoView.setVisibility(View.VISIBLE);
+                edgeAnimation.start();
 
-                tutorialAnimation.unregisterAnimationCallback(this);
+                gestureAnimation.removeListener(this);
             }
         });
 
-        if (mFeedbackViewCallback != null) {
-            mFeedbackVideoView.removeCallbacks(mFeedbackViewCallback);
-            mFeedbackViewCallback = null;
-        }
-        if (mFeedbackVideoViewCallback != null) {
-            mFeedbackVideoView.removeCallbacks(mFeedbackVideoViewCallback);
-            mFeedbackVideoViewCallback = null;
-        }
+        cancelQueuedGestureAnimation();
         if (useGestureAnimationDelay) {
             mFeedbackViewCallback = onStartRunnable;
-            mFeedbackVideoViewCallback = () -> {
-                mFeedbackVideoView.setVisibility(View.VISIBLE);
-                tutorialAnimation.start();
-            };
+            mFakeTaskViewCallback = gestureAnimation::start;
 
-            mFeedbackVideoView.setVisibility(View.GONE);
             mFeedbackView.post(mFeedbackViewCallback);
-            mFeedbackVideoView.postDelayed(mFeedbackVideoViewCallback, GESTURE_ANIMATION_DELAY_MS);
+            mFakeTaskView.postDelayed(mFakeTaskViewCallback, GESTURE_ANIMATION_DELAY_MS);
         } else {
-            mFeedbackVideoView.setVisibility(View.VISIBLE);
-            tutorialAnimation.start();
+            gestureAnimation.start();
         }
     }
 
@@ -360,10 +411,12 @@ abstract class TutorialController implements BackGestureAttemptCallback,
 
     @CallSuper
     void transitToController() {
-        hideFeedback(false);
+        hideFeedback();
         hideActionButton();
+        updateCloseButton();
         updateSubtext();
         updateDrawables();
+        updateLayout();
 
         mGestureCompleted = false;
         if (mFakeHotseatView != null) {
@@ -371,28 +424,70 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         }
     }
 
-    void hideCloseButton() {
-        mCloseButton.setVisibility(GONE);
-    }
-
-    void showCloseButton() {
-        mCloseButton.setVisibility(View.VISIBLE);
+    void updateCloseButton() {
         mCloseButton.setTextAppearance(Utilities.isDarkTheme(mContext)
                 ? R.style.TextAppearance_GestureTutorial_Feedback_Subtext
                 : R.style.TextAppearance_GestureTutorial_Feedback_Subtext_Dark);
     }
 
     void hideActionButton() {
-        showCloseButton();
+        mCloseButton.setVisibility(View.VISIBLE);
         // Invisible to maintain the layout.
         mActionButton.setVisibility(View.INVISIBLE);
         mActionButton.setOnClickListener(null);
     }
 
     void showActionButton() {
-        hideCloseButton();
+        mCloseButton.setVisibility(GONE);
         mActionButton.setVisibility(View.VISIBLE);
         mActionButton.setOnClickListener(this::onActionButtonClicked);
+    }
+
+    void hideFakeTaskbar(boolean animateToHotseat) {
+        if (!mTutorialFragment.isLargeScreen()) {
+            return;
+        }
+        if (mFakeTaskbarViewCallback != null) {
+            mFakeTaskbarView.removeCallbacks(mFakeTaskbarViewCallback);
+        }
+        if (animateToHotseat) {
+            mFakeTaskbarViewCallback = () ->
+                    mFakeTaskbarView.animateDisappearanceToHotseat(mFakeHotseatView);
+        } else {
+            mFakeTaskbarViewCallback = mFakeTaskbarView::animateDisappearanceToBottom;
+        }
+        mFakeTaskbarView.post(mFakeTaskbarViewCallback);
+    }
+
+    void showFakeTaskbar(boolean animateFromHotseat) {
+        if (!mTutorialFragment.isLargeScreen()) {
+            return;
+        }
+        if (mFakeTaskbarViewCallback != null) {
+            mFakeTaskbarView.removeCallbacks(mFakeTaskbarViewCallback);
+        }
+        if (animateFromHotseat) {
+            mFakeTaskbarViewCallback = () ->
+                    mFakeTaskbarView.animateAppearanceFromHotseat(mFakeHotseatView);
+        } else {
+            mFakeTaskbarViewCallback = mFakeTaskbarView::animateAppearanceFromBottom;
+        }
+        mFakeTaskbarView.post(mFakeTaskbarViewCallback);
+    }
+
+    void updateFakeAppTaskViewLayout(@LayoutRes int mockAppTaskLayoutResId) {
+        updateFakeViewLayout(mFakeTaskView, mockAppTaskLayoutResId);
+    }
+
+    void updateFakeViewLayout(ViewGroup view, @LayoutRes int mockLayoutResId) {
+        view.removeAllViews();
+        if (mockLayoutResId != NO_ID) {
+            view.addView(
+                    inflate(mContext, mockLayoutResId, null),
+                    new FrameLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT));
+        }
     }
 
     private void updateSubtext() {
@@ -404,21 +499,35 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         if (mContext != null) {
             mTutorialFragment.getRootView().setBackground(AppCompatResources.getDrawable(
                     mContext, getMockWallpaperResId()));
-            mTutorialFragment.updateFeedbackVideo();
+            mTutorialFragment.updateFeedbackAnimation();
             mFakeLauncherView.setBackgroundColor(
-                    mContext.getColor(Utilities.isDarkTheme(mContext)
-                            ? R.color.fake_wallpaper_color_dark_mode
-                            : R.color.fake_wallpaper_color_light_mode));
-            mFakeHotseatView.setImageDrawable(AppCompatResources.getDrawable(
-                    mContext, getMockHotseatResId()));
-            mFakeTaskView.setBackground(AppCompatResources.getDrawable(
-                    mContext, getMockAppTaskThumbnailResId(Utilities.isDarkTheme(mContext))));
+                    mContext.getColor(R.color.gesture_tutorial_fake_wallpaper_color));
+            updateFakeViewLayout(mFakeHotseatView, getMockHotseatResId());
+            mHotseatIconView = mFakeHotseatView.findViewById(R.id.hotseat_icon_1);
+            updateFakeViewLayout(mFakeTaskView, getMockAppTaskLayoutResId());
             mFakeTaskView.animate().alpha(1).setListener(
                     AnimatorListeners.forSuccessCallback(() -> mFakeTaskView.animate().cancel()));
-            mFakePreviousTaskView.setBackground(AppCompatResources.getDrawable(
-                    mContext, getMockPreviousAppTaskThumbnailResId()));
+            mFakePreviousTaskView.setFakeTaskViewFillColor(mContext.getResources().getColor(
+                    getMockPreviousAppTaskThumbnailColorResId()));
             mFakeIconView.setBackground(AppCompatResources.getDrawable(
                     mContext, getMockAppIconResId()));
+        }
+    }
+
+    private void updateLayout() {
+        if (mContext != null) {
+            RelativeLayout.LayoutParams feedbackLayoutParams =
+                    (RelativeLayout.LayoutParams) mFeedbackView.getLayoutParams();
+            feedbackLayoutParams.setMarginStart(mContext.getResources().getDimensionPixelSize(
+                    mTutorialFragment.isLargeScreen()
+                            ? R.dimen.gesture_tutorial_foldable_feedback_margin_start_end
+                            : R.dimen.gesture_tutorial_feedback_margin_start_end));
+            feedbackLayoutParams.setMarginEnd(mContext.getResources().getDimensionPixelSize(
+                    mTutorialFragment.isLargeScreen()
+                            ? R.dimen.gesture_tutorial_foldable_feedback_margin_start_end
+                            : R.dimen.gesture_tutorial_feedback_margin_start_end));
+
+            mFakeTaskbarView.setVisibility(mTutorialFragment.isLargeScreen() ? View.VISIBLE : GONE);
         }
     }
 
@@ -483,6 +592,52 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         }
 
         return null;
+    }
+
+    protected AnimatorSet createFingerDotAppearanceAnimatorSet() {
+        ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(
+                mFingerDotView, View.ALPHA, 0f, FINGER_DOT_VISIBLE_ALPHA);
+        ObjectAnimator yScaleAnimator = ObjectAnimator.ofFloat(
+                mFingerDotView, View.SCALE_Y, FINGER_DOT_SMALL_SCALE, 1f);
+        ObjectAnimator xScaleAnimator = ObjectAnimator.ofFloat(
+                mFingerDotView, View.SCALE_X, FINGER_DOT_SMALL_SCALE, 1f);
+        ArrayList<Animator> animators = new ArrayList<>();
+
+        animators.add(alphaAnimator);
+        animators.add(xScaleAnimator);
+        animators.add(yScaleAnimator);
+
+        AnimatorSet appearanceAnimatorSet = new AnimatorSet();
+
+        appearanceAnimatorSet.playTogether(animators);
+        appearanceAnimatorSet.setDuration(FINGER_DOT_ANIMATION_DURATION_MILLIS);
+
+        return appearanceAnimatorSet;
+    }
+
+    protected AnimatorSet createFingerDotDisappearanceAnimatorSet() {
+        ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(
+                mFingerDotView, View.ALPHA, FINGER_DOT_VISIBLE_ALPHA, 0f);
+        ObjectAnimator yScaleAnimator = ObjectAnimator.ofFloat(
+                mFingerDotView, View.SCALE_Y, 1f, FINGER_DOT_SMALL_SCALE);
+        ObjectAnimator xScaleAnimator = ObjectAnimator.ofFloat(
+                mFingerDotView, View.SCALE_X, 1f, FINGER_DOT_SMALL_SCALE);
+        ArrayList<Animator> animators = new ArrayList<>();
+
+        animators.add(alphaAnimator);
+        animators.add(xScaleAnimator);
+        animators.add(yScaleAnimator);
+
+        AnimatorSet appearanceAnimatorSet = new AnimatorSet();
+
+        appearanceAnimatorSet.playTogether(animators);
+        appearanceAnimatorSet.setDuration(FINGER_DOT_ANIMATION_DURATION_MILLIS);
+
+        return appearanceAnimatorSet;
+    }
+
+    protected Animator createAnimationPause() {
+        return ValueAnimator.ofFloat(0f, 1f).setDuration(GESTURE_ANIMATION_PAUSE_DURATION_MILLIS);
     }
 
     /** Denotes the type of the tutorial. */

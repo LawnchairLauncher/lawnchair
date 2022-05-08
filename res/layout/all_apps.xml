@@ -42,10 +42,10 @@
         <include layout="@layout/floating_header_content" />
 
         <include layout="@layout/all_apps_personal_work_tabs" />
+
     </com.android.launcher3.allapps.FloatingHeaderView>
 
-    <include
-        layout="@layout/search_container_all_apps"/>
+    <include layout="@layout/search_container_all_apps" />
 
     <include layout="@layout/all_apps_fast_scroller" />
 </com.android.launcher3.allapps.LauncherAllAppsContainerView>

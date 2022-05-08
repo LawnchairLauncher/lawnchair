@@ -22,11 +22,7 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
-import static com.android.launcher3.states.RotationHelper.deltaRotation;
-import static com.android.quickstep.util.RecentsOrientedState.postDisplayRotation;
-
 import android.content.res.Resources;
-import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.Log;
@@ -44,8 +40,8 @@ import java.util.Objects;
 
 /**
  * Maintains state for supporting nav bars and tracking their gestures in multiple orientations.
- * See {@link OrientationRectF#applyTransform(MotionEvent, boolean)} for transformation of
- * MotionEvents from one orientation's coordinate space to another's.
+ * See {@link OrientationRectF#applyTransformToRotation(MotionEvent, int, boolean)} for
+ * transformation of MotionEvents from one orientation's coordinate space to another's.
  *
  * This class only supports single touch/pointer gesture tracking for touches started in a supported
  * nav bar region.
@@ -94,9 +90,6 @@ class OrientationTouchTransformer {
     private static final boolean DEBUG = false;
 
     private static final int QUICKSTEP_ROTATION_UNINITIALIZED = -1;
-
-    private final Matrix mTmpMatrix = new Matrix();
-    private final float[] mTmpPoint = new float[2];
 
     private final Map<CurrentDisplay, OrientationRectF> mSwipeTouchRegions =
             new HashMap<CurrentDisplay, OrientationRectF>();
@@ -365,7 +358,7 @@ class OrientationTouchTransformer {
                 if (mLastRectTouched == null) {
                     return;
                 }
-                mLastRectTouched.applyTransform(event, true);
+                mLastRectTouched.applyTransformFromRotation(event, mCurrentDisplay.rotation, true);
                 break;
             }
             case ACTION_CANCEL:
@@ -373,7 +366,7 @@ class OrientationTouchTransformer {
                 if (mLastRectTouched == null) {
                     return;
                 }
-                mLastRectTouched.applyTransform(event, true);
+                mLastRectTouched.applyTransformFromRotation(event, mCurrentDisplay.rotation, true);
                 mLastRectTouched = null;
                 break;
             }
@@ -387,14 +380,14 @@ class OrientationTouchTransformer {
                     if (rect == null) {
                         continue;
                     }
-                    if (rect.applyTransform(event, false)) {
+                    if (rect.applyTransformFromRotation(event, mCurrentDisplay.rotation, false)) {
                         mLastRectTouched = rect;
-                        mActiveTouchRotation = rect.mRotation;
+                        mActiveTouchRotation = rect.getRotation();
                         if (mEnableMultipleRegions
                                 && mCurrentDisplay.rotation == mActiveTouchRotation) {
                             // TODO(b/154580671) might make this block unnecessary
                             // Start a touch session for the default nav region for the display
-                            mQuickStepStartingRotation = mLastRectTouched.mRotation;
+                            mQuickStepStartingRotation = mLastRectTouched.getRotation();
                             resetSwipeRegions();
                         }
                         if (DEBUG) {
@@ -422,66 +415,5 @@ class OrientationTouchTransformer {
         pw.println("  mNavBarGesturalHeight=" + mNavBarGesturalHeight);
         pw.println("  mNavBarLargerGesturalHeight=" + mNavBarLargerGesturalHeight);
         pw.println("  mOneHandedModeRegion=" + mOneHandedModeRegion);
-    }
-
-    private class OrientationRectF extends RectF {
-
-        private int mRotation;
-        private float mHeight;
-        private float mWidth;
-
-        OrientationRectF(float left, float top, float right, float bottom, int rotation) {
-            super(left, top, right, bottom);
-            this.mRotation = rotation;
-            mHeight = bottom;
-            mWidth = right;
-        }
-
-        @Override
-        public String toString() {
-            String s = super.toString();
-            s += " rotation: " + mRotation;
-            return s;
-        }
-
-        @Override
-        public boolean contains(float x, float y) {
-            // Mark bottom right as included in the Rect (copied from Rect src, added "=" in "<=")
-            return left < right && top < bottom  // check for empty first
-                    && x >= left && x <= right && y >= top && y <= bottom;
-        }
-
-        boolean applyTransform(MotionEvent event, boolean forceTransform) {
-            mTmpMatrix.reset();
-            postDisplayRotation(deltaRotation(mCurrentDisplay.rotation, mRotation),
-                    mHeight, mWidth, mTmpMatrix);
-            if (forceTransform) {
-                if (DEBUG) {
-                    Log.d(TAG, "Transforming rotation due to forceTransform, "
-                            + "mCurrentRotation: " + mCurrentDisplay.rotation
-                            + "mRotation: " + mRotation
-                            + " this: " + this);
-                }
-                event.transform(mTmpMatrix);
-                return true;
-            }
-            mTmpPoint[0] = event.getX();
-            mTmpPoint[1] = event.getY();
-            mTmpMatrix.mapPoints(mTmpPoint);
-
-            if (DEBUG) {
-                Log.d(TAG, "original: " + event.getX() + ", " + event.getY()
-                        + " new: " + mTmpPoint[0] + ", " + mTmpPoint[1]
-                        + " rect: " + this + " forceTransform: " + forceTransform
-                        + " contains: " + contains(mTmpPoint[0], mTmpPoint[1])
-                        + " this: " + this);
-            }
-
-            if (contains(mTmpPoint[0], mTmpPoint[1])) {
-                event.transform(mTmpMatrix);
-                return true;
-            }
-            return false;
-        }
     }
 }

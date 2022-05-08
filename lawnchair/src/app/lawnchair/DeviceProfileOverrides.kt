@@ -5,6 +5,8 @@ import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstBlocking
 import com.android.launcher3.InvariantDeviceProfile
+import com.android.launcher3.InvariantDeviceProfile.INDEX_ALL_APPS
+import com.android.launcher3.InvariantDeviceProfile.INDEX_DEFAULT
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.preferencemanager.firstBlocking
 
@@ -71,10 +73,10 @@ class DeviceProfileOverrides(context: Context) {
             idp.numFolderColumns = numFolderColumns
 
             // apply icon and text size
-            idp.iconSize *= iconSizeFactor
-            idp.iconTextSize *= (if (enableIconText) iconTextSizeFactor else 0f)
-            idp.allAppsIconSize *= allAppsIconSizeFactor
-            idp.allAppsIconTextSize *= (if (enableAllAppsIconText) allAppsIconTextSizeFactor else 0f)
+            idp.iconSize[INDEX_DEFAULT] *= iconSizeFactor
+            idp.iconTextSize[INDEX_DEFAULT] *= (if (enableIconText) iconTextSizeFactor else 0f)
+            idp.iconSize[INDEX_ALL_APPS] *= allAppsIconSizeFactor
+            idp.iconTextSize[INDEX_ALL_APPS] *= (if (enableAllAppsIconText) allAppsIconTextSizeFactor else 0f)
 
             idp.dbFile = dbFile
         }

@@ -28,6 +28,7 @@ import android.util.AttributeSet;
 import android.util.Property;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -68,7 +69,7 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     protected final SingleAxisSwipeDetector mSwipeDetector;
     protected final ObjectAnimator mOpenCloseAnimator;
 
-    protected View mContent;
+    protected ViewGroup mContent;
     protected final View mColorScrim;
     protected Interpolator mScrollInterpolator;
 

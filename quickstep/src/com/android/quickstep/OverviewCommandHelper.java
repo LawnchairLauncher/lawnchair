@@ -32,12 +32,15 @@ import androidx.annotation.UiThread;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.util.RunnableList;
 import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
+import com.android.quickstep.util.LauncherSplitScreenListener;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Helper class to handle various atomic commands for switching between Overview.
@@ -49,6 +52,7 @@ public class OverviewCommandHelper {
     public static final int TYPE_SHOW_NEXT_FOCUS = 2;
     public static final int TYPE_HIDE = 3;
     public static final int TYPE_TOGGLE = 4;
+    public static final int TYPE_HOME = 5;
 
     private static final String TRANSITION_NAME = "Transition:toOverview";
 
@@ -114,11 +118,12 @@ public class OverviewCommandHelper {
         mPendingCommands.clear();
     }
 
+    @Nullable
     private TaskView getNextTask(RecentsView view) {
         final TaskView runningTaskView = view.getRunningTaskView();
 
         if (runningTaskView == null) {
-            return view.getTaskViewCount() > 0 ? view.getTaskViewAt(0) : null;
+            return view.getTaskViewAt(0);
         } else {
             final TaskView nextTask = view.getNextTaskView();
             return nextTask != null ? nextTask : runningTaskView;
@@ -154,6 +159,11 @@ public class OverviewCommandHelper {
                 // already hidden
                 return true;
             }
+            if (cmd.type == TYPE_HOME) {
+                mService.startActivity(mOverviewComponentObserver.getHomeIntent());
+                LauncherSplitScreenListener.INSTANCE.getNoCreate().notifySwipingToHome();
+                return true;
+            }
         } else {
             switch (cmd.type) {
                 case TYPE_SHOW:
@@ -168,6 +178,10 @@ public class OverviewCommandHelper {
                 }
                 case TYPE_TOGGLE:
                     return launchTask(recents, getNextTask(recents), cmd);
+                case TYPE_HOME:
+                    recents.startHome();
+                    LauncherSplitScreenListener.INSTANCE.getNoCreate().notifySwipingToHome();
+                    return true;
             }
         }
 
@@ -200,7 +214,7 @@ public class OverviewCommandHelper {
             }
 
             @Override
-            public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
+            public void onRecentsAnimationCanceled(HashMap<Integer, ThumbnailData> thumbnailDatas) {
                 interactionHandler.onGestureCancelled();
                 cmd.removeListener(this);
 
@@ -244,8 +258,8 @@ public class OverviewCommandHelper {
                 // Ensure that recents view has focus so that it receives the followup key inputs
                 TaskView taskView = rv.getNextTaskView();
                 if (taskView == null) {
-                    if (rv.getTaskViewCount() > 0) {
-                        taskView = rv.getTaskViewAt(0);
+                    taskView = rv.getTaskViewAt(0);
+                    if (taskView != null) {
                         taskView.requestFocus();
                     } else {
                         rv.requestFocus();
@@ -256,6 +270,14 @@ public class OverviewCommandHelper {
             }
         }
         scheduleNextTask(cmd);
+    }
+
+    public void dump(PrintWriter pw) {
+        pw.println("OverviewCommandHelper:");
+        pw.println("  mPendingCommands=" + mPendingCommands.size());
+        if (!mPendingCommands.isEmpty()) {
+            pw.println("    pendingCommandType=" + mPendingCommands.get(0).type);
+        }
     }
 
     private static class CommandInfo {

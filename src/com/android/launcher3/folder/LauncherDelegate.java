@@ -18,8 +18,6 @@ package com.android.launcher3.folder;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_CONVERTED_TO_ICON;
 
 import android.content.Context;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -38,10 +36,7 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
-import com.android.launcher3.views.BaseDragLayer.LayoutParams;
-import com.android.launcher3.widget.LocalColorExtractor;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -51,8 +46,6 @@ import java.util.function.Consumer;
 public class LauncherDelegate {
 
     private final Launcher mLauncher;
-    private final Rect mTempRect = new Rect();
-    private final RectF mTempRectF = new RectF();
 
     private LauncherDelegate(Launcher launcher) {
         mLauncher = launcher;
@@ -84,16 +77,7 @@ public class LauncherDelegate {
         return mLauncher;
     }
 
-    void addRectForColorExtraction(BaseDragLayer.LayoutParams lp, LocalColorExtractor target) {
-        mTempRect.set(lp.x, lp.y, lp.x + lp.width, lp.y + lp.height);
-        target.getExtractedRectForViewRect(mLauncher,
-                mLauncher.getWorkspace().getCurrentPage(), mTempRect, mTempRectF);
-        if (!mTempRectF.isEmpty()) {
-            target.addLocation(Arrays.asList(mTempRectF));
-        }
-    }
-
-    void replaceFolderWithFinalItem(Folder folder) {
+    boolean replaceFolderWithFinalItem(Folder folder) {
         // Add the last remaining child to the workspace in place of the folder
         Runnable onCompleteRunnable = new Runnable() {
             @Override
@@ -147,6 +131,7 @@ public class LauncherDelegate {
         } else {
             onCompleteRunnable.run();
         }
+        return true;
     }
 
 
@@ -191,7 +176,7 @@ public class LauncherDelegate {
         ModelWriter getModelWriter() {
             if (mWriter == null) {
                 mWriter = LauncherAppState.getInstance((Context) mContext).getModel()
-                        .getWriter(false, false);
+                        .getWriter(false, false, null);
             }
             return mWriter;
         }
@@ -205,16 +190,15 @@ public class LauncherDelegate {
         }
 
         @Override
-        void replaceFolderWithFinalItem(Folder folder) { }
+        boolean replaceFolderWithFinalItem(Folder folder) {
+            return false;
+        }
 
         @Override
         boolean interceptOutsideTouch(MotionEvent ev, BaseDragLayer dl, Folder folder) {
             folder.close(true);
             return true;
         }
-
-        @Override
-        void addRectForColorExtraction(LayoutParams lp, LocalColorExtractor target) { }
     }
 
     static LauncherDelegate from(ActivityContext context) {

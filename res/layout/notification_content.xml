@@ -14,10 +14,11 @@
      limitations under the License.
 -->
 
-<merge
+<com.android.launcher3.notification.NotificationMainView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <!-- header -->
     <FrameLayout
@@ -49,7 +50,7 @@
     </FrameLayout>
 
     <!-- Main view -->
-    <com.android.launcher3.notification.NotificationMainView
+    <FrameLayout
         android:id="@+id/main_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -59,7 +60,6 @@
             android:id="@+id/text_and_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?attr/popupColorPrimary"
             android:gravity="center_vertical"
             android:orientation="vertical"
             android:paddingTop="@dimen/notification_padding"
@@ -95,5 +95,5 @@
             android:layout_marginTop="@dimen/notification_padding"
             android:layout_marginStart="@dimen/notification_icon_padding" />
 
-    </com.android.launcher3.notification.NotificationMainView>
-</merge>
+    </FrameLayout>
+</com.android.launcher3.notification.NotificationMainView>

@@ -15,11 +15,32 @@
  */
 package com.android.quickstep.interaction;
 
+import static com.android.launcher3.Utilities.mapBoundToRange;
+import static com.android.launcher3.Utilities.mapRange;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+
+import android.animation.Animator;
 import android.app.Activity;
+import android.app.ActivityManager.RunningTaskInfo;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PixelFormat;
+import android.graphics.PointF;
+import android.graphics.RadialGradient;
+import android.graphics.Rect;
+import android.graphics.Shader.TileMode;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.view.View.AccessibilityDelegate;
@@ -29,9 +50,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.quickstep.AnimatedFloat;
+import com.android.quickstep.GestureState;
+import com.android.quickstep.TouchInteractionService.TISBinder;
+import com.android.quickstep.util.TISBindHelper;
+
+import com.airbnb.lottie.LottieAnimationView;
 
 import java.net.URISyntaxException;
 
@@ -47,10 +75,27 @@ public class AllSetActivity extends Activity {
     private static final String EXTRA_ACCENT_COLOR_DARK_MODE = "suwColorAccentDark";
     private static final String EXTRA_ACCENT_COLOR_LIGHT_MODE = "suwColorAccentLight";
 
+    private static final float HINT_BOTTOM_FACTOR = 1 - .94f;
+
+    private TISBindHelper mTISBindHelper;
+    private TISBinder mBinder;
+
+    private final AnimatedFloat mSwipeProgress = new AnimatedFloat(this::onSwipeProgressUpdate);
+    private BgDrawable mBackground;
+    private View mContentView;
+    private float mSwipeUpShift;
+
+    @Nullable private Vibrator mVibrator;
+    private LottieAnimationView mAnimatedBackground;
+    private Animator.AnimatorListener mBackgroundAnimatorListener;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_allset);
+        findViewById(R.id.root_view).setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
         int mode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         boolean isDarkTheme = mode == Configuration.UI_MODE_NIGHT_YES;
@@ -59,6 +104,11 @@ public class AllSetActivity extends Activity {
                 isDarkTheme ? Color.WHITE : Color.BLACK);
 
         ((ImageView) findViewById(R.id.icon)).getDrawable().mutate().setTint(accentColor);
+
+        mBackground = new BgDrawable(this);
+        findViewById(R.id.root_view).setBackground(mBackground);
+        mContentView = findViewById(R.id.content_view);
+        mSwipeUpShift = getResources().getDimension(R.dimen.allset_swipe_up_shift);
 
         TextView tv = findViewById(R.id.navigation_settings);
         tv.setTextColor(accentColor);
@@ -73,6 +123,120 @@ public class AllSetActivity extends Activity {
         });
 
         findViewById(R.id.hint).setAccessibilityDelegate(new SkipButtonAccessibilityDelegate());
+        mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
+
+        mVibrator = getSystemService(Vibrator.class);
+        mAnimatedBackground = findViewById(R.id.animated_background);
+        startBackgroundAnimation();
+    }
+
+    private void startBackgroundAnimation() {
+        if (Utilities.ATLEAST_S && mVibrator != null && mVibrator.areAllPrimitivesSupported(
+                VibrationEffect.Composition.PRIMITIVE_THUD)) {
+            if (mBackgroundAnimatorListener == null) {
+                mBackgroundAnimatorListener =
+                        new Animator.AnimatorListener() {
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+                                mVibrator.vibrate(getVibrationEffect());
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animator animation) {
+                                mVibrator.vibrate(getVibrationEffect());
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                mVibrator.cancel();
+                            }
+
+                            @Override
+                            public void onAnimationCancel(Animator animation) {
+                                mVibrator.cancel();
+                            }
+                        };
+            }
+            mAnimatedBackground.addAnimatorListener(mBackgroundAnimatorListener);
+        }
+        mAnimatedBackground.playAnimation();
+    }
+
+    /**
+     * Sets up the vibration effect for the next round of animation. The parameters vary between
+     * different illustrations.
+     */
+    private VibrationEffect getVibrationEffect() {
+        return VibrationEffect.startComposition()
+                .addPrimitive(VibrationEffect.Composition.PRIMITIVE_THUD, 1.0f, 50)
+                .compose();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mBinder != null) {
+            mBinder.getTaskbarManager().setSetupUIVisible(true);
+            mBinder.setSwipeUpProxy(this::createSwipeUpProxy);
+        }
+    }
+
+    private void onTISConnected(TISBinder binder) {
+        mBinder = binder;
+        mBinder.getTaskbarManager().setSetupUIVisible(isResumed());
+        mBinder.setSwipeUpProxy(isResumed() ? this::createSwipeUpProxy : null);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        clearBinderOverride();
+        if (mSwipeProgress.value >= 1) {
+            finishAndRemoveTask();
+        }
+    }
+
+    private void clearBinderOverride() {
+        if (mBinder != null) {
+            mBinder.getTaskbarManager().setSetupUIVisible(false);
+            mBinder.setSwipeUpProxy(null);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mTISBindHelper.onDestroy();
+        clearBinderOverride();
+        if (mBackgroundAnimatorListener != null) {
+            mAnimatedBackground.removeAnimatorListener(mBackgroundAnimatorListener);
+        }
+    }
+
+    private AnimatedFloat createSwipeUpProxy(GestureState state) {
+        if (!state.getHomeIntent().getComponent().getPackageName().equals(getPackageName())) {
+            return null;
+        }
+        RunningTaskInfo rti = state.getRunningTask();
+        if (rti == null || !rti.topActivity.equals(getComponentName())) {
+            return null;
+        }
+        mSwipeProgress.updateValue(0);
+        return mSwipeProgress;
+    }
+
+    private void onSwipeProgressUpdate() {
+        mBackground.setProgress(mSwipeProgress.value);
+        float alpha = Utilities.mapBoundToRange(mSwipeProgress.value, 0, HINT_BOTTOM_FACTOR,
+                1, 0, LINEAR);
+        mContentView.setAlpha(alpha);
+        mContentView.setTranslationY((alpha - 1) * mSwipeUpShift);
+
+        if (alpha == 0f) {
+            mAnimatedBackground.pauseAnimation();
+        } else if (!mAnimatedBackground.isAnimating()) {
+            mAnimatedBackground.resumeAnimation();
+        }
     }
 
     /**
@@ -98,5 +262,80 @@ public class AllSetActivity extends Activity {
             }
             return super.performAccessibilityAction(host, action, args);
         }
+    }
+
+    private static class BgDrawable extends Drawable {
+
+        private static final float START_SIZE_FACTOR = .5f;
+        private static final float END_SIZE_FACTOR = 2;
+        private static final float GRADIENT_END_PROGRESS = .5f;
+
+        private final Paint mPaint = new Paint();
+        private final RadialGradient mMaskGrad;
+        private final Matrix mMatrix = new Matrix();
+
+        private final ColorMatrix mColorMatrix = new ColorMatrix();
+        private final ColorMatrixColorFilter mColorFilter =
+                new ColorMatrixColorFilter(mColorMatrix);
+
+        private final int mColor;
+        private float mProgress = 0;
+
+        BgDrawable(Context context) {
+            mColor = context.getColor(R.color.all_set_page_background);
+            mMaskGrad = new RadialGradient(0, 0, 1,
+                    new int[] {ColorUtils.setAlphaComponent(mColor, 0), mColor},
+                    new float[]{0, 1}, TileMode.CLAMP);
+
+            mPaint.setShader(mMaskGrad);
+            mPaint.setColorFilter(mColorFilter);
+        }
+
+        @Override
+        public void draw(Canvas canvas) {
+            if (mProgress <= 0) {
+                canvas.drawColor(mColor);
+                return;
+            }
+
+            // Update the progress to half the size only.
+            float progress = mapBoundToRange(mProgress,
+                    0, GRADIENT_END_PROGRESS, 0, 1, LINEAR);
+            Rect bounds = getBounds();
+            float x = bounds.exactCenterX();
+            float height = bounds.height();
+
+            float size = PointF.length(x, height);
+            float radius = size * mapRange(progress, START_SIZE_FACTOR, END_SIZE_FACTOR);
+            float y = mapRange(progress, height + radius , height / 2);
+            mMatrix.setTranslate(x, y);
+            mMatrix.postScale(radius, radius, x, y);
+            mMaskGrad.setLocalMatrix(mMatrix);
+
+            // Change the alpha-addition-component (index 19) so that every pixel is updated
+            // accordingly
+            mColorMatrix.getArray()[19] = mapBoundToRange(mProgress, 0, 1, 0, -255, LINEAR);
+            mColorFilter.setColorMatrix(mColorMatrix);
+
+            canvas.drawPaint(mPaint);
+        }
+
+        public void setProgress(float progress) {
+            if (mProgress != progress) {
+                mProgress = progress;
+                invalidateSelf();
+            }
+        }
+
+        @Override
+        public int getOpacity() {
+            return PixelFormat.TRANSLUCENT;
+        }
+
+        @Override
+        public void setAlpha(int i) { }
+
+        @Override
+        public void setColorFilter(ColorFilter colorFilter) { }
     }
 }

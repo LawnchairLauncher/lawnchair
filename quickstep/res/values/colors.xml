@@ -14,8 +14,6 @@
      limitations under the License.
 -->
 <resources>
-    <color name="back_arrow_color_light">#FFFFFFFF</color>
-    <color name="back_arrow_color_dark">#99000000</color>
 
     <color name="chip_hint_foreground_color">#fff</color>
     <color name="chip_scrim_start_color">#39000000</color>
@@ -26,6 +24,59 @@
     <color name="all_apps_prediction_row_separator_dark">#3cffffff</color>
 
     <!-- Taskbar -->
-    <color name="taskbar_background">#101010</color>
-    <color name="taskbar_icon_selection_ripple">#E0E0E0</color>
+    <color name="taskbar_background">@color/overview_scrim_dark</color>
+    <color name="taskbar_nav_icon_selection_ripple">#E0E0E0</color>
+    <color name="taskbar_nav_icon_light_color">#ffffff</color>
+    <!-- The dark navigation button color is only used in the rare cases that taskbar isn't drawing
+    its background and the underlying app has requested dark buttons. -->
+    <color name="taskbar_nav_icon_dark_color">#99000000</color>
+    <color name="taskbar_stashed_handle_light_color">#EBffffff</color>
+    <color name="taskbar_stashed_handle_dark_color">#99000000</color>
+
+    <!-- Gesture navigation tutorial -->
+    <color name="gesture_tutorial_back_arrow_color">#FFFFFFFF</color>
+
+    <color name="gesture_tutorial_fake_wallpaper_color">#f9f9f9</color> <!-- White -->
+    <color name="gesture_tutorial_ripple_color">#A0C2F9</color> <!-- Light Blue -->
+    <color name="gesture_tutorial_fake_task_view_color">#6DA1FF</color> <!-- Light Blue -->
+    <!-- Must contrast gesture_tutorial_fake_wallpaper_color -->
+    <color name="gesture_tutorial_fake_previous_task_view_color">#3C4043</color> <!-- Gray -->
+    <color name="gesture_tutorial_action_button_label_color">#FF000000</color>
+    <color name="gesture_tutorial_primary_color">#B7F29F</color> <!-- Light Green -->
+    <color name="gesture_tutorial_taskbar_color">#202124</color>
+
+    <!-- Mock hotseat -->
+    <color name="mock_app_icon_1">#8AB4F8</color>
+    <color name="mock_app_icon_2">#F28B82</color>
+    <color name="mock_app_icon_3">#FDD663</color>
+    <color name="mock_app_icon_4">#81C995</color>
+    <color name="mock_search_bar">#3C4043</color>
+
+    <!-- Mock conversation -->
+    <color name="mock_conversation_background">#f1f3f4</color>
+    <color name="mock_conversation_top_bar">#e8eaed</color>
+    <color name="mock_conversation_top_bar_item">#dadce0</color>
+    <color name="mock_conversation_sent_message">#bdc1c6</color>
+    <color name="mock_conversation_received_message">#e8eaed</color>
+    <color name="mock_conversation_message_input">#dadce0</color>
+    <color name="mock_conversation_profile_icon">#dadce0</color>
+
+    <!-- Mock conversations list -->
+    <color name="mock_list_background">#dadce0</color>
+    <color name="mock_list_top_bar">#e8eaed</color>
+    <color name="mock_list_top_bar_item">#f8f9fa</color>
+    <color name="mock_list_profile_icon">#9aa0a6</color>
+    <color name="mock_list_preview_message">#bdc1c6</color>
+    <color name="mock_list_button">#bdc1c6</color>
+
+    <!-- Mock web page -->
+    <color name="mock_webpage_background">#f1f3f4</color>
+    <color name="mock_webpage_url_bar">#6e7175</color>
+    <color name="mock_webpage_url_bar_item">#9a9a9a</color>
+    <color name="mock_webpage_top_bar">#e8eaed</color>
+    <color name="mock_webpage_top_bar_item">#80868b</color>
+    <color name="mock_webpage_page_text">#bdc1c6</color>
+
+    <color name="all_set_page_background">#FFFFFFFF</color>
+
 </resources>

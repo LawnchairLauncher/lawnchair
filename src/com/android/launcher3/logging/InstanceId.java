@@ -36,10 +36,10 @@ import androidx.annotation.VisibleForTesting;
  */
 public final class InstanceId implements Parcelable {
     // At most 20 bits: ~1m possibilities, ~0.5% probability of collision in 100 values
-    static final int INSTANCE_ID_MAX = 1 << 20;
+    public static final int INSTANCE_ID_MAX = 1 << 20;
 
     private final int mId;
-    InstanceId(int id) {
+    public InstanceId(int id) {
         mId = min(max(0, id), INSTANCE_ID_MAX);
     }
 

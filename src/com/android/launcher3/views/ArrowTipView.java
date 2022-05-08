@@ -37,6 +37,7 @@ import androidx.core.content.ContextCompat;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -56,6 +57,7 @@ public class ArrowTipView extends AbstractFloatingView {
     protected final BaseDraggingActivity mActivity;
     private final Handler mHandler = new Handler();
     private final int mArrowWidth;
+    private final int mArrowMinOffset;
     private boolean mIsPointingUp;
     private Runnable mOnClosed;
     private View mArrowView;
@@ -69,6 +71,8 @@ public class ArrowTipView extends AbstractFloatingView {
         mActivity = BaseDraggingActivity.fromContext(context);
         mIsPointingUp = isPointingUp;
         mArrowWidth = context.getResources().getDimensionPixelSize(R.dimen.arrow_toast_arrow_width);
+        mArrowMinOffset = context.getResources().getDimensionPixelSize(
+                R.dimen.dynamic_grid_cell_border_spacing);
         init(context);
     }
 
@@ -126,10 +130,10 @@ public class ArrowTipView extends AbstractFloatingView {
     /**
      * Show the ArrowTipView (tooltip) center, start, or end aligned.
      *
-     * @param text The text to be shown in the tooltip.
-     * @param gravity The gravity aligns the tooltip center, start, or end.
+     * @param text             The text to be shown in the tooltip.
+     * @param gravity          The gravity aligns the tooltip center, start, or end.
      * @param arrowMarginStart The margin from start to place arrow (ignored if center)
-     * @param top The Y coordinate of the bottom of tooltip.
+     * @param top              The Y coordinate of the bottom of tooltip.
      * @return The tooltip.
      */
     public ArrowTipView show(String text, int gravity, int arrowMarginStart, int top) {
@@ -137,23 +141,28 @@ public class ArrowTipView extends AbstractFloatingView {
         ViewGroup parent = mActivity.getDragLayer();
         parent.addView(this);
 
+        DeviceProfile grid = mActivity.getDeviceProfile();
+
         DragLayer.LayoutParams params = (DragLayer.LayoutParams) getLayoutParams();
         params.gravity = gravity;
+        params.leftMargin = mArrowMinOffset + grid.getInsets().left;
+        params.rightMargin = mArrowMinOffset + grid.getInsets().right;
         LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mArrowView.getLayoutParams();
+
         lp.gravity = gravity;
 
         if (parent.getLayoutDirection() == LAYOUT_DIRECTION_RTL) {
             arrowMarginStart = parent.getMeasuredWidth() - arrowMarginStart;
         }
         if (gravity == Gravity.END) {
-            lp.setMarginEnd(parent.getMeasuredWidth() - arrowMarginStart - mArrowWidth);
+            lp.setMarginEnd(Math.max(mArrowMinOffset,
+                    parent.getMeasuredWidth() - params.rightMargin - arrowMarginStart
+                            - mArrowWidth / 2));
         } else if (gravity == Gravity.START) {
-            lp.setMarginStart(arrowMarginStart - mArrowWidth / 2);
+            lp.setMarginStart(Math.max(mArrowMinOffset,
+                    arrowMarginStart - params.leftMargin - mArrowWidth / 2));
         }
         requestLayout();
-
-        params.leftMargin = mActivity.getDeviceProfile().workspacePadding.left;
-        params.rightMargin = mActivity.getDeviceProfile().workspacePadding.right;
         post(() -> setY(top - (mIsPointingUp ? 0 : getHeight())));
 
         mIsOpen = true;

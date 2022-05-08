@@ -17,7 +17,7 @@ package com.android.launcher3.ui.widget;
 
 import static androidx.test.InstrumentationRegistry.getTargetContext;
 
-import static com.android.launcher3.common.WidgetUtils.createWidgetInfo;
+import static com.android.launcher3.util.WidgetUtils.createWidgetInfo;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

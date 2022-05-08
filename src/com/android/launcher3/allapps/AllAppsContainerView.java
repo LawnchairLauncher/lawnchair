@@ -19,15 +19,11 @@ package com.android.launcher3.allapps;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_PERSONAL_TAB;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_WORK_TAB;
-import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_HAS_SHORTCUT_PERMISSION;
-import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_CHANGE_PERMISSION;
-import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_ENABLED;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -36,7 +32,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.Process;
-import android.text.Selection;
+import android.os.UserManager;
 import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -70,7 +66,6 @@ import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.model.data.AppInfo;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.RecyclerViewFastScroller;
@@ -94,11 +89,12 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
     public static final float FLING_VELOCITY_MULTIPLIER = 1200f;
 
     private final Paint mHeaderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Rect mInsets = new Rect();
 
     protected final BaseDraggingActivity mLauncher;
     protected final AdapterHolder[] mAH;
-    private final ItemInfoMatcher mPersonalMatcher = ItemInfoMatcher.ofUser(Process.myUserHandle());
-    private final ItemInfoMatcher mWorkMatcher = mPersonalMatcher.negate();
+    protected final ItemInfoMatcher mPersonalMatcher = ItemInfoMatcher.ofUser(
+            Process.myUserHandle());
     private final AllAppsStore mAllAppsStore = new AllAppsStore();
 
     private final RecyclerView.OnScrollListener mScrollListener =
@@ -108,6 +104,8 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
                     updateHeaderScroll(((AllAppsRecyclerView) recyclerView).getCurrentScrollY());
                 }
             };
+    private final WorkProfileManager mWorkManager;
+
 
     private final Paint mNavBarScrimPaint;
     private int mNavBarScrimHeight = 0;
@@ -117,27 +115,24 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
     private AllAppsPagedView mViewPager;
 
     protected FloatingHeaderView mHeader;
-    private float mHeaderTop;
-    private WorkModeSwitch mWorkModeSwitch;
 
 
     private SpannableStringBuilder mSearchQueryBuilder = null;
 
     protected boolean mUsingTabs;
-    private boolean mSearchModeWhileUsingTabs = false;
+    private boolean mIsSearching;
+    private boolean mHasWorkApps;
 
     protected RecyclerViewFastScroller mTouchHandler;
     protected final Point mFastScrollerOffset = new Point();
 
-    private Rect mInsets = new Rect();
-
     private SearchAdapterProvider mSearchAdapterProvider;
-    private WorkAdapterProvider mWorkAdapterProvider;
     private final int mScrimColor;
     private final int mHeaderProtectionColor;
     private final float mHeaderThreshold;
     private ScrimView mScrimView;
     private int mHeaderColor;
+    private int mTabsProtectionAlpha;
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -160,15 +155,11 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
         mLauncher.addOnDeviceProfileChangeListener(this);
 
         mSearchAdapterProvider = mLauncher.createSearchAdapterProvider(this);
-        mSearchQueryBuilder = new SpannableStringBuilder();
-        Selection.setSelection(mSearchQueryBuilder, 0);
 
         mAH = new AdapterHolder[2];
-        mWorkAdapterProvider = new WorkAdapterProvider(mLauncher, () -> {
-            if (mAH[AdapterHolder.WORK] != null) {
-                mAH[AdapterHolder.WORK].appsList.updateAdapterItems();
-            }
-        });
+
+        mWorkManager = new WorkProfileManager(mLauncher.getSystemService(UserManager.class), this,
+                Utilities.getPrefs(mLauncher));
         mAH[AdapterHolder.MAIN] = new AdapterHolder(false /* isWork */);
         mAH[AdapterHolder.WORK] = new AdapterHolder(true /* isWork */);
 
@@ -195,7 +186,7 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
             int currentPage = state.getInt(BUNDLE_KEY_CURRENT_PAGE, 0);
             if (currentPage != 0 && mViewPager != null) {
                 mViewPager.setCurrentPage(currentPage);
-                rebindAdapters(true);
+                rebindAdapters();
             } else {
                 reset(true);
             }
@@ -224,8 +215,8 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
         return mAllAppsStore;
     }
 
-    public WorkModeSwitch getWorkModeSwitch() {
-        return mWorkModeSwitch;
+    public WorkProfileManager getWorkManager() {
+        return mWorkManager;
     }
 
     @Override
@@ -244,25 +235,18 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
     private void onAppsUpdated() {
         boolean hasWorkApps = false;
         for (AppInfo app : mAllAppsStore.getApps()) {
-            if (mWorkMatcher.matches(app, null)) {
+            if (mWorkManager.getMatcher().matches(app, null)) {
                 hasWorkApps = true;
                 break;
             }
         }
+        mHasWorkApps = hasWorkApps;
         if (!mAH[AdapterHolder.MAIN].appsList.hasFilter()) {
-            rebindAdapters(hasWorkApps);
+            rebindAdapters();
             if (hasWorkApps) {
-                resetWorkProfile();
+                mWorkManager.reset();
             }
         }
-    }
-
-    private void resetWorkProfile() {
-        boolean isEnabled = !mAllAppsStore.hasModelFlag(FLAG_QUIET_MODE_ENABLED);
-        if (mWorkModeSwitch != null) {
-            mWorkModeSwitch.updateCurrentState(isEnabled);
-        }
-        mWorkAdapterProvider.updateCurrentState(isEnabled);
     }
 
     /**
@@ -328,6 +312,8 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
                     mViewPager.getNextPage() == 0
                             ? R.string.all_apps_button_personal_label
                             : R.string.all_apps_button_work_label;
+        } else if (mIsSearching) {
+            descriptionRes = R.string.all_apps_search_results;
         } else {
             descriptionRes = R.string.all_apps_button_label;
         }
@@ -376,7 +362,7 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
         });
 
         mHeader = findViewById(R.id.all_apps_header);
-        rebindAdapters(mUsingTabs, true /* force */);
+        rebindAdapters(true /* force */);
 
         mSearchContainer = findViewById(R.id.search_container_all_apps);
         mSearchUiManager = (SearchUiManager) mSearchContainer;
@@ -401,12 +387,10 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
     public void setInsets(Rect insets) {
         mInsets.set(insets);
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        int leftRightPadding = grid.desiredWorkspaceLeftRightMarginPx
-                + grid.cellLayoutPaddingLeftRightPx;
 
         for (int i = 0; i < mAH.length; i++) {
             mAH[i].padding.bottom = insets.bottom;
-            mAH[i].padding.left = mAH[i].padding.right = leftRightPadding;
+            mAH[i].padding.left = mAH[i].padding.right = grid.allAppsLeftRightPadding;
             mAH[i].applyPadding();
         }
 
@@ -427,8 +411,7 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
     @Override
     public WindowInsets dispatchApplyWindowInsets(WindowInsets insets) {
         if (Utilities.ATLEAST_Q) {
-            mNavBarScrimHeight = insets.getTappableElementInsets().bottom
-                    - mLauncher.getDeviceProfile().nonOverlappingTaskbarInset;
+            mNavBarScrimHeight = insets.getTappableElementInsets().bottom;
         } else {
             mNavBarScrimHeight = insets.getStableInsetBottom();
         }
@@ -445,11 +428,12 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
         }
     }
 
-    private void rebindAdapters(boolean showTabs) {
-        rebindAdapters(showTabs, false /* force */);
+    private void rebindAdapters() {
+        rebindAdapters(false /* force */);
     }
 
-    protected void rebindAdapters(boolean showTabs, boolean force) {
+    protected void rebindAdapters(boolean force) {
+        boolean showTabs = mHasWorkApps && !mIsSearching;
         if (showTabs == mUsingTabs && !force) {
             return;
         }
@@ -460,9 +444,8 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
         mAllAppsStore.unregisterIconContainer(mAH[AdapterHolder.WORK].recyclerView);
 
         if (mUsingTabs) {
-            setupWorkToggle();
             mAH[AdapterHolder.MAIN].setup(mViewPager.getChildAt(0), mPersonalMatcher);
-            mAH[AdapterHolder.WORK].setup(mViewPager.getChildAt(1), mWorkMatcher);
+            mAH[AdapterHolder.WORK].setup(mViewPager.getChildAt(1), mWorkManager.getMatcher());
             mAH[AdapterHolder.WORK].recyclerView.setId(R.id.apps_list_view_work);
             mViewPager.getPageIndicator().setActiveMarker(AdapterHolder.MAIN);
             findViewById(R.id.tab_personal)
@@ -494,23 +477,12 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
         mAllAppsStore.registerIconContainer(mAH[AdapterHolder.WORK].recyclerView);
     }
 
-    private void setupWorkToggle() {
-        if (Utilities.ATLEAST_P) {
-            mWorkModeSwitch = (WorkModeSwitch) mLauncher.getLayoutInflater().inflate(
-                    R.layout.work_mode_fab, this, false);
-            this.addView(mWorkModeSwitch);
-            mWorkModeSwitch.setInsets(mInsets);
-            mWorkModeSwitch.post(() -> {
-                mAH[AdapterHolder.WORK].applyPadding();
-                resetWorkProfile();
-            });
-        }
-    }
 
     private void replaceRVContainer(boolean showTabs) {
-        for (int i = 0; i < mAH.length; i++) {
-            if (mAH[i].recyclerView != null) {
-                mAH[i].recyclerView.setLayoutManager(null);
+        for (AdapterHolder adapterHolder : mAH) {
+            if (adapterHolder.recyclerView != null) {
+                adapterHolder.recyclerView.setLayoutManager(null);
+                adapterHolder.recyclerView.setAdapter(null);
             }
         }
         View oldView = getRecyclerViewContainer();
@@ -519,15 +491,15 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
         int layout = showTabs ? R.layout.all_apps_tabs : R.layout.all_apps_rv_layout;
         View newView = getLayoutInflater().inflate(layout, this, false);
         addView(newView, index);
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.WORK_PROFILE_REMOVED, "should show tabs:" + showTabs,
-                    new Exception());
-        }
         if (showTabs) {
             mViewPager = (AllAppsPagedView) newView;
             mViewPager.initParentViews(this);
             mViewPager.getPageIndicator().setOnActivePageChangedListener(this);
+            if (mWorkManager.attachWorkModeSwitch()) {
+                mWorkManager.getWorkModeSwitch().post(() -> mAH[AdapterHolder.WORK].applyPadding());
+            }
         } else {
+            mWorkManager.detachWorkModeSwitch();
             mViewPager = null;
         }
     }
@@ -543,19 +515,8 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
             mAH[currentActivePage].recyclerView.bindFastScrollbar();
         }
         reset(true /* animate */);
-        if (mWorkModeSwitch != null) {
-            mWorkModeSwitch.setWorkTabVisible(currentActivePage == AdapterHolder.WORK
-                    && mAllAppsStore.hasModelFlag(
-                    FLAG_HAS_SHORTCUT_PERMISSION | FLAG_QUIET_MODE_CHANGE_PERMISSION));
 
-            if (currentActivePage == AdapterHolder.WORK) {
-                if (mWorkModeSwitch.getParent() == null) {
-                    addView(mWorkModeSwitch);
-                }
-            } else {
-                removeView(mWorkModeSwitch);
-            }
-        }
+        mWorkManager.onActivePageChanged(currentActivePage);
     }
 
     // Used by tests only
@@ -623,26 +584,26 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
         for (int i = 0; i < mAH.length; i++) {
             mAH[i].padding.top = padding;
             mAH[i].applyPadding();
+            if (mAH[i].recyclerView != null) {
+                mAH[i].recyclerView.scrollToTop();
+            }
         }
-        mHeaderTop = mHeader.getTop();
     }
 
     public void setLastSearchQuery(String query) {
         for (int i = 0; i < mAH.length; i++) {
             mAH[i].adapter.setLastSearchQuery(query);
         }
-        if (mUsingTabs) {
-            mSearchModeWhileUsingTabs = true;
-            rebindAdapters(false); // hide tabs
-        }
+        mIsSearching = true;
+        rebindAdapters();
         mHeader.setCollapsed(true);
     }
 
     public void onClearSearchResult() {
-        if (mSearchModeWhileUsingTabs) {
-            rebindAdapters(true); // show tabs
-            mSearchModeWhileUsingTabs = false;
-        }
+        mIsSearching = false;
+        mHeader.setCollapsed(false);
+        rebindAdapters();
+        mHeader.reset(false);
     }
 
     public void onSearchResultsChanged() {
@@ -713,16 +674,16 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
 
     @Override
     public void drawOnScrim(Canvas canvas) {
+        if (!mHeader.isHeaderProtectionSupported()) return;
         mHeaderPaint.setColor(mHeaderColor);
         mHeaderPaint.setAlpha((int) (getAlpha() * Color.alpha(mHeaderColor)));
-        if (Color.alpha(mHeaderPaint.getColor()) != 0 && mHeaderPaint.getColor() != 0) {
-            int bottom = mUsingTabs && mHeader.mHeaderCollapsed ? mHeader.getVisibleBottomBound()
-                    : mSearchContainer.getBottom();
-            canvas.drawRect(0, 0, canvas.getWidth(), bottom + getTranslationY(),
-                    mHeaderPaint);
-
-            if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && getTranslationY() == 0) {
-                mSearchUiManager.getEditText().setBackground(null);
+        if (mHeaderPaint.getColor() != mScrimColor && mHeaderPaint.getColor() != 0) {
+            int bottom = (int) (mSearchContainer.getBottom() + getTranslationY());
+            canvas.drawRect(0, 0, canvas.getWidth(), bottom, mHeaderPaint);
+            int tabsHeight = getFloatingHeaderView().getPeripheralProtectionHeight();
+            if (mTabsProtectionAlpha > 0 && tabsHeight != 0) {
+                mHeaderPaint.setAlpha((int) (getAlpha() * mTabsProtectionAlpha));
+                canvas.drawRect(0, bottom, canvas.getWidth(), bottom + tabsHeight, mHeaderPaint);
             }
         }
     }
@@ -731,7 +692,6 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
         public static final int MAIN = 0;
         public static final int WORK = 1;
 
-        private ItemInfoMatcher mInfoMatcher;
         private final boolean mIsWork;
         public final AllAppsGridAdapter adapter;
         final LinearLayoutManager layoutManager;
@@ -739,17 +699,16 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
         final Rect padding = new Rect();
         AllAppsRecyclerView recyclerView;
         boolean verticalFadingEdge;
-        private View mOverlay;
 
-        boolean mWorkDisabled;
 
         AdapterHolder(boolean isWork) {
             mIsWork = isWork;
             appsList = new LawnchairAlphabeticalAppsList(mLauncher, mAllAppsStore,
-                    isWork ? mWorkAdapterProvider : null);
+                    isWork ? mWorkManager.getAdapterProvider() : null);
 
             BaseAdapterProvider[] adapterProviders =
-                    isWork ? new BaseAdapterProvider[]{mSearchAdapterProvider, mWorkAdapterProvider}
+                    isWork ? new BaseAdapterProvider[]{mSearchAdapterProvider,
+                            mWorkManager.getAdapterProvider()}
                             : new BaseAdapterProvider[]{mSearchAdapterProvider};
 
             adapter = new AllAppsGridAdapter(mLauncher, getLayoutInflater(), appsList,
@@ -759,7 +718,6 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
         }
 
         void setup(@NonNull View rv, @Nullable ItemInfoMatcher matcher) {
-            mInfoMatcher = matcher;
             appsList.updateItemFilter(matcher);
             recyclerView = (AllAppsRecyclerView) rv;
             recyclerView.setEdgeEffectFactory(createEdgeEffectFactory());
@@ -782,12 +740,10 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
 
         void applyPadding() {
             if (recyclerView != null) {
-                Resources res = getResources();
-                int switchH = res.getDimensionPixelSize(R.dimen.work_profile_footer_padding) * 2
-                        + mInsets.bottom + Utilities.calculateTextHeight(
-                        res.getDimension(R.dimen.work_profile_footer_text_size));
-
-                int bottomOffset = mWorkModeSwitch != null && mIsWork ? switchH : 0;
+                int bottomOffset = 0;
+                if (mIsWork && mWorkManager.getWorkModeSwitch() != null) {
+                    bottomOffset = mInsets.bottom + mWorkManager.getWorkModeSwitch().getHeight();
+                }
                 recyclerView.setPadding(padding.left, padding.top, padding.right,
                         padding.bottom + bottomOffset);
             }
@@ -802,25 +758,27 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
 
 
     protected void updateHeaderScroll(int scrolledOffset) {
-        float prog = Math.max(0, Math.min(1, (float) scrolledOffset / mHeaderThreshold));
-        int transparentScrim = ColorUtils.setAlphaComponent(mScrimColor, 0);
-        int viewBG = ColorUtils.blendARGB(transparentScrim, mHeaderProtectionColor, prog);
-        int searchAlpha = (int) (getSearchView().getAlpha() * prog * 255);
-        int headerColor = ColorUtils.setAlphaComponent(viewBG, searchAlpha);
-        if (headerColor != mHeaderColor) {
+        float prog = Utilities.boundToRange((float) scrolledOffset / mHeaderThreshold, 0f, 1f);
+        int viewBG = ColorUtils.blendARGB(mScrimColor, mHeaderProtectionColor, prog);
+        int headerColor = ColorUtils.setAlphaComponent(viewBG,
+                (int) (getSearchView().getAlpha() * 255));
+        int tabsAlpha = mHeader.getPeripheralProtectionHeight() == 0 ? 0
+                : (int) (Utilities.boundToRange(
+                        (scrolledOffset + mHeader.mSnappedScrolledY) / mHeaderThreshold, 0f, 1f)
+                        * 255);
+        if (headerColor != mHeaderColor || mTabsProtectionAlpha != tabsAlpha) {
             mHeaderColor = headerColor;
-            getSearchView().setBackgroundColor(searchAlpha == 255 ? viewBG : 0);
-            getFloatingHeaderView().setHeaderColor(viewBG);
+            mTabsProtectionAlpha = tabsAlpha;
             invalidateHeader();
-
-            ExtendedEditText editText = mSearchUiManager.getEditText();
-            if (editText != null) {
-                if (searchAlpha == 0) {
-                    editText.show();
-                } else {
-                    editText.hide();
-                }
+        }
+        if (mSearchUiManager.getEditText() != null) {
+            boolean bgVisible = mSearchUiManager.getBackgroundVisibility();
+            if (scrolledOffset == 0 && !mIsSearching) {
+                bgVisible = true;
+            } else if (scrolledOffset > mHeaderThreshold) {
+                bgVisible = false;
             }
+            mSearchUiManager.setBackgroundVisibility(bgVisible, 1 - prog);
         }
     }
 
@@ -828,7 +786,7 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
      * redraws header protection
      */
     public void invalidateHeader() {
-        if (mScrimView != null && FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
+        if (mScrimView != null && mHeader.isHeaderProtectionSupported()) {
             mScrimView.invalidate();
         }
     }

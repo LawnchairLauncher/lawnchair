@@ -19,13 +19,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:theme="?attr/widgetsTheme" >
+    android:theme="?attr/widgetsTheme">
 
-    <com.android.launcher3.views.TopRoundedCornerView
+    <com.android.launcher3.views.SpringRelativeLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?android:attr/colorBackground">
+        android:background="@drawable/bg_widgets_full_sheet"
+        android:focusable="true"
+        android:importantForAccessibility="no">
+
+        <View
+            android:id="@+id/collapse_handle"
+            android:layout_width="48dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="16dp"
+            android:layout_centerHorizontal="true"
+            android:background="?android:attr/textColorSecondary"/>
 
         <TextView
             android:id="@+id/no_widgets_text"
@@ -35,6 +45,7 @@
             android:visibility="gone"
             android:fontFamily="sans-serif-medium"
             android:textSize="20sp"
+            android:layout_below="@id/search_and_recommendations_container"
             tools:text="No widgets available" />
 
         <!-- Fast scroller popup -->
@@ -57,8 +68,10 @@
             android:id="@+id/search_widgets_list_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/collapse_handle"
+            android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
             android:visibility="gone"
             android:clipToPadding="false" />
 
-    </com.android.launcher3.views.TopRoundedCornerView>
+    </com.android.launcher3.views.SpringRelativeLayout>
 </com.android.launcher3.widget.picker.WidgetsFullSheet>

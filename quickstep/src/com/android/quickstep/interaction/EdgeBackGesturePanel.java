@@ -43,7 +43,7 @@ import androidx.dynamicanimation.animation.SpringForce;
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.util.VibratorWrapper;
+import com.android.quickstep.util.VibratorWrapper;
 
 /** Forked from platform/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/NavigationBarEdgePanel.java. */
 public class EdgeBackGesturePanel extends View {
@@ -282,9 +282,7 @@ public class EdgeBackGesturePanel extends View {
                         .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY));
         int currentNightMode =
                 context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        mPaint.setColor(context.getColor(currentNightMode == Configuration.UI_MODE_NIGHT_YES
-                ? R.color.back_arrow_color_light
-                : R.color.back_arrow_color_dark));
+        mPaint.setColor(context.getColor(R.color.gesture_tutorial_back_arrow_color));
         loadDimens();
         updateArrowDirection();
 

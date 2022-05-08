@@ -25,11 +25,12 @@
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"應用程式使用情況設定"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"全部清除"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"最近使用的應用程式"</string>
+    <!-- no translation found for task_view_closed (9170038230110856166) -->
+    <skip />
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>，<xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"少於 1 分鐘"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"今天剩餘時間：<xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="title_app_suggestions" msgid="4185902664111965088">"應用程式建議"</string>
-    <string name="all_apps_label" msgid="8542784161730910663">"所有應用程式"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"您的預測應用程式"</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"在主畫面底部取得應用程式建議"</string>
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"在主畫面「我的最愛」列取得應用程式建議"</string>
@@ -76,9 +77,22 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"教學課程 <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"分享"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"螢幕截圖"</string>
+    <string name="action_split" msgid="2098009717623550676">"分割"</string>
+    <string name="toast_split_select_app" msgid="5453865907322018352">"輕按其他應用程式以使用分割螢幕"</string>
+    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"應用程式不支援分割螢幕。"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"應用程式或您的機構不允許此操作"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"要略過手勢操作教學課程嗎？"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"您之後可以在「<xliff:g id="NAME">%1$s</xliff:g>」應用程式找到這些說明"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"取消"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"略過"</string>
+    <string name="accessibility_rotate_button" msgid="4771825231336502943">"旋轉螢幕"</string>
+    <string name="taskbar_edu_opened" msgid="3950252793551919129">"顯示咗工作列教學"</string>
+    <string name="taskbar_edu_closed" msgid="126643734478892862">"閂咗工作列教學"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"使用工作列即可切換應用程式"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"拖曳至一側即可同時使用兩個應用程式"</string>
+    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"按住即可隱藏工作列"</string>
+    <string name="taskbar_edu_next" msgid="4007618274426775841">"繼續"</string>
+    <string name="taskbar_edu_previous" msgid="459202320127201702">"返回"</string>
+    <string name="taskbar_edu_close" msgid="887022990168191073">"關閉"</string>
+    <string name="taskbar_edu_done" msgid="6880178093977704569">"完成"</string>
 </resources>

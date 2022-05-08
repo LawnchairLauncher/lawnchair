@@ -15,18 +15,22 @@
  */
 package com.android.launcher3.hybridhotseat;
 
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent
-        .LAUNCHER_HOTSEAT_EDU_ONLY_TIP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_EDU_ONLY_TIP;
 
 import android.content.Intent;
+import android.graphics.Rect;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.FolderInfo;
@@ -46,6 +50,8 @@ import java.util.stream.IntStream;
  * Controller class for managing user onboaridng flow for hybrid hotseat
  */
 public class HotseatEduController {
+
+    private static final String TAG = "HotseatEduController";
 
     public static final String SETTINGS_ACTION =
             "android.settings.ACTION_CONTENT_SUGGESTIONS_SETTINGS";
@@ -188,8 +194,12 @@ public class HotseatEduController {
                     .getInt(LauncherSettings.Settings.EXTRA_VALUE);
             mNewScreens = IntArray.wrap(pageId);
         }
-        for (int i = 0; i < mLauncher.getDeviceProfile().numShownHotseatIcons; i++) {
-            View child = mHotseat.getChildAt(i, 0);
+        boolean isPortrait = !mLauncher.getDeviceProfile().isVerticalBarLayout();
+        int hotseatItemsNum = mLauncher.getDeviceProfile().numShownHotseatIcons;
+        for (int i = 0; i < hotseatItemsNum; i++) {
+            int x = isPortrait ? i : 0;
+            int y = isPortrait ? 0 : hotseatItemsNum - i - 1;
+            View child = mHotseat.getChildAt(x, y);
             if (child == null || child.getTag() == null) continue;
             ItemInfo tag = (ItemInfo) child.getTag();
             if (tag.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) continue;
@@ -229,8 +239,7 @@ public class HotseatEduController {
                     R.string.hotseat_prediction_settings, null,
                     () -> mLauncher.startActivity(getSettingsIntent()));
         } else {
-            new ArrowTipView(mLauncher).show(
-                    mLauncher.getString(R.string.hotseat_tip_no_empty_slots), mHotseat.getTop());
+            showHotseatArrowTip(true, mLauncher.getString(R.string.hotseat_tip_no_empty_slots));
         }
     }
 
@@ -251,13 +260,48 @@ public class HotseatEduController {
         if (requiresMigration && canMigrateToFirstPage) {
             showDialog();
         } else {
-            new ArrowTipView(mLauncher).show(mLauncher.getString(
+            if (showHotseatArrowTip(requiresMigration, mLauncher.getString(
                     requiresMigration ? R.string.hotseat_tip_no_empty_slots
-                            : R.string.hotseat_auto_enrolled),
-                    mHotseat.getTop());
-            mLauncher.getStatsLogManager().logger().log(LAUNCHER_HOTSEAT_EDU_ONLY_TIP);
+                            : R.string.hotseat_auto_enrolled))) {
+                mLauncher.getStatsLogManager().logger().log(LAUNCHER_HOTSEAT_EDU_ONLY_TIP);
+            }
             finishOnboarding();
         }
+    }
+
+    /**
+     * Finds a child suitable child in hotseat and shows arrow tip pointing at it.
+     *
+     * @param usePinned used to determine target view. If true, will use the first matching pinned
+     *                  item. Otherwise, will use the first predicted child
+     * @param message   String to be shown inside the arrowView
+     * @return whether suitable child was found and tip was shown
+     */
+    private boolean showHotseatArrowTip(boolean usePinned, String message) {
+        int childCount = mHotseat.getShortcutsAndWidgets().getChildCount();
+        boolean isPortrait = !mLauncher.getDeviceProfile().isVerticalBarLayout();
+
+        BubbleTextView tipTargetView = null;
+        for (int i = childCount - 1; i > -1; i--) {
+            int x = isPortrait ? i : 0;
+            int y = isPortrait ? 0 : i;
+            View v = mHotseat.getShortcutsAndWidgets().getChildAt(x, y);
+            if (v instanceof BubbleTextView && v.getTag() instanceof WorkspaceItemInfo) {
+                ItemInfo info = (ItemInfo) v.getTag();
+                boolean isPinned = info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+                if (isPinned == usePinned) {
+                    tipTargetView = (BubbleTextView) v;
+                    break;
+                }
+            }
+        }
+        if (tipTargetView == null) {
+            Log.e(TAG, "Unable to find suitable view for ArrowTip");
+            return false;
+        }
+        Rect bounds = Utilities.getViewBounds(tipTargetView);
+        new ArrowTipView(mLauncher).show(message, Gravity.END, bounds.centerX(), bounds.top);
+        return true;
     }
 
     void showDialog() {

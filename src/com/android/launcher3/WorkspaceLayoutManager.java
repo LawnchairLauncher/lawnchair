@@ -23,6 +23,7 @@ import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.touch.ItemLongClickListener;
+import com.android.launcher3.util.IntSet;
 
 public interface WorkspaceLayoutManager {
 
@@ -30,8 +31,16 @@ public interface WorkspaceLayoutManager {
 
     // The screen id used for the empty screen always present at the end.
     int EXTRA_EMPTY_SCREEN_ID = -201;
+    // The screen id used for the second empty screen always present at the end for two panel home.
+    int EXTRA_EMPTY_SCREEN_SECOND_ID = -200;
+    // The screen ids used for the empty screens at the end of the workspaces.
+    IntSet EXTRA_EMPTY_SCREEN_IDS =
+            IntSet.wrap(EXTRA_EMPTY_SCREEN_ID, EXTRA_EMPTY_SCREEN_SECOND_ID);
+
     // The is the first screen. It is always present, even if its empty.
     int FIRST_SCREEN_ID = 0;
+    // This is the second page. On two panel home it is always present, even if its empty.
+    int SECOND_SCREEN_ID = 1;
 
     /**
      * At bind time, we use the rank (screenId) to compute x and y for hotseat items.
@@ -79,9 +88,9 @@ public interface WorkspaceLayoutManager {
                 return;
             }
         }
-        if (screenId == EXTRA_EMPTY_SCREEN_ID) {
+        if (EXTRA_EMPTY_SCREEN_IDS.contains(screenId)) {
             // This should never happen
-            throw new RuntimeException("Screen id should not be EXTRA_EMPTY_SCREEN_ID");
+            throw new RuntimeException("Screen id should not be extra empty screen: " + screenId);
         }
 
         final CellLayout layout;

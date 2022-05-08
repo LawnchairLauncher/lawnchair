@@ -30,7 +30,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
-import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiDevice;
 
 import com.android.launcher3.tapl.LauncherInstrumentation;
@@ -49,6 +48,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Test rule that allows executing a test with Quickstep on and then Quickstep off.
@@ -182,17 +182,12 @@ public class NavigationModeSwitchRule implements TestRule {
                     };
             targetContext.getMainExecutor().execute(() ->
                     SYS_UI_NAVIGATION_MODE.addModeChangeListener(listener));
-            // b/139137636
-//            latch.await(60, TimeUnit.SECONDS);
+            latch.await(60, TimeUnit.SECONDS);
             targetContext.getMainExecutor().execute(() ->
                     SYS_UI_NAVIGATION_MODE.removeModeChangeListener(listener));
 
-            Wait.atMost(() -> "Navigation mode didn't change to " + expectedMode,
-                    () -> currentSysUiNavigationMode() == expectedMode, WAIT_TIME_MS,
-                    launcher);
-            // b/139137636
-//            assertTrue(launcher, "Navigation mode didn't change to " + expectedMode,
-//                    currentSysUiNavigationMode() == expectedMode, description);
+            assertTrue(launcher, "Navigation mode didn't change to " + expectedMode,
+                    currentSysUiNavigationMode() == expectedMode, description);
 
         }
 
@@ -221,12 +216,7 @@ public class NavigationModeSwitchRule implements TestRule {
 
     private static void assertTrue(LauncherInstrumentation launcher, String message,
             boolean condition, Description description) {
-        if (launcher.getDevice().hasObject(By.textStartsWith(""))) {
-            // The condition above is "screen is not empty". We are not treating
-            // "Screen is empty" as an anomaly here. It's an acceptable state when
-            // Launcher just starts under instrumentation.
-            launcher.checkForAnomaly();
-        }
+        launcher.checkForAnomaly(true, true);
         if (!condition) {
             final AssertionError assertionError = new AssertionError(message);
             if (description != null) {

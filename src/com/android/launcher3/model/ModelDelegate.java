@@ -40,19 +40,21 @@ public class ModelDelegate implements ResourceBasedOverride {
      * Creates and initializes a new instance of the delegate
      */
     public static ModelDelegate newInstance(
-            Context context, LauncherAppState app, AllAppsList appsList, BgDataModel dataModel) {
+            Context context, LauncherAppState app, AllAppsList appsList, BgDataModel dataModel,
+            boolean isPrimaryInstance) {
         ModelDelegate delegate = Overrides.getObject(
                 ModelDelegate.class, context, R.string.model_delegate_class);
-
         delegate.mApp = app;
         delegate.mAppsList = appsList;
         delegate.mDataModel = dataModel;
+        delegate.mIsPrimaryInstance = isPrimaryInstance;
         return delegate;
     }
 
     protected LauncherAppState mApp;
     protected AllAppsList mAppsList;
     protected BgDataModel mDataModel;
+    protected boolean mIsPrimaryInstance;
 
     public ModelDelegate() { }
 

@@ -16,19 +16,15 @@
 
 package com.android.quickstep.logging;
 
-import static com.android.launcher3.InvariantDeviceProfile.KEY_MIGRATION_SRC_HOTSEAT_COUNT;
 import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.Utilities.getPrefs;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_2;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_3;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_4;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_5;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_SCREEN_SUGGESTIONS_DISABLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_SCREEN_SUGGESTIONS_ENABLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NOTIFICATION_DOT_DISABLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NOTIFICATION_DOT_ENABLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_THEMED_ICON_DISABLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_THEMED_ICON_ENABLED;
+import static com.android.launcher3.model.DeviceGridState.KEY_WORKSPACE_SIZE;
 import static com.android.launcher3.model.QuickstepModelDelegate.LAST_PREDICTION_ENABLED_STATE;
 import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
 import static com.android.launcher3.util.Themes.KEY_THEMED_ICONS;
@@ -44,9 +40,11 @@ import android.util.Xml;
 import com.android.launcher3.AutoInstallsLayout;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.logging.InstanceIdSequence;
+import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
+import com.android.launcher3.model.DeviceGridState;
+import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SettingsCache;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -56,12 +54,19 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Utility class to log launcher settings changes
  */
 public class SettingsChangeLogger implements
         NavigationModeChangeListener, OnSharedPreferenceChangeListener {
+  
+    /**
+     * Singleton instance
+     */
+    public static MainThreadInitializedObject<SettingsChangeLogger> INSTANCE =
+            new MainThreadInitializedObject<>(SettingsChangeLogger::new);
 
     private static final String TAG = "SettingsChangeLogger";
     private static final String ROOT_TAG = "androidx.preference.PreferenceScreen";
@@ -69,12 +74,15 @@ public class SettingsChangeLogger implements
 
     private final Context mContext;
     private final ArrayMap<String, LoggablePref> mLoggablePrefs;
+    private final StatsLogManager mStatsLogManager;
 
     private Mode mNavMode;
-    private boolean mNotificationDotsEnabled;
+    private StatsLogManager.LauncherEvent mNotificationDotsEvent;
+    private StatsLogManager.LauncherEvent mHomeScreenSuggestionEvent;
 
-    public SettingsChangeLogger(Context context) {
+    private SettingsChangeLogger(Context context) {
         mContext = context;
+        mStatsLogManager = StatsLogManager.newInstance(mContext);
         mLoggablePrefs = loadPrefKeys(context);
         mNavMode = SysUINavigationMode.INSTANCE.get(context).addModeChangeListener(this);
 
@@ -121,60 +129,52 @@ public class SettingsChangeLogger implements
     }
 
     private void onNotificationDotsChanged(boolean isDotsEnabled) {
-        mNotificationDotsEnabled = isDotsEnabled;
-        dispatchUserEvent();
+        StatsLogManager.LauncherEvent mEvent =
+                isDotsEnabled ? LAUNCHER_NOTIFICATION_DOT_ENABLED
+                        : LAUNCHER_NOTIFICATION_DOT_DISABLED;
+
+        // Log only when the setting is actually changed and not during initialization.
+        if (mNotificationDotsEvent != null && mNotificationDotsEvent != mEvent) {
+            mStatsLogManager.logger().log(mNotificationDotsEvent);
+        }
+        mNotificationDotsEvent = mEvent;
     }
 
     @Override
     public void onNavigationModeChanged(Mode newMode) {
         mNavMode = newMode;
-        dispatchUserEvent();
+        mStatsLogManager.logger().log(newMode.launcherEvent);
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        if (LAST_PREDICTION_ENABLED_STATE.equals(key) || KEY_MIGRATION_SRC_HOTSEAT_COUNT.equals(key)
+        if (LAST_PREDICTION_ENABLED_STATE.equals(key)
+                || KEY_WORKSPACE_SIZE.equals(key)
+                || KEY_THEMED_ICONS.equals(key)
                 || mLoggablePrefs.containsKey(key)) {
-            dispatchUserEvent();
+
+            mHomeScreenSuggestionEvent = getDevicePrefs(mContext)
+                    .getBoolean(LAST_PREDICTION_ENABLED_STATE, true)
+                    ? LAUNCHER_HOME_SCREEN_SUGGESTIONS_ENABLED
+                    : LAUNCHER_HOME_SCREEN_SUGGESTIONS_DISABLED;
+
+            mStatsLogManager.logger().log(mHomeScreenSuggestionEvent);
         }
     }
 
-    private void dispatchUserEvent() {
-        StatsLogger logger = StatsLogManager.newInstance(mContext).logger()
-                .withInstanceId(new InstanceIdSequence().newInstanceId());
+    /**
+     * Takes snapshot of all eligible launcher settings and log them with the provided instance ID.
+     */
+    public void logSnapshot(InstanceId snapshotInstanceId) {
+        StatsLogger logger = mStatsLogManager.logger().withInstanceId(snapshotInstanceId);
 
-        logger.log(mNotificationDotsEnabled
-                ? LAUNCHER_NOTIFICATION_DOT_ENABLED
-                : LAUNCHER_NOTIFICATION_DOT_DISABLED);
-        logger.log(mNavMode.launcherEvent);
-        logger.log(getDevicePrefs(mContext).getBoolean(LAST_PREDICTION_ENABLED_STATE, true)
-                ? LAUNCHER_HOME_SCREEN_SUGGESTIONS_ENABLED
-                : LAUNCHER_HOME_SCREEN_SUGGESTIONS_DISABLED);
+        Optional.ofNullable(mNotificationDotsEvent).ifPresent(logger::log);
+        Optional.ofNullable(mNavMode).map(mode -> mode.launcherEvent).ifPresent(logger::log);
+        Optional.ofNullable(mHomeScreenSuggestionEvent).ifPresent(logger::log);
+        Optional.ofNullable(new DeviceGridState(mContext).getWorkspaceSizeEvent()).ifPresent(
+                logger::log);
 
         SharedPreferences prefs = getPrefs(mContext);
-        StatsLogManager.LauncherEvent gridSizeChangedEvent = null;
-        // TODO(b/184981523): This doesn't work for 2-panel grid, which has 6 hotseat icons
-        switch (prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, -1)) {
-            case 5:
-                gridSizeChangedEvent = LAUNCHER_GRID_SIZE_5;
-                break;
-            case 4:
-                gridSizeChangedEvent = LAUNCHER_GRID_SIZE_4;
-                break;
-            case 3:
-                gridSizeChangedEvent = LAUNCHER_GRID_SIZE_3;
-                break;
-            case 2:
-                gridSizeChangedEvent = LAUNCHER_GRID_SIZE_2;
-                break;
-            default:
-                // Ignore illegal input.
-                break;
-        }
-        if (gridSizeChangedEvent != null) {
-            logger.log(gridSizeChangedEvent);
-        }
-
         if (FeatureFlags.ENABLE_THEMED_ICONS.get()) {
             logger.log(prefs.getBoolean(KEY_THEMED_ICONS, false)
                     ? LAUNCHER_THEMED_ICON_ENABLED

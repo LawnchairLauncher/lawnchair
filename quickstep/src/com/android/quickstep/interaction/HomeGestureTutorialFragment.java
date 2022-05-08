@@ -15,25 +15,73 @@
  */
 package com.android.quickstep.interaction;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.view.MotionEvent;
+import android.view.View;
+
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 
+import java.util.ArrayList;
+
 /** Shows the Home gesture interactive tutorial. */
 public class HomeGestureTutorialFragment extends TutorialFragment {
+
     @Nullable
     @Override
-    Integer getFeedbackVideoResId(boolean forDarkMode) {
-        return forDarkMode
-                ? R.drawable.gesture_tutorial_motion_home_dark_mode
-                : R.drawable.gesture_tutorial_motion_home_light_mode;
+    Integer getEdgeAnimationResId() {
+        return R.drawable.gesture_tutorial_loop_home;
     }
 
     @Nullable
     @Override
-    Integer getGestureVideoResId() {
-        return R.drawable.gesture_tutorial_loop_home;
+    protected Animator createGestureAnimation() {
+        if (!(mTutorialController instanceof HomeGestureTutorialController)) {
+            return null;
+        }
+        float fingerDotStartTranslationY = (float) mRootView.getFullscreenHeight() / 2;
+        HomeGestureTutorialController controller =
+                (HomeGestureTutorialController) mTutorialController;
+
+        AnimatorSet fingerDotAppearanceAnimator = controller.createFingerDotAppearanceAnimatorSet();
+        fingerDotAppearanceAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                mFingerDotView.setTranslationY(fingerDotStartTranslationY);
+            }
+        });
+
+        Animator animationPause = controller.createAnimationPause();
+        animationPause.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                controller.resetFakeTaskView(true);
+            }
+        });
+        ArrayList<Animator> animators = new ArrayList<>();
+
+        animators.add(fingerDotAppearanceAnimator);
+        animators.add(controller.createFingerDotHomeSwipeAnimator(fingerDotStartTranslationY));
+        animators.add(controller.createFingerDotDisappearanceAnimatorSet());
+        animators.add(animationPause);
+
+        AnimatorSet finalAnimation = new AnimatorSet();
+        finalAnimation.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                super.onAnimationCancel(animation);
+                controller.resetFakeTaskView(true);
+            }
+        });
+        finalAnimation.playSequentially(animators);
+
+        return finalAnimation;
     }
 
     @Override
@@ -44,5 +92,11 @@ public class HomeGestureTutorialFragment extends TutorialFragment {
     @Override
     Class<? extends TutorialController> getControllerClass() {
         return HomeGestureTutorialController.class;
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        releaseFeedbackAnimation();
+        return super.onTouch(view, motionEvent);
     }
 }

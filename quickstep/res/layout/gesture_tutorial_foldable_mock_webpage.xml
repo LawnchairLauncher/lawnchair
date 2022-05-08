@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2021 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mock_webpage_background">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/url_bar"
+        android:layout_width="match_parent"
+        android:layout_height="101dp"
+        android:background="@color/mock_webpage_url_bar"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="48dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="100dp"
+            android:layout_marginEnd="100dp"
+
+            app:cardElevation="0dp"
+            app:cardCornerRadius="100dp"
+            app:cardBackgroundColor="@color/mock_webpage_url_bar_item"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
+        android:background="@color/mock_webpage_top_bar"
+
+        app:layout_constraintTop_toBottomOf="@id/url_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/top_bar_button"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="22dp"
+            android:layout_marginBottom="22dp"
+            android:layout_marginStart="24dp"
+
+            app:cardElevation="0dp"
+            app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="@color/mock_webpage_top_bar_item"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="28dp"
+            android:layout_marginStart="97dp"
+            android:layout_marginEnd="325dp"
+
+            app:cardElevation="0dp"
+            app:cardCornerRadius="2dp"
+            app:cardBackgroundColor="@color/mock_webpage_top_bar_item"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/mock_webpage_background"
+        android:paddingTop="@dimen/gesture_tutorial_webpage_padding_top"
+        android:paddingStart="124dp"
+        android:paddingEnd="100dp"
+
+        app:layout_constraintTop_toBottomOf="@id/top_bar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/mock_line_1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/gesture_tutorial_webpage_large_line_height"
+            android:layout_marginEnd="126dp"
+
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_webpage_small_corner_radius"
+            app:cardBackgroundColor="@color/mock_webpage_page_text"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/mock_line_2"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/gesture_tutorial_webpage_large_line_height"
+            android:layout_marginTop="@dimen/gesture_tutorial_webpage_small_margin_top"
+            android:layout_marginEnd="64dp"
+
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_webpage_small_corner_radius"
+            app:cardBackgroundColor="@color/mock_webpage_page_text"
+            app:layout_constraintTop_toBottomOf="@id/mock_line_1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/mock_line_3"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/gesture_tutorial_webpage_large_line_height"
+            android:layout_marginTop="@dimen/gesture_tutorial_webpage_small_margin_top"
+            android:layout_marginEnd="151dp"
+
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_webpage_small_corner_radius"
+            app:cardBackgroundColor="@color/mock_webpage_page_text"
+            app:layout_constraintTop_toBottomOf="@id/mock_line_2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/mock_button"
+            android:layout_width="47dp"
+            android:layout_height="12dp"
+            android:layout_marginTop="@dimen/gesture_tutorial_webpage_small_margin_top"
+
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_webpage_small_corner_radius"
+            app:cardBackgroundColor="@color/mock_webpage_page_text"
+            app:layout_constraintTop_toBottomOf="@id/mock_line_3"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="47dp"
+            android:layout_height="12dp"
+            android:background="@color/mock_webpage_page_text"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="@dimen/gesture_tutorial_webpage_small_margin_top"
+
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_webpage_small_corner_radius"
+            app:cardBackgroundColor="@color/mock_webpage_page_text"
+            app:layout_constraintTop_toBottomOf="@id/mock_line_3"
+            app:layout_constraintStart_toEndOf="@id/mock_button"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/mock_block"
+            android:layout_width="0dp"
+            android:layout_height="240dp"
+            android:layout_marginTop="@dimen/gesture_tutorial_webpage_large_margin_top"
+            android:layout_marginEnd="24dp"
+
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_webpage_large_corner_radius"
+            app:cardBackgroundColor="@color/mock_webpage_page_text"
+            app:layout_constraintTop_toBottomOf="@id/mock_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/mock_line_4"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/gesture_tutorial_webpage_small_line_height"
+            android:layout_marginTop="@dimen/gesture_tutorial_webpage_large_margin_top"
+            android:layout_marginEnd="52dp"
+
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_webpage_medium_corner_radius"
+            app:cardBackgroundColor="@color/mock_webpage_page_text"
+            app:layout_constraintTop_toBottomOf="@id/mock_block"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/mock_line_5"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/gesture_tutorial_webpage_small_line_height"
+            android:layout_marginTop="@dimen/gesture_tutorial_webpage_small_margin_top"
+            android:layout_marginEnd="41dp"
+
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_webpage_medium_corner_radius"
+            app:cardBackgroundColor="@color/mock_webpage_page_text"
+            app:layout_constraintTop_toBottomOf="@id/mock_line_4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/mock_line_6"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/gesture_tutorial_webpage_small_line_height"
+            android:layout_marginTop="@dimen/gesture_tutorial_webpage_small_margin_top"
+            android:layout_marginEnd="71dp"
+
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_webpage_medium_corner_radius"
+            app:cardBackgroundColor="@color/mock_webpage_page_text"
+            app:layout_constraintTop_toBottomOf="@id/mock_line_5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/mock_line_7"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/gesture_tutorial_webpage_small_line_height"
+            android:layout_marginTop="@dimen/gesture_tutorial_webpage_small_margin_top"
+            android:layout_marginEnd="198dp"
+
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_webpage_medium_corner_radius"
+            app:cardBackgroundColor="@color/mock_webpage_page_text"
+            app:layout_constraintTop_toBottomOf="@id/mock_line_6"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/mock_line_8"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/gesture_tutorial_webpage_small_line_height"
+            android:layout_marginTop="@dimen/gesture_tutorial_webpage_large_margin_top"
+            android:layout_marginEnd="64dp"
+
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_webpage_medium_corner_radius"
+            app:cardBackgroundColor="@color/mock_webpage_page_text"
+            app:layout_constraintTop_toBottomOf="@id/mock_line_7"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="@dimen/gesture_tutorial_webpage_small_line_height"
+            android:layout_marginTop="@dimen/gesture_tutorial_webpage_small_margin_top"
+            android:layout_marginEnd="71dp"
+
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_webpage_medium_corner_radius"
+            app:cardBackgroundColor="@color/mock_webpage_page_text"
+            app:layout_constraintTop_toBottomOf="@id/mock_line_8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
