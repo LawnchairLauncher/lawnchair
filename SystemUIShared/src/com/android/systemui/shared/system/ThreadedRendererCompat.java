@@ -29,10 +29,6 @@ public class ThreadedRendererCompat {
     public static int EGL_CONTEXT_PRIORITY_LOW_IMG = 0x3103;
 
     public static void setContextPriority(int priority) {
-        try {
-            ThreadedRenderer.setContextPriority(priority);
-        } catch (Throwable e) {
-            // ignore
-        }
+        ThreadedRenderer.setContextPriority(priority);
     }
 }

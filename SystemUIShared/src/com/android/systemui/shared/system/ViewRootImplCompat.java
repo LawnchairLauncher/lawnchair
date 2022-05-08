@@ -20,8 +20,6 @@ import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewRootImpl;
 
-import com.android.systemui.shared.QuickstepCompat;
-
 import java.util.function.LongConsumer;
 
 /**
@@ -60,7 +58,7 @@ public class ViewRootImplCompat {
     }
 
     public void mergeWithNextTransaction(SurfaceControl.Transaction t, long frame) {
-        if (QuickstepCompat.ATLEAST_S && mViewRoot != null) {
+        if (mViewRoot != null) {
             mViewRoot.mergeWithNextTransaction(t, frame);
         } else {
             t.apply();

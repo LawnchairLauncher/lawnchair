@@ -30,7 +30,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.ViewDebug;
 
-import com.android.systemui.shared.QuickstepCompat;
 import com.android.systemui.shared.recents.utilities.Utilities;
 
 import java.io.PrintWriter;
@@ -229,9 +228,8 @@ public class Task {
     public boolean isLocked;
 
     // Last snapshot data, only used for recent tasks
-    public Object lastSnapshotData = QuickstepCompat.ATLEAST_S
-            ? new ActivityManager.RecentTaskInfo.PersistedTaskSnapshotData()
-            : null;
+    public ActivityManager.RecentTaskInfo.PersistedTaskSnapshotData lastSnapshotData =
+            new ActivityManager.RecentTaskInfo.PersistedTaskSnapshotData();
 
     public Task() {
         // Do nothing
@@ -256,10 +254,7 @@ public class Task {
     public Task(Task other) {
         this(other.key, other.colorPrimary, other.colorBackground, other.isDockable,
                 other.isLocked, other.taskDescription, other.topActivity);
-        if (QuickstepCompat.ATLEAST_S) {
-            ((ActivityManager.RecentTaskInfo.PersistedTaskSnapshotData) lastSnapshotData)
-                    .set((ActivityManager.RecentTaskInfo.PersistedTaskSnapshotData) other.lastSnapshotData);
-        }
+        lastSnapshotData.set(other.lastSnapshotData);
     }
 
     /**
@@ -288,18 +283,13 @@ public class Task {
     }
 
     public void setLastSnapshotData(ActivityManager.RecentTaskInfo rawTask) {
-        if (QuickstepCompat.ATLEAST_S) {
-            ((ActivityManager.RecentTaskInfo.PersistedTaskSnapshotData) lastSnapshotData)
-                    .set(rawTask.lastSnapshotData);
-        }
+        lastSnapshotData.set(rawTask.lastSnapshotData);
     }
 
     /**
      * Returns the visible width to height ratio. Returns 0f if snapshot data is not available.
      */
     public float getVisibleThumbnailRatio(boolean clipInsets) {
-        ActivityManager.RecentTaskInfo.PersistedTaskSnapshotData lastSnapshotData =
-                (ActivityManager.RecentTaskInfo.PersistedTaskSnapshotData) this.lastSnapshotData;
         if (lastSnapshotData.taskSize == null || lastSnapshotData.contentInsets == null) {
             return 0f;
         }

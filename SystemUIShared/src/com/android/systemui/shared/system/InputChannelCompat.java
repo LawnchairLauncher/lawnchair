@@ -24,8 +24,6 @@ import android.view.InputChannel;
 import android.view.InputEvent;
 import android.view.MotionEvent;
 
-import com.android.systemui.shared.QuickstepCompat;
-
 /**
  * @see android.view.InputChannel
  */
@@ -83,9 +81,7 @@ public class InputChannelCompat {
          * @see BatchedInputEventReceiver#setBatchingEnabled()
          */
         public void setBatchingEnabled(boolean batchingEnabled) {
-            if (QuickstepCompat.ATLEAST_S) {
-                mReceiver.setBatchingEnabled(batchingEnabled);
-            }
+            mReceiver.setBatchingEnabled(batchingEnabled);
         }
 
         /**

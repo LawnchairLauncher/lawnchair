@@ -28,7 +28,6 @@ import android.app.ActivityClient;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RecentTaskInfo;
 import android.app.ActivityManager.RunningTaskInfo;
-import android.os.Build;
 import android.window.TaskSnapshot;
 import android.app.ActivityOptions;
 import android.app.ActivityTaskManager;
@@ -53,18 +52,11 @@ import android.view.IRecentsAnimationRunner;
 import android.view.RemoteAnimationTarget;
 
 import com.android.internal.app.IVoiceInteractionManagerService;
-import com.android.systemui.shared.QuickstepCompat;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
-import com.android.systemui.shared.recents.utilities.Utilities;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-
-import app.lawnchair.compatlib.ActivityManagerCompat;
-import app.lawnchair.compatlib.RecentsAnimationRunnerStub;
-import app.lawnchair.compatlib.eleven.ActivityManagerCompatVR;
 
 public class ActivityManagerWrapper {
 
@@ -79,7 +71,7 @@ public class ActivityManagerWrapper {
     // Should match the value in AssistManager
     private static final String INVOCATION_TIME_MS_KEY = "invocation_time_ms";
 
-    private static final boolean ATLEAST_S = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
+    private final ActivityTaskManager mAtm = ActivityTaskManager.getInstance();
     private ActivityManagerWrapper() { }
 
     public static ActivityManagerWrapper getInstance() {
@@ -111,29 +103,26 @@ public class ActivityManagerWrapper {
      * list (can be {@code null}).
      */
     public ActivityManager.RunningTaskInfo getRunningTask(boolean filterOnlyVisibleRecents) {
-        return QuickstepCompat.getActivityManagerCompat().getRunningTask(filterOnlyVisibleRecents);
+        // Note: The set of running tasks from the system is ordered by recency
+        List<ActivityManager.RunningTaskInfo> tasks =
+                mAtm.getTasks(1, filterOnlyVisibleRecents);
+        if (tasks.isEmpty()) {
+            return null;
+        }
+        return tasks.get(0);
     }
 
     /**
      * @return a list of the recents tasks.
      */
     public List<RecentTaskInfo> getRecentTasks(int numTasks, int userId) {
-        return QuickstepCompat.getActivityManagerCompat().getRecentTasks(numTasks, userId);
+        return mAtm.getRecentTasks(numTasks, RECENT_IGNORE_UNAVAILABLE, userId);
     }
 
     /**
      * @return the task snapshot for the given {@param taskId}.
      */
     public @NonNull ThumbnailData getTaskThumbnail(int taskId, boolean isLowResolution) {
-        if (!QuickstepCompat.ATLEAST_S) {
-            ActivityManagerCompatVR compat = ((ActivityManagerCompatVR) QuickstepCompat.getActivityManagerCompat());
-            ActivityManagerCompatVR.ThumbnailData data = compat.getTaskThumbnail(taskId, isLowResolution);
-            if (data != null) {
-                return new ThumbnailData(data);
-            } else {
-                return null;
-            }
-        }
         TaskSnapshot snapshot = null;
         try {
             snapshot = getService().getTaskSnapshot(taskId, isLowResolution);
@@ -182,9 +171,9 @@ public class ActivityManagerWrapper {
     public boolean startRecentsActivity(
             Intent intent, long eventTime, RecentsAnimationListener animationHandler) {
         try {
-            RecentsAnimationRunnerStub runner = null;
+            IRecentsAnimationRunner runner = null;
             if (animationHandler != null) {
-                runner = new RecentsAnimationRunnerStub() {
+                runner = new IRecentsAnimationRunner.Stub() {
                     @Override
                     public void onAnimationStart(IRecentsAnimationController controller,
                             RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
@@ -200,16 +189,9 @@ public class ActivityManagerWrapper {
                     }
 
                     @Override
-                    public void onAnimationCanceled(Object taskSnapshot) {
-                        if (QuickstepCompat.ATLEAST_S) {
-                            animationHandler.onAnimationCanceled(
-                                    taskSnapshot != null ? new ThumbnailData((TaskSnapshot) taskSnapshot) : null);
-                        } else {
-                            ActivityManagerCompatVR compat = (ActivityManagerCompatVR) QuickstepCompat.getActivityManagerCompat();
-                            ActivityManagerCompatVR.ThumbnailData data = compat.convertTaskSnapshotToThumbnailData(taskSnapshot);
-                            animationHandler.onAnimationCanceled(
-                                    data != null ? new ThumbnailData(data) : null);
-                        }
+                    public void onAnimationCanceled(TaskSnapshot taskSnapshot) {
+                        animationHandler.onAnimationCanceled(
+                                taskSnapshot != null ? new ThumbnailData(taskSnapshot) : null);
                     }
 
                     @Override
@@ -218,7 +200,7 @@ public class ActivityManagerWrapper {
                     }
                 };
             }
-            QuickstepCompat.getActivityManagerCompat().startRecentsActivity(intent, eventTime, runner);
+            getService().startRecentsActivity(intent, eventTime, runner);
             return true;
         } catch (Exception e) {
             return false;
@@ -296,7 +278,7 @@ public class ActivityManagerWrapper {
     public void closeSystemWindows(final String reason) {
         try {
             ActivityManager.getService().closeSystemDialogs(reason);
-        } catch (RemoteException | SecurityException e) {
+        } catch (RemoteException e) {
             Log.w(TAG, "Failed to close system windows", e);
         }
     }

@@ -19,8 +19,6 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.view.AppTransitionAnimationSpec;
 
-import com.android.systemui.shared.QuickstepCompat;
-
 /**
  * Wraps the internal app transition animation spec.
  */
@@ -37,6 +35,7 @@ public class AppTransitionAnimationSpecCompat {
     }
 
     public AppTransitionAnimationSpec toAppTransitionAnimationSpec() {
-        return QuickstepCompat.getFactory().createAppTransitionAnimationSpec(mTaskId, mBuffer, mRect);
+        return new AppTransitionAnimationSpec(mTaskId,
+                mBuffer != null ? mBuffer.getHardwareBuffer() : null, mRect);
     }
 }

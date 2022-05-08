@@ -19,7 +19,6 @@ package com.android.systemui.shared.system;
 import static android.view.CrossWindowBlurListeners.CROSS_WINDOW_BLUR_SUPPORTED;
 
 import android.app.ActivityManager;
-import android.os.Build;
 import android.os.SystemProperties;
 
 public abstract class BlurUtils {
@@ -30,7 +29,6 @@ public abstract class BlurUtils {
      * @return {@code true} when supported.
      */
     public static boolean supportsBlursOnWindows() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return false;
         return CROSS_WINDOW_BLUR_SUPPORTED && ActivityManager.isHighEndGfx()
                 && !SystemProperties.getBoolean("persist.sysui.disableBlur", false);
     }

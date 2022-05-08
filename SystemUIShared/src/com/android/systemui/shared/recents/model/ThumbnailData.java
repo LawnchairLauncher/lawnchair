@@ -19,14 +19,9 @@ package com.android.systemui.shared.recents.model;
 import static android.app.WindowConfiguration.ROTATION_UNDEFINED;
 import static android.content.res.Configuration.ORIENTATION_UNDEFINED;
 import static android.graphics.Bitmap.Config.ARGB_8888;
-import static android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
-import static android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-import static android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
-import static android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS;
 
 import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_UNDEFINED;
 
-import android.app.ActivityManager;
 import android.window.TaskSnapshot;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -35,8 +30,6 @@ import android.graphics.Rect;
 import android.hardware.HardwareBuffer;
 import android.util.Log;
 import android.view.WindowInsetsController.Appearance;
-
-import app.lawnchair.compatlib.eleven.ActivityManagerCompatVR;
 
 /**
  * Data for a single thumbnail.
@@ -101,25 +94,5 @@ public class ThumbnailData {
         windowingMode = snapshot.getWindowingMode();
         appearance = snapshot.getAppearance();
         snapshotId = snapshot.getId();
-    }
-
-    public ThumbnailData(ActivityManagerCompatVR.ThumbnailData data) {
-        thumbnail = data.thumbnail;
-        insets = data.insets;
-        orientation = data.orientation;
-        rotation = data.rotation;
-        reducedResolution = data.reducedResolution;
-        scale = data.scale;
-        isRealSnapshot = data.isRealSnapshot;
-        isTranslucent = data.isTranslucent;
-        windowingMode = data.windowingMode;
-        appearance = 0;
-        if ((data.systemUiVisibility & SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) != 0) {
-            appearance |= APPEARANCE_LIGHT_STATUS_BARS;
-        }
-        if ((data.systemUiVisibility & SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR) != 0) {
-            appearance |= APPEARANCE_LIGHT_NAVIGATION_BARS;
-        }
-        snapshotId = data.snapshotId;
     }
 }
