@@ -167,7 +167,7 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"কৰ্মস্থানৰ এপ্‌সমূহ অফ হৈ আছে। আপোনাৰ কৰ্মস্থানৰ এপ্‌সমূহে আপোনালৈ জাননী পঠিয়াব, আপোনাৰ বেটাৰী ব্যৱহাৰ কৰিব অথবা আপোনাৰ অৱস্থান এক্সেছ কৰিব নোৱাৰে"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"কর্মস্থানৰ এপ্‌সমূহ প্ৰতীকেৰে চিহ্নিত কৰা হয় আৰু সেইবোৰ আপোনাৰ আইটি প্ৰশাসকৰ বাবে দৃশ্যমান হয়"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"বুজি পালোঁ"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"কৰ্মস্থানৰ এপ্‌সমূহ অফ কৰক"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"কৰ্মস্থানৰ এপ্‌ পজ কৰক"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"কৰ্মস্থানৰ এপ্‌সমূহ অন কৰক"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ফিল্টাৰ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"বিফল: <xliff:g id="WHAT">%1$s</xliff:g>"</string>

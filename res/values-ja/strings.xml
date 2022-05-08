@@ -167,7 +167,7 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"仕事用アプリは OFF になっています。仕事用アプリでは、通知の送信、バッテリーの使用、位置情報の取得が無効になっています"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"仕事用アプリはバッジが付き、IT 管理者に公開されます"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"仕事用アプリを OFF にする"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"仕事用アプリを一時停止"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"仕事用アプリを ON にする"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"フィルタ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"失敗: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
