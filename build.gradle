@@ -100,6 +100,9 @@ def releaseName = "Alpha 5"
 def versionDisplayName = "${version} ${isReleaseBuild ? releaseName : devReleaseName}"
 def majorVersion = versionDisplayName.split("\\.")[0]
 
+def quickstepMinSdk = "32"
+def quickstepMaxSdk = "32"
+
 android {
     compileSdkVersion COMPILE_SDK
     buildToolsVersion BUILD_TOOLS_VERSION
@@ -117,6 +120,11 @@ android {
         buildConfigField "String", "MAJOR_VERSION", "\"${majorVersion}\""
         buildConfigField "String", "COMMIT_HASH", "\"${buildCommit}\""
         buildConfigField "boolean", "ENABLE_AUTO_INSTALLS_LAYOUT", "false"
+
+        manifestPlaceholders.quickstepMinSdk = quickstepMinSdk
+        manifestPlaceholders.quickstepMaxSdk = quickstepMaxSdk
+        buildConfigField "int", "QUICKSTEP_MIN_SDK", quickstepMinSdk
+        buildConfigField "int", "QUICKSTEP_MAX_SDK", quickstepMaxSdk
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true

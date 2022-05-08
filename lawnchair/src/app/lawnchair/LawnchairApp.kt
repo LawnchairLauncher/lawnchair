@@ -27,6 +27,7 @@ import android.provider.Settings
 import android.util.Log
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.restartLauncher
+import com.android.launcher3.BuildConfig
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.quickstep.RecentsActivity
 import com.android.systemui.shared.system.QuickStepContract
@@ -118,7 +119,7 @@ class LawnchairApp : Application() {
     }
 
     private fun checkRecentsComponent(): Boolean {
-        if (Build.VERSION.SDK_INT !in Build.VERSION_CODES.R..Build.VERSION_CODES.S) {
+        if (Build.VERSION.SDK_INT !in BuildConfig.QUICKSTEP_MIN_SDK..BuildConfig.QUICKSTEP_MAX_SDK) {
             Log.d(TAG, "API ${Build.VERSION.SDK_INT} unsupported, disabling recents")
             return false
         }

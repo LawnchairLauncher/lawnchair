@@ -102,10 +102,10 @@
 
         <meta-data
             android:name="xyz.paphonb.quickstepswitcher.minSdk"
-            android:value="30" />
+            android:value="${quickstepMinSdk}" />
 
         <meta-data
             android:name="xyz.paphonb.quickstepswitcher.maxSdk"
-            android:value="31" />
+            android:value="${quickstepMaxSdk}" />
     </application>
 </manifest>
