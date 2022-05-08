@@ -167,7 +167,7 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"ແອັບບ່ອນເຮັດວຽກຖືກປິດໄວ້ຢູ່. ແອັບບ່ອນເຮັດວຽກຂອງທ່ານຈະບໍ່ສາມາດສົ່ງການແຈ້ງເຕືອນໃຫ້ທ່ານ, ໃຊ້ແບັດເຕີຣີຂອງທ່ານ ຫຼື ເຂົ້າເຖິງສະຖານທີ່ຂອງທ່ານໄດ້"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"ແອັບບ່ອນເຮັດວຽກແມ່ນຖືກຕິດປ້າຍ ແລະ ສະແດງໃຫ້ຜູ້ເບິ່ງແຍງໄອທີຂອງທ່ານເຫັນ"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"ເຂົ້າໃຈແລ້ວ"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"ປິດການໃຊ້ແອັບບ່ອນເຮັດວຽກ"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ຢຸດແອັບບ່ອນເຮັດວຽກຊົ່ວຄາວ"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"ເປີດໃຊ້ແອັບບ່ອນເຮັດວຽກ"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ກັ່ນຕອງ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ບໍ່ສຳເລັດ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>

@@ -167,7 +167,7 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Les applications professionnelles sont désactivées. Vos applications professionnelles ne peuvent ni vous envoyer de notifications, ni utiliser la pile, ni accéder à votre position"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Les applications professionnelles sont indiquées par un badge et sont visibles pour votre administrateur informatique"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Désactiver les applications professionnelles"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Mettre en pause les applications professionnelles"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Activer les applications professionnelles"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtrer"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Échec : <xliff:g id="WHAT">%1$s</xliff:g>"</string>
