@@ -86,8 +86,8 @@
     <string name="fuzzy_search_title">Fuzzy Search</string>
     <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
     <string name="theme_label">Theme</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark">Dark</string>
+    <string name="theme_light">روشن</string>
+    <string name="theme_dark">تاریک</string>
     <string name="theme_system_default">سیستم</string>
     <string name="theme_follow_wallpaper">Match Wallpaper</string>
     <string name="quickstep_label">Recents</string>
