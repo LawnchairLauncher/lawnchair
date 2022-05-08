@@ -56,7 +56,6 @@ import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.*
 import com.android.launcher3.allapps.AllAppsContainerView
 import com.android.launcher3.allapps.search.SearchAdapterProvider
-import com.android.launcher3.graphics.IconShape
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.uioverrides.QuickstepLauncher
@@ -222,14 +221,6 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         val isWorkspaceDarkText = Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText)
         preferenceManager2.darkStatusBar.onEach(launchIn = lifecycleScope) { darkStatusBar ->
             systemUiController.updateUiState(UI_STATE_BASE_WINDOW, isWorkspaceDarkText || darkStatusBar)
-        }
-
-        preferenceManager2.iconShape.onEach(launchIn = lifecycleScope) { iconShape ->
-            CustomAdaptiveIconDrawable.sInitialized = true
-            CustomAdaptiveIconDrawable.sMaskId = iconShape.getHashString()
-            CustomAdaptiveIconDrawable.sMask = iconShape.getMaskPath()
-            IconShape.init(this)
-            invariantDeviceProfile.onPreferencesChanged(this)
         }
 
         // Handle update from version 12 Alpha 4 to version 12 Alpha 5.

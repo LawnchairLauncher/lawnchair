@@ -28,18 +28,22 @@ import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import app.lawnchair.data.iconoverride.IconOverrideRepository
 import app.lawnchair.font.FontCache
+import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.theme.color.ColorOption
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.R
+import com.android.launcher3.graphics.IconShape as L3IconShape
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.DynamicResource
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.preferencemanager.PreferenceManager
+import com.patrykmichalik.preferencemanager.firstBlocking
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import app.lawnchair.preferences.PreferenceManager as LawnchairPreferenceManager
 
@@ -252,7 +256,20 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
     )
 
     init {
+        initializeIconShape(iconShape.firstBlocking())
+        iconShape.get()
+            .onEach { shape ->
+                val idp = InvariantDeviceProfile.INSTANCE.get(context)
+                initializeIconShape(shape)
+                L3IconShape.init(context)
+                idp.onPreferencesChanged(context)
+            }
+    }
 
+    private fun initializeIconShape(shape: IconShape) {
+        CustomAdaptiveIconDrawable.sInitialized = true
+        CustomAdaptiveIconDrawable.sMaskId = shape.getHashString()
+        CustomAdaptiveIconDrawable.sMask = shape.getMaskPath()
     }
 
     companion object {
