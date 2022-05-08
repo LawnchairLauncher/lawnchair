@@ -95,7 +95,7 @@ if (ciBuild) {
     devReleaseName = "Dev (${buildCommit})"
 }
 
-def version = "12.0.0"
+def version = "12.1.0"
 def releaseName = "Alpha 5"
 def versionDisplayName = "${version} ${isReleaseBuild ? releaseName : devReleaseName}"
 def majorVersion = versionDisplayName.split("\\.")[0]
