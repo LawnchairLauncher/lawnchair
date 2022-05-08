@@ -80,6 +80,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
+import app.lawnchair.LawnchairApp;
+
 /**
  * Model delegate which loads prediction items
  */
@@ -178,7 +180,7 @@ public class QuickstepModelDelegate extends ModelDelegate {
 
         // Only register for launcher snapshot logging if this is the primary ModelDelegate
         // instance, as there will be additional instances that may be destroyed at any time.
-        if (mIsPrimaryInstance) {
+        if (mIsPrimaryInstance && LawnchairApp.isRecentsEnabled()) {
             registerSnapshotLoggingCallback();
         }
     }

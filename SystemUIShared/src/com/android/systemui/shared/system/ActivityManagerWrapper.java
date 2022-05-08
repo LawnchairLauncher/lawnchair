@@ -71,7 +71,7 @@ public class ActivityManagerWrapper {
     // Should match the value in AssistManager
     private static final String INVOCATION_TIME_MS_KEY = "invocation_time_ms";
 
-    private final ActivityTaskManager mAtm = ActivityTaskManager.getInstance();
+    private final ActivityTaskManager mAtm = null;
     private ActivityManagerWrapper() { }
 
     public static ActivityManagerWrapper getInstance() {
@@ -103,6 +103,7 @@ public class ActivityManagerWrapper {
      * list (can be {@code null}).
      */
     public ActivityManager.RunningTaskInfo getRunningTask(boolean filterOnlyVisibleRecents) {
+        // TODO: Switch to QuickstepCompat call
         // Note: The set of running tasks from the system is ordered by recency
         List<ActivityManager.RunningTaskInfo> tasks =
                 mAtm.getTasks(1, filterOnlyVisibleRecents);

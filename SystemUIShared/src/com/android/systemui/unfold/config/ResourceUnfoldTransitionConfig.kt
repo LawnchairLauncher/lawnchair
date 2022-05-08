@@ -16,7 +16,9 @@
 package com.android.systemui.unfold.config
 
 import android.content.Context
+import android.os.Build
 import android.os.SystemProperties
+import com.android.systemui.shared.recents.utilities.Utilities
 
 internal class ResourceUnfoldTransitionConfig(
     private val context: Context
@@ -32,11 +34,17 @@ internal class ResourceUnfoldTransitionConfig(
         get() = SystemProperties.getInt(UNFOLD_TRANSITION_MODE_PROPERTY_NAME,
             UNFOLD_TRANSITION_PROPERTY_ENABLED) == UNFOLD_TRANSITION_PROPERTY_ENABLED
 
-    private fun readIsEnabledResource(): Boolean = context.resources
-        .getBoolean(com.android.internal.R.bool.config_unfoldTransitionEnabled)
+    private fun readIsEnabledResource(): Boolean {
+        if (!Utilities.ATLEAST_S_V2) return false
+        return context.resources
+            .getBoolean(com.android.internal.R.bool.config_unfoldTransitionEnabled)
+    }
 
-    private fun readIsHingeAngleEnabled(): Boolean = context.resources
-        .getBoolean(com.android.internal.R.bool.config_unfoldTransitionHingeAngle)
+    private fun readIsHingeAngleEnabled(): Boolean {
+        if (!Utilities.ATLEAST_S_V2) return false
+        return context.resources
+            .getBoolean(com.android.internal.R.bool.config_unfoldTransitionHingeAngle)
+    }
 }
 
 /**

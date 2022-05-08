@@ -1,7 +1,7 @@
 buildscript {
     ext {
-        kotlin_version = '1.6.10'
-        compose_version = '1.2.0-alpha04'
+        kotlin_version = '1.6.20'
+        compose_version = '1.2.0-alpha08'
         accompanist_version = '0.24.2-alpha'
         libsu_version = '3.1.2'
         protocVersion = '3.18.0'
@@ -325,14 +325,14 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling:$compose_version"
     implementation "androidx.compose.foundation:foundation:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.material3:material3:1.0.0-alpha06"
+    implementation "androidx.compose.material3:material3:1.0.0-alpha10"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     implementation "androidx.compose.runtime:runtime-rxjava2:$compose_version"
     implementation "androidx.compose.compiler:compiler:$compose_version"
     implementation "androidx.constraintlayout:constraintlayout:2.1.3"
     implementation 'androidx.activity:activity-compose:1.4.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1'
-    implementation "androidx.navigation:navigation-compose:2.4.1"
+    implementation "androidx.navigation:navigation-compose:2.4.2"
     implementation "androidx.palette:palette-ktx:${ANDROID_X_VERSION}"
     implementation "androidx.slice:slice-core:1.1.0-alpha02"
     implementation "com.google.accompanist:accompanist-drawablepainter:$accompanist_version"

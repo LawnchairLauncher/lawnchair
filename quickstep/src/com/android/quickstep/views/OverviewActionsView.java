@@ -86,6 +86,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     private final MultiValueAlpha mMultiValueAlpha;
     private Button mSplitButton;
+    private View mSplitSpace;
 
     @ActionsHiddenFlags
     private int mHiddenFlags;
@@ -120,6 +121,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
         mSplitButton = findViewById(R.id.action_split);
         mSplitButton.setOnClickListener(this);
+
+        mSplitSpace = findViewById(R.id.action_split_space);
     }
 
     /**
@@ -224,7 +227,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
                 dp.isVerticalBarLayout() ? 0 : dp.overviewActionsButtonSpacing,
                 ViewGroup.LayoutParams.MATCH_PARENT);
         params.weight = dp.isVerticalBarLayout() ? 1 : 0;
-        findViewById(R.id.action_split_space).setLayoutParams(params);
+        mSplitSpace.setLayoutParams(params);
 
         requestLayout();
 
@@ -239,7 +242,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         }
 
         mSplitButton.setVisibility(visible ? VISIBLE : GONE);
-        findViewById(R.id.action_split_space).setVisibility(visible ? VISIBLE : GONE);
+        mSplitSpace.setVisibility(visible ? VISIBLE : GONE);
     }
 
     /** Get the top margin associated with the action buttons in Overview. */

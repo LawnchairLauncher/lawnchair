@@ -7,7 +7,6 @@ import android.graphics.drawable.GradientDrawable
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
-import androidx.appcompat.content.res.AppCompatResources
 import app.lawnchair.theme.ResourceToken
 import app.lawnchair.theme.UiColorMode
 import app.lawnchair.theme.color.ColorToken
@@ -20,7 +19,7 @@ data class ResourceDrawableToken<T : Drawable>(@DrawableRes private val resId: I
 
     @Suppress("UNCHECKED_CAST")
     override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): T {
-        return AppCompatResources.getDrawable(context, resId) as T
+        return context.getDrawable(resId) as T
     }
 }
 

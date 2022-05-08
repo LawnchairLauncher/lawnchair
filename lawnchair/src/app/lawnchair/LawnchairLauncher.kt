@@ -39,9 +39,8 @@ import androidx.lifecycle.*
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
-import androidx.savedstate.ViewTreeSavedStateRegistryOwner
+import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import app.lawnchair.gestures.GestureController
-import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
@@ -54,6 +53,7 @@ import app.lawnchair.ui.popup.LawnchairShortcut
 import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
 import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.*
+import com.android.launcher3.R
 import com.android.launcher3.allapps.AllAppsContainerView
 import com.android.launcher3.allapps.search.SearchAdapterProvider
 import com.android.launcher3.popup.SystemShortcut
@@ -79,6 +79,8 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
 
     private val lifecycleRegistry = LifecycleRegistry(this)
     private val savedStateRegistryController = SavedStateRegistryController.create(this)
+    override val savedStateRegistry: SavedStateRegistry
+        get() = savedStateRegistryController.savedStateRegistry
     private val activityResultRegistry = object : ActivityResultRegistry() {
         override fun <I : Any?, O : Any?> onLaunch(
             requestCode: Int,
@@ -155,7 +157,6 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     private val defaultOverlay by lazy { OverlayCallbackImpl(this) }
     private val prefs by lazy { PreferenceManager.getInstance(this) }
     private val preferenceManager2 by lazy { PreferenceManager2.getInstance(this) }
-    private val invariantDeviceProfile by lazy { InvariantDeviceProfile.INSTANCE.get(this) }
     private val insetsController by lazy { WindowInsetsControllerCompat(launcher.window, rootView) }
     var allAppsScrimColor = 0
 
@@ -238,7 +239,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         super.setupViews()
         val launcherRootView = findViewById<LauncherRootView>(R.id.launcher)
         ViewTreeLifecycleOwner.set(launcherRootView, this)
-        ViewTreeSavedStateRegistryOwner.set(launcherRootView, this)
+        launcherRootView.setViewTreeSavedStateRegistryOwner(this)
     }
 
     override fun collectStateHandlers(out: MutableList<StateManager.StateHandler<*>>) {
@@ -324,10 +325,6 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
 
     override fun getLifecycle(): Lifecycle {
         return lifecycleRegistry
-    }
-
-    override fun getSavedStateRegistry(): SavedStateRegistry {
-        return savedStateRegistryController.savedStateRegistry
     }
 
     override fun getActivityResultRegistry(): ActivityResultRegistry {

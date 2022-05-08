@@ -16,7 +16,6 @@
 
 package com.android.launcher3.popup;
 
-import static androidx.core.content.ContextCompat.getColorStateList;
 import static com.android.launcher3.anim.Interpolators.ACCELERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.DECELERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -133,7 +132,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
 
     private final String mIterateChildrenTag;
 
-    private final int[] mColorIds;
+    private final int[] mColors;
 
     public ArrowPopup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -180,10 +179,13 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
 
         // TODO: use ColorTokens
         if (shouldUseColorExtraction) {
-            mColorIds = new int[]{R.color.popup_shade_first, R.color.popup_shade_second,
-                    R.color.popup_shade_third};
+            mColors = new int[] {
+                    ColorTokens.PopupShadeFirst.resolveColor(context),
+                    ColorTokens.PopupShadeSecond.resolveColor(context),
+                    ColorTokens.PopupShadeThird.resolveColor(context)};
         } else {
-            mColorIds = new int[]{R.color.popup_shade_first};
+            mColors = new int[] {
+                    ColorTokens.PopupShadeFirst.resolveColor(context)};
         }
     }
 
@@ -235,15 +237,14 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
     }
 
     /**
-     * @param backgroundColor When Color.TRANSPARENT, we get color from {@link #mColorIds}.
+     * @param backgroundColor When Color.TRANSPARENT, we get color from {@link #mColors}.
      *                        Otherwise, we will use this color for all child views.
      */
     protected void assignMarginsAndBackgrounds(ViewGroup viewGroup, int backgroundColor) {
         int[] colors = null;
         if (backgroundColor == Color.TRANSPARENT) {
             // Lazily get the colors so they match the current wallpaper colors.
-            colors = Arrays.stream(mColorIds).map(
-                    r -> getColorStateList(getContext(), r).getDefaultColor()).toArray();
+            colors = mColors;
         }
 
         int count = viewGroup.getChildCount();
