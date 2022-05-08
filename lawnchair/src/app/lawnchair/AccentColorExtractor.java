@@ -18,9 +18,11 @@ package app.lawnchair;
 
 import android.app.WallpaperColors;
 import android.content.Context;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.util.SparseIntArray;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import androidx.annotation.Keep;
@@ -29,7 +31,6 @@ import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.widget.LocalColorExtractor;
 
-import java.util.List;
 import java.util.Map;
 
 import app.lawnchair.theme.ThemeProvider;
@@ -52,17 +53,12 @@ public class AccentColorExtractor extends LocalColorExtractor implements ThemePr
     @Override
     public void setListener(@Nullable Listener listener) {
         mListener = listener;
-        notifyListener(mTmpRect, null);
+        notifyListener();
     }
 
     @Override
-    public void addLocation(List<RectF> locations) {
-        mThemeProvider.addListener(this);
-    }
+    public void setWorkspaceLocation(Rect pos, View child, int screenId) {
 
-    @Override
-    public void removeLocations() {
-        mThemeProvider.removeListener(this);
     }
 
     @Nullable
@@ -89,12 +85,12 @@ public class AccentColorExtractor extends LocalColorExtractor implements ThemePr
 
     @Override
     public void onColorSchemeChanged() {
-        notifyListener(mTmpRect, null);
+        notifyListener();
     }
 
-    protected void notifyListener(RectF area, WallpaperColors colors) {
+    private void notifyListener() {
         if (mListener != null) {
-            mListener.onColorsChanged(area, generateColorsOverride(mThemeProvider.getColorScheme()));
+            mListener.onColorsChanged(generateColorsOverride(mThemeProvider.getColorScheme()));
         }
     }
 

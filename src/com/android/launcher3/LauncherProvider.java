@@ -684,8 +684,8 @@ public class LauncherProvider extends ContentProvider {
         }
 
         protected void reInitIds() {
-            mMaxItemId = initializeMaxItemId(getWritableDatabase());
-            mMaxScreenId = initializeMaxScreenId(getWritableDatabase());
+            // mMaxItemId = initializeMaxItemId(getWritableDatabase());
+            // mMaxScreenId = initializeMaxScreenId(getWritableDatabase());
         }
 
         @Override

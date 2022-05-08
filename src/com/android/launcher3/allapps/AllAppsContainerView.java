@@ -464,10 +464,6 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
                     });
             onActivePageChanged(mViewPager.getNextPage());
         } else {
-            if (mWorkModeSwitch != null) {
-                removeView(mWorkModeSwitch);
-                mWorkModeSwitch = null;
-            }
             mAH[AdapterHolder.MAIN].setup(findViewById(R.id.apps_list_view), null);
             mAH[AdapterHolder.WORK].recyclerView = null;
         }

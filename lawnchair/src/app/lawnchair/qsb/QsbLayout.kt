@@ -1,6 +1,5 @@
 package app.lawnchair.qsb
 
-import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -94,7 +93,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         val dp = activity.deviceProfile
         val cellWidth = DeviceProfile.calculateCellWidth(
             requestedWidth,
-            dp.cellLayoutBorderSpacingPx,
+            dp.cellLayoutBorderSpacePx.x,
             dp.numShownHotseatIcons
         )
         val iconSize = (dp.iconSizePx * 0.92f).toInt()

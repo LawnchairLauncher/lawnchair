@@ -43,16 +43,6 @@ class FallbackSearchInputView(context: Context, attrs: AttributeSet?) : Extended
         background = if (showBackground) bg else null
     }
 
-    override fun show() {
-        super.show()
-        shown = true
-    }
-
-    override fun hide() {
-        super.hide()
-        shown = false
-    }
-
     override fun hideKeyboard() {
         super.hideKeyboard()
         this.appsView?.requestFocus()

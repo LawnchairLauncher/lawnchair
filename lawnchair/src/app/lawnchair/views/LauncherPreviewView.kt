@@ -72,17 +72,15 @@ class LauncherPreviewView(
                 }
             }.run()
         } else {
-            object : ModelPreload() {
-                override fun onComplete(isSuccess: Boolean) {
-                    if (isSuccess) {
-                        MAIN_EXECUTOR.execute {
-                            renderView(inflationContext, bgDataModel, null)
-                        }
-                    } else {
-                        Log.e("LauncherPreviewView", "Model loading failed")
+            LauncherAppState.getInstance(inflationContext).model.loadAsync { dataModel ->
+                if (dataModel != null) {
+                    MAIN_EXECUTOR.execute {
+                        renderView(inflationContext, dataModel, null)
                     }
+                } else {
+                    Log.e("LauncherPreviewView", "Model loading failed")
                 }
-            }.start(inflationContext)
+            }
         }
     }
 

@@ -617,7 +617,6 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         mPreviewItemManager.recomputePreviewDrawingParams();
 
         if (!mBackground.drawingDelegated()) {
-            mBackground.setBgOpacity(previewBgOpacity);
             mBackground.drawBackground(canvas);
         }
 

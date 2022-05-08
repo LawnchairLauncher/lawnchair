@@ -60,6 +60,21 @@
             android:layout_height="1dp"
             android:layout_weight="1" />
 
+        <Button
+            android:id="@+id/action_split"
+            style="@style/OverviewActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/action_split"
+            android:theme="@style/ThemeControlHighlightWorkspaceColor"
+            android:visibility="gone" />
+
+        <Space
+            android:id="@+id/action_split_space"
+            android:layout_width="@dimen/overview_actions_button_spacing"
+            android:layout_height="1dp"
+            android:visibility="gone" />
+
         <app.lawnchair.views.CustomButton
             android:id="@+id/action_lens"
             style="@style/OverviewActionButton"

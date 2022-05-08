@@ -136,7 +136,7 @@ fun CustomizeAppDialog(
                     componentKey.componentName.packageName,
                     componentKey.user,
                 )
-                context.launcher.onIdpChanged(idp)
+                context.launcher.onIdpChanged(true)
             }
         }
     }

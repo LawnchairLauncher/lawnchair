@@ -146,7 +146,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
         if (bindIcon) {
             MODEL_EXECUTOR.handler.postAtFrontOfQueue {
                 populateSearchActionItemInfo(target, info)
-                runOnMainThread { applyFromSearchActionItemInfo(info) }
+                runOnMainThread { applyFromItemInfoWithIcon(info) }
             }
         }
     }
@@ -227,7 +227,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
 
     private fun getPackageIcon(packageName: String, user: UserHandle): BitmapInfo {
         val las = LauncherAppState.getInstance(context)
-        val info = PackageItemInfo(packageName)
+        val info = PackageItemInfo(packageName, user)
         info.user = user
         las.iconCache.getTitleAndIconForApp(info, false)
         return info.bitmap

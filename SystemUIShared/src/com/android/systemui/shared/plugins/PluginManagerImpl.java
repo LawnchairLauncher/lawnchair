@@ -76,7 +76,7 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
 
         PluginExceptionHandler uncaughtExceptionHandler = new PluginExceptionHandler(
                 defaultHandlerOptional);
-        invoke(sSetUncaughtExceptionPreHandler, uncaughtExceptionHandler);
+        invoke(sSetUncaughtExceptionPreHandler, null, uncaughtExceptionHandler);
     }
 
     public boolean isDebuggable() {

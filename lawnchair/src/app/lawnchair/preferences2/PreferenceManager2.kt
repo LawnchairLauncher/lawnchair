@@ -251,6 +251,10 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    init {
+
+    }
+
     companion object {
         private val Context.preferencesDataStore by preferencesDataStore(
             name = "preferences",
