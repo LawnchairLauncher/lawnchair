@@ -35,6 +35,26 @@ fun SwitchPreference(
     enabled: Boolean = true,
     showDivider: Boolean = false,
 ) {
+    val checked = adapter.state.value
+    SwitchPreference(
+        checked = checked,
+        onCheckedChange = adapter::onChange,
+        label = label,
+        description = description,
+        enabled = enabled,
+        showDivider = showDivider,
+    )
+}
+
+@Composable
+fun SwitchPreference(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    label: String,
+    description: String? = null,
+    enabled: Boolean = true,
+    showDivider: Boolean = false,
+) {
     PreferenceTemplate(
         title = { Text(text = label) },
         description = { description?.let { Text(text = it) } },
@@ -42,17 +62,15 @@ fun SwitchPreference(
             Switch(
                 modifier = Modifier
                     .height(24.dp),
-                checked = adapter.state.value,
-                onCheckedChange = {
-                    adapter.onChange(it)
-                },
+                checked = checked,
+                onCheckedChange = onCheckedChange,
                 enabled = enabled,
                 colors = SwitchDefaults.colors(checkedThumbColor = MaterialTheme.colorScheme.primary),
             )
         },
         modifier = Modifier
             .clickable(enabled) {
-                adapter.onChange(!adapter.state.value)
+                onCheckedChange(!checked)
             },
         enabled = enabled,
         showDivider = showDivider

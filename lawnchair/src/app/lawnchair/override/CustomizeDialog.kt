@@ -25,7 +25,7 @@ import app.lawnchair.ui.preferences.PreferenceActivity
 import app.lawnchair.ui.preferences.Routes
 import app.lawnchair.ui.preferences.components.ClickableIcon
 import app.lawnchair.ui.preferences.components.PreferenceGroup
-import app.lawnchair.ui.preferences.components.SwitchPreference2
+import app.lawnchair.ui.preferences.components.SwitchPreference
 import app.lawnchair.ui.util.addIfNotNull
 import app.lawnchair.util.ifNotNull
 import app.lawnchair.util.navigationBarsOrDisplayCutoutPadding
@@ -155,7 +155,7 @@ fun CustomizeAppDialog(
                 showDescription = collectedShowComponentNames,
             ) {
                 val stringKey = componentKey.toString()
-                SwitchPreference2(
+                SwitchPreference(
                     checked = collectedHiddenApps.contains(stringKey),
                     label = stringResource(id = R.string.hide_from_drawer),
                     onCheckedChange = { newValue ->
