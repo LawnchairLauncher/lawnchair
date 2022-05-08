@@ -167,7 +167,7 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"កម្មវិធីការងារ​ត្រូវបានបិទ។ កម្មវិធីការងារ​របស់អ្នកមិនអាចផ្ញើ​ការជូនដំណឹង​ទៅអ្នក ប្រើប្រាស់ថ្ម​របស់អ្នក ឬ​ចូលប្រើ​ទីតាំង​របស់អ្នក​បានទេ"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"កម្មវិធីការងារ​ត្រូវបានដាក់​គ្រឿងសម្គាល់ ហើយ​អ្នកគ្រប់គ្រង​ផ្នែកព័ត៌មានវិទ្យា​របស់អ្នក​អាចមើលឃើញ"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"យល់ហើយ"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"បិទ​កម្មវិធីការងារ"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ផ្អាក​កម្មវិធី​ការងារ"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"បើក​កម្មវិធី​ការងារ"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"តម្រង"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"បានបរាជ័យ៖ <xliff:g id="WHAT">%1$s</xliff:g>"</string>
