@@ -34,7 +34,6 @@ fun SwitchPreference(
     description: String? = null,
     enabled: Boolean = true,
     showDivider: Boolean = false,
-    onChange: (Boolean) -> Unit = {},
 ) {
     PreferenceTemplate(
         title = { Text(text = label) },
@@ -46,7 +45,6 @@ fun SwitchPreference(
                 checked = adapter.state.value,
                 onCheckedChange = {
                     adapter.onChange(it)
-                    onChange(it)
                 },
                 enabled = enabled,
                 colors = SwitchDefaults.colors(checkedThumbColor = MaterialTheme.colorScheme.primary),
@@ -54,7 +52,6 @@ fun SwitchPreference(
         },
         modifier = Modifier
             .clickable(enabled) {
-                onChange(!adapter.state.value)
                 adapter.onChange(!adapter.state.value)
             },
         enabled = enabled,

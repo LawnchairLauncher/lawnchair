@@ -23,36 +23,35 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
-import app.lawnchair.preferences2.PreferenceCollectorScope
-import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences.getAdapter
+import app.lawnchair.preferences2.preferenceManager2
 import com.android.launcher3.R
 
 @ExperimentalMaterialApi
 @Composable
-fun PreferenceCollectorScope.IconShapePreference(
-    value: IconShape,
-    edit: suspend PreferenceManager2.(IconShape) -> Unit,
+fun IconShapePreference(
 ) {
     val context = LocalContext.current
     val entries = remember {
         val systemShape = IconShapeManager.getSystemIconShape(context)
-        listOf<ListPreferenceEntry2<IconShape>>(
-            ListPreferenceEntry2(systemShape) { stringResource(id = R.string.icon_shape_system) },
-            ListPreferenceEntry2(IconShape.Circle) { stringResource(id = R.string.icon_shape_circle) },
-            ListPreferenceEntry2(IconShape.Square) { stringResource(id = R.string.icon_shape_square) },
-            ListPreferenceEntry2(IconShape.RoundedSquare) { stringResource(id = R.string.icon_shape_rounded_square) },
-            ListPreferenceEntry2(IconShape.Squircle) { stringResource(id = R.string.icon_shape_squircle) },
-            ListPreferenceEntry2(IconShape.Sammy) { stringResource(id = R.string.icon_shape_sammy) },
-            ListPreferenceEntry2(IconShape.Teardrop) { stringResource(id = R.string.icon_shape_teardrop) },
-            ListPreferenceEntry2(IconShape.Cylinder) { stringResource(id = R.string.icon_shape_cylinder) },
-            ListPreferenceEntry2(IconShape.Cupertino) { stringResource(id = R.string.icon_shape_cupertino) },
+        listOf<ListPreferenceEntry<IconShape>>(
+            ListPreferenceEntry(systemShape) { stringResource(id = R.string.icon_shape_system) },
+            ListPreferenceEntry(IconShape.Circle) { stringResource(id = R.string.icon_shape_circle) },
+            ListPreferenceEntry(IconShape.Square) { stringResource(id = R.string.icon_shape_square) },
+            ListPreferenceEntry(IconShape.RoundedSquare) { stringResource(id = R.string.icon_shape_rounded_square) },
+            ListPreferenceEntry(IconShape.Squircle) { stringResource(id = R.string.icon_shape_squircle) },
+            ListPreferenceEntry(IconShape.Sammy) { stringResource(id = R.string.icon_shape_sammy) },
+            ListPreferenceEntry(IconShape.Teardrop) { stringResource(id = R.string.icon_shape_teardrop) },
+            ListPreferenceEntry(IconShape.Cylinder) { stringResource(id = R.string.icon_shape_cylinder) },
+            ListPreferenceEntry(IconShape.Cupertino) { stringResource(id = R.string.icon_shape_cupertino) },
             )
     }
 
-    ListPreference2(
-        value = value,
+    val adapter = preferenceManager2().iconShape.getAdapter()
+
+    ListPreference(
+        adapter = adapter,
         entries = entries,
         label = stringResource(id = R.string.icon_shape_label),
-        onValueChange = { edit { this.edit(it) } },
     )
 }

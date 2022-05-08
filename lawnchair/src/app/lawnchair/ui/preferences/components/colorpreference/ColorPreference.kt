@@ -24,9 +24,7 @@ import androidx.compose.material.RadioButton
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -50,90 +48,93 @@ fun ColorPreference(
     adapter: PreferenceAdapter<ColorOption>,
     label: String,
     dynamicEntries: List<ColorPreferenceEntry<ColorOption>>,
-    staticEntries: List<ColorPreferenceEntry<ColorOption>>
+    staticEntries: List<ColorPreferenceEntry<ColorOption>>,
 ) {
     var selectedColor by adapter
-    val selectedEntry = dynamicEntries.firstOrNull { it.value == selectedColor }
-        ?: staticEntries.firstOrNull { it.value == selectedColor }
+    val selectedEntry = dynamicEntries.firstOrNull { it.value == selectedColor } ?: staticEntries.firstOrNull { it.value == selectedColor }
     val defaultTabIndex = if (dynamicEntries.any { it.value == selectedColor }) 0 else 1
     val description = selectedEntry?.label?.invoke()
     val bottomSheetHandler = bottomSheetHandler
+    var bottomSheetShown by remember { mutableStateOf(false) }
 
     PreferenceTemplate(
         title = { Text(text = label) },
         endWidget = { ColorDot(color = MaterialTheme.colorScheme.primary) },
+        modifier = Modifier.clickable { bottomSheetShown = true },
         description = {
             if (description != null) {
                 Text(text = description)
             }
         },
-        modifier = Modifier.clickable {
-            bottomSheetHandler.show {
-                val pagerState = rememberPagerState(defaultTabIndex)
-                val scope = rememberCoroutineScope()
-                val scrollToPage = { page: Int -> scope.launch { pagerState.animateScrollToPage(page) } }
-                AlertBottomSheetContent(
-                    title = { Text(text = label) },
-                    buttons = {
-                        Button(
-                            onClick = { bottomSheetHandler.hide() }
-                        ) {
-                            Text(text = stringResource(id = R.string.done))
-                        }
+    )
+
+    if (bottomSheetShown) {
+        bottomSheetHandler.onDismiss { bottomSheetShown = false }
+        bottomSheetHandler.show {
+            val pagerState = rememberPagerState(defaultTabIndex)
+            val scope = rememberCoroutineScope()
+            val scrollToPage = { page: Int -> scope.launch { pagerState.animateScrollToPage(page) } }
+            AlertBottomSheetContent(
+                title = { Text(text = label) },
+                buttons = {
+                    Button(onClick = { bottomSheetHandler.hide() }) {
+                        Text(text = stringResource(id = R.string.done))
                     }
-                ) {
-                    Column {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        ) {
-                            Chip(
-                                label = stringResource(id = R.string.dynamic),
-                                onClick = { scrollToPage(0) },
-                                currentOffset = pagerState.currentPage + pagerState.currentPageOffset,
-                                page = 0
-                            )
-                            Chip(
-                                label = stringResource(id = R.string.presets),
-                                onClick = { scrollToPage(1) },
-                                currentOffset = pagerState.currentPage + pagerState.currentPageOffset,
-                                page = 1
-                            )
-                        }
-                        HorizontalPager(
-                            count = 2,
-                            modifier = Modifier
-                                .pagerHeight(
-                                    dynamicCount = dynamicEntries.size,
-                                    staticCount = staticEntries.size
-                                ),
-                            state = pagerState,
-                            verticalAlignment = Alignment.Top
-                        ) { page ->
-                            when (page) {
-                                0 -> {
-                                    PresetsList(dynamicEntries, adapter)
-                                }
-                                1 -> {
-                                    SwatchGrid(
-                                        entries = staticEntries,
-                                        modifier = Modifier.padding(
-                                            start = 16.dp,
-                                            top = 20.dp,
-                                            end = 16.dp,
-                                            bottom = 16.dp
-                                        ),
-                                        onSwatchClick = { selectedColor = it },
-                                        isSwatchSelected = { it == selectedColor }
-                                    )
-                                }
+                }
+            ) {
+                Column {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                    ) {
+                        Chip(
+                            label = stringResource(id = R.string.dynamic),
+                            onClick = { scrollToPage(0) },
+                            currentOffset = pagerState.currentPage + pagerState.currentPageOffset,
+                            page = 0,
+                        )
+                        Chip(
+                            label = stringResource(id = R.string.presets),
+                            onClick = { scrollToPage(1) },
+                            currentOffset = pagerState.currentPage + pagerState.currentPageOffset,
+                            page = 1,
+                        )
+                    }
+                    HorizontalPager(
+                        count = 2,
+                        state = pagerState,
+                        verticalAlignment = Alignment.Top,
+                        modifier = Modifier.pagerHeight(
+                            dynamicCount = dynamicEntries.size,
+                            staticCount = staticEntries.size,
+                        ),
+                    ) { page ->
+                        when (page) {
+                            0 -> {
+                                PresetsList(
+                                    dynamicEntries = dynamicEntries,
+                                    adapter = adapter,
+                                )
+                            }
+                            1 -> {
+                                SwatchGrid(
+                                    entries = staticEntries,
+                                    modifier = Modifier.padding(
+                                        start = 16.dp,
+                                        top = 20.dp,
+                                        end = 16.dp,
+                                        bottom = 16.dp,
+                                    ),
+                                    onSwatchClick = { selectedColor = it },
+                                    isSwatchSelected = { it == selectedColor },
+                                )
                             }
                         }
                     }
                 }
             }
         }
-    )
+    }
 }
 
 @Composable

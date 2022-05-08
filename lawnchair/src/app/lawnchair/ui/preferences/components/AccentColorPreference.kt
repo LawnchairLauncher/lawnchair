@@ -2,10 +2,10 @@ package app.lawnchair.ui.preferences.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import app.lawnchair.preferences2.PreferenceCollectorScope
-import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences.getAdapter
+import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.theme.color.ColorOption
-import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference2
+import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import com.android.launcher3.R
 
 val staticColors = listOf(
@@ -28,13 +28,10 @@ val dynamicColors = listOf(ColorOption.SystemAccent, ColorOption.WallpaperPrimar
     .map(ColorOption::colorPreferenceEntry)
 
 @Composable
-fun PreferenceCollectorScope.AccentColorPreference(
-    value: ColorOption,
-    edit: suspend PreferenceManager2.(ColorOption) -> Unit,
-) {
-    ColorPreference2(
-        value = value,
-        onValueChange = { edit { this.edit(it) } },
+fun AccentColorPreference() {
+    val adapter = preferenceManager2().accentColor.getAdapter()
+    ColorPreference(
+        adapter = adapter,
         label = stringResource(id = R.string.accent_color),
         dynamicEntries = dynamicColors,
         staticEntries = staticColors,

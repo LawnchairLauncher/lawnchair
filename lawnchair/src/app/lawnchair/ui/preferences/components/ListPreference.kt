@@ -64,19 +64,21 @@ fun <T> ListPreference(
                     LazyColumn {
                         itemsIndexed(entries) { index, item ->
                             PreferenceTemplate(
+                                enabled = item.enabled,
                                 title = { Text(item.label()) },
-                                modifier = Modifier.clickable {
+                                showDivider = index > 0,
+                                dividerIndent = 40.dp,
+                                modifier = Modifier.clickable(item.enabled) {
                                     adapter.onChange(item.value)
                                     bottomSheetHandler.hide()
                                 },
                                 startWidget = {
                                     RadioButton(
                                         selected = item.value == currentValue,
-                                        onClick = null
+                                        onClick = null,
+                                        enabled = item.enabled,
                                     )
                                 },
-                                showDivider = index > 0,
-                                dividerIndent = 40.dp
                             )
                         }
                     }
@@ -88,5 +90,6 @@ fun <T> ListPreference(
 
 class ListPreferenceEntry<T>(
     val value: T,
+    val enabled: Boolean = true,
     val label: @Composable () -> String,
 )

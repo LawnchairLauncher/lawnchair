@@ -18,7 +18,13 @@ package app.lawnchair.preferences
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
+import app.lawnchair.preferences2.IdpPreference
+import app.lawnchair.preferences2.firstBlocking
 import com.android.launcher3.InvariantDeviceProfile
+import com.patrykmichalik.preferencemanager.Preference
+import com.patrykmichalik.preferencemanager.firstBlocking
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlin.reflect.KProperty
 
 interface PreferenceAdapter<T> {
@@ -58,6 +64,16 @@ class PreferenceAdapterImpl<T>(
     }
 }
 
+private class StatePreferenceAdapter<T>(
+    override val state: State<T>,
+    private val set: (T) -> Unit
+) : PreferenceAdapter<T> {
+
+    override fun onChange(newValue: T) {
+        set(newValue)
+    }
+}
+
 @Composable
 fun BasePreferenceManager.IdpIntPref.getAdapter(): PreferenceAdapter<Int> {
     val context = LocalContext.current
@@ -91,6 +107,34 @@ private fun <P, T> getAdapter(
         onDispose { pref.removeListener(adapter) }
     }
     return adapter
+}
+
+@Composable
+fun <T> Preference<T, *>.getAdapter(): PreferenceAdapter<T> {
+    val state = get().collectAsState(initial = firstBlocking())
+    return createStateAdapter(state = state, set = this::set)
+}
+
+@Composable
+fun IdpPreference.getAdapter(): PreferenceAdapter<Int> {
+    val context = LocalContext.current
+    val idp = remember { InvariantDeviceProfile.INSTANCE.get(context) }
+    val defaultGrid = idp.closestProfile
+    val state = get(defaultGrid).collectAsState(initial = firstBlocking(defaultGrid))
+    return createStateAdapter(state = state, set = this::set)
+}
+
+@Composable
+private fun <T> createStateAdapter(
+    state: State<T>,
+    set: suspend (T) -> Unit
+) : PreferenceAdapter<T> {
+    val scope = rememberCoroutineScope()
+    return remember {
+        StatePreferenceAdapter(state) {
+            scope.launch { set(it) }
+        }
+    }
 }
 
 @Composable
