@@ -200,7 +200,7 @@ android {
 
         lawn {
             dimension "app"
-            applicationId 'app.lawnchair'
+            applicationId 'app.lawnchair.twelvel'
             testApplicationId 'com.android.launcher3.tests'
         }
 
