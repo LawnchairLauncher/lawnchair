@@ -35,6 +35,11 @@ public class StringCache {
     private static final String PREFIX = "Launcher.";
 
     /**
+     * Work folder name.
+     */
+    public static final String WORK_FOLDER_NAME = PREFIX + "WORK_FOLDER_NAME";
+
+    /**
      * User on-boarding title for work profile apps.
      */
     private static final String WORK_PROFILE_EDU = PREFIX + "WORK_PROFILE_EDU";
@@ -89,11 +94,6 @@ public class StringCache {
      */
     private static final String ALL_APPS_PERSONAL_TAB_ACCESSIBILITY =
             PREFIX + "ALL_APPS_PERSONAL_TAB_ACCESSIBILITY";
-
-    /**
-     * Work folder name.
-     */
-    private static final String WORK_FOLDER_NAME = PREFIX + "WORK_FOLDER_NAME";
 
     /**
      * Label on widget tab to indicate work app widgets.
