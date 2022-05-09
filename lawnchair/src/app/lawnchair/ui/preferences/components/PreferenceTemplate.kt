@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import app.lawnchair.ui.theme.dividerColor
 import app.lawnchair.ui.util.addIf
 import androidx.compose.material3.MaterialTheme as Material3Theme
 
@@ -52,7 +53,7 @@ fun PreferenceTemplate(
             Divider(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 startIndent = dividerIndent,
-                color = Material3Theme.colorScheme.onBackground.copy(alpha = 0.16f)
+                color = dividerColor()
             )
         }
         Row(

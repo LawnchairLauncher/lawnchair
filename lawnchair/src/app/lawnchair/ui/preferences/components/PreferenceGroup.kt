@@ -17,6 +17,7 @@
 package app.lawnchair.ui.preferences.components
 
 import androidx.compose.animation.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
@@ -27,7 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import app.lawnchair.util.smartBorder
+import app.lawnchair.theme.surfaceColorAtElevation
 import androidx.compose.material3.MaterialTheme as Material3Theme
 
 @Composable
@@ -47,12 +48,8 @@ fun PreferenceGroup(
         PreferenceGroupHeading(heading, isFirstChild)
         val columnModifier = Modifier
             .padding(horizontal = 16.dp)
-            .smartBorder(
-                1.dp,
-                color = Material3Theme.colorScheme.onBackground.copy(alpha = 0.16f),
-                shape = MaterialTheme.shapes.large
-            )
             .clip(shape = MaterialTheme.shapes.large)
+            .background(Material3Theme.colorScheme.surfaceColorAtElevation(1.dp))
         if (showDividers) {
             DividerColumn(
                 modifier = columnModifier,

@@ -1,6 +1,5 @@
 package app.lawnchair.ui.preferences.components
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -11,12 +10,13 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import app.lawnchair.ui.theme.dividerColor
 import kotlin.math.roundToInt
 
 @Composable
 fun DividerColumn(
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.16f),
+    color: Color = dividerColor(),
     thickness: Dp = 1.dp,
     startIndent: Dp = 0.dp,
     endIndent: Dp = 0.dp,
