@@ -19,12 +19,7 @@ package app.lawnchair.preferences2
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.floatPreferencesKey
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.core.stringSetPreferencesKey
+import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import app.lawnchair.data.iconoverride.IconOverrideRepository
 import app.lawnchair.font.FontCache
@@ -34,8 +29,8 @@ import app.lawnchair.icons.shape.IconShapeManager
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.theme.color.ColorOption
 import com.android.launcher3.InvariantDeviceProfile
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
-import com.android.launcher3.graphics.IconShape as L3IconShape
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.DynamicResource
 import com.android.launcher3.util.MainThreadInitializedObject
@@ -43,12 +38,16 @@ import com.patrykmichalik.preferencemanager.PreferenceManager
 import com.patrykmichalik.preferencemanager.firstBlocking
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import app.lawnchair.preferences.PreferenceManager as LawnchairPreferenceManager
+import com.android.launcher3.graphics.IconShape as L3IconShape
 
 class PreferenceManager2(private val context: Context) : PreferenceManager {
 
+    private val scope = MainScope()
     private val resourceProvider = DynamicResource.provider(context)
 
     private fun idpPreference(
@@ -259,11 +258,11 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         initializeIconShape(iconShape.firstBlocking())
         iconShape.get()
             .onEach { shape ->
-                val idp = InvariantDeviceProfile.INSTANCE.get(context)
                 initializeIconShape(shape)
                 L3IconShape.init(context)
-                idp.onPreferencesChanged(context)
+                LauncherAppState.getInstance(context).onIconShapeChanged()
             }
+            .launchIn(scope)
     }
 
     private fun initializeIconShape(shape: IconShape) {

@@ -165,6 +165,10 @@ public class LauncherAppState implements SafeCloseable {
         }
     }
 
+    public void onIconShapeChanged() {
+        refreshAndReloadLauncher();
+    }
+
     private void refreshAndReloadLauncher() {
         LauncherIcons.clearPool();
         mIconCache.updateIconParams(
