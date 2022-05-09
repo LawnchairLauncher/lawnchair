@@ -18,7 +18,8 @@
      loaded at runtime. -->
 <app.lawnchair.overview.LawnchairOverviewActionsView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal|bottom">
 
     <LinearLayout
         android:id="@+id/action_buttons"

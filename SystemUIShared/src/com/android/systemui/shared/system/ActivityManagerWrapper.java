@@ -71,8 +71,14 @@ public class ActivityManagerWrapper {
     // Should match the value in AssistManager
     private static final String INVOCATION_TIME_MS_KEY = "invocation_time_ms";
 
-    private final ActivityTaskManager mAtm = null;
-    private ActivityManagerWrapper() { }
+    private ActivityTaskManager mAtm = null;
+    private ActivityManagerWrapper() {
+        try {
+            mAtm = ActivityTaskManager.getInstance();
+        } catch (Throwable t) {
+
+        }
+    }
 
     public static ActivityManagerWrapper getInstance() {
         return sInstance;
