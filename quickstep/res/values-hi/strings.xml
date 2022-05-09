@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"\'सेटिंग\' में जाकर, पीछे जाने के लिए इस्तेमाल होने वाले हाथ के जेस्चर (हाव-भाव) की संवेदनशीलता बदलें"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"पिछली स्क्रीन पर वापस जाने के लिए स्वाइप करें"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"पिछली स्क्रीन पर वापस जाने के लिए, स्क्रीन के बाएं या दाएं किनारे से बीचों-बीच तक स्वाइप करें."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"पिछली स्क्रीन पर वापस जाने के लिए, स्क्रीन के बाएं या दाएं किनारे से स्क्रीन के बीच तक दो उंगलियों से स्वाइप करें."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"देख लें कि आप स्क्रीन के निचले किनारे से ऊपर की ओर स्वाइप कर रहे हों."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"देख लें कि आप स्क्रीन से अपनी उंगली उठाने से पहले, इसे कहीं न रोक रहे हों."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"देख लें कि आप ऊपर की ओर बिल्कुल सीधे स्वाइप कर रहे हों."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"आपने होम स्क्रीन पर ले जाने वाले हाथ के जेस्चर (हाव-भाव) के बारे में जान लिया है."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"होम स्क्रीन पर जाने के लिए स्वाइप करें"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"स्क्रीन पर नीचे से ऊपर की ओर स्वाइप करें. हाथ का यह जेस्चर आपको हमेशा होम स्क्रीन पर ले जाता है."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"स्क्रीन के सबसे नीचे से ऊपर की ओर 2 उंगलियों से स्वाइप करें. जेस्चर हमेशा होम स्क्रीन पर ले जाता है."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"देख लें कि आप स्क्रीन के निचले किनारे से ऊपर की ओर स्वाइप कर रहे हों."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"कोशिश करें कि स्क्रीन से उंगली उठाने से पहले, इसे कुछ देर स्क्रीन पर दबाकर रखें."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"देख लें कि आप स्क्रीन पर ऊपर की तरफ़, बिल्कुल सीधे स्वाइप कर रहे हों और फिर रुकें."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"आपने एक ऐप्लिकेशन से दूसरे पर जाने के लिए इस्तेमाल होने वाले हाथ के जेस्चर के बारे में जान लिया है."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"एक ऐप्लिकेशन से दूसरे पर जाने के लिए स्वाइप करें"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"एक ऐप से दूसरे पर जाने के लिए, स्क्रीन पर नीचे से ऊपर की ओर स्वाइप करें, दबाकर रखें, और फिर छोड़ दें."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"इन ऐप के बीच स्विच करने के लिए, दो उंगलियों से नीचे से ऊपर स्वाइप करें, होल्ड करें, और फिर छोड़ें."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"आप पूरी तरह तैयार हैं"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"हो गया"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"सेटिंग"</string>
