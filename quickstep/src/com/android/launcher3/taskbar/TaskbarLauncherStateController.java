@@ -428,6 +428,7 @@ import java.util.function.Supplier;
 
         // Switch taskbar and hotseat in last frame
         setTaskbarViewVisible(alignment < 1);
+        mControllers.navbarButtonsViewController.updateTaskbarAlignment(alignment);
     }
 
     private float getCurrentIconAlignmentRatioBetweenAppAndHome() {
