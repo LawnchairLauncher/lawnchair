@@ -51,7 +51,7 @@ jobs:
           echo "ARTIFACT_PATH=$newArtifactPath" >> $GITHUB_ENV
           mv "$oldArtifactPath" "$newArtifactPath"
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: Debug APK
           path: ${{ env.ARTIFACT_PATH }}
