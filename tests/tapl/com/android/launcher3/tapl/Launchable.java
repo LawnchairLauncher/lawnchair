@@ -117,7 +117,6 @@ public abstract class Launchable {
                     expectLongClickEvents);
         }
 
-
         return dragStartCenter;
     }
 
