@@ -167,7 +167,7 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"ઑફિસ માટેની ઍપ બંધ છે. ઑફિસ માટેની તમારી ઍપ તમને નોટિફિકેશન મોકલી શકતી નથી, તમારી બૅટરી વાપરી શકતી નથી કે તમારું સ્થાન ઍક્સેસ કરી શકતી નથી"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"ઑફિસની ઍપને બૅજ આપેલા હોય છે અને તમારા IT ઍડમિન તેમને જોઈ શકે છે"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"સમજાઈ ગયું"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"ઑફિસ માટેની ઍપ બંધ કરો"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ઑફિસની ઍપ થોભાવો"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"ઑફિસ માટેની ઍપ ચાલુ કરો"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ફિલ્ટર કરો"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"નિષ્ફળ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>

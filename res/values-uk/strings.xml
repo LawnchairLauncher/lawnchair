@@ -167,7 +167,7 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Робочі додатки вимкнено. Вони не можуть надсилати сповіщення, використовувати заряд акумулятора й отримувати доступ до геоданих."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Робочі додатки мають спеціальну позначку. Їх бачить системноий адміністратор."</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Зрозуміло"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Вимкнути робочі додатки"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Призупинити робочі додатки"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Увімкнути робочі додатки"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Фільтр"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Не вдалося <xliff:g id="WHAT">%1$s</xliff:g>"</string>

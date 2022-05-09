@@ -167,7 +167,7 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"कामाशी संबंधित ॲप्स बंद आहेत. तुमचे कामाशी संबंधित ॲप्स तुम्हाला सूचना पाठवू शकत नाहीत, तुमची बॅटरी वापरू शकत नाहीत किंवा तुमचे स्थान अ‍ॅक्सेस करू शकत नाहीत"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Work apps ही बॅज केलेली असून तुमच्या IT ॲडमिनला दृश्यमान आहेत"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"समजले"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"कामाशी संबंधित ॲप्स बंद करा"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Work apps थांबवा"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"कार्य ॲप्स सुरू करा"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"फिल्टर"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"हे करता आले नाही: <xliff:g id="WHAT">%1$s</xliff:g>"</string>

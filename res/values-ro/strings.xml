@@ -167,7 +167,7 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Aplicațiile pentru lucru sunt dezactivate. Acestea nu pot să vă trimită notificări, să folosească bateria sau să vă acceseze locația."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Aplicațiile pentru lucru sunt marcate și vizibile pentru administratorul IT"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Dezactivați aplicațiile pentru lucru"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Întrerupeți aplicațiile pentru lucru"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Activați aplicațiile pentru lucru"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtru"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Eșuare: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
