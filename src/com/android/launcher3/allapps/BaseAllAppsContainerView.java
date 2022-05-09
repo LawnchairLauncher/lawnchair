@@ -437,8 +437,12 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         if (showTabs == mUsingTabs && !force) {
             return;
         }
+
+        // replaceRVcontainer() needs to use both mUsingTabs value to remove the old view AND
+        // showTabs value to create new view. Hence the mUsingTabs new value assignment MUST happen
+        // after this call.
+        replaceRVContainer(showTabs);
         mUsingTabs = showTabs;
-        replaceRVContainer(mUsingTabs);
 
         mAllAppsStore.unregisterIconContainer(mAH.get(AdapterHolder.MAIN).mRecyclerView);
         mAllAppsStore.unregisterIconContainer(mAH.get(AdapterHolder.WORK).mRecyclerView);
