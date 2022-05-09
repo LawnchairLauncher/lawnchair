@@ -27,10 +27,12 @@ import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.graphics.ColorUtils
 import androidx.core.os.UserManagerCompat
 import androidx.core.view.children
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.theme.color.ColorTokens
 import com.android.launcher3.R
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Themes
@@ -39,6 +41,7 @@ import com.patrykmichalik.preferencemanager.firstBlocking
 import org.json.JSONArray
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
+import kotlin.math.roundToInt
 import kotlin.system.exitProcess
 
 fun <T, A> ensureOnMainThread(creator: (A) -> T): (A) -> T = { it ->
@@ -142,4 +145,11 @@ val View?.pendingIntent get() = this?.getTag(pendingIntentTagId) as? PendingInte
 fun getFolderPreviewAlpha(context: Context): Int {
     val prefs2 = PreferenceManager2.getInstance(context)
     return (prefs2.folderPreviewBackgroundOpacity.firstBlocking() * 255).toInt()
+}
+
+fun getAllAppsScrimColor(context: Context): Int {
+    val opacity = PreferenceManager.getInstance(context).drawerOpacity.get()
+    val scrimColor = ColorTokens.AllAppsScrimColor.resolveColor(context)
+    val alpha = (opacity * 255).roundToInt()
+    return ColorUtils.setAlphaComponent(scrimColor, alpha)
 }

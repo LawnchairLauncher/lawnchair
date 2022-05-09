@@ -73,6 +73,7 @@ import com.android.launcher3.views.ScrimView;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePageChangedListener;
 
 import app.lawnchair.allapps.LawnchairAlphabeticalAppsList;
+import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.ui.StretchRecyclerViewContainer;
 
@@ -127,6 +128,7 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
     protected final Point mFastScrollerOffset = new Point();
 
     private SearchAdapterProvider mSearchAdapterProvider;
+    private final boolean mScrimIsTranslucent;
     private final int mScrimColor;
     private final int mHeaderProtectionColor;
     private final float mHeaderThreshold;
@@ -146,6 +148,9 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
         super(context, attrs, defStyleAttr);
 
         mLauncher = BaseDraggingActivity.fromContext(context);
+
+        float drawerOpacity = PreferenceManager.getInstance(context).getDrawerOpacity().get();
+        mScrimIsTranslucent = drawerOpacity < 1f;
 
         mScrimColor = ColorTokens.AllAppsScrimColor.resolveColor(context);
         mHeaderThreshold = getResources().getDimensionPixelSize(
@@ -755,9 +760,15 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
 
     protected void updateHeaderScroll(int scrolledOffset) {
         float prog = Utilities.boundToRange((float) scrolledOffset / mHeaderThreshold, 0f, 1f);
-        int viewBG = ColorUtils.blendARGB(mScrimColor, mHeaderProtectionColor, prog);
-        int headerColor = ColorUtils.setAlphaComponent(viewBG,
-                (int) (getSearchView().getAlpha() * 255));
+        int headerColor;
+        if (mScrimIsTranslucent) {
+            headerColor = ColorUtils.setAlphaComponent(mHeaderProtectionColor,
+                    (int) (getSearchView().getAlpha() * prog * 255));
+        } else {
+            int viewBG = ColorUtils.blendARGB(mScrimColor, mHeaderProtectionColor, prog);
+            headerColor = ColorUtils.setAlphaComponent(viewBG,
+                    (int) (getSearchView().getAlpha() * 255));
+        }
         int tabsAlpha = mHeader.getPeripheralProtectionHeight() == 0 ? 0
                 : (int) (Utilities.boundToRange(
                         (scrolledOffset + mHeader.mSnappedScrolledY) / mHeaderThreshold, 0f, 1f)

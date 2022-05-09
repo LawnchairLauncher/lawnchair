@@ -32,7 +32,6 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
-import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.*
@@ -48,7 +47,6 @@ import app.lawnchair.root.RootHelperManager
 import app.lawnchair.root.RootNotAvailableException
 import app.lawnchair.search.LawnchairSearchAdapterProvider
 import app.lawnchair.theme.ThemeProvider
-import app.lawnchair.theme.color.ColorTokens
 import app.lawnchair.ui.popup.LawnchairShortcut
 import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
 import app.lawnchair.util.isPackageInstalled
@@ -72,7 +70,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.util.stream.Stream
-import kotlin.math.roundToInt
 
 class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     SavedStateRegistryOwner, ActivityResultRegistryOwner, OnBackPressedDispatcherOwner {
@@ -158,7 +155,6 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     private val prefs by lazy { PreferenceManager.getInstance(this) }
     private val preferenceManager2 by lazy { PreferenceManager2.getInstance(this) }
     private val insetsController by lazy { WindowInsetsControllerCompat(launcher.window, rootView) }
-    var allAppsScrimColor = 0
 
     private val themeProvider by lazy { ThemeProvider.INSTANCE.get(this) }
     private lateinit var colorScheme: ColorScheme
@@ -183,11 +179,6 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
 
         prefs.launcherTheme.subscribeChanges(this, ::updateTheme)
-        prefs.drawerOpacity.subscribeValues(this) { opacity ->
-            val scrimColor = ColorTokens.AllAppsScrimColor.resolveColor(this)
-            val alpha = (opacity * 255).roundToInt()
-            allAppsScrimColor = ColorUtils.setAlphaComponent(scrimColor, alpha)
-        }
 
         if (prefs.autoLaunchRoot.get()) {
             lifecycleScope.launch {
