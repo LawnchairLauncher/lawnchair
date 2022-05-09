@@ -186,12 +186,15 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     protected void onFinishInflate() {
         super.onFinishInflate();
         mContent = findViewById(R.id.container);
-        // TODO: apply correct background color to mContent
+        mContent.setBackground(DrawableTokens.BgWidgetsFullSheet.resolve(getContext()));
 
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         int contentLayoutRes = mHasWorkProfile ? R.layout.widgets_full_sheet_paged_view
                 : R.layout.widgets_full_sheet_recyclerview;
         layoutInflater.inflate(contentLayoutRes, mContent, true);
+
+        View searchBarContainer = findViewById(R.id.search_bar_container);
+        searchBarContainer.setBackgroundColor(ColorTokens.ColorBackground.resolveColor(getContext()));
 
         RecyclerViewFastScroller fastScroller = findViewById(R.id.fast_scroller);
         mAdapters.get(AdapterHolder.PRIMARY).setup(findViewById(R.id.primary_widgets_list_view));

@@ -33,6 +33,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.widget.picker.WidgetsSpaceViewHolderBinder.EmptySpaceView;
 import com.android.launcher3.widget.picker.search.WidgetsSearchBar;
 
+import app.lawnchair.theme.drawable.DrawableTokens;
+
 /**
  * A controller which measures & updates {@link WidgetsFullSheet}'s views padding, margin and
  * vertical displacement upon scrolling.
@@ -82,6 +84,8 @@ final class SearchAndRecommendationsScrollController implements
         mSearchBar = mContainer.findViewById(R.id.widgets_search_bar);
         mHeaderTitle = mContainer.findViewById(R.id.title);
         mRecommendedWidgetsTable = mContainer.findViewById(R.id.recommended_widget_table);
+        mRecommendedWidgetsTable.setBackground(
+                DrawableTokens.WidgetsRecommendationBackground.resolve(mContainer.getContext()));
         mTabBar = mContainer.findViewById(R.id.tabs);
 
         mContainer.setSearchAndRecommendationScrollController(this);

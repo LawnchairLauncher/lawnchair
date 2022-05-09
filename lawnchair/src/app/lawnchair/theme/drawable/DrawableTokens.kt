@@ -13,6 +13,14 @@ object DrawableTokens {
         .setTint(ColorTokens.ColorAccent)
 
     @JvmField
+    val BgWidgetsFullSheet = ResourceDrawableToken<GradientDrawable>(R.drawable.bg_widgets_full_sheet)
+        .setColor(ColorTokens.ColorBackground)
+
+    @JvmField
+    val BgWidgetsSearchbox = ResourceDrawableToken<GradientDrawable>(R.drawable.bg_widgets_searchbox)
+        .setColor(ColorTokens.Surface)
+
+    @JvmField
     val DropTargetBackground = ResourceDrawableToken<Drawable>(R.drawable.drop_target_background)
         .setTint(ColorTokens.WorkspaceAccentColor)
 
