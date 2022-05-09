@@ -153,8 +153,8 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
 
         TypedArray ta = context.getTheme().obtainStyledAttributes(R.styleable.FolderIconPreview);
         mDotColor = ColorTokens.FolderDotColor.resolveColor(context);
-        mStrokeColor = ta.getColor(R.styleable.FolderIconPreview_folderIconBorderColor, 0);
-        mBgColor = ColorTokens.FolderFillColor.resolveColor(context);
+        mStrokeColor = ColorTokens.FolderIconBorderColor.resolveColor(context);
+        mBgColor = ColorTokens.FolderPreviewColor.resolveColor(context);
         ta.recycle();
 
         DeviceProfile grid = activity.getDeviceProfile();

@@ -178,9 +178,8 @@ public class FolderAnimationManager {
         final float yDistance = initialY - lp.y;
 
         // Set up the Folder background.
-        // TODO: apply colortokens
-        final int initialColor = Themes.getAttrColor(mContext, R.attr.folderPreviewColor);
-        final int finalColor = Themes.getAttrColor(mContext, R.attr.folderBackgroundColor);
+        final int initialColor = ColorTokens.FolderPreviewColor.resolveColor(mContext);
+        final int finalColor = ColorTokens.FolderBackgroundColor.resolveColor(mContext);
 
         mFolderBackground.mutate();
         mFolderBackground.setColor(mIsOpening ? initialColor : finalColor);

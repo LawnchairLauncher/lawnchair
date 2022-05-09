@@ -177,7 +177,6 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
             mColorExtractors = null;
         }
 
-        // TODO: use ColorTokens
         if (shouldUseColorExtraction) {
             mColors = new int[] {
                     ColorTokens.PopupShadeFirst.resolveColor(context),

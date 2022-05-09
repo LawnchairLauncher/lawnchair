@@ -39,7 +39,7 @@ object DrawableTokens {
 
     @JvmField
     val RoundRectFolder = ResourceDrawableToken<GradientDrawable>(R.drawable.round_rect_folder)
-        .setColor(ColorTokens.FolderFillColor)
+        .setColor(ColorTokens.FolderBackgroundColor)
 
     @JvmField
     val RoundRectPrimary = ResourceDrawableToken<GradientDrawable>(R.drawable.round_rect_primary)

@@ -39,6 +39,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Themes;
 
+import app.lawnchair.theme.color.ColorTokens;
+
 /**
  * {@link PageIndicator} which shows dots per page. The active page is shown with the current
  * accent color.
@@ -111,7 +113,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
 
         mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mCirclePaint.setStyle(Style.FILL);
-        mCirclePaint.setColor(Themes.getAttrColor(context, R.attr.folderPaginationColor));
+        mCirclePaint.setColor(ColorTokens.FolderPaginationColor.resolveColor(context));
         mDotRadius = getResources().getDimension(R.dimen.page_indicator_dot_size) / 2;
         setOutlineProvider(new MyOutlineProver());
 
