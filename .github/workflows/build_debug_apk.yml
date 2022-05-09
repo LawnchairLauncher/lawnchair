@@ -35,7 +35,7 @@ jobs:
         run: chmod +x gradlew
       - name: Build debug APK
         run: ./gradlew assembleLawnWithQuickstepDebug
-     - name: Upload artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: Debug APK
