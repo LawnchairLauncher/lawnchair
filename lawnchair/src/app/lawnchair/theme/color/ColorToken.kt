@@ -9,12 +9,8 @@ import app.lawnchair.theme.UiColorMode
 import app.lawnchair.theme.toAndroidColor
 import com.android.launcher3.R
 import com.android.launcher3.util.Themes
+import com.androidinternal.graphics.cam.Cam
 import dev.kdrag0n.colorkt.Color
-import dev.kdrag0n.colorkt.cam.Zcam.Companion.toZcam
-import dev.kdrag0n.colorkt.conversion.ConversionGraph.convert
-import dev.kdrag0n.colorkt.gamut.LchGamut
-import dev.kdrag0n.colorkt.gamut.LchGamut.clipToLinearSrgb
-import dev.kdrag0n.colorkt.tristimulus.CieXyzAbs
 import dev.kdrag0n.monet.theme.ColorScheme
 
 interface ColorToken : ResourceToken<Color> {
@@ -108,11 +104,9 @@ data class SetLStarColorToken(
 ) : ColorToken {
 
     override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {
-        return token.resolve(context, scheme, uiColorMode)
-            .convert<CieXyzAbs>()
-            .toZcam(ThemeProvider.viewingCondition, include2D = false)
-            .copy(lightness = lStar)
-            .clipToLinearSrgb(LchGamut.ClipMethod.PRESERVE_LIGHTNESS)
+        val color = token.resolveColor(context, scheme, uiColorMode)
+        val cam = Cam.fromInt(color)
+        return AndroidColor(Cam.getInt(cam.hue, cam.chroma, lStar.toFloat()))
     }
 }
 

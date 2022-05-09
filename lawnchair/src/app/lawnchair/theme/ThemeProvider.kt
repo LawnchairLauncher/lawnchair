@@ -12,6 +12,7 @@ import androidx.core.graphics.ColorUtils
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.theme.color.AndroidColor
 import app.lawnchair.theme.color.ColorOption
+import app.lawnchair.theme.color.MonetColorSchemeCompat
 import app.lawnchair.theme.color.SystemColorScheme
 import app.lawnchair.ui.theme.getSystemAccent
 import app.lawnchair.wallpaper.WallpaperManagerCompat
@@ -20,16 +21,9 @@ import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.preferencemanager.firstBlocking
 import com.patrykmichalik.preferencemanager.onEach
 import dev.kdrag0n.colorkt.Color
-import dev.kdrag0n.colorkt.cam.Zcam
 import dev.kdrag0n.colorkt.conversion.ConversionGraph.convert
-import dev.kdrag0n.colorkt.data.Illuminants
 import dev.kdrag0n.colorkt.rgb.Srgb
-import dev.kdrag0n.colorkt.tristimulus.CieXyzAbs
-import dev.kdrag0n.colorkt.tristimulus.CieXyzAbs.Companion.toAbs
-import dev.kdrag0n.colorkt.ucs.lab.CieLab
 import dev.kdrag0n.monet.theme.ColorScheme
-import dev.kdrag0n.monet.theme.DynamicColorScheme
-import dev.kdrag0n.monet.theme.MaterialYouTargets
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -39,7 +33,6 @@ class ThemeProvider(private val context: Context) {
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
     private var accentColor: ColorOption = preferenceManager2.accentColor.firstBlocking()
 
-    private val targets = MaterialYouTargets(1.0, false, viewingCondition)
     private val colorSchemeMap = SparseArray<ColorScheme>()
     private val listeners = mutableListOf<ColorSchemeChangeListener>()
 
@@ -97,8 +90,7 @@ class ThemeProvider(private val context: Context) {
     private fun getColorScheme(colorInt: Int): ColorScheme {
         var colorScheme = colorSchemeMap[colorInt]
         if (colorScheme == null) {
-            val color = Srgb(colorInt)
-            colorScheme = DynamicColorScheme(targets, color, 1.0, viewingCondition, true)
+            colorScheme = MonetColorSchemeCompat(colorInt)
             colorSchemeMap.append(colorInt, colorScheme)
         }
         return colorScheme
@@ -120,13 +112,6 @@ class ThemeProvider(private val context: Context) {
     companion object {
         @JvmField
         val INSTANCE = MainThreadInitializedObject(::ThemeProvider)
-
-        val viewingCondition = Zcam.ViewingConditions(
-            Zcam.ViewingConditions.SURROUND_AVERAGE,
-            0.4f * CieXyzAbs.DEFAULT_SDR_WHITE_LUMINANCE,
-            CieLab(50.0, 0.0, 0.0, Illuminants.D65).toXyz().y * CieXyzAbs.DEFAULT_SDR_WHITE_LUMINANCE,
-            Illuminants.D65.toAbs(CieXyzAbs.DEFAULT_SDR_WHITE_LUMINANCE)
-        )
     }
 
     interface ColorSchemeChangeListener {

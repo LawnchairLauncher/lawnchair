@@ -34,6 +34,7 @@ import com.android.launcher3.widget.LocalColorExtractor;
 import java.util.Map;
 
 import app.lawnchair.theme.ThemeProvider;
+import app.lawnchair.theme.color.AndroidColor;
 import dev.kdrag0n.colorkt.Color;
 import dev.kdrag0n.colorkt.rgb.Srgb;
 import dev.kdrag0n.monet.theme.ColorScheme;
@@ -179,8 +180,8 @@ public class AccentColorExtractor extends LocalColorExtractor implements ThemePr
             int shade = entry.getKey();
             int resId = resMap.get(shade, -1);
             if (resId != -1) {
-                Srgb color = (Srgb) entry.getValue();
-                array.put(resId, 0xff000000 | color.toRgb8());
+                AndroidColor color = (AndroidColor) entry.getValue();
+                array.put(resId, color.getColor());
             }
         }
     }
