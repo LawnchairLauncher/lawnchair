@@ -36,6 +36,8 @@ public class Utilities {
 
     private static final float TABLET_MIN_DPS = 600;
 
+    public static final boolean ATLEAST_S = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
+
     public static final boolean ATLEAST_S_V2 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2;
 
     /**
