@@ -216,13 +216,14 @@ public class GridSizeMigrationTaskV2 {
             return false;
         }
 
+        // Sort the items by the reading order.
+        Collections.sort(mHotseatDiff);
+        Collections.sort(mWorkspaceDiff);
+
         // Migrate hotseat
         HotseatPlacementSolution hotseatSolution = new HotseatPlacementSolution(mDb, mSrcReader,
                 mDestReader, mContext, mDestHotseatSize, mHotseatItems, mHotseatDiff);
         hotseatSolution.find();
-
-        // Sort the items by the reading order.
-        Collections.sort(mWorkspaceDiff);
 
         // Migrate workspace.
         // First we create a collection of the screens
