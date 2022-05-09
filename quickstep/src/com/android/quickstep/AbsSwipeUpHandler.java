@@ -1177,6 +1177,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     private void doLogGesture(GestureEndTarget endTarget, @Nullable TaskView targetTask) {
+        if (mDp == null || !mDp.isGestureMode || mDownPos == null) {
+            // We probably never received an animation controller, skip logging.
+            return;
+        }
+
         StatsLogManager.EventEnum event;
         switch (endTarget) {
             case HOME:
@@ -1200,11 +1205,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             logger.withItemInfo(targetTask.getItemInfo());
         }
 
-        DeviceProfile dp = mDp;
-        if (dp == null || mDownPos == null) {
-            // We probably never received an animation controller, skip logging.
-            return;
-        }
         int pageIndex = endTarget == LAST_TASK || mRecentsView == null
                 ? LOG_NO_OP_PAGE_INDEX
                 : mRecentsView.getNextPage();
