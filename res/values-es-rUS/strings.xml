@@ -167,7 +167,7 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Las apps de trabajo están desactivadas y, por ende, no pueden enviarte notificaciones, usar la batería ni acceder a tu ubicación"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Las apps de trabajo tienen una insignia y el administrador de TI las puede ver"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Entendido"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Desactivar las apps de trabajo"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Detener apps de trabajo"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Activar las apps de trabajo"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtro"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Error: <xliff:g id="WHAT">%1$s</xliff:g>"</string>

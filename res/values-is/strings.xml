@@ -167,7 +167,7 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Slökkt er á vinnuforritum. Vinnuforrit geta ekki sent þér tilkynningar, notað rafhlöðuorku eða fengið aðgang að staðsetningu þinni"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Vinnuforrit eru merkt og kerfisstjórinn getur séð þau"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Ég skil"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Slökkva á vinnuforritum"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Setja vinnuforrit í bið"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Kveikja á vinnuforritum"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Sía"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Mistókst: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
