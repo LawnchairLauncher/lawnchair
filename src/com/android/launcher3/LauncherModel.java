@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static android.app.admin.DevicePolicyManager.ACTION_DEVICE_POLICY_RESOURCE_UPDATED;
+
 import static com.android.launcher3.LauncherAppState.ACTION_FORCE_ROLOAD;
 import static com.android.launcher3.config.FeatureFlags.IS_STUDIO_BUILD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -51,6 +53,7 @@ import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.model.PackageIncrementalDownloadUpdatedTask;
 import com.android.launcher3.model.PackageInstallStateChangedTask;
 import com.android.launcher3.model.PackageUpdatedTask;
+import com.android.launcher3.model.ReloadStringCacheTask;
 import com.android.launcher3.model.ShortcutsChangedTask;
 import com.android.launcher3.model.UserLockStateChangedTask;
 import com.android.launcher3.model.data.AppInfo;
@@ -278,6 +281,8 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                             user, Intent.ACTION_MANAGED_PROFILE_UNLOCKED.equals(action)));
                 }
             }
+        } else if (ACTION_DEVICE_POLICY_RESOURCE_UPDATED.equals(action)) {
+            enqueueModelUpdateTask(new ReloadStringCacheTask(mModelDelegate));
         } else if (IS_STUDIO_BUILD && ACTION_FORCE_ROLOAD.equals(action)) {
             for (Callbacks cb : getCallbacks()) {
                 if (cb instanceof Launcher) {
