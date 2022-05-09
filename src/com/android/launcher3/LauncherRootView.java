@@ -23,6 +23,8 @@ import com.android.launcher3.uioverrides.ApiWrapper;
 import java.util.Collections;
 import java.util.List;
 
+import app.lawnchair.LawnchairApp;
+
 public class LauncherRootView extends InsettableFrameLayout {
 
     private final Rect mTempRect = new Rect();
@@ -71,6 +73,7 @@ public class LauncherRootView extends InsettableFrameLayout {
                     insets.getSystemWindowInsetRight(), insets.getSystemWindowInsetBottom());
         }
         handleSystemWindowInsets(mTempRect);
+        computeGestureExclusionRect();
         return insets;
     }
 
@@ -171,9 +174,23 @@ public class LauncherRootView extends InsettableFrameLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        SYSTEM_GESTURE_EXCLUSION_RECT.get(0).set(l, t, r, b);
-        setDisallowBackGesture(mDisallowBackGesture);
+        computeGestureExclusionRect();
         mSysUiScrim.setSize(r - l, b - t);
+    }
+
+    private void computeGestureExclusionRect() {
+        int l = getLeft();
+        int t = getTop();
+        int r = getRight();
+        int b = getBottom();
+        if (LawnchairApp.isRecentsEnabled()) {
+            SYSTEM_GESTURE_EXCLUSION_RECT.get(0).set(l, t, r, b);
+        } else {
+            SYSTEM_GESTURE_EXCLUSION_RECT.get(0).set(
+                    l + mTempRect.left, t + mTempRect.top,
+                    r - mTempRect.right, b - mTempRect.bottom);
+        }
+        setDisallowBackGesture(mDisallowBackGesture);
     }
 
     @TargetApi(Build.VERSION_CODES.Q)
