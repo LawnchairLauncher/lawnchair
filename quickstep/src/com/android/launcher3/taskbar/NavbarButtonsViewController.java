@@ -300,6 +300,8 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                 navButtonsLayoutParams.setMarginEnd(navButtonsLayoutParams.getMarginStart());
                 navButtonsLayoutParams.gravity = Gravity.CENTER;
                 mNavButtonContainer.requestLayout();
+
+                mHomeButton.setOnLongClickListener(null);
             }
 
             // Animate taskbar background when either..
