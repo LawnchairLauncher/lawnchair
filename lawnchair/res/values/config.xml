@@ -23,6 +23,8 @@
     <string name="main_process_initializer_class" translatable="false">app.lawnchair.LawnchairProcessInitializer</string>
     <string name="task_overlay_factory_class" translatable="false">app.lawnchair.overview.TaskOverlayFactoryImpl</string>
 
+    <bool name="config_header_protection_supported">true</bool>
+
     <string-array name="filtered_components">
         <!-- Voice search -->
         <item>com.google.android.googlequicksearchbox/.VoiceSearchActivity</item>

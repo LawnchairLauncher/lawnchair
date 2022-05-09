@@ -228,4 +228,12 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
     }
 
     override fun getEditText() = input
+
+    override fun setBackgroundVisibility(visible: Boolean, maxAlpha: Float) {
+        input.setBackgroundVisibility(visible, maxAlpha)
+    }
+
+    override fun getBackgroundVisibility(): Boolean {
+        return input.getBackgroundVisibility()
+    }
 }
