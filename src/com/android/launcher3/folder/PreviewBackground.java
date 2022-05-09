@@ -40,12 +40,15 @@ import android.graphics.Shader;
 import android.util.Property;
 import android.view.View;
 
+import androidx.core.graphics.ColorUtils;
+
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.views.ActivityContext;
 
 import app.lawnchair.theme.color.ColorTokens;
+import app.lawnchair.util.LawnchairUtilsKt;
 
 /**
  * This object represents a FolderIcon preview background. It stores drawing / measurement
@@ -155,6 +158,7 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
         mDotColor = ColorTokens.FolderDotColor.resolveColor(context);
         mStrokeColor = ColorTokens.FolderIconBorderColor.resolveColor(context);
         mBgColor = ColorTokens.FolderPreviewColor.resolveColor(context);
+        mBgColor = ColorUtils.setAlphaComponent(mBgColor, LawnchairUtilsKt.getFolderPreviewAlpha(context));
         ta.recycle();
 
         DeviceProfile grid = activity.getDeviceProfile();

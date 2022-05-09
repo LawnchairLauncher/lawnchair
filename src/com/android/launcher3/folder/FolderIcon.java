@@ -82,13 +82,10 @@ import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.IconLabelDotView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
-import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-
-import app.lawnchair.preferences2.PreferenceManager2;
 
 
 /**
@@ -143,7 +140,6 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     private final PointF mTranslationForReorderBounce = new PointF(0, 0);
     private final PointF mTranslationForReorderPreview = new PointF(0, 0);
     private float mScaleForReorderBounce = 1f;
-    private final int previewBgOpacity = (int) (255 * PreferenceExtensionsKt.firstBlocking(PreferenceManager2.getInstance(getContext()).getFolderPreviewBackgroundOpacity()));
 
     private static final Property<FolderIcon, Float> DOT_SCALE_PROPERTY
             = new Property<FolderIcon, Float>(Float.TYPE, "dotScale") {

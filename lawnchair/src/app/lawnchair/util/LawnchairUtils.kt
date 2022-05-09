@@ -30,10 +30,12 @@ import android.widget.TextView
 import androidx.core.os.UserManagerCompat
 import androidx.core.view.children
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.R
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Themes
 import com.android.systemui.shared.system.QuickStepContract
+import com.patrykmichalik.preferencemanager.firstBlocking
 import org.json.JSONArray
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
@@ -136,3 +138,8 @@ val ViewGroup.recursiveChildren: Sequence<View> get() = children.flatMap {
 private val pendingIntentTagId = Resources.getSystem().getIdentifier("pending_intent_tag", "id", "android")
 
 val View?.pendingIntent get() = this?.getTag(pendingIntentTagId) as? PendingIntent
+
+fun getFolderPreviewAlpha(context: Context): Int {
+    val prefs2 = PreferenceManager2.getInstance(context)
+    return (prefs2.folderPreviewBackgroundOpacity.firstBlocking() * 255).toInt()
+}

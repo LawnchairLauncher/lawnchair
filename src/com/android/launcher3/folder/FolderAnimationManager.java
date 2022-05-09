@@ -38,6 +38,8 @@ import android.util.Property;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 
+import androidx.core.graphics.ColorUtils;
+
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
@@ -51,6 +53,7 @@ import com.android.launcher3.views.BaseDragLayer;
 import java.util.List;
 
 import app.lawnchair.theme.color.ColorTokens;
+import app.lawnchair.util.LawnchairUtilsKt;
 
 /**
  * Manages the opening and closing animations for a {@link Folder}.
@@ -178,7 +181,8 @@ public class FolderAnimationManager {
         final float yDistance = initialY - lp.y;
 
         // Set up the Folder background.
-        final int initialColor = ColorTokens.FolderPreviewColor.resolveColor(mContext);
+        final int previewColor = ColorTokens.FolderPreviewColor.resolveColor(mContext);
+        final int initialColor = ColorUtils.setAlphaComponent(previewColor, LawnchairUtilsKt.getFolderPreviewAlpha(mContext));
         final int finalColor = ColorTokens.FolderBackgroundColor.resolveColor(mContext);
 
         mFolderBackground.mutate();
