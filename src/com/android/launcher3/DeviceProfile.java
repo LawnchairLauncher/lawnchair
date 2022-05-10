@@ -665,11 +665,10 @@ public class DeviceProfile {
         updateIconSize(1f, res);
 
         updateWorkspacePadding();
-        Point workspacePadding = getTotalWorkspacePadding();
 
         // Check to see if the icons fit within the available height.
         float usedHeight = getCellLayoutHeightSpecification();
-        final int maxHeight = getWorkspaceHeight(workspacePadding);
+        final int maxHeight = getCellLayoutHeight();
         float extraHeight = Math.max(0, maxHeight - usedHeight);
         float scaleY = maxHeight / usedHeight;
         boolean shouldScale = scaleY < 1f;
@@ -702,7 +701,7 @@ public class DeviceProfile {
     }
 
     private int getCellLayoutWidthSpecification() {
-        int numColumns = isTwoPanels ? inv.numColumns * 2 : inv.numColumns;
+        int numColumns = getPanelCount() * inv.numColumns;
         return (cellWidthPx * numColumns) + (cellLayoutBorderSpacePx.x * (numColumns - 1))
                 + cellLayoutPaddingPx.left + cellLayoutPaddingPx.right;
     }
@@ -902,16 +901,22 @@ public class DeviceProfile {
             result = new Point();
         }
 
-        // Since we are only concerned with the overall padding, layout direction does
-        // not matter.
-        Point padding = getTotalWorkspacePadding();
-
-        int numColumns = isTwoPanels ? inv.numColumns * 2 : inv.numColumns;
-        int screenWidthPx = getWorkspaceWidth(padding);
-        result.x = calculateCellWidth(screenWidthPx, cellLayoutBorderSpacePx.x, numColumns);
-        int screenHeightPx = getWorkspaceHeight(padding);
-        result.y = calculateCellHeight(screenHeightPx, cellLayoutBorderSpacePx.y, inv.numRows);
+        int shortcutAndWidgetContainerWidth =
+                getCellLayoutWidth() - (cellLayoutPaddingPx.left + cellLayoutPaddingPx.right);
+        result.x = calculateCellWidth(shortcutAndWidgetContainerWidth, cellLayoutBorderSpacePx.x,
+                inv.numColumns);
+        int shortcutAndWidgetContainerHeight =
+                getCellLayoutHeight() - (cellLayoutPaddingPx.top + cellLayoutPaddingPx.bottom);
+        result.y = calculateCellHeight(shortcutAndWidgetContainerHeight, cellLayoutBorderSpacePx.y,
+                inv.numRows);
         return result;
+    }
+
+    /**
+     * Gets the number of panels within the workspace.
+     */
+    public int getPanelCount() {
+        return isTwoPanels ? 2 : 1;
     }
 
     /**
@@ -932,7 +937,7 @@ public class DeviceProfile {
     /**
      * Gets the scaled top of the workspace in px for the spring-loaded edit state.
      */
-    public float getWorkspaceSpringLoadShrunkTop() {
+    public float getCellLayoutSpringLoadShrunkTop() {
         workspaceSpringLoadShrunkTop = mInsets.top + dropTargetBarTopMarginPx + dropTargetBarSizePx
                 + dropTargetBarBottomMarginPx;
         return workspaceSpringLoadShrunkTop;
@@ -941,7 +946,7 @@ public class DeviceProfile {
     /**
      * Gets the scaled bottom of the workspace in px for the spring-loaded edit state.
      */
-    private float getWorkspaceSpringLoadShrunkBottom() {
+    private float getCellLayoutSpringLoadShrunkBottom() {
         int topOfHotseat = hotseatBarSizePx + springLoadedHotseatBarTopMarginPx;
         workspaceSpringLoadShrunkBottom =
                 heightPx - (isVerticalBarLayout() ? getVerticalHotseatLastItemBottomOffset()
@@ -960,13 +965,12 @@ public class DeviceProfile {
      * Gets the scale of the workspace for the spring-loaded edit state.
      */
     public float getWorkspaceSpringLoadScale() {
-        float cellLayoutHeight = availableHeightPx - workspacePadding.top - workspacePadding.bottom;
-        float scale = (getWorkspaceSpringLoadShrunkBottom() - getWorkspaceSpringLoadShrunkTop())
-                / cellLayoutHeight;
+        float scale = (getCellLayoutSpringLoadShrunkBottom() - getCellLayoutSpringLoadShrunkTop())
+                / getCellLayoutHeight();
         scale = Math.min(scale, 1f);
 
         // Reduce scale if next pages would not be visible after scaling the workspace
-        int workspaceWidth = getWorkspaceWidth();
+        int workspaceWidth = availableWidthPx;
         float scaledWorkspaceWidth = workspaceWidth * scale;
         float maxAvailableWidth =
                 workspaceWidth - (2 * getWorkspaceSpringLoadedMinimumNextPageVisible());
@@ -976,19 +980,23 @@ public class DeviceProfile {
         return scale;
     }
 
-    public int getWorkspaceWidth() {
-        return getWorkspaceWidth(getTotalWorkspacePadding());
+    /**
+     * Gets the width of a single Cell Layout, aka a single panel within a Workspace.
+     *
+     * <p>This is the width of a Workspace, less its horizontal padding. Note that two-panel
+     * layouts have two Cell Layouts per workspace.
+     */
+    public int getCellLayoutWidth() {
+        return (availableWidthPx - getTotalWorkspacePadding().x) / getPanelCount();
     }
 
-    public int getWorkspaceWidth(Point workspacePadding) {
-        int cellLayoutTotalPadding =
-                (isTwoPanels ? 2 : 1) * (cellLayoutPaddingPx.left + cellLayoutPaddingPx.right);
-        return availableWidthPx - workspacePadding.x - cellLayoutTotalPadding;
-    }
-
-    private int getWorkspaceHeight(Point workspacePadding) {
-        return availableHeightPx - workspacePadding.y - (cellLayoutPaddingPx.top
-                + cellLayoutPaddingPx.bottom);
+    /**
+     * Gets the height of a single Cell Layout, aka a single panel within a Workspace.
+     *
+     * <p>This is the height of a Workspace, less its vertical padding.
+     */
+    public int getCellLayoutHeight() {
+        return availableHeightPx - getTotalWorkspacePadding().y;
     }
 
     public Point getTotalWorkspacePadding() {
