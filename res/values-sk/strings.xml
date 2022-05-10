@@ -167,7 +167,7 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Pracovné aplikácie sú vypnuté. Nemôžu posielať upozornenia ani používať batériu či polohu."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Pracovné aplikácie majú odznak a zobrazujú sa správcovi IT"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Dobre"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Vypnúť pracovné aplikácie"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Pozastaviť pracovné aplikácie"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Zapnúť pracovné aplikácie"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtrujte"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Zlyhalo: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
