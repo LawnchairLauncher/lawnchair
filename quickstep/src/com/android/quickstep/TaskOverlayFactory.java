@@ -46,6 +46,7 @@ import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.launcher3.views.ActivityContext;
 import com.android.quickstep.TaskShortcutFactory.SplitSelectSystemShortcut;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.views.OverviewActionsView;
@@ -314,9 +315,14 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         }
 
         protected void showBlockedByPolicyMessage() {
+            ActivityContext activityContext = ActivityContext.lookupContext(
+                    mThumbnailView.getContext());
+            String message = activityContext.getStringCache() != null
+                    ? activityContext.getStringCache().disabledByAdminMessage
+                    : mThumbnailView.getContext().getString(R.string.blocked_by_policy);
             Toast.makeText(
                     mThumbnailView.getContext(),
-                    R.string.blocked_by_policy,
+                    message,
                     Toast.LENGTH_LONG).show();
         }
 
