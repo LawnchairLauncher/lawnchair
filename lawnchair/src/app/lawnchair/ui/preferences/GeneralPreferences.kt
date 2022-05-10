@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
@@ -72,7 +73,7 @@ fun GeneralPreferences() {
                 description = if (!themedIconsAvailable) stringResource(id = R.string.lawnicons_not_installed_description) else null,
             )
             IconShapePreference()
-            val enableFontSelection = prefs2.enableFontSelection.getAdapter().state.value
+            val enableFontSelection = prefs2.enableFontSelection.asState().value
             if (enableFontSelection) {
                 FontPreference(
                     adapter = prefs.workspaceFont.getAdapter(),

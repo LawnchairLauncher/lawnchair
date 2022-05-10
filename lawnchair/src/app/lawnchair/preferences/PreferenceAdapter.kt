@@ -19,11 +19,10 @@ package app.lawnchair.preferences
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.preferences2.IdpPreference
+import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.firstBlocking
 import com.android.launcher3.InvariantDeviceProfile
 import com.patrykmichalik.preferencemanager.Preference
-import com.patrykmichalik.preferencemanager.firstBlocking
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlin.reflect.KProperty
 
@@ -111,8 +110,7 @@ private fun <P, T> getAdapter(
 
 @Composable
 fun <T> Preference<T, *>.getAdapter(): PreferenceAdapter<T> {
-    val state = get().collectAsState(initial = firstBlocking())
-    return createStateAdapter(state = state, set = this::set)
+    return createStateAdapter(state = asState(), set = this::set)
 }
 
 @Composable
