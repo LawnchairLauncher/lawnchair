@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 
 fun LazyListScope.verticalGridItems(
+    modifier: Modifier = Modifier,
     count: Int,
     numColumns: Int,
     gap: Dp,
@@ -18,7 +19,7 @@ fun LazyListScope.verticalGridItems(
             Spacer(modifier = Modifier.height(gap))
         }
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             for (col in 0 until numColumns) {
@@ -39,12 +40,14 @@ fun LazyListScope.verticalGridItems(
 }
 
 fun <T> LazyListScope.verticalGridItems(
+    modifier: Modifier = Modifier,
     items: List<T>,
     numColumns: Int,
     gap: Dp,
     itemContent: @Composable (index: Int, item: T) -> Unit
 ) {
     verticalGridItems(
+        modifier = modifier,
         count = items.size,
         numColumns = numColumns,
         gap = gap

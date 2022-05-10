@@ -223,4 +223,5 @@
     <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
     <string name="search_provider">Search Provider</string>
     <string name="status_bar_label">Status Bar</string>
+    <string name="icon_picker_load_failed">Failed to load more icons</string>
 </resources>

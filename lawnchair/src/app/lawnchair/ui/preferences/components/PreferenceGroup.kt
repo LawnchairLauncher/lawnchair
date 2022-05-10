@@ -17,20 +17,16 @@
 package app.lawnchair.ui.preferences.components
 
 import androidx.compose.animation.*
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material3.LocalAbsoluteTonalElevation
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import app.lawnchair.theme.surfaceColorAtElevation
 import androidx.compose.material3.MaterialTheme as Material3Theme
 
 @Composable
@@ -98,7 +94,6 @@ fun PreferenceGroupHeading(
 }
 
 @Composable
-@ExperimentalAnimationApi
 fun PreferenceGroupDescription(description: String? = null, showDescription: Boolean = true) {
     description?.let {
         AnimatedVisibility(
