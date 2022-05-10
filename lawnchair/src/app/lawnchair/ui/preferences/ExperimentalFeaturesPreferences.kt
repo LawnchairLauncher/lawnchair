@@ -27,11 +27,6 @@ fun ExperimentalFeaturesPreferences() {
                 label = stringResource(id = R.string.font_picker_label),
                 description = stringResource(id = R.string.font_picker_description),
             )
-            SwitchPreference(
-                adapter = prefs.enableIconSelection.getAdapter(),
-                label = stringResource(id = R.string.icon_picker_label),
-                description = stringResource(id = R.string.icon_picker_description),
-            )
         }
     }
 }

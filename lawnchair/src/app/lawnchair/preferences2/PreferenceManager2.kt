@@ -225,19 +225,6 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = { reloadHelper.recreate() },
     )
 
-    val enableIconSelection = preference(
-        key = booleanPreferencesKey(name = "enable_icon_selection"),
-        defaultValue = context.resources.getBoolean(R.bool.config_default_enable_icon_selection),
-        onSet = {
-            if (!it) {
-                val iconOverrideRepository = IconOverrideRepository.INSTANCE.get(context)
-                CoroutineScope(Dispatchers.IO).launch {
-                    iconOverrideRepository.deleteAll()
-                }
-            }
-        }
-    )
-
     val showComponentNames = preference(
         key = booleanPreferencesKey(name = "show_component_names"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_component_names),

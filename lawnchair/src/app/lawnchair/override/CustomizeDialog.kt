@@ -105,7 +105,6 @@ fun CustomizeAppDialog(
     val prefs = preferenceManager()
     val preferenceManager2 = preferenceManager2()
     val coroutineScope = rememberCoroutineScope()
-    val enableIconSelection by preferenceManager2.enableIconSelection.asState()
     val showComponentNames by preferenceManager2.showComponentNames.asState()
     val hiddenApps by preferenceManager2.hiddenApps.asState()
     val context = LocalContext.current
@@ -138,7 +137,7 @@ fun CustomizeAppDialog(
         title = title,
         onTitleChange = { title = it },
         defaultTitle = defaultTitle,
-        launchSelectIcon = if (enableIconSelection == true) openIconPicker else null,
+        launchSelectIcon = openIconPicker,
     ) {
         PreferenceGroup(
             description = componentKey.componentName.flattenToString(),
