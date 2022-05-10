@@ -158,7 +158,6 @@ public class DeviceProfile {
     public final int numShownHotseatIcons;
     public int hotseatCellHeightPx;
     private final int hotseatExtraVerticalSize;
-    private final boolean areNavButtonsInline;
     // In portrait: size = height, in landscape: size = width
     public int hotseatBarSizePx;
     public int hotseatBarTopPaddingPx;
@@ -359,7 +358,7 @@ public class DeviceProfile {
 
         // We shrink hotseat sizes regardless of orientation, if nav buttons are inline and QSB
         // might be inline in either orientations, to keep hotseat size consistent across rotation.
-        areNavButtonsInline = isTaskbarPresent && !isGestureMode;
+        boolean areNavButtonsInline = isTaskbarPresent && !isGestureMode;
         if (areNavButtonsInline && canQsbInline) {
             numShownHotseatIcons = inv.numShrunkenHotseatIcons;
         } else {
@@ -374,14 +373,15 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
         if (isQsbInline) {
             hotseatBarBottomPaddingPx = res.getDimensionPixelSize(R.dimen.inline_qsb_bottom_margin);
+            qsbWidth = calculateQsbWidth();
         } else {
             hotseatBarBottomPaddingPx = (isTallDevice ? res.getDimensionPixelSize(
                     R.dimen.dynamic_grid_hotseat_bottom_tall_padding)
                     : res.getDimensionPixelSize(
                             R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding))
                     + res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_padding);
+            qsbWidth = 0;
         }
-
         springLoadedHotseatBarTopMarginPx = res.getDimensionPixelSize(
                 R.dimen.spring_loaded_hotseat_top_margin);
         hotseatBarSidePaddingEndPx =
@@ -390,7 +390,9 @@ public class DeviceProfile {
         hotseatBarSidePaddingStartPx = isVerticalBarLayout() ? workspacePageIndicatorHeight : 0;
         hotseatExtraVerticalSize =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_extra_vertical_size);
-        updateHotseatIconSize(pxFromDp(inv.iconSize[INDEX_DEFAULT], mMetrics));
+        hotseatBorderSpace = pxFromDp(inv.hotseatBorderSpaces[mTypeIndex], mMetrics);
+        updateHotseatIconSize(
+                pxFromDp(inv.iconSize[INDEX_DEFAULT], mMetrics));
 
         qsbBottomMarginOriginalPx = isScalableGrid
                 ? res.getDimensionPixelSize(R.dimen.scalable_grid_qsb_bottom_margin)
@@ -481,10 +483,6 @@ public class DeviceProfile {
                 cellLayoutPadding);
         updateWorkspacePadding();
 
-        // Hotseat and QSB width depends on updated cellSize and workspace padding
-        hotseatBorderSpace = calculateHotseatBorderSpace();
-        qsbWidth = calculateQsbWidth();
-
         flingToDeleteThresholdVelocity = res.getDimensionPixelSize(
                 R.dimen.drag_flingToDeleteMinVelocity);
 
@@ -495,26 +493,14 @@ public class DeviceProfile {
                 new DotRenderer(allAppsIconSizePx, dotPath, DEFAULT_DOT_SIZE);
     }
 
-    /**
-     * QSB width is always calculated because when in 3 button nav the width doesn't follow the
-     * width of the hotseat.
-     */
     private int calculateQsbWidth() {
-        if (isQsbInline) {
-            int columns = getPanelCount() * inv.numColumns;
-            return getIconToIconWidthForColumns(columns)
-                    - iconSizePx * numShownHotseatIcons
-                    - hotseatBorderSpace * numShownHotseatIcons;
-        } else {
-            int columns = inv.hotseatColumnSpan[mTypeIndex];
-            return getIconToIconWidthForColumns(columns);
-        }
-    }
+        int columns = isTwoPanels ? inv.numColumns * 2 : inv.numColumns;
 
-    private int getIconToIconWidthForColumns(int columns) {
-        return columns * getCellSize().x
-                + (columns - 1) * cellLayoutBorderSpacePx.x
-                - (getCellSize().x - iconSizePx);  // left and right cell space
+        return cellWidthPx * columns
+                + cellLayoutBorderSpacePx.x * (columns - 1)
+                - (cellWidthPx - iconSizePx) // left and right cell space
+                - iconSizePx * numShownHotseatIcons
+                - hotseatBorderSpace * numShownHotseatIcons;
     }
 
     private int getHorizontalMarginPx(InvariantDeviceProfile idp, Resources res) {
@@ -665,10 +651,11 @@ public class DeviceProfile {
         updateIconSize(1f, res);
 
         updateWorkspacePadding();
+        Point workspacePadding = getTotalWorkspacePadding();
 
         // Check to see if the icons fit within the available height.
         float usedHeight = getCellLayoutHeightSpecification();
-        final int maxHeight = getCellLayoutHeight();
+        final int maxHeight = getWorkspaceHeight(workspacePadding);
         float extraHeight = Math.max(0, maxHeight - usedHeight);
         float scaleY = maxHeight / usedHeight;
         boolean shouldScale = scaleY < 1f;
@@ -701,7 +688,7 @@ public class DeviceProfile {
     }
 
     private int getCellLayoutWidthSpecification() {
-        int numColumns = getPanelCount() * inv.numColumns;
+        int numColumns = isTwoPanels ? inv.numColumns * 2 : inv.numColumns;
         return (cellWidthPx * numColumns) + (cellLayoutBorderSpacePx.x * (numColumns - 1))
                 + cellLayoutPaddingPx.left + cellLayoutPaddingPx.right;
     }
@@ -754,28 +741,18 @@ public class DeviceProfile {
         // All apps
         updateAllAppsIconSize(scale, res);
 
+        // Hotseat
+        hotseatBorderSpace = pxFromDp(inv.hotseatBorderSpaces[mTypeIndex], mMetrics, scale);
+        if (isQsbInline) {
+            qsbWidth = calculateQsbWidth();
+        } else {
+            qsbWidth = 0;
+        }
         updateHotseatIconSize(iconSizePx);
 
         // Folder icon
         folderIconSizePx = IconNormalizer.getNormalizedCircleSize(iconSizePx);
         folderIconOffsetYPx = (iconSizePx - folderIconSizePx) / 2;
-    }
-
-    /**
-     * Hotseat width spans a certain number of columns on scalable grids.
-     * This method calculates the space between the icons to achieve that width.
-     */
-    private int calculateHotseatBorderSpace() {
-        if (!isScalableGrid) return 0;
-        //TODO(http://b/228998082) remove this when 3 button spaces are fixed
-        if (areNavButtonsInline) {
-            return pxFromDp(inv.hotseatBorderSpaces[mTypeIndex], mMetrics);
-        } else {
-            int columns = inv.hotseatColumnSpan[mTypeIndex];
-            float hotseatWidthPx = getIconToIconWidthForColumns(columns);
-            float hotseatIconsTotalPx = iconSizePx * numShownHotseatIcons;
-            return (int) (hotseatWidthPx - hotseatIconsTotalPx) / (numShownHotseatIcons - 1);
-        }
     }
 
 
@@ -901,18 +878,16 @@ public class DeviceProfile {
             result = new Point();
         }
 
-        result.x = calculateCellWidth(getShortcutAndWidgetContainerWidth(),
-                cellLayoutBorderSpacePx.x, inv.numColumns);
-        result.y = calculateCellHeight(getShortcutAndWidgetContainerHeight(),
-                cellLayoutBorderSpacePx.y, inv.numRows);
-        return result;
-    }
+        // Since we are only concerned with the overall padding, layout direction does
+        // not matter.
+        Point padding = getTotalWorkspacePadding();
 
-    /**
-     * Gets the number of panels within the workspace.
-     */
-    public int getPanelCount() {
-        return isTwoPanels ? 2 : 1;
+        int numColumns = isTwoPanels ? inv.numColumns * 2 : inv.numColumns;
+        int screenWidthPx = getWorkspaceWidth(padding);
+        result.x = calculateCellWidth(screenWidthPx, cellLayoutBorderSpacePx.x, numColumns);
+        int screenHeightPx = getWorkspaceHeight(padding);
+        result.y = calculateCellHeight(screenHeightPx, cellLayoutBorderSpacePx.y, inv.numRows);
+        return result;
     }
 
     /**
@@ -933,7 +908,7 @@ public class DeviceProfile {
     /**
      * Gets the scaled top of the workspace in px for the spring-loaded edit state.
      */
-    public float getCellLayoutSpringLoadShrunkTop() {
+    public float getWorkspaceSpringLoadShrunkTop() {
         workspaceSpringLoadShrunkTop = mInsets.top + dropTargetBarTopMarginPx + dropTargetBarSizePx
                 + dropTargetBarBottomMarginPx;
         return workspaceSpringLoadShrunkTop;
@@ -942,7 +917,7 @@ public class DeviceProfile {
     /**
      * Gets the scaled bottom of the workspace in px for the spring-loaded edit state.
      */
-    private float getCellLayoutSpringLoadShrunkBottom() {
+    private float getWorkspaceSpringLoadShrunkBottom() {
         int topOfHotseat = hotseatBarSizePx + springLoadedHotseatBarTopMarginPx;
         workspaceSpringLoadShrunkBottom =
                 heightPx - (isVerticalBarLayout() ? getVerticalHotseatLastItemBottomOffset()
@@ -961,8 +936,9 @@ public class DeviceProfile {
      * Gets the scale of the workspace for the spring-loaded edit state.
      */
     public float getWorkspaceSpringLoadScale() {
-        float scale = (getCellLayoutSpringLoadShrunkBottom() - getCellLayoutSpringLoadShrunkTop())
-                / getCellLayoutHeight();
+        float cellLayoutHeight = availableHeightPx - workspacePadding.top - workspacePadding.bottom;
+        float scale = (getWorkspaceSpringLoadShrunkBottom() - getWorkspaceSpringLoadShrunkTop())
+                / cellLayoutHeight;
         scale = Math.min(scale, 1f);
 
         // Reduce scale if next pages would not be visible after scaling the workspace
@@ -976,55 +952,19 @@ public class DeviceProfile {
         return scale;
     }
 
-    /**
-     * Gets the width of the Workspace, aka a scrollable page of the homescreen.
-     */
     public int getWorkspaceWidth() {
-        return availableWidthPx;
+        return getWorkspaceWidth(getTotalWorkspacePadding());
     }
 
-    /**
-     * Gets the height of the Workspace, aka a scrollable page of the homescreen.
-     */
-    public int getWorkspaceHeight() {
-        return availableHeightPx;
+    public int getWorkspaceWidth(Point workspacePadding) {
+        int cellLayoutTotalPadding =
+                (isTwoPanels ? 2 : 1) * (cellLayoutPaddingPx.left + cellLayoutPaddingPx.right);
+        return availableWidthPx - workspacePadding.x - cellLayoutTotalPadding;
     }
 
-    /**
-     * Gets the width of a single Cell Layout, aka a single panel within a Workspace.
-     *
-     * <p>This is the width of a Workspace, less its horizontal padding. Note that two-panel
-     * layouts have two Cell Layouts per workspace.
-     */
-    public int getCellLayoutWidth() {
-        return (getWorkspaceWidth() - getTotalWorkspacePadding().x) / getPanelCount();
-    }
-
-    /**
-     * Gets the height of a single Cell Layout, aka a single panel within a Workspace.
-     *
-     * <p>This is the height of a Workspace, less its vertical padding.
-     */
-    public int getCellLayoutHeight() {
-        return getWorkspaceHeight() - getTotalWorkspacePadding().y;
-    }
-
-    /**
-     * Gets the width of the container holding the shortcuts and widgets.
-     *
-     * <p>This is the width of one Cell Layout less its horizontal padding.
-     */
-    public int getShortcutAndWidgetContainerWidth() {
-        return getCellLayoutWidth() - (cellLayoutPaddingPx.left + cellLayoutPaddingPx.right);
-    }
-
-    /**
-     * Gets the height of the container holding the shortcuts and widgets.
-     *
-     * <p>This is the height of one Cell Layout less its vertical padding.
-     */
-    public int getShortcutAndWidgetContainerHeight() {
-        return getCellLayoutHeight() - (cellLayoutPaddingPx.top + cellLayoutPaddingPx.bottom);
+    private int getWorkspaceHeight(Point workspacePadding) {
+        return availableHeightPx - workspacePadding.y - (cellLayoutPaddingPx.top
+                + cellLayoutPaddingPx.bottom);
     }
 
     public Point getTotalWorkspacePadding() {
@@ -1130,13 +1070,6 @@ public class DeviceProfile {
                 mHotseatPadding.left -= diff;
                 mHotseatPadding.right += diff;
             }
-        } else if (isScalableGrid) {
-            int sideSpacing = (availableWidthPx - qsbWidth) / 2;
-            mHotseatPadding.set(sideSpacing,
-                    hotseatBarTopPaddingPx,
-                    sideSpacing,
-                    hotseatBarSizePx - hotseatCellHeightPx - hotseatBarTopPaddingPx
-                            + mInsets.bottom);
         } else {
             // We want the edges of the hotseat to line up with the edges of the workspace, but the
             // icons in the hotseat are a different size, and so don't line up perfectly. To account
@@ -1373,7 +1306,6 @@ public class DeviceProfile {
         writer.println(prefix + pxToDpStr("allAppsLeftRightMargin", allAppsLeftRightMargin));
 
         writer.println(prefix + pxToDpStr("hotseatBarSizePx", hotseatBarSizePx));
-        writer.println(prefix + "\tinv.hotseatColumnSpan: " + inv.hotseatColumnSpan[mTypeIndex]);
         writer.println(prefix + pxToDpStr("hotseatCellHeightPx", hotseatCellHeightPx));
         writer.println(prefix + pxToDpStr("hotseatBarTopPaddingPx", hotseatBarTopPaddingPx));
         writer.println(prefix + pxToDpStr("hotseatBarBottomPaddingPx", hotseatBarBottomPaddingPx));
@@ -1452,7 +1384,7 @@ public class DeviceProfile {
     private static Context getContext(Context c, Info info, int orientation, WindowBounds bounds) {
         Configuration config = new Configuration(c.getResources().getConfiguration());
         config.orientation = orientation;
-        config.densityDpi = info.getDensityDpi();
+        config.densityDpi = info.densityDpi;
         config.smallestScreenWidthDp = (int) info.smallestSizeDp(bounds);
         return c.createConfigurationContext(config);
     }

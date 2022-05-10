@@ -306,17 +306,6 @@
         if not specified -->
         <attr name="allAppsBorderSpaceTwoPanelLandscapeVertical" format="float" />
 
-        <!-- alignment of hotseat to the grid.
-        Not applicable for 3 button mode when taskbar is enabled -->
-        <!-- defaults to numColumns, if not specified -->
-        <attr name="hotseatColumnSpan" format="integer" />
-        <!-- defaults to numColumns, if not specified -->
-        <attr name="hotseatColumnSpanLandscape" format="integer" />
-        <!-- defaults to numColumns, if not specified -->
-        <attr name="hotseatColumnSpanTwoPanelLandscape" format="integer" />
-        <!-- defaults to numColumns, if not specified -->
-        <attr name="hotseatColumnSpanTwoPanelPortrait" format="integer" />
-
         <!-- defaults to borderSpaceDps, if not specified -->
         <attr name="hotseatBorderSpace" format="float" />
         <!-- defaults to hotseatBorderSpace, if not specified -->
