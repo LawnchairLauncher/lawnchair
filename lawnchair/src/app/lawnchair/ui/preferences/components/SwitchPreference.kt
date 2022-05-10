@@ -18,8 +18,6 @@ package app.lawnchair.ui.preferences.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.Switch
-import androidx.compose.material.SwitchDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -59,13 +57,12 @@ fun SwitchPreference(
         title = { Text(text = label) },
         description = { description?.let { Text(text = it) } },
         endWidget = {
-            Switch(
+            MYSwitch(
                 modifier = Modifier
                     .height(24.dp),
                 checked = checked,
                 onCheckedChange = onCheckedChange,
                 enabled = enabled,
-                colors = SwitchDefaults.colors(checkedThumbColor = MaterialTheme.colorScheme.primary),
             )
         },
         modifier = Modifier

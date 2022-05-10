@@ -144,29 +144,26 @@ class CustomIconPack(context: Context, packPackageName: String) :
             emit(ArrayList(result))
         }
 
-        try {
-            val parser = getXml("drawable")
-            while (parser != null && parser.next() != XmlPullParser.END_DOCUMENT) {
-                if (parser.eventType != XmlPullParser.START_TAG) continue
-                when (parser.name) {
-                    "category" -> {
-                        endCategory()
-                        currentTitle = parser["title"]!!
-                    }
-                    "item" -> {
-                        val drawableName = parser["drawable"]!!
-                        val resId = getDrawableId(drawableName)
-                        if (resId != 0) {
-                            val item = IconPickerItem(packPackageName, drawableName, drawableName, IconType.Normal)
-                            currentItems.add(item)
-                        }
+        val parser = getXml("drawable")
+        while (parser != null && parser.next() != XmlPullParser.END_DOCUMENT) {
+            if (parser.eventType != XmlPullParser.START_TAG) continue
+            when (parser.name) {
+                "category" -> {
+                    val title = parser["title"] ?: continue
+                    endCategory()
+                    currentTitle = title
+                }
+                "item" -> {
+                    val drawableName = parser["drawable"] ?: continue
+                    val resId = getDrawableId(drawableName)
+                    if (resId != 0) {
+                        val item = IconPickerItem(packPackageName, drawableName, drawableName, IconType.Normal)
+                        currentItems.add(item)
                     }
                 }
             }
-            endCategory()
-        } catch (e: Exception) {
-
         }
+        endCategory()
     }.flowOn(Dispatchers.IO)
 
     private fun getDrawableId(name: String) = idCache.getOrPut(name) {

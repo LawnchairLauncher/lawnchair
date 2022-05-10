@@ -43,7 +43,7 @@ fun PreferenceColumn(
                             scrollState.isScrollInProgress
                         }
                 }
-                .padding(rememberExtendPadding(LocalScaffoldPadding.current, bottom = 8.dp)),
+                .padding(rememberExtendPadding(LocalScaffoldPadding.current, bottom = 16.dp)),
             content = content
         )
     }
@@ -72,7 +72,7 @@ fun PreferenceLazyColumn(
                     // return true if scrolling
                     state.isScrollInProgress
                 },
-            contentPadding = rememberExtendPadding(LocalScaffoldPadding.current, bottom = 8.dp),
+            contentPadding = rememberExtendPadding(LocalScaffoldPadding.current, bottom = 16.dp),
             state = state,
             content = content
         )

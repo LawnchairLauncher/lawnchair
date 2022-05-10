@@ -12,10 +12,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.preferenceManager2
-import app.lawnchair.ui.preferences.components.ClickablePreference
-import app.lawnchair.ui.preferences.components.PreferenceGroup
-import app.lawnchair.ui.preferences.components.PreferenceLayout
-import app.lawnchair.ui.preferences.components.SwitchPreference
+import app.lawnchair.ui.preferences.components.*
 import com.android.launcher3.settings.DeveloperOptionsFragment
 import com.android.launcher3.settings.SettingsActivity
 import com.patrykmichalik.preferencemanager.Preference
@@ -35,7 +32,10 @@ fun NavGraphBuilder.debugMenuGraph(route: String) {
 fun DebugMenuPreferences() {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
-    val flags = remember { prefs.getDebugFlags() }
+    val flags = remember { prefs.debugFlags }
+    val flags2 = remember { prefs2.debugFlags }
+    val textFlags = remember { prefs2.textFlags }
+    val fontFlags = remember { prefs.fontFlags }
     val context = LocalContext.current
     PreferenceLayout(label = "Debug Menu") {
         PreferenceGroup {
@@ -53,7 +53,7 @@ fun DebugMenuPreferences() {
             )
         }
         PreferenceGroup(heading = "Debug Flags") {
-            prefs2.debugFlags.forEach {
+            flags2.forEach {
                 SwitchPreference(
                     adapter = it.getAdapter(),
                     label = it.key.name
@@ -65,6 +65,18 @@ fun DebugMenuPreferences() {
                     label = it.key,
                 )
             }
+            textFlags.forEach {
+                TextPreference(
+                    adapter = it.getAdapter(),
+                    label = it.key.name
+                )
+            }
+            fontFlags.forEach {
+                FontPreference(
+                    fontPref = it,
+                    label = it.key,
+                )
+            }
         }
     }
 }
@@ -72,11 +84,22 @@ fun DebugMenuPreferences() {
 private val PreferenceManager2.debugFlags: List<Preference<Boolean, Boolean>>
     get() = listOf(showComponentNames)
 
-private fun PreferenceManager.getDebugFlags() =
-    listOf(
+private val PreferenceManager2.textFlags: List<Preference<String, String>>
+    get() = listOf(additionalFonts)
+
+private val PreferenceManager.debugFlags
+    get() = listOf(
         deviceSearch,
         searchResultShortcuts,
         searchResultPeople,
         searchResultPixelTips,
         searchResultSettings,
+    )
+
+private val PreferenceManager.fontFlags
+    get() = listOf(
+        fontHeading,
+        fontHeadingMedium,
+        fontBody,
+        fontBodyMedium,
     )

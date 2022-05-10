@@ -7,7 +7,6 @@ import android.widget.ImageButton
 import androidx.core.view.isVisible
 import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.R
-import com.android.launcher3.util.Themes
 
 @SuppressLint("AppCompatCustomView")
 class AssistantIconView(context: Context, attrs: AttributeSet?) : ImageButton(context, attrs) {
@@ -27,7 +26,7 @@ class AssistantIconView(context: Context, attrs: AttributeSet?) : ImageButton(co
         clearColorFilter()
 
         val iconRes = if (isGoogle) R.drawable.ic_mic_color else R.drawable.ic_mic_flat
-        val themingMethod = if (isGoogle) ThemingMethod.THEME_BY_NAME else ThemingMethod.TINT
+        val themingMethod = if (isGoogle) ThemingMethod.THEME_BY_LAYER_ID else ThemingMethod.TINT
 
         setThemedIconResource(
             resId = iconRes,

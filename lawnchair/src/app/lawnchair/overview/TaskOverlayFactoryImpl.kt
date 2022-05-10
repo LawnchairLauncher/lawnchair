@@ -44,6 +44,14 @@ class TaskOverlayFactoryImpl(@Suppress("UNUSED_PARAMETER") context: Context) : T
             task
         ), OverlayUICallbacks {
 
+            override fun onShare() {
+                if (mIsAllowedByPolicy) {
+                    endLiveTileMode { mImageApi.startShareActivity(null) }
+                } else {
+                    showBlockedByPolicyMessage()
+                }
+            }
+
             override fun onLens() {
                 if (mIsAllowedByPolicy) {
                     endLiveTileMode { mImageApi.startLensActivity() }
@@ -55,6 +63,7 @@ class TaskOverlayFactoryImpl(@Suppress("UNUSED_PARAMETER") context: Context) : T
     }
 
     interface OverlayUICallbacks : TaskOverlayFactory.OverlayUICallbacks {
+        fun onShare()
         fun onLens()
     }
 }

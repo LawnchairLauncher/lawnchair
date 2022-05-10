@@ -19,12 +19,14 @@ package app.lawnchair.font.googlefonts
 
 import android.content.Context
 import android.content.res.Resources
+import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.util.toArrayList
 import com.android.launcher3.util.MainThreadInitializedObject
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.first
 import org.json.JSONObject
 
 class GoogleFontsListing private constructor(private val context: Context) {
@@ -33,12 +35,19 @@ class GoogleFontsListing private constructor(private val context: Context) {
     private val dataProvider = MockDataProvider(context.resources)
     private val fonts by lazy { scope.async(Dispatchers.IO) { loadFontListing() } }
 
-    private fun loadFontListing(): List<GoogleFontInfo> {
+    private suspend fun loadFontListing(): List<GoogleFontInfo> {
         val json = dataProvider.getFontListing()
         return parseFontListing(json)
     }
 
-    private fun parseFontListing(json: JSONObject): List<GoogleFontInfo> {
+    private suspend fun getAdditionalFonts(): List<String> {
+        val prefs = PreferenceManager2.getInstance(context)
+        val userFontsString = prefs.additionalFonts.get().first()
+        val userFonts = if (userFontsString.isEmpty()) emptyList() else userFontsString.split(",")
+        return listOf("Inter") + userFonts
+    }
+
+    private suspend fun parseFontListing(json: JSONObject): List<GoogleFontInfo> {
         val fonts = ArrayList<GoogleFontInfo>()
         val items = json.getJSONArray(KEY_ITEMS)
         for (i in (0 until items.length())) {
@@ -47,7 +56,9 @@ class GoogleFontsListing private constructor(private val context: Context) {
             val variants = font.getJSONArray(KEY_VARIANTS).toArrayList<String>()
             fonts.add(GoogleFontInfo(family, variants))
         }
-        fonts.add(GoogleFontInfo("Inter", listOf("regular", "italic", "500", "500italic", "700", "700italic")))
+        getAdditionalFonts().forEach {
+            fonts.add(GoogleFontInfo(it, listOf("regular", "italic", "500", "500italic", "700", "700italic")))
+        }
         fonts.sort()
         return fonts
     }

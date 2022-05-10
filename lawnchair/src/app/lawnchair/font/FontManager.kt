@@ -18,11 +18,6 @@ class FontManager private constructor(private val context: Context) {
 
     private val fontCache = FontCache.INSTANCE.get(context)
 
-    private val uiRegular = fontCache.uiRegular
-    private val uiMedium = fontCache.uiMedium
-    private val uiTextRegular = fontCache.uiText
-    private val uiTextMedium = fontCache.uiTextMedium
-
     private val specMap = createFontMap()
 
     private fun createFontMap(): Map<Int, FontSpec> {
@@ -31,12 +26,12 @@ class FontManager private constructor(private val context: Context) {
 
         val prefs = PreferenceManager.getInstance(context)
         val map = mutableMapOf<Int, FontSpec>()
-        map[R.id.font_base_icon] = FontSpec(prefs.workspaceFont, sansSerif)
-        map[R.id.font_button] = FontSpec(uiMedium, sansSerifMedium)
-        map[R.id.font_heading] = FontSpec(uiRegular, sansSerif)
-        map[R.id.font_heading_medium] = FontSpec(uiMedium, sansSerif)
-        map[R.id.font_body] = FontSpec(uiTextRegular, sansSerif)
-        map[R.id.font_body_medium] = FontSpec(uiTextMedium, sansSerif)
+        map[R.id.font_base_icon] = FontSpec(prefs.fontWorkspace, sansSerif)
+        map[R.id.font_button] = FontSpec(prefs.fontHeadingMedium, sansSerifMedium)
+        map[R.id.font_heading] = FontSpec(prefs.fontHeading, sansSerif)
+        map[R.id.font_heading_medium] = FontSpec(prefs.fontHeadingMedium, sansSerif)
+        map[R.id.font_body] = FontSpec(prefs.fontBody, sansSerif)
+        map[R.id.font_body_medium] = FontSpec(prefs.fontBodyMedium, sansSerif)
         return map
     }
 

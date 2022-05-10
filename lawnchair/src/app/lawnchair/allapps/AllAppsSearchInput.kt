@@ -1,5 +1,6 @@
 package app.lawnchair.allapps
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
@@ -11,9 +12,10 @@ import android.text.method.TextKeyListener
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.KeyEvent
+import android.view.View
 import android.view.ViewTreeObserver
+import android.widget.FrameLayout
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
@@ -23,19 +25,20 @@ import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.LawnchairSearchAlgorithm
-import app.lawnchair.util.viewAttachedScope
+import app.lawnchair.theme.drawable.DrawableTokens
 import com.android.launcher3.Insettable
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.allapps.*
 import com.android.launcher3.allapps.search.AllAppsSearchBarController
 import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.util.Themes
-import com.patrykmichalik.preferencemanager.onEach
+import com.patrykmichalik.preferencemanager.firstBlocking
 import java.util.*
 import kotlin.math.max
 
-class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs),
+class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs),
     Insettable, SearchUiManager,
     SearchCallback<AllAppsGridAdapter.AdapterItem>,
     AllAppsStore.OnUpdateListener, ViewTreeObserver.OnGlobalLayoutListener {
@@ -59,8 +62,18 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
     private var focusedResultTitle = ""
     private var canShowHint = false
 
+    private val bg = DrawableTokens.SearchInputFg.resolve(context)
+    private val bgAlphaAnimator = ValueAnimator.ofFloat(0f, 1f).apply { duration = 300 }
+    private var bgVisible = true
+    private var bgAlpha = 1f
+
     override fun onFinishInflate() {
         super.onFinishInflate()
+
+        val wrapper = ViewCompat.requireViewById<View>(this, R.id.search_wrapper)
+        wrapper.background = bg
+        bgAlphaAnimator.addUpdateListener { updateBgAlpha() }
+
         hint = ViewCompat.requireViewById(this, R.id.hint)
 
         input = ViewCompat.requireViewById(this, R.id.input)
@@ -97,9 +110,10 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
             }
         )
 
-        val preferenceManager2 = PreferenceManager2.getInstance(context)
-        preferenceManager2.hideAppDrawerSearchBar.onEach(launchIn = viewAttachedScope) { hideAppDrawerSearchBar ->
-            isVisible = !hideAppDrawerSearchBar
+        val hide = PreferenceManager2.getInstance(context).hideAppDrawerSearchBar.firstBlocking()
+        if (hide) {
+            isInvisible = true
+            layoutParams.height = 0
         }
     }
 
@@ -187,7 +201,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
 
     override fun onAppendSearchResult(
         query: String,
-        items: java.util.ArrayList<AllAppsGridAdapter.AdapterItem>?
+        items: ArrayList<AllAppsGridAdapter.AdapterItem>?
     ) {
         if (items != null) {
             apps.appendSearchResults(items)
@@ -214,6 +228,10 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
 
     override fun setInsets(insets: Rect) {
         val lp = layoutParams as MarginLayoutParams
+        if (isInvisible) {
+            lp.topMargin = insets.top - allAppsSearchVerticalOffset
+            return
+        }
         lp.topMargin = max(-allAppsSearchVerticalOffset, insets.top - qsbMarginTopAdjusting)
 
         val dp = launcher.deviceProfile
@@ -230,10 +248,27 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
     override fun getEditText() = input
 
     override fun setBackgroundVisibility(visible: Boolean, maxAlpha: Float) {
-        input.setBackgroundVisibility(visible, maxAlpha)
+        if (bgVisible != visible) {
+            bgVisible = visible
+            bgAlpha = maxAlpha
+            if (visible) {
+                bgAlphaAnimator.start()
+            } else {
+                bgAlphaAnimator.reverse()
+            }
+        } else if (bgAlpha != maxAlpha && !bgAlphaAnimator.isRunning && visible) {
+            bgAlpha = maxAlpha
+            bgAlphaAnimator.setCurrentFraction(maxAlpha)
+            updateBgAlpha()
+        }
     }
 
     override fun getBackgroundVisibility(): Boolean {
-        return input.getBackgroundVisibility()
+        return bgVisible
+    }
+
+    private fun updateBgAlpha() {
+        val fraction = bgAlphaAnimator.animatedFraction
+        bg.alpha = (Utilities.mapRange(fraction, 0f, bgAlpha) * 255).toInt()
     }
 }

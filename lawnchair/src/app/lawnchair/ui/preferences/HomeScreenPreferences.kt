@@ -17,17 +17,20 @@
 package app.lawnchair.ui.preferences
 
 import androidx.compose.animation.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
+import app.lawnchair.data.iconoverride.IconOverrideRepository
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.util.collectAsStateBlocking
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import kotlinx.coroutines.launch
 
 object HomeScreenRoutes {
     const val GRID = "grid"
@@ -45,6 +48,7 @@ fun NavGraphBuilder.homeScreenGraph(route: String) {
 fun HomeScreenPreferences() {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
+    val scope = rememberCoroutineScope()
     PreferenceLayout(label = stringResource(id = R.string.home_screen_label)) {
         PreferenceGroup(
             heading = stringResource(id = R.string.general_label),
@@ -128,6 +132,21 @@ fun HomeScreenPreferences() {
                     step = 0.1f,
                     valueRange = 0.5F..1.5F,
                     showAsPercentage = true,
+                )
+            }
+        }
+        val overrideRepo = IconOverrideRepository.INSTANCE.get(LocalContext.current)
+        val customIconsCount by remember { overrideRepo.observeCount() }.collectAsStateBlocking()
+        AnimatedVisibility(
+            visible = customIconsCount > 0,
+            enter = expandVertically() + fadeIn(),
+            exit = shrinkVertically() + fadeOut(),
+        ) {
+            PreferenceGroup {
+                ClickablePreference(
+                    label = stringResource(id = R.string.reset_custom_icons),
+                    confirmationText = stringResource(id = R.string.reset_custom_icons_confirmation),
+                    onClick = { scope.launch { overrideRepo.deleteAll() } }
                 )
             }
         }

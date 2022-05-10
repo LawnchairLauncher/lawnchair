@@ -213,8 +213,7 @@ class ComposeBottomSheet<T>(context: Context)
             modifier = Modifier
                 .fillMaxWidth(),
             shape = backgroundShape,
-            color = Material3Theme.colorScheme.surface,
-            tonalElevation = 3.dp
+            color = Material3Theme.colorScheme.background
         ) {
             Box(
                 modifier = Modifier

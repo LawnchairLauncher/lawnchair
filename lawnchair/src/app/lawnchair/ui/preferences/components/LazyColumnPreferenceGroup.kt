@@ -16,21 +16,17 @@
 
 package app.lawnchair.ui.preferences.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import app.lawnchair.theme.surfaceColorAtElevation
 import app.lawnchair.ui.theme.dividerColor
 
 fun LazyListScope.preferenceGroupItems(
@@ -96,11 +92,10 @@ fun PreferenceGroupItem(
         val bottom = if (cutBottom) 0.dp else 12.dp
         RoundedCornerShape(top, top, bottom, bottom)
     }
-    Column(
-        modifier = Modifier
-            .padding(start = 16.dp, end = 16.dp)
-            .clip(shape)
-            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp))
+    Surface(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        shape = shape,
+        tonalElevation = 1.dp
     ) {
         content()
     }

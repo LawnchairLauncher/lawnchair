@@ -39,6 +39,7 @@ android {
     }
 
     addFrameworkJar('framework-12l.jar')
+    replaceFrameworkJar('framework-12l.jar')
 }
 
 dependencies {

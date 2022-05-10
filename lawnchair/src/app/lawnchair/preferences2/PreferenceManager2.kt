@@ -21,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
-import app.lawnchair.data.iconoverride.IconOverrideRepository
 import app.lawnchair.font.FontCache
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.icons.shape.IconShape
@@ -36,12 +35,9 @@ import com.android.launcher3.util.DynamicResource
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.preferencemanager.PreferenceManager
 import com.patrykmichalik.preferencemanager.firstBlocking
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import app.lawnchair.preferences.PreferenceManager as LawnchairPreferenceManager
 import com.android.launcher3.graphics.IconShape as L3IconShape
 
@@ -136,6 +132,7 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
     val hideAppDrawerSearchBar = preference(
         key = booleanPreferencesKey(name = "hide_app_drawer_search_bar"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_hide_app_drawer_search_bar),
+        onSet = { reloadHelper.recreate() }
     )
 
     val enableFontSelection = preference(
@@ -144,7 +141,7 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = { newValue ->
             if (!newValue) {
                 val fontCache = FontCache.INSTANCE.get(context)
-                LawnchairPreferenceManager.getInstance(context).workspaceFont.set(newValue = fontCache.uiText)
+                LawnchairPreferenceManager.getInstance(context).fontWorkspace.set(newValue = fontCache.uiText)
             }
         },
     )
@@ -224,19 +221,6 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = { reloadHelper.recreate() },
     )
 
-    val enableIconSelection = preference(
-        key = booleanPreferencesKey(name = "enable_icon_selection"),
-        defaultValue = context.resources.getBoolean(R.bool.config_default_enable_icon_selection),
-        onSet = {
-            if (!it) {
-                val iconOverrideRepository = IconOverrideRepository.INSTANCE.get(context)
-                CoroutineScope(Dispatchers.IO).launch {
-                    iconOverrideRepository.deleteAll()
-                }
-            }
-        }
-    )
-
     val showComponentNames = preference(
         key = booleanPreferencesKey(name = "show_component_names"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_component_names),
@@ -254,13 +238,18 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    val additionalFonts = preference(
+        key = stringPreferencesKey(name = "additional_fonts"),
+        defaultValue = "",
+    )
+
     init {
         initializeIconShape(iconShape.firstBlocking())
         iconShape.get()
             .onEach { shape ->
                 initializeIconShape(shape)
                 L3IconShape.init(context)
-                LauncherAppState.getInstance(context).onIconShapeChanged()
+                LauncherAppState.getInstance(context).reloadIcons()
             }
             .launchIn(scope)
     }

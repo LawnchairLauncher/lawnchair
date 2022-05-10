@@ -39,6 +39,7 @@ import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.google.accompanist.insets.ui.LocalScaffoldPadding
 import com.google.accompanist.navigation.animation.composable
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import androidx.compose.material.MaterialTheme as Material2Theme
 
@@ -136,7 +137,6 @@ fun IconPickerPreference(packageName: String) {
                 searchQuery = searchQuery,
                 onClickItem = onClickItem,
                 modifier = Modifier
-                    .padding(horizontal = 8.dp)
                     .padding(top = topPadding)
             )
         }
@@ -157,7 +157,12 @@ fun IconPickerGrid(
     onClickItem: (item: IconPickerItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val categories by iconPack.getAllIcons().collectAsState(emptyList())
+    var loadFailed by remember { mutableStateOf(false) }
+    val categoriesFlow = remember {
+        iconPack.getAllIcons()
+            .catch { loadFailed = true }
+    }
+    val categories by categoriesFlow.collectAsState(emptyList())
     val filteredCategories by derivedStateOf {
         categories
             .map { it.filter(searchQuery) }
@@ -183,15 +188,14 @@ fun IconPickerGrid(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(MaterialTheme.colorScheme.background)
-                            .padding(
-                                vertical = 16.dp,
-                                horizontal = 8.dp,
-                            ),
+                            .padding(16.dp),
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
                 verticalGridItems(
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp),
                     items = category.items,
                     numColumns = numColumns,
                     gap = 0.dp,
@@ -204,6 +208,13 @@ fun IconPickerGrid(
                         }
                     )
                 }
+            }
+        }
+        if (loadFailed) {
+            item {
+                PreferenceGroupDescription(
+                    description = stringResource(id = R.string.icon_picker_load_failed)
+                )
             }
         }
     }

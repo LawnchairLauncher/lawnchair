@@ -22,4 +22,9 @@
     <item type="id" name="font_heading_medium" />
     <item type="id" name="font_body" />
     <item type="id" name="font_body_medium" />
+
+    <item type="id" name="qsbIconTintPrimary" />
+    <item type="id" name="qsbIconTintSecondary" />
+    <item type="id" name="qsbIconTintTertiary" />
+    <item type="id" name="qsbIconTintQuaternary" />
 </resources>

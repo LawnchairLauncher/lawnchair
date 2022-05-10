@@ -8,7 +8,7 @@ object GoogleGo : QsbSearchProvider(
     id = "google_go",
     name = R.string.search_provider_google_go,
     icon = R.drawable.ic_super_g_color,
-    themingMethod = ThemingMethod.THEME_BY_NAME,
+    themingMethod = ThemingMethod.THEME_BY_LAYER_ID,
     packageName = "com.google.android.apps.searchlite",
     action = "android.search.action.GLOBAL_SEARCH",
     supportVoiceIntent = true,

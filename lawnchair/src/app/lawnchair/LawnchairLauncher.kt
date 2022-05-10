@@ -309,7 +309,9 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (!activityResultRegistry.dispatchResult(requestCode, resultCode, data)) {
+        if (activityResultRegistry.dispatchResult(requestCode, resultCode, data)) {
+            mPendingActivityRequestCode = -1
+        } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
