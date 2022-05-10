@@ -23,10 +23,11 @@
     android:focusable="true">
 
     <FrameLayout
-        android:layout_width="0dp"
+        android:id="@+id/search_wrapper"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/search_box_height"
         android:layout_gravity="bottom"
-        android:layout_weight="1"
+        android:background="@drawable/search_input_fg"
         android:clickable="false"
         android:focusable="true"
         android:padding="0dp">
@@ -35,12 +36,11 @@
             android:id="@+id/hint"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:layout_marginEnd="28dp"
             android:clickable="false"
             android:ellipsize="end"
             android:gravity="start|center"
             android:letterSpacing="-0.01"
-            android:paddingStart="16dp"
-            android:paddingEnd="44dp"
             android:scrollHorizontally="true"
             android:singleLine="true"
             android:textColor="?android:textColorTertiary"
@@ -50,14 +50,14 @@
             android:id="@+id/input"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/search_input_fg"
+            android:layout_marginEnd="28dp"
+            android:background="@android:color/transparent"
             android:ellipsize="end"
             android:focusableInTouchMode="true"
             android:gravity="start|center"
             android:imeOptions="actionGo|flagNoExtractUi"
             android:inputType="textNoSuggestions"
             android:letterSpacing="-0.01"
-            android:paddingEnd="44dp"
             android:privateImeOptions="bc_search"
             android:scrollHorizontally="true"
             android:singleLine="true"
@@ -65,17 +65,17 @@
             android:textColorHint="?android:textColorTertiary"
             android:textSize="20sp" />
 
-        <ImageButton
-            android:id="@+id/action_btn"
-            android:layout_width="@dimen/search_box_height"
-            android:layout_height="@dimen/search_box_height"
-            android:layout_gravity="bottom|center|end"
-            android:background="@drawable/pill_ripple"
-            android:clickable="true"
-            android:contentDescription="@string/search_input_action_clear_results"
-            android:scaleType="center"
-            android:src="@drawable/ic_remove_no_shadow"
-            app:tint="?android:textColorSecondary" />
-
     </FrameLayout>
+
+    <ImageButton
+        android:id="@+id/action_btn"
+        android:layout_width="@dimen/search_box_height"
+        android:layout_height="@dimen/search_box_height"
+        android:layout_gravity="bottom|center|end"
+        android:background="@drawable/pill_ripple"
+        android:clickable="true"
+        android:contentDescription="@string/search_input_action_clear_results"
+        android:scaleType="center"
+        android:src="@drawable/ic_remove_no_shadow"
+        app:tint="?android:textColorSecondary" />
 </app.lawnchair.allapps.AllAppsSearchInput>
