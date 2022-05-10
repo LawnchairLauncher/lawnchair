@@ -176,7 +176,6 @@
             launcher:allAppsBorderSpaceHorizontal="8"
             launcher:allAppsBorderSpaceVertical="16"
             launcher:allAppsBorderSpaceLandscape="16"
-            launcher:hotseatColumnSpanLandscape="4"
             launcher:hotseatBorderSpace="58"
             launcher:hotseatBorderSpaceLandscape="50.4"
             launcher:canBeDefault="true" />
