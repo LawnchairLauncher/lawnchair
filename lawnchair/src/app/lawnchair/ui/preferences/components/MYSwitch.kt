@@ -221,7 +221,7 @@ internal val TrackWidth = 52.dp
 internal val TrackStrokeWidth = 28.dp
 internal val ThumbDiameter = 20.dp
 
-private val ThumbRippleRadius = 24.dp
+private val ThumbRippleRadius = 20.dp
 
 private val DefaultSwitchPadding = 2.dp
 private val SwitchWidth = TrackWidth
