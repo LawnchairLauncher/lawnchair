@@ -17,6 +17,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import app.lawnchair.font.FontCache
 import app.lawnchair.font.googlefonts.GoogleFontsListing
 import app.lawnchair.font.toFontFamily
@@ -28,13 +30,24 @@ import app.lawnchair.ui.AndroidText
 import app.lawnchair.ui.OverflowMenu
 import app.lawnchair.ui.preferences.components.*
 import com.android.launcher3.R
+import com.google.accompanist.navigation.animation.composable
 
 @ExperimentalAnimationApi
 fun NavGraphBuilder.fontSelectionGraph(route: String) {
-    preferenceGraph(route, {
-        // TODO: remove hardcoded reference
-        FontSelection(preferenceManager().workspaceFont)
-    })
+    preferenceGraph(route, {}) { subRoute ->
+        composable(
+            route = subRoute("{prefKey}"),
+            arguments = listOf(
+                navArgument("prefKey") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val args = backStackEntry.arguments!!
+            val prefKey = args.getString("prefKey")!!
+            val pref = preferenceManager().prefsMap[prefKey]
+                    as? BasePreferenceManager.FontPref ?: return@composable
+            FontSelection(pref)
+        }
+    }
 }
 
 @ExperimentalAnimationApi

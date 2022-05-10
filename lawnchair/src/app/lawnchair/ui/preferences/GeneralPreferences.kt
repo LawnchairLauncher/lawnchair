@@ -76,7 +76,7 @@ fun GeneralPreferences() {
             val enableFontSelection = prefs2.enableFontSelection.asState().value
             if (enableFontSelection) {
                 FontPreference(
-                    adapter = prefs.workspaceFont.getAdapter(),
+                    fontPref = prefs.fontWorkspace,
                     label = stringResource(id = R.string.font_label),
                 )
             }

@@ -62,7 +62,11 @@ class PreferenceManager private constructor(private val context: Context) : Base
     }
 
     private val fontCache = FontCache.INSTANCE.get(context)
-    val workspaceFont = FontPref("pref_workspaceFont", fontCache.uiText, recreate)
+    val fontWorkspace = FontPref("pref_workspaceFont", fontCache.uiText, recreate)
+    val fontHeading = FontPref("pref_fontHeading", fontCache.uiRegular, recreate)
+    val fontHeadingMedium = FontPref("pref_fontHeadingMedium", fontCache.uiMedium, recreate)
+    val fontBody = FontPref("pref_fontBody", fontCache.uiText, recreate)
+    val fontBodyMedium = FontPref("pref_fontBodyMedium", fontCache.uiTextMedium, recreate)
 
     val deviceSearch = BoolPref("device_search", true, recreate)
     val searchResultShortcuts = BoolPref("pref_searchResultShortcuts", true)

@@ -32,9 +32,10 @@ fun NavGraphBuilder.debugMenuGraph(route: String) {
 fun DebugMenuPreferences() {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
-    val flags = remember { prefs.getDebugFlags() }
+    val flags = remember { prefs.debugFlags }
     val flags2 = remember { prefs2.debugFlags }
     val textFlags = remember { prefs2.textFlags }
+    val fontFlags = remember { prefs.fontFlags }
     val context = LocalContext.current
     PreferenceLayout(label = "Debug Menu") {
         PreferenceGroup {
@@ -70,6 +71,12 @@ fun DebugMenuPreferences() {
                     label = it.key.name
                 )
             }
+            fontFlags.forEach {
+                FontPreference(
+                    fontPref = it,
+                    label = it.key,
+                )
+            }
         }
     }
 }
@@ -80,11 +87,19 @@ private val PreferenceManager2.debugFlags: List<Preference<Boolean, Boolean>>
 private val PreferenceManager2.textFlags: List<Preference<String, String>>
     get() = listOf(additionalFonts)
 
-private fun PreferenceManager.getDebugFlags() =
-    listOf(
+private val PreferenceManager.debugFlags
+    get() = listOf(
         deviceSearch,
         searchResultShortcuts,
         searchResultPeople,
         searchResultPixelTips,
         searchResultSettings,
+    )
+
+private val PreferenceManager.fontFlags
+    get() = listOf(
+        fontHeading,
+        fontHeadingMedium,
+        fontBody,
+        fontBodyMedium,
     )
