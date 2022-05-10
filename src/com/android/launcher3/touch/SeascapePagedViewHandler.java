@@ -19,6 +19,7 @@ package com.android.launcher3.touch;
 import static android.view.Gravity.BOTTOM;
 import static android.view.Gravity.CENTER_VERTICAL;
 import static android.view.Gravity.END;
+import static android.view.Gravity.RIGHT;
 import static android.view.Gravity.START;
 
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
@@ -164,6 +165,29 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
         return Collections.singletonList(new SplitPositionOption(
                 R.drawable.ic_split_right, R.string.split_screen_position_right,
                 STAGE_POSITION_BOTTOM_OR_RIGHT, STAGE_TYPE_MAIN));
+    }
+
+    @Override
+    public void setSplitInstructionsParams(View out, DeviceProfile dp, int splitInstructionsHeight,
+            int splitInstructionsWidth, int threeButtonNavShift) {
+        out.setPivotX(0);
+        out.setPivotY(0);
+        out.setRotation(getDegreesRotated());
+        int distanceToEdge = out.getResources().getDimensionPixelSize(
+                R.dimen.split_instructions_bottom_margin_phone_landscape);
+        // Adjust for any insets on the right edge
+        int insetCorrectionX = dp.getInsets().right;
+        // Center the view in case of unbalanced insets on top or bottom of screen
+        int insetCorrectionY = (dp.getInsets().bottom - dp.getInsets().top) / 2;
+        out.setTranslationX(splitInstructionsWidth - splitInstructionsHeight - distanceToEdge
+                + insetCorrectionX);
+        out.setTranslationY(((splitInstructionsHeight + splitInstructionsWidth) / 2f)
+                + insetCorrectionY);
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) out.getLayoutParams();
+        // Setting gravity to RIGHT instead of the lint-recommended END because we always want this
+        // view to be screen-right when phone is in seascape, regardless of the RtL setting.
+        lp.gravity = RIGHT | CENTER_VERTICAL;
+        out.setLayoutParams(lp);
     }
 
     @Override
