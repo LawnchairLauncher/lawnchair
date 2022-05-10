@@ -149,11 +149,12 @@ class CustomIconPack(context: Context, packPackageName: String) :
             if (parser.eventType != XmlPullParser.START_TAG) continue
             when (parser.name) {
                 "category" -> {
+                    val title = parser["title"] ?: continue
                     endCategory()
-                    currentTitle = parser["title"]!!
+                    currentTitle = title
                 }
                 "item" -> {
-                    val drawableName = parser["drawable"]!!
+                    val drawableName = parser["drawable"] ?: continue
                     val resId = getDrawableId(drawableName)
                     if (resId != 0) {
                         val item = IconPickerItem(packPackageName, drawableName, drawableName, IconType.Normal)
