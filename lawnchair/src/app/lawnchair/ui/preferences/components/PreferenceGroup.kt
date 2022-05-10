@@ -21,7 +21,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.LocalAbsoluteTonalElevation
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -46,21 +48,22 @@ fun PreferenceGroup(
 ) {
     Column {
         PreferenceGroupHeading(heading, isFirstChild)
-        val columnModifier = Modifier
-            .padding(horizontal = 16.dp)
-            .clip(shape = MaterialTheme.shapes.large)
-            .background(Material3Theme.colorScheme.surfaceColorAtElevation(1.dp))
-        if (showDividers) {
-            DividerColumn(
-                modifier = columnModifier,
-                startIndent = dividerStartIndent,
-                endIndent = dividerEndIndent,
-                content = content,
-                dividersToSkip = dividersToSkip
-            )
-        } else {
-            Column(modifier = columnModifier) {
-                content()
+        Surface(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            shape = MaterialTheme.shapes.large,
+            tonalElevation = 1.dp
+        ) {
+            if (showDividers) {
+                DividerColumn(
+                    startIndent = dividerStartIndent,
+                    endIndent = dividerEndIndent,
+                    content = content,
+                    dividersToSkip = dividersToSkip
+                )
+            } else {
+                Column {
+                    content()
+                }
             }
         }
         PreferenceGroupDescription(description, showDescription)
