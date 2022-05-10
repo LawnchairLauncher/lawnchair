@@ -33,15 +33,32 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 
-    ext.addFrameworkJar = { String path ->
-        def frameworkJar = new File(rootProject.projectDir, 'prebuilts/libs/' + path)
+    ext.getFrameworkJar = { String name ->
+        def frameworkJar = new File(rootProject.projectDir, 'prebuilts/libs/' + name)
         if (!frameworkJar.exists()) {
             throw new IllegalArgumentException("Framework jar path doesn't exist")
         }
+        return frameworkJar
+    }
+
+    ext.addFrameworkJar = { String name ->
+        def frameworkJar = getFrameworkJar(name)
         gradle.projectsEvaluated {
             tasks.withType(JavaCompile) {
                 options.bootstrapClasspath = files([frameworkJar] + (options.bootstrapClasspath.files as Iterable<File>))
             }
+            tasks.withType(org.jetbrains.kotlin.gradle.internal.KaptWithoutKotlincTask) {
+                it.classpath.from(files([frameworkJar]))
+            }
+            tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+                it.classpath.from(files([frameworkJar]))
+            }
+        }
+    }
+
+    ext.replaceFrameworkJar = { String name ->
+        def frameworkJar = getFrameworkJar(name)
+        gradle.projectsEvaluated {
             tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
                 def originalFiles = [] + it.classpath.files
                 def newFiles = []
@@ -52,10 +69,8 @@ allprojects {
                         newFiles.add(file)
                     }
                 }
-                it.classpath.setFrom(files(newFiles))
-            }
-            tasks.withType(org.jetbrains.kotlin.gradle.internal.KaptWithoutKotlincTask) {
-                it.classpath.from(files([frameworkJar] + (it.classpath.files as Iterable<File>)))
+                it.classpath.setFrom(files([]))
+                it.classpath.from(files(newFiles))
             }
         }
     }
