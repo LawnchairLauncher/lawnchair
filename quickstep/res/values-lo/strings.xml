@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ເພື່ອປ່ຽນຄວາມລະອຽດອ່ອນຂອງທ່າທາງກັບຄືນ, ໃຫ້ໄປຫາການຕັ້ງຄ່າ"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"ປັດເພື່ອກັບຄືນ"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"ເພື່ອກັບໄປໜ້າຈໍຫຼ້າສຸດ, ໃຫ້ປັດຈາກຂອບຊ້າຍ ຫຼື ຂວາໄປຫາທາງກາງຂອງໜ້າຈໍ."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"ເພື່ອກັບໄປໜ້າຈໍຫຼ້າສຸດ, ໃຫ້ປັດດ້ວຍ 2 ນິ້ວຈາກຂອບຊ້າຍ ຫຼື ຂວາໄປຫາທາງກາງຂອງໜ້າຈໍ."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ກະລຸນາກວດສອບວ່າທ່ານປັດຂຶ້ນຈາກຂອບລຸ່ມສຸດຂອງໜ້າຈໍ."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"ກະລຸນາກວດສອບວ່າທ່ານບໍ່ຢຸດຊົ່ວຄາວກ່ອນປ່ອຍນິ້ວ."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"ກະລຸນາກວດສອບວ່າທ່ານປັດຂຶ້ນໄປຊື່ໆ."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"ທ່ານໃຊ້ທ່າທາງໄປໜ້າຫຼັກສຳເລັດແລ້ວ."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"ປັດເພື່ອໄປໜ້າຫຼັກ"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"ປັດຂຶ້ນມາຈາກລຸ່ມສຸດຂອງໜ້າຈໍທ່ານ. ທ່າທາງນີ້ຈະພາທ່ານໄປໂຮມສະກຣີນສະເໝີ."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"ປັດຂຶ້ນດ້ວຍ 2 ນິ້ວຈາກລຸ່ມສຸດຂອງໜ້າຈໍ. ທ່າທາງນີ້ຈະພາທ່ານໄປໂຮມສະກຣີນສະເໝີ."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"ກະລຸນາກວດສອບວ່າທ່ານປັດຂຶ້ນຈາກຂອບລຸ່ມສຸດຂອງໜ້າຈໍ."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"ລອງກົດໃສ່ໜ້າຈໍຄ້າງໄວ້ດົນຂຶ້ນກ່ອນປ່ອຍນິ້ວ."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"ກະລຸນາກວດສອບວ່າທ່ານປັດຂຶ້ນຊື່ໆ, ຈາກນັ້ນຢຸດຊົ່ວຄາວ."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"ທ່ານໃຊ້ທ່າທາງສະຫຼັບແອັບສຳເລັດແລ້ວ."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"ປັດເພື່ອສະຫຼັບແອັບ"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"ເພື່ອສະຫຼັບລະຫວ່າງແອັບ, ໃຫ້ປັດຂຶ້ນຈາກລຸ່ມສຸດຂອງໜ້າຈໍທ່ານ, ກົດຄ້າງໄວ້, ຈາກນັ້ນປ່ອຍ."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"ເພື່ອສະຫຼັບລະຫວ່າງແອັບ, ໃຫ້ປັດຂຶ້ນດ້ວຍ 2 ນິ້ວຈາກລຸ່ມສຸດຂອງໜ້າຈໍທ່ານ, ກົດຄ້າງໄວ້ແລ້ວປ່ອຍ."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"ທຸກຢ່າງພ້ອມແລ້ວ"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"ແລ້ວໆ"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"ການຕັ້ງຄ່າ"</string>

@@ -167,7 +167,7 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Ажлын аппууд унтраалттай байна. Таны ажлын аппууд танд мэдэгдэл илгээх, таны батарейг ашиглах эсвэл байршилд тань хандах боломжгүй"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Ажлын аппуудыг тэмдэглэсэн бөгөөд танай IT админд харагдана"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Ойлголоо"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Ажлын аппуудыг унтраах"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Ажлын аппуудыг түр зогсоох"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Ажлын аппуудыг асаах"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Шүүлтүүр"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Амжилтгүй болсон: <xliff:g id="WHAT">%1$s</xliff:g>"</string>

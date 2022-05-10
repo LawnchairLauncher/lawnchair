@@ -167,7 +167,7 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Os apps de trabalho estão desativados. Eles não podem enviar notificações, usar a bateria nem acessar o local"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Os apps de trabalho são identificados e ficam visíveis para o adm. de TI"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Ok"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Desativar apps de trabalho"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Pausar apps de trabalho"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Ativar apps de trabalho"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtrar"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Falha: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
