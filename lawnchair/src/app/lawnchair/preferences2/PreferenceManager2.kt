@@ -261,7 +261,7 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
             .onEach { shape ->
                 initializeIconShape(shape)
                 L3IconShape.init(context)
-                LauncherAppState.getInstance(context).onIconShapeChanged()
+                LauncherAppState.getInstance(context).reloadIcons()
             }
             .launchIn(scope)
     }

@@ -7,7 +7,6 @@ import com.android.launcher3.LauncherAppState
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.MainThreadInitializedObject
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 
 class IconOverrideRepository(private val context: Context) {
@@ -32,25 +31,24 @@ class IconOverrideRepository(private val context: Context) {
 
     suspend fun setOverride(target: ComponentKey, item: IconPickerItem) {
         dao.insert(IconOverride(target, item))
-        reloadIcons()
+        updatePackageIcons(target)
     }
 
     suspend fun deleteOverride(target: ComponentKey) {
         dao.delete(target)
-        reloadIcons()
+        updatePackageIcons(target)
     }
 
     fun observeTarget(target: ComponentKey) = dao.observeTarget(target)
 
     fun deleteAll() {
         dao.deleteAll()
-        reloadIcons()
+        LauncherAppState.getInstance(context).reloadIcons()
     }
 
-    private fun reloadIcons() {
-        val las = LauncherAppState.getInstance(context)
-        val idp = las.invariantDeviceProfile
-        idp.onPreferencesChanged(context.applicationContext)
+    private fun updatePackageIcons(target: ComponentKey) {
+        val model = LauncherAppState.getInstance(context).model
+        model.onPackageChanged(target.componentName.packageName, target.user)
     }
 
     companion object {

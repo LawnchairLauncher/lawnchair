@@ -18,7 +18,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.lawnchair.launcher
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
@@ -129,12 +128,8 @@ fun CustomizeAppDialog(
             val newTitle = title.ifEmpty { null }
             if (newTitle != previousTitle) {
                 prefs.customAppName[componentKey] = newTitle
-                val las = LauncherAppState.getInstance(context)
-                las.iconCache.updateIconsForPkg(
-                    componentKey.componentName.packageName,
-                    componentKey.user,
-                )
-                context.launcher.onIdpChanged(true)
+                val model = LauncherAppState.getInstance(context).model
+                model.onPackageChanged(componentKey.componentName.packageName, componentKey.user)
             }
         }
     }
