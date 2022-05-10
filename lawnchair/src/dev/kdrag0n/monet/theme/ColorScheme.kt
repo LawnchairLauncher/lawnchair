@@ -33,4 +33,4 @@ abstract class ColorScheme {
         get() = listOf(accent1, accent2, accent3)
 }
 
-private fun Color.toComposeColor() = ComposeColor(toAndroidColor())
+fun Color.toComposeColor() = ComposeColor(toAndroidColor())

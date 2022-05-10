@@ -11,6 +11,7 @@ object ColorTokens {
     val Neutral1_50 = SwatchColorToken(Swatch.Neutral1, Shade.S50)
     val Neutral1_100 = SwatchColorToken(Swatch.Neutral1, Shade.S100)
     val Neutral1_200 = SwatchColorToken(Swatch.Neutral1, Shade.S200)
+    val Neutral1_400 = SwatchColorToken(Swatch.Neutral1, Shade.S400)
     val Neutral1_500 = SwatchColorToken(Swatch.Neutral1, Shade.S500)
     val Neutral1_700 = SwatchColorToken(Swatch.Neutral1, Shade.S700)
     val Neutral1_800 = SwatchColorToken(Swatch.Neutral1, Shade.S800)
@@ -33,6 +34,7 @@ object ColorTokens {
 
     val Accent2_50 = SwatchColorToken(Swatch.Accent2, Shade.S50)
     val Accent2_100 = SwatchColorToken(Swatch.Accent2, Shade.S100)
+    val Accent2_500 = SwatchColorToken(Swatch.Accent2, Shade.S500)
     val Accent2_600 = SwatchColorToken(Swatch.Accent2, Shade.S600)
 
     val Accent3_50 = SwatchColorToken(Swatch.Accent3, Shade.S50)
@@ -86,6 +88,13 @@ object ColorTokens {
     @JvmField val WidgetsPickerScrim = DayNightColorToken(Neutral1_200, Neutral1_900).setAlpha(0.8f)
 
     @JvmField val WorkspaceAccentColor = DarkTextColorToken(Accent1_100, Accent2_600)
+
+    val SwitchThumbOn = Accent1_100
+    val SwitchThumbOff = DayNightColorToken(Neutral2_300, Neutral1_400)
+    val SwitchThumbDisabled = DayNightColorToken(Neutral2_100, Neutral1_700)
+
+    val SwitchTrackOn = DayNightColorToken(Accent1_600, Accent2_500.setLStar(51.0))
+    val SwitchTrackOff = DayNightColorToken(Neutral2_500.setLStar(45.0), Neutral1_700)
 }
 
 @Composable
