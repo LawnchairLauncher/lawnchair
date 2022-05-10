@@ -262,7 +262,6 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
             // Add notification entries
             if (mNotificationContainer == null) {
                 mNotificationContainer = findViewById(R.id.notification_container);
-                mNotificationContainer.setBackgroundColor(ColorTokens.PopupColorPrimary.resolveColor(getContext()));
                 mNotificationContainer.setVisibility(VISIBLE);
                 mNotificationContainer.setPopupView(this);
             } else {
