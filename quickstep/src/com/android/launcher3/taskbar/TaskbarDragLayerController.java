@@ -182,7 +182,8 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
          */
         public TouchController[] getTouchControllers() {
             return new TouchController[]{mActivity.getDragController(),
-                    mControllers.taskbarForceVisibleImmersiveController};
+                    mControllers.taskbarForceVisibleImmersiveController,
+                    mControllers.navbarButtonsViewController.getTouchController()};
         }
     }
 }

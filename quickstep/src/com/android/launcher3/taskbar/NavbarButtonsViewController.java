@@ -16,6 +16,7 @@
 package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
+import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.taskbar.LauncherTaskbarUIController.SYSUI_SURFACE_PROGRESS_INDEX;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_A11Y;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_BACK;
@@ -51,6 +52,7 @@ import android.graphics.Region.Op;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.PaintDrawable;
 import android.inputmethodservice.InputMethodService;
+import android.os.Handler;
 import android.util.Property;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -158,6 +160,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     private BaseDragLayer<TaskbarActivityContext> mSeparateWindowParent; // Initialized in init.
     private final ViewTreeObserverWrapper.OnComputeInsetsListener mSeparateWindowInsetsComputer =
             this::onComputeInsetsForSeparateWindow;
+    private final RecentsHitboxExtender mHitboxExtender = new RecentsHitboxExtender();
 
     public NavbarButtonsViewController(TaskbarActivityContext context, FrameLayout navButtonsView) {
         mContext = context;
@@ -303,6 +306,8 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                 navButtonsLayoutParams.setMarginEnd(navButtonsLayoutParams.getMarginStart());
                 navButtonsLayoutParams.gravity = Gravity.CENTER;
                 mNavButtonContainer.requestLayout();
+
+                mHomeButton.setOnLongClickListener(null);
             }
 
             // Animate taskbar background when either..
@@ -394,8 +399,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                         || (flags & FLAG_KEYGUARD_VISIBLE) != 0,
                 VIEW_TRANSLATE_X, navButtonSize * (isRtl ? -2 : 2), 0));
 
-
-        // home and recents buttons
+        // home button
         mHomeButton = addButton(R.drawable.ic_sysbar_home, BUTTON_HOME, navContainer,
                 navButtonController, R.id.home);
         mHomeButtonAlpha = new MultiValueAlpha(mHomeButton, NUM_ALPHA_CHANNELS);
@@ -405,8 +409,21 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                         ALPHA_INDEX_KEYGUARD_OR_DISABLE),
                 flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0 &&
                         (flags & FLAG_DISABLE_HOME) == 0));
+
+        // Recents button
         View recentsButton = addButton(R.drawable.ic_sysbar_recent, BUTTON_RECENTS,
                 navContainer, navButtonController, R.id.recent_apps);
+        mHitboxExtender.init(recentsButton, mNavButtonsView, mContext.getDeviceProfile(),
+                () -> {
+                    float[] recentsCoords = new float[2];
+                    getDescendantCoordRelativeToAncestor(recentsButton, mNavButtonsView,
+                            recentsCoords, false);
+                    return recentsCoords;
+                }, new Handler());
+        recentsButton.setOnClickListener(v -> {
+            navButtonController.onButtonClick(BUTTON_RECENTS);
+            mHitboxExtender.onRecentsButtonClicked();
+        });
         mPropertyHolders.add(new StatePropertyHolder(recentsButton,
                 flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0 && (flags & FLAG_DISABLE_RECENTS) == 0
                         && !mContext.isNavBarKidsModeActive()));
@@ -510,6 +527,9 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
             View button = mAllButtons.get(i);
             if (button.getVisibility() == View.VISIBLE) {
                 parent.getDescendantRectRelativeToSelf(button, mTempRect);
+                if (mHitboxExtender.extendedHitboxEnabled()) {
+                    mTempRect.bottom += mContext.mDeviceProfile.getTaskbarOffsetY();
+                }
                 outRegion.op(mTempRect, Op.UNION);
             }
         }
@@ -737,6 +757,17 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                 "FLAG_NOTIFICATION_SHADE_EXPANDED");
         appendFlag(str, flags, FLAG_SCREEN_PINNING_ACTIVE, "FLAG_SCREEN_PINNING_ACTIVE");
         return str.toString();
+    }
+
+    public TouchController getTouchController() {
+        return mHitboxExtender;
+    }
+
+    /**
+     * @param alignment 0 -> Taskbar, 1 -> Workspace
+     */
+    public void updateTaskbarAlignment(float alignment) {
+        mHitboxExtender.onAnimationProgressToOverview(alignment);
     }
 
     private class RotationButtonListener implements RotationButton.RotationButtonUpdatesCallback {
