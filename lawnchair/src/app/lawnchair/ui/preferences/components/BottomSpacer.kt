@@ -8,6 +8,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import com.android.quickstep.SysUINavigationMode
 import com.google.accompanist.insets.navigationBarsHeight
 import com.google.accompanist.insets.navigationBarsWithImePadding
@@ -24,6 +25,13 @@ fun BottomSpacer() {
                     .navigationBarsHeight()
                     .fillMaxWidth()
                     .background(color = MaterialTheme.colors.background.copy(alpha = 0.9f))
+            )
+        } else {
+            Spacer(
+                modifier = Modifier
+                    .navigationBarsHeight()
+                    .fillMaxWidth()
+                    .pointerInput(Unit) {},
             )
         }
     }
