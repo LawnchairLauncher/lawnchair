@@ -23,7 +23,6 @@ import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.LawnchairSearchAlgorithm
-import app.lawnchair.util.viewAttachedScope
 import com.android.launcher3.Insettable
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
@@ -31,7 +30,7 @@ import com.android.launcher3.allapps.*
 import com.android.launcher3.allapps.search.AllAppsSearchBarController
 import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.util.Themes
-import com.patrykmichalik.preferencemanager.onEach
+import com.patrykmichalik.preferencemanager.firstBlocking
 import java.util.*
 import kotlin.math.max
 
@@ -97,9 +96,10 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
             }
         )
 
-        val preferenceManager2 = PreferenceManager2.getInstance(context)
-        preferenceManager2.hideAppDrawerSearchBar.onEach(launchIn = viewAttachedScope) { hideAppDrawerSearchBar ->
-            isVisible = !hideAppDrawerSearchBar
+        val hide = PreferenceManager2.getInstance(context).hideAppDrawerSearchBar.firstBlocking()
+        if (hide) {
+            isInvisible = true
+            layoutParams.height = 0
         }
     }
 
@@ -214,6 +214,10 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
 
     override fun setInsets(insets: Rect) {
         val lp = layoutParams as MarginLayoutParams
+        if (isInvisible) {
+            lp.topMargin = insets.top - allAppsSearchVerticalOffset
+            return
+        }
         lp.topMargin = max(-allAppsSearchVerticalOffset, insets.top - qsbMarginTopAdjusting)
 
         val dp = launcher.deviceProfile

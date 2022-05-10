@@ -136,6 +136,7 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
     val hideAppDrawerSearchBar = preference(
         key = booleanPreferencesKey(name = "hide_app_drawer_search_bar"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_hide_app_drawer_search_bar),
+        onSet = { reloadHelper.recreate() }
     )
 
     val enableFontSelection = preference(
