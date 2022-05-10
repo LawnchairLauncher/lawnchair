@@ -242,6 +242,11 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    val additionalFonts = preference(
+        key = stringPreferencesKey(name = "additional_fonts"),
+        defaultValue = "",
+    )
+
     init {
         initializeIconShape(iconShape.firstBlocking())
         iconShape.get()
