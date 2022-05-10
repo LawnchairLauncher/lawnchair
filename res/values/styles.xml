@@ -76,7 +76,7 @@
     </style>
 
     <style name="LauncherTheme.DarkMainColor" parent="@style/LauncherTheme">
-        <item name="disabledIconAlpha">.254</item>
+        <item name="disabledIconAlpha">.54</item>
 
     </style>
 
