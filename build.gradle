@@ -367,7 +367,6 @@ dependencies {
     implementation "com.google.accompanist:accompanist-placeholder-material:$accompanist_version"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
     implementation 'com.google.android.material:material:1.6.0'
-    implementation "com.github.devsideal:VectorChildFinder:1.0.0"
     implementation "com.github.fornewid:material-motion-compose:0.8.0-beta01"
     implementation 'dev.kdrag0n:colorkt:1.0.3'
     implementation "io.coil-kt:coil-compose:1.4.0"

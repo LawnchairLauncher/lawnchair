@@ -1,29 +1,41 @@
 package app.lawnchair.qsb
 
+import android.graphics.drawable.LayerDrawable
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
+import androidx.core.content.res.ResourcesCompat
 import app.lawnchair.theme.color.ColorTokens
-import com.devs.vectorchildfinder.VectorChildFinder
+import com.android.launcher3.R
 
 fun ImageView.setThemedIconResource(
     @DrawableRes resId: Int,
     themed: Boolean,
-    method: ThemingMethod = ThemingMethod.THEME_BY_NAME
+    method: ThemingMethod = ThemingMethod.THEME_BY_LAYER_ID
 ) {
-    if (themed && method == ThemingMethod.THEME_BY_NAME) {
-        val vector = VectorChildFinder(context, resId, this)
-        val primary = vector.findPathByName("qsbIconTintPrimary")
-        val primary2 = vector.findPathByName("qsbIconTintPrimary2")
-        val secondary = vector.findPathByName("qsbIconTintSecondary")
-        val tertiary = vector.findPathByName("qsbIconTintTertiary")
-        val quaternary = vector.findPathByName("qsbIconTintQuaternary")
+    if (themed && method == ThemingMethod.THEME_BY_LAYER_ID) {
+        val drawable = ResourcesCompat.getDrawable(resources, resId, null)!!
+        if (drawable is LayerDrawable) {
+            drawable.mutate()
+            val primary = ColorTokens.QsbIconTintPrimary.resolveColor(context)
+            val secondary = ColorTokens.QsbIconTintSecondary.resolveColor(context)
+            val tertiary = ColorTokens.QsbIconTintTertiary.resolveColor(context)
+            val quaternary = ColorTokens.QsbIconTintQuaternary.resolveColor(context)
 
-        primary?.fillColor = ColorTokens.QsbIconTintPrimary.resolveColor(context)
-        primary2?.fillColor = ColorTokens.QsbIconTintPrimary.resolveColor(context)
-        secondary?.fillColor = ColorTokens.QsbIconTintSecondary.resolveColor(context)
-        tertiary?.fillColor = ColorTokens.QsbIconTintTertiary.resolveColor(context)
-        quaternary?.fillColor = ColorTokens.QsbIconTintQuaternary.resolveColor(context)
-        invalidate()
+            for (i in (0 until drawable.numberOfLayers)) {
+                val color = when (drawable.getId(i)) {
+                    R.id.qsbIconTintPrimary -> primary
+                    R.id.qsbIconTintSecondary -> secondary
+                    R.id.qsbIconTintTertiary -> tertiary
+                    R.id.qsbIconTintQuaternary -> quaternary
+                    else -> 0
+                }
+                if (color == 0) continue
+
+                val layer = drawable.getDrawable(i)
+                layer.setTint(color)
+            }
+        }
+        setImageDrawable(drawable)
     } else {
         setImageResource(resId)
         if (themed) setColorFilter(ColorTokens.ColorAccent.resolveColor(context))
@@ -33,5 +45,5 @@ fun ImageView.setThemedIconResource(
 
 enum class ThemingMethod {
     TINT,
-    THEME_BY_NAME
+    THEME_BY_LAYER_ID
 }
