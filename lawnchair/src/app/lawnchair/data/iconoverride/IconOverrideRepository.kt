@@ -8,6 +8,7 @@ import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.MainThreadInitializedObject
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.flowOn
+import java.util.concurrent.ConcurrentLinkedQueue
 
 class IconOverrideRepository(private val context: Context) {
 
@@ -15,6 +16,8 @@ class IconOverrideRepository(private val context: Context) {
     private val dao = AppDatabase.INSTANCE.get(context).iconOverrideDao()
     private var _overridesMap = mapOf<ComponentKey, IconPickerItem>()
     val overridesMap get() = _overridesMap
+
+    private val updatePackageQueue = ConcurrentLinkedQueue<ComponentKey>()
 
     init {
         scope.launch {
@@ -25,18 +28,22 @@ class IconOverrideRepository(private val context: Context) {
                         keySelector = { it.target },
                         valueTransform = { it.iconPickerItem }
                     )
+                    while (updatePackageQueue.isNotEmpty()) {
+                        val target = updatePackageQueue.poll() ?: continue
+                        updatePackageIcons(target)
+                    }
                 }
         }
     }
 
     suspend fun setOverride(target: ComponentKey, item: IconPickerItem) {
         dao.insert(IconOverride(target, item))
-        updatePackageIcons(target)
+        updatePackageQueue.offer(target)
     }
 
     suspend fun deleteOverride(target: ComponentKey) {
         dao.delete(target)
-        updatePackageIcons(target)
+        updatePackageQueue.offer(target)
     }
 
     fun observeTarget(target: ComponentKey) = dao.observeTarget(target)
