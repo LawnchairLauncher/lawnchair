@@ -224,4 +224,6 @@
     <string name="search_provider">Search Provider</string>
     <string name="status_bar_label">Status Bar</string>
     <string name="icon_picker_load_failed">Failed to load more icons</string>
+    <string name="reset_custom_icons">Reset Custom Icons</string>
+    <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
 </resources>
