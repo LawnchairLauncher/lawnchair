@@ -151,6 +151,9 @@ interface ISystemUiProxy {
     /** Notifies that a swipe-up gesture has started */
     oneway void notifySwipeUpGestureStarted() = 46;
 
+    /** Notifies when taskbar is enabled or disabled */
+    oneway void setTaskbarEnabled(boolean enabled) = 500;
+
     /** Notifies when taskbar status updated */
     oneway void notifyTaskbarStatus(boolean visible, boolean stashed) = 47;
 

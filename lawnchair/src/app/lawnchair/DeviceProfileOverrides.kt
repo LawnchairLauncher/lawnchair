@@ -7,6 +7,7 @@ import app.lawnchair.preferences2.firstBlocking
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.InvariantDeviceProfile.INDEX_ALL_APPS
 import com.android.launcher3.InvariantDeviceProfile.INDEX_DEFAULT
+import com.android.launcher3.Utilities
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.preferencemanager.firstBlocking
 
@@ -17,7 +18,7 @@ class DeviceProfileOverrides(context: Context) {
     fun getOverrides(defaultGrid: InvariantDeviceProfile.GridOption) =
         Options(
             prefs = prefs,
-            preferenceManager2 = preferenceManager2,
+            prefs2 = preferenceManager2,
             defaultGrid = defaultGrid,
         )
 
@@ -37,28 +38,32 @@ class DeviceProfileOverrides(context: Context) {
         var enableAllAppsIconText: Boolean,
         var allAppsIconTextSizeFactor: Float,
 
+        var enableTaskbarOnPhone: Boolean,
+
         val dbFile: String = "launcher_${numRows}_${numColumns}_${numHotseatColumns}.db"
     ) {
 
         constructor(
             prefs: PreferenceManager,
-            preferenceManager2: PreferenceManager2,
+            prefs2: PreferenceManager2,
             defaultGrid: InvariantDeviceProfile.GridOption,
         ) : this(
             numHotseatColumns = prefs.hotseatColumns.get(defaultGrid),
             numRows = prefs.workspaceRows.get(defaultGrid),
             numColumns = prefs.workspaceColumns.get(defaultGrid),
-            numAllAppsColumns = preferenceManager2.drawerColumns.firstBlocking(gridOption = defaultGrid),
+            numAllAppsColumns = prefs2.drawerColumns.firstBlocking(gridOption = defaultGrid),
             numFolderRows = prefs.folderRows.get(defaultGrid),
-            numFolderColumns = preferenceManager2.folderColumns.firstBlocking(gridOption = defaultGrid),
+            numFolderColumns = prefs2.folderColumns.firstBlocking(gridOption = defaultGrid),
 
-            iconSizeFactor = preferenceManager2.homeIconSizeFactor.firstBlocking(),
-            enableIconText = preferenceManager2.showIconLabelsOnHomeScreen.firstBlocking(),
-            iconTextSizeFactor = preferenceManager2.homeIconLabelSizeFactor.firstBlocking(),
+            iconSizeFactor = prefs2.homeIconSizeFactor.firstBlocking(),
+            enableIconText = prefs2.showIconLabelsOnHomeScreen.firstBlocking(),
+            iconTextSizeFactor = prefs2.homeIconLabelSizeFactor.firstBlocking(),
 
-            allAppsIconSizeFactor = preferenceManager2.drawerIconSizeFactor.firstBlocking(),
-            enableAllAppsIconText = preferenceManager2.showIconLabelsInDrawer.firstBlocking(),
-            allAppsIconTextSizeFactor = preferenceManager2.drawerIconLabelSizeFactor.firstBlocking(),
+            allAppsIconSizeFactor = prefs2.drawerIconSizeFactor.firstBlocking(),
+            enableAllAppsIconText = prefs2.showIconLabelsInDrawer.firstBlocking(),
+            allAppsIconTextSizeFactor = prefs2.drawerIconLabelSizeFactor.firstBlocking(),
+
+            enableTaskbarOnPhone = prefs2.enableTaskbarOnPhone.firstBlocking()
         )
 
         fun apply(idp: InvariantDeviceProfile) {
@@ -77,6 +82,8 @@ class DeviceProfileOverrides(context: Context) {
             idp.iconTextSize[INDEX_DEFAULT] *= (if (enableIconText) iconTextSizeFactor else 0f)
             idp.iconSize[INDEX_ALL_APPS] *= allAppsIconSizeFactor
             idp.iconTextSize[INDEX_ALL_APPS] *= (if (enableAllAppsIconText) allAppsIconTextSizeFactor else 0f)
+
+            idp.enableTaskbarOnPhone = Utilities.ATLEAST_S_V2 && enableTaskbarOnPhone
 
             idp.dbFile = dbFile
         }

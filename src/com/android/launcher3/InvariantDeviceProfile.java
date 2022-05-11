@@ -162,6 +162,8 @@ public class InvariantDeviceProfile {
     public int defaultLayoutId;
     int demoModeLayoutId;
 
+    public boolean enableTaskbarOnPhone;
+
     /**
      * An immutable list of supported profiles.
      */

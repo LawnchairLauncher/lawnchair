@@ -10,12 +10,16 @@ import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
 import app.lawnchair.ui.preferences.components.SwitchPreference
 import app.lawnchair.util.isOnePlusStock
+import com.android.launcher3.InvariantDeviceProfile
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 
 @ExperimentalAnimationApi
 fun NavGraphBuilder.quickstepGraph(route: String) {
@@ -26,6 +30,7 @@ fun NavGraphBuilder.quickstepGraph(route: String) {
 @Composable
 fun QuickstepPreferences() {
     val prefs = preferenceManager()
+    val prefs2 = preferenceManager2()
     val context = LocalContext.current
     val lensAvailable = remember {
         context.packageManager.getLaunchIntentForPackage("com.google.ar.lens") != null
@@ -77,6 +82,18 @@ fun QuickstepPreferences() {
                     adapter = prefs.windowCornerRadius.getAdapter(),
                     step = 0,
                     valueRange = 70..150
+                )
+            }
+        }
+
+        val idp = LauncherAppState.getIDP(LocalContext.current)
+        if (Utilities.ATLEAST_S_V2 && idp.deviceType == InvariantDeviceProfile.TYPE_PHONE) {
+            PreferenceGroup(
+                heading = stringResource(id = R.string.taskbar_label)
+            ) {
+                SwitchPreference(
+                    adapter = prefs2.enableTaskbarOnPhone.getAdapter(),
+                    label = stringResource(id = R.string.enable_taskbar)
                 )
             }
         }

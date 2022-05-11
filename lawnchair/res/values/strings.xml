@@ -226,4 +226,6 @@
     <string name="icon_picker_load_failed">Failed to load more icons</string>
     <string name="reset_custom_icons">Reset Custom Icons</string>
     <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
+    <string name="taskbar_label">Taskbar</string>
+    <string name="enable_taskbar">Enable Taskbar</string>
 </resources>
