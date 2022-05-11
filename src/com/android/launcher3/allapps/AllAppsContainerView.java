@@ -135,6 +135,7 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
     private ScrimView mScrimView;
     private int mHeaderColor;
     private int mTabsProtectionAlpha;
+    private int mSearchVerticalOffset;
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -156,6 +157,8 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
         mHeaderThreshold = getResources().getDimensionPixelSize(
                 R.dimen.dynamic_grid_cell_border_spacing);
         mHeaderProtectionColor = ColorTokens.AllAppsHeaderProtectionColor.resolveColor(context);
+
+        mSearchVerticalOffset = getResources().getDimensionPixelSize(R.dimen.all_apps_search_vertical_offset);
 
         mLauncher.addOnDeviceProfileChangeListener(this);
 
@@ -796,5 +799,12 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
         if (mScrimView != null && mHeader.isHeaderProtectionSupported()) {
             mScrimView.invalidate();
         }
+    }
+
+    @Override
+    public void clipChild(@NonNull Canvas canvas, @NonNull View child) {
+        canvas.clipRect(
+                child.getLeft(), child.getTop() + mSearchVerticalOffset,
+                child.getRight(), child.getBottom());
     }
 }
