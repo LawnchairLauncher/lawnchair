@@ -92,6 +92,9 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.unfold.UnfoldTransitionFactory;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.config.UnfoldTransitionConfig;
+import com.android.systemui.unfold.system.ActivityManagerActivityTypeProvider;
+import com.android.systemui.unfold.system.DeviceStateManagerFoldProvider;
+import com.android.systemui.unfold.config.ResourceUnfoldTransitionConfig;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -343,15 +346,17 @@ public abstract class BaseQuickstepLauncher extends Launcher {
     }
 
     private void initUnfoldTransitionProgressProvider() {
-        final UnfoldTransitionConfig config = UnfoldTransitionFactory.createConfig(this);
+        final UnfoldTransitionConfig config = new ResourceUnfoldTransitionConfig();
         if (config.isEnabled()) {
             mUnfoldTransitionProgressProvider =
                     UnfoldTransitionFactory.createUnfoldTransitionProgressProvider(
-                            this,
+                            /* context= */ this,
                             config,
                             ProxyScreenStatusProvider.INSTANCE,
-                            getSystemService(DeviceStateManager.class),
-                            getSystemService(ActivityManager.class),
+                            new DeviceStateManagerFoldProvider(
+                                    getSystemService(DeviceStateManager.class), /* context */this),
+                            new ActivityManagerActivityTypeProvider(
+                                    getSystemService(ActivityManager.class)),
                             getSystemService(SensorManager.class),
                             getMainThreadHandler(),
                             getMainExecutor(),
