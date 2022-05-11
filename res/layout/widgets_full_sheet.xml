@@ -34,8 +34,7 @@
             android:layout_width="48dp"
             android:layout_height="2dp"
             android:layout_marginTop="16dp"
-            android:layout_centerHorizontal="true"
-            android:background="?android:attr/textColorSecondary"/>
+            android:layout_centerHorizontal="true"/>
 
         <TextView
             android:id="@+id/no_widgets_text"

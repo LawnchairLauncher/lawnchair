@@ -188,6 +188,9 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mContent = findViewById(R.id.container);
         mContent.setBackground(DrawableTokens.BgWidgetsFullSheet.resolve(getContext()));
 
+        View collapseHandle = findViewById(R.id.collapse_handle);
+        collapseHandle.setBackgroundColor(ColorTokens.TextColorSecondary.resolveColor(getContext()));
+
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         int contentLayoutRes = mHasWorkProfile ? R.layout.widgets_full_sheet_paged_view
                 : R.layout.widgets_full_sheet_recyclerview;
