@@ -161,6 +161,10 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
         recreateTaskbar();
     }
 
+    public void onUserPreferenceChanged() {
+        recreateTaskbar();
+    }
+
     /**
      * Sets a {@link StatefulActivity} to act as taskbar callback
      */

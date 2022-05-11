@@ -246,7 +246,10 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
     val enableTaskbarOnPhone = preference(
         key = booleanPreferencesKey("enable_taskbar_on_phone"),
         defaultValue = false,
-        onSet = { reloadHelper.reloadGrid() }
+        onSet = {
+            reloadHelper.reloadGrid()
+            reloadHelper.reloadTaskbar()
+        }
     )
 
     init {
