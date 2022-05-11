@@ -167,7 +167,7 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"تطبيقات العمل غير مفعّلة، وبالتالي لا يمكنها إرسال إشعارات إليك أو استخدام بطاريتك أو الوصول إلى موقعك الجغرافي."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"تحمل تطبيقات العمل شارة وتكون مرئية لمشرف تكنولوجيا المعلومات."</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"حسنًا"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"إيقاف تطبيقات العمل"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"إيقاف تطبيقات العمل مؤقتًا"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"تفعيل تطبيقات العمل"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"فلتر"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"تعذَّر <xliff:g id="WHAT">%1$s</xliff:g>."</string>

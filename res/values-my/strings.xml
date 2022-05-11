@@ -167,7 +167,7 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"အလုပ်သုံးအက်ပ်များ ပိတ်ထားသည်။ သင်၏ အလုပ်သုံးအက်ပ်များက အကြောင်းကြားချက်များ ပို့ခြင်း၊ သင့်ဘက်ထရီ သုံးခြင်း (သို့) သင့်တည်နေရာ သုံးခြင်းတို့ မပြုလုပ်နိုင်ပါ"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"အလုပ်သုံးအက်ပ်များကို တံဆိပ်တပ်ထားပြီး သင်၏ IT စီမံခန့်ခွဲသူက မြင်နိုင်ပါသည်"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"ရပြီ"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"အလုပ်သုံးအက်ပ်များ ပိတ်ရန်"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"အလုပ်သုံးအက်ပ်များကို ခဏရပ်ရန်"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"အလုပ်သုံးအက်ပ်များ ဖွင့်ရန်"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"စစ်ထုတ်ရန်"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"မအောင်မြင်ပါ− <xliff:g id="WHAT">%1$s</xliff:g>"</string>

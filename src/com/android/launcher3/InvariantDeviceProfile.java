@@ -127,7 +127,6 @@ public class InvariantDeviceProfile {
     public PointF[] borderSpaces;
     public float folderBorderSpace;
     public float[] hotseatBorderSpaces;
-    public int[] hotseatColumnSpan;
 
     public float[] horizontalMargin;
 
@@ -359,7 +358,6 @@ public class InvariantDeviceProfile {
         numDatabaseHotseatIcons = deviceType == TYPE_MULTI_DISPLAY
                 ? closestProfile.numDatabaseHotseatIcons : closestProfile.numHotseatIcons;
         hotseatBorderSpaces = displayOption.hotseatBorderSpaces;
-        hotseatColumnSpan = displayOption.hotseatColumnSpan;
 
         numAllAppsColumns = closestProfile.numAllAppsColumns;
         numDatabaseAllAppsColumns = deviceType == TYPE_MULTI_DISPLAY
@@ -400,8 +398,7 @@ public class InvariantDeviceProfile {
             // We need to ensure that there is enough extra space in the wallpaper
             // for the intended parallax effects
             float parallaxFactor =
-                    dpiFromPx(Math.min(displayWidth, displayHeight), displayInfo.getDensityDpi())
-                            < 720
+                    dpiFromPx(Math.min(displayWidth, displayHeight), displayInfo.densityDpi) < 720
                             ? 2
                             : wallpaperTravelToScreenWidthRatio(displayWidth, displayHeight);
             defaultWallpaperSize.x =
@@ -590,8 +587,8 @@ public class InvariantDeviceProfile {
             }
         }
 
-        float width = dpiFromPx(minWidthPx, displayInfo.getDensityDpi());
-        float height = dpiFromPx(minHeightPx, displayInfo.getDensityDpi());
+        float width = dpiFromPx(minWidthPx, displayInfo.densityDpi);
+        float height = dpiFromPx(minHeightPx, displayInfo.densityDpi);
 
         // Sort the profiles based on the closeness to the device size
         Collections.sort(points, (a, b) ->
@@ -824,9 +821,7 @@ public class InvariantDeviceProfile {
         private float folderBorderSpace;
         private final PointF[] borderSpaces = new PointF[COUNT_SIZES];
         private final float[] horizontalMargin = new float[COUNT_SIZES];
-        //TODO(http://b/228998082) remove this when 3 button spaces are fixed
         private final float[] hotseatBorderSpaces = new float[COUNT_SIZES];
-        private final int[] hotseatColumnSpan = new int[COUNT_SIZES];
 
         private final float[] iconSizes = new float[COUNT_SIZES];
         private final float[] textSizes = new float[COUNT_SIZES];
@@ -1052,17 +1047,6 @@ public class InvariantDeviceProfile {
                     R.styleable.ProfileDisplayOption_hotseatBorderSpaceTwoPanelPortrait,
                     hotseatBorderSpaces[INDEX_DEFAULT]);
 
-            hotseatColumnSpan[INDEX_DEFAULT] = a.getInt(
-                    R.styleable.ProfileDisplayOption_hotseatColumnSpan, grid.numColumns);
-            hotseatColumnSpan[INDEX_LANDSCAPE] = a.getInt(
-                    R.styleable.ProfileDisplayOption_hotseatColumnSpanLandscape, grid.numColumns);
-            hotseatColumnSpan[INDEX_TWO_PANEL_LANDSCAPE] = a.getInt(
-                    R.styleable.ProfileDisplayOption_hotseatColumnSpanTwoPanelLandscape,
-                    grid.numColumns);
-            hotseatColumnSpan[INDEX_TWO_PANEL_PORTRAIT] = a.getInt(
-                    R.styleable.ProfileDisplayOption_hotseatColumnSpanTwoPanelPortrait,
-                    grid.numColumns);
-
             a.recycle();
         }
 
@@ -1121,7 +1105,6 @@ public class InvariantDeviceProfile {
                 minCellSize[i].y += p.minCellSize[i].y;
                 horizontalMargin[i] += p.horizontalMargin[i];
                 hotseatBorderSpaces[i] += p.hotseatBorderSpaces[i];
-                hotseatColumnSpan[i] = p.hotseatColumnSpan[i];
                 allAppsCellSize[i].x += p.allAppsCellSize[i].x;
                 allAppsCellSize[i].y += p.allAppsCellSize[i].y;
                 allAppsIconSizes[i] += p.allAppsIconSizes[i];

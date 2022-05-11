@@ -167,7 +167,7 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Werk-apps staan uit. Je werk-apps kunnen geen meldingen sturen, je batterij niet gebruiken en hebben geen toegang tot je locatie."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Werk-apps hebben badges en zijn zichtbaar voor je IT-beheerder"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Werk-apps uitzetten"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Werk-apps pauzeren"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Werk-apps aanzetten"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filteren"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Mislukt: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
