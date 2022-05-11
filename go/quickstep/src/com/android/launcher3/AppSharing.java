@@ -39,6 +39,7 @@ import com.android.launcher3.model.AppShareabilityManager.ShareabilityStatus;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.popup.SystemShortcut;
+import com.android.launcher3.views.ActivityContext;
 
 import java.io.File;
 
@@ -191,9 +192,14 @@ public final class AppSharing {
         }
 
         private void showCannotShareToast(Context context) {
+            ActivityContext activityContext = ActivityContext.lookupContext(context);
+            String blockedByMessage = activityContext.getStringCache() != null
+                    ? activityContext.getStringCache().disabledByAdminMessage
+                    : context.getString(R.string.blocked_by_policy);
+
             CharSequence text = (mSharingEnabledForUser)
                     ? context.getText(R.string.toast_p2p_app_not_shareable)
-                    : context.getText(R.string.blocked_by_policy);
+                    : blockedByMessage;
             int duration = Toast.LENGTH_SHORT;
             Toast.makeText(context, text, duration).show();
         }
