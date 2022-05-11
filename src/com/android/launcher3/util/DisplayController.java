@@ -290,7 +290,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
 
         // Configuration property
         public final float fontScale;
-        public final int densityDpi;
+        private final int densityDpi;
         public final NavigationMode navigationMode;
 
         private final PortraitSize mScreenSizeDp;
@@ -356,6 +356,10 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
          */
         public float smallestSizeDp(WindowBounds bounds) {
             return dpiFromPx(Math.min(bounds.bounds.width(), bounds.bounds.height()), densityDpi);
+        }
+
+        public int getDensityDpi() {
+            return densityDpi;
         }
     }
 
