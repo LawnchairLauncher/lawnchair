@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.EdgeEffect
 import androidx.recyclerview.widget.RecyclerView
+import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.workprofile.PersonalWorkPagedView
 
@@ -14,6 +15,7 @@ open class StretchRecyclerViewContainer @JvmOverloads constructor(
 ) : StretchRelativeLayout(context, attrs, defStyleAttr) {
 
     private val childEffect = StretchEdgeEffect(context, { invalidate() }, { postInvalidateOnAnimation() })
+    private val verticalOffset = resources.getDimensionPixelSize(R.dimen.all_apps_search_vertical_offset)
 
     override fun drawChild(canvas: Canvas, child: View, drawingTime: Long): Boolean {
         if (Utilities.ATLEAST_S || (child !is RecyclerView && child !is PersonalWorkPagedView)) {
@@ -22,6 +24,7 @@ open class StretchRecyclerViewContainer @JvmOverloads constructor(
 
         if (!childEffect.isFinished) {
             val save = canvas.save()
+            canvas.clipRect(child.left, child.top + verticalOffset, child.right, child.bottom)
             childEffect.setSize(width, height)
             childEffect.applyStretch(canvas, StretchEdgeEffect.POSITION_BOTTOM)
             val result = super.drawChild(canvas, child, drawingTime)
