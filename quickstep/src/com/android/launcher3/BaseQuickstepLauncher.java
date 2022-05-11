@@ -91,6 +91,8 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.stream.Stream;
 
+import app.lawnchair.LawnchairApp;
+
 /**
  * Extension of Launcher activity to provide quickstep specific functionality
  */
@@ -507,7 +509,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
             ActivityOptionsCompat.setLauncherSourceInfo(
                     activityOptions.options, mLastTouchUpTime);
         }
-        if (Utilities.ATLEAST_S) {
+        if (Utilities.ATLEAST_S && LawnchairApp.isRecentsEnabled()) {
             activityOptions.options.setSplashscreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
             addLaunchCookie(item, activityOptions.options);
         }
