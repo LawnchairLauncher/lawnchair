@@ -23,15 +23,13 @@ import com.android.launcher3.InvariantDeviceProfile.TYPE_TABLET
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.`when` as whenever
 
 /**
  * Test for [DeviceProfile]
  */
 @SmallTest
 @RunWith(AndroidJUnit4::class)
-class HotseatSizeTest : DeviceProfileBaseTest() {
+class HotseatShownIconsTest : DeviceProfileBaseTest() {
 
     @Test
     fun hotseat_size_is_normal_for_handhelds() {
