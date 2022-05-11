@@ -24,6 +24,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 
+import androidx.core.content.ContextCompat;
+
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.plugins.Plugin;
@@ -61,7 +63,7 @@ public class PluginManagerWrapper {
                 new PluginInstance.VersionChecker(), privilegedPlugins,
                 Utilities.IS_DEBUG_DEVICE);
         PluginActionManager.Factory instanceManagerFactory = new PluginActionManager.Factory(
-                c, c.getPackageManager(), c.getMainExecutor(), MODEL_EXECUTOR,
+                c, c.getPackageManager(), ContextCompat.getMainExecutor(c), MODEL_EXECUTOR,
                 c.getSystemService(NotificationManager.class), mPluginEnabler,
                 privilegedPlugins, instanceFactory);
 

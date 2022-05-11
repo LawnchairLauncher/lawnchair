@@ -48,7 +48,11 @@ public class ApiWrapper {
      * Returns a unique ID representing the display
      */
     public static String getUniqueId(Display display) {
-        return display.getUniqueId();
+        try {
+            return display.getUniqueId();
+        } catch (Throwable t) {
+            return "" + display.getDisplayId();
+        }
     }
 
     /**
