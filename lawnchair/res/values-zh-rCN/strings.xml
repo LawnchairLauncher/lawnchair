@@ -142,7 +142,7 @@
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_teardrop">泪珠形</string>
     <string name="icon_shape_cylinder">圆柱形</string>
-    <string name="icon_shape_cupertino">Cupertino</string>
+    <string name="icon_shape_cupertino">库比蒂诺</string>
     <string name="customize_button_text">自定义</string>
     <string name="app_title_label">标题</string>
     <string name="hide_from_drawer">从应用抽屉隐藏</string>
@@ -182,11 +182,11 @@
     <string name="dark_status_bar_label">深色状态栏</string>
     <string name="lawnicons_not_installed_description">未安装 Lawnicons 应用</string>
     <string name="icon_picker_default_category">图标</string>
-    <string name="icon_picker_reset_to_default">重置为默认</string>
+    <string name="icon_picker_reset_to_default">恢复默认</string>
     <string name="icon_pack_external_picker">打开外部提取器</string>
     <string name="recents_actions_label">快捷操作</string>
     <string name="recents_clear_all">全部清除</string>
-    <string name="pick_icon_from_label">选择图标包</string>
+    <string name="pick_icon_from_label">选择图标来源</string>
     <string name="experimental_features_label">实验性功能</string>
     <string name="icon_picker_label">单应用图标自定义</string>
     <string name="icon_picker_description">可能会导致Lawnchair冻结。</string>
