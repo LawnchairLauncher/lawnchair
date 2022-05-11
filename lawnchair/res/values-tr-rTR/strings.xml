@@ -183,7 +183,7 @@
     <string name="recents_actions_label">Hızlı Eylemler</string>
     <string name="recents_clear_all">Tümünü Temizle</string>
     <string name="pick_icon_from_label">Simge Seçin</string>
-    <string name="experimental_features_label">Deneysel Özelliklee</string>
+    <string name="experimental_features_label">Deneysel Özellikler</string>
     <string name="icon_picker_label">Her uygulama için farklı ikonlar</string>
     <string name="icon_picker_description">Lawnchair'in donmasına neden olabilir.</string>
     <string name="font_picker_label">Yazı Tipi Özelleştirme</string>
