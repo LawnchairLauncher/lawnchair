@@ -1,5 +1,7 @@
 package app.lawnchair.qsb
 
+import android.app.PendingIntent
+import android.appwidget.AppWidgetHostView
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -11,23 +13,30 @@ import android.widget.ImageView
 import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
+import app.lawnchair.HeadlessWidgetsManager
 import app.lawnchair.launcher
+import app.lawnchair.launcherNullable
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.qsb.providers.AppSearch
 import app.lawnchair.qsb.providers.Google
 import app.lawnchair.qsb.providers.GoogleGo
 import app.lawnchair.qsb.providers.QsbSearchProvider
+import app.lawnchair.util.pendingIntent
+import app.lawnchair.util.recursiveChildren
 import app.lawnchair.util.viewAttachedScope
 import com.android.launcher3.BaseActivity
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.anim.AnimatorListeners.forSuccessCallback
+import com.android.launcher3.qsb.QsbContainerView
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
 import com.patrykmichalik.preferencemanager.firstBlocking
 import com.patrykmichalik.preferencemanager.onEach
+import kotlinx.coroutines.launch
 
 class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
@@ -38,6 +47,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
     private lateinit var inner: FrameLayout
     private lateinit var preferenceManager: PreferenceManager
     private lateinit var preferenceManager2: PreferenceManager2
+    private var searchPendingIntent: PendingIntent? = null
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -109,7 +119,23 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
     private fun setUpMainSearch(searchProvider: QsbSearchProvider, forceWebsite: Boolean) {
         val isAppSearch = searchProvider == AppSearch
 
+        if (!forceWebsite && searchProvider == Google) {
+            subscribeGoogleSearchWidget()
+        }
+
         setOnClickListener {
+            val pendingIntent = searchPendingIntent
+            if (pendingIntent != null) {
+                val launcher = context.launcher
+                launcher.startIntentSender(
+                    pendingIntent.intentSender, null,
+                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK,
+                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK,
+                    0
+                )
+                return@setOnClickListener
+            }
+
             if (!forceWebsite && !isAppSearch) {
                 val intent = searchProvider.createSearchIntent()
                 if (resolveIntent(context, intent)) {
@@ -133,6 +159,27 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
             }
         }
         return
+    }
+
+    private fun subscribeGoogleSearchWidget() {
+        val info = QsbContainerView.getSearchWidgetProviderInfo(context, Google.packageName) ?: return
+        context.launcherNullable?.lifecycleScope?.launch {
+            val headlessWidgetsManager = HeadlessWidgetsManager.INSTANCE.get(context)
+            headlessWidgetsManager.subscribeUpdates(info, "hotseatWidgetId")
+                .collect { findSearchIntent(it) }
+        }
+    }
+
+    private fun findSearchIntent(view: AppWidgetHostView) {
+        view.measure(
+            MeasureSpec.makeMeasureSpec(1000, MeasureSpec.EXACTLY),
+            MeasureSpec.makeMeasureSpec(100, MeasureSpec.EXACTLY)
+        )
+        searchPendingIntent = view.recursiveChildren
+            .filter { it.pendingIntent != null }
+            .sortedByDescending { it.measuredWidth * it.measuredHeight }
+            .firstOrNull()
+            ?.pendingIntent
     }
 
     private fun setUpLensIcon() {
