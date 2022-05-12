@@ -51,7 +51,7 @@ class LauncherPreviewView(
     private fun loadModelData() {
         val migrated = doGridMigrationIfNecessary()
 
-        val inflationContext = ContextThemeWrapper(context, Themes.getActivityThemeRes(context))
+        val inflationContext = ContextThemeWrapper(context.applicationContext, Themes.getActivityThemeRes(context))
         if (migrated) {
             val previewContext = LauncherPreviewRenderer.PreviewContext(inflationContext, idp)
             object : LoaderTask(
