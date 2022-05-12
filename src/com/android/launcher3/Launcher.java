@@ -1169,6 +1169,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
 
         AbstractFloatingView.closeAllOpenViewsExcept(this, false, TYPE_REBIND_SAFE);
+        DragView.removeAllViews(this);
         TraceHelper.INSTANCE.endSection(traceToken);
     }
 
