@@ -1160,7 +1160,7 @@ public class DeviceProfile {
             return  ((taskbarSize - overviewActionsHeight) / 2) + getTaskbarOffsetY();
         }
 
-        return 0;
+        return isTaskbarPresent ? stashedTaskbarSize : mInsets.bottom;
     }
 
     /** Gets the space that the overview actions will take, including bottom margin. */
