@@ -24,13 +24,14 @@ import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.dragndrop.DragOptions.PreDragCondition;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.keyboard.KeyboardDragAndDropView;
-import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.model.data.WorkspaceItemFactory;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.popup.ArrowPopup;
@@ -40,6 +41,7 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.views.BubbleTextHolder;
 import com.android.launcher3.views.OptionsPopupView;
 import com.android.launcher3.views.OptionsPopupView.OptionItem;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
@@ -118,7 +120,7 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
             }
         }
 
-        if ((item instanceof AppInfo) || (item instanceof WorkspaceItemInfo)
+        if ((item instanceof WorkspaceItemFactory) || (item instanceof WorkspaceItemInfo)
                 || (item instanceof PendingAddItemInfo)) {
             out.add(mActions.get(ADD_TO_WORKSPACE));
         }
@@ -143,13 +145,18 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
     protected boolean performAction(final View host, final ItemInfo item, int action,
             boolean fromKeyboard) {
         if (action == ACTION_LONG_CLICK) {
-            if (PopupContainerWithArrow.canShow(host, item)) {
-                // Long press should be consumed for workspace items, and it should invoke the
-                // Shortcuts / Notifications / Actions pop-up menu, and not start a drag as the
-                // standard long press path does.
-                PopupContainerWithArrow.showForIcon((BubbleTextView) host);
-                return true;
+            PreDragCondition dragCondition = null;
+            // Long press should be consumed for workspace items, and it should invoke the
+            // Shortcuts / Notifications / Actions pop-up menu, and not start a drag as the
+            // standard long press path does.
+            if (host instanceof BubbleTextView) {
+                dragCondition = ((BubbleTextView) host).startLongPressAction();
+            } else if (host instanceof BubbleTextHolder) {
+                BubbleTextHolder holder = (BubbleTextHolder) host;
+                dragCondition = holder.getBubbleText() == null ? null
+                        : holder.getBubbleText().startLongPressAction();
             }
+            return dragCondition != null;
         } else if (action == MOVE) {
             return beginAccessibleDrag(host, item, fromKeyboard);
         } else if (action == ADD_TO_WORKSPACE) {
@@ -166,7 +173,10 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
             popup.setOnCloseCallback(host::requestFocus);
             return true;
         } else if (action == DEEP_SHORTCUTS || action == SHORTCUTS_AND_NOTIFICATIONS) {
-            return PopupContainerWithArrow.showForIcon((BubbleTextView) host) != null;
+            BubbleTextView btv = host instanceof BubbleTextView ? (BubbleTextView) host
+                    : (host instanceof BubbleTextHolder
+                            ? ((BubbleTextHolder) host).getBubbleText() : null);
+            return btv != null && PopupContainerWithArrow.showForIcon(btv) != null;
         } else {
             for (ButtonDropTarget dropTarget : mContext.getDropTargetBar().getDropTargets()) {
                 if (dropTarget.supportsAccessibilityDrop(item, host)
@@ -367,8 +377,8 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
             return false;
         }
         mContext.getStateManager().goToState(NORMAL, true, forSuccessCallback(() -> {
-            if (item instanceof AppInfo) {
-                WorkspaceItemInfo info = ((AppInfo) item).makeWorkspaceItem();
+            if (item instanceof WorkspaceItemFactory) {
+                WorkspaceItemInfo info = ((WorkspaceItemFactory) item).makeWorkspaceItem(mContext);
                 mContext.getModelWriter().addItemToDatabase(info,
                         LauncherSettings.Favorites.CONTAINER_DESKTOP,
                         screenId, coordinates[0], coordinates[1]);
