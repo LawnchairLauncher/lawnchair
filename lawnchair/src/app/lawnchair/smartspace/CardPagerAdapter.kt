@@ -41,6 +41,8 @@ class CardPagerAdapter(context: Context) : PagerAdapter() {
         }
     }
 
+    fun getCardAtPosition(position: Int) = holders[position]?.card
+
     override fun getItemPosition(obj: Any): Int {
         val viewHolder = obj as ViewHolder
         val target = getTargetAtPosition(viewHolder.position)
