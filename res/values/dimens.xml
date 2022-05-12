@@ -24,6 +24,8 @@
     <dimen name="dynamic_grid_icon_drawable_padding">7dp</dimen>
     <!-- Minimum space between workspace and hotseat in spring loaded mode -->
     <dimen name="dynamic_grid_min_spring_loaded_space">8dp</dimen>
+    <!-- Minimum amount of next page visible in spring loaded mode -->
+    <dimen name="dynamic_grid_spring_loaded_min_next_space_visible">24dp</dimen>
 
     <dimen name="dynamic_grid_cell_border_spacing">16dp</dimen>
     <dimen name="cell_layout_padding">10.77dp</dimen>
@@ -58,12 +60,8 @@
 <!-- Drop target bar -->
     <dimen name="dynamic_grid_drop_target_size">56dp</dimen>
     <dimen name="drop_target_vertical_gap">20dp</dimen>
-    <dimen name="drop_target_top_margin">36dp</dimen>
+    <dimen name="drop_target_top_margin">32dp</dimen>
     <dimen name="drop_target_bottom_margin">16dp</dimen>
-
-    <!-- Button drop target bar -->
-    <dimen name="button_drop_target_min_text_size">10sp</dimen>
-    <dimen name="button_drop_target_resize_text_increment">1sp</dimen>
 
 <!-- App Widget resize frame -->
     <dimen name="widget_handle_margin">13dp</dimen>
@@ -229,7 +227,9 @@
     <dimen name="drop_target_button_drawable_padding">8dp</dimen>
     <dimen name="drop_target_button_drawable_horizontal_padding">16dp</dimen>
     <dimen name="drop_target_button_drawable_vertical_padding">8dp</dimen>
-    <dimen name="drop_target_button_gap">22dp</dimen>
+    <dimen name="drop_target_button_gap">28dp</dimen>
+    <dimen name="drop_target_button_workspace_edge_gap">0dp</dimen>
+    <dimen name="drop_target_button_screen_edge_gap">28dp</dimen>
 
     <!-- the distance an icon must be dragged before button drop targets accept it -->
     <dimen name="drag_distanceThreshold">30dp</dimen>
