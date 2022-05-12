@@ -113,6 +113,7 @@ import app.lawnchair.icons.CustomAdaptiveIconDrawable;
 import app.lawnchair.icons.IconPackProvider;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
+import app.lawnchair.smartspace.provider.SmartspaceProvider;
 import app.lawnchair.theme.ThemeProvider;
 
 /**
@@ -149,6 +150,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
             putBaseInstance(ThemeProvider.INSTANCE);
             putBaseInstance(IconPackProvider.INSTANCE);
             putBaseInstance(IconOverrideRepository.INSTANCE);
+            putBaseInstance(SmartspaceProvider.INSTANCE);
             mObjectMap.put(InvariantDeviceProfile.INSTANCE, idp);
             mObjectMap.put(LauncherAppState.INSTANCE,
                     new LauncherAppState(this, null /* iconCacheFileName */));

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<app.lawnchair.smartspace.BcSmartspaceView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bc_smartspace_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/enhanced_smartspace_margin_start_launcher"
+    android:layout_gravity="center_vertical">
+
+    <app.lawnchair.smartspace.InterceptingViewPager
+        android:id="@+id/smartspace_card_pager"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/enhanced_smartspace_height"
+        android:layout_gravity="center" />
+</app.lawnchair.smartspace.BcSmartspaceView>

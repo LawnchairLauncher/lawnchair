@@ -64,5 +64,31 @@
     <dimen name="smartspaceKeyShadowOffset">0.5dp</dimen>
     <dimen name="smartspaceLetterSpacing">0.02</dimen>
 
+    <dimen name="ambient_text_shadow_radius">1.5dp</dimen>
+    <dimen name="enhanced_smartspace_combination_card_padding">8dp</dimen>
+    <dimen name="enhanced_smartspace_combination_sub_card_corner_radius">20dp</dimen>
+    <dimen name="enhanced_smartspace_dismiss_margin">16dp</dimen>
+    <dimen name="enhanced_smartspace_height">104dp</dimen>
+    <dimen name="enhanced_smartspace_icon_margin">6dp</dimen>
+    <dimen name="enhanced_smartspace_icon_size">20dp</dimen>
+    <dimen name="enhanced_smartspace_margin_start_launcher">16dp</dimen>
+    <dimen name="enhanced_smartspace_padding_top">16dp</dimen>
+    <dimen name="enhanced_smartspace_secondary_card_corner_radius">28dp</dimen>
+    <dimen name="enhanced_smartspace_secondary_card_end_margin">1dp</dimen>
+    <dimen name="enhanced_smartspace_secondary_card_start_margin">8dp</dimen>
+    <dimen name="enhanced_smartspace_subtitle_margin_top">9dp</dimen>
+    <dimen name="enhanced_smartspace_subtitle_size">16sp</dimen>
+    <dimen name="enhanced_smartspace_title_size">20sp</dimen>
+    <dimen name="key_text_shadow_dx">0.5dp</dimen>
+    <dimen name="key_text_shadow_dy">0.5dp</dimen>
+    <dimen name="key_text_shadow_radius">0.5dp</dimen>
+    <dimen name="page_indicator_dot_margin">3dp</dimen>
+    <dimen name="page_indicator_dot_size">6dp</dimen>
+    <dimen name="page_indicator_padding_start">2dp</dimen>
+    <dimen name="page_indicator_padding_top_bottom">8dp</dimen>
+    <dimen name="page_indicator_width">16dp</dimen>
+    <dimen name="smartspace_icon_shadow">1dp</dimen>
+    <dimen name="status_bar_header_height_keyguard">40dp</dimen>
+
     <dimen name="theme_icon_size">24dp</dimen>
 </resources>
