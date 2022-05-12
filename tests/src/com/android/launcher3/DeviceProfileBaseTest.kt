@@ -64,6 +64,7 @@ abstract class DeviceProfileBaseTest {
         windowBounds = WindowBounds(x, y, x, y - 100, 0)
 
         whenever(info.isTablet(any())).thenReturn(false)
+        whenever(info.getDensityDpi()).thenReturn(560)
 
         inv = newScalableInvariantDeviceProfile()
     }
@@ -77,6 +78,7 @@ abstract class DeviceProfileBaseTest {
         windowBounds = WindowBounds(x, y, x, y - 100, 0)
 
         whenever(info.isTablet(any())).thenReturn(true)
+        whenever(info.getDensityDpi()).thenReturn(320)
 
         inv = newScalableInvariantDeviceProfile()
     }
@@ -107,6 +109,7 @@ abstract class DeviceProfileBaseTest {
                 PointF(16f, 16f)
             ).toTypedArray()
             hotseatBorderSpaces = FloatArray(4) { 16f }
+            hotseatColumnSpan = IntArray(4) { 4 }
             iconSize = FloatArray(4) { 56f }
             allAppsIconSize = FloatArray(4) { 56f }
             iconTextSize = FloatArray(4) { 14f }
