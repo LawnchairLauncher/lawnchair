@@ -18,6 +18,7 @@ package com.android.launcher3.model.data;
 import static com.android.launcher3.LauncherSettings.Favorites.EXTENDED_CONTAINERS;
 
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Icon;
 import android.os.Process;
@@ -26,18 +27,14 @@ import android.os.UserHandle;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.logger.LauncherAtom.ItemInfo;
 import com.android.launcher3.logger.LauncherAtom.SearchActionItem;
-import com.android.launcher3.model.AllAppsList;
-import com.android.launcher3.model.BaseModelUpdateTask;
-import com.android.launcher3.model.BgDataModel;
 
 /**
  * Represents a SearchAction with in launcher
  */
-public class SearchActionItemInfo extends ItemInfoWithIcon {
+public class SearchActionItemInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
 
     public static final int FLAG_SHOULD_START = 1 << 1;
     public static final int FLAG_SHOULD_START_FOR_RESULT = FLAG_SHOULD_START | 1 << 2;
@@ -158,7 +155,8 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
     /**
      * Creates a {@link WorkspaceItemInfo} coorsponding to search action to be stored in launcher db
      */
-    public WorkspaceItemInfo createWorkspaceItem(LauncherModel model) {
+    @Override
+    public WorkspaceItemInfo makeWorkspaceItem(Context context) {
         WorkspaceItemInfo info = new WorkspaceItemInfo();
         info.title = title;
         info.bitmap = bitmap;
@@ -167,18 +165,12 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
         if (hasFlags(FLAG_SHOULD_START_FOR_RESULT)) {
             info.options |= WorkspaceItemInfo.FLAG_START_FOR_RESULT;
         }
-
-        model.enqueueModelUpdateTask(new BaseModelUpdateTask() {
-            @Override
-            public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
-
-                model.updateAndBindWorkspaceItem(() -> {
-                    PackageItemInfo pkgInfo = new PackageItemInfo(getIntentPackageName(), user);
-                    app.getIconCache().getTitleAndIconForApp(pkgInfo, false);
-                    info.bitmap = info.bitmap.withBadgeInfo(pkgInfo.bitmap);
-                    return info;
-                });
-            }
+        LauncherAppState app = LauncherAppState.getInstance(context);
+        app.getModel().updateAndBindWorkspaceItem(() -> {
+            PackageItemInfo pkgInfo = new PackageItemInfo(getIntentPackageName(), user);
+            app.getIconCache().getTitleAndIconForApp(pkgInfo, false);
+            info.bitmap = info.bitmap.withBadgeInfo(pkgInfo.bitmap);
+            return info;
         });
         return info;
     }

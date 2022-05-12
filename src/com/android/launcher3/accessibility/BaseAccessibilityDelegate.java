@@ -23,6 +23,7 @@ import android.util.SparseArray;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.dragndrop.DragController;
@@ -31,9 +32,9 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.views.BubbleTextHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,7 @@ public abstract class BaseAccessibilityDelegate<T extends Context & ActivityCont
             getSupportedActions(host, item, actions);
             actions.forEach(la -> info.addAction(la.accessibilityAction));
 
-            if (!itemSupportsLongClick(host, item)) {
+            if (!itemSupportsLongClick(host)) {
                 info.setLongClickable(false);
                 info.removeAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_LONG_CLICK);
             }
@@ -84,8 +85,15 @@ public abstract class BaseAccessibilityDelegate<T extends Context & ActivityCont
      */
     protected abstract void getSupportedActions(View host, ItemInfo item, List<LauncherAction> out);
 
-    private boolean itemSupportsLongClick(View host, ItemInfo info) {
-        return PopupContainerWithArrow.canShow(host, info);
+    private boolean itemSupportsLongClick(View host) {
+        if (host instanceof BubbleTextView) {
+            return ((BubbleTextView) host).canShowLongPressPopup();
+        } else if (host instanceof BubbleTextHolder) {
+            BubbleTextHolder holder = (BubbleTextHolder) host;
+            return holder.getBubbleText() != null && holder.getBubbleText().canShowLongPressPopup();
+        } else {
+            return false;
+        }
     }
 
     protected boolean itemSupportsAccessibleDrag(ItemInfo item) {
@@ -113,7 +121,6 @@ public abstract class BaseAccessibilityDelegate<T extends Context & ActivityCont
     @Thunk
     protected void announceConfirmation(String confirmation) {
         mContext.getDragLayer().announceForAccessibility(confirmation);
-
     }
 
     public boolean isInAccessibleDrag() {

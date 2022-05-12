@@ -85,7 +85,7 @@ public class PredictionUpdateTask extends BaseModelUpdateTask {
                         .filter(info -> user.equals(info.user) && cn.equals(info.componentName))
                         .map(ai -> {
                             app.getIconCache().getTitleAndIcon(ai, false);
-                            return ai.makeWorkspaceItem();
+                            return ai.makeWorkspaceItem(context);
                         })
                         .findAny()
                         .orElseGet(() -> {
@@ -96,7 +96,7 @@ public class PredictionUpdateTask extends BaseModelUpdateTask {
                             }
                             AppInfo ai = new AppInfo(context, lai, user);
                             app.getIconCache().getTitleAndIcon(ai, lai, false);
-                            return ai.makeWorkspaceItem();
+                            return ai.makeWorkspaceItem(context);
                         });
 
                 if (itemInfo == null) {
