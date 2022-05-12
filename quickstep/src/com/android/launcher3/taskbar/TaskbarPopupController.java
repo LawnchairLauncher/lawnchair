@@ -43,6 +43,7 @@ import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.views.ActivityContext;
 import com.android.quickstep.SystemUiProxy;
@@ -136,7 +137,7 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
             return null;
         }
         ItemInfo item = (ItemInfo) icon.getTag();
-        if (!PopupContainerWithArrow.canShow(icon, item)) {
+        if (!ShortcutUtil.supportsShortcuts(item)) {
             return null;
         }
 
