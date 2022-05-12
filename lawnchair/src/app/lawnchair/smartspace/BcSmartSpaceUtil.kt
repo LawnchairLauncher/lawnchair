@@ -37,6 +37,8 @@ object BcSmartSpaceUtil {
                 view.context.startActivity(action.intent)
             } else if (action.pendingIntent != null) {
                 action.pendingIntent.send()
+            } else if (action.onClick != null) {
+                action.onClick.run()
             }
             onClickListener?.onClick(view)
         }

@@ -16,6 +16,7 @@ class SmartspaceProvider private constructor(context: Context) {
     init {
         flows.add(SmartspaceWidgetReader(context).targets)
         flows.add(BatteryStatusProvider(context).targets)
+        flows.add(NowPlayingProvider(context).targets)
         targets = flows.reduce { acc, flow -> flow.combine(acc) { a, b -> a + b } }
     }
 

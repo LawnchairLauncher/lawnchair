@@ -13,7 +13,8 @@ data class SmartspaceAction(
     val contentDescription: CharSequence? = null,
     val pendingIntent: PendingIntent? = null,
     val intent: Intent? = null,
+    val onClick: Runnable? = null,
     val extras: Bundle? = null
 )
 
-val SmartspaceAction?.hasIntent get() = this != null && (intent != null || pendingIntent != null)
+val SmartspaceAction?.hasIntent get() = this != null && (intent != null || pendingIntent != null || onClick != null)

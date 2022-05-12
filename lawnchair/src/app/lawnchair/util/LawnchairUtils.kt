@@ -22,6 +22,8 @@ import android.app.PendingIntent.FLAG_CANCEL_CURRENT
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageInfo.REQUESTED_PERMISSION_GRANTED
+import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Looper
 import android.view.View
@@ -152,4 +154,21 @@ fun getAllAppsScrimColor(context: Context): Int {
     val scrimColor = ColorTokens.AllAppsScrimColor.resolveColor(context)
     val alpha = (opacity * 255).roundToInt()
     return ColorUtils.setAlphaComponent(scrimColor, alpha)
+}
+
+fun Int.hasFlag(flag: Int): Boolean {
+    return (this and flag) != 0
+}
+
+fun Context.checkPackagePermission(packageName: String, permissionName: String): Boolean {
+    try {
+        val info = packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
+        info.requestedPermissions.forEachIndexed { index, s ->
+            if (s == permissionName) {
+                return info.requestedPermissionsFlags[index].hasFlag(REQUESTED_PERMISSION_GRANTED)
+            }
+        }
+    } catch (e: PackageManager.NameNotFoundException) {
+    }
+    return false
 }

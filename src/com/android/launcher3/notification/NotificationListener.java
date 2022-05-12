@@ -48,6 +48,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import app.lawnchair.NotificationManager;
+
 /**
  * A {@link NotificationListenerService} that sends updates to its
  * {@link NotificationsChangedListener} when notifications are posted or canceled,
@@ -84,6 +86,8 @@ public class NotificationListener extends NotificationListenerService {
     private SettingsCache mSettingsCache;
     private SettingsCache.OnChangeListener mNotificationSettingsChangedListener;
 
+    private NotificationManager mNotificationManager;
+
     public NotificationListener() {
         mWorkerHandler = new Handler(MODEL_EXECUTOR.getLooper(), this::handleWorkerMessage);
         mUiHandler = new Handler(Looper.getMainLooper(), this::handleUiMessage);
@@ -110,6 +114,12 @@ public class NotificationListener extends NotificationListenerService {
 
     public static void removeNotificationsChangedListener() {
         sNotificationsChangedListener = null;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mNotificationManager = NotificationManager.INSTANCE.get(this);
     }
 
     private boolean handleWorkerMessage(Message message) {
@@ -226,6 +236,7 @@ public class NotificationListener extends NotificationListenerService {
 
     private void onNotificationFullRefresh() {
         mWorkerHandler.obtainMessage(MSG_NOTIFICATION_FULL_REFRESH).sendToTarget();
+        mNotificationManager.onNotificationFullRefresh();
     }
 
     @Override
@@ -240,6 +251,7 @@ public class NotificationListener extends NotificationListenerService {
     public void onNotificationPosted(final StatusBarNotification sbn) {
         if (sbn != null) {
             mWorkerHandler.obtainMessage(MSG_NOTIFICATION_POSTED, sbn).sendToTarget();
+            mNotificationManager.onNotificationPosted(sbn);
         }
     }
 
@@ -247,6 +259,7 @@ public class NotificationListener extends NotificationListenerService {
     public void onNotificationRemoved(final StatusBarNotification sbn) {
         if (sbn != null) {
             mWorkerHandler.obtainMessage(MSG_NOTIFICATION_REMOVED, sbn).sendToTarget();
+            mNotificationManager.onNotificationRemoved(sbn);
         }
     }
 
