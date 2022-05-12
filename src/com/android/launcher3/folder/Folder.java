@@ -88,10 +88,10 @@ import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
-import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.FolderInfo.FolderListener;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemFactory;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.util.Executors;
@@ -1283,9 +1283,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             final WorkspaceItemInfo si;
             if (pasiSi != null) {
                 si = pasiSi;
-            } else if (d.dragInfo instanceof AppInfo) {
+            } else if (d.dragInfo instanceof WorkspaceItemFactory) {
                 // Came from all apps -- make a copy.
-                si = ((AppInfo) d.dragInfo).makeWorkspaceItem();
+                si = ((WorkspaceItemFactory) d.dragInfo).makeWorkspaceItem(launcher);
             } else {
                 // WorkspaceItemInfo
                 si = (WorkspaceItemInfo) d.dragInfo;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 The Android Open Source Project
+ * Copyright (C) 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.views;
+package com.android.launcher3.model.data;
 
-import com.android.launcher3.BubbleTextView;
+import android.content.Context;
 
 /**
- * Views that contain {@link BubbleTextView} should implement this interface.
+ * Interface to objects capable of generating workspace item
  */
-public interface BubbleTextHolder extends IconLabelDotView {
-    BubbleTextView getBubbleText();
+public interface WorkspaceItemFactory {
 
-    @Override
-    default void setIconVisible(boolean visible) {
-        getBubbleText().setIconVisible(visible);
-    }
-
-    @Override
-    default void setForceHideDot(boolean hide) {
-        getBubbleText().setForceHideDot(hide);
-    }
+    /**
+     * Called to create a pinnable item info
+     */
+    WorkspaceItemInfo makeWorkspaceItem(Context context);
 }
