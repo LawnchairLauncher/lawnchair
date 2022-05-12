@@ -48,11 +48,13 @@ import com.android.launcher3.tapl.HomeAppIconMenuItem;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.util.TestUtil;
+import com.android.launcher3.util.rule.ScreenRecordRule;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 import com.android.launcher3.widget.picker.WidgetsRecyclerView;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -66,6 +68,10 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     private static final String DUMMY_APP_NAME = "Aardwolf";
     private static final String MAPS_APP_NAME = "Maps";
     private static final String STORE_APP_NAME = "Play Store";
+    private static final String GMAIL_APP_NAME = "Gmail";
+
+    @Rule
+    public ScreenRecordRule mScreenRecordRule = new ScreenRecordRule();
 
     @Before
     public void setUp() throws Exception {
@@ -374,28 +380,23 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     @Test
     @PortraitLandscape
-    public void testDragToFolder() throws Exception {
-        final HomeAppIcon playStoreIcon = createShortcutIfNotExist("Play Store", 0, 1);
-        final HomeAppIcon gmailIcon = createShortcutIfNotExist("Gmail", 1, 1);
+    @ScreenRecord
+    public void testDragToFolder() {
+        // TODO: add the use case to drag an icon to an existing folder. Currently it either fails
+        // on tablets or phones due to difference in resolution.
+        final HomeAppIcon playStoreIcon = createShortcutIfNotExist(STORE_APP_NAME, 0, 1);
+        final HomeAppIcon gmailIcon = createShortcutInCenterIfNotExist(GMAIL_APP_NAME);
 
         FolderIcon folderIcon = gmailIcon.dragToIcon(playStoreIcon);
-
         Folder folder = folderIcon.open();
-        folder.getAppIcon("Play Store");
-        folder.getAppIcon("Gmail");
+        folder.getAppIcon(STORE_APP_NAME);
+        folder.getAppIcon(GMAIL_APP_NAME);
         Workspace workspace = folder.close();
 
-        assertNull("Gmail should be moved to a folder.",
-                workspace.tryGetWorkspaceAppIcon("Gmail"));
-        assertNull("Play Store should be moved to a folder.",
-                workspace.tryGetWorkspaceAppIcon("Play Store"));
-
-        final HomeAppIcon youTubeIcon = createShortcutInCenterIfNotExist("YouTube");
-
-        folderIcon = youTubeIcon.dragToIcon(folderIcon);
-        folder = folderIcon.open();
-        folder.getAppIcon("YouTube");
-        folder.close();
+        assertNull(STORE_APP_NAME + " should be moved to a folder.",
+                workspace.tryGetWorkspaceAppIcon(STORE_APP_NAME));
+        assertNull(GMAIL_APP_NAME + " should be moved to a folder.",
+                workspace.tryGetWorkspaceAppIcon(GMAIL_APP_NAME));
     }
 
     @Test

@@ -1552,11 +1552,11 @@ public final class LauncherInstrumentation {
 
             // vx0: initial speed at the x-dimension, set as twice the avg speed
             // dx: the constant deceleration at the x-dimension
-            double vx0 = 2 * (to.x - from.x) / duration;
+            double vx0 = 2.0 * (to.x - from.x) / duration;
             double dx = vx0 / duration;
             // vy0: initial speed at the y-dimension, set as twice the avg speed
             // dy: the constant deceleration at the y-dimension
-            double vy0 = 2 * (to.y - from.y) / duration;
+            double vy0 = 2.0 * (to.y - from.y) / duration;
             double dy = vy0 / duration;
 
             for (long i = 0; i < steps; ++i) {
