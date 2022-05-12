@@ -388,8 +388,6 @@ public class LauncherSettings {
 
         public static final String METHOD_UPDATE_CURRENT_OPEN_HELPER = "update_current_open_helper";
 
-        public static final String METHOD_RE_INITIALIZE_IDS = "re_initialize_ids";
-
         public static final String METHOD_PREP_FOR_PREVIEW = "prep_for_preview";
 
         public static final String METHOD_SWITCH_DATABASE = "switch_database";

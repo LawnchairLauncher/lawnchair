@@ -61,6 +61,7 @@ class IconOverrideRepository(private val context: Context) {
     }
 
     companion object {
+        @JvmField
         val INSTANCE = MainThreadInitializedObject(::IconOverrideRepository)
     }
 }

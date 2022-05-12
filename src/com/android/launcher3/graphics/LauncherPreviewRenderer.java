@@ -106,11 +106,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import app.lawnchair.data.iconoverride.IconOverrideRepository;
 import app.lawnchair.font.FontCache;
 import app.lawnchair.font.FontManager;
 import app.lawnchair.icons.CustomAdaptiveIconDrawable;
 import app.lawnchair.icons.IconPackProvider;
 import app.lawnchair.preferences.PreferenceManager;
+import app.lawnchair.preferences2.PreferenceManager2;
+import app.lawnchair.theme.ThemeProvider;
 
 /**
  * Utility class for generating the preview of Launcher for a given InvariantDeviceProfile.
@@ -140,9 +143,12 @@ public class LauncherPreviewRenderer extends ContextWrapper
                     CustomWidgetManager.INSTANCE, PluginManagerWrapper.INSTANCE);
             mIdp = idp;
             putBaseInstance(PreferenceManager.INSTANCE);
+            putBaseInstance(PreferenceManager2.INSTANCE);
             putBaseInstance(FontCache.INSTANCE);
             putBaseInstance(FontManager.INSTANCE);
+            putBaseInstance(ThemeProvider.INSTANCE);
             putBaseInstance(IconPackProvider.INSTANCE);
+            putBaseInstance(IconOverrideRepository.INSTANCE);
             mObjectMap.put(InvariantDeviceProfile.INSTANCE, idp);
             mObjectMap.put(LauncherAppState.INSTANCE,
                     new LauncherAppState(this, null /* iconCacheFileName */));

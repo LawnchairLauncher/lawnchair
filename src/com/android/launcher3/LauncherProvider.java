@@ -158,25 +158,22 @@ public class LauncherProvider extends ContentProvider {
     }
 
     private synchronized boolean prepForMigration(String dbFile, String targetTableName,
-            Supplier<DatabaseHelper> src, Supplier<DatabaseHelper> dst) {
+                                                  Supplier<DatabaseHelper> src, Supplier<DatabaseHelper> dst) {
         if (TextUtils.equals(dbFile, mOpenHelper.getDatabaseName())) {
             return false;
         }
 
         final DatabaseHelper helper = src.get();
         mOpenHelper = dst.get();
-        SQLiteDatabase toDb = mOpenHelper.getWritableDatabase();
         copyTable(helper.getReadableDatabase(), Favorites.TABLE_NAME,
-                toDb, targetTableName, getContext());
-        // remove old items in the db
-        copyTable(toDb, targetTableName, toDb, Favorites.TABLE_NAME, getContext());
+                mOpenHelper.getWritableDatabase(), targetTableName, getContext());
         helper.close();
         return true;
     }
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
-            String[] selectionArgs, String sortOrder) {
+                        String[] selectionArgs, String sortOrder) {
         createDbIfNotExists();
 
         SqlArguments args = new SqlArguments(uri, selection, selectionArgs);
@@ -194,7 +191,7 @@ public class LauncherProvider extends ContentProvider {
     }
 
     @Thunk static int dbInsertAndCheck(DatabaseHelper helper,
-            SQLiteDatabase db, String table, String nullColumnHack, ContentValues values) {
+                                       SQLiteDatabase db, String table, String nullColumnHack, ContentValues values) {
         if (values == null) {
             throw new RuntimeException("Error: attempting to insert null values");
         }
@@ -439,10 +436,6 @@ public class LauncherProvider extends ContentProvider {
                                         getContext(), true /* forMigration */)));
                 return result;
             }
-            case LauncherSettings.Settings.METHOD_RE_INITIALIZE_IDS: {
-                mOpenHelper.reInitIds();
-                return null;
-            }
             case LauncherSettings.Settings.METHOD_PREP_FOR_PREVIEW: {
                 Bundle result = new Bundle();
                 result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
@@ -489,8 +482,8 @@ public class LauncherProvider extends ContentProvider {
             String selection = LauncherSettings.Favorites.ITEM_TYPE + " = "
                     + LauncherSettings.Favorites.ITEM_TYPE_FOLDER + " AND "
                     + LauncherSettings.Favorites._ID +  " NOT IN (SELECT " +
-                            LauncherSettings.Favorites.CONTAINER + " FROM "
-                                + Favorites.TABLE_NAME + ")";
+                    LauncherSettings.Favorites.CONTAINER + " FROM "
+                    + Favorites.TABLE_NAME + ")";
 
             IntArray folderIds = LauncherDbUtils.queryIntArray(false, db, Favorites.TABLE_NAME,
                     Favorites._ID, selection, null, null);
@@ -645,10 +638,12 @@ public class LauncherProvider extends ContentProvider {
         }
 
         static DatabaseHelper createDatabaseHelper(Context context, String dbName,
-                boolean forMigration) {
+                                                   boolean forMigration) {
             if (dbName == null) {
                 dbName = InvariantDeviceProfile.INSTANCE.get(context).dbFile;
-                LawnchairAppKt.getLawnchairApp(context).migrateDbName(dbName);
+                if (!forMigration) {
+                    LawnchairAppKt.getLawnchairApp(context).migrateDbName(dbName);
+                }
             }
             DatabaseHelper databaseHelper = new DatabaseHelper(context, dbName, forMigration);
             // Table creation sometimes fails silently, which leads to a crash loop.
@@ -681,11 +676,6 @@ public class LauncherProvider extends ContentProvider {
             if (mMaxItemId == -1) {
                 mMaxItemId = initializeMaxItemId(getWritableDatabase());
             }
-        }
-
-        protected void reInitIds() {
-            // mMaxItemId = initializeMaxItemId(getWritableDatabase());
-            // mMaxScreenId = initializeMaxScreenId(getWritableDatabase());
         }
 
         @Override
@@ -995,13 +985,13 @@ public class LauncherProvider extends ContentProvider {
 
                 // Get a map for folder ID to folder width
                 Cursor c = db.rawQuery("SELECT container, MAX(cellX) FROM favorites"
-                        + " WHERE container IN (SELECT _id FROM favorites WHERE itemType = ?)"
-                        + " GROUP BY container;",
+                                + " WHERE container IN (SELECT _id FROM favorites WHERE itemType = ?)"
+                                + " GROUP BY container;",
                         new String[] {Integer.toString(LauncherSettings.Favorites.ITEM_TYPE_FOLDER)});
 
                 while (c.moveToNext()) {
                     db.execSQL("UPDATE favorites SET rank=cellX+(cellY*?) WHERE "
-                            + "container=? AND cellX IS NOT NULL AND cellY IS NOT NULL;",
+                                    + "container=? AND cellX IS NOT NULL AND cellY IS NOT NULL;",
                             new Object[] {c.getLong(1) + 1, c.getLong(0)});
                 }
 

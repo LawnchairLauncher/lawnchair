@@ -82,30 +82,14 @@ public class GridSizeMigrationTaskV2 {
 
     @VisibleForTesting
     protected GridSizeMigrationTaskV2(Context context, SQLiteDatabase db, DbReader srcReader,
-            DbReader destReader, int destHotseatSize, Point targetSize) {
+                                      DbReader destReader, int destHotseatSize, Point targetSize) {
         mContext = context;
         mDb = db;
         mSrcReader = srcReader;
         mDestReader = destReader;
 
-        List<DbEntry> hotseatItems = destReader.loadHotseatEntries();
-        List<DbEntry> workspaceItems = destReader.loadAllWorkspaceEntries();
-
-        // only add items in the target size. other items are considered lost
-        mHotseatItems = new ArrayList<>();
-        for (int i = 0; i < hotseatItems.size(); i++) {
-            DbEntry item = hotseatItems.get(i);
-            if (item.cellX < destHotseatSize) {
-                mHotseatItems.add(item);
-            }
-        }
-        mWorkspaceItems = new ArrayList<>();
-        for (int i = 0; i < workspaceItems.size(); i++) {
-            DbEntry item = workspaceItems.get(i);
-            if (item.cellX < targetSize.x && item.cellY < targetSize.y) {
-                mWorkspaceItems.add(item);
-            }
-        }
+        mHotseatItems = destReader.loadHotseatEntries();
+        mWorkspaceItems = destReader.loadAllWorkspaceEntries();
 
         mHotseatDiff = calcDiff(mSrcReader.loadHotseatEntries(), mHotseatItems);
         mWorkspaceDiff = calcDiff(mSrcReader.loadAllWorkspaceEntries(), mWorkspaceItems);
@@ -204,11 +188,6 @@ public class GridSizeMigrationTaskV2 {
             }
 
             t.commit();
-
-            // reinitialize max ids
-            LauncherSettings.Settings.call(context.getContentResolver(),
-                    LauncherSettings.Settings.METHOD_RE_INITIALIZE_IDS);
-
             return true;
         } catch (Exception e) {
             Log.e(TAG, "Error during grid migration", e);
@@ -306,7 +285,7 @@ public class GridSizeMigrationTaskV2 {
     }
 
     private static void insertEntryInDb(SQLiteDatabase db, Context context, DbEntry entry,
-            String srcTableName, String destTableName) {
+                                        String srcTableName, String destTableName) {
         int id = copyEntryAndUpdate(db, context, entry, srcTableName, destTableName);
 
         if (entry.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
@@ -319,17 +298,17 @@ public class GridSizeMigrationTaskV2 {
     }
 
     private static int copyEntryAndUpdate(SQLiteDatabase db, Context context,
-            DbEntry entry, String srcTableName, String destTableName) {
+                                          DbEntry entry, String srcTableName, String destTableName) {
         return copyEntryAndUpdate(db, context, entry, -1, -1, srcTableName, destTableName);
     }
 
     private static int copyEntryAndUpdate(SQLiteDatabase db, Context context,
-            int id, int folderId, String srcTableName, String destTableName) {
+                                          int id, int folderId, String srcTableName, String destTableName) {
         return copyEntryAndUpdate(db, context, null, id, folderId, srcTableName, destTableName);
     }
 
     private static int copyEntryAndUpdate(SQLiteDatabase db, Context context,
-            DbEntry entry, int id, int folderId, String srcTableName, String destTableName) {
+                                          DbEntry entry, int id, int folderId, String srcTableName, String destTableName) {
         int newId = -1;
         Cursor c = db.query(srcTableName, null,
                 LauncherSettings.Favorites._ID + " = '" + (entry != null ? entry.id : id) + "'",
@@ -390,7 +369,7 @@ public class GridSizeMigrationTaskV2 {
         private int mNextStartY;
 
         GridPlacementSolution(SQLiteDatabase db, DbReader srcReader, DbReader destReader,
-                Context context, int screenId, int trgX, int trgY, List<DbEntry> itemsToPlace) {
+                              Context context, int screenId, int trgX, int trgY, List<DbEntry> itemsToPlace) {
             mDb = db;
             mSrcReader = srcReader;
             mDestReader = destReader;
@@ -467,8 +446,8 @@ public class GridSizeMigrationTaskV2 {
         private final List<DbEntry> mItemsToPlace;
 
         HotseatPlacementSolution(SQLiteDatabase db, DbReader srcReader, DbReader destReader,
-                Context context, int hotseatSize, List<DbEntry> placedHotseatItems,
-                List<DbEntry> itemsToPlace) {
+                                 Context context, int hotseatSize, List<DbEntry> placedHotseatItems,
+                                 List<DbEntry> itemsToPlace) {
             mDb = db;
             mSrcReader = srcReader;
             mDestReader = destReader;
@@ -524,7 +503,7 @@ public class GridSizeMigrationTaskV2 {
                 new ArrayMap<>();
 
         DbReader(SQLiteDatabase db, String tableName, Context context,
-                HashSet<String> validPackages) {
+                 HashSet<String> validPackages) {
             mDb = db;
             mTableName = tableName;
             mContext = context;
@@ -600,7 +579,7 @@ public class GridSizeMigrationTaskV2 {
                             LauncherSettings.Favorites.INTENT,               // 7
                             LauncherSettings.Favorites.APPWIDGET_PROVIDER,   // 8
                             LauncherSettings.Favorites.APPWIDGET_ID},        // 9
-                        LauncherSettings.Favorites.CONTAINER + " = "
+                    LauncherSettings.Favorites.CONTAINER + " = "
                             + LauncherSettings.Favorites.CONTAINER_DESKTOP);
             return loadWorkspaceEntries(c);
         }

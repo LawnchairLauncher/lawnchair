@@ -39,9 +39,8 @@ class DeviceProfileOverrides(context: Context) {
         var allAppsIconTextSizeFactor: Float,
 
         var enableTaskbarOnPhone: Boolean,
-
-        val dbFile: String = "launcher_${numRows}_${numColumns}_${numHotseatColumns}.db"
     ) {
+        private val dbFile get() = "launcher_${numRows}_${numColumns}_${numHotseatColumns}.db"
 
         constructor(
             prefs: PreferenceManager,
