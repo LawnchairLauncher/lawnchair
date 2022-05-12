@@ -84,7 +84,6 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
@@ -92,7 +91,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * The main tapl object. The only object that can be explicitly constructed by the using code. It
@@ -501,29 +499,16 @@ public final class LauncherInstrumentation {
         }
     }
 
-    void checkPackagesVisible(String[] expectedVisiblePackages) {
-        Set<String> actualVisiblePackages =
-                getVisiblePackagesStream().collect(Collectors.toSet());
-
-        for (String expectedVisible : expectedVisiblePackages) {
-            assertTrue("Expected package not visible: " + expectedVisible,
-                    actualVisiblePackages.contains(expectedVisible));
-        }
-    }
-
     private String getVisiblePackages() {
-        final String apps = getVisiblePackagesStream().collect(Collectors.joining(", "));
-        return !apps.isEmpty()
-                ? "active app: " + apps
-                : "the test doesn't see views from any app, including Launcher";
-    }
-
-    private Stream<String> getVisiblePackagesStream() {
-        return mDevice.findObjects(getAnyObjectSelector())
+        final String apps = mDevice.findObjects(getAnyObjectSelector())
                 .stream()
                 .map(LauncherInstrumentation::getApplicationPackageSafe)
                 .distinct()
-                .filter(pkg -> pkg != null && !SYSTEMUI_PACKAGE.equals(pkg));
+                .filter(pkg -> pkg != null && !SYSTEMUI_PACKAGE.equals(pkg))
+                .collect(Collectors.joining(", "));
+        return !apps.isEmpty()
+                ? "active app: " + apps
+                : "the test doesn't see views from any app, including Launcher";
     }
 
     private static String getApplicationPackageSafe(UiObject2 object) {
