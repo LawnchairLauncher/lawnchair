@@ -1065,10 +1065,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                                 : LAST_TASK;
             }
         } else {
-            // If swiping at a diagonal, base end target on the faster velocity.
+            // If swiping at a diagonal on the current task, base end target on the faster velocity.
             boolean isSwipeUp = endVelocity < 0;
-            boolean willGoToNewTask =
-                    canGoToNewTask && Math.abs(velocity.x) > Math.abs(endVelocity);
+            boolean willGoToNewTask = canGoToNewTask && (
+                    mRecentsView.getDestinationPage() != mRecentsView.getCurrentPage()
+                            || Math.abs(velocity.x) > Math.abs(endVelocity));
 
             if (mDeviceState.isFullyGesturalNavMode() && isSwipeUp) {
                 endTarget = willGoToNewTask ? NEW_TASK : HOME;
