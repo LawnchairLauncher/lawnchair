@@ -235,5 +235,5 @@
     <string name="smartspace_battery_charging">Charging</string>
     <string name="smartspace_battery_full">Charged</string>
     <string name="smartspace_battery_low">Battery Low</string>
-
+    <string name="accessibility_smartspace_page">Page %1$d of %2$d</string>
 </resources>

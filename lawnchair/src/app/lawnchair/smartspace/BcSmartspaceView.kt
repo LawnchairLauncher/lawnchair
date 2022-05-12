@@ -23,11 +23,31 @@ class BcSmartspaceView @JvmOverloads constructor(
     private val provider = SmartspaceProvider.INSTANCE.get(context)
 
     private lateinit var viewPager: ViewPager
+    private lateinit var indicator: PageIndicator
     private val adapter = CardPagerAdapter(context)
 
     override fun onFinishInflate() {
         super.onFinishInflate()
         viewPager = findViewById(R.id.smartspace_card_pager)
+        indicator = findViewById(R.id.smartspace_page_indicator)
+
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                indicator.setPageOffset(position, positionOffset)
+            }
+
+            override fun onPageSelected(position: Int) {
+
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
+        })
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -69,5 +89,6 @@ class BcSmartspaceView @JvmOverloads constructor(
 
     private fun onSmartspaceTargetsUpdate(targets: List<SmartspaceTarget>) {
         adapter.setTargets(targets.sortedByDescending { it.score })
+        indicator.setNumPages(targets.size)
     }
 }
