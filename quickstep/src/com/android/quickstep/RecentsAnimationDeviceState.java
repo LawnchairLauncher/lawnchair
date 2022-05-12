@@ -419,6 +419,13 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
     }
 
     /**
+     * @return whether notification panel is expanded
+     */
+    public boolean isNotificationPanelExpanded() {
+        return (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) != 0;
+    }
+
+    /**
      * @return whether the global actions dialog is showing
      */
     public boolean isSystemUiDialogShowing() {

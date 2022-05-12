@@ -700,7 +700,10 @@ public class TouchInteractionService extends Service
 
             // If Bubbles is expanded, use the overlay input consumer, which will close Bubbles
             // instead of going all the way home when a swipe up is detected.
-            if (mDeviceState.isBubblesExpanded() || mDeviceState.isSystemUiDialogShowing()) {
+            // Notification panel can be expanded on top of expanded bubbles. Bubbles remain
+            // expanded in the back. Make sure swipe up is not passed to bubbles in this case.
+            if ((mDeviceState.isBubblesExpanded() && !mDeviceState.isNotificationPanelExpanded())
+                    || mDeviceState.isSystemUiDialogShowing()) {
                 base = new SysUiOverlayInputConsumer(
                         getBaseContext(), mDeviceState, mInputMonitorCompat);
             }
