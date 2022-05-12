@@ -253,7 +253,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
      */
     public void reset() {
         mDotInfo = null;
-        mDotParams.color = Color.TRANSPARENT;
+        mDotParams.dotColor = Color.TRANSPARENT;
+        mDotParams.appColor = Color.TRANSPARENT;
         cancelDotScaleAnim();
         mDotParams.scale = 0f;
         mForceHideDot = false;
@@ -381,7 +382,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             flags |= FLAG_NO_BADGE;
         }
         FastBitmapDrawable iconDrawable = info.newIcon(getContext(), flags);
-        mDotParams.color = iconDrawable.getIconColor();
+        mDotParams.appColor = iconDrawable.getIconColor();
+        mDotParams.dotColor = getContext().getResources()
+                .getColor(android.R.color.system_accent3_100, getContext().getTheme());
         setIcon(iconDrawable);
         applyLabel(info);
     }
