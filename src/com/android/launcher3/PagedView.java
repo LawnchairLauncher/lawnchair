@@ -28,6 +28,8 @@ import static com.android.launcher3.touch.PagedOrientationHandler.VIEW_SCROLL_TO
 import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -78,27 +80,19 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     public static final int INVALID_PAGE = -1;
     protected static final ComputePageScrollsLogic SIMPLE_SCROLL_LOGIC = (v) -> v.getVisibility() != GONE;
 
-    public static final int PAGE_SNAP_ANIMATION_DURATION = 750;
-
     private static final float RETURN_TO_ORIGINAL_PAGE_THRESHOLD = 0.33f;
     // The page is moved more than halfway, automatically move to the next page on touch up.
     private static final float SIGNIFICANT_MOVE_THRESHOLD = 0.4f;
 
     private static final float MAX_SCROLL_PROGRESS = 1.0f;
 
-    // The following constants need to be scaled based on density. The scaled versions will be
-    // assigned to the corresponding member variables below.
-    private static final int FLING_THRESHOLD_VELOCITY = 500;
-    private static final int EASY_FLING_THRESHOLD_VELOCITY = 400;
-    private static final int MIN_SNAP_VELOCITY = 1500;
-    private static final int MIN_FLING_VELOCITY = 250;
-
     private boolean mFreeScroll = false;
 
-    protected final int mFlingThresholdVelocity;
-    protected final int mEasyFlingThresholdVelocity;
-    protected final int mMinFlingVelocity;
-    protected final int mMinSnapVelocity;
+    private int mFlingThresholdVelocity;
+    private int mEasyFlingThresholdVelocity;
+    private int mMinFlingVelocity;
+    private int mMinSnapVelocity;
+    private int mPageSnapAnimationDuration;
 
     protected boolean mFirstLayout = true;
 
@@ -192,11 +186,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         mPageSlop = configuration.getScaledPagingTouchSlop();
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
 
-        float density = getResources().getDisplayMetrics().density;
-        mFlingThresholdVelocity = (int) (FLING_THRESHOLD_VELOCITY * density);
-        mEasyFlingThresholdVelocity = (int) (EASY_FLING_THRESHOLD_VELOCITY * density);
-        mMinFlingVelocity = (int) (MIN_FLING_VELOCITY * density);
-        mMinSnapVelocity = (int) (MIN_SNAP_VELOCITY * density);
+        updateVelocityValues();
 
         initEdgeEffect();
         setDefaultFocusHighlightEnabled(false);
@@ -626,6 +616,22 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     public int getNormalChildWidth() {
         return  getExpectedWidth() - getPaddingLeft() - getPaddingRight()
                 - mInsets.left - mInsets.right;
+    }
+
+    private void updateVelocityValues() {
+        Resources res = getResources();
+        mFlingThresholdVelocity = res.getDimensionPixelSize(R.dimen.fling_threshold_velocity);
+        mEasyFlingThresholdVelocity =
+                res.getDimensionPixelSize(R.dimen.easy_fling_threshold_velocity);
+        mMinFlingVelocity = res.getDimensionPixelSize(R.dimen.min_fling_velocity);
+        mMinSnapVelocity = res.getDimensionPixelSize(R.dimen.min_page_snap_velocity);
+        mPageSnapAnimationDuration = res.getInteger(R.integer.config_pageSnapAnimationDuration);
+    }
+
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        updateVelocityValues();
     }
 
     @Override
@@ -1616,7 +1622,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     protected void snapToDestination() {
-        snapToPage(getDestinationPage(), PAGE_SNAP_ANIMATION_DURATION);
+        snapToPage(getDestinationPage(), mPageSnapAnimationDuration);
     }
 
     // We want the duration of the page snap animation to be influenced by the distance that
@@ -1640,7 +1646,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (Math.abs(velocity) < mMinFlingVelocity) {
             // If the velocity is low enough, then treat this more as an automatic page advance
             // as opposed to an apparent physical response to flinging
-            return snapToPage(whichPage, PAGE_SNAP_ANIMATION_DURATION);
+            return snapToPage(whichPage, mPageSnapAnimationDuration);
         }
 
         // Here we compute a "distance" that will be used in the computation of the overall
@@ -1663,11 +1669,11 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     public boolean snapToPage(int whichPage) {
-        return snapToPage(whichPage, PAGE_SNAP_ANIMATION_DURATION);
+        return snapToPage(whichPage, mPageSnapAnimationDuration);
     }
 
     public boolean snapToPageImmediately(int whichPage) {
-        return snapToPage(whichPage, PAGE_SNAP_ANIMATION_DURATION, true);
+        return snapToPage(whichPage, mPageSnapAnimationDuration, true);
     }
 
     public boolean snapToPage(int whichPage, int duration) {

@@ -16,6 +16,9 @@
   -->
 
 <resources>
+<!-- PagedView  -->
+    <dimen name="min_page_snap_velocity">3600dp</dimen>
+
 <!-- Hotseat -->
     <dimen name="spring_loaded_hotseat_top_margin">44dp</dimen>
 
