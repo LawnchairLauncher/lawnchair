@@ -51,7 +51,7 @@ public class SpringLoadedState extends LauncherState {
             return super.getWorkspaceScaleAndTranslation(launcher);
         }
 
-        float shrunkTop = grid.getWorkspaceSpringLoadShrunkTop();
+        float shrunkTop = grid.getCellLayoutSpringLoadShrunkTop();
         float scale = grid.getWorkspaceSpringLoadScale();
 
         float halfHeight = ws.getHeight() / 2;
