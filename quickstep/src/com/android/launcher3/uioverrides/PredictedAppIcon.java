@@ -180,7 +180,7 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
                 : null;
         super.applyFromWorkspaceItem(info, animate, staggerIndex);
         int oldPlateColor = mPlateColor;
-        int newPlateColor = ColorUtils.setAlphaComponent(mDotParams.color, 200);
+        int newPlateColor = ColorUtils.setAlphaComponent(mDotParams.appColor, 200);
         if (!animate) {
             mPlateColor = newPlateColor;
         }
