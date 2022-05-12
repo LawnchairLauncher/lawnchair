@@ -18,9 +18,11 @@ package com.android.launcher3.allapps;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.WindowInsets;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.Utilities;
 
 /**
  * AllAppsContainerView with launcher specific callbacks
@@ -57,5 +59,14 @@ public class LauncherAllAppsContainerView extends ActivityAllAppsContainerView<L
             return false;
         }
         return super.onTouchEvent(ev);
+    }
+
+    @Override
+    protected int getNavBarScrimHeight(WindowInsets insets) {
+        if (Utilities.ATLEAST_Q) {
+            return insets.getTappableElementInsets().bottom;
+        } else {
+            return insets.getStableInsetBottom();
+        }
     }
 }
