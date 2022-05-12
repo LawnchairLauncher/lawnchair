@@ -328,15 +328,15 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Override
     public void setInsets(Rect insets) {
         super.setInsets(insets);
-
-        setBottomPadding(mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView, insets.bottom);
-        setBottomPadding(mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView, insets.bottom);
+        int bottomPadding = Math.max(insets.bottom, mNavBarScrimHeight);
+        setBottomPadding(mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView, bottomPadding);
+        setBottomPadding(mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView, bottomPadding);
         if (mHasWorkProfile) {
-            setBottomPadding(mAdapters.get(AdapterHolder.WORK).mWidgetsRecyclerView, insets.bottom);
+            setBottomPadding(mAdapters.get(AdapterHolder.WORK).mWidgetsRecyclerView, bottomPadding);
         }
-        ((MarginLayoutParams) mNoWidgetsView.getLayoutParams()).bottomMargin = insets.bottom;
+        ((MarginLayoutParams) mNoWidgetsView.getLayoutParams()).bottomMargin = bottomPadding;
 
-        if (insets.bottom > 0) {
+        if (bottomPadding > 0) {
             setupNavBarColor();
         } else {
             clearNavBarColor();
