@@ -149,7 +149,7 @@
     <string name="action_lens">عدسة</string>
     <string name="force_rounded_widgets">زوايا دائرية</string>
     <string name="suggestion_pref_screen_title">اقتراحات</string>
-    <string name="n_percent">%١$d%%</string>
+    <string name="n_percent">%1$d%%</string>
     <string name="label">العلامة</string>
     <string name="presets">الإعدادات المسبقة</string>
     <string name="colors">الألوان</string>
