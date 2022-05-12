@@ -19,6 +19,7 @@ import app.lawnchair.smartspace.model.SmartspaceTarget
 import app.lawnchair.util.Temperature
 import app.lawnchair.util.getAllChildren
 import app.lawnchair.util.pendingIntent
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -30,16 +31,22 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource {
     private val targetsFlow = MutableStateFlow(listOf(dummyTarget))
     override val targets get() = targetsFlow
 
+    private var currentJob: Job? = null
+
     init {
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val provider = appWidgetManager.getInstalledProvidersForPackage(GSA_PACKAGE, null)
             .firstOrNull { it.provider.className == WIDGET_CLASS_NAME }
         if (provider != null) {
             val widgetsManager = HeadlessWidgetsManager.INSTANCE.get(context)
-            widgetsManager.subscribeUpdates(provider, "smartspaceWidgetId")
+            currentJob = widgetsManager.subscribeUpdates(provider, "smartspaceWidgetId")
                 .onEach(this::parseWeather)
                 .launchIn(scope)
         }
+    }
+
+    override fun destroy() {
+        currentJob?.cancel()
     }
 
     private fun parseWeather(appWidgetHostView: AppWidgetHostView) {

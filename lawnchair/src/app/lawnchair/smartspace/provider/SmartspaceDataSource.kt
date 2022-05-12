@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface SmartspaceDataSource {
     val targets: Flow<List<SmartspaceTarget>>
+
+    fun destroy()
 }
