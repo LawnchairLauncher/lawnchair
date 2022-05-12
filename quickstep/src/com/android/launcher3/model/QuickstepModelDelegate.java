@@ -460,7 +460,7 @@ public class QuickstepModelDelegate extends ModelDelegate {
                     AppInfo info = new AppInfo(lai, user, mUMS.isUserQuiet(user));
                     mAppState.getIconCache().getTitleAndIcon(info, lai, false);
                     mReadCount++;
-                    return info.makeWorkspaceItem();
+                    return info.makeWorkspaceItem(mAppState.getContext());
                 }
                 case ITEM_TYPE_DEEP_SHORTCUT: {
                     ShortcutKey key = ShortcutKey.fromIntent(intent, user);
