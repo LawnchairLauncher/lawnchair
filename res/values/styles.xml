@@ -44,9 +44,9 @@
         <item name="isMainColorDark">false</item>
         <item name="isWorkspaceDarkText">false</item>
         <item name="workspaceTextColor">@color/workspace_text_color_light</item>
-        <item name="workspaceShadowColor">#B0000000</item>
-        <item name="workspaceAmbientShadowColor">#40000000</item>
-        <item name="workspaceKeyShadowColor">#89000000</item>
+        <item name="workspaceShadowColor">#ff000000</item>
+        <item name="workspaceAmbientShadowColor">#33000000</item>
+        <item name="workspaceKeyShadowColor">#ff000000</item>
         <item name="workspaceStatusBarScrim">@drawable/workspace_bg</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
         <item name="folderDotColor">@color/folder_dot_color</item>
@@ -82,9 +82,9 @@
 
     <style name="LauncherTheme.DarkText" parent="@style/LauncherTheme">
         <item name="workspaceTextColor">@color/workspace_text_color_dark</item>
-        <item name="workspaceShadowColor">@android:color/transparent</item>
-        <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
-        <item name="workspaceKeyShadowColor">@android:color/transparent</item>
+        <item name="workspaceShadowColor">#ffffffff</item>
+        <item name="workspaceAmbientShadowColor">#33ffffff</item>
+        <item name="workspaceKeyShadowColor">#ffffffff</item>
         <item name="isWorkspaceDarkText">true</item>
         <item name="workspaceStatusBarScrim">@null</item>
         <item name="workspaceAccentColor">@color/workspace_accent_color_dark</item>
@@ -132,9 +132,9 @@
     <style name="LauncherTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark">
         <item name="android:colorControlHighlight">#19212121</item>
         <item name="workspaceTextColor">@color/workspace_text_color_dark</item>
-        <item name="workspaceShadowColor">@android:color/transparent</item>
-        <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
-        <item name="workspaceKeyShadowColor">@android:color/transparent</item>
+        <item name="workspaceShadowColor">#ffffffff</item>
+        <item name="workspaceAmbientShadowColor">#33ffffff</item>
+        <item name="workspaceKeyShadowColor">#ffffffff</item>
         <item name="isWorkspaceDarkText">true</item>
         <item name="workspaceStatusBarScrim">@null</item>
         <item name="workspaceAccentColor">@color/workspace_accent_color_dark</item>
@@ -250,14 +250,14 @@
 
     <!-- Icon displayed on the workspace -->
     <style name="BaseIcon.Workspace.Shadows" parent="BaseIcon">
-        <item name="android:shadowRadius">2.0</item>
+        <item name="android:shadowRadius">1.0</item>
         <item name="android:shadowColor">?attr/workspaceShadowColor</item>
         <item name="ambientShadowColor">?attr/workspaceAmbientShadowColor</item>
-        <item name="ambientShadowBlur">1.5dp</item>
+        <item name="ambientShadowBlur">1.0dp</item>
         <item name="keyShadowColor">?attr/workspaceKeyShadowColor</item>
-        <item name="keyShadowBlur">.5dp</item>
-        <item name="keyShadowOffsetX">.5dp</item>
-        <item name="keyShadowOffsetY">.5dp</item>
+        <item name="keyShadowBlur">1.0dp</item>
+        <item name="keyShadowOffsetX">0dp</item>
+        <item name="keyShadowOffsetY">0dp</item>
     </style>
 
     <!-- Intentionally empty so we can override -->
