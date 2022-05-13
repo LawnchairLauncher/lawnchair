@@ -69,6 +69,8 @@ class LawnchairApp : Application() {
         if (oldDbFile.exists()) {
             oldDbFile.copyTo(dbFile)
             oldDbJournalFile.copyTo(dbJournalFile)
+            oldDbFile.delete()
+            oldDbJournalFile.delete()
         }
     }
 
