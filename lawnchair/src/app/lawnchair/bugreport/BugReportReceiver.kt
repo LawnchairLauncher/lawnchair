@@ -122,7 +122,7 @@ class BugReportReceiver : BroadcastReceiver() {
                     .putExtra("report", report)
                 val pendingUploadIntent = PendingIntent.getBroadcast(
                     context, notificationId, uploadIntent, FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE)
-                val uploadText = if (report.uploadError) R.string.action_upload_error else R.string.action_upload
+                val uploadText = if (report.uploadError) R.string.action_upload_error else R.string.action_upload_crash_report
                 val uploadIcon = Icon.createWithResource(context, R.drawable.ic_upload)
                 val uploadActionBuilder = Notification.Action.Builder(
                     uploadIcon, context.getString(uploadText), pendingUploadIntent)

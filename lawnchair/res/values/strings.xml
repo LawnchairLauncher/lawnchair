@@ -176,6 +176,7 @@
     <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
     <string name="crash_report_notif_title">%1$s Crashed</string>
     <string name="action_upload">Upload to Dogbin</string>
+    <string name="action_upload_crash_report">Upload Crash Log</string>
 
     <string name="action_copy_link">Copy Link</string>
     <string name="action_copy">Copy</string>
