@@ -16,23 +16,37 @@
 
 package app.lawnchair.ui.preferences
 
+import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.material.RadioButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavGraphBuilder
+import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
-import app.lawnchair.ui.preferences.components.AppItem
-import app.lawnchair.ui.preferences.components.PreferenceLayoutLazyColumn
-import app.lawnchair.ui.preferences.components.preferenceGroupItems
+import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.util.LazyGridLayout
+import app.lawnchair.util.Constants
+import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.R
+import com.google.accompanist.drawablepainter.rememberDrawablePainter
 
 data class IconPackInfo(
     val name: String,
@@ -48,24 +62,119 @@ fun NavGraphBuilder.iconPackGraph(route: String) {
 @ExperimentalAnimationApi
 @Composable
 fun IconPackPreferences() {
-    val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
-    var iconPackPackage by preferenceManager().iconPackPackage.getAdapter()
+    val prefs = preferenceManager()
+    var iconPackAdapter = prefs.iconPackPackage.getAdapter()
+    val themedIconsAdapter = prefs.themedIcons.getAdapter()
 
-    PreferenceLayoutLazyColumn(label = stringResource(id = R.string.icon_pack)) {
-        preferenceGroupItems(
-            items = iconPacks,
-            isFirstChild = true,
-            dividerStartIndent = 40.dp
-        ) { _, iconPack ->
-            AppItem(
-                label = iconPack.name,
-                icon = remember(iconPack) { iconPack.icon.toBitmap() },
-                onClick = { iconPackPackage = iconPack.packageName },
+    PreferenceLayout(
+        label = stringResource(id = R.string.icon_pack),
+        scrollState = null
+    ) {
+        if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            Column(
+                modifier = Modifier
+                    .weight(0.6f)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                RadioButton(
-                    selected = iconPackPackage == iconPack.packageName,
-                    onClick = null
+                GridOverridesPreview(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(top = 8.dp)
+                        .clip(MaterialTheme.shapes.large)
+                ) {
+                    iconPackAdapter.state.value
+                    themedIconsAdapter.state.value
+                }
+            }
+        }
+        Column(Modifier.weight(0.4f)) {
+            Surface(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(top = 16.dp)
+            ) {
+                IconPackGrid(iconPackAdapter)
+            }
+            PreferenceGroup {
+                val themedIconsAvailable = LocalContext.current.packageManager
+                    .isPackageInstalled(Constants.LAWNICONS_PACKAGE_NAME)
+                SwitchPreference(
+                    adapter = themedIconsAdapter,
+                    label = stringResource(id = R.string.themed_icon_title),
+                    enabled = themedIconsAvailable,
+                    description = if (!themedIconsAvailable) stringResource(id = R.string.lawnicons_not_installed_description) else null,
                 )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun IconPackGrid(adapter: PreferenceAdapter<String>) {
+    val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
+
+    val density = LocalDensity.current
+    val gridLayout = remember {
+        LazyGridLayout(
+            minWidth = 72.dp,
+            gapWidth = 16.dp,
+            density = density
+        )
+    }
+    val listState = rememberLazyListState()
+    val numColumns by gridLayout.numColumns
+    PreferenceLazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(gridLayout.onSizeChanged()),
+        state = listState,
+        isChild = true
+    ) {
+        verticalGridItems(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            items = iconPacks,
+            numColumns = numColumns,
+            horizontalGap = 16.dp,
+            verticalGap = 4.dp
+        ) { _, item ->
+            val wasSelected = remember { mutableStateOf(false) }
+            val selected = item.packageName == adapter.state.value
+            LaunchedEffect(selected) {
+                if (wasSelected.value != selected) {
+                    wasSelected.value = selected
+                    if (selected) {
+                        listState.scrollToThisItem()
+                    }
+                }
+            }
+            Surface(
+                onClick = { adapter.onChange(item.packageName) },
+                shape = MaterialTheme.shapes.large,
+                tonalElevation = if (selected) 1.dp else 0.dp
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp, horizontal = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .size(56.dp)
+                            .padding(bottom = 8.dp),
+                        painter = rememberDrawablePainter(drawable = item.icon),
+                        contentDescription = null
+                    )
+                    Text(
+                        text = item.name,
+                        textAlign = TextAlign.Center,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 2,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
             }
         }
     }

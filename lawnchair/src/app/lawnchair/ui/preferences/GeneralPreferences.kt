@@ -21,7 +21,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
@@ -29,8 +28,6 @@ import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.*
-import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
-import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.R
 
 object GeneralRoutes {
@@ -52,7 +49,6 @@ fun GeneralPreferences() {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
     val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
-    val themedIconsAvailable = LocalContext.current.packageManager.isPackageInstalled(LAWNICONS_PACKAGE_NAME)
     PreferenceLayout(label = stringResource(id = R.string.general_label)) {
         PreferenceGroup(isFirstChild = true) {
             SwitchPreference(
@@ -65,12 +61,6 @@ fun GeneralPreferences() {
                 label = stringResource(id = R.string.icon_pack),
                 destination = subRoute(name = GeneralRoutes.ICON_PACK),
                 subtitle = iconPacks.find { it.packageName == preferenceManager().iconPackPackage.get() }?.name,
-            )
-            SwitchPreference(
-                adapter = prefs.themedIcons.getAdapter(),
-                label = stringResource(id = R.string.themed_icon_title),
-                enabled = themedIconsAvailable,
-                description = if (!themedIconsAvailable) stringResource(id = R.string.lawnicons_not_installed_description) else null,
             )
             IconShapePreference()
             val enableFontSelection = prefs2.enableFontSelection.asState().value

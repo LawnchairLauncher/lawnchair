@@ -33,6 +33,7 @@ import androidx.navigation.navArgument
 import app.lawnchair.icons.*
 import app.lawnchair.ui.OverflowMenu
 import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.util.LazyGridLayout
 import app.lawnchair.ui.util.resultSender
 import com.android.launcher3.R
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
@@ -169,17 +170,16 @@ fun IconPickerGrid(
             .filter { it.items.isNotEmpty() }
     }
 
-    var numColumns by remember { mutableStateOf(0) }
     val density = LocalDensity.current
-    PreferenceLazyColumn(modifier = modifier.onSizeChanged {
-        with(density) {
-            val minWidth = 56.dp.roundToPx()
-            val gapWidth = 16.dp.roundToPx()
-            val availableWidth = (it.width - minWidth).coerceAtLeast(0)
-            val additionalCols = availableWidth / (minWidth + gapWidth)
-            numColumns = 1 + additionalCols
-        }
-    }) {
+    val gridLayout = remember {
+        LazyGridLayout(
+            minWidth = 56.dp,
+            gapWidth = 16.dp,
+            density = density
+        )
+    }
+    val numColumns by gridLayout.numColumns
+    PreferenceLazyColumn(modifier = modifier.then(gridLayout.onSizeChanged())) {
         if (numColumns != 0) {
             filteredCategories.forEach { category ->
                 stickyHeader {
@@ -198,7 +198,6 @@ fun IconPickerGrid(
                         .padding(horizontal = 8.dp),
                     items = category.items,
                     numColumns = numColumns,
-                    gap = 0.dp,
                 ) { _, item ->
                     IconPreview(
                         iconPack = iconPack,

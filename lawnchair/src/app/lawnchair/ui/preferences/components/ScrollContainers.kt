@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -29,23 +30,25 @@ fun PreferenceColumn(
     scrollState: ScrollState? = rememberScrollState(),
     content: @Composable ColumnScope.() -> Unit
 ) {
-    NestedScrollStretch {
-        Column(
-            verticalArrangement = verticalArrangement,
-            horizontalAlignment = horizontalAlignment,
-            modifier = Modifier
-                .fillMaxHeight()
-                .addIf(scrollState != null) {
-                    this
-                        .verticalScroll(scrollState!!)
-                        .pointerInteropFilter {
-                            // return true if scrolling
-                            scrollState.isScrollInProgress
-                        }
-                }
-                .padding(rememberExtendPadding(LocalScaffoldPadding.current, bottom = 16.dp)),
-            content = content
-        )
+    ConsumeScaffoldPadding { contentPadding ->
+        NestedScrollStretch {
+            Column(
+                verticalArrangement = verticalArrangement,
+                horizontalAlignment = horizontalAlignment,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .addIf(scrollState != null) {
+                        this
+                            .verticalScroll(scrollState!!)
+                            .pointerInteropFilter {
+                                // return true if scrolling
+                                scrollState.isScrollInProgress
+                            }
+                    }
+                    .padding(rememberExtendPadding(contentPadding, bottom = 16.dp)),
+                content = content
+            )
+        }
     }
 }
 
@@ -55,6 +58,7 @@ fun PreferenceLazyColumn(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     state: LazyListState = rememberLazyListState(),
+    isChild: Boolean = false,
     content: LazyListScope.() -> Unit
 ) {
     if (!enabled) {
@@ -64,17 +68,36 @@ fun PreferenceLazyColumn(
             }
         }
     }
-    NestedScrollStretch {
-        LazyColumn(
-            modifier = modifier
-                .fillMaxHeight()
-                .pointerInteropFilter {
-                    // return true if scrolling
-                    state.isScrollInProgress
-                },
-            contentPadding = rememberExtendPadding(LocalScaffoldPadding.current, bottom = 16.dp),
-            state = state,
-            content = content
-        )
+    ConsumeScaffoldPadding { contentPadding ->
+        NestedScrollStretch {
+            LazyColumn(
+                modifier = modifier
+                    .addIf(!isChild) {
+                        fillMaxHeight()
+                    }
+                    .pointerInteropFilter {
+                        // return true if scrolling
+                        state.isScrollInProgress
+                    },
+                contentPadding = rememberExtendPadding(
+                    contentPadding,
+                    bottom = if (isChild) 0.dp else 16.dp
+                ),
+                state = state,
+                content = content
+            )
+        }
+    }
+}
+
+@Composable
+fun ConsumeScaffoldPadding(
+    content: @Composable (contentPadding: PaddingValues) -> Unit
+) {
+    val contentPadding = LocalScaffoldPadding.current
+    CompositionLocalProvider(
+        LocalScaffoldPadding provides PaddingValues(0.dp)
+    ) {
+        content(contentPadding)
     }
 }
