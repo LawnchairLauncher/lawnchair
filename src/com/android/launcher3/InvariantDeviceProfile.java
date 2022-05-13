@@ -321,6 +321,7 @@ public class InvariantDeviceProfile {
             @DeviceType int deviceType) {
         DeviceProfileOverrides.Options overrideOptions = DeviceProfileOverrides.INSTANCE.get(context)
                 .getOverrides(displayOption.grid);
+        Log.d("MigrationDebug", "initGrid");
         initGrid(context, displayInfo, displayOption, deviceType, overrideOptions);
     }
 
@@ -328,9 +329,9 @@ public class InvariantDeviceProfile {
             @DeviceType int deviceType, DeviceProfileOverrides.Options overrideOptions) {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         closestProfile = displayOption.grid;
-        numRows = closestProfile.numRows;
-        numColumns = closestProfile.numColumns;
-        dbFile = closestProfile.dbFile;
+        numRows = overrideOptions.getNumRows();
+        numColumns = overrideOptions.getNumColumns();
+        dbFile = overrideOptions.getDbFile();
         defaultLayoutId = closestProfile.defaultLayoutId;
         demoModeLayoutId = closestProfile.demoModeLayoutId;
         numFolderRows = closestProfile.numFolderRows;
@@ -351,9 +352,8 @@ public class InvariantDeviceProfile {
 
         horizontalMargin = displayOption.horizontalMargin;
 
-        numShownHotseatIcons = closestProfile.numHotseatIcons;
-        numDatabaseHotseatIcons = deviceType == TYPE_MULTI_DISPLAY
-                ? closestProfile.numDatabaseHotseatIcons : closestProfile.numHotseatIcons;
+        numShownHotseatIcons = overrideOptions.getNumHotseatColumns();
+        numDatabaseHotseatIcons = overrideOptions.getNumHotseatColumns();
 
         numAllAppsColumns = closestProfile.numAllAppsColumns;
         numDatabaseAllAppsColumns = deviceType == TYPE_MULTI_DISPLAY
@@ -371,7 +371,7 @@ public class InvariantDeviceProfile {
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize
         applyPartnerDeviceProfileOverrides(context, metrics);
-        overrideOptions.apply(this);
+        overrideOptions.applyUi(this);
 
         float maxIconSize = iconSize[0];
         for (int i = 1; i < iconSize.length; i++) {
@@ -436,9 +436,11 @@ public class InvariantDeviceProfile {
     private void onConfigChanged(Context context) {
         Object[] oldState = toModelState();
 
+        Log.d("MigrationDebug", "onConfigChanged");
         // Re-init grid
         String gridName = getCurrentGridName(context);
         initGrid(context, gridName);
+        Log.d("MigrationDebug", "init grid done");
 
         boolean modelPropsChanged = !Arrays.equals(oldState, toModelState());
         for (OnIDPChangeListener listener : mChangeListeners) {
