@@ -31,6 +31,7 @@ import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherSettings;
@@ -469,6 +470,7 @@ public class BgDataModel {
          * or an empty IntSet
          * @param orderedScreenIds All the page ids to be bound
          */
+        @NonNull
         default IntSet getPagesToBindSynchronously(IntArray orderedScreenIds) {
             return new IntSet();
         }
