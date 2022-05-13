@@ -19,6 +19,7 @@ import static com.android.launcher3.taskbar.TaskbarLauncherStateController.FLAG_
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_EXTRA_NAVIGATION_BAR;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.annotation.ColorInt;
 import android.os.RemoteException;
 import android.util.Log;
@@ -28,6 +29,7 @@ import android.view.TaskTransitionSpec;
 import android.view.WindowManagerGlobal;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.BaseQuickstepLauncher;
@@ -140,6 +142,24 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     /**
+     * Adds the Launcher resume animator to the given animator set.
+     *
+     * This should be used to run a Launcher resume animation whose progress matches a
+     * swipe progress.
+     *
+     * @param placeholderDuration a placeholder duration to be used to ensure all full-length
+     *                            sub-animations are properly coordinated. This duration should not
+     *                            actually be used since this animation tracks a swipe progress.
+     */
+    protected void addLauncherResumeAnimation(AnimatorSet animation, int placeholderDuration) {
+        animation.play(onLauncherResumedOrPaused(
+                /* isResumed= */ true,
+                /* fromInit= */ false,
+                /* startAnimation= */ false,
+                placeholderDuration));
+    }
+
+    /**
      * Should be called from onResume() and onPause(), and animates the Taskbar accordingly.
      */
     public void onLauncherResumedOrPaused(boolean isResumed) {
@@ -147,9 +167,19 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     private void onLauncherResumedOrPaused(boolean isResumed, boolean fromInit) {
+        onLauncherResumedOrPaused(
+                isResumed,
+                fromInit,
+                /* startAnimation= */ true,
+                QuickstepTransitionManager.CONTENT_ALPHA_DURATION);
+    }
+
+    @Nullable
+    private Animator onLauncherResumedOrPaused(
+            boolean isResumed, boolean fromInit, boolean startAnimation, int duration) {
         if (mKeyguardController.isScreenOff()) {
             if (!isResumed) {
-                return;
+                return null;
             } else {
                 // Resuming implicitly means device unlocked
                 mKeyguardController.setScreenOn();
@@ -157,8 +187,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         }
 
         mTaskbarLauncherStateController.updateStateForFlag(FLAG_RESUMED, isResumed);
-        mTaskbarLauncherStateController.applyState(
-                fromInit ? 0 : QuickstepTransitionManager.CONTENT_ALPHA_DURATION);
+        return mTaskbarLauncherStateController.applyState(fromInit ? 0 : duration, startAnimation);
     }
 
     /**

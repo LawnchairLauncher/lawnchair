@@ -246,6 +246,10 @@ public final class FeatureFlags {
             "ENABLE_ALL_APPS_IN_TASKBAR", true,
             "Enables accessing All Apps from the system Taskbar.");
 
+    public static final BooleanFlag ENABLE_ALL_APPS_BUTTON_IN_HOTSEAT = getDebugFlag(
+            "ENABLE_ALL_APPS_BUTTON_IN_HOTSEAT", false,
+            "Enables displaying the all apps button in the hotseat.");
+
     public static final BooleanFlag ENABLE_ALL_APPS_ONE_SEARCH_IN_TASKBAR = getDebugFlag(
             "ENABLE_ALL_APPS_ONE_SEARCH_IN_TASKBAR", false,
             "Enables One Search box in Taskbar All Apps.");
