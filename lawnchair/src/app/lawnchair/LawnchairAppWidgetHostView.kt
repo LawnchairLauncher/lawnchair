@@ -8,9 +8,13 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.RemoteViews
 import app.lawnchair.smartspace.SmartspaceAppWidgetProvider
 import com.android.launcher3.R
+import com.android.launcher3.util.Themes
 import com.android.launcher3.widget.LauncherAppWidgetHostView
 
-class LawnchairAppWidgetHostView(context: Context) : LauncherAppWidgetHostView(context) {
+class LawnchairAppWidgetHostView @JvmOverloads constructor(
+    context: Context,
+    private var previewMode: Boolean = false
+) : LauncherAppWidgetHostView(context) {
 
     private var customView: ViewGroup? = null
 
@@ -18,17 +22,30 @@ class LawnchairAppWidgetHostView(context: Context) : LauncherAppWidgetHostView(c
         super.setAppWidget(appWidgetId, info)
         customView = null
 
-        val layoutId = customLayouts[info.provider] ?: return
-        removeAllViews()
-        customView = LayoutInflater.from(context).inflate(layoutId, this, false) as ViewGroup
+        inflateCustomView()
+    }
+
+    fun disablePreviewMode() {
+        previewMode = false
+        inflateCustomView()
+    }
+
+    private fun inflateCustomView() {
+        val layoutId = customLayouts[appWidgetInfo.provider]
+        if (layoutId == null) {
+            customView = null
+            return
+        }
+        val inflationContext = if (previewMode) Themes.createWidgetPreviewContext(context) else context
+        customView = LayoutInflater.from(inflationContext)
+            .inflate(layoutId, this, false) as ViewGroup
         customView!!.setOnLongClickListener(this)
+        removeAllViews()
+        addView(customView, MATCH_PARENT, MATCH_PARENT)
     }
 
     override fun updateAppWidget(remoteViews: RemoteViews?) {
-        if (customView != null) {
-            removeAllViews()
-            addView(customView, MATCH_PARENT, MATCH_PARENT)
-        }
+        if (customView != null) return
         super.updateAppWidget(remoteViews)
     }
 

@@ -29,6 +29,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Size;
+import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -53,6 +54,7 @@ import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.RoundDrawableWrapper;
 import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.util.WidgetSizes;
 
@@ -301,7 +303,7 @@ public class WidgetCell extends LinearLayout {
         // a preview during drag & drop. And thus, we should use LauncherAppWidgetHostView, which
         // supports applying local color extraction during drag & drop.
         mAppWidgetHostViewPreview = isLauncherContext(context)
-                ? new LawnchairAppWidgetHostView(context)
+                ? new LawnchairAppWidgetHostView(context, true)
                 : createAppWidgetHostView(context);
         LauncherAppWidgetProviderInfo launcherAppWidgetProviderInfo =
                 LauncherAppWidgetProviderInfo.fromProviderInfo(context, item.widgetInfo.clone());

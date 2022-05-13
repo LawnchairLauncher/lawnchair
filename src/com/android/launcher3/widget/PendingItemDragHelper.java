@@ -85,6 +85,9 @@ public class PendingItemDragHelper extends DragPreviewProvider {
     public void setAppWidgetHostViewPreview(
             @Nullable NavigableAppWidgetHostView appWidgetHostViewPreview) {
         mAppWidgetHostViewPreview = appWidgetHostViewPreview;
+        if (appWidgetHostViewPreview instanceof LawnchairAppWidgetHostView) {
+            ((LawnchairAppWidgetHostView) appWidgetHostViewPreview).disablePreviewMode();
+        }
     }
 
     /**
