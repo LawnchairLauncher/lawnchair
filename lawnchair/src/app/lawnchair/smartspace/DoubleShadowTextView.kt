@@ -3,54 +3,44 @@ package app.lawnchair.smartspace
 import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
-import androidx.core.graphics.ColorUtils
 import app.lawnchair.views.CustomTextView
-import com.android.launcher3.R
-import com.android.launcher3.util.Themes
+import com.android.launcher3.views.DoubleShadowBubbleTextView.ShadowInfo
 
 open class DoubleShadowTextView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : CustomTextView(context, attrs) {
 
-    private var drawShadow = true
-    private val keyShadowBlur = resources.getDimensionPixelSize(R.dimen.key_text_shadow_radius).toFloat()
-    private val keyShadowOffsetX = resources.getDimensionPixelSize(R.dimen.key_text_shadow_dx).toFloat()
-    private val keyShadowOffsetY = resources.getDimensionPixelSize(R.dimen.key_text_shadow_dy).toFloat()
-    private val keyShadowColor = Themes.getAttrColor(context, R.attr.keyShadowColor)
-    private val ambientShadowBlur = resources.getDimensionPixelSize(R.dimen.ambient_text_shadow_radius).toFloat()
-    private val ambientShadowColor = Themes.getAttrColor(context, R.attr.ambientShadowColor)
+    private val shadowInfo = ShadowInfo(context, attrs, 0)
 
     init {
-        updateDrawShadow(currentTextColor)
-    }
-
-    override fun setTextColor(color: Int) {
-        super.setTextColor(color)
-        updateDrawShadow(color)
-    }
-
-    private fun updateDrawShadow(var1: Int) {
-        drawShadow = ColorUtils.calculateLuminance(var1) > 0.5
+        setShadowLayer(shadowInfo.ambientShadowBlur, 0f, 0f, shadowInfo.ambientShadowColor)
     }
 
     override fun onDraw(canvas: Canvas) {
-        if (!drawShadow) {
-            paint.clearShadowLayer()
+        // If text is transparent or shadow alpha is 0, don't draw any shadow
+        if (shadowInfo.skipDoubleShadow(this)) {
             super.onDraw(canvas)
-        } else {
-            paint.setShadowLayer(ambientShadowBlur, 0.0f, 0.0f, ambientShadowColor)
-            super.onDraw(canvas)
-            canvas.save()
-            canvas.clipRect(
-                scrollX, scrollY + extendedPaddingTop,
-                scrollX + width, scrollY + height
-            )
-            paint.setShadowLayer(
-                keyShadowBlur, keyShadowOffsetX, keyShadowOffsetY,
-                keyShadowColor
-            )
-            super.onDraw(canvas)
-            canvas.restore()
+            return
         }
+
+        // We enhance the shadow by drawing the shadow twice
+        paint.setShadowLayer(shadowInfo.ambientShadowBlur, 0f, 0f, shadowInfo.ambientShadowColor)
+
+        super.onDraw(canvas)
+        canvas.save()
+        canvas.clipRect(
+            scrollX, scrollY + extendedPaddingTop,
+            scrollX + width,
+            scrollY + height
+        )
+
+        paint.setShadowLayer(
+            shadowInfo.keyShadowBlur,
+            shadowInfo.keyShadowOffsetX,
+            shadowInfo.keyShadowOffsetY,
+            shadowInfo.keyShadowColor
+        )
+        super.onDraw(canvas)
+        canvas.restore()
     }
 }

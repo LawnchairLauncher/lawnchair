@@ -198,5 +198,12 @@
         <item name="android:fontFamily">google-sans</item>
         <item name="customFontType">@id/font_heading</item>
         <item name="android:lineHeight">24sp</item>
+
+        <item name="ambientShadowBlur">@dimen/ambient_text_shadow_radius</item>
+        <item name="ambientShadowColor">?attr/workspaceAmbientShadowColor</item>
+        <item name="keyShadowBlur">@dimen/key_text_shadow_radius</item>
+        <item name="keyShadowColor">?attr/workspaceAmbientShadowColor</item>
+        <item name="keyShadowOffsetX">@dimen/key_text_shadow_dx</item>
+        <item name="keyShadowOffsetY">@dimen/key_text_shadow_dy</item>
     </style>
 </resources>
