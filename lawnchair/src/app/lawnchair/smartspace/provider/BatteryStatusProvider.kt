@@ -11,7 +11,7 @@ import app.lawnchair.smartspace.model.SmartspaceTarget
 import com.android.launcher3.R
 import kotlinx.coroutines.flow.MutableStateFlow
 
-class BatteryStatusProvider(private val context: Context) : SmartspaceDataSource {
+class BatteryStatusProvider(context: Context) : SmartspaceDataSource(context, { smartspaceBatteryStatus }) {
 
     private val batteryReceiver = object : BroadcastReceiver() {
 
@@ -30,7 +30,7 @@ class BatteryStatusProvider(private val context: Context) : SmartspaceDataSource
     private var level = 100
 
     private val targetsFlow = MutableStateFlow(emptyList<SmartspaceTarget>())
-    override val targets get() = targetsFlow
+    override val internalTargets get() = targetsFlow
 
     init {
         context.registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))

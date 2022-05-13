@@ -10,13 +10,13 @@ import app.lawnchair.smartspace.model.SmartspaceTarget
 import com.android.launcher3.R
 import kotlinx.coroutines.flow.MutableStateFlow
 
-class NowPlayingProvider(private val context: Context) : SmartspaceDataSource {
+class NowPlayingProvider(context: Context) : SmartspaceDataSource(context, { smartspaceNowPlaying }) {
 
     private val media = MediaListener(context, this::reload).also { it.onResume() }
     private val defaultIcon = Icon.createWithResource(context, R.drawable.ic_music_note)
 
     private val targetsFlow = MutableStateFlow(emptyList<SmartspaceTarget>())
-    override val targets get() = targetsFlow
+    override val internalTargets get() = targetsFlow
 
     private fun getSmartspaceTarget(): SmartspaceTarget? {
         val tracking = media.tracking ?: return null

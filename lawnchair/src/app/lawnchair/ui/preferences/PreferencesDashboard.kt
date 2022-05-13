@@ -34,6 +34,12 @@ fun PreferencesDashboard() {
         actions = { PreferencesOverflowMenu() }
     ) {
         PreferenceCategory(
+            label = stringResource(R.string.smartspace_widget),
+            iconResource = R.drawable.ic_general,
+            route = Routes.SMARTSPACE
+        )
+
+        PreferenceCategory(
             label = stringResource(R.string.general_label),
             description = stringResource(R.string.general_description),
             iconResource = R.drawable.ic_general,

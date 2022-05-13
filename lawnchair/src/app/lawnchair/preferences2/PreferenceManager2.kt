@@ -258,6 +258,21 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = { reloadHelper.recreate() }
     )
 
+    val smartspaceAagWidget = preference(
+        key = booleanPreferencesKey("enable_smartspace_aag_widget"),
+        defaultValue = true
+    )
+
+    val smartspaceBatteryStatus = preference(
+        key = booleanPreferencesKey("enable_smartspace_battery_status"),
+        defaultValue = true
+    )
+
+    val smartspaceNowPlaying = preference(
+        key = booleanPreferencesKey("enable_smartspace_now_playing"),
+        defaultValue = true
+    )
+
     init {
         initializeIconShape(iconShape.firstBlocking())
         iconShape.get()

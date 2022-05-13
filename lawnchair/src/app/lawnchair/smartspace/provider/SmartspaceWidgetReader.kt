@@ -21,15 +21,14 @@ import app.lawnchair.util.getAllChildren
 import app.lawnchair.util.pendingIntent
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 
-class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource {
+class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(context, { smartspaceAagWidget }) {
 
     private val scope = MainScope()
     private val targetsFlow = MutableStateFlow(listOf(dummyTarget))
-    override val targets get() = targetsFlow
+    override val internalTargets get() = targetsFlow
+    override val disabledTargets = flowOf(listOf(dummyTarget))
 
     private var currentJob: Job? = null
 
