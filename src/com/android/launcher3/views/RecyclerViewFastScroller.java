@@ -20,6 +20,8 @@ import static android.view.HapticFeedbackConstants.CLOCK_TICK;
 
 import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
 
+import static com.android.launcher3.util.UiThreadHelper.hideKeyboardAsync;
+
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
@@ -283,6 +285,9 @@ public class RecyclerViewFastScroller extends View {
                 }
                 break;
             case MotionEvent.ACTION_UP:
+                hideKeyboardAsync(ActivityContext.lookupContext(getContext()),
+                        getApplicationWindowToken());
+                break;
             case MotionEvent.ACTION_CANCEL:
                 mRv.onFastScrollCompleted();
                 mTouchOffsetY = 0;

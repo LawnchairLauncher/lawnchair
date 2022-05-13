@@ -53,6 +53,7 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.accessibility.BaseAccessibilityDelegate;
 import com.android.launcher3.dot.DotInfo;
+import com.android.launcher3.dragndrop.DragOptions.PreDragCondition;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.IconShape;
@@ -65,12 +66,11 @@ import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
-import com.android.launcher3.model.data.PackageItemInfo;
-import com.android.launcher3.model.data.SearchActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.util.SafeCloseable;
+import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.views.ActivityContext;
-import com.android.launcher3.views.BubbleTextHolder;
 import com.android.launcher3.views.IconLabelDotView;
 
 import java.text.NumberFormat;
@@ -174,7 +174,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private HandlerRunnable mIconLoadRequest;
 
     private boolean mEnableIconUpdateAnimation = false;
-    private BubbleTextHolder mBubbleTextHolder;
 
     public BubbleTextView(Context context) {
         this(context, null, 0);
@@ -253,7 +252,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
      */
     public void reset() {
         mDotInfo = null;
-        mDotParams.color = Color.TRANSPARENT;
+        mDotParams.dotColor = Color.TRANSPARENT;
+        mDotParams.appColor = Color.TRANSPARENT;
         cancelDotScaleAnim();
         mDotParams.scale = 0f;
         mForceHideDot = false;
@@ -361,15 +361,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         setDownloadStateContentDescription(info, info.getProgressLevel());
     }
 
-    private void setItemInfo(ItemInfoWithIcon itemInfo) {
+    protected void setItemInfo(ItemInfoWithIcon itemInfo) {
         setTag(itemInfo);
-        if (mBubbleTextHolder != null) {
-            mBubbleTextHolder.onItemInfoUpdated(itemInfo);
-        }
-    }
-
-    public void setBubbleTextHolder(BubbleTextHolder bubbleTextHolder) {
-        mBubbleTextHolder = bubbleTextHolder;
     }
 
     @UiThread
@@ -381,7 +374,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             flags |= FLAG_NO_BADGE;
         }
         FastBitmapDrawable iconDrawable = info.newIcon(getContext(), flags);
-        mDotParams.color = iconDrawable.getIconColor();
+        mDotParams.appColor = iconDrawable.getIconColor();
+        mDotParams.dotColor = getContext().getResources()
+                .getColor(android.R.color.system_accent3_100, getContext().getTheme());
         setIcon(iconDrawable);
         applyLabel(info);
     }
@@ -917,10 +912,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             } else if (info instanceof WorkspaceItemInfo) {
                 applyFromWorkspaceItem((WorkspaceItemInfo) info);
                 mActivity.invalidateParent(info);
-            } else if (info instanceof PackageItemInfo) {
-                applyFromItemInfoWithIcon((PackageItemInfo) info);
-            } else if (info instanceof SearchActionItemInfo) {
-                applyFromItemInfoWithIcon((SearchActionItemInfo) info);
+            } else if (info != null) {
+                applyFromItemInfoWithIcon(info);
             }
 
             mDisableRelayout = false;
@@ -1057,5 +1050,20 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         args.put("app_name", appName);
         args.put("count", notificationCount);
         return icuCountFormat.format(args);
+    }
+
+    /**
+     * Starts a long press action and returns the corresponding pre-drag condition
+     */
+    public PreDragCondition startLongPressAction() {
+        PopupContainerWithArrow popup = PopupContainerWithArrow.showForIcon(this);
+        return popup != null ? popup.createPreDragCondition(true) : null;
+    }
+
+    /**
+     * Returns true if the view can show long-press popup
+     */
+    public boolean canShowLongPressPopup() {
+        return getTag() instanceof ItemInfo && ShortcutUtil.supportsShortcuts((ItemInfo) getTag());
     }
 }
