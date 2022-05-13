@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
@@ -27,6 +28,7 @@ import app.lawnchair.ui.preferences.components.GridOverridesPreview
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 
 @ExperimentalAnimationApi
@@ -81,11 +83,13 @@ fun HomeScreenGridPreferences() {
         }
 
         val navController = LocalNavController.current
+        val context = LocalContext.current
         val applyOverrides = {
             prefs.batchEdit {
                 columnsAdapter.onChange(columns.value)
                 rowsAdapter.onChange(rows.value)
             }
+            LauncherAppState.getIDP(context).onPreferencesChanged(context)
             navController.popBackStack()
         }
 

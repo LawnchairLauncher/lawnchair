@@ -41,8 +41,8 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", false, reloadIcons)
     val addIconToHome = BoolPref("pref_add_icon_to_home", true)
     val hotseatColumns = IdpIntPref("pref_hotseatColumns", { numHotseatIcons }, reloadGrid)
-    val workspaceColumns = IdpIntPref("pref_workspaceColumns", { numColumns }, reloadGrid)
-    val workspaceRows = IdpIntPref("pref_workspaceRows", { numRows }, reloadGrid)
+    val workspaceColumns = IdpIntPref("pref_workspaceColumns", { numColumns })
+    val workspaceRows = IdpIntPref("pref_workspaceRows", { numRows })
     val folderRows = IdpIntPref("pref_folderRows", { numFolderRows }, reloadGrid)
 
     val drawerOpacity = FloatPref("pref_drawerOpacity", 1F, recreate)
