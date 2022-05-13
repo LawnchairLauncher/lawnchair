@@ -2,7 +2,9 @@ package app.lawnchair
 
 import android.appwidget.AppWidgetProviderInfo
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.RemoteViews
@@ -19,19 +21,17 @@ class LawnchairAppWidgetHostView @JvmOverloads constructor(
     private var customView: ViewGroup? = null
 
     override fun setAppWidget(appWidgetId: Int, info: AppWidgetProviderInfo) {
+        inflateCustomView(info)
         super.setAppWidget(appWidgetId, info)
-        customView = null
-
-        inflateCustomView()
     }
 
     fun disablePreviewMode() {
         previewMode = false
-        inflateCustomView()
+        inflateCustomView(appWidgetInfo)
     }
 
-    private fun inflateCustomView() {
-        val layoutId = customLayouts[appWidgetInfo.provider]
+    private fun inflateCustomView(info: AppWidgetProviderInfo) {
+        val layoutId = customLayouts[info.provider]
         if (layoutId == null) {
             customView = null
             return
@@ -47,6 +47,20 @@ class LawnchairAppWidgetHostView @JvmOverloads constructor(
     override fun updateAppWidget(remoteViews: RemoteViews?) {
         if (customView != null) return
         super.updateAppWidget(remoteViews)
+    }
+
+    override fun getDefaultView(): View {
+        if (customView != null) return getEmptyView()
+        return super.getDefaultView()
+    }
+
+    override fun getErrorView(): View {
+        if (customView != null) return getEmptyView()
+        return super.getErrorView()
+    }
+
+    private fun getEmptyView(): View {
+        return View(context)
     }
 
     companion object {
