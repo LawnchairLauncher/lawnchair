@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.core.content.getSystemService
+import app.lawnchair.LawnchairApp
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 import com.android.launcher3.util.MainThreadInitializedObject
@@ -109,6 +110,7 @@ class LawnchairBugReporter(private val context: Context) {
             .appendLine("version.release: ${Build.VERSION.RELEASE}")
             .appendLine("version.sdk_int: ${Build.VERSION.SDK_INT}")
             .appendLine("display.density_dpi: ${context.resources.displayMetrics.densityDpi}")
+            .appendLine("isRecentsEnabled: ${LawnchairApp.isRecentsEnabled}")
             .appendLine()
             .appendLine("error: $error")
             .also {
