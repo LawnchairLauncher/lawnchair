@@ -16,7 +16,7 @@ class IcuDateTextView @JvmOverloads constructor(
 ) : DoubleShadowTextView(context, attrs) {
 
     private var formatter: DateFormat? = null
-    private val mTicker = this::onTimeTick
+    private val ticker = this::onTimeTick
     private val intentReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             onTimeChanged(intent.action != Intent.ACTION_TIME_TICK)
@@ -26,8 +26,8 @@ class IcuDateTextView @JvmOverloads constructor(
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         val intentFilter = IntentFilter()
-        intentFilter.addAction("android.intent.action.TIME_SET")
-        intentFilter.addAction("android.intent.action.TIMEZONE_CHANGED")
+        intentFilter.addAction(Intent.ACTION_TIME_CHANGED)
+        intentFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED)
         context.registerReceiver(intentReceiver, intentFilter)
         onTimeChanged(true)
     }
@@ -57,6 +57,12 @@ class IcuDateTextView @JvmOverloads constructor(
     private fun onTimeTick() {
         onTimeChanged(false)
         val uptimeMillis: Long = SystemClock.uptimeMillis()
-        handler.postAtTime(mTicker, uptimeMillis + (1000 - uptimeMillis % 1000))
+        handler?.postAtTime(ticker, uptimeMillis + (1000 - uptimeMillis % 1000))
+    }
+
+    override fun onVisibilityAggregated(isVisible: Boolean) {
+        super.onVisibilityAggregated(isVisible)
+        handler?.removeCallbacks(ticker)
+        ticker()
     }
 }
