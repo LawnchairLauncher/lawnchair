@@ -39,7 +39,6 @@ public class MainProcessInitializer implements ResourceBasedOverride {
     private static final String TAG = "MainProcessInitializer";
 
     public static void initialize(Context context) {
-        if (true) return;
         try {
             Unseal.unseal();
             Log.i(TAG, "Unseal success!");
