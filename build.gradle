@@ -128,7 +128,7 @@ android {
 
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 31
+        targetSdkVersion 32
         versionCode 12_00_05
         versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
