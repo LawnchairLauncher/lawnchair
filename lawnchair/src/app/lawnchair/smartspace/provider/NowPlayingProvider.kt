@@ -8,17 +8,22 @@ import app.lawnchair.smartspace.model.SmartspaceAction
 import app.lawnchair.smartspace.model.SmartspaceScores
 import app.lawnchair.smartspace.model.SmartspaceTarget
 import com.android.launcher3.R
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
 
 class NowPlayingProvider(context: Context) : SmartspaceDataSource(context, { smartspaceNowPlaying }) {
 
-    private val media = MediaListener(context, this::reload).also { it.onResume() }
     private val defaultIcon = Icon.createWithResource(context, R.drawable.ic_music_note)
 
-    private val targetsFlow = MutableStateFlow(emptyList<SmartspaceTarget>())
-    override val internalTargets get() = targetsFlow
+    override val internalTargets = callbackFlow {
+        val mediaListener = MediaListener(context) {
+            trySend(listOfNotNull(getSmartspaceTarget(it)))
+        }
+        mediaListener.onResume()
+        awaitClose { mediaListener.onPause() }
+    }
 
-    private fun getSmartspaceTarget(): SmartspaceTarget? {
+    private fun getSmartspaceTarget(media: MediaListener): SmartspaceTarget? {
         val tracking = media.tracking ?: return null
         val title = tracking.info.title ?: return null
 
@@ -46,13 +51,5 @@ class NowPlayingProvider(context: Context) : SmartspaceDataSource(context, { sma
             score = SmartspaceScores.SCORE_MEDIA,
             featureType = SmartspaceTarget.FeatureType.FEATURE_MEDIA
         )
-    }
-
-    private fun reload() {
-        targetsFlow.value = listOfNotNull(getSmartspaceTarget())
-    }
-
-    override fun destroy() {
-        media.onPause()
     }
 }

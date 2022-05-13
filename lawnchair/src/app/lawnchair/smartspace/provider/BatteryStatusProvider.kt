@@ -1,6 +1,5 @@
 package app.lawnchair.smartspace.provider
 
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -8,35 +7,24 @@ import android.os.BatteryManager
 import app.lawnchair.smartspace.model.SmartspaceAction
 import app.lawnchair.smartspace.model.SmartspaceScores
 import app.lawnchair.smartspace.model.SmartspaceTarget
+import app.lawnchair.util.broadcastReceiverFlow
 import com.android.launcher3.R
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 
 class BatteryStatusProvider(context: Context) : SmartspaceDataSource(context, { smartspaceBatteryStatus }) {
 
-    private val batteryReceiver = object : BroadcastReceiver() {
-
-        override fun onReceive(context: Context?, intent: Intent) {
+    override val internalTargets = broadcastReceiverFlow(context, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        .map { intent ->
             val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
-            charging = status == BatteryManager.BATTERY_STATUS_CHARGING
-            full = status == BatteryManager.BATTERY_STATUS_FULL
-            level = (100f
+            val charging = status == BatteryManager.BATTERY_STATUS_CHARGING
+            val full = status == BatteryManager.BATTERY_STATUS_FULL
+            val level = (100f
                     * intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
                     / intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100)).toInt()
-            targetsFlow.value = listOfNotNull(getSmartspaceTarget())
+            listOfNotNull(getSmartspaceTarget(charging, full, level))
         }
-    }
-    private var charging = false
-    private var full = false
-    private var level = 100
 
-    private val targetsFlow = MutableStateFlow(emptyList<SmartspaceTarget>())
-    override val internalTargets get() = targetsFlow
-
-    init {
-        context.registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-    }
-
-    private fun getSmartspaceTarget(): SmartspaceTarget? {
+    private fun getSmartspaceTarget(charging: Boolean, full: Boolean, level: Int): SmartspaceTarget? {
         val title = when {
             full -> return null
             charging -> context.getString(R.string.smartspace_battery_charging)
@@ -54,9 +42,5 @@ class BatteryStatusProvider(context: Context) : SmartspaceDataSource(context, { 
             score = SmartspaceScores.SCORE_BATTERY,
             featureType = SmartspaceTarget.FeatureType.FEATURE_CALENDAR
         )
-    }
-
-    override fun destroy() {
-        context.unregisterReceiver(batteryReceiver)
     }
 }

@@ -12,6 +12,8 @@ import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.view.KeyEvent;
 
+import androidx.core.util.Consumer;
+
 import app.lawnchair.NotificationManager;
 import app.lawnchair.util.FlowCollector;
 
@@ -35,9 +37,9 @@ public class MediaListener extends MediaController.Callback {
     private final FlowCollector<List<StatusBarNotification>> mFlowCollector;
     private List<StatusBarNotification> mNotifications = Collections.emptyList();
 
-    public MediaListener(Context context, Runnable onChange) {
+    public MediaListener(Context context, Consumer<MediaListener> onChange) {
         mContext = context;
-        mOnChange = onChange;
+        mOnChange = () -> onChange.accept(this);
         NotificationManager notificationManager = NotificationManager.INSTANCE.get(context);
         mFlowCollector = new FlowCollector<>(
                 notificationManager.getNotifications(),
