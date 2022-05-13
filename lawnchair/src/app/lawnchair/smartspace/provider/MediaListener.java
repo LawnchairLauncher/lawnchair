@@ -18,6 +18,7 @@ import app.lawnchair.util.FlowCollector;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Paused mode is not supported on Marshmallow because the MediaSession is missing
@@ -172,6 +173,19 @@ public class MediaListener extends MediaController.Callback {
 
         public CharSequence getAlbum() {
             return album;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            MediaInfo mediaInfo = (MediaInfo) o;
+            return Objects.equals(title, mediaInfo.title) && Objects.equals(artist, mediaInfo.artist) && Objects.equals(album, mediaInfo.album);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(title, artist, album);
         }
     }
 
