@@ -32,6 +32,7 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.model.data.WorkspaceItemFactory;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.PackageInstallInfo;
@@ -107,8 +108,8 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                 }
 
                 if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                    if (item instanceof AppInfo) {
-                        item = ((AppInfo) item).makeWorkspaceItem();
+                    if (item instanceof WorkspaceItemFactory) {
+                        item = ((WorkspaceItemFactory) item).makeWorkspaceItem(app.getContext());
                     }
                 }
                 if (item != null) {
@@ -130,8 +131,8 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                 if (item instanceof WorkspaceItemInfo || item instanceof FolderInfo ||
                         item instanceof LauncherAppWidgetInfo) {
                     itemInfo = item;
-                } else if (item instanceof AppInfo) {
-                    itemInfo = ((AppInfo) item).makeWorkspaceItem();
+                } else if (item instanceof WorkspaceItemFactory) {
+                    itemInfo = ((WorkspaceItemFactory) item).makeWorkspaceItem(app.getContext());
                 } else {
                     throw new RuntimeException("Unexpected info type");
                 }
@@ -180,7 +181,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                         // App was installed while launcher was in the background,
                         // or app was already installed for another user.
                         itemInfo = new AppInfo(app.getContext(), activities.get(0), item.user)
-                                .makeWorkspaceItem();
+                                .makeWorkspaceItem(app.getContext());
 
                         if (shortcutExists(dataModel, itemInfo.getIntent(), itemInfo.user)) {
                             // We need this additional check here since we treat all auto added

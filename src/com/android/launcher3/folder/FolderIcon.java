@@ -68,11 +68,11 @@ import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager;
-import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.FolderInfo.FolderListener;
 import com.android.launcher3.model.data.FolderInfo.LabelState;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemFactory;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Executors;
@@ -284,7 +284,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         mBackground.animateToAccept(cl, lp.cellX, lp.cellY);
         mOpenAlarm.setOnAlarmListener(mOnOpenListener);
         if (SPRING_LOADING_ENABLED &&
-                ((dragInfo instanceof AppInfo)
+                ((dragInfo instanceof WorkspaceItemFactory)
                         || (dragInfo instanceof WorkspaceItemInfo)
                         || (dragInfo instanceof PendingAddShortcutInfo))) {
             mOpenAlarm.setAlarm(ON_OPEN_DELAY);
@@ -486,9 +486,9 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
     public void onDrop(DragObject d, boolean itemReturnedOnFailedDrop) {
         WorkspaceItemInfo item;
-        if (d.dragInfo instanceof AppInfo) {
+        if (d.dragInfo instanceof WorkspaceItemFactory) {
             // Came from all apps -- make a copy
-            item = ((AppInfo) d.dragInfo).makeWorkspaceItem();
+            item = ((WorkspaceItemFactory) d.dragInfo).makeWorkspaceItem(getContext());
         } else if (d.dragSource instanceof BaseItemDragListener){
             // Came from a different window -- make a copy
             item = new WorkspaceItemInfo((WorkspaceItemInfo) d.dragInfo);
@@ -637,7 +637,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
             // If we are animating to the accepting state, animate the dot out.
             mDotParams.scale = Math.max(0, mDotScale - mBackground.getScaleProgress());
-            mDotParams.color = mBackground.getDotColor();
+            mDotParams.dotColor = mBackground.getDotColor();
             mDotRenderer.draw(canvas, mDotParams);
         }
     }

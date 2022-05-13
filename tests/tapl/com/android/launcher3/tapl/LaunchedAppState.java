@@ -129,42 +129,25 @@ public final class LaunchedAppState extends Background {
 
                 try (LauncherInstrumentation.Closable c3 = launcher.addContextLayer(
                         "moved pointer to drop point")) {
-                    dropDraggedItem(
-                            launcher,
-                            launchable,
-                            expectedNewPackageName,
-                            endPoint, downTime,
-                            itemVisibleCenter,
-                            itemVisibleBounds,
-                            itemLabel,
-                            expectedExistingPackageName);
+                    LauncherInstrumentation.log("SplitscreenDragSource.dragToSplitscreen: "
+                            + "before drop " + itemVisibleCenter + " in " + itemVisibleBounds);
+                    launcher.sendPointer(
+                            downTime,
+                            SystemClock.uptimeMillis(),
+                            MotionEvent.ACTION_UP,
+                            endPoint,
+                            LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE_WITHOUT_PILFER);
+                    LauncherInstrumentation.log("SplitscreenDragSource.dragToSplitscreen: "
+                            + "after drop");
+
+                    try (LauncherInstrumentation.Closable c4 = launcher.addContextLayer(
+                            "dropped item")) {
+                        launchable.assertAppLaunched(itemLabel, By.pkg(expectedNewPackageName));
+                        launchable.assertAppLaunched(
+                                itemLabel, By.pkg(expectedExistingPackageName));
+                    }
                 }
             }
-        }
-    }
-
-    private static void dropDraggedItem(
-            LauncherInstrumentation launcher, Launchable launchable, String expectedNewPackageName,
-            Point endPoint, long downTime, Point itemVisibleCenter, Rect itemVisibleBounds,
-            String itemLabel, String expectedExistingPackageName) {
-        LauncherInstrumentation.log("SplitscreenDragSource.dragToSplitscreen before drop "
-                + itemVisibleCenter + " in " + itemVisibleBounds);
-
-        launchable.executeAndWaitForWindowChange(() -> {
-            launcher.sendPointer(
-                    downTime,
-                    SystemClock.uptimeMillis(),
-                    MotionEvent.ACTION_UP,
-                    endPoint,
-                    LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE_WITHOUT_PILFER);
-            LauncherInstrumentation.log("SplitscreenDragSource.dragToSplitscreen: after "
-                    + "drop");
-        }, itemLabel, "dropping taskbar item");
-
-        try (LauncherInstrumentation.Closable c = launcher.addContextLayer("dropped item")) {
-            launchable.assertAppLaunched(itemLabel, By.pkg(expectedNewPackageName));
-            launcher.checkPackagesVisible(
-                    new String[] {expectedNewPackageName, expectedExistingPackageName});
         }
     }
 }

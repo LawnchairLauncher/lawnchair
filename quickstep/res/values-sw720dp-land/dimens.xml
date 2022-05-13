@@ -16,5 +16,5 @@
 -->
 <resources>
     <!--  Overview actions  -->
-    <dimen name="overview_actions_top_margin">12dp</dimen>
+    <dimen name="overview_actions_top_margin">20dp</dimen>
 </resources>
