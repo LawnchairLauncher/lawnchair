@@ -51,6 +51,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.os.SystemProperties;
 import android.util.Log;
 import android.view.Choreographer;
 import android.view.InputEvent;
@@ -126,6 +127,9 @@ public class TouchInteractionService extends Service
         implements ProtoTraceable<LauncherTraceProto.Builder> {
 
     private static final String TAG = "TouchInteractionService";
+
+    private static final boolean BUBBLES_HOME_GESTURE_ENABLED =
+            SystemProperties.getBoolean("persist.wm.debug.bubbles_home_gesture", false);
 
     private static final String KEY_BACK_NOTIFICATION_COUNT = "backNotificationCount";
     private static final String NOTIFY_ACTION_BACK = "com.android.quickstep.action.BACK_GESTURE";
@@ -698,15 +702,29 @@ public class TouchInteractionService extends Service
                 base = new TaskbarStashInputConsumer(this, base, mInputMonitorCompat, tac);
             }
 
-            // If Bubbles is expanded, use the overlay input consumer, which will close Bubbles
-            // instead of going all the way home when a swipe up is detected.
-            // Notification panel can be expanded on top of expanded bubbles. Bubbles remain
-            // expanded in the back. Make sure swipe up is not passed to bubbles in this case.
-            if ((mDeviceState.isBubblesExpanded() && !mDeviceState.isNotificationPanelExpanded())
-                    || mDeviceState.isSystemUiDialogShowing()) {
+            if (mDeviceState.isBubblesExpanded()) {
+                if (BUBBLES_HOME_GESTURE_ENABLED) {
+                    // Bubbles can handle home gesture itself.
+                    base = getDefaultInputConsumer();
+                } else {
+                    // If Bubbles is expanded, use the overlay input consumer, which will close
+                    // Bubbles instead of going all the way home when a swipe up is detected.
+                    // Notification panel can be expanded on top of expanded bubbles. Bubbles remain
+                    // expanded in the back. Make sure swipe up is not passed to bubbles in this
+                    // case.
+                    if (!mDeviceState.isNotificationPanelExpanded()) {
+                        base = new SysUiOverlayInputConsumer(
+                                getBaseContext(), mDeviceState, mInputMonitorCompat);
+                    }
+                }
+            }
+
+            if (mDeviceState.isSystemUiDialogShowing()) {
                 base = new SysUiOverlayInputConsumer(
                         getBaseContext(), mDeviceState, mInputMonitorCompat);
             }
+
+
 
             if (mDeviceState.isScreenPinningActive()) {
                 // Note: we only allow accessibility to wrap this, and it replaces the previous
