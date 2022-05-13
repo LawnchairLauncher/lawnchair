@@ -29,6 +29,7 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_N
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
 
 import android.animation.AnimatorSet;
+import android.animation.ValueAnimator;
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -60,6 +61,8 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
@@ -732,6 +735,45 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
     protected boolean isNavBarForceVisible() {
         return mIsNavBarForceVisible;
+    }
+
+    /**
+     * Displays a single frame of the Launcher start from SUW animation.
+     *
+     * This animation is a combination of the Launcher resume animation, which animates the hotseat
+     * icons into position, the Taskbar unstash to hotseat animation, which animates the Taskbar
+     * stash bar into the hotseat icons, and an override to prevent showing the Taskbar all apps
+     * button.
+     *
+     * This should be used to run a Taskbar unstash to hotseat animation whose progress matches a
+     * swipe progress.
+     *
+     * @param duration a placeholder duration to be used to ensure all full-length
+     *                 sub-animations are properly coordinated. This duration should not actually
+     *                 be used since this animation tracks a swipe progress.
+     */
+    protected AnimatorPlaybackController createLauncherStartFromSuwAnim(int duration) {
+        AnimatorSet fullAnimation = new AnimatorSet();
+        fullAnimation.setDuration(duration);
+
+        TaskbarUIController uiController = mControllers.uiController;
+        if (uiController instanceof LauncherTaskbarUIController) {
+            ((LauncherTaskbarUIController) uiController).addLauncherResumeAnimation(
+                    fullAnimation, duration);
+        }
+        mControllers.taskbarStashController.addUnstashToHotseatAnimation(fullAnimation, duration);
+
+        if (!FeatureFlags.ENABLE_ALL_APPS_BUTTON_IN_HOTSEAT.get()) {
+            ValueAnimator alphaOverride = ValueAnimator.ofFloat(0, 1);
+            alphaOverride.setDuration(duration);
+            alphaOverride.addUpdateListener(a -> {
+                // Override the alpha updates in the icon alignment animation.
+                mControllers.taskbarViewController.getAllAppsButtonView().setAlpha(0);
+            });
+            fullAnimation.play(alphaOverride);
+        }
+
+        return AnimatorPlaybackController.wrap(fullAnimation, duration);
     }
 
     /**
