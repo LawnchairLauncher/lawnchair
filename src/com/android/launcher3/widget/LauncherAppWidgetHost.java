@@ -46,6 +46,8 @@ import com.android.launcher3.widget.custom.CustomWidgetManager;
 import java.util.ArrayList;
 import java.util.function.IntConsumer;
 
+import app.lawnchair.LawnchairAppWidgetHostView;
+
 
 /**
  * Specific {@link AppWidgetHost} that creates our {@link LauncherAppWidgetHostView}
@@ -96,7 +98,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
             view = mPendingViews.get(appWidgetId);
             mPendingViews.remove(appWidgetId);
         } else {
-            view = new LauncherAppWidgetHostView(context);
+            view = new LawnchairAppWidgetHostView(context);
         }
         mViews.put(appWidgetId, view);
         return view;
@@ -216,7 +218,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     public AppWidgetHostView createView(Context context, int appWidgetId,
             LauncherAppWidgetProviderInfo appWidget) {
         if (appWidget.isCustomWidget()) {
-            LauncherAppWidgetHostView lahv = new LauncherAppWidgetHostView(context);
+            LauncherAppWidgetHostView lahv = new LawnchairAppWidgetHostView(context);
             lahv.setAppWidget(0, appWidget);
             CustomWidgetManager.INSTANCE.get(context).onViewCreated(lahv);
             return lahv;

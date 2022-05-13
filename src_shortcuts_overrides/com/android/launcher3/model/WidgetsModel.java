@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.collection.ArrayMap;
 
 import com.android.launcher3.AppFilter;
+import com.android.launcher3.BuildConfig;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
@@ -41,6 +42,7 @@ import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 import com.android.launcher3.widget.picker.WidgetsDiffReporter;
+import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +54,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
+
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Widgets data model that is used by the adapters of the widget views and controllers.
@@ -267,18 +271,23 @@ public class WidgetsModel {
 
         private final InvariantDeviceProfile mIdp;
         private final AppFilter mAppFilter;
+        private PreferenceManager2 prefs;
 
         WidgetValidityCheck(LauncherAppState app) {
             mIdp = app.getInvariantDeviceProfile();
             mAppFilter = new AppFilter(app.getContext());
+            prefs = PreferenceManager2.getInstance(app.getContext());
         }
 
         @Override
         public boolean test(WidgetItem item) {
             if (item.widgetInfo != null) {
                 if ((item.widgetInfo.getWidgetFeatures() & WIDGET_FEATURE_HIDE_FROM_PICKER) != 0) {
-                    // Widget is hidden from picker
-                    return false;
+                    boolean isSelf = item.componentName.getPackageName().equals(BuildConfig.APPLICATION_ID);
+                    if (!isSelf || !PreferenceExtensionsKt.firstBlocking(prefs.getEnableEnhancedSmartspace())) {
+                        // Widget is hidden from picker
+                        return false;
+                    }
                 }
 
                 // Ensure that all widgets we show can be added on a workspace of this size

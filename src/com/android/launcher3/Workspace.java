@@ -130,6 +130,8 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import app.lawnchair.smartspace.SmartspaceAppWidgetProvider;
+
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
  * Each page contains a number of icons, folders or widgets the user can
@@ -1078,6 +1080,29 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         } else {
             mIsEventOverQsb = false;
         }
+        if (!mIsEventOverQsb) {
+            mIsEventOverQsb = isEventOverQsb(mXDown, mYDown);
+        }
+    }
+
+    private boolean isEventOverQsb(float x, float y) {
+        CellLayout target = (CellLayout) getChildAt(mCurrentPage);
+        ShortcutAndWidgetContainer container = target.getShortcutsAndWidgets();
+        mTempFXY[0] = x;
+        mTempFXY[1] = y;
+        Utilities.mapCoordInSelfToDescendant(container, this, mTempFXY);
+        for (int i = 0; i < container.getChildCount(); i++) {
+            View child = container.getChildAt(i);
+            Object tag = child.getTag();
+            if (!(tag instanceof LauncherAppWidgetInfo)) continue;
+            LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) tag;
+            if (!info.providerName.equals(SmartspaceAppWidgetProvider.componentName)) continue;
+
+            boolean isOverQsb = child.getLeft() <= mTempFXY[0] && child.getRight() >= mTempFXY[0]
+                    && child.getTop() <= mTempFXY[1] && child.getBottom() >= mTempFXY[1];
+            if (isOverQsb) return true;
+        }
+        return false;
     }
 
     @Override

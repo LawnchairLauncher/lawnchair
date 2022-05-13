@@ -46,6 +46,8 @@ import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.widget.dragndrop.AppWidgetHostViewDragListener;
 import com.android.launcher3.widget.util.WidgetSizes;
 
+import app.lawnchair.LawnchairAppWidgetHostView;
+
 /**
  * Extension of {@link DragPreviewProvider} with logic specific to pending widgets/shortcuts
  * dragged from the widget tray.
@@ -121,7 +123,7 @@ public class PendingItemDragHelper extends DragPreviewProvider {
             int[] previewSizeBeforeScale = new int[1];
 
             if (mRemoteViewsPreview != null) {
-                mAppWidgetHostViewPreview = new LauncherAppWidgetHostView(launcher);
+                mAppWidgetHostViewPreview = new LawnchairAppWidgetHostView(launcher);
                 mAppWidgetHostViewPreview.setAppWidget(/* appWidgetId= */ -1,
                         ((PendingAddWidgetInfo) mAddInfo).info);
                 DeviceProfile deviceProfile = launcher.getDeviceProfile();

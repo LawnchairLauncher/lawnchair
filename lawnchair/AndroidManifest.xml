@@ -100,6 +100,16 @@
             android:name="app.lawnchair.bugreport.UploaderService"
             android:process=":bugReport" />
 
+        <receiver android:name="app.lawnchair.smartspace.SmartspaceAppWidgetProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/smartspace_appwidget_info" />
+        </receiver>
+
         <meta-data
             android:name="xyz.paphonb.quickstepswitcher.minSdk"
             android:value="${quickstepMinSdk}" />

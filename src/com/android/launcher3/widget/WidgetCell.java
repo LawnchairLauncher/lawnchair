@@ -58,6 +58,8 @@ import com.android.launcher3.widget.util.WidgetSizes;
 
 import java.util.function.Consumer;
 
+import app.lawnchair.LawnchairAppWidgetHostView;
+
 /**
  * Represents the individual cell of the widget inside the widget tray. The preview is drawn
  * horizontally centered, and scaled down if needed.
@@ -299,7 +301,7 @@ public class WidgetCell extends LinearLayout {
         // a preview during drag & drop. And thus, we should use LauncherAppWidgetHostView, which
         // supports applying local color extraction during drag & drop.
         mAppWidgetHostViewPreview = isLauncherContext(context)
-                ? new LauncherAppWidgetHostView(context)
+                ? new LawnchairAppWidgetHostView(context)
                 : createAppWidgetHostView(context);
         LauncherAppWidgetProviderInfo launcherAppWidgetProviderInfo =
                 LauncherAppWidgetProviderInfo.fromProviderInfo(context, item.widgetInfo.clone());
