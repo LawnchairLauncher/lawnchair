@@ -120,23 +120,20 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
 
                 int maxWidth =
                         grid.allAppsCellWidthPx * grid.numShownAllAppsColumns + horizontalPadding;
-                int appsWidth = Math.min(width, maxWidth);
+                int appsWidth = Math.min(width - getPaddingLeft() - getPaddingRight(), maxWidth);
 
                 int maxHeight =
                         grid.allAppsCellHeightPx * grid.numShownAllAppsColumns + verticalPadding;
-                int appsHeight = Math.min(height, maxHeight);
+                int appsHeight = Math.min(height - getPaddingTop() - getPaddingBottom(), maxHeight);
 
                 mAppsView.measure(
                         makeMeasureSpec(appsWidth, EXACTLY), makeMeasureSpec(appsHeight, EXACTLY));
-
             } else if (child == mAllAppsButton) {
                 int appsButtonSpec = makeMeasureSpec(grid.iconSizePx, EXACTLY);
                 mAllAppsButton.measure(appsButtonSpec, appsButtonSpec);
-
             } else if (child == mWorkspace) {
                 measureChildWithMargins(mWorkspace, widthMeasureSpec, 0, heightMeasureSpec,
                         grid.iconSizePx + grid.edgeMarginPx);
-
             } else {
                 measureChildWithMargins(child, widthMeasureSpec, 0, heightMeasureSpec, 0);
             }
