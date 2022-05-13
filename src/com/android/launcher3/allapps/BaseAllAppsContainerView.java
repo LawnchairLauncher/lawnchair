@@ -326,7 +326,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
     }
 
     protected boolean isPersonalTab() {
-        return mViewPager.getNextPage() == 0;
+        return mViewPager == null || mViewPager.getNextPage() == 0;
     }
 
     /**
