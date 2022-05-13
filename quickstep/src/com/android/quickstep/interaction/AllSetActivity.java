@@ -54,6 +54,7 @@ import androidx.core.graphics.ColorUtils;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.Executors;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.TouchInteractionService.TISBinder;
@@ -136,6 +137,10 @@ public class AllSetActivity extends Activity {
         startBackgroundAnimation();
     }
 
+    private void runOnUiHelperThread(Runnable runnable) {
+        Executors.UI_HELPER_EXECUTOR.execute(runnable);
+    }
+
     private void startBackgroundAnimation() {
         if (Utilities.ATLEAST_S && mVibrator != null && mVibrator.areAllPrimitivesSupported(
                 VibrationEffect.Composition.PRIMITIVE_THUD)) {
@@ -144,22 +149,22 @@ public class AllSetActivity extends Activity {
                         new Animator.AnimatorListener() {
                             @Override
                             public void onAnimationStart(Animator animation) {
-                                mVibrator.vibrate(getVibrationEffect());
+                                runOnUiHelperThread(() -> mVibrator.vibrate(getVibrationEffect()));
                             }
 
                             @Override
                             public void onAnimationRepeat(Animator animation) {
-                                mVibrator.vibrate(getVibrationEffect());
+                                runOnUiHelperThread(() -> mVibrator.vibrate(getVibrationEffect()));
                             }
 
                             @Override
                             public void onAnimationEnd(Animator animation) {
-                                mVibrator.cancel();
+                                runOnUiHelperThread(mVibrator::cancel);
                             }
 
                             @Override
                             public void onAnimationCancel(Animator animation) {
-                                mVibrator.cancel();
+                                runOnUiHelperThread(mVibrator::cancel);
                             }
                         };
             }
