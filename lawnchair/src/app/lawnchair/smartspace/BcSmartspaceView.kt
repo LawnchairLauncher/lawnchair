@@ -78,8 +78,9 @@ class BcSmartspaceView @JvmOverloads constructor(
         }
 
         val scale = height.toFloat() / smartspaceHeight.toFloat()
+        val width = (MeasureSpec.getSize(widthMeasureSpec).toFloat() / scale).roundToInt()
         super.onMeasure(
-            makeMeasureSpec((height.toFloat() / scale).roundToInt(), EXACTLY),
+            makeMeasureSpec(width, EXACTLY),
             makeMeasureSpec(smartspaceHeight, EXACTLY)
         )
         scaleX = scale
