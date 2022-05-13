@@ -51,7 +51,7 @@ public class ModelUtils {
      * specified screen.
      */
     public static <T extends ItemInfo> void filterCurrentWorkspaceItems(
-            IntSet currentScreenIds,
+            final IntSet currentScreenIds,
             ArrayList<T> allWorkspaceItems,
             ArrayList<T> currentScreenItems,
             ArrayList<T> otherScreenItems) {
