@@ -135,6 +135,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import app.lawnchair.LawnchairApp;
 import app.lawnchair.icons.shape.IconShapeManager;
 import app.lawnchair.theme.color.ColorTokens;
 
@@ -1472,6 +1473,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      * Returns true if we have permission to control remote app transisions
      */
     public boolean hasControlRemoteAppTransitionPermission() {
+        if (!LawnchairApp.isRecentsEnabled()) return false;
         return mLauncher.checkSelfPermission(CONTROL_REMOTE_APP_TRANSITION_PERMISSION)
                 == PackageManager.PERMISSION_GRANTED;
     }

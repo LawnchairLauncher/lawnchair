@@ -39,6 +39,7 @@ import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
+import app.lawnchair.LawnchairApp.Companion.showQuickstepWarningIfNecessary
 import app.lawnchair.gestures.GestureController
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.PreferenceManager
@@ -224,6 +225,8 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         }
 
         colorScheme = themeProvider.colorScheme
+
+        showQuickstepWarningIfNecessary()
     }
 
     override fun setupViews() {

@@ -25,10 +25,23 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.ui.AlertBottomSheetContent
+import app.lawnchair.ui.preferences.openAppInfo
 import app.lawnchair.util.restartLauncher
+import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.InvariantDeviceProfile
+import com.android.launcher3.Launcher
+import com.android.launcher3.R
 import com.android.quickstep.RecentsActivity
 import com.android.systemui.shared.system.QuickStepContract
 import java.io.File
@@ -36,7 +49,9 @@ import java.io.File
 class LawnchairApp : Application() {
 
     val activityHandler = ActivityHandler()
-    private val recentsEnabled by lazy { checkRecentsComponent() }
+    private val compatible = Build.VERSION.SDK_INT in BuildConfig.QUICKSTEP_MIN_SDK..BuildConfig.QUICKSTEP_MAX_SDK
+    private val isRecentsComponent by lazy { checkRecentsComponent() }
+    private val recentsEnabled get() = compatible && isRecentsComponent
     internal var accessibilityService: LawnchairAccessibilityService? = null
 
     override fun onCreate() {
@@ -121,11 +136,6 @@ class LawnchairApp : Application() {
     }
 
     private fun checkRecentsComponent(): Boolean {
-        if (Build.VERSION.SDK_INT !in BuildConfig.QUICKSTEP_MIN_SDK..BuildConfig.QUICKSTEP_MAX_SDK) {
-            Log.d(TAG, "API ${Build.VERSION.SDK_INT} unsupported, disabling recents")
-            return false
-        }
-
         val resId = resources.getIdentifier("config_recentsComponentName", "string", "android")
         if (resId == 0) {
             Log.d(TAG, "config_recentsComponentName not found, disabling recents")
@@ -172,6 +182,40 @@ class LawnchairApp : Application() {
         @JvmStatic
         val isRecentsEnabled: Boolean
             get() = instance?.recentsEnabled == true
+
+        fun Launcher.showQuickstepWarningIfNecessary() {
+            val launcher = this
+            if (!lawnchairApp.isRecentsComponent || isRecentsEnabled) return
+            ComposeBottomSheet.show(this) {
+                AlertBottomSheetContent(
+                    title = { Text(text = stringResource(id = R.string.quickstep_incompatible)) },
+                    text = {
+                        val description = stringResource(
+                            id = R.string.quickstep_incompatible_description,
+                            stringResource(id = R.string.derived_app_name),
+                            Build.VERSION.RELEASE
+                        )
+                        Text(text = description)
+                    },
+                    buttons = {
+                        OutlinedButton(
+                            onClick = {
+                                openAppInfo(launcher)
+                                close(true)
+                            }
+                        ) {
+                            Text(text = stringResource(id = R.string.app_info_drop_target_label))
+                        }
+                        Spacer(modifier = Modifier.requiredWidth(8.dp))
+                        Button(
+                            onClick = { close(true) }
+                        ) {
+                            Text(text = stringResource(id = android.R.string.ok))
+                        }
+                    }
+                )
+            }
+        }
     }
 }
 

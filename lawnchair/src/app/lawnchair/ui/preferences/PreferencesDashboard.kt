@@ -124,7 +124,7 @@ fun PreferencesOverflowMenu() {
     }
 }
 
-private fun openAppInfo(context: Context) {
+fun openAppInfo(context: Context) {
     val launcherApps = context.getSystemService<LauncherApps>()
     val componentName = ComponentName(context, LawnchairLauncher::class.java)
     launcherApps?.startAppDetailsActivity(componentName, Process.myUserHandle(), null, null)

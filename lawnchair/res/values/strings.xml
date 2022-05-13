@@ -239,4 +239,6 @@
     <string name="accessibility_smartspace_page">Page %1$d of %2$d</string>
     <string name="smartspace_widget">At a Glance</string>
     <string name="smartspace_widget_placeholder_date">Fri, Mar 3</string>
+    <string name="quickstep_incompatible">Incompatible System Integration</string>
+    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or unset %1$s as a system gestures provider.</string>
 </resources>

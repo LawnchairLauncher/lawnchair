@@ -126,6 +126,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.function.Function;
 
+import app.lawnchair.LawnchairApp;
+
 /**
  * Service connected by system-UI for handling touch interaction.
  */
@@ -151,7 +153,7 @@ public class TouchInteractionService extends Service
 
     private int mBackGestureNotificationCounter = -1;
 
-    private final TISBinder mTISBinder = new TISBinder();
+    private final TISBinder mTISBinder = LawnchairApp.isRecentsEnabled() ? new TISBinder() : null;
 
     /**
      * Local IOverviewProxy implementation with some methods for local components
@@ -362,6 +364,7 @@ public class TouchInteractionService extends Service
     @Override
     public void onCreate() {
         super.onCreate();
+        if (!LawnchairApp.isRecentsEnabled()) return;
         // Initialize anything here that is needed in direct boot mode.
         // Everything else should be initialized in onUserUnlocked() below.
         mMainChoreographer = Choreographer.getInstance();
@@ -540,6 +543,10 @@ public class TouchInteractionService extends Service
 
     @Override
     public void onDestroy() {
+        if (!LawnchairApp.isRecentsEnabled()) {
+            super.onDestroy();
+            return;
+        }
         Log.d(TAG, "Touch service destroyed: user=" + getUserId());
         sIsInitialized = false;
         if (mDeviceState.isUserUnlocked()) {
