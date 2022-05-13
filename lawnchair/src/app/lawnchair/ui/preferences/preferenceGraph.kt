@@ -7,7 +7,7 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.navigation.NavGraphBuilder
 import com.google.accompanist.navigation.animation.composable
 
-@ExperimentalAnimationApi
+@OptIn(ExperimentalAnimationApi::class)
 inline fun NavGraphBuilder.preferenceGraph(
     route: String,
     crossinline root: @Composable () -> Unit,

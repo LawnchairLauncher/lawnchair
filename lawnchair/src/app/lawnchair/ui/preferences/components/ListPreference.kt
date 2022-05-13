@@ -19,7 +19,6 @@ package app.lawnchair.ui.preferences.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.RadioButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -31,7 +30,6 @@ import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.ui.AlertBottomSheetContent
 import app.lawnchair.ui.util.bottomSheetHandler
 
-@ExperimentalMaterialApi
 @Composable
 fun <T> ListPreference(
     adapter: PreferenceAdapter<T>,

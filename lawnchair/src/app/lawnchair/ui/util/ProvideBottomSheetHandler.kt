@@ -43,7 +43,7 @@ val bottomSheetHandler: BottomSheetHandler
     @ReadOnlyComposable
     get() = LocalBottomSheetHandler.current
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ProvideBottomSheetHandler(
     content: @Composable () -> Unit

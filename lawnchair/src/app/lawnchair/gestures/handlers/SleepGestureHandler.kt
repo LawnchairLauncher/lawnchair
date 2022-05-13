@@ -27,7 +27,6 @@ import android.os.Build
 import android.provider.Settings
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -51,7 +50,6 @@ class SleepGestureHandler(context: Context) : GestureHandler(context) {
         methods.first { it.isSupported() }.sleep(launcher)
     }
 
-    @OptIn(ExperimentalMaterialApi::class)
     private val methods = listOf(
         SleepMethodRoot(context),
         SleepMethodPieAccessibility(context),
@@ -74,7 +72,6 @@ class SleepMethodRoot(context: Context) : SleepGestureHandler.SleepMethod(contex
     }
 }
 
-@ExperimentalMaterialApi
 class SleepMethodPieAccessibility(context: Context) : SleepGestureHandler.SleepMethod(context) {
     override suspend fun isSupported() = Utilities.ATLEAST_P
 
@@ -98,7 +95,6 @@ class SleepMethodPieAccessibility(context: Context) : SleepGestureHandler.SleepM
     }
 }
 
-@ExperimentalMaterialApi
 class SleepMethodDeviceAdmin(context: Context) : SleepGestureHandler.SleepMethod(context) {
     override suspend fun isSupported() = true
 
@@ -132,7 +128,6 @@ class SleepMethodDeviceAdmin(context: Context) : SleepGestureHandler.SleepMethod
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun ServiceWarningDialog(
     title: Int,

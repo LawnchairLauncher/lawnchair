@@ -48,7 +48,7 @@ import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 
-@ExperimentalAnimationApi
+@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.licensesGraph(route: String) {
     preferenceGraph(route, { Acknowledgements() }) { subRoute ->
         composable(
@@ -60,7 +60,6 @@ fun NavGraphBuilder.licensesGraph(route: String) {
     }
 }
 
-@ExperimentalAnimationApi
 @Composable
 fun Acknowledgements() {
     val ossLibraries by LocalPreferenceInteractor.current.ossLibraries.collectAsState()
@@ -94,7 +93,6 @@ fun OssLibraryItem(ossLibrary: OssLibrary, index: Int) {
     )
 }
 
-@ExperimentalAnimationApi
 @Composable
 fun NoticePage(index: Int) {
     val ossLibraries by LocalPreferenceInteractor.current.ossLibraries.collectAsState()

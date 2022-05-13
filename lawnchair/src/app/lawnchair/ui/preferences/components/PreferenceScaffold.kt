@@ -1,6 +1,5 @@
 package app.lawnchair.ui.preferences.components
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
@@ -13,7 +12,6 @@ import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.ui.Scaffold
 
-@ExperimentalAnimationApi
 @Composable
 fun PreferenceScaffold(
     backArrowVisible: Boolean = true,

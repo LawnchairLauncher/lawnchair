@@ -21,12 +21,10 @@ import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
-@ExperimentalAnimationApi
 fun NavGraphBuilder.quickstepGraph(route: String) {
     preferenceGraph(route, { QuickstepPreferences() })
 }
 
-@ExperimentalAnimationApi
 @Composable
 fun QuickstepPreferences() {
     val prefs = preferenceManager()

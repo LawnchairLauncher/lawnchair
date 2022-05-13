@@ -16,10 +16,8 @@
 
 package app.lawnchair.ui.preferences.components.colorpreference
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.RadioButton
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -42,8 +40,8 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
-@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class, ExperimentalPagerApi::class)
 fun ColorPreference(
     adapter: PreferenceAdapter<ColorOption>,
     label: String,

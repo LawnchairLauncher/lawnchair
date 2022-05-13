@@ -44,7 +44,6 @@ class HeadlessWidgetsManager(private val context: Context) {
         return subscription.flow
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun createSubscription(info: AppWidgetProviderInfo, prefKey: String): WidgetSubscription {
         val subscription = WidgetSubscription(info)
         subscription.flow = callbackFlow {

@@ -1,6 +1,5 @@
 package app.lawnchair.ui.preferences.components
 
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import app.lawnchair.preferences.getAdapter
@@ -28,7 +27,6 @@ val themeEntries = listOf(
         }
     }
 
-@ExperimentalMaterialApi
 @Composable
 fun ThemePreference(showDivider: Boolean = false) {
     ListPreference(

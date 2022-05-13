@@ -16,7 +16,6 @@
 
 package app.lawnchair.ui.preferences.components
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ColumnScope
@@ -33,7 +32,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-@ExperimentalAnimationApi
 fun PreferenceLayout(
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
@@ -59,7 +57,6 @@ fun PreferenceLayout(
 }
 
 @Composable
-@ExperimentalAnimationApi
 fun PreferenceLayoutLazyColumn(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,

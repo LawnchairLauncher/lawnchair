@@ -1,7 +1,6 @@
 package app.lawnchair.ui.preferences
 
 import android.content.res.Configuration
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -31,12 +30,10 @@ import app.lawnchair.ui.preferences.components.SliderPreference
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 
-@ExperimentalAnimationApi
 fun NavGraphBuilder.homeScreenGridGraph(route: String) {
     preferenceGraph(route, { HomeScreenGridPreferences() })
 }
 
-@ExperimentalAnimationApi
 @Composable
 fun HomeScreenGridPreferences() {
     val isPortrait = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT

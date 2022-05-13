@@ -3,7 +3,6 @@ package app.lawnchair.ui.popup
 import android.content.pm.LauncherActivityInfo
 import android.view.View
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.override.CustomizeAppDialog
@@ -30,7 +29,6 @@ class LawnchairShortcut {
         itemInfo: ItemInfo
     ) : SystemShortcut<LawnchairLauncher>(R.drawable.ic_edit, R.string.customize_button_text, launcher, itemInfo) {
 
-        @OptIn(ExperimentalMaterialApi::class)
         override fun onClick(v: View) {
             val outObj = Array<Any?>(1) { null }
             val key = ComponentKey(mItemInfo.targetComponent, mItemInfo.user)

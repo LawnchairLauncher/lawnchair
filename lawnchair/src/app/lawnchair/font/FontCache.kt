@@ -64,7 +64,7 @@ class FontCache private constructor(private val context: Context) {
         loadFontAsync(font)
     }
 
-    @ExperimentalCoroutinesApi
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun getLoadedFont(font: Font): LoadedFont? {
         val deferredFont = deferredFonts[font] ?: return null
         if (!deferredFont.isCompleted) return null

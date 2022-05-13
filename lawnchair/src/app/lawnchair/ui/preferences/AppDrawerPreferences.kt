@@ -33,14 +33,12 @@ object AppDrawerRoutes {
     const val HIDDEN_APPS = "hiddenApps"
 }
 
-@ExperimentalAnimationApi
 fun NavGraphBuilder.appDrawerGraph(route: String) {
     preferenceGraph(route, { AppDrawerPreferences() }) { subRoute ->
         hiddenAppsGraph(route = subRoute(AppDrawerRoutes.HIDDEN_APPS))
     }
 }
 
-@ExperimentalAnimationApi
 @Composable
 fun AppDrawerPreferences() {
     val prefs = preferenceManager()

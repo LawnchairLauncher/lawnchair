@@ -24,7 +24,7 @@ import com.android.launcher3.util.ComponentKey
 import com.google.accompanist.navigation.animation.composable
 import kotlinx.coroutines.launch
 
-@ExperimentalAnimationApi
+@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.selectIconGraph(route: String) {
     preferenceGraph(route, { }) { subRoute ->
         composable(
@@ -43,7 +43,6 @@ fun NavGraphBuilder.selectIconGraph(route: String) {
     }
 }
 
-@ExperimentalAnimationApi
 @Composable
 fun SelectIconPreference(componentKey: ComponentKey) {
     val context = LocalContext.current

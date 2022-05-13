@@ -1,8 +1,6 @@
 package app.lawnchair.ui.preferences
 
 import android.content.Intent
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
@@ -17,8 +15,6 @@ import com.android.launcher3.settings.DeveloperOptionsFragment
 import com.android.launcher3.settings.SettingsActivity
 import com.patrykmichalik.preferencemanager.Preference
 
-@ExperimentalMaterialApi
-@ExperimentalAnimationApi
 fun NavGraphBuilder.debugMenuGraph(route: String) {
     preferenceGraph(route, { DebugMenuPreferences() })
 }
@@ -26,8 +22,6 @@ fun NavGraphBuilder.debugMenuGraph(route: String) {
 /**
  * A screen to house unfinished preferences and debug flags
  */
-@ExperimentalMaterialApi
-@ExperimentalAnimationApi
 @Composable
 fun DebugMenuPreferences() {
     val prefs = preferenceManager()

@@ -18,7 +18,6 @@ package app.lawnchair.ui.preferences
 
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -54,16 +53,14 @@ data class IconPackInfo(
     val icon: Drawable
 )
 
-@ExperimentalAnimationApi
 fun NavGraphBuilder.iconPackGraph(route: String) {
     preferenceGraph(route, { IconPackPreferences() })
 }
 
-@ExperimentalAnimationApi
 @Composable
 fun IconPackPreferences() {
     val prefs = preferenceManager()
-    var iconPackAdapter = prefs.iconPackPackage.getAdapter()
+    val iconPackAdapter = prefs.iconPackPackage.getAdapter()
     val themedIconsAdapter = prefs.themedIcons.getAdapter()
 
     PreferenceLayout(

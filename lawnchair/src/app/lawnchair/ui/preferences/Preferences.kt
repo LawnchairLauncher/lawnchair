@@ -17,7 +17,6 @@
 package app.lawnchair.ui.preferences
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -59,8 +58,7 @@ val LocalPreferenceInteractor = staticCompositionLocalOf<PreferenceInteractor> {
     error("CompositionLocal LocalPreferenceInteractor not present")
 }
 
-@ExperimentalMaterialApi
-@ExperimentalAnimationApi
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel>()) {
     val navController = rememberAnimatedNavController()
@@ -103,7 +101,6 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 private fun Providers(
     content: @Composable () -> Unit

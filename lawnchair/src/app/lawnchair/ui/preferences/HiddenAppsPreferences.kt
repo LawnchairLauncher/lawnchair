@@ -17,7 +17,6 @@
 package app.lawnchair.ui.preferences
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -38,12 +37,10 @@ import app.lawnchair.util.appsList
 import com.android.launcher3.R
 import java.util.Comparator.comparing
 
-@ExperimentalAnimationApi
 fun NavGraphBuilder.hiddenAppsGraph(route: String) {
     preferenceGraph(route, { HiddenAppsPreferences() })
 }
 
-@ExperimentalAnimationApi
 @Composable
 fun HiddenAppsPreferences() {
     val adapter = preferenceManager2().hiddenApps.getAdapter()

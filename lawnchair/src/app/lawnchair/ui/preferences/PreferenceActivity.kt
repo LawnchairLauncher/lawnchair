@@ -21,15 +21,11 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
 import app.lawnchair.ui.theme.LawnchairTheme
 import com.google.accompanist.insets.ProvideWindowInsets
 
-@ExperimentalMaterialApi
-@ExperimentalAnimationApi
 class PreferenceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

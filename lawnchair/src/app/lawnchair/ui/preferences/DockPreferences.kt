@@ -26,12 +26,10 @@ import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.*
 import com.android.launcher3.R
 
-@ExperimentalAnimationApi
 fun NavGraphBuilder.dockGraph(route: String) {
     preferenceGraph(route, { DockPreferences() })
 }
 
-@ExperimentalAnimationApi
 @Composable
 fun DockPreferences() {
     val prefs = preferenceManager()

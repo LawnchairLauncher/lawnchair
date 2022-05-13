@@ -1,7 +1,6 @@
 package app.lawnchair.ui.preferences.components
 
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
@@ -22,7 +21,6 @@ import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.insets.ui.LocalScaffoldPadding
 import com.google.accompanist.insets.ui.Scaffold
 
-@ExperimentalAnimationApi
 @Composable
 fun PreferenceSearchScaffold(
     searchInput: @Composable () -> Unit,

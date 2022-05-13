@@ -16,7 +16,6 @@
 
 package app.lawnchair.ui.preferences
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
@@ -28,12 +27,10 @@ import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
 import com.android.launcher3.R
 
-@ExperimentalAnimationApi
 fun NavGraphBuilder.folderGraph(route: String) {
     preferenceGraph(route, { FolderPreferences() })
 }
 
-@ExperimentalAnimationApi
 @Composable
 fun FolderPreferences() {
     PreferenceLayout(label = stringResource(id = R.string.folders_label)) {

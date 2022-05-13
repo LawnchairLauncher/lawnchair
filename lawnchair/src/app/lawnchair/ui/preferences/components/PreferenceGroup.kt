@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.material3.MaterialTheme as Material3Theme
 
 @Composable
-@ExperimentalAnimationApi
 fun PreferenceGroup(
     heading: String? = null,
     isFirstChild: Boolean = false,

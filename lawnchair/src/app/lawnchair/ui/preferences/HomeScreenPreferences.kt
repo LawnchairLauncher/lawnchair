@@ -36,14 +36,12 @@ object HomeScreenRoutes {
     const val GRID = "grid"
 }
 
-@ExperimentalAnimationApi
 fun NavGraphBuilder.homeScreenGraph(route: String) {
     preferenceGraph(route, { HomeScreenPreferences() }) { subRoute ->
         homeScreenGridGraph(route = subRoute(HomeScreenRoutes.GRID))
     }
 }
 
-@ExperimentalAnimationApi
 @Composable
 fun HomeScreenPreferences() {
     val prefs = preferenceManager()

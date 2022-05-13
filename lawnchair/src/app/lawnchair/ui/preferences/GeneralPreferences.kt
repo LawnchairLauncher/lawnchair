@@ -34,16 +34,12 @@ object GeneralRoutes {
     const val ICON_PACK = "iconPack"
 }
 
-@ExperimentalMaterialApi
-@ExperimentalAnimationApi
 fun NavGraphBuilder.generalGraph(route: String) {
     preferenceGraph(route, { GeneralPreferences() }) { subRoute ->
         iconPackGraph(route = subRoute(GeneralRoutes.ICON_PACK))
     }
 }
 
-@ExperimentalMaterialApi
-@ExperimentalAnimationApi
 @Composable
 fun GeneralPreferences() {
     val prefs = preferenceManager()

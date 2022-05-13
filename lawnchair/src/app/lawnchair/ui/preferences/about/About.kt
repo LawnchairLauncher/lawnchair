@@ -20,7 +20,6 @@ import android.content.Intent
 import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -177,14 +176,12 @@ object AboutRoutes {
     const val LICENSES = "licenses"
 }
 
-@ExperimentalAnimationApi
 fun NavGraphBuilder.aboutGraph(route: String) {
     preferenceGraph(route, { About() }) { subRoute ->
         licensesGraph(route = subRoute(AboutRoutes.LICENSES))
     }
 }
 
-@ExperimentalAnimationApi
 @Composable
 fun About() {
     val context = LocalContext.current

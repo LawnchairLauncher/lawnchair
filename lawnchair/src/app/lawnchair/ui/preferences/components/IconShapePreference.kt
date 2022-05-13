@@ -16,7 +16,6 @@
 
 package app.lawnchair.ui.preferences.components
 
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
@@ -27,7 +26,6 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
 import com.android.launcher3.R
 
-@ExperimentalMaterialApi
 @Composable
 fun IconShapePreference(
 ) {

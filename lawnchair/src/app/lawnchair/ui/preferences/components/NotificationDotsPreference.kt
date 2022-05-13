@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.ContentAlpha
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -49,7 +48,6 @@ import com.android.launcher3.util.SettingsCache
 import com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI
 
 @Composable
-@ExperimentalMaterialApi
 fun NotificationDotsPreference() {
     val bottomSheetHandler = bottomSheetHandler
     val context = LocalContext.current
@@ -96,7 +94,6 @@ fun NotificationDotsPreference() {
 }
 
 @Composable
-@ExperimentalMaterialApi
 fun NotificationAccessConfirmation(onDismissRequest: () -> Unit) {
     val context = LocalContext.current
 

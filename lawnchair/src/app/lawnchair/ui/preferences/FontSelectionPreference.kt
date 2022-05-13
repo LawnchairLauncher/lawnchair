@@ -32,7 +32,7 @@ import app.lawnchair.ui.preferences.components.*
 import com.android.launcher3.R
 import com.google.accompanist.navigation.animation.composable
 
-@ExperimentalAnimationApi
+@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.fontSelectionGraph(route: String) {
     preferenceGraph(route, {}) { subRoute ->
         composable(
@@ -50,7 +50,6 @@ fun NavGraphBuilder.fontSelectionGraph(route: String) {
     }
 }
 
-@ExperimentalAnimationApi
 @Composable
 fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
     val context = LocalContext.current
