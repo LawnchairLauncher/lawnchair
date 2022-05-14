@@ -16,20 +16,23 @@
 
 package app.lawnchair.ui.preferences.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.height
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
+import app.lawnchair.ui.theme.dividerColor
+import app.lawnchair.ui.util.addIf
 
 @Composable
 fun SwitchPreference(
     adapter: PreferenceAdapter<Boolean>,
     label: String,
     description: String? = null,
+    onClick: (() -> Unit)? = null,
     enabled: Boolean = true,
     showDivider: Boolean = false,
 ) {
@@ -39,6 +42,7 @@ fun SwitchPreference(
         onCheckedChange = adapter::onChange,
         label = label,
         description = description,
+        onClick = onClick,
         enabled = enabled,
         showDivider = showDivider,
     )
@@ -50,26 +54,42 @@ fun SwitchPreference(
     onCheckedChange: (Boolean) -> Unit,
     label: String,
     description: String? = null,
+    onClick: (() -> Unit)? = null,
     enabled: Boolean = true,
     showDivider: Boolean = false,
 ) {
     PreferenceTemplate(
+        modifier = Modifier
+            .addIf(onClick == null) { clickable { onCheckedChange(!checked) } },
+        contentModifier = Modifier
+            .addIf(onClick != null) { clickable { onClick!!() } }
+            .fillMaxHeight()
+            .padding(vertical = 16.dp)
+            .padding(start = 16.dp),
         title = { Text(text = label) },
         description = { description?.let { Text(text = it) } },
         endWidget = {
+            if (onClick != null) {
+                Spacer(
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .width(1.dp)
+                        .fillMaxHeight()
+                        .background(dividerColor())
+                )
+            }
             MYSwitch(
                 modifier = Modifier
+                    .addIf(onClick != null) { clickable { onCheckedChange(!checked) } }
+                    .padding(all = 16.dp)
                     .height(24.dp),
                 checked = checked,
                 onCheckedChange = onCheckedChange,
                 enabled = enabled,
             )
         },
-        modifier = Modifier
-            .clickable(enabled) {
-                onCheckedChange(!checked)
-            },
         enabled = enabled,
-        showDivider = showDivider
+        showDivider = showDivider,
+        applyPaddings = false
     )
 }

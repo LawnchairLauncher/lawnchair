@@ -34,8 +34,9 @@ import androidx.compose.material3.MaterialTheme as Material3Theme
 
 @Composable
 fun PreferenceTemplate(
-    title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+    contentModifier: Modifier = Modifier,
+    title: @Composable () -> Unit,
     description: @Composable () -> Unit = {},
     startWidget: (@Composable () -> Unit)? = null,
     endWidget: (@Composable () -> Unit)? = null,
@@ -59,6 +60,7 @@ fun PreferenceTemplate(
         Row(
             verticalAlignment = verticalAlignment,
             modifier = modifier
+                .height(IntrinsicSize.Min)
                 .fillMaxWidth()
                 .addIf(applyPaddings) {
                     padding(horizontal = horizontalPadding, vertical = verticalPadding)
@@ -71,7 +73,7 @@ fun PreferenceTemplate(
                 }
             }
             Column(
-                modifier = Modifier
+                modifier = contentModifier
                     .weight(1f)
                     .addIf(!enabled) {
                         alpha(contentAlphaDisabled)

@@ -55,6 +55,10 @@
             android:name="app.lawnchair.BlankActivity"
             android:theme="@style/Theme.Transparent" />
 
+        <activity
+            android:name="app.lawnchair.smartspace.SmartspacePreferencesShortcut"
+            android:theme="@style/Theme.Transparent" />
+
         <receiver
             android:name="app.lawnchair.gestures.handlers.SleepMethodDeviceAdmin$SleepDeviceAdmin"
             android:label="@string/derived_app_name"

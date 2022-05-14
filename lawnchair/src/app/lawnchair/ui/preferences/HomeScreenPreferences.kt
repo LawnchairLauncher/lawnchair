@@ -97,10 +97,18 @@ fun HomeScreenPreferences() {
                 description = if (feedAvailable) null else stringResource(id = R.string.minus_one_unavailable),
                 enabled = feedAvailable,
             )
+
+            val smartspaceAdapter = prefs2.enableSmartspace.getAdapter()
+            val enhancedSmartspace by prefs2.enableEnhancedSmartspace.get().collectAsStateBlocking()
+            val navController = LocalNavController.current
             SwitchPreference(
-                adapter = prefs2.enableSmartspace.getAdapter(),
+                adapter = smartspaceAdapter,
                 label = stringResource(id = R.string.smart_space_enable),
+                onClick = if (smartspaceAdapter.state.value && enhancedSmartspace) {
+                    { navController.navigate(route = "/${Routes.SMARTSPACE}/") }
+                } else null
             )
+
             SwitchPreference(
                 adapter = prefs2.showTopShadow.getAdapter(),
                 label = stringResource(id = R.string.show_sys_ui_scrim),

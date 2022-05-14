@@ -131,6 +131,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import app.lawnchair.smartspace.SmartspaceAppWidgetProvider;
+import app.lawnchair.smartspace.SmartspaceViewContainer;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -585,6 +586,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             // edges, we do not need a full width QSB.
             mQsb = LayoutInflater.from(getContext())
                     .inflate(R.layout.search_container_workspace, firstPage, false);
+            if (mQsb instanceof SmartspaceViewContainer) {
+                ((SmartspaceViewContainer) mQsb).setupInWorkspace();
+            }
         }
 
         int cellVSpan = FeatureFlags.EXPANDED_SMARTSPACE.get()

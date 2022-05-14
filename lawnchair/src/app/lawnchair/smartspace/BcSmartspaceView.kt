@@ -105,6 +105,10 @@ class BcSmartspaceView @JvmOverloads constructor(
         currentJob = null
     }
 
+    override fun setOnLongClickListener(l: OnLongClickListener?) {
+        viewPager.setOnLongClickListener(l)
+    }
+
     private fun onSmartspaceTargetsUpdate(targets: List<SmartspaceTarget>) {
         if (adapter.count > 1 && scrollState != ViewPager.SCROLL_STATE_IDLE) {
             pendingTargets = targets
