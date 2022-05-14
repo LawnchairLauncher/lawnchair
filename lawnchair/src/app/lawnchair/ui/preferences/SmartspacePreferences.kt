@@ -1,11 +1,13 @@
 package app.lawnchair.ui.preferences
 
+import android.app.Activity
 import android.view.ContextThemeWrapper
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -16,6 +18,7 @@ import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.smartspace.SmartspaceViewContainer
+import app.lawnchair.smartspace.provider.SmartspaceProvider
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SwitchPreference
@@ -60,7 +63,7 @@ fun SmartspacePreview() {
         CompositionLocalProvider(LocalContext provides themedContext) {
             AndroidView(
                 factory = {
-                    val view = SmartspaceViewContainer(it)
+                    val view = SmartspaceViewContainer(it, previewMode = true)
                     val height =
                         it.resources.getDimensionPixelSize(R.dimen.enhanced_smartspace_height)
                     view.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, height)
@@ -69,6 +72,9 @@ fun SmartspacePreview() {
                 modifier = Modifier
                     .padding(start = 8.dp, top = 8.dp, end = 0.dp, bottom = 16.dp)
             )
+        }
+        LaunchedEffect(key1 = null) {
+            SmartspaceProvider.INSTANCE.get(context).startSetup(context as Activity)
         }
     }
 }

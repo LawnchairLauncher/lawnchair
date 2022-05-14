@@ -7,9 +7,7 @@ import android.content.IntentFilter
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
 
 fun <T> Flow<T>.firstBlocking() = runBlocking { first() }
@@ -26,3 +24,7 @@ fun broadcastReceiverFlow(context: Context, filter: IntentFilter) = callbackFlow
     context.registerReceiver(receiver, filter)
     awaitClose { context.unregisterReceiver(receiver) }
 }
+
+fun <T> Flow<T>.dropWhileBusy(): Flow<T> = channelFlow {
+    collect { trySend(it) }
+}.buffer(0)

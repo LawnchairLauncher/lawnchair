@@ -246,4 +246,6 @@
     <string name="smartspace_weather">Weather</string>
     <string name="smartspace_battery_status">Battery Status</string>
     <string name="smartspace_now_playing">Now Playing</string>
+    <string name="smartspace_requires_setup">Tap to Set Up</string>
+    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">“%1$s”</xliff:g>, enable Notification Dots.</string>
 </resources>

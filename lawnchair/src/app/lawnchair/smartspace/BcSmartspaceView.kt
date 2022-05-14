@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlin.math.roundToInt
 
 class BcSmartspaceView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
+    context: Context, attrs: AttributeSet? = null, var previewMode: Boolean = false
 ) : FrameLayout(context, attrs) {
 
     private val scope = MainScope()
@@ -93,7 +93,8 @@ class BcSmartspaceView @JvmOverloads constructor(
         super.onAttachedToWindow()
         viewPager.adapter = adapter
 
-        currentJob = provider.targets
+        val targets = if (previewMode) provider.previewTargets else provider.targets
+        currentJob = targets
             .onEach(this::onSmartspaceTargetsUpdate)
             .launchIn(scope)
     }

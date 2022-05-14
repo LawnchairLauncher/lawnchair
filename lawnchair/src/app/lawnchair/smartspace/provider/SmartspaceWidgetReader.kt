@@ -20,10 +20,13 @@ import app.lawnchair.smartspace.model.SmartspaceTarget
 import app.lawnchair.util.Temperature
 import app.lawnchair.util.getAllChildren
 import app.lawnchair.util.pendingIntent
+import com.android.launcher3.R
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
-class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(context, { smartspaceAagWidget }) {
+class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
+    context, R.string.smartspace_weather, { smartspaceAagWidget }
+) {
 
     override val disabledTargets = flowOf(listOf(dummyTarget))
     override var internalTargets = disabledTargets

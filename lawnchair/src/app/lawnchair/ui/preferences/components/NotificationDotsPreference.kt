@@ -17,6 +17,7 @@
 package app.lawnchair.ui.preferences.components
 
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
@@ -27,10 +28,7 @@ import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -46,12 +44,14 @@ import com.android.launcher3.settings.SettingsActivity.EXTRA_FRAGMENT_ARG_KEY
 import com.android.launcher3.settings.SettingsActivity.EXTRA_SHOW_FRAGMENT_ARGS
 import com.android.launcher3.util.SettingsCache
 import com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
 
 @Composable
 fun NotificationDotsPreference() {
     val bottomSheetHandler = bottomSheetHandler
     val context = LocalContext.current
-    val enabled = notificationDotsEnabled()
+    val enabled by remember { notificationDotsEnabled(context) }.collectAsState(initial = false)
     val serviceEnabled = notificationServiceEnabled()
     val showWarning = enabled && !serviceEnabled
     val summary = when {
@@ -134,47 +134,38 @@ fun NotificationAccessConfirmation(onDismissRequest: () -> Unit) {
     )
 }
 
-@Composable
-fun notificationDotsEnabled(): Boolean {
-    val context = LocalContext.current
-    val enabledState = remember { mutableStateOf(false) }
-    val observer = remember {
-        SettingsCache.OnChangeListener {
-            enabledState.value = SettingsCache.INSTANCE.get(context).getValue(NOTIFICATION_BADGING_URI)
-        }
+fun notificationDotsEnabled(context: Context) = callbackFlow {
+    val observer = SettingsCache.OnChangeListener {
+        val enabled = SettingsCache.INSTANCE.get(context).getValue(NOTIFICATION_BADGING_URI)
+        trySend(enabled)
     }
+    val settingsCache = SettingsCache.INSTANCE.get(context)
+    observer.onSettingsChanged(false)
+    settingsCache.register(NOTIFICATION_BADGING_URI, observer)
+    awaitClose { settingsCache.unregister(NOTIFICATION_BADGING_URI, observer) }
+}
 
-    DisposableEffect(null) {
-        val settingsCache = SettingsCache.INSTANCE.get(context)
-        observer.onSettingsChanged(false)
-        settingsCache.register(NOTIFICATION_BADGING_URI, observer)
-        onDispose { settingsCache.unregister(NOTIFICATION_BADGING_URI, observer) }
-    }
-
-    return enabledState.value
+fun isNotificationServiceEnabled(context: Context): Boolean {
+    val enabledListeners = Settings.Secure.getString(
+        context.contentResolver,
+        "enabled_notification_listeners"
+    )
+    val myListener = ComponentName(context, NotificationListener::class.java)
+    return enabledListeners != null &&
+            (enabledListeners.contains(myListener.flattenToString()) ||
+                    enabledListeners.contains(myListener.flattenToShortString()))
 }
 
 @Composable
 fun notificationServiceEnabled(): Boolean {
     val context = LocalContext.current
 
-    fun isNotificationServiceEnabled(): Boolean {
-        val enabledListeners = Settings.Secure.getString(
-            context.contentResolver,
-            "enabled_notification_listeners"
-        )
-        val myListener = ComponentName(context, NotificationListener::class.java)
-        return enabledListeners != null &&
-                (enabledListeners.contains(myListener.flattenToString()) ||
-                        enabledListeners.contains(myListener.flattenToShortString()))
-    }
-
-    val enabledState = remember { mutableStateOf(isNotificationServiceEnabled()) }
+    val enabledState = remember { mutableStateOf(isNotificationServiceEnabled(context)) }
     val resumed = lifecycleState().isAtLeast(Lifecycle.State.RESUMED)
 
     if (resumed) {
         DisposableEffect(null) {
-            enabledState.value = isNotificationServiceEnabled()
+            enabledState.value = isNotificationServiceEnabled(context)
             onDispose { }
         }
     }

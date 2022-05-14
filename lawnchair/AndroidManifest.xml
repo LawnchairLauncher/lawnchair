@@ -50,6 +50,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="app.lawnchair.DialogActivity"
+            android:theme="@style/Theme.Transparent" />
+
         <receiver
             android:name="app.lawnchair.gestures.handlers.SleepMethodDeviceAdmin$SleepDeviceAdmin"
             android:label="@string/derived_app_name"

@@ -11,7 +11,9 @@ import app.lawnchair.util.broadcastReceiverFlow
 import com.android.launcher3.R
 import kotlinx.coroutines.flow.map
 
-class BatteryStatusProvider(context: Context) : SmartspaceDataSource(context, { smartspaceBatteryStatus }) {
+class BatteryStatusProvider(context: Context) : SmartspaceDataSource(
+    context, R.string.smartspace_battery_status, { smartspaceBatteryStatus }
+) {
 
     override val internalTargets = broadcastReceiverFlow(context, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
         .map { intent ->
