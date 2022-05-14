@@ -2,7 +2,6 @@ package app.lawnchair
 
 import android.appwidget.AppWidgetProviderInfo
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -62,7 +61,7 @@ class LawnchairAppWidgetHostView @JvmOverloads constructor(
     companion object {
 
         private val customLayouts = mapOf(
-            SmartspaceAppWidgetProvider.componentName to R.layout.search_container_workspace
+            SmartspaceAppWidgetProvider.componentName to R.layout.smartspace_widget
         )
 
         @JvmStatic

@@ -17,7 +17,7 @@ import com.patrykmichalik.preferencemanager.firstBlocking
 
 class SmartspaceViewContainer @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, private val previewMode: Boolean = false
-) : FrameLayout(context, attrs), View.OnLongClickListener {
+) : FrameLayout(context, attrs) {
 
     private val smartspaceView: View
 
@@ -27,6 +27,10 @@ class SmartspaceViewContainer @JvmOverloads constructor(
         smartspaceView = if (prefs.enableEnhancedSmartspace.firstBlocking()) {
             val view = inflater.inflate(R.layout.smartspace_enhanced, this, false) as BcSmartspaceView
             view.previewMode = previewMode
+            view.setOnLongClickListener {
+                openOptions()
+                true
+            }
             view
         } else {
             inflater.inflate(R.layout.smartspace_legacy, this, false)
@@ -34,19 +38,14 @@ class SmartspaceViewContainer @JvmOverloads constructor(
         addView(smartspaceView)
     }
 
-    fun setupInWorkspace() {
-        smartspaceView.setOnLongClickListener(this)
-    }
-
-    override fun onLongClick(v: View): Boolean {
-        if (previewMode) return false
-        if (!PreferenceManager2.getInstance(context).enableEnhancedSmartspace.firstBlocking()) return false
+    private fun openOptions() {
+        if (previewMode) return
+        if (!PreferenceManager2.getInstance(context).enableEnhancedSmartspace.firstBlocking()) return
 
         val launcher = context.launcher
         val pos = Rect()
         launcher.dragLayer.getDescendantRectRelativeToSelf(smartspaceView, pos)
         OptionsPopupView.show(launcher, RectF(pos), listOf(getCustomizeOption()), true)
-        return true
     }
     
     private fun getCustomizeOption() = OptionsPopupView.OptionItem(
