@@ -15,6 +15,9 @@
 -->
 
 <resources>
+<!-- PagedView  -->
+    <dimen name="min_page_snap_velocity">3400dp</dimen>
+
 <!-- AllApps -->
     <dimen name="all_apps_bottom_sheet_horizontal_padding">28dp</dimen>
 
@@ -28,6 +31,7 @@
     <dimen name="drop_target_button_drawable_horizontal_padding">24dp</dimen>
     <dimen name="drop_target_button_drawable_vertical_padding">20dp</dimen>
     <dimen name="drop_target_button_gap">32dp</dimen>
+    <dimen name="drop_target_button_workspace_edge_gap">32dp</dimen>
     <dimen name="drop_target_top_margin">110dp</dimen>
     <dimen name="drop_target_bottom_margin">48dp</dimen>
 

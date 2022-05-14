@@ -35,6 +35,8 @@ import android.view.WindowInsets;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.AnimatorListeners;
+import com.android.launcher3.taskbar.allapps.TaskbarAllAppsSlideInView;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.AnimatedFloat;
@@ -368,12 +370,33 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     }
 
     /**
+     * Adds the Taskbar unstash to Hotseat animator to the animator set.
+     *
+     * This should be used to run a Taskbar unstash to Hotseat animation whose progress matches a
+     * swipe progress.
+     *
+     * @param placeholderDuration a placeholder duration to be used to ensure all full-length
+     *                            sub-animations are properly coordinated. This duration should not
+     *                            actually be used since this animation tracks a swipe progress.
+     */
+    protected void addUnstashToHotseatAnimation(AnimatorSet animation, int placeholderDuration) {
+        createAnimToIsStashed(
+                /* isStashed= */ false,
+                placeholderDuration,
+                /* startDelay= */ 0,
+                /* animateBg= */ false);
+        animation.play(mAnimator);
+    }
+
+    /**
      * Create a stash animation and save to {@link #mAnimator}.
      * @param isStashed whether it's a stash animation or an unstash animation
      * @param duration duration of the animation
      * @param startDelay how many milliseconds to delay the animation after starting it.
+     * @param animateBg whether the taskbar's background should be animated
      */
-    private void createAnimToIsStashed(boolean isStashed, long duration, long startDelay) {
+    private void createAnimToIsStashed(
+            boolean isStashed, long duration, long startDelay, boolean animateBg) {
         if (mAnimator != null) {
             mAnimator.cancel();
         }
@@ -408,10 +431,14 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             secondHalfDurationScale = 0.5f;
             final float stashTranslation = (mUnstashedHeight - mStashedHeight) / 2f;
 
-            fullLengthAnimatorSet.playTogether(
-                    mTaskbarBackgroundOffset.animateToValue(1),
-                    mIconTranslationYForStash.animateToValue(stashTranslation)
-            );
+            fullLengthAnimatorSet.play(mIconTranslationYForStash.animateToValue(stashTranslation));
+            if (animateBg) {
+                fullLengthAnimatorSet.play(mTaskbarBackgroundOffset.animateToValue(1));
+            } else {
+                fullLengthAnimatorSet.addListener(AnimatorListeners.forEndCallback(
+                        () -> mTaskbarBackgroundOffset.updateValue(1)));
+            }
+
             firstHalfAnimatorSet.playTogether(
                     mIconAlphaForStash.animateToValue(0),
                     mIconScaleForStash.animateToValue(STASHED_TASKBAR_SCALE)
@@ -424,10 +451,15 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             secondHalfDurationScale = 0.75f;
 
             fullLengthAnimatorSet.playTogether(
-                    mTaskbarBackgroundOffset.animateToValue(0),
                     mIconScaleForStash.animateToValue(1),
-                    mIconTranslationYForStash.animateToValue(0)
-            );
+                    mIconTranslationYForStash.animateToValue(0));
+            if (animateBg) {
+                fullLengthAnimatorSet.play(mTaskbarBackgroundOffset.animateToValue(0));
+            } else {
+                fullLengthAnimatorSet.addListener(AnimatorListeners.forEndCallback(
+                        () -> mTaskbarBackgroundOffset.updateValue(0)));
+            }
+
             firstHalfAnimatorSet.playTogether(
                     mTaskbarStashedHandleAlpha.animateToValue(0)
             );
@@ -728,7 +760,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                 mIsStashed = isStashed;
 
                 // This sets mAnimator.
-                createAnimToIsStashed(mIsStashed, duration, startDelay);
+                createAnimToIsStashed(mIsStashed, duration, startDelay, /* animateBg= */ true);
                 if (start) {
                     mAnimator.start();
                 }

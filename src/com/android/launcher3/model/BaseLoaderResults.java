@@ -43,6 +43,7 @@ import com.android.launcher3.util.RunnableList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executor;
 
 /**
@@ -203,7 +204,9 @@ public abstract class BaseLoaderResults {
         }
 
         private void bind() {
-            IntSet currentScreenIds = mCallbacks.getPagesToBindSynchronously(mOrderedScreenIds);
+            final IntSet currentScreenIds =
+                    mCallbacks.getPagesToBindSynchronously(mOrderedScreenIds);
+            Objects.requireNonNull(currentScreenIds, "Null screen ids provided by " + mCallbacks);
 
             // Separate the items that are on the current screen, and all the other remaining items
             ArrayList<ItemInfo> currentWorkspaceItems = new ArrayList<>();
