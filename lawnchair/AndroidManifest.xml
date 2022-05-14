@@ -52,7 +52,7 @@
         </activity>
 
         <activity
-            android:name="app.lawnchair.DialogActivity"
+            android:name="app.lawnchair.BlankActivity"
             android:theme="@style/Theme.Transparent" />
 
         <receiver

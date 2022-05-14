@@ -1,5 +1,6 @@
 package app.lawnchair.smartspace.provider
 
+import android.app.Activity
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
@@ -13,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
+import app.lawnchair.BlankActivity
 import app.lawnchair.HeadlessWidgetsManager
 import app.lawnchair.smartspace.model.SmartspaceAction
 import app.lawnchair.smartspace.model.SmartspaceScores
@@ -21,25 +23,34 @@ import app.lawnchair.util.Temperature
 import app.lawnchair.util.getAllChildren
 import app.lawnchair.util.pendingIntent
 import com.android.launcher3.R
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 
 class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
     context, R.string.smartspace_weather, { smartspaceAagWidget }
 ) {
 
-    override val disabledTargets = flowOf(listOf(dummyTarget))
-    override var internalTargets = disabledTargets
+    override val disabledTargets = listOf(dummyTarget)
+    private val widget: HeadlessWidgetsManager.Widget?
+    override val internalTargets: Flow<List<SmartspaceTarget>>
 
     init {
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val provider = appWidgetManager.getInstalledProvidersForPackage(GSA_PACKAGE, null)
             .firstOrNull { it.provider.className == WIDGET_CLASS_NAME }
-        if (provider != null) {
+        widget = provider?.let {
             val widgetsManager = HeadlessWidgetsManager.INSTANCE.get(context)
-            internalTargets = widgetsManager.subscribeUpdates(provider, "smartspaceWidgetId")
-                .map(this::extractWidgetLayout)
+            widgetsManager.getWidget(provider, "smartspaceWidgetId")
         }
+        internalTargets = widget?.updates?.map(this::extractWidgetLayout) ?: emptyFlow()
+    }
+
+    override suspend fun requiresSetup() = widget?.isBound == false
+
+    override suspend fun startSetup(activity: Activity) {
+        val intent = widget?.getBindIntent() ?: return
+        BlankActivity.startBlankActivityForResult(activity, intent)
     }
 
     private fun extractWidgetLayout(appWidgetHostView: ViewGroup): List<SmartspaceTarget> {

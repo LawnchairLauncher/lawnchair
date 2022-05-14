@@ -16,17 +16,20 @@ abstract class SmartspaceDataSource(
     val enabled = getEnabledPref(PreferenceManager2.getInstance(context))
 
     protected abstract val internalTargets: Flow<List<SmartspaceTarget>>
-    open val disabledTargets: Flow<List<SmartspaceTarget>> = flowOf(emptyList())
+    open val disabledTargets: List<SmartspaceTarget> = emptyList()
 
     private val restartSignal = MutableStateFlow(0)
     private val enabledTargets get() = internalTargets
         .onStart {
             if (requiresSetup()) throw RequiresSetupException()
         }
-        .map { DataSourceFlowState(targets = it) }
+        .map { State(targets = it) }
         .catch {
             if (it is RequiresSetupException) {
-                emit(DataSourceFlowState(requiresSetup = listOf(this@SmartspaceDataSource)))
+                emit(State(
+                    targets = disabledTargets,
+                    requiresSetup = listOf(this@SmartspaceDataSource))
+                )
             } else {
                 throw it
             }
@@ -39,7 +42,7 @@ abstract class SmartspaceDataSource(
             if (it)
                 restartSignal.flatMapLatest { enabledTargets }
             else
-                disabledTargets.map { DataSourceFlowState(targets = it) }
+                flowOf(State(targets = disabledTargets))
         }
 
     open suspend fun requiresSetup(): Boolean = false
@@ -60,12 +63,12 @@ abstract class SmartspaceDataSource(
 
     private class RequiresSetupException : RuntimeException()
 
-    data class DataSourceFlowState(
+    data class State(
         val targets: List<SmartspaceTarget> = emptyList(),
         val requiresSetup: List<SmartspaceDataSource> = emptyList()
     ) {
-        operator fun plus(other: DataSourceFlowState): DataSourceFlowState {
-            return DataSourceFlowState(
+        operator fun plus(other: State): State {
+            return State(
                 targets = this.targets + other.targets,
                 requiresSetup = this.requiresSetup + other.requiresSetup
             )

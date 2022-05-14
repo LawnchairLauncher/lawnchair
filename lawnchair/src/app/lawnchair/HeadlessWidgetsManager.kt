@@ -6,15 +6,16 @@ import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
 import android.content.Context
+import android.content.Intent
 import android.widget.RemoteViews
 import androidx.core.content.edit
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.MainThreadInitializedObject
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.plus
 
 class HeadlessWidgetsManager(private val context: Context) {
 
@@ -22,76 +23,26 @@ class HeadlessWidgetsManager(private val context: Context) {
     private val prefs = Utilities.getDevicePrefs(context)
     private val widgetManager = AppWidgetManager.getInstance(context)
     private val host = HeadlessAppWidgetHost(context)
-    private val subscriptionsMap = mutableMapOf<String, WidgetSubscription>()
+    private val widgetsMap = mutableMapOf<String, Widget>()
 
     init {
         host.startListening()
     }
 
+    fun getWidget(info: AppWidgetProviderInfo, prefKey: String): Widget {
+        val widget = widgetsMap.getOrPut(prefKey) { Widget(info, prefKey) }
+        if (info.provider != widget.info.provider) {
+            throw IllegalStateException("widget $prefKey was created with a different provider")
+        }
+        return widget
+    }
+
     fun subscribeUpdates(info: AppWidgetProviderInfo, prefKey: String): Flow<AppWidgetHostView> {
-        var subscription = subscriptionsMap[prefKey]
-        if (subscription != null && info.provider != subscription.info.provider) {
-            subscription.cancelCallback?.invoke()
-            subscription = null
+        val widget = getWidget(info, prefKey)
+        if (!widget.isBound) {
+            return emptyFlow()
         }
-
-        if (subscription != null) {
-            return subscription.flow
-        }
-
-        subscription = createSubscription(info, prefKey)
-        subscriptionsMap[prefKey] = subscription
-        return subscription.flow
-    }
-
-    private fun createSubscription(info: AppWidgetProviderInfo, prefKey: String): WidgetSubscription {
-        val subscription = WidgetSubscription(info)
-        subscription.flow = callbackFlow {
-            subscription.cancelCallback = { close() }
-            val widgetId = bindWidget(info, prefKey)
-            if (widgetId == -1) {
-                close()
-                return@callbackFlow
-            }
-            try {
-                val view = host.createView(context, widgetId, info) as HeadlessAppWidgetHostView
-                trySend(view)
-                view.updateCallback = { trySend(it) }
-                awaitCancellation()
-            } finally {
-                host.deleteAppWidgetId(widgetId)
-            }
-        }.shareIn(
-            scope,
-            SharingStarted.WhileSubscribed(),
-            replay = 1
-        )
-        return subscription
-    }
-
-    private fun bindWidget(info: AppWidgetProviderInfo, prefKey: String): Int {
-        var widgetId = prefs.getInt(prefKey, -1)
-        val boundInfo = widgetManager.getAppWidgetInfo(widgetId)
-        var isBound = boundInfo != null && info.provider == boundInfo.provider
-
-        if (!isBound) {
-            if (widgetId > -1) {
-                host.deleteAppWidgetId(widgetId)
-            }
-
-            widgetId = host.allocateAppWidgetId()
-            isBound = widgetManager.bindAppWidgetIdIfAllowed(
-                widgetId, info.profile, info.provider, null)
-        }
-
-        if (!isBound) {
-            host.deleteAppWidgetId(widgetId)
-            widgetId = -1
-        }
-
-        prefs.edit { putInt(prefKey, widgetId) }
-
-        return widgetId
+        return widget.updates
     }
 
     private class HeadlessAppWidgetHost(context: Context) : AppWidgetHost(context, 1028) {
@@ -118,11 +69,56 @@ class HeadlessWidgetsManager(private val context: Context) {
         }
     }
 
-    private class WidgetSubscription(val info: AppWidgetProviderInfo) {
+    inner class Widget internal constructor(val info: AppWidgetProviderInfo, private val prefKey: String) {
 
-        lateinit var flow: Flow<AppWidgetHostView>
-        var cancelCallback: (() -> Unit)? = null
+        var widgetId = prefs.getInt(prefKey, -1)
+            private set
+        var isBound = false
+            private set
+        val updates = callbackFlow {
+            try {
+                val view = host.createView(context, widgetId, info) as HeadlessAppWidgetHostView
+                trySend(view)
+                view.updateCallback = { trySend(it) }
+                awaitCancellation()
+            } finally {
+                host.deleteAppWidgetId(widgetId)
+            }
+        }
+            .onStart { if (!isBound) throw WidgetNotBoundException() }
+            .shareIn(
+                scope,
+                SharingStarted.WhileSubscribed(),
+                replay = 1
+            )
+
+        init {
+            bind()
+        }
+
+        fun bind() {
+            val boundInfo = widgetManager.getAppWidgetInfo(widgetId)
+            isBound = boundInfo != null && info.provider == boundInfo.provider
+
+            if (!isBound) {
+                if (widgetId > -1) {
+                    host.deleteAppWidgetId(widgetId)
+                }
+
+                widgetId = host.allocateAppWidgetId()
+                isBound = widgetManager.bindAppWidgetIdIfAllowed(
+                    widgetId, info.profile, info.provider, null)
+            }
+
+            prefs.edit { putInt(prefKey, widgetId) }
+        }
+
+        fun getBindIntent() = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND)
+            .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+            .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, info.provider)
     }
+
+    private class WidgetNotBoundException : RuntimeException()
 
     companion object {
 

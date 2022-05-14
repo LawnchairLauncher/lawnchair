@@ -1,5 +1,6 @@
 package app.lawnchair
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +8,8 @@ import android.os.Handler
 import android.os.Looper
 import android.os.ResultReceiver
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ModalBottomSheetDefaults
@@ -17,8 +20,10 @@ import androidx.core.view.WindowCompat
 import app.lawnchair.ui.preferences.components.SystemUi
 import app.lawnchair.ui.theme.LawnchairTheme
 import com.google.accompanist.insets.ProvideWindowInsets
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
-class DialogActivity : AppCompatActivity() {
+class BlankActivity : AppCompatActivity() {
 
     private val resultReceiver by lazy { intent.getParcelableExtra<ResultReceiver>("callback")!! }
     private var resultSent = false
@@ -80,6 +85,12 @@ class DialogActivity : AppCompatActivity() {
             intent.hasExtra("intent") -> {
                 if (intent.hasExtra("dialogTitle")) {
                     startActivity(intent.getParcelableExtra("intent"))
+                } else {
+                    registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                        resultReceiver.send(it.resultCode, it.data?.extras)
+                        resultSent = true
+                        finish()
+                    }.launch(intent.getParcelableExtra("intent"))
                 }
             }
             else -> {
@@ -104,19 +115,39 @@ class DialogActivity : AppCompatActivity() {
         fun getDialogIntent(
             context: Context, targetIntent: Intent,
             dialogTitle: String, dialogMessage: String,
-            positiveButton: String, callback: (Int) -> Unit
+            positiveButton: String, callback: (ActivityResult) -> Unit
         ): Intent {
-            return Intent(context, DialogActivity::class.java).apply {
+            return Intent(context, BlankActivity::class.java).apply {
                 putExtra("intent", targetIntent)
                 putExtra("dialogTitle", dialogTitle)
                 putExtra("dialogMessage", dialogMessage)
                 putExtra("positiveButton", positiveButton)
-                putExtra("callback", object : ResultReceiver(Handler(Looper.myLooper()!!)) {
+                putExtra("callback", createResultReceiver(callback))
+            }
+        }
 
-                    override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
-                        callback(resultCode)
+        suspend fun startBlankActivityForResult(activity: Activity, targetIntent: Intent): ActivityResult {
+            return suspendCoroutine { continuation ->
+                val intent = Intent(activity, BlankActivity::class.java).apply {
+                    putExtra("intent", targetIntent)
+                    putExtra("callback", createResultReceiver {
+                        continuation.resume(it)
+                    })
+                }
+                activity.startActivity(intent)
+            }
+        }
+
+        private fun createResultReceiver(callback: (ActivityResult) -> Unit): ResultReceiver {
+            return object : ResultReceiver(Handler(Looper.myLooper()!!)) {
+
+                override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
+                    val data = Intent()
+                    if (resultData != null) {
+                        data.putExtras(resultData)
                     }
-                })
+                    callback(ActivityResult(resultCode, data))
+                }
             }
         }
     }

@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Icon
 import android.text.TextUtils
-import app.lawnchair.DialogActivity
+import app.lawnchair.BlankActivity
 import app.lawnchair.getAppName
 import app.lawnchair.smartspace.model.SmartspaceAction
 import app.lawnchair.smartspace.model.SmartspaceScores
@@ -75,7 +75,7 @@ class NowPlayingProvider(context: Context) : SmartspaceDataSource(
             val intent = PreferenceActivity.createIntent(activity, "/${Routes.GENERAL}/")
             val message = activity.getString(R.string.event_provider_missing_notification_dots,
                 activity.getString(providerName))
-            val dialogIntent = DialogActivity.getDialogIntent(
+            val dialogIntent = BlankActivity.getDialogIntent(
                 activity, intent,
                 activity.getString(R.string.title_missing_notification_access),
                 message,
