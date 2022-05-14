@@ -21,6 +21,7 @@ import static android.app.WallpaperManager.FLAG_SYSTEM;
 import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 import static android.view.View.VISIBLE;
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
@@ -54,6 +55,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.view.WindowManager;
+import android.widget.RemoteViews;
 import android.widget.TextClock;
 
 import com.android.launcher3.BubbleTextView;
@@ -106,6 +108,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import app.lawnchair.LawnchairAppWidgetHostView;
 import app.lawnchair.data.iconoverride.IconOverrideRepository;
 import app.lawnchair.font.FontCache;
 import app.lawnchair.font.FontManager;
@@ -537,6 +540,9 @@ public class LauncherPreviewRenderer extends ContextWrapper
     }
 
     private static class LauncherPreviewAppWidgetHostView extends BaseLauncherAppWidgetHostView {
+
+        private ViewGroup mCustomView;
+
         private LauncherPreviewAppWidgetHostView(Context context) {
             super(context);
         }
@@ -544,6 +550,39 @@ public class LauncherPreviewRenderer extends ContextWrapper
         @Override
         protected boolean shouldAllowDirectClick() {
             return false;
+        }
+
+        @Override
+        public void setAppWidget(int appWidgetId, AppWidgetProviderInfo info) {
+            inflateCustomView(info);
+            super.setAppWidget(appWidgetId, info);
+        }
+
+        private void inflateCustomView(AppWidgetProviderInfo info) {
+            mCustomView = LawnchairAppWidgetHostView.inflateCustomView(getContext(), info, false);
+            if (mCustomView == null) {
+                return;
+            }
+            removeAllViews();
+            addView(mCustomView, MATCH_PARENT, MATCH_PARENT);
+        }
+
+        @Override
+        public void updateAppWidget(RemoteViews remoteViews) {
+            if (mCustomView != null) return;
+            super.updateAppWidget(remoteViews);
+        }
+
+        @Override
+        protected View getDefaultView() {
+            if (mCustomView != null) return new View(getContext());
+            return super.getDefaultView();
+        }
+
+        @Override
+        protected View getErrorView() {
+            if (mCustomView != null) return new View(getContext());
+            return super.getErrorView();
         }
     }
 

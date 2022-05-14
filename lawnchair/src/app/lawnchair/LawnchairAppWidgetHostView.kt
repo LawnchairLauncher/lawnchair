@@ -31,14 +31,10 @@ class LawnchairAppWidgetHostView @JvmOverloads constructor(
     }
 
     private fun inflateCustomView(info: AppWidgetProviderInfo) {
-        val layoutId = customLayouts[info.provider]
-        if (layoutId == null) {
-            customView = null
+        customView = inflateCustomView(context, info, previewMode)
+        if (customView == null) {
             return
         }
-        val inflationContext = if (previewMode) Themes.createWidgetPreviewContext(context) else context
-        customView = LayoutInflater.from(inflationContext)
-            .inflate(layoutId, this, false) as ViewGroup
         customView!!.setOnLongClickListener(this)
         removeAllViews()
         addView(customView, MATCH_PARENT, MATCH_PARENT)
@@ -68,5 +64,14 @@ class LawnchairAppWidgetHostView @JvmOverloads constructor(
         private val customLayouts = mapOf(
             SmartspaceAppWidgetProvider.componentName to R.layout.search_container_workspace
         )
+
+        @JvmStatic
+        fun inflateCustomView(context: Context, info: AppWidgetProviderInfo, previewMode: Boolean): ViewGroup? {
+            val layoutId = customLayouts[info.provider] ?: return null
+
+            val inflationContext = if (previewMode) Themes.createWidgetPreviewContext(context) else context
+            return LayoutInflater.from(inflationContext)
+                .inflate(layoutId, null, false) as ViewGroup
+        }
     }
 }
