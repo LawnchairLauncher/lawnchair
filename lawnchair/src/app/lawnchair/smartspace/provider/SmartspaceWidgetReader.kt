@@ -25,6 +25,7 @@ import app.lawnchair.util.pendingIntent
 import com.android.launcher3.R
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
@@ -43,7 +44,7 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
             val widgetsManager = HeadlessWidgetsManager.INSTANCE.get(context)
             widgetsManager.getWidget(provider, "smartspaceWidgetId")
         }
-        internalTargets = widget?.updates?.map(this::extractWidgetLayout) ?: emptyFlow()
+        internalTargets = widget?.updates?.map(this::extractWidgetLayout) ?: flowOf(disabledTargets)
     }
 
     override suspend fun requiresSetup() = widget?.isBound == false
