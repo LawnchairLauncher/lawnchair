@@ -368,9 +368,7 @@ public class InvariantDeviceProfile {
             devicePaddings = new DevicePaddings(context, devicePaddingId);
         }
 
-        // If the partner customization apk contains any grid overrides, apply them
-        // Supported overrides: numRows, numColumns, iconSize
-        applyPartnerDeviceProfileOverrides(context, metrics);
+        // Lawnchair ignores partner overrides and allows the user to customize the grid themselves
         overrideOptions.applyUi(this);
 
         float maxIconSize = iconSize[0];
