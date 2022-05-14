@@ -5,6 +5,8 @@ import android.appwidget.AppWidgetProviderInfo
 import android.content.Context
 import android.util.Log
 import android.view.ContextThemeWrapper
+import android.view.Gravity
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
@@ -12,13 +14,18 @@ import app.lawnchair.DeviceProfileOverrides
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings.Favorites.*
+import com.android.launcher3.R
 import com.android.launcher3.graphics.LauncherPreviewRenderer
-import com.android.launcher3.model.*
+import com.android.launcher3.model.BgDataModel
+import com.android.launcher3.model.GridSizeMigrationTaskV2
+import com.android.launcher3.model.LoaderTask
+import com.android.launcher3.model.ModelDelegate
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 import com.android.launcher3.util.RunnableList
 import com.android.launcher3.util.Themes
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import kotlin.math.min
 
 @SuppressLint("ViewConstructor")
@@ -31,8 +38,23 @@ class LauncherPreviewView(
     private var destroyed = false
 
     private val idp = InvariantDeviceProfile(context, options)
+    private val spinner = CircularProgressIndicator(context).apply {
+        val themedContext = ContextThemeWrapper(context, Themes.getActivityThemeRes(context))
+        val textColor = Themes.getAttrColor(themedContext, R.attr.workspaceTextColor)
+        indeterminateDrawable!!.setTint(textColor)
+        isIndeterminate = true
+        trackCornerRadius = 1000
+        alpha = 0f
+        animate()
+            .alpha(1f)
+            .withLayer()
+            .setStartDelay(100)
+            .setDuration(300)
+            .start()
+    }
 
     init {
+        addView(spinner, LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply { gravity = Gravity.CENTER })
         loadAsync()
     }
 
@@ -115,6 +137,7 @@ class LauncherPreviewView(
         view.pivotX = if (layoutDirection == LAYOUT_DIRECTION_RTL) view.measuredWidth.toFloat() else 0f
         view.pivotY = 0f
         view.layoutParams = LayoutParams(view.measuredWidth, view.measuredHeight)
+        removeView(spinner)
         addView(view)
     }
 }
