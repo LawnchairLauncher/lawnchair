@@ -7,6 +7,7 @@
         android:id="@+id/bc_smartspace_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/enhanced_smartspace_margin_start_launcher">
 
         <androidx.viewpager.widget.ViewPager
