@@ -13,7 +13,6 @@ import com.android.quickstep.QuickstepProcessInitializer
 class LawnchairProcessInitializer(context: Context) : QuickstepProcessInitializer(context) {
 
     override fun init(context: Context) {
-        super.init(context)
         LawnchairBugReporter.INSTANCE.get(context)
         ThemedIconDrawable.COLORS_LOADER = Function {
             if (Utilities.isDarkTheme(it)) {
@@ -28,5 +27,6 @@ class LawnchairProcessInitializer(context: Context) : QuickstepProcessInitialize
                 )
             }
         }
+        super.init(context)
     }
 }
