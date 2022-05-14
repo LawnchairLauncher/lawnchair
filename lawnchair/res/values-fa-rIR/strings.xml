@@ -173,7 +173,7 @@
     <string name="themed_icon_title">Themed Icons</string>
     <string name="corner_radius_label">Corner Radius</string>
     <string name="search_bar_label">Search Bar</string>
-    <string name="apply_accent_color_label">Apply Accent Color</string>
+    <string name="apply_accent_color_label">اعمال رنگ برنامه</string>
     <string name="show_search_result_types">Show in Search Results</string>
     <string name="search_pref_result_people_title">مردم</string>
     <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
