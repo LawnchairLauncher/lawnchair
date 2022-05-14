@@ -304,13 +304,11 @@ public class DepthController implements StateHandler<LauncherState>,
     }
 
     private void setDepth(float depth, boolean force) {
+        if (!Utilities.ATLEAST_R) return;
         depth = Utilities.boundToRange(depth, 0, 1);
         // Round out the depth to dedupe frequent, non-perceptable updates
         int depthI = (int) (depth * 256);
         float depthF = depthI / 256f;
-        if (!Utilities.ATLEAST_R) {
-            return;
-        }
         if (Float.compare(mDepth, depthF) == 0 && !force) {
             return;
         }
@@ -319,6 +317,7 @@ public class DepthController implements StateHandler<LauncherState>,
     }
 
     public void onOverlayScrollChanged(float progress) {
+        if (!Utilities.ATLEAST_R) return;
         // Round out the progress to dedupe frequent, non-perceptable updates
         int progressI = (int) (progress * 256);
         float progressF = Utilities.boundToRange(progressI / 256f, 0f, 1f);
