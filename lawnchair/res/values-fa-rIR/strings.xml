@@ -192,7 +192,7 @@
     <string name="icon_picker_label">Per-App Icon Customization</string>
     <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
     <string name="font_picker_label">شخصی‌سازی قلم</string>
-    <string name="font_picker_description">Some text remains unchanged.</string>
+    <string name="font_picker_description">بعضی متون بدون تغییر می‌مانند.</string>
     <string name="search_provider_app_search">جست‌وجو برنامه</string>
     <string name="always_open_website_label">Always Open Website</string>
     <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
