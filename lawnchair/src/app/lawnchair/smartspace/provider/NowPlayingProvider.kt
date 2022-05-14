@@ -17,8 +17,6 @@ import com.android.launcher3.R
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.first
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class NowPlayingProvider(context: Context) : SmartspaceDataSource(
     context, R.string.smartspace_now_playing, { smartspaceNowPlaying }
@@ -71,19 +69,14 @@ class NowPlayingProvider(context: Context) : SmartspaceDataSource(
     }
 
     override suspend fun startSetup(activity: Activity) {
-        suspendCoroutine<Unit> { continuation ->
-            val intent = PreferenceActivity.createIntent(activity, "/${Routes.GENERAL}/")
-            val message = activity.getString(R.string.event_provider_missing_notification_dots,
-                activity.getString(providerName))
-            val dialogIntent = BlankActivity.getDialogIntent(
-                activity, intent,
-                activity.getString(R.string.title_missing_notification_access),
-                message,
-                context.getString(R.string.title_change_settings)
-            ) {
-                continuation.resume(Unit)
-            }
-            activity.startActivity(dialogIntent)
-        }
+        val intent = PreferenceActivity.createIntent(activity, "/${Routes.GENERAL}/")
+        val message = activity.getString(R.string.event_provider_missing_notification_dots,
+            activity.getString(providerName))
+        BlankActivity.startBlankActivityDialog(
+            activity, intent,
+            activity.getString(R.string.title_missing_notification_access),
+            message,
+            context.getString(R.string.title_change_settings)
+        )
     }
 }

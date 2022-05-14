@@ -1,7 +1,6 @@
 package app.lawnchair
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -112,29 +111,32 @@ class BlankActivity : AppCompatActivity() {
 
     companion object {
 
-        fun getDialogIntent(
-            context: Context, targetIntent: Intent,
+        suspend fun startBlankActivityDialog(
+            activity: Activity, targetIntent: Intent,
             dialogTitle: String, dialogMessage: String,
-            positiveButton: String, callback: (ActivityResult) -> Unit
-        ): Intent {
-            return Intent(context, BlankActivity::class.java).apply {
-                putExtra("intent", targetIntent)
-                putExtra("dialogTitle", dialogTitle)
-                putExtra("dialogMessage", dialogMessage)
-                putExtra("positiveButton", positiveButton)
-                putExtra("callback", createResultReceiver(callback))
-            }
+            positiveButton: String
+        ) {
+            start(activity, targetIntent, Bundle().apply {
+                putParcelable("intent", targetIntent)
+                putString("dialogTitle", dialogTitle)
+                putString("dialogMessage", dialogMessage)
+                putString("positiveButton", positiveButton)
+            })
         }
 
         suspend fun startBlankActivityForResult(activity: Activity, targetIntent: Intent): ActivityResult {
+            return start(activity, targetIntent, Bundle.EMPTY)
+        }
+
+        private suspend fun start(activity: Activity, targetIntent: Intent, extras: Bundle): ActivityResult {
             return suspendCoroutine { continuation ->
-                val intent = Intent(activity, BlankActivity::class.java).apply {
-                    putExtra("intent", targetIntent)
-                    putExtra("callback", createResultReceiver {
-                        continuation.resume(it)
-                    })
+                val intent = Intent(activity, BlankActivity::class.java)
+                intent.putExtras(extras)
+                intent.putExtra("intent", targetIntent)
+                val resultReceiver = createResultReceiver {
+                    continuation.resume(it)
                 }
-                activity.startActivity(intent)
+                activity.startActivity(intent.putExtra("callback", resultReceiver))
             }
         }
 
