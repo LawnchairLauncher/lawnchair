@@ -3,6 +3,7 @@ package app.lawnchair.views
 import android.annotation.SuppressLint
 import android.appwidget.AppWidgetProviderInfo
 import android.content.Context
+import android.content.res.ColorStateList
 import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.Gravity
@@ -41,8 +42,8 @@ class LauncherPreviewView(
     private val spinner = CircularProgressIndicator(context).apply {
         val themedContext = ContextThemeWrapper(context, Themes.getActivityThemeRes(context))
         val textColor = Themes.getAttrColor(themedContext, R.attr.workspaceTextColor)
-        indeterminateDrawable!!.setTint(textColor)
         isIndeterminate = true
+        setIndicatorColor(textColor)
         trackCornerRadius = 1000
         alpha = 0f
         animate()
