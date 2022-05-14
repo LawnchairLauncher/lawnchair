@@ -7,11 +7,13 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
-    <TextView
+    <TextClock
         android:id="@+id/date"
         style="@style/EnhancedSmartspaceTextTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:format12Hour="EEE, MMM d"
+        android:format24Hour="EEE, MMM d"
         android:text="@string/smartspace_widget_placeholder_date"
         android:textColor="@android:color/white"
         android:shadowColor="#40000000"
