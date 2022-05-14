@@ -109,7 +109,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        if (mDestroyed) return;
+        if (mDestroyed || mIgnoreAutoRotateSettings) return;
         boolean wasRotationEnabled = mHomeRotationEnabled;
         mHomeRotationEnabled = mSharedPrefs.getBoolean(ALLOW_ROTATION_PREFERENCE_KEY,
                 getAllowRotationDefaultValue(mActivity.getDeviceProfile()));

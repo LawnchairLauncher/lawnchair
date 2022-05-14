@@ -17,6 +17,7 @@ package com.android.quickstep.interaction;
 
 import static com.android.launcher3.Utilities.mapBoundToRange;
 import static com.android.launcher3.Utilities.mapRange;
+import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import android.animation.Animator;
@@ -54,6 +55,8 @@ import androidx.core.graphics.ColorUtils;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.util.Executors;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.TouchInteractionService.TISBinder;
@@ -77,6 +80,8 @@ public class AllSetActivity extends Activity {
 
     private static final float HINT_BOTTOM_FACTOR = 1 - .94f;
 
+    private static final int MAX_SWIPE_DURATION = 350;
+
     private TISBindHelper mTISBindHelper;
     private TISBinder mBinder;
 
@@ -88,6 +93,8 @@ public class AllSetActivity extends Activity {
     @Nullable private Vibrator mVibrator;
     private LottieAnimationView mAnimatedBackground;
     private Animator.AnimatorListener mBackgroundAnimatorListener;
+
+    private AnimatorPlaybackController mLauncherStartAnim = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -136,6 +143,10 @@ public class AllSetActivity extends Activity {
         startBackgroundAnimation();
     }
 
+    private void runOnUiHelperThread(Runnable runnable) {
+        Executors.UI_HELPER_EXECUTOR.execute(runnable);
+    }
+
     private void startBackgroundAnimation() {
         if (Utilities.ATLEAST_S && mVibrator != null && mVibrator.areAllPrimitivesSupported(
                 VibrationEffect.Composition.PRIMITIVE_THUD)) {
@@ -144,22 +155,22 @@ public class AllSetActivity extends Activity {
                         new Animator.AnimatorListener() {
                             @Override
                             public void onAnimationStart(Animator animation) {
-                                mVibrator.vibrate(getVibrationEffect());
+                                runOnUiHelperThread(() -> mVibrator.vibrate(getVibrationEffect()));
                             }
 
                             @Override
                             public void onAnimationRepeat(Animator animation) {
-                                mVibrator.vibrate(getVibrationEffect());
+                                runOnUiHelperThread(() -> mVibrator.vibrate(getVibrationEffect()));
                             }
 
                             @Override
                             public void onAnimationEnd(Animator animation) {
-                                mVibrator.cancel();
+                                runOnUiHelperThread(mVibrator::cancel);
                             }
 
                             @Override
                             public void onAnimationCancel(Animator animation) {
-                                mVibrator.cancel();
+                                runOnUiHelperThread(mVibrator::cancel);
                             }
                         };
             }
@@ -232,10 +243,19 @@ public class AllSetActivity extends Activity {
 
     private void onSwipeProgressUpdate() {
         mBackground.setProgress(mSwipeProgress.value);
-        float alpha = Utilities.mapBoundToRange(mSwipeProgress.value, 0, HINT_BOTTOM_FACTOR,
-                1, 0, LINEAR);
+        float alpha = Utilities.mapBoundToRange(
+                mSwipeProgress.value, 0, HINT_BOTTOM_FACTOR, 1, 0, LINEAR);
         mContentView.setAlpha(alpha);
         mContentView.setTranslationY((alpha - 1) * mSwipeUpShift);
+
+        if (mLauncherStartAnim == null) {
+            mLauncherStartAnim = mBinder.getTaskbarManager().createLauncherStartFromSuwAnim(
+                    MAX_SWIPE_DURATION);
+        }
+        if (mLauncherStartAnim != null) {
+            mLauncherStartAnim.setPlayFraction(Utilities.mapBoundToRange(
+                    mSwipeProgress.value, 0, 1, 0, 1, FAST_OUT_SLOW_IN));
+        }
 
         if (alpha == 0f) {
             mAnimatedBackground.pauseAnimation();

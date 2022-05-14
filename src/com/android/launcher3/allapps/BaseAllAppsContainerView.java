@@ -326,7 +326,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
     }
 
     protected boolean isPersonalTab() {
-        return mViewPager.getNextPage() == 0;
+        return mViewPager == null || mViewPager.getNextPage() == 0;
     }
 
     /**
@@ -388,34 +388,34 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         mInsets.set(insets);
         DeviceProfile grid = mActivityContext.getDeviceProfile();
 
-        for (int i = 0; i < mAH.size(); i++) {
-            mAH.get(i).mPadding.bottom = insets.bottom;
-            mAH.get(i).mPadding.left = mAH.get(i).mPadding.right = grid.allAppsLeftRightPadding;
-            mAH.get(i).applyPadding();
-        }
+        applyAdapterPaddings(grid);
 
         MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
-        int leftRightMargin = grid.allAppsLeftRightMargin;
-        mlp.leftMargin = insets.left + leftRightMargin;
-        mlp.rightMargin = insets.right + leftRightMargin;
+        mlp.leftMargin = insets.left;
+        mlp.rightMargin = insets.right;
         setLayoutParams(mlp);
 
         if (grid.isVerticalBarLayout()) {
             setPadding(grid.workspacePadding.left, 0, grid.workspacePadding.right, 0);
         } else {
-            setPadding(0, grid.allAppsTopPadding, 0, 0);
+            setPadding(grid.allAppsLeftRightMargin, grid.allAppsTopPadding,
+                    grid.allAppsLeftRightMargin, 0);
         }
 
         InsettableFrameLayout.dispatchInsets(this, insets);
     }
 
+    /**
+     * Returns a padding in case a scrim is shown on the bottom of the view and a padding is needed.
+     */
+    protected int getNavBarScrimHeight(WindowInsets insets) {
+        return 0;
+    }
+
     @Override
     public WindowInsets dispatchApplyWindowInsets(WindowInsets insets) {
-        if (Utilities.ATLEAST_Q) {
-            mNavBarScrimHeight = insets.getTappableElementInsets().bottom;
-        } else {
-            mNavBarScrimHeight = insets.getStableInsetBottom();
-        }
+        mNavBarScrimHeight = getNavBarScrimHeight(insets);
+        applyAdapterPaddings(mActivityContext.getDeviceProfile());
         return super.dispatchApplyWindowInsets(insets);
     }
 
@@ -481,6 +481,15 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
 
         mAllAppsStore.registerIconContainer(mAH.get(AdapterHolder.MAIN).mRecyclerView);
         mAllAppsStore.registerIconContainer(mAH.get(AdapterHolder.WORK).mRecyclerView);
+    }
+
+    private void applyAdapterPaddings(DeviceProfile grid) {
+        int bottomPadding = Math.max(mInsets.bottom, mNavBarScrimHeight);
+        for (int i = 0; i < mAH.size(); i++) {
+            mAH.get(i).mPadding.bottom = bottomPadding;
+            mAH.get(i).mPadding.left = mAH.get(i).mPadding.right = grid.allAppsLeftRightPadding;
+            mAH.get(i).applyPadding();
+        }
     }
 
     private void setDeviceManagementResources() {

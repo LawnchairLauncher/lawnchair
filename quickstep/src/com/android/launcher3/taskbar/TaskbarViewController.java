@@ -258,21 +258,21 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         setter.addOnFrameListener(anim -> mActivity.setTaskbarWindowHeight(
                 anim.getAnimatedFraction() > 0 ? expandedHeight : collapsedHeight));
 
-        int count = mTaskbarView.getChildCount();
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < mTaskbarView.getChildCount(); i++) {
             View child = mTaskbarView.getChildAt(i);
 
-            int positionInHotseat = -1;
-            boolean isRtl = Utilities.isRtl(child.getResources());
+            int positionInHotseat;
             if (FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get()
-                    && ((isRtl && i == 0) || (!isRtl && i == count - 1))) {
+                    && child == mTaskbarView.getAllAppsButtonView()) {
                 // Note that there is no All Apps button in the hotseat, this position is only used
                 // as its convenient for animation purposes.
-                positionInHotseat = isRtl
+                positionInHotseat = Utilities.isRtl(child.getResources())
                         ? -1
                         : mActivity.getDeviceProfile().numShownHotseatIcons;
 
-                setter.setViewAlpha(child, 0, LINEAR);
+                if (!FeatureFlags.ENABLE_ALL_APPS_BUTTON_IN_HOTSEAT.get()) {
+                    setter.setViewAlpha(child, 0, LINEAR);
+                }
             } else if (child.getTag() instanceof ItemInfo) {
                 positionInHotseat = ((ItemInfo) child.getTag()).screenId;
             } else {
