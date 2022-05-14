@@ -6,6 +6,7 @@ import app.lawnchair.smartspace.model.SmartspaceTarget
 import com.patrykmichalik.preferencemanager.Preference
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 
@@ -21,9 +22,9 @@ abstract class SmartspaceDataSource(
     open val disabledTargets: Flow<List<SmartspaceTarget>> = flowOf(emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val targets = isEnabled.flatMapLatest {
-        if (it) internalTargets else disabledTargets
-    }
+    val targets = isEnabled
+        .distinctUntilChanged()
+        .flatMapLatest { if (it) internalTargets else disabledTargets }
 
     open fun destroy() {
 
