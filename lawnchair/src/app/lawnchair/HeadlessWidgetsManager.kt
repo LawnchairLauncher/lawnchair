@@ -14,6 +14,7 @@ import com.android.launcher3.util.MainThreadInitializedObject
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.plus
 
@@ -76,14 +77,10 @@ class HeadlessWidgetsManager(private val context: Context) {
         var isBound = false
             private set
         val updates = callbackFlow {
-            try {
-                val view = host.createView(context, widgetId, info) as HeadlessAppWidgetHostView
-                trySend(view)
-                view.updateCallback = { trySend(it) }
-                awaitCancellation()
-            } finally {
-                host.deleteAppWidgetId(widgetId)
-            }
+            val view = host.createView(context, widgetId, info) as HeadlessAppWidgetHostView
+            trySend(view)
+            view.updateCallback = { trySend(it) }
+            awaitClose()
         }
             .onStart { if (!isBound) throw WidgetNotBoundException() }
             .shareIn(
