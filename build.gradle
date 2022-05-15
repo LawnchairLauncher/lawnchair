@@ -1,8 +1,8 @@
 buildscript {
     ext {
-        kotlin_version = '1.6.10'
-        compose_version = '1.1.1'
-        accompanist_version = '0.24.2-alpha'
+        kotlin_version = '1.6.21'
+        compose_version = '1.2.0-beta01'
+        accompanist_version = '0.24.4-alpha'
         libsu_version = '3.1.2'
         protocVersion = '3.18.0'
         room_version = '2.4.2'
@@ -15,7 +15,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:7.2.0'
         classpath PROTOBUF_CLASS_PATH
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.android.gms:oss-licenses-plugin:0.10.4'
+        classpath 'com.google.android.gms:oss-licenses-plugin:0.10.5'
     }
 }
 
@@ -348,7 +348,7 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling:$compose_version"
     implementation "androidx.compose.foundation:foundation:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.material3:material3:1.0.0-alpha10"
+    implementation "androidx.compose.material3:material3:1.0.0-alpha11"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     implementation "androidx.compose.runtime:runtime-rxjava2:$compose_version"
     implementation "androidx.compose.compiler:compiler:$compose_version"
