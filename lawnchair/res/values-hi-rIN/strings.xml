@@ -105,7 +105,7 @@
     <string name="quickstep_description">\"सभी हटाएं\" बटन के किनारे</string>
     <string name="wallpaper_scrolling_label">स्क्रॉल वॉलपेपर</string>
     <string name="show_sys_ui_scrim">ऊपरी हिस्से पर प्रतिछाया</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_status_bar">स्टेट्स बार दिखाएँ</string>
     <string name="what_to_show">क्या क्या दिखाना है</string>
     <string name="missing_notification_access_label">नोटिफिकेशन परमिशन चाहिए</string>
     <string name="missing_notification_access_description">नोटिफिकेशन परमिशन चाहिए.</string>
@@ -137,7 +137,7 @@
     <string name="icon_shape_label">आइकन का आकार</string>
     <string name="icon_shape_system">तंत्र</string>
     <string name="icon_shape_circle">गोल</string>
-    <string name="icon_shape_square">Square</string>
+    <string name="icon_shape_square">चौकोर</string>
     <string name="icon_shape_rounded_square">गोलाकार वर्ग</string>
     <string name="icon_shape_squircle">वर्गाकार गोल</string>
     <string name="icon_shape_sammy">One UI</string>
