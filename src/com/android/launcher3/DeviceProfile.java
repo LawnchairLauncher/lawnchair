@@ -255,7 +255,6 @@ public class DeviceProfile {
         mInsets.set(windowBounds.insets);
 
         isScalableGrid = inv.isScalable && !isVerticalBarLayout() && !isMultiWindowMode;
-
         // Determine device posture.
         mInfo = info;
         isTablet = info.isTablet(windowBounds);
@@ -265,8 +264,8 @@ public class DeviceProfile {
 
         // Some more constants.
         context = getContext(context, info, isVerticalBarLayout() || (isTablet && isLandscape)
-                ? Configuration.ORIENTATION_LANDSCAPE
-                : Configuration.ORIENTATION_PORTRAIT,
+                        ? Configuration.ORIENTATION_LANDSCAPE
+                        : Configuration.ORIENTATION_PORTRAIT,
                 windowBounds);
         final Resources res = context.getResources();
         mMetrics = res.getDisplayMetrics();
@@ -313,7 +312,6 @@ public class DeviceProfile {
         allAppsShiftRange = isTablet
                 ? heightPx - allAppsTopPadding
                 : res.getDimensionPixelSize(R.dimen.all_apps_starting_vertical_translate);
-
         folderLabelTextScale = res.getFloat(R.dimen.folder_label_text_scale);
         folderContentPaddingLeftRight =
                 res.getDimensionPixelSize(R.dimen.folder_content_padding_left_right);
@@ -795,27 +793,26 @@ public class DeviceProfile {
         allAppsBorderSpacePx = new Point(
                 pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].x, mMetrics, scale),
                 pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].y, mMetrics, scale));
+        // AllApps cells don't have real space between cells,
+        // so we add the border space to the cell height
+        allAppsCellHeightPx = pxFromDp(inv.allAppsCellSize[mTypeIndex].y, mMetrics, scale)
+                + allAppsBorderSpacePx.y;
+        // but width is just the cell,
+        // the border is added in #updateAllAppsContainerWidth
+        allAppsCellWidthPx = pxFromDp(inv.allAppsCellSize[mTypeIndex].x, mMetrics, scale);
         if (isScalableGrid) {
             allAppsIconSizePx =
                     pxFromDp(inv.allAppsIconSize[mTypeIndex], mMetrics);
             allAppsIconTextSizePx =
                     pxFromSp(inv.allAppsIconTextSize[mTypeIndex], mMetrics);
             allAppsIconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
-            // AllApps cells don't have real space between cells,
-            // so we add the border space to the cell height
-            allAppsCellHeightPx = pxFromDp(inv.allAppsCellSize[mTypeIndex].y, mMetrics, scale)
-                    + allAppsBorderSpacePx.y;
-            // but width is just the cell,
-            // the border is added in #updateAllAppsContainerWidth
-            allAppsCellWidthPx = pxFromDp(inv.allAppsCellSize[mTypeIndex].x, mMetrics, scale);
         } else {
-            float invIconSizeDp = inv.iconSize[mTypeIndex];
-            float invIconTextSizeSp = inv.iconTextSize[mTypeIndex];
+            float invIconSizeDp = inv.allAppsIconSize[mTypeIndex];
+            float invIconTextSizeSp = inv.allAppsIconTextSize[mTypeIndex];
             allAppsIconSizePx = Math.max(1, pxFromDp(invIconSizeDp, mMetrics, scale));
             allAppsIconTextSizePx = (int) (pxFromSp(invIconTextSizeSp, mMetrics) * scale);
-            allAppsIconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
-            allAppsCellWidthPx = allAppsIconSizePx + (2 * allAppsIconDrawablePaddingPx);
-            allAppsCellHeightPx = getCellSize().y;
+            allAppsIconDrawablePaddingPx =
+                    res.getDimensionPixelSize(R.dimen.all_apps_icon_drawable_padding);
         }
 
         updateAllAppsContainerWidth(res);
@@ -1145,7 +1142,7 @@ public class DeviceProfile {
             return Math.min(qsbBottomMarginPx + taskbarSize, freeSpace);
         } else {
             return (int) (freeSpace * mQsbCenterFactor)
-                + (isTaskbarPresent ? taskbarSize : mInsets.bottom);
+                    + (isTaskbarPresent ? taskbarSize : mInsets.bottom);
         }
     }
 
