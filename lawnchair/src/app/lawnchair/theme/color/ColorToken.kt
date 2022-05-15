@@ -110,6 +110,16 @@ data class SetLStarColorToken(
     }
 }
 
+class WithContextColorToken(
+    private val token: ColorToken,
+    private val transform: ColorToken.(Context) -> ColorToken
+) : ColorToken {
+
+    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {
+        return transform(token, context).resolve(context, scheme, uiColorMode)
+    }
+}
+
 enum class Swatch { Neutral1, Neutral2, Accent1, Accent2, Accent3 }
 
 @JvmInline

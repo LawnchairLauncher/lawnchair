@@ -35,10 +35,13 @@ fun QuickstepPreferences() {
     }
 
     PreferenceLayout(label = stringResource(id = R.string.quickstep_label)) {
-        PreferenceGroup(
-            heading = stringResource(id = R.string.recents_actions_label),
-            isFirstChild = true
-        ) {
+        PreferenceGroup(heading = stringResource(id = R.string.general_label), isFirstChild = true) {
+            SwitchPreference(
+                adapter = prefs.recentsTranslucentBackground.getAdapter(),
+                label = stringResource(id = R.string.translucent_background),
+            )
+        }
+        PreferenceGroup(heading = stringResource(id = R.string.recents_actions_label)) {
             if (!isOnePlusStock) {
                 SwitchPreference(
                     adapter = prefs.recentsActionScreenshot.getAdapter(),

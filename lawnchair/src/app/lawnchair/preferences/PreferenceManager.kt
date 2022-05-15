@@ -81,6 +81,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val recentsActionShare = BoolPref("pref_recentsActionShare", isOnePlusStock)
     val recentsActionLens = BoolPref("pref_recentsActionLens", true)
     val recentsActionClearAll = BoolPref("pref_clearAllAsAction", false)
+    val recentsTranslucentBackground = BoolPref("pref_recentsTranslucentBackground", false, recreate)
 
     init {
         sp.registerOnSharedPreferenceChangeListener(this)

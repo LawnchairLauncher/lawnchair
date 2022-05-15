@@ -63,6 +63,7 @@
     <string name="app_info_drop_target_label">App Info</string>
     <string name="item_removed">Item removed.</string>
     <string name="all_apps_no_search_results">No apps found matching “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="translucent_background">Translucent Background</string>
     <string name="background_opacity">Background Opacity</string>
     <string name="background_lightness_label">Background Lightness</string>
     <string name="adaptive_icons">Adaptive Icons</string>
