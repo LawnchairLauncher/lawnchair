@@ -8,6 +8,7 @@ import com.android.launcher3.allapps.AllAppsStore
 import com.android.launcher3.allapps.AlphabeticalAppsList
 import com.android.launcher3.allapps.WorkAdapterProvider
 import com.android.launcher3.model.data.AppInfo
+import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.ItemInfoMatcher
 import com.patrykmichalik.preferencemanager.onEach
 
@@ -17,19 +18,23 @@ class LawnchairAlphabeticalAppsList(
     adapterProvider: WorkAdapterProvider?,
 ) : AlphabeticalAppsList(context, appsStore, adapterProvider) {
 
-    private val preferenceManager2 = PreferenceManager2.getInstance(context)
+    private var hiddenApps: Set<String> = setOf()
     private var itemFilter: ItemInfoMatcher? = null
 
     init {
-        preferenceManager2.hiddenApps.onEach(launchIn = context.launcher.lifecycleScope) {
-            super.updateItemFilter { info, cn ->
-                require(info is AppInfo) { "`info` must be an instance of `AppInfo`." }
-                when {
-                    itemFilter?.matches(info, cn) == false -> false
-                    it.contains(info.toComponentKey().toString()) -> false
-                    else -> true
-                }
+        super.updateItemFilter { info, cn ->
+            require(info is AppInfo) { "`info` must be an instance of `AppInfo`." }
+            when {
+                itemFilter?.matches(info, cn) == false -> false
+                hiddenApps.contains(info.toComponentKey().toString()) -> false
+                else -> true
             }
+        }
+
+        val prefs = PreferenceManager2.getInstance(context)
+        prefs.hiddenApps.onEach(launchIn = context.launcher.lifecycleScope) {
+            hiddenApps = it
+            onAppsUpdated()
         }
     }
 
