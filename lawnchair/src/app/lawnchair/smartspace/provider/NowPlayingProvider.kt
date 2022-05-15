@@ -3,7 +3,6 @@ package app.lawnchair.smartspace.provider
 import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Icon
-import android.text.TextUtils
 import app.lawnchair.BlankActivity
 import app.lawnchair.getAppName
 import app.lawnchair.smartspace.model.SmartspaceAction
@@ -19,7 +18,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.first
 
 class NowPlayingProvider(context: Context) : SmartspaceDataSource(
-    context, R.string.smartspace_now_playing, { smartspaceNowPlaying }
+    context, R.string.smartspace_now_playing, { smartspaceNowPlaying },
 ) {
 
     private val defaultIcon = Icon.createWithResource(context, R.drawable.ic_music_note)
@@ -41,11 +40,11 @@ class NowPlayingProvider(context: Context) : SmartspaceDataSource(
 
         val mediaInfo = tracking.info
         val artistAndAlbum = listOf(mediaInfo.artist, mediaInfo.album)
-            .filter { !TextUtils.isEmpty(it) }
+            .filter { it.isNotEmpty() }
             .joinToString(separator = context.getString(R.string.smartspace_media_info_separator))
-        val subtitle = if (!TextUtils.isEmpty(artistAndAlbum)) {
-            artistAndAlbum
-        } else sbn?.getAppName(context) ?: context.getAppName(tracking.packageName)
+        val subtitle = artistAndAlbum.ifEmpty {
+            sbn?.getAppName(context) ?: context.getAppName(tracking.packageName)
+        }
         val intent = sbn?.notification?.contentIntent
         return SmartspaceTarget(
             id = "nowPlaying-${mediaInfo.hashCode()}",
@@ -55,28 +54,27 @@ class NowPlayingProvider(context: Context) : SmartspaceDataSource(
                 title = title,
                 subtitle = subtitle,
                 pendingIntent = intent,
-                onClick = if (intent == null) Runnable { media.toggle(true) } else null
+                onClick = if (intent == null) Runnable { media.toggle(true) } else null,
             ),
             score = SmartspaceScores.SCORE_MEDIA,
-            featureType = SmartspaceTarget.FeatureType.FEATURE_MEDIA
+            featureType = SmartspaceTarget.FeatureType.FEATURE_MEDIA,
         )
     }
 
-    override suspend fun requiresSetup(): Boolean {
-        if (!isNotificationServiceEnabled(context)) return true
-        if (!notificationDotsEnabled(context).first()) return true
-        return false
-    }
+    override suspend fun requiresSetup(): Boolean =
+        isNotificationServiceEnabled(context = context).not() ||
+            notificationDotsEnabled(context = context).first().not()
 
     override suspend fun startSetup(activity: Activity) {
         val intent = PreferenceActivity.createIntent(activity, "/${Routes.GENERAL}/")
         val message = activity.getString(R.string.event_provider_missing_notification_dots,
             activity.getString(providerName))
         BlankActivity.startBlankActivityDialog(
-            activity, intent,
+            activity,
+            intent,
             activity.getString(R.string.title_missing_notification_access),
             message,
-            context.getString(R.string.title_change_settings)
+            context.getString(R.string.title_change_settings),
         )
     }
 }
