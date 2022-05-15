@@ -141,8 +141,8 @@
     <string name="icon_shape_rounded_square">गोलाकार वर्ग</string>
     <string name="icon_shape_squircle">वर्गाकार गोल</string>
     <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_teardrop">Teardrop</string>
-    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_teardrop">आँसू आकार</string>
+    <string name="icon_shape_cylinder">सिलेंडर</string>
     <string name="icon_shape_cupertino">Cupertino</string>
     <string name="customize_button_text">अपने अनुरूप सेट करें</string>
     <string name="app_title_label">शीर्षक</string>
@@ -196,6 +196,6 @@
     <string name="search_provider_app_search">App Search</string>
     <string name="always_open_website_label">Always Open Website</string>
     <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
-    <string name="search_provider">Search Provider</string>
+    <string name="search_provider">खोज प्रदाता</string>
     <string name="status_bar_label">स्टेटस बार</string>
 </resources>
