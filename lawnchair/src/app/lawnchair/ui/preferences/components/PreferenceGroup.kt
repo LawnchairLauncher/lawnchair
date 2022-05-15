@@ -70,23 +70,24 @@ fun PreferenceGroupHeading(
     heading: String? = null,
     isFirstChild: Boolean
 ) {
-    var spacerHeight = 0
-    if (heading == null) spacerHeight += 8
-    if (!isFirstChild) spacerHeight += 8
+    val spacerHeight = listOf(heading == null, isFirstChild.not())
+        .fold(initial = 0) { sum, condition -> if (condition) sum + 8 else sum }
 
-    Spacer(modifier = Modifier.requiredHeight(spacerHeight.dp))
+    if (spacerHeight > 0) {
+        Spacer(modifier = Modifier.requiredHeight(spacerHeight.dp))
+    }
     if (heading != null) {
         Column(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .height(48.dp)
                 .padding(horizontal = 32.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
         ) {
             Text(
                 text = heading,
                 style = Material3Theme.typography.titleSmall,
-                color = Material3Theme.colorScheme.primary
+                color = Material3Theme.colorScheme.primary,
             )
         }
     }
