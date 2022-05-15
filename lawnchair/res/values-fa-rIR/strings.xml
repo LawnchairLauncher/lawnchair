@@ -176,7 +176,7 @@
     <string name="apply_accent_color_label">اعمال رنگ برنامه</string>
     <string name="show_search_result_types">Show in Search Results</string>
     <string name="search_pref_result_people_title">مردم</string>
-    <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
+    <string name="search_pref_result_shortcuts_title">میانبرهای برنامه</string>
     <string name="search_pref_result_tips_title">Pixel Tips</string>
     <string name="row_height_label">ارتفاع ردیف</string>
     <string name="all_apps_device_search_hint">جست‌و‌جو</string>
