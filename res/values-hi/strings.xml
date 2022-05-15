@@ -114,6 +114,8 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचना बिंदु दिखाने के लिए, <xliff:g id="NAME">%1$s</xliff:g> के ऐप्लिकेशन सूचना चालू करें"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिंग बदलें"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"नई सूचनाएं बताने वाला गोल निशान दिखाएं"</string>
+    <!-- no translation found for developer_options_title (700788437593726194) -->
+    <skip />
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"होम स्क्रीन पर ऐप्लिकेशन के आइकॉन जोड़ें"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नए ऐप्लिकेशन के लिए"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>

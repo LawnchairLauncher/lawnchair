@@ -114,6 +114,8 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"નોટિફિકેશન માટેનું ચિહ્ન બતાવવા હેતુ, <xliff:g id="NAME">%1$s</xliff:g> માટેની ઍપ્લિકેશન નોટિફિકેશન ચાલુ કરો"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"સેટિંગ બદલો"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"નોટિફિકેશન માટેના ચિહ્ન બતાવો"</string>
+    <!-- no translation found for developer_options_title (700788437593726194) -->
+    <skip />
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"ઍપના આઇકન હોમ સ્ક્રીનમાં ઉમેરો"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"નવી ઍપ માટે"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"અજાણ્યો"</string>

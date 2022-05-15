@@ -114,6 +114,8 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"برای نمایش «نقطه‌های اعلان»، اعلان‌های برنامه را برای <xliff:g id="NAME">%1$s</xliff:g> روشن کنید"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"تغییر تنظیمات"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"نمایش نقطه‌های اعلان"</string>
+    <!-- no translation found for developer_options_title (700788437593726194) -->
+    <skip />
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"افزودن نماد برنامه‌ها به صفحه اصلی"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"برای برنامه‌های جدید"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"نامشخص"</string>
