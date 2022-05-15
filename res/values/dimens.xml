@@ -57,13 +57,18 @@
     <dimen name="workspace_page_indicator_line_height">1dp</dimen>
     <dimen name="workspace_page_indicator_overlap_workspace">0dp</dimen>
 
-<!-- Drop target bar -->
+    <!-- Drop target bar -->
     <dimen name="dynamic_grid_drop_target_size">56dp</dimen>
     <dimen name="drop_target_vertical_gap">20dp</dimen>
     <dimen name="drop_target_top_margin">32dp</dimen>
     <dimen name="drop_target_bottom_margin">16dp</dimen>
 
-<!-- App Widget resize frame -->
+    <!-- App Widget resize frame -->
+    <!-- Button drop target bar -->
+    <dimen name="button_drop_target_min_text_size">10sp</dimen>
+    <dimen name="button_drop_target_resize_text_increment">1sp</dimen>
+
+    <!-- App Widget resize frame -->
     <dimen name="widget_handle_margin">13dp</dimen>
     <dimen name="resize_frame_background_padding">24dp</dimen>
     <dimen name="resize_frame_margin">22dp</dimen>
@@ -76,7 +81,7 @@
     <dimen name="widget_reconfigure_button_size">36dp</dimen>
     <dimen name="widget_reconfigure_tip_top_margin">16dp</dimen>
 
-<!-- Fast scroll -->
+    <!-- Fast scroll -->
     <dimen name="fastscroll_track_min_width">6dp</dimen>
     <dimen name="fastscroll_track_max_width">8dp</dimen>
     <dimen name="fastscroll_thumb_padding">1dp</dimen>
@@ -136,19 +141,20 @@
     <dimen name="all_apps_paged_view_top_padding">40dp</dimen>
     <dimen name="all_apps_personal_work_tabs_vertical_margin">16dp</dimen>
 
+    <dimen name="all_apps_icon_drawable_padding">8dp</dimen>
     <!-- The size of corner radius of the arrow in the arrow toast. -->
     <dimen name="arrow_toast_corner_radius">2dp</dimen>
     <dimen name="arrow_toast_elevation">2dp</dimen>
     <dimen name="arrow_toast_arrow_width">10dp</dimen>
 
-<!-- Search bar in All Apps -->
+    <!-- Search bar in All Apps -->
     <dimen name="all_apps_header_max_elevation">3dp</dimen>
     <dimen name="all_apps_header_scroll_to_elevation">16dp</dimen>
     <dimen name="all_apps_header_shadow_height">6dp</dimen>
 
     <dimen name="all_apps_divider_margin_vertical">8dp</dimen>
 
-<!-- Floating action button inside work tab to toggle work profile -->
+    <!-- Floating action button inside work tab to toggle work profile -->
     <dimen name="work_fab_height">56dp</dimen>
     <dimen name="work_fab_radius">16dp</dimen>
     <dimen name="work_card_padding_horizontal">10dp</dimen>
@@ -219,13 +225,13 @@
     <dimen name="shortcut_preview_padding_right">0dp</dimen>
     <dimen name="shortcut_preview_padding_top">0dp</dimen>
 
-<!-- Pin widget dialog -->
+    <!-- Pin widget dialog -->
     <dimen name="pin_widget_button_padding_horizontal">8dp</dimen>
     <dimen name="pin_widget_button_padding_vertical">4dp</dimen>
     <dimen name="pin_widget_button_inset_horizontal">4dp</dimen>
     <dimen name="pin_widget_button_inset_vertical">6dp</dimen>
 
-<!-- Dragging -->
+    <!-- Dragging -->
     <!-- Drag padding to add to the bottom of drop targets -->
     <dimen name="drop_target_drag_padding">14dp</dimen>
     <dimen name="drop_target_text_size">16sp</dimen>
@@ -250,7 +256,7 @@
     <dimen name="spring_loaded_panel_border">2dp</dimen>
     <dimen name="keyboard_drag_stroke_width">4dp</dimen>
 
-<!-- Folders -->
+    <!-- Folders -->
     <dimen name="page_indicator_dot_size">8dp</dimen>
 
     <dimen name="folder_cell_x_padding">9dp</dimen>
@@ -262,22 +268,22 @@
     <dimen name="folder_content_padding_left_right">8dp</dimen>
     <dimen name="folder_content_padding_top">16dp</dimen>
 
-<!-- Sizes for managed profile badges -->
+    <!-- Sizes for managed profile badges -->
     <dimen name="profile_badge_size">24dp</dimen>
     <dimen name="profile_badge_margin">5dp</dimen>
     <dimen name="profile_badge_minimum_top">2dp</dimen>
 
-<!-- Shadows and outlines -->
+    <!-- Shadows and outlines -->
     <dimen name="blur_size_thin_outline">1dp</dimen>
     <dimen name="blur_size_medium_outline">2dp</dimen>
     <dimen name="blur_size_click_shadow">4dp</dimen>
     <dimen name="click_shadow_high_shift">2dp</dimen>
 
-<!-- Pending widget -->
+    <!-- Pending widget -->
     <dimen name="pending_widget_min_padding">8dp</dimen>
     <dimen name="pending_widget_elevation">2dp</dimen>
 
-<!-- Deep shortcuts -->
+    <!-- Deep shortcuts -->
     <dimen name="deep_shortcuts_elevation">2dp</dimen>
     <dimen name="bg_popup_padding">2dp</dimen>
     <dimen name="bg_popup_item_width">216dp</dimen>
@@ -311,7 +317,7 @@
     <!-- (system_shortcut_header_icon_touch_size - system_shortcut_icon_size) / 2 -->
     <dimen name="system_shortcut_header_icon_padding">14dp</dimen>
 
-<!-- Notifications -->
+    <!-- Notifications -->
     <dimen name="bg_round_rect_radius">8dp</dimen>
     <dimen name="notification_max_trans">8dp</dimen>
     <dimen name="notification_space">8dp</dimen>
@@ -329,11 +335,11 @@
     <dimen name="notification_main_text_padding_start">56dp</dimen>
     <dimen name="horizontal_ellipsis_size">18dp</dimen>
 
-<!-- Overview -->
+    <!-- Overview -->
     <dimen name="options_menu_icon_size">24dp</dimen>
     <dimen name="options_menu_thumb_size">32dp</dimen>
 
-<!-- Snackbar -->
+    <!-- Snackbar -->
     <dimen name="snackbar_height">48dp</dimen>
     <dimen name="snackbar_content_height">32dp</dimen>
     <dimen name="snackbar_padding">8dp</dimen>
@@ -345,17 +351,17 @@
     <dimen name="snackbar_max_text_size">14sp</dimen>
     <dimen name="snackbar_max_width">504dp</dimen>
 
-<!-- Developer Options -->
+    <!-- Developer Options -->
     <dimen name="developer_options_filter_margins">10dp</dimen>
 
-<!-- Theming related -->
+    <!-- Theming related -->
     <dimen name="default_dialog_corner_radius">8dp</dimen>
     <dimen name="dialogCornerRadius">@dimen/default_dialog_corner_radius</dimen>
 
     <!-- Onboarding bottomsheet related -->
     <dimen name="bottom_sheet_edu_padding">24dp</dimen>
 
-<!-- Taskbar related (placeholders to compile in Launcher3 without Quickstep) -->
+    <!-- Taskbar related (placeholders to compile in Launcher3 without Quickstep) -->
     <dimen name="taskbar_size">0dp</dimen>
     <dimen name="taskbar_stashed_size">0dp</dimen>
     <dimen name="qsb_widget_height">0dp</dimen>
@@ -366,10 +372,10 @@
     <!-- Size of the maximum radius for the enforced rounded rectangles. -->
     <dimen name="enforced_rounded_corner_max_radius">16dp</dimen>
 
-<!-- Base Swipe Detector, speed in dp/s -->
+    <!-- Base Swipe Detector, speed in dp/s -->
     <dimen name="base_swift_detector_fling_release_velocity">1dp</dimen>
 
-<!-- Overview placeholder to compile in Launcher3 without Quickstep -->
+    <!-- Overview placeholder to compile in Launcher3 without Quickstep -->
     <dimen name="task_thumbnail_icon_size">0dp</dimen>
     <dimen name="task_thumbnail_icon_drawable_size">0dp</dimen>
     <dimen name="task_thumbnail_icon_drawable_size_grid">0dp</dimen>
@@ -388,17 +394,17 @@
     <dimen name="task_menu_width_grid">216dp</dimen>
 
 
-<!-- Workspace grid visualization parameters -->
+    <!-- Workspace grid visualization parameters -->
     <dimen name="grid_visualization_rounding_radius">28dp</dimen>
     <dimen name="grid_visualization_horizontal_cell_spacing">6dp</dimen>
     <dimen name="grid_visualization_vertical_cell_spacing">6dp</dimen>
 
-<!-- Search results related parameters -->
+    <!-- Search results related parameters -->
     <dimen name="search_row_icon_size">48dp</dimen>
     <dimen name="search_row_small_icon_size">32dp</dimen>
     <dimen name="padded_rounded_button_padding">8dp</dimen>
 
-<!-- Bottom sheet related parameters -->
+    <!-- Bottom sheet related parameters -->
     <dimen name="bottom_sheet_extra_top_padding">0dp</dimen>
     <dimen name="bottom_sheet_handle_width">32dp</dimen>
     <dimen name="bottom_sheet_handle_height">4dp</dimen>
