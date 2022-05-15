@@ -249,5 +249,5 @@
     <string name="smartspace_now_playing">Now Playing</string>
     <string name="smartspace_requires_setup">Tap to Set Up</string>
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">“%1$s”</xliff:g>, enable Notification Dots.</string>
-    <string name="smartspace_media_info_separator"> — </string>
+    <string name="smartspace_media_info_separator">" — "</string>
 </resources>
