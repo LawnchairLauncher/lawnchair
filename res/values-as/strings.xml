@@ -114,6 +114,8 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"জাননী সম্পৰ্কীয় বিন্দুবোৰ দেখুৱাবলৈ <xliff:g id="NAME">%1$s</xliff:g>ৰ বাবে এপৰ জাননীসমূহ অন কৰক"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ছেটিং সলনি কৰক"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"জাননী বিন্দু দেখুৱাওক"</string>
+    <!-- no translation found for developer_options_title (700788437593726194) -->
+    <skip />
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"গৃহ স্ক্ৰীনত এপৰ চিহ্ন যোগ দিয়ক"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"নতুন এপসমূহৰ বাবে"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"অজ্ঞাত"</string>
