@@ -122,7 +122,7 @@ fun CustomizeAppDialog(
         title = prefs.customAppName[componentKey] ?: defaultTitle
         onDispose {
             val previousTitle = prefs.customAppName[componentKey]
-            val newTitle = title.ifEmpty { null }
+            val newTitle = if (title != defaultTitle) title else null
             if (newTitle != previousTitle) {
                 prefs.customAppName[componentKey] = newTitle
                 val model = LauncherAppState.getInstance(context).model
