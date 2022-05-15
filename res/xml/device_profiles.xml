@@ -34,6 +34,8 @@
             launcher:minHeightDps="300"
             launcher:iconImageSize="48"
             launcher:iconTextSize="13.0"
+            launcher:allAppsBorderSpace="16"
+            launcher:allAppsCellHeight="104"
             launcher:canBeDefault="true" />
 
         <display-option
@@ -42,6 +44,8 @@
             launcher:minHeightDps="400"
             launcher:iconImageSize="48"
             launcher:iconTextSize="13.0"
+            launcher:allAppsBorderSpace="16"
+            launcher:allAppsCellHeight="104"
             launcher:canBeDefault="true" />
 
     </grid-option>
@@ -63,6 +67,8 @@
             launcher:minHeightDps="420"
             launcher:iconImageSize="48"
             launcher:iconTextSize="13.0"
+            launcher:allAppsBorderSpace="16"
+            launcher:allAppsCellHeight="104"
             launcher:canBeDefault="true" />
 
         <display-option
@@ -71,6 +77,8 @@
             launcher:minHeightDps="450"
             launcher:iconImageSize="48"
             launcher:iconTextSize="13.0"
+            launcher:allAppsBorderSpace="16"
+            launcher:allAppsCellHeight="104"
             launcher:canBeDefault="true" />
 
         <display-option
@@ -79,6 +87,8 @@
             launcher:minHeightDps="491.33"
             launcher:iconImageSize="48"
             launcher:iconTextSize="13.0"
+            launcher:allAppsBorderSpace="16"
+            launcher:allAppsCellHeight="104"
             launcher:canBeDefault="true" />
 
         <display-option
@@ -87,6 +97,8 @@
             launcher:minHeightDps="567"
             launcher:iconImageSize="54"
             launcher:iconTextSize="13.0"
+            launcher:allAppsBorderSpace="16"
+            launcher:allAppsCellHeight="104"
             launcher:canBeDefault="true" />
 
         <display-option
@@ -95,6 +107,8 @@
             launcher:minHeightDps="567"
             launcher:iconImageSize="54"
             launcher:iconTextSize="13.0"
+            launcher:allAppsBorderSpace="16"
+            launcher:allAppsCellHeight="104"
             launcher:canBeDefault="true" />
 
     </grid-option>
@@ -116,6 +130,8 @@
             launcher:minHeightDps="694"
             launcher:iconImageSize="56"
             launcher:iconTextSize="14.4"
+            launcher:allAppsBorderSpace="16"
+            launcher:allAppsCellHeight="104"
             launcher:canBeDefault="true" />
 
         <display-option
@@ -124,6 +140,8 @@
             launcher:minHeightDps="694"
             launcher:iconImageSize="56"
             launcher:iconTextSize="14.4"
+            launcher:allAppsBorderSpace="16"
+            launcher:allAppsCellHeight="104"
             launcher:canBeDefault="true" />
 
         <display-option
@@ -132,6 +150,8 @@
             launcher:minHeightDps="400"
             launcher:iconImageSize="48"
             launcher:iconTextSize="13.0"
+            launcher:allAppsBorderSpace="16"
+            launcher:allAppsCellHeight="104"
             launcher:canBeDefault="true" />
 
     </grid-option>
