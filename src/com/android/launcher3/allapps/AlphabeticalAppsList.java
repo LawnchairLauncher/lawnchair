@@ -222,7 +222,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         mApps.clear();
 
         for (AppInfo app : mAllAppsStore.getApps()) {
-            if (mItemFilter == null || mItemFilter.matches(app, null) || hasFilter()) {
+            if (mItemFilter == null || mItemFilter.matches(app, null)) {
                 mApps.add(app);
             }
         }
