@@ -40,7 +40,7 @@ class NowPlayingProvider(context: Context) : SmartspaceDataSource(
 
         val mediaInfo = tracking.info
         val artistAndAlbum = listOf(mediaInfo.artist, mediaInfo.album)
-            .filter { it?.isNotEmpty() == false }
+            .filter { it?.isNotEmpty() == true }
             .joinToString(separator = context.getString(R.string.smartspace_media_info_separator))
         val subtitle = artistAndAlbum.ifEmpty {
             sbn?.getAppName(context) ?: context.getAppName(tracking.packageName)
