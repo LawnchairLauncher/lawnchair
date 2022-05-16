@@ -35,16 +35,12 @@ import com.google.accompanist.placeholder.material.placeholder
 fun AppItem(
     app: App,
     onClick: (app: App) -> Unit,
-    showDivider: Boolean = false,
-    widgetSize: Dp = 0.dp,
     widget: (@Composable () -> Unit)? = null,
 ) {
     AppItem(
         label = app.label,
         icon = app.icon,
         onClick = { onClick(app) },
-        showDivider = showDivider,
-        widgetSize = widgetSize,
         widget = widget,
     )
 }
@@ -54,15 +50,11 @@ fun AppItem(
     label: String,
     icon: Bitmap,
     onClick: () -> Unit,
-    showDivider: Boolean = false,
-    widgetSize: Dp = 0.dp,
     widget: (@Composable () -> Unit)? = null,
 ) {
     AppItemLayout(
         modifier = Modifier
             .clickable(onClick = onClick),
-        showDivider = showDivider,
-        widgetSize = widgetSize,
         widget = widget,
         icon = {
             Image(
@@ -77,13 +69,9 @@ fun AppItem(
 
 @Composable
 fun AppItemPlaceholder(
-    showDivider: Boolean = false,
-    widgetSize: Dp = 0.dp,
     widget: (@Composable () -> Unit)? = null,
 ) {
     AppItemLayout(
-        showDivider = showDivider,
-        widgetSize = widgetSize,
         widget = widget,
         icon = {
             Spacer(
@@ -111,8 +99,6 @@ fun AppItemPlaceholder(
 @Composable
 private fun AppItemLayout(
     modifier: Modifier = Modifier,
-    showDivider: Boolean = false,
-    widgetSize: Dp = 0.dp,
     widget: (@Composable () -> Unit)? = null,
     icon: @Composable () -> Unit,
     title: @Composable () -> Unit,
@@ -127,8 +113,6 @@ private fun AppItemLayout(
             }
             icon()
         },
-        showDivider = showDivider,
-        dividerIndent = if (widgetSize != 0.dp) widgetSize + 16.dp else 0.dp,
         verticalPadding = 12.dp
     )
 }

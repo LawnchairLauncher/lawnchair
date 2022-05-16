@@ -35,7 +35,6 @@ fun SwitchPreference(
     description: String? = null,
     onClick: (() -> Unit)? = null,
     enabled: Boolean = true,
-    showDivider: Boolean = false,
 ) {
     val checked = adapter.state.value
     SwitchPreference(
@@ -45,7 +44,6 @@ fun SwitchPreference(
         description = description,
         onClick = onClick,
         enabled = enabled,
-        showDivider = showDivider,
     )
 }
 
@@ -57,7 +55,6 @@ fun SwitchPreference(
     description: String? = null,
     onClick: (() -> Unit)? = null,
     enabled: Boolean = true,
-    showDivider: Boolean = false,
 ) {
     PreferenceTemplate(
         modifier = Modifier.clickable {
@@ -94,7 +91,6 @@ fun SwitchPreference(
             )
         },
         enabled = enabled,
-        showDivider = showDivider,
         applyPaddings = false
     )
 }

@@ -39,7 +39,7 @@ import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 
 @Composable
-fun ContributorRow(name: String, description: String, photoUrl: String, url: String, showDivider: Boolean = false) {
+fun ContributorRow(name: String, description: String, photoUrl: String, url: String) {
     val context = LocalContext.current
 
     PreferenceTemplate(
@@ -73,6 +73,5 @@ fun ContributorRow(name: String, description: String, photoUrl: String, url: Str
                 }
             )
         },
-        showDivider = showDivider
     )
 }

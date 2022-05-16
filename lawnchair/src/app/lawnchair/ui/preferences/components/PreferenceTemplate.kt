@@ -18,7 +18,6 @@ package app.lawnchair.ui.preferences.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Divider
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Composable
@@ -28,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import app.lawnchair.ui.theme.dividerColor
 import app.lawnchair.ui.util.addIf
 import androidx.compose.material3.MaterialTheme as Material3Theme
 
@@ -41,8 +39,6 @@ fun PreferenceTemplate(
     startWidget: (@Composable () -> Unit)? = null,
     endWidget: (@Composable () -> Unit)? = null,
     enabled: Boolean = true,
-    showDivider: Boolean = false,
-    dividerIndent: Dp = 0.dp,
     applyPaddings: Boolean = true,
     horizontalPadding: Dp = 16.dp,
     verticalPadding: Dp = 16.dp,
@@ -50,13 +46,6 @@ fun PreferenceTemplate(
 ) {
     val contentAlphaDisabled = ContentAlpha.disabled
     Column {
-        if (showDivider) {
-            Divider(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                startIndent = dividerIndent,
-                color = dividerColor()
-            )
-        }
         Row(
             verticalAlignment = verticalAlignment,
             modifier = modifier

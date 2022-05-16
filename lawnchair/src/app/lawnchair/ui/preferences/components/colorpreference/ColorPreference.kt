@@ -31,6 +31,7 @@ import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.ui.AlertBottomSheetContent
 import app.lawnchair.ui.preferences.components.Chip
+import app.lawnchair.ui.preferences.components.PreferenceDivider
 import app.lawnchair.ui.preferences.components.PreferenceTemplate
 import app.lawnchair.ui.theme.lightenColor
 import app.lawnchair.ui.util.bottomSheetHandler
@@ -148,12 +149,13 @@ private fun PresetsList(
         Column(modifier = Modifier.padding(top = 16.dp)) {
             dynamicEntries.mapIndexed { index, entry ->
                 key(entry) {
+                    if (index > 0) {
+                        PreferenceDivider(startIndent = 40.dp)
+                    }
                     PreferenceTemplate(
                         title = { Text(text = entry.label()) },
                         verticalPadding = 12.dp,
                         modifier = Modifier.clickable { adapter.onChange(entry.value) },
-                        showDivider = index > 0,
-                        dividerIndent = 40.dp,
                         startWidget = {
                             RadioButton(
                                 selected = entry.value == adapter.state.value,

@@ -12,7 +12,6 @@ import app.lawnchair.ui.preferences.LocalNavController
 fun FontPreference(
     fontPref: BasePreferenceManager.FontPref,
     label: String,
-    showDivider: Boolean = false
 ) {
     val navController = LocalNavController.current
 
@@ -27,6 +26,5 @@ fun FontPreference(
         },
         modifier = Modifier
             .clickable { navController.navigate(route = "/fontSelection/${fontPref.key}/") },
-        showDivider = showDivider
     )
 }

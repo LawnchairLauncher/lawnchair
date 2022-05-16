@@ -28,11 +28,10 @@ val themeEntries = listOf(
     }
 
 @Composable
-fun ThemePreference(showDivider: Boolean = false) {
+fun ThemePreference() {
     ListPreference(
         adapter = preferenceManager().launcherTheme.getAdapter(),
         entries = themeEntries,
         label = stringResource(id = R.string.theme_label),
-        showDivider = showDivider
     )
 }

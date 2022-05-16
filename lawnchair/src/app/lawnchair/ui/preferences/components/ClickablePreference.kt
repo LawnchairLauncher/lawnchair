@@ -36,7 +36,6 @@ fun ClickablePreference(
     subtitle: String? = null,
     confirmationText: String? = null,
     onClick: () -> Unit,
-    showDivider: Boolean = false
 ) {
     val bottomSheetHandler = bottomSheetHandler
     PreferenceTemplate(
@@ -57,7 +56,6 @@ fun ClickablePreference(
                }
             },
         description = { subtitle?.let { Text(text = it) } },
-        showDivider = showDivider
     )
 }
 

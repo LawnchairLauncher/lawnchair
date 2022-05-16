@@ -22,14 +22,12 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import app.lawnchair.ui.theme.dividerColor
 
 fun LazyListScope.preferenceGroupItems(
     count: Int,
@@ -41,8 +39,6 @@ fun LazyListScope.preferenceGroupItems(
     dividerEndIndent: Dp = 0.dp,
     itemContent: @Composable LazyItemScope.(index: Int) -> Unit
 ) {
-    val actualStartIndent = 16.dp + dividerStartIndent
-    val actualEndIndent = 16.dp + dividerEndIndent
     item {
         if (!isFirstChild) {
             Spacer(modifier = Modifier.requiredHeight(8.dp))
@@ -52,13 +48,7 @@ fun LazyListScope.preferenceGroupItems(
     items(count, key) {
         PreferenceGroupItem(cutTop = it > 0, cutBottom = it < count - 1) {
             if (showDividers && it > 0) {
-                Divider(
-                    color = dividerColor(),
-                    modifier = Modifier.padding(
-                        start = actualStartIndent,
-                        end = actualEndIndent
-                    )
-                )
+                PreferenceDivider(startIndent = dividerStartIndent, endIndent = dividerEndIndent)
             }
             itemContent(it)
         }

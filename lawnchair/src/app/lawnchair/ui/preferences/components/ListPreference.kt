@@ -17,8 +17,10 @@
 package app.lawnchair.ui.preferences.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.Divider
 import androidx.compose.material.RadioButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -28,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.ui.AlertBottomSheetContent
+import app.lawnchair.ui.theme.dividerColor
 import app.lawnchair.ui.util.bottomSheetHandler
 
 @Composable
@@ -36,7 +39,6 @@ fun <T> ListPreference(
     entries: List<ListPreferenceEntry<T>>,
     label: String,
     enabled: Boolean = true,
-    showDivider: Boolean = false
 ) {
     val bottomSheetHandler = bottomSheetHandler
     val currentValue = adapter.state.value
@@ -48,7 +50,6 @@ fun <T> ListPreference(
         title = { Text(text = label) },
         description = { currentLabel?.let { Text(text = it) } },
         enabled = enabled,
-        showDivider = showDivider,
         modifier = Modifier.clickable(enabled) {
             bottomSheetHandler.show {
                 AlertBottomSheetContent(
@@ -61,11 +62,12 @@ fun <T> ListPreference(
                 ) {
                     LazyColumn {
                         itemsIndexed(entries) { index, item ->
+                            if (index > 0) {
+                                PreferenceDivider(startIndent = 40.dp)
+                            }
                             PreferenceTemplate(
                                 enabled = item.enabled,
                                 title = { Text(item.label()) },
-                                showDivider = index > 0,
-                                dividerIndent = 40.dp,
                                 modifier = Modifier.clickable(item.enabled) {
                                     adapter.onChange(item.value)
                                     bottomSheetHandler.hide()

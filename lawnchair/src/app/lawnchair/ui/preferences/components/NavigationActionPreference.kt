@@ -27,7 +27,6 @@ fun NavigationActionPreference(
     label: String,
     subtitle: String? = null,
     destination: String,
-    showDivider: Boolean = false,
     endWidget: (@Composable () -> Unit)? = null
 ) {
     val navController = LocalNavController.current
@@ -36,7 +35,6 @@ fun NavigationActionPreference(
         modifier = Modifier.clickable { navController.navigate(route = destination) },
         title = { Text(text = label) },
         description = { subtitle?.let { Text(text = it) } },
-        showDivider = showDivider,
         endWidget = endWidget
     )
 }

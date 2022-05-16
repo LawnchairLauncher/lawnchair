@@ -50,7 +50,6 @@ fun SliderPreference(
     valueRange: ClosedRange<Int>,
     step: Int,
     showAsPercentage: Boolean = false,
-    showDivider: Boolean = false
 ) {
     val transformedAdapter = rememberTransformAdapter(
         adapter = adapter,
@@ -65,7 +64,6 @@ fun SliderPreference(
         valueRange = start..endInclusive,
         step = step.toFloat(),
         showAsPercentage = showAsPercentage,
-        showDivider = showDivider
     )
 }
 
@@ -76,7 +74,6 @@ fun SliderPreference(
     valueRange: ClosedFloatingPointRange<Float>,
     step: Float,
     showAsPercentage: Boolean = false,
-    showDivider: Boolean = false
 ) {
     var adapterValue by adapter
     var sliderValue by remember { mutableStateOf(adapterValue) }
@@ -124,7 +121,6 @@ fun SliderPreference(
                     .height(24.dp)
             )
         },
-        showDivider = showDivider,
         applyPaddings = false
     )
 }
