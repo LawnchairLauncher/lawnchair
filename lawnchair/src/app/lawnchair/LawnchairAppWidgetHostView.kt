@@ -2,8 +2,6 @@ package app.lawnchair
 
 import android.appwidget.AppWidgetProviderInfo
 import android.content.Context
-import android.os.Parcelable
-import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,11 +42,6 @@ class LawnchairAppWidgetHostView @JvmOverloads constructor(
     override fun updateAppWidget(remoteViews: RemoteViews?) {
         if (customView != null) return
         super.updateAppWidget(remoteViews)
-    }
-
-    override fun dispatchRestoreInstanceState(container: SparseArray<Parcelable>?) {
-        if (customView != null) return
-        super.dispatchRestoreInstanceState(container)
     }
 
     override fun getDefaultView(): View {

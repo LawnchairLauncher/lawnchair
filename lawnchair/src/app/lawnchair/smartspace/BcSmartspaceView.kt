@@ -39,6 +39,7 @@ class BcSmartspaceView @JvmOverloads constructor(
     override fun onFinishInflate() {
         super.onFinishInflate()
         viewPager = findViewById(R.id.smartspace_card_pager)
+        viewPager.isSaveEnabled = false
         indicator = findViewById(R.id.smartspace_page_indicator)
 
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
