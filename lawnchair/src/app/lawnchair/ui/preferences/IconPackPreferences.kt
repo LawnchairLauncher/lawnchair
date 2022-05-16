@@ -136,7 +136,7 @@ fun IconPackGrid(adapter: PreferenceAdapter<String>) {
                 }
             }
         }
-        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
