@@ -1,7 +1,7 @@
 package app.lawnchair.util
 
 import android.os.FileObserver
-import android.util.Log
+import com.android.launcher3.Utilities
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import java.io.File
@@ -12,13 +12,26 @@ fun File.subscribeFiles() = callbackFlow<List<File>> {
     }
     sendFiles()
     val events = FileObserver.MOVED_TO or FileObserver.DELETE
-    val observer = object : FileObserver(this@subscribeFiles, events) {
-        override fun onEvent(event: Int, path: String?) {
-            Log.d("FileUtils", "onEvent: event=$event, path=$path")
-            sendFiles()
-        }
+    val observer = createFileObserver(this@subscribeFiles, events) { _, _ ->
+        sendFiles()
     }
     observer.startWatching()
-    awaitClose()
-    observer.stopWatching()
+    awaitClose { observer.stopWatching() }
+}
+
+fun createFileObserver(file: File, events: Int, onEvent: (event: Int, path: String?) -> Unit): FileObserver {
+    return if (Utilities.ATLEAST_Q) {
+        object : FileObserver(file, events) {
+            override fun onEvent(event: Int, path: String?) {
+                onEvent(event, path)
+            }
+        }
+    } else {
+        @Suppress("DEPRECATION")
+        object : FileObserver(file.path, events) {
+            override fun onEvent(event: Int, path: String?) {
+                onEvent(event, path)
+            }
+        }
+    }
 }
