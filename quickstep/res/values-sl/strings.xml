@@ -52,7 +52,7 @@
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Pazite, da ne povlečete preblizu dna zaslona."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Občutljivost poteze za nazaj lahko spremenite v nastavitvah."</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Povlecite za vrnitev"</string>
-    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Če se želite vrniti na zadnji zaslon, povlecite z levega ali desnega roba do sredine zaslona."</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Če se želite vrniti na prejšnji zaslon, povlecite z levega ali desnega roba do sredine zaslona."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Če se želite vrniti na zadnji prikazani zaslon, z dvema prstoma povlecite z levega ali desnega roba do sredine zaslona."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Pazite, da povlečete s spodnjega roba zaslona navzgor."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Pazite, da ne zaustavite prsta, preden ga dvignete."</string>
