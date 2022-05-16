@@ -18,9 +18,10 @@ package app.lawnchair.ui.preferences.about
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
@@ -32,7 +33,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import app.lawnchair.theme.surfaceColorAtElevation
 import app.lawnchair.ui.preferences.components.PreferenceTemplate
-import coil.compose.rememberImagePainter
+import coil.compose.SubcomposeAsyncImage
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 
 @Composable
 fun ContributorRow(name: String, description: String, photoUrl: String, url: String, showDivider: Boolean = false) {
@@ -50,18 +54,23 @@ fun ContributorRow(name: String, description: String, photoUrl: String, url: Str
             },
         description = { Text(text = description) },
         startWidget = {
-            Image(
-                painter = rememberImagePainter(
-                    data = photoUrl,
-                    builder = {
-                        crossfade(true)
-                    }
-                ),
+            SubcomposeAsyncImage(
+                model = photoUrl,
                 contentDescription = null,
                 modifier = Modifier
                     .clip(CircleShape)
                     .size(32.dp)
                     .background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)),
+                loading = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .placeholder(
+                                visible = true,
+                                highlight = PlaceholderHighlight.fade(),
+                            )
+                    )
+                }
             )
         },
         showDivider = showDivider
