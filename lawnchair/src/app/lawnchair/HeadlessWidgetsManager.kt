@@ -13,7 +13,6 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.util.MainThreadInitializedObject
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.plus
