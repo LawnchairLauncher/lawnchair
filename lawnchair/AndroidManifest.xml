@@ -52,6 +52,10 @@
         </activity>
 
         <activity
+            android:name="com.android.launcher3.secondarydisplay.SecondaryDisplayLauncher"
+            tools:node="remove" />
+
+        <activity
             android:name="app.lawnchair.BlankActivity"
             android:theme="@style/Theme.Transparent" />
 
