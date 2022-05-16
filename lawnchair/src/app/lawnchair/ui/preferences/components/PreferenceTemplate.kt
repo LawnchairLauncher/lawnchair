@@ -72,24 +72,27 @@ fun PreferenceTemplate(
                     Spacer(modifier = Modifier.requiredWidth(16.dp))
                 }
             }
-            Column(
+            Row(
                 modifier = contentModifier
                     .weight(1f)
                     .addIf(!enabled) {
                         alpha(contentAlphaDisabled)
-                    }
+                    },
+                verticalAlignment = verticalAlignment
             ) {
-                CompositionLocalProvider(
-                    LocalContentColor provides Material3Theme.colorScheme.onBackground,
-                    LocalTextStyle provides Material3Theme.typography.bodyLarge
-                ) {
-                    title()
-                }
-                CompositionLocalProvider(
-                    LocalContentColor provides Material3Theme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium),
-                    LocalTextStyle provides Material3Theme.typography.bodyMedium
-                ) {
-                    description()
+                Column(Modifier.weight(1f)) {
+                    CompositionLocalProvider(
+                        LocalContentColor provides Material3Theme.colorScheme.onBackground,
+                        LocalTextStyle provides Material3Theme.typography.bodyLarge
+                    ) {
+                        title()
+                    }
+                    CompositionLocalProvider(
+                        LocalContentColor provides Material3Theme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium),
+                        LocalTextStyle provides Material3Theme.typography.bodyMedium
+                    ) {
+                        description()
+                    }
                 }
             }
             endWidget?.let {

@@ -19,6 +19,7 @@ package app.lawnchair.ui.preferences.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -59,10 +60,14 @@ fun SwitchPreference(
     showDivider: Boolean = false,
 ) {
     PreferenceTemplate(
-        modifier = Modifier
-            .addIf(onClick == null) { clickable { onCheckedChange(!checked) } },
+        modifier = Modifier.clickable {
+            if (onClick != null) {
+                onClick()
+            } else {
+                onCheckedChange(!checked)
+            }
+        },
         contentModifier = Modifier
-            .addIf(onClick != null) { clickable { onClick!!() } }
             .fillMaxHeight()
             .padding(vertical = 16.dp)
             .padding(start = 16.dp),
@@ -72,19 +77,19 @@ fun SwitchPreference(
             if (onClick != null) {
                 Spacer(
                     modifier = Modifier
-                        .padding(vertical = 8.dp)
+                        .height(32.dp)
                         .width(1.dp)
                         .fillMaxHeight()
                         .background(dividerColor())
                 )
             }
-            MYSwitch(
+            Switch(
                 modifier = Modifier
                     .addIf(onClick != null) { clickable { onCheckedChange(!checked) } }
                     .padding(all = 16.dp)
                     .height(24.dp),
                 checked = checked,
-                onCheckedChange = onCheckedChange,
+                onCheckedChange = null,
                 enabled = enabled,
             )
         },
