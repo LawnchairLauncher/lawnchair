@@ -46,130 +46,137 @@ import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.ui.preferences.subRoute
 import com.android.launcher3.R
 
+private enum class Role(val descriptionResId: Int) {
+    Development(descriptionResId = R.string.development),
+    DevOps(descriptionResId = R.string.devops),
+    QuickSwitchMaintenance(descriptionResId = R.string.quickswitch_maintenance),
+    Support(descriptionResId = R.string.support),
+    SupportAndPr(descriptionResId = R.string.support_and_pr),
+}
+
 private data class TeamMember(
     val name: String,
-    @StringRes val descriptionRes: Int,
+    val role: Role,
     val photoUrl: String,
-    val socialUrl: String
+    val socialUrl: String,
 )
 
 private data class Link(
     @DrawableRes val iconResId: Int,
     @StringRes val labelResId: Int,
-    val url: String
+    val url: String,
 )
 
 private val product = listOf(
     TeamMember(
         name = "Amogh Lele",
-        descriptionRes = R.string.development,
+        role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/31761843",
-        socialUrl = "https://www.linkedin.com/in/amogh-lele/"
+        socialUrl = "https://www.linkedin.com/in/amogh-lele/",
     ),
     TeamMember(
         name = "Antonio J. Roa Valverde",
-        descriptionRes = R.string.development,
+        role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/914983",
-        socialUrl = "https://twitter.com/6020peaks"
+        socialUrl = "https://twitter.com/6020peaks",
     ),
     TeamMember(
         name = "David Sn",
-        descriptionRes = R.string.devops,
+        role = Role.DevOps,
         photoUrl = "https://i.imgur.com/b65akTl.png",
-        socialUrl = "https://codebucket.de"
+        socialUrl = "https://codebucket.de",
     ),
     TeamMember(
         name = "Harsh Shandilya",
-        descriptionRes = R.string.development,
+        role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/13348378",
-        socialUrl = "https://github.com/msfjarvis"
+        socialUrl = "https://github.com/msfjarvis",
     ),
     TeamMember(
         name = "Kshitij Gupta",
-        descriptionRes = R.string.development,
+        role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/18647641",
-        socialUrl = "https://twitter.com/Agent_Fabulous"
+        socialUrl = "https://twitter.com/Agent_Fabulous",
     ),
     TeamMember(
         name = "Manuel Lorenzo",
-        descriptionRes = R.string.development,
+        role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/183264",
-        socialUrl = "https://twitter.com/noloman"
+        socialUrl = "https://twitter.com/noloman",
     ),
     TeamMember(
         name = "paphonb",
-        descriptionRes = R.string.development,
+        role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/8080853",
-        socialUrl = "https://twitter.com/paphonb"
+        socialUrl = "https://twitter.com/paphonb",
     ),
     TeamMember(
         name = "Patryk Michalik",
-        descriptionRes = R.string.design_and_development,
+        role = Role.Development,
         photoUrl = "https://raw.githubusercontent.com/patrykmichalik/brand/master/logo-on-indigo.png",
-        socialUrl = "https://patrykmichalik.com"
+        socialUrl = "https://patrykmichalik.com",
     ),
     TeamMember(
         name = "raphtlw",
-        descriptionRes = R.string.development,
+        role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/47694127",
-        socialUrl = "https://twitter.com/raphtlw"
+        socialUrl = "https://twitter.com/raphtlw",
     ),
     TeamMember(
         name = "Rhyse Simpson",
-        descriptionRes = R.string.quickswitch_maintenance,
+        role = Role.QuickSwitchMaintenance,
         photoUrl = "https://avatars.githubusercontent.com/u/7065700",
-        socialUrl = "https://twitter.com/skittles9823"
-    )
+        socialUrl = "https://twitter.com/skittles9823",
+    ),
 )
 
 private val supportAndPr = listOf(
     TeamMember(
         name = "Daniel Souza",
-        descriptionRes = R.string.support,
+        role = Role.Support,
         photoUrl = "https://avatars.githubusercontent.com/u/32078304",
-        socialUrl = "https://github.com/DanGLES3"
+        socialUrl = "https://github.com/DanGLES3",
     ),
-
     TeamMember(
         name = "Giuseppe Longobardo",
-        descriptionRes = R.string.support,
+        role = Role.Support,
         photoUrl = "https://avatars.githubusercontent.com/u/49398464",
-        socialUrl = "https://github.com/joseph-20"
+        socialUrl = "https://github.com/joseph-20",
     ),
     TeamMember(
         name = "Rik Koedoot",
-        descriptionRes = R.string.support_and_pr,
+        role = Role.SupportAndPr,
         photoUrl = "https://avatars.githubusercontent.com/u/29402532",
-        socialUrl = "https://twitter.com/rikkoedoot"
-    )
+        socialUrl = "https://twitter.com/rikkoedoot",
+    ),
 )
 
 private val links = listOf(
     Link(
         iconResId = R.drawable.ic_new_releases,
         labelResId = R.string.news,
-        url = "https://t.me/lawnchairci"
+        url = "https://t.me/lawnchairci",
     ),
     Link(
         iconResId = R.drawable.ic_help,
         labelResId = R.string.support,
-        url = "https://t.me/lccommunity"
+        url = "https://t.me/lccommunity",
     ),
     Link(
         iconResId = R.drawable.ic_twitter,
         labelResId = R.string.twitter,
-        url = "https://twitter.com/lawnchairapp"
+        url = "https://twitter.com/lawnchairapp",
     ),
     Link(
         iconResId = R.drawable.ic_github,
         labelResId = R.string.github,
-        url = "https://github.com/LawnchairLauncher/Lawnchair"
+        url = "https://github.com/LawnchairLauncher/Lawnchair",
     ),
     Link(
         iconResId = R.drawable.ic_discord,
         labelResId = R.string.discord,
-        url = "https://discord.com/invite/3x8qNWxgGZ"
-    )
+        url = "https://discord.com/invite/3x8qNWxgGZ",
+    ),
 )
 
 object AboutRoutes {
@@ -188,18 +195,17 @@ fun About() {
 
     PreferenceLayout(
         horizontalAlignment = Alignment.CenterHorizontally,
-        label = stringResource(id = R.string.about_label)
+        label = stringResource(id = R.string.about_label),
     ) {
-        Spacer(modifier = Modifier.requiredHeight(8.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Image(
             painter = painterResource(id = R.drawable.ic_launcher_home_comp),
             contentDescription = null,
             modifier = Modifier
-                .width(72.dp)
-                .height(72.dp)
-                .clip(CircleShape)
+                .size(72.dp)
+                .clip(CircleShape),
         )
-        Spacer(modifier = Modifier.requiredHeight(12.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = stringResource(id = R.string.derived_app_name),
             style = MaterialTheme.typography.titleLarge,
@@ -207,20 +213,20 @@ fun About() {
         Text(
             text = Versioning.versionName,
             style = MaterialTheme.typography.bodyLarge,
-            color = LocalContentColor.current.copy(alpha = ContentAlpha.medium)
+            color = LocalContentColor.current.copy(alpha = ContentAlpha.medium),
         )
         Spacer(modifier = Modifier.requiredHeight(16.dp))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 16.dp),
         ) {
-            links.map { link ->
+            links.forEach { link ->
                 LawnchairLink(
                     iconResId = link.iconResId,
                     label = stringResource(id = link.labelResId),
-                    modifier = Modifier.weight(1f),
-                    url = link.url
+                    modifier = Modifier.weight(weight = 1f),
+                    url = link.url,
                 )
             }
         }
@@ -228,9 +234,9 @@ fun About() {
             product.forEach {
                 ContributorRow(
                     name = it.name,
-                    description = stringResource(it.descriptionRes),
+                    description = stringResource(it.role.descriptionResId),
                     url = it.socialUrl,
-                    photoUrl = it.photoUrl
+                    photoUrl = it.photoUrl,
                 )
             }
         }
@@ -238,27 +244,29 @@ fun About() {
             supportAndPr.forEach {
                 ContributorRow(
                     name = it.name,
-                    description = stringResource(it.descriptionRes),
+                    description = stringResource(it.role.descriptionResId),
                     url = it.socialUrl,
-                    photoUrl = it.photoUrl
+                    photoUrl = it.photoUrl,
                 )
             }
         }
         PreferenceGroup {
             NavigationActionPreference(
                 label = stringResource(id = R.string.acknowledgements),
-                destination = subRoute(name = AboutRoutes.LICENSES)
+                destination = subRoute(name = AboutRoutes.LICENSES),
             )
             ClickablePreference(
                 label = stringResource(id = R.string.translate),
                 onClick = {
-                    val webpage = Uri.parse("https://lawnchair.crowdin.com")
+                    val webpage = Uri.parse(CROWDIN_URL)
                     val intent = Intent(Intent.ACTION_VIEW, webpage)
                     if (intent.resolveActivity(context.packageManager) != null) {
                         context.startActivity(intent)
                     }
-                }
+                },
             )
         }
     }
 }
+
+private const val CROWDIN_URL = "https://lawnchair.crowdin.com/lawnchair"
