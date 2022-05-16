@@ -8,10 +8,7 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.animation.Interpolator
 import android.widget.LinearLayout
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
@@ -36,9 +33,6 @@ import com.android.launcher3.util.SystemUiController
 import com.android.launcher3.views.AbstractSlideInView
 import com.android.launcher3.views.ActivityContext
 import com.android.launcher3.views.BaseDragLayer
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.rememberInsetsPaddingValues
 import androidx.compose.material3.LocalContentColor as M3LocalContentColor
 import androidx.compose.material3.MaterialTheme as Material3Theme
 
@@ -181,14 +175,12 @@ class ComposeBottomSheet<T>(context: Context)
     @Composable
     private fun Providers(content: @Composable () -> Unit) {
         LawnchairTheme {
-            ProvideWindowInsets {
-                ProvideLifecycleState {
-                    CompositionLocalProvider(
-                        LocalContentColor provides MaterialTheme.colors.onSurface,
-                        M3LocalContentColor provides Material3Theme.colorScheme.onSurface
-                    ) {
-                        content()
-                    }
+            ProvideLifecycleState {
+                CompositionLocalProvider(
+                    LocalContentColor provides MaterialTheme.colors.onSurface,
+                    M3LocalContentColor provides Material3Theme.colorScheme.onSurface
+                ) {
+                    content()
                 }
             }
         }
@@ -199,11 +191,9 @@ class ComposeBottomSheet<T>(context: Context)
         contentPaddings: PaddingValues = PaddingValues(all = 0.dp),
         content: @Composable ComposeBottomSheet<T>.() -> Unit
     ) {
-        val windowInsets = LocalWindowInsets.current
-        val imePaddings = rememberInsetsPaddingValues(
-            insets = windowInsets.ime,
-            applyStart = true, applyEnd = true, applyBottom = true
-        )
+        val imePaddings = WindowInsets.ime
+            .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
+            .asPaddingValues()
 
         val translation = imePaddings - contentPaddings
         setImeShift(with(LocalDensity.current) { -translation.calculateBottomPadding().toPx() })

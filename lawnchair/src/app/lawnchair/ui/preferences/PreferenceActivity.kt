@@ -24,7 +24,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
 import app.lawnchair.ui.theme.LawnchairTheme
-import com.google.accompanist.insets.ProvideWindowInsets
 
 class PreferenceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,9 +31,7 @@ class PreferenceActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             LawnchairTheme {
-                ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
-                    Preferences()
-                }
+                Preferences()
             }
         }
     }

@@ -14,10 +14,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.rememberInsetsPaddingValues
-import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.insets.ui.LocalScaffoldPadding
 import com.google.accompanist.insets.ui.Scaffold
 
@@ -31,7 +27,7 @@ fun PreferenceSearchScaffold(
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val searchBarVerticalMargin = 8.dp
     val searchBarHeight = 56.dp
-    val statusBarHeight = with(LocalDensity.current) { LocalWindowInsets.current.statusBars.top.toDp() }
+    val statusBarHeight = with(LocalDensity.current) { WindowInsets.statusBars.getTop(this).toDp() }
     val contentShift = statusBarHeight + searchBarVerticalMargin + searchBarHeight / 2
 
     Scaffold(
@@ -39,7 +35,7 @@ fun PreferenceSearchScaffold(
             Surface(
                 modifier = Modifier
                     .statusBarsPadding()
-                    .navigationBarsPadding(bottom = false)
+                    .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top))
                     .padding(horizontal = 16.dp, vertical = searchBarVerticalMargin)
                     .height(searchBarHeight),
                 shape = MaterialTheme.shapes.small,
@@ -78,11 +74,7 @@ fun PreferenceSearchScaffold(
             }
         },
         bottomBar = { BottomSpacer() },
-        contentPadding = rememberInsetsPaddingValues(
-            insets = LocalWindowInsets.current.systemBars,
-            applyTop = false,
-            applyBottom = false
-        )
+        contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues()
     ) {
         val layoutDirection = LocalLayoutDirection.current
         innerPadding.left = it.calculateLeftPadding(layoutDirection)

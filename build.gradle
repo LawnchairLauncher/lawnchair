@@ -359,7 +359,6 @@ dependencies {
     implementation "androidx.palette:palette-ktx:${ANDROID_X_VERSION}"
     implementation "androidx.slice:slice-core:1.1.0-alpha02"
     implementation "com.google.accompanist:accompanist-drawablepainter:$accompanist_version"
-    implementation "com.google.accompanist:accompanist-insets:$accompanist_version"
     implementation "com.google.accompanist:accompanist-insets-ui:$accompanist_version"
     implementation "com.google.accompanist:accompanist-navigation-animation:$accompanist_version"
     implementation "com.google.accompanist:accompanist-permissions:$accompanist_version"

@@ -18,6 +18,9 @@ package app.lawnchair.ui.util
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
@@ -31,7 +34,6 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.LocalWindowInsets
 import kotlinx.coroutines.launch
 import kotlin.math.max
 import androidx.compose.material.MaterialTheme as Material2Theme
@@ -110,8 +112,9 @@ class BottomSheetHandler(
 
 @Composable
 fun StatusBarOffset(content: @Composable () -> Unit) {
-    val windowInsets = LocalWindowInsets.current
-    val statusBarHeight = max(windowInsets.statusBars.top, windowInsets.displayCutout.top)
+    val statusBar = WindowInsets.statusBars.getTop(LocalDensity.current)
+    val displayCutout = WindowInsets.displayCutout.getTop(LocalDensity.current)
+    val statusBarHeight = max(statusBar, displayCutout)
     val topOffset = statusBarHeight + with(LocalDensity.current) { 8.dp.roundToPx() }
 
     Box(

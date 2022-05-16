@@ -18,7 +18,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
 import app.lawnchair.ui.preferences.components.SystemUi
 import app.lawnchair.ui.theme.LawnchairTheme
-import com.google.accompanist.insets.ProvideWindowInsets
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -39,31 +38,29 @@ class BlankActivity : AppCompatActivity() {
         setContent {
             SystemUi()
             LawnchairTheme {
-                ProvideWindowInsets {
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = ModalBottomSheetDefaults.scrimColor
-                    ) {
-                        AlertDialog(
-                            onDismissRequest = { if (!targetStarted) finish() },
-                            confirmButton = {
-                                Button(onClick = { startTargetActivity() }) {
-                                    Text(text = intent.getStringExtra("positiveButton")!!)
-                                }
-                            },
-                            dismissButton = {
-                                OutlinedButton(onClick = { finish() }) {
-                                    Text(text = stringResource(id = android.R.string.cancel))
-                                }
-                            },
-                            title = {
-                                Text(text = intent.getStringExtra("dialogTitle")!!)
-                            },
-                            text = {
-                                Text(text = intent.getStringExtra("dialogMessage")!!)
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = ModalBottomSheetDefaults.scrimColor
+                ) {
+                    AlertDialog(
+                        onDismissRequest = { if (!targetStarted) finish() },
+                        confirmButton = {
+                            Button(onClick = { startTargetActivity() }) {
+                                Text(text = intent.getStringExtra("positiveButton")!!)
                             }
-                        )
-                    }
+                        },
+                        dismissButton = {
+                            OutlinedButton(onClick = { finish() }) {
+                                Text(text = stringResource(id = android.R.string.cancel))
+                            }
+                        },
+                        title = {
+                            Text(text = intent.getStringExtra("dialogTitle")!!)
+                        },
+                        text = {
+                            Text(text = intent.getStringExtra("dialogMessage")!!)
+                        }
+                    )
                 }
             }
         }
