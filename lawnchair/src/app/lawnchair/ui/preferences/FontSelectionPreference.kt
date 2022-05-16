@@ -1,14 +1,22 @@
 package app.lawnchair.ui.preferences
 
+import android.app.Activity
+import android.content.Intent
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.RadioButton
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ArrowDropDown
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -30,6 +38,7 @@ import app.lawnchair.ui.OverflowMenu
 import app.lawnchair.ui.preferences.components.*
 import com.android.launcher3.R
 import com.google.accompanist.navigation.animation.composable
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.fontSelectionGraph(route: String) {
@@ -49,9 +58,14 @@ fun NavGraphBuilder.fontSelectionGraph(route: String) {
     }
 }
 
+private enum class ContentType {
+    ADD_BUTTON, FONT
+}
+
 @Composable
 fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
     val context = LocalContext.current
+    val customFonts by remember { FontCache.INSTANCE.get(context).customFonts }.collectAsState(initial = emptyList())
     val items by produceState(initialValue = emptyList<FontCache.Family>()) {
         val list = mutableListOf<FontCache.Family>()
         list.add(FontCache.Family(FontCache.SystemFont("sans-serif")))
@@ -67,14 +81,26 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
         }
         value = list
     }
+    val allItems by derivedStateOf { customFonts + items }
     val adapter = fontPref.getAdapter()
     var searchQuery by remember { mutableStateOf("") }
 
+    val hasFilter by derivedStateOf { searchQuery.isNotEmpty() }
     val filteredItems by derivedStateOf {
-        if (searchQuery.isNotEmpty()) {
+        if (hasFilter) {
             val lowerCaseQuery = searchQuery.lowercase()
-            items.filter { it.displayName.lowercase().contains(lowerCaseQuery) }
+            allItems.filter { it.displayName.lowercase().contains(lowerCaseQuery) }
         } else items
+    }
+
+    val request = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode != Activity.RESULT_OK) return@rememberLauncherForActivityResult
+        val uri = it.data?.data ?: return@rememberLauncherForActivityResult
+        try {
+            FontCache.INSTANCE.get(context).addCustomFont(uri)
+        } catch (e: FontCache.AddFontException) {
+            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     PreferenceSearchScaffold(
@@ -105,10 +131,56 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
         },
     ) {
         PreferenceLazyColumn {
+            if (!hasFilter) {
+                item(contentType = { ContentType.ADD_BUTTON }) {
+                    PreferenceGroupItem(
+                        modifier = Modifier.padding(top = 8.dp),
+                        cutBottom = customFonts.isNotEmpty()
+                    ) {
+                        PreferenceTemplate(
+                            modifier = Modifier.clickable {
+                                val intent = Intent(Intent.ACTION_GET_CONTENT)
+                                intent.addCategory(Intent.CATEGORY_OPENABLE)
+                                intent.type = "*/*"
+                                request.launch(intent)
+                            },
+                            title = { Text(stringResource(id = R.string.pref_fonts_add_fonts)) },
+                            description = { Text(stringResource(id = R.string.pref_fonts_add_fonts_summary)) },
+                            startWidget = {
+                                Icon(imageVector = Icons.Rounded.Add, contentDescription = null)
+                            }
+                        )
+                    }
+                }
+                itemsIndexed(
+                    items = customFonts,
+                    key = { _, family -> family.toString() },
+                    contentType = { _, _ -> ContentType.FONT }
+                ) { index, family ->
+                    PreferenceGroupItem(
+                        cutTop = true,
+                        cutBottom = index != customFonts.lastIndex
+                    ) {
+                        PreferenceDivider(startIndent = 40.dp)
+                        FontSelectionItem(
+                            adapter = adapter,
+                            family = family,
+                            onDelete = {
+                                val selected = family.variants.any { it.value == adapter.state.value }
+                                if (selected) {
+                                    fontPref.set(fontPref.defaultValue)
+                                }
+                                (family.default as? FontCache.TTFFont)?.delete()
+                            }
+                        )
+                    }
+                }
+            }
             preferenceGroupItems(
                 filteredItems,
-                isFirstChild = true,
+                isFirstChild = false,
                 key = { _, family -> family.toString() },
+                contentType = { ContentType.FONT },
                 dividerStartIndent = 40.dp
             ) { _, family ->
                 FontSelectionItem(
@@ -123,10 +195,13 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
 @Composable
 private fun FontSelectionItem(
     adapter: PreferenceAdapter<FontCache.Font>,
-    family: FontCache.Family
+    family: FontCache.Family,
+    onDelete: (() -> Unit)? = null
 ) {
     val selected = family.variants.any { it.value == adapter.state.value }
     PreferenceTemplate(
+        modifier = Modifier
+            .clickable { adapter.onChange(family.default) },
         title = {
             Box(modifier = Modifier.height(52.dp)) {
                 Text(
@@ -141,21 +216,42 @@ private fun FontSelectionItem(
         startWidget = {
             RadioButton(
                 selected = selected,
-                onClick = null
+                onClick = null,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
             )
         },
-        endWidget = if (selected && family.variants.size > 1) {
-            {
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.wrapContentWidth()
-                ) {
-                    VariantDropdown(adapter = adapter, family = family)
+        endWidget = when {
+            selected && family.variants.size > 1 -> {
+                {
+                    Row(
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .padding(end = 16.dp)
+                    ) {
+                        VariantDropdown(adapter = adapter, family = family)
+                    }
                 }
             }
-        } else null,
-        modifier = Modifier.clickable { adapter.onChange(family.default) },
+            onDelete != null -> {
+                {
+                    IconButton(
+                        onClick = onDelete,
+                        modifier = Modifier.padding(end = 8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Delete,
+                            contentDescription = stringResource(id = R.string.delete),
+                            tint = LocalContentColor.current.copy(alpha = ContentAlpha.medium)
+                        )
+                    }
+                }
+            }
+            else -> null
+        },
+        applyPaddings = false,
         verticalPadding = 0.dp
     )
 }

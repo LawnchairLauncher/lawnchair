@@ -30,10 +30,13 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.provider.FontRequest
 import androidx.core.provider.FontsContractCompat
 import app.lawnchair.font.googlefonts.GoogleFontsListing
+import app.lawnchair.util.getDisplayName
+import app.lawnchair.util.subscribeFiles
 import app.lawnchair.util.uiHelperHandler
 import com.android.launcher3.R
 import com.android.launcher3.util.MainThreadInitializedObject
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.map
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -47,6 +50,17 @@ class FontCache private constructor(private val context: Context) {
     private val scope = MainScope() + CoroutineName("FontCache")
 
     private val deferredFonts = mutableMapOf<Font, Deferred<LoadedFont?>>()
+
+    private val cacheDir = context.cacheDir.apply { mkdirs() }
+    private val customFontsDir = TTFFont.getFontsDir(context)
+    val customFonts = customFontsDir.subscribeFiles()
+        .map { files ->
+            files
+                .sortedByDescending { it.lastModified() }
+                .map { TTFFont(context, it) }
+                .filter { it.isAvailable }
+                .map { Family(it) }
+        }
 
     val uiRegular = ResourceFont(context, R.font.inter_regular, "Inter")
     val uiMedium = ResourceFont(context, R.font.inter_medium, "Inter Medium")
@@ -75,6 +89,31 @@ class FontCache private constructor(private val context: Context) {
                 font.load()?.let { LoadedFont(it) }
             }
         }
+    }
+
+    fun addCustomFont(uri: Uri) {
+        val name = context.contentResolver.getDisplayName(uri) ?: throw AddFontException("Couldn't get file name")
+        val file = TTFFont.getFile(context, name)
+        val tmpFile = File(cacheDir.apply { mkdirs() }, file.name)
+
+        if (file.exists()) return
+
+        context.contentResolver.openInputStream(uri)?.use { input ->
+            tmpFile.outputStream().use { output ->
+                input.copyTo(output)
+            }
+        } ?: throw AddFontException("Couldn't open file")
+
+        if (Typeface.createFromFile(tmpFile) === Typeface.DEFAULT) {
+            tmpFile.delete()
+            throw AddFontException("Not a valid font file")
+        }
+
+        tmpFile.setLastModified(System.currentTimeMillis())
+        tmpFile.renameTo(file)
+
+        @Suppress("DeferredResultUnused")
+        deferredFonts.remove(TTFFont(context, file))
     }
 
     class Family(val displayName: String, val variants: Map<String, Font>) {
@@ -453,4 +492,6 @@ class FontCache private constructor(private val context: Context) {
             certificates = R.array.com_google_android_gms_fonts_certs
         )
     }
+
+    class AddFontException(message: String) : Exception(message)
 }

@@ -20,12 +20,15 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_CANCEL_CURRENT
 import android.app.PendingIntent.FLAG_IMMUTABLE
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo.REQUESTED_PERMISSION_GRANTED
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.net.Uri
 import android.os.Looper
+import android.provider.OpenableColumns
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -171,4 +174,14 @@ fun Context.checkPackagePermission(packageName: String, permissionName: String):
     } catch (e: PackageManager.NameNotFoundException) {
     }
     return false
+}
+
+fun ContentResolver.getDisplayName(uri: Uri): String? {
+    query(uri, null, null, null, null)?.use { cursor ->
+        if (!cursor.moveToFirst()) return null
+        val columnIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+        if (columnIndex < 0) return null
+        return cursor.getString(columnIndex)
+    }
+    return null
 }

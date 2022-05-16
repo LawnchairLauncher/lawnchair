@@ -34,6 +34,7 @@ fun LazyListScope.preferenceGroupItems(
     heading: (@Composable () -> String)? = null,
     isFirstChild: Boolean,
     key: ((index: Int) -> Any)? = null,
+    contentType: (index: Int) -> Any? = { null },
     showDividers: Boolean = true,
     dividerStartIndent: Dp = 0.dp,
     dividerEndIndent: Dp = 0.dp,
@@ -45,7 +46,7 @@ fun LazyListScope.preferenceGroupItems(
         }
         PreferenceGroupHeading(heading?.let { it() })
     }
-    items(count, key) {
+    items(count, key, contentType) {
         PreferenceGroupItem(cutTop = it > 0, cutBottom = it < count - 1) {
             if (showDividers && it > 0) {
                 PreferenceDivider(startIndent = dividerStartIndent, endIndent = dividerEndIndent)
@@ -60,6 +61,7 @@ inline fun <T> LazyListScope.preferenceGroupItems(
     noinline heading: (@Composable () -> String)? = null,
     isFirstChild: Boolean,
     noinline key: ((index: Int, item: T) -> Any)? = null,
+    noinline contentType: (index: Int) -> Any? = { null },
     showDividers: Boolean = true,
     dividerStartIndent: Dp = 0.dp,
     dividerEndIndent: Dp = 0.dp,
@@ -70,6 +72,7 @@ inline fun <T> LazyListScope.preferenceGroupItems(
         heading,
         isFirstChild,
         if (key != null) { index: Int -> key(index, items[index]) } else null,
+        contentType = contentType,
         showDividers = showDividers,
         dividerStartIndent = dividerStartIndent,
         dividerEndIndent = dividerEndIndent,
@@ -80,8 +83,9 @@ inline fun <T> LazyListScope.preferenceGroupItems(
 
 @Composable
 fun PreferenceGroupItem(
-    cutTop: Boolean,
-    cutBottom: Boolean,
+    modifier: Modifier = Modifier,
+    cutTop: Boolean = false,
+    cutBottom: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val shape = remember(cutTop, cutBottom) {
@@ -90,7 +94,7 @@ fun PreferenceGroupItem(
         RoundedCornerShape(top, top, bottom, bottom)
     }
     Surface(
-        modifier = Modifier.padding(horizontal = 16.dp),
+        modifier = modifier.padding(horizontal = 16.dp),
         shape = shape,
         tonalElevation = 1.dp
     ) {
