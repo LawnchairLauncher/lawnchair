@@ -273,7 +273,9 @@ public class FloatingIconView extends FrameLayout implements
             int width = (int) pos.width();
             int height = (int) pos.height();
             if (supportsAdaptiveIcons) {
-                drawable = getFullDrawable(l, info, width, height, sTmpObjArray);
+                boolean useTheme = originalView instanceof BubbleTextView
+                        && ((BubbleTextView) originalView).shouldUseTheme();
+                drawable = getFullDrawable(l, info, width, height, sTmpObjArray, useTheme);
                 if (drawable instanceof AdaptiveIconDrawable) {
                     badge = getBadge(l, info, sTmpObjArray[0]);
                 } else {

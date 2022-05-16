@@ -702,6 +702,15 @@ public final class Utilities {
         return icon;
     }
 
+    public static Drawable getFullDrawable(Context context, ItemInfo info, int width, int height,
+            Object[] outObj, boolean useTheme) {
+        Drawable icon = loadFullDrawableWithoutTheme(context, info, width, height, outObj);
+        if (useTheme && icon instanceof BitmapInfo.Extender) {
+            icon = ((BitmapInfo.Extender) icon).getThemedDrawable(context);
+        }
+        return icon;
+    }
+
     public static Drawable loadFullDrawableWithoutTheme(Context context, ItemInfo info,
             int width, int height, Object[] outObj) {
         ActivityContext activity = ActivityContext.lookupContext(context);

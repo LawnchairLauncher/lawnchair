@@ -365,10 +365,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         mBubbleTextHolder = bubbleTextHolder;
     }
 
+    public boolean shouldUseTheme() {
+        return mDisplay == DISPLAY_WORKSPACE || mDisplay == DISPLAY_FOLDER || mDisplay == DISPLAY_TASKBAR;
+    }
+
     @UiThread
     protected void applyIconAndLabel(ItemInfoWithIcon info) {
-        boolean useTheme = mDisplay == DISPLAY_WORKSPACE || mDisplay == DISPLAY_FOLDER
-                || mDisplay == DISPLAY_TASKBAR;
+        boolean useTheme = shouldUseTheme();
         FastBitmapDrawable iconDrawable = info.newIcon(getContext(), useTheme);
         mDotParams.color = IconPalette.getMutedColor(iconDrawable.getIconColor(), 0.54f);
 
