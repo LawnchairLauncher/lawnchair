@@ -140,10 +140,10 @@
     <string name="icon_shape_square">चौकोर</string>
     <string name="icon_shape_rounded_square">गोलाकार वर्ग</string>
     <string name="icon_shape_squircle">वर्गाकार गोल</string>
-    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_sammy">वन यूआई</string>
     <string name="icon_shape_teardrop">आँसू आकार</string>
     <string name="icon_shape_cylinder">सिलेंडर</string>
-    <string name="icon_shape_cupertino">Cupertino</string>
+    <string name="icon_shape_cupertino">क्यूपर्टिनो</string>
     <string name="customize_button_text">अपने अनुरूप सेट करें</string>
     <string name="app_title_label">शीर्षक</string>
     <string name="hide_from_drawer">ऐप ड्रॉअर से छुपाएं</string>
@@ -193,9 +193,9 @@
     <string name="icon_picker_description">लॉन्चेयर रूक सकता है।</string>
     <string name="font_picker_label">फॉन्ट बदलें</string>
     <string name="font_picker_description">कुछ शब्द नहीं बदलेंगे</string>
-    <string name="search_provider_app_search">App Search</string>
-    <string name="always_open_website_label">Always Open Website</string>
-    <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
+    <string name="search_provider_app_search">एप खोजे</string>
+    <string name="always_open_website_label">हमेशा वेबसाइट खोलें</string>
+    <string name="always_open_website_description">खोज प्रदाता की वेबसाइट खोलें, भले ही उनका ऐप इंस्टॉल हो।</string>
     <string name="search_provider">खोज प्रदाता</string>
     <string name="status_bar_label">स्टेटस बार</string>
 </resources>
