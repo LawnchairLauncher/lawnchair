@@ -4,10 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import app.lawnchair.font.FontCache
-import app.lawnchair.font.toFontFamily
 import app.lawnchair.preferences.BasePreferenceManager
-import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.ui.preferences.LocalNavController
 
@@ -25,7 +22,7 @@ fun FontPreference(
             val font = fontPref.getAdapter().state.value
             Text(
                 text = font.fullDisplayName,
-                fontFamily = font.toFontFamily()?.getOrNull()
+                fontFamily = font.composeFontFamily
             )
         },
         modifier = Modifier

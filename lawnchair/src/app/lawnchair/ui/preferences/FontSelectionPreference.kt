@@ -21,7 +21,6 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import app.lawnchair.font.FontCache
 import app.lawnchair.font.googlefonts.GoogleFontsListing
-import app.lawnchair.font.toFontFamily
 import app.lawnchair.preferences.BasePreferenceManager
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
@@ -135,7 +134,7 @@ private fun FontSelectionItem(
                     modifier = Modifier
                         .align(Alignment.CenterStart)
                         .fillMaxWidth(),
-                    fontFamily = family.default.toFontFamily()?.getOrNull()
+                    fontFamily = family.default.composeFontFamily
                 )
             }
         },
@@ -211,7 +210,7 @@ private fun VariantDropdown(
             }) {
                 Text(
                     text = font.displayName,
-                    fontFamily = font.toFontFamily()?.getOrNull()
+                    fontFamily = font.composeFontFamily
                 )
             }
         }
