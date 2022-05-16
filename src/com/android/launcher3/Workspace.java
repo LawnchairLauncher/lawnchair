@@ -605,7 +605,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         // Recycle the QSB widget
         if (mQsb != null) {
-            ((ViewGroup) mQsb.getParent()).removeView(mQsb);
+            ViewGroup viewGroup = (ViewGroup) mQsb.getParent();
+            if (viewGroup != null) {
+                viewGroup.removeView(mQsb);
+            }
         }
 
         // Remove the pages and clear the screen models
