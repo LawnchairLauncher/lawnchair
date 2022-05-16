@@ -73,14 +73,10 @@ fun GeneralPreferences() {
             val enabled by remember { notificationDotsEnabled(context) }.collectAsState(initial = false)
             val serviceEnabled = notificationServiceEnabled()
             NotificationDotsPreference(enabled = enabled, serviceEnabled = serviceEnabled)
-            AnimatedVisibility(
-                visible = enabled && serviceEnabled,
-                enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut()
-            ) {
+            if (enabled && serviceEnabled) {
                 SwitchPreference(
                     adapter = prefs2.showNotificationCount.getAdapter(),
-                    label = stringResource(id = R.string.show_notification_count)
+                    label = stringResource(id = R.string.show_notification_count),
                 )
             }
         }
