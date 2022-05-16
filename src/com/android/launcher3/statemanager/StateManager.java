@@ -335,13 +335,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
             @Override
             public void onAnimationStart(Animator animation) {
                 // Change the internal state only when the transition actually starts
-                onStateTransitionStart(mCancelled ? mCurrentStableState : state);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                super.onAnimationCancel(animation);
-                mState = mCurrentStableState;
+                onStateTransitionStart(state);
             }
 
             @Override
