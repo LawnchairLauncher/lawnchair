@@ -21,6 +21,8 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
@@ -52,7 +54,6 @@ fun GeneralPreferences() {
                 label = stringResource(id = R.string.home_screen_rotation_label),
                 description = stringResource(id = R.string.home_screen_rotaton_description),
             )
-            NotificationDotsPreference()
             NavigationActionPreference(
                 label = stringResource(id = R.string.icon_pack),
                 destination = subRoute(name = GeneralRoutes.ICON_PACK),
@@ -64,6 +65,18 @@ fun GeneralPreferences() {
                 FontPreference(
                     fontPref = prefs.fontWorkspace,
                     label = stringResource(id = R.string.font_label),
+                )
+            }
+        }
+        PreferenceGroup(heading = stringResource(id = R.string.notification_dots)) {
+            val context = LocalContext.current
+            val enabled by remember { notificationDotsEnabled(context) }.collectAsState(initial = false)
+            val serviceEnabled = notificationServiceEnabled()
+            NotificationDotsPreference(enabled = enabled, serviceEnabled = serviceEnabled)
+            if (enabled && serviceEnabled) {
+                SwitchPreference(
+                    adapter = prefs2.showNotificationCount.getAdapter(),
+                    label = stringResource(id = R.string.show_notification_count),
                 )
             }
         }

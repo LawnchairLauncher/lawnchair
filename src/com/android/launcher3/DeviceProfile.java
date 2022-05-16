@@ -31,8 +31,10 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.util.DisplayMetrics;
 import android.view.Surface;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.DevicePaddings.DevicePadding;
@@ -487,11 +489,20 @@ public class DeviceProfile {
         flingToDeleteThresholdVelocity = res.getDimensionPixelSize(
                 R.dimen.drag_flingToDeleteMinVelocity);
 
+        // Check if notification dots should show the notification count
+        boolean showNotificationCount = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getShowNotificationCount());
+
+        // Load the default font to use on notification dots
+        Typeface typeface = null;
+        if (showNotificationCount) {
+            typeface = ResourcesCompat.getFont(context, R.font.inter_regular);
+        }
+
         // This is done last, after iconSizePx is calculated above.
         Path dotPath = GraphicsUtils.getShapePath(DEFAULT_DOT_SIZE);
-        mDotRendererWorkSpace = new DotRenderer(iconSizePx, dotPath, DEFAULT_DOT_SIZE);
+        mDotRendererWorkSpace = new DotRenderer(iconSizePx, dotPath, DEFAULT_DOT_SIZE, showNotificationCount, typeface);
         mDotRendererAllApps = iconSizePx == allAppsIconSizePx ? mDotRendererWorkSpace :
-                new DotRenderer(allAppsIconSizePx, dotPath, DEFAULT_DOT_SIZE);
+                new DotRenderer(allAppsIconSizePx, dotPath, DEFAULT_DOT_SIZE, showNotificationCount, typeface);
     }
 
     private int getHorizontalMarginPx(InvariantDeviceProfile idp, Resources res) {

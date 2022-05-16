@@ -44,6 +44,7 @@
 
     <bool name="config_default_dark_status_bar">false</bool>
     <bool name="config_default_dock_search_bar">true</bool>
+    <bool name="config_default_show_notification_count">false</bool>
     <bool name="config_default_themed_hotseat_qsb">false</bool>
     <bool name="config_default_dock_search_bar_force_website">false</bool>
     <bool name="config_default_rounded_widgets">true</bool>
