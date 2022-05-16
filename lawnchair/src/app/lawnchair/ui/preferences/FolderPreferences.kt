@@ -36,10 +36,7 @@ fun FolderPreferences() {
     PreferenceLayout(label = stringResource(id = R.string.folders_label)) {
         val prefs = preferenceManager()
         val prefs2 = preferenceManager2()
-        PreferenceGroup(
-            heading = stringResource(id = R.string.general_label),
-            isFirstChild = true
-        ) {
+        PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
             SliderPreference(
                 label = stringResource(id = R.string.folder_preview_bg_opacity_label),
                 adapter = prefs2.folderPreviewBackgroundOpacity.getAdapter(),

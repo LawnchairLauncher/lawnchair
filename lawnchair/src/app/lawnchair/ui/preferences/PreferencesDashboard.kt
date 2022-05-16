@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.pm.LauncherApps
 import android.os.Process
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Build
@@ -30,6 +31,7 @@ import com.android.launcher3.R
 fun PreferencesDashboard() {
     PreferenceLayout(
         label = stringResource(id = R.string.settings),
+        verticalArrangement = Arrangement.Top,
         backArrowVisible = false,
         actions = { PreferencesOverflowMenu() }
     ) {

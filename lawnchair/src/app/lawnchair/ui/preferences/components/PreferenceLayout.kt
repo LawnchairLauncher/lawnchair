@@ -30,10 +30,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun PreferenceLayout(
-    verticalArrangement: Arrangement.Vertical = Arrangement.Top,
+    verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(8.dp),
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     scrollState: ScrollState? = rememberScrollState(),
     label: String,

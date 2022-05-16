@@ -18,7 +18,7 @@ fun NavGraphBuilder.experimentalFeaturesGraph(route: String) {
 fun ExperimentalFeaturesPreferences() {
     val prefs = preferenceManager2()
     PreferenceLayout(label = stringResource(id = R.string.experimental_features_label)) {
-        PreferenceGroup(isFirstChild = true) {
+        PreferenceGroup {
             SwitchPreference(
                 adapter = prefs.enableFontSelection.getAdapter(),
                 label = stringResource(id = R.string.font_picker_label),

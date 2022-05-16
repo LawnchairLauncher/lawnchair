@@ -32,7 +32,6 @@ import androidx.compose.material3.MaterialTheme as Material3Theme
 @Composable
 fun PreferenceGroup(
     heading: String? = null,
-    isFirstChild: Boolean = false,
     description: String? = null,
     showDescription: Boolean = true,
     showDividers: Boolean = true,
@@ -42,9 +41,6 @@ fun PreferenceGroup(
     content: @Composable () -> Unit
 ) {
     Column {
-        if (!isFirstChild) {
-            Spacer(modifier = Modifier.requiredHeight(8.dp))
-        }
         PreferenceGroupHeading(heading)
         Surface(
             modifier = Modifier.padding(horizontal = 16.dp),

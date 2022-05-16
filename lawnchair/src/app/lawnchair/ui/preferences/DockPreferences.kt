@@ -35,10 +35,7 @@ fun DockPreferences() {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
     PreferenceLayout(label = stringResource(id = R.string.dock_label)) {
-        PreferenceGroup(
-            isFirstChild = true,
-            heading = stringResource(id = R.string.search_bar_label),
-        ) {
+        PreferenceGroup(heading = stringResource(id = R.string.search_bar_label)) {
             val hotseatQsbAdapter = prefs2.hotseatQsb.getAdapter()
             SwitchPreference(
                 adapter = hotseatQsbAdapter,

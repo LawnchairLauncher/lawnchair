@@ -45,7 +45,7 @@ fun AppDrawerPreferences() {
     val prefs2 = preferenceManager2()
     val resources = LocalContext.current.resources
     PreferenceLayout(label = stringResource(id = R.string.app_drawer_label)) {
-        PreferenceGroup(heading = stringResource(id = R.string.general_label), isFirstChild = true) {
+        PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
             val hiddenApps = prefs2.hiddenApps.getAdapter().state.value
             NavigationActionPreference(
                 label = stringResource(id = R.string.hidden_apps_label),

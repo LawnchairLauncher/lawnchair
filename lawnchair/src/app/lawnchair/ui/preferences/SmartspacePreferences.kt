@@ -53,10 +53,7 @@ fun SmartspacePreferences() {
 
 @Composable
 fun SmartspacePreview() {
-    PreferenceGroup(
-        isFirstChild = true,
-        heading = stringResource(id = R.string.preview_label),
-    ) {
+    PreferenceGroup(heading = stringResource(id = R.string.preview_label)) {
         val themeRes = if (isSelectedThemeDark()) R.style.AppTheme_Dark else R.style.AppTheme_DarkText
         val context = LocalContext.current
         val themedContext = remember(themeRes) { ContextThemeWrapper(context, themeRes) }

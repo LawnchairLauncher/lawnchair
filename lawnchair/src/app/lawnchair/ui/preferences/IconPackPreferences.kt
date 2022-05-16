@@ -90,7 +90,7 @@ fun IconPackPreferences() {
             Surface(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(top = 16.dp)
+                    .padding(vertical = 8.dp)
             ) {
                 IconPackGrid(iconPackAdapter)
             }

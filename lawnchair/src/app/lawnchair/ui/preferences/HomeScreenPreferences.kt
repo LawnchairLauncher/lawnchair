@@ -48,10 +48,7 @@ fun HomeScreenPreferences() {
     val prefs2 = preferenceManager2()
     val scope = rememberCoroutineScope()
     PreferenceLayout(label = stringResource(id = R.string.home_screen_label)) {
-        PreferenceGroup(
-            heading = stringResource(id = R.string.general_label),
-            isFirstChild = true,
-        ) {
+        PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
             SwitchPreference(
                 prefs.addIconToHome.getAdapter(),
                 label = stringResource(id = R.string.auto_add_shortcuts_label),

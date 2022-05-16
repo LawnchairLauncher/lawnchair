@@ -35,7 +35,7 @@ fun QuickstepPreferences() {
     }
 
     PreferenceLayout(label = stringResource(id = R.string.quickstep_label)) {
-        PreferenceGroup(heading = stringResource(id = R.string.general_label), isFirstChild = true) {
+        PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
             SwitchPreference(
                 adapter = prefs.recentsTranslucentBackground.getAdapter(),
                 label = stringResource(id = R.string.translucent_background),

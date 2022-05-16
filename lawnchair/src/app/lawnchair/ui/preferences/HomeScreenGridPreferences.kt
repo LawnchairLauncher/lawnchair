@@ -93,7 +93,7 @@ fun HomeScreenGridPreferences() {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp)
+                .padding(top = 8.dp)
                 .padding(horizontal = 16.dp)
         ) {
             Button(

@@ -197,37 +197,41 @@ fun About() {
         horizontalAlignment = Alignment.CenterHorizontally,
         label = stringResource(id = R.string.about_label),
     ) {
-        Spacer(modifier = Modifier.height(8.dp))
-        Image(
-            painter = painterResource(id = R.drawable.ic_launcher_home_comp),
-            contentDescription = null,
-            modifier = Modifier
-                .size(72.dp)
-                .clip(CircleShape),
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        Text(
-            text = stringResource(id = R.string.derived_app_name),
-            style = MaterialTheme.typography.titleLarge,
-        )
-        Text(
-            text = Versioning.versionName,
-            style = MaterialTheme.typography.bodyLarge,
-            color = LocalContentColor.current.copy(alpha = ContentAlpha.medium),
-        )
-        Spacer(modifier = Modifier.requiredHeight(16.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+        Column(
+            modifier = Modifier.padding(top = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            links.forEach { link ->
-                LawnchairLink(
-                    iconResId = link.iconResId,
-                    label = stringResource(id = link.labelResId),
-                    modifier = Modifier.weight(weight = 1f),
-                    url = link.url,
-                )
+            Image(
+                painter = painterResource(id = R.drawable.ic_launcher_home_comp),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(72.dp)
+                    .clip(CircleShape),
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = stringResource(id = R.string.derived_app_name),
+                style = MaterialTheme.typography.titleLarge,
+            )
+            Text(
+                text = Versioning.versionName,
+                style = MaterialTheme.typography.bodyLarge,
+                color = LocalContentColor.current.copy(alpha = ContentAlpha.medium),
+            )
+            Spacer(modifier = Modifier.requiredHeight(16.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+            ) {
+                links.forEach { link ->
+                    LawnchairLink(
+                        iconResId = link.iconResId,
+                        label = stringResource(id = link.labelResId),
+                        modifier = Modifier.weight(weight = 1f),
+                        url = link.url,
+                    )
+                }
             }
         }
         PreferenceGroup(heading = stringResource(id = R.string.product)) {

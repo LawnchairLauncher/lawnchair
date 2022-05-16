@@ -46,7 +46,7 @@ fun GeneralPreferences() {
     val prefs2 = preferenceManager2()
     val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
     PreferenceLayout(label = stringResource(id = R.string.general_label)) {
-        PreferenceGroup(isFirstChild = true) {
+        PreferenceGroup {
             SwitchPreference(
                 adapter = prefs.allowRotation.getAdapter(),
                 label = stringResource(id = R.string.home_screen_rotation_label),
