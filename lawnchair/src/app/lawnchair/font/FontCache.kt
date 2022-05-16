@@ -22,15 +22,10 @@ import android.content.res.AssetManager
 import android.graphics.Typeface
 import android.net.Uri
 import androidx.annotation.Keep
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.produceState
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.ExperimentalTextApi
-import androidx.compose.ui.text.font.Font as ComposeFont
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.googlefonts.GoogleFont as ComposeGoogleFont
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.provider.FontRequest
 import androidx.core.provider.FontsContractCompat
@@ -44,6 +39,8 @@ import org.json.JSONObject
 import java.io.File
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import androidx.compose.ui.text.font.Font as ComposeFont
+import androidx.compose.ui.text.googlefonts.GoogleFont as ComposeGoogleFont
 
 class FontCache private constructor(private val context: Context) {
 
@@ -58,10 +55,6 @@ class FontCache private constructor(private val context: Context) {
 
     suspend fun getTypeface(font: Font): Typeface? {
         return loadFontAsync(font).await()?.typeface
-    }
-
-    suspend fun getFontFamily(font: Font): FontFamily? {
-        return loadFontAsync(font).await()?.fontFamily
     }
 
     fun preloadFont(font: Font) {
@@ -428,9 +421,7 @@ class FontCache private constructor(private val context: Context) {
         }
     }
 
-    class LoadedFont internal constructor(val typeface: Typeface) {
-        val fontFamily = FontFamily(typeface)
-    }
+    class LoadedFont internal constructor(val typeface: Typeface)
 
     companion object {
         @JvmField
