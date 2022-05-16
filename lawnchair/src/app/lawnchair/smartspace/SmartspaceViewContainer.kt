@@ -6,10 +6,12 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
 import app.lawnchair.launcher
 import app.lawnchair.preferences2.PreferenceManager2
+import com.android.launcher3.CheckLongPressHelper
 import com.android.launcher3.R
 import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.views.OptionsPopupView
@@ -19,6 +21,7 @@ class SmartspaceViewContainer @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, private val previewMode: Boolean = false
 ) : FrameLayout(context, attrs) {
 
+    private val longPressHelper = CheckLongPressHelper(this) { performLongClick() }
     private val smartspaceView: View
 
     init {
@@ -27,7 +30,7 @@ class SmartspaceViewContainer @JvmOverloads constructor(
         smartspaceView = if (prefs.enableEnhancedSmartspace.firstBlocking()) {
             val view = inflater.inflate(R.layout.smartspace_enhanced, this, false) as BcSmartspaceView
             view.previewMode = previewMode
-            view.setOnLongClickListener {
+            setOnLongClickListener {
                 openOptions()
                 true
             }
@@ -54,5 +57,20 @@ class SmartspaceViewContainer @JvmOverloads constructor(
     ) {
         context.startActivity(Intent(context, SmartspacePreferencesShortcut::class.java))
         true
+    }
+
+    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+        longPressHelper.onTouchEvent(ev)
+        return longPressHelper.hasPerformedLongPress()
+    }
+
+    override fun onTouchEvent(ev: MotionEvent): Boolean {
+        longPressHelper.onTouchEvent(ev)
+        return true
+    }
+
+    override fun cancelLongPress() {
+        super.cancelLongPress()
+        longPressHelper.cancelLongPress()
     }
 }
