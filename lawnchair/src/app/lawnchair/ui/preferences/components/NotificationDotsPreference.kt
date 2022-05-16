@@ -48,11 +48,9 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 
 @Composable
-fun NotificationDotsPreference() {
+fun NotificationDotsPreference(enabled: Boolean, serviceEnabled: Boolean) {
     val bottomSheetHandler = bottomSheetHandler
     val context = LocalContext.current
-    val enabled by remember { notificationDotsEnabled(context) }.collectAsState(initial = false)
-    val serviceEnabled = notificationServiceEnabled()
     val showWarning = enabled && !serviceEnabled
     val summary = when {
         showWarning -> R.string.missing_notification_access_description

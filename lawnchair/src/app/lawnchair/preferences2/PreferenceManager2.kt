@@ -78,6 +78,12 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         save = { it.toString() },
     )
 
+    val showNotificationCount = preference(
+        key = booleanPreferencesKey(name = "show_notification_count"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_show_notification_count),
+        onSet = { reloadHelper.restart() },
+    )
+
     val themedHotseatQsb = preference(
         key = booleanPreferencesKey(name = "themed_hotseat_qsb"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_themed_hotseat_qsb),
