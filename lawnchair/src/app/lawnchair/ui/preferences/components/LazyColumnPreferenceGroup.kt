@@ -16,7 +16,9 @@
 
 package app.lawnchair.ui.preferences.components
 
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,7 +43,12 @@ fun LazyListScope.preferenceGroupItems(
 ) {
     val actualStartIndent = 16.dp + dividerStartIndent
     val actualEndIndent = 16.dp + dividerEndIndent
-    item { PreferenceGroupHeading(heading?.let { it() }, isFirstChild) }
+    item {
+        if (!isFirstChild) {
+            Spacer(modifier = Modifier.requiredHeight(8.dp))
+        }
+        PreferenceGroupHeading(heading?.let { it() })
+    }
     items(count, key) {
         PreferenceGroupItem(cutTop = it > 0, cutBottom = it < count - 1) {
             if (showDividers && it > 0) {

@@ -42,7 +42,10 @@ fun PreferenceGroup(
     content: @Composable () -> Unit
 ) {
     Column {
-        PreferenceGroupHeading(heading, isFirstChild)
+        if (!isFirstChild) {
+            Spacer(modifier = Modifier.requiredHeight(8.dp))
+        }
+        PreferenceGroupHeading(heading)
         Surface(
             modifier = Modifier.padding(horizontal = 16.dp),
             shape = MaterialTheme.shapes.large,
@@ -66,16 +69,7 @@ fun PreferenceGroup(
 }
 
 @Composable
-fun PreferenceGroupHeading(
-    heading: String? = null,
-    isFirstChild: Boolean
-) {
-    val spacerHeight = listOf(heading == null, isFirstChild.not())
-        .fold(initial = 0) { sum, condition -> if (condition) sum + 8 else sum }
-
-    if (spacerHeight > 0) {
-        Spacer(modifier = Modifier.requiredHeight(spacerHeight.dp))
-    }
+fun PreferenceGroupHeading(heading: String?) {
     if (heading != null) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -90,6 +84,8 @@ fun PreferenceGroupHeading(
                 color = Material3Theme.colorScheme.primary,
             )
         }
+    } else {
+        Spacer(modifier = Modifier.requiredHeight(8.dp))
     }
 }
 
