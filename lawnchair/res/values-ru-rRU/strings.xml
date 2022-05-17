@@ -56,7 +56,7 @@
     <string name="app_info_drop_target_label">О приложении</string>
     <string name="item_removed">Элемент удален.</string>
     <string name="all_apps_no_search_results">Не найдено приложений по запросу “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
-    <string name="translucent_background">Translucent Background</string>
+    <string name="translucent_background">Полупрозрачный фон</string>
     <string name="background_opacity">Прозрачность фона</string>
     <string name="background_lightness_label">Яркость фона</string>
     <string name="adaptive_icons">Адаптивные иконки</string>
@@ -163,7 +163,7 @@
     <string name="lawnchair_bug_report">Отчёт об ошибке в Lawnchair</string>
     <string name="crash_report_notif_title">%1$s произошел сбой</string>
     <string name="action_upload">Загрузить на Dogbin</string>
-    <string name="action_upload_crash_report">Upload Crash Log</string>
+    <string name="action_upload_crash_report">Загрузить журнал сбоя</string>
     <string name="action_copy_link">Скопировать ссылку</string>
     <string name="action_copy">Скопировать</string>
     <string name="copied_toast">Скопировано в буфер обмена.</string>
@@ -202,31 +202,31 @@
     <string name="always_open_website_description">Открывать сайт поставщика поиска, даже если установлено приложение.</string>
     <string name="search_provider">Поисковик</string>
     <string name="status_bar_label">Строка состояния</string>
-    <string name="show_notification_count">Show Notification Count</string>
-    <string name="icon_picker_load_failed">Couldn’t load more icons.</string>
-    <string name="reset_custom_icons">Reset Custom Icons</string>
-    <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
-    <string name="taskbar_label">Taskbar</string>
-    <string name="enable_taskbar">Enable Taskbar</string>
+    <string name="show_notification_count">Показывать количество уведомлений</string>
+    <string name="icon_picker_load_failed">Не удалось загрузить больше иконок.</string>
+    <string name="reset_custom_icons">Сброс пользовательских значков</string>
+    <string name="reset_custom_icons_confirmation">Все пользовательские иконки будут сброшены. Вы хотите продолжить?</string>
+    <string name="taskbar_label">Панель задач</string>
+    <string name="enable_taskbar">Включить панель задач</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_icu_date_pattern">EEEMMMd</string>
-    <string name="smartspace_battery_charging">Charging</string>
-    <string name="smartspace_battery_full">Charged</string>
-    <string name="smartspace_battery_low">Battery Low</string>
-    <string name="accessibility_smartspace_page">Page %1$d of %2$d</string>
-    <string name="smartspace_widget">At a Glance</string>
-    <string name="smartspace_widget_placeholder_date">Fri, Mar 3</string>
-    <string name="quickstep_incompatible">Incompatible System Integration</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
-    <string name="preview_label">Preview</string>
-    <string name="smartspace_weather">Weather</string>
-    <string name="smartspace_battery_status">Battery Status</string>
-    <string name="smartspace_now_playing">Now Playing</string>
-    <string name="smartspace_requires_setup">Tap to Set Up</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
+    <string name="smartspace_battery_charging">Зарядка</string>
+    <string name="smartspace_battery_full">Заряжено</string>
+    <string name="smartspace_battery_low">Батарея разряжена</string>
+    <string name="accessibility_smartspace_page">Страница %1$d из %2$d</string>
+    <string name="smartspace_widget">Самое главное</string>
+    <string name="smartspace_widget_placeholder_date">Пт, 3 Марта</string>
+    <string name="quickstep_incompatible">Несовместимая системная интеграция</string>
+    <string name="quickstep_incompatible_description">Ваше устройство настроено на использование системных жестов (известных как Quickstep), предоставляемых %1$s, но эта версия %1$s не совместима с вашей версией Android. Чтобы продолжить использование вашего устройства, удалите обновления %1$s или отключите %1$s как поставщика системных жестов.</string>
+    <string name="preview_label">Предпросмотр</string>
+    <string name="smartspace_weather">Погода</string>
+    <string name="smartspace_battery_status">Состояние батареи</string>
+    <string name="smartspace_now_playing">Сейчас играет</string>
+    <string name="smartspace_requires_setup">Нажмите для настройки</string>
+    <string name="event_provider_missing_notification_dots">Чтобы использовать <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включите точки уведомлений.</string>
     <string name="smartspace_media_info_separator">" — "</string>
-    <string name="pref_fonts_add_fonts">Add Fonts</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
-    <string name="delete">Delete</string>
+    <string name="pref_fonts_add_fonts">Добавить шрифты</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF поддерживается.</string>
+    <string name="delete">Удалить</string>
 </resources>
