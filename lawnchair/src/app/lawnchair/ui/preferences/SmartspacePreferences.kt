@@ -5,10 +5,7 @@ import android.view.ContextThemeWrapper
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -16,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
-import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.smartspace.SmartspaceViewContainer
 import app.lawnchair.smartspace.provider.SmartspaceProvider
 import app.lawnchair.ui.preferences.components.PreferenceGroup
@@ -31,22 +27,20 @@ fun NavGraphBuilder.smartspaceGraph(route: String) {
 
 @Composable
 fun SmartspacePreferences() {
-    val prefs = preferenceManager2()
+    val smartspaceProvider = SmartspaceProvider.INSTANCE.get(LocalContext.current)
     PreferenceLayout(label = stringResource(id = R.string.smartspace_widget)) {
         SmartspacePreview()
         PreferenceGroup(heading = stringResource(id = R.string.what_to_show)) {
-            SwitchPreference(
-                adapter = prefs.smartspaceAagWidget.getAdapter(),
-                label = stringResource(id = R.string.smartspace_weather)
-            )
-            SwitchPreference(
-                adapter = prefs.smartspaceNowPlaying.getAdapter(),
-                label = stringResource(id = R.string.smartspace_now_playing)
-            )
-            SwitchPreference(
-                adapter = prefs.smartspaceBatteryStatus.getAdapter(),
-                label = stringResource(id = R.string.smartspace_battery_status)
-            )
+            smartspaceProvider.dataSources
+                .filter { it.isAvailable }
+                .forEach {
+                    key(it.providerName) {
+                        SwitchPreference(
+                            adapter = it.enabledPref.getAdapter(),
+                            label = stringResource(id = it.providerName)
+                        )
+                    }
+                }
         }
     }
 }

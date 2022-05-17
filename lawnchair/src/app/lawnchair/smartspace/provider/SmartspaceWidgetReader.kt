@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.map
 class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
     context, R.string.smartspace_weather, { smartspaceAagWidget }
 ) {
+    override val isAvailable: Boolean
 
     override val disabledTargets = listOf(dummyTarget)
     private val widget: HeadlessWidgetsManager.Widget?
@@ -40,6 +41,7 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val provider = appWidgetManager.getInstalledProvidersForPackage(GSA_PACKAGE, null)
             .firstOrNull { it.provider.className == WIDGET_CLASS_NAME }
+        isAvailable = provider != null
         widget = provider?.let {
             val widgetsManager = HeadlessWidgetsManager.INSTANCE.get(context)
             widgetsManager.getWidget(provider, "smartspaceWidgetId")

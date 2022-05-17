@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.*
 
 class SmartspaceProvider private constructor(context: Context) {
 
-    private val dataSources = listOf(
+    val dataSources = listOf(
         SmartspaceWidgetReader(context),
         BatteryStatusProvider(context),
         NowPlayingProvider(context)

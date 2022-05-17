@@ -13,7 +13,8 @@ abstract class SmartspaceDataSource(
     val providerName: Int,
     getEnabledPref: PreferenceManager2.() -> Preference<Boolean, Boolean>
 ) {
-    val enabled = getEnabledPref(PreferenceManager2.getInstance(context))
+    val enabledPref = getEnabledPref(PreferenceManager2.getInstance(context))
+    open val isAvailable: Boolean = true
 
     protected abstract val internalTargets: Flow<List<SmartspaceTarget>>
     open val disabledTargets: List<SmartspaceTarget> = emptyList()
@@ -36,10 +37,10 @@ abstract class SmartspaceDataSource(
         }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val targets = enabled.get()
+    val targets = enabledPref.get()
         .distinctUntilChanged()
-        .flatMapLatest {
-            if (it)
+        .flatMapLatest { isEnabled ->
+            if (isAvailable && isEnabled)
                 restartSignal.flatMapLatest { enabledTargets }
             else
                 flowOf(State(targets = disabledTargets))
@@ -53,7 +54,7 @@ abstract class SmartspaceDataSource(
         if (!requiresSetup()) {
             restart()
         } else {
-            enabled.set(false)
+            enabledPref.set(false)
         }
     }
 
