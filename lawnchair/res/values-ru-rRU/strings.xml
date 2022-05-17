@@ -146,7 +146,7 @@
     <string name="icon_shape_sammy">Из OneUI</string>
     <string name="icon_shape_teardrop">Капля</string>
     <string name="icon_shape_cylinder">Цилиндр</string>
-    <string name="icon_shape_cupertino">Cupertino</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">Настроить</string>
     <string name="app_title_label">Заголовок</string>
     <string name="hide_from_drawer">Скрыть из меню приложений</string>
@@ -162,7 +162,6 @@
     <string name="show_app_search_bar">Показать строку поиска</string>
     <string name="lawnchair_bug_report">Отчёт об ошибке в Lawnchair</string>
     <string name="crash_report_notif_title">%1$s произошел сбой</string>
-    <string name="action_upload">Загрузить на Dogbin</string>
     <string name="action_upload_crash_report">Загрузить журнал сбоя</string>
     <string name="action_copy_link">Скопировать ссылку</string>
     <string name="action_copy">Скопировать</string>
