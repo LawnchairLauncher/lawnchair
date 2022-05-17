@@ -221,7 +221,7 @@
     <string name="smartspace_battery_status">Status Baterai</string>
     <string name="smartspace_now_playing">Sedang Diputar</string>
     <string name="smartspace_requires_setup">Ketuk untuk Menyiapkan</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
+    <string name="event_provider_missing_notification_dots">Untuk menggunakan <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, aktifkan Titik Notifikasi.</string>
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="pref_fonts_add_fonts">Tambahkan Font</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
