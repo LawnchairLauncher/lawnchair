@@ -246,7 +246,8 @@ public class LauncherSwipeHandlerV2 extends
 
         return mActivity.getFirstMatchForAppClose(launchCookieItemId,
                 runningTaskView.getTask().key.getComponent().getPackageName(),
-                UserHandle.of(runningTaskView.getTask().key.userId));
+                UserHandle.of(runningTaskView.getTask().key.userId),
+                false /* supportsAllAppsState */);
     }
 
     @Override

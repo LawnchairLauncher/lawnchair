@@ -29,6 +29,7 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TR
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
+import static com.android.launcher3.testing.TestProtocol.BAD_STATE;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_FULLSCREEN_TASK;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
@@ -36,6 +37,7 @@ import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHO
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.android.launcher3.Launcher;
@@ -112,6 +114,7 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
         RECENTS_SCALE_PROPERTY.set(mOverviewPanel,
                 QUICK_SWITCH.getOverviewScaleAndOffset(mLauncher)[0] * 0.85f);
         ADJACENT_PAGE_HORIZONTAL_OFFSET.set(mOverviewPanel, 1f);
+        Log.d(BAD_STATE, "QuickSwitchTouchController initCurrentAnimation setContentAlpha=1");
         mOverviewPanel.setContentAlpha(1);
 
         mCurrentAnimation = mLauncher.getStateManager()

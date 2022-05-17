@@ -40,19 +40,19 @@
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"يمكنك النقر على الأداة مع الاستمرار لتحريكها على الشاشة الرئيسية."</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"إضافة إلى الشاشة الرئيسية"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"تمت إضافة الأداة <xliff:g id="WIDGET_NAME">%1$s</xliff:g> إلى الشاشة الرئيسية."</string>
-    <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{أداة واحدة}zero{# أداة}two{أداتان}few{# أدوات}many{# أداة}other{# أداة}}"</string>
+    <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{تطبيق مصغّر واحد}zero{# تطبيق مصغّر}two{تطبيقان مصغّران}few{# تطبيقات مصغّرة}many{# تطبيقًا مصغّرًا}other{# تطبيق مصغّر}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{اختصار واحد}zero{# اختصار}two{اختصاران}few{# اختصارات}many{# اختصارًا}other{# اختصار}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>، <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
-    <string name="widget_button_text" msgid="2880537293434387943">"الأدوات"</string>
+    <string name="widget_button_text" msgid="2880537293434387943">"التطبيقات المصغّرة"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"بحث"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"محو النص من مربّع البحث"</string>
     <string name="no_widgets_available" msgid="4337693382501046170">"الأدوات والاختصارات غير متاحة."</string>
-    <string name="no_search_results" msgid="3787956167293097509">"لم يتم العثور على أدوات أو اختصارات."</string>
+    <string name="no_search_results" msgid="3787956167293097509">"لم يتم العثور على تطبيقات مصغّرة أو اختصارات."</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"الأدوات الشخصية"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"أدوات العمل"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"المحادثات"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"معلومات مفيدة في متناول يديك"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"للحصول على معلومات بدون فتح التطبيقات، يمكنك إضافة الأدوات إلى الشاشة الرئيسية."</string>
+    <string name="widget_education_content" msgid="745542879510751525">"للحصول على معلومات بدون فتح التطبيقات، يمكنك إضافة التطبيقات المصغّرة إلى الشاشة الرئيسية."</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"انقر لتغيير إعدادات الأداة"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"حسنًا"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"تغيير إعدادات الأداة"</string>

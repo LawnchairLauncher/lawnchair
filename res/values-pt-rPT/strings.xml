@@ -37,11 +37,11 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d de largura por %2$d de altura"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Toque sem soltar no widget para o mover à volta do ecrã principal"</string>
+    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Toque sem soltar no widget para o mover no ecrã principal"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"Adicionar ao ecrã principal"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g> adicionado ao ecrã principal"</string>
-    <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# widget}one{# widget(s)}other{# widgets}}"</string>
-    <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# atalho}one{# atalho(s)}other{# atalhos}}"</string>
+    <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# widget}other{# widgets}}"</string>
+    <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# atalho}other{# atalhos}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Pesquisar"</string>
@@ -90,7 +90,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"É uma app de sistema e não pode ser desinstalada."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Edite o nome"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> desativado"</string>
-    <string name="dotted_app_label" msgid="1704091277755818896">"{count,plural,offset:1 =1{A app {app_name} tem # notificação}one{A app {app_name} tem # notificação(ões)}other{A app {app_name} tem # notificações}}"</string>
+    <string name="dotted_app_label" msgid="1704091277755818896">"{count,plural,offset:1 =1{A app {app_name} tem # notificação}other{A app {app_name} tem # notificações}}"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Página %1$d de %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Ecrã principal %1$d de %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Nova página do ecrã principal"</string>

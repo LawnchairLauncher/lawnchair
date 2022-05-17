@@ -22,11 +22,10 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"ପିନ୍‍"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"ଫ୍ରିଫର୍ମ"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"କୌଣସି ସାମ୍ପ୍ରତିକ ଆଇଟମ୍ ନାହିଁ"</string>
-    <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"ଆପ୍‍ ବ୍ୟବହାର ସେଟିଂସ୍‍"</string>
+    <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"ଆପ ବ୍ୟବହାର ସେଟିଂସ"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"ସବୁ ଖାଲି କରନ୍ତୁ"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"ବର୍ତ୍ତମାନର ଆପ୍‌"</string>
-    <!-- no translation found for task_view_closed (9170038230110856166) -->
-    <skip />
+    <string name="task_view_closed" msgid="9170038230110856166">"ଟାସ୍କ ବନ୍ଦ ହୋଇଯାଇଛି"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g> <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 ମିନିଟ୍"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"ଆଜି <xliff:g id="TIME">%1$s</xliff:g> ବାକି ଅଛି"</string>
@@ -39,7 +38,7 @@
     <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"ଆପଣଙ୍କର ସବୁଠାରୁ ଅଧିକ-ବ୍ୟବହୃତ ଆପଗୁଡ଼ିକୁ, ସିଧା ମୂଳ ସ୍କ୍ରିନରେ ସହଜରେ ଆକ୍ସେସ୍ କରନ୍ତୁ। ଆପଣଙ୍କ ରୁଟିନଗୁଡ଼ିକ ଆଧାରରେ ପରାମର୍ଶଗୁଡ଼ିକ ପରିବର୍ତ୍ତିତ ହେବ। ତଳ ଧାଡ଼ିରେ ଥିବା ଆପଗୁଡ଼ିକ ଏକ ନୂଆ ଫୋଲ୍ଡରକୁ ମୁଭ୍ କରିଯିବ।"</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"ଆପ୍ ପରାମର୍ଶଗୁଡ଼ିକ ପାଆନ୍ତୁ"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"ନାହିଁ, ଥାଉ"</string>
-    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"ସେଟିଂସ୍"</string>
+    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"ସେଟିଂସ"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"ସବୁଠାରୁ ଅଧିକ-ବ୍ୟବହୃତ ଆପଗୁଡ଼ିକ ଏଠାରେ ଦେଖାଯାଏ ଏବଂ ରୁଟିନଗୁଡ଼ିକ ଆଧାରରେ ପରିବର୍ତ୍ତିତ ହୋଇଥାଏ"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"ଆପ୍ ପରାମର୍ଶଗୁଡ଼ିକ ପାଇବାକୁ ଆପଗୁଡ଼ିକୁ ତଳ ଧାଡ଼ିରୁ ଟାଣି ଆଣନ୍ତୁ"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"ଆପ୍ ପରାମର୍ଶଗୁଡ଼ିକ ଖାଲି ସ୍ଥାନରେ ଯୋଗ କରାଯାଇଛି"</string>
@@ -70,14 +69,14 @@
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"ଆପଗୁଡ଼ିକ ମଧ୍ୟରେ ସ୍ୱିଚ୍ କରିବାକୁ, ସ୍କ୍ରିନର ତଳୁ ଉପରକୁ ସ୍ୱାଇପ୍ କରନ୍ତୁ, ଧରି ରଖନ୍ତୁ, ତା\'ପରେ ରିଲିଜ୍ କରନ୍ତୁ।"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"ସବୁ ପ୍ରସ୍ତୁତ"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"ହୋଇଗଲା"</string>
-    <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"ସେଟିଂସ୍"</string>
+    <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"ସେଟିଂସ"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"ବଢ଼ିଆ!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"ଟ୍ୟୁଟୋରିଆଲ୍ <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"ସମ୍ପୂର୍ଣ୍ଣ ଭାବେ ପ୍ରସ୍ତୁତ!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"ମୂଳପୃଷ୍ଠାକୁ ଯିବା ପାଇଁ ଉପରକୁ ସ୍ୱାଇପ୍ କରନ୍ତୁ"</string>
     <string name="allset_description" msgid="6350320429953234580">"ଆପଣ ଆପଣଙ୍କ ଫୋନ୍ ବ୍ୟବହାର କରିବା ପାଇଁ ପ୍ରସ୍ତୁତ ଅଛନ୍ତି"</string>
-    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"ସିଷ୍ଟମ୍ ନାଭିଗେସନ୍ ସେଟିଂସ୍"</annotation></string>
+    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"ସିଷ୍ଟମ ନାଭିଗେସନ ସେଟିଂସ"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"ସେୟାର୍ କରନ୍ତୁ"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ସ୍କ୍ରିନସଟ୍"</string>
     <string name="action_split" msgid="2098009717623550676">"ସ୍ପ୍ଲିଟ୍"</string>

@@ -92,8 +92,8 @@
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> מושבתת"</string>
     <string name="dotted_app_label" msgid="1704091277755818896">"{count,plural,offset:1 =1{לאפליקציה {app_name} יש התראה אחת}two{לאפליקציה {app_name} יש # התראות}many{לאפליקציה {app_name} יש # התראות}other{לאפליקציה {app_name} יש # התראות}}"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"‏דף %1$d מתוך %2$d"</string>
-    <string name="workspace_scroll_format" msgid="8458889198184077399">"‏מסך דף הבית %1$d מתוך %2$d"</string>
-    <string name="workspace_new_page" msgid="257366611030256142">"מסך דף הבית חדש"</string>
+    <string name="workspace_scroll_format" msgid="8458889198184077399">"‏מסך הבית %1$d מתוך %2$d"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"מסך הבית חדש"</string>
     <string name="folder_opened" msgid="94695026776264709">"תיקייה פתוחה, <xliff:g id="WIDTH">%1$d</xliff:g> על <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="4625795376335528256">"יש להקיש כדי לסגור את התיקייה"</string>
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"יש להקיש כדי לשמור שינוי שם"</string>
@@ -128,7 +128,7 @@
     <string name="widgets_list_closed" msgid="6141506579418771922">"רשימת הווידג\'טים נסגרה"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"הוספה למסך דף הבית"</string>
     <string name="action_move_here" msgid="2170188780612570250">"העברת הפריט לכאן"</string>
-    <string name="item_added_to_workspace" msgid="4211073925752213539">"הפריט הועבר אל מסך דף הבית"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"הפריט הועבר אל מסך הבית"</string>
     <string name="item_removed" msgid="851119963877842327">"הפריט הוסר"</string>
     <string name="undo" msgid="4151576204245173321">"ביטול"</string>
     <string name="action_move" msgid="4339390619886385032">"העברת הפריט"</string>
@@ -141,7 +141,7 @@
     <string name="added_to_folder" msgid="4793259502305558003">"הפריט נוסף לתיקייה"</string>
     <string name="create_folder_with" msgid="4050141361160214248">"יצירת תיקייה עם: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"התיקייה נוצרה"</string>
-    <string name="action_move_to_workspace" msgid="1603837886334246317">"העבר אל מסך דף הבית"</string>
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"העבר אל מסך הבית"</string>
     <string name="action_resize" msgid="1802976324781771067">"שינוי גודל"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"הגדלת רוחב"</string>
     <string name="action_increase_height" msgid="459390020612501122">"הגדלת גובה"</string>

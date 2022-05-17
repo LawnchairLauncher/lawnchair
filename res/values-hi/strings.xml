@@ -52,7 +52,7 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ऑफ़िस"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"बातचीत"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"काम की जानकारी आसानी से पाएं"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"ऐप्लिकेशन को खोले बिना उनकी जानकारी पाने के लिए, आप होम स्क्रीन पर विजेट जोड़ सकते हैं"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"ऐप्लिकेशन को खोले बिना उनकी जानकारी पाने के लिए, होम स्क्रीन पर विजेट जोड़े जा सकते हैं"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"विजेट की सेटिंग में बदलाव करने के लिए टैप करें"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"ठीक है"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"विजेट की सेटिंग में बदलाव करें"</string>
@@ -107,7 +107,7 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपके एडमिन ने बंद किया हुआ है"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"होमस्क्रीन घुमाने की अनुमति दें"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फ़ोन घुुमाए जाने पर"</string>
-    <string name="notification_dots_title" msgid="9062440428204120317">"नई सूचनाएं बताने वाला गोल निशान"</string>
+    <string name="notification_dots_title" msgid="9062440428204120317">"सूचनाएं बताने वाला डॉट"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"चालू"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"चालू"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"सूचना के ऐक्सेस की ज़रूरत है"</string>

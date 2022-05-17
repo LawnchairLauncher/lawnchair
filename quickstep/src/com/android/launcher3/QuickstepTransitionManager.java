@@ -44,6 +44,7 @@ import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_TRANSITIONS;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
 import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
+import static com.android.launcher3.testing.TestProtocol.BAD_STATE;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 import static com.android.launcher3.views.FloatingIconView.getFloatingIconView;
 import static com.android.quickstep.TaskViewUtils.findTaskViewToLaunch;
@@ -75,6 +76,8 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.SystemProperties;
 import android.os.UserHandle;
+import android.provider.Settings;
+import android.util.Log;
 import android.util.Pair;
 import android.util.Size;
 import android.view.SurfaceControl;
@@ -133,6 +136,7 @@ import com.android.systemui.shared.system.WindowManagerWrapper;
 import com.android.wm.shell.startingsurface.IStartingWindowListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -609,9 +613,28 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         RecentsView overview = mLauncher.getOverviewPanel();
         ObjectAnimator alpha = ObjectAnimator.ofFloat(overview,
                 RecentsView.CONTENT_ALPHA, alphas);
+        Log.d(BAD_STATE, "QTM composeViewContentAnimator alphas=" + Arrays.toString(alphas));
+        alpha.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                Log.d(BAD_STATE, "QTM composeViewContentAnimator onStart");
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                float alpha = overview == null ? -1 : RecentsView.CONTENT_ALPHA.get(overview);
+                Log.d(BAD_STATE, "QTM composeViewContentAnimator onCancel, alpha=" + alpha);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                Log.d(BAD_STATE, "QTM composeViewContentAnimator onEnd");
+            }
+        });
         alpha.setDuration(CONTENT_ALPHA_DURATION);
         alpha.setInterpolator(LINEAR);
         anim.play(alpha);
+        Log.d(BAD_STATE, "QTM composeViewContentAnimator setFreezeVisibility=true");
         overview.setFreezeViewVisibility(true);
 
         ObjectAnimator scaleAnim = ObjectAnimator.ofFloat(overview, SCALE_PROPERTY, scales);
@@ -620,6 +643,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         anim.play(scaleAnim);
 
         return () -> {
+            Log.d(BAD_STATE, "QTM composeViewContentAnimator onEnd setFreezeVisibility=false");
             overview.setFreezeViewVisibility(false);
             SCALE_PROPERTY.set(overview, 1f);
             mLauncher.getStateManager().reapplyState();
@@ -1274,8 +1298,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             }
         }
 
-        return mLauncher.getFirstMatchForAppClose(launchCookieItemId,
-                packageName, UserHandle.of(runningTaskTarget.taskInfo.userId));
+        return mLauncher.getFirstMatchForAppClose(launchCookieItemId, packageName,
+                UserHandle.of(runningTaskTarget.taskInfo.userId), true /* supportsAllAppsState */);
     }
 
     private @NonNull RectF getDefaultWindowTargetRect() {

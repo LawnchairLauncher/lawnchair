@@ -25,8 +25,7 @@
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"앱 사용 설정"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"모두 삭제"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"최근 앱"</string>
-    <!-- no translation found for task_view_closed (9170038230110856166) -->
-    <skip />
+    <string name="task_view_closed" msgid="9170038230110856166">"작업 종료됨"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1분"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"오늘 <xliff:g id="TIME">%1$s</xliff:g> 남음"</string>

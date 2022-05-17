@@ -52,7 +52,7 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"कामसम्बन्धी"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"वार्तालापहरू"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"उपयोगी जानकारी सजिलै प्राप्त गर्नुहोस्"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"एपहरू नखोलिकनै तिनका बारेमा जानकारी प्राप्त गर्न तपाईं आफ्नो होम स्क्रिनमा विजेटहरू हाल्न सक्नुहुन्छ"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"एपहरू नखोलिकनै जानकारी प्राप्त गर्न तपाईं आफ्नो होम स्क्रिनमा विजेटहरू हाल्न सक्नुहुन्छ"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"विजेटका सेटिङ बदल्न ट्याप गर्नुहोस्"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"बुझेँ"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"विजेटका सेटिङ बदल्नुहोस्"</string>

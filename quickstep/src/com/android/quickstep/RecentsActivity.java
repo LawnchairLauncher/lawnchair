@@ -24,6 +24,7 @@ import static com.android.launcher3.QuickstepTransitionManager.STATUS_BAR_TRANSI
 import static com.android.launcher3.Utilities.createHomeIntent;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.graphics.SysUiScrim.SYSUI_PROGRESS;
+import static com.android.launcher3.testing.TestProtocol.BAD_STATE;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.quickstep.TaskViewUtils.createRecentsWindowAnimator;
@@ -38,6 +39,8 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
+import android.view.Display;
 import android.view.SurfaceControl.Transaction;
 import android.view.View;
 import android.window.SplashScreen;
@@ -308,6 +311,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     protected void onStart() {
         // Set the alpha to 1 before calling super, as it may get set back to 0 due to
         // onActivityStart callback.
+        Log.d(BAD_STATE, "RecentsActivity onStart mFallbackRecentsView.setContentAlpha(1)");
         mFallbackRecentsView.setContentAlpha(1);
         super.onStart();
         mFallbackRecentsView.updateLocusId();
