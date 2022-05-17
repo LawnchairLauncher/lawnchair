@@ -145,7 +145,7 @@
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_teardrop">Teardrop</string>
     <string name="icon_shape_cylinder">Cylinder</string>
-    <string name="icon_shape_cupertino">Cupertino</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">Personalizeaza</string>
     <string name="app_title_label">Titlu</string>
     <string name="hide_from_drawer">Ascunde din lista aplicațiilor</string>
@@ -161,7 +161,6 @@
     <string name="show_app_search_bar">Arată Bara de Căutare</string>
     <string name="lawnchair_bug_report">Raport Bug Lawnchair</string>
     <string name="crash_report_notif_title">%1$s Crashed</string>
-    <string name="action_upload">Upload to Dogbin</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
     <string name="action_copy_link">Copiază link</string>
     <string name="action_copy">Copiază</string>
