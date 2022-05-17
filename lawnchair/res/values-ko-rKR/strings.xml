@@ -143,7 +143,7 @@
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_teardrop">Teardrop</string>
     <string name="icon_shape_cylinder">Cylinder</string>
-    <string name="icon_shape_cupertino">Cupertino</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">개인화</string>
     <string name="app_title_label">이름</string>
     <string name="hide_from_drawer">앱 서랍에서 숨기기</string>
@@ -159,7 +159,6 @@
     <string name="show_app_search_bar">검색 창 활성화</string>
     <string name="lawnchair_bug_report">Lawnchair 버그 신고하기</string>
     <string name="crash_report_notif_title">%1$s가 종료되었습니다</string>
-    <string name="action_upload">Dogbin으로 업로드하기</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
     <string name="action_copy_link">링크 복사</string>
     <string name="action_copy">복사</string>
