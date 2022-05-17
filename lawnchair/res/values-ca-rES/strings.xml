@@ -144,7 +144,7 @@
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_teardrop">Teardrop</string>
     <string name="icon_shape_cylinder">Cylinder</string>
-    <string name="icon_shape_cupertino">Cupertino</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">Personalitza</string>
     <string name="app_title_label">Títol</string>
     <string name="hide_from_drawer">Oculta del calaix d\'aplicacions</string>
@@ -160,7 +160,6 @@
     <string name="show_app_search_bar">Mostra la Barra de Cerca</string>
     <string name="lawnchair_bug_report">Informa un error de Lawnchair</string>
     <string name="crash_report_notif_title">%1$s ha deixat de funcionar</string>
-    <string name="action_upload">Puja a Dogbin</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
     <string name="action_copy_link">Copia l\'enllaç</string>
     <string name="action_copy">Copia</string>
