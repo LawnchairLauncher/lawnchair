@@ -56,13 +56,13 @@ fun TopBar(
                 .statusBarsPadding()
                 .fillMaxWidth()
                 .height(topBarSize)
-                .padding(horizontal = 8.dp)
+                .padding(horizontal = 4.dp),
         ) {
             if (backArrowVisible) {
                 CompositionLocalProvider(LocalContentColor provides navigationIconContentColor.value) {
                     ClickableIcon(
                         imageVector = backIcon(),
-                        onClick = { backDispatcher?.onBackPressed() }
+                        onClick = { backDispatcher?.onBackPressed() },
                     )
                 }
             }
@@ -70,19 +70,18 @@ fun TopBar(
                 text = label,
                 style = MaterialTheme.typography.titleLarge,
                 color = titleContentColor.value,
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .weight(1f),
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .padding(horizontal = if (backArrowVisible) 4.dp else 12.dp)
+                    .weight(weight = 1f),
             )
-
             CompositionLocalProvider(LocalContentColor provides actionIconContentColor.value) {
                 Row(
-                    Modifier.fillMaxHeight(),
+                    modifier = Modifier.fillMaxHeight(),
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically,
-                    content = actions
+                    content = actions,
                 )
             }
         }
