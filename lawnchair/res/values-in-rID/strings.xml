@@ -160,7 +160,7 @@
     <string name="lawnchair_bug_report">Laporan Bug Lawnchair</string>
     <string name="crash_report_notif_title">%1$s berhenti</string>
     <string name="action_upload">Unggah ke Dogbin</string>
-    <string name="action_upload_crash_report">Upload Crash Log</string>
+    <string name="action_upload_crash_report">Unggah Log Mogok</string>
     <string name="action_copy_link">Salin Tautan</string>
     <string name="action_copy">Salin</string>
     <string name="copied_toast">Disalin ke papan klip.</string>
@@ -207,7 +207,7 @@
     <string name="enable_taskbar">Aktifkan Bilah Tugas</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_icu_date_pattern">EEEMMMd</string>
+    <string name="smartspace_icu_date_pattern">EEEdMMM</string>
     <string name="smartspace_battery_charging">Mengisi daya</string>
     <string name="smartspace_battery_full">Daya terisi penuh</string>
     <string name="smartspace_battery_low">Baterai lemah</string>
