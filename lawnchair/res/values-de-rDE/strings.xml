@@ -216,13 +216,13 @@
     <string name="smartspace_widget">Auf einen Blick</string>
     <string name="smartspace_widget_placeholder_date">Fr, 3. Mär</string>
     <string name="quickstep_incompatible">Inkompatible Systemintegration</string>
-    <string name="quickstep_incompatible_description">Dein Gerät ist so konfiguriert, dass Systemgesten (bekannt als Quickstep) von %1$s bereitgestellt werden, diese Version von %1$s ist jedoch nicht mit deiner Android-Version kompatibel. Um dein Gerät weiter zu verwenden, deinstalliere bitte %1$s-Aktualisierungen oder entferne %1$s als Systemgesten-Provider.</string>
+    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
     <string name="preview_label">Vorschau</string>
     <string name="smartspace_weather">Wetter</string>
     <string name="smartspace_battery_status">Ladestand</string>
     <string name="smartspace_now_playing">Now Playing</string>
     <string name="smartspace_requires_setup">Zum Einrichten tippen</string>
-    <string name="event_provider_missing_notification_dots">Aktiviere Benachrichtigungspunkte, um <xliff:g example="My Provider" id="providerName">“%1$s”</xliff:g>zu verwenden.</string>
+    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="pref_fonts_add_fonts">Schriftarten hinzufügen</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF werden unterstützt.</string>
