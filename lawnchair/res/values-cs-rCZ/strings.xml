@@ -146,7 +146,7 @@
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_teardrop">Slza</string>
     <string name="icon_shape_cylinder">Válec</string>
-    <string name="icon_shape_cupertino">Cupertino</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">Přizpůsobit</string>
     <string name="app_title_label">Název</string>
     <string name="hide_from_drawer">Skrýt v seznamu aplikací</string>
@@ -162,7 +162,6 @@
     <string name="show_app_search_bar">Zobrazit vyhledávací lištu</string>
     <string name="lawnchair_bug_report">Hlášení o chybě v Lawnchair</string>
     <string name="crash_report_notif_title">%1$s přestal fungovat</string>
-    <string name="action_upload">Nahrát na Dogbin</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
     <string name="action_copy_link">Kopírovat odkaz</string>
     <string name="action_copy">Kopírovat</string>
