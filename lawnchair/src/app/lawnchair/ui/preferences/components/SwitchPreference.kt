@@ -57,7 +57,7 @@ fun SwitchPreference(
     enabled: Boolean = true,
 ) {
     PreferenceTemplate(
-        modifier = Modifier.clickable {
+        modifier = Modifier.clickable(enabled = enabled) {
             if (onClick != null) {
                 onClick()
             } else {
