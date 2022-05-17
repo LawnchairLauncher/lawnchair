@@ -56,7 +56,7 @@
     <string name="app_info_drop_target_label">Informações da Aplicação</string>
     <string name="item_removed">Item removido.</string>
     <string name="all_apps_no_search_results">Nenhuma Aplicação encontrada que corresponda a \"<xliff:g example="Android" id="query">%1$s</xliff:g> \".</string>
-    <string name="translucent_background">Translucent Background</string>
+    <string name="translucent_background">Fundo Translúcido</string>
     <string name="background_opacity">Opacidade de Fundo</string>
     <string name="background_lightness_label">Luminosidade de Fundo</string>
     <string name="adaptive_icons">Ícones Adaptativos</string>
@@ -160,7 +160,7 @@
     <string name="show_app_search_bar">Mostrar Barra de Pesquisa</string>
     <string name="lawnchair_bug_report">Relatório de Erros do Lawnchair</string>
     <string name="crash_report_notif_title">%1$s Bloqueou</string>
-    <string name="action_upload_crash_report">Upload Crash Log</string>
+    <string name="action_upload_crash_report">Enviar Relatório de Erros</string>
     <string name="action_copy_link">Copiar Ligação</string>
     <string name="action_copy">Copiar</string>
     <string name="copied_toast">Copiado para a área de transferência.</string>
@@ -199,31 +199,31 @@
     <string name="always_open_website_description">Abrir o website do fornecedor de pesquisa mesmo que a aplicação esteja instalada.</string>
     <string name="search_provider">Fornecedor de Pesquisa</string>
     <string name="status_bar_label">Barra de Estado</string>
-    <string name="show_notification_count">Show Notification Count</string>
-    <string name="icon_picker_load_failed">Couldn’t load more icons.</string>
-    <string name="reset_custom_icons">Reset Custom Icons</string>
-    <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
-    <string name="taskbar_label">Taskbar</string>
-    <string name="enable_taskbar">Enable Taskbar</string>
+    <string name="show_notification_count">Mostrar Contador de Notificações</string>
+    <string name="icon_picker_load_failed">Não foi possível carregar mais ícones.</string>
+    <string name="reset_custom_icons">Redefinir os Ícones Personalizados</string>
+    <string name="reset_custom_icons_confirmation">Todos os ícones personalizados vão ser redefinidos. Quer continuar?</string>
+    <string name="taskbar_label">Barra de tarefas</string>
+    <string name="enable_taskbar">Ativar Barra de Tarefas</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_icu_date_pattern">EEEMMMd</string>
-    <string name="smartspace_battery_charging">Charging</string>
-    <string name="smartspace_battery_full">Charged</string>
-    <string name="smartspace_battery_low">Battery Low</string>
-    <string name="accessibility_smartspace_page">Page %1$d of %2$d</string>
+    <string name="smartspace_battery_charging">A carregar</string>
+    <string name="smartspace_battery_full">Carregado</string>
+    <string name="smartspace_battery_low">Bateria Baixa</string>
+    <string name="accessibility_smartspace_page">Página %1$d de %2$d</string>
     <string name="smartspace_widget">At a Glance</string>
-    <string name="smartspace_widget_placeholder_date">Fri, Mar 3</string>
-    <string name="quickstep_incompatible">Incompatible System Integration</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
-    <string name="preview_label">Preview</string>
-    <string name="smartspace_weather">Weather</string>
-    <string name="smartspace_battery_status">Battery Status</string>
-    <string name="smartspace_now_playing">Now Playing</string>
-    <string name="smartspace_requires_setup">Tap to Set Up</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
+    <string name="smartspace_widget_placeholder_date">Sex, mar 3</string>
+    <string name="quickstep_incompatible">Integração de Sistema Incompatível</string>
+    <string name="quickstep_incompatible_description">O seu dispositivo está configurado para ter gestos do sistema (conhecidos como Quickstep) fornecidos por %1$s, mas esta versão de %1$s não é compatível com a versão do Android. Para continuar a usar o dispositivo, por favor desinstale as atualizações de %1$s ou desative %1$s como fornecedor de gestos do sistema.</string>
+    <string name="preview_label">Pré-visualização</string>
+    <string name="smartspace_weather">Meteorologia</string>
+    <string name="smartspace_battery_status">Estado da Bateria</string>
+    <string name="smartspace_now_playing">A Reproduzir</string>
+    <string name="smartspace_requires_setup">Tocar para Configurar</string>
+    <string name="event_provider_missing_notification_dots">Para utilizar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ative os Pontos de Notificação.</string>
     <string name="smartspace_media_info_separator">" — "</string>
-    <string name="pref_fonts_add_fonts">Add Fonts</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
-    <string name="delete">Delete</string>
+    <string name="pref_fonts_add_fonts">Adicionar Fontes</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF suportado.</string>
+    <string name="delete">Eliminar</string>
 </resources>
