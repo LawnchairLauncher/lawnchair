@@ -1,5 +1,4 @@
-Lawnchair 12.1 is here! This release is based on Launcher3 from Android 12.1 and works with
-QuickSwitch on Android 12.1. In addition, it includes the following new features:
+Lawnchair 12.1 is here! This release is based on Launcher3 from Android 12.1 and works with QuickSwitch on Android 12.1. In addition, it includes the following new features:
 
 • a new At a Glance widget
 • the ability to change the search provider for the Dock search bar (thanks to <a href="https://github.com/evowizz">Dylan Roussel</a>)
