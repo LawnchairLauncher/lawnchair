@@ -100,7 +100,8 @@ public class LauncherDelegate {
                     }
 
                     // Remove the folder
-                    mLauncher.removeItem(folder.mFolderIcon, info, true /* deleteFromDb */);
+                    mLauncher.removeItem(folder.mFolderIcon, info, true /* deleteFromDb */,
+                            "folder removed because there's only 1 item in it");
                     if (folder.mFolderIcon instanceof DropTarget) {
                         folder.mDragController.removeDropTarget((DropTarget) folder.mFolderIcon);
                     }
