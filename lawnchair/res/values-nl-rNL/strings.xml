@@ -144,7 +144,7 @@
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_teardrop">Teardrop</string>
     <string name="icon_shape_cylinder">Cylinder</string>
-    <string name="icon_shape_cupertino">Cupertino</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">Personaliseren</string>
     <string name="app_title_label">Titel</string>
     <string name="hide_from_drawer">Verbergen in App-Overzicht</string>
@@ -160,7 +160,6 @@
     <string name="show_app_search_bar">Zoekbalk weergeven</string>
     <string name="lawnchair_bug_report">Lawnchair Bug Melding</string>
     <string name="crash_report_notif_title">%1$s is Gecrasht</string>
-    <string name="action_upload">Uploaden naar Dogbin</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
     <string name="action_copy_link">Koppeling Kopiëren</string>
     <string name="action_copy">Kopiëren</string>
