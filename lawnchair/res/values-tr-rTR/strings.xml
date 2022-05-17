@@ -144,7 +144,7 @@
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_teardrop">Damla</string>
     <string name="icon_shape_cylinder">Silindir</string>
-    <string name="icon_shape_cupertino">Cupertino</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">Özelleştir</string>
     <string name="app_title_label">Başlık</string>
     <string name="hide_from_drawer">Uygulama Çekmecesinden Gizle</string>
@@ -160,7 +160,6 @@
     <string name="show_app_search_bar">Arama Çubuğunu Göster</string>
     <string name="lawnchair_bug_report">Lawnchair Hata Bildirme</string>
     <string name="crash_report_notif_title">%1$s Çalışmayı Durdurdu</string>
-    <string name="action_upload">Dogbin\'e Yükle</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
     <string name="action_copy_link">Bağlantıyı Kopyala</string>
     <string name="action_copy">Kopyala</string>
