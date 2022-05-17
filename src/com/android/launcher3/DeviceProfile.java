@@ -411,10 +411,7 @@ public class DeviceProfile {
         overviewTaskIconDrawableSizeGridPx =
                 res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_drawable_size_grid);
         overviewTaskThumbnailTopMarginPx = overviewTaskIconSizePx + overviewTaskMarginPx * 2;
-        // In vertical bar, use the smaller task margin for the top regardless of mode.
-        overviewActionsTopMarginPx = isVerticalBarLayout()
-                ? overviewTaskMarginPx
-                : res.getDimensionPixelSize(R.dimen.overview_actions_top_margin);
+        overviewActionsTopMarginPx = res.getDimensionPixelSize(R.dimen.overview_actions_top_margin);
         overviewPageSpacing = res.getDimensionPixelSize(R.dimen.overview_page_spacing);
         overviewActionsButtonSpacing = res.getDimensionPixelSize(
                 R.dimen.overview_actions_button_spacing);
