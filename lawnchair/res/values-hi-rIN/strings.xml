@@ -144,7 +144,7 @@
     <string name="icon_shape_sammy">वन यूआई</string>
     <string name="icon_shape_teardrop">आँसू आकार</string>
     <string name="icon_shape_cylinder">सिलेंडर</string>
-    <string name="icon_shape_cupertino">क्यूपर्टिनो</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">अपने अनुरूप सेट करें</string>
     <string name="app_title_label">शीर्षक</string>
     <string name="hide_from_drawer">ऐप ड्रॉअर से छुपाएं</string>
@@ -160,7 +160,6 @@
     <string name="show_app_search_bar">खोज बार दिखाएँ</string>
     <string name="lawnchair_bug_report">लॉन चेयर बग रिपोर्ट</string>
     <string name="crash_report_notif_title">%1$s अचानक बंद हुआ</string>
-    <string name="action_upload">Dogbin में अपलोड करें</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
     <string name="action_copy_link">लिंक कॉपी करें</string>
     <string name="action_copy">कॉपी</string>
