@@ -187,4 +187,6 @@
     <string name="icon_picker_description">可能導致 Lawnchair 畫面凍結</string>
     <string name="font_picker_label">自訂字型</string>
     <string name="font_picker_description">部分文字可能無法套用。</string>
+    <string name="generic_smartspace_concatenated_desc">%1$s，%2$s</string>
+    <string name="accessibility_smartspace_page">第 %1$d 頁，共 %2$d 頁</string>
 </resources>

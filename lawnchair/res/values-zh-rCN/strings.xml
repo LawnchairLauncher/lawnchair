@@ -187,4 +187,6 @@
     <string name="icon_picker_description">可能会导致Lawnchair冻结。</string>
     <string name="font_picker_label">字体自定义</string>
     <string name="font_picker_description">部分文本保持不变。</string>
+    <string name="generic_smartspace_concatenated_desc">%1$s，%2$s</string>
+    <string name="accessibility_smartspace_page">第 %1$d 页，共 %2$d 页</string>
 </resources>
