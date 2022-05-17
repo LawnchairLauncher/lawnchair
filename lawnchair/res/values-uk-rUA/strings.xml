@@ -146,7 +146,7 @@
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_teardrop">Краплеподібні</string>
     <string name="icon_shape_cylinder">Циліндричні</string>
-    <string name="icon_shape_cupertino">Купертіно</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">Налаштувати</string>
     <string name="app_title_label">Заголовок</string>
     <string name="hide_from_drawer">Сховати з панелі програм</string>
@@ -162,7 +162,6 @@
     <string name="show_app_search_bar">Показувати Рядок Пошуку</string>
     <string name="lawnchair_bug_report">Звіт про помилку Lawnchair</string>
     <string name="crash_report_notif_title">%1$s Збій</string>
-    <string name="action_upload">Завантажити в Dogbin</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
     <string name="action_copy_link">Скопіювати посилання</string>
     <string name="action_copy">Копіювати</string>
