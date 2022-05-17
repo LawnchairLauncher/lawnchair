@@ -143,7 +143,7 @@
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_teardrop">水滴形</string>
     <string name="icon_shape_cylinder">圓柱形</string>
-    <string name="icon_shape_cupertino">庫比蒂諾</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">自訂</string>
     <string name="app_title_label">標題</string>
     <string name="hide_from_drawer">從應用程式列表隱藏</string>
@@ -159,7 +159,6 @@
     <string name="show_app_search_bar">顯示搜尋列</string>
     <string name="lawnchair_bug_report">Lawnchair 問題回報</string>
     <string name="crash_report_notif_title">%1$s 已停止運作</string>
-    <string name="action_upload">上傳至 Dogbin</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
     <string name="action_copy_link">複製連結</string>
     <string name="action_copy">複製</string>
