@@ -148,7 +148,7 @@
     <string name="icon_shape_sammy">واجهة واحدة</string>
     <string name="icon_shape_teardrop">دمعة</string>
     <string name="icon_shape_cylinder">أسطوانة</string>
-    <string name="icon_shape_cupertino">كوبرتينو</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">تخصيص</string>
     <string name="app_title_label">عنوان</string>
     <string name="hide_from_drawer">إخفاء من قائمة التطبيقات</string>
@@ -164,7 +164,6 @@
     <string name="show_app_search_bar">إظهار شريط البحث</string>
     <string name="lawnchair_bug_report">تقرير الأخطاء Lawnchair</string>
     <string name="crash_report_notif_title">%1$s توقف عن العمل</string>
-    <string name="action_upload">تحميل إلى Dogbin</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
     <string name="action_copy_link">نسخ الرابط</string>
     <string name="action_copy">نسخ</string>
