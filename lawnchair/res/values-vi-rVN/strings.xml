@@ -56,7 +56,7 @@
     <string name="app_info_drop_target_label">Thông tin ứng dụng</string>
     <string name="item_removed">Mục đã bị xoá.</string>
     <string name="all_apps_no_search_results">Không tìm thấy ứng dụng khớp \"<xliff:g example="Android" id="query">%1$s</xliff:g>\".</string>
-    <string name="translucent_background">Translucent Background</string>
+    <string name="translucent_background">Nền trong suốt</string>
     <string name="background_opacity">Độ trong suốt Nền</string>
     <string name="background_lightness_label">Độ sáng nền</string>
     <string name="adaptive_icons">Biểu tượng thích ứng</string>
@@ -160,7 +160,7 @@
     <string name="lawnchair_bug_report">Báo lỗi Lawnchair</string>
     <string name="crash_report_notif_title">%1$s đã dừng</string>
     <string name="action_upload">Tải lên Dogbin</string>
-    <string name="action_upload_crash_report">Upload Crash Log</string>
+    <string name="action_upload_crash_report">Tải lên bản ghi lỗi</string>
     <string name="action_copy_link">Sao chép liên kết</string>
     <string name="action_copy">Sao chép</string>
     <string name="copied_toast">Đã sao chép vào clipboard.</string>
@@ -199,31 +199,31 @@
     <string name="always_open_website_description">Mở trang web của nhà cung cấp dịch vụ tìm kiếm cho dù ứng dụng của họ đã được cài đặt.</string>
     <string name="search_provider">Nhà cung cấp dịch vụ tìm kiếm</string>
     <string name="status_bar_label">Thanh trạng thái</string>
-    <string name="show_notification_count">Show Notification Count</string>
-    <string name="icon_picker_load_failed">Couldn’t load more icons.</string>
-    <string name="reset_custom_icons">Reset Custom Icons</string>
-    <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
-    <string name="taskbar_label">Taskbar</string>
-    <string name="enable_taskbar">Enable Taskbar</string>
+    <string name="show_notification_count">Hiện số đếm thông báo</string>
+    <string name="icon_picker_load_failed">Không thể tải thêm biểu tượng.</string>
+    <string name="reset_custom_icons">Đặt lại biểu tượng tùy chỉnh</string>
+    <string name="reset_custom_icons_confirmation">Mọi biểu tượng tùy chỉnh sẽ được đặt lại. Bạn có muốn tiếp tục không?</string>
+    <string name="taskbar_label">Thanh tác vụ</string>
+    <string name="enable_taskbar">Bật Thanh tác vụ</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_icu_date_pattern">EEEMMMd</string>
-    <string name="smartspace_battery_charging">Charging</string>
-    <string name="smartspace_battery_full">Charged</string>
-    <string name="smartspace_battery_low">Battery Low</string>
-    <string name="accessibility_smartspace_page">Page %1$d of %2$d</string>
-    <string name="smartspace_widget">At a Glance</string>
-    <string name="smartspace_widget_placeholder_date">Fri, Mar 3</string>
-    <string name="quickstep_incompatible">Incompatible System Integration</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
-    <string name="preview_label">Preview</string>
-    <string name="smartspace_weather">Weather</string>
-    <string name="smartspace_battery_status">Battery Status</string>
-    <string name="smartspace_now_playing">Now Playing</string>
-    <string name="smartspace_requires_setup">Tap to Set Up</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
+    <string name="smartspace_battery_charging">Đang sạc</string>
+    <string name="smartspace_battery_full">Đã sạc đầy</string>
+    <string name="smartspace_battery_low">Pin yếu</string>
+    <string name="accessibility_smartspace_page">Trang %1$d của %2$d</string>
+    <string name="smartspace_widget">Xem nhanh</string>
+    <string name="smartspace_widget_placeholder_date">Thứ Sáu, 3 thg 3</string>
+    <string name="quickstep_incompatible">Tích hợp hệ thống không tương thích</string>
+    <string name="quickstep_incompatible_description">Thiết bị của bạn được thiết lập để hỗ trợ cử chỉ hệ thống (gọi là Quickstep) được cung cấp bởi %1$s, nhưng phiên bản này của %1$s không tương thích với phiên bản Android của bạn. Để tiếp tục sử dụng thiết bị, vui lòng gỡ cài đặt bản cập nhật của %1$s hoặc vô hiệu hóa %1$s khỏi cung cấp cử chỉ hệ thống.</string>
+    <string name="preview_label">Xem trước</string>
+    <string name="smartspace_weather">Thời tiết</string>
+    <string name="smartspace_battery_status">Trạng thái pin</string>
+    <string name="smartspace_now_playing">Đang phát</string>
+    <string name="smartspace_requires_setup">Chạm để thiết lập</string>
+    <string name="event_provider_missing_notification_dots">Để sử dụng <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, kích hoạt Dấu chấm thông báo.</string>
     <string name="smartspace_media_info_separator">" — "</string>
-    <string name="pref_fonts_add_fonts">Add Fonts</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
-    <string name="delete">Delete</string>
+    <string name="pref_fonts_add_fonts">Thêm phông chữ</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF được hỗ trợ.</string>
+    <string name="delete">Xoá</string>
 </resources>
