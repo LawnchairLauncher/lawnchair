@@ -45,19 +45,18 @@ fun PreferenceSearchScaffold(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(topBarSize)
-                        .padding(end = 8.dp),
+                        .padding(horizontal = 4.dp),
                     contentAlignment = Alignment.CenterStart,
                 ) {
                     ClickableIcon(
                         imageVector = backIcon(),
-                        onClick = { backDispatcher?.onBackPressed() },
-                        modifier = Modifier.padding(start = 4.dp)
+                        onClick = { backDispatcher?.onBackPressed() }
                     )
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(start = 40.dp)
+                            .padding(start = 36.dp)
                     ) {
                         Box(modifier = Modifier.weight(1f)) {
                             searchInput()
