@@ -143,7 +143,7 @@
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_teardrop">Giọt nước</string>
     <string name="icon_shape_cylinder">Trụ</string>
-    <string name="icon_shape_cupertino">Cupertino</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">Tùy chỉnh</string>
     <string name="app_title_label">Tiêu đề</string>
     <string name="hide_from_drawer">Ẩn khỏi ngăn kéo ứng dụng</string>
@@ -159,7 +159,6 @@
     <string name="show_app_search_bar">Hiện thanh tìm kiếm</string>
     <string name="lawnchair_bug_report">Báo lỗi Lawnchair</string>
     <string name="crash_report_notif_title">%1$s đã dừng</string>
-    <string name="action_upload">Tải lên Dogbin</string>
     <string name="action_upload_crash_report">Tải lên bản ghi lỗi</string>
     <string name="action_copy_link">Sao chép liên kết</string>
     <string name="action_copy">Sao chép</string>
