@@ -144,7 +144,7 @@
     <string name="icon_shape_sammy">وان یو‌آی</string>
     <string name="icon_shape_teardrop">اشک</string>
     <string name="icon_shape_cylinder">سیلندر</string>
-    <string name="icon_shape_cupertino">کوپرتینو</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">شخصی‌سازی</string>
     <string name="app_title_label">عنوان</string>
     <string name="hide_from_drawer">مخفی‌ در کشوی برنامه‌ها</string>
@@ -160,7 +160,6 @@
     <string name="show_app_search_bar">Show Search Bar</string>
     <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
     <string name="crash_report_notif_title">%1$s Crashed</string>
-    <string name="action_upload">آپلود در Dogbin</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
     <string name="action_copy_link">کپی لینک</string>
     <string name="action_copy">کپی</string>
