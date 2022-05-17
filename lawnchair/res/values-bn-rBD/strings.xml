@@ -144,7 +144,7 @@
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_teardrop">Teardrop</string>
     <string name="icon_shape_cylinder">Cylinder</string>
-    <string name="icon_shape_cupertino">Cupertino</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">কাস্টমাইজ করুন</string>
     <string name="app_title_label">শিরোনাম</string>
     <string name="hide_from_drawer">অ্যাপ ড্রয়ার থেকে লুকান</string>
@@ -160,7 +160,6 @@
     <string name="show_app_search_bar">সার্চ বার দেখান</string>
     <string name="lawnchair_bug_report">Lawnchair বাগ রিপোর্ট</string>
     <string name="crash_report_notif_title">%1$s Crashed</string>
-    <string name="action_upload">Dogbin এ আপলোড করুন</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
     <string name="action_copy_link">লিংক কপি করুন</string>
     <string name="action_copy">কপি</string>
