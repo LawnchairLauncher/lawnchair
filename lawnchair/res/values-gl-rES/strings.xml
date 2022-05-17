@@ -144,7 +144,7 @@
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_teardrop">Teardrop</string>
     <string name="icon_shape_cylinder">Cylinder</string>
-    <string name="icon_shape_cupertino">Cupertino</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">Customize</string>
     <string name="app_title_label">Title</string>
     <string name="hide_from_drawer">Hide from App Drawer</string>
@@ -160,7 +160,6 @@
     <string name="show_app_search_bar">Show Search Bar</string>
     <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
     <string name="crash_report_notif_title">%1$s Crashed</string>
-    <string name="action_upload">Upload to Dogbin</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
     <string name="action_copy_link">Copy Link</string>
     <string name="action_copy">Copy</string>
