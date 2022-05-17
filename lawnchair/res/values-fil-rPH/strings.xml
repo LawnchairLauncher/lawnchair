@@ -144,7 +144,7 @@
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_teardrop">Teardrop</string>
     <string name="icon_shape_cylinder">Cylinder</string>
-    <string name="icon_shape_cupertino">Cupertino</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">I-customize</string>
     <string name="app_title_label">Pamagat</string>
     <string name="hide_from_drawer">Itago mula sa App Drawer</string>
@@ -160,7 +160,6 @@
     <string name="show_app_search_bar">Ipakita ang Search Bar</string>
     <string name="lawnchair_bug_report">Ulat sa Lawchair Bug</string>
     <string name="crash_report_notif_title">Nag-crash ang %1$s</string>
-    <string name="action_upload">I-upload sa Dogbin</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
     <string name="action_copy_link">Kopyahin ang Link</string>
     <string name="action_copy">Kopya</string>
