@@ -111,6 +111,11 @@ class LawnchairIconProvider @JvmOverloads constructor(
                     // is clock app but icon might not be adaptive, fallback to static themed clock
                     themeData = ThemedIconDrawable.ThemeData(context.resources, BuildConfig.APPLICATION_ID, R.drawable.themed_icon_static_clock)
                 }
+                packageName == mCalendar.packageName -> {
+                    // calendar app, apply the dynamic calendar icon
+                    themeData = getThemeData(mCalendar.packageName, "")
+                    iconType = ICON_TYPE_CALENDAR
+                }
                 else -> {
                     // regular icon
                     themeData = getThemeData(componentName)
