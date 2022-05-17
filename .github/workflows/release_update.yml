@@ -92,7 +92,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
       - name: Publish Telegram update post
-        run: python publish_telegram_update_post.py
+        run: python ci.py
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_CI_BOT_TOKEN }}
           ARTIFACT_DIRECTORY: artifacts/release-apk
