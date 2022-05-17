@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Kubadilisha hisi ya ishara ya nyuma, nenda kwenye Mipangilio"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Telezesha kidole ili urudi nyuma"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Ili urudi kwenye skrini iliyotangulia, telezesha kidole kuanzia ukingo wa kushoto au wa kulia kuelekea katikati ya skrini."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Ili urudi kwenye skrini iliyopita, telezesha vidole viwili kuanzia ukingo wa kushoto au wa kulia kuelekea katikati ya skrini."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Hakikisha unatelezesha kidole juu kuanzia ukingo wa chini wa skrini."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Hakikisha kuwa husimamishi kabla ya kuachilia."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Hakikisha unatelezesha kidole kuelekea juu."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Umekamilisha ishara ya kwenda kwenye Skrini ya kwanza."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Telezesha kidole ili uende kwenye skrini ya kwanza"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Telezesha kidole juu kuanzia chini ya skrini yako. Ishara hii kila wakati hukupeleka kwenye Skrini ya kwanza."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Telezesha vidole viwili kuelekea juu kuanzia sehemu ya chini ya skrini. Ishara hii kila wakati hukupeleka kwenye Skrini ya kwanza."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Hakikisha unatelezesha kidole juu kuanzia ukingo wa chini wa skrini."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Jaribu kushikilia dirisha kwa muda mrefu kabla ya kuachilia."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Hakikisha unatelezesha kidole kuelekea juu, kisha usimamishe."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Umekamilisha ishara ya kubadilisha programu."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Telezesha kidole ili ubadilishe programu"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Ili ubadili kati ya programu, telezesha kidole juu kuanzia sehemu ya chini ya skrini yako, ushikilie, kisha uachilie."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Ili ubadilishe kati ya programu, telezesha vidole viwili kuelekea juu kuanzia sehemu ya chini ya skrini yako, ushikilie, kisha uachilie."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Kila kitu kiko tayari"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Nimemaliza"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Mipangilio"</string>

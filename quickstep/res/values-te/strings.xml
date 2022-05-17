@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"వెనుక సంజ్ఞ సున్నితత్వం మార్చడానికి, సెట్టింగ్‌లకు వెళ్లండి"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"వెనుకకు వెళ్ళడం కోసం స్వైప్ చేయండి"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"మునుపటి స్క్రీన్‌కు తిరిగి వెళ్లడానికి, ఎడమ లేదా కుడి అంచు నుండి స్క్రీన్ మధ్యలోకి స్వైప్ చేయండి."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"గత స్క్రీన్‌కు తిరిగి వెళ్లడానికి, ఎడమ లేదా కుడి అంచు నుండి స్క్రీన్ మధ్యలోకి 2 వేళ్లతో స్వైప్ చేయండి."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"మీరు స్క్రీన్ దిగువ అంచు నుండి పైకి స్వయిప్ చేస్తున్నారని నిర్ధారించుకోండి."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"బయలుదేరే ముందు మీరు పాజ్ చేయకుండా చూసుకోండి."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"మీరు నేరుగా పైకి స్వైప్ చేశారని నిర్ధారించుకోండి."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"మీరు మొదటి ట్యాబ్‌కు వెళ్లే సంజ్ఞను పూర్తి చేశారు."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"మొదటి స్క్రీన్‌కు వెళ్లడానికి స్వైప్ చేయండి"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"స్క్రీన్ కింది నుండి పైకి స్వైప్ చేయండి. ఈ సంజ్ఞ ఎప్పుడూ మిమ్మల్ని మొదటి స్క్రీన్‌కు తీసుకెళ్తుంది."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"స్క్రీన్ కింది నుండి 2 వేళ్లతో పైకి స్వైప్ చేయండి. సంజ్ఞ ఎల్లప్పుడూ మొదటి స్క్రీన్‌కు తీసుకెళ్తుంది."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"మీరు స్క్రీన్ దిగువ అంచు నుండి పైకి స్వయిప్ చేస్తున్నారని నిర్ధారించుకోండి."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"రిలీజ్ చేయడానికి ముందు విండోను ఎక్కువసేపు పట్టుకోడానికి ట్రై చేయండి."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"మీరు నేరుగా స్వైప్ చేశారని నిర్ధారించుకోండి, ఆపై పాజ్ చేయండి."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"మీరు \'యాప్‌ల మధ్య మార్పు\' సంజ్ఞను పూర్తి చేశారు."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"యాప్‌ల మధ్య మార్చడం కోసం స్వైప్ చేయండి"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"యాప్‌ల మధ్య మారడానికి, మీ స్క్రీన్ కింది వైపు నుండి పైకి స్వైప్ చేసి, పట్టుకుని, తర్వాత వదలండి."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"యాప్‌ల మధ్య మారడానికి, మీ స్క్రీన్ కింది నుండి 2 వేళ్లతో పైకి స్వైప్ చేసి, నొక్కి పట్టి, వదలండి."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"అంతా సిద్ధంగా ఉంది"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"పూర్తయింది"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"సెట్టింగ్‌లు"</string>
@@ -87,7 +90,7 @@
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"నావిగేషన్ ట్యుటోరియల్‌ను స్కిప్ చేయాలా?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"<xliff:g id="NAME">%1$s</xliff:g> యాప్‌లో మీరు తర్వాత కనుగొనవచ్చు"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"రద్దు చేయి"</string>
-    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"స్కిప్ చేయి"</string>
+    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"స్కిప్ చేయండి"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"స్క్రీన్‌ను తిప్పండి"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"టాస్క్‌బార్ శిక్షణకు సంబంధించిన ప్యానెల్ కనిపించింది"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"టాస్క్‌బార్ శిక్షణకు సంబంధించిన ప్యానెల్ మూసివేయబడింది"</string>
