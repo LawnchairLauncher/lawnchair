@@ -260,7 +260,7 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
 
     val enableEnhancedSmartspace = preference(
         key = booleanPreferencesKey("enable_enhanced_smartspace"),
-        defaultValue = false,
+        defaultValue = true,
         onSet = { reloadHelper.recreate() }
     )
 
