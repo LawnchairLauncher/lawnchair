@@ -71,7 +71,7 @@
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Готово"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Настройки"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Повторите попытку"</string>
-    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Поздравляем!"</string>
+    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Отлично!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Руководство (шаг <xliff:g id="CURRENT">%1$d</xliff:g> из <xliff:g id="TOTAL">%2$d</xliff:g>)"</string>
     <string name="allset_title" msgid="5021126669778966707">"Готово!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Чтобы перейти на главный экран, проведите вверх."</string>

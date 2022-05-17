@@ -56,8 +56,8 @@
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Pyyhkäise ylös näytön alareunasta."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Varo keskeyttämästä ennen kuin päästät irti."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Muista pyyhkäistä suoraan ylöspäin."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Olet oppinut aloitusnäytölle palaamiseleen. Opettele seuraavaksi siirtymään takaisin."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Olet oppinut aloitusnäytölle palaamiseleen."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Olet oppinut aloitusnäytölle palaamisen eleen. Opettele seuraavaksi siirtymään takaisin."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Olet oppinut aloitusnäytölle palaamisen eleen."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Siirry aloitusnäytölle pyyhkäisemällä"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Pyyhkäise ylös näytön alareunasta. Tämä ele vie sinut aina aloitusnäytölle."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Pyyhkäise ylös näytön alareunasta."</string>
