@@ -71,10 +71,9 @@ class HeadlessWidgetsManager(private val context: Context) {
 
     inner class Widget internal constructor(val info: AppWidgetProviderInfo, private val prefKey: String) {
 
-        var widgetId = prefs.getInt(prefKey, -1)
-            private set
-        var isBound = false
-            private set
+        private var widgetId = prefs.getInt(prefKey, -1)
+        val isBound: Boolean
+            get() = widgetManager.getAppWidgetInfo(widgetId)?.provider == info.provider
         val updates = callbackFlow {
             val view = host.createView(context, widgetId, info) as HeadlessAppWidgetHostView
             trySend(view)
@@ -93,16 +92,13 @@ class HeadlessWidgetsManager(private val context: Context) {
         }
 
         fun bind() {
-            val boundInfo = widgetManager.getAppWidgetInfo(widgetId)
-            isBound = boundInfo != null && info.provider == boundInfo.provider
-
             if (!isBound) {
                 if (widgetId > -1) {
                     host.deleteAppWidgetId(widgetId)
                 }
 
                 widgetId = host.allocateAppWidgetId()
-                isBound = widgetManager.bindAppWidgetIdIfAllowed(
+                widgetManager.bindAppWidgetIdIfAllowed(
                     widgetId, info.profile, info.provider, null)
             }
 
