@@ -133,6 +133,13 @@ fun AppDrawerPreferences() {
                 valueRange = 0.5F..1.5F,
                 showAsPercentage = true,
             )
+            val themedIconsEnabled = prefs.themedIcons.get()
+            if (themedIconsEnabled) {
+                SwitchPreference(
+                    adapter = prefs.drawerThemedIcons.getAdapter(),
+                    label = stringResource(id = R.string.themed_icon_title)
+                )
+            }
             val showDrawerLabels = prefs2.showIconLabelsInDrawer.getAdapter()
             SwitchPreference(
                 adapter = showDrawerLabels,

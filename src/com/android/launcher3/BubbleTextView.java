@@ -78,6 +78,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import app.lawnchair.font.FontManager;
+import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.util.LawnchairUtilsKt;
 
 /**
@@ -366,6 +367,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     }
 
     public boolean shouldUseTheme() {
+        if (mDisplay == DISPLAY_ALL_APPS) {
+            return PreferenceManager.getInstance(getContext()).getDrawerThemedIcons().get();
+        }
         return mDisplay == DISPLAY_WORKSPACE || mDisplay == DISPLAY_FOLDER || mDisplay == DISPLAY_TASKBAR;
     }
 
