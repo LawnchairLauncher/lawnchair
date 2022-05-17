@@ -146,7 +146,7 @@
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_teardrop">Teardrop</string>
     <string name="icon_shape_cylinder">Cylinder</string>
-    <string name="icon_shape_cupertino">Cupertino</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">התאמה אישית</string>
     <string name="app_title_label">כותרת</string>
     <string name="hide_from_drawer">הסתר ממגירת היישומים</string>
@@ -162,7 +162,6 @@
     <string name="show_app_search_bar">הצגת סרגל חיפוש</string>
     <string name="lawnchair_bug_report">דיווח על תקלה</string>
     <string name="crash_report_notif_title">%1$s קרס</string>
-    <string name="action_upload">העלה לDogbin</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
     <string name="action_copy_link">העתקת קישור</string>
     <string name="action_copy">העתקה</string>
