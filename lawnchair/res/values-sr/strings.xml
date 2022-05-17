@@ -145,7 +145,7 @@
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_teardrop">Teardrop</string>
     <string name="icon_shape_cylinder">Cylinder</string>
-    <string name="icon_shape_cupertino">Cupertino</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">Прилагоди</string>
     <string name="app_title_label">Назив</string>
     <string name="hide_from_drawer">Сакриј са листе апликација</string>
@@ -161,7 +161,6 @@
     <string name="show_app_search_bar">Прикажи траку за претрагу</string>
     <string name="lawnchair_bug_report">Извештај о грешци у Lawnchair-у</string>
     <string name="crash_report_notif_title">%1$s је отказао</string>
-    <string name="action_upload">Отпреми на Dogbin</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
     <string name="action_copy_link">Копирај линк</string>
     <string name="action_copy">Копирај</string>
