@@ -143,7 +143,7 @@
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_teardrop">Teardrop</string>
     <string name="icon_shape_cylinder">Cylinder</string>
-    <string name="icon_shape_cupertino">Cupertino</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">カスタマイズ</string>
     <string name="app_title_label">タイトル</string>
     <string name="hide_from_drawer">アプリドロワーから隠す</string>
@@ -159,7 +159,6 @@
     <string name="show_app_search_bar">検索バーを表示</string>
     <string name="lawnchair_bug_report">Lawnchairのバグレポート</string>
     <string name="crash_report_notif_title">%1$s がクラッシュしました</string>
-    <string name="action_upload">Dogbin にアップロード</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
     <string name="action_copy_link">リンクをコピー</string>
     <string name="action_copy">コピー</string>
