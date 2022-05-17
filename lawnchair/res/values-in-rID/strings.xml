@@ -56,7 +56,7 @@
     <string name="app_info_drop_target_label">Info Aplikasi</string>
     <string name="item_removed">Barang dihapus.</string>
     <string name="all_apps_no_search_results">Tidak ada aplikasi yang cocok dengan “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
-    <string name="translucent_background">Translucent Background</string>
+    <string name="translucent_background">Latar Belakang Transparan</string>
     <string name="background_opacity">Kegelapan Latar Belakang</string>
     <string name="background_lightness_label">Kecerahan Latar Belakang</string>
     <string name="adaptive_icons">Ikon Adaptif</string>
@@ -200,9 +200,9 @@
     <string name="search_provider">Penyedia Pencarian</string>
     <string name="status_bar_label">Bar Status</string>
     <string name="show_notification_count">Tampilkan Jumlah Notifikasi</string>
-    <string name="icon_picker_load_failed">Couldn’t load more icons.</string>
+    <string name="icon_picker_load_failed">Tidak dapat memuat lebih banyak ikon.</string>
     <string name="reset_custom_icons">Atur Ulang Ikon Kustom</string>
-    <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
+    <string name="reset_custom_icons_confirmation">Semua ikon kustom akan diatur ulang. Apakah Anda ingin melanjutkan?</string>
     <string name="taskbar_label">Bilah Tugas</string>
     <string name="enable_taskbar">Aktifkan Bilah Tugas</string>
     <!-- Smartspace -->
@@ -219,11 +219,11 @@
     <string name="preview_label">Pratinjau</string>
     <string name="smartspace_weather">Cuaca</string>
     <string name="smartspace_battery_status">Status Baterai</string>
-    <string name="smartspace_now_playing">Now Playing</string>
-    <string name="smartspace_requires_setup">Tap to Set Up</string>
+    <string name="smartspace_now_playing">Sedang Diputar</string>
+    <string name="smartspace_requires_setup">Ketuk untuk Menyiapkan</string>
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
     <string name="smartspace_media_info_separator">" — "</string>
-    <string name="pref_fonts_add_fonts">Add Fonts</string>
+    <string name="pref_fonts_add_fonts">Tambahkan Font</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
-    <string name="delete">Delete</string>
+    <string name="delete">Hapus</string>
 </resources>
