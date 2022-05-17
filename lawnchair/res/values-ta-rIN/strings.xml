@@ -144,7 +144,7 @@
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_teardrop">Teardrop</string>
     <string name="icon_shape_cylinder">Cylinder</string>
-    <string name="icon_shape_cupertino">Cupertino</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">தனிப்பயனாக்கு</string>
     <string name="app_title_label">தலைப்பு</string>
     <string name="hide_from_drawer">செயலி இழுப்பறையிலிருந்து மறை</string>
@@ -160,7 +160,6 @@
     <string name="show_app_search_bar">தேடல் பட்டை காட்டு</string>
     <string name="lawnchair_bug_report">Lawnchair பிழை அறிக்கை</string>
     <string name="crash_report_notif_title">%1$s சிதைந்தது</string>
-    <string name="action_upload">Dogbinக்குப் பதிவேற்று</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
     <string name="action_copy_link">தொடுப்பை நகலெடு</string>
     <string name="action_copy">நகலெடு</string>
