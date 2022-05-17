@@ -20,7 +20,7 @@
     <string name="home_screen_label">Ekran główny</string>
     <string name="home_screen_description">Aktualności, At a Glance, Siatka, Ikony</string>
     <string name="general_label">Ogólne</string>
-    <string name="general_description">Plakietki powiadomień, paczka ikon, kolory</string>
+    <string name="general_description">Plakietki z powiadomieniami, paczka ikon, kolory</string>
     <string name="home_screen_rotation_label">Obrót Ekranu głównego</string>
     <string name="home_screen_rotaton_description">Po obróceniu urządzenia.</string>
     <string name="auto_add_shortcuts_label">Dodaj nowe aplikacje do ekranu głównego</string>
@@ -96,7 +96,7 @@
     <string name="quickstep_label">Ostatnie aplikacje</string>
     <string name="clear_all_as_action_label">Przycisk \"Wyczyść wszystko\" na dole</string>
     <string name="window_corner_radius_label">Promień narożnika ekranu</string>
-    <string name="override_window_corner_radius_label">Niestandardowy promień narożnika ekranu</string>
+    <string name="override_window_corner_radius_label">Własny promień narożnika ekranu</string>
     <string name="window_corner_radius_description">Gdy przeciągniesz w górę, aby otworzyć menu Ulubione, bieżąca aplikacja podąży za Twoim palcem, kurcząc się kartę. Użyj tego suwaka, aby dostosować promień narożnika karty, gdy jest ona prawie pełnoekranowa, tak aby dopasować ją do rogów ekranu.</string>
     <string name="system_icons">Ikony systemowe</string>
     <string name="accent_color">Kolor Akcentujący</string>
@@ -112,7 +112,7 @@
     <string name="what_to_show">Co wyświetlić</string>
     <string name="missing_notification_access_label">Wymagany dostęp do powiadomień</string>
     <string name="missing_notification_access_description">Wymagany dostęp do powiadomień.</string>
-    <string name="msg_missing_notification_access">Aby używać plakietek powiadomień, przyznaj <xliff:g id="name" example="My App">%1$s</xliff:g> dostęp do powiadomień.</string>
+    <string name="msg_missing_notification_access">Aby używać plakietek z powiadomieniami, przyznaj <xliff:g id="name" example="My App">%1$s</xliff:g> dostęp do powiadomień.</string>
     <string name="title_change_settings">Zmień ustawienia</string>
     <string name="debug_restart_launcher">Zrestartuj Lawnchair</string>
     <string name="pref_fonts_missing_font">Brak czcionki.</string>
@@ -202,30 +202,30 @@
     <string name="search_provider">Dostawca wyszukiwania</string>
     <string name="status_bar_label">Pasek stanu</string>
     <string name="show_notification_count">Pokaż ilość powiadomień</string>
-    <string name="icon_picker_load_failed">Couldn’t load more icons.</string>
+    <string name="icon_picker_load_failed">Nie udało się załadować kolejnych ikon.</string>
     <string name="reset_custom_icons">Zresetuj własne ikony</string>
     <string name="reset_custom_icons_confirmation">Wszystkie własne ikony zostaną zresetowane. Czy chcesz kontynuować?</string>
     <string name="taskbar_label">Pasek zadań</string>
     <string name="enable_taskbar">Włącz pasek zadań</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_icu_date_pattern">EEEMMMd</string>
-    <string name="smartspace_battery_charging">Charging</string>
-    <string name="smartspace_battery_full">Charged</string>
-    <string name="smartspace_battery_low">Battery Low</string>
-    <string name="accessibility_smartspace_page">Page %1$d of %2$d</string>
-    <string name="smartspace_widget">At a Glance</string>
-    <string name="smartspace_widget_placeholder_date">Fri, Mar 3</string>
-    <string name="quickstep_incompatible">Incompatible System Integration</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
-    <string name="preview_label">Preview</string>
-    <string name="smartspace_weather">Weather</string>
-    <string name="smartspace_battery_status">Battery Status</string>
-    <string name="smartspace_now_playing">Now Playing</string>
-    <string name="smartspace_requires_setup">Tap to Set Up</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
+    <string name="smartspace_icu_date_pattern">EEE, dMMM</string>
+    <string name="smartspace_battery_charging">Ładowanie</string>
+    <string name="smartspace_battery_full">Naładowano</string>
+    <string name="smartspace_battery_low">Niski poziom baterii</string>
+    <string name="accessibility_smartspace_page">Strona %1$d z %2$d</string>
+    <string name="smartspace_widget">W skrócie</string>
+    <string name="smartspace_widget_placeholder_date">Pią, 3 Mar</string>
+    <string name="quickstep_incompatible">Niezgodna integracja systemu</string>
+    <string name="quickstep_incompatible_description">Twoje urządzenie jest skonfigurowane, aby wspierać gesty systemowe (znane jako Quickstep) dostarczane przez %1$s, ale ta wersja %1$s nie jest kompatybilna z twoją wersją Androida. Aby kontynuować korzystanie z urządzenia, odinstaluj %1$s aktualizacje lub wyłącz %1$s jako dostawcę gestów systemowych.</string>
+    <string name="preview_label">Podgląd</string>
+    <string name="smartspace_weather">Pogoda</string>
+    <string name="smartspace_battery_status">Stan baterii</string>
+    <string name="smartspace_now_playing">Teraz odtwarzane</string>
+    <string name="smartspace_requires_setup">Dotknij, aby ustawić</string>
+    <string name="event_provider_missing_notification_dots">Aby używać <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, włącz opcję: plakietki z powiadomieniami.</string>
     <string name="smartspace_media_info_separator">" — "</string>
-    <string name="pref_fonts_add_fonts">Add Fonts</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
-    <string name="delete">Delete</string>
+    <string name="pref_fonts_add_fonts">Dodaj Czcionki</string>
+    <string name="pref_fonts_add_fonts_summary">Obsługiwane: OTF i TTF.</string>
+    <string name="delete">Usuń</string>
 </resources>
