@@ -7,8 +7,8 @@ on:
       - '*'
       - '*/*'
       - '**'
-      - '!12-dev-localization'
-      - '!12-alpha'
+      - '!12.1-dev-localization'
+      - '!12.1-alpha'
 
 jobs:
   build-debug-apk:
