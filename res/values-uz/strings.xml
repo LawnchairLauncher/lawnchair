@@ -114,6 +114,8 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Bildirishnoma belgilarini ko‘rsatish uchun <xliff:g id="NAME">%1$s</xliff:g> ilovasida bildirishnomalarni yoqing"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Sozlamalarni o‘zgartirish"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Bildirishnoma belgilarini chiqarish"</string>
+    <!-- no translation found for developer_options_title (700788437593726194) -->
+    <skip />
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Ilova ikonkalarini bosh ekranga chiqarish"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Yangi o‘rnatilgan ilovalar ikonkasini bosh ekranga chiqarish"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Noma’lum"</string>
@@ -167,8 +169,12 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Ishga oid ilovalar faolsizlantirilgan. Ular batareya sarfi haqida bildirishnomalar yubora olmaydi va joylashuv axborotidan foydalana olmaydi"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Ishga oid ilovalarning maxsus belgisi bor hamda ular administratoringizga koʻrinadi"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Ishga oid ilovalarni faolsizlantirish"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Ishga oid ilovalarni pauza qilish"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Ishga oid ilovalarni yoqish"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Saralash"</string>
+    <!-- no translation found for search_pref_screen_title (3258959643336315962) -->
+    <skip />
+    <!-- no translation found for search_pref_screen_title_tablet (5220319680451343959) -->
+    <skip />
     <string name="remote_action_failed" msgid="1383965239183576790">"Xato: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

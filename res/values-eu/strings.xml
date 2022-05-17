@@ -114,6 +114,8 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Jakinarazpen-biribiltxoak ikusteko, aktibatu <xliff:g id="NAME">%1$s</xliff:g> aplikazioaren jakinarazpenak"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Aldatu ezarpenak"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Erakutsi jakinarazpen-biribiltxoak"</string>
+    <!-- no translation found for developer_options_title (700788437593726194) -->
+    <skip />
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Gehitu aplikazioen ikonoak hasierako pantailan"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Aplikazio berrien kasuan"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Ezezaguna"</string>
@@ -167,8 +169,12 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Laneko aplikazioak desaktibatuta daude. Hori dela eta, ezin dute jakinarazpenik bidali, bateria erabili edo kokapena atzitu."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Laneko aplikazioek bereizgarriak dituzte, eta IKT saileko administratzaileak ikus ditzake"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Ados"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Desaktibatu laneko aplikazioak"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Pausatu laneko aplikazioak"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Aktibatu laneko aplikazioak"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Iragazi"</string>
+    <!-- no translation found for search_pref_screen_title (3258959643336315962) -->
+    <skip />
+    <!-- no translation found for search_pref_screen_title_tablet (5220319680451343959) -->
+    <skip />
     <string name="remote_action_failed" msgid="1383965239183576790">"Huts egin du: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

@@ -114,6 +114,8 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"বিজ্ঞপ্তির ডটগুলি দেখানোর জন্য, <xliff:g id="NAME">%1$s</xliff:g> এর অ্যাপ বিজ্ঞপ্তি চালু করুন"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"সেটিংস পরিবর্তন করুন"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"বিজ্ঞপ্তির ডট দেখুন"</string>
+    <!-- no translation found for developer_options_title (700788437593726194) -->
+    <skip />
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"হোম স্ক্রিনে অ্যাপের আইকন যোগ করুন"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"নতুন অ্যাপের জন্য"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"অজানা"</string>
@@ -167,8 +169,12 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"অফিসের অ্যাপ বন্ধ আছে। আপনার অফিসের অ্যাপ আপনাকে বিজ্ঞপ্তি পাঠাতে, ব্যাটারি ব্যবহার করতে বা লোকেশন অ্যাক্সেস করতে পারবে না"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"অফিসের অ্যাপে ব্যাজ যোগ করা হয়েছে এবং আপনার আইটি অ্যাডমিন সেটি দেখতে পাবেন"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"বুঝেছি"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"অফিসের অ্যাপ বন্ধ করুন"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"অফিসের অ্যাপ পজ করুন"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"অফিস অ্যাপ চালু করুন"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ফিল্টার"</string>
+    <!-- no translation found for search_pref_screen_title (3258959643336315962) -->
+    <skip />
+    <!-- no translation found for search_pref_screen_title_tablet (5220319680451343959) -->
+    <skip />
     <string name="remote_action_failed" msgid="1383965239183576790">"কাজটি করা যায়নি: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

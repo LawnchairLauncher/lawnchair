@@ -114,6 +114,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"အကြောင်းကြားချက် အစက်များကို ပြသရန် <xliff:g id="NAME">%1$s</xliff:g> အတွက် အက်ပ်အကြောင်းကြားချက်များကို ဖွင့်ပါ"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ဆက်တင်များ ပြောင်းရန်"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"အကြောင်းကြားချက် အစက်များ ပြရန်"</string>
+    <string name="developer_options_title" msgid="700788437593726194">"တီထွင်သူ ရွေးစရာများ"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"ပင်မစာမျက်နှာတွင် အက်ပ်သင်္ကေတထည့်ရန်"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"အက်ပ်အသစ်များအတွက်"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"မသိ"</string>
@@ -167,8 +168,12 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"အလုပ်သုံးအက်ပ်များ ပိတ်ထားသည်။ သင်၏ အလုပ်သုံးအက်ပ်များက အကြောင်းကြားချက်များ ပို့ခြင်း၊ သင့်ဘက်ထရီ သုံးခြင်း (သို့) သင့်တည်နေရာ သုံးခြင်းတို့ မပြုလုပ်နိုင်ပါ"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"အလုပ်သုံးအက်ပ်များကို တံဆိပ်တပ်ထားပြီး သင်၏ IT စီမံခန့်ခွဲသူက မြင်နိုင်ပါသည်"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"ရပြီ"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"အလုပ်သုံးအက်ပ်များ ပိတ်ရန်"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"အလုပ်သုံးအက်ပ်များကို ခဏရပ်ရန်"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"အလုပ်သုံးအက်ပ်များ ဖွင့်ရန်"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"စစ်ထုတ်ရန်"</string>
+    <!-- no translation found for search_pref_screen_title (3258959643336315962) -->
+    <skip />
+    <!-- no translation found for search_pref_screen_title_tablet (5220319680451343959) -->
+    <skip />
     <string name="remote_action_failed" msgid="1383965239183576790">"မအောင်မြင်ပါ− <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

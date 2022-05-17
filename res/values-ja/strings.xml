@@ -32,7 +32,7 @@
     <string name="split_screen_position_left" msgid="7537793098851830883">"左に分割"</string>
     <string name="split_screen_position_right" msgid="1569377524925193369">"右に分割"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s のアプリ情報"</string>
-    <string name="long_press_widget_to_add" msgid="3587712543577675817">"長押ししてウィジェットを移動してください。"</string>
+    <string name="long_press_widget_to_add" msgid="3587712543577675817">"長押ししてウィジェットを移動させます。"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"ウィジェットをダブルタップして長押ししながら移動するか、カスタム操作を使用してください。"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$dx%2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"幅 %1$d、高さ %2$d"</string>
@@ -114,6 +114,8 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"通知ドットを表示するには、「<xliff:g id="NAME">%1$s</xliff:g>」のアプリ通知を ON にしてください"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"設定を変更"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"通知ドットの表示"</string>
+    <!-- no translation found for developer_options_title (700788437593726194) -->
+    <skip />
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"ホーム画面にアプリのアイコンを追加"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"新しいアプリをダウンロードしたときに自動で追加します"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"不明"</string>
@@ -167,8 +169,12 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"仕事用アプリは OFF になっています。仕事用アプリでは、通知の送信、バッテリーの使用、位置情報の取得が無効になっています"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"仕事用アプリはバッジが付き、IT 管理者に公開されます"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"仕事用アプリを OFF にする"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"仕事用アプリを一時停止"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"仕事用アプリを ON にする"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"フィルタ"</string>
+    <!-- no translation found for search_pref_screen_title (3258959643336315962) -->
+    <skip />
+    <!-- no translation found for search_pref_screen_title_tablet (5220319680451343959) -->
+    <skip />
     <string name="remote_action_failed" msgid="1383965239183576790">"失敗: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
