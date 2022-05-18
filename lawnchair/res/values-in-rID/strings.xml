@@ -215,7 +215,7 @@
     <string name="smartspace_widget_description">Yang Ditampilkan</string>
     <string name="smartspace_widget_placeholder_date">Jum, 3 Mar</string>
     <string name="quickstep_incompatible">Integrasi Sistem yang Tidak Kompatibel</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
+    <string name="quickstep_incompatible_description">Perangkat Anda dikonfigurasi untuk menggunakan gestur sistem (dikenal sebagai Quickstep) yang disediakan oleh %1$s, tetapi versi %1$s ini tidak kompatibel dengan versi Android Anda. Untuk terus menggunakan perangkat Anda, mohon uninstal pembaruan %1$s atau menonaktifkan %1$s sebagai penyedia gestur sistem.</string>
     <string name="preview_label">Pratinjau</string>
     <string name="smartspace_weather">Cuaca</string>
     <string name="smartspace_battery_status">Status Baterai</string>
@@ -226,7 +226,7 @@
     <string name="pref_fonts_add_fonts">Tambahkan Font</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF didukung.</string>
     <string name="delete">Hapus</string>
-    <string name="themed_icons_off_label">Off</string>
+    <string name="themed_icons_off_label">Mati</string>
     <string name="themed_icons_home_label">Tampilan Depan</string>
-    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
+    <string name="themed_icons_home_and_drawer_label">Tampilan Depan &amp; Halaman Aplikasi</string>
 </resources>
