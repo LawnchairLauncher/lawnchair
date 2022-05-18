@@ -32,6 +32,7 @@ import com.android.launcher3.util.Themes;
 public class AllAppsState extends LauncherState {
 
     private static final float PARALLAX_COEFFICIENT = .125f;
+    private static final float WORKSPACE_SCALE_FACTOR = 0.97f;
 
     private static final int STATE_FLAGS = FLAG_WORKSPACE_INACCESSIBLE;
 
@@ -59,7 +60,7 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
-        return new ScaleAndTranslation(0.97f, NO_OFFSET, NO_OFFSET);
+        return new ScaleAndTranslation(WORKSPACE_SCALE_FACTOR, NO_OFFSET, NO_OFFSET);
     }
 
     @Override
@@ -70,7 +71,7 @@ public class AllAppsState extends LauncherState {
             ScaleAndTranslation overviewScaleAndTranslation = LauncherState.OVERVIEW
                     .getWorkspaceScaleAndTranslation(launcher);
             return new ScaleAndTranslation(
-                    NO_SCALE,
+                    WORKSPACE_SCALE_FACTOR,
                     overviewScaleAndTranslation.translationX,
                     overviewScaleAndTranslation.translationY);
         }
