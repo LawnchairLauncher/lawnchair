@@ -203,7 +203,7 @@
     <string name="reset_custom_icons">Đặt lại biểu tượng tùy chỉnh</string>
     <string name="reset_custom_icons_confirmation">Mọi biểu tượng tùy chỉnh sẽ được đặt lại. Bạn có muốn tiếp tục không?</string>
     <string name="taskbar_label">Thanh tác vụ</string>
-    <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
+    <string name="enable_taskbar_experimental">Bật Thanh tác vụ (thử nghiệm)</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Đang sạc</string>
@@ -228,17 +228,17 @@
     <string name="themed_icons_off_label">Tắt</string>
     <string name="themed_icons_home_label">Màn hình chính</string>
     <string name="themed_icons_home_and_drawer_label">Màn hình chính &amp; Ngăn kéo ứng dụng</string>
-    <string name="create_backup">Create Backup</string>
-    <string name="create_backup_action">Create</string>
-    <string name="what_to_backup">What to Backup</string>
-    <string name="backup_content_layout_and_settings">Layout and Settings</string>
+    <string name="create_backup">Tạo bản sao lưu</string>
+    <string name="create_backup_action">Tạo</string>
+    <string name="what_to_backup">Sao lưu những gì</string>
+    <string name="backup_content_layout_and_settings">Bố trí và cài đặt</string>
     <string name="backup_content_wallpaper">Hình nền</string>
-    <string name="backup_create_success">Backup created</string>
-    <string name="backup_create_error">Failed to create backup</string>
-    <string name="restore_backup">Restore Backup</string>
-    <string name="restore_backup_action">Restore</string>
-    <string name="what_to_restore">What to Restore</string>
-    <string name="backup_restore_success">Backup restored</string>
-    <string name="backup_restore_error">Failed to restore backup</string>
-    <string name="invalid_backup_file">Invalid backup file</string>
+    <string name="backup_create_success">Đã tạo bản sao lưu</string>
+    <string name="backup_create_error">Tạo bản sao lưu thất bại</string>
+    <string name="restore_backup">Khôi phục bản sao lưu</string>
+    <string name="restore_backup_action">Khôi phục</string>
+    <string name="what_to_restore">Khôi phục những gì</string>
+    <string name="backup_restore_success">Đã khôi phục bản sao lưu</string>
+    <string name="backup_restore_error">Khôi phục bản sao lưu thất bại</string>
+    <string name="invalid_backup_file">Tệp sao lưu không hợp lệ</string>
 </resources>
