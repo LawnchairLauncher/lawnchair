@@ -18,7 +18,7 @@
     <string name="icon_pack">Paczka ikon</string>
     <string name="settings">Ustawienia</string>
     <string name="home_screen_label">Ekran główny</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Aktualności, At a Glance, Siatka, Ikony</string>
     <string name="general_label">Ogólne</string>
     <string name="general_description">Plakietki z powiadomieniami, paczka ikon, kolory</string>
     <string name="home_screen_rotation_label">Obrót Ekranu głównego</string>
@@ -229,7 +229,7 @@
     <string name="pref_fonts_add_fonts">Dodaj Czcionki</string>
     <string name="pref_fonts_add_fonts_summary">Obsługiwane: OTF i TTF.</string>
     <string name="delete">Usuń</string>
-    <string name="themed_icons_off_label">Off</string>
+    <string name="themed_icons_off_label">Wyłączono</string>
     <string name="themed_icons_home_label">Ekran główny</string>
-    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
+    <string name="themed_icons_home_and_drawer_label">Ekran główny i Szuflada aplikacji</string>
 </resources>
