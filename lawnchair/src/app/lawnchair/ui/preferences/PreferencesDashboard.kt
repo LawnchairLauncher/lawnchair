@@ -50,6 +50,13 @@ fun PreferencesDashboard() {
         )
 
         PreferenceCategory(
+            label = stringResource(id = R.string.smartspace_widget),
+            description = stringResource(R.string.smartspace_widget_description),
+            iconResource = R.drawable.ic_smartspace,
+            route = Routes.SMARTSPACE,
+        )
+
+        PreferenceCategory(
             label = stringResource(R.string.dock_label),
             description = stringResource(R.string.dock_description),
             iconResource = R.drawable.ic_dock,

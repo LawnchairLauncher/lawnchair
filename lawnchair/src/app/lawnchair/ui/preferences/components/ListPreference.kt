@@ -17,10 +17,8 @@
 package app.lawnchair.ui.preferences.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.Divider
 import androidx.compose.material.RadioButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -30,7 +28,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.ui.AlertBottomSheetContent
-import app.lawnchair.ui.theme.dividerColor
 import app.lawnchair.ui.util.bottomSheetHandler
 
 @Composable
@@ -39,16 +36,35 @@ fun <T> ListPreference(
     entries: List<ListPreferenceEntry<T>>,
     label: String,
     enabled: Boolean = true,
+    description: String? = null,
+) {
+    ListPreference(
+        entries = entries,
+        value = adapter.state.value,
+        onValueChange = adapter::onChange,
+        label = label,
+        enabled = enabled,
+        description = description,
+    )
+}
+
+@Composable
+fun <T> ListPreference(
+    entries: List<ListPreferenceEntry<T>>,
+    value: T,
+    onValueChange: (T) -> Unit,
+    label: String,
+    enabled: Boolean = true,
+    description: String? = null,
 ) {
     val bottomSheetHandler = bottomSheetHandler
-    val currentValue = adapter.state.value
-    val currentLabel = entries
-        .firstOrNull { it.value == currentValue }
+    val currentDescription = description ?: entries
+        .firstOrNull { it.value == value }
         ?.label?.invoke()
 
     PreferenceTemplate(
         title = { Text(text = label) },
-        description = { currentLabel?.let { Text(text = it) } },
+        description = { currentDescription?.let { Text(text = it) } },
         enabled = enabled,
         modifier = Modifier.clickable(enabled) {
             bottomSheetHandler.show {
@@ -69,12 +85,12 @@ fun <T> ListPreference(
                                 enabled = item.enabled,
                                 title = { Text(item.label()) },
                                 modifier = Modifier.clickable(item.enabled) {
-                                    adapter.onChange(item.value)
+                                    onValueChange(item.value)
                                     bottomSheetHandler.hide()
                                 },
                                 startWidget = {
                                     RadioButton(
-                                        selected = item.value == currentValue,
+                                        selected = item.value == value,
                                         onClick = null,
                                         enabled = item.enabled,
                                     )

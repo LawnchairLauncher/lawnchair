@@ -18,17 +18,29 @@ package app.lawnchair.ui.preferences
 
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,7 +54,12 @@ import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.GridOverridesPreview
+import app.lawnchair.ui.preferences.components.ListPreference
+import app.lawnchair.ui.preferences.components.ListPreferenceEntry
+import app.lawnchair.ui.preferences.components.NestedScrollStretch
+import app.lawnchair.ui.preferences.components.PreferenceGroup
+import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.util.Constants
 import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.R
@@ -63,6 +80,7 @@ fun IconPackPreferences() {
     val prefs = preferenceManager()
     val iconPackAdapter = prefs.iconPackPackage.getAdapter()
     val themedIconsAdapter = prefs.themedIcons.getAdapter()
+    val drawerThemedIconsAdapter = prefs.drawerThemedIcons.getAdapter()
 
     PreferenceLayout(
         label = stringResource(id = R.string.icon_pack),
@@ -71,7 +89,7 @@ fun IconPackPreferences() {
         if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
             Column(
                 modifier = Modifier
-                    .weight(0.6f)
+                    .weight(weight = 1f)
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -91,22 +109,35 @@ fun IconPackPreferences() {
                 }
             }
         }
-        Column(Modifier.weight(0.4f)) {
-            Surface(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(vertical = 8.dp)
-            ) {
-                IconPackGrid(iconPackAdapter)
-            }
+        Column {
+            IconPackGrid(
+                adapter = iconPackAdapter,
+                modifier = Modifier.padding(vertical = 8.dp),
+            )
             PreferenceGroup {
                 val themedIconsAvailable = LocalContext.current.packageManager
                     .isPackageInstalled(Constants.LAWNICONS_PACKAGE_NAME)
-                SwitchPreference(
-                    adapter = themedIconsAdapter,
-                    label = stringResource(id = R.string.themed_icon_title),
+                ListPreference(
                     enabled = themedIconsAvailable,
-                    description = if (!themedIconsAvailable) stringResource(id = R.string.lawnicons_not_installed_description) else null,
+                    label = stringResource(id = R.string.themed_icon_title),
+                    entries = ThemedIconsState.values().map {
+                        ListPreferenceEntry(
+                            value = it,
+                            label = { stringResource(id = it.labelResourceId) },
+                        )
+                    },
+                    value = when {
+                        themedIconsAdapter.state.value && drawerThemedIconsAdapter.state.value -> ThemedIconsState.HomeAndDrawer
+                        themedIconsAdapter.state.value -> ThemedIconsState.Home
+                        else -> ThemedIconsState.Off
+                    },
+                    onValueChange = {
+                        themedIconsAdapter.onChange(newValue = it != ThemedIconsState.Off)
+                        drawerThemedIconsAdapter.onChange(newValue = it == ThemedIconsState.HomeAndDrawer)
+                    },
+                    description = if (themedIconsAvailable.not()) {
+                        stringResource(id = R.string.lawnicons_not_installed_description)
+                    } else null,
                 )
             }
         }
@@ -114,16 +145,19 @@ fun IconPackPreferences() {
 }
 
 @Composable
-fun IconPackGrid(adapter: PreferenceAdapter<String>) {
+fun IconPackGrid(
+    adapter: PreferenceAdapter<String>,
+    modifier: Modifier,
+) {
     val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
 
     NestedScrollStretch {
-        val state = rememberLazyGridState()
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 72.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp)
+        val state = rememberLazyListState()
+        LazyRow(
+            state = state,
+            horizontalArrangement = Arrangement.spacedBy(space = 16.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            modifier = modifier,
         ) {
             itemsIndexed(iconPacks, { _, item -> item.packageName }) { index, item ->
                 val wasSelected = remember { mutableStateOf(false) }
@@ -136,7 +170,11 @@ fun IconPackGrid(adapter: PreferenceAdapter<String>) {
                         }
                     }
                 }
-                IconPackItem(item = item, selected = selected) {
+                IconPackItem(
+                    item = item,
+                    selected = selected,
+                    modifier = Modifier.width(80.dp),
+                ) {
                     adapter.onChange(item.packageName)
                 }
             }
@@ -149,12 +187,14 @@ fun IconPackGrid(adapter: PreferenceAdapter<String>) {
 fun IconPackItem(
     item: IconPackInfo,
     selected: Boolean,
-    onClick: () -> Unit
+    modifier: Modifier,
+    onClick: () -> Unit,
 ) {
     Surface(
         onClick = onClick,
         shape = MaterialTheme.shapes.large,
-        tonalElevation = if (selected) 1.dp else 0.dp
+        tonalElevation = if (selected) 1.dp else 0.dp,
+        modifier = modifier,
     ) {
         Column(
             modifier = Modifier
@@ -178,4 +218,10 @@ fun IconPackItem(
             )
         }
     }
+}
+
+private enum class ThemedIconsState(@StringRes val labelResourceId: Int) {
+    Off(labelResourceId = R.string.themed_icons_off_label),
+    Home(labelResourceId = R.string.themed_icons_home_label),
+    HomeAndDrawer(labelResourceId = R.string.themed_icons_home_and_drawer_label),
 }

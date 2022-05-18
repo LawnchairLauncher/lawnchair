@@ -61,6 +61,17 @@ fun HomeScreenPreferences() {
                 adapter = prefs2.dt2s.getAdapter(),
                 label = stringResource(id = R.string.workspace_dt2s),
             )
+            val feedAvailable = OverlayCallbackImpl.minusOneAvailable(LocalContext.current)
+            SwitchPreference(
+                adapter = prefs2.enableFeed.getAdapter(),
+                label = stringResource(id = R.string.minus_one_enable),
+                description = if (feedAvailable) null else stringResource(id = R.string.minus_one_unavailable),
+                enabled = feedAvailable,
+            )
+            SwitchPreference(
+                adapter = prefs2.showTopShadow.getAdapter(),
+                label = stringResource(id = R.string.show_sys_ui_scrim),
+            )
             val columns by prefs.workspaceColumns.getAdapter()
             val rows by prefs.workspaceRows.getAdapter()
             NavigationActionPreference(
@@ -85,31 +96,6 @@ fun HomeScreenPreferences() {
                     label = stringResource(id = R.string.dark_status_bar_label),
                 )
             }
-        }
-        PreferenceGroup(heading = stringResource(id = R.string.what_to_show)) {
-            val feedAvailable = OverlayCallbackImpl.minusOneAvailable(LocalContext.current)
-            SwitchPreference(
-                adapter = prefs2.enableFeed.getAdapter(),
-                label = stringResource(id = R.string.minus_one_enable),
-                description = if (feedAvailable) null else stringResource(id = R.string.minus_one_unavailable),
-                enabled = feedAvailable,
-            )
-
-            val smartspaceAdapter = prefs2.enableSmartspace.getAdapter()
-            val enhancedSmartspace by prefs2.enableEnhancedSmartspace.get().collectAsStateBlocking()
-            val navController = LocalNavController.current
-            SwitchPreference(
-                adapter = smartspaceAdapter,
-                label = stringResource(id = R.string.smart_space_enable),
-                onClick = if (smartspaceAdapter.state.value && enhancedSmartspace) {
-                    { navController.navigate(route = "/${Routes.SMARTSPACE}/") }
-                } else null
-            )
-
-            SwitchPreference(
-                adapter = prefs2.showTopShadow.getAdapter(),
-                label = stringResource(id = R.string.show_sys_ui_scrim),
-            )
         }
         PreferenceGroup(heading = stringResource(id = R.string.icons)) {
             SliderPreference(

@@ -31,6 +31,7 @@ import androidx.compose.material3.MaterialTheme as Material3Theme
 
 @Composable
 fun PreferenceGroup(
+    modifier: Modifier = Modifier,
     heading: String? = null,
     description: String? = null,
     showDescription: Boolean = true,
@@ -40,7 +41,7 @@ fun PreferenceGroup(
     dividersToSkip: Int = 0,
     content: @Composable () -> Unit
 ) {
-    Column {
+    Column(modifier = modifier) {
         PreferenceGroupHeading(heading)
         Surface(
             modifier = Modifier.padding(horizontal = 16.dp),

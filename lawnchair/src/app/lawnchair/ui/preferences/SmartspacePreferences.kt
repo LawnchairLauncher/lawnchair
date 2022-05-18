@@ -4,8 +4,15 @@ import android.app.Activity
 import android.view.ContextThemeWrapper
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -13,12 +20,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
+import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.smartspace.SmartspaceViewContainer
 import app.lawnchair.smartspace.provider.SmartspaceProvider
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SwitchPreference
 import app.lawnchair.ui.theme.isSelectedThemeDark
+import app.lawnchair.util.collectAsStateBlocking
 import com.android.launcher3.R
 
 fun NavGraphBuilder.smartspaceGraph(route: String) {
@@ -27,41 +36,65 @@ fun NavGraphBuilder.smartspaceGraph(route: String) {
 
 @Composable
 fun SmartspacePreferences() {
+    val preferenceManager2 = preferenceManager2()
     val smartspaceProvider = SmartspaceProvider.INSTANCE.get(LocalContext.current)
+    val smartspaceAdapter = preferenceManager2.enableSmartspace.getAdapter()
+    val enhancedSmartspace by preferenceManager2.enableEnhancedSmartspace.get().collectAsStateBlocking()
+
     PreferenceLayout(label = stringResource(id = R.string.smartspace_widget)) {
-        SmartspacePreview()
-        PreferenceGroup(heading = stringResource(id = R.string.what_to_show)) {
-            smartspaceProvider.dataSources
-                .filter { it.isAvailable }
-                .forEach {
-                    key(it.providerName) {
-                        SwitchPreference(
-                            adapter = it.enabledPref.getAdapter(),
-                            label = stringResource(id = it.providerName)
-                        )
+        PreferenceGroup {
+            SwitchPreference(
+                adapter = smartspaceAdapter,
+                label = stringResource(id = R.string.smartspace_widget),
+            )
+        }
+        Crossfade(targetState = smartspaceAdapter.state.value && enhancedSmartspace) { targetState ->
+            if (targetState) {
+                Column {
+                    SmartspacePreview()
+                    PreferenceGroup(
+                        heading = stringResource(id = R.string.what_to_show),
+                        modifier = Modifier.padding(top = 8.dp),
+                    ) {
+                        smartspaceProvider.dataSources
+                            .filter { it.isAvailable }
+                            .forEach {
+                                key(it.providerName) {
+                                    SwitchPreference(
+                                        adapter = it.enabledPref.getAdapter(),
+                                        label = stringResource(id = it.providerName),
+                                    )
+                                }
+                            }
                     }
                 }
+            }
         }
     }
 }
 
 @Composable
 fun SmartspacePreview() {
+    val themeRes = if (isSelectedThemeDark()) R.style.AppTheme_Dark else R.style.AppTheme_DarkText
+    val context = LocalContext.current
+    val themedContext = remember(themeRes) { ContextThemeWrapper(context, themeRes) }
+
     PreferenceGroup(heading = stringResource(id = R.string.preview_label)) {
-        val themeRes = if (isSelectedThemeDark()) R.style.AppTheme_Dark else R.style.AppTheme_DarkText
-        val context = LocalContext.current
-        val themedContext = remember(themeRes) { ContextThemeWrapper(context, themeRes) }
         CompositionLocalProvider(LocalContext provides themedContext) {
             AndroidView(
                 factory = {
                     val view = SmartspaceViewContainer(it, previewMode = true)
-                    val height =
-                        it.resources.getDimensionPixelSize(R.dimen.enhanced_smartspace_height)
+                    val height = it.resources
+                        .getDimensionPixelSize(R.dimen.enhanced_smartspace_height)
                     view.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, height)
                     view
                 },
-                modifier = Modifier
-                    .padding(start = 8.dp, top = 8.dp, end = 0.dp, bottom = 16.dp)
+                modifier = Modifier.padding(
+                    start = 8.dp,
+                    top = 8.dp,
+                    end = 0.dp,
+                    bottom = 16.dp,
+                ),
             )
         }
         LaunchedEffect(key1 = null) {
