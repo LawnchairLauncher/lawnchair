@@ -18,7 +18,7 @@
     <string name="icon_pack">Balíček ikon</string>
     <string name="settings">Nastavenia</string>
     <string name="home_screen_label">Domovská obrazovka</string>
-    <string name="home_screen_description">Google Feed, Prehľad udalostí, Ikony</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">Všeobecné</string>
     <string name="general_description">Farby, Balíčky ikon, Bodky upozornení</string>
     <string name="home_screen_rotation_label">Rotácia domovskej obrazovky</string>
