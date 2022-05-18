@@ -18,7 +18,7 @@
     <string name="icon_pack">Paczka ikon</string>
     <string name="settings">Ustawienia</string>
     <string name="home_screen_label">Ekran główny</string>
-    <string name="home_screen_description">Aktualności, At a Glance, Siatka, Ikony</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">Ogólne</string>
     <string name="general_description">Plakietki z powiadomieniami, paczka ikon, kolory</string>
     <string name="home_screen_rotation_label">Obrót Ekranu głównego</string>
