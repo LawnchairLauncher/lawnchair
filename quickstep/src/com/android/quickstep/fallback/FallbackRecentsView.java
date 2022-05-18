@@ -56,6 +56,7 @@ import java.util.ArrayList;
 public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsState>
         implements StateListener<RecentsState> {
 
+    @Nullable
     private Task mHomeTask;
 
     public FallbackRecentsView(Context context, AttributeSet attrs) {
@@ -89,7 +90,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
             RotationTouchHelper rotationTouchHelper) {
         // TODO(b/195607777) General fallback love, but this might be correct
         //  Home task should be defined as the front-most task info I think?
-        mHomeTask = homeTask[0];
+        mHomeTask = homeTask.length > 0 ? homeTask[0] : null;
         onGestureAnimationStart(homeTask, rotationTouchHelper);
     }
 

@@ -2257,6 +2257,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * is called.  Also scrolls the view to this task.
      */
     private void showCurrentTask(Task[] runningTasks) {
+        if (runningTasks.length == 0) {
+            return;
+        }
         int runningTaskViewId = -1;
         boolean needGroupTaskView = runningTasks.length > 1;
         if (shouldAddStubTaskView(runningTasks)) {
