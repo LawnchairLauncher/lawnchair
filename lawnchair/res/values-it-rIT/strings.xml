@@ -227,7 +227,7 @@
     <string name="pref_fonts_add_fonts">Aggiungi set di caratteri</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supportati.</string>
     <string name="delete">Elimina</string>
-    <string name="themed_icons_off_label">Off</string>
+    <string name="themed_icons_off_label">Disattivate</string>
     <string name="themed_icons_home_label">Schermata home</string>
-    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
+    <string name="themed_icons_home_and_drawer_label">Schermata home &amp; menu delle app</string>
 </resources>
