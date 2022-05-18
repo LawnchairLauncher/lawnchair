@@ -21,6 +21,7 @@ import android.annotation.Nullable;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.view.ViewTreeObserver;
+import android.view.ViewTreeObserver.InternalInsetsInfo;
 import android.view.ViewTreeObserver.OnComputeInternalInsetsListener;
 
 import java.util.HashMap;
@@ -42,16 +43,19 @@ public class ViewTreeObserverWrapper {
      */
     public static void addOnComputeInsetsListener(
             @NonNull ViewTreeObserver observer, @NonNull OnComputeInsetsListener listener) {
-        final OnComputeInternalInsetsListener internalListener = internalInOutInfo -> {
-            final InsetsInfo inOutInfo = new InsetsInfo();
-            inOutInfo.contentInsets.set(internalInOutInfo.contentInsets);
-            inOutInfo.visibleInsets.set(internalInOutInfo.visibleInsets);
-            inOutInfo.touchableRegion.set(internalInOutInfo.touchableRegion);
-            listener.onComputeInsets(inOutInfo);
-            internalInOutInfo.contentInsets.set(inOutInfo.contentInsets);
-            internalInOutInfo.visibleInsets.set(inOutInfo.visibleInsets);
-            internalInOutInfo.touchableRegion.set(inOutInfo.touchableRegion);
-            internalInOutInfo.setTouchableInsets(inOutInfo.mTouchableInsets);
+        final OnComputeInternalInsetsListener internalListener = new OnComputeInternalInsetsListener() {
+            @Override
+            public void onComputeInternalInsets(InternalInsetsInfo internalInOutInfo) {
+                final InsetsInfo inOutInfo = new InsetsInfo();
+                inOutInfo.contentInsets.set(internalInOutInfo.contentInsets);
+                inOutInfo.visibleInsets.set(internalInOutInfo.visibleInsets);
+                inOutInfo.touchableRegion.set(internalInOutInfo.touchableRegion);
+                listener.onComputeInsets(inOutInfo);
+                internalInOutInfo.contentInsets.set(inOutInfo.contentInsets);
+                internalInOutInfo.visibleInsets.set(inOutInfo.visibleInsets);
+                internalInOutInfo.touchableRegion.set(inOutInfo.touchableRegion);
+                internalInOutInfo.setTouchableInsets(inOutInfo.mTouchableInsets);
+            }
         };
         sListenerObserverMap.put(listener, observer);
         sListenerInternalListenerMap.put(listener, internalListener);
