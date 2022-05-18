@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -39,6 +40,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -54,12 +56,15 @@ import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
-import app.lawnchair.ui.preferences.components.GridOverridesPreview
+import app.lawnchair.ui.preferences.components.DummyLauncherBox
+import app.lawnchair.ui.preferences.components.DummyLauncherLayout
 import app.lawnchair.ui.preferences.components.ListPreference
 import app.lawnchair.ui.preferences.components.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.NestedScrollStretch
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
+import app.lawnchair.ui.preferences.components.WallpaperPreview
+import app.lawnchair.ui.preferences.components.invariantDeviceProfile
 import app.lawnchair.util.Constants
 import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.R
