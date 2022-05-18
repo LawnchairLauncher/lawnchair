@@ -36,6 +36,7 @@ import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.Routes
 import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.ui.preferences.preferenceGraph
+import app.lawnchair.util.BackHandler
 import app.lawnchair.util.hasFlag
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.R
@@ -108,6 +109,9 @@ fun ColumnScope.RestoreBackupOptions(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var restoringBackup by remember { mutableStateOf(false) }
+    if (restoringBackup) {
+        BackHandler {}
+    }
 
     fun restoreBackup() {
         if (restoringBackup) return

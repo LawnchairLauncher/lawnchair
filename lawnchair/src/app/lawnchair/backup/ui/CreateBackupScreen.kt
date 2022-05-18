@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -32,8 +31,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.backup.LawnchairBackup
+import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.ui.preferences.preferenceGraph
+import app.lawnchair.util.BackHandler
 import app.lawnchair.util.hasFlag
 import app.lawnchair.util.removeFlag
 import com.android.launcher3.R
@@ -63,8 +64,11 @@ fun CreateBackupScreen(viewModel: CreateBackupViewModel) {
 
     val scope = rememberCoroutineScope()
     var creatingBackup by remember { mutableStateOf(false) }
+    if (creatingBackup) {
+        BackHandler {}
+    }
 
-    val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    val navController = LocalNavController.current
     val request = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode != Activity.RESULT_OK) return@rememberLauncherForActivityResult
         val uri = it.data?.data ?: return@rememberLauncherForActivityResult
@@ -73,7 +77,7 @@ fun CreateBackupScreen(viewModel: CreateBackupViewModel) {
             creatingBackup = true
             try {
                 LawnchairBackup.create(context, contents, screenshot, uri)
-                backDispatcher?.onBackPressed()
+                navController.popBackStack()
                 Toast.makeText(context, R.string.backup_create_success, Toast.LENGTH_SHORT).show()
             } catch (t: Throwable) {
                 Log.d("CreateBackupScreen", "failed to create backup", t)
