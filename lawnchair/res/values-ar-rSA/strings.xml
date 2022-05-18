@@ -211,7 +211,6 @@
     <string name="enable_taskbar">Enable Taskbar</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_icu_date_pattern">EEEMMMd</string>
     <string name="smartspace_battery_charging">Charging</string>
     <string name="smartspace_battery_full">Charged</string>
     <string name="smartspace_battery_low">Battery Low</string>

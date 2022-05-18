@@ -209,7 +209,6 @@
     <string name="enable_taskbar">Włącz pasek zadań</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_icu_date_pattern">EEE, dMMM</string>
     <string name="smartspace_battery_charging">Ładowanie</string>
     <string name="smartspace_battery_full">Naładowano</string>
     <string name="smartspace_battery_low">Niski poziom baterii</string>

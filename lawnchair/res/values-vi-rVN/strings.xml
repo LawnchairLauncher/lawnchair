@@ -206,7 +206,6 @@
     <string name="enable_taskbar">Bật Thanh tác vụ</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_icu_date_pattern">EEEMMMd</string>
     <string name="smartspace_battery_charging">Đang sạc</string>
     <string name="smartspace_battery_full">Đã sạc đầy</string>
     <string name="smartspace_battery_low">Pin yếu</string>

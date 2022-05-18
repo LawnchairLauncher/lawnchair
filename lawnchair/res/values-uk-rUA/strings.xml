@@ -209,7 +209,6 @@
     <string name="enable_taskbar">Увімкнути панель задач</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_icu_date_pattern">EEEMMMd</string>
     <string name="smartspace_battery_charging">Зарядка</string>
     <string name="smartspace_battery_full">Заряджено</string>
     <string name="smartspace_battery_low">Низький заряд батареї</string>
