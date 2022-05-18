@@ -224,12 +224,12 @@
     <string name="smartspace_battery_status">Стан батареї</string>
     <string name="smartspace_now_playing">Зараз грає</string>
     <string name="smartspace_requires_setup">Торкніться для налаштування</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
+    <string name="event_provider_missing_notification_dots">Щоб використовувати <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, увімкніть крапки сповіщень.</string>
     <string name="smartspace_media_info_separator">" — "</string>
-    <string name="pref_fonts_add_fonts">Add Fonts</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
-    <string name="delete">Delete</string>
-    <string name="themed_icons_off_label">Off</string>
+    <string name="pref_fonts_add_fonts">Додати шрифти</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF підтримується.</string>
+    <string name="delete">Видалити</string>
+    <string name="themed_icons_off_label">Вимкнено</string>
     <string name="themed_icons_home_label">Домашній Екран</string>
-    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
+    <string name="themed_icons_home_and_drawer_label">Домашній екран &amp; Меню додатків</string>
 </resources>
