@@ -34,7 +34,7 @@
     <string name="dock_icons">Dock Icons</string>
     <string name="max_folder_columns">Nr max i Kolonave ne Dosje</string>
     <string name="max_folder_rows">Nr max i Rreshtave në Dosje</string>
-    <string name="home_screen_grid">Home Screen Grid</string>
+    <string name="home_screen_grid">Rrjeta e Ekranit Kryesorë</string>
     <string name="columns">Kolonat</string>
     <string name="grid">Rrjeta</string>
     <string name="rows">Rreshtat</string>
@@ -172,7 +172,7 @@
     <string name="bugreport_group_summary">%d raporte të reja.</string>
     <string name="bugreport_group_summary_multiple">Multiple new reports.</string>
     <string name="themed_icon_title">Themed Icons</string>
-    <string name="corner_radius_label">Corner Radius</string>
+    <string name="corner_radius_label">Rrezja e Këndeve</string>
     <string name="search_bar_label">Shiriti i Kërkimit</string>
     <string name="apply_accent_color_label">Apply Accent Color</string>
     <string name="show_search_result_types">Shfaq në Rezultatet e Kërkimit</string>
