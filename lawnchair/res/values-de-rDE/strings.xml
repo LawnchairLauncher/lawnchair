@@ -56,7 +56,7 @@
     <string name="app_info_drop_target_label">App Info</string>
     <string name="item_removed">Element entfernt.</string>
     <string name="all_apps_no_search_results">Keine Apps gefunden mit “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
-    <string name="translucent_background">Transparenter Hintergrund</string>
+    <string name="translucent_background">Transluzenter Hintergrund</string>
     <string name="background_opacity">Hintergrundtransparenz</string>
     <string name="background_lightness_label">Hintergrundbeleuchtung</string>
     <string name="adaptive_icons">Adaptive Symbole</string>
@@ -213,6 +213,7 @@
     <string name="smartspace_battery_low">Akku schwach</string>
     <string name="accessibility_smartspace_page">Seite %1$d von %2$d</string>
     <string name="smartspace_widget">Auf einen Blick</string>
+    <string name="smartspace_widget_description">Was soll angezeigt werden</string>
     <string name="smartspace_widget_placeholder_date">Fr, 3. Mär</string>
     <string name="quickstep_incompatible">Inkompatible Systemintegration</string>
     <string name="quickstep_incompatible_description">Dein Gerät ist so konfiguriert, dass Systemgesten (bekannt als Quickstep) von %1$s bereitgestellt werden, diese Version von %1$s ist jedoch nicht mit deiner Android-Version kompatibel. Um dein Gerät weiter zu verwenden, deinstalliere bitte %1$s-Aktualisierungen oder deaktiviere %1$s als Systemgesten-Provider.</string>
@@ -226,4 +227,7 @@
     <string name="pref_fonts_add_fonts">Schriftarten hinzufügen</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF werden unterstützt.</string>
     <string name="delete">Löschen</string>
+    <string name="themed_icons_off_label">Off</string>
+    <string name="themed_icons_home_label">Startseite</string>
+    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
 </resources>
