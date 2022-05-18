@@ -18,7 +18,7 @@
     <string name="icon_pack">Icon Pack</string>
     <string name="settings">Mga Settings</string>
     <string name="home_screen_label">Home Screen</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Feed, At a Glance, Grid, Mga Icon</string>
     <string name="general_label">Pangkalahatan</string>
     <string name="general_description">Mga tuldok ng pag-abiso, Icon Pack</string>
     <string name="home_screen_rotation_label">Paggalaw ng Home Screen</string>
