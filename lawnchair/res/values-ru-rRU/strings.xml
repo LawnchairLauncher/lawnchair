@@ -229,7 +229,7 @@
     <string name="pref_fonts_add_fonts">Добавить шрифты</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF поддерживается.</string>
     <string name="delete">Удалить</string>
-    <string name="themed_icons_off_label">Off</string>
+    <string name="themed_icons_off_label">Выкл</string>
     <string name="themed_icons_home_label">Домашний экран</string>
-    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
+    <string name="themed_icons_home_and_drawer_label">Главный экран &amp; Панель приложений</string>
 </resources>
