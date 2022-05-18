@@ -18,7 +18,7 @@
     <string name="icon_pack">アイコンパック</string>
     <string name="settings">設定</string>
     <string name="home_screen_label">ホーム画面</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">フィード、At a Glance、グリッド、アイコン</string>
     <string name="general_label">一般設定</string>
     <string name="general_description">色、アイコンパック、通知ドット</string>
     <string name="home_screen_rotation_label">ホーム画面の回転</string>
