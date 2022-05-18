@@ -18,7 +18,7 @@
     <string name="icon_pack">Tema ikonica</string>
     <string name="settings">Podešavanja</string>
     <string name="home_screen_label">Početna stranica</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Vesti, \"At a Glance\", Mreža, Ikonice</string>
     <string name="general_label">Opšte</string>
     <string name="general_description">Simboli obaveštenja, Tema ikonica</string>
     <string name="home_screen_rotation_label">Rotacija početne stranice</string>
