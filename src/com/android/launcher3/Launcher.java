@@ -2046,11 +2046,14 @@ public class Launcher extends StatefulActivity<LauncherState>
         // Note: There should be at most one log per method call. This is enforced implicitly
         // by using if-else statements.
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
-        if (topView != null && topView.onBackPressed()) {
-            // Handled by the floating view.
-        } else {
-            mStateManager.getState().onBackPressed(this);
+        if (topView == null || !topView.onBackPressed()) {
+            // Not handled by the floating view.
+            onStateBack();
         }
+    }
+
+    protected void onStateBack() {
+        mStateManager.getState().onBackPressed(this);
     }
 
     protected void onScreenOff() {
