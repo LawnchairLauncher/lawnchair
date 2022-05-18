@@ -321,7 +321,6 @@ public class InvariantDeviceProfile {
             @DeviceType int deviceType) {
         DeviceProfileOverrides.Options overrideOptions = DeviceProfileOverrides.INSTANCE.get(context)
                 .getOverrides(displayOption.grid);
-        Log.d("MigrationDebug", "initGrid");
         initGrid(context, displayInfo, displayOption, deviceType, overrideOptions);
     }
 
@@ -434,11 +433,9 @@ public class InvariantDeviceProfile {
     private void onConfigChanged(Context context) {
         Object[] oldState = toModelState();
 
-        Log.d("MigrationDebug", "onConfigChanged");
         // Re-init grid
         String gridName = getCurrentGridName(context);
         initGrid(context, gridName);
-        Log.d("MigrationDebug", "init grid done");
 
         boolean modelPropsChanged = !Arrays.equals(oldState, toModelState());
         for (OnIDPChangeListener listener : mChangeListeners) {
