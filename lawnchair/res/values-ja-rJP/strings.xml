@@ -203,7 +203,7 @@
     <string name="reset_custom_icons">カスタムアイコンをリセット</string>
     <string name="reset_custom_icons_confirmation">すべてのカスタムアイコンがリセットされます。続行しますか？</string>
     <string name="taskbar_label">タスクバー</string>
-    <string name="enable_taskbar_experimental">タスクバーを有効にする (実験的)</string>
+    <string name="enable_taskbar_experimental">タスクバーを有効化 (実験的)</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s,%2$s</string>
     <string name="smartspace_battery_charging">充電中...</string>
