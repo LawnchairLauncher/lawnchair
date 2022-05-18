@@ -203,7 +203,7 @@
     <string name="reset_custom_icons">Đặt lại biểu tượng tùy chỉnh</string>
     <string name="reset_custom_icons_confirmation">Mọi biểu tượng tùy chỉnh sẽ được đặt lại. Bạn có muốn tiếp tục không?</string>
     <string name="taskbar_label">Thanh tác vụ</string>
-    <string name="enable_taskbar">Bật Thanh tác vụ</string>
+    <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Đang sạc</string>
