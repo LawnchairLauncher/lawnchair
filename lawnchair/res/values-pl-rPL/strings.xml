@@ -20,7 +20,7 @@
     <string name="home_screen_label">Ekran główny</string>
     <string name="home_screen_description">Aktualności, At a Glance, Siatka, Ikony</string>
     <string name="general_label">Ogólne</string>
-    <string name="general_description">Plakietki powiadomień, paczka ikon, kolory</string>
+    <string name="general_description">Plakietki z powiadomieniami, paczka ikon, kolory</string>
     <string name="home_screen_rotation_label">Obrót Ekranu głównego</string>
     <string name="home_screen_rotaton_description">Po obróceniu urządzenia.</string>
     <string name="auto_add_shortcuts_label">Dodaj nowe aplikacje do ekranu głównego</string>
@@ -56,6 +56,7 @@
     <string name="app_info_drop_target_label">Informacje o aplikacji</string>
     <string name="item_removed">Element usunięty.</string>
     <string name="all_apps_no_search_results">Nie znaleziono aplikacji pasujących do „<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="translucent_background">Przezroczyste tło</string>
     <string name="background_opacity">Przezroczystość tła</string>
     <string name="background_lightness_label">Jasność tła</string>
     <string name="adaptive_icons">Ikony adaptacyjne</string>
@@ -95,7 +96,7 @@
     <string name="quickstep_label">Ostatnie aplikacje</string>
     <string name="clear_all_as_action_label">Przycisk \"Wyczyść wszystko\" na dole</string>
     <string name="window_corner_radius_label">Promień narożnika ekranu</string>
-    <string name="override_window_corner_radius_label">Niestandardowy promień narożnika ekranu</string>
+    <string name="override_window_corner_radius_label">Własny promień narożnika ekranu</string>
     <string name="window_corner_radius_description">Gdy przeciągniesz w górę, aby otworzyć menu Ulubione, bieżąca aplikacja podąży za Twoim palcem, kurcząc się kartę. Użyj tego suwaka, aby dostosować promień narożnika karty, gdy jest ona prawie pełnoekranowa, tak aby dopasować ją do rogów ekranu.</string>
     <string name="system_icons">Ikony systemowe</string>
     <string name="accent_color">Kolor Akcentujący</string>
@@ -107,11 +108,11 @@
     <string name="quickstep_description">Przycisk \"Wyczyść wszystko\", promień narożnika</string>
     <string name="wallpaper_scrolling_label">Przewiń tapetę</string>
     <string name="show_sys_ui_scrim">Górny cień</string>
-    <string name="show_status_bar">Pasek stanu</string>
+    <string name="show_status_bar">Pokaż pasek stanu</string>
     <string name="what_to_show">Co wyświetlić</string>
     <string name="missing_notification_access_label">Wymagany dostęp do powiadomień</string>
     <string name="missing_notification_access_description">Wymagany dostęp do powiadomień.</string>
-    <string name="msg_missing_notification_access">Aby używać plakietek powiadomień, przyznaj <xliff:g id="name" example="My App">%1$s</xliff:g> dostęp do powiadomień.</string>
+    <string name="msg_missing_notification_access">Aby używać plakietek z powiadomieniami, przyznaj <xliff:g id="name" example="My App">%1$s</xliff:g> dostęp do powiadomień.</string>
     <string name="title_change_settings">Zmień ustawienia</string>
     <string name="debug_restart_launcher">Zrestartuj Lawnchair</string>
     <string name="pref_fonts_missing_font">Brak czcionki.</string>
@@ -139,8 +140,13 @@
     <string name="icon_shape_label">Kształt ikon</string>
     <string name="icon_shape_system">System</string>
     <string name="icon_shape_circle">Okrąg</string>
+    <string name="icon_shape_square">Kwadrat</string>
     <string name="icon_shape_rounded_square">Zaokrąglony kwadrat</string>
     <string name="icon_shape_squircle">Kwadratokrąg</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_teardrop">Łza</string>
+    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">Dostosuj</string>
     <string name="app_title_label">Nazwa</string>
     <string name="hide_from_drawer">Ukryj w szufladzie aplikacji</string>
@@ -156,7 +162,7 @@
     <string name="show_app_search_bar">Pokaż pasek wyszukiwania</string>
     <string name="lawnchair_bug_report">Raport błędów Lawnchair</string>
     <string name="crash_report_notif_title">%1$s uległ awarii</string>
-    <string name="action_upload">Prześlij do Dogbin</string>
+    <string name="action_upload_crash_report">Prześlij dziennik awarii</string>
     <string name="action_copy_link">Kopiuj odnośnik</string>
     <string name="action_copy">Kopiuj</string>
     <string name="copied_toast">Skopiowano do schowka.</string>
@@ -190,4 +196,40 @@
     <string name="icon_picker_description">Może spowodować zamrożenie Lawnchair.</string>
     <string name="font_picker_label">Dostosowywanie czcionek</string>
     <string name="font_picker_description">Niektóre teksty pozostają niezmienione.</string>
+    <string name="search_provider_app_search">Wyszukiwanie aplikacji</string>
+    <string name="always_open_website_label">Zawsze otwieraj stronę internetową</string>
+    <string name="always_open_website_description">Otwórz stronę internetową dostawcy wyszukiwania, nawet jeśli ich aplikacja jest zainstalowana.</string>
+    <string name="search_provider">Dostawca wyszukiwania</string>
+    <string name="status_bar_label">Pasek stanu</string>
+    <string name="show_notification_count">Pokaż ilość powiadomień</string>
+    <string name="icon_picker_load_failed">Nie udało się załadować kolejnych ikon.</string>
+    <string name="reset_custom_icons">Zresetuj własne ikony</string>
+    <string name="reset_custom_icons_confirmation">Wszystkie własne ikony zostaną zresetowane. Czy chcesz kontynuować?</string>
+    <string name="taskbar_label">Pasek zadań</string>
+    <string name="enable_taskbar">Włącz pasek zadań</string>
+    <!-- Smartspace -->
+    <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
+    <string name="smartspace_icu_date_pattern">EEE, dMMM</string>
+    <string name="smartspace_battery_charging">Ładowanie</string>
+    <string name="smartspace_battery_full">Naładowano</string>
+    <string name="smartspace_battery_low">Niski poziom baterii</string>
+    <string name="accessibility_smartspace_page">Strona %1$d z %2$d</string>
+    <string name="smartspace_widget">W skrócie</string>
+    <string name="smartspace_widget_description">Co wyświetlić</string>
+    <string name="smartspace_widget_placeholder_date">Pią, 3 Mar</string>
+    <string name="quickstep_incompatible">Niezgodna integracja systemu</string>
+    <string name="quickstep_incompatible_description">Twoje urządzenie jest skonfigurowane, aby wspierać gesty systemowe (znane jako Quickstep) dostarczane przez %1$s, ale ta wersja %1$s nie jest kompatybilna z twoją wersją Androida. Aby kontynuować korzystanie z urządzenia, odinstaluj %1$s aktualizacje lub wyłącz %1$s jako dostawcę gestów systemowych.</string>
+    <string name="preview_label">Podgląd</string>
+    <string name="smartspace_weather">Pogoda</string>
+    <string name="smartspace_battery_status">Stan baterii</string>
+    <string name="smartspace_now_playing">Teraz odtwarzane</string>
+    <string name="smartspace_requires_setup">Dotknij, aby ustawić</string>
+    <string name="event_provider_missing_notification_dots">Aby używać <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, włącz opcję: plakietki z powiadomieniami.</string>
+    <string name="smartspace_media_info_separator">" — "</string>
+    <string name="pref_fonts_add_fonts">Dodaj Czcionki</string>
+    <string name="pref_fonts_add_fonts_summary">Obsługiwane: OTF i TTF.</string>
+    <string name="delete">Usuń</string>
+    <string name="themed_icons_off_label">Off</string>
+    <string name="themed_icons_home_label">Ekran główny</string>
+    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
 </resources>

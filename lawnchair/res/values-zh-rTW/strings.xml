@@ -56,6 +56,7 @@
     <string name="app_info_drop_target_label">應用程式資訊</string>
     <string name="item_removed">已移除物件。</string>
     <string name="all_apps_no_search_results">找不到應用程式「<xliff:g example="Android" id="query">%1$s</xliff:g>」。</string>
+    <string name="translucent_background">Translucent Background</string>
     <string name="background_opacity">背景透明度</string>
     <string name="background_lightness_label">背景亮度</string>
     <string name="adaptive_icons">自適應圖示</string>
@@ -104,7 +105,7 @@
     <string name="quickstep_description">「清除全部」按鈕、圓角大小</string>
     <string name="wallpaper_scrolling_label">桌布隨頁面捲動</string>
     <string name="show_sys_ui_scrim">Top Shadow</string>
-    <string name="show_status_bar">Status Bar</string>
+    <string name="show_status_bar">顯示狀態列</string>
     <string name="what_to_show">What to Show</string>
     <string name="missing_notification_access_label">Notification Access Needed</string>
     <string name="missing_notification_access_description">Notification access needed.</string>
@@ -136,8 +137,13 @@
     <string name="icon_shape_label">圖示形狀</string>
     <string name="icon_shape_system">系統</string>
     <string name="icon_shape_circle">圓形</string>
+    <string name="icon_shape_square">方形</string>
     <string name="icon_shape_rounded_square">圓角矩形</string>
     <string name="icon_shape_squircle">方圓形</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_teardrop">水滴形</string>
+    <string name="icon_shape_cylinder">圓柱形</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">自訂</string>
     <string name="app_title_label">標題</string>
     <string name="hide_from_drawer">從應用程式列表隱藏</string>
@@ -153,7 +159,7 @@
     <string name="show_app_search_bar">顯示搜尋列</string>
     <string name="lawnchair_bug_report">Lawnchair 問題回報</string>
     <string name="crash_report_notif_title">%1$s 已停止運作</string>
-    <string name="action_upload">上傳至 Dogbin</string>
+    <string name="action_upload_crash_report">Upload Crash Log</string>
     <string name="action_copy_link">複製連結</string>
     <string name="action_copy">複製</string>
     <string name="copied_toast">已複製到剪貼簿</string>
@@ -187,6 +193,40 @@
     <string name="icon_picker_description">可能導致 Lawnchair 畫面凍結</string>
     <string name="font_picker_label">自訂字型</string>
     <string name="font_picker_description">部分文字可能無法套用。</string>
-    <string name="generic_smartspace_concatenated_desc">%1$s，%2$s</string>
-    <string name="accessibility_smartspace_page">第 %1$d 頁，共 %2$d 頁</string>
+    <string name="search_provider_app_search">應用程式搜尋</string>
+    <string name="always_open_website_label">永遠開啟網站</string>
+    <string name="always_open_website_description">使用網頁而非相應的應用程式來進行搜尋</string>
+    <string name="search_provider">搜尋服務供應商</string>
+    <string name="status_bar_label">Status Bar</string>
+    <string name="show_notification_count">Show Notification Count</string>
+    <string name="icon_picker_load_failed">Couldn’t load more icons.</string>
+    <string name="reset_custom_icons">Reset Custom Icons</string>
+    <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
+    <string name="taskbar_label">Taskbar</string>
+    <string name="enable_taskbar">Enable Taskbar</string>
+    <!-- Smartspace -->
+    <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
+    <string name="smartspace_icu_date_pattern">EEEMMMd</string>
+    <string name="smartspace_battery_charging">Charging</string>
+    <string name="smartspace_battery_full">Charged</string>
+    <string name="smartspace_battery_low">Battery Low</string>
+    <string name="accessibility_smartspace_page">Page %1$d of %2$d</string>
+    <string name="smartspace_widget">At a Glance</string>
+    <string name="smartspace_widget_description">What to Show</string>
+    <string name="smartspace_widget_placeholder_date">Fri, Mar 3</string>
+    <string name="quickstep_incompatible">Incompatible System Integration</string>
+    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
+    <string name="preview_label">Preview</string>
+    <string name="smartspace_weather">Weather</string>
+    <string name="smartspace_battery_status">Battery Status</string>
+    <string name="smartspace_now_playing">Now Playing</string>
+    <string name="smartspace_requires_setup">Tap to Set Up</string>
+    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
+    <string name="smartspace_media_info_separator">" — "</string>
+    <string name="pref_fonts_add_fonts">Add Fonts</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
+    <string name="delete">Delete</string>
+    <string name="themed_icons_off_label">Off</string>
+    <string name="themed_icons_home_label">主螢幕</string>
+    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
 </resources>

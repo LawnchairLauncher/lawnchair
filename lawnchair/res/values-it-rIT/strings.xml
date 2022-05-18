@@ -56,6 +56,7 @@
     <string name="app_info_drop_target_label">Informazioni app</string>
     <string name="item_removed">Elemento rimosso.</string>
     <string name="all_apps_no_search_results">Nessuna app trovata corrispondente a «<xliff:g example="Android" id="query">%1$s</xliff:g>».</string>
+    <string name="translucent_background">Sfondo semitrasparente</string>
     <string name="background_opacity">Opacità dello sfondo</string>
     <string name="background_lightness_label">Luminosità sfondo</string>
     <string name="adaptive_icons">Icone adattive</string>
@@ -105,7 +106,7 @@
     <string name="quickstep_description">Pulsante \"Cancella tutto\", raggio dell\'angolo</string>
     <string name="wallpaper_scrolling_label">Scorrimento dello sfondo</string>
     <string name="show_sys_ui_scrim">Ombra in alto</string>
-    <string name="show_status_bar">Barra di stato</string>
+    <string name="show_status_bar">Mostra barra di stato</string>
     <string name="what_to_show">Cosa mostrare</string>
     <string name="missing_notification_access_label">Accesso alle notifiche necessario</string>
     <string name="missing_notification_access_description">Accesso alle notifiche necessario.</string>
@@ -137,8 +138,13 @@
     <string name="icon_shape_label">Forma dell\'icona</string>
     <string name="icon_shape_system">Sistema</string>
     <string name="icon_shape_circle">Cerchio</string>
+    <string name="icon_shape_square">Quadrato</string>
     <string name="icon_shape_rounded_square">Quadrato arrotondato</string>
     <string name="icon_shape_squircle">Supercerchio</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_teardrop">Goccia</string>
+    <string name="icon_shape_cylinder">Cilindro</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">Personalizza</string>
     <string name="app_title_label">Titolo</string>
     <string name="hide_from_drawer">Nascondi dal menu delle app</string>
@@ -154,7 +160,7 @@
     <string name="show_app_search_bar">Mostra la Barra di Ricerca</string>
     <string name="lawnchair_bug_report">Segnalazione bug di Lawnchair</string>
     <string name="crash_report_notif_title">%1$s è crashato</string>
-    <string name="action_upload">Carica su Dogbin</string>
+    <string name="action_upload_crash_report">Carica log del crash</string>
     <string name="action_copy_link">Copia link</string>
     <string name="action_copy">Copia</string>
     <string name="copied_toast">Copiato negli appunti.</string>
@@ -188,4 +194,40 @@
     <string name="icon_picker_description">Può causare il blocco di Lawnchair.</string>
     <string name="font_picker_label">Personalizzazione carattere</string>
     <string name="font_picker_description">Alcuni testi rimangono invariati.</string>
+    <string name="search_provider_app_search">Ricerca app</string>
+    <string name="always_open_website_label">Apri sempre Il sito</string>
+    <string name="always_open_website_description">Apri il sito web del provider di ricerca anche se la loro app è installata.</string>
+    <string name="search_provider">Provider di ricerca</string>
+    <string name="status_bar_label">Barra di stato</string>
+    <string name="show_notification_count">Mostra conteggio notifiche</string>
+    <string name="icon_picker_load_failed">Impossibile caricare più icone.</string>
+    <string name="reset_custom_icons">Resetta icone personalizzate</string>
+    <string name="reset_custom_icons_confirmation">Tutte le icone personalizzate saranno resettate? Vuoi continuare?</string>
+    <string name="taskbar_label">Barra delle applicazioni</string>
+    <string name="enable_taskbar">Attiva la barra delle applicazioni</string>
+    <!-- Smartspace -->
+    <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
+    <string name="smartspace_icu_date_pattern">EEEMMMd</string>
+    <string name="smartspace_battery_charging">In carica</string>
+    <string name="smartspace_battery_full">Carico</string>
+    <string name="smartspace_battery_low">Batteria scarica</string>
+    <string name="accessibility_smartspace_page">Pagina %1$d di %2$d</string>
+    <string name="smartspace_widget">At a Glance</string>
+    <string name="smartspace_widget_description">Cosa mostrare</string>
+    <string name="smartspace_widget_placeholder_date">Ven, 3 Mar</string>
+    <string name="quickstep_incompatible">Integrazione di sistema incompatibile</string>
+    <string name="quickstep_incompatible_description">Il tuo dispositivo è configurato per avere i gesti di sistema (noti come Quickstep) forniti da %1$s, ma questa versione di %1$s non è compatibile con la tua versione di Android. Per continuare ad usare il tuo dispositivo, disinstalla gli aggiornamenti di %1$s o disabilita %1$s come provider dei gesti di sistema.</string>
+    <string name="preview_label">Anteprima</string>
+    <string name="smartspace_weather">Meteo</string>
+    <string name="smartspace_battery_status">Stato batteria</string>
+    <string name="smartspace_now_playing">In riproduzione</string>
+    <string name="smartspace_requires_setup">Tocca per configurare</string>
+    <string name="event_provider_missing_notification_dots">Per utilizzare <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, abilita i badge di notifica.</string>
+    <string name="smartspace_media_info_separator">" — "</string>
+    <string name="pref_fonts_add_fonts">Aggiungi set di caratteri</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supportati.</string>
+    <string name="delete">Elimina</string>
+    <string name="themed_icons_off_label">Disattivate</string>
+    <string name="themed_icons_home_label">Schermata home</string>
+    <string name="themed_icons_home_and_drawer_label">Schermata home &amp; menu delle app</string>
 </resources>
