@@ -48,7 +48,6 @@ import com.android.launcher3.tapl.HomeAppIconMenuItem;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.util.TestUtil;
-import com.android.launcher3.util.rule.ScreenRecordRule;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 import com.android.launcher3.widget.picker.WidgetsRecyclerView;
@@ -69,9 +68,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     private static final String MAPS_APP_NAME = "Maps";
     private static final String STORE_APP_NAME = "Play Store";
     private static final String GMAIL_APP_NAME = "Gmail";
-
-    @Rule
-    public ScreenRecordRule mScreenRecordRule = new ScreenRecordRule();
 
     @Before
     public void setUp() throws Exception {
@@ -380,7 +376,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     @Test
     @PortraitLandscape
-    @ScreenRecord
     public void testDragToFolder() {
         // TODO: add the use case to drag an icon to an existing folder. Currently it either fails
         // on tablets or phones due to difference in resolution.
@@ -397,6 +392,15 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 workspace.tryGetWorkspaceAppIcon(STORE_APP_NAME));
         assertNull(GMAIL_APP_NAME + " should be moved to a folder.",
                 workspace.tryGetWorkspaceAppIcon(GMAIL_APP_NAME));
+
+        final HomeAppIcon mapIcon = createShortcutInCenterIfNotExist(MAPS_APP_NAME);
+        folderIcon = mapIcon.dragToIcon(folderIcon);
+        folder = folderIcon.open();
+        folder.getAppIcon(MAPS_APP_NAME);
+        workspace = folder.close();
+
+        assertNull(MAPS_APP_NAME + " should be moved to a folder.",
+                workspace.tryGetWorkspaceAppIcon(MAPS_APP_NAME));
     }
 
     @Test
