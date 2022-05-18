@@ -18,12 +18,22 @@ class IdpPreference(
 ) {
 
     fun get(gridOption: InvariantDeviceProfile.GridOption) = preferencesDataStore.data.map { preferences ->
-        preferences[key] ?: defaultSelector(gridOption)
+        val value = preferences[key]
+        if (value == null || value == -1) {
+            defaultSelector(gridOption)
+        } else {
+            value
+        }
     }
 
-    suspend fun set(value: Int) {
+    suspend fun set(value: Int, gridOption: InvariantDeviceProfile.GridOption) {
         preferencesDataStore.edit { mutablePreferences ->
-            mutablePreferences[key] = value
+            val defaultValue = defaultSelector(gridOption)
+            if (value == defaultValue) {
+                mutablePreferences.remove(key)
+            } else {
+                mutablePreferences[key] = value
+            }
         }
         onSet(value)
     }

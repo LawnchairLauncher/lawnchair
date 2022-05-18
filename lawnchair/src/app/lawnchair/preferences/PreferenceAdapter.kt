@@ -119,7 +119,7 @@ fun IdpPreference.getAdapter(): PreferenceAdapter<Int> {
     val idp = remember { InvariantDeviceProfile.INSTANCE.get(context) }
     val defaultGrid = idp.closestProfile
     val state = get(defaultGrid).collectAsState(initial = firstBlocking(defaultGrid))
-    return createStateAdapter(state = state, set = this::set)
+    return createStateAdapter(state = state, set = { set(it, defaultGrid) })
 }
 
 @Composable
