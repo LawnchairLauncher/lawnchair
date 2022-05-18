@@ -18,7 +18,7 @@
     <string name="icon_pack">Simge Paketi</string>
     <string name="settings">Ayarlar</string>
     <string name="home_screen_label">Ana Ekran</string>
-    <string name="home_screen_description">Akış, Bir Bakışta, Izgara, Simgeler</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">Genel</string>
     <string name="general_description">Renkler, Simge Paketi, Bildirim Noktaları</string>
     <string name="home_screen_rotation_label">Ana Ekran Rotasyonu</string>

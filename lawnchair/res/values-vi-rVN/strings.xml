@@ -18,7 +18,7 @@
     <string name="icon_pack">Gói biểu tượng</string>
     <string name="settings">Cài đặt</string>
     <string name="home_screen_label">Màn hình chính</string>
-    <string name="home_screen_description">Bản tin, Xem nhanh, Lưới, Biểu tượng</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">Chung</string>
     <string name="general_description">Màu sắc, Gói biểu tượng, Dấu chấm thông báo</string>
     <string name="home_screen_rotation_label">Xoay màn hình chính</string>

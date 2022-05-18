@@ -18,7 +18,7 @@
     <string name="icon_pack">Sada ikon</string>
     <string name="settings">Nastavení</string>
     <string name="home_screen_label">Domovská stránka</string>
-    <string name="home_screen_description">Kanál, Widget domácí obrazovky, Mřížka, Ikony</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">Obecné</string>
     <string name="general_description">Barvy, balíček ikon, tečky oznámení</string>
     <string name="home_screen_rotation_label">Otáčení domovské obrazovky</string>

@@ -18,7 +18,7 @@
     <string name="icon_pack">Ikoncsomag</string>
     <string name="settings">Beállítások</string>
     <string name="home_screen_label">Kezdőképernyő</string>
-    <string name="home_screen_description">Hírfolyam, kezdőoldal, rács, ikonok</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">Általános</string>
     <string name="general_description">Színek, ikoncsomag, értesítési pöttyök</string>
     <string name="home_screen_rotation_label">Kezdőképernyő tájolása</string>

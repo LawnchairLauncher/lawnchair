@@ -18,7 +18,7 @@
     <string name="icon_pack">Pachet de pictograme</string>
     <string name="settings">Setări</string>
     <string name="home_screen_label">Ecran principal</string>
-    <string name="home_screen_description">Flux, Prima Privire, Grilă, Pictograme</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">General</string>
     <string name="general_description">Pictograme pentru Notificări, Pachet Pictograme</string>
     <string name="home_screen_rotation_label">Rotația ecranului de pornire</string>

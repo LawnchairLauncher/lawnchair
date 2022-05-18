@@ -18,7 +18,7 @@
     <string name="icon_pack">آیکن‌پک</string>
     <string name="settings">تنظیمات</string>
     <string name="home_screen_label">صفحه اصلی</string>
-    <string name="home_screen_description">Feed, At a Glance, Grid, Icons</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">عمومی</string>
     <string name="general_description">Colors, Icon Pack, Notification Dots</string>
     <string name="home_screen_rotation_label">Home Screen Rotation</string>

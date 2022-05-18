@@ -18,7 +18,7 @@
     <string name="icon_pack">Icon Pack</string>
     <string name="settings">Settings</string>
     <string name="home_screen_label">Home Screen</string>
-    <string name="home_screen_description">Feed, At a Glance, Grid, Icons</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">General</string>
     <string name="general_description">Notification Dots, Icon Pack</string>
     <string name="home_screen_rotation_label">Home Screen Rotation</string>

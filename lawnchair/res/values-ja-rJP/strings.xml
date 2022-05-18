@@ -18,7 +18,7 @@
     <string name="icon_pack">アイコンパック</string>
     <string name="settings">設定</string>
     <string name="home_screen_label">ホーム画面</string>
-    <string name="home_screen_description">フィード、At a Glance、グリッド、アイコン</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">一般設定</string>
     <string name="general_description">色、アイコンパック、通知ドット</string>
     <string name="home_screen_rotation_label">ホーム画面の回転</string>
@@ -213,7 +213,7 @@
     <string name="accessibility_smartspace_page">%1$d ページ中 %2$d</string>
     <string name="smartspace_widget">At a Glance</string>
     <string name="smartspace_widget_description">表示する項目</string>
-    <string name="smartspace_widget_placeholder_date">3月3日(金)</string>
+    <string name="smartspace_widget_placeholder_date">3月3日 (金)</string>
     <string name="quickstep_incompatible">互換性のないシステム統合</string>
     <string name="quickstep_incompatible_description">お使いのデバイスは %1$s が提供するシステムジェスチャー (Quickstepとして知られています) が設定されていますが %1$s のこのバージョンはお使いのAndroidのバージョンと互換性がありません。デバイスを引き続き使用するには、%1$s の更新をアンインストールするか、システムジェスチャープロバイダとして %1$s を無効にしてください。</string>
     <string name="preview_label">プレビュー</string>

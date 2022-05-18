@@ -18,7 +18,7 @@
     <string name="icon_pack">Paquet d\'icones</string>
     <string name="settings">Configuració</string>
     <string name="home_screen_label">Pantalla d\'inici</string>
-    <string name="home_screen_description">Feed, D\'una ullada, Graella, Icones</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">General</string>
     <string name="general_description">Colors, Paquet d\'icones, Punts de notificació</string>
     <string name="home_screen_rotation_label">Rotació de la Pantalla d\'inici</string>

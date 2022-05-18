@@ -18,7 +18,7 @@
     <string name="icon_pack">Kuvakepaketti</string>
     <string name="settings">Asetukset</string>
     <string name="home_screen_label">Aloitusnäyttö</string>
-    <string name="home_screen_description">Fiidi, Pikanäkymä, Ruudukko, Kuvakkeet</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">Yleiset</string>
     <string name="general_description">Värit, Kuvakepaketti, Ilmoitusmerkit</string>
     <string name="home_screen_rotation_label">Aloitusnäytön kierto</string>

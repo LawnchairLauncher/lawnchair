@@ -18,7 +18,7 @@
     <string name="icon_pack">حزمة أيقونات</string>
     <string name="settings">الإعدادات</string>
     <string name="home_screen_label">الشاشة الرئيسة</string>
-    <string name="home_screen_description">حصاد، في لمحة، شبكة، أيقونات</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">عام</string>
     <string name="general_description">الألوان، حزمة الأيقونة، نقاط الإشعار</string>
     <string name="home_screen_rotation_label">تدوير الشاشة الرئيسة</string>

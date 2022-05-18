@@ -18,7 +18,7 @@
     <string name="icon_pack">Symbol-Paket</string>
     <string name="settings">Einstellungen</string>
     <string name="home_screen_label">Startseite</string>
-    <string name="home_screen_description">Feed, auf einen Blick, Gitter, Symbole</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">Allgemein</string>
     <string name="general_description">Farben, Symbolpaket, Benachrichtigungspunkte</string>
     <string name="home_screen_rotation_label">Startbildschirm-Drehung</string>

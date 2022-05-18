@@ -18,7 +18,7 @@
     <string name="icon_pack">Ikon pakke</string>
     <string name="settings">Innstillinger</string>
     <string name="home_screen_label">Hjem skjerm</string>
-    <string name="home_screen_description">Strøm, hurtig blikk, rutenett, ikoner</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">Generelt</string>
     <string name="general_description">Notifikasjons prikker, ikonpakke</string>
     <string name="home_screen_rotation_label">Hjemskjerm rotasjon</string>

@@ -18,7 +18,7 @@
     <string name="icon_pack">Pacchetto icone</string>
     <string name="settings">Impostazioni</string>
     <string name="home_screen_label">Schermata home</string>
-    <string name="home_screen_description">Feed, At a Glance, Griglia, Icone</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">Generale</string>
     <string name="general_description">Colori, Pacchetto Icone, Badge di notifica</string>
     <string name="home_screen_rotation_label">Rotazione schermata home</string>

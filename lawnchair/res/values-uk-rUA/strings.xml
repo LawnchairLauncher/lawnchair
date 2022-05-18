@@ -18,7 +18,7 @@
     <string name="icon_pack">Набір Значків</string>
     <string name="settings">Налаштування</string>
     <string name="home_screen_label">Домашній Екран</string>
-    <string name="home_screen_description">Стрічка, «At a Glance», Сітка, Значки</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">Загальні</string>
     <string name="general_description">Значки Сповіщень, Набір Значків</string>
     <string name="home_screen_rotation_label">Обертання Головного Екрану</string>

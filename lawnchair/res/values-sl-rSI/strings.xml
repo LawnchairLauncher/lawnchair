@@ -18,7 +18,7 @@
     <string name="icon_pack">Ikone</string>
     <string name="settings">Nastavitve</string>
     <string name="home_screen_label">Začetne zaslon</string>
-    <string name="home_screen_description">Feed, At a Glance, Mreža, Ikone</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">Splošno</string>
     <string name="general_description">Notifikacijske pike, Ikone</string>
     <string name="home_screen_rotation_label">Rotacija Začetnega zaslona</string>

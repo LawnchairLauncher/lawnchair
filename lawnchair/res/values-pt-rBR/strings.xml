@@ -18,7 +18,7 @@
     <string name="icon_pack">Pacote de ícones</string>
     <string name="settings">Configurações</string>
     <string name="home_screen_label">Tela inicial</string>
-    <string name="home_screen_description">Feed, Resumo, Grade, Ícones</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">Geral</string>
     <string name="general_description">Cores, Pacote de Ícones, Pontos de Notificação</string>
     <string name="home_screen_rotation_label">Rotação da Tela Inicial</string>
