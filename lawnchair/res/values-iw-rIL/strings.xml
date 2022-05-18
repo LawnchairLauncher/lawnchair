@@ -18,7 +18,7 @@
     <string name="icon_pack">ערכת סמלים</string>
     <string name="settings">הגדרות</string>
     <string name="home_screen_label">מסך הבית</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">הזנה, מבט מהיר, רשת, סמלים</string>
     <string name="general_label">כללי</string>
     <string name="general_description">Notification Dots, Icon Pack</string>
     <string name="home_screen_rotation_label">סיבוב מסך הבית</string>
