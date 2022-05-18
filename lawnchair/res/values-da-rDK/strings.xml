@@ -18,7 +18,7 @@
     <string name="icon_pack">Ikon pakker</string>
     <string name="settings">Indstillinger</string>
     <string name="home_screen_label">Startskærm</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Feed, At a Glance, Gitter, Ikoner</string>
     <string name="general_label">Generelt</string>
     <string name="general_description">Notifikationsprikker, Ikon pakke</string>
     <string name="home_screen_rotation_label">Startskærms rotation</string>
