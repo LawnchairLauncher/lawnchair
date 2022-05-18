@@ -19,12 +19,12 @@ import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
-import static com.android.launcher3.Utilities.createHomeIntent;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.launcher3.util.VelocityUtils.PX_PER_MS;
 import static com.android.quickstep.AbsSwipeUpHandler.MIN_PROGRESS_FOR_OVERVIEW;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
+import static com.android.quickstep.OverviewComponentObserver.startHomeIntentSafely;
 import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
 
 import android.animation.Animator;
@@ -205,8 +205,9 @@ public class DeviceLockedInputConsumer implements InputConsumer,
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     if (dismissTask) {
-                        // For now, just start the home intent so user is prompted to unlock the device.
-                        mContext.startActivity(createHomeIntent());
+                        // For now, just start the home intent so user is prompted to
+                        // unlock the device.
+                        startHomeIntentSafely(mContext, mGestureState.getHomeIntent(), null);
                         mHomeLaunched = true;
                     }
                     mStateCallback.setState(STATE_HANDLER_INVALIDATED);
