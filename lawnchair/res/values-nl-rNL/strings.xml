@@ -207,7 +207,6 @@
     <string name="enable_taskbar">Taakbalk inschakelen</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_icu_date_pattern">EEEdMMM</string>
     <string name="smartspace_battery_charging">Aan het opladen</string>
     <string name="smartspace_battery_full">Opgeladen</string>
     <string name="smartspace_battery_low">Batterij bijna leeg</string>
