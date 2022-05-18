@@ -75,14 +75,19 @@ fun IconPackPreferences() {
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                GridOverridesPreview(
+                DummyLauncherBox(
                     modifier = Modifier
                         .fillMaxHeight()
                         .padding(top = 8.dp)
                         .clip(MaterialTheme.shapes.large)
                 ) {
-                    iconPackAdapter.state.value
-                    themedIconsAdapter.state.value
+                    WallpaperPreview(modifier = Modifier.fillMaxSize())
+                    key(iconPackAdapter.state.value, themedIconsAdapter.state.value) {
+                        DummyLauncherLayout(
+                            idp = invariantDeviceProfile(),
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
                 }
             }
         }

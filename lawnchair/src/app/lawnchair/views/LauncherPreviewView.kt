@@ -32,13 +32,12 @@ import kotlin.math.min
 @SuppressLint("ViewConstructor")
 class LauncherPreviewView(
     context: Context,
-    options: DeviceProfileOverrides.Options
+    private val idp: InvariantDeviceProfile
 ) : FrameLayout(context) {
 
     private val onDestroyCallbacks = RunnableList()
     private var destroyed = false
 
-    private val idp = InvariantDeviceProfile(context, options)
     private val spinner = CircularProgressIndicator(context).apply {
         val themedContext = ContextThemeWrapper(context, Themes.getActivityThemeRes(context))
         val textColor = Themes.getAttrColor(themedContext, R.attr.workspaceTextColor)
