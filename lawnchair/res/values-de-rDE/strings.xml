@@ -207,7 +207,6 @@
     <string name="enable_taskbar">Taskbar aktivieren</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_icu_date_pattern">EE, d. MMM</string>
     <string name="smartspace_battery_charging">Wird geladen</string>
     <string name="smartspace_battery_full">Geladen</string>
     <string name="smartspace_battery_low">Akku schwach</string>
@@ -235,7 +234,7 @@
     <string name="what_to_backup">Was gesichert wird</string>
     <string name="backup_content_layout_and_settings">Layout und Einstellungen</string>
     <string name="backup_content_wallpaper">Hintergrund</string>
-    <string name="backup_create_success">Backup erstellt</string>
+    <string name="backup_create_success">Sicherung erstellt</string>
     <string name="backup_create_error">Sicherung konnte nicht erstellt werden</string>
     <string name="restore_backup">Sicherung wiederherstellen</string>
     <string name="restore_backup_action">Wiederherstellen</string>
