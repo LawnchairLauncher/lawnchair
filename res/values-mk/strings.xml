@@ -114,6 +114,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"За да се прикажуваат „Точки за известување“, вклучете ги известувањата за апликацијата <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Промени ги поставките"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Прикажувај точки за известување"</string>
+    <string name="developer_options_title" msgid="700788437593726194">"Опции за програмери"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Додавај икони за апликации на почетниот екран"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"За нови апликации"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Непознато"</string>
@@ -167,8 +168,12 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Работните апликации се исклучени. Не може да ви испраќаат известувања, да ја користат батеријата или да пристапуваат до вашата локација"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Работните апликации имаат значка и се видливи за IT-администраторот"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Сфатив"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Исклучете ги работните апликации"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Паузирај ги работните апликации"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Вклучете ги работните апликации"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Филтер"</string>
+    <!-- no translation found for search_pref_screen_title (3258959643336315962) -->
+    <skip />
+    <!-- no translation found for search_pref_screen_title_tablet (5220319680451343959) -->
+    <skip />
     <string name="remote_action_failed" msgid="1383965239183576790">"Не успеа: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

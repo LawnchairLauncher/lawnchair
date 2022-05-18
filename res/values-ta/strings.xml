@@ -114,6 +114,8 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"அறிவிப்புப் புள்ளிகளைக் காட்ட, <xliff:g id="NAME">%1$s</xliff:g> இன் ஆப்ஸ் அறிவிப்புகளை இயக்கவும்"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"அமைப்புகளை மாற்று"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"அறிவிப்புப் புள்ளிகளைக் காட்டு"</string>
+    <!-- no translation found for developer_options_title (700788437593726194) -->
+    <skip />
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"முகப்புத் திரையில் ஆப்ஸ் ஐகான்களைச் சேர்"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"புதிய ஆப்ஸை நிறுவும்போது"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"தெரியாதது"</string>
@@ -167,8 +169,12 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"பணி ஆப்ஸ் முடக்கப்பட்டுள்ளன. அவற்றால் உங்களுக்கு அறிவிப்புகளை அனுப்பவோ பேட்டரியைப் பயன்படுத்தவோ உங்கள் இருப்பிடத்தை அணுகவோ முடியாது"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"பணி ஆப்ஸ் பேட்ஜ் குறியிடப்பட்டுள்ளன. மேலும் உங்கள் IT நிர்வாகியால் அவற்றைப் பார்க்க முடியும்"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"சரி"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"பணி ஆப்ஸை முடக்கு"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"பணி ஆப்ஸை இடைநிறுத்து"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"பணி ஆப்ஸை இயக்கு"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"வடிப்பான்"</string>
+    <!-- no translation found for search_pref_screen_title (3258959643336315962) -->
+    <skip />
+    <!-- no translation found for search_pref_screen_title_tablet (5220319680451343959) -->
+    <skip />
     <string name="remote_action_failed" msgid="1383965239183576790">"தோல்வி: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

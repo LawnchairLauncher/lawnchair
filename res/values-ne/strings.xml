@@ -114,6 +114,8 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचनाको प्रतीक जनाउने थोप्लाहरू देखाउन <xliff:g id="NAME">%1$s</xliff:g> को एपसम्बन्धी सूचनाहरूलाई अन गर्नुहोस्"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिङहरू बदल्नुहोस्"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"सूचनाको प्रतीक जनाउने थोप्लाहरू देखाउनुहोस्"</string>
+    <!-- no translation found for developer_options_title (700788437593726194) -->
+    <skip />
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"एपका आइकनहरू होम स्क्रिनमा राखियोस्"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नयाँ एपका लागि"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
@@ -167,8 +169,12 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"कामसम्बन्धी एपहरू अफ गरिएका छन्। तपाईंका कामसम्बन्धी एपहरूले तपाईंलाई सूचना पठाउन, तपाईंको डिभाइसको ब्याट्री प्रयोग गर्न वा तपाईंको लोकेसन हेर्न सक्दैनन्"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"कामसम्बन्धी एपमा ब्याज अङ्कित हुन्छ र तपाईंका IT एड्मिन ती एप हेर्न सक्नुहुन्छ"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"बुझेँ"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"कामसम्बन्धी एपहरू अफ गर्नुहोस्"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"कामसम्बन्धी एपहरू अस्थायी रूपमा रोक्का गर्नुहोस्"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"कामसम्बन्धी एपहरू अन गर्नुहोस्"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"फिल्टर"</string>
+    <!-- no translation found for search_pref_screen_title (3258959643336315962) -->
+    <skip />
+    <!-- no translation found for search_pref_screen_title_tablet (5220319680451343959) -->
+    <skip />
     <string name="remote_action_failed" msgid="1383965239183576790">"कार्य पूरा गर्न सकिएन: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

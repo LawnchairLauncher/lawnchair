@@ -114,6 +114,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Za prikaz točaka obavijesti uključite obavijesti aplikacije <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Promjena postavki"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Prikaži točke obavijesti"</string>
+    <string name="developer_options_title" msgid="700788437593726194">"Opcije za razvojne programere"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Dodaj ikone aplikacija na početni zaslon"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Za nove aplikacije"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Nepoznato"</string>
@@ -167,8 +168,12 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Poslovne aplikacije su isključene. Ne mogu vam slati obavijesti, trošiti bateriju ili pristupati vašoj lokaciji"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Poslovne su aplikacije označene i vidljive vašem IT administratoru"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Shvaćam"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Isključite poslovne aplikacije"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Pauziraj poslovne aplikacije"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Uključite poslovne aplikacije"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtrirajte"</string>
+    <!-- no translation found for search_pref_screen_title (3258959643336315962) -->
+    <skip />
+    <!-- no translation found for search_pref_screen_title_tablet (5220319680451343959) -->
+    <skip />
     <string name="remote_action_failed" msgid="1383965239183576790">"Nije uspjelo: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

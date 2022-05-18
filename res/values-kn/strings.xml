@@ -114,6 +114,8 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"ಅಧಿಸೂಚನೆ ಚುಕ್ಕೆಗಳನ್ನು ತೋರಿಸಲು, <xliff:g id="NAME">%1$s</xliff:g> ಗೆ ಅಪ್ಲಿಕೇಶನ್‌ ಅಧಿಸೂಚನೆಗಳನ್ನು ಆನ್‌ ಮಾಡಿ"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ಸೆಟ್ಟಿಂಗ್‌‌ಗಳನ್ನು ಬದಲಾಯಿಸಿ"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"ಅಧಿಸೂಚನೆ ಡಾಟ್‌ಗಳನ್ನು ತೋರಿಸಿ"</string>
+    <!-- no translation found for developer_options_title (700788437593726194) -->
+    <skip />
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"ಹೋಮ್ ಸ್ಕ್ರೀನ್‌ಗೆ ಆ್ಯಪ್ ಐಕಾನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ಹೊಸ ಅಪ್ಲಿಕೇಶನ್‌ಗಳಿಗೆ"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"ಅಪರಿಚಿತ"</string>
@@ -167,8 +169,12 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳು ಆಫ್ ಆಗಿವೆ. ನಿಮ್ಮ ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳು ನಿಮಗೆ ಅಧಿಸೂಚನೆಗಳನ್ನು ಕಳುಹಿಸಲು, ನಿಮ್ಮ ಬ್ಯಾಟರಿಯನ್ನು ಬಳಸಲು ಅಥವಾ ನಿಮ್ಮ ಸ್ಥಳವನ್ನು ಪ್ರವೇಶಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳು ಬ್ಯಾಡ್ಜ್ ಮಾಡಲಾಗಿದೆ ಮತ್ತು ನಿಮ್ಮ IT ನಿರ್ವಾಹಕರಿಗೆ ಗೋಚರಿಸುತ್ತದೆ"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"ಅರ್ಥವಾಯಿತು"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳನ್ನು ಆಫ್ ಮಾಡಿ"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳನ್ನು ವಿರಾಮಗೊಳಿಸಿ"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳನ್ನು ಆನ್ ಮಾಡಿ"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ಫಿಲ್ಟರ್‌"</string>
+    <!-- no translation found for search_pref_screen_title (3258959643336315962) -->
+    <skip />
+    <!-- no translation found for search_pref_screen_title_tablet (5220319680451343959) -->
+    <skip />
     <string name="remote_action_failed" msgid="1383965239183576790">"ವಿಫಲವಾಗಿದೆ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
