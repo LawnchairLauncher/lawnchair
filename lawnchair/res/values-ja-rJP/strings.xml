@@ -141,7 +141,7 @@
     <string name="icon_shape_rounded_square">角丸四角形</string>
     <string name="icon_shape_squircle">スクワークル</string>
     <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_teardrop">ティアドドロップ</string>
+    <string name="icon_shape_teardrop">ティアドロップ</string>
     <string name="icon_shape_cylinder">シリンダー</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">カスタマイズ</string>
@@ -210,12 +210,12 @@
     <string name="smartspace_battery_charging">充電中</string>
     <string name="smartspace_battery_full">充電完了</string>
     <string name="smartspace_battery_low">バッテリー残量低下</string>
-    <string name="accessibility_smartspace_page">Page %1$d of %2$d</string>
+    <string name="accessibility_smartspace_page">%1$d ページ中 %2$d</string>
     <string name="smartspace_widget">At a Glance</string>
     <string name="smartspace_widget_description">表示する項目</string>
     <string name="smartspace_widget_placeholder_date">3月3日(金)</string>
     <string name="quickstep_incompatible">互換性のないシステム統合</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
+    <string name="quickstep_incompatible_description">お使いのデバイスは %1$s が提供するシステムジェスチャー (Quickstepとして知られています) が設定されていますが %1$s のこのバージョンはお使いのAndroidのバージョンと互換性がありません。デバイスを引き続き使用するには、%1$s の更新をアンインストールするか、システムジェスチャープロバイダとして %1$s を無効にしてください。</string>
     <string name="preview_label">プレビュー</string>
     <string name="smartspace_weather">天気</string>
     <string name="smartspace_battery_status">バッテリーステータス</string>
