@@ -18,7 +18,7 @@
     <string name="icon_pack">Тема иконица</string>
     <string name="settings">Подешавања</string>
     <string name="home_screen_label">Почетна страна</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Вести, \"At a Glance\", Мрежа, Иконице</string>
     <string name="general_label">Општа подешавања</string>
     <string name="general_description">Боје, пакети икона и тачке за обавештења</string>
     <string name="home_screen_rotation_label">Ротација почетне стране</string>
