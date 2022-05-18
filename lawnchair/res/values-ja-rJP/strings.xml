@@ -229,4 +229,17 @@
     <string name="themed_icons_off_label">オフ</string>
     <string name="themed_icons_home_label">ホーム画面</string>
     <string name="themed_icons_home_and_drawer_label">ホーム画面 &amp; アプリドロワー</string>
+    <string name="create_backup">Create Backup</string>
+    <string name="create_backup_action">Create</string>
+    <string name="what_to_backup">What to Backup</string>
+    <string name="backup_content_layout_and_settings">Layout and Settings</string>
+    <string name="backup_content_wallpaper">壁紙</string>
+    <string name="backup_create_success">Backup created</string>
+    <string name="backup_create_error">Failed to create backup</string>
+    <string name="restore_backup">Restore Backup</string>
+    <string name="restore_backup_action">Restore</string>
+    <string name="what_to_restore">What to Restore</string>
+    <string name="backup_restore_success">Backup restored</string>
+    <string name="backup_restore_error">Failed to restore backup</string>
+    <string name="invalid_backup_file">Invalid backup file</string>
 </resources>
