@@ -56,6 +56,7 @@
     <string name="app_info_drop_target_label">App Info</string>
     <string name="item_removed">Element entfernt.</string>
     <string name="all_apps_no_search_results">Keine Apps gefunden mit “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="translucent_background">Transluzenter Hintergrund</string>
     <string name="background_opacity">Hintergrundtransparenz</string>
     <string name="background_lightness_label">Hintergrundbeleuchtung</string>
     <string name="adaptive_icons">Adaptive Symbole</string>
@@ -105,7 +106,7 @@
     <string name="quickstep_description">Alles entfernen Taste, Eckradius</string>
     <string name="wallpaper_scrolling_label">Hintergrund scrollen</string>
     <string name="show_sys_ui_scrim">Oberer Schatten</string>
-    <string name="show_status_bar">Statusleiste</string>
+    <string name="show_status_bar">Suchleiste anzeigen</string>
     <string name="what_to_show">Was soll angezeigt werden</string>
     <string name="missing_notification_access_label">Benachrichtigungszugriff erforderlich</string>
     <string name="missing_notification_access_description">Benachrichtigungszugriff erforderlich.</string>
@@ -137,8 +138,13 @@
     <string name="icon_shape_label">Symbolform</string>
     <string name="icon_shape_system">System</string>
     <string name="icon_shape_circle">Kreis</string>
+    <string name="icon_shape_square">Quadrat</string>
     <string name="icon_shape_rounded_square">Abgerundetes Quadrat</string>
     <string name="icon_shape_squircle">Quadreis</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_teardrop">Tropfen</string>
+    <string name="icon_shape_cylinder">Zylinder</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">Anpassen</string>
     <string name="app_title_label">Name</string>
     <string name="hide_from_drawer">Aus der App-Übersicht ausblenden</string>
@@ -154,7 +160,7 @@
     <string name="show_app_search_bar">Suchleiste anzeigen</string>
     <string name="lawnchair_bug_report">Lawnchair-Fehlerbericht</string>
     <string name="crash_report_notif_title">%1$s abgestürzt</string>
-    <string name="action_upload">Hochladen auf Dogbin</string>
+    <string name="action_upload_crash_report">Absturzprotokoll hochladen</string>
     <string name="action_copy_link">Link kopieren</string>
     <string name="action_copy">Kopieren</string>
     <string name="copied_toast">In Zwischenablage kopiert.</string>
@@ -184,8 +190,44 @@
     <string name="recents_clear_all">Alle löschen</string>
     <string name="pick_icon_from_label">Symbol auswählen von</string>
     <string name="experimental_features_label">Experimentelle Funktionen</string>
-    <string name="icon_picker_label">App-spezifische Icon-Auswahl</string>
+    <string name="icon_picker_label">App-spezifische Symbol-Anpassung</string>
     <string name="icon_picker_description">Kann Lawnchair zum Einfrieren bringen.</string>
     <string name="font_picker_label">Schriftart anpassen</string>
     <string name="font_picker_description">Manche Texte bleiben unverändert.</string>
+    <string name="search_provider_app_search">App-Suche</string>
+    <string name="always_open_website_label">Website immer öffnen</string>
+    <string name="always_open_website_description">Website des Suchanbieters auch öffnen, wenn dessen App installiert ist.</string>
+    <string name="search_provider">Suchanbieter</string>
+    <string name="status_bar_label">Statusleiste</string>
+    <string name="show_notification_count">Benachrichtigungszähler anzeigen</string>
+    <string name="icon_picker_load_failed">Konnte keine weiteren Symbole laden.</string>
+    <string name="reset_custom_icons">Benutzerdefinierte Symbole zurücksetzen</string>
+    <string name="reset_custom_icons_confirmation">Alle benutzerdefinierten Symbole werden zurückgesetzt. Möchtest du fortfahren?</string>
+    <string name="taskbar_label">Taskbar</string>
+    <string name="enable_taskbar">Taskbar aktivieren</string>
+    <!-- Smartspace -->
+    <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
+    <string name="smartspace_icu_date_pattern">EE, d. MMM</string>
+    <string name="smartspace_battery_charging">Wird geladen</string>
+    <string name="smartspace_battery_full">Geladen</string>
+    <string name="smartspace_battery_low">Akku schwach</string>
+    <string name="accessibility_smartspace_page">Seite %1$d von %2$d</string>
+    <string name="smartspace_widget">Auf einen Blick</string>
+    <string name="smartspace_widget_description">Was soll angezeigt werden</string>
+    <string name="smartspace_widget_placeholder_date">Fr, 3. Mär</string>
+    <string name="quickstep_incompatible">Inkompatible Systemintegration</string>
+    <string name="quickstep_incompatible_description">Dein Gerät ist so konfiguriert, dass Systemgesten (bekannt als Quickstep) von %1$s bereitgestellt werden, diese Version von %1$s ist jedoch nicht mit deiner Android-Version kompatibel. Um dein Gerät weiter zu verwenden, deinstalliere bitte %1$s-Aktualisierungen oder deaktiviere %1$s als Systemgesten-Provider.</string>
+    <string name="preview_label">Vorschau</string>
+    <string name="smartspace_weather">Wetter</string>
+    <string name="smartspace_battery_status">Ladestand</string>
+    <string name="smartspace_now_playing">Now Playing</string>
+    <string name="smartspace_requires_setup">Zum Einrichten tippen</string>
+    <string name="event_provider_missing_notification_dots">Aktiviere Benachrichtigungspunkte, um <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> zu verwenden.</string>
+    <string name="smartspace_media_info_separator">" — "</string>
+    <string name="pref_fonts_add_fonts">Schriftarten hinzufügen</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF werden unterstützt.</string>
+    <string name="delete">Löschen</string>
+    <string name="themed_icons_off_label">Aus</string>
+    <string name="themed_icons_home_label">Startseite</string>
+    <string name="themed_icons_home_and_drawer_label">Startbildschirm &amp; App-Übersicht</string>
 </resources>
