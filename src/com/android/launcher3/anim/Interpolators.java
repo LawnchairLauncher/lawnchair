@@ -208,4 +208,14 @@ public class Interpolators {
             float upperBound) {
         return t -> Utilities.mapRange(interpolator.getInterpolation(t), lowerBound, upperBound);
     }
+
+    /**
+     * Returns the reverse of the provided interpolator, following the formula: g(x) = 1 - f(1 - x).
+     * In practice, this means that if f is an interpolator used to model a value animating between
+     * m and n, g is the interpolator to use to obtain the specular behavior when animating from n
+     * to m.
+     */
+    public static Interpolator reverse(Interpolator interpolator) {
+        return t -> 1 - interpolator.getInterpolation(1 - t);
+    }
 }
