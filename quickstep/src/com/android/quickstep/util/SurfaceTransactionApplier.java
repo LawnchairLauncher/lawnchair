@@ -53,6 +53,7 @@ public class SurfaceTransactionApplier extends ReleaseCheck {
         mTargetViewRootImpl = targetView.getViewRootImpl();
         mBarrierSurfaceControl = mTargetViewRootImpl.getSurfaceControl();
         mApplyHandler = new Handler(this::onApplyMessage);
+        setCanRelease(true);
     }
 
     protected boolean onApplyMessage(Message msg) {
