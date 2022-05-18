@@ -56,6 +56,7 @@
     <string name="app_info_drop_target_label">О приложении</string>
     <string name="item_removed">Элемент удален.</string>
     <string name="all_apps_no_search_results">Не найдено приложений по запросу “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="translucent_background">Полупрозрачный фон</string>
     <string name="background_opacity">Прозрачность фона</string>
     <string name="background_lightness_label">Яркость фона</string>
     <string name="adaptive_icons">Адаптивные иконки</string>
@@ -107,7 +108,7 @@
     <string name="quickstep_description">Радиус углов кнопки \"Очистить всё\"</string>
     <string name="wallpaper_scrolling_label">Прокрутка обоев</string>
     <string name="show_sys_ui_scrim">Тень под строкой состояния</string>
-    <string name="show_status_bar">Строка состояния</string>
+    <string name="show_status_bar">Отображать строку состояния</string>
     <string name="what_to_show">Что показывать</string>
     <string name="missing_notification_access_label">Доступ к уведомлениям</string>
     <string name="missing_notification_access_description">Необходимо разрешение доступа к уведомлениям.</string>
@@ -139,8 +140,13 @@
     <string name="icon_shape_label">Форма значка</string>
     <string name="icon_shape_system">Система</string>
     <string name="icon_shape_circle">Круг</string>
+    <string name="icon_shape_square">Квадратный</string>
     <string name="icon_shape_rounded_square">Скруглённый квадрат</string>
     <string name="icon_shape_squircle">Квадрокруг</string>
+    <string name="icon_shape_sammy">Из OneUI</string>
+    <string name="icon_shape_teardrop">Капля</string>
+    <string name="icon_shape_cylinder">Цилиндр</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">Настроить</string>
     <string name="app_title_label">Заголовок</string>
     <string name="hide_from_drawer">Скрыть из меню приложений</string>
@@ -156,7 +162,7 @@
     <string name="show_app_search_bar">Показать строку поиска</string>
     <string name="lawnchair_bug_report">Отчёт об ошибке в Lawnchair</string>
     <string name="crash_report_notif_title">%1$s произошел сбой</string>
-    <string name="action_upload">Загрузить на Dogbin</string>
+    <string name="action_upload_crash_report">Загрузить журнал сбоя</string>
     <string name="action_copy_link">Скопировать ссылку</string>
     <string name="action_copy">Скопировать</string>
     <string name="copied_toast">Скопировано в буфер обмена.</string>
@@ -190,4 +196,40 @@
     <string name="icon_picker_description">Может привести к замиранию Lawnchair.</string>
     <string name="font_picker_label">Настройка шрифта</string>
     <string name="font_picker_description">Некоторый текст останется без изменений.</string>
+    <string name="search_provider_app_search">Поиск приложений</string>
+    <string name="always_open_website_label">Всегда открывать сайт</string>
+    <string name="always_open_website_description">Открывать сайт поставщика поиска, даже если установлено приложение.</string>
+    <string name="search_provider">Поисковик</string>
+    <string name="status_bar_label">Строка состояния</string>
+    <string name="show_notification_count">Показывать количество уведомлений</string>
+    <string name="icon_picker_load_failed">Не удалось загрузить больше иконок.</string>
+    <string name="reset_custom_icons">Сброс пользовательских значков</string>
+    <string name="reset_custom_icons_confirmation">Все пользовательские иконки будут сброшены. Вы хотите продолжить?</string>
+    <string name="taskbar_label">Панель задач</string>
+    <string name="enable_taskbar">Включить панель задач</string>
+    <!-- Smartspace -->
+    <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
+    <string name="smartspace_icu_date_pattern">EEEMMMd</string>
+    <string name="smartspace_battery_charging">Зарядка</string>
+    <string name="smartspace_battery_full">Заряжено</string>
+    <string name="smartspace_battery_low">Батарея разряжена</string>
+    <string name="accessibility_smartspace_page">Страница %1$d из %2$d</string>
+    <string name="smartspace_widget">Самое главное</string>
+    <string name="smartspace_widget_description">Что показывать</string>
+    <string name="smartspace_widget_placeholder_date">Пт, 3 Марта</string>
+    <string name="quickstep_incompatible">Несовместимая системная интеграция</string>
+    <string name="quickstep_incompatible_description">Ваше устройство настроено на использование системных жестов (известных как Quickstep), предоставляемых %1$s, но эта версия %1$s не совместима с вашей версией Android. Чтобы продолжить использование вашего устройства, удалите обновления %1$s или отключите %1$s как поставщика системных жестов.</string>
+    <string name="preview_label">Предпросмотр</string>
+    <string name="smartspace_weather">Погода</string>
+    <string name="smartspace_battery_status">Состояние батареи</string>
+    <string name="smartspace_now_playing">Сейчас играет</string>
+    <string name="smartspace_requires_setup">Нажмите для настройки</string>
+    <string name="event_provider_missing_notification_dots">Чтобы использовать <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включите точки уведомлений.</string>
+    <string name="smartspace_media_info_separator">" — "</string>
+    <string name="pref_fonts_add_fonts">Добавить шрифты</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF поддерживается.</string>
+    <string name="delete">Удалить</string>
+    <string name="themed_icons_off_label">Off</string>
+    <string name="themed_icons_home_label">Домашний экран</string>
+    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
 </resources>
