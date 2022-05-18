@@ -18,7 +18,7 @@
     <string name="icon_pack">అయ్ కాన్</string>
     <string name="settings">సెట్టింగ్స్</string>
     <string name="home_screen_label">హోమ్ స్రీన్ లేబల్</string>
-    <string name="home_screen_description">ఫీడ్, ఒక చూపులో, గ్రిడ్, చిహ్నాలు</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">జనరల్</string>
     <string name="general_description">నోటిఫికేషన్ చుక్కలు, ఐకాన్ ప్యాక్</string>
     <string name="home_screen_rotation_label">హోమ్ స్క్రీన్ భ్రమణం</string>
