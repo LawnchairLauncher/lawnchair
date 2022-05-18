@@ -43,11 +43,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -155,14 +158,29 @@ fun IconPackGrid(
     modifier: Modifier,
 ) {
     val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
+    val density = LocalDensity.current
+    var iconPackItemWidth by remember { mutableStateOf(value = 0f) }
+    val padding = 16.dp
 
     NestedScrollStretch {
         val state = rememberLazyListState()
         LazyRow(
             state = state,
-            horizontalArrangement = Arrangement.spacedBy(space = 16.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            modifier = modifier,
+            horizontalArrangement = Arrangement.spacedBy(space = padding),
+            contentPadding = PaddingValues(horizontal = padding),
+            modifier = modifier
+                .fillMaxWidth()
+                .onGloballyPositioned {
+                    with(density) {
+                        if (iconPackItemWidth == 0f) {
+                            iconPackItemWidth = getIconPackItemWidth(
+                                availableWidth = it.size.width.toDp().value - padding.value,
+                                minimumWidth = 80f,
+                                gutterWidth = padding.value,
+                            )
+                        }
+                    }
+                },
         ) {
             itemsIndexed(iconPacks, { _, item -> item.packageName }) { index, item ->
                 val wasSelected = remember { mutableStateOf(false) }
@@ -178,13 +196,32 @@ fun IconPackGrid(
                 IconPackItem(
                     item = item,
                     selected = selected,
-                    modifier = Modifier.width(80.dp),
+                    modifier = Modifier.width(iconPackItemWidth.dp),
                 ) {
                     adapter.onChange(item.packageName)
                 }
             }
         }
     }
+}
+
+private fun getIconPackItemWidth(
+    availableWidth: Float,
+    minimumWidth: Float,
+    gutterWidth: Float,
+): Float {
+    var gutterCount = 2f
+    var visibleItemCount = gutterCount + 0.5f
+    var iconPackItemWidth = minimumWidth
+    while (true) {
+        gutterCount += 1f
+        visibleItemCount += 1f
+        val possibleIconPackItemWidth = (availableWidth - gutterCount * gutterWidth) / visibleItemCount
+        if (possibleIconPackItemWidth >= minimumWidth) {
+            iconPackItemWidth = possibleIconPackItemWidth
+        } else break
+    }
+    return iconPackItemWidth
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
