@@ -18,7 +18,7 @@
     <string name="icon_pack">Icoon pakket</string>
     <string name="settings">Instellingen</string>
     <string name="home_screen_label">Startscherm</string>
-    <string name="home_screen_description">Feed, At a Glance, raster, iconen</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">Algemeen</string>
     <string name="general_description">Kleuren, Icoon Pakket, Notificatie stippen</string>
     <string name="home_screen_rotation_label">Startpagina rotatie</string>
