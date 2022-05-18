@@ -56,6 +56,7 @@
     <string name="app_info_drop_target_label">Infos de l\'application</string>
     <string name="item_removed">Élément supprimé.</string>
     <string name="all_apps_no_search_results">Aucune application correspondant à “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="translucent_background">Arrière-plan translucide</string>
     <string name="background_opacity">Opacité de l\'arrière-plan</string>
     <string name="background_lightness_label">Luminosité de l\'arrière-plan</string>
     <string name="adaptive_icons">Icônes Adaptatives</string>
@@ -79,7 +80,7 @@
     <string name="dt2s_admin_hint">Pour utiliser le double appui pour mettre en veille, définissez Lawnchair avec les permissions d\'administrateur. Appuyez sur \"Ouvrir les paramètres\", puis appuyez sur \"Activer l\'application avec les permissions d\'administrateur\"</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
-    <string name="dt2s_a11y_hint">Pour utiliser la veille sur double tape, activez le service d\'accessibilité Lawnchair. Appuyez sur \"Ouvrir paramètres\", sélectionnez ensuite “Lawnchair” et activez “Utiliser Lawnchair”.</string>
+    <string name="dt2s_a11y_hint">Pour utiliser la veille sur double tape, activez le service d\'accessibilité Lawnchair. Appuyez sur Ouvrir Paramètres, sélectionnez ensuite Lawnchair et activez Utiliser Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Ouvrir les paramètres</string>
     <string name="minus_one_enable">Fil</string>
     <string name="minus_one_unavailable">Aucun fil installé.</string>
@@ -92,7 +93,7 @@
     <string name="theme_follow_wallpaper">Fais correspondre au fond d\'écran</string>
     <string name="quickstep_label">Récents</string>
     <string name="clear_all_as_action_label">Bouton \"Tout effacer\" en bas</string>
-    <string name="window_corner_radius_label">Courbure des coins d\'écran</string>
+    <string name="window_corner_radius_label">Rayon d\'angle de l\'écran</string>
     <string name="override_window_corner_radius_label">Rayon d\'angle de l\'écran personnalisé</string>
     <string name="window_corner_radius_description">Lorsque vous faites glisser vers le haut pour ouvrir Récents, l\'application actuelle suit votre doigt et se replie sur une carte. Utilisez ce curseur pour régler le rayon d\'angle de la carte quand il est presque en plein écran de telle sorte qu\'il corresponde aux coins de votre écran.</string>
     <string name="system_icons">Icônes système</string>
@@ -105,11 +106,11 @@
     <string name="quickstep_description">Bouton \"Tout effacer\", Courbure des coins</string>
     <string name="wallpaper_scrolling_label">Défiler le fond d\'écran</string>
     <string name="show_sys_ui_scrim">Ombre du haut</string>
-    <string name="show_status_bar">Barre d\'état</string>
+    <string name="show_status_bar">Afficher la barre d\'état</string>
     <string name="what_to_show">Qu\'afficher</string>
     <string name="missing_notification_access_label">Accès aux notifications requis</string>
     <string name="missing_notification_access_description">Accès aux notifications requis.</string>
-    <string name="msg_missing_notification_access">Pour utiliser les points de notification, accordez <xliff:g id="name" example="My App">%1$s</xliff:g> l\'accès aux notifications.</string>
+    <string name="msg_missing_notification_access">Pour utiliser les pastilles de notification, accordez <xliff:g id="name" example="My App">%1$s</xliff:g> l\'accès aux notifications.</string>
     <string name="title_change_settings">Modifier les réglages</string>
     <string name="debug_restart_launcher">Redémarrer Lawnchair</string>
     <string name="pref_fonts_missing_font">Police introuvable.</string>
@@ -137,8 +138,13 @@
     <string name="icon_shape_label">Forme d\'icône</string>
     <string name="icon_shape_system">Système</string>
     <string name="icon_shape_circle">Cercle</string>
+    <string name="icon_shape_square">Carré</string>
     <string name="icon_shape_rounded_square">Carré arrondi</string>
     <string name="icon_shape_squircle">Carré rond</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_teardrop">Gouttelette</string>
+    <string name="icon_shape_cylinder">Cylindre</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">Personnaliser</string>
     <string name="app_title_label">Titre</string>
     <string name="hide_from_drawer">Masquer dans le tiroir d\'applications</string>
@@ -154,7 +160,7 @@
     <string name="show_app_search_bar">Afficher la barre de recherche</string>
     <string name="lawnchair_bug_report">Rapport de bug Lawnchair</string>
     <string name="crash_report_notif_title">%1$s a planté</string>
-    <string name="action_upload">Télécharger vers Dogbin</string>
+    <string name="action_upload_crash_report">Télécharger le journal de plantage</string>
     <string name="action_copy_link">Copier le lien</string>
     <string name="action_copy">Copier</string>
     <string name="copied_toast">Copié dans le presse-papiers.</string>
@@ -188,4 +194,40 @@
     <string name="icon_picker_description">Pourrait causer le gel de Lawnchair.</string>
     <string name="font_picker_label">Personnalisation de la police</string>
     <string name="font_picker_description">Certains textes restent inchangés.</string>
+    <string name="search_provider_app_search">Recherche d\'appli</string>
+    <string name="always_open_website_label">Toujours ouvrir le site web</string>
+    <string name="always_open_website_description">Ouvrir le site web du fournisseur de recherche même si son appli est installée.</string>
+    <string name="search_provider">Fournisseur de recherche</string>
+    <string name="status_bar_label">Barre d\'état</string>
+    <string name="show_notification_count">Afficher le compteur de notifications</string>
+    <string name="icon_picker_load_failed">Impossible de charger plus d\'icônes.</string>
+    <string name="reset_custom_icons">Réinitialiser les icônes personnalisées</string>
+    <string name="reset_custom_icons_confirmation">Toutes les icônes personnalisées seront réinitialisées. Voulez-vous continuer ?</string>
+    <string name="taskbar_label">Barre des tâches</string>
+    <string name="enable_taskbar">Activer la barre des tâches</string>
+    <!-- Smartspace -->
+    <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
+    <string name="smartspace_icu_date_pattern">EEEdMMM</string>
+    <string name="smartspace_battery_charging">Recharge en cours</string>
+    <string name="smartspace_battery_full">Chargé</string>
+    <string name="smartspace_battery_low">Batterie faible</string>
+    <string name="accessibility_smartspace_page">Page %1$d sur %2$d</string>
+    <string name="smartspace_widget">Widget Aperçu</string>
+    <string name="smartspace_widget_description">Qu\'afficher</string>
+    <string name="smartspace_widget_placeholder_date">Ven, 3 Mar</string>
+    <string name="quickstep_incompatible">Intégration au système incompatible</string>
+    <string name="quickstep_incompatible_description">Votre appareil est configuré pour avoir la navigation par gestes (appelé Quickstep) fourni par %1$s, mais cette version de %1$s n\'est pas compatible avec votre version d\'Android. Pour continuer à utiliser votre appareil, merci de désinstaller les mises à jour de %1$s ou d\'enlever %1$s en tant que fournisseur de gestes.</string>
+    <string name="preview_label">Aperçu</string>
+    <string name="smartspace_weather">Météo</string>
+    <string name="smartspace_battery_status">État de la batterie</string>
+    <string name="smartspace_now_playing">En cours de lecture</string>
+    <string name="smartspace_requires_setup">Appuyez pour configurer</string>
+    <string name="event_provider_missing_notification_dots">Pour utiliser <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activez les pastilles de notifications.</string>
+    <string name="smartspace_media_info_separator">" — "</string>
+    <string name="pref_fonts_add_fonts">Ajouter des polices</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF pris en charge.</string>
+    <string name="delete">Supprimer</string>
+    <string name="themed_icons_off_label">Off</string>
+    <string name="themed_icons_home_label">Écran d\'accueil</string>
+    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
 </resources>
