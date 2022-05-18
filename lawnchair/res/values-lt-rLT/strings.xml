@@ -18,7 +18,7 @@
     <string name="icon_pack">Ikonu Paketas</string>
     <string name="settings">Nustatymai</string>
     <string name="home_screen_label">Namu Ekranas</string>
-    <string name="home_screen_description">Feed, At a Glance, Grid, Icons</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">Pagrindinis</string>
     <string name="general_description">Pranešimu taškai, Ikonu Paketas</string>
     <string name="home_screen_rotation_label">Namu Ekrano Sukimas</string>
