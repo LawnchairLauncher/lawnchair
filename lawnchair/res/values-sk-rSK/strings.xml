@@ -206,7 +206,7 @@
     <string name="reset_custom_icons">Obnoviť vlastné ikony</string>
     <string name="reset_custom_icons_confirmation">Všetky vlastné ikony budú obnovené, naozaj chcete pokračovať?</string>
     <string name="taskbar_label">Panel úloh</string>
-    <string name="enable_taskbar">Povoliť panel úloh</string>
+    <string name="enable_taskbar_experimental">Povoliť panel úloh (Experimentálne)</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Nabíja sa</string>
@@ -231,17 +231,17 @@
     <string name="themed_icons_off_label">Vypnuté</string>
     <string name="themed_icons_home_label">Domovská obrazovka</string>
     <string name="themed_icons_home_and_drawer_label">Domovská obrazovka &amp; zásuvka s aplikáciami</string>
-    <string name="create_backup">Create Backup</string>
-    <string name="create_backup_action">Create</string>
-    <string name="what_to_backup">What to Backup</string>
-    <string name="backup_content_layout_and_settings">Layout and Settings</string>
+    <string name="create_backup">Vytvoriť zálohu</string>
+    <string name="create_backup_action">Vytvoriť</string>
+    <string name="what_to_backup">Čo sa má zálohovať</string>
+    <string name="backup_content_layout_and_settings">Rozloženie a nastavenia</string>
     <string name="backup_content_wallpaper">Tapeta</string>
-    <string name="backup_create_success">Backup created</string>
-    <string name="backup_create_error">Failed to create backup</string>
-    <string name="restore_backup">Restore Backup</string>
-    <string name="restore_backup_action">Restore</string>
-    <string name="what_to_restore">What to Restore</string>
-    <string name="backup_restore_success">Backup restored</string>
-    <string name="backup_restore_error">Failed to restore backup</string>
-    <string name="invalid_backup_file">Invalid backup file</string>
+    <string name="backup_create_success">Záloha bola vytvorená</string>
+    <string name="backup_create_error">Vytvorenie zálohy zlyhalo</string>
+    <string name="restore_backup">Obnoviť zálohu</string>
+    <string name="restore_backup_action">Obnoviť</string>
+    <string name="what_to_restore">Čo sa má obnoviť</string>
+    <string name="backup_restore_success">Záloha bola obnovená</string>
+    <string name="backup_restore_error">Nepodarilo sa obnoviť zálohu</string>
+    <string name="invalid_backup_file">Neplatný súbor zálohy</string>
 </resources>
