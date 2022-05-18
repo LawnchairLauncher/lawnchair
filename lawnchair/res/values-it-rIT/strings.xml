@@ -213,6 +213,7 @@
     <string name="smartspace_battery_low">Batteria scarica</string>
     <string name="accessibility_smartspace_page">Pagina %1$d di %2$d</string>
     <string name="smartspace_widget">At a Glance</string>
+    <string name="smartspace_widget_description">Cosa mostrare</string>
     <string name="smartspace_widget_placeholder_date">Ven, 3 Mar</string>
     <string name="quickstep_incompatible">Integrazione di sistema incompatibile</string>
     <string name="quickstep_incompatible_description">Il tuo dispositivo è configurato per avere i gesti di sistema (noti come Quickstep) forniti da %1$s, ma questa versione di %1$s non è compatibile con la tua versione di Android. Per continuare ad usare il tuo dispositivo, disinstalla gli aggiornamenti di %1$s o disabilita %1$s come provider dei gesti di sistema.</string>
@@ -226,4 +227,7 @@
     <string name="pref_fonts_add_fonts">Aggiungi set di caratteri</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supportati.</string>
     <string name="delete">Elimina</string>
+    <string name="themed_icons_off_label">Off</string>
+    <string name="themed_icons_home_label">Schermata home</string>
+    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
 </resources>
