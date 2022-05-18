@@ -206,7 +206,7 @@
     <string name="reset_custom_icons">Сброс пользовательских значков</string>
     <string name="reset_custom_icons_confirmation">Все пользовательские иконки будут сброшены. Вы хотите продолжить?</string>
     <string name="taskbar_label">Панель задач</string>
-    <string name="enable_taskbar">Включить панель задач</string>
+    <string name="enable_taskbar_experimental">Включить панель задач (экспериментально)</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Зарядка</string>
