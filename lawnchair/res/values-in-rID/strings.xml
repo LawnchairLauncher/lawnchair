@@ -18,7 +18,7 @@
     <string name="icon_pack">Paket Ikon</string>
     <string name="settings">Pengaturan</string>
     <string name="home_screen_label">Tampilan Depan</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Umpan Berita,</string>
     <string name="general_label">Umum</string>
     <string name="general_description">Warna, Titik Notifikasi, Paket Ikon</string>
     <string name="home_screen_rotation_label">Rotasi Layar Beranda</string>
