@@ -230,4 +230,17 @@
     <string name="themed_icons_off_label">Disattivate</string>
     <string name="themed_icons_home_label">Schermata home</string>
     <string name="themed_icons_home_and_drawer_label">Schermata home &amp; menu delle app</string>
+    <string name="create_backup">Crea backup</string>
+    <string name="create_backup_action">Crea</string>
+    <string name="what_to_backup">Cosa salvare</string>
+    <string name="backup_content_layout_and_settings">Layout e impostazioni</string>
+    <string name="backup_content_wallpaper">Sfondo</string>
+    <string name="backup_create_success">Backup creato</string>
+    <string name="backup_create_error">Creazione backup non riuscita</string>
+    <string name="restore_backup">Ripristina backup</string>
+    <string name="restore_backup_action">Ripristina</string>
+    <string name="what_to_restore">Cosa ripristinare</string>
+    <string name="backup_restore_success">Backup ripristinato</string>
+    <string name="backup_restore_error">Ripristino del backup non riuscito</string>
+    <string name="invalid_backup_file">File di backup non valido</string>
 </resources>
