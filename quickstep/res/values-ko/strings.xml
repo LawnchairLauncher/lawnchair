@@ -52,21 +52,24 @@
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"화면 하단에 지나치게 가까운 곳에서 스와이프하면 안 됩니다."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"돌아가기 동작의 민감도를 변경하려면 설정으로 이동하세요"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"스와이프하여 돌아가기"</string>
-    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"마지막 화면으로 돌아가려면 왼쪽 또는 오른쪽 가장자리에서 화면 중앙으로 스와이프하세요."</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"이전 화면으로 돌아가려면 왼쪽 또는 오른쪽 가장자리에서 화면 중앙으로 스와이프하세요."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"마지막 화면으로 돌아가려면 두 손가락을 사용해 왼쪽 또는 오른쪽 가장자리에서 화면 중앙으로 스와이프하세요"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"화면 하단 가장자리에서 위로 스와이프하세요."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"손가락을 떼기 전에 멈추지 않아야 합니다."</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"위로 똑바르게 스와이프하세요."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"위로 곧게 스와이프하세요."</string>
     <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"홈으로 이동 동작을 완료했습니다. 이번에는 뒤로 돌아가는 방법을 알아보겠습니다."</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"홈으로 이동 동작을 완료했습니다."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"스와이프하여 홈으로 이동"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"화면 하단에서 위로 스와이프합니다. 이 동작을 사용하면 언제든지 홈 화면으로 이동할 수 있습니다."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"두 손가락을 사용해 화면 하단에서 위로 스와이프하세요. 이 동작을 사용하면 언제든지 홈 화면으로 이동할 수 있습니다"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"화면 하단 가장자리에서 위로 스와이프하세요."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"창을 더 오래 누르고 있다가 손가락을 떼 보세요."</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"위로 똑바르게 스와이프한 후 잠깐 멈추세요."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"위로 곧게 스와이프한 후 잠시 멈추세요."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"동작 사용 방법을 알아봤습니다. 동작을 사용 중지하려면 설정으로 이동하세요."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"앱 전환 동작을 완료했습니다."</string>
-    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"스와이프로 앱 전환"</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"스와이프하여 앱 전환"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"앱 간에 전환하려면 화면 하단에서 위로 스와이프하고 잠시 멈춘 다음 손가락을 떼세요."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"앱 간에 전환하려면 두 손가락을 사용해 화면 하단에서 위로 스와이프하고 잠시 멈춘 다음 손가락을 떼세요"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"설정 완료"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"완료"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"설정"</string>
@@ -85,7 +88,7 @@
     <string name="toast_split_app_unsupported" msgid="3271526028981899666">"앱이 화면 분할을 지원하지 않습니다."</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"이 작업은 앱 또는 조직에서 허용되지 않습니다."</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"이동 방법 튜토리얼을 건너뛰시겠습니까?"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"이 튜토리얼은 <xliff:g id="NAME">%1$s</xliff:g> 앱에서 다시 볼 수 있습니다"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"이 튜토리얼은 <xliff:g id="NAME">%1$s</xliff:g> 앱에서 다시 볼 수 있습니다."</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"취소"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"건너뛰기"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"화면 회전"</string>
