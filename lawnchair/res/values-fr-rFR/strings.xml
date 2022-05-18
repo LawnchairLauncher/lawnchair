@@ -18,7 +18,7 @@
     <string name="icon_pack">Pack d\'icônes</string>
     <string name="settings">Paramètres</string>
     <string name="home_screen_label">Écran d\'accueil</string>
-    <string name="home_screen_description">Fil, Coup d\'œil, Grille, Icônes</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">Général</string>
     <string name="general_description">Couleurs, Pack d\'icônes, Pastilles de notification</string>
     <string name="home_screen_rotation_label">Rotation de l\'écran d\'accueil</string>
