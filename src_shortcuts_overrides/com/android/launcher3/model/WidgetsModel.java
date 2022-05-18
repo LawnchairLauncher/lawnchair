@@ -42,7 +42,6 @@ import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 import com.android.launcher3.widget.picker.WidgetsDiffReporter;
-import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -284,7 +283,7 @@ public class WidgetsModel {
             if (item.widgetInfo != null) {
                 if ((item.widgetInfo.getWidgetFeatures() & WIDGET_FEATURE_HIDE_FROM_PICKER) != 0) {
                     boolean isSelf = item.componentName.getPackageName().equals(BuildConfig.APPLICATION_ID);
-                    if (!isSelf || !PreferenceExtensionsKt.firstBlocking(prefs.getEnableEnhancedSmartspace())) {
+                    if (!isSelf) {
                         // Widget is hidden from picker
                         return false;
                     }

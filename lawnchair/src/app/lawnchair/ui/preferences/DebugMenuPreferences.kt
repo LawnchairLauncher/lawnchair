@@ -76,7 +76,7 @@ fun DebugMenuPreferences() {
 }
 
 private val PreferenceManager2.debugFlags: List<Preference<Boolean, Boolean>>
-    get() = listOf(showComponentNames, enableEnhancedSmartspace)
+    get() = listOf(showComponentNames)
 
 private val PreferenceManager2.textFlags: List<Preference<String, String>>
     get() = listOf(additionalFonts)
