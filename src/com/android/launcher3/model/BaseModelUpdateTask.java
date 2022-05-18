@@ -17,6 +17,8 @@ package com.android.launcher3.model;
 
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.CallbackTask;
@@ -128,8 +130,9 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
         scheduleCallbackTask(c -> c.bindAllWidgets(widgets));
     }
 
-    public void deleteAndBindComponentsRemoved(final Predicate<ItemInfo> matcher) {
-        getModelWriter().deleteItemsFromDatabase(matcher);
+    public void deleteAndBindComponentsRemoved(final Predicate<ItemInfo> matcher,
+            @Nullable final String reason) {
+        getModelWriter().deleteItemsFromDatabase(matcher, reason);
 
         // Call the components-removed callback
         scheduleCallbackTask(c -> c.bindWorkspaceComponentsRemoved(matcher));
