@@ -16,10 +16,11 @@
 package com.android.launcher3.taskbar
 
 import android.graphics.Insets
+import android.graphics.Region
+import android.view.InsetsState.ITYPE_BOTTOM_MANDATORY_GESTURES
 import android.view.WindowManager
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.AbstractFloatingView.TYPE_TASKBAR_ALL_APPS
-import com.android.launcher3.R
 import com.android.launcher3.anim.AlphaUpdateListener
 import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarController
 import com.android.quickstep.KtR
@@ -36,6 +37,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
     /** The bottom insets taskbar provides to the IME when IME is visible. */
     val taskbarHeightForIme: Int = context.resources.getDimensionPixelSize(
         KtR.dimen.taskbar_ime_size)
+    private val contentRegion: Region = Region()
 
     // Initialized in init.
     private lateinit var controllers: TaskbarControllers
@@ -50,7 +52,8 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
             windowLayoutParams,
             intArrayOf(
                 ITYPE_EXTRA_NAVIGATION_BAR,
-                ITYPE_BOTTOM_TAPPABLE_ELEMENT
+                ITYPE_BOTTOM_TAPPABLE_ELEMENT,
+                ITYPE_BOTTOM_MANDATORY_GESTURES
             )
         )
 
@@ -67,14 +70,20 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
     fun onTaskbarWindowHeightOrInsetsChanged() {
         var reducingSize = getReducingInsetsForTaskbarInsetsHeight(
             controllers.taskbarStashController.contentHeightToReportToApps)
+
+        contentRegion.set(0, reducingSize.top,
+                context.dragLayer.width, windowLayoutParams.height)
         windowLayoutParams.providedInternalInsets[ITYPE_EXTRA_NAVIGATION_BAR] = reducingSize
+        windowLayoutParams.providedInternalInsets[ITYPE_BOTTOM_MANDATORY_GESTURES] = reducingSize
         reducingSize = getReducingInsetsForTaskbarInsetsHeight(
             controllers.taskbarStashController.tappableHeightToReportToApps)
         windowLayoutParams.providedInternalInsets[ITYPE_BOTTOM_TAPPABLE_ELEMENT] = reducingSize
+        windowLayoutParams.providedInternalInsets[ITYPE_BOTTOM_MANDATORY_GESTURES] = reducingSize
 
         reducingSize = getReducingInsetsForTaskbarInsetsHeight(taskbarHeightForIme)
         windowLayoutParams.providedInternalImeInsets[ITYPE_EXTRA_NAVIGATION_BAR] = reducingSize
         windowLayoutParams.providedInternalImeInsets[ITYPE_BOTTOM_TAPPABLE_ELEMENT] = reducingSize
+        windowLayoutParams.providedInternalImeInsets[ITYPE_BOTTOM_MANDATORY_GESTURES] = reducingSize
     }
 
     /**
@@ -121,7 +130,8 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
                 if (context.isTaskbarWindowFullscreen) {
                     InsetsInfo.TOUCHABLE_INSETS_FRAME
                 } else {
-                    InsetsInfo.TOUCHABLE_INSETS_CONTENT
+                    insetsInfo.touchableRegion.set(contentRegion)
+                    InsetsInfo.TOUCHABLE_INSETS_REGION
                 }
             )
             insetsIsTouchableRegion = false
