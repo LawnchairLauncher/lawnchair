@@ -259,14 +259,14 @@
     <string name="themed_icons_home_label">Home Screen</string>
     <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
 
-    <string name="create_backup">Create backup</string>
+    <string name="create_backup">Create Backup</string>
     <string name="create_backup_action">Create</string>
     <string name="what_to_backup">What to Backup</string>
     <string name="backup_content_layout_and_settings">Layout and Settings</string>
     <string name="backup_content_wallpaper">Wallpaper</string>
     <string name="backup_create_success">Backup created</string>
     <string name="backup_create_error">Failed to create backup</string>
-    <string name="restore_backup">Restore backup</string>
+    <string name="restore_backup">Restore Backup</string>
     <string name="restore_backup_action">Restore</string>
     <string name="what_to_restore">What to Restore</string>
     <string name="backup_restore_success">Backup restored</string>
