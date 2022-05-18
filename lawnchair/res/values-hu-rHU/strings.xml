@@ -56,6 +56,7 @@
     <string name="app_info_drop_target_label">Alkalmazásinfó</string>
     <string name="item_removed">Elem eltávolítva.</string>
     <string name="all_apps_no_search_results">Nincs megfelelő alkalmazás erre \"<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="translucent_background">Translucent Background</string>
     <string name="background_opacity">Háttér átlátszósága</string>
     <string name="background_lightness_label">Háttér világossága</string>
     <string name="adaptive_icons">Adaptív ikonok</string>
@@ -105,7 +106,7 @@
     <string name="quickstep_description">Minden törlése gomb, sarok sugár</string>
     <string name="wallpaper_scrolling_label">Háttérkép görgetése</string>
     <string name="show_sys_ui_scrim">Felső árnyék</string>
-    <string name="show_status_bar">Állapotsor</string>
+    <string name="show_status_bar">Állapotsor megjelenítése</string>
     <string name="what_to_show">Mit mutasson</string>
     <string name="missing_notification_access_label">Értesítés hozzáférés szükséges</string>
     <string name="missing_notification_access_description">Értesítés hozzáférés szükséges.</string>
@@ -137,8 +138,13 @@
     <string name="icon_shape_label">Ikon alak</string>
     <string name="icon_shape_system">Rendszer</string>
     <string name="icon_shape_circle">Kör</string>
+    <string name="icon_shape_square">Square</string>
     <string name="icon_shape_rounded_square">Lekerekített négyszög</string>
     <string name="icon_shape_squircle">Squircle</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_teardrop">Teardrop</string>
+    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">Testreszabás</string>
     <string name="app_title_label">Cím</string>
     <string name="hide_from_drawer">Hide from App Drawer</string>
@@ -154,7 +160,7 @@
     <string name="show_app_search_bar">Keresősáv megjelenítése</string>
     <string name="lawnchair_bug_report">Lawnchair hibajelentés</string>
     <string name="crash_report_notif_title">%1$s összeomlott</string>
-    <string name="action_upload">Feltöltés Dogbin-ba</string>
+    <string name="action_upload_crash_report">Upload Crash Log</string>
     <string name="action_copy_link">Link másolása</string>
     <string name="action_copy">Másol</string>
     <string name="copied_toast">Vágólapra másolva.</string>
@@ -188,4 +194,40 @@
     <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
     <string name="font_picker_label">Font Customization</string>
     <string name="font_picker_description">Some text remains unchanged.</string>
+    <string name="search_provider_app_search">App Search</string>
+    <string name="always_open_website_label">Always Open Website</string>
+    <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
+    <string name="search_provider">Search Provider</string>
+    <string name="status_bar_label">Állapotsor</string>
+    <string name="show_notification_count">Show Notification Count</string>
+    <string name="icon_picker_load_failed">Couldn’t load more icons.</string>
+    <string name="reset_custom_icons">Reset Custom Icons</string>
+    <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
+    <string name="taskbar_label">Taskbar</string>
+    <string name="enable_taskbar">Enable Taskbar</string>
+    <!-- Smartspace -->
+    <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
+    <string name="smartspace_icu_date_pattern">EEEMMMd</string>
+    <string name="smartspace_battery_charging">Charging</string>
+    <string name="smartspace_battery_full">Charged</string>
+    <string name="smartspace_battery_low">Battery Low</string>
+    <string name="accessibility_smartspace_page">Page %1$d of %2$d</string>
+    <string name="smartspace_widget">At a Glance</string>
+    <string name="smartspace_widget_description">Mit mutasson</string>
+    <string name="smartspace_widget_placeholder_date">Fri, Mar 3</string>
+    <string name="quickstep_incompatible">Incompatible System Integration</string>
+    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
+    <string name="preview_label">Preview</string>
+    <string name="smartspace_weather">Weather</string>
+    <string name="smartspace_battery_status">Battery Status</string>
+    <string name="smartspace_now_playing">Now Playing</string>
+    <string name="smartspace_requires_setup">Tap to Set Up</string>
+    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
+    <string name="smartspace_media_info_separator">" — "</string>
+    <string name="pref_fonts_add_fonts">Add Fonts</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
+    <string name="delete">Delete</string>
+    <string name="themed_icons_off_label">Off</string>
+    <string name="themed_icons_home_label">Kezdőképernyő</string>
+    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
 </resources>
