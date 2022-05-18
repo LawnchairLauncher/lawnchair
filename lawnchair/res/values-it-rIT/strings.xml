@@ -204,7 +204,7 @@
     <string name="reset_custom_icons">Resetta icone personalizzate</string>
     <string name="reset_custom_icons_confirmation">Tutte le icone personalizzate saranno resettate? Vuoi continuare?</string>
     <string name="taskbar_label">Barra delle applicazioni</string>
-    <string name="enable_taskbar">Attiva la barra delle applicazioni</string>
+    <string name="enable_taskbar_experimental">Abilita la barra delle applicazioni (sperimentale)</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">In carica</string>
