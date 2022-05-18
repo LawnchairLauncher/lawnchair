@@ -215,6 +215,7 @@
     <string name="smartspace_battery_low">Niski poziom baterii</string>
     <string name="accessibility_smartspace_page">Strona %1$d z %2$d</string>
     <string name="smartspace_widget">W skrócie</string>
+    <string name="smartspace_widget_description">Co wyświetlić</string>
     <string name="smartspace_widget_placeholder_date">Pią, 3 Mar</string>
     <string name="quickstep_incompatible">Niezgodna integracja systemu</string>
     <string name="quickstep_incompatible_description">Twoje urządzenie jest skonfigurowane, aby wspierać gesty systemowe (znane jako Quickstep) dostarczane przez %1$s, ale ta wersja %1$s nie jest kompatybilna z twoją wersją Androida. Aby kontynuować korzystanie z urządzenia, odinstaluj %1$s aktualizacje lub wyłącz %1$s jako dostawcę gestów systemowych.</string>
@@ -228,4 +229,7 @@
     <string name="pref_fonts_add_fonts">Dodaj Czcionki</string>
     <string name="pref_fonts_add_fonts_summary">Obsługiwane: OTF i TTF.</string>
     <string name="delete">Usuń</string>
+    <string name="themed_icons_off_label">Off</string>
+    <string name="themed_icons_home_label">Ekran główny</string>
+    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
 </resources>
