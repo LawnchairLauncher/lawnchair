@@ -5,14 +5,17 @@ import android.content.Context
 import android.content.pm.LauncherApps
 import android.os.Process
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Build
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.core.content.getSystemService
 import app.lawnchair.LawnchairApp
 import app.lawnchair.LawnchairLauncher
@@ -22,6 +25,7 @@ import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.OverflowMenu
 import app.lawnchair.ui.preferences.components.ClickableIcon
 import app.lawnchair.ui.preferences.components.PreferenceCategory
+import app.lawnchair.ui.preferences.components.PreferenceDivider
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.BuildConfig
@@ -127,6 +131,13 @@ fun PreferencesOverflowMenu() {
             hideMenu()
         }) {
             Text(text = stringResource(id = R.string.experimental_features_label))
+        }
+        PreferenceDivider(modifier = Modifier.padding(vertical = 8.dp))
+        DropdownMenuItem(onClick = {
+            navController.navigate("/${Routes.CREATE_BACKUP}/")
+            hideMenu()
+        }) {
+            Text(text = stringResource(id = R.string.create_backup))
         }
     }
 }

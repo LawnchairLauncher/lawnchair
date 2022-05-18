@@ -23,6 +23,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_4;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_5;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
@@ -33,6 +34,8 @@ import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 
 import java.util.Locale;
 import java.util.Objects;
+
+import app.lawnchair.LawnchairProto;
 
 /**
  * Utility class representing persisted grid properties.
@@ -60,6 +63,13 @@ public class DeviceGridState {
         mDeviceType = prefs.getInt(KEY_DEVICE_TYPE, TYPE_PHONE);
     }
 
+    @SuppressLint("WrongConstant")
+    public DeviceGridState(LawnchairProto.GridState protoGridState) {
+        mGridSizeString = protoGridState.getGridSize();
+        mNumHotseat = protoGridState.getHotseatCount();
+        mDeviceType = protoGridState.getDeviceType();
+    }
+
     /**
      * Returns the device type for the grid
      */
@@ -76,6 +86,14 @@ public class DeviceGridState {
                 .putInt(KEY_HOTSEAT_COUNT, mNumHotseat)
                 .putInt(KEY_DEVICE_TYPE, mDeviceType)
                 .apply();
+    }
+
+    public LawnchairProto.GridState toProtoMessage() {
+        return LawnchairProto.GridState.newBuilder()
+                .setGridSize(mGridSizeString)
+                .setHotseatCount(mNumHotseat)
+                .setDeviceType(mDeviceType)
+                .build();
     }
 
     /**

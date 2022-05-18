@@ -284,6 +284,9 @@ android {
             assets {
                 srcDirs 'lawnchair/assets'
             }
+            proto {
+                srcDirs = ['lawnchair/protos/']
+            }
         }
 
         lawnWithoutQuickstep {

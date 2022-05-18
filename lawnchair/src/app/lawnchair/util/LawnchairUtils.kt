@@ -161,10 +161,6 @@ fun getAllAppsScrimColor(context: Context): Int {
     return ColorUtils.setAlphaComponent(scrimColor, alpha)
 }
 
-fun Int.hasFlag(flag: Int): Boolean {
-    return (this and flag) != 0
-}
-
 fun Context.checkPackagePermission(packageName: String, permissionName: String): Boolean {
     try {
         val info = packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)

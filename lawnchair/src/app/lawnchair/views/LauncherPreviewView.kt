@@ -3,15 +3,14 @@ package app.lawnchair.views
 import android.annotation.SuppressLint
 import android.appwidget.AppWidgetProviderInfo
 import android.content.Context
-import android.content.res.ColorStateList
 import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
-import app.lawnchair.DeviceProfileOverrides
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings.Favorites.*
@@ -32,11 +31,17 @@ import kotlin.math.min
 @SuppressLint("ViewConstructor")
 class LauncherPreviewView(
     context: Context,
-    private val idp: InvariantDeviceProfile
+    private val idp: InvariantDeviceProfile,
+    private val dummySmartspace: Boolean = false,
+    private val dummyInsets: Boolean = false,
+    private val appContext: Context = context.applicationContext
 ) : FrameLayout(context) {
 
+    private val onReadyCallbacks = RunnableList()
     private val onDestroyCallbacks = RunnableList()
     private var destroyed = false
+
+    private var rendererView: View? = null
 
     private val spinner = CircularProgressIndicator(context).apply {
         val themedContext = ContextThemeWrapper(context, Themes.getActivityThemeRes(context))
@@ -58,6 +63,10 @@ class LauncherPreviewView(
         loadAsync()
     }
 
+    fun addOnReadyCallback(runnable: Runnable) {
+        onReadyCallbacks.add(runnable)
+    }
+
     @UiThread
     fun destroy() {
         destroyed = true
@@ -73,7 +82,7 @@ class LauncherPreviewView(
     private fun loadModelData() {
         val migrated = doGridMigrationIfNecessary()
 
-        val inflationContext = ContextThemeWrapper(context.applicationContext, Themes.getActivityThemeRes(context))
+        val inflationContext = ContextThemeWrapper(appContext, Themes.getActivityThemeRes(context))
         if (migrated) {
             val previewContext = LauncherPreviewRenderer.PreviewContext(inflationContext, idp)
             object : LoaderTask(
@@ -100,6 +109,7 @@ class LauncherPreviewView(
                         renderView(inflationContext, dataModel, null)
                     }
                 } else {
+                    onReadyCallbacks.executeAllAndDestroy()
                     Log.e("LauncherPreviewView", "Model loading failed")
                 }
             }
@@ -125,8 +135,28 @@ class LauncherPreviewView(
             return
         }
 
-        val view = LauncherPreviewRenderer(inflationContext, idp, null)
-            .getRenderedView(dataModel, widgetProviderInfoMap)
+        val renderer = LauncherPreviewRenderer(inflationContext, idp, null, dummyInsets)
+        if (dummySmartspace) {
+            renderer.setWorkspaceSearchContainer(R.layout.smartspace_widget_placeholder)
+        }
+
+        val view = renderer.getRenderedView(dataModel, widgetProviderInfoMap)
+        updateScale(view)
+        view.pivotX = if (layoutDirection == LAYOUT_DIRECTION_RTL) view.measuredWidth.toFloat() else 0f
+        view.pivotY = 0f
+        view.layoutParams = LayoutParams(view.measuredWidth, view.measuredHeight)
+        removeView(spinner)
+        rendererView = view
+        addView(view)
+        onReadyCallbacks.executeAllAndDestroy()
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        rendererView?.let { updateScale(it) }
+    }
+
+    private fun updateScale(view: View) {
         // This aspect scales the view to fit in the surface and centers it
         val scale: Float = min(
             measuredWidth / view.measuredWidth.toFloat(),
@@ -134,10 +164,5 @@ class LauncherPreviewView(
         )
         view.scaleX = scale
         view.scaleY = scale
-        view.pivotX = if (layoutDirection == LAYOUT_DIRECTION_RTL) view.measuredWidth.toFloat() else 0f
-        view.pivotY = 0f
-        view.layoutParams = LayoutParams(view.measuredWidth, view.measuredHeight)
-        removeView(spinner)
-        addView(view)
     }
 }

@@ -201,10 +201,18 @@ public class LauncherPreviewRenderer extends ContextWrapper
     private final Map<Integer, CellLayout> mWorkspaceScreens = new HashMap<>();
     private final AppWidgetHost mAppWidgetHost;
     private final SparseIntArray mWallpaperColorResources;
+    private int mWorkspaceSearchContainer = R.layout.search_container_workspace;
 
     public LauncherPreviewRenderer(Context context,
             InvariantDeviceProfile idp,
             WallpaperColors wallpaperColorsOverride) {
+        this(context, idp, wallpaperColorsOverride, false);
+    }
+
+    public LauncherPreviewRenderer(Context context,
+            InvariantDeviceProfile idp,
+            WallpaperColors wallpaperColorsOverride,
+            boolean dummyInsets) {
 
         super(context);
         mUiHandler = new Handler(Looper.getMainLooper());
@@ -212,7 +220,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
         mIdp = idp;
         mDp = idp.getDeviceProfile(context).copy(context);
 
-        if (Utilities.ATLEAST_R) {
+        if (!dummyInsets && Utilities.ATLEAST_R) {
             WindowInsets currentWindowInsets = context.getSystemService(WindowManager.class)
                     .getCurrentWindowMetrics().getWindowInsets();
             mInsets = new Rect(
@@ -504,7 +512,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
         // Add first page QSB
         if (FeatureFlags.topQsbOnFirstScreenEnabled(mContext)) {
             CellLayout firstScreen = mWorkspaceScreens.get(FIRST_SCREEN_ID);
-            View qsb = mHomeElementInflater.inflate(R.layout.search_container_workspace, firstScreen,
+            View qsb = mHomeElementInflater.inflate(mWorkspaceSearchContainer, firstScreen,
                     false);
             CellLayout.LayoutParams lp =
                     new CellLayout.LayoutParams(0, 0, firstScreen.getCountX(), 1);
@@ -517,6 +525,10 @@ public class LauncherPreviewRenderer extends ContextWrapper
         measureView(mRootView, mDp.widthPx, mDp.heightPx);
         // Additional measure for views which use auto text size API
         measureView(mRootView, mDp.widthPx, mDp.heightPx);
+    }
+
+    public void setWorkspaceSearchContainer(int resId) {
+        mWorkspaceSearchContainer = resId;
     }
 
     private static void measureView(View view, int width, int height) {

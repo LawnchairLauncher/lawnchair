@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option java_package = "app.lawnchair";
+option java_outer_classname = "LawnchairProto";
+
+import "google/protobuf/timestamp.proto";
+
+message BackupInfo {
+    int32 lawnchair_version = 1;
+    int32 backup_version = 2;
+    google.protobuf.Timestamp created_at = 3;
+
+    int32 contents = 4;
+    GridState grid_state = 5;
+}
+
+message GridState {
+    string grid_size = 1;
+    int32 hotseat_count = 2;
+    int32 device_type = 3;
+}

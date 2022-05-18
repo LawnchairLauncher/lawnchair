@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import app.lawnchair.backup.ui.createBackupGraph
 import app.lawnchair.ui.preferences.about.aboutGraph
 import app.lawnchair.ui.preferences.components.SystemUi
 import app.lawnchair.ui.util.ProvideBottomSheetHandler
@@ -36,20 +37,22 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import soup.compose.material.motion.materialSharedAxisX
 
 object Routes {
-    const val GENERAL: String = "general"
-    const val ABOUT: String = "about"
-    const val HOME_SCREEN: String = "homeScreen"
-    const val DOCK: String = "dock"
-    const val APP_DRAWER: String = "appDrawer"
-    const val FOLDERS: String = "folders"
-    const val QUICKSTEP: String = "quickstep"
-    const val FONT_SELECTION: String = "fontSelection"
-    const val DEBUG_MENU: String = "debugMenu"
-    const val SELECT_ICON: String = "selectIcon"
-    const val ICON_PICKER: String = "iconPicker"
-    const val EXPERIMENTAL_FEATURES: String = "experimentalFeatures"
-    const val SMARTSPACE: String = "smartspace"
-    const val SMARTSPACE_WIDGET: String = "smartspaceWidget"
+    const val GENERAL = "general"
+    const val ABOUT = "about"
+    const val HOME_SCREEN = "homeScreen"
+    const val DOCK = "dock"
+    const val APP_DRAWER = "appDrawer"
+    const val FOLDERS = "folders"
+    const val QUICKSTEP = "quickstep"
+    const val FONT_SELECTION = "fontSelection"
+    const val DEBUG_MENU = "debugMenu"
+    const val SELECT_ICON = "selectIcon"
+    const val ICON_PICKER = "iconPicker"
+    const val EXPERIMENTAL_FEATURES = "experimentalFeatures"
+    const val SMARTSPACE = "smartspace"
+    const val SMARTSPACE_WIDGET = "smartspaceWidget"
+    const val CREATE_BACKUP = "createBackup"
+    const val RESTORE_BACKUP = "restoreBackup"
 }
 
 val LocalNavController = staticCompositionLocalOf<NavController> {
@@ -98,6 +101,7 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
                         experimentalFeaturesGraph(route = subRoute(Routes.EXPERIMENTAL_FEATURES))
                         smartspaceGraph(route = subRoute(Routes.SMARTSPACE))
                         smartspaceWidgetGraph(route = subRoute(Routes.SMARTSPACE_WIDGET))
+                        createBackupGraph(route = subRoute(Routes.CREATE_BACKUP))
                     }
                 }
             }
