@@ -18,7 +18,7 @@
     <string name="icon_pack">चिह्न पैक</string>
     <string name="settings">सेटिंग्स</string>
     <string name="home_screen_label">होम स्क्रीन</string>
-    <string name="home_screen_description">फ़ीड, एक नज़र में, ग्रिड, प्रतीक</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">सामान्य</string>
     <string name="general_description">नोटिफिकेशन डॉट्स, आइकन पैक</string>
     <string name="home_screen_rotation_label">होम स्क्रीन रोटेशन</string>
