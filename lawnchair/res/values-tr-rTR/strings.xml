@@ -204,7 +204,7 @@
     <string name="reset_custom_icons">Özel Simgeleri Sıfırla</string>
     <string name="reset_custom_icons_confirmation">Tüm özel simgeler sıfırlanacak. Devam etmek istiyor musun?</string>
     <string name="taskbar_label">Taskbar</string>
-    <string name="enable_taskbar">Taskbar Çubuğunu Etkinleştir</string>
+    <string name="enable_taskbar_experimental">Görev Çubuğunu Etkinleştir (Deneysel)</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Şarj ediliyor</string>
