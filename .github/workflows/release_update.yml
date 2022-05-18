@@ -96,5 +96,5 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_CI_BOT_TOKEN }}
           ARTIFACT_DIRECTORY: artifacts/release-apk
-          TELEGRAM_NEWS_CHANNEL_ID: ${{ secrets.TELEGRAM_NEWS_CHANNEL_ID }}
+          TELEGRAM_NEWS_CHANNEL_ID: ${{ secrets.TELEGRAM_CI_CHANNEL_ID }}
           ACTION: update_announcement
