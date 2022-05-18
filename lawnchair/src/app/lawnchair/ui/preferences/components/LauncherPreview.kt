@@ -3,18 +3,21 @@ package app.lawnchair.ui.preferences.components
 import android.view.View
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import app.lawnchair.LauncherPreviewManager
+import app.lawnchair.theme.surfaceColorAtElevation
+import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.util.lifecycleState
+import app.lawnchair.wallpaper.WallpaperColorsCompat
+import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 
@@ -28,11 +31,21 @@ fun DummyLauncherBox(
     val dp = idp.getDeviceProfile(context)
     val ratio = dp.widthPx.toFloat() / dp.heightPx.toFloat()
 
-    Box(
-        modifier = modifier
-            .aspectRatio(ratio, matchHeightConstraintsFirst = true)
-            .background(Color.Black)
-    ) {
+    val colorHints = remember {
+        WallpaperManagerCompat.INSTANCE[context].wallpaperColors?.colorHints ?: 0
+    }
+    val supportsDarkText = (colorHints and WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT) != 0
+
+    Box(modifier = modifier.aspectRatio(ratio, matchHeightConstraintsFirst = true)) {
+        LawnchairTheme(
+            darkTheme = !supportsDarkText
+        ) {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp))
+            )
+        }
         content()
     }
 }
