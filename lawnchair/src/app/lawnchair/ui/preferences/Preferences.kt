@@ -49,6 +49,7 @@ object Routes {
     const val ICON_PICKER: String = "iconPicker"
     const val EXPERIMENTAL_FEATURES: String = "experimentalFeatures"
     const val SMARTSPACE: String = "smartspace"
+    const val SMARTSPACE_WIDGET: String = "smartspace_widget"
 }
 
 val LocalNavController = staticCompositionLocalOf<NavController> {
@@ -96,6 +97,7 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
                         iconPickerGraph(route = subRoute(Routes.ICON_PICKER))
                         experimentalFeaturesGraph(route = subRoute(Routes.EXPERIMENTAL_FEATURES))
                         smartspaceGraph(route = subRoute(Routes.SMARTSPACE))
+                        smartspaceWidgetGraph(route = subRoute(Routes.SMARTSPACE_WIDGET))
                     }
                 }
             }

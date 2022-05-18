@@ -11,6 +11,8 @@ import android.view.View
 import android.widget.FrameLayout
 import app.lawnchair.launcher
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.ui.preferences.PreferenceActivity
+import app.lawnchair.ui.preferences.Routes
 import com.android.launcher3.CheckLongPressHelper
 import com.android.launcher3.R
 import com.android.launcher3.logging.StatsLogManager
@@ -55,7 +57,7 @@ class SmartspaceViewContainer @JvmOverloads constructor(
         context, R.string.customize_button_text, R.drawable.ic_setting,
         StatsLogManager.LauncherEvent.IGNORE
     ) {
-        context.startActivity(Intent(context, SmartspacePreferencesShortcut::class.java))
+        context.startActivity(PreferenceActivity.createIntent(context, "/${Routes.SMARTSPACE}/"))
         true
     }
 

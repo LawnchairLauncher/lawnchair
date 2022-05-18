@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -27,28 +26,32 @@ import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SwitchPreference
 import app.lawnchair.ui.theme.isSelectedThemeDark
-import app.lawnchair.util.collectAsStateBlocking
 import com.android.launcher3.R
 
 fun NavGraphBuilder.smartspaceGraph(route: String) {
-    preferenceGraph(route, { SmartspacePreferences() })
+    preferenceGraph(route, { SmartspacePreferences(fromWidget = false) })
+}
+
+fun NavGraphBuilder.smartspaceWidgetGraph(route: String) {
+    preferenceGraph(route, { SmartspacePreferences(fromWidget = true) })
 }
 
 @Composable
-fun SmartspacePreferences() {
+fun SmartspacePreferences(fromWidget: Boolean) {
     val preferenceManager2 = preferenceManager2()
     val smartspaceProvider = SmartspaceProvider.INSTANCE.get(LocalContext.current)
     val smartspaceAdapter = preferenceManager2.enableSmartspace.getAdapter()
-    val enhancedSmartspace by preferenceManager2.enableEnhancedSmartspace.get().collectAsStateBlocking()
 
     PreferenceLayout(label = stringResource(id = R.string.smartspace_widget)) {
-        PreferenceGroup {
-            SwitchPreference(
-                adapter = smartspaceAdapter,
-                label = stringResource(id = R.string.smartspace_widget),
-            )
+        if (!fromWidget) {
+            PreferenceGroup {
+                SwitchPreference(
+                    adapter = smartspaceAdapter,
+                    label = stringResource(id = R.string.smartspace_widget),
+                )
+            }
         }
-        Crossfade(targetState = smartspaceAdapter.state.value && enhancedSmartspace) { targetState ->
+        Crossfade(targetState = smartspaceAdapter.state.value || fromWidget) { targetState ->
             if (targetState) {
                 Column {
                     SmartspacePreview()
