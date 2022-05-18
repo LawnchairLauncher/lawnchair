@@ -61,23 +61,27 @@ jobs:
     permissions:
       contents: write
     steps:
-    - name: Download artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: Release APK
-        path: artifacts/release-apk
-    - name: Publish GitHub release
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: ${{ github.event.inputs.tagName }}
-        prerelease: ${{ github.events.inputs.prerelease }}
-        draft: true
-        body_path: ${{ github.workspace }}/GITHUB_CHANGELOG.md
-        files: artifacts/release-apk${{ github.event.inputs.artifactName }}
+      - name: Check out repository
+        uses: actions/checkout@v2.3.4
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: Release APK
+          path: artifacts/release-apk
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.inputs.tagName }}
+          prerelease: ${{ github.events.inputs.prerelease }}
+          draft: true
+          body_path: ${{ github.workspace }}/GITHUB_CHANGELOG.md
+          files: artifacts/release-apk/${{ github.event.inputs.artifactName }}
   publish-telegram-update-post:
     runs-on: ubuntu-latest
     needs: build-release-apk
     steps:
+      - name: Check out repository
+        uses: actions/checkout@v2.3.4
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
