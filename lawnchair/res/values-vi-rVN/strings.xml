@@ -226,7 +226,7 @@
     <string name="pref_fonts_add_fonts">Thêm phông chữ</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF được hỗ trợ.</string>
     <string name="delete">Xoá</string>
-    <string name="themed_icons_off_label">Off</string>
+    <string name="themed_icons_off_label">Tắt</string>
     <string name="themed_icons_home_label">Màn hình chính</string>
-    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
+    <string name="themed_icons_home_and_drawer_label">Màn hình chính &amp; Ngăn kéo ứng dụng</string>
 </resources>
