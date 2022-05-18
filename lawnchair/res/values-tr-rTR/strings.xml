@@ -238,7 +238,7 @@
     <string name="backup_create_error">Yedek oluşturulamadı</string>
     <string name="restore_backup">Yedeklemeyi Geri Yükle</string>
     <string name="restore_backup_action">Eski haline getir</string>
-    <string name="what_to_restore">What to Restore</string>
+    <string name="what_to_restore">Geri Yüklenecekler</string>
     <string name="backup_restore_success">Yedekleme geri yüklendi</string>
     <string name="backup_restore_error">Yedek oluşturulamadı</string>
     <string name="invalid_backup_file">Geçersiz yedekleme dosyası</string>
