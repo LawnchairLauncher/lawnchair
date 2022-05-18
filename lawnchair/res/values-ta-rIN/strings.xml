@@ -18,7 +18,7 @@
     <string name="icon_pack">சின்னங்கள்</string>
     <string name="settings">அமைப்புகள்</string>
     <string name="home_screen_label">முகப்புத் திரை</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">செய்தியோடை, கண்ணோட்டம், கட்டம், சின்னங்கள்</string>
     <string name="general_label">பொது</string>
     <string name="general_description">நிறங்கள், சின்னச்சிப்பம், அறிவிப்பு புள்ளிகள்</string>
     <string name="home_screen_rotation_label">முகப்புத் திரைச் சுழற்சி</string>
