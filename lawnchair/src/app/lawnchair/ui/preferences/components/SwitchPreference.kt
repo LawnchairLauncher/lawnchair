@@ -82,7 +82,9 @@ fun SwitchPreference(
             }
             Switch(
                 modifier = Modifier
-                    .addIf(onClick != null) { clickable { onCheckedChange(!checked) } }
+                    .addIf(onClick != null) {
+                        clickable(enabled = enabled) { onCheckedChange(!checked) }
+                    }
                     .padding(all = 16.dp)
                     .height(24.dp),
                 checked = checked,
