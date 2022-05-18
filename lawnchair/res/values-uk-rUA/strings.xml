@@ -199,7 +199,7 @@
     <string name="search_provider_app_search">Пошук додатків</string>
     <string name="always_open_website_label">Завжди відкривати сайт</string>
     <string name="always_open_website_description">Відкрити сайт пошукового запиту, навіть якщо встановлено додаток.</string>
-    <string name="search_provider">Постачальник пошуку</string>
+    <string name="search_provider">Пошукова система</string>
     <string name="status_bar_label">Рядок стану</string>
     <string name="show_notification_count">Показувати кількість сповіщень</string>
     <string name="icon_picker_load_failed">Не вдалося завантажити більше іконок.</string>
@@ -209,7 +209,6 @@
     <string name="enable_taskbar">Увімкнути панель задач</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_icu_date_pattern">EEEMMMd</string>
     <string name="smartspace_battery_charging">Зарядка</string>
     <string name="smartspace_battery_full">Заряджено</string>
     <string name="smartspace_battery_low">Низький заряд батареї</string>
