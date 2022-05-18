@@ -266,4 +266,10 @@
     <string name="backup_content_wallpaper">Wallpaper</string>
     <string name="backup_create_success">Backup created</string>
     <string name="backup_create_error">Failed to create backup</string>
+    <string name="restore_backup">Restore backup</string>
+    <string name="restore_backup_action">Restore</string>
+    <string name="what_to_restore">What to Restore</string>
+    <string name="backup_restore_success">Backup restored</string>
+    <string name="backup_restore_error">Failed to restore backup</string>
+    <string name="invalid_backup_file">Invalid backup file</string>
 </resources>

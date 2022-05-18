@@ -31,6 +31,7 @@ import android.graphics.Matrix
 import android.net.Uri
 import android.os.Looper
 import android.provider.OpenableColumns
+import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -48,6 +49,7 @@ import com.patrykmichalik.preferencemanager.firstBlocking
 import org.json.JSONArray
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
+import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.system.exitProcess
 
@@ -186,7 +188,7 @@ fun ContentResolver.getDisplayName(uri: Uri): String? {
 
 fun Bitmap.scaleDownToDisplaySize(context: Context, keepOriginal: Boolean = false): Bitmap {
     val metrics = context.resources.displayMetrics
-    return scaleDownTo(kotlin.math.max(metrics.widthPixels, metrics.heightPixels), keepOriginal)
+    return scaleDownTo(max(metrics.widthPixels, metrics.heightPixels), keepOriginal)
 }
 
 fun Bitmap.scaleDownTo(maxSize: Int, keepOriginal: Boolean = false): Bitmap {

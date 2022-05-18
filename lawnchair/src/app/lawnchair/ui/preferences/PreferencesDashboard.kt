@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.getSystemService
 import app.lawnchair.LawnchairApp
 import app.lawnchair.LawnchairLauncher
+import app.lawnchair.backup.ui.restoreBackupOpener
 import app.lawnchair.preferences.Versioning
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
@@ -112,6 +113,7 @@ fun PreferencesOverflowMenu() {
             onClick = { navController.navigate(resolvedRoute) },
         )
     }
+    val openRestoreBackup = restoreBackupOpener()
     OverflowMenu {
         val context = LocalContext.current
         DropdownMenuItem(onClick = {
@@ -138,6 +140,12 @@ fun PreferencesOverflowMenu() {
             hideMenu()
         }) {
             Text(text = stringResource(id = R.string.create_backup))
+        }
+        DropdownMenuItem(onClick = {
+            openRestoreBackup()
+            hideMenu()
+        }) {
+            Text(text = stringResource(id = R.string.restore_backup))
         }
     }
 }

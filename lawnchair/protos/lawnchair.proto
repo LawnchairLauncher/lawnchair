@@ -11,7 +11,9 @@ message BackupInfo {
     google.protobuf.Timestamp created_at = 3;
 
     int32 contents = 4;
-    GridState grid_state = 5;
+    int32 preview_width = 5;
+    int32 preview_height = 6;
+    GridState grid_state = 7;
 }
 
 message GridState {

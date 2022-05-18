@@ -86,6 +86,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import app.lawnchair.LawnchairApp;
 import app.lawnchair.LawnchairAppKt;
 
 public class LauncherProvider extends ContentProvider {
@@ -642,7 +643,9 @@ public class LauncherProvider extends ContentProvider {
             if (dbName == null) {
                 dbName = InvariantDeviceProfile.INSTANCE.get(context).dbFile;
                 if (!forMigration) {
-                    LawnchairAppKt.getLawnchairApp(context).migrateDbName(dbName);
+                    LawnchairApp app = LawnchairAppKt.getLawnchairApp(context);
+                    app.renameRestoredDb(dbName);
+                    app.migrateDbName(dbName);
                 }
             }
             DatabaseHelper databaseHelper = new DatabaseHelper(context, dbName, forMigration);

@@ -1,11 +1,10 @@
 package app.lawnchair.data.iconoverride
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.android.launcher3.util.ComponentKey
 import kotlinx.coroutines.flow.Flow
+
 
 @Dao
 interface IconOverrideDao {
@@ -26,4 +25,7 @@ interface IconOverrideDao {
 
     @Query("DELETE FROM iconoverride")
     suspend fun deleteAll()
+
+    @RawQuery
+    suspend fun checkpoint(supportSQLiteQuery: SupportSQLiteQuery): Int
 }

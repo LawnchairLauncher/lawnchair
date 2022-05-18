@@ -81,11 +81,19 @@ public class DeviceGridState {
      * Stores the device state to shared preferences
      */
     public void writeToPrefs(Context context) {
-        Utilities.getPrefs(context).edit()
+        writeToPrefs(context, false);
+    }
+
+    public void writeToPrefs(Context context, boolean commit) {
+        SharedPreferences.Editor editor = Utilities.getPrefs(context).edit()
                 .putString(KEY_WORKSPACE_SIZE, mGridSizeString)
                 .putInt(KEY_HOTSEAT_COUNT, mNumHotseat)
-                .putInt(KEY_DEVICE_TYPE, mDeviceType)
-                .apply();
+                .putInt(KEY_DEVICE_TYPE, mDeviceType);
+        if (commit) {
+            editor.commit();
+        } else {
+            editor.apply();
+        }
     }
 
     public LawnchairProto.GridState toProtoMessage() {

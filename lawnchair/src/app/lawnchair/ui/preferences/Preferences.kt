@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import app.lawnchair.backup.ui.createBackupGraph
+import app.lawnchair.backup.ui.restoreBackupGraph
 import app.lawnchair.ui.preferences.about.aboutGraph
 import app.lawnchair.ui.preferences.components.SystemUi
 import app.lawnchair.ui.util.ProvideBottomSheetHandler
@@ -102,6 +103,7 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
                         smartspaceGraph(route = subRoute(Routes.SMARTSPACE))
                         smartspaceWidgetGraph(route = subRoute(Routes.SMARTSPACE_WIDGET))
                         createBackupGraph(route = subRoute(Routes.CREATE_BACKUP))
+                        restoreBackupGraph(route = subRoute(Routes.RESTORE_BACKUP))
                     }
                 }
             }

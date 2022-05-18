@@ -8,8 +8,10 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.core.graphics.drawable.toBitmap
 import app.lawnchair.LawnchairProto.BackupInfo
+import app.lawnchair.data.AppDatabase
 import app.lawnchair.util.hasFlag
 import app.lawnchair.util.scaleDownTo
+import app.lawnchair.util.scaleDownToDisplaySize
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherFiles
@@ -27,6 +29,7 @@ import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
+import kotlin.math.max
 
 class LawnchairBackup(
     private val context: Context,
@@ -36,12 +39,40 @@ class LawnchairBackup(
     var screenshot: Bitmap? = null
     var wallpaper: Bitmap? = null
 
-    private suspend fun readInfoAndPreview() {
+    suspend fun readInfoAndPreview() {
+        var tmpScreenshot: Bitmap? = null
+        var tmpWallpaper: Bitmap? = null
         readZip(mapOf(
             INFO_FILE_NAME to { info = BackupInfo.newBuilder().mergeFrom(it).build() },
-            SCREENSHOT_FILE_NAME to { screenshot = BitmapFactory.decodeStream(it)?.scaleDownTo(1000, false) },
-            WALLPAPER_FILE_NAME to { wallpaper = BitmapFactory.decodeStream(it)?.scaleDownTo(1000, false) },
+            SCREENSHOT_FILE_NAME to { tmpScreenshot = BitmapFactory.decodeStream(it) },
+            WALLPAPER_FILE_NAME to { tmpWallpaper = BitmapFactory.decodeStream(it) },
         ))
+        val size = max(info.previewWidth, info.previewHeight).coerceAtMost(4000)
+        screenshot = tmpScreenshot?.scaleDownTo(size)
+        wallpaper = tmpWallpaper?.scaleDownToDisplaySize(context)
+    }
+
+    suspend fun restore(selectedContents: Int) {
+        val handlers = mutableMapOf<String, suspend (InputStream) -> Unit>()
+        val contents = selectedContents and info.contents
+        if (contents.hasFlag(INCLUDE_LAYOUT_AND_SETTINGS)) {
+            handlers.putAll(getFiles(context, forRestore = true).mapValues { entry ->
+                {
+                    val file = entry.value
+                    file.parentFile?.mkdirs()
+                    it.copyTo(file.outputStream())
+                }
+            })
+        }
+        if (contents.hasFlag(INCLUDE_WALLPAPER)) {
+            handlers[WALLPAPER_FILE_NAME] = {
+                val wallpaperManager = WallpaperManager.getInstance(context)
+                wallpaperManager.setBitmap(BitmapFactory.decodeStream(it))
+            }
+        }
+        context.getDatabasePath(LAUNCHER_DB_FILE_NAME).parentFile?.deleteRecursively()
+        DeviceGridState(info.gridState).writeToPrefs(context, true)
+        readZip(handlers)
     }
 
     private suspend fun readZip(handlers: Map<String, suspend (InputStream) -> Unit>) {
@@ -68,9 +99,17 @@ class LawnchairBackup(
         const val INFO_FILE_NAME = "info.pb"
         const val WALLPAPER_FILE_NAME = "wallpaper.png"
         const val SCREENSHOT_FILE_NAME = "screenshot.png"
+        const val LAUNCHER_DB_FILE_NAME = "launcher.db"
+        const val RESTORED_DB_FILE_NAME = "restored.db"
+        const val PREFS_FILE_NAME = "${LauncherFiles.SHARED_PREFERENCES_KEY}.xml"
+        const val PREFS_DB_FILE_NAME = "preferences"
+        const val PREFS_DATASTORE_FILE_NAME = "preferences.preferences_pb"
 
         const val INCLUDE_LAYOUT_AND_SETTINGS = 1 shl 0
         const val INCLUDE_WALLPAPER = 1 shl 1
+
+        const val MIME_TYPE = "application/zip"
+        val EXTRA_MIME_TYPES = arrayOf(MIME_TYPE, "application/x-zip", "application/octet-stream")
 
         val contentOptions = listOf(
             INCLUDE_LAYOUT_AND_SETTINGS to R.string.backup_content_layout_and_settings,
@@ -82,13 +121,17 @@ class LawnchairBackup(
             return "$fileName.lawnchairbackup"
         }
 
+        fun getFiles(context: Context, forRestore: Boolean): Map<String, File> {
+            return mapOf(
+                LAUNCHER_DB_FILE_NAME to launcherDbFile(context, forRestore),
+                PREFS_FILE_NAME to prefsFile(context),
+                PREFS_DB_FILE_NAME to prefsDbFile(context),
+                PREFS_DATASTORE_FILE_NAME to prefsDataStoreFile(context),
+            )
+        }
+
         @SuppressLint("MissingPermission")
         suspend fun create(context: Context, contents: Int, screenshotBitmap: Bitmap, fileUri: Uri) {
-            val files: MutableList<File> = ArrayList()
-            if (contents.hasFlag(INCLUDE_LAYOUT_AND_SETTINGS)) {
-                files.add(prefsFile(context))
-                files.add(prefsDataStoreFile(context))
-            }
             val idp = LauncherAppState.getIDP(context)
             val createdAt = Timestamp.newBuilder()
                 .setSeconds(System.currentTimeMillis() / 1000)
@@ -98,8 +141,11 @@ class LawnchairBackup(
                 .setCreatedAt(createdAt)
                 .setContents(contents)
                 .setGridState(DeviceGridState(idp).toProtoMessage())
+                .setPreviewWidth(screenshotBitmap.width)
+                .setPreviewHeight(screenshotBitmap.height)
                 .build()
 
+            AppDatabase.INSTANCE.get(context).checkpoint()
             val pfd = context.contentResolver.openFileDescriptor(fileUri, "w")!!
             withContext(Dispatchers.IO) {
                 pfd.use {
@@ -118,31 +164,33 @@ class LawnchairBackup(
                         if (contents.hasFlag(INCLUDE_LAYOUT_AND_SETTINGS)) {
                             out.putNextEntry(ZipEntry(SCREENSHOT_FILE_NAME))
                             screenshotBitmap.compress(Bitmap.CompressFormat.PNG, 85, out)
-                            
-                            out.putNextEntry(ZipEntry("launcher.db"))
-                            gridDbFile(context).inputStream().copyTo(out)
                         }
 
-                        files.forEach { file ->
-                            out.putNextEntry(ZipEntry(file.name))
-                            file.inputStream().copyTo(out)
+                        getFiles(context, forRestore = false).entries.forEach {
+                            out.putNextEntry(ZipEntry(it.key))
+                            it.value.inputStream().copyTo(out)
                         }
                     }
                 }
             }
         }
 
-        private fun gridDbFile(context: Context): File {
-            return context.getDatabasePath(LauncherAppState.getIDP(context).dbFile)
+        private fun launcherDbFile(context: Context, forRestore: Boolean): File {
+            val dbName = if (forRestore) RESTORED_DB_FILE_NAME else LauncherAppState.getIDP(context).dbFile
+            return context.getDatabasePath(dbName)
         }
 
         private fun prefsFile(context: Context): File {
             val dir = context.cacheDir.parent
-            return File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml")
+            return File(dir, "shared_prefs/$PREFS_FILE_NAME")
+        }
+
+        private fun prefsDbFile(context: Context): File {
+            return context.getDatabasePath(PREFS_DB_FILE_NAME)
         }
 
         private fun prefsDataStoreFile(context: Context): File {
-            return File(context.filesDir, "datastore/preferences.preferences_pb")
+            return File(context.filesDir, "datastore/${PREFS_DATASTORE_FILE_NAME}")
         }
     }
 }
