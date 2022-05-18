@@ -18,7 +18,7 @@
     <string name="icon_pack">আইকন প্যাক</string>
     <string name="settings">সেটিংস</string>
     <string name="home_screen_label">মূল পর্দা</string>
-    <string name="home_screen_description">ফিড, এক পলকে, গ্রিড, আইকন-সমুহ</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">সাধারণ</string>
     <string name="general_description">বিজ্ঞাপন বিন্দু, প্রতীক গুচ্ছ</string>
     <string name="home_screen_rotation_label">মূল পেজ ঘূর্ণন</string>
