@@ -231,5 +231,5 @@
     <string name="delete">Удалить</string>
     <string name="themed_icons_off_label">Выкл</string>
     <string name="themed_icons_home_label">Домашний экран</string>
-    <string name="themed_icons_home_and_drawer_label">Главный экран &amp; Панель приложений</string>
+    <string name="themed_icons_home_and_drawer_label">Домашний экран &amp; Панель приложений</string>
 </resources>
