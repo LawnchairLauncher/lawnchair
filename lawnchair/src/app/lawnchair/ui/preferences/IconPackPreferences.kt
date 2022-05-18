@@ -21,6 +21,7 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -43,14 +44,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -158,47 +156,40 @@ fun IconPackGrid(
     modifier: Modifier,
 ) {
     val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
-    val density = LocalDensity.current
-    var iconPackItemWidth by remember { mutableStateOf(value = 0f) }
+    val lazyListState = rememberLazyListState()
     val padding = 16.dp
 
-    NestedScrollStretch {
-        val state = rememberLazyListState()
-        LazyRow(
-            state = state,
-            horizontalArrangement = Arrangement.spacedBy(space = padding),
-            contentPadding = PaddingValues(horizontal = padding),
-            modifier = modifier
-                .fillMaxWidth()
-                .onGloballyPositioned {
-                    with(density) {
-                        if (iconPackItemWidth == 0f) {
-                            iconPackItemWidth = getIconPackItemWidth(
-                                availableWidth = it.size.width.toDp().value - padding.value,
-                                minimumWidth = 80f,
-                                gutterWidth = padding.value,
-                            )
+    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+        val iconPackItemWidth = getIconPackItemWidth(
+            availableWidth = this.maxWidth.value - padding.value,
+            minimumWidth = 80f,
+            gutterWidth = padding.value,
+        )
+        NestedScrollStretch {
+            LazyRow(
+                state = lazyListState,
+                horizontalArrangement = Arrangement.spacedBy(space = padding),
+                contentPadding = PaddingValues(horizontal = padding),
+                modifier = modifier.fillMaxWidth(),
+            ) {
+                itemsIndexed(iconPacks, { _, item -> item.packageName }) { index, item ->
+                    val wasSelected = remember { mutableStateOf(false) }
+                    val selected = item.packageName == adapter.state.value
+                    LaunchedEffect(selected) {
+                        if (wasSelected.value != selected) {
+                            wasSelected.value = selected
+                            if (selected) {
+                                lazyListState.animateScrollToItem(index)
+                            }
                         }
                     }
-                },
-        ) {
-            itemsIndexed(iconPacks, { _, item -> item.packageName }) { index, item ->
-                val wasSelected = remember { mutableStateOf(false) }
-                val selected = item.packageName == adapter.state.value
-                LaunchedEffect(selected) {
-                    if (wasSelected.value != selected) {
-                        wasSelected.value = selected
-                        if (selected) {
-                            state.animateScrollToItem(index)
-                        }
+                    IconPackItem(
+                        item = item,
+                        selected = selected,
+                        modifier = Modifier.width(iconPackItemWidth.dp),
+                    ) {
+                        adapter.onChange(item.packageName)
                     }
-                }
-                IconPackItem(
-                    item = item,
-                    selected = selected,
-                    modifier = Modifier.width(iconPackItemWidth.dp),
-                ) {
-                    adapter.onChange(item.packageName)
                 }
             }
         }
