@@ -18,7 +18,7 @@
     <string name="icon_pack">Ikonpaket</string>
     <string name="settings">Inställningar</string>
     <string name="home_screen_label">Hemskärm</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Flöde, Vid ett ögonkast, rutnät, ikoner</string>
     <string name="general_label">Generellt</string>
     <string name="general_description">Notifikationspunkter</string>
     <string name="home_screen_rotation_label">Rotation på hemskärmen</string>
