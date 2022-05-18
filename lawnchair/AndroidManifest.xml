@@ -88,7 +88,7 @@
         </service>
 
         <provider
-            android:authorities="${applicationId}.bugreport.provider"
+            android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true"
             android:name="app.lawnchair.bugreport.FileProvider">

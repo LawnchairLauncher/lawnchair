@@ -21,6 +21,7 @@ import android.app.Application
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -33,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.ui.AlertBottomSheetContent
 import app.lawnchair.ui.preferences.openAppInfo
@@ -215,6 +217,10 @@ class LawnchairApp : Application() {
                     }
                 )
             }
+        }
+
+        fun getUriForFile(context: Context, file: File): Uri {
+            return FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.fileprovider", file)
         }
     }
 }
