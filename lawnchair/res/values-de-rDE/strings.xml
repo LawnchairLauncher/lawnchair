@@ -227,7 +227,7 @@
     <string name="pref_fonts_add_fonts">Schriftarten hinzufügen</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF werden unterstützt.</string>
     <string name="delete">Löschen</string>
-    <string name="themed_icons_off_label">Off</string>
+    <string name="themed_icons_off_label">Aus</string>
     <string name="themed_icons_home_label">Startseite</string>
-    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
+    <string name="themed_icons_home_and_drawer_label">Startbildschirm &amp; App-Übersicht</string>
 </resources>
