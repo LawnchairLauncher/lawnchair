@@ -2,8 +2,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="10dp"
-    android:paddingTop="@dimen/enhanced_smartspace_padding_top"
     android:clipChildren="false"
     android:clipToPadding="false">
 
@@ -12,6 +10,8 @@
         style="@style/EnhancedSmartspaceTextTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="@dimen/enhanced_smartspace_padding_top"
         android:format12Hour="EEE, MMM d"
         android:format24Hour="EEE, MMM d"
         android:text="@string/smartspace_widget_placeholder_date"
