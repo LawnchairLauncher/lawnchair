@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"「戻る」操作の感度を変更するには [設定] に移動します"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"スワイプで戻る"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"直前の画面に戻るには、画面の左端または右端から中央に向かってスワイプします。"</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"直前の画面に戻るには、2 本の指で画面の左端または右端から中央に向かってスワイプします。"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"画面の下端から上にスワイプしてください。"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"指を離す前にいったん止めないでください。"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"まっすぐ上にスワイプしてください。"</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"「ホームに戻る」操作を学習しました。"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"スワイプでホームに戻る"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"画面を下から上にスワイプします。この操作でいつでもホーム画面に戻れます。"</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"2 本の指で画面下部から上にスワイプします。この操作で常にホーム画面に戻ります。"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"画面の下端から上にスワイプしてください。"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"ウィンドウをもう少し長く押してから指を離すようにしてみましょう。"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"まっすぐ上にスワイプしてから、いったん指を止めてください。"</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"「アプリを切り替える」操作を完了しました。"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"スワイプでアプリを切り替える"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"アプリを切り替えるには、画面を下から上にスワイプして長押しし、指を離します。"</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"アプリを切り替えるには、2 本の指で画面下部から上にスワイプしたまま長押しし、指を離します。"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"設定完了"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"完了"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"設定"</string>
@@ -75,7 +78,7 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"チュートリアル <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"設定完了"</string>
     <string name="allset_hint" msgid="2384632994739392447">"ホームに移動するには上にスワイプします"</string>
-    <string name="allset_description" msgid="6350320429953234580">"スマートフォンを使い始めることができます"</string>
+    <string name="allset_description" msgid="6350320429953234580">"スマートフォンを使用する準備ができました"</string>
     <string name="allset_description_tablet" msgid="7332070270570039247">"これでタブレットが使えるようになりました"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"システム ナビゲーションの設定"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"共有"</string>

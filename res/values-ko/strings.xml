@@ -114,6 +114,8 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"알림 표시점을 표시하려면 <xliff:g id="NAME">%1$s</xliff:g>의 앱 알림을 사용 설정하세요."</string>
     <string name="title_change_settings" msgid="1376365968844349552">"설정 변경"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"알림 표시 점 보기"</string>
+    <!-- no translation found for developer_options_title (700788437593726194) -->
+    <skip />
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"홈 화면에 앱 아이콘 추가"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"새로 설치한 앱에 적용"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"알 수 없음"</string>
@@ -167,8 +169,12 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"직장 앱이 꺼져 있습니다. 직장 앱에서 알림을 보내거나 배터리를 사용하거나 위치 정보에 액세스할 수 없습니다."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"직장 앱에는 배지가 있으며, IT 관리자는 직장 앱을 확인할 수 있습니다."</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"확인"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"직장 앱 사용 중지"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"직장 앱 일시중지"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"직장 앱 사용 설정"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"필터"</string>
+    <!-- no translation found for search_pref_screen_title (3258959643336315962) -->
+    <skip />
+    <!-- no translation found for search_pref_screen_title_tablet (5220319680451343959) -->
+    <skip />
     <string name="remote_action_failed" msgid="1383965239183576790">"실패: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

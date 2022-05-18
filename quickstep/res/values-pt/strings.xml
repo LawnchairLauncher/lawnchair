@@ -33,9 +33,9 @@
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Suas predições de apps"</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Receba sugestões de apps na linha inferior da tela inicial"</string>
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Receba sugestões de apps na linha \"Favoritos\" da tela inicial"</string>
-    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Acesse diretamente na tela inicial os apps que você mais usa. As sugestões mudarão de acordo com sua rotina. Os apps na linha inferior serão movidos para a tela inicial."</string>
-    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Acesse os apps mais usados na tela inicial de forma simples. As sugestões mudarão de acordo com sua rotina. Os apps na linha \"Favoritos\" serão movidos para a tela inicial."</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Acesse diretamente na tela inicial os apps que você mais usa. As sugestões mudarão de acordo com sua rotina. Os apps na linha inferior serão movidos para uma nova pasta."</string>
+    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Acesse diretamente na tela inicial os apps que você mais usa. As sugestões mudam de acordo com sua rotina, e os apps na linha inferior são movidos para a tela inicial."</string>
+    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Acesse os apps mais usados na tela inicial de forma simples. As sugestões mudam de acordo com sua rotina, e os apps na linha \"Favoritos\" são movidos para a tela inicial."</string>
+    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Acesse diretamente na tela inicial os apps que você mais usa. As sugestões mudam de acordo com sua rotina, e os apps na linha inferior são movidos para uma nova pasta."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"Receber sugestões de apps"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Não"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Configurações"</string>
@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Mude a sensibilidade do gesto de voltar nas configurações"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Deslize para voltar"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Para voltar à tela anterior, deslize da borda esquerda ou direita até o meio da tela."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Para voltar à tela anterior, deslize da borda esquerda ou direita até o meio da tela com dois dedos."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Deslize da borda inferior da tela para cima."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Não pare antes de soltar."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Deslize para cima."</string>
@@ -60,13 +61,15 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Você concluiu o gesto para acessar a tela inicial."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Deslizar para voltar à tela inicial"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Deslize de baixo para cima na tela. Esse gesto sempre leva você para a tela inicial."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Deslize de baixo para cima na tela com dois dedos. Esse gesto sempre leva você para a tela inicial."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Deslize da borda inferior da tela para cima."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Mantenha a janela pressionada por mais tempo antes de soltar."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Deslize para cima e pare."</string>
-    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Você aprendeu a usar gestos. Para desativá-los, acesse as Configurações."</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Você aprendeu. Para desativar os gestos, acesse as Configurações."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Você concluiu o gesto para trocar de app."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Deslizar para trocar de app"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Para mudar de app, deslize de baixo para cima na tela, mantenha-a pressionada por um tempo e solte."</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Para mudar de app, deslize de baixo para cima, mantenha a tela pressionada por um tempo e solte."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Para mudar de app, deslize de baixo para cima na tela com dois dedos, segure por um tempo e solte."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Tudo pronto"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Concluído"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Configurações"</string>

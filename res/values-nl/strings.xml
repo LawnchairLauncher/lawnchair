@@ -106,7 +106,7 @@
     <string name="settings_button_text" msgid="8873672322605444408">"Instellingen start"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Uitgezet door je beheerder"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Draaien van startscherm toestaan"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"Wanneer de telefoon gedraaid is"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"Als de telefoon gedraaid is"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Meldingsstipjes"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Aan"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Uit"</string>
@@ -114,6 +114,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Als je meldingsstipjes wilt tonen, zet je app-meldingen aan voor <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Instellingen wijzigen"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Toon meldingsstipjes"</string>
+    <string name="developer_options_title" msgid="700788437593726194">"Ontwikkelaarsopties"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"App-iconen toevoegen aan startscherm"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Voor nieuwe apps"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Onbekend"</string>
@@ -167,8 +168,12 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Werk-apps staan uit. Je werk-apps kunnen geen meldingen sturen, je batterij niet gebruiken en hebben geen toegang tot je locatie."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Werk-apps hebben badges en zijn zichtbaar voor je IT-beheerder"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Werk-apps uitzetten"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Werk-apps pauzeren"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Werk-apps aanzetten"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filteren"</string>
+    <!-- no translation found for search_pref_screen_title (3258959643336315962) -->
+    <skip />
+    <!-- no translation found for search_pref_screen_title_tablet (5220319680451343959) -->
+    <skip />
     <string name="remote_action_failed" msgid="1383965239183576790">"Mislukt: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

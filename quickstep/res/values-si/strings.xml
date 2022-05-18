@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ආපසු ඉංගිතයෙහි සංවේදීතාව වෙනස් කිරීමට, සැකසීම් වෙත යන්න"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"ආපසු යාමට ස්වයිප් කරන්න"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"අවසාන තිරයට ආපසු යාමට, වම් හෝ දකුණු දාරයෙන් තිරයේ මැදට ස්වයිප් කරන්න."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"අවසාන තිරයට ආපසු යාමට, වම් හෝ දකුණු දාරයෙන් තිරයේ මැදට ඇඟිලි 2කින් ස්වයිප් කරන්න."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ඔබ තිරයේ පහළ දාරයේ සිට ඉහළට ස්වයිප් කරන බව සහතික කර ගන්න."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"යාමට ඉඩ හැරීමට පෙර ඔබ විරාමයක් නොගන්නා බව සහතික කර ගන්න."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"ඔබ කෙලින්ම ඉහළට ස්වයිප් කරන බව සහතික කර ගන්න."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"ඔබ මුල් පිටුවට යාමේ ඉංගිතය සම්පූර්ණ කරන ලදි."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"මුල් පිටුවට යාමට ස්වයිප් කරන්න"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"ඔබගේ තිරයේ පහළින් උඩට ස්වයිප් කරන්න.මෙම ඉංගිතය සැම විටම ඔබව මුල් තිරයට ගෙන යයි."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"තිරයේ පහළම සිට ඇඟිලි 2කින් ඉහළට ස්වයිප් කරන්න. මෙම ඉංගිතය සැම විටම ඔබව මුල් තිරයට ගෙන යයි."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"ඔබ තිරයේ පහළ දාරයේ සිට ඉහළට ස්වයිප් කරන බව සහතික කර ගන්න."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"මුදා හැරීමට පෙර කවුළුව වැඩි වේලාවක් රඳවා තබා ගැනීමට උත්සාහ කරන්න."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"ඔබ කෙලින්ම ඉහළට ස්වයිප් කර, අනතුරුව විරාම කරන බව සහතික කර ගන්න."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"ඔබ යෙදුම් මාරු කිරීමේ ඉංගිතය සම්පූර්ණ කර ඇත."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"යෙදුම් මාරු කිරීමට ස්වයිප් කරන්න"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"යෙදුම් අතර මාරු වීමට, ඔබගේ තිරයේ පහළම සිට උඩට ස්වයිප් කර, අල්ලාගෙන සිට, අනතුරුව මුදා හරින්න."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"යෙදුම් අතර මාරු වීමට, ඔබගේ තිරයේ පහළම සිට උඩට ඇඟිලි 2කින් ස්වයිප් කර, අල්ලාගෙන සිට, අනතුරුව මුදා හරින්න."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"සියල්ල සකසා ඇත"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"නිමයි"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"සැකසීම්"</string>

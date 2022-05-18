@@ -114,6 +114,8 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"નોટિફિકેશન માટેનું ચિહ્ન બતાવવા હેતુ, <xliff:g id="NAME">%1$s</xliff:g> માટેની ઍપ્લિકેશન નોટિફિકેશન ચાલુ કરો"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"સેટિંગ બદલો"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"નોટિફિકેશન માટેના ચિહ્ન બતાવો"</string>
+    <!-- no translation found for developer_options_title (700788437593726194) -->
+    <skip />
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"ઍપના આઇકન હોમ સ્ક્રીનમાં ઉમેરો"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"નવી ઍપ માટે"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"અજાણ્યો"</string>
@@ -167,8 +169,12 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"ઑફિસ માટેની ઍપ બંધ છે. ઑફિસ માટેની તમારી ઍપ તમને નોટિફિકેશન મોકલી શકતી નથી, તમારી બૅટરી વાપરી શકતી નથી કે તમારું સ્થાન ઍક્સેસ કરી શકતી નથી"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"ઑફિસની ઍપને બૅજ આપેલા હોય છે અને તમારા IT ઍડમિન તેમને જોઈ શકે છે"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"સમજાઈ ગયું"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"ઑફિસ માટેની ઍપ બંધ કરો"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ઑફિસની ઍપ થોભાવો"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"ઑફિસ માટેની ઍપ ચાલુ કરો"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ફિલ્ટર કરો"</string>
+    <!-- no translation found for search_pref_screen_title (3258959643336315962) -->
+    <skip />
+    <!-- no translation found for search_pref_screen_title_tablet (5220319680451343959) -->
+    <skip />
     <string name="remote_action_failed" msgid="1383965239183576790">"નિષ્ફળ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

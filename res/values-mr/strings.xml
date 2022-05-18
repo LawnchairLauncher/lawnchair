@@ -114,6 +114,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचना बिंदू दाखवण्यासाठी, <xliff:g id="NAME">%1$s</xliff:g> साठी अ‍ॅप सूचना सुरू करा"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिंग्ज बदला"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"सूचना बिंदू दाखवा"</string>
+    <string name="developer_options_title" msgid="700788437593726194">"डेव्हलपर पर्याय"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"होम स्क्रीनवर ॲप आयकन जोडा"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नवीन अ‍ॅप्ससाठी"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
@@ -167,8 +168,12 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"कामाशी संबंधित ॲप्स बंद आहेत. तुमचे कामाशी संबंधित ॲप्स तुम्हाला सूचना पाठवू शकत नाहीत, तुमची बॅटरी वापरू शकत नाहीत किंवा तुमचे स्थान अ‍ॅक्सेस करू शकत नाहीत"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Work apps ही बॅज केलेली असून तुमच्या IT ॲडमिनला दृश्यमान आहेत"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"समजले"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"कामाशी संबंधित ॲप्स बंद करा"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Work apps थांबवा"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"कार्य ॲप्स सुरू करा"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"फिल्टर"</string>
+    <!-- no translation found for search_pref_screen_title (3258959643336315962) -->
+    <skip />
+    <!-- no translation found for search_pref_screen_title_tablet (5220319680451343959) -->
+    <skip />
     <string name="remote_action_failed" msgid="1383965239183576790">"हे करता आले नाही: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

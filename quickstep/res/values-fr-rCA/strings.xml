@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Modifiez la sensibilité du geste de retour dans Paramètres"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Balayer l\'écran pour revenir en arrière"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Pour revenir à l\'écran précédent, balayez l\'écran de l\'extrémité gauche ou droite vers le centre."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Pour revenir à l\'écran précédent, balayez l\'écran avec deux doigts du bord gauche ou droit jusqu\'au centre."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Assurez-vous de balayer l\'écran à partir de l\'extrémité inférieure vers le haut."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Assurez-vous de ne pas interrompre le geste avant de lever le doigt."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Assurez-vous de balayer l\'écran en ligne droite vers le haut."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Vous avez appris le geste de retour à l\'écran d\'accueil."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Balayer pour revenir à l\'écran d\'accueil"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Balayez l\'écran du bas vers le haut. Ce geste vous ramène toujours à l\'écran d\'accueil."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Balayez l\'écran de bas en haut avec deux doigts. Ce geste vous ramène toujours à l\'écran d\'accueil."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Assurez-vous de balayer l\'écran à partir de l\'extrémité inférieure vers le haut."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Essayez de tenir la fenêtre plus longtemps avant de relâcher."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Assurez-vous de balayer l\'écran vers le haut, puis de faire une pause."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Vous avez appris le geste de changement d\'application."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Balayer pour basculer entre les applications"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Pour passer d\'une application à l\'autre, balayez l\'écran de bas en haut, maintenez la pression, puis relâchez."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Pour changer d\'appli, balayez l\'écran de bas en haut avec deux doigts, maintenez-les et relâchez-les."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Terminé"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"OK"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Paramètres"</string>
