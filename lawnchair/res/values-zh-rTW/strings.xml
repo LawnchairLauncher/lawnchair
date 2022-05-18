@@ -18,7 +18,7 @@
     <string name="icon_pack">圖示套件</string>
     <string name="settings">設定</string>
     <string name="home_screen_label">主螢幕</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">動態消息、快速查看、網格、圖示</string>
     <string name="general_label">一般</string>
     <string name="general_description">色彩、圖示套件、通知圓點</string>
     <string name="home_screen_rotation_label">旋轉主螢幕</string>
