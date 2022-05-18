@@ -207,7 +207,6 @@
     <string name="enable_taskbar">Attiva la barra delle applicazioni</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_icu_date_pattern">EEEMMMd</string>
     <string name="smartspace_battery_charging">In carica</string>
     <string name="smartspace_battery_full">Carico</string>
     <string name="smartspace_battery_low">Batteria scarica</string>
