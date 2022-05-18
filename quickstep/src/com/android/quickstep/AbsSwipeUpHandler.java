@@ -151,6 +151,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     // Null if the recents animation hasn't started yet or has been canceled or finished.
     protected @Nullable RecentsAnimationController mRecentsAnimationController;
+    protected @Nullable RecentsAnimationController mDeferredCleanupRecentsAnimationController;
     protected RecentsAnimationTargets mRecentsAnimationTargets;
     protected T mActivity;
     protected Q mRecentsView;
@@ -435,6 +436,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     mRecentsView.switchToScreenshot(snapshots, () -> {
                         if (mRecentsAnimationController != null) {
                             mRecentsAnimationController.cleanupScreenshot();
+                        } else if (mDeferredCleanupRecentsAnimationController != null) {
+                            mDeferredCleanupRecentsAnimationController.cleanupScreenshot();
+                            mDeferredCleanupRecentsAnimationController = null;
                         }
                     });
                     mRecentsView.onRecentsAnimationComplete();
@@ -839,6 +843,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     public void onRecentsAnimationCanceled(HashMap<Integer, ThumbnailData> thumbnailDatas) {
         ActiveGestureLog.INSTANCE.addLog("cancelRecentsAnimation");
         mActivityInitListener.unregister();
+        // Cache the recents animation controller so we can defer its cleanup to after having
+        // properly cleaned up the screenshot without accidentally using it.
+        mDeferredCleanupRecentsAnimationController = mRecentsAnimationController;
         mStateCallback.setStateOnUiThread(STATE_GESTURE_CANCELLED | STATE_HANDLER_INVALIDATED);
 
         if (mRecentsAnimationTargets != null) {
