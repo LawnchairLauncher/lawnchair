@@ -223,7 +223,7 @@
     <string name="smartspace_requires_setup">Appuyez pour configurer</string>
     <string name="event_provider_missing_notification_dots">Pour utiliser <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activez les pastilles de notifications.</string>
     <string name="smartspace_media_info_separator">" — "</string>
-    <string name="pref_fonts_add_fonts">Add Fonts</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
-    <string name="delete">Delete</string>
+    <string name="pref_fonts_add_fonts">Ajouter des polices</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF pris en charge.</string>
+    <string name="delete">Supprimer</string>
 </resources>
