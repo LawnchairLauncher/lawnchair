@@ -203,7 +203,6 @@
     <string name="reset_custom_icons">Atur Ulang Ikon Kustom</string>
     <string name="reset_custom_icons_confirmation">Semua ikon kustom akan diatur ulang. Apakah Anda ingin melanjutkan?</string>
     <string name="taskbar_label">Bilah Tugas</string>
-    <string name="enable_taskbar">Aktifkan Bilah Tugas</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Mengisi daya</string>

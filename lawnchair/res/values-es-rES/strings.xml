@@ -204,7 +204,6 @@
     <string name="reset_custom_icons">Reiniciar iconos personalizados</string>
     <string name="reset_custom_icons_confirmation">Todos los iconos personalizados se reiniciarán. ¿Desea continuar?</string>
     <string name="taskbar_label">Barra de tareas</string>
-    <string name="enable_taskbar">Activar barra de tareas</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Cargando</string>

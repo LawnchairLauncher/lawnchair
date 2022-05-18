@@ -94,7 +94,7 @@ fun QuickstepPreferences() {
             ) {
                 SwitchPreference(
                     adapter = prefs2.enableTaskbarOnPhone.getAdapter(),
-                    label = stringResource(id = R.string.enable_taskbar)
+                    label = stringResource(id = R.string.enable_taskbar_experimental)
                 )
             }
         }
