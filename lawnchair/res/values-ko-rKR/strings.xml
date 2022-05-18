@@ -18,7 +18,7 @@
     <string name="icon_pack">아이콘 팩</string>
     <string name="settings">설정</string>
     <string name="home_screen_label">홈 화면</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">피드, 한 눈에 보기, 그리드, 아이콘</string>
     <string name="general_label">일반</string>
     <string name="general_description">색상, 아이콘 팩, 알림 딱지</string>
     <string name="home_screen_rotation_label">홈 화면 회전</string>
