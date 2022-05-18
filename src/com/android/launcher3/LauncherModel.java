@@ -477,7 +477,9 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                 }
 
                 if (!removedIds.isEmpty()) {
-                    deleteAndBindComponentsRemoved(ItemInfoMatcher.ofItemIds(removedIds));
+                    deleteAndBindComponentsRemoved(
+                            ItemInfoMatcher.ofItemIds(removedIds),
+                            "removed because install session failed");
                 }
             }
         });

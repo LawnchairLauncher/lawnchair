@@ -311,7 +311,9 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
 
             bindUpdatedWorkspaceItems(updatedWorkspaceItems);
             if (!removedShortcuts.isEmpty()) {
-                deleteAndBindComponentsRemoved(ItemInfoMatcher.ofItemIds(removedShortcuts));
+                deleteAndBindComponentsRemoved(
+                        ItemInfoMatcher.ofItemIds(removedShortcuts),
+                        "removed because the target component is invalid");
             }
 
             if (!widgets.isEmpty()) {
@@ -340,7 +342,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
             Predicate<ItemInfo> removeMatch = ItemInfoMatcher.ofPackages(removedPackages, mUser)
                     .or(ItemInfoMatcher.ofComponents(removedComponents, mUser))
                     .and(ItemInfoMatcher.ofItemIds(forceKeepShortcuts).negate());
-            deleteAndBindComponentsRemoved(removeMatch);
+            deleteAndBindComponentsRemoved(removeMatch,
+                    "removed because the corresponding package or component is removed");
 
             // Remove any queued items from the install queue
             ItemInstallQueue.INSTANCE.get(context)
