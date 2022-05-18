@@ -26,6 +26,8 @@ import android.content.Intent
 import android.content.pm.PackageInfo.REQUESTED_PERMISSION_GRANTED
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Looper
 import android.provider.OpenableColumns
@@ -184,4 +186,33 @@ fun ContentResolver.getDisplayName(uri: Uri): String? {
         return cursor.getString(columnIndex)
     }
     return null
+}
+
+fun Bitmap.scaleDownToDisplaySize(context: Context, keepOriginal: Boolean = false): Bitmap {
+    val metrics = context.resources.displayMetrics
+    return scaleDownTo(kotlin.math.max(metrics.widthPixels, metrics.heightPixels), keepOriginal)
+}
+
+fun Bitmap.scaleDownTo(maxSize: Int, keepOriginal: Boolean = false): Bitmap {
+    val width = width
+    val height = height
+    val newWidth: Int
+    val newHeight: Int
+
+    when {
+        width > height && width > maxSize -> {
+            newWidth = maxSize
+            newHeight = (height * newWidth.toFloat() / width).toInt()
+        }
+        height > maxSize -> {
+            newHeight = maxSize
+            newWidth = (width * newHeight.toFloat() / height).toInt()
+        }
+        else -> return this
+    }
+    val newBitmap = Bitmap.createScaledBitmap(this, newWidth, newHeight, true)
+    if (!keepOriginal) {
+        recycle()
+    }
+    return newBitmap
 }

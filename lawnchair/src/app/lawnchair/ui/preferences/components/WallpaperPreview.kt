@@ -2,6 +2,7 @@ package app.lawnchair.ui.preferences.components
 
 import android.annotation.SuppressLint
 import android.app.WallpaperManager
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
@@ -10,6 +11,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.graphics.drawable.toBitmap
+import app.lawnchair.util.scaleDownToDisplaySize
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.google.accompanist.permissions.*
 
@@ -35,7 +38,12 @@ fun wallpaperDrawable(): Drawable? {
 
     return when {
         wallpaperInfo != null -> remember { wallpaperInfo.loadThumbnail(context.packageManager) }
-        permissionState.status.isGranted -> remember { wallpaperManager.drawable }
+        permissionState.status.isGranted -> remember {
+            wallpaperManager.drawable?.let {
+                val bitmap = it.toBitmap().scaleDownToDisplaySize(context)
+                BitmapDrawable(context.resources, bitmap)
+            }
+        }
         permissionState.status.isGranted.not() -> {
             SideEffect { permissionState.launchPermissionRequest() }
             null
