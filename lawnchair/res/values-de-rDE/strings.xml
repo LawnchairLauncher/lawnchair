@@ -231,7 +231,7 @@
     <string name="themed_icons_home_and_drawer_label">Startbildschirm &amp; App-Übersicht</string>
     <string name="create_backup">Sicherung erstellen</string>
     <string name="create_backup_action">Erstellen</string>
-    <string name="what_to_backup">Was gesichert wird</string>
+    <string name="what_to_backup">What to Back Up</string>
     <string name="backup_content_layout_and_settings">Layout und Einstellungen</string>
     <string name="backup_content_wallpaper">Hintergrund</string>
     <string name="backup_create_success">Sicherung erstellt</string>
