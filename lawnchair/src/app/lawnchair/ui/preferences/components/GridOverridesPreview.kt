@@ -9,13 +9,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.DeviceProfileOverrides
 import app.lawnchair.preferences.preferenceManager
-import app.lawnchair.preferences2.preferenceManager2
 import com.android.launcher3.InvariantDeviceProfile
 
 @Composable
 fun GridOverridesPreview(
     modifier: Modifier = Modifier,
-    updateGridOptions: DeviceProfileOverrides.Options.() -> Unit
+    updateGridOptions: DeviceProfileOverrides.DBGridInfo.() -> Unit
 ) {
     DummyLauncherBox(modifier = modifier) {
         WallpaperPreview(modifier = Modifier.fillMaxSize())
@@ -27,15 +26,13 @@ fun GridOverridesPreview(
 }
 
 @Composable
-fun createPreviewIdp(updateGridOptions: DeviceProfileOverrides.Options.() -> Unit): InvariantDeviceProfile {
+fun createPreviewIdp(updateGridOptions: DeviceProfileOverrides.DBGridInfo.() -> Unit): InvariantDeviceProfile {
     val context = LocalContext.current
     val prefs = preferenceManager()
-    val preferenceManager2 = preferenceManager2()
-    val defaultGrid = invariantDeviceProfile().closestProfile
 
     val newIdp by remember {
         derivedStateOf {
-            val options = DeviceProfileOverrides.Options(prefs, preferenceManager2, defaultGrid)
+            val options = DeviceProfileOverrides.DBGridInfo(prefs)
             updateGridOptions(options)
             InvariantDeviceProfile(context, options)
         }

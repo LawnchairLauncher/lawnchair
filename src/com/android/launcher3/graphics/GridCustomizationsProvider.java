@@ -83,7 +83,7 @@ public class GridCustomizationsProvider extends ContentProvider {
                 MatrixCursor cursor = new MatrixCursor(new String[] {
                         KEY_NAME, KEY_ROWS, KEY_COLS, KEY_PREVIEW_COUNT, KEY_IS_DEFAULT});
                 InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(getContext());
-                for (GridOption gridOption : idp.parseAllGridOptions(getContext())) {
+                for (GridOption gridOption : InvariantDeviceProfile.parseAllGridOptions(getContext())) {
                     cursor.newRow()
                             .add(KEY_NAME, gridOption.name)
                             .add(KEY_ROWS, gridOption.numRows)
@@ -128,7 +128,7 @@ public class GridCustomizationsProvider extends ContentProvider {
                 InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(getContext());
                 // Verify that this is a valid grid option
                 GridOption match = null;
-                for (GridOption option : idp.parseAllGridOptions(getContext())) {
+                for (GridOption option : InvariantDeviceProfile.parseAllGridOptions(getContext())) {
                     if (option.name.equals(gridName)) {
                         match = option;
                         break;

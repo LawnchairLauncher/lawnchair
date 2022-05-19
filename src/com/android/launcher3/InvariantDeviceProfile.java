@@ -202,23 +202,12 @@ public class InvariantDeviceProfile {
      * This constructor should NOT have any monitors by design.
      */
     public InvariantDeviceProfile(Context context, String gridName) {
-        String newName = initGrid(context, gridName);
-        if (newName == null || !newName.equals(gridName)) {
-            throw new IllegalArgumentException("Unknown grid name");
-        }
+        this(context, DeviceProfileOverrides.INSTANCE.get(context).getGridInfo(gridName));
     }
 
-    public InvariantDeviceProfile(Context context, DeviceProfileOverrides.Options overrideOptions) {
-        // Get the display info based on default display and interpolate it to existing display
-        Info defaultInfo = DisplayController.INSTANCE.get(context).getInfo();
-        @DeviceType int defaultDeviceType = getDeviceType(defaultInfo);
-
-        String gridName = getCurrentGridName(context);
-        ArrayList<DisplayOption> allOptions =
-                getPredefinedDeviceProfiles(context, gridName, defaultDeviceType, false);
-        DisplayOption displayOption =
-                invDistWeightedInterpolate(defaultInfo, allOptions, defaultDeviceType);
-        initGrid(context, defaultInfo, displayOption, defaultDeviceType, overrideOptions);
+    public InvariantDeviceProfile(Context context, DeviceProfileOverrides.DBGridInfo dbGridInfo) {
+        String gridName = DeviceProfileOverrides.INSTANCE.get(context).getGridName(dbGridInfo);
+        initGrid(context, gridName, dbGridInfo);
     }
 
     /**
@@ -299,11 +288,16 @@ public class InvariantDeviceProfile {
     }
 
     public static String getCurrentGridName(Context context) {
-        return Utilities.isGridOptionsEnabled(context)
-                ? Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null) : null;
+        return DeviceProfileOverrides.INSTANCE.get(context).getCurrentGridName();
     }
 
     private String initGrid(Context context, String gridName) {
+        DeviceProfileOverrides.DBGridInfo dbGridInfo = DeviceProfileOverrides.INSTANCE.get(context)
+                .getGridInfo();
+        return initGrid(context, gridName, dbGridInfo);
+    }
+
+    private String initGrid(Context context, String gridName, DeviceProfileOverrides.DBGridInfo dbGridInfo) {
         Info displayInfo = DisplayController.INSTANCE.get(context).getInfo();
         @DeviceType int deviceType = getDeviceType(displayInfo);
 
@@ -312,25 +306,26 @@ public class InvariantDeviceProfile {
                         RestoreDbTask.isPending(context));
         DisplayOption displayOption =
                 invDistWeightedInterpolate(displayInfo, allOptions, deviceType);
-        initGrid(context, displayInfo, displayOption, deviceType);
+        initGrid(context, displayInfo, displayOption, deviceType, dbGridInfo);
         return displayOption.grid.name;
     }
 
-    private void initGrid(
-            Context context, Info displayInfo, DisplayOption displayOption,
+    private void initGrid(Context context, Info displayInfo, DisplayOption displayOption,
             @DeviceType int deviceType) {
-        DeviceProfileOverrides.Options overrideOptions = DeviceProfileOverrides.INSTANCE.get(context)
-                .getOverrides(displayOption.grid);
-        initGrid(context, displayInfo, displayOption, deviceType, overrideOptions);
+        DeviceProfileOverrides.DBGridInfo dbGridInfo = DeviceProfileOverrides.INSTANCE.get(context)
+                .getGridInfo();
+        initGrid(context, displayInfo, displayOption, deviceType, dbGridInfo);
     }
 
     private void initGrid(Context context, Info displayInfo, DisplayOption displayOption,
-            @DeviceType int deviceType, DeviceProfileOverrides.Options overrideOptions) {
+            @DeviceType int deviceType, DeviceProfileOverrides.DBGridInfo dbGridInfo) {
+        DeviceProfileOverrides.Options overrideOptions = DeviceProfileOverrides.INSTANCE.get(context)
+                .getOverrides(displayOption.grid);
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         closestProfile = displayOption.grid;
-        numRows = overrideOptions.getNumRows();
-        numColumns = overrideOptions.getNumColumns();
-        dbFile = overrideOptions.getDbFile();
+        numRows = dbGridInfo.getNumRows();
+        numColumns = dbGridInfo.getNumColumns();
+        dbFile = dbGridInfo.getDbFile();
         defaultLayoutId = closestProfile.defaultLayoutId;
         demoModeLayoutId = closestProfile.demoModeLayoutId;
         numFolderRows = closestProfile.numFolderRows;
@@ -351,8 +346,8 @@ public class InvariantDeviceProfile {
 
         horizontalMargin = displayOption.horizontalMargin;
 
-        numShownHotseatIcons = overrideOptions.getNumHotseatColumns();
-        numDatabaseHotseatIcons = overrideOptions.getNumHotseatColumns();
+        numShownHotseatIcons = dbGridInfo.getNumHotseatColumns();
+        numDatabaseHotseatIcons = dbGridInfo.getNumHotseatColumns();
 
         numAllAppsColumns = closestProfile.numAllAppsColumns;
         numDatabaseAllAppsColumns = deviceType == TYPE_MULTI_DISPLAY
@@ -414,8 +409,8 @@ public class InvariantDeviceProfile {
 
 
     public void setCurrentGrid(Context context, String gridName) {
+        DeviceProfileOverrides.INSTANCE.get(context).setCurrentGrid(gridName);
         Context appContext = context.getApplicationContext();
-        Utilities.getPrefs(appContext).edit().putString(KEY_IDP_GRID_NAME, gridName).apply();
         MAIN_EXECUTOR.execute(() -> onConfigChanged(appContext));
     }
 
@@ -501,7 +496,9 @@ public class InvariantDeviceProfile {
     /**
      * @return all the grid options that can be shown on the device
      */
-    public List<GridOption> parseAllGridOptions(Context context) {
+    public static List<GridOption> parseAllGridOptions(Context context) {
+        Info defaultInfo = DisplayController.INSTANCE.get(context).getInfo();
+        @DeviceType int deviceType = getDeviceType(defaultInfo);
         List<GridOption> result = new ArrayList<>();
 
         try (XmlResourceParser parser = context.getResources().getXml(R.xml.device_profiles)) {

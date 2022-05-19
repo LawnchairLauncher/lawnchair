@@ -40,9 +40,9 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val allowRotation = BoolPref("pref_allowRotation", false)
     val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", false, reloadIcons)
     val addIconToHome = BoolPref("pref_add_icon_to_home", true)
-    val hotseatColumns = IdpIntPref("pref_hotseatColumns", { numHotseatIcons }, reloadGrid)
-    val workspaceColumns = IdpIntPref("pref_workspaceColumns", { numColumns })
-    val workspaceRows = IdpIntPref("pref_workspaceRows", { numRows })
+    val hotseatColumns = IntPref("pref_hotseatColumns", 4, reloadGrid)
+    val workspaceColumns = IntPref("pref_workspaceColumns", 4)
+    val workspaceRows = IntPref("pref_workspaceRows", 5)
     val folderRows = IdpIntPref("pref_folderRows", { numFolderRows }, reloadGrid)
 
     val drawerOpacity = FloatPref("pref_drawerOpacity", 1F, recreate)
@@ -86,9 +86,21 @@ class PreferenceManager private constructor(private val context: Context) : Base
 
     init {
         sp.registerOnSharedPreferenceChangeListener(this)
+        migratePrefs(CURRENT_VERSION) { oldVersion ->
+            if (oldVersion < 2) {
+                listOf(hotseatColumns, workspaceColumns, workspaceRows)
+                    .forEach {
+                        if (it.get() == -1) {
+                            it.set(it.defaultValue)
+                        }
+                    }
+            }
+        }
     }
 
     companion object {
+        private const val CURRENT_VERSION = 2
+
         @JvmField
         val INSTANCE = MainThreadInitializedObject(::PreferenceManager)
 

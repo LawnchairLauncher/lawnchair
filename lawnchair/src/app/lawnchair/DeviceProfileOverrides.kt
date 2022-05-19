@@ -15,6 +15,38 @@ class DeviceProfileOverrides(context: Context) {
     private val prefs = PreferenceManager.getInstance(context)
     private val preferenceManager2 = PreferenceManager2.getInstance(context)
 
+    private val predefinedGrids = InvariantDeviceProfile.parseAllGridOptions(context)
+        .map { option ->
+            val gridInfo = DBGridInfo(
+                numHotseatColumns = option.numHotseatIcons,
+                numRows = option.numRows,
+                numColumns = option.numColumns
+            )
+            gridInfo to option.name
+        }
+
+    fun getGridInfo() = DBGridInfo(prefs)
+
+    fun getGridInfo(gridName: String) = predefinedGrids
+        .first { it.second == gridName }
+        .first
+
+    fun getGridName(gridInfo: DBGridInfo): String {
+        val match = predefinedGrids
+            .firstOrNull { it.first.numRows >= gridInfo.numRows && it.first.numColumns >= gridInfo.numColumns }
+            ?: predefinedGrids.last()
+        return match.second
+    }
+
+    fun getCurrentGridName() = getGridName(getGridInfo())
+
+    fun setCurrentGrid(gridName: String) {
+        val gridInfo = getGridInfo(gridName)
+        prefs.workspaceRows.set(gridInfo.numRows)
+        prefs.workspaceColumns.set(gridInfo.numColumns)
+        prefs.hotseatColumns.set(gridInfo.numHotseatColumns)
+    }
+
     fun getOverrides(defaultGrid: InvariantDeviceProfile.GridOption) =
         Options(
             prefs = prefs,
@@ -22,10 +54,21 @@ class DeviceProfileOverrides(context: Context) {
             defaultGrid = defaultGrid,
         )
 
-    data class Options(
+    data class DBGridInfo(
         var numHotseatColumns: Int,
         var numRows: Int,
         var numColumns: Int,
+    ) {
+        val dbFile get() = "launcher_${numRows}_${numColumns}_${numHotseatColumns}.db"
+
+        constructor(prefs: PreferenceManager) : this(
+            numHotseatColumns = prefs.hotseatColumns.get(),
+            numRows = prefs.workspaceRows.get(),
+            numColumns = prefs.workspaceColumns.get(),
+        )
+    }
+
+    data class Options(
         var numAllAppsColumns: Int,
         var numFolderRows: Int,
         var numFolderColumns: Int,
@@ -40,16 +83,11 @@ class DeviceProfileOverrides(context: Context) {
 
         var enableTaskbarOnPhone: Boolean,
     ) {
-        val dbFile get() = "launcher_${numRows}_${numColumns}_${numHotseatColumns}.db"
-
         constructor(
             prefs: PreferenceManager,
             prefs2: PreferenceManager2,
             defaultGrid: InvariantDeviceProfile.GridOption,
         ) : this(
-            numHotseatColumns = prefs.hotseatColumns.get(defaultGrid),
-            numRows = prefs.workspaceRows.get(defaultGrid),
-            numColumns = prefs.workspaceColumns.get(defaultGrid),
             numAllAppsColumns = prefs2.drawerColumns.firstBlocking(gridOption = defaultGrid),
             numFolderRows = prefs.folderRows.get(defaultGrid),
             numFolderColumns = prefs2.folderColumns.firstBlocking(gridOption = defaultGrid),

@@ -58,11 +58,11 @@ abstract class BasePreferenceManager(private val context: Context) : SharedPrefe
             inBatchMode = value > 0
         }
 
-    init {
-        if (!sp.contains("version")) {
-            sp.edit {
-                putInt("version", 1)
-            }
+    fun migratePrefs(currentVersion: Int, block: (oldVersion: Int) -> Unit) {
+        val oldVersion = sp.getInt("version", 9999)
+        block(oldVersion)
+        sp.edit {
+            putInt("version", currentVersion)
         }
     }
 
