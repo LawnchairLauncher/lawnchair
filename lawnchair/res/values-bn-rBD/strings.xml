@@ -231,7 +231,7 @@
     <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
     <string name="create_backup">Create Backup</string>
     <string name="create_backup_action">Create</string>
-    <string name="what_to_backup">What to Backup</string>
+    <string name="what_to_backup">What to Back Up</string>
     <string name="backup_content_layout_and_settings">Layout and Settings</string>
     <string name="backup_content_wallpaper">ওয়ালপেপার</string>
     <string name="backup_create_success">Backup created</string>
