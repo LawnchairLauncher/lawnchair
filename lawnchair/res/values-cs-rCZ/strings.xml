@@ -18,7 +18,7 @@
     <string name="icon_pack">Sada ikon</string>
     <string name="settings">Nastavení</string>
     <string name="home_screen_label">Domovská stránka</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Kanál, Widget domácí obrazovky, Mřížka, Ikony</string>
     <string name="general_label">Obecné</string>
     <string name="general_description">Barvy, balíček ikon, tečky oznámení</string>
     <string name="home_screen_rotation_label">Otáčení domovské obrazovky</string>
@@ -206,6 +206,7 @@
     <string name="reset_custom_icons">Obnovit vlastní ikony</string>
     <string name="reset_custom_icons_confirmation">Všechny vlastní ikony budou obnoveny. Chcete pokračovat?</string>
     <string name="taskbar_label">Taskbar</string>
+    <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Nabíjení</string>
@@ -230,4 +231,17 @@
     <string name="themed_icons_off_label">Vypnout</string>
     <string name="themed_icons_home_label">Domovská stránka</string>
     <string name="themed_icons_home_and_drawer_label">Domovská obrazovka &amp; Seznam aplikací</string>
+    <string name="create_backup">Vytvořit zálohu</string>
+    <string name="create_backup_action">Vytvořit</string>
+    <string name="what_to_backup">What to Back Up</string>
+    <string name="backup_content_layout_and_settings">Rozložení a nastavení</string>
+    <string name="backup_content_wallpaper">Tapeta</string>
+    <string name="backup_create_success">Záloha vytvořena</string>
+    <string name="backup_create_error">Nepodařilo se vytvořit zálohu</string>
+    <string name="restore_backup">Obnovit ze zálohy</string>
+    <string name="restore_backup_action">Obnovit</string>
+    <string name="what_to_restore">Co obnovit</string>
+    <string name="backup_restore_success">Obnoveno ze zálohy</string>
+    <string name="backup_restore_error">Nepodařilo se obnovit ze zálohy</string>
+    <string name="invalid_backup_file">Neplatný záložní soubor</string>
 </resources>
