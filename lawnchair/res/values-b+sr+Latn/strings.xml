@@ -18,7 +18,7 @@
     <string name="icon_pack">Tema ikonica</string>
     <string name="settings">Podešavanja</string>
     <string name="home_screen_label">Početna stranica</string>
-    <string name="home_screen_description">Vesti, \"At a Glance\", Mreža, Ikonice</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">Opšte</string>
     <string name="general_description">Simboli obaveštenja, Tema ikonica</string>
     <string name="home_screen_rotation_label">Rotacija početne stranice</string>
@@ -235,12 +235,12 @@
     <string name="what_to_backup">What to Back Up</string>
     <string name="backup_content_layout_and_settings">Layout and Settings</string>
     <string name="backup_content_wallpaper">Wallpaper</string>
-    <string name="backup_create_success">Backup created</string>
-    <string name="backup_create_error">Failed to create backup</string>
+    <string name="backup_create_success">Backup created.</string>
+    <string name="backup_create_error">Failed to create backup.</string>
     <string name="restore_backup">Restore Backup</string>
     <string name="restore_backup_action">Restore</string>
     <string name="what_to_restore">What to Restore</string>
-    <string name="backup_restore_success">Backup restored</string>
-    <string name="backup_restore_error">Failed to restore backup</string>
-    <string name="invalid_backup_file">Invalid backup file</string>
+    <string name="backup_restore_success">Backup restored.</string>
+    <string name="backup_restore_error">Failed to restore backup.</string>
+    <string name="invalid_backup_file">Invalid backup file.</string>
 </resources>
