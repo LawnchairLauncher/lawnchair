@@ -201,7 +201,7 @@
     <string name="always_open_website_description">Otwórz stronę internetową dostawcy wyszukiwania, nawet jeśli ich aplikacja jest zainstalowana.</string>
     <string name="search_provider">Dostawca wyszukiwania</string>
     <string name="status_bar_label">Pasek stanu</string>
-    <string name="show_notification_count">Pokaż ilość powiadomień</string>
+    <string name="show_notification_count">Pokaż liczbę powiadomień</string>
     <string name="icon_picker_load_failed">Nie udało się załadować kolejnych ikon.</string>
     <string name="reset_custom_icons">Zresetuj własne ikony</string>
     <string name="reset_custom_icons_confirmation">Wszystkie własne ikony zostaną zresetowane. Czy chcesz kontynuować?</string>
