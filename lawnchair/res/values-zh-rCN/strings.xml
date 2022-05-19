@@ -209,18 +209,18 @@
     <string name="smartspace_battery_charging">充电中</string>
     <string name="smartspace_battery_full">充电完成</string>
     <string name="smartspace_battery_low">电池电量低</string>
-    <string name="accessibility_smartspace_page">Page %1$d of %2$d</string>
+    <string name="accessibility_smartspace_page">第 %1$d 页，共 %2$d 页</string>
     <string name="smartspace_widget">一目了然</string>
     <string name="smartspace_widget_description">选择要显示的项目</string>
     <string name="smartspace_widget_placeholder_date">Fri, Mar 3</string>
-    <string name="quickstep_incompatible">Incompatible System Integration</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
+    <string name="quickstep_incompatible">不兼容的系统集成</string>
+    <string name="quickstep_incompatible_description">您的设备被配置为由 %1$s提供的系统手势(称为Quickstep) ，但这个版本的 %1$s 与您的 Android 版本不兼容。 要继续使用您的设备，请卸载 %1$s 更新或禁用 %1$s 作为系统手势提供者。</string>
     <string name="preview_label">预览</string>
     <string name="smartspace_weather">天气</string>
     <string name="smartspace_battery_status">电池状态</string>
     <string name="smartspace_now_playing">正在播放</string>
     <string name="smartspace_requires_setup">点击以设置</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
+    <string name="event_provider_missing_notification_dots">要使用 <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, 请启用通知圆点。</string>
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="pref_fonts_add_fonts">添加字体</string>
     <string name="pref_fonts_add_fonts_summary">支持 OTF &amp; TTF</string>
