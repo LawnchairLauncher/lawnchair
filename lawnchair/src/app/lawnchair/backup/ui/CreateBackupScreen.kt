@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.WallpaperManager
 import android.content.Intent
 import android.content.res.Configuration
+import android.provider.DocumentsContract
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -82,6 +83,9 @@ fun CreateBackupScreen(viewModel: CreateBackupViewModel) {
             } catch (t: Throwable) {
                 Log.e("CreateBackupScreen", "failed to create backup", t)
                 Toast.makeText(context, R.string.backup_create_error, Toast.LENGTH_SHORT).show()
+                try {
+                    DocumentsContract.deleteDocument(context.contentResolver, uri)
+                } catch (ignore: Throwable) {}
             }
             creatingBackup = false
         }
