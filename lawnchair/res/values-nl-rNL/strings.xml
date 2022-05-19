@@ -18,7 +18,7 @@
     <string name="icon_pack">Icoon pakket</string>
     <string name="settings">Instellingen</string>
     <string name="home_screen_label">Startscherm</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Feed, Raster, Pictogrammen</string>
     <string name="general_label">Algemeen</string>
     <string name="general_description">Kleuren, Icoon Pakket, Notificatie stippen</string>
     <string name="home_screen_rotation_label">Startpagina rotatie</string>
@@ -230,8 +230,8 @@
     <string name="themed_icons_home_label">Startscherm</string>
     <string name="themed_icons_home_and_drawer_label">Beginscherm &amp; App-overzicht</string>
     <string name="create_backup">Creëer back-up</string>
-    <string name="create_backup_action">Aanmaken</string>
-    <string name="what_to_backup">What to Back Up</string>
+    <string name="create_backup_action">Creëer</string>
+    <string name="what_to_backup">Wat te back-uppen</string>
     <string name="backup_content_layout_and_settings">Lay-out en instellingen</string>
     <string name="backup_content_wallpaper">Achtergrond</string>
     <string name="backup_create_success">Backup created.</string>
