@@ -33,14 +33,18 @@ object BcSmartSpaceUtil {
             return
         }
         view.setOnClickListener {
-            if (action.intent != null) {
-                view.context.startActivity(action.intent)
-            } else if (action.pendingIntent != null) {
-                action.pendingIntent.send()
-            } else if (action.onClick != null) {
-                action.onClick.run()
+            try {
+                if (action.intent != null) {
+                    view.context.startActivity(action.intent)
+                } else if (action.pendingIntent != null) {
+                    action.pendingIntent.send()
+                } else if (action.onClick != null) {
+                    action.onClick.run()
+                }
+                onClickListener?.onClick(view)
+            } catch (t: Throwable) {
+                Log.d("BcSmartspaceUtil", "onClick error", t)
             }
-            onClickListener?.onClick(view)
         }
     }
 
