@@ -18,7 +18,7 @@
     <string name="icon_pack">圖示套件</string>
     <string name="settings">設定</string>
     <string name="home_screen_label">主螢幕</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">探索、網格、圖示</string>
     <string name="general_label">一般</string>
     <string name="general_description">色彩、圖示套件、通知圓點</string>
     <string name="home_screen_rotation_label">旋轉主螢幕</string>
@@ -56,7 +56,7 @@
     <string name="app_info_drop_target_label">應用程式資訊</string>
     <string name="item_removed">已移除物件。</string>
     <string name="all_apps_no_search_results">找不到應用程式「<xliff:g example="Android" id="query">%1$s</xliff:g>」。</string>
-    <string name="translucent_background">Translucent Background</string>
+    <string name="translucent_background">透明背景</string>
     <string name="background_opacity">背景透明度</string>
     <string name="background_lightness_label">背景亮度</string>
     <string name="adaptive_icons">自適應圖示</string>
@@ -159,7 +159,7 @@
     <string name="show_app_search_bar">顯示搜尋列</string>
     <string name="lawnchair_bug_report">Lawnchair 問題回報</string>
     <string name="crash_report_notif_title">%1$s 已停止運作</string>
-    <string name="action_upload_crash_report">Upload Crash Log</string>
+    <string name="action_upload_crash_report">上傳錯誤日誌</string>
     <string name="action_copy_link">複製連結</string>
     <string name="action_copy">複製</string>
     <string name="copied_toast">已複製到剪貼簿</string>
@@ -198,17 +198,17 @@
     <string name="always_open_website_description">使用網頁而非相應的應用程式來進行搜尋</string>
     <string name="search_provider">搜尋服務供應商</string>
     <string name="status_bar_label">Status Bar</string>
-    <string name="show_notification_count">Show Notification Count</string>
-    <string name="icon_picker_load_failed">Couldn’t load more icons.</string>
-    <string name="reset_custom_icons">Reset Custom Icons</string>
-    <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
-    <string name="taskbar_label">Taskbar</string>
-    <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
+    <string name="show_notification_count">顯示通知數量</string>
+    <string name="icon_picker_load_failed">無法載入更多圖示。</string>
+    <string name="reset_custom_icons">重設自訂圖示</string>
+    <string name="reset_custom_icons_confirmation">即將重設所有自訂圖示。是否繼續？</string>
+    <string name="taskbar_label">工作列</string>
+    <string name="enable_taskbar_experimental">啟用工作列（實驗性功能）</string>
     <!-- Smartspace -->
-    <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_battery_charging">Charging</string>
-    <string name="smartspace_battery_full">Charged</string>
-    <string name="smartspace_battery_low">Battery Low</string>
+    <string name="generic_smartspace_concatenated_desc">%1$s、%2$s</string>
+    <string name="smartspace_battery_charging">充電中</string>
+    <string name="smartspace_battery_full">已完全充飽</string>
+    <string name="smartspace_battery_low">低電量</string>
     <string name="accessibility_smartspace_page">Page %1$d of %2$d</string>
     <string name="smartspace_widget">At a Glance</string>
     <string name="smartspace_widget_description">What to Show</string>
