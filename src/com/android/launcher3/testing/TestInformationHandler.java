@@ -33,6 +33,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Hotseat;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
@@ -185,7 +186,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
                     return new int[]{cellLayout.getCountX(), cellLayout.getCountY()};
                 });
 
-            case TestProtocol.REQUEST_WORKSPACE_CELL_CENTER:
+            case TestProtocol.REQUEST_WORKSPACE_CELL_CENTER: {
                 final WorkspaceCellCenterRequest request = extra.getParcelable(
                         TestProtocol.TEST_INFO_REQUEST_FIELD);
                 return getLauncherUIProperty(Bundle::putParcelable, launcher -> {
@@ -197,6 +198,21 @@ public class TestInformationHandler implements ResourceBasedOverride {
                             cellLayout, request.cellX, request.cellY, request.spanX, request.spanY);
                     return new Point(cellRect.centerX(), cellRect.centerY());
                 });
+            }
+
+            case TestProtocol.REQUEST_HOTSEAT_CELL_CENTER: {
+                final HotseatCellCenterRequest request = extra.getParcelable(
+                        TestProtocol.TEST_INFO_REQUEST_FIELD);
+                return getLauncherUIProperty(Bundle::putParcelable, launcher -> {
+                    final Hotseat hotseat = launcher.getHotseat();
+                    final Rect cellRect = getDescendantRectRelativeToDragLayerForCell(launcher,
+                            hotseat, request.cellInd, /* cellY= */ 0,
+                            /* spanX= */ 1, /* spanY= */ 1);
+                    // TODO(b/234322284): return the real center point.
+                    return new Point(cellRect.left + (cellRect.right - cellRect.left) / 3,
+                            cellRect.centerY());
+                });
+            }
 
             case TestProtocol.REQUEST_HAS_TIS: {
                 response.putBoolean(
