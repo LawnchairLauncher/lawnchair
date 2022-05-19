@@ -18,7 +18,7 @@
     <string name="icon_pack">Набір Значків</string>
     <string name="settings">Налаштування</string>
     <string name="home_screen_label">Домашній Екран</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Стрічка, Сітка, Іконки</string>
     <string name="general_label">Загальні</string>
     <string name="general_description">Значки сповіщень, Набір значків</string>
     <string name="home_screen_rotation_label">Обертання Головного Екрану</string>
@@ -236,12 +236,12 @@
     <string name="what_to_backup">Що резервувати</string>
     <string name="backup_content_layout_and_settings">Макет та налаштування</string>
     <string name="backup_content_wallpaper">Шпалери</string>
-    <string name="backup_create_success">Backup created.</string>
-    <string name="backup_create_error">Failed to create backup.</string>
+    <string name="backup_create_success">Резервну копію створено.</string>
+    <string name="backup_create_error">Не вдалося створити резервну копію.</string>
     <string name="restore_backup">Відновити резервну копію</string>
     <string name="restore_backup_action">Відновити</string>
     <string name="what_to_restore">Що відновлювати</string>
-    <string name="backup_restore_success">Backup restored.</string>
-    <string name="backup_restore_error">Failed to restore backup.</string>
-    <string name="invalid_backup_file">Invalid backup file.</string>
+    <string name="backup_restore_success">Резервна копія відновлена.</string>
+    <string name="backup_restore_error">Не вдалося відновити резервну копію.</string>
+    <string name="invalid_backup_file">Недійсний файл резервної копії.</string>
 </resources>
