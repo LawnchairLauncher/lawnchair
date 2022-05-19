@@ -50,6 +50,7 @@ import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
 
 import java.io.PrintWriter;
 
+import app.lawnchair.DeviceProfileOverrides;
 import app.lawnchair.preferences2.PreferenceManager2;
 
 @SuppressLint("NewApi")
@@ -228,10 +229,13 @@ public class DeviceProfile {
     // DragController
     public int flingToDeleteThresholdVelocity;
 
+    private final DeviceProfileOverrides.TextFactors mTextFactors;
+
     /** TODO: Once we fully migrate to staged split, remove "isMultiWindowMode" */
     DeviceProfile(Context context, InvariantDeviceProfile inv, Info info, WindowBounds windowBounds,
             boolean isMultiWindowMode, boolean transposeLayoutWithOrientation,
             boolean useTwoPanels) {
+        mTextFactors = DeviceProfileOverrides.INSTANCE.get(context).getTextFactors();
         PreferenceManager2 preferenceManager2 = PreferenceManager2.INSTANCE.get(context);
         allAppsCellHeightMultiplier = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getDrawerCellHeightFactor());
 
@@ -705,6 +709,7 @@ public class DeviceProfile {
 
         iconSizePx = Math.max(1, pxFromDp(invIconSizeDp, mMetrics, iconScale));
         iconTextSizePx = (int) (pxFromSp(invIconTextSizeSp, mMetrics) * iconScale);
+        iconTextSizePx *= mTextFactors.getIconTextSizeFactor();
         iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * iconScale);
 
         cellLayoutBorderSpacePx = getCellLayoutBorderSpaceScaled(inv, scale);
@@ -738,6 +743,7 @@ public class DeviceProfile {
                 pxFromDp(inv.iconSize[InvariantDeviceProfile.INDEX_ALL_APPS], mMetrics);
         allAppsIconTextSizePx =
                 pxFromSp(inv.iconTextSize[InvariantDeviceProfile.INDEX_ALL_APPS], mMetrics);
+        allAppsIconTextSizePx *= mTextFactors.getAllAppsIconTextSizeFactor();
         allAppsIconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
         autoResizeAllAppsCells();
         allAppsCellWidthPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx;
@@ -804,6 +810,7 @@ public class DeviceProfile {
         folderChildTextSizePx =
                 pxFromSp(inv.iconTextSize[InvariantDeviceProfile.INDEX_DEFAULT], mMetrics, scale);
         folderLabelTextSizePx = (int) (folderChildTextSizePx * folderLabelTextScale);
+        folderChildTextSizePx *= mTextFactors.getIconTextSizeFactor();
 
         int textHeight = Utilities.calculateTextHeight(folderChildTextSizePx);
 
