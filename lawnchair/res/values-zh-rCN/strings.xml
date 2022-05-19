@@ -18,7 +18,7 @@
     <string name="icon_pack">图标包</string>
     <string name="settings">设置</string>
     <string name="home_screen_label">主屏幕</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">订阅、网格、图标</string>
     <string name="general_label">通用</string>
     <string name="general_description">颜色、图标包与通知圆点</string>
     <string name="home_screen_rotation_label">主屏幕旋转</string>
@@ -233,12 +233,12 @@
     <string name="what_to_backup">选择要备份的内容</string>
     <string name="backup_content_layout_and_settings">布局和设置</string>
     <string name="backup_content_wallpaper">壁纸</string>
-    <string name="backup_create_success">Backup created.</string>
-    <string name="backup_create_error">Failed to create backup.</string>
+    <string name="backup_create_success">备份已创建。</string>
+    <string name="backup_create_error">创建备份失败.</string>
     <string name="restore_backup">恢复备份</string>
     <string name="restore_backup_action">恢复</string>
     <string name="what_to_restore">选择要恢复的内容</string>
-    <string name="backup_restore_success">Backup restored.</string>
-    <string name="backup_restore_error">Failed to restore backup.</string>
-    <string name="invalid_backup_file">Invalid backup file.</string>
+    <string name="backup_restore_success">备份已恢复。</string>
+    <string name="backup_restore_error">恢复备份失败。</string>
+    <string name="invalid_backup_file">无效的备份文件。</string>
 </resources>
