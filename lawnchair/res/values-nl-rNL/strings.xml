@@ -18,7 +18,7 @@
     <string name="icon_pack">Icoon pakket</string>
     <string name="settings">Instellingen</string>
     <string name="home_screen_label">Startscherm</string>
-    <string name="home_screen_description">Feed, At a Glance, raster, iconen</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">Algemeen</string>
     <string name="general_description">Kleuren, Icoon Pakket, Notificatie stippen</string>
     <string name="home_screen_rotation_label">Startpagina rotatie</string>
@@ -234,12 +234,12 @@
     <string name="what_to_backup">What to Back Up</string>
     <string name="backup_content_layout_and_settings">Lay-out en instellingen</string>
     <string name="backup_content_wallpaper">Achtergrond</string>
-    <string name="backup_create_success">Back-up gemaakt</string>
-    <string name="backup_create_error">Back-up maken mislukt</string>
+    <string name="backup_create_success">Backup created.</string>
+    <string name="backup_create_error">Failed to create backup.</string>
     <string name="restore_backup">Back-up herstellen</string>
     <string name="restore_backup_action">Herstellen</string>
     <string name="what_to_restore">Wat te herstellen</string>
-    <string name="backup_restore_success">Back-up teruggezet</string>
-    <string name="backup_restore_error">Back-up herstellen mislukt</string>
-    <string name="invalid_backup_file">Ongeldige back-up bestand</string>
+    <string name="backup_restore_success">Backup restored.</string>
+    <string name="backup_restore_error">Failed to restore backup.</string>
+    <string name="invalid_backup_file">Invalid backup file.</string>
 </resources>
