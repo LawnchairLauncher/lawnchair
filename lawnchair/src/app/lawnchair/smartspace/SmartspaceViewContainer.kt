@@ -27,7 +27,7 @@ class SmartspaceViewContainer @JvmOverloads constructor(
         val inflater = LayoutInflater.from(context)
         smartspaceView = inflater.inflate(R.layout.smartspace_enhanced, this, false) as BcSmartspaceView
         smartspaceView.previewMode = previewMode
-        smartspaceView.setOnLongClickListener {
+        setOnLongClickListener {
             openOptions()
             true
         }
