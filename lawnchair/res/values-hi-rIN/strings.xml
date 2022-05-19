@@ -18,7 +18,7 @@
     <string name="icon_pack">चिह्न पैक</string>
     <string name="settings">सेटिंग्स</string>
     <string name="home_screen_label">होम स्क्रीन</string>
-    <string name="home_screen_description">फ़ीड, एक नज़र में, ग्रिड, प्रतीक</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">सामान्य</string>
     <string name="general_description">नोटिफिकेशन डॉट्स, आइकन पैक</string>
     <string name="home_screen_rotation_label">होम स्क्रीन रोटेशन</string>
@@ -234,12 +234,12 @@
     <string name="what_to_backup">What to Back Up</string>
     <string name="backup_content_layout_and_settings">Layout and Settings</string>
     <string name="backup_content_wallpaper">वॉलपेपर</string>
-    <string name="backup_create_success">Backup created</string>
-    <string name="backup_create_error">Failed to create backup</string>
+    <string name="backup_create_success">Backup created.</string>
+    <string name="backup_create_error">Failed to create backup.</string>
     <string name="restore_backup">Restore Backup</string>
     <string name="restore_backup_action">Restore</string>
     <string name="what_to_restore">What to Restore</string>
-    <string name="backup_restore_success">Backup restored</string>
-    <string name="backup_restore_error">Failed to restore backup</string>
-    <string name="invalid_backup_file">Invalid backup file</string>
+    <string name="backup_restore_success">Backup restored.</string>
+    <string name="backup_restore_error">Failed to restore backup.</string>
+    <string name="invalid_backup_file">Invalid backup file.</string>
 </resources>
