@@ -231,7 +231,7 @@
     <string name="themed_icons_home_and_drawer_label">Ana Ekran &amp; Uygulama Çekmecesi</string>
     <string name="create_backup">Yedek Oluştur</string>
     <string name="create_backup_action">Oluştur</string>
-    <string name="what_to_backup">Neler Yedeklemeli</string>
+    <string name="what_to_backup">What to Back Up</string>
     <string name="backup_content_layout_and_settings">Düzen ve Ayarlar</string>
     <string name="backup_content_wallpaper">Duvar Kağıdı</string>
     <string name="backup_create_success">Yedek oluşturuldu</string>
