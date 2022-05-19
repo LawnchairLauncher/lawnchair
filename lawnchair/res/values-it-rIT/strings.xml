@@ -231,7 +231,7 @@
     <string name="themed_icons_home_and_drawer_label">Schermata home &amp; menu delle app</string>
     <string name="create_backup">Crea backup</string>
     <string name="create_backup_action">Crea</string>
-    <string name="what_to_backup">Cosa salvare</string>
+    <string name="what_to_backup">What to Back Up</string>
     <string name="backup_content_layout_and_settings">Layout e impostazioni</string>
     <string name="backup_content_wallpaper">Sfondo</string>
     <string name="backup_create_success">Backup creato</string>
