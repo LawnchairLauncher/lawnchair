@@ -196,13 +196,9 @@ fun ColumnScope.RestoreBackupOptions(
 fun restoreBackupOpener(): () -> Unit {
     val navController = LocalNavController.current
 
-    val context = LocalContext.current
     val request = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode != Activity.RESULT_OK) return@rememberLauncherForActivityResult
         val uri = it.data?.data ?: return@rememberLauncherForActivityResult
-
-        val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION
-        context.contentResolver.takePersistableUriPermission(uri, takeFlags)
 
         @Suppress("BlockingMethodInNonBlockingContext")
         val encodedUri = URLEncoder.encode(uri.toString(), "utf-8")
