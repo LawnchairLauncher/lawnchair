@@ -117,7 +117,7 @@
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Thin</string>
     <string name="font_weight_extra_light">Extra Light</string>
-    <string name="font_weight_light">Light</string>
+    <string name="font_weight_light">روشن</string>
     <string name="font_weight_regular">Regular</string>
     <string name="font_weight_medium">Medium</string>
     <string name="font_weight_semi_bold">Semibold</string>
