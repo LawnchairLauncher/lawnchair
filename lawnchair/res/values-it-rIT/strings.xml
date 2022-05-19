@@ -18,7 +18,7 @@
     <string name="icon_pack">Pacchetto icone</string>
     <string name="settings">Impostazioni</string>
     <string name="home_screen_label">Schermata home</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Feed, griglia, icone</string>
     <string name="general_label">Generale</string>
     <string name="general_description">Colori, Pacchetto Icone, Badge di notifica</string>
     <string name="home_screen_rotation_label">Rotazione schermata home</string>
@@ -234,12 +234,12 @@
     <string name="what_to_backup">Cosa salvare</string>
     <string name="backup_content_layout_and_settings">Layout e impostazioni</string>
     <string name="backup_content_wallpaper">Sfondo</string>
-    <string name="backup_create_success">Backup created.</string>
-    <string name="backup_create_error">Failed to create backup.</string>
+    <string name="backup_create_success">Backup creato.</string>
+    <string name="backup_create_error">Creazione backup non riuscita.</string>
     <string name="restore_backup">Ripristina backup</string>
     <string name="restore_backup_action">Ripristina</string>
     <string name="what_to_restore">Cosa ripristinare</string>
-    <string name="backup_restore_success">Backup restored.</string>
-    <string name="backup_restore_error">Failed to restore backup.</string>
-    <string name="invalid_backup_file">Invalid backup file.</string>
+    <string name="backup_restore_success">Backup ripristinato.</string>
+    <string name="backup_restore_error">Ripristino del backup non riuscito.</string>
+    <string name="invalid_backup_file">File di backup non valido.</string>
 </resources>
