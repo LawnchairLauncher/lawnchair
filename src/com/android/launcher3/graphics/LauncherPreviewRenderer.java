@@ -108,6 +108,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import app.lawnchair.DeviceProfileOverrides;
 import app.lawnchair.LawnchairAppWidgetHostView;
 import app.lawnchair.data.iconoverride.IconOverrideRepository;
 import app.lawnchair.font.FontCache;
@@ -154,6 +155,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
             putBaseInstance(IconPackProvider.INSTANCE);
             putBaseInstance(IconOverrideRepository.INSTANCE);
             putBaseInstance(SmartspaceProvider.INSTANCE);
+            putBaseInstance(DeviceProfileOverrides.INSTANCE);
             mObjectMap.put(InvariantDeviceProfile.INSTANCE, idp);
             mObjectMap.put(LauncherAppState.INSTANCE,
                     new LauncherAppState(this, null /* iconCacheFileName */));
