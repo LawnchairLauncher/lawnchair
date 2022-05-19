@@ -255,6 +255,7 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = {
             reloadHelper.reloadGrid()
             reloadHelper.reloadTaskbar()
+            reloadHelper.recreate()
         }
     )
 

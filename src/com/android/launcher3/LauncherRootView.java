@@ -19,11 +19,13 @@ import androidx.annotation.RequiresApi;
 import com.android.launcher3.graphics.SysUiScrim;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.uioverrides.ApiWrapper;
+import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
 
 import java.util.Collections;
 import java.util.List;
 
 import app.lawnchair.LawnchairApp;
+import app.lawnchair.preferences2.PreferenceManager2;
 
 public class LauncherRootView extends InsettableFrameLayout {
 
@@ -42,11 +44,14 @@ public class LauncherRootView extends InsettableFrameLayout {
     private boolean mForceHideBackArrow;
 
     private final SysUiScrim mSysUiScrim;
+    private final boolean mEnableTaskbarOnPhone;
 
     public LauncherRootView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mActivity = StatefulActivity.fromContext(context);
         mSysUiScrim = new SysUiScrim(this);
+        PreferenceManager2 prefs2 = PreferenceManager2.getInstance(getContext());
+        mEnableTaskbarOnPhone = PreferenceExtensionsKt.firstBlocking(prefs2.getEnableTaskbarOnPhone());
     }
 
     private void handleSystemWindowInsets(Rect insets) {
@@ -88,7 +93,7 @@ public class LauncherRootView extends InsettableFrameLayout {
      */
     @RequiresApi(api = Build.VERSION_CODES.R)
     private WindowInsets updateInsetsDueToTaskbar(WindowInsets oldInsets) {
-        if (!ApiWrapper.TASKBAR_DRAWN_IN_PROCESS) {
+        if (!ApiWrapper.TASKBAR_DRAWN_IN_PROCESS || !LawnchairApp.isRecentsEnabled()) {
             // 3P launchers based on Launcher3 should still be inset like normal.
             return oldInsets;
         }
@@ -101,6 +106,10 @@ public class LauncherRootView extends InsettableFrameLayout {
         Insets oldNavInsets = oldInsets.getInsets(WindowInsets.Type.navigationBars());
         Rect newNavInsets = new Rect(oldNavInsets.left, oldNavInsets.top, oldNavInsets.right,
                 oldNavInsets.bottom);
+
+        if (!dp.isTablet && !mEnableTaskbarOnPhone) {
+            return oldInsets;
+        }
 
         if (dp.isLandscape) {
             boolean isGesturalMode = ResourceUtils.getIntegerByName(
