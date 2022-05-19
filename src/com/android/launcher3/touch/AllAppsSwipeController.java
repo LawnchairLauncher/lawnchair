@@ -26,9 +26,11 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_DEPTH;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_TRANSLATE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_SCRIM_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCALE;
 
 import android.view.MotionEvent;
@@ -51,6 +53,7 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
     private static final float WORKSPACE_MOTION_START = 0.1667f;
     private static final float ALL_APPS_STATE_TRANSITION = 0.305f;
     private static final float ALL_APPS_FADE_END = 0.4717f;
+    private static final float ALL_APPS_FULL_DEPTH_PROGRESS = 0.5f;
 
     public static final Interpolator ALLAPPS_STAGGERED_FADE_EARLY_RESPONDER =
             Interpolators.clampToProgress(LINEAR, 0, ALLAPPS_STAGGERED_FADE_THRESHOLD);
@@ -58,14 +61,19 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
             Interpolators.clampToProgress(LINEAR, ALLAPPS_STAGGERED_FADE_THRESHOLD, 1f);
 
     // Custom interpolators for NORMAL -> ALL_APPS on phones only.
+    // The blur to All Apps is set to be complete when the interpolator is at 0.5.
     public static final Interpolator BLUR =
             Interpolators.clampToProgress(
-                    EMPHASIZED_DECELERATE, WORKSPACE_MOTION_START, ALL_APPS_STATE_TRANSITION);
+                    Interpolators.mapToProgress(
+                            EMPHASIZED_DECELERATE, 0f, ALL_APPS_FULL_DEPTH_PROGRESS),
+                    WORKSPACE_MOTION_START, ALL_APPS_STATE_TRANSITION);
+    public static final Interpolator WORKSPACE_FADE =
+            Interpolators.clampToProgress(FINAL_FRAME, 0f, ALL_APPS_STATE_TRANSITION);
     public static final Interpolator WORKSPACE_SCALE =
             Interpolators.clampToProgress(
                     EMPHASIZED_DECELERATE, WORKSPACE_MOTION_START, ALL_APPS_STATE_TRANSITION);
-    public static final Interpolator HOTSEAT_FADE =
-            Interpolators.clampToProgress(FINAL_FRAME, 0f, ALL_APPS_STATE_TRANSITION);
+    public static final Interpolator HOTSEAT_FADE = WORKSPACE_FADE;
+    public static final Interpolator HOTSEAT_SCALE = HOTSEAT_FADE;
     public static final Interpolator HOTSEAT_TRANSLATE =
             Interpolators.clampToProgress(
                     EMPHASIZED_ACCELERATE, WORKSPACE_MOTION_START, ALL_APPS_STATE_TRANSITION);
@@ -161,8 +169,10 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
             config.setInterpolator(ANIM_ALL_APPS_FADE, INSTANT);
         } else {
             config.setInterpolator(ANIM_DEPTH, BLUR);
+            config.setInterpolator(ANIM_WORKSPACE_FADE, WORKSPACE_FADE);
             config.setInterpolator(ANIM_WORKSPACE_SCALE, WORKSPACE_SCALE);
             config.setInterpolator(ANIM_HOTSEAT_FADE, HOTSEAT_FADE);
+            config.setInterpolator(ANIM_HOTSEAT_SCALE, HOTSEAT_SCALE);
             config.setInterpolator(ANIM_HOTSEAT_TRANSLATE, HOTSEAT_TRANSLATE);
             config.setInterpolator(ANIM_SCRIM_FADE, SCRIM_FADE);
             config.setInterpolator(ANIM_ALL_APPS_FADE, ALL_APPS_FADE);

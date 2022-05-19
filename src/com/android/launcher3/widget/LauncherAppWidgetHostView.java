@@ -457,7 +457,8 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         }
         // Remove and rebind the current widget (which was inflated in the wrong
         // orientation), but don't delete it from the database
-        mLauncher.removeItem(this, info, false  /* deleteFromDb */);
+        mLauncher.removeItem(this, info, false  /* deleteFromDb */,
+                "widget removed because of configuration change");
         mLauncher.bindAppWidget(info);
     }
 
