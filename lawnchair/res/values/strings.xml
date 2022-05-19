@@ -272,4 +272,5 @@
     <string name="backup_restore_success">Backup restored.</string>
     <string name="backup_restore_error">Failed to restore backup.</string>
     <string name="invalid_backup_file">Invalid backup file.</string>
+    <string name="google_folder_title" translatable="false">Google</string>
 </resources>
