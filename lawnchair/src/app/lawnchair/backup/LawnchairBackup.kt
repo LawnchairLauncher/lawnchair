@@ -167,6 +167,7 @@ class LawnchairBackup(
                         }
 
                         getFiles(context, forRestore = false).entries.forEach {
+                            if (!it.value.exists()) return@forEach
                             out.putNextEntry(ZipEntry(it.key))
                             it.value.inputStream().copyTo(out)
                         }
