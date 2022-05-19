@@ -213,7 +213,7 @@
     <string name="accessibility_smartspace_page">Pagina %1$d van %2$d</string>
     <string name="smartspace_widget">In een oogopslag</string>
     <string name="smartspace_widget_description">Wat te tonen</string>
-    <string name="smartspace_widget_placeholder_date">Vr, 3 mrt</string>
+    <string name="smartspace_widget_placeholder_date">Vr 3 mrt</string>
     <string name="quickstep_incompatible">Incompatibele systeem integratie</string>
     <string name="quickstep_incompatible_description">Uw apparaat is geconfigureerd om systeem gebaren (bekend als Quickstep) te gebruiken. Deze worden geleverd door %1$s, maar deze versie van %1$s is niet compatibel met uw Android versie. Om uw apparaat te blijven gebruiken, gelieve %1$s updates te verwijderen of %1$s als systeemgebaar provider uit te schakelen.</string>
     <string name="preview_label">Voorbeeld</string>
@@ -230,11 +230,11 @@
     <string name="themed_icons_home_label">Startscherm</string>
     <string name="themed_icons_home_and_drawer_label">Beginscherm &amp; App-overzicht</string>
     <string name="create_backup">Creëer back-up</string>
-    <string name="create_backup_action">Creëer</string>
+    <string name="create_backup_action">Aanmaken</string>
     <string name="what_to_backup">Wat te back-uppen</string>
     <string name="backup_content_layout_and_settings">Lay-out en instellingen</string>
     <string name="backup_content_wallpaper">Achtergrond</string>
-    <string name="backup_create_success">Back-up gecreëerd</string>
+    <string name="backup_create_success">Back-up gemaakt</string>
     <string name="backup_create_error">Back-up maken mislukt</string>
     <string name="restore_backup">Back-up herstellen</string>
     <string name="restore_backup_action">Herstellen</string>
