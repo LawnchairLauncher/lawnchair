@@ -18,7 +18,7 @@
     <string name="icon_pack">Pacote de Ícones</string>
     <string name="settings">Definições</string>
     <string name="home_screen_label">Ecrã Inicial</string>
-    <string name="home_screen_description">Feed, Num Relance, Grelha, Ícones</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">Geral</string>
     <string name="general_description">Cores, Pacote de Ícones, Pontos de Notificação</string>
     <string name="home_screen_rotation_label">Rotação de Ecrã Inicial</string>
@@ -234,12 +234,12 @@
     <string name="what_to_backup">What to Back Up</string>
     <string name="backup_content_layout_and_settings">Esquema e Definições</string>
     <string name="backup_content_wallpaper">Papel de Parede</string>
-    <string name="backup_create_success">Cópia de Segurança criada</string>
-    <string name="backup_create_error">Falha ao criar cópia de segurança</string>
+    <string name="backup_create_success">Backup created.</string>
+    <string name="backup_create_error">Failed to create backup.</string>
     <string name="restore_backup">Restaurar Cópia de Segurança</string>
     <string name="restore_backup_action">Restaurar</string>
     <string name="what_to_restore">O que Restaurar</string>
-    <string name="backup_restore_success">Cópia de Segurança restaurada</string>
-    <string name="backup_restore_error">Falha ao restaurar cópia de segurança</string>
-    <string name="invalid_backup_file">Ficheiro de cópia de segurança inválido</string>
+    <string name="backup_restore_success">Backup restored.</string>
+    <string name="backup_restore_error">Failed to restore backup.</string>
+    <string name="invalid_backup_file">Invalid backup file.</string>
 </resources>
