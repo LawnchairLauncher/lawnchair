@@ -231,7 +231,7 @@
     <string name="themed_icons_home_and_drawer_label">Pantalla de inicio &amp; Cajón de aplicaciones</string>
     <string name="create_backup">Crear copia de seguridad</string>
     <string name="create_backup_action">Crear</string>
-    <string name="what_to_backup">Qué copiar</string>
+    <string name="what_to_backup">What to Back Up</string>
     <string name="backup_content_layout_and_settings">Diseño y ajustes</string>
     <string name="backup_content_wallpaper">Fondo de Pantalla</string>
     <string name="backup_create_success">Copia de seguridad creada</string>
