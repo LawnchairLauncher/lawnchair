@@ -18,7 +18,7 @@
     <string name="icon_pack">Gói biểu tượng</string>
     <string name="settings">Cài đặt</string>
     <string name="home_screen_label">Màn hình chính</string>
-    <string name="home_screen_description">Feed, Lưới, Biểu tượng</string>
+    <string name="home_screen_description">Bảng tin, Lưới, Biểu tượng</string>
     <string name="general_label">Chung</string>
     <string name="general_description">Màu sắc, Gói biểu tượng, Dấu chấm thông báo</string>
     <string name="home_screen_rotation_label">Xoay màn hình chính</string>
@@ -50,7 +50,7 @@
     <string name="acknowledgements">Ghi nhận</string>
     <string name="devops">Tuỳ chọn của lập trình viên</string>
     <string name="quickswitch_maintenance">Duy trì QuickSwitch</string>
-    <string name="all_apps_search_bar_hint">Tìm Ứng dụng</string>
+    <string name="all_apps_search_bar_hint">Tìm ứng dụng</string>
     <string name="settings_button_text">Cài đặt màn hình chính</string>
     <string name="development">Sự phát triển</string>
     <string name="app_info_drop_target_label">Thông tin ứng dụng</string>
