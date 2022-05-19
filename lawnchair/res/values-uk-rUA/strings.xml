@@ -233,7 +233,7 @@
     <string name="themed_icons_home_and_drawer_label">Домашній екран &amp; Меню додатків</string>
     <string name="create_backup">Створити резервну копію</string>
     <string name="create_backup_action">Створити</string>
-    <string name="what_to_backup">Що резервувати</string>
+    <string name="what_to_backup">What to Back Up</string>
     <string name="backup_content_layout_and_settings">Макет та налаштування</string>
     <string name="backup_content_wallpaper">Шпалери</string>
     <string name="backup_create_success">Резервну копію створено</string>
