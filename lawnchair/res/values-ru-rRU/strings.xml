@@ -233,7 +233,7 @@
     <string name="themed_icons_home_and_drawer_label">Домашний экран &amp; Панель приложений</string>
     <string name="create_backup">Создать резервную копию</string>
     <string name="create_backup_action">Создать</string>
-    <string name="what_to_backup">Что нужно сохранить</string>
+    <string name="what_to_backup">What to Back Up</string>
     <string name="backup_content_layout_and_settings">Расположение и настройки</string>
     <string name="backup_content_wallpaper">Обои</string>
     <string name="backup_create_success">Резервная копия создана</string>
