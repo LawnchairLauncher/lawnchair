@@ -233,7 +233,7 @@
     <string name="what_to_backup">バックアップする項目</string>
     <string name="backup_content_layout_and_settings">レイアウトと設定</string>
     <string name="backup_content_wallpaper">壁紙</string>
-    <string name="backup_create_success">バックアップが作成されました</string>
+    <string name="backup_create_success">バックアップを作成しました。</string>
     <string name="backup_create_error">バックアップの作成に失敗しました。</string>
     <string name="restore_backup">バックアップを復元</string>
     <string name="restore_backup_action">復元</string>
