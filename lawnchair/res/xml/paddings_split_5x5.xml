@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<device-paddings xmlns:launcher="http://schemas.android.com/apk/res-auto">
+
+    <device-padding launcher:maxEmptySpace="3dp">
+        <workspaceTopPadding launcher:a="1" launcher:b="0"/>
+        <workspaceBottomPadding launcher:a="0" launcher:b="0"/>
+        <hotseatBottomPadding launcher:a="0" launcher:b="0"/>
+    </device-padding>
+
+    <device-padding launcher:maxEmptySpace="30dp">
+        <workspaceTopPadding launcher:a="0" launcher:b="8dp"/>
+        <workspaceBottomPadding launcher:a="1" launcher:c="24dp"/>
+        <hotseatBottomPadding launcher:a="0" launcher:b="16dp"/>
+    </device-padding>
+
+    <device-padding launcher:maxEmptySpace="100dp">
+        <workspaceTopPadding launcher:a="0" launcher:b="48dp"/>
+        <workspaceBottomPadding launcher:a="1" launcher:c="84dp"/>
+        <hotseatBottomPadding launcher:a="0" launcher:b="36dp"/>
+    </device-padding>
+
+    <device-padding launcher:maxEmptySpace="132dp">
+        <workspaceTopPadding launcher:a="0" launcher:b="48dp"/>
+        <workspaceBottomPadding launcher:a="1" launcher:c="92dp"/>
+        <hotseatBottomPadding launcher:a="0" launcher:b="44dp"/>
+    </device-padding>
+
+    <device-padding launcher:maxEmptySpace="138dp">
+        <workspaceTopPadding launcher:a="0" launcher:b="84dp"/>
+        <workspaceBottomPadding launcher:a="1" launcher:c="108dp"/>
+        <hotseatBottomPadding launcher:a="0" launcher:b="24dp"/>
+    </device-padding>
+
+    <device-padding launcher:maxEmptySpace="170dp">
+        <workspaceTopPadding launcher:a="0" launcher:b="84dp"/>
+        <workspaceBottomPadding launcher:a="1" launcher:c="130dp"/>
+        <hotseatBottomPadding launcher:a="0" launcher:b="46dp"/>
+    </device-padding>
+
+    <device-padding launcher:maxEmptySpace="9999dp">
+        <workspaceTopPadding launcher:a="0.4" launcher:c="36dp"/>
+        <workspaceBottomPadding launcher:a="0.6" launcher:c="36dp"/>
+        <hotseatBottomPadding launcher:a="0" launcher:b="36dp"/>
+    </device-padding>
+</device-paddings>
