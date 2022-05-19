@@ -18,7 +18,7 @@
     <string name="icon_pack">Paket Ikon</string>
     <string name="settings">Pengaturan</string>
     <string name="home_screen_label">Tampilan Depan</string>
-    <string name="home_screen_description">Umpan Berita,</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">Umum</string>
     <string name="general_description">Warna, Titik Notifikasi, Paket Ikon</string>
     <string name="home_screen_rotation_label">Rotasi Layar Beranda</string>
@@ -233,12 +233,12 @@
     <string name="what_to_backup">What to Back Up</string>
     <string name="backup_content_layout_and_settings">Tata Letak dan Setelan</string>
     <string name="backup_content_wallpaper">Wallpaper</string>
-    <string name="backup_create_success">Cadangan dibuat</string>
-    <string name="backup_create_error">Gagal membuat cadangan</string>
+    <string name="backup_create_success">Backup created.</string>
+    <string name="backup_create_error">Failed to create backup.</string>
     <string name="restore_backup">Pulihkan cadangan</string>
     <string name="restore_backup_action">Pulihkan</string>
     <string name="what_to_restore">Apa yang Dipulihkan</string>
-    <string name="backup_restore_success">Cadangan dipulihkan</string>
-    <string name="backup_restore_error">Gagal memulihkan cadangan</string>
-    <string name="invalid_backup_file">Berkas cadangan tidak valid</string>
+    <string name="backup_restore_success">Backup restored.</string>
+    <string name="backup_restore_error">Failed to restore backup.</string>
+    <string name="invalid_backup_file">Invalid backup file.</string>
 </resources>
