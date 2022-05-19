@@ -18,7 +18,7 @@
     <string name="icon_pack">Simge Paketi</string>
     <string name="settings">Ayarlar</string>
     <string name="home_screen_label">Ana Ekran</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Akış, Bir Bakışta, Izgara, Simgeler</string>
     <string name="general_label">Genel</string>
     <string name="general_description">Renkler, Simge Paketi, Bildirim Noktaları</string>
     <string name="home_screen_rotation_label">Ana Ekran Rotasyonu</string>
@@ -204,6 +204,7 @@
     <string name="reset_custom_icons">Özel Simgeleri Sıfırla</string>
     <string name="reset_custom_icons_confirmation">Tüm özel simgeler sıfırlanacak. Devam etmek istiyor musun?</string>
     <string name="taskbar_label">Taskbar</string>
+    <string name="enable_taskbar_experimental">Görev Çubuğunu Etkinleştir (Deneysel)</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Şarj ediliyor</string>
@@ -228,4 +229,17 @@
     <string name="themed_icons_off_label">Kapat</string>
     <string name="themed_icons_home_label">Ana Ekran</string>
     <string name="themed_icons_home_and_drawer_label">Ana Ekran &amp; Uygulama Çekmecesi</string>
+    <string name="create_backup">Yedek Oluştur</string>
+    <string name="create_backup_action">Oluştur</string>
+    <string name="what_to_backup">What to Back Up</string>
+    <string name="backup_content_layout_and_settings">Düzen ve Ayarlar</string>
+    <string name="backup_content_wallpaper">Duvar Kağıdı</string>
+    <string name="backup_create_success">Yedek oluşturuldu</string>
+    <string name="backup_create_error">Yedek oluşturulamadı</string>
+    <string name="restore_backup">Yedeklemeyi Geri Yükle</string>
+    <string name="restore_backup_action">Eski haline getir</string>
+    <string name="what_to_restore">Geri Yüklenecekler</string>
+    <string name="backup_restore_success">Yedekleme geri yüklendi</string>
+    <string name="backup_restore_error">Yedek oluşturulamadı</string>
+    <string name="invalid_backup_file">Geçersiz yedekleme dosyası</string>
 </resources>
