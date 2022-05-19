@@ -18,7 +18,7 @@
     <string name="icon_pack">Набор иконок</string>
     <string name="settings">Настройки</string>
     <string name="home_screen_label">Домашний экран</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Лента, Сетка, Иконки</string>
     <string name="general_label">Общие</string>
     <string name="general_description">Значки уведомлений, Набор иконок</string>
     <string name="home_screen_rotation_label">Поворачивать домашний экран</string>
@@ -236,12 +236,12 @@
     <string name="what_to_backup">Что нужно сохранить</string>
     <string name="backup_content_layout_and_settings">Расположение и настройки</string>
     <string name="backup_content_wallpaper">Обои</string>
-    <string name="backup_create_success">Backup created.</string>
-    <string name="backup_create_error">Failed to create backup.</string>
+    <string name="backup_create_success">Резервная копия создана.</string>
+    <string name="backup_create_error">Не удалось создать резервную копию.</string>
     <string name="restore_backup">Восстановление резервной копии</string>
     <string name="restore_backup_action">Восстановить</string>
     <string name="what_to_restore">Что восстанавливать</string>
-    <string name="backup_restore_success">Backup restored.</string>
-    <string name="backup_restore_error">Failed to restore backup.</string>
-    <string name="invalid_backup_file">Invalid backup file.</string>
+    <string name="backup_restore_success">Резервная копия восстановлена.</string>
+    <string name="backup_restore_error">Не удалось восстановить резервную копию.</string>
+    <string name="invalid_backup_file">Файл резервной копии недействителен.</string>
 </resources>
