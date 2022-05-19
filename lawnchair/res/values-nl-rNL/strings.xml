@@ -231,7 +231,7 @@
     <string name="themed_icons_home_and_drawer_label">Beginscherm &amp; App-overzicht</string>
     <string name="create_backup">Creëer back-up</string>
     <string name="create_backup_action">Aanmaken</string>
-    <string name="what_to_backup">Wat te back-uppen</string>
+    <string name="what_to_backup">What to Back Up</string>
     <string name="backup_content_layout_and_settings">Lay-out en instellingen</string>
     <string name="backup_content_wallpaper">Achtergrond</string>
     <string name="backup_create_success">Back-up gemaakt</string>
