@@ -83,7 +83,7 @@ fun CreateBackupScreen(viewModel: CreateBackupViewModel) {
                 Log.e("CreateBackupScreen", "failed to create backup", t)
                 Toast.makeText(context, R.string.backup_create_error, Toast.LENGTH_SHORT).show()
             }
-            creatingBackup = true
+            creatingBackup = false
         }
     }
 
