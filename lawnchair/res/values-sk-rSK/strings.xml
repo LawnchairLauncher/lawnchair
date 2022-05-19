@@ -18,7 +18,7 @@
     <string name="icon_pack">Balíček ikon</string>
     <string name="settings">Nastavenia</string>
     <string name="home_screen_label">Domovská obrazovka</string>
-    <string name="home_screen_description">Google Feed, Prehľad udalostí, Ikony</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">Všeobecné</string>
     <string name="general_description">Farby, Balíčky ikon, Bodky upozornení</string>
     <string name="home_screen_rotation_label">Rotácia domovskej obrazovky</string>
@@ -236,12 +236,12 @@
     <string name="what_to_backup">What to Back Up</string>
     <string name="backup_content_layout_and_settings">Rozloženie a nastavenia</string>
     <string name="backup_content_wallpaper">Tapeta</string>
-    <string name="backup_create_success">Záloha bola vytvorená</string>
-    <string name="backup_create_error">Vytvorenie zálohy zlyhalo</string>
+    <string name="backup_create_success">Backup created.</string>
+    <string name="backup_create_error">Failed to create backup.</string>
     <string name="restore_backup">Obnoviť zálohu</string>
     <string name="restore_backup_action">Obnoviť</string>
     <string name="what_to_restore">Čo sa má obnoviť</string>
-    <string name="backup_restore_success">Záloha bola obnovená</string>
-    <string name="backup_restore_error">Nepodarilo sa obnoviť zálohu</string>
-    <string name="invalid_backup_file">Neplatný súbor zálohy</string>
+    <string name="backup_restore_success">Backup restored.</string>
+    <string name="backup_restore_error">Failed to restore backup.</string>
+    <string name="invalid_backup_file">Invalid backup file.</string>
 </resources>
