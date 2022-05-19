@@ -42,24 +42,26 @@ import app.lawnchair.util.restartLauncher
 import com.android.launcher3.R
 import com.google.accompanist.navigation.animation.composable
 import kotlinx.coroutines.launch
-import java.net.URLDecoder
-import java.net.URLEncoder
+import java.util.Base64
 
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.restoreBackupGraph(route: String) {
     preferenceGraph(route, {}) { subRoute ->
         composable(
-            route = subRoute("{backupUri}"),
+            route = subRoute("{base64Uri}"),
             arguments = listOf(
-                navArgument("backupUri") { type = NavType.StringType }
+                navArgument("base64Uri") { type = NavType.StringType }
             )
         ) { backStackEntry ->
             val args = backStackEntry.arguments!!
-            val encodedUri = args.getString("backupUri")!!
-            val backupUriString = URLDecoder.decode(encodedUri, "utf-8")
+            val backupUri = remember {
+                val base64Uri = args.getString("base64Uri")!!
+                val backupUriString = String(Base64.getDecoder().decode(base64Uri))
+                Uri.parse(backupUriString)
+            }
             val viewModel: RestoreBackupViewModel = viewModel()
             DisposableEffect(key1 = null) {
-                viewModel.init(Uri.parse(backupUriString))
+                viewModel.init(backupUri)
                 onDispose {  }
             }
             RestoreBackupScreen(viewModel)
@@ -200,9 +202,8 @@ fun restoreBackupOpener(): () -> Unit {
         if (it.resultCode != Activity.RESULT_OK) return@rememberLauncherForActivityResult
         val uri = it.data?.data ?: return@rememberLauncherForActivityResult
 
-        @Suppress("BlockingMethodInNonBlockingContext")
-        val encodedUri = URLEncoder.encode(uri.toString(), "utf-8")
-        navController.navigate("/${Routes.RESTORE_BACKUP}/${encodedUri}/")
+        val base64Uri = Base64.getEncoder().encodeToString(uri.toString().toByteArray())
+        navController.navigate("/${Routes.RESTORE_BACKUP}/${base64Uri}/")
     }
 
     return {
