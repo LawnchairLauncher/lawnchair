@@ -230,7 +230,7 @@
     <string name="themed_icons_home_and_drawer_label">Tampilan Depan &amp; Halaman Aplikasi</string>
     <string name="create_backup">Buat Cadangan</string>
     <string name="create_backup_action">Buat</string>
-    <string name="what_to_backup">Apa yang Dicadangkan</string>
+    <string name="what_to_backup">What to Back Up</string>
     <string name="backup_content_layout_and_settings">Tata Letak dan Setelan</string>
     <string name="backup_content_wallpaper">Wallpaper</string>
     <string name="backup_create_success">Cadangan dibuat</string>
