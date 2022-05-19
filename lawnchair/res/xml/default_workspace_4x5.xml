@@ -74,7 +74,7 @@
         launcher:title="@string/google_folder_title"
         launcher:screen="0"
         launcher:x="0"
-        launcher:y="3">
+        launcher:y="-1">
         <favorite
             launcher:packageName="com.google.android.googlequicksearchbox"
             launcher:className="com.google.android.googlequicksearchbox.SearchActivity"/>
@@ -107,7 +107,7 @@
     <favorite
         launcher:screen="0"
         launcher:x="3"
-        launcher:y="3"
+        launcher:y="-1"
         launcher:packageName="com.android.vending"
         launcher:className="com.android.vending.AssetBrowserActivity"/>
 
