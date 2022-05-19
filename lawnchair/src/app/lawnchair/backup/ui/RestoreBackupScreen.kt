@@ -122,7 +122,7 @@ fun ColumnScope.RestoreBackupOptions(
                 Toast.makeText(context, R.string.backup_restore_success, Toast.LENGTH_SHORT).show()
                 restartLauncher(context)
             } catch (t: Throwable) {
-                Log.d("RestoreBackupScreen", "failed to restore backup", t)
+                Log.e("RestoreBackupScreen", "failed to restore backup", t)
                 Toast.makeText(context, R.string.backup_restore_error, Toast.LENGTH_SHORT).show()
             }
             restoringBackup = false
@@ -148,7 +148,6 @@ fun ColumnScope.RestoreBackupOptions(
             }
             val screenshot = backup.screenshot
             if (contents.hasFlag(LawnchairBackup.INCLUDE_LAYOUT_AND_SETTINGS) && screenshot != null) {
-                Log.d("RestoreBackupScreen", "height: ${screenshot.height}")
                 Image(
                     bitmap = screenshot.asImageBitmap(),
                     contentDescription = null,

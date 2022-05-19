@@ -68,7 +68,7 @@ class RestoreBackupViewModel(
                 setBackupContents(backup.info.contents)
                 viewModelState.update { it.copy(backup = backup) }
             } catch (t: Throwable) {
-                Log.d("RestoreBackupViewModel", "failed to parse backup", t)
+                Log.e("RestoreBackupViewModel", "failed to parse backup", t)
                 viewModelState.update { it.copy(hasError = true) }
             }
         }

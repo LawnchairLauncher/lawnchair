@@ -80,7 +80,7 @@ fun CreateBackupScreen(viewModel: CreateBackupViewModel) {
                 navController.popBackStack()
                 Toast.makeText(context, R.string.backup_create_success, Toast.LENGTH_SHORT).show()
             } catch (t: Throwable) {
-                Log.d("CreateBackupScreen", "failed to create backup", t)
+                Log.e("CreateBackupScreen", "failed to create backup", t)
                 Toast.makeText(context, R.string.backup_create_error, Toast.LENGTH_SHORT).show()
             }
             creatingBackup = true
