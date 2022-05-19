@@ -78,7 +78,7 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"チュートリアル <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"設定完了"</string>
     <string name="allset_hint" msgid="2384632994739392447">"ホームに移動するには上にスワイプします"</string>
-    <string name="allset_description" msgid="6350320429953234580">"スマートフォンを使い始めることができます"</string>
+    <string name="allset_description" msgid="6350320429953234580">"スマートフォンを使用する準備ができました"</string>
     <string name="allset_description_tablet" msgid="7332070270570039247">"これでタブレットが使えるようになりました"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"システム ナビゲーションの設定"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"共有"</string>
