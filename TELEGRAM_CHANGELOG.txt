@@ -1,11 +1,1 @@
-Lawnchair 12.1 is here! This release is based on Launcher3 from Android 12.1 and works with QuickSwitch on Android 12.1. In addition, it includes the following new features:
-
-• a new At a Glance widget
-• an option to show Themed Icons in the App Drawer
-• the ability to change the search provider for the Dock search bar (thanks to <a href="https://github.com/evowizz">Dylan Roussel</a>)
-• multiple new shapes for Adaptive Icons (thanks to <a href="https://github.com/yasandev">@yasandev</a> and <a href="https://github.com/DariaHamrahPaytakht">Daria Hamrah Paytakht</a>)
-• an option to display the notification count in Notification Dots (thanks to <a href="https://github.com/yasandev">@yasandev</a> and <a href="https://github.com/DariaHamrahPaytakht">Daria Hamrah Paytakht</a>)
-• the ability to add custom fonts
-• if Lawnchair is connected to QuickSwitch, an option to make the Recents background translucent
-
-Also included in this version are bug fixes and other improvements. Thanks go to <a href="https://github.com/arter97">Juhyung Park</a>, <a href="https://github.com/npv12">Pranav Santhosh</a>, <a href="https://github.com/erfanoabdi">Erfan Abdi</a>, and <a href="https://github.com/SuperDragonXD">@SuperDragonXD</a> for their contributions.
+Lawnchair 12.1.0 Alpha 2 introduces backup functionality and resolves an issue where, on devices with Spanish set as the system display language, Lawnchair would crash on being opened.
