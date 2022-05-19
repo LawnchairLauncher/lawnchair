@@ -18,7 +18,7 @@
     <string name="icon_pack">Pack d\'icônes</string>
     <string name="settings">Paramètres</string>
     <string name="home_screen_label">Écran d\'accueil</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Flux, Grille, Icônes</string>
     <string name="general_label">Général</string>
     <string name="general_description">Couleurs, Pack d\'icônes, Pastilles de notification</string>
     <string name="home_screen_rotation_label">Rotation de l\'écran d\'accueil</string>
@@ -204,6 +204,7 @@
     <string name="reset_custom_icons">Réinitialiser les icônes personnalisées</string>
     <string name="reset_custom_icons_confirmation">Toutes les icônes personnalisées seront réinitialisées. Voulez-vous continuer ?</string>
     <string name="taskbar_label">Barre des tâches</string>
+    <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Recharge en cours</string>
@@ -228,4 +229,17 @@
     <string name="themed_icons_off_label">Off</string>
     <string name="themed_icons_home_label">Écran d\'accueil</string>
     <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
+    <string name="create_backup">Create Backup</string>
+    <string name="create_backup_action">Create</string>
+    <string name="what_to_backup">What to Back Up</string>
+    <string name="backup_content_layout_and_settings">Layout and Settings</string>
+    <string name="backup_content_wallpaper">Fond d\'écran</string>
+    <string name="backup_create_success">Sauvegarde crée.</string>
+    <string name="backup_create_error">Impossible de créer une sauvegarde.</string>
+    <string name="restore_backup">Restore Backup</string>
+    <string name="restore_backup_action">Restore</string>
+    <string name="what_to_restore">What to Restore</string>
+    <string name="backup_restore_success">Sauvegarde restaurée.</string>
+    <string name="backup_restore_error">Échec de la restauration de la sauvegarde.</string>
+    <string name="invalid_backup_file">Fichier de sauvegarde invalide.</string>
 </resources>

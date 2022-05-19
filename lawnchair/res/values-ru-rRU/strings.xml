@@ -18,7 +18,7 @@
     <string name="icon_pack">Набор иконок</string>
     <string name="settings">Настройки</string>
     <string name="home_screen_label">Домашний экран</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Лента, Сетка, Иконки</string>
     <string name="general_label">Общие</string>
     <string name="general_description">Значки уведомлений, Набор иконок</string>
     <string name="home_screen_rotation_label">Поворачивать домашний экран</string>
@@ -206,6 +206,7 @@
     <string name="reset_custom_icons">Сброс пользовательских значков</string>
     <string name="reset_custom_icons_confirmation">Все пользовательские иконки будут сброшены. Вы хотите продолжить?</string>
     <string name="taskbar_label">Панель задач</string>
+    <string name="enable_taskbar_experimental">Включить панель задач (экспериментально)</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Зарядка</string>
@@ -230,4 +231,17 @@
     <string name="themed_icons_off_label">Выкл</string>
     <string name="themed_icons_home_label">Домашний экран</string>
     <string name="themed_icons_home_and_drawer_label">Домашний экран &amp; Панель приложений</string>
+    <string name="create_backup">Создать резервную копию</string>
+    <string name="create_backup_action">Создать</string>
+    <string name="what_to_backup">Что нужно сохранить</string>
+    <string name="backup_content_layout_and_settings">Расположение и настройки</string>
+    <string name="backup_content_wallpaper">Обои</string>
+    <string name="backup_create_success">Резервная копия создана.</string>
+    <string name="backup_create_error">Не удалось создать резервную копию.</string>
+    <string name="restore_backup">Восстановление резервной копии</string>
+    <string name="restore_backup_action">Восстановить</string>
+    <string name="what_to_restore">Что восстанавливать</string>
+    <string name="backup_restore_success">Резервная копия восстановлена.</string>
+    <string name="backup_restore_error">Не удалось восстановить резервную копию.</string>
+    <string name="invalid_backup_file">Файл резервной копии недействителен.</string>
 </resources>
