@@ -193,9 +193,19 @@ public final class Utilities {
         return Log.isLoggable(propertyName, Log.VERBOSE);
     }
 
+    public static boolean showStyleWallpapers(Context context) {
+        return existsStyleWallpapers(context) || existsStyleWallpapersAlt(context);
+    }
+
     public static boolean existsStyleWallpapers(Context context) {
         ResolveInfo ri = context.getPackageManager().resolveActivity(
                 PackageManagerHelper.getStyleWallpapersIntent(context), 0);
+        return ri != null;
+    }
+
+    public static boolean existsStyleWallpapersAlt(Context context) {
+        ResolveInfo ri = context.getPackageManager().resolveActivity(
+                PackageManagerHelper.getStyleWallpapersAltIntent(context), 0);
         return ri != null;
     }
 

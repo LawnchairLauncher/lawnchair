@@ -192,9 +192,10 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
                     LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS,
                     OptionsPopupView::onWidgetsClicked));
         }
-        int resString = Utilities.existsStyleWallpapers(launcher) ?
+        boolean showStyleWallpapers = Utilities.showStyleWallpapers(launcher);
+        int resString = showStyleWallpapers ?
                 R.string.styles_wallpaper_button_text : R.string.wallpaper_button_text;
-        int resDrawable = Utilities.existsStyleWallpapers(launcher) ?
+        int resDrawable = showStyleWallpapers ?
                 R.drawable.ic_palette : R.drawable.ic_wallpaper;
         options.add(new OptionItem(launcher,
                 resString,
@@ -249,13 +250,16 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
                 .putExtra(EXTRA_WALLPAPER_OFFSET,
                         launcher.getWorkspace().getWallpaperOffsetForCenterPage())
                 .putExtra(EXTRA_WALLPAPER_LAUNCH_SOURCE, "app_launched_launcher");
-        if (!Utilities.existsStyleWallpapers(launcher)) {
+        if (!Utilities.showStyleWallpapers(launcher)) {
             intent.putExtra(EXTRA_WALLPAPER_FLAVOR, "wallpaper_only");
         } else {
             intent.putExtra(EXTRA_WALLPAPER_FLAVOR, "focus_wallpaper");
         }
-        String pickerPackage = launcher.getString(R.string.wallpaper_picker_package);
-        if (!TextUtils.isEmpty(pickerPackage)) {
+        if (Utilities.existsStyleWallpapersAlt(v.getContext())) {
+            String pickerPackage = launcher.getString(R.string.wallpaper_picker_package_alt);
+            intent.setPackage(pickerPackage);
+        } else if (Utilities.existsStyleWallpapers(v.getContext())) {
+            String pickerPackage = launcher.getString(R.string.wallpaper_picker_package);
             intent.setPackage(pickerPackage);
         }
         return launcher.startActivitySafely(v, intent, placeholderInfo(intent));

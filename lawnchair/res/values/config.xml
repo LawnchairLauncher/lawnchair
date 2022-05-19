@@ -23,7 +23,7 @@
     <string name="main_process_initializer_class" translatable="false">app.lawnchair.LawnchairProcessInitializer</string>
     <string name="task_overlay_factory_class" translatable="false">app.lawnchair.overview.TaskOverlayFactoryImpl</string>
     <string name="wallpaper_picker_package" translatable="false">com.android.wallpaper</string>
-    <string name="wallpaper_picker_package_alt" translatable="false">com.android.wallpaper</string>
+    <string name="wallpaper_picker_package_alt" translatable="false">com.google.android.apps.wallpaper</string>
 
     <bool name="config_header_protection_supported">true</bool>
 
