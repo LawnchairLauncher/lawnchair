@@ -230,7 +230,7 @@
     <string name="themed_icons_home_and_drawer_label">ホーム画面 &amp; アプリドロワー</string>
     <string name="create_backup">バックアップを作成</string>
     <string name="create_backup_action">作成</string>
-    <string name="what_to_backup">バックアップする項目</string>
+    <string name="what_to_backup">What to Back Up</string>
     <string name="backup_content_layout_and_settings">レイアウトと設定</string>
     <string name="backup_content_wallpaper">壁紙</string>
     <string name="backup_create_success">バックアップの作成</string>
