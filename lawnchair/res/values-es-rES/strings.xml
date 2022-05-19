@@ -18,7 +18,7 @@
     <string name="icon_pack">Paquete de iconos</string>
     <string name="settings">Ajustes</string>
     <string name="home_screen_label">Pantalla de Inicio</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Feed, De un vistazo, Cuadrícula, iconos</string>
     <string name="general_label">General</string>
     <string name="general_description">Colores, Paquete de Íconos, Puntos de Notificación</string>
     <string name="home_screen_rotation_label">Rotación de Pantalla de Inicio</string>
@@ -201,9 +201,10 @@
     <string name="status_bar_label">Barra de estado</string>
     <string name="show_notification_count">Mostrar contador de notificaciones</string>
     <string name="icon_picker_load_failed">No se han podido cargar más iconos.</string>
-    <string name="reset_custom_icons">Reiniciar iconos personalizados</string>
-    <string name="reset_custom_icons_confirmation">Todos los iconos personalizados se reiniciarán. ¿Desea continuar?</string>
+    <string name="reset_custom_icons">Restablecer iconos personalizados</string>
+    <string name="reset_custom_icons_confirmation">Todos los iconos personalizados se restablecerán. ¿Desea continuar?</string>
     <string name="taskbar_label">Barra de tareas</string>
+    <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Cargando</string>
@@ -214,9 +215,9 @@
     <string name="smartspace_widget_description">Qué mostrar</string>
     <string name="smartspace_widget_placeholder_date">Vie, 3 de Mar</string>
     <string name="quickstep_incompatible">Integración del sistema incompatible</string>
-    <string name="quickstep_incompatible_description">Su dispositivo está configurado para tener gestos del sistema (conocidos como Quickstep) proporcionados por %1$s, pero esta versión de %1$s no es compatible con su versión de Android. Para continuar utilizando su dispositivo, desinstale actualizaciones de %1$s o deshabilite %1$s como proveedor de gestos de sistema.</string>
+    <string name="quickstep_incompatible_description">Su dispositivo está configurado para tener gestos del sistema (conocidos como Quickstep) proporcionados por %1$s, pero esta versión de %1$s no es compatible con tu versión de Android. Para continuar utilizando tu dispositivo, por favor desinstala las actualizaciones de %1$s o deshabilita %1$s como proveedor de gestos de sistema.</string>
     <string name="preview_label">Vista previa</string>
-    <string name="smartspace_weather">Tiempo</string>
+    <string name="smartspace_weather">Clima</string>
     <string name="smartspace_battery_status">Estado de la batería</string>
     <string name="smartspace_now_playing">Reproduciendo</string>
     <string name="smartspace_requires_setup">Toca para configurar</string>
@@ -228,4 +229,17 @@
     <string name="themed_icons_off_label">Apagado</string>
     <string name="themed_icons_home_label">Pantalla de Inicio</string>
     <string name="themed_icons_home_and_drawer_label">Pantalla de inicio &amp; Cajón de aplicaciones</string>
+    <string name="create_backup">Crear copia de seguridad</string>
+    <string name="create_backup_action">Crear</string>
+    <string name="what_to_backup">What to Back Up</string>
+    <string name="backup_content_layout_and_settings">Diseño y ajustes</string>
+    <string name="backup_content_wallpaper">Fondo de Pantalla</string>
+    <string name="backup_create_success">Copia de seguridad creada</string>
+    <string name="backup_create_error">No se pudo crear la copia de seguridad</string>
+    <string name="restore_backup">Restaurar copia de seguridad</string>
+    <string name="restore_backup_action">Restaurar</string>
+    <string name="what_to_restore">Qué restaurar</string>
+    <string name="backup_restore_success">Copia de seguridad restaurada</string>
+    <string name="backup_restore_error">No se pudo restaurar la copia de seguridad</string>
+    <string name="invalid_backup_file">Archivo de copia de seguridad inválido</string>
 </resources>
