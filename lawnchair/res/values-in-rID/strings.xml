@@ -203,7 +203,7 @@
     <string name="reset_custom_icons">Atur Ulang Ikon Kustom</string>
     <string name="reset_custom_icons_confirmation">Semua ikon kustom akan diatur ulang. Apakah Anda ingin melanjutkan?</string>
     <string name="taskbar_label">Bilah Tugas</string>
-    <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
+    <string name="enable_taskbar_experimental">Aktifkan Bilah Tugas (Eksperimental)</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Mengisi daya</string>
@@ -228,12 +228,12 @@
     <string name="themed_icons_off_label">Mati</string>
     <string name="themed_icons_home_label">Tampilan Depan</string>
     <string name="themed_icons_home_and_drawer_label">Tampilan Depan &amp; Halaman Aplikasi</string>
-    <string name="create_backup">Create Backup</string>
+    <string name="create_backup">Buat Cadangan</string>
     <string name="create_backup_action">Create</string>
     <string name="what_to_backup">What to Backup</string>
-    <string name="backup_content_layout_and_settings">Layout and Settings</string>
+    <string name="backup_content_layout_and_settings">Tata Letak dan Setelan</string>
     <string name="backup_content_wallpaper">Wallpaper</string>
-    <string name="backup_create_success">Backup created</string>
+    <string name="backup_create_success">Cadangan dibuat</string>
     <string name="backup_create_error">Failed to create backup</string>
     <string name="restore_backup">Restore Backup</string>
     <string name="restore_backup_action">Restore</string>
