@@ -107,6 +107,7 @@
 -keep class com.android.launcher3.tracing.LauncherTraceProto$* { *; }
 -keep class com.android.launcher3.userevent.LauncherLogExtensions$* { *; }
 -keep class app.lawnchair.LawnchairProto$* { *; }
+-keep class com.google.protobuf.Timestamp { *; }
 -keepattributes InnerClasses
 
 -keep class app.lawnchair.compatlib.** {
