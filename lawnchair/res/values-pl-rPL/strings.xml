@@ -18,7 +18,7 @@
     <string name="icon_pack">Paczka ikon</string>
     <string name="settings">Ustawienia</string>
     <string name="home_screen_label">Ekran główny</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Kanał, Siatka, Ikony</string>
     <string name="general_label">Ogólne</string>
     <string name="general_description">Plakietki z powiadomieniami, paczka ikon, kolory</string>
     <string name="home_screen_rotation_label">Obrót Ekranu głównego</string>
@@ -233,15 +233,15 @@
     <string name="themed_icons_home_and_drawer_label">Ekran główny i Szuflada aplikacji</string>
     <string name="create_backup">Utwórz kopię zapasową</string>
     <string name="create_backup_action">Utwórz</string>
-    <string name="what_to_backup">What to Back Up</string>
+    <string name="what_to_backup">Co zachować</string>
     <string name="backup_content_layout_and_settings">Układ i Ustawienia</string>
     <string name="backup_content_wallpaper">Tapeta</string>
-    <string name="backup_create_success">Backup created.</string>
-    <string name="backup_create_error">Failed to create backup.</string>
+    <string name="backup_create_success">Utworzono kopię zapasową.</string>
+    <string name="backup_create_error">Błąd przy tworzeniu kopii zapasowej.</string>
     <string name="restore_backup">Przywróć kopię zapasową</string>
     <string name="restore_backup_action">Przywróć</string>
     <string name="what_to_restore">Co przywrócić</string>
-    <string name="backup_restore_success">Backup restored.</string>
-    <string name="backup_restore_error">Failed to restore backup.</string>
-    <string name="invalid_backup_file">Invalid backup file.</string>
+    <string name="backup_restore_success">Przywrócono kopię zapasową.</string>
+    <string name="backup_restore_error">Błąd podczas przywracania kopii zapasowej.</string>
+    <string name="invalid_backup_file">Niewłaściwy plik kopii zapasowej.</string>
 </resources>
