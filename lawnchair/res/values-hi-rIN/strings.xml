@@ -18,7 +18,7 @@
     <string name="icon_pack">चिह्न पैक</string>
     <string name="settings">सेटिंग्स</string>
     <string name="home_screen_label">होम स्क्रीन</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">फ़ीड, एक नज़र में, ग्रिड, प्रतीक</string>
     <string name="general_label">सामान्य</string>
     <string name="general_description">नोटिफिकेशन डॉट्स, आइकन पैक</string>
     <string name="home_screen_rotation_label">होम स्क्रीन रोटेशन</string>
@@ -56,7 +56,7 @@
     <string name="app_info_drop_target_label">ऍप की जानकारी</string>
     <string name="item_removed">आइटम हटा दिया गया।</string>
     <string name="all_apps_no_search_results">मेल खाने वाला कोई ऐप नहीं मिला “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
-    <string name="translucent_background">Translucent Background</string>
+    <string name="translucent_background">धुंधला बैकग्राउंड</string>
     <string name="background_opacity">चित्रभूमि अपारदर्शिता</string>
     <string name="background_lightness_label">चित्रभूमि हल्कापन</string>
     <string name="adaptive_icons">अनुकूली प्रतीक</string>
@@ -160,7 +160,7 @@
     <string name="show_app_search_bar">खोज बार दिखाएँ</string>
     <string name="lawnchair_bug_report">लॉन चेयर बग रिपोर्ट</string>
     <string name="crash_report_notif_title">%1$s अचानक बंद हुआ</string>
-    <string name="action_upload_crash_report">Upload Crash Log</string>
+    <string name="action_upload_crash_report">क्रैशलोग अपलोड करें</string>
     <string name="action_copy_link">लिंक कॉपी करें</string>
     <string name="action_copy">कॉपी</string>
     <string name="copied_toast">क्लिपबोर्ड पर कॉपी हो गया</string>
@@ -199,11 +199,12 @@
     <string name="always_open_website_description">खोज प्रदाता की वेबसाइट खोलें, भले ही उनका ऐप इंस्टॉल हो।</string>
     <string name="search_provider">खोज प्रदाता</string>
     <string name="status_bar_label">स्टेटस बार</string>
-    <string name="show_notification_count">Show Notification Count</string>
+    <string name="show_notification_count">नोटिफिकेशन की संख्या दिखाएं</string>
     <string name="icon_picker_load_failed">Couldn’t load more icons.</string>
     <string name="reset_custom_icons">Reset Custom Icons</string>
     <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
     <string name="taskbar_label">Taskbar</string>
+    <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Charging</string>
@@ -228,4 +229,17 @@
     <string name="themed_icons_off_label">Off</string>
     <string name="themed_icons_home_label">होम स्क्रीन</string>
     <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
+    <string name="create_backup">Create Backup</string>
+    <string name="create_backup_action">Create</string>
+    <string name="what_to_backup">What to Back Up</string>
+    <string name="backup_content_layout_and_settings">Layout and Settings</string>
+    <string name="backup_content_wallpaper">वॉलपेपर</string>
+    <string name="backup_create_success">Backup created</string>
+    <string name="backup_create_error">Failed to create backup</string>
+    <string name="restore_backup">Restore Backup</string>
+    <string name="restore_backup_action">Restore</string>
+    <string name="what_to_restore">What to Restore</string>
+    <string name="backup_restore_success">Backup restored</string>
+    <string name="backup_restore_error">Failed to restore backup</string>
+    <string name="invalid_backup_file">Invalid backup file</string>
 </resources>
