@@ -231,7 +231,7 @@
     <string name="themed_icons_home_and_drawer_label">Ecrã Inicial &amp; Gaveta de Aplicações</string>
     <string name="create_backup">Criar Cópia de Segurança</string>
     <string name="create_backup_action">Criar</string>
-    <string name="what_to_backup">O que fazer Cópia de Segurança</string>
+    <string name="what_to_backup">What to Back Up</string>
     <string name="backup_content_layout_and_settings">Esquema e Definições</string>
     <string name="backup_content_wallpaper">Papel de Parede</string>
     <string name="backup_create_success">Cópia de Segurança criada</string>
