@@ -234,7 +234,7 @@
     <string name="what_to_backup">Wat te back-uppen</string>
     <string name="backup_content_layout_and_settings">Lay-out en instellingen</string>
     <string name="backup_content_wallpaper">Achtergrond</string>
-    <string name="backup_create_success">Backup created.</string>
+    <string name="backup_create_success">Back-up gecreëerd.</string>
     <string name="backup_create_error">Failed to create backup.</string>
     <string name="restore_backup">Back-up herstellen</string>
     <string name="restore_backup_action">Herstellen</string>
