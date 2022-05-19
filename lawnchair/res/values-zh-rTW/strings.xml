@@ -25,7 +25,7 @@
     <string name="home_screen_rotaton_description">當手機旋轉時</string>
     <string name="auto_add_shortcuts_label">將應用程式圖示新增到主螢幕</string>
     <string name="dock_label">底欄</string>
-    <string name="dock_description">搜尋列、圖示數量</string>
+    <string name="dock_description">搜尋欄、圖示數量</string>
     <string name="app_drawer_label">應用程式抽屜</string>
     <string name="app_drawer_description">隱藏應用程式、行數、圖示</string>
     <string name="folders_label">資料夾</string>
