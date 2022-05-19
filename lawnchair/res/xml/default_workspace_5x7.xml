@@ -17,7 +17,7 @@
 <favorites xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3">
 
     <!-- Hotseat (We use the screen as the position of the item in the hotseat) -->
-    <!-- Dialer, Messaging, Browser, Camera -->
+    <!-- Dialer, Messaging, [Maps/Music], Browser, Camera -->
     <resolve
         launcher:container="-101"
         launcher:screen="0"
@@ -49,10 +49,10 @@
     </resolve>
 
     <resolve
-         launcher:container="-101"
-         launcher:screen="3"
-         launcher:x="3"
-         launcher:y="0" >
+        launcher:container="-101"
+        launcher:screen="3"
+        launcher:x="3"
+        launcher:y="0" >
         <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_BROWSER;end" />
         <favorite launcher:uri="http://www.example.com/" />
     </resolve>
@@ -68,13 +68,13 @@
 
     <!-- Screen 0 -->
 
-    <!-- Google folder -->
+    <!-- Google Folder -->
     <!-- Google, Gmail, Maps, YouTube, Drive, YouTube Music, Play Movies, Duo, Photos -->
     <folder
         launcher:title="@string/google_folder_title"
         launcher:screen="0"
         launcher:x="0"
-        launcher:y="3">
+        launcher:y="6">
         <favorite
             launcher:packageName="com.google.android.googlequicksearchbox"
             launcher:className="com.google.android.googlequicksearchbox.SearchActivity"/>
@@ -106,13 +106,12 @@
 
     <favorite
         launcher:screen="0"
-        launcher:x="3"
-        launcher:y="3"
+        launcher:x="4"
+        launcher:y="6"
         launcher:packageName="com.android.vending"
         launcher:className="com.android.vending.AssetBrowserActivity"/>
 
     <!-- Screen 1 -->
-
     <resolve
         launcher:screen="1"
         launcher:x="0"
