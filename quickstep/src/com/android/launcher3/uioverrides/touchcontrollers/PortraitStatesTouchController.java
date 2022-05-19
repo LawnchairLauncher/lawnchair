@@ -80,13 +80,18 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
     // Custom timing for NORMAL -> ALL_APPS on phones only.
     private static final float ALL_APPS_STATE_TRANSITION = 0.4f;
+    private static final float ALL_APPS_FULL_DEPTH_PROGRESS = 0.5f;
 
     // Custom interpolators for NORMAL -> ALL_APPS on phones only.
     private static final Interpolator LINEAR_EARLY =
             Interpolators.clampToProgress(LINEAR, 0f, ALL_APPS_STATE_TRANSITION);
     private static final Interpolator STEP_TRANSITION =
             Interpolators.clampToProgress(FINAL_FRAME, 0f, ALL_APPS_STATE_TRANSITION);
-    public static final Interpolator BLUR = LINEAR_EARLY;
+    // The blur to and from All Apps is set to be complete when the interpolator is at 0.5.
+    public static final Interpolator BLUR =
+            Interpolators.clampToProgress(
+                    Interpolators.mapToProgress(LINEAR, 0f, ALL_APPS_FULL_DEPTH_PROGRESS),
+                    0f, ALL_APPS_STATE_TRANSITION);
     public static final Interpolator WORKSPACE_FADE = STEP_TRANSITION;
     public static final Interpolator WORKSPACE_SCALE = LINEAR_EARLY;
     public static final Interpolator HOTSEAT_FADE = STEP_TRANSITION;
@@ -97,8 +102,8 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             Interpolators.clampToProgress(LINEAR, ALL_APPS_STATE_TRANSITION, 1f);
     public static final Interpolator ALL_APPS_VERTICAL_PROGRESS =
             Interpolators.clampToProgress(
-                    Interpolators.mapToProgress(LINEAR, ALL_APPS_STATE_TRANSITION, 1.0f),
-                    ALL_APPS_STATE_TRANSITION, 1.0f);
+                    Interpolators.mapToProgress(LINEAR, ALL_APPS_STATE_TRANSITION, 1f),
+                    ALL_APPS_STATE_TRANSITION, 1f);
 
     private final PortraitOverviewStateTouchHelper mOverviewPortraitStateTouchHelper;
 
