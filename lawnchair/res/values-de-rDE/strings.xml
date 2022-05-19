@@ -18,7 +18,7 @@
     <string name="icon_pack">Symbol-Paket</string>
     <string name="settings">Einstellungen</string>
     <string name="home_screen_label">Startseite</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Feed, auf einen Blick, Gitter, Symbole</string>
     <string name="general_label">Allgemein</string>
     <string name="general_description">Farben, Symbolpaket, Benachrichtigungspunkte</string>
     <string name="home_screen_rotation_label">Startbildschirm-Drehung</string>
@@ -204,6 +204,7 @@
     <string name="reset_custom_icons">Benutzerdefinierte Symbole zurücksetzen</string>
     <string name="reset_custom_icons_confirmation">Alle benutzerdefinierten Symbole werden zurückgesetzt. Möchtest du fortfahren?</string>
     <string name="taskbar_label">Taskbar</string>
+    <string name="enable_taskbar_experimental">Taskbar aktivieren (experimentell)</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Wird geladen</string>
@@ -228,4 +229,17 @@
     <string name="themed_icons_off_label">Aus</string>
     <string name="themed_icons_home_label">Startseite</string>
     <string name="themed_icons_home_and_drawer_label">Startbildschirm &amp; App-Übersicht</string>
+    <string name="create_backup">Sicherung erstellen</string>
+    <string name="create_backup_action">Erstellen</string>
+    <string name="what_to_backup">What to Back Up</string>
+    <string name="backup_content_layout_and_settings">Layout und Einstellungen</string>
+    <string name="backup_content_wallpaper">Hintergrund</string>
+    <string name="backup_create_success">Sicherung erstellt</string>
+    <string name="backup_create_error">Sicherung konnte nicht erstellt werden</string>
+    <string name="restore_backup">Sicherung wiederherstellen</string>
+    <string name="restore_backup_action">Wiederherstellen</string>
+    <string name="what_to_restore">Was wiederhergestellt wird</string>
+    <string name="backup_restore_success">Sicherung wiederhergestellt</string>
+    <string name="backup_restore_error">Fehler beim Wiederherstellen der Sicherung</string>
+    <string name="invalid_backup_file">Ungültige Sicherungsdatei</string>
 </resources>
