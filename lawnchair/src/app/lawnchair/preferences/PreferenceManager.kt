@@ -23,6 +23,7 @@ import app.lawnchair.LawnchairLauncher
 import app.lawnchair.font.FontCache
 import app.lawnchair.util.isOnePlusStock
 import com.android.launcher3.InvariantDeviceProfile
+import com.android.launcher3.model.DeviceGridState
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.MainThreadInitializedObject
 
@@ -88,12 +89,13 @@ class PreferenceManager private constructor(private val context: Context) : Base
         sp.registerOnSharedPreferenceChangeListener(this)
         migratePrefs(CURRENT_VERSION) { oldVersion ->
             if (oldVersion < 2) {
-                listOf(hotseatColumns, workspaceColumns, workspaceRows)
-                    .forEach {
-                        if (it.get() == -1) {
-                            it.set(it.defaultValue)
-                        }
-                    }
+                val gridState = DeviceGridState(context).toProtoMessage()
+                if (gridState.hotseatCount != -1) {
+                    val colsAndRows = gridState.gridSize.split(",")
+                    workspaceColumns.set(colsAndRows[0].toInt())
+                    workspaceRows.set(colsAndRows[1].toInt())
+                    hotseatColumns.set(gridState.hotseatCount)
+                }
             }
         }
     }
