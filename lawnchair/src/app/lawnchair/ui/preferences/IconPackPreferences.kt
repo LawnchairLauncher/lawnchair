@@ -74,8 +74,30 @@ import com.google.accompanist.drawablepainter.rememberDrawablePainter
 data class IconPackInfo(
     val name: String,
     val packageName: String,
-    val icon: Drawable
+    val icon: Drawable,
 )
+
+private enum class ThemedIconsState(
+    @StringRes val labelResourceId: Int,
+    val themedIcons: Boolean = true,
+    val drawerThemedIcons: Boolean = false,
+) {
+    Off(labelResourceId = R.string.themed_icons_off_label, themedIcons = false),
+    Home(labelResourceId = R.string.themed_icons_home_label),
+    HomeAndDrawer(
+        labelResourceId = R.string.themed_icons_home_and_drawer_label,
+        drawerThemedIcons = true,
+    );
+
+    companion object {
+        fun getForSettings(
+            themedIcons: Boolean,
+            drawerThemedIcons: Boolean,
+        ) = values().find {
+            it.themedIcons == themedIcons && it.drawerThemedIcons == drawerThemedIcons
+        } ?: Off
+    }
+}
 
 fun NavGraphBuilder.iconPackGraph(route: String) {
     preferenceGraph(route, { IconPackPreferences() })
@@ -132,14 +154,13 @@ fun IconPackPreferences() {
                             label = { stringResource(id = it.labelResourceId) },
                         )
                     },
-                    value = when {
-                        themedIconsAdapter.state.value && drawerThemedIconsAdapter.state.value -> ThemedIconsState.HomeAndDrawer
-                        themedIconsAdapter.state.value -> ThemedIconsState.Home
-                        else -> ThemedIconsState.Off
-                    },
+                    value = ThemedIconsState.getForSettings(
+                        themedIcons = themedIconsAdapter.state.value,
+                        drawerThemedIcons = drawerThemedIconsAdapter.state.value,
+                    ),
                     onValueChange = {
-                        themedIconsAdapter.onChange(newValue = it != ThemedIconsState.Off)
-                        drawerThemedIconsAdapter.onChange(newValue = it == ThemedIconsState.HomeAndDrawer)
+                        themedIconsAdapter.onChange(newValue = it.themedIcons)
+                        drawerThemedIconsAdapter.onChange(newValue = it.drawerThemedIcons)
                     },
                     description = if (themedIconsAvailable.not()) {
                         stringResource(id = R.string.lawnicons_not_installed_description)
@@ -251,10 +272,4 @@ fun IconPackItem(
             )
         }
     }
-}
-
-private enum class ThemedIconsState(@StringRes val labelResourceId: Int) {
-    Off(labelResourceId = R.string.themed_icons_off_label),
-    Home(labelResourceId = R.string.themed_icons_home_label),
-    HomeAndDrawer(labelResourceId = R.string.themed_icons_home_and_drawer_label),
 }
