@@ -73,9 +73,9 @@
     <string name="hidden_apps_label_with_count">Skrite aplikacije (%1$d)</string>
     <plurals name="apps_count">
         <item quantity="one">%1$d App</item>
-        <item quantity="two">%1$d Apps</item>
-        <item quantity="few">%1$d Apps</item>
-        <item quantity="other">%1$d Apps</item>
+        <item quantity="two">%1$d Aplikacij</item>
+        <item quantity="few">%1$d Aplikacij</item>
+        <item quantity="other">%1$d Aplikacije</item>
     </plurals>
     <string name="hotseat_qsb_label">Pokaži vrstico za iskanje</string>
     <string name="dt2s_admin_hint_title">Zahtevana so skrbniška dovoljenja</string>
