@@ -1956,6 +1956,19 @@ public class Launcher extends StatefulActivity<LauncherState>
      * @param deleteFromDb whether or not to delete this item from the db.
      */
     public boolean removeItem(View v, final ItemInfo itemInfo, boolean deleteFromDb) {
+        return removeItem(v, itemInfo, deleteFromDb, null);
+    }
+
+    /**
+     * Unbinds the view for the specified item, and removes the item and all its children.
+     *
+     * @param v the view being removed.
+     * @param itemInfo the {@link ItemInfo} for this view.
+     * @param deleteFromDb whether or not to delete this item from the db.
+     * @param reason the resaon for removal.
+     */
+    public boolean removeItem(View v, final ItemInfo itemInfo, boolean deleteFromDb,
+            @Nullable final String reason) {
         if (itemInfo instanceof WorkspaceItemInfo) {
             // Remove the shortcut from the folder before removing it from launcher
             View folderIcon = mWorkspace.getHomescreenIconByItemId(itemInfo.container);
@@ -1965,7 +1978,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                 mWorkspace.removeWorkspaceItem(v);
             }
             if (deleteFromDb) {
-                getModelWriter().deleteItemFromDatabase(itemInfo);
+                getModelWriter().deleteItemFromDatabase(itemInfo, reason);
             }
         } else if (itemInfo instanceof FolderInfo) {
             final FolderInfo folderInfo = (FolderInfo) itemInfo;
@@ -1980,7 +1993,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             final LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) itemInfo;
             mWorkspace.removeWorkspaceItem(v);
             if (deleteFromDb) {
-                getModelWriter().deleteWidgetInfo(widgetInfo, getAppWidgetHost());
+                getModelWriter().deleteWidgetInfo(widgetInfo, getAppWidgetHost(), reason);
             }
         } else {
             return false;
@@ -2032,11 +2045,14 @@ public class Launcher extends StatefulActivity<LauncherState>
         // Note: There should be at most one log per method call. This is enforced implicitly
         // by using if-else statements.
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
-        if (topView != null && topView.onBackPressed()) {
-            // Handled by the floating view.
-        } else {
-            mStateManager.getState().onBackPressed(this);
+        if (topView == null || !topView.onBackPressed()) {
+            // Not handled by the floating view.
+            onStateBack();
         }
+    }
+
+    protected void onStateBack() {
+        mStateManager.getState().onBackPressed(this);
     }
 
     protected void onScreenOff() {
@@ -2399,8 +2415,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                     if (FeatureFlags.IS_STUDIO_BUILD) {
                         throw (new RuntimeException(desc));
                     } else {
-                        Log.d(TAG, desc);
-                        getModelWriter().deleteItemFromDatabase(item);
+                        getModelWriter().deleteItemFromDatabase(item, desc);
                         if (TestProtocol.sDebugTracing) {
                             Log.d(TestProtocol.MISSING_PROMISE_ICON,
                                     TAG + "bindItems failed for item=" + item);
@@ -2480,7 +2495,8 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (item.hasOptionFlag(LauncherAppWidgetInfo.OPTION_SEARCH_WIDGET)) {
             item.providerName = QsbContainerView.getSearchComponentName(this);
             if (item.providerName == null) {
-                getModelWriter().deleteItemFromDatabase(item);
+                getModelWriter().deleteItemFromDatabase(item,
+                        "search widget removed because search component cannot be found");
                 return null;
             }
         }
@@ -2531,10 +2547,10 @@ public class Launcher extends StatefulActivity<LauncherState>
             if (!item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)
                     && (item.restoreStatus != LauncherAppWidgetInfo.RESTORE_COMPLETED)) {
                 if (appWidgetInfo == null) {
-                    FileLog.d(TAG, "Removing restored widget: id=" + item.appWidgetId
+                    getModelWriter().deleteItemFromDatabase(item,
+                            "Removing restored widget: id=" + item.appWidgetId
                             + " belongs to component " + item.providerName + " user " + item.user
                             + ", as the provider is null and " + removalReason);
-                    getModelWriter().deleteItemFromDatabase(item);
                     return null;
                 }
 
@@ -2604,7 +2620,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                 // Verify that we own the widget
                 if (appWidgetInfo == null) {
                     FileLog.e(TAG, "Removing invalid widget: id=" + item.appWidgetId);
-                    getModelWriter().deleteWidgetInfo(item, getAppWidgetHost());
+                    getModelWriter().deleteWidgetInfo(item, getAppWidgetHost(), removalReason);
                     return null;
                 }
 

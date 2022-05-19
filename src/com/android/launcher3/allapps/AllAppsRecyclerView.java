@@ -15,9 +15,7 @@
  */
 package com.android.launcher3.allapps;
 
-import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.UNSPECIFIED;
-import static android.view.View.MeasureSpec.makeMeasureSpec;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_SCROLLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_VERTICAL_SWIPE_BEGIN;
@@ -47,7 +45,6 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -96,8 +93,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     // The empty-search result background
     private AllAppsBackgroundDrawable mEmptySearchBackground;
     private int mEmptySearchBackgroundTopOffset;
-
-    private ArrayList<View> mAutoSizedOverlays = new ArrayList<>();
 
     public AllAppsRecyclerView(Context context) {
         this(context, null);
@@ -172,30 +167,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         updateEmptySearchBackgroundBounds();
         updatePoolSize();
-        for (int i = 0; i < mAutoSizedOverlays.size(); i++) {
-            View overlay = mAutoSizedOverlays.get(i);
-            overlay.measure(makeMeasureSpec(w, EXACTLY), makeMeasureSpec(w, EXACTLY));
-            overlay.layout(0, 0, w, h);
-        }
-    }
-
-    /**
-     * Adds an overlay that automatically rescales with the recyclerview.
-     */
-    public void addAutoSizedOverlay(View overlay) {
-        mAutoSizedOverlays.add(overlay);
-        getOverlay().add(overlay);
-        onSizeChanged(getWidth(), getHeight(), getWidth(), getHeight());
-    }
-
-    /**
-     * Clears auto scaling overlay views added by #addAutoSizedOverlay
-     */
-    public void clearAutoSizedOverlays() {
-        for (View v : mAutoSizedOverlays) {
-            getOverlay().remove(v);
-        }
-        mAutoSizedOverlays.clear();
     }
 
     public void onSearchResultsChanged() {
