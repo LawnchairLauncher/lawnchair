@@ -230,7 +230,7 @@
     <string name="themed_icons_home_and_drawer_label">主屏幕 &amp; 应用抽屉</string>
     <string name="create_backup">创建备份</string>
     <string name="create_backup_action">创建</string>
-    <string name="what_to_backup">选择要备份的内容</string>
+    <string name="what_to_backup">What to Back Up</string>
     <string name="backup_content_layout_and_settings">布局和设置</string>
     <string name="backup_content_wallpaper">壁纸</string>
     <string name="backup_create_success">备份已创建</string>
