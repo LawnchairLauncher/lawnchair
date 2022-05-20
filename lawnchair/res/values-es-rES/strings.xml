@@ -18,7 +18,7 @@
     <string name="icon_pack">Paquete de iconos</string>
     <string name="settings">Ajustes</string>
     <string name="home_screen_label">Pantalla de Inicio</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Nuevo, cuadrícula, iconos</string>
     <string name="general_label">General</string>
     <string name="general_description">Colores, Paquete de Íconos, Puntos de Notificación</string>
     <string name="home_screen_rotation_label">Rotación de Pantalla de Inicio</string>
@@ -204,7 +204,7 @@
     <string name="reset_custom_icons">Restablecer iconos personalizados</string>
     <string name="reset_custom_icons_confirmation">Todos los iconos personalizados se restablecerán. ¿Desea continuar?</string>
     <string name="taskbar_label">Barra de tareas</string>
-    <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
+    <string name="enable_taskbar_experimental">Habilitar Barra de Tareas</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Cargando</string>
@@ -231,15 +231,15 @@
     <string name="themed_icons_home_and_drawer_label">Pantalla de inicio &amp; Cajón de aplicaciones</string>
     <string name="create_backup">Crear copia de seguridad</string>
     <string name="create_backup_action">Crear</string>
-    <string name="what_to_backup">What to Back Up</string>
+    <string name="what_to_backup">Que para respaldar</string>
     <string name="backup_content_layout_and_settings">Diseño y ajustes</string>
     <string name="backup_content_wallpaper">Fondo de Pantalla</string>
-    <string name="backup_create_success">Backup created.</string>
-    <string name="backup_create_error">Failed to create backup.</string>
+    <string name="backup_create_success">Copia de seguridad creada.</string>
+    <string name="backup_create_error">Error al crear copia de seguridad.</string>
     <string name="restore_backup">Restaurar copia de seguridad</string>
     <string name="restore_backup_action">Restaurar</string>
     <string name="what_to_restore">Qué restaurar</string>
-    <string name="backup_restore_success">Backup restored.</string>
-    <string name="backup_restore_error">Failed to restore backup.</string>
-    <string name="invalid_backup_file">Invalid backup file.</string>
+    <string name="backup_restore_success">Copia de seguridad restaurada.</string>
+    <string name="backup_restore_error">Error al restaurar copia de seguridad.</string>
+    <string name="invalid_backup_file">Copia de seguridad no válida.</string>
 </resources>
