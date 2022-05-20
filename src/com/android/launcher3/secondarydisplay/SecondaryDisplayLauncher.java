@@ -53,7 +53,6 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     private LauncherModel mModel;
 
     private BaseDragLayer mDragLayer;
-    // TODO(b/216191717): Verify all apps works on secondary display.
     private ActivityAllAppsContainerView<SecondaryDisplayLauncher> mAppsView;
     private View mAppsButton;
 
