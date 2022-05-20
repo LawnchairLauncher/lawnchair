@@ -97,12 +97,16 @@ public final class LaunchedAppState extends Background {
     }
 
     static void dragToSplitscreen(
-            LauncherInstrumentation launcher, Launchable launchable, String expectedNewPackageName,
+            LauncherInstrumentation launcher,
+            Launchable launchable,
+            String expectedNewPackageName,
             String expectedExistingPackageName) {
         try (LauncherInstrumentation.Closable c1 = launcher.addContextLayer(
                 "want to drag taskbar item to splitscreen")) {
             final Point displaySize = launcher.getRealDisplaySize();
-            final Point endPoint = new Point(displaySize.x / 4, 3 * displaySize.y / 4);
+            // Drag to the center of the top-left quadrant of the screen, this point will work in
+            // both portrait and landscape.
+            final Point endPoint = new Point(displaySize.x / 4, displaySize.y / 4);
             final long downTime = SystemClock.uptimeMillis();
             // Use mObject before starting drag since the system drag and drop moves the original
             // view.
@@ -142,9 +146,8 @@ public final class LaunchedAppState extends Background {
 
                     try (LauncherInstrumentation.Closable c4 = launcher.addContextLayer(
                             "dropped item")) {
-                        launchable.assertAppLaunched(itemLabel, By.pkg(expectedNewPackageName));
-                        launchable.assertAppLaunched(
-                                itemLabel, By.pkg(expectedExistingPackageName));
+                        launchable.assertAppLaunched(By.pkg(expectedNewPackageName));
+                        launchable.assertAppLaunched(By.pkg(expectedExistingPackageName));
                     }
                 }
             }
