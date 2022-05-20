@@ -199,7 +199,7 @@
     <string name="always_open_website_description">Abra o site do provedor de pesquisa mesmo que o aplicativo esteja instalado.</string>
     <string name="search_provider">Procurar Provedor</string>
     <string name="status_bar_label">Barra de Status</string>
-    <string name="show_notification_count">Mostrar Contagem de Notificações</string>
+    <string name="show_notification_count">Mostrar Contador de Notificações</string>
     <string name="icon_picker_load_failed">Não foi possível carregar mais ícones.</string>
     <string name="reset_custom_icons">Redefinir ícones personalizados</string>
     <string name="reset_custom_icons_confirmation">Todos os ícones personalizados serão redefinidos. Você quer continuar?</string>
