@@ -285,13 +285,21 @@ public class DropTargetBar extends FrameLayout
                 int buttonPlusGapWidth = leftButtonWidth + buttonGap + rightButtonWidth;
 
                 int extraSpace = end - start - buttonPlusGapWidth;
-                start = (start - left) + (extraSpace / 2);
+                int leftBound = Math.max(left, 0);
+                int rightBound = Math.min(right, dp.availableWidthPx);
 
-                leftButton.layout(start, 0, start + leftButtonWidth,
+                int leftButtonStart = Utilities.boundToRange(
+                        (start - left) + (extraSpace / 2), leftBound, rightBound);
+                int leftButtonEnd = Utilities.boundToRange(
+                        leftButtonStart + leftButtonWidth, leftBound, rightBound);
+                int rightButtonStart = Utilities.boundToRange(
+                        leftButtonEnd + buttonGap, leftBound, rightBound);
+                int rightButtonEnd = Utilities.boundToRange(
+                        rightButtonStart + rightButtonWidth, leftBound, rightBound);
+
+                leftButton.layout(leftButtonStart, 0, leftButtonEnd,
                         leftButton.getMeasuredHeight());
-
-                int rightButtonStart = start + leftButtonWidth + buttonGap;
-                rightButton.layout(rightButtonStart, 0, rightButtonStart + rightButtonWidth,
+                rightButton.layout(rightButtonStart, 0, rightButtonEnd,
                         rightButton.getMeasuredHeight());
             }
         }
