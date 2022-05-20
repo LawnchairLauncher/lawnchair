@@ -18,7 +18,7 @@
     <string name="icon_pack">Simge Paketi</string>
     <string name="settings">Ayarlar</string>
     <string name="home_screen_label">Ana Ekran</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Besleme, Izgara, Simgeler</string>
     <string name="general_label">Genel</string>
     <string name="general_description">Renkler, Simge Paketi, Bildirim Noktaları</string>
     <string name="home_screen_rotation_label">Ana Ekran Rotasyonu</string>
@@ -231,15 +231,15 @@
     <string name="themed_icons_home_and_drawer_label">Ana Ekran &amp; Uygulama Çekmecesi</string>
     <string name="create_backup">Yedek Oluştur</string>
     <string name="create_backup_action">Oluştur</string>
-    <string name="what_to_backup">What to Back Up</string>
+    <string name="what_to_backup">Neler Yedeklemeli</string>
     <string name="backup_content_layout_and_settings">Düzen ve Ayarlar</string>
     <string name="backup_content_wallpaper">Duvar Kağıdı</string>
-    <string name="backup_create_success">Backup created.</string>
-    <string name="backup_create_error">Failed to create backup.</string>
+    <string name="backup_create_success">Yedek oluşturuldu.</string>
+    <string name="backup_create_error">Yedek oluşturulamadı.</string>
     <string name="restore_backup">Yedeklemeyi Geri Yükle</string>
     <string name="restore_backup_action">Eski haline getir</string>
     <string name="what_to_restore">Geri Yüklenecekler</string>
-    <string name="backup_restore_success">Backup restored.</string>
-    <string name="backup_restore_error">Failed to restore backup.</string>
-    <string name="invalid_backup_file">Invalid backup file.</string>
+    <string name="backup_restore_success">Yedekleme geri yüklendi.</string>
+    <string name="backup_restore_error">Yedek geri yüklenirken bir hata meydana geldi.</string>
+    <string name="invalid_backup_file">Geçersiz yedekleme dosyası.</string>
 </resources>
