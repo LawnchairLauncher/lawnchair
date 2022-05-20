@@ -169,7 +169,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     /**
      * CellInfo for the cell that is currently being dragged
      */
-    private CellLayout.CellInfo mDragInfo;
+    protected CellLayout.CellInfo mDragInfo;
 
     /**
      * Target drop area calculated during last acceptDrop call.
@@ -214,7 +214,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     private boolean mUnlockWallpaperFromDefaultPageOnLayout;
 
     public static final int REORDER_TIMEOUT = 650;
-    private final Alarm mReorderAlarm = new Alarm();
+    protected final Alarm mReorderAlarm = new Alarm();
     private PreviewBackground mFolderCreateBg;
     private FolderIcon mDragOverFolderIcon = null;
     private boolean mCreateUserFolderOnDrop = false;
@@ -242,7 +242,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     private static final int DRAG_MODE_CREATE_FOLDER = 1;
     private static final int DRAG_MODE_ADD_TO_FOLDER = 2;
     private static final int DRAG_MODE_REORDER = 3;
-    private int mDragMode = DRAG_MODE_NONE;
+    protected int mDragMode = DRAG_MODE_NONE;
     @Thunk int mLastReorderX = -1;
     @Thunk int mLastReorderY = -1;
 
@@ -1980,10 +1980,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
                 // If the item being dropped is a shortcut and the nearest drop
                 // cell also contains a shortcut, then create a folder with the two shortcuts.
-                if (createUserFolderIfNecessary(cell, container,
-                        dropTargetLayout, mTargetCell, distance, false, d)
+                if (createUserFolderIfNecessary(cell, container, dropTargetLayout, mTargetCell,
+                        distance, false, d)
                         || addToExistingFolderIfNecessary(cell, dropTargetLayout, mTargetCell,
-                                distance, d, false)) {
+                        distance, d, false)) {
                     mLauncher.getStateManager().goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
                     return;
                 }
@@ -2012,8 +2012,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     mTargetCell[0] = mTargetCell[1] = -1;
                 } else {
                     mTargetCell = dropTargetLayout.performReorder((int) mDragViewVisualCenter[0],
-                            (int) mDragViewVisualCenter[1], minSpanX, minSpanY, spanX, spanY, cell,
-                            mTargetCell, resultSpan, CellLayout.MODE_ON_DROP);
+                            (int) mDragViewVisualCenter[1], minSpanX, minSpanY, spanX, spanY,
+                            cell, mTargetCell, resultSpan, CellLayout.MODE_ON_DROP);
                 }
 
                 boolean foundCell = mTargetCell[0] >= 0 && mTargetCell[1] >= 0;
@@ -2297,7 +2297,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         }
     }
 
-    private void cleanupFolderCreation() {
+    protected void cleanupFolderCreation() {
         if (mFolderCreateBg != null) {
             mFolderCreateBg.animateToRest();
         }
@@ -2310,7 +2310,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         }
     }
 
-    private void cleanupReorder(boolean cancelAlarm) {
+    protected void cleanupReorder(boolean cancelAlarm) {
         // Any pending reorders are canceled
         if (cancelAlarm) {
             mReorderAlarm.cancelAlarm();
@@ -2402,26 +2402,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1], item.spanX,
                     item.spanY, child, mTargetCell);
 
-            if (!nearestDropOccupied) {
-                mDragTargetLayout.visualizeDropLocation(mTargetCell[0], mTargetCell[1],
-                        item.spanX, item.spanY, d);
-            } else if ((mDragMode == DRAG_MODE_NONE || mDragMode == DRAG_MODE_REORDER)
-                    && !mReorderAlarm.alarmPending()
-                    && (mLastReorderX != reorderX || mLastReorderY != reorderY)
-                    && targetCellDistance < mDragTargetLayout.getReorderRadius(mTargetCell)) {
-
-                int[] resultSpan = new int[2];
-                mDragTargetLayout.performReorder((int) mDragViewVisualCenter[0],
-                        (int) mDragViewVisualCenter[1], minSpanX, minSpanY, item.spanX, item.spanY,
-                        child, mTargetCell, resultSpan, CellLayout.MODE_SHOW_REORDER_HINT);
-
-                // Otherwise, if we aren't adding to or creating a folder and there's no pending
-                // reorder, then we schedule a reorder
-                ReorderAlarmListener listener = new ReorderAlarmListener(mDragViewVisualCenter,
-                        minSpanX, minSpanY, item.spanX, item.spanY, d, child);
-                mReorderAlarm.setOnAlarmListener(listener);
-                mReorderAlarm.setAlarm(REORDER_TIMEOUT);
-            }
+            manageReorderOnDragOver(d, targetCellDistance, nearestDropOccupied, minSpanX, minSpanY);
 
             if (mDragMode == DRAG_MODE_CREATE_FOLDER || mDragMode == DRAG_MODE_ADD_TO_FOLDER ||
                     !nearestDropOccupied) {
@@ -2432,6 +2413,34 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         }
     }
 
+    protected void manageReorderOnDragOver(DragObject d, float targetCellDistance,
+            boolean nearestDropOccupied, int minSpanX, int minSpanY) {
+
+        ItemInfo item = d.dragInfo;
+        final View child = (mDragInfo == null) ? null : mDragInfo.cell;
+        int reorderX = mTargetCell[0];
+        int reorderY = mTargetCell[1];
+        if (!nearestDropOccupied) {
+            mDragTargetLayout.visualizeDropLocation(mTargetCell[0], mTargetCell[1],
+                    item.spanX, item.spanY, d);
+        } else if ((mDragMode == DRAG_MODE_NONE || mDragMode == DRAG_MODE_REORDER)
+                && !mReorderAlarm.alarmPending()
+                && (mLastReorderX != reorderX || mLastReorderY != reorderY)
+                && targetCellDistance < mDragTargetLayout.getReorderRadius(mTargetCell)) {
+
+            int[] resultSpan = new int[2];
+            mDragTargetLayout.performReorder((int) mDragViewVisualCenter[0],
+                    (int) mDragViewVisualCenter[1], minSpanX, minSpanY, item.spanX, item.spanY,
+                    child, mTargetCell, resultSpan, CellLayout.MODE_SHOW_REORDER_HINT);
+
+            // Otherwise, if we aren't adding to or creating a folder and there's no pending
+            // reorder, then we schedule a reorder
+            ReorderAlarmListener listener = new ReorderAlarmListener(mDragViewVisualCenter,
+                    minSpanX, minSpanY, item.spanX, item.spanY, d, child);
+            mReorderAlarm.setOnAlarmListener(listener);
+            mReorderAlarm.setAlarm(REORDER_TIMEOUT);
+        }
+    }
     /**
      * Updates {@link #mDragTargetLayout} and {@link #mDragOverlappingLayout}
      * based on the DragObject's position.
