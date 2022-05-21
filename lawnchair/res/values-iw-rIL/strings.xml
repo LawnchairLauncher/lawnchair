@@ -18,7 +18,7 @@
     <string name="icon_pack">ערכת סמלים</string>
     <string name="settings">הגדרות</string>
     <string name="home_screen_label">מסך הבית</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">פיד, רשת, אייקונים</string>
     <string name="general_label">כללי</string>
     <string name="general_description">Notification Dots, Icon Pack</string>
     <string name="home_screen_rotation_label">סיבוב מסך הבית</string>
@@ -34,7 +34,7 @@
     <string name="dock_icons">הסמלים במעגן</string>
     <string name="max_folder_columns">מספר מרבי לטורים בתיקייה</string>
     <string name="max_folder_rows">מספר מרבי לשורות בתיקייה</string>
-    <string name="home_screen_grid">Home Screen Grid</string>
+    <string name="home_screen_grid">רשת מסך הבית</string>
     <string name="columns">עמודות</string>
     <string name="grid">רשת</string>
     <string name="rows">שורות</string>
@@ -47,7 +47,7 @@
     <string name="about_label">על אודות</string>
     <string name="news">חדשות</string>
     <string name="support">תמיכה</string>
-    <string name="acknowledgements">Acknowledgements</string>
+    <string name="acknowledgements">תודות</string>
     <string name="devops">DevOps</string>
     <string name="quickswitch_maintenance">QuickSwitch Maintenance</string>
     <string name="all_apps_search_bar_hint">חיפוש יישומים</string>
@@ -55,8 +55,8 @@
     <string name="development">פיתוח</string>
     <string name="app_info_drop_target_label">מידע על האפליקציה</string>
     <string name="item_removed">הפריט הוסר.</string>
-    <string name="all_apps_no_search_results">No apps found matching “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
-    <string name="translucent_background">Translucent Background</string>
+    <string name="all_apps_no_search_results">לא נמצאו אפליקציות מתאימות “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="translucent_background">רקע שקוף</string>
     <string name="background_opacity">שקיפות הרקע</string>
     <string name="background_lightness_label">בהירות הרקע</string>
     <string name="adaptive_icons">Adaptive Icons</string>
@@ -70,7 +70,7 @@
     <string name="translate">תרגום</string>
     <string name="product">מוצר</string>
     <string name="hidden_apps_label">יישומים מוסתרים</string>
-    <string name="hidden_apps_label_with_count">Hidden Apps (%1$d)</string>
+    <string name="hidden_apps_label_with_count">אפליקציות מוסתרות (%1$d)</string>
     <plurals name="apps_count">
         <item quantity="one">%1$d App</item>
         <item quantity="two">%1$d Apps</item>
@@ -114,7 +114,7 @@
     <string name="missing_notification_access_description">נדרשת גישה להתראות.</string>
     <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">שינוי הגדרות</string>
-    <string name="debug_restart_launcher">Restart Lawnchair</string>
+    <string name="debug_restart_launcher">איתחול Lawnchair</string>
     <string name="pref_fonts_missing_font">פונט לא נמצא.</string>
     <string name="font_variant_italic">נטוי</string>
     <string name="font_weight_thin">דק</string>
@@ -130,7 +130,7 @@
     <string name="reset_font">איפוס</string>
     <string name="search_input_action_clear_results">נקה תיבת חיפוש</string>
     <string name="pref_category_search">חיפוש</string>
-    <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
+    <string name="pref_search_auto_show_keyboard">הצגה אוטומטית של המקלדת</string>
     <string name="label_search">חיפוש</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">חיפוש קולי</string>
@@ -140,12 +140,12 @@
     <string name="icon_shape_label">צורת האייקון</string>
     <string name="icon_shape_system">מערכת</string>
     <string name="icon_shape_circle">עיגול</string>
-    <string name="icon_shape_square">Square</string>
+    <string name="icon_shape_square">מרובע</string>
     <string name="icon_shape_rounded_square">ריבוע מעוגל</string>
-    <string name="icon_shape_squircle">Squircle</string>
+    <string name="icon_shape_squircle">מעוגל</string>
     <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_teardrop">Teardrop</string>
-    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_teardrop">טיפה</string>
+    <string name="icon_shape_cylinder">צילינדר</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">התאמה אישית</string>
     <string name="app_title_label">כותרת</string>
@@ -157,7 +157,7 @@
     <string name="label">תוית</string>
     <string name="presets">Presets</string>
     <string name="colors">צבעים</string>
-    <string name="dynamic">Dynamic</string>
+    <string name="dynamic">דינמי</string>
     <string name="all_apps_search_market_message">חפש עוד יישומים</string>
     <string name="show_app_search_bar">הצגת סרגל חיפוש</string>
     <string name="lawnchair_bug_report">דיווח על תקלה</string>
@@ -171,17 +171,17 @@
     <string name="dogbin_uploading">מעלה…</string>
     <string name="bugreport_channel_name">דיווחי באגים</string>
     <string name="status_channel_name">סטטוס העלאה</string>
-    <string name="bugreport_group_summary">%d new reports.</string>
+    <string name="bugreport_group_summary">%d דיווחים חדשים.</string>
     <string name="bugreport_group_summary_multiple">מס\' דיווחים חדשים.</string>
     <string name="themed_icon_title">Themed Icons</string>
     <string name="corner_radius_label">רדיוס פינות</string>
-    <string name="search_bar_label">Search Bar</string>
+    <string name="search_bar_label">סרגל חיפוש</string>
     <string name="apply_accent_color_label">Apply Accent Color</string>
     <string name="show_search_result_types">הצגה בתוצאות החיפוש</string>
     <string name="search_pref_result_people_title">אנשים</string>
     <string name="search_pref_result_shortcuts_title">קיצורי יישום</string>
     <string name="search_pref_result_tips_title">Pixel Tips</string>
-    <string name="row_height_label">Row Height</string>
+    <string name="row_height_label">גובה שורה</string>
     <string name="all_apps_device_search_hint">חיפוש</string>
     <string name="dark_status_bar_label">שורת מצב כהה</string>
     <string name="lawnicons_not_installed_description">Lawnicons not installed.</string>
