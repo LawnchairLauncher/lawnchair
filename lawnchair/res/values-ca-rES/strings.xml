@@ -138,12 +138,12 @@
     <string name="icon_shape_label">Forma de la icona</string>
     <string name="icon_shape_system">Sistema</string>
     <string name="icon_shape_circle">Cercle</string>
-    <string name="icon_shape_square">Square</string>
+    <string name="icon_shape_square">Quadrat</string>
     <string name="icon_shape_rounded_square">Quadrat arrodonit</string>
     <string name="icon_shape_squircle">Quadrat Superellipse</string>
     <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_teardrop">Teardrop</string>
-    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_teardrop">Gota d\'aigua</string>
+    <string name="icon_shape_cylinder">Cilindre</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">Personalitza</string>
     <string name="app_title_label">Títol</string>
@@ -160,7 +160,7 @@
     <string name="show_app_search_bar">Mostra la Barra de Cerca</string>
     <string name="lawnchair_bug_report">Informa un error de Lawnchair</string>
     <string name="crash_report_notif_title">%1$s ha deixat de funcionar</string>
-    <string name="action_upload_crash_report">Upload Crash Log</string>
+    <string name="action_upload_crash_report">Pujar register d\'errors</string>
     <string name="action_copy_link">Copia l\'enllaç</string>
     <string name="action_copy">Copia</string>
     <string name="copied_toast">S\'ha copiat al porta-retalls.</string>
@@ -199,15 +199,15 @@
     <string name="always_open_website_description">Obrir el cercador del web del proveïdor inclús si l\'app no està instal·lada.</string>
     <string name="search_provider">Proveïdor del cercador</string>
     <string name="status_bar_label">Barra de estat</string>
-    <string name="show_notification_count">Show Notification Count</string>
-    <string name="icon_picker_load_failed">Couldn’t load more icons.</string>
-    <string name="reset_custom_icons">Reset Custom Icons</string>
-    <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
-    <string name="taskbar_label">Taskbar</string>
-    <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
+    <string name="show_notification_count">Mostrar comptador de notificacions</string>
+    <string name="icon_picker_load_failed">No s\'han pogut carregar més notificacions.</string>
+    <string name="reset_custom_icons">Reiniciar Icones Personalitzades</string>
+    <string name="reset_custom_icons_confirmation">Totes les icones seran reiniciades. Vols continuar?</string>
+    <string name="taskbar_label">Barra de notificacions</string>
+    <string name="enable_taskbar_experimental">Activar Barra de Notificacions (Experimental)</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_battery_charging">Charging</string>
+    <string name="smartspace_battery_charging">Carregant</string>
     <string name="smartspace_battery_full">Charged</string>
     <string name="smartspace_battery_low">Battery Low</string>
     <string name="accessibility_smartspace_page">Page %1$d of %2$d</string>
@@ -231,7 +231,7 @@
     <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
     <string name="create_backup">Create Backup</string>
     <string name="create_backup_action">Create</string>
-    <string name="what_to_backup">What to Back Up</string>
+    <string name="what_to_backup">Quins elements s\'han d\'incloure a la còpia de seguretat</string>
     <string name="backup_content_layout_and_settings">Layout and Settings</string>
     <string name="backup_content_wallpaper">Fons de pantalla</string>
     <string name="backup_create_success">Backup created.</string>
