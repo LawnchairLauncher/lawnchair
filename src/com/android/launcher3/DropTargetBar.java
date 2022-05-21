@@ -39,6 +39,8 @@ import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.testing.TestProtocol;
 
+import java.util.Arrays;
+
 /*
  * The top bar containing various drop targets: Delete/App Info/Uninstall.
  */
@@ -51,8 +53,6 @@ public class DropTargetBar extends FrameLayout
     private final Runnable mFadeAnimationEndRunnable =
             () -> updateVisibility(DropTargetBar.this);
 
-    private final Launcher mLauncher;
-
     @ViewDebug.ExportedProperty(category = "launcher")
     protected boolean mDeferOnDragEnd;
 
@@ -60,19 +60,16 @@ public class DropTargetBar extends FrameLayout
     protected boolean mVisible = false;
 
     private ButtonDropTarget[] mDropTargets;
-    private ButtonDropTarget[] mTempTargets;
     private ViewPropertyAnimator mCurrentAnimation;
 
     private boolean mIsVertical = true;
 
     public DropTargetBar(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mLauncher = Launcher.getLauncher(context);
     }
 
     public DropTargetBar(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mLauncher = Launcher.getLauncher(context);
     }
 
     @Override
@@ -83,13 +80,12 @@ public class DropTargetBar extends FrameLayout
             mDropTargets[i] = (ButtonDropTarget) getChildAt(i);
             mDropTargets[i].setDropTargetBar(this);
         }
-        mTempTargets = new ButtonDropTarget[getChildCount()];
     }
 
     @Override
     public void setInsets(Rect insets) {
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
-        DeviceProfile grid = mLauncher.getDeviceProfile();
+        DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
         mIsVertical = grid.isVerticalBarLayout();
 
         lp.leftMargin = insets.left;
@@ -120,15 +116,10 @@ public class DropTargetBar extends FrameLayout
         lp.height = grid.dropTargetBarSizePx;
         lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
 
-        DeviceProfile dp = mLauncher.getDeviceProfile();
-        int horizontalPadding = dp.dropTargetHorizontalPaddingPx;
-        int verticalPadding = dp.dropTargetVerticalPaddingPx;
         setLayoutParams(lp);
         for (ButtonDropTarget button : mDropTargets) {
             button.setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.dropTargetTextSizePx);
             button.setToolTipLocation(tooltipLocation);
-            button.setPadding(horizontalPadding, verticalPadding, horizontalPadding,
-                    verticalPadding);
         }
     }
 
@@ -144,83 +135,36 @@ public class DropTargetBar extends FrameLayout
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
-        int heightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
 
-        int visibleCount = getVisibleButtons(mTempTargets);
-        if (visibleCount == 1) {
-            int widthSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST);
-
-            ButtonDropTarget firstButton = mTempTargets[0];
-            firstButton.setTextVisible(true);
-            firstButton.setIconVisible(true);
-            firstButton.measure(widthSpec, heightSpec);
-        } else if (visibleCount == 2) {
-            DeviceProfile dp = mLauncher.getDeviceProfile();
-            int verticalPadding = dp.dropTargetVerticalPaddingPx;
-            int horizontalPadding = dp.dropTargetHorizontalPaddingPx;
-
-            ButtonDropTarget firstButton = mTempTargets[0];
-            firstButton.setTextVisible(true);
-            firstButton.setIconVisible(true);
-
-            ButtonDropTarget secondButton = mTempTargets[1];
-            secondButton.setTextVisible(true);
-            secondButton.setIconVisible(true);
-            secondButton.setTextMultiLine(false);
-            // Reset second button padding in case it was previously changed to multi-line text.
-            secondButton.setPadding(horizontalPadding, verticalPadding, horizontalPadding,
-                    verticalPadding);
-
-            if (dp.isTwoPanels) {
-                // Both buttons for two panel fit to the width of one Cell Layout (less
-                // half of the center gap between the buttons).
-                float scale = dp.getWorkspaceSpringLoadScale();
-                int scaledPanelWidth = (int) (dp.getCellLayoutWidth() * scale);
-                int halfButtonGap = dp.dropTargetGapPx / 2;
-                scaledPanelWidth -= halfButtonGap / 2;
-
-                int widthSpec = MeasureSpec.makeMeasureSpec(scaledPanelWidth, MeasureSpec.AT_MOST);
-                firstButton.measure(widthSpec, heightSpec);
-                secondButton.measure(widthSpec, heightSpec);
-            } else {
-                int availableWidth;
-                int buttonGap = dp.dropTargetGapPx;
-                if (mIsVertical) {
-                    // Both buttons plus the button gap do not display past the edge of the
-                    // scaled workspace, less a pre-defined gap from the edge of the workspace.
-                    float scale = dp.getWorkspaceSpringLoadScale();
-                    int panelWidth = (int) (dp.getCellLayoutWidth() * scale);
-                    availableWidth = Math.min(
-                            panelWidth - (2 * dp.dropTargetButtonWorkspaceEdgeGapPx), width);
-                } else {
-                    // Both buttons plus the button gap display up to a pre-defined margin of
-                    // the unscaled workspace edge.
-                    availableWidth = Math.min(
-                            dp.availableWidthPx - (2 * dp.dropTargetButtonScreenEdgeGapPx),
-                            width);
+        int visibleCount = getVisibleButtonsCount();
+        if (visibleCount > 0) {
+            int availableWidth = width / visibleCount;
+            boolean textVisible = true;
+            boolean textResized = false;
+            float textSize = mDropTargets[0].getTextSize();
+            for (ButtonDropTarget button : mDropTargets) {
+                if (button.getVisibility() == GONE) {
+                    continue;
                 }
-                int widthSpec = MeasureSpec.makeMeasureSpec(availableWidth - buttonGap,
-                        MeasureSpec.AT_MOST);
+                if (button.isTextTruncated(availableWidth)) {
+                    textSize = Math.min(textSize, button.resizeTextToFit(availableWidth));
+                    textResized = true;
+                }
+                textVisible = textVisible && !button.isTextTruncated(availableWidth);
+            }
 
-                // First button's width is at most the drop target bar's total width less the button
-                // gap.
-                firstButton.measure(widthSpec, heightSpec);
+            if (textResized) {
+                for (ButtonDropTarget button : mDropTargets) {
+                    button.setTextSize(textSize);
+                }
+            }
 
-                int usedWidth = firstButton.getMeasuredWidth() + buttonGap;
-                int remainingWidth = availableWidth - usedWidth;
-                widthSpec = MeasureSpec.makeMeasureSpec(remainingWidth, MeasureSpec.AT_MOST);
-                secondButton.measure(widthSpec, heightSpec);
-
-                // Remove both icons and put the second button's text on two lines if text is
-                // truncated on phones. We assume first button's text is never truncated, so it
-                // remains single-line.
-                if (secondButton.isTextTruncated(remainingWidth) && !mIsVertical) {
-                    firstButton.setIconVisible(false);
-                    secondButton.setIconVisible(false);
-                    secondButton.setTextMultiLine(true);
-                    secondButton.setPadding(secondButton.getPaddingLeft(),
-                            secondButton.getPaddingTop() / 2, secondButton.getPaddingRight(),
-                            secondButton.getPaddingBottom() / 2);
+            int widthSpec = MeasureSpec.makeMeasureSpec(availableWidth, MeasureSpec.AT_MOST);
+            int heightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+            for (ButtonDropTarget button : mDropTargets) {
+                if (button.getVisibility() != GONE) {
+                    button.setTextVisible(textVisible);
+                    button.measure(widthSpec, heightSpec);
                 }
             }
         }
@@ -229,79 +173,98 @@ public class DropTargetBar extends FrameLayout
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        int visibleCount = getVisibleButtons(mTempTargets);
+        int visibleCount = getVisibleButtonsCount();
         if (visibleCount == 0) {
             return;
         }
 
-        DeviceProfile dp = mLauncher.getDeviceProfile();
+        Launcher launcher = Launcher.getLauncher(getContext());
+        Workspace<?> workspace = launcher.getWorkspace();
+        DeviceProfile dp = launcher.getDeviceProfile();
+        int buttonHorizontalPadding = dp.dropTargetHorizontalPaddingPx;
+        int buttonVerticalPadding = dp.dropTargetVerticalPaddingPx;
         int barCenter = (right - left) / 2;
-        if (mIsVertical) {
-            // Center vertical bar over scaled workspace, accounting for hotseat offset.
-            float scale = dp.getWorkspaceSpringLoadScale();
-            Workspace<?> ws = mLauncher.getWorkspace();
-            int workspaceCenter = (ws.getLeft() + ws.getRight()) / 2;
-            int cellLayoutCenter = ((dp.getInsets().left + dp.workspacePadding.left) + (dp.widthPx
-                    - dp.getInsets().right - dp.workspacePadding.right)) / 2;
-            int cellLayoutCenterOffset = (int) ((cellLayoutCenter - workspaceCenter) * scale);
-            barCenter = workspaceCenter + cellLayoutCenterOffset;
-        }
+
+        ButtonDropTarget[] visibleButtons = Arrays.stream(mDropTargets)
+                .filter(b -> b.getVisibility() != GONE)
+                .toArray(ButtonDropTarget[]::new);
+        Arrays.stream(visibleButtons).forEach(
+                b -> b.setPadding(buttonHorizontalPadding, buttonVerticalPadding,
+                        buttonHorizontalPadding, buttonVerticalPadding));
 
         if (visibleCount == 1) {
-            ButtonDropTarget button = mTempTargets[0];
+            ButtonDropTarget button = visibleButtons[0];
             button.layout(barCenter - (button.getMeasuredWidth() / 2), 0,
                     barCenter + (button.getMeasuredWidth() / 2), button.getMeasuredHeight());
         } else if (visibleCount == 2) {
             int buttonGap = dp.dropTargetGapPx;
 
             if (dp.isTwoPanels) {
-                ButtonDropTarget leftButton = mTempTargets[0];
+                ButtonDropTarget leftButton = visibleButtons[0];
                 leftButton.layout(barCenter - leftButton.getMeasuredWidth() - (buttonGap / 2), 0,
                         barCenter - (buttonGap / 2), leftButton.getMeasuredHeight());
 
-                ButtonDropTarget rightButton = mTempTargets[1];
+                ButtonDropTarget rightButton = visibleButtons[1];
                 rightButton.layout(barCenter + (buttonGap / 2), 0,
-                        barCenter + (buttonGap / 2) + rightButton.getMeasuredWidth(),
+                        barCenter + rightButton.getMeasuredWidth() + (buttonGap / 2),
                         rightButton.getMeasuredHeight());
-            } else {
-                int start;
-                int end;
-                if (mIsVertical) {
-                    // Scaled CellLayout width is assumed to not exceed the bounds of left/right.
-                    float scale = dp.getWorkspaceSpringLoadScale();
-                    int panelWidth = (int) (dp.getCellLayoutWidth() * scale);
-                    start = barCenter - (panelWidth / 2) + dp.dropTargetButtonWorkspaceEdgeGapPx;
-                    end = barCenter + (panelWidth / 2) - dp.dropTargetButtonWorkspaceEdgeGapPx;
-                } else {
-                    start = Math.max(dp.dropTargetButtonScreenEdgeGapPx, left);
-                    end = Math.min(dp.availableWidthPx - dp.dropTargetButtonScreenEdgeGapPx, right);
+            } else if (dp.isTablet) {
+                int numberOfMargins = visibleCount - 1;
+                int buttonWidths = Arrays.stream(mDropTargets)
+                        .filter(b -> b.getVisibility() != GONE)
+                        .mapToInt(ButtonDropTarget::getMeasuredWidth)
+                        .sum();
+                int totalWidth = buttonWidths + (numberOfMargins * buttonGap);
+                int buttonsStartMargin = barCenter - (totalWidth / 2);
+
+                int start = buttonsStartMargin;
+                for (ButtonDropTarget button : visibleButtons) {
+                    int margin = (start != buttonsStartMargin) ? buttonGap : 0;
+                    button.layout(start + margin, 0, start + margin + button.getMeasuredWidth(),
+                            button.getMeasuredHeight());
+                    start += button.getMeasuredWidth() + margin;
+                }
+            } else if (mIsVertical) {
+                // Center buttons over workspace, not screen.
+                int verticalCenter = (workspace.getRight() - workspace.getLeft()) / 2;
+                ButtonDropTarget leftButton = visibleButtons[0];
+                leftButton.layout(verticalCenter - leftButton.getMeasuredWidth() - (buttonGap / 2),
+                        0, verticalCenter - (buttonGap / 2), leftButton.getMeasuredHeight());
+
+                ButtonDropTarget rightButton = visibleButtons[1];
+                rightButton.layout(verticalCenter + (buttonGap / 2), 0,
+                        verticalCenter + rightButton.getMeasuredWidth() + (buttonGap / 2),
+                        rightButton.getMeasuredHeight());
+            } else if (dp.isPhone) {
+                // Buttons aligned to outer edges of scaled workspace.
+                float scale = dp.getWorkspaceSpringLoadScale();
+
+                int workspaceWidth = (int) (launcher.getWorkspace().getNormalChildWidth() * scale);
+                int start = barCenter - (workspaceWidth / 2);
+                int end = barCenter + (workspaceWidth / 2);
+
+                ButtonDropTarget leftButton = visibleButtons[0];
+                ButtonDropTarget rightButton = visibleButtons[1];
+
+                // If the text within the buttons is too long, the buttons can overlap
+                int overlap = start + leftButton.getMeasuredWidth() + rightButton.getMeasuredWidth()
+                        - end;
+                if (overlap > 0) {
+                    end += overlap;
                 }
 
-                ButtonDropTarget leftButton = mTempTargets[0];
-                ButtonDropTarget rightButton = mTempTargets[1];
-
-                int leftButtonWidth = leftButton.getMeasuredWidth();
-                int rightButtonWidth = rightButton.getMeasuredWidth();
-                int buttonPlusGapWidth = leftButtonWidth + buttonGap + rightButtonWidth;
-
-                int extraSpace = end - start - buttonPlusGapWidth;
-                start = (start - left) + (extraSpace / 2);
-
-                leftButton.layout(start, 0, start + leftButtonWidth,
+                leftButton.layout(start, 0, start + leftButton.getMeasuredWidth(),
                         leftButton.getMeasuredHeight());
-
-                int rightButtonStart = start + leftButtonWidth + buttonGap;
-                rightButton.layout(rightButtonStart, 0, rightButtonStart + rightButtonWidth,
+                rightButton.layout(end - rightButton.getMeasuredWidth(), 0, end,
                         rightButton.getMeasuredHeight());
             }
         }
     }
 
-    private int getVisibleButtons(ButtonDropTarget[] outVisibleButtons) {
+    private int getVisibleButtonsCount() {
         int visibleCount = 0;
-        for (ButtonDropTarget button : mDropTargets) {
-            if (button.getVisibility() != GONE) {
-                outVisibleButtons[visibleCount] = button;
+        for (ButtonDropTarget buttons : mDropTargets) {
+            if (buttons.getVisibility() != GONE) {
                 visibleCount++;
             }
         }
