@@ -70,10 +70,10 @@
     <string name="translate">ترجمه</string>
     <string name="product">محصول</string>
     <string name="hidden_apps_label">برنامه‌های مخفی‌شده</string>
-    <string name="hidden_apps_label_with_count">Hidden Apps (%1$d)</string>
+    <string name="hidden_apps_label_with_count">برنامه های مخفی (%1$d)</string>
     <plurals name="apps_count">
         <item quantity="one">%1$d App</item>
-        <item quantity="other">%1$d Apps</item>
+        <item quantity="other">%1$d تا برنامه</item>
     </plurals>
     <string name="hotseat_qsb_label">نشان‌دادن نوار جست‌و‌جو</string>
     <string name="dt2s_admin_hint_title">Admin Permissions Required</string>
@@ -91,7 +91,7 @@
     <string name="theme_dark">تاریک</string>
     <string name="theme_system_default">سیستم</string>
     <string name="theme_follow_wallpaper">Match Wallpaper</string>
-    <string name="quickstep_label">Recents</string>
+    <string name="quickstep_label">اخیر</string>
     <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
     <string name="window_corner_radius_label">Screen Corner Radius</string>
     <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
