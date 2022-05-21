@@ -196,7 +196,7 @@
     <string name="icon_picker_description">עלול לגרום ל-Lawnchair להתקע.</string>
     <string name="font_picker_label">התאמת גופן</string>
     <string name="font_picker_description">טקסט מסוים נותר ללא שינוי.</string>
-    <string name="search_provider_app_search">App Search</string>
+    <string name="search_provider_app_search">חיפוש אפליקציה</string>
     <string name="always_open_website_label">Always Open Website</string>
     <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
     <string name="search_provider">Search Provider</string>
