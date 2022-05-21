@@ -26,7 +26,7 @@
     <string name="auto_add_shortcuts_label">Add New Apps to Home Screen</string>
     <string name="dock_label">Dock</string>
     <string name="dock_description">Search Bar, Icon Count</string>
-    <string name="app_drawer_label">App Drawer</string>
+    <string name="app_drawer_label">کشوی برنامه‌ها</string>
     <string name="app_drawer_description">Hidden Apps, Column Count, Icons</string>
     <string name="folders_label">پوشه‌ها</string>
     <string name="folders_description">تعداد سطرها و ستون‌ها</string>
@@ -48,7 +48,7 @@
     <string name="news">اخبار</string>
     <string name="support">پشتیبانی</string>
     <string name="acknowledgements">Acknowledgements</string>
-    <string name="devops">DevOps</string>
+    <string name="devops">دو‌آپس</string>
     <string name="quickswitch_maintenance">QuickSwitch Maintenance</string>
     <string name="all_apps_search_bar_hint">اپلیکیشنهای جستجو</string>
     <string name="settings_button_text">تنظیمات خانه</string>
