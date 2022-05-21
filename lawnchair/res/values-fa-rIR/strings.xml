@@ -65,7 +65,7 @@
     <string name="auto_adaptive_icons_description">For all non-Adaptive icons.</string>
     <string name="support_and_pr">Support &amp; PR</string>
     <string name="workspace_dt2s">Double-Tap to Sleep</string>
-    <string name="smart_space_enable">At a Glance Widget</string>
+    <string name="smart_space_enable">ویجت در یک نگاه</string>
     <string name="design_and_development">Design &amp; Development</string>
     <string name="translate">ترجمه</string>
     <string name="product">محصول</string>
@@ -75,13 +75,13 @@
         <item quantity="one">%1$d App</item>
         <item quantity="other">%1$d Apps</item>
     </plurals>
-    <string name="hotseat_qsb_label">Show Search Bar</string>
+    <string name="hotseat_qsb_label">نشان‌دادن نوار جست‌و‌جو</string>
     <string name="dt2s_admin_hint_title">Admin Permissions Required</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">Double-Tap to Sleep will be turned off.</string>
     <string name="dt2s_a11y_hint_title">Turn on Accessibility Service</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
-    <string name="dt2s_warning_open_settings">Open Settings</string>
+    <string name="dt2s_warning_open_settings">باز کردن تنظیمات</string>
     <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">No feed installed.</string>
     <string name="fuzzy_search_title">جست‌و‌جو فازی</string>
@@ -108,10 +108,10 @@
     <string name="show_sys_ui_scrim">Top Shadow</string>
     <string name="show_status_bar">نشان‌دادن نوار وضعیت</string>
     <string name="what_to_show">What to Show</string>
-    <string name="missing_notification_access_label">Notification Access Needed</string>
-    <string name="missing_notification_access_description">Notification access needed.</string>
+    <string name="missing_notification_access_label">دسترسی به اعلان‌ها نیاز است</string>
+    <string name="missing_notification_access_description">دسترسی به اعلان‌ها نیاز است.</string>
     <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
-    <string name="title_change_settings">Change Settings</string>
+    <string name="title_change_settings">تغییر تنظیمات</string>
     <string name="debug_restart_launcher">Restart Lawnchair</string>
     <string name="pref_fonts_missing_font">Font not found.</string>
     <string name="font_variant_italic">Italic</string>
@@ -124,9 +124,9 @@
     <string name="font_weight_bold">Bold</string>
     <string name="font_weight_extra_bold">Extra Bold</string>
     <string name="font_weight_extra_black">Black</string>
-    <string name="font_label">Font (Experimental)</string>
+    <string name="font_label">قلم‌ (آزمایشی)</string>
     <string name="reset_font">Reset</string>
-    <string name="search_input_action_clear_results">Clear Search Box</string>
+    <string name="search_input_action_clear_results">پاک کردن نوار جست‌و‌جو</string>
     <string name="pref_category_search">جست‌و‌جو</string>
     <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
     <string name="label_search">جست‌و‌جو</string>
@@ -144,7 +144,7 @@
     <string name="icon_shape_sammy">وان یو‌آی</string>
     <string name="icon_shape_teardrop">اشک</string>
     <string name="icon_shape_cylinder">سیلندر</string>
-    <string name="icon_shape_cupertino">iOS</string>
+    <string name="icon_shape_cupertino">آی او اس</string>
     <string name="customize_button_text">شخصی‌سازی</string>
     <string name="app_title_label">عنوان</string>
     <string name="hide_from_drawer">مخفی‌ در کشوی برنامه‌ها</string>
