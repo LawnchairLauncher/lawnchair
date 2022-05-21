@@ -29,7 +29,7 @@
     <string name="app_drawer_label">Szuflada aplikacji</string>
     <string name="app_drawer_description">Ukryte aplikacje, Liczba kolumn, Ikony</string>
     <string name="folders_label">Foldery</string>
-    <string name="folders_description">Liczba wierszy i kolumn</string>
+    <string name="folders_description">Liczba rzędów i kolumn</string>
     <string name="app_drawer_columns">Kolumny szuflady aplikacji</string>
     <string name="dock_icons">Ikony docka</string>
     <string name="max_folder_columns">Maks. liczba kolumn folderu</string>
