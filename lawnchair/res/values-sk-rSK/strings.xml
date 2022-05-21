@@ -236,12 +236,12 @@
     <string name="what_to_backup">What to Back Up</string>
     <string name="backup_content_layout_and_settings">Rozloženie a nastavenia</string>
     <string name="backup_content_wallpaper">Tapeta</string>
-    <string name="backup_create_success">Backup created.</string>
-    <string name="backup_create_error">Failed to create backup.</string>
+    <string name="backup_create_success">Záloha bola vytvorená.</string>
+    <string name="backup_create_error">Zálohu sa nepodarilo vytvoriť.</string>
     <string name="restore_backup">Obnoviť zálohu</string>
     <string name="restore_backup_action">Obnoviť</string>
     <string name="what_to_restore">Čo sa má obnoviť</string>
-    <string name="backup_restore_success">Backup restored.</string>
-    <string name="backup_restore_error">Failed to restore backup.</string>
-    <string name="invalid_backup_file">Invalid backup file.</string>
+    <string name="backup_restore_success">Záloha bola obnovená.</string>
+    <string name="backup_restore_error">Obnovenie zálohy zlyhalo.</string>
+    <string name="invalid_backup_file">Neplatný záložný súbor.</string>
 </resources>
