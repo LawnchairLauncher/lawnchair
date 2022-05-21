@@ -233,10 +233,10 @@
     <string name="themed_icons_home_and_drawer_label">Plocha a\u00a0Seznam aplikací</string>
     <string name="create_backup">Vytvořit zálohu</string>
     <string name="create_backup_action">Vytvořit</string>
-    <string name="what_to_backup">Co má být zálohováno</string>
+    <string name="what_to_backup">Co zálohovat</string>
     <string name="backup_content_layout_and_settings">Rozložení a\u00a0nastavení</string>
     <string name="backup_content_wallpaper">Tapeta</string>
-    <string name="backup_create_success">Záloha byla vytvořena.</string>
+    <string name="backup_create_success">Záloha vytvořena.</string>
     <string name="backup_create_error">Nepodařilo se vytvořit zálohu.</string>
     <string name="restore_backup">Obnovit ze zálohy</string>
     <string name="restore_backup_action">Obnovit</string>
