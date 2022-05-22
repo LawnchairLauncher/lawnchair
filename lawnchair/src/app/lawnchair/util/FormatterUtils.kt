@@ -21,11 +21,17 @@ fun formatShortElapsedTime(context: Context, millis: Long): String? {
     var hours = 0
     var minutes = 0
 
-    listOf(SECONDS_PER_DAY, SECONDS_PER_HOUR, SECONDS_PER_MINUTE).forEach {
-        if (secondsLong >= it) {
-            days = (secondsLong / it).toInt()
-            secondsLong -= (days * it).toLong()
-        }
+    if (secondsLong >= SECONDS_PER_DAY) {
+        days = (secondsLong / SECONDS_PER_DAY).toInt()
+        secondsLong -= (days * SECONDS_PER_DAY).toLong()
+    }
+    if (secondsLong >= SECONDS_PER_HOUR) {
+        hours = (secondsLong / SECONDS_PER_HOUR).toInt()
+        secondsLong -= (hours * SECONDS_PER_HOUR).toLong()
+    }
+    if (secondsLong >= SECONDS_PER_MINUTE) {
+        minutes = (secondsLong / SECONDS_PER_MINUTE).toInt()
+        secondsLong -= (minutes * SECONDS_PER_MINUTE).toLong()
     }
 
     val seconds = secondsLong.toInt()
