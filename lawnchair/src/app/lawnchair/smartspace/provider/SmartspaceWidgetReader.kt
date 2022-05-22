@@ -71,7 +71,7 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
             weatherIconView = images.last()
             temperatureText = texts.last()
         }
-        if (images.size > 1) {
+        if (images.size > 1 && texts.size > 2) {
             cardIconView = images.first()
             title = texts[0]
             subtitle = texts[1]
