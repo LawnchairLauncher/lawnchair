@@ -4,11 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
+import androidx.core.content.getSystemService
 import app.lawnchair.smartspace.model.SmartspaceAction
 import app.lawnchair.smartspace.model.SmartspaceScores
 import app.lawnchair.smartspace.model.SmartspaceTarget
 import app.lawnchair.util.broadcastReceiverFlow
+import app.lawnchair.util.formatShortElapsedTimeRoundingUpToMinutes
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import kotlinx.coroutines.flow.map
 
 class BatteryStatusProvider(context: Context) : SmartspaceDataSource(
@@ -33,7 +36,14 @@ class BatteryStatusProvider(context: Context) : SmartspaceDataSource(
             level <= 15 -> context.getString(R.string.smartspace_battery_low)
             else -> return null
         }
-        val subtitle = context.getString(R.string.n_percent, level)
+        val chargingTimeRemaining = computeChargeTimeRemaining()
+        val subtitle = if (charging && chargingTimeRemaining > 0) {
+            val chargingTime = formatShortElapsedTimeRoundingUpToMinutes(context, chargingTimeRemaining)
+            context.getString(
+                R.string.battery_charging_percentage_charging_time, level, chargingTime)
+        } else {
+            context.getString(R.string.n_percent, level)
+        }
         return SmartspaceTarget(
             id = "batteryStatus",
             headerAction = SmartspaceAction(
@@ -44,5 +54,14 @@ class BatteryStatusProvider(context: Context) : SmartspaceDataSource(
             score = SmartspaceScores.SCORE_BATTERY,
             featureType = SmartspaceTarget.FeatureType.FEATURE_CALENDAR
         )
+    }
+
+    private fun computeChargeTimeRemaining(): Long {
+        if (!Utilities.ATLEAST_P) return -1
+        return try {
+            batteryManager?.computeChargeTimeRemaining() ?: -1
+        } catch (t: Throwable) {
+            -1
+        }
     }
 }
