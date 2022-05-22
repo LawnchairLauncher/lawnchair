@@ -45,12 +45,10 @@ fun formatShortElapsedTime(context: Context, millis: Long): String? {
             hours += (minutes + 30) / 60
             measureFormat.format(Measure(hours, MeasureUnit.HOUR))
         }
-        hours > 0 -> {
-            measureFormat.formatMeasures(
-                Measure(hours, MeasureUnit.HOUR),
-                Measure(minutes, MeasureUnit.MINUTE),
-            )
-        }
+        hours > 0 -> measureFormat.formatMeasures(
+            Measure(hours, MeasureUnit.HOUR),
+            Measure(minutes, MeasureUnit.MINUTE),
+        )
         minutes >= 2 || minutes > 0 && seconds == 0 -> {
             minutes += (seconds + 30) / 60
             measureFormat.format(Measure(minutes, MeasureUnit.MINUTE))
