@@ -241,5 +241,5 @@
     <string name="backup_restore_success">备份已恢复。</string>
     <string name="backup_restore_error">恢复备份失败。</string>
     <string name="invalid_backup_file">无效的备份文件。</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — %2$s后充满"</string>
 </resources>
