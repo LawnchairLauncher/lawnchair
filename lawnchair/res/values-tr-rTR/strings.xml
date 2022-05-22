@@ -242,4 +242,5 @@
     <string name="backup_restore_success">Yedekleme geri yüklendi.</string>
     <string name="backup_restore_error">Yedek geri yüklenirken bir hata meydana geldi.</string>
     <string name="invalid_backup_file">Geçersiz yedekleme dosyası.</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
 </resources>
