@@ -3,7 +3,6 @@ package app.lawnchair.backup.ui
 import android.app.Application
 import android.content.res.Configuration
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.view.ContextThemeWrapper
 import android.view.View.MeasureSpec
 import android.view.View.MeasureSpec.EXACTLY
@@ -14,6 +13,7 @@ import app.lawnchair.backup.LawnchairBackup
 import app.lawnchair.views.LauncherPreviewView
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
+import com.android.launcher3.icons.BitmapRenderer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -67,14 +67,12 @@ class CreateBackupViewModel(
                 val dp = idp.getDeviceProfile(context)
                 val width = dp.widthPx
                 val height = dp.heightPx
-                val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-                val canvas = Canvas(bitmap)
                 previewView.measure(
                     MeasureSpec.makeMeasureSpec(width, EXACTLY),
                     MeasureSpec.makeMeasureSpec(height, EXACTLY),
                 )
                 previewView.layout(0, 0, width, height)
-                previewView.draw(canvas)
+                val bitmap = BitmapRenderer.createHardwareBitmap(width, height, previewView::draw)
                 continuation.resume(bitmap)
                 previewView.destroy()
             }
