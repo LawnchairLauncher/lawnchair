@@ -244,4 +244,5 @@
     <string name="backup_restore_success">Záloha bola obnovená.</string>
     <string name="backup_restore_error">Obnovenie zálohy zlyhalo.</string>
     <string name="invalid_backup_file">Neplatný záložný súbor.</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
 </resources>
