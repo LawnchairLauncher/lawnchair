@@ -244,4 +244,5 @@
     <string name="backup_restore_success">Резервная копия восстановлена.</string>
     <string name="backup_restore_error">Не удалось восстановить резервную копию.</string>
     <string name="invalid_backup_file">Файл резервной копии недействителен.</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
 </resources>
