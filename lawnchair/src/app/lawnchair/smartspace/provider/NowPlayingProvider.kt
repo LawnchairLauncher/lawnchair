@@ -39,10 +39,7 @@ class NowPlayingProvider(context: Context) : SmartspaceDataSource(
         val icon = sbn.notification.smallIcon ?: defaultIcon
 
         val mediaInfo = tracking.info
-        val artistAndAlbum = listOf(mediaInfo.artist, mediaInfo.album)
-            .filter { it?.isNotEmpty() == true }
-            .joinToString(separator = context.getString(R.string.smartspace_media_info_separator))
-        val subtitle = artistAndAlbum.ifEmpty {
+        val subtitle = mediaInfo.artist.ifEmpty {
             sbn?.getAppName(context) ?: context.getAppName(tracking.packageName)
         }
         val intent = sbn?.notification?.contentIntent
