@@ -54,7 +54,7 @@
     <string name="settings_button_text">Ana Ekran Ayarları</string>
     <string name="development">Geliştirme</string>
     <string name="app_info_drop_target_label">Uygulama Bilgileri</string>
-    <string name="item_removed">Eşya kaldırıldı.</string>
+    <string name="item_removed">Nesne kaldırıldı.</string>
     <string name="all_apps_no_search_results">“<xliff:g example="Android" id="query">%1$s</xliff:g>” ile eşleşen bir uygulama bulunamadı.</string>
     <string name="translucent_background">Hafif Saydam Arka Plan</string>
     <string name="background_opacity">Arka Plan Opaklığı</string>
@@ -203,12 +203,12 @@
     <string name="icon_picker_load_failed">Daha fazla simge yüklenemedi.</string>
     <string name="reset_custom_icons">Özel Simgeleri Sıfırla</string>
     <string name="reset_custom_icons_confirmation">Tüm özel simgeler sıfırlanacak. Devam etmek istiyor musun?</string>
-    <string name="taskbar_label">Taskbar</string>
+    <string name="taskbar_label">Görev çubuğu</string>
     <string name="enable_taskbar_experimental">Görev Çubuğunu Etkinleştir (Deneysel)</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Şarj ediliyor</string>
-    <string name="smartspace_battery_full">Charged</string>
+    <string name="smartspace_battery_full">Şarj dolu</string>
     <string name="smartspace_battery_low">Düşük pil</string>
     <string name="accessibility_smartspace_page">Sayfa %1$d of %2$d</string>
     <string name="smartspace_widget">Bir Bakışta</string>
@@ -242,5 +242,5 @@
     <string name="backup_restore_success">Yedekleme geri yüklendi.</string>
     <string name="backup_restore_error">Yedek geri yüklenirken bir hata meydana geldi.</string>
     <string name="invalid_backup_file">Geçersiz yedekleme dosyası.</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — %2$s içinde tamamen dolacak"</string>
 </resources>
