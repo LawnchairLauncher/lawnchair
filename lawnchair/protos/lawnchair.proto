@@ -13,6 +13,7 @@ message BackupInfo {
     int32 contents = 4;
     int32 preview_width = 5;
     int32 preview_height = 6;
+    bool preview_dark_text = 8;
     GridState grid_state = 7;
 }
 

@@ -24,6 +24,7 @@ import com.android.launcher3.LauncherAppState
 @Composable
 fun DummyLauncherBox(
     modifier: Modifier = Modifier,
+    darkText: Boolean = wallpaperSupportsDarkText(),
     content: @Composable BoxScope.() -> Unit
 ) {
     val context = LocalContext.current
@@ -31,15 +32,8 @@ fun DummyLauncherBox(
     val dp = idp.getDeviceProfile(context)
     val ratio = dp.widthPx.toFloat() / dp.heightPx.toFloat()
 
-    val colorHints = remember {
-        WallpaperManagerCompat.INSTANCE[context].wallpaperColors?.colorHints ?: 0
-    }
-    val supportsDarkText = (colorHints and WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT) != 0
-
     Box(modifier = modifier.aspectRatio(ratio, matchHeightConstraintsFirst = true)) {
-        LawnchairTheme(
-            darkTheme = !supportsDarkText
-        ) {
+        LawnchairTheme(darkTheme = !darkText) {
             Spacer(
                 modifier = Modifier
                     .fillMaxSize()
@@ -65,6 +59,15 @@ fun DummyLauncherLayout(
             modifier = modifier
         )
     }
+}
+
+@Composable
+fun wallpaperSupportsDarkText(): Boolean {
+    val context = LocalContext.current
+    val colorHints = remember {
+        WallpaperManagerCompat.INSTANCE[context].wallpaperColors?.colorHints ?: 0
+    }
+    return (colorHints and WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT) != 0
 }
 
 @Composable

@@ -137,7 +137,8 @@ fun ColumnScope.RestoreBackupOptions(
                 .padding(top = 8.dp)
                 .weight(1f)
                 .align(Alignment.CenterHorizontally)
-                .clip(MaterialTheme.shapes.large)
+                .clip(MaterialTheme.shapes.large),
+            darkText = backup.info.previewDarkText,
         ) {
             val wallpaper = backup.wallpaper
             if (contents.hasFlag(LawnchairBackup.INCLUDE_WALLPAPER) && wallpaper != null) {

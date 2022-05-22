@@ -12,6 +12,8 @@ import app.lawnchair.data.AppDatabase
 import app.lawnchair.util.hasFlag
 import app.lawnchair.util.scaleDownTo
 import app.lawnchair.util.scaleDownToDisplaySize
+import app.lawnchair.wallpaper.WallpaperColorsCompat
+import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherFiles
@@ -135,6 +137,8 @@ class LawnchairBackup(
             val idp = LauncherAppState.getIDP(context)
             val createdAt = Timestamp.newBuilder()
                 .setSeconds(System.currentTimeMillis() / 1000)
+            val colorHints = WallpaperManagerCompat.INSTANCE.get(context).wallpaperColors?.colorHints ?: 0
+            val wallpaperSupportsDarkText = (colorHints and WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT) != 0
             val info = BackupInfo.newBuilder()
                 .setLawnchairVersion(BuildConfig.VERSION_CODE)
                 .setBackupVersion(BACKUP_VERSION)
@@ -143,6 +147,7 @@ class LawnchairBackup(
                 .setGridState(DeviceGridState(idp).toProtoMessage())
                 .setPreviewWidth(screenshotBitmap.width)
                 .setPreviewHeight(screenshotBitmap.height)
+                .setPreviewDarkText(wallpaperSupportsDarkText)
                 .build()
 
             AppDatabase.INSTANCE.get(context).checkpoint()
