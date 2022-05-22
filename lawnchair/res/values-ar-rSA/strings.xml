@@ -236,15 +236,15 @@
     <string name="create_backup">إنشاء نسخة احتياطية</string>
     <string name="create_backup_action">إنشاء</string>
     <string name="what_to_backup">ما سيتم نسخه احتياطيًا</string>
-    <string name="backup_content_layout_and_settings">Layout and Settings</string>
+    <string name="backup_content_layout_and_settings">التخطيط والإعدادات</string>
     <string name="backup_content_wallpaper">خلفية الخلفية</string>
-    <string name="backup_create_success">Backup created.</string>
-    <string name="backup_create_error">Failed to create backup.</string>
-    <string name="restore_backup">Restore Backup</string>
+    <string name="backup_create_success">تم إنشاء النسخة الاحتياطية.</string>
+    <string name="backup_create_error">فشل إنشاء النسخة الاحتياطية.</string>
+    <string name="restore_backup">استعادة النسخ الاحتياطي</string>
     <string name="restore_backup_action">Restore</string>
     <string name="what_to_restore">What to Restore</string>
     <string name="backup_restore_success">Backup restored.</string>
     <string name="backup_restore_error">Failed to restore backup.</string>
-    <string name="invalid_backup_file">Invalid backup file.</string>
+    <string name="invalid_backup_file">ملف النسخ الاحتياطي غير صحيح.</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
 </resources>
