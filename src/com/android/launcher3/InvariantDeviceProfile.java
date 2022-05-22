@@ -375,9 +375,16 @@ public class InvariantDeviceProfile {
         final List<DeviceProfile> localSupportedProfiles = new ArrayList<>();
         defaultWallpaperSize = new Point(displayInfo.currentSize);
         for (WindowBounds bounds : displayInfo.supportedBounds) {
-            localSupportedProfiles.add(new DeviceProfile.Builder(context, this, displayInfo)
-                    .setUseTwoPanels(deviceType == TYPE_MULTI_DISPLAY)
-                    .setWindowBounds(bounds).build());
+            DeviceProfile dp;
+            try {
+                dp = new DeviceProfile.Builder(context, this, displayInfo)
+                        .setUseTwoPanels(deviceType == TYPE_MULTI_DISPLAY)
+                        .setWindowBounds(bounds).build();
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to create device profile for bounds " + bounds, e);
+                continue;
+            }
+            localSupportedProfiles.add(dp);
 
             // Wallpaper size should be the maximum of the all possible sizes Launcher expects
             int displayWidth = bounds.bounds.width();
