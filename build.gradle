@@ -1,8 +1,8 @@
 buildscript {
     ext {
         kotlin_version = '1.6.21'
-        compose_version = '1.2.0-beta01'
-        accompanist_version = '0.24.8-beta'
+        compose_version = '1.2.0-beta02'
+        accompanist_version = '0.24.9-beta'
         libsu_version = '3.1.2'
         protocVersion = '3.18.0'
         room_version = '2.4.2'
@@ -352,7 +352,7 @@ dependencies {
     implementation "androidx.compose.ui:ui-text-google-fonts:$compose_version"
     implementation "androidx.compose.foundation:foundation:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.material3:material3:1.0.0-alpha11"
+    implementation "androidx.compose.material3:material3:1.0.0-alpha12"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     implementation "androidx.compose.runtime:runtime-rxjava2:$compose_version"
     implementation "androidx.compose.compiler:compiler:$compose_version"
