@@ -242,4 +242,5 @@
     <string name="backup_restore_success">Backup ripristinato.</string>
     <string name="backup_restore_error">Ripristino del backup non riuscito.</string>
     <string name="invalid_backup_file">File di backup non valido.</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
 </resources>
