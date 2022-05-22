@@ -241,4 +241,5 @@
     <string name="backup_restore_success">已還原備份。</string>
     <string name="backup_restore_error">還原備份失敗。</string>
     <string name="invalid_backup_file">無效備份檔案。</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
 </resources>
