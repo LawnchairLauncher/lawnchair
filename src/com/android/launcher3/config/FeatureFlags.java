@@ -21,12 +21,14 @@ import android.content.Context;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.DeviceFlag;
+import com.android.systemui.shared.system.BlurUtils;
 import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.lawnchair.config.DynamicFlag;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 
@@ -89,8 +91,12 @@ public final class FeatureFlags {
     public static final BooleanFlag ADAPTIVE_ICON_WINDOW_ANIM = getDebugFlag(
             "ADAPTIVE_ICON_WINDOW_ANIM", true, "Use adaptive icons for window animations.");
 
-    public static final BooleanFlag ENABLE_QUICKSTEP_LIVE_TILE = getDebugFlag(
-            "ENABLE_QUICKSTEP_LIVE_TILE", Utilities.ATLEAST_S, "Enable live tile in Quickstep overview");
+    public static final BooleanFlag ENABLE_QUICKSTEP_LIVE_TILE = new DynamicFlag("ENABLE_QUICKSTEP_LIVE_TILE", context -> {
+        if (!Utilities.ATLEAST_S) return false;
+        if (!BlurUtils.supportsBlursOnWindows()) return true;
+        if (context == null) return true;
+        return !PreferenceManager.getInstance(context).getRecentsTranslucentBackground().get();
+    }, Utilities.ATLEAST_S);
 
     public static final BooleanFlag ENABLE_QUICKSTEP_WIDGET_APP_START = getDebugFlag(
             "ENABLE_QUICKSTEP_WIDGET_APP_START", Utilities.ATLEAST_S,
