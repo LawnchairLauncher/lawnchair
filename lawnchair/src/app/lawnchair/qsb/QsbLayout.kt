@@ -19,6 +19,7 @@ import app.lawnchair.launcher
 import app.lawnchair.launcherNullable
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.subscribeBlocking
 import app.lawnchair.qsb.providers.AppSearch
 import app.lawnchair.qsb.providers.Google
 import app.lawnchair.qsb.providers.GoogleGo
@@ -68,7 +69,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
 
         val supportsLens = searchProvider == Google
 
-        preferenceManager2.themedHotseatQsb.onEach(launchIn = viewAttachedScope) { themed ->
+        preferenceManager2.themedHotseatQsb.subscribeBlocking(scope = viewAttachedScope) { themed ->
             setUpBackground(themed)
 
             val iconRes = if (themed) searchProvider.themedIcon else searchProvider.icon
