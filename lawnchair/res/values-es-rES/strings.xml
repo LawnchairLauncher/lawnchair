@@ -242,4 +242,5 @@
     <string name="backup_restore_success">Copia de seguridad restaurada.</string>
     <string name="backup_restore_error">Error al restaurar copia de seguridad.</string>
     <string name="invalid_backup_file">Copia de seguridad no válida.</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
 </resources>
