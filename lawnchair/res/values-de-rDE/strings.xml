@@ -242,5 +242,5 @@
     <string name="backup_restore_success">Sicherung wiederhergestellt.</string>
     <string name="backup_restore_error">Fehler beim Wiederherstellen der Sicherung.</string>
     <string name="invalid_backup_file">Ungültige Sicherungsdatei.</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Voll in %2$s"</string>
 </resources>
