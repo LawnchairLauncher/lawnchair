@@ -244,4 +244,5 @@
     <string name="backup_restore_success">Obnoveno ze zálohy.</string>
     <string name="backup_restore_error">Nepodařilo se obnovit ze zálohy.</string>
     <string name="invalid_backup_file">Neplatný soubor zálohy.</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
 </resources>
