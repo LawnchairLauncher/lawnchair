@@ -3,6 +3,7 @@ package app.lawnchair.smartspace.provider
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.drawable.Icon
 import android.os.BatteryManager
 import androidx.core.content.getSystemService
 import app.lawnchair.smartspace.model.SmartspaceAction
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.map
 class BatteryStatusProvider(context: Context) : SmartspaceDataSource(
     context, R.string.smartspace_battery_status, { smartspaceBatteryStatus }
 ) {
+    private val batteryManager = context.getSystemService<BatteryManager>()
 
     override val internalTargets = broadcastReceiverFlow(context, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
         .map { intent ->
@@ -31,7 +33,7 @@ class BatteryStatusProvider(context: Context) : SmartspaceDataSource(
 
     private fun getSmartspaceTarget(charging: Boolean, full: Boolean, level: Int): SmartspaceTarget? {
         val title = when {
-            full -> return null
+            full || level == 100 -> return null
             charging -> context.getString(R.string.smartspace_battery_charging)
             level <= 15 -> context.getString(R.string.smartspace_battery_low)
             else -> return null
@@ -44,10 +46,12 @@ class BatteryStatusProvider(context: Context) : SmartspaceDataSource(
         } else {
             context.getString(R.string.n_percent, level)
         }
+        val iconResId = if (charging) R.drawable.ic_charging else R.drawable.ic_battery_low
         return SmartspaceTarget(
             id = "batteryStatus",
             headerAction = SmartspaceAction(
                 id = "batteryStatusAction",
+                icon = Icon.createWithResource(context, iconResId),
                 title = title,
                 subtitle = subtitle
             ),
