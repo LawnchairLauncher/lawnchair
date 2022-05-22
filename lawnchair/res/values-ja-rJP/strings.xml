@@ -241,5 +241,5 @@
     <string name="backup_restore_success">バックアップが復元されました。</string>
     <string name="backup_restore_error">バックアップの復元に失敗しました。</string>
     <string name="invalid_backup_file">バックアップファイルが無効です。</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — 充電完了まで %2$s"</string>
 </resources>
