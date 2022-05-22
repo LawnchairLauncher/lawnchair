@@ -244,4 +244,5 @@
     <string name="backup_restore_success">Przywrócono kopię zapasową.</string>
     <string name="backup_restore_error">Błąd podczas przywracania kopii zapasowej.</string>
     <string name="invalid_backup_file">Niewłaściwy plik kopii zapasowej.</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
 </resources>
