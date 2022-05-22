@@ -242,5 +242,5 @@
     <string name="backup_restore_success">Biztonsági mentés visszaállítva.</string>
     <string name="backup_restore_error">Biztonsági mentés visszaállítása nem sikerült.</string>
     <string name="invalid_backup_file">Biztonsági mentés fájl érvénytelen.</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — tele %2$s"</string>
 </resources>
