@@ -1,15 +1,14 @@
 package app.lawnchair.bugreport
 
-import android.content.Context
-
 object UploaderUtils {
 
-    private val ctrlVService = CtrlVService.create()
+    private val katbinService = KatbinService.create()
     const val isAvailable = true
 
     @Suppress("BlockingMethodInNonBlockingContext")
-    suspend fun upload(context: Context, report: BugReport): String {
-        val result = ctrlVService.upload(report.getTitle(context), report.contents)
-        return "https://ctrl-v.app/raw/${result.hash}"
+    suspend fun upload(report: BugReport): String {
+        val body = KatbinUploadBody(KatbinPaste(content = report.contents))
+        val result = katbinService.upload(body)
+        return "https://katb.in/${result.id}"
     }
 }

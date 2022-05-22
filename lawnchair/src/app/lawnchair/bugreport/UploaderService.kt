@@ -36,7 +36,7 @@ class UploaderService : Service() {
         while (uploadQueue.isNotEmpty()) {
             val report = uploadQueue.poll()!!
             try {
-                report.link = UploaderUtils.upload(this, report)
+                report.link = UploaderUtils.upload(report)
             } catch (e: Throwable) {
                 Log.d("UploaderService", "failed to upload bug report", e)
                 report.uploadError = true
