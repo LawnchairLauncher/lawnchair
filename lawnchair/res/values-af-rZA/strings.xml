@@ -242,4 +242,5 @@
     <string name="backup_restore_success">Rugsteun herstel.</string>
     <string name="backup_restore_error">Kon nie rugsteun herstel nie.</string>
     <string name="invalid_backup_file">Ongeldige rugsteunlêer.</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
 </resources>
