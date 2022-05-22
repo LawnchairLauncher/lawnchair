@@ -242,4 +242,5 @@
     <string name="backup_restore_success">Backup restored.</string>
     <string name="backup_restore_error">Back-up maken mislukt.</string>
     <string name="invalid_backup_file">Ongeldige back-up bestand.</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
 </resources>
