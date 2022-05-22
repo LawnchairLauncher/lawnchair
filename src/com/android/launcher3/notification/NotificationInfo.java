@@ -22,11 +22,14 @@ import android.app.ActivityOptions;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.view.View;
+
+import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
@@ -120,6 +123,9 @@ public class NotificationInfo implements View.OnClickListener {
         if (mIsIconLarge) {
             // Only small icons should be tinted.
             return mIconDrawable;
+        }
+        if (Color.alpha(background) < 255) {
+            background = ColorUtils.setAlphaComponent(background, 255);
         }
         mIconColor = IconPalette.resolveContrastColor(context, mIconColor, background);
         Drawable icon = mIconDrawable.mutate();
