@@ -18,7 +18,7 @@
     <string name="icon_pack">حزمة أيقونات</string>
     <string name="settings">الإعدادات</string>
     <string name="home_screen_label">الشاشة الرئيسة</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">تغذية، شبكة، أيقونات</string>
     <string name="general_label">عام</string>
     <string name="general_description">الألوان، حزمة الأيقونة، نقاط الإشعار</string>
     <string name="home_screen_rotation_label">تدوير الشاشة الرئيسة</string>
@@ -56,7 +56,7 @@
     <string name="app_info_drop_target_label">معلومات التطبيق</string>
     <string name="item_removed">أُزيلَ العنصر.</string>
     <string name="all_apps_no_search_results">لم يُعثَر على تطبيقات مطابقة لـ \"<xliff:g example="Android" id="query">%1$s</xliff:g>\".</string>
-    <string name="translucent_background">Translucent Background</string>
+    <string name="translucent_background">خلفية شفافة</string>
     <string name="background_opacity">شفافية الخلفية</string>
     <string name="background_lightness_label">إضاءة الخلفية</string>
     <string name="adaptive_icons">أيقونات متكيفة</string>
@@ -148,7 +148,7 @@
     <string name="icon_shape_sammy">واجهة واحدة</string>
     <string name="icon_shape_teardrop">دمعة</string>
     <string name="icon_shape_cylinder">أسطوانة</string>
-    <string name="icon_shape_cupertino">iOS</string>
+    <string name="icon_shape_cupertino">نظام iOS</string>
     <string name="customize_button_text">تخصيص</string>
     <string name="app_title_label">عنوان</string>
     <string name="hide_from_drawer">إخفاء من قائمة التطبيقات</string>
@@ -164,7 +164,7 @@
     <string name="show_app_search_bar">إظهار شريط البحث</string>
     <string name="lawnchair_bug_report">تقرير الأخطاء Lawnchair</string>
     <string name="crash_report_notif_title">%1$s توقف عن العمل</string>
-    <string name="action_upload_crash_report">Upload Crash Log</string>
+    <string name="action_upload_crash_report">رفع سجل الأعطال</string>
     <string name="action_copy_link">نسخ الرابط</string>
     <string name="action_copy">نسخ</string>
     <string name="copied_toast">تم نسخه إلى الحافظة.</string>
@@ -203,16 +203,16 @@
     <string name="always_open_website_description">افتح موقع الويب لموفر البحث حتى لو تم تثبيت تطبيقهم.</string>
     <string name="search_provider">مزود البحث</string>
     <string name="status_bar_label">شريط الحالة</string>
-    <string name="show_notification_count">Show Notification Count</string>
-    <string name="icon_picker_load_failed">Couldn’t load more icons.</string>
-    <string name="reset_custom_icons">Reset Custom Icons</string>
-    <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
-    <string name="taskbar_label">Taskbar</string>
-    <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
+    <string name="show_notification_count">عرض عدد الإشعارات</string>
+    <string name="icon_picker_load_failed">تعذر تحميل المزيد من الأيقونات.</string>
+    <string name="reset_custom_icons">إعادة تعيين الأيقونات المخصصة</string>
+    <string name="reset_custom_icons_confirmation">سيتم إعادة تعيين جميع الأيقونات المخصصة. هل تريد المتابعة؟</string>
+    <string name="taskbar_label">شريط المهام</string>
+    <string name="enable_taskbar_experimental">تمكين شريط المهام (تجريبي)</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Charging</string>
-    <string name="smartspace_battery_full">Charged</string>
+    <string name="smartspace_battery_full">تم الشحن</string>
     <string name="smartspace_battery_low">Battery Low</string>
     <string name="accessibility_smartspace_page">Page %1$d of %2$d</string>
     <string name="smartspace_widget">At a Glance</string>
