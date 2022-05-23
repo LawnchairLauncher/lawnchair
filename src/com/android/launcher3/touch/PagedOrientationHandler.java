@@ -135,6 +135,16 @@ public interface PagedOrientationHandler {
             @StagePosition int stagePosition);
 
     /**
+     * Sets positioning and rotation for a SplitInstructionsView.
+     * @param out The SplitInstructionsView that needs to be positioned.
+     * @param dp The device profile, used to report rotation and device type.
+     * @param splitInstructionsHeight The SplitInstructionView's height.
+     * @param splitInstructionsWidth  The SplitInstructionView's width.
+     */
+    void setSplitInstructionsParams(View out, DeviceProfile dp, int splitInstructionsHeight,
+            int splitInstructionsWidth, int threeButtonNavShift);
+
+    /**
      * @param splitDividerSize height of split screen drag handle in portrait, width in landscape
      * @param stagePosition the split position option (top/left, bottom/right) of the first
      *                           task selected for entering split

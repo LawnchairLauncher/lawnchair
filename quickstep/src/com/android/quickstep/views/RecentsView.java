@@ -630,6 +630,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private final Toast mSplitUnsupportedToast = Toast.makeText(getContext(),
             R.string.toast_split_app_unsupported, Toast.LENGTH_SHORT);
 
+    private SplitInstructionsView mSplitInstructionsView;
+
     @Nullable
     private QuickstepSystemShortcut.SplitSelectSource mSplitSelectSource;
 
@@ -2764,11 +2766,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             mFirstFloatingTaskView.addAnimation(anim, startingTaskRect, mTempRect,
                     false /* fadeWithThumbnail */, true /* isStagedTask */);
         }
+
+        mSplitInstructionsView = SplitInstructionsView.getSplitInstructionsView(mActivity);
+        mSplitInstructionsView.setAlpha(0);
+        anim.addFloat(mSplitInstructionsView, SplitInstructionsView.ALPHA_FLOAT, 0, 1, ACCEL);
+
         InteractionJankMonitorWrapper.begin(this,
                 InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER, "First tile selected");
         anim.addEndListener(success -> {
             if (success) {
-                mSplitToast.show();
                 InteractionJankMonitorWrapper.end(
                         InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
             } else {
@@ -4099,6 +4105,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @SuppressLint("WrongCall")
     protected void resetFromSplitSelectionState() {
         if (mSplitSelectSource != null || mSplitHiddenTaskViewIndex != -1) {
+            if (mSplitInstructionsView != null) {
+                mActivity.getDragLayer().removeView(mSplitInstructionsView);
+                mSplitInstructionsView = null;
+            }
             if (mFirstFloatingTaskView != null) {
                 mActivity.getRootView().removeView(mFirstFloatingTaskView);
                 mFirstFloatingTaskView = null;
@@ -4163,6 +4173,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         mActivity.getDeviceProfile());
         taskViewsFloat.first.set(this, getSplitSelectTranslation());
         taskViewsFloat.second.set(this, 0f);
+
+        if (mSplitInstructionsView != null) {
+            mSplitInstructionsView.ensureProperRotation();
+        }
 
         applySplitPrimaryScrollOffset();
     }
