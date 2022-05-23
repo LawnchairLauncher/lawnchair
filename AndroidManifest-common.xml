@@ -78,7 +78,8 @@
         android:label="@string/derived_app_name"
         android:largeHeap="@bool/config_largeHeap"
         android:restoreAnyVersion="true"
-        android:supportsRtl="true" >
+        android:supportsRtl="true"
+        tools:replace="android:label">
 
         <!-- Intent received when a session is committed -->
         <receiver
