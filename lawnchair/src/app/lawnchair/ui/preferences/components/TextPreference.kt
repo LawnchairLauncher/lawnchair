@@ -45,7 +45,7 @@ fun TextPreference(
     val bottomSheetHandler = bottomSheetHandler
     PreferenceTemplate(
         title = { Text(text = label) },
-        description = { description?.let { it(value) }?.let { Text(text = it) } },
+        description = { description(value)?.let { Text(text = it) } },
         modifier = Modifier
             .clickable(enabled) {
                 bottomSheetHandler.show {
@@ -53,11 +53,11 @@ fun TextPreference(
                         title = label,
                         initialValue = value,
                         onDismissRequest = { bottomSheetHandler.hide() },
-                        onConfirm = onChange
+                        onConfirm = onChange,
                     )
                 }
             },
-        enabled = enabled
+        enabled = enabled,
     )
 }
 
