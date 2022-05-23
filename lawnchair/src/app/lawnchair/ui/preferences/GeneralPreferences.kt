@@ -16,8 +16,6 @@
 
 package app.lawnchair.ui.preferences
 
-import androidx.compose.animation.*
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,7 +27,19 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.AccentColorPreference
+import app.lawnchair.ui.preferences.components.ExpandAndShrink
+import app.lawnchair.ui.preferences.components.FontPreference
+import app.lawnchair.ui.preferences.components.IconShapePreference
+import app.lawnchair.ui.preferences.components.NavigationActionPreference
+import app.lawnchair.ui.preferences.components.NotificationDotsPreference
+import app.lawnchair.ui.preferences.components.PreferenceGroup
+import app.lawnchair.ui.preferences.components.PreferenceLayout
+import app.lawnchair.ui.preferences.components.SliderPreference
+import app.lawnchair.ui.preferences.components.SwitchPreference
+import app.lawnchair.ui.preferences.components.ThemePreference
+import app.lawnchair.ui.preferences.components.notificationDotsEnabled
+import app.lawnchair.ui.preferences.components.notificationServiceEnabled
 import com.android.launcher3.R
 
 object GeneralRoutes {
