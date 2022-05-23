@@ -114,7 +114,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Za prikaz tačaka za obavještenja, uključite obavještenja za aplikacije za aplikaciju <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Promijeni postavke"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Prikaži tačke za obavještenja"</string>
-    <string name="developer_options_title" msgid="700788437593726194">"Opcije za razvojne programere"</string>
+    <string name="developer_options_title" msgid="700788437593726194">"Opcije za programere"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Dodaj ikone aplikacija na početni ekran"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Za nove aplikacije"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Nepoznato"</string>
@@ -171,5 +171,7 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Pauziraj poslovne aplikacije"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Uključi poslovne aplikacije"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtrirajte"</string>
+    <string name="search_pref_screen_title" msgid="3258959643336315962">"Pretraživanje telefona"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Pretraživanje tableta"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Nije uspjelo: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
