@@ -210,7 +210,7 @@
     <string name="smartspace_battery_full">充电完成</string>
     <string name="smartspace_battery_low">电池电量低</string>
     <string name="accessibility_smartspace_page">第 %1$d 页，共 %2$d 页</string>
-    <string name="smartspace_widget">快速查看</string>
+    <string name="smartspace_widget">资讯一览</string>
     <string name="smartspace_widget_description">选择要显示的项目</string>
     <string name="smartspace_widget_placeholder_date">Fri, Mar 3</string>
     <string name="quickstep_incompatible">不兼容的系统集成</string>
