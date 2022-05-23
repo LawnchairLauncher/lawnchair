@@ -19,6 +19,7 @@ package com.android.launcher3.touch;
 import static android.view.Gravity.BOTTOM;
 import static android.view.Gravity.CENTER_VERTICAL;
 import static android.view.Gravity.END;
+import static android.view.Gravity.LEFT;
 import static android.view.Gravity.START;
 import static android.view.Gravity.TOP;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -422,6 +423,28 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
                 - 1.0f * drawableWidth / 2));
         out.setY(Math.round((onScreenRectCenterY + (inset / 2f)) / fullscreenScaleY
                 - 1.0f * drawableHeight / 2));
+    }
+
+    @Override
+    public void setSplitInstructionsParams(View out, DeviceProfile dp, int splitInstructionsHeight,
+            int splitInstructionsWidth, int threeButtonNavShift) {
+        out.setPivotX(0);
+        out.setPivotY(0);
+        out.setRotation(getDegreesRotated());
+        int distanceToEdge = out.getResources().getDimensionPixelSize(
+                R.dimen.split_instructions_bottom_margin_phone_landscape);
+        // Adjust for any insets on the left edge
+        int insetCorrectionX = dp.getInsets().left;
+        // Center the view in case of unbalanced insets on top or bottom of screen
+        int insetCorrectionY = (dp.getInsets().bottom - dp.getInsets().top) / 2;
+        out.setTranslationX(splitInstructionsHeight + distanceToEdge - insetCorrectionX);
+        out.setTranslationY(((splitInstructionsHeight - splitInstructionsWidth) / 2f)
+                + insetCorrectionY);
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) out.getLayoutParams();
+        // Setting gravity to LEFT instead of the lint-recommended START because we always want this
+        // view to be screen-left when phone is in landscape, regardless of the RtL setting.
+        lp.gravity = LEFT | CENTER_VERTICAL;
+        out.setLayoutParams(lp);
     }
 
     @Override
