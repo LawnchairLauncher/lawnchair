@@ -11,6 +11,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.ui.preferences.components.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
@@ -73,11 +74,7 @@ fun QuickstepPreferences() {
                 adapter = prefs.overrideWindowCornerRadius.getAdapter(),
                 label = stringResource(id = R.string.override_window_corner_radius_label),
             )
-            AnimatedVisibility(
-                visible = overrideWindowCornerRadius,
-                enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut()
-            ) {
+            ExpandAndShrink(visible = overrideWindowCornerRadius,) {
                 SliderPreference(
                     label = stringResource(id = R.string.window_corner_radius_label),
                     adapter = prefs.windowCornerRadius.getAdapter(),

@@ -86,11 +86,7 @@ fun HomeScreenPreferences() {
                 adapter = showStatusBarAdapter,
                 label = stringResource(id = R.string.show_status_bar),
             )
-            AnimatedVisibility(
-                visible = showStatusBarAdapter.state.value,
-                enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut(),
-            ) {
+            ExpandAndShrink(visible = showStatusBarAdapter.state.value) {
                 SwitchPreference(
                     adapter = prefs2.darkStatusBar.getAdapter(),
                     label = stringResource(id = R.string.dark_status_bar_label),
@@ -110,11 +106,7 @@ fun HomeScreenPreferences() {
                 adapter = homeScreenLabelsAdapter,
                 label = stringResource(id = R.string.show_home_labels),
             )
-            AnimatedVisibility(
-                visible = homeScreenLabelsAdapter.state.value,
-                enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut(),
-            ) {
+            ExpandAndShrink(visible = homeScreenLabelsAdapter.state.value) {
                 SliderPreference(
                     label = stringResource(id = R.string.label_size),
                     adapter = prefs2.homeIconLabelSizeFactor.getAdapter(),
@@ -126,11 +118,7 @@ fun HomeScreenPreferences() {
         }
         val overrideRepo = IconOverrideRepository.INSTANCE.get(LocalContext.current)
         val customIconsCount by remember { overrideRepo.observeCount() }.collectAsStateBlocking()
-        AnimatedVisibility(
-            visible = customIconsCount > 0,
-            enter = expandVertically() + fadeIn(),
-            exit = shrinkVertically() + fadeOut(),
-        ) {
+        ExpandAndShrink(visible = customIconsCount > 0) {
             PreferenceGroup {
                 ClickablePreference(
                     label = stringResource(id = R.string.reset_custom_icons),

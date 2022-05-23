@@ -89,11 +89,7 @@ fun PreferenceGroupHeading(heading: String?) {
 @Composable
 fun PreferenceGroupDescription(description: String? = null, showDescription: Boolean = true) {
     description?.let {
-        AnimatedVisibility(
-            visible = showDescription,
-            enter = expandVertically() + fadeIn(),
-            exit = shrinkVertically() + fadeOut()
-        ) {
+        ExpandAndShrink(visible = showDescription) {
             Row(modifier = Modifier.padding(start = 32.dp, end = 32.dp, top = 16.dp)) {
                 Text(
                     text = it,

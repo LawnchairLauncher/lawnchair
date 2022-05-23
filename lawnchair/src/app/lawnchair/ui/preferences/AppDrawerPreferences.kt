@@ -68,11 +68,7 @@ fun AppDrawerPreferences() {
                 label = stringResource(id = R.string.show_app_search_bar),
                 adapter = showDrawerSearchBar,
             )
-            AnimatedVisibility(
-                visible = showDrawerSearchBar.state.value,
-                enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut()
-            ) {
+            ExpandAndShrink(visible = showDrawerSearchBar.state.value) {
                 DividerColumn {
                     SwitchPreference(
                         adapter = prefs2.autoShowKeyboardInDrawer.getAdapter(),
@@ -89,11 +85,7 @@ fun AppDrawerPreferences() {
             }
         }
         if (deviceSearchEnabled) {
-            AnimatedVisibility(
-                visible = showDrawerSearchBar.state.value,
-                enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut()
-            ) {
+            ExpandAndShrink(visible = showDrawerSearchBar.state.value) {
                 PreferenceGroup(heading = stringResource(id = R.string.show_search_result_types)) {
                     SwitchPreference(
                         adapter = prefs.searchResultShortcuts.getAdapter(),
@@ -138,11 +130,7 @@ fun AppDrawerPreferences() {
                 adapter = showDrawerLabels,
                 label = stringResource(id = R.string.show_home_labels),
             )
-            AnimatedVisibility(
-                visible = showDrawerLabels.state.value,
-                enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut()
-            ) {
+            ExpandAndShrink(visible = showDrawerLabels.state.value) {
                 SliderPreference(
                     label = stringResource(id = R.string.label_size),
                     adapter = prefs2.drawerIconLabelSizeFactor.getAdapter(),

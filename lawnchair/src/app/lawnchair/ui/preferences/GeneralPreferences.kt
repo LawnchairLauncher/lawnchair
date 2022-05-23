@@ -95,11 +95,7 @@ fun GeneralPreferences() {
                 label = stringResource(id = R.string.auto_adaptive_icons_label),
                 description = stringResource(id = R.string.auto_adaptive_icons_description),
             )
-            AnimatedVisibility(
-                visible = wrapAdaptiveIcons.state.value,
-                enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut()
-            ) {
+            ExpandAndShrink(visible = wrapAdaptiveIcons.state.value) {
                 SliderPreference(
                     label = stringResource(id = R.string.background_lightness_label),
                     adapter = prefs.coloredBackgroundLightness.getAdapter(),

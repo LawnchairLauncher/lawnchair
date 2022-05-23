@@ -41,11 +41,7 @@ fun DockPreferences() {
                 adapter = hotseatQsbAdapter,
                 label = stringResource(id = R.string.hotseat_qsb_label),
             )
-            AnimatedVisibility(
-                visible = hotseatQsbAdapter.state.value,
-                enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut(),
-            ) {
+            ExpandAndShrink(visible = hotseatQsbAdapter.state.value) {
                 DividerColumn {
                     SwitchPreference(
                         adapter = prefs2.themedHotseatQsb.getAdapter(),
