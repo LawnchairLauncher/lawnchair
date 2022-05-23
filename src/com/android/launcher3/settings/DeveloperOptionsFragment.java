@@ -63,6 +63,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.FlagTogglerPrefUi;
+import com.android.launcher3.secondarydisplay.SecondaryDisplayLauncher;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.OnboardingPrefs;
 
@@ -369,6 +370,16 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
             return true;
         });
         sandboxCategory.addPreference(launchSandboxModeTutorialPreference);
+
+        Preference launchSecondaryDisplayPreference = new Preference(context);
+        launchSecondaryDisplayPreference.setKey("launchSecondaryDisplay");
+        launchSecondaryDisplayPreference.setTitle("Launch Secondary Display");
+        launchSecondaryDisplayPreference.setSummary("Launch secondary display activity");
+        launchSecondaryDisplayPreference.setOnPreferenceClickListener(preference -> {
+            startActivity(new Intent(context, SecondaryDisplayLauncher.class));
+            return true;
+        });
+        sandboxCategory.addPreference(launchSecondaryDisplayPreference);
     }
 
     private void addOnboardingPrefsCatergory() {
