@@ -5,10 +5,9 @@ import android.icu.text.MeasureFormat
 import android.icu.util.Measure
 import android.icu.util.MeasureUnit
 import java.util.*
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.DurationUnit
 
-private const val SECONDS_PER_MINUTE = 60
-private const val SECONDS_PER_HOUR = 60 * 60
-private const val SECONDS_PER_DAY = 24 * 60 * 60
 private const val MILLIS_PER_MINUTE = 1000 * 60
 
 private val Context.locale: Locale?
@@ -16,54 +15,42 @@ private val Context.locale: Locale?
 
 fun formatShortElapsedTime(context: Context, millis: Long): String? {
 
-    var secondsLong = millis / 1000
-    var days = 0
-    var hours = 0
-    var minutes = 0
-
-    if (secondsLong >= SECONDS_PER_DAY) {
-        days = (secondsLong / SECONDS_PER_DAY).toInt()
-        secondsLong -= (days * SECONDS_PER_DAY).toLong()
-    }
-    if (secondsLong >= SECONDS_PER_HOUR) {
-        hours = (secondsLong / SECONDS_PER_HOUR).toInt()
-        secondsLong -= (hours * SECONDS_PER_HOUR).toLong()
-    }
-    if (secondsLong >= SECONDS_PER_MINUTE) {
-        minutes = (secondsLong / SECONDS_PER_MINUTE).toInt()
-        secondsLong -= (minutes * SECONDS_PER_MINUTE).toLong()
-    }
-
-    val seconds = secondsLong.toInt()
+    val duration = millis.milliseconds
     val locale = context.locale
     val measureFormat = MeasureFormat.getInstance(locale, MeasureFormat.FormatWidth.SHORT)
 
-    return when {
-        days >= 2 || days > 0 && hours == 0 -> {
-            days += (hours + 12) / 24
-            measureFormat.format(Measure(days, MeasureUnit.DAY))
+    return duration.toComponents { days, hours, minutes, seconds, _ ->
+        when {
+            days >= 2 || days > 0 && hours == 0 -> {
+                val roundedDays = duration.toDouble(DurationUnit.DAYS).round()
+                measureFormat.format(Measure(roundedDays, MeasureUnit.DAY))
+            }
+            days >= 2 || days > 0 && hours == 0 -> {
+                val roundedDays = duration.toDouble(DurationUnit.DAYS).round()
+                measureFormat.format(Measure(roundedDays, MeasureUnit.DAY))
+            }
+            days > 0 -> measureFormat.formatMeasures(
+                Measure(days, MeasureUnit.DAY),
+                Measure(hours, MeasureUnit.HOUR),
+            )
+            hours >= 2 || hours > 0 && minutes == 0 -> {
+                val roundedHours = duration.toDouble(DurationUnit.HOURS).round()
+                measureFormat.format(Measure(roundedHours, MeasureUnit.HOUR))
+            }
+            hours > 0 -> measureFormat.formatMeasures(
+                Measure(hours, MeasureUnit.HOUR),
+                Measure(minutes, MeasureUnit.MINUTE),
+            )
+            minutes >= 2 || minutes > 0 && seconds == 0 -> {
+                val roundedMinutes = duration.toDouble(DurationUnit.MINUTES).round()
+                measureFormat.format(Measure(roundedMinutes, MeasureUnit.MINUTE))
+            }
+            minutes > 0 -> measureFormat.formatMeasures(
+                Measure(minutes, MeasureUnit.MINUTE),
+                Measure(seconds, MeasureUnit.SECOND),
+            )
+            else -> measureFormat.format(Measure(seconds, MeasureUnit.SECOND))
         }
-        days > 0 -> measureFormat.formatMeasures(
-            Measure(days, MeasureUnit.DAY),
-            Measure(hours, MeasureUnit.HOUR),
-        )
-        hours >= 2 || hours > 0 && minutes == 0 -> {
-            hours += (minutes + 30) / 60
-            measureFormat.format(Measure(hours, MeasureUnit.HOUR))
-        }
-        hours > 0 -> measureFormat.formatMeasures(
-            Measure(hours, MeasureUnit.HOUR),
-            Measure(minutes, MeasureUnit.MINUTE),
-        )
-        minutes >= 2 || minutes > 0 && seconds == 0 -> {
-            minutes += (seconds + 30) / 60
-            measureFormat.format(Measure(minutes, MeasureUnit.MINUTE))
-        }
-        minutes > 0 -> measureFormat.formatMeasures(
-            Measure(minutes, MeasureUnit.MINUTE),
-            Measure(seconds, MeasureUnit.SECOND),
-        )
-        else -> measureFormat.format(Measure(seconds, MeasureUnit.SECOND))
     }
 }
 
