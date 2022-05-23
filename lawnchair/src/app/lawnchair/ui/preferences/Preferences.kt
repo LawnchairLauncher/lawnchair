@@ -31,7 +31,6 @@ import app.lawnchair.backup.ui.restoreBackupGraph
 import app.lawnchair.ui.preferences.about.aboutGraph
 import app.lawnchair.ui.preferences.components.SystemUi
 import app.lawnchair.ui.util.ProvideBottomSheetHandler
-import app.lawnchair.ui.util.portal.ProvidePortalNode
 import app.lawnchair.util.ProvideLifecycleState
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -115,11 +114,9 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
 private fun Providers(
     content: @Composable () -> Unit
 ) {
-    ProvidePortalNode {
-        ProvideLifecycleState {
-            ProvideBottomSheetHandler {
-                content()
-            }
+    ProvideLifecycleState {
+        ProvideBottomSheetHandler {
+            content()
         }
     }
 }
