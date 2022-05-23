@@ -21,13 +21,13 @@
     <string name="home_screen_description">اخبار،‌ جدول،‌‌ آیکن‌ها</string>
     <string name="general_label">عمومی</string>
     <string name="general_description">Colors, Icon Pack, Notification Dots</string>
-    <string name="home_screen_rotation_label">Home Screen Rotation</string>
+    <string name="home_screen_rotation_label">چرخش صفحه‌اصلی</string>
     <string name="home_screen_rotaton_description">هنگام چرخش دستگاه.</string>
     <string name="auto_add_shortcuts_label">افزودن برنامه‌های جدید به صفحه‌اصلی</string>
     <string name="dock_label">Dock</string>
-    <string name="dock_description">Search Bar, Icon Count</string>
+    <string name="dock_description">نوار جست‌و‌جو، تعداد آیکن</string>
     <string name="app_drawer_label">کشوی برنامه‌ها</string>
-    <string name="app_drawer_description">Hidden Apps, Column Count, Icons</string>
+    <string name="app_drawer_description">برنامه‌های مخفی، تعداد ستون‌ها، آیکن‌ها</string>
     <string name="folders_label">پوشه‌ها</string>
     <string name="folders_description">تعداد سطرها و ستون‌ها</string>
     <string name="app_drawer_columns">ستون‌های کشوی برنامه‌ها</string>
@@ -76,10 +76,10 @@
         <item quantity="other">%1$d تا برنامه</item>
     </plurals>
     <string name="hotseat_qsb_label">نشان‌دادن نوار جست‌و‌جو</string>
-    <string name="dt2s_admin_hint_title">Admin Permissions Required</string>
+    <string name="dt2s_admin_hint_title">دسترسی ادمین نیاز است</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">Double-Tap to Sleep will be turned off.</string>
-    <string name="dt2s_a11y_hint_title">Turn on Accessibility Service</string>
+    <string name="dt2s_a11y_hint_title">فعال‌سازی سرویس دسترسی</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
     <string name="dt2s_warning_open_settings">باز کردن تنظیمات</string>
     <string name="minus_one_enable">اخبار</string>
@@ -104,22 +104,22 @@
     <string name="wallpaper">کاغذ دیواری</string>
     <string name="custom">شخصی</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
-    <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
+    <string name="wallpaper_scrolling_label">پیمایش کاغذ دیواری</string>
     <string name="show_sys_ui_scrim">Top Shadow</string>
     <string name="show_status_bar">نشان‌دادن نوار وضعیت</string>
-    <string name="what_to_show">What to Show</string>
+    <string name="what_to_show">چه چیزی نشان‌داده شود</string>
     <string name="missing_notification_access_label">دسترسی به اعلان‌ها نیاز است</string>
     <string name="missing_notification_access_description">دسترسی به اعلان‌ها نیاز است.</string>
     <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">تغییر تنظیمات</string>
-    <string name="debug_restart_launcher">Restart Lawnchair</string>
-    <string name="pref_fonts_missing_font">Font not found.</string>
-    <string name="font_variant_italic">Italic</string>
+    <string name="debug_restart_launcher">راه اندازی مجدد Lawnchair</string>
+    <string name="pref_fonts_missing_font">قلم پیدا نشد.</string>
+    <string name="font_variant_italic">مورب</string>
     <string name="font_weight_thin">لاغر</string>
     <string name="font_weight_extra_light">Extra Light</string>
     <string name="font_weight_light">روشن</string>
     <string name="font_weight_regular">عادی</string>
-    <string name="font_weight_medium">Medium</string>
+    <string name="font_weight_medium">متوسط</string>
     <string name="font_weight_semi_bold">Semibold</string>
     <string name="font_weight_bold">Bold</string>
     <string name="font_weight_extra_bold">Extra Bold</string>
@@ -152,7 +152,7 @@
     <string name="force_rounded_widgets">Rounded Corners</string>
     <string name="suggestion_pref_screen_title">پیشنهادها</string>
     <string name="n_percent">%1$d%%</string>
-    <string name="label">Label</string>
+    <string name="label">نام</string>
     <string name="presets">Presets</string>
     <string name="colors">رنگ‌ها</string>
     <string name="dynamic">Dynamic</string>
@@ -175,10 +175,10 @@
     <string name="corner_radius_label">Corner Radius</string>
     <string name="search_bar_label">Search Bar</string>
     <string name="apply_accent_color_label">اعمال رنگ برنامه</string>
-    <string name="show_search_result_types">Show in Search Results</string>
+    <string name="show_search_result_types">نشان‌دادن در نتایج جست‌و‌جو</string>
     <string name="search_pref_result_people_title">مردم</string>
     <string name="search_pref_result_shortcuts_title">میانبرهای برنامه</string>
-    <string name="search_pref_result_tips_title">Pixel Tips</string>
+    <string name="search_pref_result_tips_title">نکته‌های Pixel</string>
     <string name="row_height_label">ارتفاع ردیف</string>
     <string name="all_apps_device_search_hint">جست‌و‌جو</string>
     <string name="dark_status_bar_label">نوار وضعیت تاریک</string>
@@ -212,13 +212,13 @@
     <string name="smartspace_battery_low">Battery Low</string>
     <string name="accessibility_smartspace_page">صفحه %1$d از %2$d</string>
     <string name="smartspace_widget">در یک نگاه</string>
-    <string name="smartspace_widget_description">What to Show</string>
+    <string name="smartspace_widget_description">چه چیزی نشان‌داده شود</string>
     <string name="smartspace_widget_placeholder_date">Fri, Mar 3</string>
     <string name="quickstep_incompatible">Incompatible System Integration</string>
     <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
     <string name="preview_label">پیش‌نمایش</string>
     <string name="smartspace_weather">آب و هوا</string>
-    <string name="smartspace_battery_status">Battery Status</string>
+    <string name="smartspace_battery_status">وضعیت باتری</string>
     <string name="smartspace_now_playing">درحال پخش</string>
     <string name="smartspace_requires_setup">Tap to Set Up</string>
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
