@@ -36,19 +36,17 @@ data class BugReport(val timestamp: Long, val id: Int, val type: String, val des
         parcel.writeString(file?.absolutePath)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    override fun describeContents(): Int = 0
 
-    fun getTitle(context: Context): String {
-        return if (type == TYPE_UNCAUGHT_EXCEPTION) {
-            context.getString(R.string.crash_report_notif_title,
-                context.getString(R.string.derived_app_name))
-        } else type
-    }
+    fun getTitle(context: Context): String = if (type == TYPE_UNCAUGHT_EXCEPTION) {
+        context.getString(
+            R.string.crash_report_notif_title,
+            context.getString(R.string.derived_app_name),
+        )
+    } else type
 
-    fun getFileUri(context: Context): Uri? {
-        return file?.let { LawnchairApp.getUriForFile(context, it) }
+    fun getFileUri(context: Context): Uri? = file?.let {
+        LawnchairApp.getUriForFile(context, it)
     }
 
     fun createShareIntent(context: Context): Intent {
@@ -71,12 +69,8 @@ data class BugReport(val timestamp: Long, val id: Int, val type: String, val des
         const val TYPE_UNCAUGHT_EXCEPTION = "Uncaught exception"
         const val TYPE_STRICT_MODE_VIOLATION = "Strict mode violation"
 
-        override fun createFromParcel(parcel: Parcel): BugReport {
-            return BugReport(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel): BugReport = BugReport(parcel)
 
-        override fun newArray(size: Int): Array<BugReport?> {
-            return arrayOfNulls(size)
-        }
+        override fun newArray(size: Int): Array<BugReport?> = arrayOfNulls(size)
     }
 }
