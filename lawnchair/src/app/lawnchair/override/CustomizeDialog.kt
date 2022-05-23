@@ -47,7 +47,7 @@ fun CustomizeDialog(
     Column(
         modifier = Modifier
             .navigationBarsOrDisplayCutoutPadding()
-            .fillMaxWidth()
+            .fillMaxWidth(),
     ) {
         val iconPainter = rememberDrawablePainter(drawable = icon)
         Box(
@@ -62,7 +62,7 @@ fun CustomizeDialog(
         ) {
             Image(
                 painter = iconPainter,
-                contentDescription = "",
+                contentDescription = null,
                 modifier = Modifier.size(54.dp),
             )
         }
@@ -76,18 +76,18 @@ fun CustomizeDialog(
                 if (title != defaultTitle) {
                     ClickableIcon(
                         painter = painterResource(id = R.drawable.ic_undo),
-                        onClick = { onTitleChange(defaultTitle) }
+                        onClick = { onTitleChange(defaultTitle) },
                     )
                 }
             },
             singleLine = true,
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.12F),
-                textColor = MaterialTheme.colors.onSurface
+                textColor = MaterialTheme.colors.onSurface,
             ),
             shape = MaterialTheme.shapes.large,
             label = { Text(text = stringResource(id = R.string.label)) },
-            isError = title.isEmpty()
+            isError = title.isEmpty(),
         )
         content?.invoke()
     }
