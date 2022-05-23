@@ -114,6 +114,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Мэдэгдлийн цэгийг харуулахын тулд <xliff:g id="NAME">%1$s</xliff:g>-д аппын мэдэгдлийг асаана уу"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Тохиргоог өөрчлөх"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Мэдэгдлийн цэгийг харуулах"</string>
+    <string name="developer_options_title" msgid="700788437593726194">"Хөгжүүлэгчийн тохиргоо"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Үндсэн нүүрэнд аппын дүрс тэмдгүүдийг нэмэх"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Шинэ аппад зориулсан"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Тодорхойгүй"</string>
@@ -170,5 +171,7 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Ажлын аппуудыг түр зогсоох"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Ажлын аппуудыг асаах"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Шүүлтүүр"</string>
+    <string name="search_pref_screen_title" msgid="3258959643336315962">"Утаснаасаа хайх"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Таблетнаасаа хайх"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Амжилтгүй болсон: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
