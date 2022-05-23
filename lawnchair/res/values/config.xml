@@ -44,6 +44,9 @@
     <!-- Which icon shape to use by default -->
     <string name="config_default_icon_shape" translatable="false">circle</string>
 
+    <!-- Which calendar to use on smartspace by default -->
+    <string name="config_default_smart_space_calendar" translatable="false">gregorian</string>
+
     <bool name="config_default_dark_status_bar">false</bool>
     <bool name="config_default_dock_search_bar">true</bool>
     <bool name="config_default_show_notification_count">false</bool>

@@ -26,6 +26,7 @@ import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
 import app.lawnchair.qsb.providers.QsbSearchProvider
+import app.lawnchair.smartspace.model.SmartspaceCalendar
 import app.lawnchair.theme.color.ColorOption
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
@@ -274,6 +275,13 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
     val smartspaceNowPlaying = preference(
         key = booleanPreferencesKey("enable_smartspace_now_playing"),
         defaultValue = true
+    )
+
+    val smartspaceCalendar = preference(
+        key = stringPreferencesKey(name = "smartspace_calendar"),
+        defaultValue = SmartspaceCalendar.fromString(context.getString(R.string.config_default_smart_space_calendar)),
+        parse = { SmartspaceCalendar.fromString(it) },
+        save = { it.toString() },
     )
 
     init {
