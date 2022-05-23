@@ -149,8 +149,6 @@ public class CellLayout extends ViewGroup {
     private boolean mVisualizeDropLocation = true;
     private RectF mVisualizeGridRect = new RectF();
     private Paint mVisualizeGridPaint = new Paint();
-    private int mGridVisualizationPaddingX;
-    private int mGridVisualizationPaddingY;
     private int mGridVisualizationRoundingRadius;
     private float mGridAlpha = 0f;
     private int mGridColor = 0;
@@ -262,10 +260,6 @@ public class CellLayout extends ViewGroup {
         mBackground.setAlpha(0);
 
         mGridColor = Themes.getAttrColor(getContext(), R.attr.workspaceAccentColor);
-        mGridVisualizationPaddingX = res.getDimensionPixelSize(
-                R.dimen.grid_visualization_horizontal_cell_spacing);
-        mGridVisualizationPaddingY = res.getDimensionPixelSize(
-                R.dimen.grid_visualization_vertical_cell_spacing);
         mGridVisualizationRoundingRadius =
                 res.getDimensionPixelSize(R.dimen.grid_visualization_rounding_radius);
         mReorderPreviewAnimationMagnitude = (REORDER_PREVIEW_MAGNITUDE * deviceProfile.iconSizePx);
@@ -595,8 +589,8 @@ public class CellLayout extends ViewGroup {
 
     protected void visualizeGrid(Canvas canvas) {
         DeviceProfile dp = mActivity.getDeviceProfile();
-        int paddingX = Math.min((mCellWidth - dp.iconSizePx) / 2, mGridVisualizationPaddingX);
-        int paddingY = Math.min((mCellHeight - dp.iconSizePx) / 2, mGridVisualizationPaddingY);
+        int paddingX = Math.min((mCellWidth - dp.iconSizePx) / 2, dp.gridVisualizationPaddingX);
+        int paddingY = Math.min((mCellHeight - dp.iconSizePx) / 2, dp.gridVisualizationPaddingY);
         mVisualizeGridRect.set(paddingX, paddingY,
                 mCellWidth - paddingX,
                 mCellHeight - paddingY);
