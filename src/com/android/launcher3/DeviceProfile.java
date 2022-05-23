@@ -110,6 +110,7 @@ public class DeviceProfile {
     public float workspaceSpringLoadShrunkTop;
     public float workspaceSpringLoadShrunkBottom;
     public final int workspaceSpringLoadedBottomSpace;
+    public final int workspaceSpringLoadedMinNextPageVisiblePx;
 
     private final int extraSpace;
     public int workspaceTopPadding;
@@ -350,6 +351,8 @@ public class DeviceProfile {
 
         workspaceSpringLoadedBottomSpace =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_min_spring_loaded_space);
+        workspaceSpringLoadedMinNextPageVisiblePx = res.getDimensionPixelSize(
+                R.dimen.dynamic_grid_spring_loaded_min_next_space_visible);
 
         workspaceCellPaddingXPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_padding_x);
 
@@ -505,7 +508,7 @@ public class DeviceProfile {
      */
     private int calculateQsbWidth() {
         if (isQsbInline) {
-            int columns = isTwoPanels ? inv.numColumns * 2 : inv.numColumns;
+            int columns = getPanelCount() * inv.numColumns;
             return getIconToIconWidthForColumns(columns)
                     - iconSizePx * numShownHotseatIcons
                     - hotseatBorderSpace * numShownHotseatIcons;
@@ -958,13 +961,6 @@ public class DeviceProfile {
     }
 
     /**
-     * Gets the minimum visible amount of the next workspace page when in the spring-loaded state.
-     */
-    private float getWorkspaceSpringLoadedMinimumNextPageVisible() {
-        return getCellSize().x / 2f;
-    }
-
-    /**
      * Gets the scale of the workspace for the spring-loaded edit state.
      */
     public float getWorkspaceSpringLoadScale() {
@@ -975,8 +971,7 @@ public class DeviceProfile {
         // Reduce scale if next pages would not be visible after scaling the workspace
         int workspaceWidth = availableWidthPx;
         float scaledWorkspaceWidth = workspaceWidth * scale;
-        float maxAvailableWidth =
-                workspaceWidth - (2 * getWorkspaceSpringLoadedMinimumNextPageVisible());
+        float maxAvailableWidth = workspaceWidth - (2 * workspaceSpringLoadedMinNextPageVisiblePx);
         if (scaledWorkspaceWidth > maxAvailableWidth) {
             scale *= maxAvailableWidth / scaledWorkspaceWidth;
         }
@@ -1426,6 +1421,10 @@ public class DeviceProfile {
                 prefix + pxToDpStr("workspaceSpringLoadShrunkTop", workspaceSpringLoadShrunkTop));
         writer.println(prefix + pxToDpStr("workspaceSpringLoadShrunkBottom",
                 workspaceSpringLoadShrunkBottom));
+        writer.println(prefix + pxToDpStr("workspaceSpringLoadedBottomSpace",
+                workspaceSpringLoadedBottomSpace));
+        writer.println(prefix + pxToDpStr("workspaceSpringLoadedMinNextPageVisiblePx",
+                workspaceSpringLoadedMinNextPageVisiblePx));
         writer.println(
                 prefix + pxToDpStr("getWorkspaceSpringLoadScale()", getWorkspaceSpringLoadScale()));
     }
