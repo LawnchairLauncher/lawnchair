@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_APP_SHARE_TAP;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -123,6 +125,8 @@ public final class AppSharing {
 
         @Override
         public void onClick(View view) {
+            ActivityContext.lookupContext(view.getContext())
+                    .getStatsLogManager().logger().log(LAUNCHER_SYSTEM_SHORTCUT_APP_SHARE_TAP);
             if (!isEnabled()) {
                 showCannotShareToast(view.getContext());
                 return;
