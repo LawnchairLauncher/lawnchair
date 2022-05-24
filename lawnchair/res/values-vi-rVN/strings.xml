@@ -194,7 +194,7 @@
     <string name="font_picker_label">Tùy chỉnh font</string>
     <string name="font_picker_description">Một số văn bản vẫn không thay đổi.</string>
     <string name="smartspace_calendar_label">Tùy chỉnh lịch Xem nhanh</string>
-    <string name="smartspace_calendar_description">Cho phép hiện ngày trên hệ thống lịch khác Gregorian.</string>
+    <string name="smartspace_calendar_description">Cho phép hiện ngày trên hệ thống lịch khác Gregory.</string>
     <string name="search_provider_app_search">Tìm kiếm ứng dụng</string>
     <string name="always_open_website_label">Luôn mở trang web</string>
     <string name="always_open_website_description">Mở trang web của nhà cung cấp dịch vụ tìm kiếm cho dù ứng dụng của họ đã được cài đặt.</string>
@@ -225,8 +225,8 @@
     <string name="smartspace_requires_setup">Chạm để thiết lập</string>
     <string name="event_provider_missing_notification_dots">Để sử dụng <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, kích hoạt Dấu chấm thông báo.</string>
     <string name="smartspace_media_info_separator">" — "</string>
-    <string name="smartspace_calendar_gregorian">Gregorian</string>
-    <string name="smartspace_calendar_persian">Persian</string>
+    <string name="smartspace_calendar_gregorian">Gregory</string>
+    <string name="smartspace_calendar_persian">Ba Tư</string>
     <string name="pref_fonts_add_fonts">Thêm phông chữ</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF được hỗ trợ.</string>
     <string name="delete">Xoá</string>
