@@ -102,7 +102,7 @@
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ଫୋଲ୍ଡର୍: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ଆଇଟମଗୁଡ଼ିକ"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ଫୋଲ୍ଡର୍: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> କିମ୍ବା ଅଧିକ ଆଇଟମ୍"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ୱାଲପେପର୍‌"</string>
-    <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ୱାଲପେପର୍ ଏବଂ ଷ୍ଟାଇଲ୍"</string>
+    <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ୱାଲପେପର ଏବଂ ଷ୍ଟାଇଲ"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ହୋମ ସେଟିଂସ"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ଆପଣଙ୍କ ଆଡମିନଙ୍କ ଦ୍ୱାରା ଅକ୍ଷମ କରାଯାଇଛି"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"ମୂଳସ୍କ୍ରିନ ରୋଟେସନକୁ ଅନୁମତି ଦିଅନ୍ତୁ"</string>
@@ -114,8 +114,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"ବିଜ୍ଞପ୍ତି ବିନ୍ଦୁ ଦେଖାଇବାକୁ, <xliff:g id="NAME">%1$s</xliff:g> ପାଇଁ ଆପ୍‌ ବିଜ୍ଞପ୍ତି ଅନ୍‌ କରନ୍ତୁ"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ସେଟିଂସ ପରିବର୍ତ୍ତନ କରନ୍ତୁ"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"ବିଜ୍ଞପ୍ତି ଡଟ୍‌ଗୁଡ଼ିକୁ ଦେଖାନ୍ତୁ"</string>
-    <!-- no translation found for developer_options_title (700788437593726194) -->
-    <skip />
+    <string name="developer_options_title" msgid="700788437593726194">"ଡେଭେଲପର ବିକଳ୍ପଗୁଡ଼ିକ"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"ମୂଳସ୍କ୍ରିନରେ ଆପ ଆଇକନଗୁଡ଼ିକୁ ଯୋଗ କରନ୍ତୁ"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ନୂଆ ଆପ୍‌ ପାଇଁ"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"ଅଜଣା"</string>
@@ -172,9 +171,7 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ୱାର୍କ ଆପଗୁଡ଼ିକୁ ବିରତ କରନ୍ତୁ"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"ୱାର୍କ ଆପଗୁଡ଼ିକୁ ଚାଲୁ କରନ୍ତୁ"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ଫିଲ୍ଟର୍"</string>
-    <!-- no translation found for search_pref_screen_title (3258959643336315962) -->
-    <skip />
-    <!-- no translation found for search_pref_screen_title_tablet (5220319680451343959) -->
-    <skip />
+    <string name="search_pref_screen_title" msgid="3258959643336315962">"ଆପଣଙ୍କ ଫୋନରେ ସନ୍ଧାନ କରନ୍ତୁ"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"ଆପଣଙ୍କ ଟାବଲେଟରେ ସନ୍ଧାନ କରନ୍ତୁ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ବିଫଳ ହୋଇଛି: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
