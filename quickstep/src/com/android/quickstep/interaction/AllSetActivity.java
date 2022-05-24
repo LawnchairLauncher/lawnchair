@@ -19,6 +19,7 @@ import static com.android.launcher3.Utilities.mapBoundToRange;
 import static com.android.launcher3.Utilities.mapRange;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.quickstep.OverviewComponentObserver.startHomeIntentSafely;
 
 import android.animation.Animator;
 import android.app.Activity;
@@ -281,7 +282,7 @@ public class AllSetActivity extends Activity {
         @Override
         public boolean performAccessibilityAction(View host, int action, Bundle args) {
             if (action == AccessibilityAction.ACTION_CLICK.getId()) {
-                startActivity(Utilities.createHomeIntent());
+                startHomeIntentSafely(AllSetActivity.this, null);
                 finish();
                 return true;
             }
