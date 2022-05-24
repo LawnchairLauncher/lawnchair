@@ -19,19 +19,12 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: true
-      - name: Restore Gradle cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: ${{ runner.os }}-gradle-
       - name: Set up Java 11
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: 11
+      - uses: gradle/gradle-build-action@v2
       - name: Grant execution permission to Gradle Wrapper
         run: chmod +x gradlew
       - name: Build debug APK
