@@ -196,6 +196,8 @@
     <string name="icon_picker_description">Může způsobit zatuhnutí Lawnchair.</string>
     <string name="font_picker_label">Přizpůsobení písma</string>
     <string name="font_picker_description">Některý text zůstává beze změny.</string>
+    <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
+    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
     <string name="search_provider_app_search">Hledání aplikací</string>
     <string name="always_open_website_label">Vždy otevřít webovou stránku</string>
     <string name="always_open_website_description">Otevřít webovou stránku poskytovatele vyhledávání, i když je jejich aplikace nainstalována.</string>
@@ -219,12 +221,15 @@
     <string name="quickstep_incompatible">Nekompatibilní systémová integrace</string>
     <string name="quickstep_incompatible_description">Vaše zařízení je nakonfigurováno tak, aby systémová gesta (známá jako Quickstep) byla poskytována aplikací %1$s, ale tato verze aplikace %1$s není kompatibilní s\u00a0vaší verzí Android. Chcete‑li nadále používat vaše zařízení, odinstalujte aktualizace aplikace %1$s, nebo zakažte aplikaci %1$s jako poskytovatele systémových gest.</string>
     <string name="preview_label">Náhled</string>
+    <string name="smartspace_calendar">Calendar</string>
     <string name="smartspace_weather">Počasí</string>
     <string name="smartspace_battery_status">Stav baterie</string>
     <string name="smartspace_now_playing">Právě hraje</string>
     <string name="smartspace_requires_setup">Klepnutím nastavíte</string>
     <string name="event_provider_missing_notification_dots">Chcete‑li použít <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, povolte puntíky s\u00a0oznámením.</string>
     <string name="smartspace_media_info_separator">" — "</string>
+    <string name="smartspace_calendar_gregorian">Gregorian</string>
+    <string name="smartspace_calendar_persian">Persian</string>
     <string name="pref_fonts_add_fonts">Přidat písma</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF jsou podporované.</string>
     <string name="delete">Odstranit</string>
