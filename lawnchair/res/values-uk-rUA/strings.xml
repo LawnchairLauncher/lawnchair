@@ -196,6 +196,8 @@
     <string name="icon_picker_description">Може спричинити замирання Lawnchair.</string>
     <string name="font_picker_label">Налаштування шрифту</string>
     <string name="font_picker_description">Деякий текст залишається незмінним.</string>
+    <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
+    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
     <string name="search_provider_app_search">Пошук додатків</string>
     <string name="always_open_website_label">Завжди відкривати сайт</string>
     <string name="always_open_website_description">Відкрити сайт пошукового запиту, навіть якщо встановлено додаток.</string>
@@ -219,12 +221,15 @@
     <string name="quickstep_incompatible">Несумісна системна інтеграція</string>
     <string name="quickstep_incompatible_description">Ваш пристрій налаштовано на використання системних жестів (відомих як Quickstep), які надає %1$s, але ця версія %1$s несумісна з вашою версією Android. Щоб продовжити використовувати свій пристрій, видаліть оновлення %1$s або вимкніть %1$s як постачальника системних жестів.</string>
     <string name="preview_label">Перегляд</string>
+    <string name="smartspace_calendar">Calendar</string>
     <string name="smartspace_weather">Погода</string>
     <string name="smartspace_battery_status">Стан батареї</string>
     <string name="smartspace_now_playing">Зараз грає</string>
     <string name="smartspace_requires_setup">Торкніться для налаштування</string>
     <string name="event_provider_missing_notification_dots">Щоб використовувати <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, увімкніть крапки сповіщень.</string>
     <string name="smartspace_media_info_separator">" — "</string>
+    <string name="smartspace_calendar_gregorian">Gregorian</string>
+    <string name="smartspace_calendar_persian">Persian</string>
     <string name="pref_fonts_add_fonts">Додати шрифти</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF підтримується.</string>
     <string name="delete">Видалити</string>
