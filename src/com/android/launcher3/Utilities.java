@@ -587,15 +587,6 @@ public final class Utilities {
     }
 
     /**
-     * Returns an intent for starting the default home activity
-     */
-    public static Intent createHomeIntent() {
-        return new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_HOME)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    }
-
-    /**
      * Wraps a message with a TTS span, so that a different message is spoken than
      * what is getting displayed.
      * @param msg original message
