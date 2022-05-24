@@ -287,7 +287,6 @@ public class RecyclerViewFastScroller extends View {
             case MotionEvent.ACTION_UP:
                 hideKeyboardAsync(ActivityContext.lookupContext(getContext()),
                         getApplicationWindowToken());
-                break;
             case MotionEvent.ACTION_CANCEL:
                 mRv.onFastScrollCompleted();
                 mTouchOffsetY = 0;
