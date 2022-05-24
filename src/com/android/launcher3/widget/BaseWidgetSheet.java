@@ -198,7 +198,9 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     /** Returns the number of cells that can fit horizontally in a given {@code content}. */
     protected int computeMaxHorizontalSpans(View content, int contentHorizontalPaddingPx) {
         DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
-        int availableWidth = content.getMeasuredWidth() - contentHorizontalPaddingPx;
+        int availableWidth = content.getMeasuredWidth()
+                - contentHorizontalPaddingPx
+                - (2 * mContentHorizontalMarginInPx);
         Point cellSize = deviceProfile.getCellSize();
         if (cellSize.x > 0) {
             return availableWidth / cellSize.x;
