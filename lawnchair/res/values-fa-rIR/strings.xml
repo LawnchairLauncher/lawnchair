@@ -54,7 +54,7 @@
     <string name="settings_button_text">تنظیمات خانه</string>
     <string name="development">توسعه</string>
     <string name="app_info_drop_target_label">اطلاعات برنامه</string>
-    <string name="item_removed">Item removed.</string>
+    <string name="item_removed">آیتم حذف شد.</string>
     <string name="all_apps_no_search_results">No apps found matching “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
     <string name="translucent_background">بک‌گراند نیمه‌شفاف</string>
     <string name="background_opacity">شفافیت بک‌گراند</string>
@@ -83,14 +83,14 @@
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
     <string name="dt2s_warning_open_settings">باز کردن تنظیمات</string>
     <string name="minus_one_enable">اخبار</string>
-    <string name="minus_one_unavailable">No feed installed.</string>
+    <string name="minus_one_unavailable">هیچ اخباری نصب نشده است.</string>
     <string name="fuzzy_search_title">جست‌و‌جو فازی</string>
     <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
     <string name="theme_label">تم</string>
     <string name="theme_light">روشن</string>
     <string name="theme_dark">تاریک</string>
     <string name="theme_system_default">سیستم</string>
-    <string name="theme_follow_wallpaper">Match Wallpaper</string>
+    <string name="theme_follow_wallpaper">تطابق با کاغذ دیواری</string>
     <string name="quickstep_label">اخیر</string>
     <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
     <string name="window_corner_radius_label">Screen Corner Radius</string>
@@ -120,9 +120,9 @@
     <string name="font_weight_light">روشن</string>
     <string name="font_weight_regular">عادی</string>
     <string name="font_weight_medium">متوسط</string>
-    <string name="font_weight_semi_bold">Semibold</string>
-    <string name="font_weight_bold">Bold</string>
-    <string name="font_weight_extra_bold">Extra Bold</string>
+    <string name="font_weight_semi_bold">نیمه پررنگ</string>
+    <string name="font_weight_bold">پررنگ</string>
+    <string name="font_weight_extra_bold">بسیار پررنگ</string>
     <string name="font_weight_extra_black">مشکی</string>
     <string name="font_label">قلم‌ (آزمایشی)</string>
     <string name="reset_font">باز نشاندن</string>
@@ -149,7 +149,7 @@
     <string name="app_title_label">عنوان</string>
     <string name="hide_from_drawer">مخفی‌ در کشوی برنامه‌ها</string>
     <string name="action_lens">لنز</string>
-    <string name="force_rounded_widgets">Rounded Corners</string>
+    <string name="force_rounded_widgets">گوشه‌های گرد</string>
     <string name="suggestion_pref_screen_title">پیشنهادها</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">نام</string>
@@ -167,13 +167,13 @@
     <string name="action_share">اشتراک گذاری</string>
     <string name="action_upload_error">آپلود با خطا مواجه شد</string>
     <string name="dogbin_uploading">درحال آپلود…</string>
-    <string name="bugreport_channel_name">Bug Reports</string>
+    <string name="bugreport_channel_name">گزارش خطاها</string>
     <string name="status_channel_name">وضعیت آپلود</string>
     <string name="bugreport_group_summary">%d گزارش جدید.</string>
     <string name="bugreport_group_summary_multiple">چندین گزارش‌هاش جدید.</string>
     <string name="themed_icon_title">Themed Icons</string>
-    <string name="corner_radius_label">Corner Radius</string>
-    <string name="search_bar_label">Search Bar</string>
+    <string name="corner_radius_label">شعاع گوشه</string>
+    <string name="search_bar_label">نوار جست‌و‌جو</string>
     <string name="apply_accent_color_label">اعمال رنگ برنامه</string>
     <string name="show_search_result_types">نشان‌دادن در نتایج جست‌و‌جو</string>
     <string name="search_pref_result_people_title">مردم</string>
