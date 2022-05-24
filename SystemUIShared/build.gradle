@@ -2,12 +2,12 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion COMPILE_SDK
+    compileSdk COMPILE_SDK
     buildToolsVersion BUILD_TOOLS_VERSION
 
     defaultConfig {
-        minSdkVersion 26
-        targetSdkVersion 28
+        minSdk 26
+        targetSdk 28
         versionCode 1
         versionName "1.0"
     }
@@ -44,7 +44,6 @@ android {
 
 dependencies {
     compileOnly fileTree(dir: new File(rootProject.projectDir, 'prebuilts/libs'), include: 'WindowManager-Shell.jar')
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "androidx.concurrent:concurrent-futures:1.1.0"
     implementation "androidx.lifecycle:lifecycle-common-java8:2.4.1"
     implementation "androidx.dynamicanimation:dynamicanimation:1.0.0"

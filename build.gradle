@@ -1,6 +1,8 @@
 buildscript {
     ext {
-        kotlin_version = '1.6.21'
+        ANDROID_X_VERSION = "1+"
+        BUILD_TOOLS_VERSION = "32.0.0"
+        COMPILE_SDK = 32
         compose_version = '1.2.0-beta02'
         accompanist_version = '0.24.9-beta'
         libsu_version = '3.1.2'
@@ -13,18 +15,14 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.2.0'
-        classpath PROTOBUF_CLASS_PATH
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.16'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21"
         classpath 'com.google.android.gms:oss-licenses-plugin:0.10.5'
     }
 }
 
 final String FRAMEWORK_PREBUILTS_DIR = "prebuilts"
 final def keystorePropertiesFile = rootProject.file("keystore.properties")
-
-wrapper {
-    gradleVersion = '6.8.3'
-}
 
 allprojects {
     repositories {
@@ -119,7 +117,7 @@ def quickstepMinSdk = "32"
 def quickstepMaxSdk = "32"
 
 android {
-    compileSdkVersion COMPILE_SDK
+    compileSdk COMPILE_SDK
     buildToolsVersion BUILD_TOOLS_VERSION
 
     lintOptions {
@@ -127,8 +125,8 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 26
-        targetSdkVersion 32
+        minSdk 26
+        targetSdk 32
         versionCode 12_01_00_03
         versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
@@ -222,7 +220,7 @@ android {
         withQuickstep {
             dimension "recents"
 
-            minSdkVersion 26
+            minSdk 26
         }
 
         withoutQuickstep {
@@ -336,7 +334,6 @@ dependencies {
     // Required for AOSP to compile. This is already included in the sysui_shared.jar
     withoutQuickstepImplementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'plugin_core.jar')
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'org.mockito:mockito-core:4.5.1'
     androidTestImplementation 'com.google.dexmaker:dexmaker:1.2'
