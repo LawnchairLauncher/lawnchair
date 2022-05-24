@@ -193,6 +193,8 @@
     <string name="icon_picker_description">Dapat menyebabkan Lawnchair membeku.</string>
     <string name="font_picker_label">Kustomisasi Font</string>
     <string name="font_picker_description">Beberapa teks tetap tidak berubah.</string>
+    <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
+    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
     <string name="search_provider_app_search">Pencarian App</string>
     <string name="always_open_website_label">Selalu Buka Laman Web</string>
     <string name="always_open_website_description">Buka situs web pencarian bahkan jika aplikasi telah terinstal.</string>
@@ -216,12 +218,15 @@
     <string name="quickstep_incompatible">Integrasi Sistem yang Tidak Kompatibel</string>
     <string name="quickstep_incompatible_description">Perangkat Anda dikonfigurasi untuk menggunakan gestur sistem (dikenal sebagai Quickstep) yang disediakan oleh %1$s, tetapi versi %1$s ini tidak kompatibel dengan versi Android Anda. Untuk terus menggunakan perangkat Anda, mohon uninstal pembaruan %1$s atau menonaktifkan %1$s sebagai penyedia gestur sistem.</string>
     <string name="preview_label">Pratinjau</string>
+    <string name="smartspace_calendar">Kalender</string>
     <string name="smartspace_weather">Cuaca</string>
     <string name="smartspace_battery_status">Status Baterai</string>
     <string name="smartspace_now_playing">Sedang Diputar</string>
     <string name="smartspace_requires_setup">Ketuk untuk Menyiapkan</string>
     <string name="event_provider_missing_notification_dots">Untuk menggunakan <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, aktifkan Titik Notifikasi.</string>
     <string name="smartspace_media_info_separator">" — "</string>
+    <string name="smartspace_calendar_gregorian">Gregorian</string>
+    <string name="smartspace_calendar_persian">Persia</string>
     <string name="pref_fonts_add_fonts">Tambahkan Font</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF didukung.</string>
     <string name="delete">Hapus</string>
