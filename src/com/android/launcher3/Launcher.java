@@ -536,6 +536,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (Utilities.ATLEAST_R) {
             getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         }
+        setTitle(R.string.home_screen);
     }
 
     protected LauncherOverlayManager getDefaultOverlay() {
