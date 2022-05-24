@@ -18,7 +18,7 @@
     <string name="icon_pack">Pachet de pictograme</string>
     <string name="settings">Setări</string>
     <string name="home_screen_label">Ecran principal</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Descriere_ecran_de_pornire</string>
     <string name="general_label">General</string>
     <string name="general_description">Pictograme pentru Notificări, Pachet Pictograme</string>
     <string name="home_screen_rotation_label">Rotația ecranului de pornire</string>
@@ -56,7 +56,7 @@
     <string name="app_info_drop_target_label">Informații despre aplicație</string>
     <string name="item_removed">Element șters.</string>
     <string name="all_apps_no_search_results">Nicio aplicație găsită pentru „<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
-    <string name="translucent_background">Translucent Background</string>
+    <string name="translucent_background">Fundal_translucent</string>
     <string name="background_opacity">Opacitatea fundalului</string>
     <string name="background_lightness_label">Luminozitate fundal</string>
     <string name="adaptive_icons">Pictograme Adaptive</string>
@@ -107,7 +107,7 @@
     <string name="quickstep_description">Buton “Șterge tot”, Raza colțurilor</string>
     <string name="wallpaper_scrolling_label">Derulează imaginea de fundal</string>
     <string name="show_sys_ui_scrim">Umbra de sus</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_status_bar">Arata_status_bar</string>
     <string name="what_to_show">Ce trebuie afișat</string>
     <string name="missing_notification_access_label">Acces la notificări necesar</string>
     <string name="missing_notification_access_description">Acces la notificări necesar.</string>
