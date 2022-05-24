@@ -37,4 +37,5 @@
 
     <item type="id" name="quick_settings_button" />
     <item type="id" name="notifications_button" />
+    <item type="id" name="cache_entry_tag_id" />
 </resources>
