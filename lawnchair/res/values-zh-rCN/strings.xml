@@ -193,8 +193,8 @@
     <string name="icon_picker_description">可能会导致Lawnchair冻结。</string>
     <string name="font_picker_label">字体自定义</string>
     <string name="font_picker_description">部分文本保持不变。</string>
-    <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
+    <string name="smartspace_calendar_label">资讯一览日历自定义</string>
+    <string name="smartspace_calendar_description">允许显示非公历日期</string>
     <string name="search_provider_app_search">应用搜索</string>
     <string name="always_open_website_label">始终打开网站</string>
     <string name="always_open_website_description">使用网页搜索（即使已安装相应应用）。</string>
