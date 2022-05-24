@@ -69,7 +69,7 @@ class IcuDateTextView @JvmOverloads constructor(
             context.getString(R.string.smartspace_icu_date_pattern_persian),
             PersianDateFormat.PersianDateNumberCharacter.FARSI,
         ).also { formatterPersian = it }
-        return formatter.format(PersianDate(java.lang.Long.valueOf(System.currentTimeMillis())))
+        return formatter.format(PersianDate(System.currentTimeMillis()))
     }
 
     private fun getTimeTextGregorian(updateFormatter: Boolean): String {
@@ -78,7 +78,7 @@ class IcuDateTextView @JvmOverloads constructor(
                 context.getString(R.string.smartspace_icu_date_pattern_gregorian),
                 Locale.getDefault()
             ).also { formatterGregorian = it }
-        return formatter.format(java.lang.Long.valueOf(System.currentTimeMillis()))
+        return formatter.format(System.currentTimeMillis())
     }
 
     private fun onTimeTick() {
