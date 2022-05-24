@@ -89,6 +89,16 @@ public abstract class PropertySetter {
     }
 
     /**
+     * Updates a color property of the target using the provided interpolator
+     */
+    @NonNull
+    public <T> Animator setColor(T target, IntProperty<T> property, int value,
+            TimeInterpolator interpolator) {
+        property.setValue(target, value);
+        return NO_OP;
+    }
+
+    /**
      * Runs the animation as part of setting the property
      */
     public abstract void add(Animator animatorSet);
