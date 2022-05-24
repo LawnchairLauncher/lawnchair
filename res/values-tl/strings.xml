@@ -114,8 +114,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Upang ipakita ang Mga Notification Dot, i-on ang mga notification ng app para sa <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Baguhin ang mga setting"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Ipakita ang mga notification dot"</string>
-    <!-- no translation found for developer_options_title (700788437593726194) -->
-    <skip />
+    <string name="developer_options_title" msgid="700788437593726194">"Mga Opsyon ng Developer"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Magdagdag ng mga icon ng app sa home screen"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Para sa mga bagong app"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Hindi kilala"</string>
@@ -172,9 +171,7 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"I-pause ang mga app para sa trabaho"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"I-on ang mga app para sa trabaho"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filter"</string>
-    <!-- no translation found for search_pref_screen_title (3258959643336315962) -->
-    <skip />
-    <!-- no translation found for search_pref_screen_title_tablet (5220319680451343959) -->
-    <skip />
+    <string name="search_pref_screen_title" msgid="3258959643336315962">"Maghanap sa iyong telepono"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Maghanap sa iyong tablet"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Hindi nagawa: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

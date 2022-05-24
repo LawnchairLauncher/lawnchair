@@ -171,9 +171,7 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Werk-apps pauzeren"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Werk-apps aanzetten"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filteren"</string>
-    <!-- no translation found for search_pref_screen_title (3258959643336315962) -->
-    <skip />
-    <!-- no translation found for search_pref_screen_title_tablet (5220319680451343959) -->
-    <skip />
+    <string name="search_pref_screen_title" msgid="3258959643336315962">"Zoeken op je telefoon"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Zoeken op je tablet"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Mislukt: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

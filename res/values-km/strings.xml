@@ -114,8 +114,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"ដើម្បីបង្ហាញស្លាកជូនដំណឹង សូមបើកការជូនដំណឹងកម្មវិធីសម្រាប់ <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ប្ដូរ​ការកំណត់"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"បង្ហាញ​ស្លាក​ជូនដំណឹង"</string>
-    <!-- no translation found for developer_options_title (700788437593726194) -->
-    <skip />
+    <string name="developer_options_title" msgid="700788437593726194">"ជម្រើសសម្រាប់​អ្នក​អភិវឌ្ឍន៍"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"បញ្ចូល​រូបកម្មវិធី​ទៅក្នុង​អេក្រង់ដើម"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"សម្រាប់កម្មវិធីថ្មី"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"មិន​ស្គាល់"</string>
@@ -172,9 +171,7 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ផ្អាក​កម្មវិធី​ការងារ"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"បើក​កម្មវិធី​ការងារ"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"តម្រង"</string>
-    <!-- no translation found for search_pref_screen_title (3258959643336315962) -->
-    <skip />
-    <!-- no translation found for search_pref_screen_title_tablet (5220319680451343959) -->
-    <skip />
+    <string name="search_pref_screen_title" msgid="3258959643336315962">"ស្វែងរកក្នុងទូរសព្ទរបស់អ្នក"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"ស្វែងរកក្នុង​ថេប្លេតរបស់អ្នក"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"បានបរាជ័យ៖ <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

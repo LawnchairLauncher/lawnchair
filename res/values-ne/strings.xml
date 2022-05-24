@@ -114,8 +114,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचनाको प्रतीक जनाउने थोप्लाहरू देखाउन <xliff:g id="NAME">%1$s</xliff:g> को एपसम्बन्धी सूचनाहरूलाई अन गर्नुहोस्"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिङहरू बदल्नुहोस्"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"सूचनाको प्रतीक जनाउने थोप्लाहरू देखाउनुहोस्"</string>
-    <!-- no translation found for developer_options_title (700788437593726194) -->
-    <skip />
+    <string name="developer_options_title" msgid="700788437593726194">"विकासकर्ताका लागि उपलब्ध विकल्पहरू"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"एपका आइकनहरू होम स्क्रिनमा राखियोस्"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नयाँ एपका लागि"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
@@ -172,9 +171,7 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"कामसम्बन्धी एपहरू अस्थायी रूपमा रोक्का गर्नुहोस्"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"कामसम्बन्धी एपहरू अन गर्नुहोस्"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"फिल्टर"</string>
-    <!-- no translation found for search_pref_screen_title (3258959643336315962) -->
-    <skip />
-    <!-- no translation found for search_pref_screen_title_tablet (5220319680451343959) -->
-    <skip />
+    <string name="search_pref_screen_title" msgid="3258959643336315962">"आफ्नो फोन खोज्नुहोस्"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"आफ्नो ट्याब्लेट खोज्नुहोस्"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"कार्य पूरा गर्न सकिएन: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
