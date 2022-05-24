@@ -21,7 +21,10 @@ import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.smartspace.SmartspaceViewContainer
+import app.lawnchair.smartspace.model.SmartspaceCalendar
 import app.lawnchair.smartspace.provider.SmartspaceProvider
+import app.lawnchair.ui.preferences.components.ListPreference
+import app.lawnchair.ui.preferences.components.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SwitchPreference
@@ -59,6 +62,11 @@ fun SmartspacePreferences(fromWidget: Boolean) {
                         heading = stringResource(id = R.string.what_to_show),
                         modifier = Modifier.padding(top = 8.dp),
                     ) {
+                        val calendarSelectionEnabled =
+                            preferenceManager2.enableSmartspaceCalendarSelection.getAdapter()
+                        if (calendarSelectionEnabled.state.value) {
+                            SmartspaceCalendarPreference()
+                        }
                         smartspaceProvider.dataSources
                             .filter { it.isAvailable }
                             .forEach {
@@ -105,3 +113,22 @@ fun SmartspacePreview() {
         }
     }
 }
+
+@Composable
+fun SmartspaceCalendarPreference() {
+
+    val entries = remember {
+        SmartspaceCalendar.values().map { calendar ->
+            ListPreferenceEntry(calendar) { stringResource(id = calendar.nameResourceId) }
+        }
+    }
+
+    val adapter = preferenceManager2().smartspaceCalendar.getAdapter()
+
+    ListPreference(
+        adapter = adapter,
+        entries = entries,
+        label = stringResource(id = R.string.smartspace_calendar),
+    )
+}
+

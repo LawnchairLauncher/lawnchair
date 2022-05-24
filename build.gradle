@@ -389,6 +389,9 @@ dependencies {
     implementation 'com.google.protobuf:protobuf-javalite:3.8.0'
     implementation 'com.github.LawnchairLauncher:oss-notices:1.0.2'
 
+    // Persian Date
+    implementation 'com.github.samanzamani:PersianDate:1.5.0'
+
     api 'com.airbnb.android:lottie:5.0.3'
 }
 

@@ -216,6 +216,8 @@
     <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
     <string name="font_picker_label">Font Customization</string>
     <string name="font_picker_description">Some text remains unchanged.</string>
+    <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
+    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
     <string name="search_provider_app_search">App Search</string>
     <string name="search_provider_google" translatable="false">Google</string>
     <string name="search_provider_google_go" translatable="false">Google Go</string>
@@ -233,7 +235,8 @@
 
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_icu_date_pattern" translatable="false">EEEMMMd</string>
+    <string name="smartspace_icu_date_pattern_gregorian" translatable="false">EEEMMMd</string>
+    <string name="smartspace_icu_date_pattern_persian" translatable="false">l، j F</string>
     <string name="smartspace_battery_charging">Charging</string>
     <string name="smartspace_battery_full">Charged</string>
     <string name="smartspace_battery_low">Battery Low</string>
@@ -245,12 +248,16 @@
     <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
 
     <string name="preview_label">Preview</string>
+    <string name="smartspace_calendar">Calendar</string>
     <string name="smartspace_weather">Weather</string>
     <string name="smartspace_battery_status">Battery Status</string>
     <string name="smartspace_now_playing">Now Playing</string>
     <string name="smartspace_requires_setup">Tap to Set Up</string>
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
     <string name="smartspace_media_info_separator">" — "</string>
+
+    <string name="smartspace_calendar_gregorian">Gregorian</string>
+    <string name="smartspace_calendar_persian">Persian</string>
 
     <string name="pref_fonts_add_fonts">Add Fonts</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
