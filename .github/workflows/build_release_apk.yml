@@ -12,21 +12,15 @@ jobs:
     continue-on-error: true
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v3
         with:
           submodules: true
-      - name: Restore Gradle cache
-        uses: actions/cache@v2.1.4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: ${{ runner.os }}-gradle-
       - name: Set up Java 11
-        uses: actions/setup-java@v1.4.3
+        uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: 11
+      - uses: gradle/gradle-build-action@v2
       - name: Grant execution permission to Gradle Wrapper
         run: chmod +x gradlew
       - name: Build release APK
@@ -48,7 +42,7 @@ jobs:
           echo "ARTIFACT_PATH=$newArtifactPath" >> $GITHUB_ENV
           mv "$oldArtifactPath" "$newArtifactPath"
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: Release APK
           path: ${{ env.ARTIFACT_PATH }}
@@ -57,12 +51,12 @@ jobs:
     needs: build-release-apk
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v3
         with:
           submodules: true
           fetch-depth: 0
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: '3.x'
       - name: Install Python packages
@@ -70,7 +64,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install gitpython requests
       - name: Download artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: Release APK
           path: artifacts/release-apk
