@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - 12.1-alpha
+  pull_request:
 
 jobs:
   build-release-apk:
