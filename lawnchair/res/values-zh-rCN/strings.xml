@@ -218,15 +218,15 @@
     <string name="quickstep_incompatible">不兼容的系统集成</string>
     <string name="quickstep_incompatible_description">您的设备被配置为由 %1$s提供的系统手势(称为Quickstep) ，但这个版本的 %1$s 与您的 Android 版本不兼容。 要继续使用您的设备，请卸载 %1$s 更新或禁用 %1$s 作为系统手势提供者。</string>
     <string name="preview_label">预览</string>
-    <string name="smartspace_calendar">Calendar</string>
+    <string name="smartspace_calendar">日历</string>
     <string name="smartspace_weather">天气</string>
     <string name="smartspace_battery_status">电池状态</string>
     <string name="smartspace_now_playing">正在播放</string>
     <string name="smartspace_requires_setup">点击以设置</string>
     <string name="event_provider_missing_notification_dots">要使用 <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, 请启用通知圆点。</string>
     <string name="smartspace_media_info_separator">" — "</string>
-    <string name="smartspace_calendar_gregorian">Gregorian</string>
-    <string name="smartspace_calendar_persian">Persian</string>
+    <string name="smartspace_calendar_gregorian">公历</string>
+    <string name="smartspace_calendar_persian">波斯历</string>
     <string name="pref_fonts_add_fonts">添加字体</string>
     <string name="pref_fonts_add_fonts_summary">支持 OTF &amp; TTF</string>
     <string name="delete">删除</string>
