@@ -193,8 +193,8 @@
     <string name="icon_picker_description">Lawnchair がフリーズする原因になる可能性があります。</string>
     <string name="font_picker_label">フォントのカスタマイズ</string>
     <string name="font_picker_description">一部のテキストは変更されません。</string>
-    <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
+    <string name="smartspace_calendar_label">At a Glance カレンダーカスタマイズ</string>
+    <string name="smartspace_calendar_description">グレゴリオ暦以外の暦で日付を表示できるようにします。</string>
     <string name="search_provider_app_search">アプリ検索</string>
     <string name="always_open_website_label">常にウェブサイトを開く</string>
     <string name="always_open_website_description">アプリがインストールされていても、検索プロバイダのウェブサイトを開きます。</string>
@@ -218,15 +218,15 @@
     <string name="quickstep_incompatible">互換性のないシステム統合</string>
     <string name="quickstep_incompatible_description">お使いのデバイスは %1$s が提供するシステムジェスチャー (Quickstepとして知られています) が設定されていますが %1$s のこのバージョンはお使いのAndroidのバージョンと互換性がありません。デバイスを引き続き使用するには、%1$s の更新をアンインストールするか、システムジェスチャープロバイダとして %1$s を無効にしてください。</string>
     <string name="preview_label">プレビュー</string>
-    <string name="smartspace_calendar">Calendar</string>
+    <string name="smartspace_calendar">カレンダー</string>
     <string name="smartspace_weather">天気</string>
     <string name="smartspace_battery_status">バッテリーステータス</string>
     <string name="smartspace_now_playing">再生中</string>
     <string name="smartspace_requires_setup">タップしてセットアップ</string>
     <string name="event_provider_missing_notification_dots">使用するには <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>、通知ドットを有効にします。</string>
     <string name="smartspace_media_info_separator">" — "</string>
-    <string name="smartspace_calendar_gregorian">Gregorian</string>
-    <string name="smartspace_calendar_persian">Persian</string>
+    <string name="smartspace_calendar_gregorian">グレゴリオ暦</string>
+    <string name="smartspace_calendar_persian">ペルシャ語</string>
     <string name="pref_fonts_add_fonts">フォントを追加</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF がサポートされています。</string>
     <string name="delete">削除</string>
