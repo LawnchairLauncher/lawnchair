@@ -219,15 +219,15 @@
     <string name="quickstep_incompatible">Incompatible System Integration</string>
     <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
     <string name="preview_label">پیش‌نمایش</string>
-    <string name="smartspace_calendar">Calendar</string>
+    <string name="smartspace_calendar">تقویم</string>
     <string name="smartspace_weather">آب و هوا</string>
     <string name="smartspace_battery_status">وضعیت باتری</string>
     <string name="smartspace_now_playing">درحال پخش</string>
     <string name="smartspace_requires_setup">Tap to Set Up</string>
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
     <string name="smartspace_media_info_separator">" — "</string>
-    <string name="smartspace_calendar_gregorian">Gregorian</string>
-    <string name="smartspace_calendar_persian">Persian</string>
+    <string name="smartspace_calendar_gregorian">میلادی</string>
+    <string name="smartspace_calendar_persian">شمسی</string>
     <string name="pref_fonts_add_fonts">افزودن قلم</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
     <string name="delete">حذف</string>
