@@ -53,7 +53,6 @@ import com.android.launcher3.widget.picker.WidgetsFullSheet;
 import com.android.launcher3.widget.picker.WidgetsRecyclerView;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -199,8 +198,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         // Test that ensureWorkspaceIsScrollable adds a page by dragging an icon there.
         executeOnLauncher(launcher -> assertFalse("Initial workspace state is scrollable",
                 isWorkspaceScrollable(launcher)));
-        assertNull("Chrome app was found on empty workspace",
-                workspace.tryGetWorkspaceAppIcon("Chrome"));
+        workspace.verifyWorkspaceAppIconIsGone(
+                "Chrome app was found on empty workspace", "Chrome");
 
         workspace.ensureWorkspaceIsScrollable();
 
@@ -388,10 +387,10 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         folder.getAppIcon(GMAIL_APP_NAME);
         Workspace workspace = folder.close();
 
-        assertNull(STORE_APP_NAME + " should be moved to a folder.",
-                workspace.tryGetWorkspaceAppIcon(STORE_APP_NAME));
-        assertNull(GMAIL_APP_NAME + " should be moved to a folder.",
-                workspace.tryGetWorkspaceAppIcon(GMAIL_APP_NAME));
+        workspace.verifyWorkspaceAppIconIsGone(STORE_APP_NAME + " should be moved to a folder.",
+                STORE_APP_NAME);
+        workspace.verifyWorkspaceAppIconIsGone(GMAIL_APP_NAME + " should be moved to a folder.",
+                GMAIL_APP_NAME);
 
         final HomeAppIcon mapIcon = createShortcutInCenterIfNotExist(MAPS_APP_NAME);
         folderIcon = mapIcon.dragToIcon(folderIcon);
@@ -399,8 +398,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         folder.getAppIcon(MAPS_APP_NAME);
         workspace = folder.close();
 
-        assertNull(MAPS_APP_NAME + " should be moved to a folder.",
-                workspace.tryGetWorkspaceAppIcon(MAPS_APP_NAME));
+        workspace.verifyWorkspaceAppIconIsGone(MAPS_APP_NAME + " should be moved to a folder.",
+                MAPS_APP_NAME);
     }
 
     @Test
@@ -424,8 +423,9 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         for (String appName : new String[]{"Gmail", "Play Store", APP_NAME}) {
             final HomeAppIcon homeAppIcon = createShortcutInCenterIfNotExist(appName);
             Workspace workspace = mLauncher.getWorkspace().deleteAppIcon(homeAppIcon);
-            assertNull(appName + " app was found after being deleted from workspace",
-                    workspace.tryGetWorkspaceAppIcon(appName));
+            workspace.verifyWorkspaceAppIconIsGone(
+                    appName + " app was found after being deleted from workspace",
+                    appName);
         }
     }
 
@@ -509,10 +509,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                     .containsAtLeast(DUMMY_APP_NAME, MAPS_APP_NAME, STORE_APP_NAME);
 
             mLauncher.getWorkspace().getWorkspaceAppIcon(DUMMY_APP_NAME).uninstall();
-
-            assertNull(
-                    DUMMY_APP_NAME + " app was found after being uninstalled",
-                    mLauncher.getWorkspace().tryGetWorkspaceAppIcon(DUMMY_APP_NAME));
+            mLauncher.getWorkspace().verifyWorkspaceAppIconIsGone(
+                    DUMMY_APP_NAME + " was expected to disappear after uninstall.", DUMMY_APP_NAME);
 
             Map<String, Point> finalPositions =
                     mLauncher.getWorkspace().getWorkspaceIconsPositions();
