@@ -193,6 +193,8 @@
     <string name="icon_picker_description">Có thể làm đóng băng Lawnchair.</string>
     <string name="font_picker_label">Tùy chỉnh font</string>
     <string name="font_picker_description">Một số văn bản vẫn không thay đổi.</string>
+    <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
+    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
     <string name="search_provider_app_search">Tìm kiếm ứng dụng</string>
     <string name="always_open_website_label">Luôn mở trang web</string>
     <string name="always_open_website_description">Mở trang web của nhà cung cấp dịch vụ tìm kiếm cho dù ứng dụng của họ đã được cài đặt.</string>
@@ -216,12 +218,15 @@
     <string name="quickstep_incompatible">Tích hợp hệ thống không tương thích</string>
     <string name="quickstep_incompatible_description">Thiết bị của bạn được thiết lập để hỗ trợ cử chỉ hệ thống (gọi là Quickstep) được cung cấp bởi %1$s, nhưng phiên bản này của %1$s không tương thích với phiên bản Android của bạn. Để tiếp tục sử dụng thiết bị, vui lòng gỡ cài đặt bản cập nhật của %1$s hoặc vô hiệu hóa %1$s khỏi cung cấp cử chỉ hệ thống.</string>
     <string name="preview_label">Xem trước</string>
+    <string name="smartspace_calendar">Calendar</string>
     <string name="smartspace_weather">Thời tiết</string>
     <string name="smartspace_battery_status">Trạng thái pin</string>
     <string name="smartspace_now_playing">Đang phát</string>
     <string name="smartspace_requires_setup">Chạm để thiết lập</string>
     <string name="event_provider_missing_notification_dots">Để sử dụng <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, kích hoạt Dấu chấm thông báo.</string>
     <string name="smartspace_media_info_separator">" — "</string>
+    <string name="smartspace_calendar_gregorian">Gregorian</string>
+    <string name="smartspace_calendar_persian">Persian</string>
     <string name="pref_fonts_add_fonts">Thêm phông chữ</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF được hỗ trợ.</string>
     <string name="delete">Xoá</string>
