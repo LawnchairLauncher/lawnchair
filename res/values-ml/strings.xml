@@ -114,6 +114,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"അറിയിപ്പ് ഡോട്ടുകൾ കാണിക്കുന്നതിന്, <xliff:g id="NAME">%1$s</xliff:g> എന്നയാളിനായുള്ള ആപ്പ് അറിയിപ്പുകൾ ഓണാക്കുക"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ക്രമീകരണം മാറ്റുക"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"അറിയിപ്പ് ഡോട്ടുകൾ കാണിക്കുക"</string>
+    <string name="developer_options_title" msgid="700788437593726194">"ഡെവലപ്പർ ഓപ്‌ഷനുകൾ"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"ഹോം സ്‌ക്രീനിലേക്ക് ആപ്പ് ഐക്കണുകൾ ചേർക്കുക"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"പുതിയ ആപ്പുകൾക്ക്"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"അജ്ഞാതം"</string>
@@ -170,5 +171,7 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ഔദ്യോഗിക ആപ്പുകൾ താൽക്കാലികമായി നിർത്തുക"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"ഔദ്യോഗിക ആപ്പുകൾ ഓണാക്കുക"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ഫിൽട്ടർ ചെയ്യുക"</string>
+    <string name="search_pref_screen_title" msgid="3258959643336315962">"നിങ്ങളുടെ ഫോണിലുള്ളവ തിരയുക"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"നിങ്ങളുടെ ടാബ്‌ലെറ്റിലുള്ളവ തിരയുക"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"പരാജയപ്പെട്ടു: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
