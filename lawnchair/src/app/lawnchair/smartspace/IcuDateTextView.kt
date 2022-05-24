@@ -8,11 +8,14 @@ import android.icu.text.DateFormat
 import android.icu.text.DisplayContext
 import android.os.SystemClock
 import android.util.AttributeSet
+import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.subscribeBlocking
 import app.lawnchair.smartspace.model.SmartspaceCalendar
 import app.lawnchair.util.viewAttachedScope
 import com.android.launcher3.R
+import com.patrykmichalik.preferencemanager.first
+import com.patrykmichalik.preferencemanager.firstBlocking
 import saman.zamani.persiandate.PersianDate
 import saman.zamani.persiandate.PersianDateFormat
 import java.util.*
@@ -87,8 +90,14 @@ class IcuDateTextView @JvmOverloads constructor(
     override fun onFinishInflate() {
         super.onFinishInflate()
         preferenceManager2 = PreferenceManager2.getInstance(context)
-        preferenceManager2.smartspaceCalendar.subscribeBlocking(scope = viewAttachedScope) {
-            calendar = it
+        val calendarSelectionEnabled =
+            preferenceManager2.enableSmartspaceCalendarSelection.firstBlocking()
+        if (calendarSelectionEnabled) {
+            preferenceManager2.smartspaceCalendar.subscribeBlocking(scope = viewAttachedScope) {
+                calendar = it
+            }
+        } else {
+            calendar = preferenceManager2.smartspaceCalendar.defaultValue
         }
     }
 

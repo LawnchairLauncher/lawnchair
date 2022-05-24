@@ -24,6 +24,11 @@ fun ExperimentalFeaturesPreferences() {
                 label = stringResource(id = R.string.font_picker_label),
                 description = stringResource(id = R.string.font_picker_description),
             )
+            SwitchPreference(
+                adapter = prefs.enableSmartspaceCalendarSelection.getAdapter(),
+                label = stringResource(id = R.string.smartspace_calendar_label),
+                description = stringResource(id = R.string.smartspace_calendar_description),
+            )
         }
     }
 }

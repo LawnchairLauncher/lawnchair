@@ -62,7 +62,11 @@ fun SmartspacePreferences(fromWidget: Boolean) {
                         heading = stringResource(id = R.string.what_to_show),
                         modifier = Modifier.padding(top = 8.dp),
                     ) {
-                        SmartspaceCalendarPreference()
+                        val calendarSelectionEnabled =
+                            preferenceManager2.enableSmartspaceCalendarSelection.getAdapter()
+                        if (calendarSelectionEnabled.state.value) {
+                            SmartspaceCalendarPreference()
+                        }
                         smartspaceProvider.dataSources
                             .filter { it.isAvailable }
                             .forEach {

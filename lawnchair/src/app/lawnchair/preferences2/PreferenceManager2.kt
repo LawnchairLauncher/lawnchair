@@ -155,6 +155,11 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         },
     )
 
+    val enableSmartspaceCalendarSelection = preference(
+        key = booleanPreferencesKey(name = "enable_smartspace_calendar_selection"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_enable_smartspace_calendar_selection),
+    )
+
     val dt2s = preference(
         key = booleanPreferencesKey(name = "dt2s"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_dts2),
