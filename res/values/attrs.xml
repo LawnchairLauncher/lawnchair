@@ -53,6 +53,8 @@
     <attr name="workProfileOverlayTextColor" format="color" />
     <attr name="workspaceAccentColor" format="color" />
     <attr name="dropTargetHoverTextColor" format="color" />
+    <attr name="preloadIconAccentColor" format="color" />
+    <attr name="preloadIconBackgroundColor" format="color" />
 
     <attr name="allAppsButtonBgColor" format="color" />
     <attr name="allAppsButtonColor1" format="color" />
