@@ -522,7 +522,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
             if (button.getVisibility() == View.VISIBLE) {
                 parent.getDescendantRectRelativeToSelf(button, mTempRect);
                 if (mHitboxExtender.extendedHitboxEnabled()) {
-                    mTempRect.bottom += mContext.mDeviceProfile.getTaskbarOffsetY();
+                    mTempRect.bottom += mContext.getDeviceProfile().getTaskbarOffsetY();
                 }
                 outRegion.op(mTempRect, Op.UNION);
             }
