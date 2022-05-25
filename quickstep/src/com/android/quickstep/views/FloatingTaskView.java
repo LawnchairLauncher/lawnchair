@@ -1,5 +1,6 @@
 package com.android.quickstep.views;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_TASK_MENU;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -19,6 +20,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.LauncherAnimUtils;
@@ -110,13 +112,19 @@ public class FloatingTaskView extends FrameLayout {
      */
     public static FloatingTaskView getFloatingTaskView(StatefulActivity launcher,
             View originalView, @Nullable Bitmap thumbnail, Drawable icon, RectF positionOut) {
-        final BaseDragLayer dragLayer = launcher.getDragLayer();
-        ViewGroup parent = (ViewGroup) dragLayer.getParent();
+        final ViewGroup dragLayer = launcher.getDragLayer();
         final FloatingTaskView floatingView = (FloatingTaskView) launcher.getLayoutInflater()
-                .inflate(R.layout.floating_split_select_view, parent, false);
+                .inflate(R.layout.floating_split_select_view, dragLayer, false);
 
         floatingView.init(launcher, originalView, thumbnail, icon, positionOut);
-        parent.addView(floatingView);
+        // Add this animating view underneath the existing open task menu view (if there is one)
+        View openTaskView = AbstractFloatingView.getOpenView(launcher, TYPE_TASK_MENU);
+        int openTaskViewIndex = dragLayer.indexOfChild(openTaskView);
+        if (openTaskViewIndex == -1) {
+            // Add to top if not
+            openTaskViewIndex = dragLayer.getChildCount();
+        }
+        dragLayer.addView(floatingView, openTaskViewIndex - 1);
         return floatingView;
     }
 
@@ -125,7 +133,7 @@ public class FloatingTaskView extends FrameLayout {
         Utilities.getBoundsForViewInDragLayer(mActivity.getDragLayer(), originalView, viewBounds,
                 false /* ignoreTransform */, null /* recycle */,
                 mStartingPosition);
-        final InsettableFrameLayout.LayoutParams lp = new InsettableFrameLayout.LayoutParams(
+        final BaseDragLayer.LayoutParams lp = new BaseDragLayer.LayoutParams(
                 Math.round(mStartingPosition.width()),
                 Math.round(mStartingPosition.height()));
         initPosition(mStartingPosition, lp);
