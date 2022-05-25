@@ -102,6 +102,15 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+    public void fixBoundsForHomeAnimStartRect(RectF outStartRect, DeviceProfile deviceProfile) {
+        if (outStartRect.left > deviceProfile.widthPx) {
+            outStartRect.offsetTo(0, outStartRect.top);
+        } else if (outStartRect.left < -deviceProfile.widthPx) {
+            outStartRect.offsetTo(0, outStartRect.top);
+        }
+    }
+
+    @Override
     public <T> void setPrimary(T target, Int2DAction<T> action, int param) {
         action.call(target, param, 0);
     }
