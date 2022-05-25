@@ -20,6 +20,8 @@ import saman.zamani.persiandate.PersianDate
 import saman.zamani.persiandate.PersianDateFormat
 import java.util.*
 
+typealias FormatterFunction = (Long) -> String
+
 class IcuDateTextView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : DoubleShadowTextView(context, attrs) {
@@ -27,8 +29,7 @@ class IcuDateTextView @JvmOverloads constructor(
     private val prefs = PreferenceManager2.getInstance(context)
     private var calendar: SmartspaceCalendar? = null
     private lateinit var dateTimeOptions: DateTimeOptions
-    private var formatterGregorian: DateFormat? = null
-    private var formatterPersian: PersianDateFormat? = null
+    private var formatterFunction: FormatterFunction? = null
     private val ticker = this::onTimeTick
     private val intentReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -52,10 +53,7 @@ class IcuDateTextView @JvmOverloads constructor(
 
     private fun onTimeChanged(updateFormatter: Boolean) {
         if (isShown) {
-            val timeText = when (calendar) {
-                SmartspaceCalendar.Persian -> getTimeTextPersian(updateFormatter = updateFormatter)
-                else -> getTimeTextGregorian(updateFormatter = updateFormatter)
-            }
+            val timeText = getTimeText(updateFormatter)
             if (text != timeText) {
                 textAlignment =
                     if (calendar == SmartspaceCalendar.Persian) TEXT_ALIGNMENT_TEXT_END else TEXT_ALIGNMENT_TEXT_START
@@ -65,32 +63,45 @@ class IcuDateTextView @JvmOverloads constructor(
         }
     }
 
-    private fun getTimeTextPersian(updateFormatter: Boolean): String {
-        val formatter = formatterPersian.takeIf { !updateFormatter } ?: PersianDateFormat(
+    private fun getTimeText(updateFormatter: Boolean): String {
+        val formatter = getFormatterFunction(updateFormatter)
+        return formatter(System.currentTimeMillis())
+    }
+
+    private fun getFormatterFunction(updateFormatter: Boolean): FormatterFunction {
+        if (formatterFunction != null && !updateFormatter) {
+            return formatterFunction!!
+        }
+        val formatter = when (calendar) {
+            SmartspaceCalendar.Persian -> createPersianFormatter()
+            else -> createGregorianFormatter()
+        }
+        formatterFunction = formatter
+        return formatter
+    }
+
+    private fun createPersianFormatter(): FormatterFunction {
+        val formatter = PersianDateFormat(
             context.getString(R.string.smartspace_icu_date_pattern_persian),
             PersianDateFormat.PersianDateNumberCharacter.FARSI,
-        ).also { formatterPersian = it }
-        return formatter.format(PersianDate(System.currentTimeMillis()))
+        )
+        return { formatter.format(PersianDate(it)) }
     }
 
-    private fun getTimeTextGregorian(updateFormatter: Boolean): String {
-        val formatter = formatterGregorian.takeIf { !updateFormatter }
-            ?: DateFormat.getInstanceForSkeleton(getGregorianFormat(), Locale.getDefault())
-                .also { it.setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE) }
-        return formatter.format(System.currentTimeMillis())
-    }
-
-    private fun getGregorianFormat(): String {
-        return if (dateTimeOptions.showTime) {
-            var format = context.getString(
+    private fun createGregorianFormatter(): FormatterFunction {
+        var format: String
+        if (dateTimeOptions.showTime) {
+            format = context.getString(
                 if (dateTimeOptions.time24HourFormat) R.string.smartspace_icu_date_pattern_gregorian_time
                 else R.string.smartspace_icu_date_pattern_gregorian_time_12h
             )
             if (dateTimeOptions.showDate) format += context.getString(R.string.smartspace_icu_date_pattern_gregorian_date)
-            format
         } else {
-            context.getString(R.string.smartspace_icu_date_pattern_gregorian_wday_month_day_no_year)
+            format = context.getString(R.string.smartspace_icu_date_pattern_gregorian_wday_month_day_no_year)
         }
+        val formatter = DateFormat.getInstanceForSkeleton(format, Locale.getDefault())
+        formatter.setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE)
+        return { formatter.format(it) }
     }
 
     private fun onTimeTick() {
@@ -107,6 +118,7 @@ class IcuDateTextView @JvmOverloads constructor(
         if (calendarSelectionEnabled) {
             prefs.smartspaceCalendar.subscribeBlocking(scope = viewAttachedScope) {
                 calendar = it
+                onTimeChanged(true)
             }
         } else {
             calendar = prefs.smartspaceCalendar.defaultValue
