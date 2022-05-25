@@ -66,20 +66,19 @@ public abstract class Launchable {
                 "want to launch an app from " + launchableType())) {
             LauncherInstrumentation.log("Launchable.launch before click "
                     + mObject.getVisibleCenter() + " in " + mLauncher.getVisibleBounds(mObject));
-            final String label = mObject.getText();
 
             mLauncher.clickLauncherObject(mObject);
 
             try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("clicked")) {
                 expectActivityStartEvents();
-                return assertAppLaunched(label, selector);
+                return assertAppLaunched(selector);
             }
         }
     }
 
-    protected LaunchedAppState assertAppLaunched(String label, BySelector selector) {
+    protected LaunchedAppState assertAppLaunched(BySelector selector) {
         mLauncher.assertTrue(
-                "App didn't start: " + label + " (" + selector + ")",
+                "App didn't start: (" + selector + ")",
                 mLauncher.getDevice().wait(Until.hasObject(selector),
                         LauncherInstrumentation.WAIT_TIME_MS));
         return new LaunchedAppState(mLauncher);
