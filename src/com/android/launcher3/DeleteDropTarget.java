@@ -85,6 +85,9 @@ public class DeleteDropTarget extends ButtonDropTarget {
     }
 
     @Override
+    protected void setupItemInfo(ItemInfo info) {}
+
+    @Override
     protected boolean supportsDrop(ItemInfo info) {
         return true;
     }
