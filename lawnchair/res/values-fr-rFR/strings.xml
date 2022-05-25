@@ -220,6 +220,10 @@
     <string name="quickstep_incompatible_description">Votre appareil est configuré pour avoir la navigation par gestes (appelé Quickstep) fourni par %1$s, mais cette version de %1$s n\'est pas compatible avec votre version d\'Android. Pour continuer à utiliser votre appareil, merci de désinstaller les mises à jour de %1$s ou d\'enlever %1$s en tant que fournisseur de gestes.</string>
     <string name="preview_label">Aperçu</string>
     <string name="smartspace_calendar">Calendar</string>
+    <string name="smartspace_date_and_time">Date &amp; Time</string>
+    <string name="smartspace_date">Date</string>
+    <string name="smartspace_time">Time</string>
+    <string name="smartspace_time_24_hour_format">24-Hour Format</string>
     <string name="smartspace_weather">Météo</string>
     <string name="smartspace_battery_status">État de la batterie</string>
     <string name="smartspace_now_playing">En cours de lecture</string>
