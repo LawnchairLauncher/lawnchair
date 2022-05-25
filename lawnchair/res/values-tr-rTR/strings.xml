@@ -220,6 +220,10 @@
     <string name="quickstep_incompatible_description">Cihazınız %1$s tarafından sağlanan sistem hareketlerine (Quickstep olarak bilinir) sahip olacak şekilde yapılandırılmış, ancak %1$s ürününün bu sürümü Android sürümünüzle uyumlu değil. Cihazınızı kullanmaya devam etmek için lütfen %1$s güncellemelerini kaldırın veya sistem hareketi sağlayıcısı olarak %1$s\'yi devre dışı bırakın.</string>
     <string name="preview_label">Ön izleme</string>
     <string name="smartspace_calendar">Calendar</string>
+    <string name="smartspace_date_and_time">Date &amp; Time</string>
+    <string name="smartspace_date">Date</string>
+    <string name="smartspace_time">Time</string>
+    <string name="smartspace_time_24_hour_format">24-Hour Format</string>
     <string name="smartspace_weather">Hava durumu</string>
     <string name="smartspace_battery_status">Batarya durumu</string>
     <string name="smartspace_now_playing">Şimdi Oynatılıyor</string>
