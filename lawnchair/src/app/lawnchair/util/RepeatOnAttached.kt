@@ -11,7 +11,10 @@ fun View.repeatOnAttached(block: suspend CoroutineScope.() -> Unit) {
     val mutext = Mutex()
     observeAttachedState { isAttached ->
         if (isAttached) {
-            launchedJob = MainScope().launch(Dispatchers.Main.immediate) {
+            launchedJob = MainScope().launch(
+                context = Dispatchers.Main.immediate,
+                start = CoroutineStart.UNDISPATCHED
+            ) {
                 mutext.withLock {
                     coroutineScope {
                         block()
