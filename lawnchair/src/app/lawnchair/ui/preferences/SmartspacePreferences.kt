@@ -4,7 +4,12 @@ import android.app.Activity
 import android.view.ContextThemeWrapper
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -123,7 +128,7 @@ fun SmartspaceDateAndTimePreferences() {
         val showTimeAdapter = preferenceManager2.smartspaceShowTime.getAdapter()
         val use24HourFormatAdapter = preferenceManager2.smartspace24HourFormat.getAdapter()
 
-        val calendarHasMinimumContent = !showDateAdapter.state.value or !showTimeAdapter.state.value
+        val calendarHasMinimumContent = !showDateAdapter.state.value || !showTimeAdapter.state.value
         val isGregorian = calendarAdapter.state.value != SmartspaceCalendar.Persian
 
         AnimatedVisibility(

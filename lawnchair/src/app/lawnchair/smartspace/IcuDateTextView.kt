@@ -24,6 +24,10 @@ class IcuDateTextView @JvmOverloads constructor(
 
     private lateinit var preferenceManager2: PreferenceManager2
     private var calendar: SmartspaceCalendar? = null
+    private var showDate: Boolean = true
+    private var showTime: Boolean = false
+    private var time24HourFormat: Boolean = false
+    private var formatterUpdateRequired = true
     private var formatterGregorian: DateFormat? = null
     private var formatterPersian: PersianDateFormat? = null
     private val ticker = this::onTimeTick
@@ -50,8 +54,8 @@ class IcuDateTextView @JvmOverloads constructor(
     private fun onTimeChanged(updateFormatter: Boolean) {
         if (isShown) {
             val timeText = when (calendar) {
-                SmartspaceCalendar.Persian -> getTimeTextPersian(updateFormatter = updateFormatter)
-                else -> getTimeTextGregorian(updateFormatter = updateFormatter)
+                SmartspaceCalendar.Persian -> getTimeTextPersian(updateFormatter = updateFormatter || formatterUpdateRequired)
+                else -> getTimeTextGregorian(updateFormatter = updateFormatter || formatterUpdateRequired)
             }
             if (text != timeText) {
                 textAlignment =
@@ -67,19 +71,33 @@ class IcuDateTextView @JvmOverloads constructor(
             context.getString(R.string.smartspace_icu_date_pattern_persian),
             PersianDateFormat.PersianDateNumberCharacter.FARSI,
         ).also { formatterPersian = it }
+        formatterUpdateRequired = false
         return formatter.format(PersianDate(System.currentTimeMillis()))
     }
 
     private fun getTimeTextGregorian(updateFormatter: Boolean): String {
-        val formatter = formatterGregorian.takeIf { updateFormatter.not() }
-            ?: DateFormat.getInstanceForSkeleton(
-                context.getString(R.string.smartspace_icu_date_pattern_gregorian),
-                Locale.getDefault()
-            ).also {
-                it.setContext(DisplayContext.CAPITALIZATION_FOR_BEGINNING_OF_SENTENCE)
-                formatterGregorian = it
-            }
+        val formatter = getGregorianFormatter(updateFormatter = updateFormatter)
         return formatter.format(System.currentTimeMillis())
+    }
+
+    private fun getGregorianFormatter(updateFormatter: Boolean): DateFormat {
+        var formatter = formatterGregorian.takeIf { updateFormatter.not() } ?: DateFormat.getInstanceForSkeleton(
+            context.getString(R.string.smartspace_icu_date_pattern_gregorian_wday_month_day_no_year),
+            Locale.getDefault()
+        )
+        formatter.setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE)
+        if (showTime) {
+            var format = context.getString(
+                if (time24HourFormat) R.string.smartspace_icu_date_pattern_gregorian_time
+                else R.string.smartspace_icu_date_pattern_gregorian_time_12h
+            )
+            if (showDate) format += context.getString(R.string.smartspace_icu_date_pattern_gregorian_date)
+            DateFormat.getInstanceForSkeleton(format, Locale.getDefault()).also {
+                formatter = it
+            }.setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE)
+        }
+        formatterUpdateRequired = false
+        return formatter
     }
 
     private fun onTimeTick() {
@@ -91,6 +109,7 @@ class IcuDateTextView @JvmOverloads constructor(
     override fun onFinishInflate() {
         super.onFinishInflate()
         preferenceManager2 = PreferenceManager2.getInstance(context)
+
         val calendarSelectionEnabled =
             preferenceManager2.enableSmartspaceCalendarSelection.firstBlocking()
         if (calendarSelectionEnabled) {
@@ -99,6 +118,25 @@ class IcuDateTextView @JvmOverloads constructor(
             }
         } else {
             calendar = preferenceManager2.smartspaceCalendar.defaultValue
+        }
+
+        preferenceManager2.smartspaceShowDate.subscribeBlocking(scope = viewAttachedScope) {
+            if (it != showDate) {
+                formatterUpdateRequired = true
+                showDate = it
+            }
+        }
+        preferenceManager2.smartspaceShowTime.subscribeBlocking(scope = viewAttachedScope) {
+            if (it != showTime) {
+                formatterUpdateRequired = true
+                showTime = it
+            }
+        }
+        preferenceManager2.smartspace24HourFormat.subscribeBlocking(scope = viewAttachedScope) {
+            if (it != time24HourFormat) {
+                formatterUpdateRequired = true
+                time24HourFormat = it
+            }
         }
     }
 
