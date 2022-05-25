@@ -220,6 +220,10 @@
     <string name="quickstep_incompatible_description">Uw apparaat is geconfigureerd om systeem gebaren (bekend als Quickstep) te gebruiken. Deze worden geleverd door %1$s, maar deze versie van %1$s is niet compatibel met uw Android versie. Om uw apparaat te blijven gebruiken, gelieve %1$s updates te verwijderen of %1$s als systeemgebaar provider uit te schakelen.</string>
     <string name="preview_label">Voorbeeld</string>
     <string name="smartspace_calendar">Calendar</string>
+    <string name="smartspace_date_and_time">Date &amp; Time</string>
+    <string name="smartspace_date">Date</string>
+    <string name="smartspace_time">Time</string>
+    <string name="smartspace_time_24_hour_format">24-Hour Format</string>
     <string name="smartspace_weather">Weer</string>
     <string name="smartspace_battery_status">Batterij status</string>
     <string name="smartspace_now_playing">Wordt nu afgespeeld</string>
