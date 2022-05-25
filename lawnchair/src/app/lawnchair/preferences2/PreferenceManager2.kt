@@ -282,6 +282,21 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         defaultValue = true
     )
 
+    val smartspaceShowDate = preference(
+        key = booleanPreferencesKey("smartspace_show_date"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_smartspace_show_date),
+    )
+
+    val smartspaceShowTime = preference(
+        key = booleanPreferencesKey("smartspace_show_time"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_smartspace_show_time),
+    )
+
+    val smartspace24HourFormat = preference(
+        key = booleanPreferencesKey("smartspace_24_hour_format"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_smartspace_24_hour_format),
+    )
+
     val smartspaceCalendar = preference(
         key = stringPreferencesKey(name = "smartspace_calendar"),
         defaultValue = SmartspaceCalendar.fromString(context.getString(R.string.config_default_smart_space_calendar)),

@@ -67,6 +67,9 @@
     <bool name="config_default_enable_feed">true</bool>
     <bool name="config_default_enable_icon_selection">false</bool>
     <bool name="config_default_show_component_names">false</bool>
+    <bool name="config_default_smartspace_show_date">true</bool>
+    <bool name="config_default_smartspace_show_time">false</bool>
+    <bool name="config_default_smartspace_24_hour_format">false</bool>
 
     <item name="config_default_home_icon_size_factor" type="dimen" format="float">1.0</item>
     <item name="config_default_folder_preview_background_opacity" type="dimen" format="float">1.0</item>
