@@ -28,11 +28,7 @@ import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.smartspace.SmartspaceViewContainer
 import app.lawnchair.smartspace.model.SmartspaceCalendar
 import app.lawnchair.smartspace.provider.SmartspaceProvider
-import app.lawnchair.ui.preferences.components.ListPreference
-import app.lawnchair.ui.preferences.components.ListPreferenceEntry
-import app.lawnchair.ui.preferences.components.PreferenceGroup
-import app.lawnchair.ui.preferences.components.PreferenceLayout
-import app.lawnchair.ui.preferences.components.SwitchPreference
+import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.ui.theme.isSelectedThemeDark
 import com.android.launcher3.R
 
@@ -131,37 +127,25 @@ fun SmartspaceDateAndTimePreferences() {
         val calendarHasMinimumContent = !showDateAdapter.state.value || !showTimeAdapter.state.value
         val isGregorian = calendarAdapter.state.value != SmartspaceCalendar.Persian
 
-        AnimatedVisibility(
-            visible = isGregorian,
-            enter = expandVertically() + fadeIn(),
-            exit = shrinkVertically() + fadeOut()
-        ) {
-            SwitchPreference(
-                adapter = showDateAdapter,
-                label = stringResource(id = R.string.smartspace_date),
-                enabled = if (showDateAdapter.state.value) !calendarHasMinimumContent else true,
-            )
-        }
-        AnimatedVisibility(
-            visible = isGregorian,
-            enter = expandVertically() + fadeIn(),
-            exit = shrinkVertically() + fadeOut()
-        ) {
-            SwitchPreference(
-                adapter = showTimeAdapter,
-                label = stringResource(id = R.string.smartspace_time),
-                enabled = if (showTimeAdapter.state.value) !calendarHasMinimumContent else true,
-            )
-        }
-        AnimatedVisibility(
-            visible = isGregorian && showTimeAdapter.state.value,
-            enter = expandVertically() + fadeIn(),
-            exit = shrinkVertically() + fadeOut()
-        ) {
-            SwitchPreference(
-                adapter = use24HourFormatAdapter,
-                label = stringResource(id = R.string.smartspace_time_24_hour_format),
-            )
+        ExpandAndShrink(visible = isGregorian) {
+            DividerColumn {
+                SwitchPreference(
+                    adapter = showDateAdapter,
+                    label = stringResource(id = R.string.smartspace_date),
+                    enabled = if (showDateAdapter.state.value) !calendarHasMinimumContent else true,
+                )
+                SwitchPreference(
+                    adapter = showTimeAdapter,
+                    label = stringResource(id = R.string.smartspace_time),
+                    enabled = if (showTimeAdapter.state.value) !calendarHasMinimumContent else true,
+                )
+                ExpandAndShrink(visible = showTimeAdapter.state.value) {
+                    SwitchPreference(
+                        adapter = use24HourFormatAdapter,
+                        label = stringResource(id = R.string.smartspace_time_24_hour_format),
+                    )
+                }
+            }
         }
         val calendarSelectionEnabled =
             preferenceManager2.enableSmartspaceCalendarSelection.getAdapter()
