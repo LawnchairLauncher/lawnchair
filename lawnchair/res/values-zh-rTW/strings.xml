@@ -219,6 +219,10 @@
     <string name="quickstep_incompatible_description">您的裝置目前由 %1$s 提供系統手勢 (Quickstep)，但目前安裝的 %1$s 版本與您的 Android 版本不相容。要繼續執行，請解除安裝或停用 %1$s。</string>
     <string name="preview_label">預覽</string>
     <string name="smartspace_calendar">日曆</string>
+    <string name="smartspace_date_and_time">Date &amp; Time</string>
+    <string name="smartspace_date">Date</string>
+    <string name="smartspace_time">Time</string>
+    <string name="smartspace_time_24_hour_format">24-Hour Format</string>
     <string name="smartspace_weather">天氣</string>
     <string name="smartspace_battery_status">電量狀態</string>
     <string name="smartspace_now_playing">聽聲辨曲</string>
