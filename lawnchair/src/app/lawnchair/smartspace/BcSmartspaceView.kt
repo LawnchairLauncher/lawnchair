@@ -14,9 +14,8 @@ import android.widget.FrameLayout
 import androidx.viewpager.widget.ViewPager
 import app.lawnchair.smartspace.model.SmartspaceTarget
 import app.lawnchair.smartspace.provider.SmartspaceProvider
+import app.lawnchair.util.repeatOnAttached
 import com.android.launcher3.R
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlin.math.roundToInt
@@ -25,8 +24,6 @@ class BcSmartspaceView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, var previewMode: Boolean = false
 ) : FrameLayout(context, attrs) {
 
-    private val scope = MainScope()
-    private var currentJob: Job? = null
     private val provider = SmartspaceProvider.INSTANCE.get(context)
 
     private lateinit var viewPager: ViewPager
@@ -65,6 +62,14 @@ class BcSmartspaceView @JvmOverloads constructor(
                 }
             }
         })
+
+        val targets = if (previewMode) provider.previewTargets else provider.targets
+        repeatOnAttached {
+            viewPager.adapter = adapter
+            targets
+                .onEach(::onSmartspaceTargetsUpdate)
+                .launchIn(this)
+        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -88,22 +93,6 @@ class BcSmartspaceView @JvmOverloads constructor(
         scaleY = scale
         pivotX = 0f
         pivotY = smartspaceHeight.toFloat() / 2f
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        viewPager.adapter = adapter
-
-        val targets = if (previewMode) provider.previewTargets else provider.targets
-        currentJob = targets
-            .onEach(this::onSmartspaceTargetsUpdate)
-            .launchIn(scope)
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        currentJob?.cancel()
-        currentJob = null
     }
 
     override fun setOnLongClickListener(l: OnLongClickListener?) {
