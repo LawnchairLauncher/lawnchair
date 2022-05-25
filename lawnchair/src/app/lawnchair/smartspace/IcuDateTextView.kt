@@ -24,10 +24,10 @@ class IcuDateTextView @JvmOverloads constructor(
 
     private lateinit var preferenceManager2: PreferenceManager2
     private var calendar: SmartspaceCalendar? = null
+    private var initialized: Boolean = false
     private var showDate: Boolean = true
     private var showTime: Boolean = false
     private var time24HourFormat: Boolean = false
-    private var formatterUpdateRequired = true
     private var formatterGregorian: DateFormat? = null
     private var formatterPersian: PersianDateFormat? = null
     private val ticker = this::onTimeTick
@@ -54,8 +54,8 @@ class IcuDateTextView @JvmOverloads constructor(
     private fun onTimeChanged(updateFormatter: Boolean) {
         if (isShown) {
             val timeText = when (calendar) {
-                SmartspaceCalendar.Persian -> getTimeTextPersian(updateFormatter = updateFormatter || formatterUpdateRequired)
-                else -> getTimeTextGregorian(updateFormatter = updateFormatter || formatterUpdateRequired)
+                SmartspaceCalendar.Persian -> getTimeTextPersian(updateFormatter = updateFormatter)
+                else -> getTimeTextGregorian(updateFormatter = updateFormatter)
             }
             if (text != timeText) {
                 textAlignment =
@@ -71,7 +71,6 @@ class IcuDateTextView @JvmOverloads constructor(
             context.getString(R.string.smartspace_icu_date_pattern_persian),
             PersianDateFormat.PersianDateNumberCharacter.FARSI,
         ).also { formatterPersian = it }
-        formatterUpdateRequired = false
         return formatter.format(PersianDate(System.currentTimeMillis()))
     }
 
@@ -96,7 +95,6 @@ class IcuDateTextView @JvmOverloads constructor(
                 formatter = it
             }.setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE)
         }
-        formatterUpdateRequired = false
         return formatter
     }
 
@@ -121,23 +119,22 @@ class IcuDateTextView @JvmOverloads constructor(
         }
 
         preferenceManager2.smartspaceShowDate.subscribeBlocking(scope = viewAttachedScope) {
-            if (it != showDate) {
-                formatterUpdateRequired = true
-                showDate = it
-            }
+            showDate = it
+            onPrefChanged()
         }
         preferenceManager2.smartspaceShowTime.subscribeBlocking(scope = viewAttachedScope) {
-            if (it != showTime) {
-                formatterUpdateRequired = true
-                showTime = it
-            }
+            showTime = it
+            onPrefChanged()
         }
         preferenceManager2.smartspace24HourFormat.subscribeBlocking(scope = viewAttachedScope) {
-            if (it != time24HourFormat) {
-                formatterUpdateRequired = true
-                time24HourFormat = it
-            }
+            time24HourFormat = it
+            onPrefChanged()
         }
+        initialized = true
+    }
+
+    private fun onPrefChanged() {
+        onTimeChanged(true)
     }
 
     override fun onVisibilityAggregated(isVisible: Boolean) {
