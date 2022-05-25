@@ -209,7 +209,7 @@
     <string name="enable_taskbar_experimental">Ativar Barra de Tarefas (Experimental)</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_battery_charging">A carregar</string>
+    <string name="smartspace_battery_charging">Carregando</string>
     <string name="smartspace_battery_full">Carregado</string>
     <string name="smartspace_battery_low">Bateria Baixa</string>
     <string name="accessibility_smartspace_page">Página %1$d de %2$d</string>
@@ -221,9 +221,9 @@
     <string name="preview_label">Pré-visualização</string>
     <string name="smartspace_calendar">Calendário</string>
     <string name="smartspace_date_and_time">Date &amp; Time</string>
-    <string name="smartspace_date">Date</string>
-    <string name="smartspace_time">Time</string>
-    <string name="smartspace_time_24_hour_format">24-Hour Format</string>
+    <string name="smartspace_date">Data</string>
+    <string name="smartspace_time">Tempo</string>
+    <string name="smartspace_time_24_hour_format">Formato 24 Horas</string>
     <string name="smartspace_weather">Meteorologia</string>
     <string name="smartspace_battery_status">Estado da Bateria</string>
     <string name="smartspace_now_playing">A Reproduzir</string>
