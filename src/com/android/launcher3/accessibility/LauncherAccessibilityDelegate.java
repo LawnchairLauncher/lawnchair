@@ -60,6 +60,7 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
     public static final int DISMISS_PREDICTION = R.id.action_dismiss_prediction;
     public static final int PIN_PREDICTION = R.id.action_pin_prediction;
     public static final int RECONFIGURE = R.id.action_reconfigure;
+    public static final int INVALID = -1;
     protected static final int ADD_TO_WORKSPACE = R.id.action_add_to_workspace;
     protected static final int MOVE = R.id.action_move;
     protected static final int MOVE_TO_WORKSPACE = R.id.action_move_to_workspace;
