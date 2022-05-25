@@ -18,31 +18,31 @@ package app.lawnchair.gestures
 
 import androidx.lifecycle.lifecycleScope
 import app.lawnchair.LawnchairLauncher
-import app.lawnchair.gestures.handlers.SleepGestureHandler
+import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.preferences2.PreferenceManager2
-import com.patrykmichalik.preferencemanager.onEach
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.patrykmichalik.preferencemanager.Preference
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class GestureController(private val launcher: LawnchairLauncher) {
-    private val preferenceManager = PreferenceManager2.getInstance(launcher)
-    private val doubleTapHandler = SleepGestureHandler(launcher)
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
-    private var dt2s = false
+    private val prefs = PreferenceManager2.getInstance(launcher)
+    private val scope = MainScope()
 
-    init {
-        preferenceManager.dt2s.onEach(launchIn = coroutineScope) {
-            dt2s = it
-        }
-    }
+    private val doubleTapHandler = handler(prefs.doubleTapHandler)
 
     fun onDoubleTap() {
-        // TODO: proper gesture selection system
-        if (dt2s) {
-            launcher.lifecycleScope.launch {
-                doubleTapHandler.onTrigger(launcher)
-            }
+        launcher.lifecycleScope.launch {
+            doubleTapHandler.first().onTrigger(launcher)
         }
     }
+
+    private fun handler(pref: Preference<GestureHandlerConfig, String>) = pref.get()
+        .distinctUntilChanged()
+        .map { it.createHandler(launcher) }
+        .shareIn(
+            scope,
+            SharingStarted.Lazily,
+            replay = 1
+        )
 }

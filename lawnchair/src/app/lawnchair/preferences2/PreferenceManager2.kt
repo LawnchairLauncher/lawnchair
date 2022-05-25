@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import app.lawnchair.font.FontCache
+import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
@@ -41,6 +42,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import app.lawnchair.preferences.PreferenceManager as LawnchairPreferenceManager
 import com.android.launcher3.graphics.IconShape as L3IconShape
 
@@ -158,11 +162,6 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
     val enableSmartspaceCalendarSelection = preference(
         key = booleanPreferencesKey(name = "enable_smartspace_calendar_selection"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_smartspace_calendar_selection),
-    )
-
-    val dt2s = preference(
-        key = booleanPreferencesKey(name = "dt2s"),
-        defaultValue = context.resources.getBoolean(R.bool.config_default_dts2),
     )
 
     val autoShowKeyboardInDrawer = preference(
@@ -302,6 +301,21 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         defaultValue = SmartspaceCalendar.fromString(context.getString(R.string.config_default_smart_space_calendar)),
         parse = { SmartspaceCalendar.fromString(it) },
         save = { it.toString() },
+    )
+
+    val doubleTapHandler = serializablePreference<GestureHandlerConfig>(
+        key = stringPreferencesKey("double_tap_handler"),
+        defaultValue = GestureHandlerConfig.Sleep
+    )
+
+    private inline fun <reified T> serializablePreference(
+        key: Preferences.Key<String>,
+        defaultValue: T
+    ) = preference(
+        key = key,
+        defaultValue = defaultValue,
+        parse = { Json.decodeFromString(it) },
+        save = { Json.encodeToString(it) }
     )
 
     init {

@@ -23,3 +23,7 @@ abstract class GestureHandler(val context: Context) {
 
     abstract suspend fun onTrigger(launcher: LawnchairLauncher)
 }
+
+class NoOpGestureHandler(context: Context) : GestureHandler(context) {
+    override suspend fun onTrigger(launcher: LawnchairLauncher) = Unit
+}

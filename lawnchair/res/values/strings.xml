@@ -288,4 +288,8 @@
     <string name="invalid_backup_file">Invalid backup file.</string>
     <string name="google_folder_title" translatable="false">Google</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
+    <string name="gesture_double_tap">Double-Tap</string>
+    <string name="gesture_handler_no_op">Do Nothing</string>
+    <string name="gesture_handler_sleep">Sleep</string>
+    <string name="gesture_handler_open_notifications">Open Notification Panel</string>
 </resources>

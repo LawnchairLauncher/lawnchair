@@ -15,6 +15,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:7.2.0'
         classpath PROTOBUF_CLASS_PATH
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
         classpath 'com.google.android.gms:oss-licenses-plugin:0.10.5'
     }
 }
@@ -88,6 +89,7 @@ apply plugin: 'com.google.protobuf'
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 
 final def commitHash = { ->
     final def stdout = new ByteArrayOutputStream()
@@ -337,6 +339,7 @@ dependencies {
     withoutQuickstepImplementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'plugin_core.jar')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'org.mockito:mockito-core:4.5.1'
     androidTestImplementation 'com.google.dexmaker:dexmaker:1.2'

@@ -16,8 +16,10 @@
 
 package app.lawnchair.ui.preferences
 
-import androidx.compose.animation.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
@@ -57,9 +59,9 @@ fun HomeScreenPreferences() {
                 prefs.wallpaperScrolling.getAdapter(),
                 label = stringResource(id = R.string.wallpaper_scrolling_label),
             )
-            SwitchPreference(
-                adapter = prefs2.dt2s.getAdapter(),
-                label = stringResource(id = R.string.workspace_dt2s),
+            GestureHandlerPreference(
+                adapter = prefs2.doubleTapHandler.getAdapter(),
+                label = stringResource(id = R.string.gesture_double_tap)
             )
             val feedAvailable = OverlayCallbackImpl.minusOneAvailable(LocalContext.current)
             SwitchPreference(
