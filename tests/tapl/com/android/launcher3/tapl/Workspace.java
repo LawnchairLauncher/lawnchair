@@ -140,6 +140,20 @@ public final class Workspace extends Home {
         }
     }
 
+    /**
+     * Waits for an app icon to be gone (e.g. after uninstall). Fails if it remains.
+     *
+     * @param errorMessage error message thrown then the icon doesn't disappear.
+     * @param appName      app that should be gone.
+     */
+    public void verifyWorkspaceAppIconIsGone(String errorMessage, String appName) {
+        final UiObject2 workspace = verifyActiveContainer();
+        assertTrue(errorMessage,
+                workspace.wait(
+                        Until.gone(AppIcon.getAppIconSelector(appName, mLauncher)),
+                        LauncherInstrumentation.WAIT_TIME_MS));
+    }
+
 
     /**
      * Returns an icon for the app; fails if the icon doesn't exist.
