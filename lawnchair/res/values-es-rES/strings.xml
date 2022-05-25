@@ -194,8 +194,8 @@
     <string name="icon_picker_description">Puede hacer que Lawnchair se congele.</string>
     <string name="font_picker_label">Configuración de Fuente</string>
     <string name="font_picker_description">Algunos textos permanecen sin cambios.</string>
-    <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
+    <string name="smartspace_calendar_label">Personalización de calendario de visualización rápida</string>
+    <string name="smartspace_calendar_description">Permitir mostrar fechas en sistemas de calendario no gregorianos.</string>
     <string name="search_provider_app_search">Búsqueda de Aplicaciones</string>
     <string name="always_open_website_label">Siempre Abrir Sitio Web</string>
     <string name="always_open_website_description">Abrir siempre Sitio web del proveedor aunque la app ya está instalada.</string>
@@ -219,15 +219,15 @@
     <string name="quickstep_incompatible">Integración del sistema incompatible</string>
     <string name="quickstep_incompatible_description">Su dispositivo está configurado para tener gestos del sistema (conocidos como Quickstep) proporcionados por %1$s, pero esta versión de %1$s no es compatible con tu versión de Android. Para continuar utilizando tu dispositivo, por favor desinstala las actualizaciones de %1$s o deshabilita %1$s como proveedor de gestos de sistema.</string>
     <string name="preview_label">Vista previa</string>
-    <string name="smartspace_calendar">Calendar</string>
+    <string name="smartspace_calendar">Calendario</string>
     <string name="smartspace_weather">Clima</string>
     <string name="smartspace_battery_status">Estado de la batería</string>
     <string name="smartspace_now_playing">Reproduciendo</string>
     <string name="smartspace_requires_setup">Toca para configurar</string>
     <string name="event_provider_missing_notification_dots">Para usar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activa los puntos de notificación.</string>
     <string name="smartspace_media_info_separator">" — "</string>
-    <string name="smartspace_calendar_gregorian">Gregorian</string>
-    <string name="smartspace_calendar_persian">Persian</string>
+    <string name="smartspace_calendar_gregorian">Gregoriano</string>
+    <string name="smartspace_calendar_persian">Persa</string>
     <string name="pref_fonts_add_fonts">Añadir fuentes</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF soportados.</string>
     <string name="delete">Eliminar</string>
@@ -247,5 +247,5 @@
     <string name="backup_restore_success">Copia de seguridad restaurada.</string>
     <string name="backup_restore_error">Error al restaurar copia de seguridad.</string>
     <string name="invalid_backup_file">Copia de seguridad no válida.</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Cargado en %2$s"</string>
 </resources>
