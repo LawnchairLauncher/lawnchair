@@ -26,6 +26,7 @@ import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.PagedOrientationHandler;
 
 import app.lawnchair.font.FontManager;
+import app.lawnchair.theme.drawable.DrawableTokens;
 
 public class ClearAllButton extends Button {
 
@@ -78,6 +79,7 @@ public class ClearAllButton extends Button {
         mIsRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
         mActivity = StatefulActivity.fromContext(context);
         FontManager.INSTANCE.get(context).overrideFont(this, attrs);
+        setBackground(DrawableTokens.BgOverviewClearAllButton.resolve(context));
     }
 
     @Override

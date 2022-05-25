@@ -158,7 +158,11 @@
         <item name="qsbIconTintTertiary">#fffbbc05</item>
     </style>
 
-    <style name="OverviewClearAllButton" parent="@android:style/Widget.DeviceDefault.Button.Borderless">
+    <style name="OverviewClearAllButton" parent="@android:style/Widget.Material.Button">
+        <item name="android:background">@drawable/bg_overview_clear_all_button</item>
+        <item name="android:minWidth">96dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:stateListAnimator">@null</item>
         <item name="android:textAllCaps">false</item>
         <item name="customFontType">@id/font_button</item>
     </style>

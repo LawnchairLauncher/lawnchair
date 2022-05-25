@@ -13,6 +13,13 @@ object DrawableTokens {
         .setTint(ColorTokens.ColorAccent)
 
     @JvmField
+    val BgOverviewClearAllButton = ResourceDrawableToken<RippleDrawable>(R.drawable.bg_overview_clear_all_button)
+        .mutate { context, scheme, uiColorMode ->
+            val background = getDrawable(0) as GradientDrawable
+            background.setColor(ColorTokens.Surface.resolveColor(context, scheme, uiColorMode))
+        }
+
+    @JvmField
     val BgWidgetsFullSheet = ResourceDrawableToken<GradientDrawable>(R.drawable.bg_widgets_full_sheet)
         .setColor(ColorTokens.ColorBackground)
 
