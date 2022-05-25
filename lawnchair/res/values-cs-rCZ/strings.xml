@@ -222,6 +222,10 @@
     <string name="quickstep_incompatible_description">Vaše zařízení je nakonfigurováno tak, aby systémová gesta (známá jako Quickstep) byla poskytována aplikací %1$s, ale tato verze aplikace %1$s není kompatibilní s\u00a0vaší verzí Android. Chcete‑li nadále používat vaše zařízení, odinstalujte aktualizace aplikace %1$s, nebo zakažte aplikaci %1$s jako poskytovatele systémových gest.</string>
     <string name="preview_label">Náhled</string>
     <string name="smartspace_calendar">Calendar</string>
+    <string name="smartspace_date_and_time">Date &amp; Time</string>
+    <string name="smartspace_date">Date</string>
+    <string name="smartspace_time">Time</string>
+    <string name="smartspace_time_24_hour_format">24-Hour Format</string>
     <string name="smartspace_weather">Počasí</string>
     <string name="smartspace_battery_status">Stav baterie</string>
     <string name="smartspace_now_playing">Právě hraje</string>
