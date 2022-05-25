@@ -235,7 +235,10 @@
 
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_icu_date_pattern_gregorian" translatable="false">EEEMMMd</string>
+    <string name="smartspace_icu_date_pattern_gregorian_wday_month_day_no_year" translatable="false">EEEMMMd</string>
+    <string name="smartspace_icu_date_pattern_gregorian_time" translatable="false">HH:mm</string>
+    <string name="smartspace_icu_date_pattern_gregorian_time_12h" translatable="false">hh:mm aa</string>
+    <string name="smartspace_icu_date_pattern_gregorian_date" translatable="false"> dd MMMM</string>
     <string name="smartspace_icu_date_pattern_persian" translatable="false">l، j F</string>
     <string name="smartspace_battery_charging">Charging</string>
     <string name="smartspace_battery_full">Charged</string>
@@ -249,6 +252,10 @@
 
     <string name="preview_label">Preview</string>
     <string name="smartspace_calendar">Calendar</string>
+    <string name="smartspace_date_and_time">Date &amp; Time</string>
+    <string name="smartspace_date">Date</string>
+    <string name="smartspace_time">Time</string>
+    <string name="smartspace_time_24_hour_format">24-Hour Format</string>
     <string name="smartspace_weather">Weather</string>
     <string name="smartspace_battery_status">Battery Status</string>
     <string name="smartspace_now_playing">Now Playing</string>
