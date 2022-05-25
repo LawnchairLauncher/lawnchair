@@ -219,6 +219,10 @@
     <string name="quickstep_incompatible_description">Perangkat Anda dikonfigurasi untuk menggunakan gestur sistem (dikenal sebagai Quickstep) yang disediakan oleh %1$s, tetapi versi %1$s ini tidak kompatibel dengan versi Android Anda. Untuk terus menggunakan perangkat Anda, mohon uninstal pembaruan %1$s atau menonaktifkan %1$s sebagai penyedia gestur sistem.</string>
     <string name="preview_label">Pratinjau</string>
     <string name="smartspace_calendar">Kalender</string>
+    <string name="smartspace_date_and_time">Date &amp; Time</string>
+    <string name="smartspace_date">Date</string>
+    <string name="smartspace_time">Time</string>
+    <string name="smartspace_time_24_hour_format">24-Hour Format</string>
     <string name="smartspace_weather">Cuaca</string>
     <string name="smartspace_battery_status">Status Baterai</string>
     <string name="smartspace_now_playing">Sedang Diputar</string>
