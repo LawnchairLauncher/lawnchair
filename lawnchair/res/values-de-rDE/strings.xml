@@ -220,10 +220,10 @@
     <string name="quickstep_incompatible_description">Dein Gerät ist so konfiguriert, dass Systemgesten (bekannt als Quickstep) von %1$s bereitgestellt werden, diese Version von %1$s ist jedoch nicht mit deiner Android-Version kompatibel. Um dein Gerät weiter zu verwenden, deinstalliere bitte %1$s-Aktualisierungen oder deaktiviere %1$s als Systemgesten-Provider.</string>
     <string name="preview_label">Vorschau</string>
     <string name="smartspace_calendar">Kalender</string>
-    <string name="smartspace_date_and_time">Date &amp; Time</string>
-    <string name="smartspace_date">Date</string>
-    <string name="smartspace_time">Time</string>
-    <string name="smartspace_time_24_hour_format">24-Hour Format</string>
+    <string name="smartspace_date_and_time">Datum &amp; Uhrzeit</string>
+    <string name="smartspace_date">Datum</string>
+    <string name="smartspace_time">Uhrzeit</string>
+    <string name="smartspace_time_24_hour_format">24-Stunden-Format</string>
     <string name="smartspace_weather">Wetter</string>
     <string name="smartspace_battery_status">Ladestand</string>
     <string name="smartspace_now_playing">Now Playing</string>
