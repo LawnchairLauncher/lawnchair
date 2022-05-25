@@ -148,7 +148,7 @@ public class TaskbarManager {
                     // Config change might be handled without re-creating the taskbar
                     if (mTaskbarActivityContext != null) {
                         if (dp != null && dp.isTaskbarPresent) {
-                            mTaskbarActivityContext.updateDeviceProfile(dp.copy(mContext));
+                            mTaskbarActivityContext.updateDeviceProfile(dp);
                         }
                         mTaskbarActivityContext.onConfigurationChanged(configDiff);
                     }
@@ -274,8 +274,8 @@ public class TaskbarManager {
             return;
         }
 
-        mTaskbarActivityContext = new TaskbarActivityContext(mContext, dp.copy(mContext),
-                mNavButtonController, mUnfoldProgressProvider);
+        mTaskbarActivityContext = new TaskbarActivityContext(mContext, dp, mNavButtonController,
+                mUnfoldProgressProvider);
 
         mTaskbarActivityContext.init(mSharedState);
         if (mActivity != null) {
