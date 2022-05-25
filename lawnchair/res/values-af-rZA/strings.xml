@@ -220,6 +220,10 @@
     <string name="quickstep_incompatible_description">Jou toestel is opgestel om stelselgebare (bekend as Quickstep) te hê wat verskaf word deur%1$s, maar hierdie weergawe van%1$s is nie versoenbaar met jou Android-weergawe nie. Deïnstalleer asseblief om voort te gaan om jou toestel te gebruik%1$s opdaterings of deaktiveer %1$s as \'n stelselgebareverskaffer.</string>
     <string name="preview_label">Voorskou</string>
     <string name="smartspace_calendar">Calendar</string>
+    <string name="smartspace_date_and_time">Date &amp; Time</string>
+    <string name="smartspace_date">Date</string>
+    <string name="smartspace_time">Time</string>
+    <string name="smartspace_time_24_hour_format">24-Hour Format</string>
     <string name="smartspace_weather">Weer</string>
     <string name="smartspace_battery_status">Battery Status</string>
     <string name="smartspace_now_playing">Speel nou</string>
