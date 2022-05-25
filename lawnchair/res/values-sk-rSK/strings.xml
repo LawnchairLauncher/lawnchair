@@ -222,6 +222,10 @@
     <string name="quickstep_incompatible_description">Vaše zariadenie je nakonfigurované na systémové gestá (známe ako Quickstep), ktoré poskytuje %1$s, ale táto verzia %1$s nie je kompatibilná s vašou verziou systému Android. Ak chcete pokračovať v používaní svojho zariadenia, odinštalujte aktualizácie %1$s alebo vypnite %1$s ako poskytovateľa systémových gest.</string>
     <string name="preview_label">Náhľad</string>
     <string name="smartspace_calendar">Kalendár</string>
+    <string name="smartspace_date_and_time">Date &amp; Time</string>
+    <string name="smartspace_date">Date</string>
+    <string name="smartspace_time">Time</string>
+    <string name="smartspace_time_24_hour_format">24-Hour Format</string>
     <string name="smartspace_weather">Počasie</string>
     <string name="smartspace_battery_status">Stav batérie</string>
     <string name="smartspace_now_playing">Práve hrá</string>
