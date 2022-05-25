@@ -4,7 +4,12 @@ import android.app.Activity
 import android.view.ContextThemeWrapper
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -62,11 +67,6 @@ fun SmartspacePreferences(fromWidget: Boolean) {
                         heading = stringResource(id = R.string.what_to_show),
                         modifier = Modifier.padding(top = 8.dp),
                     ) {
-                        val calendarSelectionEnabled =
-                            preferenceManager2.enableSmartspaceCalendarSelection.getAdapter()
-                        if (calendarSelectionEnabled.state.value) {
-                            SmartspaceCalendarPreference()
-                        }
                         smartspaceProvider.dataSources
                             .filter { it.isAvailable }
                             .forEach {
@@ -78,6 +78,7 @@ fun SmartspacePreferences(fromWidget: Boolean) {
                                 }
                             }
                     }
+                    SmartspaceDateAndTimePreferences()
                 }
             }
         }
@@ -110,6 +111,62 @@ fun SmartspacePreview() {
         }
         LaunchedEffect(key1 = null) {
             SmartspaceProvider.INSTANCE.get(context).startSetup(context as Activity)
+        }
+    }
+}
+
+@Composable
+fun SmartspaceDateAndTimePreferences() {
+    PreferenceGroup(
+        heading = stringResource(id = R.string.smartspace_date_and_time),
+        modifier = Modifier.padding(top = 8.dp),
+    ) {
+        val preferenceManager2 = preferenceManager2()
+
+        val calendarAdapter = preferenceManager2.smartspaceCalendar.getAdapter()
+        val showDateAdapter = preferenceManager2.smartspaceShowDate.getAdapter()
+        val showTimeAdapter = preferenceManager2.smartspaceShowTime.getAdapter()
+        val use24HourFormatAdapter = preferenceManager2.smartspace24HourFormat.getAdapter()
+
+        val calendarHasMinimumContent = !showDateAdapter.state.value || !showTimeAdapter.state.value
+        val isGregorian = calendarAdapter.state.value != SmartspaceCalendar.Persian
+
+        AnimatedVisibility(
+            visible = isGregorian,
+            enter = expandVertically() + fadeIn(),
+            exit = shrinkVertically() + fadeOut()
+        ) {
+            SwitchPreference(
+                adapter = showDateAdapter,
+                label = stringResource(id = R.string.smartspace_date),
+                enabled = if (showDateAdapter.state.value) !calendarHasMinimumContent else true,
+            )
+        }
+        AnimatedVisibility(
+            visible = isGregorian,
+            enter = expandVertically() + fadeIn(),
+            exit = shrinkVertically() + fadeOut()
+        ) {
+            SwitchPreference(
+                adapter = showTimeAdapter,
+                label = stringResource(id = R.string.smartspace_time),
+                enabled = if (showTimeAdapter.state.value) !calendarHasMinimumContent else true,
+            )
+        }
+        AnimatedVisibility(
+            visible = isGregorian && showTimeAdapter.state.value,
+            enter = expandVertically() + fadeIn(),
+            exit = shrinkVertically() + fadeOut()
+        ) {
+            SwitchPreference(
+                adapter = use24HourFormatAdapter,
+                label = stringResource(id = R.string.smartspace_time_24_hour_format),
+            )
+        }
+        val calendarSelectionEnabled =
+            preferenceManager2.enableSmartspaceCalendarSelection.getAdapter()
+        if (calendarSelectionEnabled.state.value) {
+            SmartspaceCalendarPreference()
         }
     }
 }
