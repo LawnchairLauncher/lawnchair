@@ -5,8 +5,10 @@ import com.android.launcher3.R
 
 /**
  * Contains the data of a single calendar system for smartspace.
+ *
+ * @param formatCustomizationSupport If the calendar system supports date & time format customization.
  */
-open class SmartspaceCalendar(@StringRes val nameResourceId: Int) {
+open class SmartspaceCalendar(@StringRes val nameResourceId: Int, val formatCustomizationSupport: Boolean = true) {
 
     companion object {
 
@@ -24,7 +26,7 @@ open class SmartspaceCalendar(@StringRes val nameResourceId: Int) {
     object Gregorian : SmartspaceCalendar(nameResourceId = R.string.smartspace_calendar_gregorian) {
         override fun toString() = "gregorian"
     }
-    object Persian : SmartspaceCalendar(nameResourceId = R.string.smartspace_calendar_persian) {
+    object Persian : SmartspaceCalendar(nameResourceId = R.string.smartspace_calendar_persian, formatCustomizationSupport = false) {
         override fun toString() = "persian"
     }
 

@@ -119,15 +119,21 @@ fun SmartspaceDateAndTimePreferences() {
     ) {
         val preferenceManager2 = preferenceManager2()
 
+        val calendarSelectionAdapter = preferenceManager2.enableSmartspaceCalendarSelection.getAdapter()
         val calendarAdapter = preferenceManager2.smartspaceCalendar.getAdapter()
         val showDateAdapter = preferenceManager2.smartspaceShowDate.getAdapter()
         val showTimeAdapter = preferenceManager2.smartspaceShowTime.getAdapter()
         val use24HourFormatAdapter = preferenceManager2.smartspace24HourFormat.getAdapter()
 
         val calendarHasMinimumContent = !showDateAdapter.state.value || !showTimeAdapter.state.value
-        val isGregorian = calendarAdapter.state.value != SmartspaceCalendar.Persian
 
-        ExpandAndShrink(visible = isGregorian) {
+        val calendar = if (calendarSelectionAdapter.state.value) {
+            calendarAdapter.state.value
+        } else {
+            preferenceManager2.smartspaceCalendar.defaultValue
+        }
+
+        ExpandAndShrink(visible = calendar.formatCustomizationSupport) {
             DividerColumn {
                 SwitchPreference(
                     adapter = showDateAdapter,
