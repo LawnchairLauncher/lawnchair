@@ -222,10 +222,10 @@
     <string name="quickstep_incompatible_description">Ваше устройство настроено на использование системных жестов (известных как Quickstep), предоставляемых %1$s, но эта версия %1$s не совместима с вашей версией Android. Чтобы продолжить использование вашего устройства, удалите обновления %1$s или отключите %1$s как поставщика системных жестов.</string>
     <string name="preview_label">Предпросмотр</string>
     <string name="smartspace_calendar">Календарь</string>
-    <string name="smartspace_date_and_time">Date &amp; Time</string>
-    <string name="smartspace_date">Date</string>
-    <string name="smartspace_time">Time</string>
-    <string name="smartspace_time_24_hour_format">24-Hour Format</string>
+    <string name="smartspace_date_and_time">Дата &amp; Время</string>
+    <string name="smartspace_date">Дата</string>
+    <string name="smartspace_time">Время</string>
+    <string name="smartspace_time_24_hour_format">24-часовой формат</string>
     <string name="smartspace_weather">Погода</string>
     <string name="smartspace_battery_status">Состояние батареи</string>
     <string name="smartspace_now_playing">Сейчас играет</string>
