@@ -26,6 +26,7 @@ import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.tapl.Taskbar;
 import com.android.launcher3.ui.TaplTestsLauncher3;
+import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 
 import org.junit.After;
 import org.junit.Assume;
@@ -85,6 +86,7 @@ public class TaplTestsTaskbar extends AbstractQuickStepTest {
     }
 
     @Test
+    @ScreenRecord // b/231615831
     @PortraitLandscape
     public void testLaunchAppInSplitscreen() throws Exception {
         getTaskbar().getAppIcon(TEST_APP_NAME).dragToSplitscreen(
@@ -92,6 +94,7 @@ public class TaplTestsTaskbar extends AbstractQuickStepTest {
     }
 
     @Test
+    @ScreenRecord // b/231615831
     @PortraitLandscape
     public void testLaunchShortcutInSplitscreen() throws Exception {
         getTaskbar().getAppIcon(TEST_APP_NAME)
@@ -120,6 +123,7 @@ public class TaplTestsTaskbar extends AbstractQuickStepTest {
     }
 
     @Test
+    @ScreenRecord // b/231615831
     @PortraitLandscape
     public void testLaunchAppInSplitscreen_FromTaskbarAllApps() throws Exception {
         getTaskbar().openAllApps()
@@ -128,6 +132,7 @@ public class TaplTestsTaskbar extends AbstractQuickStepTest {
     }
 
     @Test
+    @ScreenRecord // b/231615831
     @PortraitLandscape
     public void testLaunchShortcutInSplitscreen_FromTaskbarAllApps() throws Exception {
         getTaskbar().openAllApps()
