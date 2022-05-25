@@ -140,6 +140,8 @@ class IcuDateTextView @JvmOverloads constructor(
     override fun onVisibilityAggregated(isVisible: Boolean) {
         super.onVisibilityAggregated(isVisible)
         handler?.removeCallbacks(ticker)
-        ticker()
+        if (isVisible) {
+            ticker()
+        }
     }
 }
