@@ -179,7 +179,12 @@ public abstract class ButtonDropTarget extends TextView
 
     @Override
     public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
-        mActive = !options.isKeyboardDrag && supportsDrop(dragObject.dragInfo);
+        if (options.isKeyboardDrag) {
+            mActive = false;
+        } else {
+            setupItemInfo(dragObject.dragInfo);
+            mActive = supportsDrop(dragObject.dragInfo);
+        }
         setVisibility(mActive ? View.VISIBLE : View.GONE);
 
         mAccessibleDrag = options.isAccessibleDrag;
@@ -190,6 +195,11 @@ public abstract class ButtonDropTarget extends TextView
     public final boolean acceptDrop(DragObject dragObject) {
         return supportsDrop(dragObject.dragInfo);
     }
+
+    /**
+     * Setups button for the specified ItemInfo.
+     */
+    protected abstract void setupItemInfo(ItemInfo info);
 
     protected abstract boolean supportsDrop(ItemInfo info);
 
