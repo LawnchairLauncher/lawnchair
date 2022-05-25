@@ -220,10 +220,10 @@
     <string name="quickstep_incompatible_description">Il tuo dispositivo è configurato per avere i gesti di sistema (noti come Quickstep) forniti da %1$s, ma questa versione di %1$s non è compatibile con la tua versione di Android. Per continuare ad usare il tuo dispositivo, disinstalla gli aggiornamenti di %1$s o disabilita %1$s come provider dei gesti di sistema.</string>
     <string name="preview_label">Anteprima</string>
     <string name="smartspace_calendar">Calendario</string>
-    <string name="smartspace_date_and_time">Date &amp; Time</string>
-    <string name="smartspace_date">Date</string>
-    <string name="smartspace_time">Time</string>
-    <string name="smartspace_time_24_hour_format">24-Hour Format</string>
+    <string name="smartspace_date_and_time">Data &amp; ora</string>
+    <string name="smartspace_date">Data</string>
+    <string name="smartspace_time">Ora</string>
+    <string name="smartspace_time_24_hour_format">Formato 24 ore</string>
     <string name="smartspace_weather">Meteo</string>
     <string name="smartspace_battery_status">Stato batteria</string>
     <string name="smartspace_now_playing">In riproduzione</string>
