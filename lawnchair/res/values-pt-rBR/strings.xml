@@ -219,10 +219,10 @@
     <string name="quickstep_incompatible">Integração de sistema incompatível</string>
     <string name="quickstep_incompatible_description">Seu dispositivo está configurado para ter gestos do sistema (conhecido como Quickstep) fornecidos por %1$s, mas esta versão do %1$s não é compatível com sua versão do Android. Para continuar usando o seu dispositivo, desinstale %1$s atualizações ou desative %1$s como provedor de gesto do sistema.</string>
     <string name="preview_label">Pré-visualização</string>
-    <string name="smartspace_calendar">Calendar</string>
-    <string name="smartspace_date_and_time">Date &amp; Time</string>
-    <string name="smartspace_date">Date</string>
-    <string name="smartspace_time">Time</string>
+    <string name="smartspace_calendar">Calendário</string>
+    <string name="smartspace_date_and_time">Data &amp; Hora</string>
+    <string name="smartspace_date">Data</string>
+    <string name="smartspace_time">Horário</string>
     <string name="smartspace_time_24_hour_format">24-Hour Format</string>
     <string name="smartspace_weather">Clima</string>
     <string name="smartspace_battery_status">Status da bateria</string>
@@ -230,8 +230,8 @@
     <string name="smartspace_requires_setup">Toque para Configurar</string>
     <string name="event_provider_missing_notification_dots">Para usar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, habilite os Pontos de Notificação.</string>
     <string name="smartspace_media_info_separator">" — "</string>
-    <string name="smartspace_calendar_gregorian">Gregorian</string>
-    <string name="smartspace_calendar_persian">Persian</string>
+    <string name="smartspace_calendar_gregorian">Gregoriano</string>
+    <string name="smartspace_calendar_persian">Persa</string>
     <string name="pref_fonts_add_fonts">Adicionar Fontes</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF suportado.</string>
     <string name="delete">Apagar</string>
@@ -251,5 +251,5 @@
     <string name="backup_restore_success">Backup restaurado.</string>
     <string name="backup_restore_error">Falha ao restaurar o backup.</string>
     <string name="invalid_backup_file">Arquivo de backup inválido.</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Completo em %2$s"</string>
 </resources>
