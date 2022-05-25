@@ -11,9 +11,11 @@ import android.util.AttributeSet
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.subscribeBlocking
 import app.lawnchair.smartspace.model.SmartspaceCalendar
+import app.lawnchair.util.subscribeBlocking
 import app.lawnchair.util.viewAttachedScope
 import com.android.launcher3.R
 import com.patrykmichalik.preferencemanager.firstBlocking
+import kotlinx.coroutines.flow.combine
 import saman.zamani.persiandate.PersianDate
 import saman.zamani.persiandate.PersianDateFormat
 import java.util.*
@@ -22,12 +24,9 @@ class IcuDateTextView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : DoubleShadowTextView(context, attrs) {
 
-    private lateinit var preferenceManager2: PreferenceManager2
+    private val prefs = PreferenceManager2.getInstance(context)
     private var calendar: SmartspaceCalendar? = null
-    private var initialized: Boolean = false
-    private var showDate: Boolean = true
-    private var showTime: Boolean = false
-    private var time24HourFormat: Boolean = false
+    private lateinit var dateTimeOptions: DateTimeOptions
     private var formatterGregorian: DateFormat? = null
     private var formatterPersian: PersianDateFormat? = null
     private val ticker = this::onTimeTick
@@ -67,7 +66,7 @@ class IcuDateTextView @JvmOverloads constructor(
     }
 
     private fun getTimeTextPersian(updateFormatter: Boolean): String {
-        val formatter = formatterPersian.takeIf { updateFormatter.not() } ?: PersianDateFormat(
+        val formatter = formatterPersian.takeIf { !updateFormatter } ?: PersianDateFormat(
             context.getString(R.string.smartspace_icu_date_pattern_persian),
             PersianDateFormat.PersianDateNumberCharacter.FARSI,
         ).also { formatterPersian = it }
@@ -75,27 +74,23 @@ class IcuDateTextView @JvmOverloads constructor(
     }
 
     private fun getTimeTextGregorian(updateFormatter: Boolean): String {
-        val formatter = getGregorianFormatter(updateFormatter = updateFormatter)
+        val formatter = formatterGregorian.takeIf { !updateFormatter }
+            ?: DateFormat.getInstanceForSkeleton(getGregorianFormat(), Locale.getDefault())
+                .also { it.setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE) }
         return formatter.format(System.currentTimeMillis())
     }
 
-    private fun getGregorianFormatter(updateFormatter: Boolean): DateFormat {
-        var formatter = formatterGregorian.takeIf { updateFormatter.not() } ?: DateFormat.getInstanceForSkeleton(
-            context.getString(R.string.smartspace_icu_date_pattern_gregorian_wday_month_day_no_year),
-            Locale.getDefault()
-        )
-        formatter.setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE)
-        if (showTime) {
+    private fun getGregorianFormat(): String {
+        return if (dateTimeOptions.showTime) {
             var format = context.getString(
-                if (time24HourFormat) R.string.smartspace_icu_date_pattern_gregorian_time
+                if (dateTimeOptions.time24HourFormat) R.string.smartspace_icu_date_pattern_gregorian_time
                 else R.string.smartspace_icu_date_pattern_gregorian_time_12h
             )
-            if (showDate) format += context.getString(R.string.smartspace_icu_date_pattern_gregorian_date)
-            DateFormat.getInstanceForSkeleton(format, Locale.getDefault()).also {
-                formatter = it
-            }.setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE)
+            if (dateTimeOptions.showDate) format += context.getString(R.string.smartspace_icu_date_pattern_gregorian_date)
+            format
+        } else {
+            context.getString(R.string.smartspace_icu_date_pattern_gregorian_wday_month_day_no_year)
         }
-        return formatter
     }
 
     private fun onTimeTick() {
@@ -106,35 +101,21 @@ class IcuDateTextView @JvmOverloads constructor(
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        preferenceManager2 = PreferenceManager2.getInstance(context)
 
         val calendarSelectionEnabled =
-            preferenceManager2.enableSmartspaceCalendarSelection.firstBlocking()
+            prefs.enableSmartspaceCalendarSelection.firstBlocking()
         if (calendarSelectionEnabled) {
-            preferenceManager2.smartspaceCalendar.subscribeBlocking(scope = viewAttachedScope) {
+            prefs.smartspaceCalendar.subscribeBlocking(scope = viewAttachedScope) {
                 calendar = it
             }
         } else {
-            calendar = preferenceManager2.smartspaceCalendar.defaultValue
+            calendar = prefs.smartspaceCalendar.defaultValue
         }
 
-        preferenceManager2.smartspaceShowDate.subscribeBlocking(scope = viewAttachedScope) {
-            showDate = it
-            onPrefChanged()
+        DateTimeOptions.fromPrefs(prefs).subscribeBlocking(viewAttachedScope) {
+            dateTimeOptions = it
+            onTimeChanged(true)
         }
-        preferenceManager2.smartspaceShowTime.subscribeBlocking(scope = viewAttachedScope) {
-            showTime = it
-            onPrefChanged()
-        }
-        preferenceManager2.smartspace24HourFormat.subscribeBlocking(scope = viewAttachedScope) {
-            time24HourFormat = it
-            onPrefChanged()
-        }
-        initialized = true
-    }
-
-    private fun onPrefChanged() {
-        onTimeChanged(true)
     }
 
     override fun onVisibilityAggregated(isVisible: Boolean) {
@@ -143,5 +124,22 @@ class IcuDateTextView @JvmOverloads constructor(
         if (isVisible) {
             ticker()
         }
+    }
+}
+
+data class DateTimeOptions(
+    val showDate: Boolean,
+    val showTime: Boolean,
+    val time24HourFormat: Boolean,
+) {
+    companion object {
+        fun fromPrefs(prefs: PreferenceManager2) =
+            combine(
+                prefs.smartspaceShowDate.get(),
+                prefs.smartspaceShowTime.get(),
+                prefs.smartspace24HourFormat.get()
+            ) { showDate, showTime, time24HourFormat ->
+                DateTimeOptions(showDate, showTime, time24HourFormat)
+            }
     }
 }

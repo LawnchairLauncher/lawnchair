@@ -6,6 +6,9 @@ import android.content.Intent
 import android.content.IntentFilter
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import com.patrykmichalik.preferencemanager.Preference
+import com.patrykmichalik.preferencemanager.firstBlocking
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
@@ -28,3 +31,15 @@ fun broadcastReceiverFlow(context: Context, filter: IntentFilter) = callbackFlow
 fun <T> Flow<T>.dropWhileBusy(): Flow<T> = channelFlow {
     collect { trySend(it) }
 }.buffer(0)
+
+fun <T> Flow<T>.subscribeBlocking(
+    scope: CoroutineScope,
+    block: (T) -> Unit,
+) {
+    block(firstBlocking())
+    this
+        .onEach { block(it) }
+        .drop(1)
+        .distinctUntilChanged()
+        .launchIn(scope = scope)
+}
