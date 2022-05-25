@@ -16,6 +16,7 @@
 
 package app.lawnchair.util
 
+import android.util.Log
 import android.view.View
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,11 +24,21 @@ import kotlinx.coroutines.cancel
 
 inline val View.viewAttachedScope: CoroutineScope
     get() {
-        val scope = CoroutineScope(Dispatchers.Main)
+        var detached = false
+        val scope = CoroutineScope(Dispatchers.Main.immediate)
         addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(v: View?) = Unit
+            override fun onViewAttachedToWindow(v: View?) {
+                if (detached) {
+                    Log.e(
+                        "ViewExtensions",
+                        "view attached after being detached ${this@viewAttachedScope}",
+                        Throwable()
+                    )
+                }
+            }
 
             override fun onViewDetachedFromWindow(v: View?) {
+                detached = true
                 scope.cancel()
             }
         })

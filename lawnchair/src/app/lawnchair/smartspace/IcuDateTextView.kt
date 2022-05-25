@@ -1,6 +1,5 @@
 package app.lawnchair.smartspace
 
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -9,13 +8,16 @@ import android.icu.text.DisplayContext
 import android.os.SystemClock
 import android.util.AttributeSet
 import app.lawnchair.preferences2.PreferenceManager2
-import app.lawnchair.preferences2.subscribeBlocking
 import app.lawnchair.smartspace.model.SmartspaceCalendar
+import app.lawnchair.util.broadcastReceiverFlow
+import app.lawnchair.util.repeatOnAttached
 import app.lawnchair.util.subscribeBlocking
-import app.lawnchair.util.viewAttachedScope
 import com.android.launcher3.R
 import com.patrykmichalik.preferencemanager.firstBlocking
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import saman.zamani.persiandate.PersianDate
 import saman.zamani.persiandate.PersianDateFormat
 import java.util.*
@@ -31,24 +33,28 @@ class IcuDateTextView @JvmOverloads constructor(
     private lateinit var dateTimeOptions: DateTimeOptions
     private var formatterFunction: FormatterFunction? = null
     private val ticker = this::onTimeTick
-    private val intentReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            onTimeChanged(intent.action != Intent.ACTION_TIME_TICK)
+
+    init {
+        repeatOnAttached {
+            val calendarSelectionEnabled = prefs.enableSmartspaceCalendarSelection.firstBlocking()
+            val calendarFlow =
+                if (calendarSelectionEnabled) prefs.smartspaceCalendar.get()
+                else flowOf(prefs.smartspaceCalendar.defaultValue)
+            val optionsFlow = DateTimeOptions.fromPrefs(prefs)
+            combine(calendarFlow, optionsFlow) { calendar, options -> calendar to options }
+                .subscribeBlocking(this) {
+                    calendar = it.first
+                    dateTimeOptions = it.second
+                    onTimeChanged(true)
+                }
+
+            val intentFilter = IntentFilter()
+            intentFilter.addAction(Intent.ACTION_TIME_CHANGED)
+            intentFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED)
+            broadcastReceiverFlow(context, intentFilter)
+                .onEach { onTimeChanged(it.action != Intent.ACTION_TIME_TICK) }
+                .launchIn(this)
         }
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        val intentFilter = IntentFilter()
-        intentFilter.addAction(Intent.ACTION_TIME_CHANGED)
-        intentFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED)
-        context.registerReceiver(intentReceiver, intentFilter)
-        onTimeChanged(true)
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        context.unregisterReceiver(intentReceiver)
     }
 
     private fun onTimeChanged(updateFormatter: Boolean) {
@@ -60,6 +66,8 @@ class IcuDateTextView @JvmOverloads constructor(
                 text = timeText
                 contentDescription = timeText
             }
+        } else if (updateFormatter) {
+            formatterFunction = null
         }
     }
 
@@ -108,26 +116,6 @@ class IcuDateTextView @JvmOverloads constructor(
         onTimeChanged(false)
         val uptimeMillis: Long = SystemClock.uptimeMillis()
         handler?.postAtTime(ticker, uptimeMillis + (1000 - uptimeMillis % 1000))
-    }
-
-    override fun onFinishInflate() {
-        super.onFinishInflate()
-
-        val calendarSelectionEnabled =
-            prefs.enableSmartspaceCalendarSelection.firstBlocking()
-        if (calendarSelectionEnabled) {
-            prefs.smartspaceCalendar.subscribeBlocking(scope = viewAttachedScope) {
-                calendar = it
-                onTimeChanged(true)
-            }
-        } else {
-            calendar = prefs.smartspaceCalendar.defaultValue
-        }
-
-        DateTimeOptions.fromPrefs(prefs).subscribeBlocking(viewAttachedScope) {
-            dateTimeOptions = it
-            onTimeChanged(true)
-        }
     }
 
     override fun onVisibilityAggregated(isVisible: Boolean) {

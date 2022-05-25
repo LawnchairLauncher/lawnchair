@@ -6,8 +6,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import com.patrykmichalik.preferencemanager.Preference
-import com.patrykmichalik.preferencemanager.firstBlocking
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
