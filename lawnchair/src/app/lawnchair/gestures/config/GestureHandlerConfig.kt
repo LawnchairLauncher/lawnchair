@@ -3,6 +3,8 @@ package app.lawnchair.gestures.config
 import android.content.Context
 import app.lawnchair.gestures.GestureHandler
 import app.lawnchair.gestures.NoOpGestureHandler
+import app.lawnchair.gestures.handlers.OpenAppGestureHandler
+import app.lawnchair.gestures.handlers.OpenAppTarget
 import app.lawnchair.gestures.handlers.OpenNotificationsHandler
 import app.lawnchair.gestures.handlers.SleepGestureHandler
 import com.android.launcher3.R
@@ -38,4 +40,11 @@ sealed class GestureHandlerConfig {
     @Serializable
     @SerialName("openNotifications")
     object OpenNotifications : Simple(R.string.gesture_handler_open_notifications, { OpenNotificationsHandler(it) })
+
+    @Serializable
+    @SerialName("openApp")
+    data class OpenApp(val appName: String, val target: OpenAppTarget) : GestureHandlerConfig() {
+        override fun getLabel(context: Context) = context.getString(R.string.gesture_handler_open_app_config, appName)
+        override fun createHandler(context: Context) = OpenAppGestureHandler(context, target)
+    }
 }

@@ -292,4 +292,7 @@
     <string name="gesture_handler_no_op">Do Nothing</string>
     <string name="gesture_handler_sleep">Sleep</string>
     <string name="gesture_handler_open_notifications">Open Notification Panel</string>
+    <string name="gesture_handler_open_app_option">Open App</string>
+    <string name="gesture_handler_open_app_config">Open %1$s</string>
+    <string name="pick_app_for_gesture">Pick App</string>
 </resources>

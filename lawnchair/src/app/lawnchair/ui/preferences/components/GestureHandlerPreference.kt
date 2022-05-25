@@ -1,5 +1,6 @@
 package app.lawnchair.ui.preferences.components
 
+import android.app.Activity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -23,6 +24,7 @@ val options = listOf(
     GestureHandlerOption.NoOp,
     GestureHandlerOption.Sleep,
     GestureHandlerOption.OpenNotifications,
+    GestureHandlerOption.OpenApp,
 )
 
 @Composable
@@ -38,7 +40,8 @@ fun GestureHandlerPreference(
 
     fun onSelect(option: GestureHandlerOption) {
         scope.launch {
-            adapter.onChange(option.buildConfig())
+            val config = option.buildConfig(context as Activity) ?: return@launch
+            adapter.onChange(config)
         }
     }
 
