@@ -222,6 +222,10 @@
     <string name="quickstep_incompatible_description">Twoje urządzenie jest skonfigurowane, aby wspierać gesty systemowe (znane jako Quickstep) dostarczane przez %1$s, ale ta wersja %1$s nie jest kompatybilna z twoją wersją Androida. Aby kontynuować korzystanie z urządzenia, odinstaluj %1$s aktualizacje lub wyłącz %1$s jako dostawcę gestów systemowych.</string>
     <string name="preview_label">Podgląd</string>
     <string name="smartspace_calendar">Kalendarz</string>
+    <string name="smartspace_date_and_time">Date &amp; Time</string>
+    <string name="smartspace_date">Date</string>
+    <string name="smartspace_time">Time</string>
+    <string name="smartspace_time_24_hour_format">24-Hour Format</string>
     <string name="smartspace_weather">Pogoda</string>
     <string name="smartspace_battery_status">Stan baterii</string>
     <string name="smartspace_now_playing">Teraz odtwarzane</string>
