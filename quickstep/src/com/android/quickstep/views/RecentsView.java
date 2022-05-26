@@ -34,6 +34,7 @@ import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_0_75;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -4097,6 +4098,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSecondSplitHiddenView.setVisibility(INVISIBLE);
         InteractionJankMonitorWrapper.begin(this,
                 InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER, "Second tile selected");
+
+        // Fade out all other views underneath placeholders
+        ObjectAnimator tvFade = ObjectAnimator.ofFloat(this, RecentsView.CONTENT_ALPHA,1, 0);
+        pendingAnimation.add(tvFade, DEACCEL_2, SpringProperty.DEFAULT);
         pendingAnimation.buildAnim().start();
         return true;
     }
@@ -4110,11 +4115,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 mSplitInstructionsView = null;
             }
             if (mFirstFloatingTaskView != null) {
-                mActivity.getRootView().removeView(mFirstFloatingTaskView);
+                mActivity.getDragLayer().removeView(mFirstFloatingTaskView);
                 mFirstFloatingTaskView = null;
             }
             if (mSecondFloatingTaskView != null) {
-                mActivity.getRootView().removeView(mSecondFloatingTaskView);
+                mActivity.getDragLayer().removeView(mSecondFloatingTaskView);
                 mSecondFloatingTaskView = null;
                 mSecondSplitHiddenView.setVisibility(VISIBLE);
                 mSecondSplitHiddenView = null;

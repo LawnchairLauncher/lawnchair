@@ -6,6 +6,7 @@ import static android.appwidget.AppWidgetProviderInfo.WIDGET_FEATURE_RECONFIGURA
 import static com.android.launcher3.Launcher.REQUEST_RECONFIGURE_APPWIDGET;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.DISMISS_PREDICTION;
+import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.INVALID;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.RECONFIGURE;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.UNINSTALL;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_DISMISS_PREDICTION_UNDO;
@@ -69,6 +70,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
     private boolean mHadPendingAlarm;
 
     protected int mCurrentAccessibilityAction = -1;
+
     public SecondaryDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
@@ -134,24 +136,33 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
     }
 
     @Override
+    protected void setupItemInfo(ItemInfo info) {
+        int buttonType = getButtonType(info, getViewUnderDrag(info));
+        if (buttonType != INVALID) {
+            setupUi(buttonType);
+        }
+    }
+
+    @Override
     protected boolean supportsDrop(ItemInfo info) {
-        return supportsAccessibilityDrop(info, getViewUnderDrag(info));
+        return getButtonType(info, getViewUnderDrag(info)) != INVALID;
     }
 
     @Override
     public boolean supportsAccessibilityDrop(ItemInfo info, View view) {
+        return getButtonType(info, view) != INVALID;
+    }
+
+    private int getButtonType(ItemInfo info, View view) {
         if (view instanceof AppWidgetHostView) {
             if (getReconfigurableWidgetId(view) != INVALID_APPWIDGET_ID) {
-                setupUi(RECONFIGURE);
-                return true;
+                return RECONFIGURE;
             }
-            return false;
+            return INVALID;
         } else if (FeatureFlags.ENABLE_PREDICTION_DISMISS.get() && info.isPredictedItem()) {
-            setupUi(DISMISS_PREDICTION);
-            return true;
+            return DISMISS_PREDICTION;
         }
 
-        setupUi(UNINSTALL);
         Boolean uninstallDisabled = mUninstallDisabledCache.get(info.user);
         if (uninstallDisabled == null) {
             UserManager userManager =
@@ -165,16 +176,20 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         mCacheExpireAlarm.setAlarm(CACHE_EXPIRE_TIMEOUT);
         mCacheExpireAlarm.setOnAlarmListener(this);
         if (uninstallDisabled) {
-            return false;
+            return INVALID;
         }
 
         if (info instanceof ItemInfoWithIcon) {
             ItemInfoWithIcon iconInfo = (ItemInfoWithIcon) info;
-            if ((iconInfo.runtimeStatusFlags & FLAG_SYSTEM_MASK) != 0) {
-                return (iconInfo.runtimeStatusFlags & FLAG_SYSTEM_NO) != 0;
+            if ((iconInfo.runtimeStatusFlags & FLAG_SYSTEM_MASK) != 0
+                    && (iconInfo.runtimeStatusFlags & FLAG_SYSTEM_NO) == 0) {
+                return INVALID;
             }
         }
-        return getUninstallTarget(info) != null;
+        if (getUninstallTarget(info) == null) {
+            return INVALID;
+        }
+        return UNINSTALL;
     }
 
     /**

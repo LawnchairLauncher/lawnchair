@@ -1537,7 +1537,6 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     public void initiateSplitSelect(SplitPositionOption splitPositionOption) {
-        AbstractFloatingView.closeOpenViews(mActivity, false, TYPE_TASK_MENU);
         getRecentsView().initiateSplitSelect(this, splitPositionOption.stagePosition);
     }
 

@@ -268,6 +268,16 @@ public class TouchInteractionService extends Service
             MAIN_EXECUTOR.execute(ProxyScreenStatusProvider.INSTANCE::onScreenTurnedOn);
         }
 
+        /**
+         * Preloads the Overview activity.
+         *
+         * This method should only be used when the All Set page of the SUW is reached to safely
+         * preload the Launcher for the SUW first reveal.
+         */
+        public void preloadOverviewForSUWAllSet() {
+            preloadOverview(false, true);
+        }
+
         @Override
         public void onRotationProposal(int rotation, boolean isValid) {
             executeForTaskbarManager(() -> mTaskbarManager.onRotationProposal(rotation, isValid));
@@ -883,6 +893,10 @@ public class TouchInteractionService extends Service
     }
 
     private void preloadOverview(boolean fromInit) {
+        preloadOverview(fromInit, false);
+    }
+
+    private void preloadOverview(boolean fromInit, boolean forSUWAllSet) {
         if (!mDeviceState.isUserUnlocked()) {
             return;
         }
@@ -892,7 +906,8 @@ public class TouchInteractionService extends Service
             return;
         }
 
-        if (RestoreDbTask.isPending(this) || !mDeviceState.isUserSetupComplete()) {
+        if ((RestoreDbTask.isPending(this) && !forSUWAllSet)
+                || !mDeviceState.isUserSetupComplete()) {
             // Preloading while a restore is pending may cause launcher to start the restore
             // too early.
             return;
