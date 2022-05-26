@@ -47,6 +47,10 @@ sealed class GestureHandlerConfig {
     object OpenAppSearch : Simple(R.string.gesture_handler_open_app_search, ::OpenAppSearchGestureHandler)
 
     @Serializable
+    @SerialName("openSearch")
+    object OpenSearch : Simple(R.string.gesture_handler_open_search, ::OpenSearchGestureHandler)
+
+    @Serializable
     @SerialName("openApp")
     data class OpenApp(val appName: String, val target: OpenAppTarget) : GestureHandlerConfig() {
         override fun getLabel(context: Context) = context.getString(R.string.gesture_handler_open_app_config, appName)

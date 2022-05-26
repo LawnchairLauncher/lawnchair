@@ -297,4 +297,5 @@
     <string name="pick_app_for_gesture">Pick App</string>
     <string name="gesture_handler_open_app_drawer">Open App Drawer</string>
     <string name="gesture_handler_open_app_search">Open App Search</string>
+    <string name="gesture_handler_open_search">Open Search</string>
 </resources>
