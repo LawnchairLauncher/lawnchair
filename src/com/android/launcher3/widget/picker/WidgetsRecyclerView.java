@@ -27,8 +27,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener;
 
-import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.FastScrollRecyclerView;
 import com.android.launcher3.R;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.model.WidgetListSpaceEntry;
@@ -41,7 +41,7 @@ import com.android.launcher3.widget.picker.WidgetsSpaceViewHolderBinder.EmptySpa
 /**
  * The widgets recycler view.
  */
-public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouchListener {
+public class WidgetsRecyclerView extends FastScrollRecyclerView implements OnItemTouchListener {
 
     private WidgetsListAdapter mAdapter;
 
