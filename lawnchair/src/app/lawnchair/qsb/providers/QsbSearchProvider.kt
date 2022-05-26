@@ -5,9 +5,13 @@ import android.content.Intent
 import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.qsb.QsbLayout
 import app.lawnchair.qsb.ThemingMethod
+import app.lawnchair.resolveIntent
+import com.android.launcher3.Launcher
 import com.android.launcher3.R
+import com.patrykmichalik.preferencemanager.first
 
 open class QsbSearchProvider(
     val id: String,
@@ -20,6 +24,27 @@ open class QsbSearchProvider(
     val supportVoiceIntent: Boolean = false,
     val website: String
 ) {
+
+    suspend fun launch(launcher: Launcher) {
+        val prefs = PreferenceManager2.getInstance(launcher)
+        val forceWebsite = prefs.hotseatQsbForceWebsite.first()
+        launch(launcher, forceWebsite)
+    }
+
+    open suspend fun launch(launcher: Launcher, forceWebsite: Boolean) {
+        createLaunchIntent(launcher, forceWebsite)
+            ?.let { launcher.startActivity(it) }
+    }
+
+    private fun createLaunchIntent(context: Context, forceWebsite: Boolean): Intent? {
+        if (!forceWebsite) {
+            val intent = createSearchIntent().takeIf { context.resolveIntent(it) != null }
+            if (intent != null) {
+                return intent
+            }
+        }
+        return createWebsiteIntent().takeIf { context.resolveIntent(it) != null }
+    }
 
     fun createSearchIntent() = Intent(action)
         .addFlags(INTENT_FLAGS)
