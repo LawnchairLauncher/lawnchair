@@ -18,7 +18,7 @@
     <string name="icon_pack">Icon Pack</string>
     <string name="settings">Mga Settings</string>
     <string name="home_screen_label">Home Screen</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Feed, Raster, Symbole</string>
     <string name="general_label">Pangkalahatan</string>
     <string name="general_description">Mga tuldok ng pag-abiso, Icon Pack</string>
     <string name="home_screen_rotation_label">Paggalaw ng Home Screen</string>
@@ -106,7 +106,7 @@
     <string name="quickstep_description">I-clear ang Lahat ng Button, Corner Radius</string>
     <string name="wallpaper_scrolling_label">I-scroll ang Wallpaper</string>
     <string name="show_sys_ui_scrim">Nangungunang Anino</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_status_bar">Ipakita ang Search Bar</string>
     <string name="what_to_show">Ano ang Ipapakita</string>
     <string name="missing_notification_access_label">Kailangan ng Notification Access</string>
     <string name="missing_notification_access_description">Kailangan ng Notification Access.</string>
