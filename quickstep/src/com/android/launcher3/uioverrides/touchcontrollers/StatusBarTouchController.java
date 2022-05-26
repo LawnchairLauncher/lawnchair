@@ -39,10 +39,12 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.util.VibratorWrapper;
 
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 
+import app.lawnchair.LawnchairAppKt;
 import app.lawnchair.util.CompatibilityKt;
 
 /**
@@ -64,6 +66,7 @@ public class StatusBarTouchController implements TouchController {
     private boolean mCanIntercept;
 
     private boolean mExpanded;
+    private boolean mVibrated;
 
     public StatusBarTouchController(Launcher l) {
         mLauncher = l;
@@ -89,6 +92,10 @@ public class StatusBarTouchController implements TouchController {
             mExpanded = true;
             expand();
         }
+        if (!mVibrated) {
+            mVibrated = true;
+            vibrate();
+        }
     }
 
     @SuppressLint({"WrongConstant", "PrivateApi"})
@@ -99,6 +106,12 @@ public class StatusBarTouchController implements TouchController {
                     .invoke(mLauncher.getSystemService("statusbar"));
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void vibrate() {
+        if (!LawnchairAppKt.getLawnchairApp(mLauncher).getVibrateOnIconAnimation()) {
+            VibratorWrapper.INSTANCE.get(mLauncher).vibrate(VibratorWrapper.OVERVIEW_HAPTIC);
         }
     }
 
@@ -113,6 +126,7 @@ public class StatusBarTouchController implements TouchController {
                 return false;
             }
             mExpanded = false;
+            mVibrated = false;
             mDownEvents.put(pid, new PointF(ev.getX(), ev.getY()));
         } else if (ev.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
            // Check!! should only set it only when threshold is not entered.

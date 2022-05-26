@@ -35,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
-import androidx.core.content.edit
 import app.lawnchair.backup.LawnchairBackup
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.ui.AlertBottomSheetContent
@@ -57,6 +56,7 @@ class LawnchairApp : Application() {
     private val isRecentsComponent by lazy { checkRecentsComponent() }
     private val recentsEnabled get() = compatible && isRecentsComponent
     internal var accessibilityService: LawnchairAccessibilityService? = null
+    val vibrateOnIconAnimation by lazy { getSystemUiBoolean("config_vibrateOnIconAnimation", false) }
 
     override fun onCreate() {
         super.onCreate()
@@ -114,6 +114,16 @@ class LawnchairApp : Application() {
 
     private fun getJournalFile(file: File): File =
         File(file.parentFile, "${file.name}-journal")
+
+    private fun getSystemUiBoolean(resName: String, fallback: Boolean): Boolean {
+        val systemUiPackage = "com.android.systemui"
+        val res = packageManager.getResourcesForApplication(systemUiPackage)
+        val resId = res.getIdentifier(resName, "bool", systemUiPackage)
+        if (resId == 0) {
+            return fallback
+        }
+        return res.getBoolean(resId)
+    }
 
     class ActivityHandler : ActivityLifecycleCallbacks {
 
