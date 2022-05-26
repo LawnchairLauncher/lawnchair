@@ -56,7 +56,7 @@
     <string name="app_info_drop_target_label">অ্যাপ তথ্য</string>
     <string name="item_removed">আইটেম সরানো হয়েছে.</string>
     <string name="all_apps_no_search_results">কোনও অ্যাপ্লিকেশন মিলছে না \"<xliff:g example="Android" id="query">%1$s</xliff:g>\".</string>
-    <string name="translucent_background">Translucent Background</string>
+    <string name="translucent_background">স্বচ্ছ ব্যাকগ্রাউন্ড</string>
     <string name="background_opacity">ব্যাকগ্রাউন্ডের অস্বচ্ছতা</string>
     <string name="background_lightness_label">ব্যাকগ্রাউন্ড লাইটনেস</string>
     <string name="adaptive_icons">অ্যাডাপ্টিভ আইকন</string>
