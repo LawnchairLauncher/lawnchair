@@ -308,6 +308,16 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         defaultValue = GestureHandlerConfig.Sleep
     )
 
+    val swipeUpGestureHandler = serializablePreference<GestureHandlerConfig>(
+        key = stringPreferencesKey("swipe_up_gesture_handler"),
+        defaultValue = GestureHandlerConfig.OpenAppDrawer
+    )
+
+    val swipeDownGestureHandler = serializablePreference<GestureHandlerConfig>(
+        key = stringPreferencesKey("swipe_down_gesture_handler"),
+        defaultValue = GestureHandlerConfig.OpenNotifications
+    )
+
     private inline fun <reified T> serializablePreference(
         key: Preferences.Key<String>,
         defaultValue: T

@@ -30,10 +30,24 @@ class GestureController(private val launcher: LawnchairLauncher) {
     private val scope = MainScope()
 
     private val doubleTapHandler = handler(prefs.doubleTapHandler)
+    private val swipeUpHandler = handler(prefs.swipeUpGestureHandler)
+    private val swipeDownHandler = handler(prefs.swipeDownGestureHandler)
 
     fun onDoubleTap() {
+        triggerHandler(doubleTapHandler)
+    }
+
+    fun onSwipeUp() {
+        triggerHandler(swipeUpHandler)
+    }
+
+    fun onSwipeDown() {
+        triggerHandler(swipeDownHandler)
+    }
+
+    private fun triggerHandler(handlerFlow: Flow<GestureHandler>) {
         launcher.lifecycleScope.launch {
-            doubleTapHandler.first().onTrigger(launcher)
+            handlerFlow.first().onTrigger(launcher)
         }
     }
 

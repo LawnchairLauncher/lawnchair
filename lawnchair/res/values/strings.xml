@@ -298,4 +298,7 @@
     <string name="gesture_handler_open_app_drawer">Open App Drawer</string>
     <string name="gesture_handler_open_app_search">Open App Search</string>
     <string name="gesture_handler_open_search">Open Search</string>
+    <string name="gestures_label">Gestures</string>
+    <string name="gesture_swipe_up">Swipe Up</string>
+    <string name="gesture_swipe_down">Swipe Down</string>
 </resources>

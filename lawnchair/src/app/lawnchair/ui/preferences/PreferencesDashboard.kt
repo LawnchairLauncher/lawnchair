@@ -82,6 +82,12 @@ fun PreferencesDashboard() {
             route = Routes.FOLDERS
         )
 
+        PreferenceCategory(
+            label = stringResource(id = R.string.gestures_label),
+            iconResource = R.drawable.ic_general,
+            route = Routes.GESTURES,
+        )
+
         if (LawnchairApp.isRecentsEnabled || BuildConfig.DEBUG) {
             PreferenceCategory(
                 label = stringResource(id = R.string.quickstep_label),

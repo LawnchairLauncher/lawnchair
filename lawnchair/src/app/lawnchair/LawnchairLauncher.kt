@@ -41,6 +41,7 @@ import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import app.lawnchair.LawnchairApp.Companion.showQuickstepWarningIfNecessary
 import app.lawnchair.gestures.GestureController
+import app.lawnchair.gestures.VerticalSwipeTouchController
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
@@ -61,6 +62,7 @@ import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.launcher3.uioverrides.states.OverviewState
 import com.android.launcher3.util.SystemUiController.UI_STATE_BASE_WINDOW
 import com.android.launcher3.util.Themes
+import com.android.launcher3.util.TouchController
 import com.android.launcher3.widget.RoundedCornerEnforcement
 import com.android.systemui.plugins.shared.LauncherOverlayManager
 import com.android.systemui.shared.system.QuickStepContract
@@ -258,6 +260,11 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         } else {
             super.updateTheme()
         }
+    }
+
+    override fun createTouchControllers(): Array<TouchController> {
+        val verticalSwipeController = VerticalSwipeTouchController(this, gestureController)
+        return arrayOf<TouchController>(verticalSwipeController) + super.createTouchControllers()
     }
 
     override fun onStart() {
