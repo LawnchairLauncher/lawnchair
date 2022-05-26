@@ -20,6 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.preferences2.PreferenceManager2
+import com.android.quickstep.util.VibratorWrapper
 import com.patrykmichalik.preferencemanager.Preference
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
@@ -47,7 +48,12 @@ class GestureController(private val launcher: LawnchairLauncher) {
 
     private fun triggerHandler(handlerFlow: Flow<GestureHandler>) {
         launcher.lifecycleScope.launch {
-            handlerFlow.first().onTrigger(launcher)
+            val handler = handlerFlow.first()
+            if (handler is NoOpGestureHandler) {
+                return@launch
+            }
+            handler.onTrigger(launcher)
+            VibratorWrapper.INSTANCE.get(launcher).vibrate(VibratorWrapper.OVERVIEW_HAPTIC)
         }
     }
 
