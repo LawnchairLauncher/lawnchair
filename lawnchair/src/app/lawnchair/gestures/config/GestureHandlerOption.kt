@@ -19,12 +19,17 @@ abstract class GestureHandlerOption(
     abstract suspend fun buildConfig(activity: Activity): GestureHandlerConfig?
 
     open class Simple(labelRes: Int, val obj: GestureHandlerConfig) : GestureHandlerOption(labelRes, obj::class.java) {
+        constructor(obj: GestureHandlerConfig.Simple) : this(
+            obj.labelRes, obj
+        )
+
         override suspend fun buildConfig(activity: Activity) = obj
     }
 
-    object NoOp : Simple(R.string.gesture_handler_no_op, GestureHandlerConfig.NoOp)
-    object Sleep : Simple(R.string.gesture_handler_sleep, GestureHandlerConfig.Sleep)
-    object OpenNotifications : Simple(R.string.gesture_handler_open_notifications, GestureHandlerConfig.OpenNotifications)
+    object NoOp : Simple(GestureHandlerConfig.NoOp)
+    object Sleep : Simple(GestureHandlerConfig.Sleep)
+    object OpenNotifications : Simple(GestureHandlerConfig.OpenNotifications)
+    object OpenAppDrawer : Simple(GestureHandlerConfig.OpenAppDrawer)
 
     object OpenApp : GestureHandlerOption(
         R.string.gesture_handler_open_app_option,

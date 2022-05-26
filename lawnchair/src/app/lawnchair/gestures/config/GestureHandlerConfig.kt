@@ -3,10 +3,7 @@ package app.lawnchair.gestures.config
 import android.content.Context
 import app.lawnchair.gestures.GestureHandler
 import app.lawnchair.gestures.NoOpGestureHandler
-import app.lawnchair.gestures.handlers.OpenAppGestureHandler
-import app.lawnchair.gestures.handlers.OpenAppTarget
-import app.lawnchair.gestures.handlers.OpenNotificationsHandler
-import app.lawnchair.gestures.handlers.SleepGestureHandler
+import app.lawnchair.gestures.handlers.*
 import com.android.launcher3.R
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -20,7 +17,7 @@ sealed class GestureHandlerConfig {
 
     @Serializable
     sealed class Simple(
-        private val labelRes: Int,
+        val labelRes: Int,
         @Transient private val creator: (Context) -> GestureHandler = {
             throw IllegalArgumentException("default creator not supported")
         }
@@ -31,15 +28,19 @@ sealed class GestureHandlerConfig {
 
     @Serializable
     @SerialName("noOp")
-    object NoOp : Simple(R.string.gesture_handler_no_op, { NoOpGestureHandler(it) })
+    object NoOp : Simple(R.string.gesture_handler_no_op, ::NoOpGestureHandler)
 
     @Serializable
     @SerialName("sleep")
-    object Sleep : Simple(R.string.gesture_handler_sleep, { SleepGestureHandler(it) })
+    object Sleep : Simple(R.string.gesture_handler_sleep, ::SleepGestureHandler)
 
     @Serializable
     @SerialName("openNotifications")
-    object OpenNotifications : Simple(R.string.gesture_handler_open_notifications, { OpenNotificationsHandler(it) })
+    object OpenNotifications : Simple(R.string.gesture_handler_open_notifications, ::OpenNotificationsHandler)
+
+    @Serializable
+    @SerialName("openAppDrawer")
+    object OpenAppDrawer : Simple(R.string.gesture_handler_open_app_drawer, ::OpenAppDrawerGestureHandler)
 
     @Serializable
     @SerialName("openApp")
