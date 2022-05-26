@@ -268,6 +268,6 @@
     <string name="gestures_label">Gesty</string>
     <string name="gesture_swipe_up">Przeciągnij w górę</string>
     <string name="gesture_swipe_down">Przeciągnij w dół</string>
-    <string name="gesture_home_tap">Home Button Tap</string>
-    <string name="gesture_back_tap">Back Button Tap</string>
+    <string name="gesture_home_tap">Dotknięcie przycisku Ekranu głównego</string>
+    <string name="gesture_back_tap">Dotknięcie przycisku Wstecz</string>
 </resources>
