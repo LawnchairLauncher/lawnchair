@@ -251,4 +251,20 @@
     <string name="backup_restore_error">恢复备份失败。</string>
     <string name="invalid_backup_file">无效的备份文件。</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — %2$s后充满"</string>
+    <string name="wallpaper_depth_effect">Wallpaper Depth Effect</string>
+    <string name="gesture_double_tap">Double-Tap</string>
+    <string name="gesture_handler_no_op">Do Nothing</string>
+    <string name="gesture_handler_sleep">Sleep</string>
+    <string name="gesture_handler_open_notifications">Open Notification Panel</string>
+    <string name="gesture_handler_open_app_option">Open App</string>
+    <string name="gesture_handler_open_app_config">Open %1$s</string>
+    <string name="pick_app_for_gesture">Pick App</string>
+    <string name="gesture_handler_open_app_drawer">Open App Drawer</string>
+    <string name="gesture_handler_open_app_search">Open App Search</string>
+    <string name="gesture_handler_open_search">Open Search</string>
+    <string name="gestures_label">Gestures</string>
+    <string name="gesture_swipe_up">Swipe Up</string>
+    <string name="gesture_swipe_down">Swipe Down</string>
+    <string name="gesture_home_tap">Home Button Tap</string>
+    <string name="gesture_back_tap">Back Button Tap</string>
 </resources>
