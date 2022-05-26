@@ -43,9 +43,13 @@ import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.systemui.shared.system.BlurUtils;
 import com.android.systemui.shared.system.WallpaperManagerCompat;
+import com.patrykmichalik.preferencemanager.Preference;
+import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
 
 import app.lawnchair.preferences.BasePreferenceManager;
 import app.lawnchair.preferences.PreferenceManager;
+import app.lawnchair.preferences2.PreferenceManager2;
+
 import java.io.PrintWriter;
 import java.util.function.Consumer;
 
@@ -164,9 +168,12 @@ public class DepthController implements StateHandler<LauncherState>,
     private View.OnAttachStateChangeListener mOnAttachListener;
 
     private BasePreferenceManager.FloatPref mDrawerOpacity;
+    private final boolean mEnableDepth;
 
     public DepthController(Launcher l) {
         mLauncher = l;
+        Preference<Boolean, Boolean> depthPref = PreferenceManager2.getInstance(l).getWallpaperDepthEffect();
+        mEnableDepth = PreferenceExtensionsKt.firstBlocking(depthPref);
     }
 
     private void ensureDependencies() {
@@ -182,7 +189,7 @@ public class DepthController implements StateHandler<LauncherState>,
                     // To handle the case where window token is invalid during last setDepth call.
                     IBinder windowToken = mLauncher.getRootView().getWindowToken();
                     if (windowToken != null) {
-                        mWallpaperManager.setWallpaperZoomOut(windowToken, mDepth);
+                        mWallpaperManager.setWallpaperZoomOut(windowToken, mEnableDepth ? mDepth : 1f);
                     }
                     onAttached();
                 }
@@ -337,7 +344,7 @@ public class DepthController implements StateHandler<LauncherState>,
         depth = Math.max(depth, mOverlayScrollProgress);
         IBinder windowToken = mLauncher.getRootView().getWindowToken();
         if (windowToken != null) {
-            mWallpaperManager.setWallpaperZoomOut(windowToken, depth);
+            mWallpaperManager.setWallpaperZoomOut(windowToken, mEnableDepth ? depth : 1f);
         }
 
         if (supportsBlur) {

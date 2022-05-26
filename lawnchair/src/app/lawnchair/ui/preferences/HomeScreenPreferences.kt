@@ -59,6 +59,12 @@ fun HomeScreenPreferences() {
                 prefs.wallpaperScrolling.getAdapter(),
                 label = stringResource(id = R.string.wallpaper_scrolling_label),
             )
+            if (Utilities.ATLEAST_R) {
+                SwitchPreference(
+                    prefs2.wallpaperDepthEffect.getAdapter(),
+                    label = stringResource(id = R.string.wallpaper_depth_effect),
+                )
+            }
             GestureHandlerPreference(
                 adapter = prefs2.doubleTapGestureHandler.getAdapter(),
                 label = stringResource(id = R.string.gesture_double_tap)

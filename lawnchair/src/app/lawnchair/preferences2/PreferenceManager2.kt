@@ -303,6 +303,12 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         save = { it.toString() },
     )
 
+    val wallpaperDepthEffect = preference(
+        key = booleanPreferencesKey(name = "enable_wallpaper_depth_effect"),
+        defaultValue = true,
+        onSet = { reloadHelper.recreate() }
+    )
+
     val doubleTapGestureHandler = serializablePreference<GestureHandlerConfig>(
         key = stringPreferencesKey("double_tap_gesture_handler"),
         defaultValue = GestureHandlerConfig.Sleep
