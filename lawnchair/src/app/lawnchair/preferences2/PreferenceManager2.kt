@@ -303,8 +303,8 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         save = { it.toString() },
     )
 
-    val doubleTapHandler = serializablePreference<GestureHandlerConfig>(
-        key = stringPreferencesKey("double_tap_handler"),
+    val doubleTapGestureHandler = serializablePreference<GestureHandlerConfig>(
+        key = stringPreferencesKey("double_tap_gesture_handler"),
         defaultValue = GestureHandlerConfig.Sleep
     )
 
@@ -318,13 +318,13 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         defaultValue = GestureHandlerConfig.OpenNotifications
     )
 
-    val homeTapGestureHandler = serializablePreference<GestureHandlerConfig>(
-        key = stringPreferencesKey("home_tap_gesture_handler"),
+    val homePressGestureHandler = serializablePreference<GestureHandlerConfig>(
+        key = stringPreferencesKey("home_press_gesture_handler"),
         defaultValue = GestureHandlerConfig.NoOp
     )
 
-    val backTapGestureHandler = serializablePreference<GestureHandlerConfig>(
-        key = stringPreferencesKey("back_tap_gesture_handler"),
+    val backPressGestureHandler = serializablePreference<GestureHandlerConfig>(
+        key = stringPreferencesKey("back_press_gesture_handler"),
         defaultValue = GestureHandlerConfig.NoOp
     )
 

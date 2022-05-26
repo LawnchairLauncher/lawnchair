@@ -220,7 +220,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         preferenceManager2.darkStatusBar.onEach(launchIn = lifecycleScope) { darkStatusBar ->
             systemUiController.updateUiState(UI_STATE_BASE_WINDOW, isWorkspaceDarkText || darkStatusBar)
         }
-        preferenceManager2.backTapGestureHandler.onEach(launchIn = lifecycleScope) { handler ->
+        preferenceManager2.backPressGestureHandler.onEach(launchIn = lifecycleScope) { handler ->
             hasBackGesture = handler !is GestureHandlerConfig.NoOp
         }
 
@@ -274,7 +274,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     }
 
     override fun handleHomeTap() {
-        gestureController.onHomeTap()
+        gestureController.onHomePressed()
     }
 
     override fun shouldBackButtonBeHidden(toState: LauncherState): Boolean {

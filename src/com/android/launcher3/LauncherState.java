@@ -111,7 +111,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         @Override
         public void onBackPressed(Launcher launcher) {
             if (launcher instanceof LawnchairLauncher) {
-                ((LawnchairLauncher) launcher).getGestureController().onBackTap();
+                ((LawnchairLauncher) launcher).getGestureController().onBackPressed();
             }
             super.onBackPressed(launcher);
         }

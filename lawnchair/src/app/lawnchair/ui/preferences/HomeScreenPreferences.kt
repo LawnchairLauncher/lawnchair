@@ -60,7 +60,7 @@ fun HomeScreenPreferences() {
                 label = stringResource(id = R.string.wallpaper_scrolling_label),
             )
             GestureHandlerPreference(
-                adapter = prefs2.doubleTapHandler.getAdapter(),
+                adapter = prefs2.doubleTapGestureHandler.getAdapter(),
                 label = stringResource(id = R.string.gesture_double_tap)
             )
             val feedAvailable = OverlayCallbackImpl.minusOneAvailable(LocalContext.current)

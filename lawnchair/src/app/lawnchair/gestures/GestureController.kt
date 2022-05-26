@@ -30,11 +30,11 @@ class GestureController(private val launcher: LawnchairLauncher) {
     private val prefs = PreferenceManager2.getInstance(launcher)
     private val scope = MainScope()
 
-    private val doubleTapHandler = handler(prefs.doubleTapHandler)
+    private val doubleTapHandler = handler(prefs.doubleTapGestureHandler)
     private val swipeUpHandler = handler(prefs.swipeUpGestureHandler)
     private val swipeDownHandler = handler(prefs.swipeDownGestureHandler)
-    private val homeTapHandler = handler(prefs.homeTapGestureHandler)
-    private val backTapHandler = handler(prefs.backTapGestureHandler)
+    private val homePressHandler = handler(prefs.homePressGestureHandler)
+    private val backPressHandler = handler(prefs.backPressGestureHandler)
 
     fun onDoubleTap() {
         triggerHandler(doubleTapHandler)
@@ -48,12 +48,12 @@ class GestureController(private val launcher: LawnchairLauncher) {
         triggerHandler(swipeDownHandler)
     }
 
-    fun onHomeTap() {
-        triggerHandler(homeTapHandler)
+    fun onHomePressed() {
+        triggerHandler(homePressHandler)
     }
 
-    fun onBackTap() {
-        triggerHandler(backTapHandler, false)
+    fun onBackPressed() {
+        triggerHandler(backPressHandler, false)
     }
 
     private fun triggerHandler(handlerFlow: Flow<GestureHandler>, withHaptic: Boolean = true) {

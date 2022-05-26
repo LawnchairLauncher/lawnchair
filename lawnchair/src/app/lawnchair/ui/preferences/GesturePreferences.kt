@@ -20,7 +20,7 @@ fun GesturePreferences() {
     PreferenceLayout(label = stringResource(id = R.string.gestures_label)) {
         PreferenceGroup {
             GestureHandlerPreference(
-                adapter = prefs.doubleTapHandler.getAdapter(),
+                adapter = prefs.doubleTapGestureHandler.getAdapter(),
                 label = stringResource(id = R.string.gesture_double_tap)
             )
             GestureHandlerPreference(
@@ -32,11 +32,11 @@ fun GesturePreferences() {
                 label = stringResource(id = R.string.gesture_swipe_down)
             )
             GestureHandlerPreference(
-                adapter = prefs.homeTapGestureHandler.getAdapter(),
+                adapter = prefs.homePressGestureHandler.getAdapter(),
                 label = stringResource(id = R.string.gesture_home_tap)
             )
             GestureHandlerPreference(
-                adapter = prefs.backTapGestureHandler.getAdapter(),
+                adapter = prefs.backPressGestureHandler.getAdapter(),
                 label = stringResource(id = R.string.gesture_back_tap)
             )
         }
