@@ -296,4 +296,5 @@
     <string name="gesture_handler_open_app_config">Open %1$s</string>
     <string name="pick_app_for_gesture">Pick App</string>
     <string name="gesture_handler_open_app_drawer">Open App Drawer</string>
+    <string name="gesture_handler_open_app_search">Open App Search</string>
 </resources>
