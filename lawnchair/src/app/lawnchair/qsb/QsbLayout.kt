@@ -15,6 +15,7 @@ import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import app.lawnchair.HeadlessWidgetsManager
+import app.lawnchair.animateToAllApps
 import app.lawnchair.launcher
 import app.lawnchair.launcherNullable
 import app.lawnchair.preferences.PreferenceManager
@@ -29,9 +30,7 @@ import app.lawnchair.util.recursiveChildren
 import app.lawnchair.util.viewAttachedScope
 import com.android.launcher3.BaseActivity
 import com.android.launcher3.DeviceProfile
-import com.android.launcher3.LauncherState
 import com.android.launcher3.R
-import com.android.launcher3.anim.AnimatorListeners.forSuccessCallback
 import com.android.launcher3.qsb.QsbContainerView
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
@@ -150,13 +149,10 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
                 context.startActivity(intent)
             } else {
                 val launcher = context.launcher
-                launcher.stateManager.goToState(
-                    LauncherState.ALL_APPS,
-                    true,
-                    forSuccessCallback {
-                        launcher.appsView.searchUiManager.editText?.showKeyboard()
-                    }
-                )
+                launcher.lifecycleScope.launch {
+                    launcher.animateToAllApps()
+                    launcher.appsView.searchUiManager.editText?.showKeyboard()
+                }
             }
         }
         return
