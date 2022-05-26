@@ -255,8 +255,8 @@
     <string name="wallpaper_depth_effect">Hintergrundbild Tiefeneffekt</string>
     <string name="gesture_double_tap">Doppeltipp</string>
     <string name="gesture_handler_no_op">Nichts tun</string>
-    <string name="gesture_handler_sleep">Sleep</string>
-    <string name="gesture_handler_open_notifications">Open Notification Panel</string>
+    <string name="gesture_handler_sleep">Ruhezustand</string>
+    <string name="gesture_handler_open_notifications">Benachrichtigungsleiste öffnen</string>
     <string name="gesture_handler_open_app_option">App öffnen</string>
     <string name="gesture_handler_open_app_config">%1$s öffnen</string>
     <string name="pick_app_for_gesture">App auswählen</string>
