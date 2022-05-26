@@ -261,11 +261,11 @@
     <string name="gesture_handler_open_app_config">Aç %1$s</string>
     <string name="pick_app_for_gesture">Uygulama Seç</string>
     <string name="gesture_handler_open_app_drawer">Uygulama Çekmecesini Aç</string>
-    <string name="gesture_handler_open_app_search">Open App Search</string>
+    <string name="gesture_handler_open_app_search">Uygulama Aramayı Aç</string>
     <string name="gesture_handler_open_search">Open Search</string>
     <string name="gestures_label">Gestures</string>
-    <string name="gesture_swipe_up">Swipe Up</string>
-    <string name="gesture_swipe_down">Swipe Down</string>
-    <string name="gesture_home_tap">Home Button Tap</string>
-    <string name="gesture_back_tap">Back Button Tap</string>
+    <string name="gesture_swipe_up">Yukarı kaydırın</string>
+    <string name="gesture_swipe_down">Aşağı kaydır</string>
+    <string name="gesture_home_tap">Ana Ekran Düğmesine Dokunun</string>
+    <string name="gesture_back_tap">Geri Düğmesine Dokunun</string>
 </resources>
