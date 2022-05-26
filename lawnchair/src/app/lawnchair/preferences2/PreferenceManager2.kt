@@ -318,6 +318,11 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         defaultValue = GestureHandlerConfig.OpenNotifications
     )
 
+    val homeTapGestureHandler = serializablePreference<GestureHandlerConfig>(
+        key = stringPreferencesKey("home_tap_gesture_handler"),
+        defaultValue = GestureHandlerConfig.NoOp
+    )
+
     private inline fun <reified T> serializablePreference(
         key: Preferences.Key<String>,
         defaultValue: T

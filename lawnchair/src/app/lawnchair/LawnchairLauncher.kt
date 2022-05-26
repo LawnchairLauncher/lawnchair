@@ -267,6 +267,10 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         return arrayOf<TouchController>(verticalSwipeController) + super.createTouchControllers()
     }
 
+    override fun handleHomeTap() {
+        gestureController.onHomeTap()
+    }
+
     override fun onStart() {
         super.onStart()
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)

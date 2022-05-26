@@ -268,6 +268,8 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
                 getStateManager().goToState(NORMAL);
                 if (workspace.getNextPage() != Workspace.DEFAULT_PAGE) {
                     workspace.post(workspace::moveToDefaultScreen);
+                } else {
+                    handleHomeTap();
                 }
                 break;
             }

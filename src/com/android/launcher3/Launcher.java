@@ -1572,6 +1572,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
                 if (shouldMoveToDefaultScreen && !mWorkspace.isHandlingTouch()) {
                     mWorkspace.post(mWorkspace::moveToDefaultScreen);
+                } else {
+                    handleHomeTap();
                 }
             }
 
@@ -1585,6 +1587,10 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         }
 
         TraceHelper.INSTANCE.endSection(traceToken);
+    }
+
+    protected void handleHomeTap() {
+
     }
 
     protected void showAllAppsFromIntent(boolean alreadyOnHome) {

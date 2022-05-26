@@ -33,6 +33,7 @@ class GestureController(private val launcher: LawnchairLauncher) {
     private val doubleTapHandler = handler(prefs.doubleTapHandler)
     private val swipeUpHandler = handler(prefs.swipeUpGestureHandler)
     private val swipeDownHandler = handler(prefs.swipeDownGestureHandler)
+    private val homeTapHandler = handler(prefs.homeTapGestureHandler)
 
     fun onDoubleTap() {
         triggerHandler(doubleTapHandler)
@@ -44,6 +45,10 @@ class GestureController(private val launcher: LawnchairLauncher) {
 
     fun onSwipeDown() {
         triggerHandler(swipeDownHandler)
+    }
+
+    fun onHomeTap() {
+        triggerHandler(homeTapHandler)
     }
 
     private fun triggerHandler(handlerFlow: Flow<GestureHandler>) {
