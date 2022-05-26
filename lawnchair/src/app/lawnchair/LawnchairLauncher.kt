@@ -42,6 +42,7 @@ import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import app.lawnchair.LawnchairApp.Companion.showQuickstepWarningIfNecessary
 import app.lawnchair.gestures.GestureController
 import app.lawnchair.gestures.VerticalSwipeTouchController
+import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
@@ -175,6 +176,8 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         }
     }
 
+    private var hasBackGesture = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         layoutInflater.factory2 = LawnchairLayoutFactory(this)
         savedStateRegistryController.performRestore(savedInstanceState)
@@ -216,6 +219,9 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         val isWorkspaceDarkText = Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText)
         preferenceManager2.darkStatusBar.onEach(launchIn = lifecycleScope) { darkStatusBar ->
             systemUiController.updateUiState(UI_STATE_BASE_WINDOW, isWorkspaceDarkText || darkStatusBar)
+        }
+        preferenceManager2.backTapGestureHandler.onEach(launchIn = lifecycleScope) { handler ->
+            hasBackGesture = handler !is GestureHandlerConfig.NoOp
         }
 
         // Handle update from version 12 Alpha 4 to version 12 Alpha 5.
@@ -269,6 +275,13 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
 
     override fun handleHomeTap() {
         gestureController.onHomeTap()
+    }
+
+    override fun shouldBackButtonBeHidden(toState: LauncherState): Boolean {
+        if (toState == LauncherState.NORMAL && hasBackGesture) {
+            return false
+        }
+        return super.shouldBackButtonBeHidden(toState)
     }
 
     override fun onStart() {

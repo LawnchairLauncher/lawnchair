@@ -35,6 +35,10 @@ fun GesturePreferences() {
                 adapter = prefs.homeTapGestureHandler.getAdapter(),
                 label = stringResource(id = R.string.gesture_home_tap)
             )
+            GestureHandlerPreference(
+                adapter = prefs.backTapGestureHandler.getAdapter(),
+                label = stringResource(id = R.string.gesture_back_tap)
+            )
         }
     }
 }

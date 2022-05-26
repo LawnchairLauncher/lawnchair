@@ -323,6 +323,11 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         defaultValue = GestureHandlerConfig.NoOp
     )
 
+    val backTapGestureHandler = serializablePreference<GestureHandlerConfig>(
+        key = stringPreferencesKey("back_tap_gesture_handler"),
+        defaultValue = GestureHandlerConfig.NoOp
+    )
+
     private inline fun <reified T> serializablePreference(
         key: Preferences.Key<String>,
         defaultValue: T

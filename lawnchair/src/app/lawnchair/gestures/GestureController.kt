@@ -34,6 +34,7 @@ class GestureController(private val launcher: LawnchairLauncher) {
     private val swipeUpHandler = handler(prefs.swipeUpGestureHandler)
     private val swipeDownHandler = handler(prefs.swipeDownGestureHandler)
     private val homeTapHandler = handler(prefs.homeTapGestureHandler)
+    private val backTapHandler = handler(prefs.backTapGestureHandler)
 
     fun onDoubleTap() {
         triggerHandler(doubleTapHandler)
@@ -51,14 +52,20 @@ class GestureController(private val launcher: LawnchairLauncher) {
         triggerHandler(homeTapHandler)
     }
 
-    private fun triggerHandler(handlerFlow: Flow<GestureHandler>) {
+    fun onBackTap() {
+        triggerHandler(backTapHandler, false)
+    }
+
+    private fun triggerHandler(handlerFlow: Flow<GestureHandler>, withHaptic: Boolean = true) {
         launcher.lifecycleScope.launch {
             val handler = handlerFlow.first()
             if (handler is NoOpGestureHandler) {
                 return@launch
             }
             handler.onTrigger(launcher)
-            VibratorWrapper.INSTANCE.get(launcher).vibrate(VibratorWrapper.OVERVIEW_HAPTIC)
+            if (withHaptic) {
+                VibratorWrapper.INSTANCE.get(launcher).vibrate(VibratorWrapper.OVERVIEW_HAPTIC)
+            }
         }
     }
 

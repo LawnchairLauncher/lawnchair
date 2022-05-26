@@ -43,6 +43,8 @@ import com.android.launcher3.uioverrides.states.OverviewState;
 
 import java.util.Arrays;
 
+import app.lawnchair.LawnchairLauncher;
+
 /**
  * Base state for various states used for the Launcher
  */
@@ -104,6 +106,14 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         public int getTransitionDuration(Context context) {
             // Arbitrary duration, when going to NORMAL we use the state we're coming from instead.
             return 0;
+        }
+
+        @Override
+        public void onBackPressed(Launcher launcher) {
+            if (launcher instanceof LawnchairLauncher) {
+                ((LawnchairLauncher) launcher).getGestureController().onBackTap();
+            }
+            super.onBackPressed(launcher);
         }
     };
 
