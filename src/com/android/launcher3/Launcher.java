@@ -1571,9 +1571,11 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 }
 
                 if (shouldMoveToDefaultScreen && !mWorkspace.isHandlingTouch()) {
-                    mWorkspace.post(mWorkspace::moveToDefaultScreen);
-                } else {
-                    handleHomeTap();
+                    if (mWorkspace.getNextPage() != Workspace.DEFAULT_PAGE) {
+                        mWorkspace.post(mWorkspace::moveToDefaultScreen);
+                    } else {
+                        handleHomeTap();
+                    }
                 }
             }
 
