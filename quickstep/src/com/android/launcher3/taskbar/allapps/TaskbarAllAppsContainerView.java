@@ -44,9 +44,10 @@ public class TaskbarAllAppsContainerView extends
     }
 
     @Override
-    protected BaseAllAppsAdapter getAdapter(AlphabeticalAppsList<TaskbarAllAppsContext> mAppsList,
+    protected BaseAllAppsAdapter<TaskbarAllAppsContext> createAdapter(
+            AlphabeticalAppsList<TaskbarAllAppsContext> appsList,
             BaseAdapterProvider[] adapterProviders) {
-        return new AllAppsGridAdapter<>(mActivityContext, getLayoutInflater(), mAppsList,
+        return new AllAppsGridAdapter<>(mActivityContext, getLayoutInflater(), appsList,
                 adapterProviders);
     }
 }
