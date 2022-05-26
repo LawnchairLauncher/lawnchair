@@ -217,6 +217,7 @@ public class DeviceProfile {
     public int dropTargetHorizontalPaddingPx;
     public int dropTargetVerticalPaddingPx;
     public int dropTargetGapPx;
+    public int dropTargetButtonWorkspaceEdgeGapPx;
 
     // Insets
     private final Rect mInsets = new Rect();
@@ -348,6 +349,8 @@ public class DeviceProfile {
         dropTargetVerticalPaddingPx = res.getDimensionPixelSize(
                 R.dimen.drop_target_button_drawable_vertical_padding);
         dropTargetGapPx = res.getDimensionPixelSize(R.dimen.drop_target_button_gap);
+        dropTargetButtonWorkspaceEdgeGapPx = res.getDimensionPixelSize(
+                R.dimen.drop_target_button_workspace_edge_gap);
 
         workspaceSpringLoadedBottomSpace =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_min_spring_loaded_space);
