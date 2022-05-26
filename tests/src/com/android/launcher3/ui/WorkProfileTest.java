@@ -140,8 +140,8 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
         executeOnLauncher(l -> {
             ActivityAllAppsContainerView<?> allApps = l.getAppsView();
             assertEquals("Work tab is not focused", allApps.getCurrentPage(), WORK_PAGE);
-            View workPausedCard = allApps.getActiveRecyclerView().findViewHolderForAdapterPosition(
-                    0).itemView;
+            View workPausedCard = allApps.getActiveRecyclerView()
+                    .findViewHolderForAdapterPosition(0).itemView;
             workPausedCard.findViewById(R.id.enable_work_apps).performClick();
         });
         waitForLauncherCondition("Work profile toggle ON failed", launcher -> {
