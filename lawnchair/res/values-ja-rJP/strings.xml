@@ -32,8 +32,8 @@
     <string name="folders_description">行と列の数</string>
     <string name="app_drawer_columns">アプリドロワーの列</string>
     <string name="dock_icons">ドックアイコン</string>
-    <string name="max_folder_columns">フォルダ列の最大値</string>
-    <string name="max_folder_rows">フォルダ行の最大値</string>
+    <string name="max_folder_columns">フォルダの列の最大数</string>
+    <string name="max_folder_rows">フォルダの行の最大数</string>
     <string name="home_screen_grid">ホーム画面のグリッド</string>
     <string name="columns">列数</string>
     <string name="grid">グリッド</string>
@@ -53,7 +53,7 @@
     <string name="all_apps_search_bar_hint">アプリを検索</string>
     <string name="settings_button_text">ホーム設定</string>
     <string name="development">開発</string>
-    <string name="app_info_drop_target_label">アプリケーション情報</string>
+    <string name="app_info_drop_target_label">アプリ情報</string>
     <string name="item_removed">アイテムを削除しました。</string>
     <string name="all_apps_no_search_results">“<xliff:g example="Android" id="query">%1$s</xliff:g> ”に一致するアプリが見つかりませんでした</string>
     <string name="translucent_background">半透明の背景</string>
@@ -200,7 +200,7 @@
     <string name="always_open_website_description">アプリがインストールされていても、検索プロバイダのウェブサイトを開きます。</string>
     <string name="search_provider">検索プロバイダー</string>
     <string name="status_bar_label">ステータスバー</string>
-    <string name="show_notification_count">通知カウントを表示</string>
+    <string name="show_notification_count">通知の数を表示</string>
     <string name="icon_picker_load_failed">アイコンを読み込めませんでした。</string>
     <string name="reset_custom_icons">カスタムアイコンをリセット</string>
     <string name="reset_custom_icons_confirmation">すべてのカスタムアイコンがリセットされます。続行しますか？</string>
@@ -210,7 +210,7 @@
     <string name="generic_smartspace_concatenated_desc">%1$s,%2$s</string>
     <string name="smartspace_battery_charging">充電中...</string>
     <string name="smartspace_battery_full">充電完了</string>
-    <string name="smartspace_battery_low">バッテリー残量低下</string>
+    <string name="smartspace_battery_low">電池残量が少ない</string>
     <string name="accessibility_smartspace_page">%1$d ページ中 %2$d</string>
     <string name="smartspace_widget">At a Glance</string>
     <string name="smartspace_widget_description">表示する項目</string>
@@ -224,7 +224,7 @@
     <string name="smartspace_time">時間</string>
     <string name="smartspace_time_24_hour_format">24時間表記</string>
     <string name="smartspace_weather">天気</string>
-    <string name="smartspace_battery_status">バッテリーステータス</string>
+    <string name="smartspace_battery_status">電池の状態</string>
     <string name="smartspace_now_playing">再生中</string>
     <string name="smartspace_requires_setup">タップしてセットアップ</string>
     <string name="event_provider_missing_notification_dots">使用するには <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>、通知ドットを有効にします。</string>
@@ -252,19 +252,19 @@
     <string name="invalid_backup_file">バックアップファイルが無効です。</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — 充電完了まで %2$s"</string>
     <string name="wallpaper_depth_effect">Wallpaper Depth Effect</string>
-    <string name="gesture_double_tap">Double-Tap</string>
-    <string name="gesture_handler_no_op">Do Nothing</string>
-    <string name="gesture_handler_sleep">Sleep</string>
-    <string name="gesture_handler_open_notifications">Open Notification Panel</string>
-    <string name="gesture_handler_open_app_option">Open App</string>
+    <string name="gesture_double_tap">ダブルタップをしたとき</string>
+    <string name="gesture_handler_no_op">何もしない</string>
+    <string name="gesture_handler_sleep">スリープ状態にする</string>
+    <string name="gesture_handler_open_notifications">通知パネルを開く</string>
+    <string name="gesture_handler_open_app_option">アプリを開く</string>
     <string name="gesture_handler_open_app_config">Open %1$s</string>
-    <string name="pick_app_for_gesture">Pick App</string>
+    <string name="pick_app_for_gesture">アプリを選択</string>
     <string name="gesture_handler_open_app_drawer">Open App Drawer</string>
     <string name="gesture_handler_open_app_search">Open App Search</string>
     <string name="gesture_handler_open_search">Open Search</string>
-    <string name="gestures_label">Gestures</string>
-    <string name="gesture_swipe_up">Swipe Up</string>
-    <string name="gesture_swipe_down">Swipe Down</string>
-    <string name="gesture_home_tap">Home Button Tap</string>
-    <string name="gesture_back_tap">Back Button Tap</string>
+    <string name="gestures_label">ジェスチャー</string>
+    <string name="gesture_swipe_up">上へスワイプしたとき</string>
+    <string name="gesture_swipe_down">下へスワイプしたとき</string>
+    <string name="gesture_home_tap">ホームボタンが押されたとき</string>
+    <string name="gesture_back_tap">戻るボタンが押されたとき</string>
 </resources>
