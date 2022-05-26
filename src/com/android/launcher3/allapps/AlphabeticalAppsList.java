@@ -21,6 +21,7 @@ import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_SEARCH_
 
 import android.content.Context;
 
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
@@ -72,6 +73,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
 
     // The set of apps from the system
     private final List<AppInfo> mApps = new ArrayList<>();
+    @Nullable
     private final AllAppsStore mAllAppsStore;
 
     // The number of results in current adapter
@@ -89,14 +91,16 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
     private int mNumAppRowsInAdapter;
     private Predicate<ItemInfo> mItemFilter;
 
-    public AlphabeticalAppsList(Context context, AllAppsStore appsStore,
+    public AlphabeticalAppsList(Context context, @Nullable AllAppsStore appsStore,
             WorkAdapterProvider adapterProvider) {
         mAllAppsStore = appsStore;
         mActivityContext = ActivityContext.lookupContext(context);
         mAppNameComparator = new AppInfoComparator(context);
         mWorkAdapterProvider = adapterProvider;
         mNumAppsPerRowAllApps = mActivityContext.getDeviceProfile().inv.numAllAppsColumns;
-        mAllAppsStore.addUpdateListener(this);
+        if (mAllAppsStore != null) {
+            mAllAppsStore.addUpdateListener(this);
+        }
     }
 
     public void updateItemFilter(Predicate<ItemInfo> itemFilter) {
@@ -162,9 +166,9 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
     }
 
     /**
-     * Returns whether there are is a filter set.
+     * Returns whether there are search results which will hide the A-Z list.
      */
-    public boolean hasFilter() {
+    public boolean hasSearchResults() {
         return !mSearchResults.isEmpty();
     }
 
@@ -172,7 +176,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
      * Returns whether there are no filtered results.
      */
     public boolean hasNoFilteredResults() {
-        return hasFilter() && mAccessibilityResultsCount == 0;
+        return hasSearchResults() && mAccessibilityResultsCount == 0;
     }
 
     /**
@@ -195,11 +199,14 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
      */
     @Override
     public void onAppsUpdated() {
+        if (mAllAppsStore == null) {
+            return;
+        }
         // Sort the list of apps
         mApps.clear();
 
         Stream<AppInfo> appSteam = Stream.of(mAllAppsStore.getApps());
-        if (!hasFilter() && mItemFilter != null) {
+        if (!hasSearchResults() && mItemFilter != null) {
             appSteam = appSteam.filter(mItemFilter);
         }
         appSteam = appSteam.sorted(mAppNameComparator);
@@ -240,7 +247,18 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
 
         // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
         // ordered set of sections
-        if (!hasFilter()) {
+        if (hasSearchResults()) {
+            mAdapterItems.addAll(mSearchResults);
+            if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
+                // Append the search market item
+                if (hasNoFilteredResults()) {
+                    mAdapterItems.add(new AdapterItem(VIEW_TYPE_EMPTY_SEARCH));
+                } else {
+                    mAdapterItems.add(new AdapterItem(VIEW_TYPE_ALL_APPS_DIVIDER));
+                }
+                mAdapterItems.add(new AdapterItem(VIEW_TYPE_SEARCH_MARKET));
+            }
+        } else {
             int position = 0;
             if (mWorkAdapterProvider != null) {
                 position += mWorkAdapterProvider.addWorkItems(mAdapterItems);
@@ -259,17 +277,6 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                     mFastScrollerSections.add(new FastScrollSectionInfo(sectionName, position));
                 }
                 position++;
-            }
-        } else {
-            mAdapterItems.addAll(mSearchResults);
-            if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
-                // Append the search market item
-                if (hasNoFilteredResults()) {
-                    mAdapterItems.add(new AdapterItem(VIEW_TYPE_EMPTY_SEARCH));
-                } else {
-                    mAdapterItems.add(new AdapterItem(VIEW_TYPE_ALL_APPS_DIVIDER));
-                }
-                mAdapterItems.add(new AdapterItem(VIEW_TYPE_SEARCH_MARKET));
             }
         }
         mAccessibilityResultsCount = (int) mAdapterItems.stream()
