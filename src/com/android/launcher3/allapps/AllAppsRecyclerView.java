@@ -35,8 +35,8 @@ import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.FastScrollRecyclerView;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -50,13 +50,13 @@ import java.util.List;
 /**
  * A RecyclerView with custom fast scroll support for the all apps view.
  */
-public class AllAppsRecyclerView extends BaseRecyclerView {
-    private static final String TAG = "AllAppsContainerView";
+public class AllAppsRecyclerView extends FastScrollRecyclerView {
+    protected static final String TAG = "AllAppsRecyclerView";
     private static final boolean DEBUG = false;
     private static final boolean DEBUG_LATENCY = Utilities.isPropertyEnabled(SEARCH_LOGGING);
 
-    private AlphabeticalAppsList<?> mApps;
-    private final int mNumAppsPerRow;
+    protected AlphabeticalAppsList<?> mApps;
+    protected final int mNumAppsPerRow;
 
     // The specific view heights that we use to calculate scroll
     private final SparseIntArray mViewHeights = new SparseIntArray();
@@ -91,8 +91,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     };
 
     // The empty-search result background
-    private AllAppsBackgroundDrawable mEmptySearchBackground;
-    private int mEmptySearchBackgroundTopOffset;
+    protected AllAppsBackgroundDrawable mEmptySearchBackground;
+    protected int mEmptySearchBackgroundTopOffset;
 
     public AllAppsRecyclerView(Context context) {
         this(context, null);
@@ -127,7 +127,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         return mApps;
     }
 
-    private void updatePoolSize() {
+    protected void updatePoolSize() {
         DeviceProfile grid = ActivityContext.lookupContext(getContext()).getDeviceProfile();
         RecyclerView.RecycledViewPool pool = getRecycledViewPool();
         int approxRows = (int) Math.ceil(grid.availableHeightPx / grid.allAppsIconSizePx);
@@ -152,8 +152,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
             Log.d(TAG, "onDraw at = " + System.currentTimeMillis());
         }
         if (DEBUG_LATENCY) {
-            Log.d(SEARCH_LOGGING,
-                    "-- Recycle view onDraw, time stamp = " + System.currentTimeMillis());
+            Log.d(SEARCH_LOGGING,  getClass().getSimpleName() + " onDraw; time stamp = "
+                    + System.currentTimeMillis());
         }
         super.onDraw(c);
     }
@@ -342,13 +342,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     }
 
     @Override
-    public boolean supportsFastScrolling() {
-        // Only allow fast scrolling when the user is not searching, since the results are not
-        // grouped in a meaningful order
-        return !mApps.hasFilter();
-    }
-
-    @Override
     public int getCurrentScrollY() {
         // Return early if there are no items or we haven't been measured
         List<AllAppsGridAdapter.AdapterItem> items = mApps.getAdapterItems();
@@ -358,7 +351,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
 
         // Calculate the y and offset for the item
         View child = getChildAt(0);
-        int position = getChildPosition(child);
+        int position = getChildAdapterPosition(child);
         if (position == NO_POSITION) {
             return -1;
         }
@@ -447,15 +440,5 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     @Override
     public boolean hasOverlappingRendering() {
         return false;
-    }
-
-    /**
-     * Returns distance between left and right app icons
-     */
-    public int getTabWidth() {
-        DeviceProfile grid = ActivityContext.lookupContext(getContext()).getDeviceProfile();
-        int totalWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
-        int iconPadding = totalWidth / grid.numShownAllAppsColumns - grid.allAppsIconSizePx;
-        return totalWidth - iconPadding - grid.allAppsIconDrawablePaddingPx;
     }
 }
