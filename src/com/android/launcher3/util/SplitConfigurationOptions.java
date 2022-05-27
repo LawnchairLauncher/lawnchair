@@ -96,7 +96,7 @@ public final class SplitConfigurationOptions {
      *
      * If you make changes here, consider making the same changes there
      */
-    public static class StagedSplitBounds {
+    public static class SplitBounds {
         public final Rect leftTopBounds;
         public final Rect rightBottomBounds;
         /** This rect represents the actual gap between the two apps */
@@ -124,7 +124,7 @@ public final class SplitConfigurationOptions {
         public final int leftTopTaskId;
         public final int rightBottomTaskId;
 
-        public StagedSplitBounds(Rect leftTopBounds, Rect rightBottomBounds, int leftTopTaskId,
+        public SplitBounds(Rect leftTopBounds, Rect rightBottomBounds, int leftTopTaskId,
                 int rightBottomTaskId) {
             this.leftTopBounds = leftTopBounds;
             this.rightBottomBounds = rightBottomBounds;
@@ -163,7 +163,7 @@ public final class SplitConfigurationOptions {
         }
     }
 
-    public static class StagedSplitTaskPosition {
+    public static class SplitStageInfo {
         public int taskId = -1;
         @StagePosition
         public int stagePosition = STAGE_POSITION_UNDEFINED;

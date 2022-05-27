@@ -17,7 +17,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.RunnableList;
-import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskIconCache;
@@ -53,7 +53,7 @@ public class GroupedTaskView extends TaskView {
     private CancellableTask mIconLoadRequest2;
     private final float[] mIcon2CenterCoords = new float[2];
     private TransformingTouchDelegate mIcon2TouchDelegate;
-    @Nullable private StagedSplitBounds mSplitBoundsConfig;
+    @Nullable private SplitBounds mSplitBoundsConfig;
     private final DigitalWellBeingToast mDigitalWellBeingToast2;
 
     public GroupedTaskView(Context context) {
@@ -78,7 +78,7 @@ public class GroupedTaskView extends TaskView {
     }
 
     public void bind(Task primary, Task secondary, RecentsOrientedState orientedState,
-            @Nullable StagedSplitBounds splitBoundsConfig) {
+            @Nullable SplitBounds splitBoundsConfig) {
         super.bind(primary, orientedState);
         mSecondaryTask = secondary;
         mTaskIdContainer[1] = secondary.key.id;
@@ -126,8 +126,8 @@ public class GroupedTaskView extends TaskView {
         }
     }
 
-    public void updateSplitBoundsConfig(StagedSplitBounds stagedSplitBounds) {
-        mSplitBoundsConfig = stagedSplitBounds;
+    public void updateSplitBoundsConfig(SplitBounds splitBounds) {
+        mSplitBoundsConfig = splitBounds;
         invalidate();
     }
 

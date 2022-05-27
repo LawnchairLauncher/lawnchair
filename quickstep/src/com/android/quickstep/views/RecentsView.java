@@ -142,7 +142,7 @@ import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.ResourceBasedOverride.Overrides;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
-import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TranslateEdgeEffect;
 import com.android.launcher3.util.ViewPool;
@@ -625,7 +625,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Nullable
     private View mSecondSplitHiddenView;
     @Nullable
-    private StagedSplitBounds mSplitBoundsConfig;
+    private SplitBounds mSplitBoundsConfig;
     private final Toast mSplitToast = Toast.makeText(getContext(),
             R.string.toast_split_select_app, Toast.LENGTH_SHORT);
     private final Toast mSplitUnsupportedToast = Toast.makeText(getContext(),
@@ -1448,11 +1448,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
             if (hasMultipleTasks) {
                 boolean firstTaskIsLeftTopTask =
-                        groupTask.mStagedSplitBounds.leftTopTaskId == groupTask.task1.key.id;
+                        groupTask.mSplitBounds.leftTopTaskId == groupTask.task1.key.id;
                 Task leftTopTask = firstTaskIsLeftTopTask ? groupTask.task1 : groupTask.task2;
                 Task rightBottomTask = firstTaskIsLeftTopTask ? groupTask.task2 : groupTask.task1;
                 ((GroupedTaskView) taskView).bind(leftTopTask, rightBottomTask, mOrientationState,
-                        groupTask.mStagedSplitBounds);
+                        groupTask.mSplitBounds);
             } else {
                 taskView.bind(groupTask.task1, mOrientationState);
             }
@@ -4492,7 +4492,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         RemoteTargetGluer gluer = new RemoteTargetGluer(getContext(), getSizeStrategy());
         mRemoteTargetHandles = gluer.assignTargetsForSplitScreen(
                 getContext(), recentsAnimationTargets);
-        mSplitBoundsConfig = gluer.getStagedSplitBounds();
+        mSplitBoundsConfig = gluer.getSplitBounds();
         // Add release check to the targets from the RemoteTargetGluer and not the targets
         // passed in because in the event we're in split screen, we use the passed in targets
         // to create new RemoteAnimationTargets in assignTargetsForSplitScreen(), and the

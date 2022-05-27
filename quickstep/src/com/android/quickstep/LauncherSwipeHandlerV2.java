@@ -91,7 +91,7 @@ public class LauncherSwipeHandlerV2 extends
             mActivity.setHintUserWillBeActive();
         }
 
-        if (!canUseWorkspaceView || appCanEnterPip || mIsSwipeForStagedSplit) {
+        if (!canUseWorkspaceView || appCanEnterPip || mIsSwipeForSplit) {
             return new LauncherHomeAnimationFactory();
         }
         if (workspaceView instanceof LauncherAppWidgetHostView) {
