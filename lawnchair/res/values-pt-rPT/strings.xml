@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">Pacote de Ícones</string>
-    <string name="icon_style">Icon Style</string>
+    <string name="icon_style">Estilo de Ícones</string>
     <string name="settings">Definições</string>
     <string name="home_screen_label">Ecrã Inicial</string>
     <string name="home_screen_description">Feed, Grelha, Ícones</string>
@@ -262,11 +262,11 @@
     <string name="gesture_handler_open_app_config">Abrir %1$s</string>
     <string name="pick_app_for_gesture">Escolher Aplicação</string>
     <string name="gesture_handler_open_app_drawer">Abrir Gaveta de Aplicações</string>
-    <string name="gesture_handler_open_app_search">Open App Search</string>
-    <string name="gesture_handler_open_search">Open Search</string>
-    <string name="gestures_label">Gestures</string>
-    <string name="gesture_swipe_up">Swipe Up</string>
-    <string name="gesture_swipe_down">Swipe Down</string>
-    <string name="gesture_home_tap">Home Button Tap</string>
-    <string name="gesture_back_tap">Back Button Tap</string>
+    <string name="gesture_handler_open_app_search">Abrir Pesquisa de Aplicações</string>
+    <string name="gesture_handler_open_search">Abrir Pesquisa</string>
+    <string name="gestures_label">Gestos</string>
+    <string name="gesture_swipe_up">Deslizar para Cima</string>
+    <string name="gesture_swipe_down">Deslizar para Baixo</string>
+    <string name="gesture_home_tap">Toque no Botão Home</string>
+    <string name="gesture_back_tap">Toque no Botão Voltar</string>
 </resources>
