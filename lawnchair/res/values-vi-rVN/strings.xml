@@ -251,8 +251,8 @@
     <string name="backup_restore_error">Khôi phục bản sao lưu thất bại.</string>
     <string name="invalid_backup_file">Tệp sao lưu không hợp lệ.</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Sẽ đầy sau %2$s"</string>
-    <string name="wallpaper_depth_effect">Hiệu ứng chiều sâu hình nền</string>
-    <string name="gesture_double_tap">Chạm đúp</string>
+    <string name="wallpaper_depth_effect">Hình nền có hiệu ứng chiều sâu</string>
+    <string name="gesture_double_tap">Nhấn 2 lần</string>
     <string name="gesture_handler_no_op">Không làm gì cả</string>
     <string name="gesture_handler_sleep">Ngủ</string>
     <string name="gesture_handler_open_notifications">Mở bảng thông báo</string>
