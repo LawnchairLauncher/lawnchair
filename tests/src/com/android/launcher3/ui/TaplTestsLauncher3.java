@@ -375,6 +375,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     @Test
     @PortraitLandscape
+    @ScreenRecord
     public void testDragToFolder() {
         // TODO: add the use case to drag an icon to an existing folder. Currently it either fails
         // on tablets or phones due to difference in resolution.
