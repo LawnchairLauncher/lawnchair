@@ -55,15 +55,7 @@ import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
-import app.lawnchair.ui.preferences.components.DummyLauncherBox
-import app.lawnchair.ui.preferences.components.DummyLauncherLayout
-import app.lawnchair.ui.preferences.components.ListPreference
-import app.lawnchair.ui.preferences.components.ListPreferenceEntry
-import app.lawnchair.ui.preferences.components.NestedScrollStretch
-import app.lawnchair.ui.preferences.components.PreferenceGroup
-import app.lawnchair.ui.preferences.components.PreferenceLayout
-import app.lawnchair.ui.preferences.components.WallpaperPreview
-import app.lawnchair.ui.preferences.components.invariantDeviceProfile
+import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.util.Constants
 import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.R
@@ -109,7 +101,7 @@ fun IconPackPreferences() {
     val drawerThemedIconsAdapter = prefs.drawerThemedIcons.getAdapter()
 
     PreferenceLayout(
-        label = stringResource(id = R.string.icon_pack),
+        label = stringResource(id = R.string.icon_style),
         scrollState = null
     ) {
         if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -136,9 +128,10 @@ fun IconPackPreferences() {
             }
         }
         Column {
+            PreferenceGroupHeading(heading = stringResource(id = R.string.icon_pack))
             IconPackGrid(
                 adapter = iconPackAdapter,
-                modifier = Modifier.padding(vertical = 8.dp),
+                modifier = Modifier.padding(bottom = 8.dp),
             )
             PreferenceGroup {
                 val themedIconsAvailable = LocalContext.current.packageManager

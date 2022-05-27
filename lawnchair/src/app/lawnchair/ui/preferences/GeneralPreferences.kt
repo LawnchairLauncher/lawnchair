@@ -65,7 +65,7 @@ fun GeneralPreferences() {
                 description = stringResource(id = R.string.home_screen_rotaton_description),
             )
             NavigationActionPreference(
-                label = stringResource(id = R.string.icon_pack),
+                label = stringResource(id = R.string.icon_style),
                 destination = subRoute(name = GeneralRoutes.ICON_PACK),
                 subtitle = iconPacks.find { it.packageName == preferenceManager().iconPackPackage.get() }?.name,
             )
