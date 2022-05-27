@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">Symbol-Paket</string>
-    <string name="icon_style">Icon Style</string>
+    <string name="icon_style">Symbolform</string>
     <string name="settings">Einstellungen</string>
     <string name="home_screen_label">Startseite</string>
     <string name="home_screen_description">Feed, Raster, Symbole</string>
