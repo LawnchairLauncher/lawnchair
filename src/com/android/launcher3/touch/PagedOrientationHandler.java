@@ -226,6 +226,12 @@ public interface PagedOrientationHandler {
      */
     void adjustFloatingIconStartVelocity(PointF velocity);
 
+    /**
+     * Ensures that outStartRect left bound is within the DeviceProfile's visual boundaries
+     * @param outStartRect The start rect that will directly be modified
+     */
+    void fixBoundsForHomeAnimStartRect(RectF outStartRect, DeviceProfile deviceProfile);
+
     class ChildBounds {
 
         public final int primaryDimension;
