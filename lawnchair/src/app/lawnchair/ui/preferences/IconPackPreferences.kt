@@ -42,8 +42,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -180,6 +178,14 @@ fun IconPackGrid(
     val lazyListState = rememberLazyListState()
     val padding = 16.dp
 
+    val selectedPack = adapter.state.value
+    LaunchedEffect(selectedPack) {
+        val selectedIndex = iconPacks.indexOfFirst { it.packageName == selectedPack }
+        if (selectedIndex != -1) {
+            lazyListState.animateScrollToItem(selectedIndex)
+        }
+    }
+
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
         val iconPackItemWidth = getIconPackItemWidth(
             availableWidth = this.maxWidth.value - padding.value,
@@ -194,19 +200,9 @@ fun IconPackGrid(
                 modifier = modifier.fillMaxWidth(),
             ) {
                 itemsIndexed(iconPacks, { _, item -> item.packageName }) { index, item ->
-                    val wasSelected = remember { mutableStateOf(false) }
-                    val selected = item.packageName == adapter.state.value
-                    LaunchedEffect(selected) {
-                        if (wasSelected.value != selected) {
-                            wasSelected.value = selected
-                            if (selected) {
-                                lazyListState.animateScrollToItem(index)
-                            }
-                        }
-                    }
                     IconPackItem(
                         item = item,
-                        selected = selected,
+                        selected = item.packageName == adapter.state.value,
                         modifier = Modifier.width(iconPackItemWidth.dp),
                     ) {
                         adapter.onChange(item.packageName)
