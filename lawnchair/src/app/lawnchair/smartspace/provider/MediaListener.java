@@ -208,18 +208,10 @@ public class MediaListener extends MediaController.Callback {
         }
 
         private boolean isPlaying() {
-            return hasTitle()
-                    && controller.getPlaybackState() != null
-                    && controller.getPlaybackState().getState() == PlaybackState.STATE_PLAYING;
-        }
-
-        private boolean isPausedOrPlaying() {
-            if (!hasTitle() || controller.getPlaybackState() == null) {
-                return false;
-            }
-            int state = controller.getPlaybackState().getState();
-            return state == PlaybackState.STATE_PAUSED
-                    || state == PlaybackState.STATE_PLAYING;
+            if (!hasTitle()) return false;
+            PlaybackState playbackState = controller.getPlaybackState();
+            if (playbackState == null) return false;
+            return playbackState.getState() == PlaybackState.STATE_PLAYING;
         }
 
         private void pressButton(int keyCode) {
