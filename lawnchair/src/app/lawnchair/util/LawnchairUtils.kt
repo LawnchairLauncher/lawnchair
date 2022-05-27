@@ -30,6 +30,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Looper
 import android.provider.OpenableColumns
+import android.util.Size
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -185,30 +186,43 @@ fun ContentResolver.getDisplayName(uri: Uri): String? {
 }
 
 fun Bitmap.scaleDownToDisplaySize(context: Context, keepOriginal: Boolean = false): Bitmap {
-    val metrics = context.resources.displayMetrics
-    return scaleDownTo(max(metrics.widthPixels, metrics.heightPixels), keepOriginal)
+    val originalSize = Size(width, height)
+    return scaleDownTo(originalSize.scaleDownToDisplaySize(context), keepOriginal)
 }
 
 fun Bitmap.scaleDownTo(maxSize: Int, keepOriginal: Boolean = false): Bitmap {
-    val width = width
-    val height = height
-    val newWidth: Int
-    val newHeight: Int
+    val originalSize = Size(width, height)
+    return scaleDownTo(originalSize.scaleDownTo(maxSize), keepOriginal)
+}
 
-    when {
-        width > height && width > maxSize -> {
-            newWidth = maxSize
-            newHeight = (height * newWidth.toFloat() / width).toInt()
-        }
-        height > maxSize -> {
-            newHeight = maxSize
-            newWidth = (width * newHeight.toFloat() / height).toInt()
-        }
-        else -> return this
-    }
-    val newBitmap = Bitmap.createScaledBitmap(this, newWidth, newHeight, true)
+fun Bitmap.scaleDownTo(size: Size, keepOriginal: Boolean = false): Bitmap {
+    if (size.width > width || size.height > height) return this
+
+    val newBitmap = Bitmap.createScaledBitmap(this, size.width, size.height, true)
     if (!keepOriginal) {
         recycle()
     }
     return newBitmap
+}
+
+fun Size.scaleDownToDisplaySize(context: Context): Size {
+    val metrics = context.resources.displayMetrics
+    return scaleDownTo(max(metrics.widthPixels, metrics.heightPixels))
+}
+
+fun Size.scaleDownTo(maxSize: Int): Size {
+    val width = width
+    val height = height
+
+    return when {
+        width > height && width > maxSize -> {
+            val newHeight = (height * maxSize.toFloat() / width).toInt()
+            Size(maxSize, newHeight)
+        }
+        height > maxSize -> {
+            val newWidth = (width * maxSize.toFloat() / height).toInt()
+            Size(newWidth, maxSize)
+        }
+        else -> this
+    }
 }
