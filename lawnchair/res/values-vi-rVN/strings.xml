@@ -265,6 +265,6 @@
     <string name="gestures_label">Cử chỉ</string>
     <string name="gesture_swipe_up">Vuốt lên</string>
     <string name="gesture_swipe_down">Vuốt xuống</string>
-    <string name="gesture_home_tap">Chạm phím Trang chính</string>
-    <string name="gesture_back_tap">Chạm phím Quay lại</string>
+    <string name="gesture_home_tap">Chạm phím về màn hình chính</string>
+    <string name="gesture_back_tap">Chạm phím quay lại</string>
 </resources>
