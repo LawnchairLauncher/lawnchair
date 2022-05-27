@@ -525,7 +525,7 @@ public class FloatingIconView extends FrameLayout implements
                     & ItemInfoWithIcon.FLAG_SHOW_DOWNLOAD_PROGRESS_MASK) != 0) {
                 btvIcon = btv.makePreloadIcon();
             } else {
-                btvIcon = btv.getIcon();
+                btvIcon = (FastBitmapDrawable) btv.getIcon().getConstantState().newDrawable();
             }
         } else {
             btvIcon = null;
