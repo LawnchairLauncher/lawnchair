@@ -16,6 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">Belgilar to‘plami</string>
+    <string name="icon_style">Icon Style</string>
     <string name="settings">Sozlamalar</string>
     <string name="home_screen_label">Asosiy ekran</string>
     <string name="home_screen_description">Feed, Grid, Icons</string>
