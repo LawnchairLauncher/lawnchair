@@ -23,6 +23,7 @@
     <string name="discord" translatable="false">Discord</string>
 
     <string name="icon_pack">Icon Pack</string>
+    <string name="icon_style">Icon Style</string>
     <string name="settings">Settings</string>
     <string name="home_screen_label">Home Screen</string>
     <string name="home_screen_description">Feed, Grid, Icons</string>
