@@ -266,6 +266,13 @@ public abstract class SwipeUpAnimationLogic implements
         RectF cropRectF = new RectF(taskViewSimulator.getCurrentCropRect());
         // Move the startRect to Launcher space as floatingIconView runs in Launcher
         Matrix windowToHomePositionMap = new Matrix();
+
+        // If the start rect ends up overshooting too much to the left/right offscreen, bring it
+        // back to fullscreen. This can happen when the recentsScroll value isn't aligned with
+        // the pageScroll value for a given taskView, see b/228829958#comment12
+        mRemoteTargetHandles[0].getTaskViewSimulator().getOrientationState().getOrientationHandler()
+                .fixBoundsForHomeAnimStartRect(startRect, mDp);
+
         homeToWindowPositionMap.invert(windowToHomePositionMap);
         windowToHomePositionMap.mapRect(startRect);
 
