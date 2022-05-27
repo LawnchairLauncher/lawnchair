@@ -12,10 +12,7 @@ import app.lawnchair.util.recursiveChildren
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.android.launcher3.qsb.QsbContainerView
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 
 object Google : QsbSearchProvider(
     id = "google",
@@ -30,7 +27,7 @@ object Google : QsbSearchProvider(
     override suspend fun launch(launcher: Launcher, forceWebsite: Boolean) {
         if (!forceWebsite) {
             val subscription = getSearchIntent(launcher)
-            val pendingIntent = subscription.first()
+            val pendingIntent = subscription.firstOrNull()
             if (pendingIntent != null) {
                 launcher.startIntentSender(
                     pendingIntent.intentSender, null,
