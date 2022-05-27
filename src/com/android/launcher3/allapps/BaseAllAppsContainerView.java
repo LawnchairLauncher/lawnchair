@@ -246,7 +246,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
      */
     public boolean shouldContainerScroll(MotionEvent ev) {
         // Scroll if not within the container view (e.g. over large-screen scrim).
-        if (!mActivityContext.getDragLayer().isEventOverView(this, ev)) {
+        if (!mActivityContext.getDragLayer().isEventOverView(getVisibleContainerView(), ev)) {
             return true;
         }
         if (mActivityContext.getDragLayer().isEventOverView(mBottomSheetHandleArea, ev)) {

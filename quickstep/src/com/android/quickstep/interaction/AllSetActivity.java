@@ -149,45 +149,50 @@ public class AllSetActivity extends Activity {
     }
 
     private void startBackgroundAnimation() {
-        if (Utilities.ATLEAST_S && mVibrator != null && mVibrator.areAllPrimitivesSupported(
-                VibrationEffect.Composition.PRIMITIVE_THUD)) {
-            if (mBackgroundAnimatorListener == null) {
-                mBackgroundAnimatorListener =
-                        new Animator.AnimatorListener() {
-                            @Override
-                            public void onAnimationStart(Animator animation) {
-                                runOnUiHelperThread(() -> mVibrator.vibrate(getVibrationEffect()));
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animator animation) {
-                                runOnUiHelperThread(() -> mVibrator.vibrate(getVibrationEffect()));
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                runOnUiHelperThread(mVibrator::cancel);
-                            }
-
-                            @Override
-                            public void onAnimationCancel(Animator animation) {
-                                runOnUiHelperThread(mVibrator::cancel);
-                            }
-                        };
-            }
-            mAnimatedBackground.addAnimatorListener(mBackgroundAnimatorListener);
+        if (!Utilities.ATLEAST_S || mVibrator == null) {
+            return;
         }
-        mAnimatedBackground.playAnimation();
-    }
+        boolean supportsThud = mVibrator.areAllPrimitivesSupported(
+                VibrationEffect.Composition.PRIMITIVE_THUD);
 
-    /**
-     * Sets up the vibration effect for the next round of animation. The parameters vary between
-     * different illustrations.
-     */
-    private VibrationEffect getVibrationEffect() {
-        return VibrationEffect.startComposition()
-                .addPrimitive(VibrationEffect.Composition.PRIMITIVE_THUD, 1.0f, 50)
-                .compose();
+        if (!supportsThud && !mVibrator.areAllPrimitivesSupported(
+                VibrationEffect.Composition.PRIMITIVE_TICK)) {
+            return;
+        }
+        if (mBackgroundAnimatorListener == null) {
+            VibrationEffect vibrationEffect = VibrationEffect.startComposition()
+                    .addPrimitive(supportsThud
+                                    ? VibrationEffect.Composition.PRIMITIVE_THUD
+                                    : VibrationEffect.Composition.PRIMITIVE_TICK,
+                            /* scale= */ 1.0f,
+                            /* delay= */ 50)
+                    .compose();
+
+            mBackgroundAnimatorListener =
+                    new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            runOnUiHelperThread(() -> mVibrator.vibrate(vibrationEffect));
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+                            runOnUiHelperThread(() -> mVibrator.vibrate(vibrationEffect));
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            runOnUiHelperThread(mVibrator::cancel);
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+                            runOnUiHelperThread(mVibrator::cancel);
+                        }
+                    };
+        }
+        mAnimatedBackground.addAnimatorListener(mBackgroundAnimatorListener);
+        mAnimatedBackground.playAnimation();
     }
 
     @Override
@@ -203,6 +208,7 @@ public class AllSetActivity extends Activity {
         mBinder = binder;
         mBinder.getTaskbarManager().setSetupUIVisible(isResumed());
         mBinder.setSwipeUpProxy(isResumed() ? this::createSwipeUpProxy : null);
+        mBinder.preloadOverviewForSUWAllSet();
     }
 
     @Override

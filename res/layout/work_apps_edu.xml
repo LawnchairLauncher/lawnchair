@@ -16,8 +16,8 @@
 <com.android.launcher3.allapps.WorkEduCard xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/work_edu_card_margin"
-    android:layout_marginBottom="@dimen/work_edu_card_bottom_margin"
+    android:paddingTop="@dimen/work_edu_card_margin"
+    android:paddingBottom="@dimen/work_edu_card_bottom_margin"
     android:gravity="center">
     <RelativeLayout
         android:layout_width="match_parent"

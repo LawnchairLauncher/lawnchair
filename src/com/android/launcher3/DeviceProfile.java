@@ -792,7 +792,7 @@ public class DeviceProfile {
     /**
      * Updates the iconSize for allApps* variants.
      */
-    public void updateAllAppsIconSize(float scale, Resources res) {
+    private void updateAllAppsIconSize(float scale, Resources res) {
         allAppsBorderSpacePx = new Point(
                 pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].x, mMetrics, scale),
                 pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].y, mMetrics, scale));
@@ -805,9 +805,9 @@ public class DeviceProfile {
         allAppsCellWidthPx = pxFromDp(inv.allAppsCellSize[mTypeIndex].x, mMetrics, scale);
         if (isScalableGrid) {
             allAppsIconSizePx =
-                    pxFromDp(inv.allAppsIconSize[mTypeIndex], mMetrics);
+                    pxFromDp(inv.allAppsIconSize[mTypeIndex], mMetrics, scale);
             allAppsIconTextSizePx =
-                    pxFromSp(inv.allAppsIconTextSize[mTypeIndex], mMetrics);
+                    pxFromSp(inv.allAppsIconTextSize[mTypeIndex], mMetrics, scale);
             allAppsIconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
         } else {
             float invIconSizeDp = inv.allAppsIconSize[mTypeIndex];
