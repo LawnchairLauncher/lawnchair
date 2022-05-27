@@ -16,6 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">అయ్ కాన్</string>
+    <string name="icon_style">Icon Style</string>
     <string name="settings">సెట్టింగ్స్</string>
     <string name="home_screen_label">హోమ్ స్రీన్ లేబల్</string>
     <string name="home_screen_description">Feed, Grid, Icons</string>
