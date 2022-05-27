@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">图标包</string>
-    <string name="icon_style">Icon Style</string>
+    <string name="icon_style">图标风格</string>
     <string name="settings">设置</string>
     <string name="home_screen_label">主屏幕</string>
     <string name="home_screen_description">订阅、网格、图标</string>
@@ -206,7 +206,7 @@
     <string name="reset_custom_icons">重置自定义图标</string>
     <string name="reset_custom_icons_confirmation">所有自定义图标将被重置。您想要继续吗？</string>
     <string name="taskbar_label">任务栏</string>
-    <string name="enable_taskbar_experimental">启用任务栏(实验性)</string>
+    <string name="enable_taskbar_experimental">启用任务栏 (实验性)</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">充电中</string>
@@ -223,7 +223,7 @@
     <string name="smartspace_date_and_time">日期 &amp; 时间</string>
     <string name="smartspace_date">日期</string>
     <string name="smartspace_time">时间</string>
-    <string name="smartspace_time_24_hour_format">24小时制</string>
+    <string name="smartspace_time_24_hour_format">24 小时制</string>
     <string name="smartspace_weather">天气</string>
     <string name="smartspace_battery_status">电池状态</string>
     <string name="smartspace_now_playing">正在播放</string>
@@ -244,7 +244,7 @@
     <string name="backup_content_layout_and_settings">布局和设置</string>
     <string name="backup_content_wallpaper">壁纸</string>
     <string name="backup_create_success">备份已创建。</string>
-    <string name="backup_create_error">创建备份失败.</string>
+    <string name="backup_create_error">创建备份失败。</string>
     <string name="restore_backup">恢复备份</string>
     <string name="restore_backup_action">恢复</string>
     <string name="what_to_restore">选择要恢复的内容</string>
