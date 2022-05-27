@@ -254,7 +254,7 @@
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Penuh dalam %2$s"</string>
     <string name="wallpaper_depth_effect">Efek Kedalaman Wallpaper</string>
     <string name="gesture_double_tap">Ketuk Dua Kali</string>
-    <string name="gesture_handler_no_op">Tidak Melakukan Apapun</string>
+    <string name="gesture_handler_no_op">Tidak Ada Tindakan</string>
     <string name="gesture_handler_sleep">Tidur</string>
     <string name="gesture_handler_open_notifications">Buka Panel Notifikasi</string>
     <string name="gesture_handler_open_app_option">Buka Aplikasi</string>
