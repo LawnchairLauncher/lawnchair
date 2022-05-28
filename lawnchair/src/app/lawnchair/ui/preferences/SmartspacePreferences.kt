@@ -4,12 +4,7 @@ import android.app.Activity
 import android.view.ContextThemeWrapper
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -28,7 +23,13 @@ import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.smartspace.SmartspaceViewContainer
 import app.lawnchair.smartspace.model.SmartspaceCalendar
 import app.lawnchair.smartspace.provider.SmartspaceProvider
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.DividerColumn
+import app.lawnchair.ui.preferences.components.ExpandAndShrink
+import app.lawnchair.ui.preferences.components.ListPreference
+import app.lawnchair.ui.preferences.components.ListPreferenceEntry
+import app.lawnchair.ui.preferences.components.PreferenceGroup
+import app.lawnchair.ui.preferences.components.PreferenceLayout
+import app.lawnchair.ui.preferences.components.SwitchPreference
 import app.lawnchair.ui.theme.isSelectedThemeDark
 import com.android.launcher3.R
 
@@ -100,7 +101,6 @@ fun SmartspacePreview() {
                 modifier = Modifier.padding(
                     start = 8.dp,
                     top = 8.dp,
-                    end = 0.dp,
                     bottom = 16.dp,
                 ),
             )
