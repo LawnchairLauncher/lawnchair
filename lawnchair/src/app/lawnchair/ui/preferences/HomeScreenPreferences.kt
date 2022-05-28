@@ -80,12 +80,18 @@ fun HomeScreenPreferences() {
                 adapter = prefs2.showTopShadow.getAdapter(),
                 label = stringResource(id = R.string.show_sys_ui_scrim),
             )
+        }
+        PreferenceGroup(heading = stringResource(id = R.string.layout)) {
             val columns by prefs.workspaceColumns.getAdapter()
             val rows by prefs.workspaceRows.getAdapter()
             NavigationActionPreference(
                 label = stringResource(id = R.string.home_screen_grid),
                 destination = subRoute(name = HomeScreenRoutes.GRID),
                 subtitle = stringResource(id = R.string.x_by_y, columns, rows),
+            )
+            SwitchPreference(
+                adapter = prefs2.lockHomeScreen.getAdapter(),
+                label = stringResource(id = R.string.home_screen_lock),
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.status_bar_label)) {
