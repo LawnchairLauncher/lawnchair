@@ -269,4 +269,5 @@
     <string name="gesture_swipe_down">Nach unten wischen</string>
     <string name="gesture_home_tap">Home-Taste Tippen</string>
     <string name="gesture_back_tap">Zurück-Taste tippen</string>
+    <string name="x_and_y">%s &amp; %s</string>
 </resources>
