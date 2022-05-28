@@ -199,7 +199,7 @@ fun Bitmap.scaleDownTo(size: Size, keepOriginal: Boolean = false): Bitmap {
     if (size.width > width || size.height > height) return this
 
     val newBitmap = Bitmap.createScaledBitmap(this, size.width, size.height, true)
-    if (!keepOriginal) {
+    if (newBitmap != this && !keepOriginal) {
         recycle()
     }
     return newBitmap
