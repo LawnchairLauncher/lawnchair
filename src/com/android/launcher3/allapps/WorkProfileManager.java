@@ -160,7 +160,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
         lp.bottomMargin = workFabMarginBottom;
         int totalScreenWidth = mDeviceProfile.widthPx;
         int personalWorkTabWidth =
-                mAllApps.mActivityContext.getAppsView().getActiveRecyclerView().getTabWidth();
+                mAllApps.mActivityContext.getAppsView().getFloatingHeaderView().getTabWidth();
         lp.rightMargin = lp.leftMargin = (totalScreenWidth - personalWorkTabWidth) / 2;
         if (mWorkModeSwitch.getParent() != mAllApps) {
             mAllApps.addView(mWorkModeSwitch);

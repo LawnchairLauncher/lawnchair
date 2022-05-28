@@ -19,7 +19,6 @@ import android.content.Context;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.DeviceProfileListenable;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.util.Themes;
@@ -36,8 +35,6 @@ public abstract class BaseTaskbarContext extends ContextThemeWrapper implements 
     protected final LayoutInflater mLayoutInflater;
     private final List<OnDeviceProfileChangeListener> mDPChangeListeners = new ArrayList<>();
 
-    protected DeviceProfile mDeviceProfile;
-
     public BaseTaskbarContext(Context windowContext) {
         super(windowContext, Themes.getActivityThemeRes(windowContext));
         mLayoutInflater = LayoutInflater.from(this).cloneInContext(this);
@@ -49,17 +46,9 @@ public abstract class BaseTaskbarContext extends ContextThemeWrapper implements 
     }
 
     @Override
-    public final DeviceProfile getDeviceProfile() {
-        return mDeviceProfile;
-    }
-
-    @Override
     public final List<OnDeviceProfileChangeListener> getOnDeviceProfileChangeListeners() {
         return mDPChangeListeners;
     }
-
-    /** Updates the {@link DeviceProfile} instance to the latest representation of the screen. */
-    public abstract void updateDeviceProfile(DeviceProfile dp);
 
     /** Callback invoked when a drag is initiated within this context. */
     public abstract void onDragStart();

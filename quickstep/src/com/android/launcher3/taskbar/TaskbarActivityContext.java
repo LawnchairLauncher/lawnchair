@@ -111,6 +111,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
     private final WindowManager mWindowManager;
     private final @Nullable RoundedCorner mLeftCorner, mRightCorner;
+    private DeviceProfile mDeviceProfile;
     private WindowManager.LayoutParams mWindowLayoutParams;
     private boolean mIsFullscreen;
     // The size we should return to when we call setTaskbarWindowFullscreen(false)
@@ -135,7 +136,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             TaskbarNavButtonController buttonController, ScopedUnfoldTransitionProgressProvider
             unfoldTransitionProgressProvider) {
         super(windowContext);
-        mDeviceProfile = dp;
+        mDeviceProfile = dp.copy(this);
 
         final Resources resources = getResources();
 
@@ -198,7 +199,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new TaskbarAutohideSuspendController(this),
                 new TaskbarPopupController(this),
                 new TaskbarForceVisibleImmersiveController(this),
-                new TaskbarAllAppsController(this),
+                new TaskbarAllAppsController(this, dp),
                 new TaskbarInsetsController(this));
     }
 
@@ -214,8 +215,14 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     @Override
+    public DeviceProfile getDeviceProfile() {
+        return mDeviceProfile;
+    }
+
+    /** Updates {@link DeviceProfile} instances for any Taskbar windows. */
     public void updateDeviceProfile(DeviceProfile dp) {
-        mDeviceProfile = dp;
+        mControllers.taskbarAllAppsController.updateDeviceProfile(dp);
+        mDeviceProfile = dp.copy(this);
         updateIconSize(getResources());
 
         AbstractFloatingView.closeAllOpenViewsExcept(this, false, TYPE_REBIND_SAFE);
@@ -230,7 +237,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mDeviceProfile.updateIconSize(1, resources);
         float iconScale = taskbarIconSize / mDeviceProfile.iconSizePx;
         mDeviceProfile.updateIconSize(iconScale, resources);
-        mDeviceProfile.updateAllAppsIconSize(1, resources); // Leave all apps unscaled.
     }
 
     @VisibleForTesting
