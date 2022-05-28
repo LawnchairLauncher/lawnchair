@@ -256,7 +256,7 @@
     <string name="wallpaper_depth_effect">Efecto de profundidad del fondo de pantalla</string>
     <string name="gesture_double_tap">Doble toque</string>
     <string name="gesture_handler_no_op">No hacer nada</string>
-    <string name="gesture_handler_sleep">Sleep</string>
+    <string name="gesture_handler_sleep">Modo reposo</string>
     <string name="gesture_handler_open_notifications">Desplegar el panel de notificaciones</string>
     <string name="gesture_handler_open_app_option">Abrir aplicación</string>
     <string name="gesture_handler_open_app_config">Abrir %1$s</string>
