@@ -727,14 +727,15 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             pageScrollChanged = true;
         }
 
-        if (childCount == 0) {
-            return;
-        }
-
         if (DEBUG) Log.d(TAG, "PagedView.onLayout()");
 
         pageScrollChanged |= getPageScrolls(pageScrolls, true, SIMPLE_SCROLL_LOGIC);
         mPageScrolls = pageScrolls;
+
+        if (childCount == 0) {
+            onPageScrollsInitialized();
+            return;
+        }
 
         final LayoutTransition transition = getLayoutTransition();
         // If the transition is running defer updating max scroll, as some empty pages could

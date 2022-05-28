@@ -18,6 +18,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/drag_layer"
+    android:clipChildren="false"
     android:padding="@dimen/dynamic_grid_edge_margin">
 
     <GridView
@@ -52,11 +53,14 @@
         android:saveEnabled="false"
         android:layout_gravity="bottom|end"
         android:background="@drawable/round_rect_primary"
-        android:elevation="2dp"
         android:visibility="invisible" >
 
         <include
             layout="@layout/all_apps_bottom_sheet_background"
+            android:visibility="gone" />
+
+        <include
+            layout="@layout/search_results_rv_layout"
             android:visibility="gone" />
 
         <include

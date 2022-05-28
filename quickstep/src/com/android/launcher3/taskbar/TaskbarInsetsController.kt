@@ -21,6 +21,7 @@ import android.view.InsetsState.ITYPE_BOTTOM_MANDATORY_GESTURES
 import android.view.WindowManager
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.AbstractFloatingView.TYPE_TASKBAR_ALL_APPS
+import com.android.launcher3.DeviceProfile
 import com.android.launcher3.anim.AlphaUpdateListener
 import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarController
 import com.android.quickstep.KtR
@@ -38,6 +39,9 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
     val taskbarHeightForIme: Int = context.resources.getDimensionPixelSize(
         KtR.dimen.taskbar_ime_size)
     private val contentRegion: Region = Region()
+    private val deviceProfileChangeListener = { _: DeviceProfile ->
+        onTaskbarWindowHeightOrInsetsChanged()
+    }
 
     // Initialized in init.
     private lateinit var controllers: TaskbarControllers
@@ -63,16 +67,19 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
         onTaskbarWindowHeightOrInsetsChanged()
 
         windowLayoutParams.insetsRoundedCornerFrame = true
+        context.addOnDeviceProfileChangeListener(deviceProfileChangeListener)
     }
 
-    fun onDestroy() {}
+    fun onDestroy() {
+        context.removeOnDeviceProfileChangeListener(deviceProfileChangeListener)
+    }
 
     fun onTaskbarWindowHeightOrInsetsChanged() {
         var reducingSize = getReducingInsetsForTaskbarInsetsHeight(
             controllers.taskbarStashController.contentHeightToReportToApps)
 
         contentRegion.set(0, reducingSize.top,
-                context.dragLayer.width, windowLayoutParams.height)
+                context.deviceProfile.widthPx, windowLayoutParams.height)
         windowLayoutParams.providedInternalInsets[ITYPE_EXTRA_NAVIGATION_BAR] = reducingSize
         windowLayoutParams.providedInternalInsets[ITYPE_BOTTOM_MANDATORY_GESTURES] = reducingSize
         reducingSize = getReducingInsetsForTaskbarInsetsHeight(
