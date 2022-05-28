@@ -269,4 +269,5 @@
     <string name="gesture_swipe_down">Deslizar para Baixo</string>
     <string name="gesture_home_tap">Toque no botão Home</string>
     <string name="gesture_back_tap">Toque no Botão Voltar</string>
+    <string name="x_and_y">%s &amp; %s</string>
 </resources>
