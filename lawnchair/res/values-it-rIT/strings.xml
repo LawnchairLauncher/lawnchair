@@ -269,4 +269,5 @@
     <string name="gesture_swipe_down">Scorri giù</string>
     <string name="gesture_home_tap">Tocco sul pulsante home</string>
     <string name="gesture_back_tap">Tocco sul pulsante indietro</string>
+    <string name="x_and_y">%s &amp; %s</string>
 </resources>
