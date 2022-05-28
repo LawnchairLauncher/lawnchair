@@ -271,5 +271,5 @@
     <string name="gesture_swipe_down">Przeciągnij w dół</string>
     <string name="gesture_home_tap">Dotknięcie przycisku Ekranu głównego</string>
     <string name="gesture_back_tap">Dotknięcie przycisku Wstecz</string>
-    <string name="x_and_y">%s &amp; %s</string>
+    <string name="x_and_y">%s i %s</string>
 </resources>
