@@ -57,6 +57,24 @@ fun GeneralPreferences() {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
     val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
+    val themedIconsAdapter = prefs.themedIcons.getAdapter()
+    val drawerThemedIconsAdapter = prefs.drawerThemedIcons.getAdapter()
+
+    val currentIconPackName = iconPacks
+        .find { it.packageName == preferenceManager().iconPackPackage.get() }
+        ?.name
+    val themedIconsEnabled = ThemedIconsState.getForSettings(
+        themedIcons = themedIconsAdapter.state.value,
+        drawerThemedIcons = drawerThemedIconsAdapter.state.value,
+    ) != ThemedIconsState.Off
+    val iconStyleSubtitle = if (currentIconPackName != null && themedIconsEnabled) {
+        stringResource(
+            id = R.string.x_and_y,
+            currentIconPackName,
+            stringResource(id = R.string.themed_icon_title),
+        )
+    } else currentIconPackName
+
     PreferenceLayout(label = stringResource(id = R.string.general_label)) {
         PreferenceGroup {
             SwitchPreference(
@@ -67,7 +85,7 @@ fun GeneralPreferences() {
             NavigationActionPreference(
                 label = stringResource(id = R.string.icon_style),
                 destination = subRoute(name = GeneralRoutes.ICON_PACK),
-                subtitle = iconPacks.find { it.packageName == preferenceManager().iconPackPackage.get() }?.name,
+                subtitle = iconStyleSubtitle,
             )
             IconShapePreference()
             val enableFontSelection = prefs2.enableFontSelection.asState().value

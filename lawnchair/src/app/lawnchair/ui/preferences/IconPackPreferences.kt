@@ -67,7 +67,7 @@ data class IconPackInfo(
     val icon: Drawable,
 )
 
-private enum class ThemedIconsState(
+enum class ThemedIconsState(
     @StringRes val labelResourceId: Int,
     val themedIcons: Boolean = true,
     val drawerThemedIcons: Boolean = false,
