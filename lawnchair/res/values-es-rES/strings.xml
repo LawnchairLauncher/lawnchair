@@ -221,9 +221,9 @@
     <string name="quickstep_incompatible_description">Su dispositivo está configurado para tener gestos del sistema (conocidos como Quickstep) proporcionados por %1$s, pero esta versión de %1$s no es compatible con tu versión de Android. Para continuar utilizando tu dispositivo, por favor desinstala las actualizaciones de %1$s o deshabilita %1$s como proveedor de gestos de sistema.</string>
     <string name="preview_label">Vista previa</string>
     <string name="smartspace_calendar">Calendario</string>
-    <string name="smartspace_date_and_time">Date &amp; Time</string>
-    <string name="smartspace_date">Date</string>
-    <string name="smartspace_time">Time</string>
+    <string name="smartspace_date_and_time">Fecha y hora</string>
+    <string name="smartspace_date">Fecha</string>
+    <string name="smartspace_time">Hora</string>
     <string name="smartspace_time_24_hour_format">24-Hour Format</string>
     <string name="smartspace_weather">Clima</string>
     <string name="smartspace_battery_status">Estado de la batería</string>
