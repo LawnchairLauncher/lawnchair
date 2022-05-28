@@ -8,13 +8,11 @@ data class IconPickerItem(
     val packPackageName: String,
     val drawableName: String,
     val label: String,
-    val type: IconType
+    val type: IconType,
 ) : Parcelable {
-    fun toIconEntry(): IconEntry {
-        return IconEntry(
-            packPackageName = packPackageName,
-            name = drawableName,
-            type = type
-        )
-    }
+    fun toIconEntry() = IconEntry(
+        packPackageName = packPackageName,
+        name = drawableName,
+        type = type,
+    )
 }
