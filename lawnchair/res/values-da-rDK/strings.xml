@@ -36,6 +36,7 @@
     <string name="max_folder_columns">Maks. Mappekolonner</string>
     <string name="max_folder_rows">Maks. Mappe rækker</string>
     <string name="home_screen_grid">Home Screen Grid</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">Columns</string>
     <string name="grid">Gitter</string>
     <string name="rows">Rows</string>
@@ -108,6 +109,7 @@
     <string name="wallpaper_scrolling_label">Rul Baggrund</string>
     <string name="show_sys_ui_scrim">Top Skygge</string>
     <string name="show_status_bar">Vis Statuslinje</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">Hvad skal vises</string>
     <string name="missing_notification_access_label">Notifikationsadgang krævet</string>
     <string name="missing_notification_access_description">Notifikationsadgang krævet.</string>
