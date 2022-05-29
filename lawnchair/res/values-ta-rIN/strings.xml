@@ -36,6 +36,7 @@
     <string name="max_folder_columns">அதிகபட்ச கோப்புறை நெடுவரிசைகள்</string>
     <string name="max_folder_rows">அதிகபட்ச கோப்புறை வரிசைகள்</string>
     <string name="home_screen_grid">முகப்புத்திரை கட்டம்</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">நெடுவரிசைகள்</string>
     <string name="grid">கட்டடம்</string>
     <string name="rows">வரிசைகள்</string>
@@ -108,6 +109,7 @@
     <string name="wallpaper_scrolling_label">சுவர்த்தாளைத் திரையுருட்டு</string>
     <string name="show_sys_ui_scrim">மேற்புற நிழல்</string>
     <string name="show_status_bar">நிலைப்பலகையை காட்டு</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">எதைக் காடட</string>
     <string name="missing_notification_access_label">அறிவிப்பணுகல் தேவை</string>
     <string name="missing_notification_access_description">அறிவிப்பணுகல் தேவை.</string>
