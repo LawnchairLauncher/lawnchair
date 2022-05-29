@@ -36,7 +36,7 @@
     <string name="max_folder_columns">Max. Ordnerspalten</string>
     <string name="max_folder_rows">Max. Ordnerzeilen</string>
     <string name="home_screen_grid">Startbildschirm-Raster</string>
-    <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_lock">Startbildschirm sperren</string>
     <string name="columns">Spalten</string>
     <string name="grid">Raster</string>
     <string name="rows">Zeilen</string>
