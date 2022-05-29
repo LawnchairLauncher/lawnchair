@@ -36,6 +36,7 @@
     <string name="max_folder_columns">จำนวนคอลัมน์</string>
     <string name="max_folder_rows">จำนวนแถว</string>
     <string name="home_screen_grid">ขนาดกริด</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">จำนวนคอลัมน์</string>
     <string name="grid">กริด</string>
     <string name="rows">จำนวนแถว</string>
@@ -107,6 +108,7 @@
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
     <string name="show_sys_ui_scrim">Top Shadow</string>
     <string name="show_status_bar">Show Status Bar</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">What to Show</string>
     <string name="missing_notification_access_label">Notification Access Needed</string>
     <string name="missing_notification_access_description">Notification access needed.</string>
