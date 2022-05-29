@@ -36,6 +36,7 @@
     <string name="max_folder_columns">Maksimum Klasör Sütunları</string>
     <string name="max_folder_rows">Maksimum Klasör Sıraları</string>
     <string name="home_screen_grid">Ana Ekran Izgaraları</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">Sütunlar</string>
     <string name="grid">Izgara</string>
     <string name="rows">Satırlar</string>
@@ -108,6 +109,7 @@
     <string name="wallpaper_scrolling_label">Duvar Kağıdını Kaydır</string>
     <string name="show_sys_ui_scrim">Üst Gölge</string>
     <string name="show_status_bar">Durum Çubuğunu Göster</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">Gösterilecekler</string>
     <string name="missing_notification_access_label">Bildirim Erişimi Gerekli</string>
     <string name="missing_notification_access_description">Bildirim Erişimi Gerekli.</string>
