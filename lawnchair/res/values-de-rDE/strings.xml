@@ -36,6 +36,7 @@
     <string name="max_folder_columns">Max. Ordnerspalten</string>
     <string name="max_folder_rows">Max. Ordnerzeilen</string>
     <string name="home_screen_grid">Startbildschirm-Raster</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">Spalten</string>
     <string name="grid">Raster</string>
     <string name="rows">Zeilen</string>
@@ -108,6 +109,7 @@
     <string name="wallpaper_scrolling_label">Hintergrund scrollen</string>
     <string name="show_sys_ui_scrim">Oberer Schatten</string>
     <string name="show_status_bar">Suchleiste anzeigen</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">Was soll angezeigt werden</string>
     <string name="missing_notification_access_label">Benachrichtigungszugriff erforderlich</string>
     <string name="missing_notification_access_description">Benachrichtigungszugriff erforderlich.</string>
