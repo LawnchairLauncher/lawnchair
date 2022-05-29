@@ -36,6 +36,7 @@
     <string name="max_folder_columns">Макс. количество столбцов в папке</string>
     <string name="max_folder_rows">Макс. количество строк в папке</string>
     <string name="home_screen_grid">Сетка главного экрана</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">Столбцы</string>
     <string name="grid">Сетка</string>
     <string name="rows">Строки</string>
@@ -110,6 +111,7 @@
     <string name="wallpaper_scrolling_label">Прокрутка обоев</string>
     <string name="show_sys_ui_scrim">Тень под строкой состояния</string>
     <string name="show_status_bar">Отображать строку состояния</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">Что показывать</string>
     <string name="missing_notification_access_label">Доступ к уведомлениям</string>
     <string name="missing_notification_access_description">Необходимо разрешение доступа к уведомлениям.</string>
