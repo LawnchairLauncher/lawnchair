@@ -36,6 +36,7 @@
     <string name="max_folder_columns">Nombre maximum de colonnes des dossiers</string>
     <string name="max_folder_rows">Nombre maximum de lignes des dossiers</string>
     <string name="home_screen_grid">Grille de l\'écran d\'accueil</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">Colonnes</string>
     <string name="grid">Grille</string>
     <string name="rows">Rangées</string>
@@ -108,6 +109,7 @@
     <string name="wallpaper_scrolling_label">Défiler le fond d\'écran</string>
     <string name="show_sys_ui_scrim">Ombre du haut</string>
     <string name="show_status_bar">Afficher la barre d\'état</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">Qu\'afficher</string>
     <string name="missing_notification_access_label">Accès aux notifications requis</string>
     <string name="missing_notification_access_description">Accès aux notifications requis.</string>
