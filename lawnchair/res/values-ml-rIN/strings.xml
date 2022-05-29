@@ -36,6 +36,7 @@
     <string name="max_folder_columns">ഫോൾഡറിലെ പരമാവധി നിരകൾ</string>
     <string name="max_folder_rows">ഫോൾഡറിലെ പരമാവധി വരികൾ</string>
     <string name="home_screen_grid">ഹോം സ്ക്രീനിലെ കളം</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">നിരകൾ</string>
     <string name="grid">കളം</string>
     <string name="rows">വരികൾ</string>
@@ -108,6 +109,7 @@
     <string name="wallpaper_scrolling_label">വാൾപേപ്പർ സ്ക്രോൾ ചെയ്യുക</string>
     <string name="show_sys_ui_scrim">മുകളിലെ നിഴൽ</string>
     <string name="show_status_bar">Show Status Bar</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">എന്തു കാണികണം</string>
     <string name="missing_notification_access_label">നോട്ടിഫിക്കേഷൻ അക്സസ്സ് ആവശ്യമാണ്</string>
     <string name="missing_notification_access_description">നോട്ടിഫിക്കേഷൻ അക്സസ്സ് ആവശ്യമാണ്.</string>
