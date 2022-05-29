@@ -36,6 +36,7 @@
     <string name="max_folder_columns">フォルダの列の最大数</string>
     <string name="max_folder_rows">フォルダの行の最大数</string>
     <string name="home_screen_grid">ホーム画面のグリッド</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">列数</string>
     <string name="grid">グリッド</string>
     <string name="rows">行数</string>
@@ -107,6 +108,7 @@
     <string name="wallpaper_scrolling_label">壁紙をスクロール</string>
     <string name="show_sys_ui_scrim">上部の影</string>
     <string name="show_status_bar">ステータスバーを表示</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">表示する項目</string>
     <string name="missing_notification_access_label">通知へのアクセスが必要です</string>
     <string name="missing_notification_access_description">通知へのアクセスが必要です。</string>
