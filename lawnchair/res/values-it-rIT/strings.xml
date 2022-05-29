@@ -36,7 +36,7 @@
     <string name="max_folder_columns">Colonne massime per la cartella</string>
     <string name="max_folder_rows">Righe massime per la cartella</string>
     <string name="home_screen_grid">Griglia della schermata home</string>
-    <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_lock">Blocca la schermata home</string>
     <string name="columns">Colonne</string>
     <string name="grid">Griglia</string>
     <string name="rows">Righe</string>
