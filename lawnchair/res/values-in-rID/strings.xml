@@ -36,7 +36,7 @@
     <string name="max_folder_columns">Maksimal Kolom Folder</string>
     <string name="max_folder_rows">Maksimal Baris Folder</string>
     <string name="home_screen_grid">Kisi Layar Utama</string>
-    <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_lock">Kunci Layar Beranda</string>
     <string name="columns">Kolom</string>
     <string name="grid">Kisi</string>
     <string name="rows">Baris</string>
@@ -108,7 +108,7 @@
     <string name="wallpaper_scrolling_label">Latar Bergulir</string>
     <string name="show_sys_ui_scrim">Bayangan Atas</string>
     <string name="show_status_bar">Tampilkan bar status</string>
-    <string name="layout">Layout</string>
+    <string name="layout">Tata Letak</string>
     <string name="what_to_show">Yang Ditampilkan</string>
     <string name="missing_notification_access_label">Akses Notifikasi Diperlukan</string>
     <string name="missing_notification_access_description">Akses notifikasi diperlukan.</string>
