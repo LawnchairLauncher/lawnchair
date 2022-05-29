@@ -36,6 +36,7 @@
     <string name="max_folder_columns">מספר מרבי לטורים בתיקייה</string>
     <string name="max_folder_rows">מספר מרבי לשורות בתיקייה</string>
     <string name="home_screen_grid">רשת מסך הבית</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">עמודות</string>
     <string name="grid">רשת</string>
     <string name="rows">שורות</string>
@@ -110,6 +111,7 @@
     <string name="wallpaper_scrolling_label">גלילת טפט</string>
     <string name="show_sys_ui_scrim">הצגת צל</string>
     <string name="show_status_bar">הצגת שורת מצב</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">מה להציג</string>
     <string name="missing_notification_access_label">נדרשת גישה להתראות</string>
     <string name="missing_notification_access_description">נדרשת גישה להתראות.</string>
