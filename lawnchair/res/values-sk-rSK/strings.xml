@@ -36,6 +36,7 @@
     <string name="max_folder_columns">Max. Počet stĺpcov v priečinku</string>
     <string name="max_folder_rows">Max. počet riadkov v priečinku</string>
     <string name="home_screen_grid">Mriežka na Domovskej obrazovke</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">Stĺpce</string>
     <string name="grid">Mriežka</string>
     <string name="rows">Riadky</string>
@@ -110,6 +111,7 @@
     <string name="wallpaper_scrolling_label">Pretáčať tapetu</string>
     <string name="show_sys_ui_scrim">Vrchný tieň</string>
     <string name="show_status_bar">Zobraziť stavový riadok</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">Čo ukázať</string>
     <string name="missing_notification_access_label">Potrebný prístup k upozorneniam</string>
     <string name="missing_notification_access_description">Potrebný prístup k upozorneniam.</string>
