@@ -36,6 +36,7 @@
     <string name="max_folder_columns">Maximální počet sloupců složek</string>
     <string name="max_folder_rows">Maximální počet řádků složek</string>
     <string name="home_screen_grid">Mřížka domovské obrazovky</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">Sloupce</string>
     <string name="grid">Mřížka</string>
     <string name="rows">Řádky</string>
@@ -110,6 +111,7 @@
     <string name="wallpaper_scrolling_label">Posouvat tapetu</string>
     <string name="show_sys_ui_scrim">Horní stín</string>
     <string name="show_status_bar">Zobrazit stavový řádek</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">Co zobrazit</string>
     <string name="missing_notification_access_label">Je vyžadován přístup k oznámením</string>
     <string name="missing_notification_access_description">Je vyžadován přístup k oznámením.</string>
