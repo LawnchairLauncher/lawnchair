@@ -36,6 +36,7 @@
     <string name="max_folder_columns">Máx. colunas de pastas</string>
     <string name="max_folder_rows">Máx. linhas de pastas</string>
     <string name="home_screen_grid">Grade da Tela Inicial</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">Colunas</string>
     <string name="grid">Grade</string>
     <string name="rows">Linhas</string>
@@ -108,6 +109,7 @@
     <string name="wallpaper_scrolling_label">Rolar Papel de Parede</string>
     <string name="show_sys_ui_scrim">Sombra Superior</string>
     <string name="show_status_bar">Mostrar barra de status</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">O que mostrar</string>
     <string name="missing_notification_access_label">Necessário o Acesso às Notificações</string>
     <string name="missing_notification_access_description">Necessário o acesso às notificações.</string>
