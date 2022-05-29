@@ -36,6 +36,7 @@
     <string name="max_folder_columns">عدد الأعمدة الأقصى للمجلدات</string>
     <string name="max_folder_rows">عدد الصفوف الأقصى للمجلدات</string>
     <string name="home_screen_grid">صفوف الشاشة الرئيسية</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">أعمدة</string>
     <string name="grid">شبكة</string>
     <string name="rows">صفوف</string>
@@ -112,6 +113,7 @@
     <string name="wallpaper_scrolling_label">تحريك الخلفية</string>
     <string name="show_sys_ui_scrim">الظل العلوي</string>
     <string name="show_status_bar">إظهار شريط الحالة</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">ماذا تريد أن تُظهر</string>
     <string name="missing_notification_access_label">الوصول إلى الإشعارات مطلوب</string>
     <string name="missing_notification_access_description">الوصول إلى الإشعارات مطلوب.</string>
