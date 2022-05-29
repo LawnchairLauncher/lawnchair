@@ -36,6 +36,7 @@
     <string name="max_folder_columns">Kansion sarakkeiden enimmäismäärä</string>
     <string name="max_folder_rows">Kansion rivien enimmäismäärä</string>
     <string name="home_screen_grid">Aloitusnäytön rivit</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">Sarakkeet</string>
     <string name="grid">Ruudukko</string>
     <string name="rows">Rivit</string>
@@ -108,6 +109,7 @@
     <string name="wallpaper_scrolling_label">Vieritä taustakuvaa</string>
     <string name="show_sys_ui_scrim">Yläosan varjo</string>
     <string name="show_status_bar">Show Status Bar</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">Mitä näytetään</string>
     <string name="missing_notification_access_label">Ilmoitusten käyttöoikeus vaaditaan</string>
     <string name="missing_notification_access_description">Ilmoitusten käyttöoikeus vaaditaan.</string>
