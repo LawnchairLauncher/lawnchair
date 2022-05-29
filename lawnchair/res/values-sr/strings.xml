@@ -36,6 +36,7 @@
     <string name="max_folder_columns">Максимални број колона у фолдеру</string>
     <string name="max_folder_rows">Максимални број редова у фолдеру</string>
     <string name="home_screen_grid">Мрежа почетног екрана</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">Колоне</string>
     <string name="grid">Мрежа</string>
     <string name="rows">Редови</string>
@@ -109,6 +110,7 @@
     <string name="wallpaper_scrolling_label">Листање позадине</string>
     <string name="show_sys_ui_scrim">Горња сенка</string>
     <string name="show_status_bar">Show Status Bar</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">Шта се приказује</string>
     <string name="missing_notification_access_label">Приступ обавештењима</string>
     <string name="missing_notification_access_description">Потребан је приступ обавештењима.</string>
