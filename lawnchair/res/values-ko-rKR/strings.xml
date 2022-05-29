@@ -36,6 +36,7 @@
     <string name="max_folder_columns">폴더 아이콘 최대 가로 배치 수</string>
     <string name="max_folder_rows">폴더 아이콘 최대 세로 배치 수</string>
     <string name="home_screen_grid">홈 화면 칸 수</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">세로</string>
     <string name="grid">그리드</string>
     <string name="rows">가로</string>
@@ -107,6 +108,7 @@
     <string name="wallpaper_scrolling_label">배경화면 움직이기</string>
     <string name="show_sys_ui_scrim">상태표시줄 그림자</string>
     <string name="show_status_bar">Show Status Bar</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">표시할 항목</string>
     <string name="missing_notification_access_label">알림 권한이 필요함</string>
     <string name="missing_notification_access_description">알림 권한이 필요함</string>
