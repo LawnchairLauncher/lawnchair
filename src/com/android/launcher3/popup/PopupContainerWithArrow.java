@@ -68,6 +68,7 @@ import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
+import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,6 +78,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.theme.drawable.DrawableTokens;
 
@@ -87,6 +89,9 @@ import app.lawnchair.theme.drawable.DrawableTokens;
  */
 public class PopupContainerWithArrow<T extends Context & ActivityContext>
         extends ArrowPopup<T> implements DragSource, DragController.DragListener {
+
+    private final PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(getContext());
+    private final boolean lockHomeScreen = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getLockHomeScreen());
 
     private final List<DeepShortcutView> mShortcuts = new ArrayList<>();
     private final PointF mInterceptTouchDown = new PointF();
@@ -650,6 +655,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
 
         @Override
         public boolean onLongClick(View v) {
+            if (mContainer.lockHomeScreen) return false;
             if (!ItemLongClickListener.canStartDrag(mLauncher)) return false;
             // Return early if not the correct view
             if (!(v.getParent() instanceof DeepShortcutView)) return false;

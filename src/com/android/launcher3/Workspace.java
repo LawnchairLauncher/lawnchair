@@ -55,6 +55,7 @@ import android.os.UserHandle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -121,6 +122,7 @@ import com.android.launcher3.widget.WidgetManagerHelper;
 import com.android.launcher3.widget.dragndrop.AppWidgetHostViewDragListener;
 import com.android.launcher3.widget.util.WidgetSizes;
 import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlay;
+import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -130,6 +132,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.smartspace.SmartspaceAppWidgetProvider;
 
 /**
@@ -270,6 +273,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     private final StatsLogManager mStatsLogManager;
 
+    PreferenceManager2 mPreferenceManager2;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -293,6 +298,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mLauncher = Launcher.getLauncher(context);
         mStateTransitionAnimation = new WorkspaceStateTransitionAnimation(mLauncher, this);
         mWallpaperManager = WallpaperManager.getInstance(context);
+        mPreferenceManager2 = PreferenceManager2.getInstance(context);
 
         mWallpaperOffset = new WallpaperOffsetInterpolator(this);
 
@@ -1721,6 +1727,15 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             }
         }
 
+        boolean lockHomeScreen = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getLockHomeScreen());
+        if (lockHomeScreen) {
+            child.setVisibility(View.VISIBLE);
+
+            if (dragOptions.preDragCondition != null) {
+                mLauncher.getDragLayer().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+            }
+            return null;
+        }
         final DragView dv;
         if (contentView instanceof View) {
             if (contentView instanceof LauncherAppWidgetHostView) {

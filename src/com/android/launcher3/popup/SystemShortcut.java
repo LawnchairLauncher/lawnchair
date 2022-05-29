@@ -27,8 +27,11 @@ import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.WidgetsBottomSheet;
+import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
 
 import java.util.List;
+
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Represents a system shortcut for a given app. The shortcut should have a label and icon, and an
@@ -108,6 +111,7 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
     }
 
     public static final Factory<Launcher> WIDGETS = (launcher, itemInfo) -> {
+        if (PreferenceExtensionsKt.firstBlocking(PreferenceManager2.getInstance(launcher).getLockHomeScreen())) return null;
         if (itemInfo.getTargetComponent() == null) return null;
         final List<WidgetItem> widgets =
                 launcher.getPopupDataProvider().getWidgetsForPackageUser(new PackageUserKey(

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.override.CustomizeAppDialog
+import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
@@ -16,12 +17,15 @@ import com.android.launcher3.model.data.AppInfo as ModelAppInfo
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.util.ComponentKey
+import com.patrykmichalik.preferencemanager.firstBlocking
 
 class LawnchairShortcut {
 
     companion object {
-        val CUSTOMIZE = SystemShortcut.Factory<LawnchairLauncher> { activity, itemInfo ->
-            getAppInfo(activity, itemInfo)?.let { Customize(activity, it, itemInfo) }
+
+        val CUSTOMIZE: SystemShortcut.Factory<LawnchairLauncher> = SystemShortcut.Factory<LawnchairLauncher> { activity, itemInfo ->
+            if (PreferenceManager2.getInstance(activity).lockHomeScreen.firstBlocking()) null
+            else getAppInfo(activity, itemInfo)?.let { Customize(activity, it, itemInfo) }
         }
 
         private fun getAppInfo(launcher: LawnchairLauncher, itemInfo: ItemInfo): ModelAppInfo? {

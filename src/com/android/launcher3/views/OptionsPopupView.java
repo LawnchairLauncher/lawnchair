@@ -52,9 +52,12 @@ import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
+import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Popup shown on long pressing an empty space in launcher
@@ -185,7 +188,8 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
                 R.drawable.ic_setting,
                 LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS,
                 OptionsPopupView::startSettings));
-        if (!WidgetsModel.GO_DISABLE_WIDGETS) {
+        boolean lockHomeScreen = PreferenceExtensionsKt.firstBlocking(PreferenceManager2.INSTANCE.get(launcher).getLockHomeScreen());
+        if (!lockHomeScreen && !WidgetsModel.GO_DISABLE_WIDGETS) {
             options.add(new OptionItem(launcher,
                     R.string.widget_button_text,
                     R.drawable.ic_widget,

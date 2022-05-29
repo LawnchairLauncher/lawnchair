@@ -18,6 +18,7 @@ package com.android.launcher3.folder;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
@@ -26,8 +27,11 @@ import android.view.inputmethod.InputConnectionWrapper;
 import android.view.inputmethod.InputMethodManager;
 
 import com.android.launcher3.ExtendedEditText;
+import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
 
 import java.util.List;
+
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Handles additional edit text functionality to better support folder name suggestion.
@@ -38,6 +42,8 @@ import java.util.List;
 public class FolderNameEditText extends ExtendedEditText {
     private static final String TAG = "FolderNameEditText";
     private static final boolean DEBUG = false;
+
+    private final PreferenceManager2 mPreferenceManager2 = PreferenceManager2.getInstance(getContext());
 
     private boolean mEnteredCompose = false;
 
@@ -129,5 +135,11 @@ public class FolderNameEditText extends ExtendedEditText {
             }
         }
         hideKeyboard();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getLockHomeScreen())) return true;
+        return super.onTouchEvent(event);
     }
 }

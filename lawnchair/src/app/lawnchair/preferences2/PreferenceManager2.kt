@@ -142,6 +142,11 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_top_shadow),
     )
 
+    val lockHomeScreen = preference(
+        key = booleanPreferencesKey(name = "lock_home_screen"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_lock_home_screen),
+    )
+
     val hideAppDrawerSearchBar = preference(
         key = booleanPreferencesKey(name = "hide_app_drawer_search_bar"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_hide_app_drawer_search_bar),
