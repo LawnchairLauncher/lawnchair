@@ -36,6 +36,7 @@
     <string name="max_folder_columns">Max. Folder Columns</string>
     <string name="max_folder_rows">Max. Folder Rows</string>
     <string name="home_screen_grid">Home Screen Grid</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">Columns</string>
     <string name="grid">Grid</string>
     <string name="rows">Rows</string>
@@ -108,6 +109,7 @@
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
     <string name="show_sys_ui_scrim">Top Shadow</string>
     <string name="show_status_bar">Show Status Bar</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">What to Show</string>
     <string name="missing_notification_access_label">Notification Access Needed</string>
     <string name="missing_notification_access_description">Notification access needed.</string>
