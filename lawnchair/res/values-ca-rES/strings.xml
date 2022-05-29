@@ -36,6 +36,7 @@
     <string name="max_folder_columns">Màxim de Columnes de Carpeta</string>
     <string name="max_folder_rows">Màxim de Files de Carpeta</string>
     <string name="home_screen_grid">Graella de la pantalla d\'inici</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">Columnes</string>
     <string name="grid">Graella</string>
     <string name="rows">Files</string>
@@ -108,6 +109,7 @@
     <string name="wallpaper_scrolling_label">Desplaçament de fons de pantalla</string>
     <string name="show_sys_ui_scrim">Ombra superior</string>
     <string name="show_status_bar">Mostrar la barra d\'estat</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">Què mostrar</string>
     <string name="missing_notification_access_label">Es necessita accés a les notificacions</string>
     <string name="missing_notification_access_description">És necessari l\'accés a les notificacions.</string>
