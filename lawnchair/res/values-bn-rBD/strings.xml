@@ -36,6 +36,7 @@
     <string name="max_folder_columns">সর্বাধিক. ফোল্ডারের কলাম-সমুহ</string>
     <string name="max_folder_rows">সর্বাধিক. ফোল্ডারের সারি</string>
     <string name="home_screen_grid">হোম স্ক্রীন গ্রিড</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">কলাম</string>
     <string name="grid">গ্রিড</string>
     <string name="rows">সারি</string>
@@ -108,6 +109,7 @@
     <string name="wallpaper_scrolling_label">স্ক্রোল ওয়ালপেপার</string>
     <string name="show_sys_ui_scrim">শীর্ষ ছায়া</string>
     <string name="show_status_bar">স্ট্যাটাস বার দেখান</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">কি দেখাতে হবে</string>
     <string name="missing_notification_access_label">বিজ্ঞপ্তি অ্যাক্সেস প্রয়োজন</string>
     <string name="missing_notification_access_description">বিজ্ঞপ্তি অ্যাক্সেস প্রয়োজন.</string>
