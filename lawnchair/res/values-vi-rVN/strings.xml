@@ -108,7 +108,7 @@
     <string name="wallpaper_scrolling_label">Hình nền cuộn</string>
     <string name="show_sys_ui_scrim">Top Shadow</string>
     <string name="show_status_bar">Hiện thanh trạng thái</string>
-    <string name="layout">Layout</string>
+    <string name="layout">Bố cục</string>
     <string name="what_to_show">What to Show</string>
     <string name="missing_notification_access_label">Cần quyền truy cập thông báo</string>
     <string name="missing_notification_access_description">Cần quyền truy cập thông báo.</string>
