@@ -28,13 +28,19 @@ import android.widget.Toast;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
+
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * A {@link BubbleTextView} that has the shortcut icon on the left and drag handle on the right.
  */
 public class DeepShortcutTextView extends BubbleTextView {
+
+    private final PreferenceManager2 mPreferenceManager2 = PreferenceManager2.getInstance(getContext());
+
     private final Rect mDragHandleBounds = new Rect();
-    private final int mDragHandleWidth;
+    private int mDragHandleWidth;
     private boolean mShowInstructionToast = false;
 
     private Toast mInstructionToast;
@@ -59,6 +65,17 @@ public class DeepShortcutTextView extends BubbleTextView {
                 + resources.getDimensionPixelSize(R.dimen.deep_shortcut_drag_handle_size)
                 + resources.getDimensionPixelSize(R.dimen.deep_shortcut_drawable_padding) / 2;
         showLoadingState(true);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        if (PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getLockHomeScreen())) {
+            setCompoundDrawables(null, null, null, null);
+            mDragHandleWidth = 0;
+            mDragHandleBounds.set(0, 0, 0, 0);
+        }
     }
 
     @Override
