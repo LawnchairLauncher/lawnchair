@@ -36,6 +36,7 @@
     <string name="max_folder_columns">Макс. колонок тек</string>
     <string name="max_folder_rows">Макс. рядків тек</string>
     <string name="home_screen_grid">Сітка головного екрану</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">Стовпці</string>
     <string name="grid">Решітка</string>
     <string name="rows">Рядки</string>
@@ -110,6 +111,7 @@
     <string name="wallpaper_scrolling_label">Пролистати шпалери</string>
     <string name="show_sys_ui_scrim">Найвища тінь</string>
     <string name="show_status_bar">Показати рядок стану</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">Що показати</string>
     <string name="missing_notification_access_label">Необхідний доступ до сповіщень</string>
     <string name="missing_notification_access_description">Потрібний доступ до сповіщень.</string>
