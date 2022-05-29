@@ -36,6 +36,7 @@
     <string name="max_folder_columns">Maks. liczba kolumn folderu</string>
     <string name="max_folder_rows">Maks. liczba wierszy folderu</string>
     <string name="home_screen_grid">Siatka ekranu głównego</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">Kolumny</string>
     <string name="grid">Siatka</string>
     <string name="rows">Wiersze</string>
@@ -110,6 +111,7 @@
     <string name="wallpaper_scrolling_label">Przewiń tapetę</string>
     <string name="show_sys_ui_scrim">Górny cień</string>
     <string name="show_status_bar">Pokaż pasek stanu</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">Co wyświetlić</string>
     <string name="missing_notification_access_label">Wymagany dostęp do powiadomień</string>
     <string name="missing_notification_access_description">Wymagany dostęp do powiadomień.</string>
