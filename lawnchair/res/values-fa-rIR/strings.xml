@@ -98,7 +98,7 @@
     <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">آیکن‌های سیستمی</string>
-    <string name="accent_color">Accent Color</string>
+    <string name="accent_color">رنگ برنامه</string>
     <string name="done">انجام شده</string>
     <string name="loading">درحال بارگذاری…</string>
     <string name="system">سیستم</string>
@@ -106,7 +106,7 @@
     <string name="custom">شخصی</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
     <string name="wallpaper_scrolling_label">پیمایش کاغذ دیواری</string>
-    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_sys_ui_scrim">سایه بالا</string>
     <string name="show_status_bar">نشان‌دادن نوار وضعیت</string>
     <string name="what_to_show">چه چیزی نشان‌داده شود</string>
     <string name="missing_notification_access_label">دسترسی به اعلان‌ها نیاز است</string>
