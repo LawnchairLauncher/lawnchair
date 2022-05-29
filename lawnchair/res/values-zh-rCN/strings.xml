@@ -36,7 +36,7 @@
     <string name="max_folder_columns">最大文件夹列数</string>
     <string name="max_folder_rows">最大文件夹行数</string>
     <string name="home_screen_grid">桌面图标行列数</string>
-    <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_lock">锁定主屏幕布局</string>
     <string name="columns">列数</string>
     <string name="grid">网格</string>
     <string name="rows">行数</string>
@@ -108,7 +108,7 @@
     <string name="wallpaper_scrolling_label">滚动壁纸</string>
     <string name="show_sys_ui_scrim">顶部阴影</string>
     <string name="show_status_bar">显示状态栏</string>
-    <string name="layout">Layout</string>
+    <string name="layout">布局</string>
     <string name="what_to_show">选择要显示的项目</string>
     <string name="missing_notification_access_label">需要通知权限</string>
     <string name="missing_notification_access_description">需要通知权限。</string>
