@@ -111,7 +111,7 @@
     <string name="wallpaper_scrolling_label">Przewiń tapetę</string>
     <string name="show_sys_ui_scrim">Górny cień</string>
     <string name="show_status_bar">Pokaż pasek stanu</string>
-    <string name="layout">Layout</string>
+    <string name="layout">Układ</string>
     <string name="what_to_show">Co wyświetlić</string>
     <string name="missing_notification_access_label">Wymagany dostęp do powiadomień</string>
     <string name="missing_notification_access_description">Wymagany dostęp do powiadomień.</string>
