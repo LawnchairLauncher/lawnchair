@@ -36,6 +36,7 @@
     <string name="max_folder_columns">Numărul maxim de coloane pentru dosare</string>
     <string name="max_folder_rows">Numărul maxim de rânduri pentru dosare</string>
     <string name="home_screen_grid">Grilă ecran principal</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
     <string name="columns">Coloane</string>
     <string name="grid">Grilă</string>
     <string name="rows">Rânduri</string>
@@ -109,6 +110,7 @@
     <string name="wallpaper_scrolling_label">Derulează imaginea de fundal</string>
     <string name="show_sys_ui_scrim">Umbra de sus</string>
     <string name="show_status_bar">Arata_status_bar</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">Ce trebuie afișat</string>
     <string name="missing_notification_access_label">Acces la notificări necesar</string>
     <string name="missing_notification_access_description">Acces la notificări necesar.</string>
