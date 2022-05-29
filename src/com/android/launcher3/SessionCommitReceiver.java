@@ -31,6 +31,9 @@ import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.util.Executors;
+import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
+
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * BroadcastReceiver to handle session commit intent.
@@ -81,6 +84,7 @@ public class SessionCommitReceiver extends BroadcastReceiver {
     }
 
     public static boolean isEnabled(Context context) {
+        if (PreferenceExtensionsKt.firstBlocking(PreferenceManager2.getInstance(context).getLockHomeScreen())) return false;
         return Utilities.getPrefs(context).getBoolean(ADD_ICON_PREFERENCE_KEY, true);
     }
 }
