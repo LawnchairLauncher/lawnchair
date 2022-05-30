@@ -65,13 +65,13 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
     public static final Interpolator BLUR =
             Interpolators.clampToProgress(
                     Interpolators.mapToProgress(
-                            EMPHASIZED_DECELERATE, 0f, ALL_APPS_FULL_DEPTH_PROGRESS),
+                            LINEAR, 0f, ALL_APPS_FULL_DEPTH_PROGRESS),
                     WORKSPACE_MOTION_START, ALL_APPS_STATE_TRANSITION);
     public static final Interpolator WORKSPACE_FADE =
             Interpolators.clampToProgress(FINAL_FRAME, 0f, ALL_APPS_STATE_TRANSITION);
     public static final Interpolator WORKSPACE_SCALE =
             Interpolators.clampToProgress(
-                    EMPHASIZED_DECELERATE, WORKSPACE_MOTION_START, ALL_APPS_STATE_TRANSITION);
+                    EMPHASIZED_ACCELERATE, WORKSPACE_MOTION_START, ALL_APPS_STATE_TRANSITION);
     public static final Interpolator HOTSEAT_FADE = WORKSPACE_FADE;
     public static final Interpolator HOTSEAT_SCALE = HOTSEAT_FADE;
     public static final Interpolator HOTSEAT_TRANSLATE =
