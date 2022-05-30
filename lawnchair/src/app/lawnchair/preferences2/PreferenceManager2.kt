@@ -147,6 +147,12 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         defaultValue = context.resources.getBoolean(R.bool.config_default_lock_home_screen),
     )
 
+    val lockHomeScreenButtonOnPopUp = preference(
+            key = booleanPreferencesKey(name = "lock_home_screen_on_popup"),
+            defaultValue = context.resources.getBoolean(R.bool.config_default_lock_home_screen_on_popup),
+            onSet = { reloadHelper.reloadGrid() },
+    )
+
     val hideAppDrawerSearchBar = preference(
         key = booleanPreferencesKey(name = "hide_app_drawer_search_bar"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_hide_app_drawer_search_bar),
