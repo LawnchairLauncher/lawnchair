@@ -36,7 +36,7 @@
     <string name="max_folder_columns">Số cột tối đa của thư mục</string>
     <string name="max_folder_rows">Số hàng tối đa của thư mục</string>
     <string name="home_screen_grid">Lưới màn hình chính</string>
-    <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_lock">Khoá màn hình chính</string>
     <string name="columns">Cột</string>
     <string name="grid">Lưới</string>
     <string name="rows">Hàng</string>
