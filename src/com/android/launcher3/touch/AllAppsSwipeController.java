@@ -157,6 +157,9 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
         config.setInterpolator(ANIM_SCRIM_FADE, ALLAPPS_STAGGERED_FADE_LATE_RESPONDER);
         config.setInterpolator(ANIM_ALL_APPS_FADE, isTablet
                 ? FINAL_FRAME : ALLAPPS_STAGGERED_FADE_EARLY_RESPONDER);
+        if (!isTablet) {
+            config.setInterpolator(ANIM_WORKSPACE_FADE, INSTANT);
+        }
     }
 
     /**
