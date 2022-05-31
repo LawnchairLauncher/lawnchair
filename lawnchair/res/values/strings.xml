@@ -227,6 +227,7 @@
     <string name="search_provider_duckduckgo" translatable="false">DuckDuckGo</string>
     <string name="search_provider_wikipedia" translatable="false">Wikipedia</string>
     <string name="search_provider_presearch" translatable="false">Presearch</string>
+    <string name="search_provider_bing" translatable="false">Bing</string>
     <string name="always_open_website_label">Always Open Website</string>
     <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
     <string name="search_provider">Search Provider</string>
