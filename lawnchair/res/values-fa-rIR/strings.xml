@@ -109,7 +109,7 @@
     <string name="wallpaper_scrolling_label">پیمایش کاغذ دیواری</string>
     <string name="show_sys_ui_scrim">سایه بالا</string>
     <string name="show_status_bar">نشان‌دادن نوار وضعیت</string>
-    <string name="layout">Layout</string>
+    <string name="layout">چیدمان</string>
     <string name="what_to_show">چه چیزی نشان‌داده شود</string>
     <string name="missing_notification_access_label">دسترسی به اعلان‌ها نیاز است</string>
     <string name="missing_notification_access_description">دسترسی به اعلان‌ها نیاز است.</string>
@@ -189,7 +189,7 @@
     <string name="icon_picker_default_category">آیکن‌ها</string>
     <string name="icon_picker_reset_to_default">بازنشانی به پیشفرض</string>
     <string name="icon_pack_external_picker">Open External Picker</string>
-    <string name="recents_actions_label">Quick Actions</string>
+    <string name="recents_actions_label">عملیات‌های سریع</string>
     <string name="recents_clear_all">حذف همه</string>
     <string name="pick_icon_from_label">انتخاب آیکن از</string>
     <string name="experimental_features_label">قابلیت‌های آزمایشی</string>
@@ -224,8 +224,8 @@
     <string name="preview_label">پیش‌نمایش</string>
     <string name="smartspace_calendar">تقویم</string>
     <string name="smartspace_date_and_time">تاریخ و زمان</string>
-    <string name="smartspace_date">Date</string>
-    <string name="smartspace_time">Time</string>
+    <string name="smartspace_date">تاریخ</string>
+    <string name="smartspace_time">زمان</string>
     <string name="smartspace_time_24_hour_format">24-Hour Format</string>
     <string name="smartspace_weather">آب و هوا</string>
     <string name="smartspace_battery_status">وضعیت باتری</string>
