@@ -52,16 +52,13 @@ import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
+import com.patrykmichalik.preferencemanager.Preference;
 import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import app.lawnchair.preferences2.PreferenceManager2;
-import kotlin.coroutines.CoroutineContext;
-import kotlinx.coroutines.BuildersKt;
-import kotlinx.coroutines.CoroutineStart;
-import kotlinx.coroutines.GlobalScope;
 
 /**
  * Popup shown on long pressing an empty space in launcher
@@ -276,17 +273,11 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
         return launcher.startActivitySafely(v, intent, placeholderInfo(intent));
     }
 
-    @SuppressLint("UnsafeOptInUsageWarning")
     private static boolean toggleHomeScreenLock(View v) {
         Context context = v.getContext();
         PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
-        GlobalScope globalScope = GlobalScope.INSTANCE;
-        CoroutineContext coroutineContext = globalScope.getCoroutineContext();
-        BuildersKt.launch(globalScope,
-                coroutineContext,
-                CoroutineStart.DEFAULT,
-                (coroutineScope, continuation) -> PreferenceExtensionsKt.toggle(preferenceManager2.getLockHomeScreen(), continuation)
-        );
+        boolean oldValue = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getLockHomeScreen());
+        PreferenceExtensionsKt.setBlocking(preferenceManager2.getLockHomeScreen(), !oldValue);
         return true;
     }
 
