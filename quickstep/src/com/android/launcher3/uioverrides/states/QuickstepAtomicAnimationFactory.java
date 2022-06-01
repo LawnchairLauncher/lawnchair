@@ -191,6 +191,9 @@ public class QuickstepAtomicAnimationFactory extends
                     1 - ALL_APPS_SCRIM_OPAQUE_THRESHOLD,
                     1 - ALL_APPS_SCRIM_VISIBLE_THRESHOLD));
             config.setInterpolator(ANIM_VERTICAL_PROGRESS, EMPHASIZED_ACCELERATE);
+            if (!isTablet) {
+                config.setInterpolator(ANIM_WORKSPACE_FADE, INSTANT);
+            }
         } else if (fromState == NORMAL && toState == ALL_APPS) {
             if (mActivity.getDeviceProfile().isTablet) {
                 config.setInterpolator(ANIM_VERTICAL_PROGRESS, EMPHASIZED_DECELERATE);
