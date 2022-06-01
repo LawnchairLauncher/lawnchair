@@ -26,7 +26,7 @@ open class SmartspaceCalendar(@StringRes val nameResourceId: Int, val formatCust
     object Gregorian : SmartspaceCalendar(nameResourceId = R.string.smartspace_calendar_gregorian) {
         override fun toString() = "gregorian"
     }
-    object Persian : SmartspaceCalendar(nameResourceId = R.string.smartspace_calendar_persian, formatCustomizationSupport = false) {
+    object Persian : SmartspaceCalendar(nameResourceId = R.string.smartspace_calendar_persian) {
         override fun toString() = "persian"
     }
 

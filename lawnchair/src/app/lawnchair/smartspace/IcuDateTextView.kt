@@ -61,14 +61,18 @@ class IcuDateTextView @JvmOverloads constructor(
         if (isShown) {
             val timeText = getTimeText(updateFormatter)
             if (text != timeText) {
-                textAlignment =
-                    if (calendar == SmartspaceCalendar.Persian) TEXT_ALIGNMENT_TEXT_END else TEXT_ALIGNMENT_TEXT_START
+                textAlignment = if (shouldAlignToTextEnd()) TEXT_ALIGNMENT_TEXT_END else TEXT_ALIGNMENT_TEXT_START
                 text = timeText
                 contentDescription = timeText
             }
         } else if (updateFormatter) {
             formatterFunction = null
         }
+    }
+
+    private fun shouldAlignToTextEnd(): Boolean {
+        val shouldNotAlignToEnd = dateTimeOptions.showTime && dateTimeOptions.time24HourFormat && !dateTimeOptions.showDate
+        return calendar == SmartspaceCalendar.Persian && !shouldNotAlignToEnd
     }
 
     private fun getTimeText(updateFormatter: Boolean): String {
@@ -89,10 +93,17 @@ class IcuDateTextView @JvmOverloads constructor(
     }
 
     private fun createPersianFormatter(): FormatterFunction {
-        val formatter = PersianDateFormat(
-            context.getString(R.string.smartspace_icu_date_pattern_persian),
-            PersianDateFormat.PersianDateNumberCharacter.FARSI,
-        )
+        var format: String
+        if (dateTimeOptions.showTime) {
+            format = context.getString(
+                if (dateTimeOptions.time24HourFormat) R.string.smartspace_icu_date_pattern_persian_time
+                else R.string.smartspace_icu_date_pattern_persian_time_12h
+            )
+            if (dateTimeOptions.showDate) format = context.getString(R.string.smartspace_icu_date_pattern_persian_date) + format
+        } else {
+            format = context.getString(R.string.smartspace_icu_date_pattern_persian_wday_month_day_no_year)
+        }
+        val formatter = PersianDateFormat(format, PersianDateFormat.PersianDateNumberCharacter.FARSI)
         return { formatter.format(PersianDate(it)) }
     }
 

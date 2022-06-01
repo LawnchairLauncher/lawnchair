@@ -242,7 +242,10 @@
     <string name="smartspace_icu_date_pattern_gregorian_time" translatable="false">HH:mm</string>
     <string name="smartspace_icu_date_pattern_gregorian_time_12h" translatable="false">hh:mm aa</string>
     <string name="smartspace_icu_date_pattern_gregorian_date" translatable="false"> dd MMMM</string>
-    <string name="smartspace_icu_date_pattern_persian" translatable="false">l، j F</string>
+    <string name="smartspace_icu_date_pattern_persian_wday_month_day_no_year" translatable="false">l، j F</string>
+    <string name="smartspace_icu_date_pattern_persian_time" translatable="false">H:i</string>
+    <string name="smartspace_icu_date_pattern_persian_time_12h" translatable="false">H:i a</string>
+    <string name="smartspace_icu_date_pattern_persian_date" translatable="false">"j F، "</string>
     <string name="smartspace_battery_charging">Charging</string>
     <string name="smartspace_battery_full">Charged</string>
     <string name="smartspace_battery_low">Battery Low</string>
