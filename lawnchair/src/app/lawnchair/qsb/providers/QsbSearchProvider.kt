@@ -77,7 +77,8 @@ open class QsbSearchProvider(
             DuckDuckGo,
             Presearch,
             Wikipedia,
-            Bing
+            Bing,
+            Sesame
         )
 
         /**
