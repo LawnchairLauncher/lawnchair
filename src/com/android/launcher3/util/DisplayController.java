@@ -55,6 +55,7 @@ import com.android.launcher3.util.window.WindowManagerProxy;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
@@ -238,7 +239,8 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         if (newInfo.navigationMode != oldInfo.navigationMode) {
             change |= CHANGE_NAVIGATION_MODE;
         }
-        if (!newInfo.supportedBounds.equals(oldInfo.supportedBounds)) {
+        if (!newInfo.supportedBounds.equals(oldInfo.supportedBounds)
+                || !newInfo.mPerDisplayBounds.equals(oldInfo.mPerDisplayBounds)) {
             change |= CHANGE_SUPPORTED_BOUNDS;
 
             Point currentS = newInfo.currentSize;
@@ -261,6 +263,9 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
                 return;
             }
         }
+        Log.d("b/198965093", "handleInfoChange"
+                + "\n\tchange: " + change
+                + "\n\tConfiguration diff: " + newInfo.mConfiguration.diff(oldInfo.mConfiguration));
 
         if (change != 0) {
             mInfo = newInfo;
@@ -300,6 +305,9 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         private final ArrayMap<String, Pair<CachedDisplayInfo, WindowBounds[]>> mPerDisplayBounds =
                 new ArrayMap<>();
 
+        // TODO(b/198965093): Remove after investigation
+        private Configuration mConfiguration;
+
         public Info(Context context, Display display) {
             /* don't need system overrides for external displays */
             this(context, display, new WindowManagerProxy(), new ArrayMap<>());
@@ -321,6 +329,9 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
             mScreenSizeDp = new PortraitSize(config.screenHeightDp, config.screenWidthDp);
             navigationMode = parseNavigationMode(context);
 
+            // TODO(b/198965093): Remove after investigation
+            mConfiguration = config;
+
             mPerDisplayBounds.putAll(perDisplayBoundsCache);
             Pair<CachedDisplayInfo, WindowBounds[]> cachedValue = mPerDisplayBounds.get(displayId);
 
@@ -340,8 +351,11 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
             }
             mPerDisplayBounds.values().forEach(
                     pair -> Collections.addAll(supportedBounds, pair.second));
-            Log.d("b/211775278", "displayId: " + displayId + ", currentSize: " + currentSize);
-            Log.d("b/211775278", "perDisplayBounds: " + mPerDisplayBounds);
+            Log.e("b/198965093", "mConfiguration: " + mConfiguration);
+            Log.d("b/198965093", "displayInfo: " + displayInfo);
+            Log.d("b/198965093", "realBounds: " + realBounds);
+            mPerDisplayBounds.values().forEach(pair -> Log.d("b/198965093",
+                    "perDisplayBounds - " + pair.first + ": " + Arrays.deepToString(pair.second)));
         }
 
         /**
@@ -375,7 +389,8 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         pw.println("  densityDpi=" + info.densityDpi);
         pw.println("  navigationMode=" + info.navigationMode.name());
         pw.println("  currentSize=" + info.currentSize);
-        pw.println("  supportedBounds=" + info.supportedBounds);
+        info.mPerDisplayBounds.values().forEach(pair -> pw.println(
+                "  perDisplayBounds - " + pair.first + ": " + Arrays.deepToString(pair.second)));
     }
 
     /**
