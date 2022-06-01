@@ -209,9 +209,6 @@ public final class FeatureFlags {
             "ENABLE_SCRIM_FOR_APP_LAUNCH", false,
             "Enables scrim during app launch animation.");
 
-    public static final BooleanFlag ENABLE_SPLIT_SELECT = getDebugFlag(
-            "ENABLE_SPLIT_SELECT", true, "Uses new split screen selection overview UI");
-
     public static final BooleanFlag ENABLE_ENFORCED_ROUNDED_CORNERS = new DeviceFlag(
             "ENABLE_ENFORCED_ROUNDED_CORNERS", true, "Enforce rounded corners on all App Widgets");
 

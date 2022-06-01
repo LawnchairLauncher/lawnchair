@@ -231,8 +231,7 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
     private void addMenuOptions(TaskIdAttributeContainer taskContainer) {
         mTaskName.setText(TaskUtils.getTitle(getContext(), taskContainer.getTask()));
         mTaskName.setOnClickListener(v -> close(true));
-        TaskOverlayFactory.getEnabledShortcuts(mTaskView, mActivity.getDeviceProfile(),
-                taskContainer)
+        TaskOverlayFactory.getEnabledShortcuts(mTaskView, taskContainer)
                 .forEach(this::addMenuOption);
     }
 
