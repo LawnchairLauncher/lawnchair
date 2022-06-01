@@ -16,6 +16,8 @@
 
 package com.android.launcher3.views;
 
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -54,10 +56,11 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
             super.onDraw(canvas);
             return;
         }
+        int alpha = Color.alpha(getCurrentTextColor());
 
         // We enhance the shadow by drawing the shadow twice
         getPaint().setShadowLayer(mShadowInfo.ambientShadowBlur, 0, 0,
-                mShadowInfo.ambientShadowColor);
+                getTextShadowColor(mShadowInfo.ambientShadowColor, alpha));
 
         drawWithoutDot(canvas);
         canvas.save();
@@ -69,7 +72,7 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
                 mShadowInfo.keyShadowBlur,
                 mShadowInfo.keyShadowOffsetX,
                 mShadowInfo.keyShadowOffsetY,
-                mShadowInfo.keyShadowColor);
+                getTextShadowColor(mShadowInfo.keyShadowColor, alpha));
         drawWithoutDot(canvas);
         canvas.restore();
 
@@ -110,18 +113,24 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
                 return true;
             } else if (ambientShadowAlpha > 0 && keyShadowAlpha == 0) {
                 textView.getPaint().setShadowLayer(ambientShadowBlur, 0, 0,
-                        ambientShadowColor);
+                        getTextShadowColor(ambientShadowColor, textAlpha));
                 return true;
             } else if (keyShadowAlpha > 0 && ambientShadowAlpha == 0) {
                 textView.getPaint().setShadowLayer(
                         keyShadowBlur,
                         keyShadowOffsetX,
                         keyShadowOffsetY,
-                        keyShadowColor);
+                        getTextShadowColor(keyShadowColor, textAlpha));
                 return true;
             } else {
                 return false;
             }
         }
+    }
+
+    // Multiplies the alpha of shadowColor by textAlpha.
+    private static int getTextShadowColor(int shadowColor, int textAlpha) {
+        return setColorAlphaBound(shadowColor,
+                Math.round(Color.alpha(shadowColor) * textAlpha / 255f));
     }
 }
