@@ -26,7 +26,7 @@
     <string name="home_screen_rotaton_description">هنگام چرخش دستگاه.</string>
     <string name="auto_add_shortcuts_label">افزودن برنامه‌های جدید به صفحه‌اصلی</string>
     <string name="dock_label">Dock</string>
-    <string name="dock_description">نوار جست‌و‌جو، تعداد آیکون</string>
+    <string name="dock_description">نوار جستجو، تعداد آیکون‌ها</string>
     <string name="app_drawer_label">کشوی برنامه‌ها</string>
     <string name="app_drawer_description">برنامه‌های مخفی، تعداد ستون‌ها، آیکون‌ها</string>
     <string name="folders_label">پوشه‌ها</string>
@@ -52,7 +52,7 @@
     <string name="acknowledgements">سپاسگزاریها</string>
     <string name="devops">دو‌آپس</string>
     <string name="quickswitch_maintenance">نگه‌داری QuickSwitch</string>
-    <string name="all_apps_search_bar_hint">اپلیکیشنهای جستجو</string>
+    <string name="all_apps_search_bar_hint">جستجو برنامه‌ها</string>
     <string name="settings_button_text">تنظیمات خانه</string>
     <string name="development">توسعه</string>
     <string name="app_info_drop_target_label">اطلاعات برنامه</string>
@@ -87,7 +87,7 @@
     <string name="minus_one_enable">اخبار</string>
     <string name="minus_one_unavailable">هیچ اخباری نصب نشده است.</string>
     <string name="fuzzy_search_title">جست‌و‌جو فازی</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
+    <string name="fuzzy_search_desc">مطابقت تقریبی برای جستجوی برنامه‌ها.</string>
     <string name="theme_label">تم</string>
     <string name="theme_light">روشن</string>
     <string name="theme_dark">تاریک</string>
@@ -129,9 +129,9 @@
     <string name="font_weight_extra_black">مشکی</string>
     <string name="font_label">قلم‌ (آزمایشی)</string>
     <string name="reset_font">باز نشاندن</string>
-    <string name="search_input_action_clear_results">پاک کردن نوار جست‌و‌جو</string>
+    <string name="search_input_action_clear_results">پاک کردن متن جستجو</string>
     <string name="pref_category_search">جست‌و‌جو</string>
-    <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
+    <string name="pref_search_auto_show_keyboard">نمایش خودکار صفحه کلید</string>
     <string name="label_search">جست‌و‌جو</string>
     <string name="label_lens">گوگل لنز</string>
     <string name="label_voice_search">جستوجو صوتی</string>
@@ -160,7 +160,7 @@
     <string name="colors">رنگ‌ها</string>
     <string name="dynamic">Dynamic</string>
     <string name="all_apps_search_market_message">جست‌و‌جو برنامه‌های بیشتر</string>
-    <string name="show_app_search_bar">Show Search Bar</string>
+    <string name="show_app_search_bar">نشان‌دادن نوار جستجو</string>
     <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
     <string name="crash_report_notif_title">%1$s Crashed</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
@@ -201,7 +201,7 @@
     <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
     <string name="search_provider_app_search">جست‌وجو برنامه</string>
     <string name="always_open_website_label">Always Open Website</string>
-    <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
+    <string name="always_open_website_description">بازکردن وب سایت ارائه‌دهنده‌ها حتی در صورت برنامه آن‌ها.</string>
     <string name="search_provider">تامین کننده جست‌وجو</string>
     <string name="status_bar_label">نوار وضعیت</string>
     <string name="show_notification_count">نشان‌دادن تعداد اعلان‌ها</string>
@@ -226,11 +226,11 @@
     <string name="smartspace_date_and_time">تاریخ و زمان</string>
     <string name="smartspace_date">تاریخ</string>
     <string name="smartspace_time">زمان</string>
-    <string name="smartspace_time_24_hour_format">24-Hour Format</string>
+    <string name="smartspace_time_24_hour_format">قالب ۲۴ ساعته</string>
     <string name="smartspace_weather">آب و هوا</string>
     <string name="smartspace_battery_status">وضعیت باتری</string>
     <string name="smartspace_now_playing">درحال پخش</string>
-    <string name="smartspace_requires_setup">Tap to Set Up</string>
+    <string name="smartspace_requires_setup">برای تنظیم ضربه بزنید</string>
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="smartspace_calendar_gregorian">میلادی</string>
@@ -248,10 +248,10 @@
     <string name="backup_content_wallpaper">کاغذ دیواری</string>
     <string name="backup_create_success">پشتیبان ساخته‌شد.</string>
     <string name="backup_create_error">خطا در ساخت پشتیبان.</string>
-    <string name="restore_backup">بازگرداندن پشتیبان</string>
-    <string name="restore_backup_action">بازگرداندن</string>
-    <string name="what_to_restore">What to Restore</string>
-    <string name="backup_restore_success">پشتیبان بازگردانده شد.</string>
+    <string name="restore_backup">بازیابی بکاپ</string>
+    <string name="restore_backup_action">بازیابی</string>
+    <string name="what_to_restore">موارد بازیابی</string>
+    <string name="backup_restore_success">بکاپ بازیابی شد.</string>
     <string name="backup_restore_error">Failed to restore backup.</string>
     <string name="invalid_backup_file">Invalid backup file.</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
@@ -264,8 +264,8 @@
     <string name="gesture_handler_open_app_config">باز کردن %1$s</string>
     <string name="pick_app_for_gesture">Pick App</string>
     <string name="gesture_handler_open_app_drawer">Open App Drawer</string>
-    <string name="gesture_handler_open_app_search">Open App Search</string>
-    <string name="gesture_handler_open_search">Open Search</string>
+    <string name="gesture_handler_open_app_search">بازکردن جستجوی برنامه‌ها</string>
+    <string name="gesture_handler_open_search">بازکردن جستجو</string>
     <string name="gestures_label">Gestures</string>
     <string name="gesture_swipe_up">Swipe Up</string>
     <string name="gesture_swipe_down">Swipe Down</string>
