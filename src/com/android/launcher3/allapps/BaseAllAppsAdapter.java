@@ -119,7 +119,7 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
          * Returns true if the items represent the same object
          */
         public boolean isSameAs(AdapterItem other) {
-            return (other.viewType != viewType) && (other.getClass() == getClass());
+            return (other.viewType == viewType) && (other.getClass() == getClass());
         }
 
         /**
