@@ -17,7 +17,6 @@ package com.android.quickstep;
 
 import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_SELECT;
 
 import android.animation.Animator;
 import android.content.Context;
@@ -80,7 +79,7 @@ public abstract class SwipeUpAnimationLogic implements
         mDeviceState = deviceState;
         mGestureState = gestureState;
 
-        mIsSwipeForStagedSplit = ENABLE_SPLIT_SELECT.get() &&
+        mIsSwipeForStagedSplit =
                 TopTaskTracker.INSTANCE.get(context).getRunningSplitTaskIds().length > 1;
 
         mTargetGluer = new RemoteTargetGluer(mContext, mGestureState.getActivityInterface());
