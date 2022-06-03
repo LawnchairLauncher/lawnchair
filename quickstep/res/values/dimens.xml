@@ -239,7 +239,7 @@
     <dimen name="navigation_key_padding">0dp</dimen>
 
     <!-- Floating rotation button -->
-    <dimen name="floating_rotation_button_diameter">40dp</dimen>
+    <dimen name="floating_rotation_button_diameter">52dp</dimen>
     <dimen name="floating_rotation_button_min_margin">20dp</dimen>
     <dimen name="floating_rotation_button_taskbar_left_margin">20dp</dimen>
     <dimen name="floating_rotation_button_taskbar_bottom_margin">10dp</dimen>
