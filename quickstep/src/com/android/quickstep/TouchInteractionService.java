@@ -129,7 +129,7 @@ public class TouchInteractionService extends Service
     private static final String TAG = "TouchInteractionService";
 
     private static final boolean BUBBLES_HOME_GESTURE_ENABLED =
-            SystemProperties.getBoolean("persist.wm.debug.bubbles_home_gesture", false);
+            SystemProperties.getBoolean("persist.wm.debug.bubbles_home_gesture", true);
 
     private static final String KEY_BACK_NOTIFICATION_COUNT = "backNotificationCount";
     private static final String NOTIFY_ACTION_BACK = "com.android.quickstep.action.BACK_GESTURE";
