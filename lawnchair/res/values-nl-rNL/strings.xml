@@ -109,7 +109,7 @@
     <string name="wallpaper_scrolling_label">Scrollende achtergrond</string>
     <string name="show_sys_ui_scrim">Bovenste Schaduw</string>
     <string name="show_status_bar">Statusbalk weergeven</string>
-    <string name="layout">Layout</string>
+    <string name="layout">Lay-out</string>
     <string name="what_to_show">Wat te tonen</string>
     <string name="missing_notification_access_label">Notificatie Toegang Nodig</string>
     <string name="missing_notification_access_description">Notificatie toegang vereist.</string>
