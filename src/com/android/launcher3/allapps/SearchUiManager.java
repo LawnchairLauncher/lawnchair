@@ -68,4 +68,9 @@ public interface SearchUiManager {
 
     /** Refresh the currently displayed list of results. */
     default void refreshResults() {}
+
+    /** Returns whether search is in zero state. */
+    default boolean inZeroState() {
+        return false;
+    }
 }
