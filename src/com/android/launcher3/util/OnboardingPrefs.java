@@ -142,16 +142,11 @@ public class OnboardingPrefs<T extends ActivityContext> {
     }
 
     /**
-     * Add "incCountBy" to the given event count, if we haven't already reached the max count.
+     * Sets the event count to the given value.
      *
      * @return Whether we have now reached the max count.
      */
-    public boolean incrementEventCountBy(int incCountBy, @EventCountKey String eventKey) {
-        int count = getCount(eventKey);
-        if (hasReachedMaxCount(count, eventKey)) {
-            return true;
-        }
-        count += incCountBy;
+    public boolean setEventCount(int count, @EventCountKey String eventKey) {
         mSharedPrefs.edit().putInt(eventKey, count).apply();
         return hasReachedMaxCount(count, eventKey);
     }
