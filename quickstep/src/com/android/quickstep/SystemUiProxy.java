@@ -274,18 +274,6 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
         }
     }
 
-    @Override
-    public Rect getNonMinimizedSplitScreenSecondaryBounds() {
-        if (mSystemUiProxy != null) {
-            try {
-                return mSystemUiProxy.getNonMinimizedSplitScreenSecondaryBounds();
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call getNonMinimizedSplitScreenSecondaryBounds", e);
-            }
-        }
-        return null;
-    }
-
     public float getLastNavButtonAlpha() {
         return mLastNavButtonAlpha;
     }
@@ -384,28 +372,6 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
                 mSystemUiProxy.stopScreenPinning();
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call stopScreenPinning", e);
-            }
-        }
-    }
-
-    @Override
-    public void handleImageAsScreenshot(Bitmap bitmap, Rect rect, Insets insets, int i) {
-        if (mSystemUiProxy != null) {
-            try {
-                mSystemUiProxy.handleImageAsScreenshot(bitmap, rect, insets, i);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call handleImageAsScreenshot", e);
-            }
-        }
-    }
-
-    @Override
-    public void setSplitScreenMinimized(boolean minimized) {
-        if (mSystemUiProxy != null) {
-            try {
-                mSystemUiProxy.setSplitScreenMinimized(minimized);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call setSplitScreenMinimized", e);
             }
         }
     }

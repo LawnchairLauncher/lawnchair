@@ -4542,12 +4542,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             @Nullable Runnable onFinishComplete) {
         // TODO(b/197232424#comment#10) Move this back into onRecentsAnimationComplete(). Maybe?
         cleanupRemoteTargets();
-        if (!toRecents && ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            // Reset the minimized state since we force-toggled the minimized state when entering
-            // overview, but never actually finished the recents animation.  This is a catch all for
-            // cases where we haven't already reset it.
-            SystemUiProxy.INSTANCE.get(getContext()).setSplitScreenMinimized(false);
-        }
 
         if (mRecentsAnimationController == null) {
             if (onFinishComplete != null) {
