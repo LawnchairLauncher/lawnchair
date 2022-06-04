@@ -104,6 +104,7 @@ public class ExtendedEditText extends EditText {
 
     public void hideKeyboard() {
         hideKeyboardAsync(ActivityContext.lookupContext(getContext()), getWindowToken());
+        clearFocus();
     }
 
     private boolean showSoftInput() {
