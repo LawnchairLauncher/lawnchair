@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">Icoon pakket</string>
-    <string name="icon_style">Icon Style</string>
+    <string name="icon_style">Icoon stijl</string>
     <string name="settings">Instellingen</string>
     <string name="home_screen_label">Startscherm</string>
     <string name="home_screen_description">Feed, Raster, Pictogrammen</string>
@@ -36,7 +36,7 @@
     <string name="max_folder_columns">Max. Aantal map kolommen</string>
     <string name="max_folder_rows">Max. Aantal Map Rijen</string>
     <string name="home_screen_grid">Startscherm raster</string>
-    <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_lock">Vergrendel startscherm</string>
     <string name="columns">Kolommen</string>
     <string name="grid">Raster</string>
     <string name="rows">Rijen</string>
