@@ -86,7 +86,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     @Override
     protected boolean canInterceptTouch(MotionEvent ev) {
         mDidTouchStartInNavBar = (ev.getEdgeFlags() & EDGE_NAV_BAR) != 0;
-        return super.canInterceptTouch(ev);
+        return super.canInterceptTouch(ev) && !mLauncher.isInState(HINT_STATE);
     }
 
     @Override
