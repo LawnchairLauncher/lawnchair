@@ -267,11 +267,11 @@
     <string name="pick_app_for_gesture">Pick App</string>
     <string name="gesture_handler_open_app_drawer">Open App Drawer</string>
     <string name="gesture_handler_open_app_search">Open App Search</string>
-    <string name="gesture_handler_open_search">Open Search</string>
-    <string name="gestures_label">Gestures</string>
-    <string name="gesture_swipe_up">Swipe Up</string>
-    <string name="gesture_swipe_down">Swipe Down</string>
-    <string name="gesture_home_tap">Home Button Tap</string>
-    <string name="gesture_back_tap">Back Button Tap</string>
-    <string name="x_and_y">%s &amp; %s</string>
+    <string name="gesture_handler_open_search">Otvoriť vyhľadávanie</string>
+    <string name="gestures_label">Gestá</string>
+    <string name="gesture_swipe_up">Potiahnutie nahor</string>
+    <string name="gesture_swipe_down">Potiahnutie nadol</string>
+    <string name="gesture_home_tap">Tlačidlo Domov</string>
+    <string name="gesture_back_tap">Tlačidlo Späť</string>
+    <string name="x_and_y">%s a %s</string>
 </resources>
