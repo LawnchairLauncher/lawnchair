@@ -25,9 +25,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.view.inputmethod.InputMethodManager;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.views.ActivityContext;
 
 /**
@@ -48,6 +52,29 @@ public class UiThreadHelper {
     public static void hideKeyboardAsync(ActivityContext activityContext, IBinder token) {
         View root = activityContext.getDragLayer();
 
+        if (Utilities.ATLEAST_R) {
+            Preconditions.assertUIThread();
+            //  Hide keyboard with WindowInsetsController if could. In case
+            //  hideSoftInputFromWindow may get ignored by input connection being finished
+            //  when the screen is off.
+            //
+            // In addition, inside IMF, the keyboards are closed asynchronously that launcher no
+            // longer need to post to the message queue.
+            final WindowInsetsController wic = root.getWindowInsetsController();
+            WindowInsets insets = root.getRootWindowInsets();
+            boolean isImeShown = insets != null && insets.isVisible(WindowInsets.Type.ime());
+            if (wic != null && isImeShown) {
+                // this method cannot be called cross threads
+                wic.hide(WindowInsets.Type.ime());
+                activityContext.getStatsLogManager().logger()
+                        .log(LAUNCHER_ALLAPPS_KEYBOARD_CLOSED);
+                return;
+            } else {
+                // print which stack trace failed.
+                Log.e("Launcher", "hideKeyboard ignored.", new Exception());
+                // Then attempt to use the old logic.
+            }
+        }
         // Since the launcher context cannot be accessed directly from callback, adding secondary
         // message to log keyboard close event asynchronously.
         Bundle mHideKeyboardLoggerMsg = new Bundle();
@@ -55,7 +82,7 @@ public class UiThreadHelper {
                 STATS_LOGGER_KEY,
                 Message.obtain(
                         HANDLER.get(root.getContext()),
-                        () -> ActivityContext.lookupContext(root.getContext())
+                        () -> activityContext
                                 .getStatsLogManager()
                                 .logger()
                                 .log(LAUNCHER_ALLAPPS_KEYBOARD_CLOSED)
