@@ -20,6 +20,7 @@ open class QsbSearchProvider(
     @DrawableRes val themedIcon: Int = icon,
     val themingMethod: ThemingMethod = ThemingMethod.TINT,
     val packageName: String,
+    val className: String = "",
     val action: String? = null,
     val supportVoiceIntent: Boolean = false,
     val website: String
@@ -48,7 +49,7 @@ open class QsbSearchProvider(
 
     fun createSearchIntent() = Intent(action)
         .addFlags(INTENT_FLAGS)
-        .setPackage(packageName)
+        .setClassName(packageName, className)
 
     fun createVoiceIntent(): Intent = if (supportVoiceIntent) {
         handleCreateVoiceIntent()
@@ -73,7 +74,8 @@ open class QsbSearchProvider(
             AppSearch,
             Google,
             GoogleGo,
-            DuckDuckGo
+            DuckDuckGo,
+            Wikipedia
         )
 
         /**
