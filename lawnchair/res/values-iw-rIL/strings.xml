@@ -37,6 +37,8 @@
     <string name="max_folder_rows">מספר מרבי לשורות בתיקייה</string>
     <string name="home_screen_grid">רשת מסך הבית</string>
     <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">עמודות</string>
     <string name="grid">רשת</string>
     <string name="rows">שורות</string>
