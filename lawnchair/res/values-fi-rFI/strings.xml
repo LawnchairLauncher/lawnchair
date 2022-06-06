@@ -37,6 +37,8 @@
     <string name="max_folder_rows">Kansion rivien enimmäismäärä</string>
     <string name="home_screen_grid">Aloitusnäytön rivit</string>
     <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">Sarakkeet</string>
     <string name="grid">Ruudukko</string>
     <string name="rows">Rivit</string>
