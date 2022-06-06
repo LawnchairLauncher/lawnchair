@@ -1584,10 +1584,9 @@ public class TaskView extends FrameLayout implements Reusable {
             }
             mCurrentDrawnInsets.set(currentInsetsLeft, insets.top * fullscreenProgress,
                     currentInsetsRight, insetsBottom * fullscreenProgress);
-            float fullscreenCornerRadius = dp.isMultiWindowMode ? 0 : mWindowCornerRadius;
 
             mCurrentDrawnCornerRadius =
-                    Utilities.mapRange(fullscreenProgress, mCornerRadius, fullscreenCornerRadius)
+                    Utilities.mapRange(fullscreenProgress, mCornerRadius, mWindowCornerRadius)
                             / parentScale / taskViewScale;
 
             // We scaled the thumbnail to fit the content (excluding insets) within task view width.

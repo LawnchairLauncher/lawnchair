@@ -451,9 +451,8 @@ public class TaskThumbnailView extends View {
 
             // Landscape vs portrait change.
             // Note: Disable rotation in grid layout.
-            boolean windowingModeSupportsRotation = !dp.isMultiWindowMode
-                    && thumbnailData.windowingMode == WINDOWING_MODE_FULLSCREEN
-                    && !dp.isTablet;
+            boolean windowingModeSupportsRotation =
+                    thumbnailData.windowingMode == WINDOWING_MODE_FULLSCREEN && !dp.isTablet;
             isOrientationDifferent = isOrientationChange(deltaRotate)
                     && windowingModeSupportsRotation;
             if (canvasWidth == 0 || canvasHeight == 0 || scale == 0) {
@@ -562,13 +561,8 @@ public class TaskThumbnailView extends View {
             Rect splitScreenInsets = dp.getInsets();
             if (!isRotated) {
                 // No Rotation
-                if (dp.isMultiWindowMode) {
-                    mClippedInsets.offsetTo(splitScreenInsets.left * scale,
-                            splitScreenInsets.top * scale);
-                } else {
-                    mClippedInsets.offsetTo(thumbnailClipHint.left * scale,
-                            thumbnailClipHint.top * scale);
-                }
+                mClippedInsets.offsetTo(thumbnailClipHint.left * scale,
+                        thumbnailClipHint.top * scale);
                 mMatrix.setTranslate(
                         -thumbnailClipHint.left * scale,
                         -thumbnailClipHint.top * scale);
@@ -587,16 +581,10 @@ public class TaskThumbnailView extends View {
             }
             mClippedInsets.left *= thumbnailScale;
             mClippedInsets.top *= thumbnailScale;
-
-            if (dp.isMultiWindowMode) {
-                mClippedInsets.right = splitScreenInsets.right * scale * thumbnailScale;
-                mClippedInsets.bottom = splitScreenInsets.bottom * scale * thumbnailScale;
-            } else {
-                mClippedInsets.right = Math.max(0,
-                        widthWithInsets - mClippedInsets.left - canvasWidth);
-                mClippedInsets.bottom = Math.max(0,
-                        heightWithInsets - mClippedInsets.top - canvasHeight);
-            }
+            mClippedInsets.right = Math.max(0,
+                    widthWithInsets - mClippedInsets.left - canvasWidth);
+            mClippedInsets.bottom = Math.max(0,
+                    heightWithInsets - mClippedInsets.top - canvasHeight);
 
             mMatrix.postScale(thumbnailScale, thumbnailScale);
             mIsOrientationChanged = isOrientationDifferent;
