@@ -1698,15 +1698,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 return;
             }
 
-            if (!mLauncher.hasBeenResumed()) {
-                // If launcher is not resumed, wait until new async-frame after resume
-                mLauncher.addOnResumeCallback(() ->
-                        postAsyncCallback(mHandler, () ->
-                                onCreateAnimation(transit, appTargets, wallpaperTargets,
-                                        nonAppTargets, result)));
-                return;
-            }
-
             if (mLauncher.hasSomeInvisibleFlag(PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION)) {
                 mLauncher.addForceInvisibleFlag(INVISIBLE_BY_PENDING_FLAGS);
                 mLauncher.getStateManager().moveToRestState();
