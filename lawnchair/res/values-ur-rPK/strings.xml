@@ -37,6 +37,8 @@
     <string name="max_folder_rows">زیادہ سے زیادہ۔ فولڈر کی قطاریں</string>
     <string name="home_screen_grid">Home Screen Grid</string>
     <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">Columns</string>
     <string name="grid">گرڈ</string>
     <string name="rows">Rows</string>
