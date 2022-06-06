@@ -37,6 +37,8 @@
     <string name="max_folder_rows">Максимални број редова у фолдеру</string>
     <string name="home_screen_grid">Мрежа почетног екрана</string>
     <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">Колоне</string>
     <string name="grid">Мрежа</string>
     <string name="rows">Редови</string>
