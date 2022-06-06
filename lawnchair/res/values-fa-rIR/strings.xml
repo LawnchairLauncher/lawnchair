@@ -36,7 +36,7 @@
     <string name="max_folder_columns">حداکثر ستون‌های پوشه‌ها</string>
     <string name="max_folder_rows">حداکثر ردیف‌های پوشه‌ها</string>
     <string name="home_screen_grid">جدول صفحه‌اصلی</string>
-    <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_lock">قفل صفحه اصلی</string>
     <string name="columns">ستون‌ها</string>
     <string name="grid">جدول</string>
     <string name="rows">ردیف‌ها</string>
