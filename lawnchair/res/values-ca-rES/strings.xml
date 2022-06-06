@@ -37,6 +37,8 @@
     <string name="max_folder_rows">Màxim de Files de Carpeta</string>
     <string name="home_screen_grid">Graella de la pantalla d\'inici</string>
     <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">Columnes</string>
     <string name="grid">Graella</string>
     <string name="rows">Files</string>
