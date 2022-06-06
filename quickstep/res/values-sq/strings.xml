@@ -84,7 +84,7 @@
     <string name="toast_split_app_unsupported" msgid="3271526028981899666">"Aplikacioni nuk mbështet ekranin e ndarë."</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Ky veprim nuk lejohet nga aplikacioni ose organizata jote"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Të kapërcehet udhëzuesi i navigimit?"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Këtë mund ta gjesh më vonë tek aplikacioni <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Këtë mund ta gjesh më vonë tek aplikacioni \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Anulo"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Kapërce"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Rrotullo ekranin"</string>

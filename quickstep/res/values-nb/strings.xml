@@ -70,7 +70,7 @@
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Ferdig"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Ferdig"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Innstillinger"</string>
-    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Prøv igjen"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Prøv på nytt"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Bra!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Veiledning <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Alt er klart!"</string>
@@ -83,7 +83,7 @@
     <string name="toast_split_select_app" msgid="5453865907322018352">"Trykk på en annen app for å bruke delt skjerm"</string>
     <string name="toast_split_app_unsupported" msgid="3271526028981899666">"Appen støtter ikke delt skjerm."</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Appen eller organisasjonen din tillater ikke denne handlingen"</string>
-    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Vil du hoppe over navigeringsveiledning?"</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Vil du hoppe over navigeringsveiledningen?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Du kan finne dette i <xliff:g id="NAME">%1$s</xliff:g>-appen senere"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Avbryt"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Hopp over"</string>
