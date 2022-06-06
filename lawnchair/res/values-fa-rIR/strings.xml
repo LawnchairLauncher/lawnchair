@@ -37,7 +37,7 @@
     <string name="max_folder_rows">حداکثر ردیف‌های پوشه‌ها</string>
     <string name="home_screen_grid">جدول صفحه‌اصلی</string>
     <string name="home_screen_lock">قفل صفحه اصلی</string>
-    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_unlock">باز کردن قفل صفحه اصلی</string>
     <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">ستون‌ها</string>
     <string name="grid">جدول</string>
