@@ -37,6 +37,8 @@
     <string name="max_folder_rows">Maks. Folderrye</string>
     <string name="home_screen_grid">Tuisskermrooster</string>
     <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">Kolomme</string>
     <string name="grid">Rooster</string>
     <string name="rows">Rye</string>
