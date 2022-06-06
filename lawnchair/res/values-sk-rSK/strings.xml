@@ -37,6 +37,8 @@
     <string name="max_folder_rows">Max. počet riadkov v priečinku</string>
     <string name="home_screen_grid">Mriežka na Domovskej obrazovke</string>
     <string name="home_screen_lock">Uzamknúť domovskú obrazovku</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">Stĺpce</string>
     <string name="grid">Mriežka</string>
     <string name="rows">Riadky</string>
