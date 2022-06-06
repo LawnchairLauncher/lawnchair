@@ -37,6 +37,8 @@
     <string name="max_folder_rows">عدد الصفوف الأقصى للمجلدات</string>
     <string name="home_screen_grid">صفوف الشاشة الرئيسية</string>
     <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">أعمدة</string>
     <string name="grid">شبكة</string>
     <string name="rows">صفوف</string>
