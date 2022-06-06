@@ -21,7 +21,7 @@
     <string name="home_screen_label">صفحه اصلی</string>
     <string name="home_screen_description">اخبار،‌ جدول،‌‌ آیکون‌ها</string>
     <string name="general_label">عمومی</string>
-    <string name="general_description">Colors, Icon Pack, Notification Dots</string>
+    <string name="general_description">رنگ‌ها، آیکون پک، نشان اعلان‌ها</string>
     <string name="home_screen_rotation_label">چرخش صفحه‌اصلی</string>
     <string name="home_screen_rotaton_description">هنگام چرخش دستگاه.</string>
     <string name="auto_add_shortcuts_label">افزودن برنامه‌های جدید به صفحه‌اصلی</string>
@@ -264,7 +264,7 @@
     <string name="gesture_handler_open_notifications">Open Notification Panel</string>
     <string name="gesture_handler_open_app_option">باز کردن برنامه</string>
     <string name="gesture_handler_open_app_config">باز کردن %1$s</string>
-    <string name="pick_app_for_gesture">Pick App</string>
+    <string name="pick_app_for_gesture">انتخاب برنامه</string>
     <string name="gesture_handler_open_app_drawer">Open App Drawer</string>
     <string name="gesture_handler_open_app_search">بازکردن جستجوی برنامه‌ها</string>
     <string name="gesture_handler_open_search">بازکردن جستجو</string>
