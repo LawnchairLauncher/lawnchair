@@ -37,8 +37,8 @@
     <string name="max_folder_rows">Maksimal Baris Folder</string>
     <string name="home_screen_grid">Kisi Layar Utama</string>
     <string name="home_screen_lock">Kunci Layar Beranda</string>
-    <string name="home_screen_unlock">Unlock Home Screen</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_unlock">Buka Kunci Layar Beranda</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Tampilkan Tombol Kunci di Pop-Up</string>
     <string name="columns">Kolom</string>
     <string name="grid">Kisi</string>
     <string name="rows">Baris</string>
