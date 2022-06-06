@@ -32,7 +32,7 @@
     <string name="split_screen_position_left" msgid="7537793098851830883">"Приложение слева"</string>
     <string name="split_screen_position_right" msgid="1569377524925193369">"Приложение справа"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Сведения о приложении \"%1$s\""</string>
-    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Нажмите и удерживайте для переноса виджета."</string>
+    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Чтобы переместить виджет, нажмите на него и удерживайте"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Чтобы использовать специальные действия или перенести виджет, нажмите на него дважды и удерживайте."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d x %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Ширина %1$d, высота %2$d"</string>

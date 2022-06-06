@@ -52,7 +52,7 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"İş"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Görüşmeler"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Faydalı bilgiler parmaklarınızın ucunda"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"Uygulamaları açmadan bilgi almak için Ana ekranınıza widget\'lar ekleyebilirsiniz"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"Uygulama açmadan bilgi almak için Ana ekranınıza widget ekleyebilirsiniz"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Widget ayarlarını değiştirmek için dokunun"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"Anladım"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Widget ayarlarını değiştir"</string>
@@ -129,7 +129,7 @@
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Ana ekrana ekle"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Öğeyi buraya taşı"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Öğe ana ekrana eklendi"</string>
-    <string name="item_removed" msgid="851119963877842327">"Öğe kaldırıldı"</string>
+    <string name="item_removed" msgid="851119963877842327">"Öğe silindi"</string>
     <string name="undo" msgid="4151576204245173321">"Geri al"</string>
     <string name="action_move" msgid="4339390619886385032">"Öğeyi taşı"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"<xliff:g id="NUMBER_0">%1$s</xliff:g>. satır <xliff:g id="NUMBER_1">%2$s</xliff:g>. sütuna taşı"</string>
