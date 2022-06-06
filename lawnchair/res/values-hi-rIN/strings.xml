@@ -37,6 +37,8 @@
     <string name="max_folder_rows">ज्यादा फ़ोल्डर पंक्तियाँ</string>
     <string name="home_screen_grid">होम स्क्रीन ग्रिड</string>
     <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">कॉलम</string>
     <string name="grid">ग्रिड</string>
     <string name="rows">रॉ</string>
