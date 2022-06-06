@@ -37,8 +37,8 @@
     <string name="max_folder_rows">Maks. liczba wierszy folderu</string>
     <string name="home_screen_grid">Siatka ekranu głównego</string>
     <string name="home_screen_lock">Zablokuj ekran główny</string>
-    <string name="home_screen_unlock">Unlock Home Screen</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_unlock">Odblokuj ekran główny</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Pokaż przycisk blokady w wyskakującym oknie</string>
     <string name="columns">Kolumny</string>
     <string name="grid">Siatka</string>
     <string name="rows">Wiersze</string>
