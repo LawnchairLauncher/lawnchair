@@ -37,6 +37,8 @@
     <string name="max_folder_rows">Numărul maxim de rânduri pentru dosare</string>
     <string name="home_screen_grid">Grilă ecran principal</string>
     <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">Coloane</string>
     <string name="grid">Grilă</string>
     <string name="rows">Rânduri</string>
