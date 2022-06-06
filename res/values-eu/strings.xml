@@ -37,7 +37,7 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d zabal eta %2$d luze"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> widgeta"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Eduki sakatuta widgeta hasierako pantailan zehar mugitzeko"</string>
+    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Widgeta hasierako pantailan zehar mugitzeko, eduki ezazu sakatuta"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"Gehitu hasierako pantailan"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> widgeta hasierako pantailan gehitu da"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# widget}other{# widget}}"</string>

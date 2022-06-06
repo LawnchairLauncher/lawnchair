@@ -32,7 +32,7 @@
     <string name="split_screen_position_left" msgid="7537793098851830883">"פיצול שמאלה"</string>
     <string name="split_screen_position_right" msgid="1569377524925193369">"פיצול ימינה"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"‏פרטים על האפליקציה %1$s"</string>
-    <string name="long_press_widget_to_add" msgid="3587712543577675817">"כדי להעביר ווידג\'ט למקום אחר יש לגעת ולא להרפות."</string>
+    <string name="long_press_widget_to_add" msgid="3587712543577675817">"להעברת ווידג\'ט למקום אחר לוחצים עליו לחיצה ארוכה."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"כדי להעביר ווידג\'ט למקום אחר או להשתמש בפעולות מותאמות אישית, יש ללחוץ פעמיים ולא להרפות."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"‏רוחב %1$d על גובה %2$d"</string>
@@ -153,7 +153,7 @@
     <string name="action_dismiss_notification" msgid="5909461085055959187">"סגירה"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"סגירה"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ההתראה נסגרה"</string>
-    <string name="all_apps_personal_tab" msgid="4190252696685155002">"אישיות"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"אישי"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"עבודה"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"פרופיל עבודה"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"‏האפליקציות לעבודה מתויגות ומוצגות למנהל ה-IT"</string>
@@ -163,7 +163,7 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"האפליקציות לעבודה מושבתות. האפליקציות לא יכולות לשלוח לך התראות, להשתמש בסוללה או לגשת למיקום שלך"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"‏האפליקציות לעבודה מתויגות ומוצגות למנהל ה-IT"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"הבנתי"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"כיבוי של אפליקציות לעבודה"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"השבתה של אפליקציות לעבודה"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"הפעלה של אפליקציות לעבודה"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"סינון"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"הפעולה נכשלה: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
