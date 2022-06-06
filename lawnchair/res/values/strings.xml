@@ -44,6 +44,8 @@
     <string name="max_folder_rows">Max. Folder Rows</string>
     <string name="home_screen_grid">Home Screen Grid</string>
     <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">Columns</string>
     <string name="grid">Grid</string>
     <string name="rows">Rows</string>
@@ -226,6 +228,8 @@
     <string name="search_provider_google_go" translatable="false">Google Go</string>
     <string name="search_provider_duckduckgo" translatable="false">DuckDuckGo</string>
     <string name="search_provider_wikipedia" translatable="false">Wikipedia</string>
+    <string name="search_provider_presearch" translatable="false">Presearch</string>
+    <string name="search_provider_bing" translatable="false">Bing</string>
     <string name="always_open_website_label">Always Open Website</string>
     <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
     <string name="search_provider">Search Provider</string>
