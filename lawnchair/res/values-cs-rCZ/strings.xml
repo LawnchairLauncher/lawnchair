@@ -37,6 +37,8 @@
     <string name="max_folder_rows">Maximální počet řádků složek</string>
     <string name="home_screen_grid">Mřížka domovské obrazovky</string>
     <string name="home_screen_lock">Uzamknout domovskou obrazovku</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">Sloupce</string>
     <string name="grid">Mřížka</string>
     <string name="rows">Řádky</string>
