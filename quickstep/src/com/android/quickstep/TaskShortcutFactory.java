@@ -20,9 +20,7 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_SELECTIO
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.ActivityOptions;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -254,7 +252,6 @@ public interface TaskShortcutFactory {
      * Does NOT add split options in the following scenarios:
      * * The taskView to add split options is already showing split screen tasks
      * * There aren't at least 2 tasks in overview to show split options for
-     * * Device is in "Lock task mode"
      * * The taskView to show split options for is the focused task AND we haven't started
      * scrolling in overview (if we haven't scrolled, there's a split overview action button so
      * we don't need this menu option)
@@ -274,12 +271,9 @@ public interface TaskShortcutFactory {
             boolean isFocusedTask = deviceProfile.isTablet && taskView.isFocusedTask();
             boolean isTaskInExpectedScrollPosition =
                     recentsView.isTaskInExpectedScrollPosition(recentsView.indexOfChild(taskView));
-            ActivityManager activityManager = (ActivityManager) taskView.getContext()
-                    .getSystemService(Context.ACTIVITY_SERVICE);
-            boolean isLockTaskMode = activityManager.isInLockTaskMode();
 
-            if (taskViewHasMultipleTasks || notEnoughTasksToSplit || isLockTaskMode ||
-                    (isFocusedTask && isTaskInExpectedScrollPosition)) {
+            if (taskViewHasMultipleTasks || notEnoughTasksToSplit
+                    || (isFocusedTask && isTaskInExpectedScrollPosition)) {
                 return null;
             }
 
