@@ -37,6 +37,8 @@
     <string name="max_folder_rows">அதிகபட்ச கோப்புறை வரிசைகள்</string>
     <string name="home_screen_grid">முகப்புத்திரை கட்டம்</string>
     <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">நெடுவரிசைகள்</string>
     <string name="grid">கட்டடம்</string>
     <string name="rows">வரிசைகள்</string>
