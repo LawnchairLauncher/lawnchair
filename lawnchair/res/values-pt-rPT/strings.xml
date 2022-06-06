@@ -37,6 +37,8 @@
     <string name="max_folder_rows">Max. de Linhas da Pasta</string>
     <string name="home_screen_grid">Grelha da Tela Inicial</string>
     <string name="home_screen_lock">Bloquear Ecrã Inicial</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">Colunas</string>
     <string name="grid">Grelha</string>
     <string name="rows">Linhas</string>
