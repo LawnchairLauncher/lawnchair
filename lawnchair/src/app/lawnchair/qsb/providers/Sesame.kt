@@ -10,5 +10,6 @@ object Sesame : QsbSearchProvider(
     themingMethod = ThemingMethod.TINT,
     packageName = "ninja.sesame.app.edge",
     className = "ninja.sesame.app.edge.omni.OmniActivity",
-    website = "https://play.google.com/store/apps/details?id=ninja.sesame.app.edge"
+    website = "https://play.google.com/store/apps/details?id=ninja.sesame.app.edge",
+    type = QsbSearchProviderType.APP
 )

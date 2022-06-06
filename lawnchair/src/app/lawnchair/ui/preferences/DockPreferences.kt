@@ -23,6 +23,7 @@ import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.qsb.providers.QsbSearchProviderType
 import app.lawnchair.ui.preferences.components.*
 import com.android.launcher3.R
 
@@ -55,11 +56,15 @@ fun DockPreferences() {
                         showAsPercentage = true,
                     )
                     QsbProviderPreference()
-                    SwitchPreference(
-                        adapter = prefs2.hotseatQsbForceWebsite.getAdapter(),
-                        label = stringResource(R.string.always_open_website_label),
-                        description = stringResource(R.string.always_open_website_description),
-                    )
+                    val hotseatQsbProviderAdapter =
+                        preferenceManager2().hotseatQsbProvider.getAdapter()
+                    ExpandAndShrink(visible = hotseatQsbProviderAdapter.state.value.type == QsbSearchProviderType.APP_AND_WEBSITE) {
+                        SwitchPreference(
+                            adapter = prefs2.hotseatQsbForceWebsite.getAdapter(),
+                            label = stringResource(R.string.always_open_website_label),
+                            description = stringResource(R.string.always_open_website_description),
+                        )
+                    }
                 }
             }
         }
