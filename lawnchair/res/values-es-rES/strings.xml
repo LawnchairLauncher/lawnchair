@@ -36,9 +36,9 @@
     <string name="max_folder_columns">Máx. Columnas de Carpetas</string>
     <string name="max_folder_rows">Máx. Filas de Carpetas</string>
     <string name="home_screen_grid">Cuadrícula de Pantalla de Inicio</string>
-    <string name="home_screen_lock">Lock Home Screen</string>
-    <string name="home_screen_unlock">Unlock Home Screen</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_lock">Bloquear pantalla de inicio</string>
+    <string name="home_screen_unlock">Desbloquear pantalla de inicio</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Mostrar botón de bloqueo en la ventana emergente</string>
     <string name="columns">Columnas</string>
     <string name="grid">Cuadrícula</string>
     <string name="rows">Filas</string>
@@ -111,7 +111,7 @@
     <string name="wallpaper_scrolling_label">Desplazar fondo</string>
     <string name="show_sys_ui_scrim">Sombra superior</string>
     <string name="show_status_bar">Mostrar Barra de estado</string>
-    <string name="layout">Layout</string>
+    <string name="layout">Diseño</string>
     <string name="what_to_show">Qué mostrar</string>
     <string name="missing_notification_access_label">Acceso a las notificaciones requerido</string>
     <string name="missing_notification_access_description">Acceso a las notificaciones requerido.</string>
