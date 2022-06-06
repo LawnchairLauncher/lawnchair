@@ -1676,7 +1676,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         boolean wasVisible = mWasLauncherAlreadyVisible || mGestureStarted;
         mActivityInterface.onTransitionCancelled(wasVisible, mGestureState.getEndTarget());
 
-        if (mRecentsAnimationTargets != null) {
+        if (mRecentsAnimationTargets != null && wasVisible) {
             setDividerShown(true /* shown */, true /* immediate */);
         }
 
