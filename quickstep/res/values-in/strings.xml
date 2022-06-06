@@ -40,7 +40,7 @@
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Lain kali"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Setelan"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Aplikasi yang paling sering digunakan muncul di sini, dan berubah berdasarkan rutinitas"</string>
-    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Tarik aplikasi dari baris paling bawah untuk mendapatkan saran aplikasi"</string>
+    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Tarik aplikasi dari baris bawah untuk mendapatkan saran aplikasi"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Saran aplikasi ditambahkan ke ruang kosong"</string>
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Saran aplikasi diaktifkan"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Saran aplikasi dinonaktifkan"</string>
@@ -83,7 +83,7 @@
     <string name="toast_split_select_app" msgid="5453865907322018352">"Ketuk aplikasi lain untuk menggunakan layar terpisah"</string>
     <string name="toast_split_app_unsupported" msgid="3271526028981899666">"Aplikasi tidak mendukung layar terpisah."</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Tindakan ini tidak diizinkan oleh aplikasi atau organisasi Anda"</string>
-    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Lewati tutorial navigasi?"</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Lewati tutorial gestur?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Anda dapat menemukan tutorial ini di lain waktu di aplikasi <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Batal"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Lewati"</string>
