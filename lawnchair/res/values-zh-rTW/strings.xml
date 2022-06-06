@@ -37,6 +37,8 @@
     <string name="max_folder_rows">最大資料夾列數</string>
     <string name="home_screen_grid">主螢幕網格</string>
     <string name="home_screen_lock">鎖定主螢幕</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">列數</string>
     <string name="grid">網格</string>
     <string name="rows">行數</string>
