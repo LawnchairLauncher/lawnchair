@@ -97,6 +97,10 @@ fun HomeScreenPreferences() {
                 adapter = lockHomeScreenAdapter,
                 label = stringResource(id = R.string.home_screen_lock),
             )
+            SwitchPreference(
+                adapter = prefs2.lockHomeScreenButtonOnPopUp.getAdapter(),
+                label = stringResource(id = R.string.home_screen_lock_toggle_from_home_popup),
+            )
         }
         PreferenceGroup(heading = stringResource(id = R.string.status_bar_label)) {
             val showStatusBarAdapter = prefs2.showStatusBar.getAdapter()

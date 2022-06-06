@@ -22,12 +22,12 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -52,6 +52,7 @@ import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
+import com.patrykmichalik.preferencemanager.Preference;
 import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
 
 import java.util.ArrayList;
@@ -182,13 +183,23 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
      * Returns the list of supported actions
      */
     public static ArrayList<OptionItem> getOptions(Launcher launcher) {
+        PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(launcher);
+        boolean lockHomeScreen = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getLockHomeScreen());
+        boolean showLockToggle = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getLockHomeScreenButtonOnPopUp());
+
         ArrayList<OptionItem> options = new ArrayList<>();
+        if (showLockToggle) {
+            options.add(new OptionItem(launcher,
+                    lockHomeScreen ? R.string.home_screen_unlock : R.string.home_screen_lock,
+                    lockHomeScreen ? R.drawable.ic_lock_open : R.drawable.ic_lock,
+                    IGNORE,
+                    OptionsPopupView::toggleHomeScreenLock));
+        }
         options.add(new OptionItem(launcher,
                 R.string.settings_button_text,
                 R.drawable.ic_setting,
                 LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS,
                 OptionsPopupView::startSettings));
-        boolean lockHomeScreen = PreferenceExtensionsKt.firstBlocking(PreferenceManager2.INSTANCE.get(launcher).getLockHomeScreen());
         if (!lockHomeScreen && !WidgetsModel.GO_DISABLE_WIDGETS) {
             options.add(new OptionItem(launcher,
                     R.string.widget_button_text,
@@ -260,6 +271,14 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
             intent.putExtra(EXTRA_WALLPAPER_FLAVOR, "focus_wallpaper");
         }
         return launcher.startActivitySafely(v, intent, placeholderInfo(intent));
+    }
+
+    private static boolean toggleHomeScreenLock(View v) {
+        Context context = v.getContext();
+        PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
+        boolean oldValue = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getLockHomeScreen());
+        PreferenceExtensionsKt.setBlocking(preferenceManager2.getLockHomeScreen(), !oldValue);
+        return true;
     }
 
     static WorkspaceItemInfo placeholderInfo(Intent intent) {
