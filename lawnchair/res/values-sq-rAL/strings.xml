@@ -37,6 +37,8 @@
     <string name="max_folder_rows">Nr max i Rreshtave në Dosje</string>
     <string name="home_screen_grid">Rrjeta e Ekranit Kryesorë</string>
     <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">Kolonat</string>
     <string name="grid">Rrjeta</string>
     <string name="rows">Rreshtat</string>
