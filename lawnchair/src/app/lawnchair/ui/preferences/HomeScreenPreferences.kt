@@ -149,13 +149,11 @@ fun HomeScreenPreferences() {
                 )
             }
         }
-        if (!Utilities.ATLEAST_S) {
-            PreferenceGroup(heading = stringResource(id = R.string.widget_button_text)) {
-                SwitchPreference(
-                    adapter = prefs2.roundedWidgets.getAdapter(),
-                    label = stringResource(id = R.string.force_rounded_widgets),
-                )
-            }
+        PreferenceGroup(heading = stringResource(id = R.string.widget_button_text)) {
+            SwitchPreference(
+                adapter = prefs2.roundedWidgets.getAdapter(),
+                label = stringResource(id = R.string.force_rounded_widgets),
+            )
         }
     }
 }
