@@ -37,6 +37,8 @@
     <string name="max_folder_rows">Máx. Filas de Carpetas</string>
     <string name="home_screen_grid">Cuadrícula de Pantalla de Inicio</string>
     <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">Columnas</string>
     <string name="grid">Cuadrícula</string>
     <string name="rows">Filas</string>
