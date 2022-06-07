@@ -799,13 +799,13 @@ public class DeviceProfile {
                 + allAppsBorderSpacePx.y;
         // but width is just the cell,
         // the border is added in #updateAllAppsContainerWidth
-        allAppsCellWidthPx = pxFromDp(inv.allAppsCellSize[mTypeIndex].x, mMetrics, scale);
         if (isScalableGrid) {
             allAppsIconSizePx =
                     pxFromDp(inv.allAppsIconSize[mTypeIndex], mMetrics, scale);
             allAppsIconTextSizePx =
                     pxFromSp(inv.allAppsIconTextSize[mTypeIndex], mMetrics, scale);
             allAppsIconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
+            allAppsCellWidthPx = pxFromDp(inv.allAppsCellSize[mTypeIndex].x, mMetrics, scale);
         } else {
             float invIconSizeDp = inv.allAppsIconSize[mTypeIndex];
             float invIconTextSizeSp = inv.allAppsIconTextSize[mTypeIndex];
@@ -813,6 +813,7 @@ public class DeviceProfile {
             allAppsIconTextSizePx = (int) (pxFromSp(invIconTextSizeSp, mMetrics) * scale);
             allAppsIconDrawablePaddingPx =
                     res.getDimensionPixelSize(R.dimen.all_apps_icon_drawable_padding);
+            allAppsCellWidthPx = allAppsIconSizePx + (2 * allAppsIconDrawablePaddingPx);
         }
 
         updateAllAppsContainerWidth(res);

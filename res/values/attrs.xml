@@ -252,9 +252,10 @@
         if not specified -->
         <attr name="borderSpaceTwoPanelLandscapeVertical" format="float" />
 
-        <!-- These min cell values are only used if GridDisplayOption#isScalable is true -->
-        <!-- defaults to minCellHeight, if not specified -->
+        <!-- defaults to minCellHeight if not specified when GridDisplayOption#isScalable is true.
+         Must be defined when GridDisplayOption#isScalable is false. -->
         <attr name="allAppsCellHeight" format="float" />
+        <!-- These min cell values are only used if GridDisplayOption#isScalable is true -->
         <!-- defaults to minCellWidth, if not specified -->
         <attr name="allAppsCellWidth" format="float" />
         <!-- defaults to allAppsCellHeight, if not specified -->
