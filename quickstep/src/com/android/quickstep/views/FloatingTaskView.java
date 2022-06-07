@@ -254,7 +254,7 @@ public class FloatingTaskView extends FrameLayout {
      *                        offscreen).
      */
     void centerIconView(IconView iconView, float onScreenRectCenterX, float onScreenRectCenterY) {
-        mOrientationHandler.updateStagedSplitIconParams(iconView, onScreenRectCenterX,
+        mOrientationHandler.updateSplitIconParams(iconView, onScreenRectCenterX,
                 onScreenRectCenterY, mFullscreenParams.mScaleX, mFullscreenParams.mScaleY,
                 iconView.getDrawableWidth(), iconView.getDrawableHeight(),
                 mActivity.getDeviceProfile(), mStagePosition);
