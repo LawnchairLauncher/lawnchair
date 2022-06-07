@@ -416,7 +416,7 @@ public class RecentsOrientedState implements
             fullHeight -= insets.bottom;
         }
 
-        getTaskDimension(mContext, dp, outPivot);
+        getTaskDimension(dp, outPivot);
         float scale = Math.min(outPivot.x / taskView.width(), outPivot.y / taskView.height());
         // We also scale the preview as part of fullScreenParams, so account for that as well.
         if (fullWidth > 0) {
@@ -425,12 +425,6 @@ public class RecentsOrientedState implements
 
         if (scale == 1) {
             outPivot.set(fullWidth / 2, fullHeight / 2);
-        } else if (dp.isMultiWindowMode) {
-            float denominator = 1 / (scale - 1);
-            // Ensure that the task aligns to right bottom for the root view
-            float y = (scale * taskView.bottom - fullHeight) * denominator;
-            float x = (scale * taskView.right - fullWidth) * denominator;
-            outPivot.set(x, y);
         } else {
             float factor = scale / (scale - 1);
             outPivot.set(taskView.left * factor, taskView.top * factor);
