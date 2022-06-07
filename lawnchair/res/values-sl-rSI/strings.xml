@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">Ikone</string>
-    <string name="icon_style">Icon Style</string>
+    <string name="icon_style">Stil ikone</string>
     <string name="settings">Nastavitve</string>
     <string name="home_screen_label">Začetne zaslon</string>
     <string name="home_screen_description">Feed, Grid, Icons</string>
@@ -36,8 +36,8 @@
     <string name="max_folder_columns">Max. stolpcev v mapi</string>
     <string name="max_folder_rows">Max. vrstic v mapi</string>
     <string name="home_screen_grid">Mreža na začetnem zaslonu</string>
-    <string name="home_screen_lock">Lock Home Screen</string>
-    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock">Zakleni domači zaslon</string>
+    <string name="home_screen_unlock">Odkleni domači zaslon</string>
     <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">Stolpci</string>
     <string name="grid">Mreža</string>
@@ -99,8 +99,8 @@
     <string name="theme_follow_wallpaper">Uskladi s ozadjem</string>
     <string name="quickstep_label">Nedavno</string>
     <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
-    <string name="window_corner_radius_label">Screen Corner Radius</string>
-    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
+    <string name="window_corner_radius_label">Radij robu zaslona</string>
+    <string name="override_window_corner_radius_label">Radij robu zaslona po meri</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">Sistemske ikone</string>
     <string name="accent_color">Sekundarna barva</string>
@@ -113,7 +113,7 @@
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
     <string name="show_sys_ui_scrim">Top Shadow</string>
     <string name="show_status_bar">Pokaži statusno vrstico</string>
-    <string name="layout">Layout</string>
+    <string name="layout">Postavitev</string>
     <string name="what_to_show">Kaj prikazati</string>
     <string name="missing_notification_access_label">Potreben je dostop do obvestil</string>
     <string name="missing_notification_access_description">Notification access needed.</string>
