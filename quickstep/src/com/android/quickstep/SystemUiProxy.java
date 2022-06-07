@@ -96,7 +96,7 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
     private IPipAnimationListener mPipAnimationListener;
     private ISplitScreenListener mSplitScreenListener;
     private IStartingWindowListener mStartingWindowListener;
-    private ILauncherUnlockAnimationController mPendingLauncherUnlockAnimationController;
+    private ILauncherUnlockAnimationController mLauncherUnlockAnimationController;
     private IRecentTasksListener mRecentTasksListener;
     private final ArrayList<RemoteTransitionCompat> mRemoteTransitions = new ArrayList<>();
     private IOnBackInvokedCallback mBackToLauncherCallback;
@@ -189,10 +189,8 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
         if (mStartingWindowListener != null && mStartingWindow != null) {
             setStartingWindowListener(mStartingWindowListener);
         }
-        if (mPendingLauncherUnlockAnimationController != null
-                && mSysuiUnlockAnimationController != null) {
-            setLauncherUnlockAnimationController(mPendingLauncherUnlockAnimationController);
-            mPendingLauncherUnlockAnimationController = null;
+        if (mSysuiUnlockAnimationController != null && mLauncherUnlockAnimationController != null) {
+            setLauncherUnlockAnimationController(mLauncherUnlockAnimationController);
         }
         for (int i = mRemoteTransitions.size() - 1; i >= 0; --i) {
             registerRemoteTransition(mRemoteTransitions.get(i));
@@ -757,11 +755,11 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
                     controller.dispatchSmartspaceStateToSysui();
                 }
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call setStartingWindowListener", e);
+                Log.w(TAG, "Failed call setLauncherUnlockAnimationController", e);
             }
-        } else {
-            mPendingLauncherUnlockAnimationController = controller;
         }
+
+        mLauncherUnlockAnimationController = controller;
     }
 
     /**
