@@ -22,8 +22,6 @@ import android.graphics.Rect;
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
 
-import java.util.function.Supplier;
-
 /**
  * App icon on the workspace or all apps.
  */
@@ -101,38 +99,6 @@ public abstract class HomeAppIcon extends AppIcon implements FolderDragTarget, W
             );
         }
     }
-
-    /**
-     * Drag an object to the given cell in workspace. The target cell must be empty.
-     *
-     * @param cellX zero based column number, starting from the left of the screen.
-     * @param cellY zero based row number, starting from the top of the screen.
-     */
-    public HomeAppIcon dragToWorkspace(int cellX, int cellY) {
-        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
-             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                     String.format("want to drag the icon to cell(%d, %d)", cellX, cellY))
-        ) {
-            final Supplier<Point> dest = () -> Workspace.getCellCenter(mLauncher, cellX, cellY);
-            Workspace.dragIconToWorkspace(
-                    mLauncher,
-                    /* launchable= */ this,
-                    dest,
-                    () -> addExpectedEventsForLongClick(),
-                    /*expectDropEvents= */ null);
-            try (LauncherInstrumentation.Closable ignore = mLauncher.addContextLayer("dragged")) {
-                WorkspaceAppIcon appIcon =
-                        (WorkspaceAppIcon) mLauncher.getWorkspace().getWorkspaceAppIcon(mAppName);
-                mLauncher.assertTrue(
-                        String.format(
-                                "The %s icon should be in the cell (%d, %d).", mAppName, cellX,
-                                cellY),
-                        appIcon.isInCell(cellX, cellY));
-                return appIcon;
-            }
-        }
-    }
-
 
     /** This method requires public access, however should not be called in tests. */
     @Override

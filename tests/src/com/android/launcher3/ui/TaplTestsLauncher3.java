@@ -521,6 +521,25 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         }
     }
 
+    @Test
+    @PortraitLandscape
+    public void testDragShortcutToWorkspaceCell() throws Exception {
+        Point[] targets = getCornersAndCenterPositions();
+
+        for (Point target : targets) {
+            final HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
+            allApps.freeze();
+            try {
+                allApps.getAppIcon(APP_NAME)
+                        .openDeepShortcutMenu()
+                        .getMenuItem(0)
+                        .dragToWorkspace(target.x, target.y);
+            } finally {
+                allApps.unfreeze();
+            }
+        }
+    }
+
     /**
      * @return List of workspace grid coordinates. Those are not pixels. See {@link
      *     Workspace#getIconGridDimensions()}

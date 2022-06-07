@@ -74,6 +74,15 @@ public interface TaskShortcutFactory {
         return false;
     }
 
+    /** @return a singleton list if the provided shortcut is non-null, null otherwise */
+    @Nullable
+    default List<SystemShortcut> createSingletonShortcutList(@Nullable SystemShortcut shortcut) {
+        if (shortcut != null) {
+            return Collections.singletonList(shortcut);
+        }
+        return null;
+    }
+
     TaskShortcutFactory APP_INFO = new TaskShortcutFactory() {
         @Override
         public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
@@ -373,9 +382,10 @@ public interface TaskShortcutFactory {
         @Override
         public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
                 TaskIdAttributeContainer taskContainer) {
-            return Collections.singletonList(
+            SystemShortcut<BaseDraggingActivity> wellbeingShortcut =
                     WellbeingModel.SHORTCUT_FACTORY.getShortcut(activity,
-                            taskContainer.getItemInfo(), taskContainer.getTaskView()));
+                            taskContainer.getItemInfo(), taskContainer.getTaskView());
+            return createSingletonShortcutList(wellbeingShortcut);
         }
     };
 
@@ -383,10 +393,10 @@ public interface TaskShortcutFactory {
         @Override
         public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
                 TaskIdAttributeContainer taskContainer) {
-            return Collections.singletonList(
-                    taskContainer.getThumbnailView().getTaskOverlay()
-                            .getScreenshotShortcut(activity, taskContainer.getItemInfo(),
-                                    taskContainer.getTaskView()));
+            SystemShortcut screenshotShortcut = taskContainer.getThumbnailView().getTaskOverlay()
+                    .getScreenshotShortcut(activity, taskContainer.getItemInfo(),
+                            taskContainer.getTaskView());
+            return createSingletonShortcutList(screenshotShortcut);
         }
     };
 
@@ -394,10 +404,12 @@ public interface TaskShortcutFactory {
         @Override
         public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
                 TaskIdAttributeContainer taskContainer) {
+            SystemShortcut modalStateSystemShortcut =
+                    taskContainer.getThumbnailView().getTaskOverlay()
+                            .getModalStateSystemShortcut(
+                                    taskContainer.getItemInfo(), taskContainer.getTaskView());
             if (ENABLE_OVERVIEW_SELECTIONS.get()) {
-                return Collections.singletonList(taskContainer.getThumbnailView().getTaskOverlay()
-                        .getModalStateSystemShortcut(
-                                        taskContainer.getItemInfo(), taskContainer.getTaskView()));
+                return createSingletonShortcutList(modalStateSystemShortcut);
             }
             return null;
         }
