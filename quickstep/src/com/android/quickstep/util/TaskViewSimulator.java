@@ -40,7 +40,7 @@ import androidx.annotation.NonNull;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.BaseActivityInterface;
@@ -100,7 +100,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     // Cached calculations
     private boolean mLayoutValid = false;
     private int mOrientationStateId;
-    private StagedSplitBounds mStagedSplitBounds;
+    private SplitBounds mSplitBounds;
     private boolean mDrawsBelowRecents;
     private boolean mIsGridTask;
     private int mTaskRectTranslationX;
@@ -152,13 +152,13 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         }
 
         Rect fullTaskSize;
-        if (mStagedSplitBounds != null) {
+        if (mSplitBounds != null) {
             // The task rect changes according to the staged split task sizes, but recents
             // fullscreen scale and pivot remains the same since the task fits into the existing
             // sized task space bounds
             fullTaskSize = new Rect(mTaskRect);
             mOrientationState.getOrientationHandler()
-                    .setSplitTaskSwipeRect(mDp, mTaskRect, mStagedSplitBounds, mStagePosition);
+                    .setSplitTaskSwipeRect(mDp, mTaskRect, mSplitBounds, mStagePosition);
             mTaskRect.offset(mTaskRectTranslationX, mTaskRectTranslationY);
         } else {
             fullTaskSize = mTaskRect;
@@ -180,10 +180,10 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
      *
      * @param splitInfo set to {@code null} when not in staged split mode
      */
-    public void setPreview(RemoteAnimationTargetCompat runningTarget, StagedSplitBounds splitInfo) {
+    public void setPreview(RemoteAnimationTargetCompat runningTarget, SplitBounds splitInfo) {
         setPreview(runningTarget);
-        mStagedSplitBounds = splitInfo;
-        if (mStagedSplitBounds == null) {
+        mSplitBounds = splitInfo;
+        if (mSplitBounds == null) {
             mStagePosition = STAGE_POSITION_UNDEFINED;
             return;
         }
