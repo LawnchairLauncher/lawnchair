@@ -772,6 +772,13 @@ public class StatsLogManager implements ResourceBasedOverride {
         }
 
         /**
+         * Sets query length of the event.
+         */
+        default StatsLatencyLogger withQueryLength(int queryLength) {
+            return this;
+        }
+
+        /**
          * Sets packageId of log message.
          */
         default StatsLatencyLogger withPackageId(int packageId) {
