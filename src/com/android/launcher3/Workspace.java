@@ -3265,7 +3265,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         }
     }
 
-    private View mapOverCellLayout(CellLayout layout, ItemOperator op) {
+    /**
+     * Perform {param operator} over all the items in a given {param layout}.
+     * @return The first item that satisfies the operator or null.
+     */
+    public View mapOverCellLayout(CellLayout layout, ItemOperator operator) {
         // TODO(b/128460496) Potential race condition where layout is not yet loaded
         if (layout == null) {
             return null;
@@ -3275,7 +3279,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         final int itemCount = container.getChildCount();
         for (int itemIdx = 0; itemIdx < itemCount; itemIdx++) {
             View item = container.getChildAt(itemIdx);
-            if (op.evaluate((ItemInfo) item.getTag(), item)) {
+            if (operator.evaluate((ItemInfo) item.getTag(), item)) {
                 return item;
             }
         }

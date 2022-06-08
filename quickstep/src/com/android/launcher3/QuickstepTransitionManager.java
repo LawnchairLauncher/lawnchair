@@ -483,6 +483,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 ? new float[]{1, mContentScale}
                 : new float[]{mContentScale, 1};
 
+        // Pause expensive view updates as they can lead to layer thrashing and skipped frames.
+        mLauncher.pauseExpensiveViewUpdates();
+
         if (mLauncher.isInState(ALL_APPS)) {
             // All Apps in portrait mode is full screen, so we only animate AllAppsContainerView.
             final View appsView = mLauncher.getAppsView();
@@ -580,9 +583,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     launcherAnimator.play(scrim);
                 }
             }
-
-            // Pause expensive view updates as they can lead to layer thrashing and skipped frames.
-            mLauncher.pauseExpensiveViewUpdates();
 
             endListener = () -> {
                 viewsToAnimate.forEach(view -> {
