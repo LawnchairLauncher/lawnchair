@@ -239,7 +239,7 @@ public class ActivityAllAppsContainerView<T extends Context & AppLauncher
     }
 
     @Override
-    protected int getHeaderBottom() {
+    public int getHeaderBottom() {
         if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
             return super.getHeaderBottom();
         }
