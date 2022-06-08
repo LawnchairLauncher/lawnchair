@@ -18,6 +18,7 @@ package com.android.quickstep.util;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_DEPTH_CONTROLLER;
@@ -147,6 +148,9 @@ public class StaggeredWorkspaceAnim {
                 }
             });
         }
+
+        launcher.pauseExpensiveViewUpdates();
+        mAnimators.addListener(forEndCallback(launcher::resumeExpensiveViewUpdates));
 
         if (animateOverviewScrim) {
             PendingAnimation pendingAnimation = new PendingAnimation(DURATION_MS);
