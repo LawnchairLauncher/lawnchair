@@ -171,8 +171,8 @@ public final class TaskbarAllAppsController {
      * This method should be called after an exit animation finishes, if applicable.
      */
     void maybeCloseWindow() {
-        if (AbstractFloatingView.getOpenView(mAllAppsContext, TYPE_ALL) != null
-                || mAllAppsContext.getDragController().isSystemDragInProgress()) {
+        if (mAllAppsContext != null && (AbstractFloatingView.hasOpenView(mAllAppsContext, TYPE_ALL)
+                || mAllAppsContext.getDragController().isSystemDragInProgress())) {
             return;
         }
         mProxyView.close(false);
