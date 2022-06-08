@@ -88,6 +88,7 @@
     </plurals>
 
     <string name="hotseat_qsb_label">Show Search Bar</string>
+    <string name="qsb_search_provider_app_required">App required.</string>
     <string name="dt2s_admin_hint_title">Admin Permissions Required</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">Double-Tap to Sleep will be turned off.</string>
@@ -230,6 +231,7 @@
     <string name="search_provider_wikipedia" translatable="false">Wikipedia</string>
     <string name="search_provider_presearch" translatable="false">Presearch</string>
     <string name="search_provider_bing" translatable="false">Bing</string>
+    <string name="search_provider_sesame" translatable="false">Sesame</string>
     <string name="always_open_website_label">Always Open Website</string>
     <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
     <string name="search_provider">Search Provider</string>
@@ -240,6 +242,7 @@
     <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
     <string name="taskbar_label">Taskbar</string>
     <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
+    <string name="error_no_market_or_browser_installed">No app market or browser installed.</string>
 
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
