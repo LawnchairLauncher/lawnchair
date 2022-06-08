@@ -43,6 +43,7 @@ import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -85,7 +86,7 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     private Runnable mAutoAdvanceRunnable;
 
     private long mDeferUpdatesUntilMillis = 0;
-    private RemoteViews mDeferredRemoteViews;
+    RemoteViews mLastRemoteViews;
     private boolean mHasDeferredColorChange = false;
     private @Nullable SparseIntArray mDeferredColorChange = null;
 
@@ -150,11 +151,18 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
                     TRACE_METHOD_NAME + getAppWidgetInfo().provider, getAppWidgetId());
             mTrackingWidgetUpdate = false;
         }
-        if (isDeferringUpdates()) {
-            mDeferredRemoteViews = remoteViews;
-            return;
+        if (FeatureFlags.ENABLE_CACHED_WIDGET.get()) {
+            mLastRemoteViews = remoteViews;
+            if (isDeferringUpdates()) {
+                return;
+            }
+        } else {
+            if (isDeferringUpdates()) {
+                mLastRemoteViews = remoteViews;
+                return;
+            }
+            mLastRemoteViews = null;
         }
-        mDeferredRemoteViews = null;
 
         super.updateAppWidget(remoteViews);
 
@@ -218,8 +226,7 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         SparseIntArray deferredColors;
         boolean hasDeferredColors;
         mDeferUpdatesUntilMillis = 0;
-        remoteViews = mDeferredRemoteViews;
-        mDeferredRemoteViews = null;
+        remoteViews = mLastRemoteViews;
         deferredColors = mDeferredColorChange;
         hasDeferredColors = mHasDeferredColorChange;
         mDeferredColorChange = null;
