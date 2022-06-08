@@ -114,11 +114,7 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         parse = ColorOption::fromString,
         save = ColorOption::toString,
         onSet = { reloadHelper.recreate() },
-        defaultValue = when {
-            Utilities.ATLEAST_S -> ColorOption.SystemAccent
-            Utilities.ATLEAST_O_MR1 -> ColorOption.WallpaperPrimary
-            else -> ColorOption.LawnchairBlue
-        },
+        defaultValue = ColorOption.fromString(context.getString(R.string.config_default_accent_color)),
     )
 
     val hiddenApps = preference(
