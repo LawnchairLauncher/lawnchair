@@ -24,6 +24,7 @@ import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
+import static com.android.launcher3.taskbar.TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW;
 import static com.android.launcher3.testing.shared.ResourceUtils.getBoolByName;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
@@ -130,6 +131,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     // The flag to know if the window is excluded from magnification region computation.
     private boolean mIsExcludeFromMagnificationRegion = false;
     private boolean mBindingItems = false;
+    private boolean mAddedWindow = false;
+
 
     private final TaskbarShortcutMenuAccessibilityDelegate mAccessibilityDelegate;
 
@@ -218,7 +221,12 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mControllers.init(sharedState);
         updateSysuiStateFlags(sharedState.sysuiStateFlags, true /* fromInit */);
 
-        mWindowManager.addView(mDragLayer, mWindowLayoutParams);
+        if (!mAddedWindow) {
+            mWindowManager.addView(mDragLayer, mWindowLayoutParams);
+            mAddedWindow = true;
+        } else {
+            mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
+        }
     }
 
     @Override
@@ -461,7 +469,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mIsDestroyed = true;
         setUIController(TaskbarUIController.DEFAULT);
         mControllers.onDestroy();
-        mWindowManager.removeViewImmediate(mDragLayer);
+        if (!FLAG_HIDE_NAVBAR_WINDOW) {
+            mWindowManager.removeViewImmediate(mDragLayer);
+            mAddedWindow = false;
+        }
     }
 
     public void updateSysuiStateFlags(int systemUiStateFlags, boolean fromInit) {
@@ -596,6 +607,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      * Returns the default height of the window, including the static corner radii above taskbar.
      */
     public int getDefaultTaskbarWindowHeight() {
+        if (FLAG_HIDE_NAVBAR_WINDOW && mDeviceProfile.isPhone) {
+            return getResources().getDimensionPixelSize(R.dimen.taskbar_stashed_size);
+        }
         return mDeviceProfile.taskbarSize + Math.max(getLeftCornerRadius(), getRightCornerRadius());
     }
 
