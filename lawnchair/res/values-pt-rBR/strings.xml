@@ -214,7 +214,7 @@
     <string name="enable_taskbar_experimental">Habilitar Barra de Tarefas (Experimental)</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_battery_charging">Carregando</string>
+    <string name="smartspace_battery_charging">Carregamento</string>
     <string name="smartspace_battery_full">Carregado</string>
     <string name="smartspace_battery_low">Bateria fraca</string>
     <string name="accessibility_smartspace_page">Página %1$d de %2$d</string>
