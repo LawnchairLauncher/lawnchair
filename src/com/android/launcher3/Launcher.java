@@ -124,6 +124,7 @@ import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.accessibility.BaseAccessibilityDelegate.LauncherAction;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
+import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.BaseAllAppsContainerView;
@@ -196,6 +197,7 @@ import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.views.FloatingIconView;
 import com.android.launcher3.views.FloatingSurfaceView;
 import com.android.launcher3.views.OptionsPopupView;
 import com.android.launcher3.views.ScrimView;
@@ -2757,8 +2759,8 @@ public class Launcher extends StatefulActivity<LauncherState>
      * @param supportsAllAppsState If true and we are in All Apps state, looks for view in All Apps.
      *                             Else we only looks on the workspace.
      */
-    public View getFirstMatchForAppClose(int preferredItemId, String packageName, UserHandle user,
-            boolean supportsAllAppsState) {
+    public @Nullable View getFirstMatchForAppClose(int preferredItemId, String packageName,
+            UserHandle user, boolean supportsAllAppsState) {
         final Predicate<ItemInfo> preferredItem = info ->
                 info != null && info.id == preferredItemId;
         final Predicate<ItemInfo> packageAndUserAndApp = info ->
@@ -2770,8 +2772,21 @@ public class Launcher extends StatefulActivity<LauncherState>
                         packageName);
 
         if (supportsAllAppsState && isInState(LauncherState.ALL_APPS)) {
-            return getFirstMatch(Collections.singletonList(mAppsView.getActiveRecyclerView()),
+            AllAppsRecyclerView activeRecyclerView = mAppsView.getActiveRecyclerView();
+            View v = getFirstMatch(Collections.singletonList(activeRecyclerView),
                     preferredItem, packageAndUserAndApp);
+
+            if (activeRecyclerView.getCurrentScrollY() > 0) {
+                RectF locationBounds = new RectF();
+                FloatingIconView.getLocationBoundsForView(this, v, false, locationBounds,
+                        new Rect());
+                if (locationBounds.top < mAppsView.getHeaderBottom()) {
+                    // Icon is covered by scrim, return null to play fallback animation.
+                    return null;
+                }
+            }
+
+            return v;
         } else {
             List<ViewGroup> containers = new ArrayList<>(mWorkspace.getPanelCount() + 1);
             containers.add(mWorkspace.getHotseat().getShortcutsAndWidgets());
@@ -3229,11 +3244,24 @@ public class Launcher extends StatefulActivity<LauncherState>
     public void pauseExpensiveViewUpdates() {
         // Pause page indicator animations as they lead to layer trashing.
         getWorkspace().getPageIndicator().pauseAnimations();
+
+        getWorkspace().mapOverItems((info, view) -> {
+            if (view instanceof LauncherAppWidgetHostView) {
+                ((LauncherAppWidgetHostView) view).beginDeferringUpdates();
+            }
+            return false; // Return false to continue iterating through all the items.
+        });
     }
 
     /** Resumes view updates at the end of the app launch animation. */
     public void resumeExpensiveViewUpdates() {
         getWorkspace().getPageIndicator().skipAnimationsToEnd();
-    }
 
+        getWorkspace().mapOverItems((info, view) -> {
+            if (view instanceof LauncherAppWidgetHostView) {
+                ((LauncherAppWidgetHostView) view).endDeferringUpdates();
+            }
+            return false; // Return false to continue iterating through all the items.
+        });
+    }
 }
