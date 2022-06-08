@@ -514,9 +514,6 @@ public final class TaskViewUtils {
             for (SurfaceControl leash: openingTargets) {
                 t.setAlpha(leash, progress);
             }
-            for (SurfaceControl leash: closingTargets) {
-                t.setAlpha(leash, 1 - progress);
-            }
             t.apply();
         });
         animator.addListener(new AnimatorListenerAdapter() {
