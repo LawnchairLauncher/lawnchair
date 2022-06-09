@@ -1799,6 +1799,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     new PictureInPictureSurfaceTransaction.Builder()
                             .setAlpha(0f)
                             .build();
+            tx.setShouldDisableCanAffectSystemUiFlags(false);
             int[] taskIds = TopTaskTracker.INSTANCE.get(mContext).getRunningSplitTaskIds();
             for (int taskId : taskIds) {
                 mRecentsAnimationController.setFinishTaskTransaction(taskId,
