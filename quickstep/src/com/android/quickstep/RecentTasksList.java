@@ -34,7 +34,7 @@ import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.KeyguardManagerCompat;
 import com.android.wm.shell.recents.IRecentTasksListener;
 import com.android.wm.shell.util.GroupedRecentTaskInfo;
-import com.android.wm.shell.util.StagedSplitBounds;
+import com.android.wm.shell.util.SplitBounds;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -271,19 +271,19 @@ public class RecentTasksList {
                                 tmpLockedUsers.get(task2Key.userId) /* isLocked */);
                 task2.setLastSnapshotData(taskInfo2);
             }
-            final SplitConfigurationOptions.StagedSplitBounds launcherSplitBounds =
-                    convertSplitBounds(rawTask.mStagedSplitBounds);
+            final SplitConfigurationOptions.SplitBounds launcherSplitBounds =
+                    convertSplitBounds(rawTask.mSplitBounds);
             allTasks.add(new GroupTask(task1, task2, launcherSplitBounds));
         }
 
         return allTasks;
     }
 
-    private SplitConfigurationOptions.StagedSplitBounds convertSplitBounds(
-            StagedSplitBounds shellSplitBounds) {
+    private SplitConfigurationOptions.SplitBounds convertSplitBounds(
+            SplitBounds shellSplitBounds) {
         return shellSplitBounds == null ?
                 null :
-                new SplitConfigurationOptions.StagedSplitBounds(
+                new SplitConfigurationOptions.SplitBounds(
                         shellSplitBounds.leftTopBounds, shellSplitBounds.rightBottomBounds,
                         shellSplitBounds.leftTopTaskId, shellSplitBounds.rightBottomTaskId);
     }

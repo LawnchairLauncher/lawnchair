@@ -194,9 +194,10 @@ public class DropTargetBar extends FrameLayout
             int widthSpec = MeasureSpec.makeMeasureSpec(availableWidth, MeasureSpec.AT_MOST);
             firstButton.measure(widthSpec, heightSpec);
             if (!mIsVertical) {
-                // Remove icons and put the button's text on two lines if text is truncated.
+                // Remove both icons and put the button's text on two lines if text is truncated.
                 if (firstButton.isTextTruncated(availableWidth)) {
                     firstButton.setIconVisible(false);
+                    secondButton.setIconVisible(false);
                     firstButton.setTextMultiLine(true);
                     firstButton.setPadding(horizontalPadding, verticalPadding / 2,
                             horizontalPadding, verticalPadding / 2);
@@ -209,8 +210,10 @@ public class DropTargetBar extends FrameLayout
             }
             secondButton.measure(widthSpec, heightSpec);
             if (!mIsVertical) {
+                // Remove both icons and put the button's text on two lines if text is truncated.
                 if (secondButton.isTextTruncated(availableWidth)) {
                     secondButton.setIconVisible(false);
+                    firstButton.setIconVisible(false);
                     secondButton.setTextMultiLine(true);
                     secondButton.setPadding(horizontalPadding, verticalPadding / 2,
                             horizontalPadding, verticalPadding / 2);
