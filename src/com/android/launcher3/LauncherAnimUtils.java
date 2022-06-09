@@ -26,6 +26,7 @@ import android.util.FloatProperty;
 import android.util.IntProperty;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.TextView;
 
 import com.android.launcher3.util.MultiScalePropertyFactory;
 
@@ -112,6 +113,32 @@ public class LauncherAnimUtils {
                 @Override
                 public void setValue(LayoutParams lp, int height) {
                     lp.height = height;
+                }
+            };
+
+    public static final IntProperty<TextView> TEXT_COLOR =
+            new IntProperty<TextView>("textColor") {
+                @Override
+                public Integer get(TextView view) {
+                    return view.getTextColors().getDefaultColor();
+                }
+
+                @Override
+                public void setValue(TextView view, int color) {
+                    view.setTextColor(color);
+                }
+            };
+
+    public static final IntProperty<TextView> HINT_TEXT_COLOR =
+            new IntProperty<TextView>("hintTextColor") {
+                @Override
+                public Integer get(TextView view) {
+                    return view.getHintTextColors().getDefaultColor();
+                }
+
+                @Override
+                public void setValue(TextView view, int color) {
+                    view.setHintTextColor(color);
                 }
             };
 
