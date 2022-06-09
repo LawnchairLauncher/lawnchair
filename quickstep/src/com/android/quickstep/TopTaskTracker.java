@@ -33,7 +33,7 @@ import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 import com.android.launcher3.util.SplitConfigurationOptions.StageType;
-import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitTaskPosition;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitStageInfo;
 import com.android.launcher3.util.TraceHelper;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
@@ -63,8 +63,9 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
     // Ordered list with first item being the most recent task.
     private final LinkedList<RunningTaskInfo> mOrderedTaskList = new LinkedList<>();
 
-    private final StagedSplitTaskPosition mMainStagePosition = new StagedSplitTaskPosition();
-    private final StagedSplitTaskPosition mSideStagePosition = new StagedSplitTaskPosition();
+
+    private final SplitStageInfo mMainStagePosition = new SplitStageInfo();
+    private final SplitStageInfo mSideStagePosition = new SplitStageInfo();
     private int mPinnedTaskId = INVALID_TASK_ID;
 
     private TopTaskTracker(Context context) {
@@ -144,8 +145,8 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
         mPinnedTaskId = INVALID_TASK_ID;
     }
 
-    private void resetTaskId(StagedSplitTaskPosition taskPosition) {
-        taskPosition.taskId = INVALID_TASK_ID;
+    private void resetTaskId(SplitStageInfo taskPosition) {
+        taskPosition.taskId = -1;
     }
 
     /**

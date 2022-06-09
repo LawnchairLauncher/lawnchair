@@ -36,7 +36,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
-import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 
 import java.util.List;
 
@@ -129,7 +129,7 @@ public interface PagedOrientationHandler {
      * @param dp The device profile, used to report rotation and hardware insets.
      * @param stagePosition 0 if the staging area is pinned to top/left, 1 for bottom/right.
      */
-    void updateStagedSplitIconParams(View out, float onScreenRectCenterX,
+    void updateSplitIconParams(View out, float onScreenRectCenterX,
             float onScreenRectCenterY, float fullscreenScaleX, float fullscreenScaleY,
             int drawableWidth, int drawableHeight, DeviceProfile dp,
             @StagePosition int stagePosition);
@@ -163,12 +163,12 @@ public interface PagedOrientationHandler {
      * @param desiredStagePosition Which stage position (topLeft/rightBottom) we want to resize
      *                           outRect for
      */
-    void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect, StagedSplitBounds splitInfo,
+    void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect, SplitBounds splitInfo,
             @SplitConfigurationOptions.StagePosition int desiredStagePosition);
 
     void measureGroupedTaskViewThumbnailBounds(View primarySnapshot, View secondarySnapshot,
             int parentWidth, int parentHeight,
-            StagedSplitBounds splitBoundsConfig, DeviceProfile dp, boolean isRtl);
+            SplitBounds splitBoundsConfig, DeviceProfile dp, boolean isRtl);
 
     // Overview TaskMenuView methods
     void setTaskIconParams(FrameLayout.LayoutParams iconParams,
@@ -176,7 +176,7 @@ public interface PagedOrientationHandler {
     void setSplitIconParams(View primaryIconView, View secondaryIconView,
             int taskIconHeight, int primarySnapshotWidth, int primarySnapshotHeight,
             int groupedTaskViewHeight, int groupedTaskViewWidth, boolean isRtl,
-            DeviceProfile deviceProfile, StagedSplitBounds splitConfig);
+            DeviceProfile deviceProfile, SplitBounds splitConfig);
 
     /*
      * The following two methods try to center the TaskMenuView in landscape by finding the center
@@ -217,7 +217,7 @@ public interface PagedOrientationHandler {
      * @return A Pair of Floats representing the proper x and y translations.
      */
     Pair<Float, Float> getDwbLayoutTranslations(int taskViewWidth,
-            int taskViewHeight, StagedSplitBounds splitBounds, DeviceProfile deviceProfile,
+            int taskViewHeight, SplitBounds splitBounds, DeviceProfile deviceProfile,
             View[] thumbnailViews, int desiredTaskId, View banner);
 
     // The following are only used by TaskViewTouchHandler.

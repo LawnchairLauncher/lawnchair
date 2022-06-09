@@ -761,7 +761,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
     protected abstract BaseAllAppsAdapter<T> createAdapter(AlphabeticalAppsList<T> mAppsList,
             BaseAdapterProvider[] adapterProviders);
 
-    protected int getHeaderBottom() {
+    public int getHeaderBottom() {
         return (int) getTranslationY();
     }
 

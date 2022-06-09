@@ -39,7 +39,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
-import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.Collections;
@@ -110,7 +110,7 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
 
     @Override
     public Pair<Float, Float> getDwbLayoutTranslations(int taskViewWidth,
-            int taskViewHeight, StagedSplitBounds splitBounds, DeviceProfile deviceProfile,
+            int taskViewHeight, SplitBounds splitBounds, DeviceProfile deviceProfile,
             View[] thumbnailViews, int desiredTaskId, View banner) {
         boolean isRtl = banner.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
         float translationX = 0;
@@ -203,7 +203,7 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     public void setSplitIconParams(View primaryIconView, View secondaryIconView,
             int taskIconHeight, int primarySnapshotWidth, int primarySnapshotHeight,
             int groupedTaskViewHeight, int groupedTaskViewWidth, boolean isRtl,
-            DeviceProfile deviceProfile, StagedSplitBounds splitConfig) {
+            DeviceProfile deviceProfile, SplitBounds splitConfig) {
         super.setSplitIconParams(primaryIconView, secondaryIconView, taskIconHeight,
                 primarySnapshotWidth, primarySnapshotHeight, groupedTaskViewHeight,
                 groupedTaskViewWidth, isRtl, deviceProfile, splitConfig);
