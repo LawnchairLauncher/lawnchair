@@ -31,7 +31,6 @@ import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.Utilities.mapBoundToRange;
-import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
@@ -184,6 +183,10 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     public static final int SPLIT_DIVIDER_ANIM_DURATION = 100;
 
     public static final int CONTENT_ALPHA_DURATION = 217;
+    public static final int TASKBAR_TO_APP_DURATION = 600;
+    // TODO(b/236145847): Tune TASKBAR_TO_HOME_DURATION to 383 after conflict with unlock animation
+    // is solved.
+    public static final int TASKBAR_TO_HOME_DURATION = 300;
     protected static final int CONTENT_SCALE_DURATION = 350;
     protected static final int CONTENT_SCRIM_DURATION = 350;
 
@@ -527,7 +530,15 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             workspace.forEachVisiblePage(
                     view -> viewsToAnimate.add(((CellLayout) view).getShortcutsAndWidgets()));
 
-            viewsToAnimate.add(mLauncher.getHotseat());
+            // Do not scale hotseat as a whole when taskbar is present, and scale QSB only if it's
+            // not inline.
+            if (mDeviceProfile.isTaskbarPresent) {
+                if (!mDeviceProfile.isQsbInline) {
+                    viewsToAnimate.add(mLauncher.getHotseat().getQsb());
+                }
+            } else {
+                viewsToAnimate.add(mLauncher.getHotseat());
+            }
 
             viewsToAnimate.forEach(view -> {
                 view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
