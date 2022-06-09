@@ -22,6 +22,7 @@ option java_outer_classname = "LauncherAtomExtensions";
 // Wrapper message for containers used at the quickstep level.
 // Message name should match with launcher_atom_extension.proto message at
 // the AOSP level.
+// Next ID = 3
 message ExtendedContainers {
   reserved 2; // Deleted fields
 
@@ -31,10 +32,16 @@ message ExtendedContainers {
 }
 
 // Represents on-device search result container.
+// Next ID = 4
 message DeviceSearchResultContainer{
   optional int32 query_length = 1;
   optional SearchAttributes search_attributes = 2;
+  // [0, m], m varies based on the display density and resolution
+  // To indicate the location of the tapped on-device search result.
+  // For application, it will be the column number in the apps row.
+  optional int32 grid_x = 3;
 
+  // Next ID = 4
   message SearchAttributes{
 
     // True if results are based on spell corrected query
