@@ -390,10 +390,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
                 .withWindowCrop(mTmpCropRect)
                 .withCornerRadius(getCurrentCornerRadius());
 
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && params.getRecentsSurface() != null) {
-            // When relativeLayer = 0, it reverts the surfaces back to the original order.
-            builder.withRelativeLayerTo(params.getRecentsSurface(),
-                    mDrawsBelowRecents ? Integer.MIN_VALUE : 0);
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            builder.withLayer(mDrawsBelowRecents ? Integer.MIN_VALUE : 0);
         }
     }
 
