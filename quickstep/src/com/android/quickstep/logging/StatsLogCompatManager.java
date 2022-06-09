@@ -582,14 +582,18 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     private static int getGridX(LauncherAtom.ItemInfo info, boolean parent) {
-        if (info.getContainerInfo().getContainerCase() == FOLDER) {
+        LauncherAtom.ContainerInfo containerInfo = info.getContainerInfo();
+        if (containerInfo.getContainerCase() == FOLDER) {
             if (parent) {
-                return info.getContainerInfo().getFolder().getWorkspace().getGridX();
+                return containerInfo.getFolder().getWorkspace().getGridX();
             } else {
-                return info.getContainerInfo().getFolder().getGridX();
+                return containerInfo.getFolder().getGridX();
             }
+        } else if (containerInfo.getContainerCase() == EXTENDED_CONTAINERS) {
+            return containerInfo.getExtendedContainers()
+                    .getDeviceSearchResultContainer().getGridX();
         } else {
-            return info.getContainerInfo().getWorkspace().getGridX();
+            return containerInfo.getWorkspace().getGridX();
         }
     }
 
