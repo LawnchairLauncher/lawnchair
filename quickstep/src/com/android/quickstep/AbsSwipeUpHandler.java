@@ -1284,8 +1284,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     ? runningTaskTarget.taskInfo.launchCookies
                     : new ArrayList<>();
             boolean isTranslucent = runningTaskTarget != null && runningTaskTarget.isTranslucent;
+            boolean hasValidLeash = runningTaskTarget != null
+                    && runningTaskTarget.leash != null
+                    && runningTaskTarget.leash.isValid();
             boolean appCanEnterPip = !mDeviceState.isPipActive()
-                    && runningTaskTarget != null
+                    && hasValidLeash
                     && runningTaskTarget.allowEnterPip
                     && runningTaskTarget.taskInfo.pictureInPictureParams != null
                     && runningTaskTarget.taskInfo.pictureInPictureParams.isAutoEnterEnabled();
@@ -1394,9 +1397,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         }
     }
 
-    /**
-     * TODO(b/195473090) handle multiple task simulators (if needed) for PIP
-     */
     private SwipePipToHomeAnimator createWindowAnimationToPip(HomeAnimationFactory homeAnimFactory,
             RemoteAnimationTargetCompat runningTaskTarget, float startProgress) {
         // Directly animate the app to PiP (picture-in-picture) mode
