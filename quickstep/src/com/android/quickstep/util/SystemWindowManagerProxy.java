@@ -16,6 +16,7 @@
 package com.android.quickstep.util;
 
 import android.content.Context;
+import android.hardware.display.DisplayManager;
 import android.view.Display;
 
 import com.android.launcher3.util.window.WindowManagerProxy;
@@ -42,5 +43,11 @@ public class SystemWindowManagerProxy extends WindowManagerProxy {
     @Override
     public int getRotation(Context context) {
         return context.getResources().getConfiguration().windowConfiguration.getRotation();
+    }
+
+    @Override
+    protected Display[] getDisplays(Context context) {
+        return context.getSystemService(DisplayManager.class).getDisplays(
+                DisplayManager.DISPLAY_CATEGORY_ALL_INCLUDING_DISABLED);
     }
 }
