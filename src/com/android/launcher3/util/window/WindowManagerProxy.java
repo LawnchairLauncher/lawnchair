@@ -90,7 +90,7 @@ public class WindowManagerProxy implements ResourceBasedOverride {
      */
     public ArrayMap<String, Pair<CachedDisplayInfo, WindowBounds[]>> estimateInternalDisplayBounds(
             Context context) {
-        Display[] displays = context.getSystemService(DisplayManager.class).getDisplays();
+        Display[] displays = getDisplays(context);
         ArrayMap<String, Pair<CachedDisplayInfo, WindowBounds[]>> result = new ArrayMap<>();
         for (Display display : displays) {
             if (isInternalDisplay(display)) {
@@ -354,5 +354,12 @@ public class WindowManagerProxy implements ResourceBasedOverride {
             d = context.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY);
         }
         return d.getRotation();
+    }
+
+    /**
+     * Returns all currently valid logical displays.
+     */
+    protected Display[] getDisplays(Context context) {
+        return context.getSystemService(DisplayManager.class).getDisplays();
     }
 }
