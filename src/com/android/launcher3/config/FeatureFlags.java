@@ -265,8 +265,8 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_ONE_SEARCH_MOTION = new DeviceFlag(
             "ENABLE_ONE_SEARCH_MOTION", true, "Enables animations in OneSearch.");
 
-    public static final BooleanFlag ENABLE_SHOW_KEYBOARD_IN_ALL_APPS = new DeviceFlag(
-            "ENABLE_SHOW_KEYBOARD_IN_ALL_APPS", true,
+    public static final BooleanFlag ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS = new DeviceFlag(
+            "ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS", true,
             "Enable option to show keyboard when going to all-apps");
 
     public static final BooleanFlag USE_LOCAL_ICON_OVERRIDES = getDebugFlag(
