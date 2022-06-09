@@ -209,7 +209,7 @@ public class FloatingHeaderView extends LinearLayout implements
         int oldMaxHeight = mMaxTranslation;
         updateExpectedHeight();
 
-        if (mMaxTranslation != oldMaxHeight) {
+        if (mMaxTranslation != oldMaxHeight || mCollapsed) {
             BaseAllAppsContainerView<?> parent = (BaseAllAppsContainerView<?>) getParent();
             if (parent != null) {
                 parent.setupHeader();
