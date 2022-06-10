@@ -20,6 +20,8 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.FLAG_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.NO_OFFSET;
+import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
@@ -70,6 +72,7 @@ import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.NavigationMode;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ObjectWrapper;
+import com.android.launcher3.util.PendingSplitSelectInfo;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.UiThreadHelper;
@@ -91,10 +94,10 @@ import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.unfold.UnfoldTransitionFactory;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
+import com.android.systemui.unfold.config.ResourceUnfoldTransitionConfig;
 import com.android.systemui.unfold.config.UnfoldTransitionConfig;
 import com.android.systemui.unfold.system.ActivityManagerActivityTypeProvider;
 import com.android.systemui.unfold.system.DeviceStateManagerFoldProvider;
-import com.android.systemui.unfold.config.ResourceUnfoldTransitionConfig;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -130,9 +133,19 @@ public abstract class BaseQuickstepLauncher extends Launcher {
     private @Nullable UnfoldTransitionProgressProvider mUnfoldTransitionProgressProvider;
     private @Nullable LauncherUnfoldAnimationController mLauncherUnfoldAnimationController;
 
+    /**
+     * If Launcher restarted while in the middle of an Overview split select, it needs this data to
+     * recover. In all other cases this will remain null.
+     */
+    private PendingSplitSelectInfo mPendingSplitSelectInfo = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            mPendingSplitSelectInfo = ObjectWrapper.unwrap(
+                    savedInstanceState.getIBinder(PENDING_SPLIT_SELECT_INFO));
+        }
         addMultiWindowModeChangedListener(mDepthController);
         initUnfoldTransitionProgressProvider();
     }
@@ -642,5 +655,54 @@ public abstract class BaseQuickstepLauncher extends Launcher {
         if (mDepthController != null) {
             mDepthController.dump(prefix, writer);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // If Launcher shuts downs during split select, we save some extra data in the recovery
+        // bundle to allow graceful recovery. The normal LauncherState restore mechanism doesn't
+        // work in this case because restoring straight to OverviewSplitSelect without staging data,
+        // or before the tasks themselves have loaded into Overview, causes a crash. So we tell
+        // Launcher to first restore into Overview state, wait for the relevant tasks and icons to
+        // load in, and then proceed to OverviewSplitSelect.
+        if (isInState(OVERVIEW_SPLIT_SELECT)) {
+            SplitSelectStateController splitSelectStateController =
+                    ((RecentsView) getOverviewPanel()).getSplitPlaceholder();
+            // Launcher will restart in Overview and then transition to OverviewSplitSelect.
+            outState.putIBinder(PENDING_SPLIT_SELECT_INFO, ObjectWrapper.wrap(
+                    new PendingSplitSelectInfo(
+                            splitSelectStateController.getInitialTaskId(),
+                            splitSelectStateController.getActiveSplitStagePosition()
+                    )
+            ));
+            outState.putInt(RUNTIME_STATE, OVERVIEW.ordinal);
+        }
+    }
+
+    /**
+     * When Launcher restarts, it sometimes needs to recover to a split selection state.
+     * This function checks if such a recovery is needed.
+     * @return a boolean representing whether the launcher is waiting to recover to
+     * OverviewSplitSelect state.
+     */
+    public boolean hasPendingSplitSelectInfo() {
+        return mPendingSplitSelectInfo != null;
+    }
+
+    /**
+     * See {@link #hasPendingSplitSelectInfo()}
+     */
+    public @Nullable PendingSplitSelectInfo getPendingSplitSelectInfo() {
+        return mPendingSplitSelectInfo;
+    }
+
+    /**
+     * When the launcher has successfully recovered to OverviewSplitSelect state, this function
+     * deletes the recovery data, returning it to a null state.
+     */
+    public void finishSplitSelectRecovery() {
+        mPendingSplitSelectInfo = null;
     }
 }
