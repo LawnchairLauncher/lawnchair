@@ -279,7 +279,10 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
         // get the final leash operations but do not apply to the leash.
         final SurfaceControl.Transaction tx =
                 PipSurfaceTransactionHelper.newSurfaceControlTransaction();
-        return onAnimationUpdate(tx, new RectF(mDestinationBounds), END_PROGRESS);
+        final PictureInPictureSurfaceTransaction pipTx =
+                onAnimationUpdate(tx, new RectF(mDestinationBounds), END_PROGRESS);
+        pipTx.setShouldDisableCanAffectSystemUiFlags(true);
+        return pipTx;
     }
 
     private RotatedPosition getRotatedPosition(float progress) {
