@@ -41,7 +41,6 @@ import android.os.Build;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Display;
 
 import androidx.annotation.AnyThread;
@@ -117,8 +116,9 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
                 getPackageFilter(TARGET_OVERLAY_PACKAGE, ACTION_OVERLAY_CHANGED));
 
         WindowManagerProxy wmProxy = WindowManagerProxy.INSTANCE.get(context);
-        mInfo = new Info(getDisplayInfoContext(display), display,
-                wmProxy, wmProxy.estimateInternalDisplayBounds(context));
+        Context displayInfoContext = getDisplayInfoContext(display);
+        mInfo = new Info(displayInfoContext, wmProxy,
+                wmProxy.estimateInternalDisplayBounds(displayInfoContext));
     }
 
     /**
@@ -216,18 +216,18 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         WindowManagerProxy wmProxy = WindowManagerProxy.INSTANCE.get(mContext);
         Info oldInfo = mInfo;
 
-        Context displayContext = getDisplayInfoContext(display);
-        Info newInfo = new Info(displayContext, display, wmProxy, oldInfo.mPerDisplayBounds);
+        Context displayInfoContext = getDisplayInfoContext(display);
+        Info newInfo = new Info(displayInfoContext, wmProxy, oldInfo.mPerDisplayBounds);
 
         if (newInfo.densityDpi != oldInfo.densityDpi || newInfo.fontScale != oldInfo.fontScale
                 || newInfo.navigationMode != oldInfo.navigationMode) {
             // Cache may not be valid anymore, recreate without cache
-            newInfo = new Info(displayContext, display, wmProxy,
-                    wmProxy.estimateInternalDisplayBounds(displayContext));
+            newInfo = new Info(displayInfoContext, wmProxy,
+                    wmProxy.estimateInternalDisplayBounds(displayInfoContext));
         }
 
         int change = 0;
-        if (!newInfo.displayId.equals(oldInfo.displayId)) {
+        if (!newInfo.normalizedDisplayInfo.equals(oldInfo.normalizedDisplayInfo)) {
             change |= CHANGE_ACTIVE_SCREEN;
         }
         if (newInfo.rotation != oldInfo.rotation) {
@@ -242,35 +242,16 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         if (!newInfo.supportedBounds.equals(oldInfo.supportedBounds)
                 || !newInfo.mPerDisplayBounds.equals(oldInfo.mPerDisplayBounds)) {
             change |= CHANGE_SUPPORTED_BOUNDS;
-
-            Point currentS = newInfo.currentSize;
-            Pair<CachedDisplayInfo, WindowBounds[]> cachedBounds =
-                    oldInfo.mPerDisplayBounds.get(newInfo.displayId);
-            Point expectedS = cachedBounds == null ? null : cachedBounds.first.size;
-            if (newInfo.supportedBounds.size() != oldInfo.supportedBounds.size()) {
-                Log.e("b/198965093",
-                        "Inconsistent number of displays"
-                                + "\ndisplay state: " + display.getState()
-                                + "\noldInfo.supportedBounds: " + oldInfo.supportedBounds
-                                + "\nnewInfo.supportedBounds: " + newInfo.supportedBounds);
-            }
-            if (expectedS != null
-                    && (Math.min(currentS.x, currentS.y) != Math.min(expectedS.x, expectedS.y)
-                    || Math.max(currentS.x, currentS.y) != Math.max(expectedS.x, expectedS.y))
-                    && display.getState() == Display.STATE_OFF) {
-                Log.e("b/198965093",
-                        "Display size changed while display is off, ignoring change");
-                return;
-            }
         }
         Log.d("b/198965093", "handleInfoChange"
-                + "\n\tchange: " + change
-                + "\n\tConfiguration diff: " + newInfo.mConfiguration.diff(oldInfo.mConfiguration));
+                + "\n\tchange: 0b" + Integer.toBinaryString(change)
+                + "\n\tConfiguration diff: 0x" + Integer.toHexString(
+                        newInfo.mConfiguration.diff(oldInfo.mConfiguration)));
 
         if (change != 0) {
             mInfo = newInfo;
             final int flags = change;
-            MAIN_EXECUTOR.execute(() -> notifyChange(displayContext, flags));
+            MAIN_EXECUTOR.execute(() -> notifyChange(displayInfoContext, flags));
         }
     }
 
@@ -288,8 +269,8 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
     public static class Info {
 
         // Cached property
+        public final CachedDisplayInfo normalizedDisplayInfo;
         public final int rotation;
-        public final String displayId;
         public final Point currentSize;
         public final Rect cutout;
 
@@ -302,60 +283,71 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
 
         public final Set<WindowBounds> supportedBounds = new ArraySet<>();
 
-        private final ArrayMap<String, Pair<CachedDisplayInfo, WindowBounds[]>> mPerDisplayBounds =
+        private final ArrayMap<CachedDisplayInfo, WindowBounds[]> mPerDisplayBounds =
                 new ArrayMap<>();
 
         // TODO(b/198965093): Remove after investigation
         private Configuration mConfiguration;
 
-        public Info(Context context, Display display) {
+        public Info(Context displayInfoContext) {
             /* don't need system overrides for external displays */
-            this(context, display, new WindowManagerProxy(), new ArrayMap<>());
+            this(displayInfoContext, new WindowManagerProxy(), new ArrayMap<>());
         }
 
         // Used for testing
-        public Info(Context context, Display display,
+        public Info(Context displayInfoContext,
                 WindowManagerProxy wmProxy,
-                ArrayMap<String, Pair<CachedDisplayInfo, WindowBounds[]>> perDisplayBoundsCache) {
-            CachedDisplayInfo displayInfo = wmProxy.getDisplayInfo(context, display);
+                ArrayMap<CachedDisplayInfo, WindowBounds[]> perDisplayBoundsCache) {
+            CachedDisplayInfo displayInfo = wmProxy.getDisplayInfo(displayInfoContext);
+            normalizedDisplayInfo = displayInfo.normalize();
             rotation = displayInfo.rotation;
             currentSize = displayInfo.size;
-            displayId = displayInfo.id;
             cutout = displayInfo.cutout;
 
-            Configuration config = context.getResources().getConfiguration();
+            Configuration config = displayInfoContext.getResources().getConfiguration();
             fontScale = config.fontScale;
             densityDpi = config.densityDpi;
             mScreenSizeDp = new PortraitSize(config.screenHeightDp, config.screenWidthDp);
-            navigationMode = parseNavigationMode(context);
+            navigationMode = parseNavigationMode(displayInfoContext);
 
             // TODO(b/198965093): Remove after investigation
             mConfiguration = config;
 
             mPerDisplayBounds.putAll(perDisplayBoundsCache);
-            Pair<CachedDisplayInfo, WindowBounds[]> cachedValue = mPerDisplayBounds.get(displayId);
+            WindowBounds[] cachedValue = mPerDisplayBounds.get(normalizedDisplayInfo);
 
-            WindowBounds realBounds = wmProxy.getRealBounds(context, display, displayInfo);
+            WindowBounds realBounds = wmProxy.getRealBounds(displayInfoContext, displayInfo);
             if (cachedValue == null) {
-                supportedBounds.add(realBounds);
-            } else {
+                // Unexpected normalizedDisplayInfo is found, recreate the cache
+                Log.e("b/198965093", "Unexpected normalizedDisplayInfo found, invalidating cache");
+                mPerDisplayBounds.clear();
+                mPerDisplayBounds.putAll(wmProxy.estimateInternalDisplayBounds(displayInfoContext));
+                cachedValue = mPerDisplayBounds.get(normalizedDisplayInfo);
+                if (cachedValue == null) {
+                    Log.e("b/198965093", "normalizedDisplayInfo not found in estimation: "
+                            + normalizedDisplayInfo);
+                    supportedBounds.add(realBounds);
+                }
+            }
+
+            if (cachedValue != null) {
                 // Verify that the real bounds are a match
-                WindowBounds expectedBounds = cachedValue.second[displayInfo.rotation];
+                WindowBounds expectedBounds = cachedValue[displayInfo.rotation];
                 if (!realBounds.equals(expectedBounds)) {
                     WindowBounds[] clone = new WindowBounds[4];
-                    System.arraycopy(cachedValue.second, 0, clone, 0, 4);
+                    System.arraycopy(cachedValue, 0, clone, 0, 4);
                     clone[displayInfo.rotation] = realBounds;
-                    cachedValue = Pair.create(displayInfo.normalize(), clone);
-                    mPerDisplayBounds.put(displayId, cachedValue);
+                    mPerDisplayBounds.put(normalizedDisplayInfo, clone);
                 }
             }
             mPerDisplayBounds.values().forEach(
-                    pair -> Collections.addAll(supportedBounds, pair.second));
+                    windowBounds -> Collections.addAll(supportedBounds, windowBounds));
             Log.e("b/198965093", "mConfiguration: " + mConfiguration);
             Log.d("b/198965093", "displayInfo: " + displayInfo);
             Log.d("b/198965093", "realBounds: " + realBounds);
-            mPerDisplayBounds.values().forEach(pair -> Log.d("b/198965093",
-                    "perDisplayBounds - " + pair.first + ": " + Arrays.deepToString(pair.second)));
+            Log.d("b/198965093", "normalizedDisplayInfo: " + normalizedDisplayInfo);
+            mPerDisplayBounds.forEach((key, value) -> Log.d("b/198965093",
+                    "perDisplayBounds - " + key + ": " + Arrays.deepToString(value)));
         }
 
         /**
@@ -383,14 +375,14 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
     public void dump(PrintWriter pw) {
         Info info = mInfo;
         pw.println("DisplayController.Info:");
-        pw.println("  id=" + info.displayId);
+        pw.println("  normalizedDisplayInfo=" + info.normalizedDisplayInfo);
         pw.println("  rotation=" + info.rotation);
         pw.println("  fontScale=" + info.fontScale);
         pw.println("  densityDpi=" + info.densityDpi);
         pw.println("  navigationMode=" + info.navigationMode.name());
         pw.println("  currentSize=" + info.currentSize);
-        info.mPerDisplayBounds.values().forEach(pair -> pw.println(
-                "  perDisplayBounds - " + pair.first + ": " + Arrays.deepToString(pair.second)));
+        info.mPerDisplayBounds.forEach((key, value) -> pw.println(
+                "  perDisplayBounds - " + key + ": " + Arrays.deepToString(value)));
     }
 
     /**

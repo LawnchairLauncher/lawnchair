@@ -234,7 +234,8 @@ public class InvariantDeviceProfile {
                         /*allowDisabledGrid=*/false),
                 defaultDeviceType);
 
-        Info myInfo = new Info(context, display);
+        Context displayContext = context.createDisplayContext(display);
+        Info myInfo = new Info(displayContext);
         @DeviceType int deviceType = getDeviceType(myInfo);
         DisplayOption myDisplayOption = invDistWeightedInterpolate(
                 myInfo,
@@ -642,7 +643,7 @@ public class InvariantDeviceProfile {
                             + "\nconfig: " + config
                             + "\ndisplayMetrics: " + res.getDisplayMetrics()
                             + "\nrotation: " + rotation
-                            + "\n" + stringWriter.toString(),
+                            + "\n" + stringWriter,
                     new Exception());
         }
         return getBestMatch(screenWidth, screenHeight, rotation);

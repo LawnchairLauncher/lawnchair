@@ -97,6 +97,18 @@ public class AnimatedPropertySetter extends PropertySetter {
         return anim;
     }
 
+    @NonNull
+    @Override
+    public <T> Animator setColor(T target, IntProperty<T> property, int value,
+            TimeInterpolator interpolator) {
+        if (property.get(target) == value) {
+            return NO_OP;
+        }
+        Animator anim = ObjectAnimator.ofArgb(target, property, value);
+        anim.setInterpolator(interpolator);
+        add(anim);
+        return anim;
+    }
 
     /**
      * Adds a callback to be run on every frame of the animation
