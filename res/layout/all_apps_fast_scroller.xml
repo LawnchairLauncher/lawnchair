@@ -22,6 +22,7 @@
         style="@style/FastScrollerPopup"
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/all_apps_header"
+        android:layout_marginTop="@dimen/all_apps_header_bottom_padding"
         android:layout_marginEnd="@dimen/fastscroll_popup_margin" />
 
     <com.android.launcher3.views.RecyclerViewFastScroller
@@ -31,6 +32,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/all_apps_header"
+        android:layout_marginTop="@dimen/all_apps_header_bottom_padding"
         android:layout_marginEnd="@dimen/fastscroll_end_margin"
         launcher:canThumbDetach="true" />
 
