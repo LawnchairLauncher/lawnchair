@@ -58,6 +58,8 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 
+import java.util.function.Supplier;
+
 /**
  * A view that is created to look like another view with the purpose of creating fluid animations.
  */
@@ -295,9 +297,11 @@ public class FloatingIconView extends FrameLayout implements
 
         drawable = drawable == null ? null : drawable.getConstantState().newDrawable();
         int iconOffset = getOffsetForIconBounds(l, drawable, pos);
+        // Clone right away as we are on the background thread instead of blocking the
+        // main thread later
+        Drawable btvClone = btvIcon == null ? null : btvIcon.getConstantState().newDrawable();
         synchronized (outIconLoadResult) {
-            outIconLoadResult.btvDrawable = btvIcon == null || drawable == btvIcon
-                    ? null : btvIcon.getConstantState().newDrawable();
+            outIconLoadResult.btvDrawable = () -> btvClone;
             outIconLoadResult.drawable = drawable;
             outIconLoadResult.badge = badge;
             outIconLoadResult.iconOffset = iconOffset;
@@ -318,7 +322,7 @@ public class FloatingIconView extends FrameLayout implements
      */
     @UiThread
     private void setIcon(@Nullable Drawable drawable, @Nullable Drawable badge,
-            @Nullable Drawable btvIcon, int iconOffset) {
+            @Nullable Supplier<Drawable> btvIcon, int iconOffset) {
         final DeviceProfile dp = mLauncher.getDeviceProfile();
         final InsettableFrameLayout.LayoutParams lp =
                 (InsettableFrameLayout.LayoutParams) getLayoutParams();
@@ -361,9 +365,9 @@ public class FloatingIconView extends FrameLayout implements
      *
      * Allows nullable as this may be cleared when drawing is deferred to ClipIconView.
      */
-    private void setOriginalDrawableBackground(@Nullable Drawable btvIcon) {
+    private void setOriginalDrawableBackground(@Nullable Supplier<Drawable> btvIcon) {
         if (!mIsOpening) {
-            mBtvDrawable.setBackground(btvIcon);
+            mBtvDrawable.setBackground(btvIcon == null ? null : btvIcon.get());
         }
     }
 
@@ -518,21 +522,26 @@ public class FloatingIconView extends FrameLayout implements
         getLocationBoundsForView(l, v, isOpening, position);
 
         final FastBitmapDrawable btvIcon;
+        final Supplier<Drawable> btvDrawableSupplier;
         if (v instanceof BubbleTextView) {
             BubbleTextView btv = (BubbleTextView) v;
             if (info instanceof ItemInfoWithIcon
                     && (((ItemInfoWithIcon) info).runtimeStatusFlags
                     & ItemInfoWithIcon.FLAG_SHOW_DOWNLOAD_PROGRESS_MASK) != 0) {
                 btvIcon = btv.makePreloadIcon();
+                btvDrawableSupplier = () -> btvIcon;
             } else {
-                btvIcon = (FastBitmapDrawable) btv.getIcon().getConstantState().newDrawable();
+                btvIcon = btv.getIcon();
+                // Clone when needed
+                btvDrawableSupplier = () -> btvIcon.getConstantState().newDrawable();
             }
         } else {
             btvIcon = null;
+            btvDrawableSupplier = null;
         }
 
         IconLoadResult result = new IconLoadResult(info, btvIcon != null && btvIcon.isThemed());
-        result.btvDrawable = btvIcon;
+        result.btvDrawable = btvDrawableSupplier;
 
         final long fetchIconId = sFetchIconId++;
         MODEL_EXECUTOR.getHandler().postAtFrontOfQueue(() -> {
@@ -647,7 +656,7 @@ public class FloatingIconView extends FrameLayout implements
     private static class IconLoadResult {
         final ItemInfo itemInfo;
         final boolean isThemed;
-        Drawable btvDrawable;
+        Supplier<Drawable> btvDrawable;
         Drawable drawable;
         Drawable badge;
         int iconOffset;
