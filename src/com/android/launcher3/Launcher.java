@@ -2776,7 +2776,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             View v = getFirstMatch(Collections.singletonList(activeRecyclerView),
                     preferredItem, packageAndUserAndApp);
 
-            if (activeRecyclerView.getCurrentScrollY() > 0) {
+            if (v != null && activeRecyclerView.getCurrentScrollY() > 0) {
                 RectF locationBounds = new RectF();
                 FloatingIconView.getLocationBoundsForView(this, v, false, locationBounds,
                         new Rect());
@@ -2804,6 +2804,7 @@ public class Launcher extends StatefulActivity<LauncherState>
      * @param containers List of ViewGroups to scan, in order of preference.
      * @param operators List of operators, in order starting from best matching operator.
      */
+    @Nullable
     private static View getFirstMatch(Iterable<ViewGroup> containers,
             final Predicate<ItemInfo>... operators) {
         for (Predicate<ItemInfo> operator : operators) {
@@ -2821,6 +2822,7 @@ public class Launcher extends StatefulActivity<LauncherState>
      * Returns the first view matching the operator in the given ViewGroups, or null if none.
      * Forward iteration matters.
      */
+    @Nullable
     private static View mapOverViewGroup(ViewGroup container, Predicate<ItemInfo> op) {
         final int itemCount = container.getChildCount();
         for (int itemIdx = 0; itemIdx < itemCount; itemIdx++) {

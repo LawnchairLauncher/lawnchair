@@ -81,7 +81,6 @@ public class FloatingHeaderView extends LinearLayout implements
 
     protected final Map<AllAppsRow, PluginHeaderRow> mPluginRows = new ArrayMap<>();
 
-    private final int mHeaderTopPadding;
     // These two values are necessary to ensure that the header protection is drawn correctly.
     private final int mHeaderTopAdjustment;
     private final int mHeaderBottomAdjustment;
@@ -118,8 +117,6 @@ public class FloatingHeaderView extends LinearLayout implements
 
     public FloatingHeaderView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        mHeaderTopPadding = context.getResources()
-                .getDimensionPixelSize(R.dimen.all_apps_header_top_padding);
         mHeaderTopAdjustment = context.getResources()
                 .getDimensionPixelSize(R.dimen.all_apps_header_top_adjustment);
         mHeaderBottomAdjustment = context.getResources()
@@ -209,7 +206,7 @@ public class FloatingHeaderView extends LinearLayout implements
         int oldMaxHeight = mMaxTranslation;
         updateExpectedHeight();
 
-        if (mMaxTranslation != oldMaxHeight) {
+        if (mMaxTranslation != oldMaxHeight || mCollapsed) {
             BaseAllAppsContainerView<?> parent = (BaseAllAppsContainerView<?>) getParent();
             if (parent != null) {
                 parent.setupHeader();
@@ -326,7 +323,7 @@ public class FloatingHeaderView extends LinearLayout implements
         int uncappedTranslationY = mTranslationY;
         mTranslationY = Math.max(mTranslationY, -mMaxTranslation);
 
-        if (mCollapsed || uncappedTranslationY < mTranslationY - mHeaderTopPadding) {
+        if (mCollapsed || uncappedTranslationY < mTranslationY - getPaddingTop()) {
             // we hide it completely if already capped (for opening search anim)
             for (FloatingHeaderRow row : mAllRows) {
                 row.setVerticalScroll(0, true /* isScrolledOut */);
@@ -339,7 +336,10 @@ public class FloatingHeaderView extends LinearLayout implements
 
         mTabLayout.setTranslationY(mTranslationY);
 
-        int clipTop = mHeaderTopPadding - mHeaderTopAdjustment;
+        int clipTop = getPaddingTop() - mHeaderTopAdjustment;
+        if (mTabsHidden) {
+            clipTop += getPaddingBottom() - mHeaderBottomAdjustment;
+        }
         mRVClip.top = mTabsHidden ? clipTop : 0;
         mHeaderClip.top = clipTop;
         // clipping on a draw might cause additional redraw
