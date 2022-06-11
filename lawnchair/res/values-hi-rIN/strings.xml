@@ -19,7 +19,7 @@
     <string name="icon_style">आइकन स्टाइल</string>
     <string name="settings">सेटिंग्स</string>
     <string name="home_screen_label">होम स्क्रीन</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">फ़ीड, ग्रिड, आइकन्स</string>
     <string name="general_label">सामान्य</string>
     <string name="general_description">नोटिफिकेशन डॉट्स, आइकन पैक</string>
     <string name="home_screen_rotation_label">होम स्क्रीन रोटेशन</string>
@@ -36,8 +36,8 @@
     <string name="max_folder_columns">मैक्स। फ़ोल्डर कॉलम</string>
     <string name="max_folder_rows">ज्यादा फ़ोल्डर पंक्तियाँ</string>
     <string name="home_screen_grid">होम स्क्रीन ग्रिड</string>
-    <string name="home_screen_lock">Lock Home Screen</string>
-    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock">होम स्क्रीन लॉक करें</string>
+    <string name="home_screen_unlock">होम स्क्रीन अनलॉक करें</string>
     <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">कॉलम</string>
     <string name="grid">ग्रिड</string>
