@@ -736,7 +736,8 @@ public class StatsLogManager implements ResourceBasedOverride {
             COLD(1),
             HOT(2),
             TIMEOUT(3),
-            FAIL(4);
+            FAIL(4),
+            COLD_USERWAITING(5);
 
             private final int mId;
 
