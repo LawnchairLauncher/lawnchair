@@ -241,6 +241,37 @@ filegroup {
     ],
 }
 
+// Library with all the dependencies for building Launcher Go
+// without the sources, sources to be added in the downstream projects
+android_library {
+    name: "LauncherGoResNoSrcLib",
+
+    resource_dirs: [
+        "go/res",
+        "go/quickstep/res",
+    ],
+    // Note the ordering here is important when it comes to resource
+    // overriding. We want the most specific resource overrides defined
+    // in QuickstepResLib to take precedence, so it should be the final
+    // dependency. See b/205278434 for how this can go wrong.
+    static_libs: [
+        "Launcher3CommonDepsLib",
+        "QuickstepResLib",
+        "androidx.room_room-runtime",
+    ],
+    plugins: ["androidx.room_room-compiler-plugin"],
+    manifest: "quickstep/AndroidManifest-launcher.xml",
+    additional_manifests: [
+        "go/AndroidManifest.xml",
+        "AndroidManifest-common.xml",
+    ],
+    min_sdk_version: "current",
+    lint: {
+        baseline_filename: "lint-baseline-go-res-lib.xml",
+    },
+}
+
+
 // Proguard files for Launcher3
 filegroup {
     name: "launcher-proguard-rules",
@@ -251,27 +282,13 @@ filegroup {
 android_library {
     name: "LauncherGoResLib",
     srcs: [
-        "src/**/*.java",
-        "src/**/*.kt",
-        "quickstep/src/**/*.java",
-        "quickstep/src/**/*.kt",
+        ":launcher-go-src-no-build-config",
         "go/src/**/*.java",
         "go/src/**/*.kt",
-        "go/quickstep/src/**/*.java",
-        "go/quickstep/src/**/*.kt",
     ],
-    resource_dirs: [
-        "go/res",
-        "go/quickstep/res",
-    ],
-    // Note the ordering here is important when it comes to resource
-    // overriding. We want the most specific resource overrides defined
-    // in QuickstepResLib to take precendece, so it should be the final
-    // dependency. See b/205278434 for how this can go wrong.
+
     static_libs: [
-        "Launcher3CommonDepsLib",
-        "QuickstepResLib",
-        "androidx.room_room-runtime",
+        "LauncherGoResNoSrcLib",
     ],
     plugins: ["androidx.room_room-compiler-plugin"],
     manifest: "quickstep/AndroidManifest-launcher.xml",
@@ -406,19 +423,6 @@ android_app {
     platform_apis: true,
     min_sdk_version: "current",
     target_sdk_version: "current",
-
-    srcs: [
-        "src/**/*.java",
-        "quickstep/src/**/*.java",
-        "go/src/**/*.java",
-        "go/quickstep/src/**/*.java",
-    ],
-
-    resource_dirs: [
-        "go/quickstep/res",
-        "go/res",
-        "quickstep/res",
-    ],
 
     optimize: {
         proguard_flags_files: ["proguard.flags"],
