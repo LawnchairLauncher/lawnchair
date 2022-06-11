@@ -38,7 +38,7 @@
     <string name="home_screen_grid">Graella de la pantalla d\'inici</string>
     <string name="home_screen_lock">Bloquejar Pantalla Inicial</string>
     <string name="home_screen_unlock">Desbloquejar Pantalla Inicial</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Mostrar botó de bloquejar en finestra emergent</string>
     <string name="columns">Columnes</string>
     <string name="grid">Graella</string>
     <string name="rows">Files</string>
