@@ -128,6 +128,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
     private final int mScrimColor;
     private final int mHeaderProtectionColor;
     protected final float mHeaderThreshold;
+    private int mHeaderBottomAdjustment;
     private ScrimView mScrimView;
     private int mHeaderColor;
     private int mTabsProtectionAlpha;
@@ -140,6 +141,8 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         mScrimColor = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
         mHeaderThreshold = getResources().getDimensionPixelSize(
                 R.dimen.dynamic_grid_cell_border_spacing);
+        mHeaderBottomAdjustment = getResources().getDimensionPixelSize(
+                R.dimen.all_apps_header_bottom_adjustment);
         mHeaderProtectionColor = Themes.getAttrColor(context, R.attr.allappsHeaderProtectionColor);
 
         mWorkManager = new WorkProfileManager(
@@ -722,6 +725,9 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         mHeaderPaint.setAlpha((int) (getAlpha() * Color.alpha(mHeaderColor)));
         if (mHeaderPaint.getColor() != mScrimColor && mHeaderPaint.getColor() != 0) {
             int bottom = getHeaderBottom();
+            if (!mUsingTabs) {
+                bottom += getFloatingHeaderView().getPaddingBottom() - mHeaderBottomAdjustment;
+            }
             canvas.drawRect(0, 0, canvas.getWidth(), bottom, mHeaderPaint);
             int tabsHeight = getFloatingHeaderView().getPeripheralProtectionHeight();
             if (mTabsProtectionAlpha > 0 && tabsHeight != 0) {
