@@ -285,8 +285,6 @@ public class RecyclerViewFastScroller extends View {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                hideKeyboardAsync(ActivityContext.lookupContext(getContext()),
-                        getApplicationWindowToken());
             case MotionEvent.ACTION_CANCEL:
                 mRv.onFastScrollCompleted();
                 mTouchOffsetY = 0;
@@ -310,6 +308,7 @@ public class RecyclerViewFastScroller extends View {
     }
 
     private void calcTouchOffsetAndPrepToFastScroll(int downY, int lastY) {
+        hideKeyboardAsync(ActivityContext.lookupContext(getContext()), getWindowToken());
         mIsDragging = true;
         if (mCanThumbDetach) {
             mIsThumbDetached = true;
