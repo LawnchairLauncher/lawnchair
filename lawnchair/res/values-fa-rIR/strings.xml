@@ -107,7 +107,7 @@
     <string name="system">سیستم</string>
     <string name="wallpaper">کاغذ دیواری</string>
     <string name="custom">شخصی</string>
-    <string name="quickstep_description">Clear All Button, Corner Radius</string>
+    <string name="quickstep_description">دکمه پاک کردن همه، شعاع گوشه‌ها</string>
     <string name="wallpaper_scrolling_label">پیمایش کاغذ دیواری</string>
     <string name="show_sys_ui_scrim">سایه بالا</string>
     <string name="show_status_bar">نشان‌دادن نوار وضعیت</string>
@@ -190,7 +190,7 @@
     <string name="lawnicons_not_installed_description">Lawnicons نصب نشده است.</string>
     <string name="icon_picker_default_category">آیکن‌ها</string>
     <string name="icon_picker_reset_to_default">بازنشانی به پیشفرض</string>
-    <string name="icon_pack_external_picker">Open External Picker</string>
+    <string name="icon_pack_external_picker">بازکردن انتخاب‌کننده خارجی</string>
     <string name="recents_actions_label">عملیات‌های سریع</string>
     <string name="recents_clear_all">حذف همه</string>
     <string name="pick_icon_from_label">انتخاب آیکن از</string>
