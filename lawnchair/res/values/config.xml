@@ -53,6 +53,7 @@
     <bool name="config_default_themed_hotseat_qsb">false</bool>
     <bool name="config_default_dock_search_bar_force_website">false</bool>
     <bool name="config_default_rounded_widgets">true</bool>
+    <bool name="config_default_allow_widget_overlap">false</bool>
     <bool name="config_default_show_status_bar">true</bool>
     <bool name="config_default_show_top_shadow">true</bool>
     <bool name="config_default_lock_home_screen">false</bool>

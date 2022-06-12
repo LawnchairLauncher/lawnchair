@@ -132,6 +132,12 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    val allowWidgetOverlap = preference(
+        key = booleanPreferencesKey(name = "allow_widget_overlap"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_allow_widget_overlap),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     val showStatusBar = preference(
         key = booleanPreferencesKey(name = "show_status_bar"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_status_bar),

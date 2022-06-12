@@ -154,6 +154,10 @@ fun HomeScreenPreferences() {
                 adapter = prefs2.roundedWidgets.getAdapter(),
                 label = stringResource(id = R.string.force_rounded_widgets),
             )
+            SwitchPreference(
+                adapter = prefs2.allowWidgetOverlap.getAdapter(),
+                label = stringResource(id = R.string.allow_widget_overlap),
+            )
         }
     }
 }
