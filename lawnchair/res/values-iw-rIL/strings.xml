@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">ערכת סמלים</string>
-    <string name="icon_style">Icon Style</string>
+    <string name="icon_style">סגנון אייקון</string>
     <string name="settings">הגדרות</string>
     <string name="home_screen_label">מסך הבית</string>
     <string name="home_screen_description">פיד, רשת, אייקונים</string>
@@ -36,7 +36,7 @@
     <string name="max_folder_columns">מספר מרבי לטורים בתיקייה</string>
     <string name="max_folder_rows">מספר מרבי לשורות בתיקייה</string>
     <string name="home_screen_grid">רשת מסך הבית</string>
-    <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_lock">נעילת מסך הבית</string>
     <string name="home_screen_unlock">Unlock Home Screen</string>
     <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">עמודות</string>
@@ -113,7 +113,7 @@
     <string name="wallpaper_scrolling_label">גלילת טפט</string>
     <string name="show_sys_ui_scrim">הצגת צל</string>
     <string name="show_status_bar">הצגת שורת מצב</string>
-    <string name="layout">Layout</string>
+    <string name="layout">סידור</string>
     <string name="what_to_show">מה להציג</string>
     <string name="missing_notification_access_label">נדרשת גישה להתראות</string>
     <string name="missing_notification_access_description">נדרשת גישה להתראות.</string>
@@ -141,7 +141,7 @@
     <string name="label_voice_search">חיפוש קולי</string>
     <string name="apply_grid">החל</string>
     <string name="x_by_y">%1$d × %2$d</string>
-    <string name="folder_preview_bg_opacity_label">Icon Background Opacity</string>
+    <string name="folder_preview_bg_opacity_label">שקיפות רקע אייקון</string>
     <string name="icon_shape_label">צורת האייקון</string>
     <string name="icon_shape_system">מערכת</string>
     <string name="icon_shape_circle">עיגול</string>
@@ -167,7 +167,7 @@
     <string name="show_app_search_bar">הצגת סרגל חיפוש</string>
     <string name="lawnchair_bug_report">דיווח על תקלה</string>
     <string name="crash_report_notif_title">%1$s קרס</string>
-    <string name="action_upload_crash_report">Upload Crash Log</string>
+    <string name="action_upload_crash_report">העלאת תיעוד קריסה</string>
     <string name="action_copy_link">העתקת קישור</string>
     <string name="action_copy">העתקה</string>
     <string name="copied_toast">הועתק ללוח הכתיבה.</string>
@@ -206,11 +206,11 @@
     <string name="search_provider_app_search">חיפוש אפליקציה</string>
     <string name="always_open_website_label">Always Open Website</string>
     <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
-    <string name="search_provider">Search Provider</string>
+    <string name="search_provider">ספק חיפוש</string>
     <string name="status_bar_label">סרגל מצב</string>
-    <string name="show_notification_count">Show Notification Count</string>
-    <string name="icon_picker_load_failed">Couldn’t load more icons.</string>
-    <string name="reset_custom_icons">Reset Custom Icons</string>
+    <string name="show_notification_count">הצגת כמות התראות</string>
+    <string name="icon_picker_load_failed">לא ניתן לטעון אייקונים נוספים.</string>
+    <string name="reset_custom_icons">איפוס אייקונים מותאמים</string>
     <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
     <string name="taskbar_label">Taskbar</string>
     <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
