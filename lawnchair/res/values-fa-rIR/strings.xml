@@ -97,8 +97,8 @@
     <string name="theme_follow_wallpaper">تطابق با کاغذ دیواری</string>
     <string name="quickstep_label">اخیر</string>
     <string name="clear_all_as_action_label">دکمه پاک کردن همه در پایین صفحه</string>
-    <string name="window_corner_radius_label">Screen Corner Radius</string>
-    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
+    <string name="window_corner_radius_label">شعاع گوشه صفحه</string>
+    <string name="override_window_corner_radius_label">شعاع گوشه صفحه شخصی‌سازی شده</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">آیکون‌های سیستمی</string>
     <string name="accent_color">رنگ برنامه</string>
@@ -139,7 +139,7 @@
     <string name="label_voice_search">جستوجو صوتی</string>
     <string name="apply_grid">اعمال</string>
     <string name="x_by_y">%1$d × %2$d</string>
-    <string name="folder_preview_bg_opacity_label">Icon Background Opacity</string>
+    <string name="folder_preview_bg_opacity_label">شفافیت بک‌گراند آیکون</string>
     <string name="icon_shape_label">شکل آیکن</string>
     <string name="icon_shape_system">سیستم</string>
     <string name="icon_shape_circle">دایره</string>
