@@ -115,7 +115,7 @@
     <string name="what_to_show">چه چیزی نشان‌داده شود</string>
     <string name="missing_notification_access_label">دسترسی به اعلان‌ها نیاز است</string>
     <string name="missing_notification_access_description">دسترسی به اعلان‌ها نیاز است.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
+    <string name="msg_missing_notification_access">برای استفاده از نشان اعلان‌ها، دسترسی به اعلان‌ها را برای <xliff:g id="name" example="My App">%1$s</xliff:g> فعال کنید.</string>
     <string name="title_change_settings">تغییر تنظیمات</string>
     <string name="debug_restart_launcher">راه اندازی مجدد Lawnchair</string>
     <string name="pref_fonts_missing_font">قلم پیدا نشد.</string>
@@ -156,14 +156,14 @@
     <string name="action_lens">لنز</string>
     <string name="force_rounded_widgets">گوشه‌های گرد</string>
     <string name="suggestion_pref_screen_title">پیشنهادها</string>
-    <string name="n_percent">%1$d%%</string>
+    <string name="n_percent">%1$d٪</string>
     <string name="label">نام</string>
-    <string name="presets">Presets</string>
+    <string name="presets">از پیش تعیین شده‌ها</string>
     <string name="colors">رنگ‌ها</string>
     <string name="dynamic">پویا</string>
     <string name="all_apps_search_market_message">جست‌و‌جو برنامه‌های بیشتر</string>
     <string name="show_app_search_bar">نشان‌دادن نوار جستجو</string>
-    <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
+    <string name="lawnchair_bug_report">گزارش مشکلات Lawnchair</string>
     <string name="crash_report_notif_title">%1$s Crashed</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
     <string name="action_copy_link">کپی لینک</string>
@@ -196,7 +196,7 @@
     <string name="pick_icon_from_label">انتخاب آیکن از</string>
     <string name="experimental_features_label">قابلیت‌های آزمایشی</string>
     <string name="icon_picker_label">Per-App Icon Customization</string>
-    <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
+    <string name="icon_picker_description">میتواند باعث فلج شدن Lawnchair شود.</string>
     <string name="font_picker_label">شخصی‌سازی قلم</string>
     <string name="font_picker_description">بعضی متون بدون تغییر می‌مانند.</string>
     <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
@@ -256,7 +256,7 @@
     <string name="backup_restore_success">بکاپ بازیابی شد.</string>
     <string name="backup_restore_error">بازیابی بکاپ انجام نشد.</string>
     <string name="invalid_backup_file">فایل بکاپ نامعتبر.</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d٪ — کامل در %2$s"</string>
     <string name="wallpaper_depth_effect">Wallpaper Depth Effect</string>
     <string name="gesture_double_tap">دو ضربه سریع</string>
     <string name="gesture_handler_no_op">انجام هیچ‌کار</string>
