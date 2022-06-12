@@ -202,7 +202,7 @@
     <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
     <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
     <string name="search_provider_app_search">جست‌وجو برنامه</string>
-    <string name="always_open_website_label">Always Open Website</string>
+    <string name="always_open_website_label">همیشه باز کردن وب‌سایت</string>
     <string name="always_open_website_description">بازکردن وب سایت ارائه‌دهنده‌ها حتی در صورت برنامه آن‌ها.</string>
     <string name="search_provider">تامین کننده جست‌وجو</string>
     <string name="status_bar_label">نوار وضعیت</string>
@@ -257,7 +257,7 @@
     <string name="backup_restore_error">بازیابی بکاپ انجام نشد.</string>
     <string name="invalid_backup_file">فایل بکاپ نامعتبر.</string>
     <string name="battery_charging_percentage_charging_time">"%1$d٪ — کامل در %2$s"</string>
-    <string name="wallpaper_depth_effect">Wallpaper Depth Effect</string>
+    <string name="wallpaper_depth_effect">افکت عمق کاغذ دیواری</string>
     <string name="gesture_double_tap">دو ضربه سریع</string>
     <string name="gesture_handler_no_op">انجام هیچ‌کار</string>
     <string name="gesture_handler_sleep">خاموش کردن صفحه نمایش</string>
@@ -268,7 +268,7 @@
     <string name="gesture_handler_open_app_drawer">باز کردن کشوی برنامه‌ها</string>
     <string name="gesture_handler_open_app_search">بازکردن جستجوی برنامه‌ها</string>
     <string name="gesture_handler_open_search">بازکردن جستجو</string>
-    <string name="gestures_label">Gestures</string>
+    <string name="gestures_label">حرکات</string>
     <string name="gesture_swipe_up">به بالا کشیدن</string>
     <string name="gesture_swipe_down">به پایین کشیدن</string>
     <string name="gesture_home_tap">زدن دکمه خانه</string>
