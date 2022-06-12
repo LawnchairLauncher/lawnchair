@@ -63,10 +63,10 @@
     <string name="translucent_background">بک‌گراند نیمه‌شفاف</string>
     <string name="background_opacity">شفافیت بک‌گراند</string>
     <string name="background_lightness_label">روشنایی بک‌گراند</string>
-    <string name="adaptive_icons">Adaptive Icons</string>
+    <string name="adaptive_icons">آیکون‌های انطباقی</string>
     <string name="adaptive_icon_background_description">Use 100% background lightness for white.</string>
-    <string name="auto_adaptive_icons_label">Auto Adaptive Icons</string>
-    <string name="auto_adaptive_icons_description">For all non-Adaptive icons.</string>
+    <string name="auto_adaptive_icons_label">آیکون‌های انطباقی خودکار</string>
+    <string name="auto_adaptive_icons_description">برای تمام آیکون‌های غیر انطباقی.</string>
     <string name="support_and_pr">پشتیبانی و روابط عمومی</string>
     <string name="workspace_dt2s">دو ضربه سریع برای خواب</string>
     <string name="smart_space_enable">ویجت در یک نگاه</string>
@@ -160,7 +160,7 @@
     <string name="label">نام</string>
     <string name="presets">Presets</string>
     <string name="colors">رنگ‌ها</string>
-    <string name="dynamic">Dynamic</string>
+    <string name="dynamic">پویا</string>
     <string name="all_apps_search_market_message">جست‌و‌جو برنامه‌های بیشتر</string>
     <string name="show_app_search_bar">نشان‌دادن نوار جستجو</string>
     <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
@@ -208,7 +208,7 @@
     <string name="status_bar_label">نوار وضعیت</string>
     <string name="show_notification_count">نشان‌دادن تعداد اعلان‌ها</string>
     <string name="icon_picker_load_failed">بعضی از آیکون‌ها بارگیری نشدند.</string>
-    <string name="reset_custom_icons">Reset Custom Icons</string>
+    <string name="reset_custom_icons">تنظیم مجدد آیکون‌های شخصی‌سازی شده</string>
     <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
     <string name="taskbar_label">نوار وظیفه</string>
     <string name="enable_taskbar_experimental">فعال کردن نوار وظیفه (آزمایشی)</string>
