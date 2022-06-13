@@ -19,7 +19,7 @@
     <string name="icon_style">Estil de les icones</string>
     <string name="settings">Configuració</string>
     <string name="home_screen_label">Pantalla d\'inici</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Feed, Quadrícula, icones</string>
     <string name="general_label">General</string>
     <string name="general_description">Colors, Paquet d\'icones, Punts de notificació</string>
     <string name="home_screen_rotation_label">Rotació de la Pantalla d\'inici</string>
@@ -60,7 +60,7 @@
     <string name="app_info_drop_target_label">Informació de l\'aplicació</string>
     <string name="item_removed">Element esborrat.</string>
     <string name="all_apps_no_search_results">No s\'han trobat apps que coincideixin amb \"<xliff:g example="Android" id="query">%1$s</xliff:g>\".</string>
-    <string name="translucent_background">Translucent Background</string>
+    <string name="translucent_background">Fons Translúcid</string>
     <string name="background_opacity">Opacitat del fons</string>
     <string name="background_lightness_label">Lluminositat del fons</string>
     <string name="adaptive_icons">Icones Adaptables</string>
@@ -80,7 +80,7 @@
         <item quantity="other">%1$d Aplicacions</item>
     </plurals>
     <string name="hotseat_qsb_label">Mostra la Barra de Cerca</string>
-    <string name="qsb_search_provider_app_required">App required.</string>
+    <string name="qsb_search_provider_app_required">Aplicació necessària.</string>
     <string name="dt2s_admin_hint_title">Es necessiten permisos d\'administrador</string>
     <string name="dt2s_admin_hint">Per a utilitzar el «Doble toc per a adormir», selecciona Lawnchair com a aplicació d\'administració del dispositiu. Toca «Obre la Configuració», i toca «Activa aquesta aplicació administradora del dispositiu»</string>
     <string name="dt2s_admin_warning">\"Toca dos cops per apagar la pantalla\" s\'apagarà.</string>
@@ -112,7 +112,7 @@
     <string name="wallpaper_scrolling_label">Desplaçament de fons de pantalla</string>
     <string name="show_sys_ui_scrim">Ombra superior</string>
     <string name="show_status_bar">Mostrar la barra d\'estat</string>
-    <string name="layout">Layout</string>
+    <string name="layout">Diseny</string>
     <string name="what_to_show">Què mostrar</string>
     <string name="missing_notification_access_label">Es necessita accés a les notificacions</string>
     <string name="missing_notification_access_description">És necessari l\'accés a les notificacions.</string>
@@ -201,7 +201,7 @@
     <string name="font_picker_label">Personalització de tipus de lletra</string>
     <string name="font_picker_description">El text encara no té cap canvi.</string>
     <string name="smartspace_calendar_label">Personalització del calendari d\'una ullada</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
+    <string name="smartspace_calendar_description">Permet mostrar la data en sistemes de calendari no Gregorià.</string>
     <string name="search_provider_app_search">Buscar aplicacions</string>
     <string name="always_open_website_label">Obrir sempre pàgina web</string>
     <string name="always_open_website_description">Obrir el cercador del web del proveïdor inclús si l\'app no està instal·lada.</string>
@@ -213,7 +213,7 @@
     <string name="reset_custom_icons_confirmation">Totes les icones seran reiniciades. Vols continuar?</string>
     <string name="taskbar_label">Barra de notificacions</string>
     <string name="enable_taskbar_experimental">Activar Barra de Notificacions (Experimental)</string>
-    <string name="error_no_market_or_browser_installed">No app market or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">No hi ha cap tenda d\'aplicacions o navegador web instal·lat.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Carregant</string>
@@ -224,7 +224,7 @@
     <string name="smartspace_widget_description">Què mostrar</string>
     <string name="smartspace_widget_placeholder_date">Dv. 3 de març</string>
     <string name="quickstep_incompatible">Integració del sistema incompatible</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
+    <string name="quickstep_incompatible_description">El teu dispositiu està configurat per tenir gestos del sistema (conegut com a Quickstep) proveït per %1$s, però aquesta versió de %1$s no és compatible amb la teva versió d\'Android. Per continuar utilitzant el teu dispositiu, si us plau desinstal·la %1$s actualitzacions o desactiva %1$s com un proveïdor de gestos del sistema.</string>
     <string name="preview_label">Vista prèvia</string>
     <string name="smartspace_calendar">Calendari</string>
     <string name="smartspace_date_and_time">Data i hora</string>
@@ -235,7 +235,7 @@
     <string name="smartspace_battery_status">Estat de bateria</string>
     <string name="smartspace_now_playing">En reproducció</string>
     <string name="smartspace_requires_setup">Toqueu per a configurar</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
+    <string name="event_provider_missing_notification_dots">Per fer servir <xliff:g example="el meu proveidor" id="providerName">%1$s</xliff:g>, activa Punts de notificació.</string>
     <string name="smartspace_media_info_separator">" - "</string>
     <string name="smartspace_calendar_gregorian">Georgià</string>
     <string name="smartspace_calendar_persian">Persa</string>
@@ -276,6 +276,6 @@
     <string name="gesture_home_tap">Toc al botó de pàgina principal</string>
     <string name="gesture_back_tap">Toc al botó de tornar</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="app_label">App</string>
-    <string name="website_label">Website</string>
+    <string name="app_label">Aplicació</string>
+    <string name="website_label">Lloc web</string>
 </resources>
