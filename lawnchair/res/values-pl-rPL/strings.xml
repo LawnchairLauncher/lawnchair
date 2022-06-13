@@ -82,7 +82,7 @@
         <item quantity="other">%1$d aplikacji</item>
     </plurals>
     <string name="hotseat_qsb_label">Pokaż pasek wyszukiwania</string>
-    <string name="qsb_search_provider_app_required">App required.</string>
+    <string name="qsb_search_provider_app_required">Wymagana aplikacja.</string>
     <string name="dt2s_admin_hint_title">Wymagane uprawnienia administratora</string>
     <string name="dt2s_admin_hint">Aby korzystać z funkcji uśpienia dwukrotnym dotknięciem, przyznaj Lawnchair uprawnienia administratora urządzenia. Otwórz ustawienia, następnie dotknij \"Aktywuj tę aplikację do administrowania urządzeniem\".</string>
     <string name="dt2s_admin_warning">Opcja \"Dotknij dwa razy aby uśpić\" zostanie wyłączona.</string>
@@ -215,7 +215,7 @@
     <string name="reset_custom_icons_confirmation">Wszystkie własne ikony zostaną zresetowane. Czy chcesz kontynuować?</string>
     <string name="taskbar_label">Pasek zadań</string>
     <string name="enable_taskbar_experimental">Włącz pasek zadań (eksperymentalnie)</string>
-    <string name="error_no_market_or_browser_installed">No app market or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">Brak sklepu lub przeglądarki aplikacji.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Ładowanie</string>
@@ -278,6 +278,6 @@
     <string name="gesture_home_tap">Dotknięcie przycisku Ekranu głównego</string>
     <string name="gesture_back_tap">Dotknięcie przycisku Wstecz</string>
     <string name="x_and_y">%s i %s</string>
-    <string name="app_label">App</string>
-    <string name="website_label">Website</string>
+    <string name="app_label">Aplikacja</string>
+    <string name="website_label">Witryna</string>
 </resources>
