@@ -2367,13 +2367,9 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                     Object tag = v.getTag();
                     String desc = "Collision while binding workspace item: " + item
                             + ". Collides with " + tag;
-                    if (FeatureFlags.IS_STUDIO_BUILD) {
-                        throw (new RuntimeException(desc));
-                    } else {
-                        Log.d(TAG, desc);
-                        getModelWriter().deleteItemFromDatabase(item);
-                        continue;
-                    }
+                    Log.d(TAG, desc);
+                    getModelWriter().deleteItemFromDatabase(item);
+                    continue;
                 }
             }
             workspace.addInScreenFromBind(view, item);
