@@ -235,6 +235,10 @@ public class OverviewCommandHelper {
             }
         };
 
+        RecentsView<?, ?> visibleRecentsView = activityInterface.getVisibleRecentsView();
+        if (visibleRecentsView != null) {
+            visibleRecentsView.moveFocusedTaskToFront();
+        }
         if (mTaskAnimationManager.isRecentsAnimationRunning()) {
             cmd.mActiveCallbacks = mTaskAnimationManager.continueRecentsAnimation(gestureState);
             cmd.mActiveCallbacks.addListener(interactionHandler);
