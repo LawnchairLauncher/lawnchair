@@ -80,6 +80,7 @@
         <item quantity="other">%1$d sovellusta</item>
     </plurals>
     <string name="hotseat_qsb_label">Näytä hakupalkki</string>
+    <string name="qsb_search_provider_app_required">App required.</string>
     <string name="dt2s_admin_hint_title">Admin permission required</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
@@ -212,6 +213,7 @@
     <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
     <string name="taskbar_label">Taskbar</string>
     <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
+    <string name="error_no_market_or_browser_installed">No app market or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Charging</string>
@@ -274,4 +276,6 @@
     <string name="gesture_home_tap">Home Button Tap</string>
     <string name="gesture_back_tap">Back Button Tap</string>
     <string name="x_and_y">%s &amp; %s</string>
+    <string name="app_label">App</string>
+    <string name="website_label">Website</string>
 </resources>
