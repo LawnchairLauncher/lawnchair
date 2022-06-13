@@ -268,7 +268,7 @@
     <string name="gesture_handler_open_app_drawer">Uygulama Çekmecesini Aç</string>
     <string name="gesture_handler_open_app_search">Uygulama Aramayı Aç</string>
     <string name="gesture_handler_open_search">Aramayı Aç</string>
-    <string name="gestures_label">Gestures</string>
+    <string name="gestures_label">Hareketler</string>
     <string name="gesture_swipe_up">Yukarı kaydırın</string>
     <string name="gesture_swipe_down">Aşağı kaydır</string>
     <string name="gesture_home_tap">Ana Ekran Düğmesine Dokunun</string>
