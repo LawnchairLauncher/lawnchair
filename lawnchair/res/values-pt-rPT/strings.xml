@@ -80,7 +80,7 @@
         <item quantity="other">Aplicação %1$d</item>
     </plurals>
     <string name="hotseat_qsb_label">Mostrar Barra de Pesquisa</string>
-    <string name="qsb_search_provider_app_required">App required.</string>
+    <string name="qsb_search_provider_app_required">Aplicação necessária.</string>
     <string name="dt2s_admin_hint_title">Permissões de Administrador Necessárias</string>
     <string name="dt2s_admin_hint">Para usar o Duplo Toque para Dormir, defina o Lawnchair como uma aplicação de administrador do dispositivo. Toque em \"Abrir Definições,\" e de seguida em \"Ativar a aplicação de administrador deste dispositivo.\"</string>
     <string name="dt2s_admin_warning">O Duplo Toque para Dormir será desativado.</string>
@@ -213,7 +213,7 @@
     <string name="reset_custom_icons_confirmation">Todos os ícones personalizados vão ser redefinidos. Quer continuar?</string>
     <string name="taskbar_label">Barra de tarefas</string>
     <string name="enable_taskbar_experimental">Ativar Barra de Tarefas (Experimental)</string>
-    <string name="error_no_market_or_browser_installed">No app market or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">Nenhuma loja de aplicações ou navegador instalado.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Carregando</string>
@@ -276,6 +276,6 @@
     <string name="gesture_home_tap">Toque no Botão Home</string>
     <string name="gesture_back_tap">Toque no Botão Voltar</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="app_label">App</string>
+    <string name="app_label">Aplicação</string>
     <string name="website_label">Website</string>
 </resources>
