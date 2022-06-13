@@ -215,7 +215,7 @@
     <string name="reset_custom_icons_confirmation">Všetky vlastné ikony budú obnovené, naozaj chcete pokračovať?</string>
     <string name="taskbar_label">Panel úloh</string>
     <string name="enable_taskbar_experimental">Povoliť panel úloh (Experimentálne)</string>
-    <string name="error_no_market_or_browser_installed">Nie je nainštalovaný žiadny obchod s aplikáciami alebo prehliadač.</string>
+    <string name="error_no_market_or_browser_installed">Nie je nainštalovaný žiadny obchod s aplikáciami ani prehliadač.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Nabíja sa</string>
