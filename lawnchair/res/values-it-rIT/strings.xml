@@ -80,7 +80,7 @@
         <item quantity="other">%1$d Applicazioni</item>
     </plurals>
     <string name="hotseat_qsb_label">Mostra la Barra di Ricerca</string>
-    <string name="qsb_search_provider_app_required">App required.</string>
+    <string name="qsb_search_provider_app_required">App richiesta.</string>
     <string name="dt2s_admin_hint_title">Permesso di amministratore richiesto</string>
     <string name="dt2s_admin_hint">Per usare il doppio tocco per attivare la modalità standby, imposta Lawnchair come app amministratore del dispositivo. Tocca Apri impostazioni, poi tocca \"Attiva app come amministratore del dispositivo\"</string>
     <string name="dt2s_admin_warning">Il doppio tocco per bloccare lo schermo sarà disabilitato.</string>
@@ -277,5 +277,5 @@
     <string name="gesture_back_tap">Tocco sul pulsante indietro</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="app_label">App</string>
-    <string name="website_label">Website</string>
+    <string name="website_label">Sito web</string>
 </resources>
