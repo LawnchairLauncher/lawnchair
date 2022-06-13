@@ -1221,6 +1221,13 @@ public final class LauncherInstrumentation {
         return object;
     }
 
+    @NonNull
+    List<UiObject2> waitForObjectsBySelector(BySelector selector) {
+        final List<UiObject2> objects = mDevice.wait(Until.findObjects(selector), WAIT_TIME_MS);
+        assertNotNull("Can't find any view in Launcher, selector: " + selector, objects);
+        return objects;
+    }
+
     private UiObject2 waitForObjectBySelector(BySelector selector) {
         final UiObject2 object = mDevice.wait(Until.findObject(selector), WAIT_TIME_MS);
         assertNotNull("Can't find a view in Launcher, selector: " + selector, object);
