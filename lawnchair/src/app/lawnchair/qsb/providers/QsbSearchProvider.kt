@@ -3,7 +3,6 @@ package app.lawnchair.qsb.providers
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.widget.Toast
 import androidx.annotation.DrawableRes
@@ -24,7 +23,7 @@ open class QsbSearchProvider(
     @DrawableRes val themedIcon: Int = icon,
     val themingMethod: ThemingMethod = ThemingMethod.TINT,
     val packageName: String,
-    val className: String = "",
+    val className: String? = null,
     val action: String? = null,
     val supportVoiceIntent: Boolean = false,
     val website: String,
@@ -54,7 +53,10 @@ open class QsbSearchProvider(
 
     fun createSearchIntent() = Intent(action)
         .addFlags(INTENT_FLAGS)
-        .setClassName(packageName, className)
+        .apply {
+            if (className != null) setClassName(packageName, className)
+            else setPackage(packageName)
+        }
 
     fun createVoiceIntent(): Intent = if (supportVoiceIntent) {
         handleCreateVoiceIntent()
