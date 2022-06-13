@@ -37,8 +37,8 @@
     <string name="max_folder_rows">Max. počet riadkov v priečinku</string>
     <string name="home_screen_grid">Mriežka na Domovskej obrazovke</string>
     <string name="home_screen_lock">Uzamknúť domovskú obrazovku</string>
-    <string name="home_screen_unlock">Unlock Home Screen</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_unlock">Odomknúť domovskú obrazovku</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Ukázať tlačidlo zamknutia vo vyskakovacej ponuke</string>
     <string name="columns">Stĺpce</string>
     <string name="grid">Mriežka</string>
     <string name="rows">Riadky</string>
@@ -59,7 +59,7 @@
     <string name="development">Vývoj</string>
     <string name="app_info_drop_target_label">Informácie o aplikácii</string>
     <string name="item_removed">Položka odstránená.</string>
-    <string name="all_apps_no_search_results">Žiadne podobné aplikácie \"<xliff:g example="Android" id="query">%1$s</xliff:g>\".</string>
+    <string name="all_apps_no_search_results">Žiadne aplikácie zhodujúce sa s \"<xliff:g example="Android" id="query">%1$s</xliff:g>\".</string>
     <string name="translucent_background">Priesvitné pozadie</string>
     <string name="background_opacity">Sýtosť pozadia</string>
     <string name="background_lightness_label">Svietivosť pozadia</string>
@@ -82,7 +82,7 @@
         <item quantity="other">%1$d Aplikácie</item>
     </plurals>
     <string name="hotseat_qsb_label">Ukázať vyhľadávacie okno</string>
-    <string name="qsb_search_provider_app_required">App required.</string>
+    <string name="qsb_search_provider_app_required">Potrebná aplikácia.</string>
     <string name="dt2s_admin_hint_title">Nutné povolenia správcu</string>
     <string name="dt2s_admin_hint">Pre používanie dvojitého kliknutia pre uspanie, nastavte Lawnchair ako správcovskú aplikáciu zariadenia. Kliknite na Nastavenia a potom na \"Aktivujte túto aplikáciu ako správcovskú.\"</string>
     <string name="dt2s_admin_warning">Dvojité kliknutie pre uspanie bude vypnuté.</string>
@@ -203,7 +203,7 @@
     <string name="font_picker_label">Prispôsobenie písma</string>
     <string name="font_picker_description">Niektoré texty ostávajú nezmenené.</string>
     <string name="smartspace_calendar_label">Prispôsobenie kalendára Na pohľad</string>
-    <string name="smartspace_calendar_description">Povoliť zobrazovanie dátumu v iných, ako Gregoriánskych kalendárových systémoch.</string>
+    <string name="smartspace_calendar_description">Povoliť zobrazovanie dátumu v iných než gregoriánskych kalendárových systémoch.</string>
     <string name="search_provider_app_search">Vyhľadávanie aplikácií</string>
     <string name="always_open_website_label">Vždy otvoriť webovú stránku</string>
     <string name="always_open_website_description">Otvoriť webovú stránku poskytovateľa vyhľadávania, aj keď je nainštalovaná jeho aplikácia.</string>
@@ -215,7 +215,7 @@
     <string name="reset_custom_icons_confirmation">Všetky vlastné ikony budú obnovené, naozaj chcete pokračovať?</string>
     <string name="taskbar_label">Panel úloh</string>
     <string name="enable_taskbar_experimental">Povoliť panel úloh (Experimentálne)</string>
-    <string name="error_no_market_or_browser_installed">No app market or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">Nie je nainštalovaný žiadny obchod s aplikáciami alebo prehliadač.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Nabíja sa</string>
@@ -278,6 +278,6 @@
     <string name="gesture_home_tap">Tlačidlo Domov</string>
     <string name="gesture_back_tap">Tlačidlo Späť</string>
     <string name="x_and_y">%s a %s</string>
-    <string name="app_label">App</string>
-    <string name="website_label">Website</string>
+    <string name="app_label">Aplikácia</string>
+    <string name="website_label">Webová stránka</string>
 </resources>
