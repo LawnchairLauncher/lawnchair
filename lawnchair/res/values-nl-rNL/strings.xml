@@ -37,8 +37,8 @@
     <string name="max_folder_rows">Max. Aantal Map Rijen</string>
     <string name="home_screen_grid">Startscherm raster</string>
     <string name="home_screen_lock">Vergrendel startscherm</string>
-    <string name="home_screen_unlock">Unlock Home Screen</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_unlock">Startscherm ontgrendelen</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Vergrendelingsknop in pop-up weergeven</string>
     <string name="columns">Kolommen</string>
     <string name="grid">Raster</string>
     <string name="rows">Rijen</string>
