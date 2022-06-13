@@ -80,6 +80,7 @@
         <item quantity="other">%1$d Aplicacions</item>
     </plurals>
     <string name="hotseat_qsb_label">Mostra la Barra de Cerca</string>
+    <string name="qsb_search_provider_app_required">App required.</string>
     <string name="dt2s_admin_hint_title">Es necessiten permisos d\'administrador</string>
     <string name="dt2s_admin_hint">Per a utilitzar el «Doble toc per a adormir», selecciona Lawnchair com a aplicació d\'administració del dispositiu. Toca «Obre la Configuració», i toca «Activa aquesta aplicació administradora del dispositiu»</string>
     <string name="dt2s_admin_warning">\"Toca dos cops per apagar la pantalla\" s\'apagarà.</string>
@@ -212,6 +213,7 @@
     <string name="reset_custom_icons_confirmation">Totes les icones seran reiniciades. Vols continuar?</string>
     <string name="taskbar_label">Barra de notificacions</string>
     <string name="enable_taskbar_experimental">Activar Barra de Notificacions (Experimental)</string>
+    <string name="error_no_market_or_browser_installed">No app market or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Carregant</string>
@@ -274,4 +276,6 @@
     <string name="gesture_home_tap">Toc al botó de pàgina principal</string>
     <string name="gesture_back_tap">Toc al botó de tornar</string>
     <string name="x_and_y">%s &amp; %s</string>
+    <string name="app_label">App</string>
+    <string name="website_label">Website</string>
 </resources>
