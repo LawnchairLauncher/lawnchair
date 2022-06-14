@@ -396,7 +396,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
      * Current behavior:
      * - Start the drag if the touch passes a certain distance from the original touch down.
      */
-    public DragOptions.PreDragCondition createPreDragCondition() {
+    public DragOptions.PreDragCondition createPreDragCondition(boolean updateIconUi) {
         return new DragOptions.PreDragCondition() {
 
             @Override
@@ -406,6 +406,9 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
 
             @Override
             public void onPreDragStart(DropTarget.DragObject dragObject) {
+                if (!updateIconUi) {
+                    return;
+                }
                 if (mIsAboveIcon) {
                     // Hide only the icon, keep the text visible.
                     mOriginalIcon.setIconVisible(false);
@@ -418,6 +421,9 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
 
             @Override
             public void onPreDragEnd(DropTarget.DragObject dragObject, boolean dragStarted) {
+                if (!updateIconUi) {
+                    return;
+                }
                 mOriginalIcon.setIconVisible(true);
                 if (dragStarted) {
                     // Make sure we keep the original icon hidden while it is being dragged.
@@ -480,6 +486,9 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
     @Override
     protected void closeComplete() {
         super.closeComplete();
+        if (mActivityContext.getDragController() != null) {
+            mActivityContext.getDragController().removeDragListener(this);
+        }
         PopupContainerWithArrow openPopup = getOpen(mActivityContext);
         if (openPopup == null || openPopup.mOriginalIcon != mOriginalIcon) {
             mOriginalIcon.setTextVisibility(mOriginalIcon.shouldTextBeVisible());

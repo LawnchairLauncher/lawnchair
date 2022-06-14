@@ -13,23 +13,36 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:enterFadeDuration="100">
-    <item
-        android:id="@+id/unselected"
-        android:state_selected="false">
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/accent_ripple_color">
+
+    <item android:id="@android:id/mask">
         <shape android:shape="rectangle">
             <corners android:radius="@dimen/all_apps_header_pill_corner_radius" />
-            <solid android:color="@color/all_apps_tabs_background" />
+            <solid android:color="@color/accent_ripple_color" />
         </shape>
     </item>
 
-    <item
-        android:id="@+id/selected"
-        android:state_selected="true">
-        <shape android:shape="rectangle">
-            <corners android:radius="@dimen/all_apps_header_pill_corner_radius" />
-            <solid android:color="@color/all_apps_tab_background_selected" />
-        </shape>
+    <item>
+        <selector android:enterFadeDuration="100">
+            <item
+                android:id="@+id/unselected"
+                android:state_selected="false">
+                <shape android:shape="rectangle">
+                    <corners android:radius="@dimen/all_apps_header_pill_corner_radius" />
+                    <solid android:color="@color/all_apps_tabs_background" />
+                </shape>
+            </item>
+
+            <item
+                android:id="@+id/selected"
+                android:state_selected="true">
+                <shape android:shape="rectangle">
+                    <corners android:radius="@dimen/all_apps_header_pill_corner_radius" />
+                    <solid android:color="@color/all_apps_tab_background_selected" />
+                </shape>
+            </item>
+        </selector>
     </item>
-</selector>
+
+</ripple>

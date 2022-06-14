@@ -42,6 +42,8 @@ public class AnimatedFloat {
 
     private final Runnable mUpdateCallback;
     private ObjectAnimator mValueAnimator;
+    // Only non-null when an animation is playing to this value.
+    private Float mEndValue;
 
     public float value;
 
@@ -68,9 +70,17 @@ public class AnimatedFloat {
         mValueAnimator = ObjectAnimator.ofFloat(this, VALUE, start, end);
         mValueAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
+            public void onAnimationStart(Animator animator) {
+                if (mValueAnimator == animator) {
+                    mEndValue = end;
+                }
+            }
+
+            @Override
             public void onAnimationEnd(Animator animator) {
                 if (mValueAnimator == animator) {
                     mValueAnimator = null;
+                    mEndValue = null;
                 }
             }
         });
@@ -102,5 +112,16 @@ public class AnimatedFloat {
 
     public ObjectAnimator getCurrentAnimation() {
         return mValueAnimator;
+    }
+
+    public boolean isAnimating() {
+        return mValueAnimator != null;
+    }
+
+    /**
+     * Returns whether we are currently animating, and the animation's end value matches the given.
+     */
+    public boolean isAnimatingToValue(float endValue) {
+        return isAnimating() && mEndValue != null && mEndValue == endValue;
     }
 }
