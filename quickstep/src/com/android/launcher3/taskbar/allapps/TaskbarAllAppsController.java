@@ -187,7 +187,7 @@ public final class TaskbarAllAppsController {
         TaskStackChangeListeners.getInstance().unregisterTaskStackListener(mTaskStackListener);
         Optional.ofNullable(mAllAppsContext)
                 .map(c -> c.getSystemService(WindowManager.class))
-                .ifPresent(m -> m.removeView(mAllAppsContext.getDragLayer()));
+                .ifPresent(m -> m.removeViewImmediate(mAllAppsContext.getDragLayer()));
         mAllAppsContext = null;
     }
 
