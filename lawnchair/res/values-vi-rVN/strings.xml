@@ -275,6 +275,6 @@
     <string name="gesture_home_tap">Chạm phím về màn hình chính</string>
     <string name="gesture_back_tap">Chạm phím quay lại</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="app_label">App</string>
-    <string name="website_label">Website</string>
+    <string name="app_label">Ứng dụng</string>
+    <string name="website_label">Trang web</string>
 </resources>
