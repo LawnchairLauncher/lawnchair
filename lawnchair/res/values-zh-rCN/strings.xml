@@ -38,7 +38,7 @@
     <string name="home_screen_grid">桌面图标行列数</string>
     <string name="home_screen_lock">锁定主屏幕布局</string>
     <string name="home_screen_unlock">解锁主屏幕布局</string>
-    <string name="home_screen_lock_toggle_from_home_popup">主页弹窗中显示锁定按钮</string>
+    <string name="home_screen_lock_toggle_from_home_popup">在弹出窗口中显示锁定按钮</string>
     <string name="columns">列数</string>
     <string name="grid">网格</string>
     <string name="rows">行数</string>
@@ -79,7 +79,7 @@
         <item quantity="other">%1$d 个应用</item>
     </plurals>
     <string name="hotseat_qsb_label">显示搜索栏</string>
-    <string name="qsb_search_provider_app_required">需要安装App</string>
+    <string name="qsb_search_provider_app_required">需要安装 App</string>
     <string name="dt2s_admin_hint_title">需要管理员权限</string>
     <string name="dt2s_admin_hint">若要使用双击息屏，请设置Lawnchair 为设备管理应用。点击\"打开设置\"，然后点击\"启用此设备管理应用\"。</string>
     <string name="dt2s_admin_warning">双击息屏功能将被关闭。</string>
@@ -108,7 +108,7 @@
     <string name="wallpaper">壁纸</string>
     <string name="custom">自定义</string>
     <string name="quickstep_description">清除所有按钮，圆角半径</string>
-    <string name="wallpaper_scrolling_label">滚动壁纸</string>
+    <string name="wallpaper_scrolling_label">壁纸跟随屏幕滚动</string>
     <string name="show_sys_ui_scrim">顶部阴影</string>
     <string name="show_status_bar">显示状态栏</string>
     <string name="layout">布局</string>
@@ -216,12 +216,12 @@
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">充电中</string>
-    <string name="smartspace_battery_full">充电完成</string>
+    <string name="smartspace_battery_full">已充满电</string>
     <string name="smartspace_battery_low">电池电量低</string>
     <string name="accessibility_smartspace_page">第 %1$d 页，共 %2$d 页</string>
     <string name="smartspace_widget">资讯一览</string>
     <string name="smartspace_widget_description">选择要显示的项目</string>
-    <string name="smartspace_widget_placeholder_date">Fri, Mar 3</string>
+    <string name="smartspace_widget_placeholder_date">三月三日，星期三</string>
     <string name="quickstep_incompatible">不兼容的系统集成</string>
     <string name="quickstep_incompatible_description">您的设备被配置为由 %1$s提供的系统手势(称为Quickstep) ，但这个版本的 %1$s 与您的 Android 版本不兼容。 要继续使用您的设备，请卸载 %1$s 更新或禁用 %1$s 作为系统手势提供者。</string>
     <string name="preview_label">预览</string>
@@ -250,12 +250,12 @@
     <string name="backup_content_layout_and_settings">布局和设置</string>
     <string name="backup_content_wallpaper">壁纸</string>
     <string name="backup_create_success">备份已创建。</string>
-    <string name="backup_create_error">创建备份失败。</string>
+    <string name="backup_create_error">备份失败。</string>
     <string name="restore_backup">恢复备份</string>
     <string name="restore_backup_action">恢复</string>
     <string name="what_to_restore">选择要恢复的内容</string>
     <string name="backup_restore_success">备份已恢复。</string>
-    <string name="backup_restore_error">恢复备份失败。</string>
+    <string name="backup_restore_error">恢复失败。</string>
     <string name="invalid_backup_file">无效的备份文件。</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — %2$s后充满"</string>
     <string name="wallpaper_depth_effect">壁纸深度效果</string>
