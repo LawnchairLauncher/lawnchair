@@ -165,7 +165,7 @@ public class RecentsModel implements IconChangeListener, TaskStackChangeListener
     }
 
     @Override
-    public void onTaskSnapshotChanged(int taskId, ThumbnailData snapshot) {
+    public boolean onTaskSnapshotChanged(int taskId, ThumbnailData snapshot) {
         mThumbnailCache.updateTaskSnapShot(taskId, snapshot);
 
         for (int i = mThumbnailChangeListeners.size() - 1; i >= 0; i--) {
@@ -174,6 +174,7 @@ public class RecentsModel implements IconChangeListener, TaskStackChangeListener
                 task.thumbnail = snapshot;
             }
         }
+        return true;
     }
 
     @Override
