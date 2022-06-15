@@ -131,9 +131,14 @@ public class OverviewState extends LauncherState {
 
     @Override
     public void onBackPressed(Launcher launcher) {
-        TaskView taskView = launcher.<RecentsView>getOverviewPanel().getRunningTaskView();
+        RecentsView recentsView = launcher.getOverviewPanel();
+        TaskView taskView = recentsView.getRunningTaskView();
         if (taskView != null) {
-            taskView.launchTasks();
+            if (recentsView.isTaskViewFullyVisible(taskView)) {
+                taskView.launchTasks();
+            } else {
+                recentsView.snapToPage(recentsView.indexOfChild(taskView));
+            }
         } else {
             super.onBackPressed(launcher);
         }
