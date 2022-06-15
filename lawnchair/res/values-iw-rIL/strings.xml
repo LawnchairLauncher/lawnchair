@@ -37,8 +37,8 @@
     <string name="max_folder_rows">מספר מרבי לשורות בתיקייה</string>
     <string name="home_screen_grid">רשת מסך הבית</string>
     <string name="home_screen_lock">נעילת מסך הבית</string>
-    <string name="home_screen_unlock">Unlock Home Screen</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_unlock">פתח נעילת מסך הבית</string>
+    <string name="home_screen_lock_toggle_from_home_popup">הצג כפתור נעילה בפופ-אפ</string>
     <string name="columns">עמודות</string>
     <string name="grid">רשת</string>
     <string name="rows">שורות</string>
@@ -52,7 +52,7 @@
     <string name="news">חדשות</string>
     <string name="support">תמיכה</string>
     <string name="acknowledgements">תודות</string>
-    <string name="devops">DevOps</string>
+    <string name="devops">דֶב-אוֹפּס</string>
     <string name="quickswitch_maintenance">QuickSwitch Maintenance</string>
     <string name="all_apps_search_bar_hint">חיפוש יישומים</string>
     <string name="settings_button_text">הגדרות בית</string>
