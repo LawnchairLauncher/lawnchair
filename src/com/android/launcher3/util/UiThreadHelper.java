@@ -69,10 +69,6 @@ public class UiThreadHelper {
                 activityContext.getStatsLogManager().logger()
                         .log(LAUNCHER_ALLAPPS_KEYBOARD_CLOSED);
                 return;
-            } else {
-                // print which stack trace failed.
-                Log.e("Launcher", "hideKeyboard ignored.", new Exception());
-                // Then attempt to use the old logic.
             }
         }
         // Since the launcher context cannot be accessed directly from callback, adding secondary
