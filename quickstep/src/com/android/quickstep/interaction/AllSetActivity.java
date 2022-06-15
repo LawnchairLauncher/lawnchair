@@ -202,6 +202,7 @@ public class AllSetActivity extends Activity {
         mBinder = binder;
         mBinder.getTaskbarManager().setSetupUIVisible(isResumed());
         mBinder.setSwipeUpProxy(isResumed() ? this::createSwipeUpProxy : null);
+        mBinder.setOverviewTargetChangeListener(mBinder::preloadOverviewForSUWAllSet);
         mBinder.preloadOverviewForSUWAllSet();
     }
 
@@ -218,6 +219,7 @@ public class AllSetActivity extends Activity {
         if (mBinder != null) {
             mBinder.getTaskbarManager().setSetupUIVisible(false);
             mBinder.setSwipeUpProxy(null);
+            mBinder.setOverviewTargetChangeListener(null);
         }
     }
 
