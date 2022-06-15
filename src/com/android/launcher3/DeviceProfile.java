@@ -1148,7 +1148,7 @@ public class DeviceProfile {
 
     private int getHotseatBottomPadding() {
         if (isQsbInline) {
-            return getQsbOffsetY() - (Math.abs(hotseatQsbHeight - hotseatCellHeightPx) / 2);
+            return getQsbOffsetY() + ((hotseatQsbHeight - hotseatCellHeightPx) / 2);
         } else {
             return (getQsbOffsetY() - taskbarSize) / 2;
         }
