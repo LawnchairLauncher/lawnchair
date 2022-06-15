@@ -147,7 +147,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mIsUserSetupComplete = SettingsCache.INSTANCE.get(this).getValue(
                 Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE), 0);
         mIsNavBarForceVisible = SettingsCache.INSTANCE.get(this).getValue(
-                Settings.Secure.getUriFor(Settings.Secure.NAV_BAR_FORCE_VISIBLE), 0);
+                Settings.Secure.getUriFor(Settings.Secure.NAV_BAR_KIDS_MODE), 0);
         mIsNavBarKidsMode = SettingsCache.INSTANCE.get(this).getValue(
                 Settings.Secure.getUriFor(Settings.Secure.NAV_BAR_KIDS_MODE), 0);
 
