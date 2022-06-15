@@ -1187,7 +1187,9 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     public int getScrollForPage(int index) {
-        if (!pageScrollsInitialized() || index >= mPageScrolls.length || index < 0) {
+        // TODO(b/233112195): Use !pageScrollsInitialized() instead of mPageScrolls == null, once we
+        // root cause where we should be using runOnPageScrollsInitialized().
+        if (mPageScrolls == null || index >= mPageScrolls.length || index < 0) {
             return 0;
         } else {
             return mPageScrolls[index];
