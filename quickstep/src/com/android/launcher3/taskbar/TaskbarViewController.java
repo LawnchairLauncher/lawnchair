@@ -16,6 +16,7 @@
 package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP;
@@ -35,12 +36,15 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.AlphaUpdateListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.icons.ThemedIconDrawable;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.util.HorizontalInsettableView;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.util.MultiValueAlpha;
@@ -212,9 +216,10 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
      *                       0 => not aligned
      *                       1 => fully aligned
      */
-    public void setLauncherIconAlignment(float alignmentRatio, DeviceProfile launcherDp) {
+    public void setLauncherIconAlignment(float alignmentRatio, Float endAlignment,
+            DeviceProfile launcherDp) {
         if (mIconAlignControllerLazy == null) {
-            mIconAlignControllerLazy = createIconAlignmentController(launcherDp);
+            mIconAlignControllerLazy = createIconAlignmentController(launcherDp, endAlignment);
         }
         mIconAlignControllerLazy.setPlayFraction(alignmentRatio);
         if (alignmentRatio <= 0 || alignmentRatio >= 1) {
@@ -226,11 +231,13 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     /**
      * Creates an animation for aligning the taskbar icons with the provided Launcher device profile
      */
-    private AnimatorPlaybackController createIconAlignmentController(DeviceProfile launcherDp) {
+    private AnimatorPlaybackController createIconAlignmentController(DeviceProfile launcherDp,
+            Float endAlignment) {
         mOnControllerPreCreateCallback.run();
         PendingAnimation setter = new PendingAnimation(100);
+        DeviceProfile taskbarDp = mActivity.getDeviceProfile();
         Rect hotseatPadding = launcherDp.getHotseatLayoutPadding(mActivity);
-        float scaleUp = ((float) launcherDp.iconSizePx) / mActivity.getDeviceProfile().iconSizePx;
+        float scaleUp = ((float) launcherDp.iconSizePx) / taskbarDp.iconSizePx;
         int borderSpacing = launcherDp.hotseatBorderSpace;
         int hotseatCellSize = DeviceProfile.calculateCellWidth(
                 launcherDp.availableWidthPx - hotseatPadding.left - hotseatPadding.right,
@@ -247,14 +254,13 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         }
 
         int collapsedHeight = mActivity.getDefaultTaskbarWindowHeight();
-        int expandedHeight = Math.max(collapsedHeight,
-                mActivity.getDeviceProfile().taskbarSize + offsetY);
+        int expandedHeight = Math.max(collapsedHeight, taskbarDp.taskbarSize + offsetY);
         setter.addOnFrameListener(anim -> mActivity.setTaskbarWindowHeight(
                 anim.getAnimatedFraction() > 0 ? expandedHeight : collapsedHeight));
 
+        boolean isToHome = endAlignment != null && endAlignment == 1;
         for (int i = 0; i < mTaskbarView.getChildCount(); i++) {
             View child = mTaskbarView.getChildAt(i);
-
             int positionInHotseat;
             if (FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get()
                     && child == mTaskbarView.getAllAppsButtonView()) {
@@ -262,13 +268,46 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                 // as its convenient for animation purposes.
                 positionInHotseat = Utilities.isRtl(child.getResources())
                         ? -1
-                        : mActivity.getDeviceProfile().numShownHotseatIcons;
+                        : taskbarDp.numShownHotseatIcons;
 
                 if (!FeatureFlags.ENABLE_ALL_APPS_BUTTON_IN_HOTSEAT.get()) {
-                    setter.setViewAlpha(child, 0, LINEAR);
+                    setter.setViewAlpha(child, 0,
+                            isToHome
+                                    ? Interpolators.clampToProgress(LINEAR, 0f, 0.17f)
+                                    : Interpolators.clampToProgress(LINEAR, 0.72f, 0.84f));
                 }
             } else if (child.getTag() instanceof ItemInfo) {
                 positionInHotseat = ((ItemInfo) child.getTag()).screenId;
+            } else if (child == mTaskbarView.getQsb()) {
+                boolean isRtl = Utilities.isRtl(child.getResources());
+                float hotseatIconCenter = isRtl
+                        ? launcherDp.widthPx - hotseatPadding.right + borderSpacing
+                        + launcherDp.qsbWidth / 2f
+                        : hotseatPadding.left - borderSpacing - launcherDp.qsbWidth / 2f;
+                float childCenter = (child.getLeft() + child.getRight()) / 2f;
+                float halfQsbIconWidthDiff = (launcherDp.qsbWidth - taskbarDp.iconSizePx) / 2f;
+                setter.addFloat(child, ICON_TRANSLATE_X,
+                        isRtl ? -halfQsbIconWidthDiff : halfQsbIconWidthDiff,
+                        hotseatIconCenter - childCenter, LINEAR);
+
+                int qsbContentHeight = child.getHeight() - child.getPaddingTop()
+                        - child.getPaddingBottom();
+                float scale = ((float) taskbarDp.iconSizePx) / qsbContentHeight;
+                setter.addFloat(child, SCALE_PROPERTY, scale, 1f, LINEAR);
+
+                setter.addFloat(child, VIEW_ALPHA, 0f, 1f,
+                        isToHome
+                                ? Interpolators.clampToProgress(LINEAR, 0f, 0.35f)
+                                : Interpolators.clampToProgress(LINEAR, 0.84f, 1f));
+                setter.addOnFrameListener(animator -> AlphaUpdateListener.updateVisibility(child));
+
+                float qsbInsetFraction = halfQsbIconWidthDiff / launcherDp.qsbWidth;
+                if (child instanceof  HorizontalInsettableView) {
+                    setter.addFloat((HorizontalInsettableView) child,
+                            HorizontalInsettableView.HORIZONTAL_INSETS, qsbInsetFraction, 0,
+                            LINEAR);
+                }
+                continue;
             } else {
                 Log.w(TAG, "Unsupported view found in createIconAlignmentController, v=" + child);
                 continue;
