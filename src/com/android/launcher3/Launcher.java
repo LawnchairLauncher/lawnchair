@@ -57,6 +57,7 @@ import static com.android.launcher3.popup.SystemShortcut.INSTALL;
 import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
 import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
+import static com.android.launcher3.testing.TestProtocol.BAD_STATE;
 import static com.android.launcher3.util.ItemInfoMatcher.forFolderMatch;
 
 import android.animation.Animator;
@@ -493,6 +494,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
         if (!mModel.addCallbacksAndLoad(this)) {
             if (!internalStateHandled) {
+                Log.d(BAD_STATE, "Launcher onCreate not binding sync, setting DragLayer alpha "
+                        + "ALPHA_INDEX_LAUNCHER_LOAD to 0");
                 // If we are not binding synchronously, show a fade in animation when
                 // the first page bind completes.
                 mDragLayer.getAlphaProperty(ALPHA_INDEX_LAUNCHER_LOAD).setValue(0);
@@ -986,6 +989,9 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
         DiscoveryBounce.showForHomeIfNeeded(this);
         mAppWidgetHost.setActivityResumed(true);
+
+        // Temporary workaround for apps using SHOW_FORCED IME flag.
+        hideKeyboard();
     }
 
     private void logStopAndResume(boolean isResume) {
@@ -2626,6 +2632,28 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         AlphaProperty property = mDragLayer.getAlphaProperty(ALPHA_INDEX_LAUNCHER_LOAD);
         if (property.getValue() < 1) {
             ObjectAnimator anim = ObjectAnimator.ofFloat(property, MultiValueAlpha.VALUE, 1);
+
+            Log.d(BAD_STATE, "Launcher onInitialBindComplete toAlpha=" + 1);
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    Log.d(BAD_STATE, "Launcher onInitialBindComplete onStart");
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    float alpha = mDragLayer == null
+                            ? -1
+                            : mDragLayer.getAlphaProperty(ALPHA_INDEX_LAUNCHER_LOAD).getValue();
+                    Log.d(BAD_STATE, "Launcher onInitialBindComplete onCancel, alpha=" + alpha);
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    Log.d(BAD_STATE, "Launcher onInitialBindComplete onEnd");
+                }
+            });
+
             anim.addListener(AnimatorListeners.forEndCallback(executor::onLoadAnimationCompleted));
             anim.start();
         } else {
@@ -2688,8 +2716,11 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
      * @param preferredItemId The id of the preferred item to match to if it exists.
      * @param packageName The package name of the app to match.
      * @param user The user of the app to match.
+     * @param supportsAllAppsState If true and we are in All Apps state, looks for view in All Apps.
+     *                             Else we only looks on the workspace.
      */
-    public View getFirstMatchForAppClose(int preferredItemId, String packageName, UserHandle user) {
+    public View getFirstMatchForAppClose(int preferredItemId, String packageName, UserHandle user,
+            boolean supportsAllAppsState) {
         final ItemInfoMatcher preferredItem = (info, cn) ->
                 info != null && info.id == preferredItemId;
         final ItemInfoMatcher packageAndUserAndApp = (info, cn) ->
@@ -2700,7 +2731,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                         && TextUtils.equals(info.getTargetComponent().getPackageName(),
                         packageName);
 
-        if (isInState(LauncherState.ALL_APPS)) {
+        if (supportsAllAppsState && isInState(LauncherState.ALL_APPS)) {
             return getFirstMatch(Collections.singletonList(mAppsView.getActiveRecyclerView()),
                     preferredItem, packageAndUserAndApp);
         } else {

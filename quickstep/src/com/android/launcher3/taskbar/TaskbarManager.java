@@ -110,6 +110,13 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
                 } else {
                     // Config change might be handled without re-creating the taskbar
                     if (mTaskbarActivityContext != null) {
+                        DeviceProfile dp = mUserUnlocked
+                                ? LauncherAppState.getIDP(mContext).getDeviceProfile(mContext)
+                                : null;
+
+                        if (dp != null && dp.isTaskbarPresent) {
+                            mTaskbarActivityContext.updateDeviceProfile(dp.copy(mContext));
+                        }
                         mTaskbarActivityContext.onConfigurationChanged(configDiff);
                     }
                 }

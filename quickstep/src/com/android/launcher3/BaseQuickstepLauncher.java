@@ -39,6 +39,7 @@ import android.hardware.SensorManager;
 import android.hardware.devicestate.DeviceStateManager;
 import android.os.Bundle;
 import android.os.CancellationSignal;
+import android.os.IBinder;
 import android.view.View;
 import android.view.WindowInsets;
 import android.window.SplashScreen;
@@ -513,11 +514,26 @@ public abstract class BaseQuickstepLauncher extends Launcher
     }
 
     /**
-     * Adds a new launch cookie for the activity launch of the given {@param info} if supported.
+     * Adds a new launch cookie for the activity launch if supported.
+     *
+     * @param info the item info for the launch
+     * @param opts the options to set the launchCookie on.
      */
     public void addLaunchCookie(ItemInfo info, ActivityOptions opts) {
+        IBinder launchCookie = getLaunchCookie(info);
+        if (launchCookie != null) {
+            opts.setLaunchCookie(launchCookie);
+        }
+    }
+
+    /**
+     * Return a new launch cookie for the activity launch if supported.
+     *
+     * @param info the item info for the launch
+     */
+    public IBinder getLaunchCookie(ItemInfo info) {
         if (info == null) {
-            return;
+            return null;
         }
         switch (info.container) {
             case LauncherSettings.Favorites.CONTAINER_DESKTOP:
@@ -531,8 +547,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
                     break;
                 }
                 // Reset any existing launch cookies associated with the cookie
-                opts.setLaunchCookie(ObjectWrapper.wrap(NO_MATCHING_ID));
-                return;
+                return ObjectWrapper.wrap(NO_MATCHING_ID);
         }
         switch (info.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
@@ -543,10 +558,9 @@ public abstract class BaseQuickstepLauncher extends Launcher
                 break;
             default:
                 // Reset any existing launch cookies associated with the cookie
-                opts.setLaunchCookie(ObjectWrapper.wrap(NO_MATCHING_ID));
-                return;
+                return ObjectWrapper.wrap(NO_MATCHING_ID);
         }
-        opts.setLaunchCookie(ObjectWrapper.wrap(new Integer(info.id)));
+        return ObjectWrapper.wrap(new Integer(info.id));
     }
 
     public void setHintUserWillBeActive() {

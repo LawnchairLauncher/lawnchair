@@ -37,7 +37,6 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_N
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_TRACING_ENABLED;
 
 import android.annotation.TargetApi;
-import android.app.ActivityManager;
 import android.app.PendingIntent;
 import android.app.RemoteAction;
 import android.app.Service;
@@ -600,26 +599,14 @@ public class TouchInteractionService extends Service
 
                 ActiveGestureLog.INSTANCE.addLog("setInputConsumer: " + mConsumer.getName());
                 mUncheckedConsumer = mConsumer;
-            } else if (mDeviceState.isUserUnlocked() && mDeviceState.isFullyGesturalNavMode()) {
+            } else if (mDeviceState.isUserUnlocked() && mDeviceState.isFullyGesturalNavMode()
+                    && mDeviceState.canTriggerAssistantAction(event)) {
                 mGestureState = createGestureState(mGestureState);
-                ActivityManager.RunningTaskInfo runningTask = mGestureState.getRunningTask();
-                if (mDeviceState.canTriggerAssistantAction(event, runningTask)) {
-                    // Do not change mConsumer as if there is an ongoing QuickSwitch gesture, we
-                    // should not interrupt it. QuickSwitch assumes that interruption can only
-                    // happen if the next gesture is also quick switch.
-                    mUncheckedConsumer = new AssistantInputConsumer(
-                            this,
-                            mGestureState,
-                            InputConsumer.NO_OP, mInputMonitorCompat,
-                            mDeviceState,
-                            event);
-                } else if (mDeviceState.canTriggerOneHandedAction(event)) {
-                    // Consume gesture event for triggering one handed feature.
-                    mUncheckedConsumer = new OneHandedModeInputConsumer(this, mDeviceState,
-                        InputConsumer.NO_OP, mInputMonitorCompat);
-                } else {
-                    mUncheckedConsumer = InputConsumer.NO_OP;
-                }
+                // Do not change mConsumer as if there is an ongoing QuickSwitch gesture, we
+                // should not interrupt it. QuickSwitch assumes that interruption can only
+                // happen if the next gesture is also quick switch.
+                mUncheckedConsumer = tryCreateAssistantInputConsumer(
+                        InputConsumer.NO_OP, mGestureState, event);
             } else if (mDeviceState.canTriggerOneHandedAction(event)) {
                 // Consume gesture event for triggering one handed feature.
                 mUncheckedConsumer = new OneHandedModeInputConsumer(this, mDeviceState,
@@ -664,6 +651,14 @@ public class TouchInteractionService extends Service
         }
         TraceHelper.INSTANCE.endFlagsOverride(traceToken);
         ProtoTracer.INSTANCE.get(this).scheduleFrameUpdate();
+    }
+
+    private InputConsumer tryCreateAssistantInputConsumer(InputConsumer base,
+            GestureState gestureState, MotionEvent motionEvent) {
+        return mDeviceState.isGestureBlockedActivity(gestureState.getRunningTask())
+                ? base
+                : new AssistantInputConsumer(this, gestureState, base, mInputMonitorCompat,
+                        mDeviceState, motionEvent);
     }
 
     public GestureState createGestureState(GestureState previousGestureState) {
@@ -711,9 +706,8 @@ public class TouchInteractionService extends Service
             handleOrientationSetup(base);
         }
         if (mDeviceState.isFullyGesturalNavMode()) {
-            if (mDeviceState.canTriggerAssistantAction(event, newGestureState.getRunningTask())) {
-                base = new AssistantInputConsumer(this, newGestureState, base, mInputMonitorCompat,
-                        mDeviceState, event);
+            if (mDeviceState.canTriggerAssistantAction(event)) {
+                base = tryCreateAssistantInputConsumer(base, newGestureState, event);
             }
 
             // If Taskbar is present, we listen for long press to unstash it.

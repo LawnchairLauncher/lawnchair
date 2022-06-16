@@ -564,6 +564,12 @@ public class FloatingIconView extends FrameLayout implements
                 launcher, parent);
         view.recycle();
 
+        // Init properties before getting the drawable.
+        view.mIsVerticalBarLayout = launcher.getDeviceProfile().isVerticalBarLayout();
+        view.mIsOpening = isOpening;
+        view.mOriginalIcon = originalView;
+        view.mPositionOut = positionOut;
+
         // Get the drawable on the background thread
         boolean shouldLoadIcon = originalView.getTag() instanceof ItemInfo && hideOriginal;
         if (shouldLoadIcon) {
@@ -576,11 +582,6 @@ public class FloatingIconView extends FrameLayout implements
             view.setOriginalDrawableBackground(view.mIconLoadResult.btvDrawable);
         }
         sIconLoadResult = null;
-
-        view.mIsVerticalBarLayout = launcher.getDeviceProfile().isVerticalBarLayout();
-        view.mIsOpening = isOpening;
-        view.mOriginalIcon = originalView;
-        view.mPositionOut = positionOut;
 
         // Match the position of the original view.
         view.matchPositionOf(launcher, originalView, isOpening, positionOut);
@@ -639,6 +640,7 @@ public class FloatingIconView extends FrameLayout implements
         mLoadIconSignal = null;
         mEndRunnable = null;
         mFinalDrawableBounds.setEmpty();
+        mIsOpening = false;
         mPositionOut = null;
         mListenerView.setListener(null);
         mOriginalIcon = null;
