@@ -80,7 +80,7 @@
         <item quantity="other">%1$d Uygulama</item>
     </plurals>
     <string name="hotseat_qsb_label">Arama Çubuğunu Göster</string>
-    <string name="qsb_search_provider_app_required">App required.</string>
+    <string name="qsb_search_provider_app_required">Uygulama gereklidir.</string>
     <string name="dt2s_admin_hint_title">Admin izni gerekli</string>
     <string name="dt2s_admin_hint">Ekranı Kapatmak İçin Çift Dokunun\'u kullanmak için Lawnchair\'i bir cihaz yöneticisi uygulaması olarak ayarlayın. Ayarları Aç\'a tıklayın, ardından \"Bu cihaz yöneticisi uygulamasını aktif et\"\'e tıklayın.</string>
     <string name="dt2s_admin_warning">Ekranı Kapatmak İçin Çift Dokunun kapatılacaktır.</string>
