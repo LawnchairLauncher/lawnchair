@@ -234,7 +234,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     STATE_LAUNCHER_BIND_TO_SERVICE;
 
     public static final long MAX_SWIPE_DURATION = 350;
-    public static final long HOME_DURATION = StaggeredWorkspaceAnim.DURATION_MS;
 
     public static final float MIN_PROGRESS_FOR_OVERVIEW = 0.7f;
     private static final float SWIPE_DURATION_MULTIPLIER =
@@ -1141,7 +1140,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mInputConsumerProxy.enable();
         }
         if (endTarget == HOME) {
-            duration = HOME_DURATION;
+            duration = mActivity.getDeviceProfile().isTaskbarPresent
+                    ? StaggeredWorkspaceAnim.DURATION_TASKBAR_MS
+                    : StaggeredWorkspaceAnim.DURATION_MS;
             // Early detach the nav bar once the endTarget is determined as HOME
             if (mRecentsAnimationController != null) {
                 mRecentsAnimationController.detachNavigationBarFromApp(true);
