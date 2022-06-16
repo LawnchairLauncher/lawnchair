@@ -79,7 +79,7 @@
         <item quantity="other">%1$d 个应用</item>
     </plurals>
     <string name="hotseat_qsb_label">显示搜索栏</string>
-    <string name="qsb_search_provider_app_required">需要安装 App</string>
+    <string name="qsb_search_provider_app_required">需要应用。</string>
     <string name="dt2s_admin_hint_title">需要管理员权限</string>
     <string name="dt2s_admin_hint">若要使用双击息屏，请设置Lawnchair 为设备管理应用。点击\"打开设置\"，然后点击\"启用此设备管理应用\"。</string>
     <string name="dt2s_admin_warning">双击息屏功能将被关闭。</string>
