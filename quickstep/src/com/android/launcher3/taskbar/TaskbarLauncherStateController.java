@@ -19,11 +19,13 @@ import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_STASHED_LAUNCHER_STATE;
 import static com.android.launcher3.taskbar.TaskbarStashController.TASKBAR_STASH_DURATION;
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_HOME;
+import static com.android.systemui.animation.Interpolators.EMPHASIZED;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,6 +33,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.util.MultiValueAlpha;
@@ -44,7 +47,6 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.StringJoiner;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -52,6 +54,9 @@ import java.util.function.Supplier;
  * the task bar accordingly.
  */
  public class TaskbarLauncherStateController {
+
+    private static final String TAG = TaskbarLauncherStateController.class.getSimpleName();
+    private static final boolean DEBUG = false;
 
     public static final int FLAG_RESUMED = 1 << 0;
     public static final int FLAG_RECENTS_ANIMATION_RUNNING = 1 << 1;
@@ -99,7 +104,11 @@ import java.util.function.Supplier;
                     }
                     updateStateForFlag(FLAG_TRANSITION_STATE_RUNNING, true);
                     if (!mShouldDelayLauncherStateAnim) {
-                        applyState();
+                        if (toState == LauncherState.NORMAL) {
+                            applyState(QuickstepTransitionManager.TASKBAR_TO_HOME_DURATION);
+                        } else {
+                            applyState();
+                        }
                     }
                 }
 
@@ -122,7 +131,12 @@ import java.util.function.Supplier;
         MultiValueAlpha taskbarIconAlpha = mControllers.taskbarViewController.getTaskbarIconAlpha();
         mIconAlphaForHome = taskbarIconAlpha.getProperty(ALPHA_INDEX_HOME);
         mIconAlphaForHome.setConsumer(
-                (Consumer<Float>) alpha -> mLauncher.getHotseat().setIconsAlpha(alpha > 0 ? 0 : 1));
+                alpha -> {
+                    mLauncher.getHotseat().setIconsAlpha(alpha > 0 ? 0 : 1);
+                    if (mLauncher.getDeviceProfile().isQsbInline) {
+                        mLauncher.getHotseat().setQsbAlpha(alpha > 0 ? 0 : 1);
+                    }
+                });
 
         mIconAlignmentForResumedState.finishAnimation();
         onIconAlignmentRatioChangedForAppAndHomeTransition();
@@ -269,6 +283,11 @@ import java.util.function.Supplier;
                 ObjectAnimator resumeAlignAnim = mIconAlignmentForResumedState
                         .animateToValue(toAlignmentForResumedState)
                         .setDuration(duration);
+                if (DEBUG) {
+                    Log.d(TAG, "mIconAlignmentForResumedState - "
+                            + mIconAlignmentForResumedState.value
+                            + " -> " + toAlignmentForResumedState + ": " + duration);
+                }
 
                 resumeAlignAnim.addListener(new AnimatorListenerAdapter() {
                     @Override
@@ -305,6 +324,11 @@ import java.util.function.Supplier;
                 if (isRecentsAnimationRunning) {
                     gestureAlignAnim.setDuration(duration);
                 }
+                if (DEBUG) {
+                    Log.d(TAG, "mIconAlignmentForGestureState - "
+                            + mIconAlignmentForGestureState.value
+                            + " -> " + toAlignmentForGestureState + ": " + duration);
+                }
                 gestureAlignAnim.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -330,6 +354,7 @@ import java.util.function.Supplier;
                     .setDuration(duration));
         }
 
+        animatorSet.setInterpolator(EMPHASIZED);
         if (start) {
             animatorSet.start();
         }
@@ -374,6 +399,12 @@ import java.util.function.Supplier;
             mIconAlignmentForLauncherState.finishAnimation();
             animatorSet.play(mIconAlignmentForLauncherState.animateToValue(toAlignment)
                     .setDuration(duration));
+            if (DEBUG) {
+                Log.d(TAG, "mIconAlignmentForLauncherState - "
+                        + mIconAlignmentForLauncherState.value
+                        + " -> " + toAlignment + ": " + duration);
+            }
+            animatorSet.setInterpolator(EMPHASIZED);
         }
     }
 
@@ -396,17 +427,17 @@ import java.util.function.Supplier;
         onIconAlignmentRatioChanged(this::getCurrentIconAlignmentRatioBetweenAppAndHome);
     }
 
-    private void onIconAlignmentRatioChanged(Supplier<Float> alignmentSupplier) {
+    private void onIconAlignmentRatioChanged(Supplier<AnimatedFloat> alignmentSupplier) {
         if (mControllers == null) {
             return;
         }
-        float alignment = alignmentSupplier.get();
+        AnimatedFloat animatedFloat = alignmentSupplier.get();
         float currentValue = mIconAlphaForHome.getValue();
-        boolean taskbarWillBeVisible = alignment < 1;
+        boolean taskbarWillBeVisible = animatedFloat.value < 1;
         boolean firstFrameVisChanged = (taskbarWillBeVisible && Float.compare(currentValue, 1) != 0)
                 || (!taskbarWillBeVisible && Float.compare(currentValue, 0) != 0);
 
-        updateIconAlignment(alignment);
+        updateIconAlignment(animatedFloat.value, animatedFloat.getEndValue());
 
         // Sync the first frame where we swap taskbar and hotseat.
         if (firstFrameVisChanged && mCanSyncViews && !Utilities.IS_RUNNING_IN_TEST_HARNESS) {
@@ -416,21 +447,22 @@ import java.util.function.Supplier;
         }
     }
 
-    private void updateIconAlignment(float alignment) {
+    private void updateIconAlignment(float alignment, Float endAlignment) {
         mControllers.taskbarViewController.setLauncherIconAlignment(
-                alignment, mLauncher.getDeviceProfile());
+                alignment, endAlignment, mLauncher.getDeviceProfile());
 
         // Switch taskbar and hotseat in last frame
         setTaskbarViewVisible(alignment < 1);
         mControllers.navbarButtonsViewController.updateTaskbarAlignment(alignment);
     }
 
-    private float getCurrentIconAlignmentRatioBetweenAppAndHome() {
-        return Math.max(mIconAlignmentForResumedState.value, mIconAlignmentForGestureState.value);
+    private AnimatedFloat getCurrentIconAlignmentRatioBetweenAppAndHome() {
+        return mIconAlignmentForResumedState.value > mIconAlignmentForGestureState.value
+                ? mIconAlignmentForResumedState : mIconAlignmentForGestureState;
     }
 
-    private float getCurrentIconAlignmentRatioForLauncherState() {
-        return mIconAlignmentForLauncherState.value;
+    private AnimatedFloat getCurrentIconAlignmentRatioForLauncherState() {
+        return mIconAlignmentForLauncherState;
     }
 
     private void setTaskbarViewVisible(boolean isVisible) {

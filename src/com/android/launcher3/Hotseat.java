@@ -206,6 +206,13 @@ public class Hotseat extends CellLayout implements Insettable {
         getShortcutsAndWidgets().setAlpha(alpha);
     }
 
+    /**
+     * Sets the alpha value of just our QSB.
+     */
+    public void setQsbAlpha(float alpha) {
+        mQsb.setAlpha(alpha);
+    }
+
     public float getIconsAlpha() {
         return getShortcutsAndWidgets().getAlpha();
     }
