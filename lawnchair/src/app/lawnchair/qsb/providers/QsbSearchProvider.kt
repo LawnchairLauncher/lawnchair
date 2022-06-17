@@ -14,7 +14,7 @@ import app.lawnchair.resolveIntent
 import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
-import com.patrykmichalik.preferencemanager.first
+import com.patrykmichalik.opto.core.first
 
 open class QsbSearchProvider(
     val id: String,

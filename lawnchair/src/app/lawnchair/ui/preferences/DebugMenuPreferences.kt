@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.datastore.preferences.core.Preferences
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences.getAdapter
@@ -13,7 +14,7 @@ import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.*
 import com.android.launcher3.settings.DeveloperOptionsFragment
 import com.android.launcher3.settings.SettingsActivity
-import com.patrykmichalik.preferencemanager.Preference
+import com.patrykmichalik.opto.domain.Preference
 
 fun NavGraphBuilder.debugMenuGraph(route: String) {
     preferenceGraph(route, { DebugMenuPreferences() })
@@ -75,10 +76,10 @@ fun DebugMenuPreferences() {
     }
 }
 
-private val PreferenceManager2.debugFlags: List<Preference<Boolean, Boolean>>
+private val PreferenceManager2.debugFlags: List<Preference<Boolean, Boolean, Preferences.Key<Boolean>>>
     get() = listOf(showComponentNames)
 
-private val PreferenceManager2.textFlags: List<Preference<String, String>>
+private val PreferenceManager2.textFlags: List<Preference<String, String, Preferences.Key<String>>>
     get() = listOf(additionalFonts)
 
 private val PreferenceManager.debugFlags

@@ -5,14 +5,14 @@ import android.content.Context
 import android.util.Log
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.smartspace.model.SmartspaceTarget
-import com.patrykmichalik.preferencemanager.Preference
+import com.patrykmichalik.opto.domain.Preference
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
 abstract class SmartspaceDataSource(
     val context: Context,
     val providerName: Int,
-    getEnabledPref: PreferenceManager2.() -> Preference<Boolean, Boolean>
+    getEnabledPref: PreferenceManager2.() -> Preference<Boolean, Boolean, *>
 ) {
     val enabledPref = getEnabledPref(PreferenceManager2.getInstance(context))
     open val isAvailable: Boolean = true

@@ -35,8 +35,8 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.DynamicResource
 import com.android.launcher3.util.MainThreadInitializedObject
-import com.patrykmichalik.preferencemanager.PreferenceManager
-import com.patrykmichalik.preferencemanager.firstBlocking
+import com.patrykmichalik.opto.core.PreferenceManager
+import com.patrykmichalik.opto.core.firstBlocking
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
