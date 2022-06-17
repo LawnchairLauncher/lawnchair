@@ -171,7 +171,9 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
                 isResumed,
                 fromInit,
                 /* startAnimation= */ true,
-                QuickstepTransitionManager.CONTENT_ALPHA_DURATION);
+                !isResumed
+                        ? QuickstepTransitionManager.TASKBAR_TO_APP_DURATION
+                        : QuickstepTransitionManager.TASKBAR_TO_HOME_DURATION);
     }
 
     @Nullable
