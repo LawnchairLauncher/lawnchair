@@ -347,12 +347,12 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
 
     private inline fun <reified T> serializablePreference(
         key: Preferences.Key<String>,
-        defaultValue: T
+        defaultValue: T,
     ) = preference(
         key = key,
         defaultValue = defaultValue,
-        parse = { Json.decodeFromString(it) },
-        save = { Json.encodeToString(it) }
+        parse = Json::decodeFromString,
+        save = Json::encodeToString,
     )
 
     init {
