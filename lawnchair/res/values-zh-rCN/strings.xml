@@ -268,7 +268,7 @@
     <string name="gesture_handler_open_app_search">打开应用搜索</string>
     <string name="gesture_handler_open_search">打开搜索</string>
     <string name="gestures_label">手势</string>
-    <string name="gestures_description">点击和滑动等手势</string>
+    <string name="gestures_description">点击、滑动</string>
     <string name="gesture_swipe_up">向上滑动</string>
     <string name="gesture_swipe_down">向下滑动</string>
     <string name="gesture_home_tap">点击主屏幕按钮</string>
