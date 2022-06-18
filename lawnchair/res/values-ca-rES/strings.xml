@@ -203,8 +203,6 @@
     <string name="smartspace_calendar_label">Personalització del calendari d\'una ullada</string>
     <string name="smartspace_calendar_description">Permet mostrar la data en sistemes de calendari no Gregorià.</string>
     <string name="search_provider_app_search">Buscar aplicacions</string>
-    <string name="always_open_website_label">Obrir sempre pàgina web</string>
-    <string name="always_open_website_description">Obrir el cercador del web del proveïdor inclús si l\'app no està instal·lada.</string>
     <string name="search_provider">Proveïdor del cercador</string>
     <string name="status_bar_label">Barra de estat</string>
     <string name="show_notification_count">Mostrar comptador de notificacions</string>
@@ -213,7 +211,7 @@
     <string name="reset_custom_icons_confirmation">Totes les icones seran reiniciades. Vols continuar?</string>
     <string name="taskbar_label">Barra de notificacions</string>
     <string name="enable_taskbar_experimental">Activar Barra de Notificacions (Experimental)</string>
-    <string name="error_no_market_or_browser_installed">No hi ha cap tenda d\'aplicacions o navegador web instal·lat.</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Carregant</string>
@@ -260,7 +258,7 @@
     <string name="invalid_backup_file">El fitxer de la còpia és invàlid.</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Completament carregat en %2$s"</string>
     <string name="wallpaper_depth_effect">Efecte de profunditat del fons de pantalla</string>
-    <string name="gesture_double_tap">Doble toc</string>
+    <string name="gesture_double_tap">Double Tap</string>
     <string name="gesture_handler_no_op">Res</string>
     <string name="gesture_handler_sleep">Apaga la pantalla</string>
     <string name="gesture_handler_open_notifications">Obre el panell de notificacions</string>
