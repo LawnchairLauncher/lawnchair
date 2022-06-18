@@ -45,7 +45,7 @@
     <string name="icons">圖示</string>
     <string name="icon_size">圖示尺寸</string>
     <string name="label_size">標籤尺寸</string>
-    <string name="show_home_labels">Show Labels</string>
+    <string name="show_home_labels">顯示名稱</string>
     <string name="notification_dots">通知圓點</string>
     <string name="smartspace_preferences">偏好設定</string>
     <string name="about_label">關於</string>
@@ -109,10 +109,10 @@
     <string name="custom">自訂</string>
     <string name="quickstep_description">「清除全部」按鈕、圓角大小</string>
     <string name="wallpaper_scrolling_label">桌布隨頁面捲動</string>
-    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_sys_ui_scrim">狀態欄陰影</string>
     <string name="show_status_bar">顯示狀態列</string>
     <string name="layout">版面</string>
-    <string name="what_to_show">What to Show</string>
+    <string name="what_to_show">顯示內容</string>
     <string name="missing_notification_access_label">Notification Access Needed</string>
     <string name="missing_notification_access_description">Notification access needed.</string>
     <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
@@ -210,7 +210,7 @@
     <string name="reset_custom_icons_confirmation">即將重設所有自訂圖示。是否繼續？</string>
     <string name="taskbar_label">工作列</string>
     <string name="enable_taskbar_experimental">啟用工作列（實驗性功能）</string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">尚未安裝應用市場或瀏覽器。</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s、%2$s</string>
     <string name="smartspace_battery_charging">充電中</string>
@@ -257,7 +257,7 @@
     <string name="invalid_backup_file">無效備份檔案。</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — %2$s 分鐘後充飽"</string>
     <string name="wallpaper_depth_effect">桌布景深效果</string>
-    <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_double_tap">輕觸兩次</string>
     <string name="gesture_handler_no_op">什麼也不做</string>
     <string name="gesture_handler_sleep">睡眠</string>
     <string name="gesture_handler_open_notifications">開啟通知面板</string>
@@ -268,6 +268,7 @@
     <string name="gesture_handler_open_app_search">開啟應用程式搜尋</string>
     <string name="gesture_handler_open_search">開啟搜尋</string>
     <string name="gestures_label">手勢</string>
+    <string name="gestures_description">Taps and Swipes</string>
     <string name="gesture_swipe_up">向上滑動</string>
     <string name="gesture_swipe_down">向下滑動</string>
     <string name="gesture_home_tap">輕觸主畫面按鈕</string>
