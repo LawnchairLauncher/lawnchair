@@ -36,9 +36,9 @@
     <string name="max_folder_columns">Макс. количество столбцов в папке</string>
     <string name="max_folder_rows">Макс. количество строк в папке</string>
     <string name="home_screen_grid">Сетка главного экрана</string>
-    <string name="home_screen_lock">Lock Home Screen</string>
-    <string name="home_screen_unlock">Unlock Home Screen</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_lock">Блокировка домашнего экрана</string>
+    <string name="home_screen_unlock">Разблокировать домашний экран</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Показывать кнопку блокировки в всплывающем окне</string>
     <string name="columns">Столбцы</string>
     <string name="grid">Сетка</string>
     <string name="rows">Строки</string>
@@ -82,7 +82,7 @@
         <item quantity="other">%1$d Приложения</item>
     </plurals>
     <string name="hotseat_qsb_label">Показать строку поиска</string>
-    <string name="qsb_search_provider_app_required">App required.</string>
+    <string name="qsb_search_provider_app_required">Требуется приложение.</string>
     <string name="dt2s_admin_hint_title">Необходимы права администратора</string>
     <string name="dt2s_admin_hint">Чтобы использовать функцию \"Нажмите дважды для выключения\", выберите Lawnchair как приложение администратора устройства. Для этого откройте Настройки, потом нажмите на \"Активировать приложение администратора устройства.\"</string>
     <string name="dt2s_admin_warning">Двойной тап для блокировки будет отключен.</string>
@@ -114,7 +114,7 @@
     <string name="wallpaper_scrolling_label">Прокрутка обоев</string>
     <string name="show_sys_ui_scrim">Тень под строкой состояния</string>
     <string name="show_status_bar">Отображать строку состояния</string>
-    <string name="layout">Layout</string>
+    <string name="layout">Макет</string>
     <string name="what_to_show">Что показывать</string>
     <string name="missing_notification_access_label">Доступ к уведомлениям</string>
     <string name="missing_notification_access_description">Необходимо разрешение доступа к уведомлениям.</string>
@@ -213,7 +213,7 @@
     <string name="reset_custom_icons_confirmation">Все пользовательские иконки будут сброшены. Вы хотите продолжить?</string>
     <string name="taskbar_label">Панель задач</string>
     <string name="enable_taskbar_experimental">Включить панель задач (экспериментально)</string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">Магазин приложений или браузер не установлены.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Зарядка</string>
@@ -260,7 +260,7 @@
     <string name="invalid_backup_file">Файл резервной копии недействителен.</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Полная через %2$s"</string>
     <string name="wallpaper_depth_effect">Глубина обоев</string>
-    <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_double_tap">Двойное нажатие</string>
     <string name="gesture_handler_no_op">Ничего</string>
     <string name="gesture_handler_sleep">Сон</string>
     <string name="gesture_handler_open_notifications">Открыть панель уведомлений</string>
@@ -276,6 +276,6 @@
     <string name="gesture_home_tap">Кнопка \"Домой\"</string>
     <string name="gesture_back_tap">Кнопка \"Назад\"</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="app_label">App</string>
-    <string name="website_label">Website</string>
+    <string name="app_label">Приложение</string>
+    <string name="website_label">Веб-сайт</string>
 </resources>
