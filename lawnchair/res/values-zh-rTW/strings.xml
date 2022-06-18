@@ -16,6 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">圖示套件</string>
+    <string name="icon_style">圖示風格</string>
     <string name="settings">設定</string>
     <string name="home_screen_label">主螢幕</string>
     <string name="home_screen_description">探索、網格、圖示</string>
@@ -30,11 +31,14 @@
     <string name="app_drawer_description">隱藏應用程式、行數、圖示</string>
     <string name="folders_label">資料夾</string>
     <string name="folders_description">行列數</string>
-    <string name="app_drawer_columns">應用程式抽屜列數</string>
+    <string name="app_drawer_columns">所有應用程式列數</string>
     <string name="dock_icons">底欄圖示</string>
     <string name="max_folder_columns">最大資料夾行數</string>
     <string name="max_folder_rows">最大資料夾列數</string>
     <string name="home_screen_grid">主螢幕網格</string>
+    <string name="home_screen_lock">鎖定主螢幕</string>
+    <string name="home_screen_unlock">解鎖主螢幕</string>
+    <string name="home_screen_lock_toggle_from_home_popup">在彈出視窗中顯示鎖定按鈕</string>
     <string name="columns">列數</string>
     <string name="grid">網格</string>
     <string name="rows">行數</string>
@@ -75,6 +79,7 @@
         <item quantity="other">%1$d 個應用程式</item>
     </plurals>
     <string name="hotseat_qsb_label">顯示搜尋列</string>
+    <string name="qsb_search_provider_app_required">需要應用程式。</string>
     <string name="dt2s_admin_hint_title">需要管理員權限</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">將停用「輕觸兩下來關閉螢幕」</string>
@@ -106,6 +111,7 @@
     <string name="wallpaper_scrolling_label">桌布隨頁面捲動</string>
     <string name="show_sys_ui_scrim">Top Shadow</string>
     <string name="show_status_bar">顯示狀態列</string>
+    <string name="layout">版面</string>
     <string name="what_to_show">What to Show</string>
     <string name="missing_notification_access_label">Notification Access Needed</string>
     <string name="missing_notification_access_description">Notification access needed.</string>
@@ -193,9 +199,9 @@
     <string name="icon_picker_description">可能導致 Lawnchair 畫面凍結</string>
     <string name="font_picker_label">自訂字型</string>
     <string name="font_picker_description">部分文字可能無法套用。</string>
+    <string name="smartspace_calendar_label">自訂資訊一覽日曆</string>
+    <string name="smartspace_calendar_description">允許顯示非公曆的日期</string>
     <string name="search_provider_app_search">應用程式搜尋</string>
-    <string name="always_open_website_label">永遠開啟網站</string>
-    <string name="always_open_website_description">使用網頁而非相應的應用程式來進行搜尋</string>
     <string name="search_provider">搜尋服務供應商</string>
     <string name="status_bar_label">Status Bar</string>
     <string name="show_notification_count">顯示通知數量</string>
@@ -204,6 +210,7 @@
     <string name="reset_custom_icons_confirmation">即將重設所有自訂圖示。是否繼續？</string>
     <string name="taskbar_label">工作列</string>
     <string name="enable_taskbar_experimental">啟用工作列（實驗性功能）</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s、%2$s</string>
     <string name="smartspace_battery_charging">充電中</string>
@@ -216,12 +223,19 @@
     <string name="quickstep_incompatible">不支援系統整合</string>
     <string name="quickstep_incompatible_description">您的裝置目前由 %1$s 提供系統手勢 (Quickstep)，但目前安裝的 %1$s 版本與您的 Android 版本不相容。要繼續執行，請解除安裝或停用 %1$s。</string>
     <string name="preview_label">預覽</string>
+    <string name="smartspace_calendar">日曆</string>
+    <string name="smartspace_date_and_time">日期與時間</string>
+    <string name="smartspace_date">日期</string>
+    <string name="smartspace_time">時間</string>
+    <string name="smartspace_time_24_hour_format">24 小時制</string>
     <string name="smartspace_weather">天氣</string>
     <string name="smartspace_battery_status">電量狀態</string>
     <string name="smartspace_now_playing">聽聲辨曲</string>
     <string name="smartspace_requires_setup">輕觸開始設定</string>
     <string name="event_provider_missing_notification_dots">要使用 <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>，請啟用通知圓點。</string>
     <string name="smartspace_media_info_separator">" — "</string>
+    <string name="smartspace_calendar_gregorian">公曆</string>
+    <string name="smartspace_calendar_persian">伊朗曆</string>
     <string name="pref_fonts_add_fonts">新增字型</string>
     <string name="pref_fonts_add_fonts_summary">支援 OTF &amp; TTF。</string>
     <string name="delete">刪除</string>
@@ -241,4 +255,24 @@
     <string name="backup_restore_success">已還原備份。</string>
     <string name="backup_restore_error">還原備份失敗。</string>
     <string name="invalid_backup_file">無效備份檔案。</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — %2$s 分鐘後充飽"</string>
+    <string name="wallpaper_depth_effect">桌布景深效果</string>
+    <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_handler_no_op">什麼也不做</string>
+    <string name="gesture_handler_sleep">睡眠</string>
+    <string name="gesture_handler_open_notifications">開啟通知面板</string>
+    <string name="gesture_handler_open_app_option">開啟應用程式</string>
+    <string name="gesture_handler_open_app_config">開啟 %1$s</string>
+    <string name="pick_app_for_gesture">選取應用程式</string>
+    <string name="gesture_handler_open_app_drawer">查看所有應用程式</string>
+    <string name="gesture_handler_open_app_search">開啟應用程式搜尋</string>
+    <string name="gesture_handler_open_search">開啟搜尋</string>
+    <string name="gestures_label">手勢</string>
+    <string name="gesture_swipe_up">向上滑動</string>
+    <string name="gesture_swipe_down">向下滑動</string>
+    <string name="gesture_home_tap">輕觸主畫面按鈕</string>
+    <string name="gesture_back_tap">輕觸返回按鈕</string>
+    <string name="x_and_y">%s &amp; %s</string>
+    <string name="app_label">應用程式</string>
+    <string name="website_label">網站</string>
 </resources>
