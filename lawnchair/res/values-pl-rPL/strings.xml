@@ -213,7 +213,7 @@
     <string name="reset_custom_icons_confirmation">Wszystkie własne ikony zostaną zresetowane. Czy chcesz kontynuować?</string>
     <string name="taskbar_label">Pasek zadań</string>
     <string name="enable_taskbar_experimental">Włącz pasek zadań (eksperymentalnie)</string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">Brak zainstalowanego sklepu z aplikacjami lub przeglądarki.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Ładowanie</string>
@@ -271,7 +271,7 @@
     <string name="gesture_handler_open_app_search">Otwórz wyszukiwanie aplikacji</string>
     <string name="gesture_handler_open_search">Otwórz wyszukiwanie</string>
     <string name="gestures_label">Gesty</string>
-    <string name="gestures_description">Taps and Swipes</string>
+    <string name="gestures_description">Dotknięcia i przesunięcia</string>
     <string name="gesture_swipe_up">Przeciągnij w górę</string>
     <string name="gesture_swipe_down">Przeciągnij w dół</string>
     <string name="gesture_home_tap">Dotknięcie przycisku Ekranu głównego</string>
