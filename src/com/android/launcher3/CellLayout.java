@@ -72,7 +72,7 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
-import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

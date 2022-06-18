@@ -53,7 +53,7 @@ import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSparseArrayMap;
-import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.net.URISyntaxException;
 import java.security.InvalidParameterException;

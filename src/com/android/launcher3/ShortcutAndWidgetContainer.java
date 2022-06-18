@@ -33,10 +33,9 @@ import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.NavigableAppWidgetHostView;
-import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import app.lawnchair.preferences2.PreferenceManager2;
-import app.lawnchair.util.FlowUtilsKt;
 
 public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.FolderIconParent {
     static final String TAG = "ShortcutAndWidgetContainer";
