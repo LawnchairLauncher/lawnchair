@@ -202,8 +202,6 @@
     <string name="smartspace_calendar_label">自訂資訊一覽日曆</string>
     <string name="smartspace_calendar_description">允許顯示非公曆的日期</string>
     <string name="search_provider_app_search">應用程式搜尋</string>
-    <string name="always_open_website_label">永遠開啟網站</string>
-    <string name="always_open_website_description">使用網頁而非相應的應用程式來進行搜尋</string>
     <string name="search_provider">搜尋服務供應商</string>
     <string name="status_bar_label">Status Bar</string>
     <string name="show_notification_count">顯示通知數量</string>
@@ -212,7 +210,7 @@
     <string name="reset_custom_icons_confirmation">即將重設所有自訂圖示。是否繼續？</string>
     <string name="taskbar_label">工作列</string>
     <string name="enable_taskbar_experimental">啟用工作列（實驗性功能）</string>
-    <string name="error_no_market_or_browser_installed">尚未安裝應用市場或瀏覽器。</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s、%2$s</string>
     <string name="smartspace_battery_charging">充電中</string>
@@ -259,7 +257,7 @@
     <string name="invalid_backup_file">無效備份檔案。</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — %2$s 分鐘後充飽"</string>
     <string name="wallpaper_depth_effect">桌布景深效果</string>
-    <string name="gesture_double_tap">輕觸兩次</string>
+    <string name="gesture_double_tap">Double Tap</string>
     <string name="gesture_handler_no_op">什麼也不做</string>
     <string name="gesture_handler_sleep">睡眠</string>
     <string name="gesture_handler_open_notifications">開啟通知面板</string>
