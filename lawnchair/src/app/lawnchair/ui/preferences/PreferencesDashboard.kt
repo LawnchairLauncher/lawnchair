@@ -84,7 +84,8 @@ fun PreferencesDashboard() {
 
         PreferenceCategory(
             label = stringResource(id = R.string.gestures_label),
-            iconResource = R.drawable.ic_general,
+            description = stringResource(R.string.gestures_description),
+            iconResource = R.drawable.ic_gestures,
             route = Routes.GESTURES,
         )
 
