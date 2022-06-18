@@ -258,7 +258,7 @@
     <string name="invalid_backup_file">File di backup non valido.</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Carica in %2$s"</string>
     <string name="wallpaper_depth_effect">Effetto di profondità dello sfondo</string>
-    <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_double_tap">Doppio tocco</string>
     <string name="gesture_handler_no_op">Non fare niente</string>
     <string name="gesture_handler_sleep">Sospendi</string>
     <string name="gesture_handler_open_notifications">Apri il pannello delle notifiche</string>
