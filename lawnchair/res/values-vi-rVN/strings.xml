@@ -45,7 +45,7 @@
     <string name="icons">Biểu tượng</string>
     <string name="icon_size">Kích thước biểu tượng</string>
     <string name="label_size">Kích thước tên ứng dụng</string>
-    <string name="show_home_labels">Show Labels</string>
+    <string name="show_home_labels">Hiện thị tên</string>
     <string name="notification_dots">Dấu chấm thông báo</string>
     <string name="smartspace_preferences">Tùy chỉnh</string>
     <string name="about_label">Giới thiệu</string>
@@ -79,7 +79,7 @@
         <item quantity="other">%1$d Ứng dụng</item>
     </plurals>
     <string name="hotseat_qsb_label">Hiện thanh tìm kiếm</string>
-    <string name="qsb_search_provider_app_required">App required.</string>
+    <string name="qsb_search_provider_app_required">Yêu cầu nhà cung cấp tìm kiếm.</string>
     <string name="dt2s_admin_hint_title">Cần cấp Quyền Quản trị</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">Nhấp đôi để khoá màn hình sẽ được tắt.</string>
@@ -212,7 +212,7 @@
     <string name="reset_custom_icons_confirmation">Mọi biểu tượng tùy chỉnh sẽ được đặt lại. Bạn có muốn tiếp tục không?</string>
     <string name="taskbar_label">Thanh tác vụ</string>
     <string name="enable_taskbar_experimental">Bật Thanh tác vụ (thử nghiệm)</string>
-    <string name="error_no_market_or_browser_installed">No app market or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">Không có cửa hàng ứng dụng hay trình duyệt được cài đặt.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Đang sạc</string>
