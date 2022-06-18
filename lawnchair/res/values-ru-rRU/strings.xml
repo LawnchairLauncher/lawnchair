@@ -205,8 +205,6 @@
     <string name="smartspace_calendar_label">Настройки календаря на виджете \"Самое главное\"</string>
     <string name="smartspace_calendar_description">Разрешить показывать дату в негригорианских календарных системах.</string>
     <string name="search_provider_app_search">Поиск приложений</string>
-    <string name="always_open_website_label">Всегда открывать сайт</string>
-    <string name="always_open_website_description">Открывать сайт поставщика поиска, даже если установлено приложение.</string>
     <string name="search_provider">Поисковик</string>
     <string name="status_bar_label">Строка состояния</string>
     <string name="show_notification_count">Показывать количество уведомлений</string>
@@ -215,7 +213,7 @@
     <string name="reset_custom_icons_confirmation">Все пользовательские иконки будут сброшены. Вы хотите продолжить?</string>
     <string name="taskbar_label">Панель задач</string>
     <string name="enable_taskbar_experimental">Включить панель задач (экспериментально)</string>
-    <string name="error_no_market_or_browser_installed">No app market or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Зарядка</string>
@@ -262,7 +260,7 @@
     <string name="invalid_backup_file">Файл резервной копии недействителен.</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Полная через %2$s"</string>
     <string name="wallpaper_depth_effect">Глубина обоев</string>
-    <string name="gesture_double_tap">Двойное нажатие</string>
+    <string name="gesture_double_tap">Double Tap</string>
     <string name="gesture_handler_no_op">Ничего</string>
     <string name="gesture_handler_sleep">Сон</string>
     <string name="gesture_handler_open_notifications">Открыть панель уведомлений</string>
