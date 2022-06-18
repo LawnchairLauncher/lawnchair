@@ -80,7 +80,7 @@
         <item quantity="other">%1$d تا برنامه</item>
     </plurals>
     <string name="hotseat_qsb_label">نشان‌دادن نوار جست‌و‌جو</string>
-    <string name="qsb_search_provider_app_required">App required.</string>
+    <string name="qsb_search_provider_app_required">برنامه نیاز است.</string>
     <string name="dt2s_admin_hint_title">دسترسی ادمین نیاز است</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">دو ضربه سریع برای خواب خاموش خواهد شد.</string>
@@ -276,6 +276,6 @@
     <string name="gesture_home_tap">زدن دکمه خانه</string>
     <string name="gesture_back_tap">زدن دکمه بازگشت</string>
     <string name="x_and_y">%s و %s</string>
-    <string name="app_label">App</string>
-    <string name="website_label">Website</string>
+    <string name="app_label">برنامه</string>
+    <string name="website_label">وب‌سایت</string>
 </resources>
