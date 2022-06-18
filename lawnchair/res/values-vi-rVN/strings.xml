@@ -202,8 +202,6 @@
     <string name="smartspace_calendar_label">Tùy chỉnh lịch Xem nhanh</string>
     <string name="smartspace_calendar_description">Cho phép hiện ngày trên hệ thống lịch khác Gregory.</string>
     <string name="search_provider_app_search">Tìm kiếm ứng dụng</string>
-    <string name="always_open_website_label">Luôn mở trang web</string>
-    <string name="always_open_website_description">Mở trang web của nhà cung cấp dịch vụ tìm kiếm cho dù ứng dụng của họ đã được cài đặt.</string>
     <string name="search_provider">Nhà cung cấp dịch vụ tìm kiếm</string>
     <string name="status_bar_label">Thanh trạng thái</string>
     <string name="show_notification_count">Hiện số đếm thông báo</string>
@@ -212,7 +210,7 @@
     <string name="reset_custom_icons_confirmation">Mọi biểu tượng tùy chỉnh sẽ được đặt lại. Bạn có muốn tiếp tục không?</string>
     <string name="taskbar_label">Thanh tác vụ</string>
     <string name="enable_taskbar_experimental">Bật Thanh tác vụ (thử nghiệm)</string>
-    <string name="error_no_market_or_browser_installed">Không có cửa hàng ứng dụng hay trình duyệt được cài đặt.</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Đang sạc</string>
@@ -259,7 +257,7 @@
     <string name="invalid_backup_file">Tệp sao lưu không hợp lệ.</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Sẽ đầy sau %2$s"</string>
     <string name="wallpaper_depth_effect">Hình nền có hiệu ứng chiều sâu</string>
-    <string name="gesture_double_tap">Nhấn 2 lần</string>
+    <string name="gesture_double_tap">Double Tap</string>
     <string name="gesture_handler_no_op">Không làm gì cả</string>
     <string name="gesture_handler_sleep">Ngủ</string>
     <string name="gesture_handler_open_notifications">Mở bảng thông báo</string>
