@@ -271,6 +271,7 @@
     <string name="gesture_handler_open_app_search">Открыть поиск приложений</string>
     <string name="gesture_handler_open_search">Открыть поиск</string>
     <string name="gestures_label">Жесты</string>
+    <string name="gestures_description">Taps and Swipes</string>
     <string name="gesture_swipe_up">Свайп вверх</string>
     <string name="gesture_swipe_down">Свайп вниз</string>
     <string name="gesture_home_tap">Кнопка \"Домой\"</string>
