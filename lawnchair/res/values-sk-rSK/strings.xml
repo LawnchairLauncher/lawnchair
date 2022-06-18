@@ -271,6 +271,7 @@
     <string name="gesture_handler_open_app_search">Otvoriť vyhľadávanie aplikácií</string>
     <string name="gesture_handler_open_search">Otvoriť vyhľadávanie</string>
     <string name="gestures_label">Gestá</string>
+    <string name="gestures_description">Taps and Swipes</string>
     <string name="gesture_swipe_up">Potiahnutie nahor</string>
     <string name="gesture_swipe_down">Potiahnutie nadol</string>
     <string name="gesture_home_tap">Tlačidlo Domov</string>
