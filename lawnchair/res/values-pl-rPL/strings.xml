@@ -205,8 +205,6 @@
     <string name="smartspace_calendar_label">Dostosowanie kalendarza \"W skrócie\"</string>
     <string name="smartspace_calendar_description">Umożliwiaj wyświetlanie daty w systemach kalendarzowych innych niż gregoriański.</string>
     <string name="search_provider_app_search">Wyszukiwanie aplikacji</string>
-    <string name="always_open_website_label">Zawsze otwieraj stronę internetową</string>
-    <string name="always_open_website_description">Otwórz stronę internetową dostawcy wyszukiwania, nawet jeśli ich aplikacja jest zainstalowana.</string>
     <string name="search_provider">Dostawca wyszukiwania</string>
     <string name="status_bar_label">Pasek stanu</string>
     <string name="show_notification_count">Pokaż liczbę powiadomień</string>
@@ -215,7 +213,7 @@
     <string name="reset_custom_icons_confirmation">Wszystkie własne ikony zostaną zresetowane. Czy chcesz kontynuować?</string>
     <string name="taskbar_label">Pasek zadań</string>
     <string name="enable_taskbar_experimental">Włącz pasek zadań (eksperymentalnie)</string>
-    <string name="error_no_market_or_browser_installed">Brak sklepu lub przeglądarki aplikacji.</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Ładowanie</string>
@@ -262,7 +260,7 @@
     <string name="invalid_backup_file">Niewłaściwy plik kopii zapasowej.</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Naładowany za %2$s"</string>
     <string name="wallpaper_depth_effect">Efekt głębi tapety</string>
-    <string name="gesture_double_tap">Podwójne dotknięcie</string>
+    <string name="gesture_double_tap">Double Tap</string>
     <string name="gesture_handler_no_op">Nic nie rób</string>
     <string name="gesture_handler_sleep">Uśpij</string>
     <string name="gesture_handler_open_notifications">Otwórz panel powiadomień</string>
