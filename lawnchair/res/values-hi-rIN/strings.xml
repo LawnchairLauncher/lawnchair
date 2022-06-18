@@ -16,9 +16,10 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">चिह्न पैक</string>
+    <string name="icon_style">आइकन स्टाइल</string>
     <string name="settings">सेटिंग्स</string>
     <string name="home_screen_label">होम स्क्रीन</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">फ़ीड, ग्रिड, आइकन्स</string>
     <string name="general_label">सामान्य</string>
     <string name="general_description">नोटिफिकेशन डॉट्स, आइकन पैक</string>
     <string name="home_screen_rotation_label">होम स्क्रीन रोटेशन</string>
@@ -35,6 +36,9 @@
     <string name="max_folder_columns">मैक्स। फ़ोल्डर कॉलम</string>
     <string name="max_folder_rows">ज्यादा फ़ोल्डर पंक्तियाँ</string>
     <string name="home_screen_grid">होम स्क्रीन ग्रिड</string>
+    <string name="home_screen_lock">होम स्क्रीन लॉक करें</string>
+    <string name="home_screen_unlock">होम स्क्रीन अनलॉक करें</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">कॉलम</string>
     <string name="grid">ग्रिड</string>
     <string name="rows">रॉ</string>
@@ -76,6 +80,7 @@
         <item quantity="other">ऐप्स</item>
     </plurals>
     <string name="hotseat_qsb_label">खोज बार दिखाएँ</string>
+    <string name="qsb_search_provider_app_required">App required.</string>
     <string name="dt2s_admin_hint_title">व्यवस्थापक अनुमतियाँ आवश्यक</string>
     <string name="dt2s_admin_hint">\"डबल-टैप से स्क्रीन बंद\" उपयोग करने के लिए, लॉनचेयर को डिवाइस एडमिन ऐप के रूप में सेट करें। सेटिंग्स खोल कर “इस डिवाइस एडमिन ऐप को एक्टिवेट करें” दबाएं।</string>
     <string name="dt2s_admin_warning">सोने के लिए डबल-टैप करना बंद कर दिया जाएगा।</string>
@@ -107,6 +112,7 @@
     <string name="wallpaper_scrolling_label">स्क्रॉल वॉलपेपर</string>
     <string name="show_sys_ui_scrim">ऊपरी हिस्से पर प्रतिछाया</string>
     <string name="show_status_bar">स्टेट्स बार दिखाएँ</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">क्या क्या दिखाना है</string>
     <string name="missing_notification_access_label">नोटिफिकेशन परमिशन चाहिए</string>
     <string name="missing_notification_access_description">नोटिफिकेशन परमिशन चाहिए.</string>
@@ -194,9 +200,9 @@
     <string name="icon_picker_description">लॉन्चेयर रूक सकता है।</string>
     <string name="font_picker_label">फॉन्ट बदलें</string>
     <string name="font_picker_description">कुछ शब्द नहीं बदलेंगे</string>
+    <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
+    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
     <string name="search_provider_app_search">एप खोजे</string>
-    <string name="always_open_website_label">हमेशा वेबसाइट खोलें</string>
-    <string name="always_open_website_description">खोज प्रदाता की वेबसाइट खोलें, भले ही उनका ऐप इंस्टॉल हो।</string>
     <string name="search_provider">खोज प्रदाता</string>
     <string name="status_bar_label">स्टेटस बार</string>
     <string name="show_notification_count">नोटिफिकेशन की संख्या दिखाएं</string>
@@ -205,6 +211,7 @@
     <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
     <string name="taskbar_label">Taskbar</string>
     <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Charging</string>
@@ -217,12 +224,19 @@
     <string name="quickstep_incompatible">Incompatible System Integration</string>
     <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
     <string name="preview_label">Preview</string>
+    <string name="smartspace_calendar">Calendar</string>
+    <string name="smartspace_date_and_time">Date &amp; Time</string>
+    <string name="smartspace_date">Date</string>
+    <string name="smartspace_time">Time</string>
+    <string name="smartspace_time_24_hour_format">24-Hour Format</string>
     <string name="smartspace_weather">Weather</string>
     <string name="smartspace_battery_status">Battery Status</string>
     <string name="smartspace_now_playing">Now Playing</string>
     <string name="smartspace_requires_setup">Tap to Set Up</string>
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
     <string name="smartspace_media_info_separator">" — "</string>
+    <string name="smartspace_calendar_gregorian">Gregorian</string>
+    <string name="smartspace_calendar_persian">Persian</string>
     <string name="pref_fonts_add_fonts">Add Fonts</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
     <string name="delete">Delete</string>
@@ -242,4 +256,24 @@
     <string name="backup_restore_success">Backup restored.</string>
     <string name="backup_restore_error">Failed to restore backup.</string>
     <string name="invalid_backup_file">Invalid backup file.</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
+    <string name="wallpaper_depth_effect">Wallpaper Depth Effect</string>
+    <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_handler_no_op">Do Nothing</string>
+    <string name="gesture_handler_sleep">Sleep</string>
+    <string name="gesture_handler_open_notifications">Open Notification Panel</string>
+    <string name="gesture_handler_open_app_option">Open App</string>
+    <string name="gesture_handler_open_app_config">Open %1$s</string>
+    <string name="pick_app_for_gesture">Pick App</string>
+    <string name="gesture_handler_open_app_drawer">Open App Drawer</string>
+    <string name="gesture_handler_open_app_search">Open App Search</string>
+    <string name="gesture_handler_open_search">Open Search</string>
+    <string name="gestures_label">Gestures</string>
+    <string name="gesture_swipe_up">Swipe Up</string>
+    <string name="gesture_swipe_down">Swipe Down</string>
+    <string name="gesture_home_tap">Home Button Tap</string>
+    <string name="gesture_back_tap">Back Button Tap</string>
+    <string name="x_and_y">%s &amp; %s</string>
+    <string name="app_label">App</string>
+    <string name="website_label">Website</string>
 </resources>
