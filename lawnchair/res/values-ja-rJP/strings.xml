@@ -16,6 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">アイコンパック</string>
+    <string name="icon_style">アイコンのスタイル</string>
     <string name="settings">設定</string>
     <string name="home_screen_label">ホーム画面</string>
     <string name="home_screen_description">フィード、グリッド、アイコン</string>
@@ -23,7 +24,7 @@
     <string name="general_description">色、アイコンパック、通知ドット</string>
     <string name="home_screen_rotation_label">ホーム画面の回転</string>
     <string name="home_screen_rotaton_description">デバイスを回転させた時</string>
-    <string name="auto_add_shortcuts_label">新しいアプリをホーム画面に追加</string>
+    <string name="auto_add_shortcuts_label">ホーム画面に新しいアプリを追加</string>
     <string name="dock_label">ドック</string>
     <string name="dock_description">検索バー、アイコン数</string>
     <string name="app_drawer_label">アプリドロワー</string>
@@ -32,9 +33,12 @@
     <string name="folders_description">行と列の数</string>
     <string name="app_drawer_columns">アプリドロワーの列</string>
     <string name="dock_icons">ドックアイコン</string>
-    <string name="max_folder_columns">フォルダ列の最大値</string>
-    <string name="max_folder_rows">フォルダ行の最大値</string>
+    <string name="max_folder_columns">フォルダの列の最大数</string>
+    <string name="max_folder_rows">フォルダの行の最大数</string>
     <string name="home_screen_grid">ホーム画面のグリッド</string>
+    <string name="home_screen_lock">ホーム画面をロック</string>
+    <string name="home_screen_unlock">ホーム画面のロックを解除</string>
+    <string name="home_screen_lock_toggle_from_home_popup">ロックボタンをポップアップして表示</string>
     <string name="columns">列数</string>
     <string name="grid">グリッド</string>
     <string name="rows">行数</string>
@@ -53,7 +57,7 @@
     <string name="all_apps_search_bar_hint">アプリを検索</string>
     <string name="settings_button_text">ホーム設定</string>
     <string name="development">開発</string>
-    <string name="app_info_drop_target_label">アプリケーション情報</string>
+    <string name="app_info_drop_target_label">アプリ情報</string>
     <string name="item_removed">アイテムを削除しました。</string>
     <string name="all_apps_no_search_results">“<xliff:g example="Android" id="query">%1$s</xliff:g> ”に一致するアプリが見つかりませんでした</string>
     <string name="translucent_background">半透明の背景</string>
@@ -75,6 +79,7 @@
         <item quantity="other">%1$d 個のアプリ</item>
     </plurals>
     <string name="hotseat_qsb_label">検索バーを表示</string>
+    <string name="qsb_search_provider_app_required">アプリが必要です。</string>
     <string name="dt2s_admin_hint_title">Admin permission required</string>
     <string name="dt2s_admin_hint">ダブルタップでスリープを使用するには、Lawnchairをデバイス管理アプリとして設定する必要があります。「設定を開く」をタップし、「このデバイス管理アプリを有効にする」を有効にしてください。</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
@@ -106,6 +111,7 @@
     <string name="wallpaper_scrolling_label">壁紙をスクロール</string>
     <string name="show_sys_ui_scrim">上部の影</string>
     <string name="show_status_bar">ステータスバーを表示</string>
+    <string name="layout">レイアウト</string>
     <string name="what_to_show">表示する項目</string>
     <string name="missing_notification_access_label">通知へのアクセスが必要です</string>
     <string name="missing_notification_access_description">通知へのアクセスが必要です。</string>
@@ -193,22 +199,23 @@
     <string name="icon_picker_description">Lawnchair がフリーズする原因になる可能性があります。</string>
     <string name="font_picker_label">フォントのカスタマイズ</string>
     <string name="font_picker_description">一部のテキストは変更されません。</string>
+    <string name="smartspace_calendar_label">At a Glance カレンダーカスタマイズ</string>
+    <string name="smartspace_calendar_description">グレゴリオ暦以外の暦で日付を表示できるようにします。</string>
     <string name="search_provider_app_search">アプリ検索</string>
-    <string name="always_open_website_label">常にウェブサイトを開く</string>
-    <string name="always_open_website_description">アプリがインストールされていても、検索プロバイダのウェブサイトを開きます。</string>
     <string name="search_provider">検索プロバイダー</string>
     <string name="status_bar_label">ステータスバー</string>
-    <string name="show_notification_count">通知カウントを表示</string>
+    <string name="show_notification_count">通知の数を表示</string>
     <string name="icon_picker_load_failed">アイコンを読み込めませんでした。</string>
     <string name="reset_custom_icons">カスタムアイコンをリセット</string>
     <string name="reset_custom_icons_confirmation">すべてのカスタムアイコンがリセットされます。続行しますか？</string>
     <string name="taskbar_label">タスクバー</string>
     <string name="enable_taskbar_experimental">タスクバーを有効化 (実験的)</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s,%2$s</string>
     <string name="smartspace_battery_charging">充電中...</string>
     <string name="smartspace_battery_full">充電完了</string>
-    <string name="smartspace_battery_low">バッテリー残量低下</string>
+    <string name="smartspace_battery_low">電池残量が少ない</string>
     <string name="accessibility_smartspace_page">%1$d ページ中 %2$d</string>
     <string name="smartspace_widget">At a Glance</string>
     <string name="smartspace_widget_description">表示する項目</string>
@@ -216,12 +223,19 @@
     <string name="quickstep_incompatible">互換性のないシステム統合</string>
     <string name="quickstep_incompatible_description">お使いのデバイスは %1$s が提供するシステムジェスチャー (Quickstepとして知られています) が設定されていますが %1$s のこのバージョンはお使いのAndroidのバージョンと互換性がありません。デバイスを引き続き使用するには、%1$s の更新をアンインストールするか、システムジェスチャープロバイダとして %1$s を無効にしてください。</string>
     <string name="preview_label">プレビュー</string>
+    <string name="smartspace_calendar">カレンダー</string>
+    <string name="smartspace_date_and_time">日付 &amp; 時間</string>
+    <string name="smartspace_date">日付</string>
+    <string name="smartspace_time">時間</string>
+    <string name="smartspace_time_24_hour_format">24時間表記</string>
     <string name="smartspace_weather">天気</string>
-    <string name="smartspace_battery_status">バッテリーステータス</string>
+    <string name="smartspace_battery_status">電池の状態</string>
     <string name="smartspace_now_playing">再生中</string>
     <string name="smartspace_requires_setup">タップしてセットアップ</string>
     <string name="event_provider_missing_notification_dots">使用するには <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>、通知ドットを有効にします。</string>
     <string name="smartspace_media_info_separator">" — "</string>
+    <string name="smartspace_calendar_gregorian">グレゴリオ暦</string>
+    <string name="smartspace_calendar_persian">ペルシャ語</string>
     <string name="pref_fonts_add_fonts">フォントを追加</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF がサポートされています。</string>
     <string name="delete">削除</string>
@@ -233,7 +247,7 @@
     <string name="what_to_backup">バックアップする項目</string>
     <string name="backup_content_layout_and_settings">レイアウトと設定</string>
     <string name="backup_content_wallpaper">壁紙</string>
-    <string name="backup_create_success">バックアップが作成されました</string>
+    <string name="backup_create_success">バックアップを作成しました。</string>
     <string name="backup_create_error">バックアップの作成に失敗しました。</string>
     <string name="restore_backup">バックアップを復元</string>
     <string name="restore_backup_action">復元</string>
@@ -241,4 +255,24 @@
     <string name="backup_restore_success">バックアップが復元されました。</string>
     <string name="backup_restore_error">バックアップの復元に失敗しました。</string>
     <string name="invalid_backup_file">バックアップファイルが無効です。</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — 充電完了まで %2$s"</string>
+    <string name="wallpaper_depth_effect">壁紙の視差効果</string>
+    <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_handler_no_op">何もしない</string>
+    <string name="gesture_handler_sleep">スリープ状態にする</string>
+    <string name="gesture_handler_open_notifications">通知パネルを開く</string>
+    <string name="gesture_handler_open_app_option">アプリを開く</string>
+    <string name="gesture_handler_open_app_config">%1$s を開く</string>
+    <string name="pick_app_for_gesture">アプリを選択</string>
+    <string name="gesture_handler_open_app_drawer">アプリドロワーを開く</string>
+    <string name="gesture_handler_open_app_search">アプリ検索を開く</string>
+    <string name="gesture_handler_open_search">検索を開く</string>
+    <string name="gestures_label">ジェスチャー</string>
+    <string name="gesture_swipe_up">上へスワイプしたとき</string>
+    <string name="gesture_swipe_down">下へスワイプしたとき</string>
+    <string name="gesture_home_tap">ホームボタンが押されたとき</string>
+    <string name="gesture_back_tap">戻るボタンが押されたとき</string>
+    <string name="x_and_y">%s &amp; %s</string>
+    <string name="app_label">アプリ</string>
+    <string name="website_label">ウェブサイト</string>
 </resources>
