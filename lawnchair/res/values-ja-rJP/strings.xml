@@ -202,8 +202,6 @@
     <string name="smartspace_calendar_label">At a Glance カレンダーカスタマイズ</string>
     <string name="smartspace_calendar_description">グレゴリオ暦以外の暦で日付を表示できるようにします。</string>
     <string name="search_provider_app_search">アプリ検索</string>
-    <string name="always_open_website_label">常にウェブサイトを開く</string>
-    <string name="always_open_website_description">アプリがインストールされていても、検索プロバイダのウェブサイトを開きます。</string>
     <string name="search_provider">検索プロバイダー</string>
     <string name="status_bar_label">ステータスバー</string>
     <string name="show_notification_count">通知の数を表示</string>
@@ -212,7 +210,7 @@
     <string name="reset_custom_icons_confirmation">すべてのカスタムアイコンがリセットされます。続行しますか？</string>
     <string name="taskbar_label">タスクバー</string>
     <string name="enable_taskbar_experimental">タスクバーを有効化 (実験的)</string>
-    <string name="error_no_market_or_browser_installed">アプリマーケットまたはブラウザがインストールされていません。</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s,%2$s</string>
     <string name="smartspace_battery_charging">充電中...</string>
@@ -259,7 +257,7 @@
     <string name="invalid_backup_file">バックアップファイルが無効です。</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — 充電完了まで %2$s"</string>
     <string name="wallpaper_depth_effect">壁紙の視差効果</string>
-    <string name="gesture_double_tap">ダブルタップをしたとき</string>
+    <string name="gesture_double_tap">Double Tap</string>
     <string name="gesture_handler_no_op">何もしない</string>
     <string name="gesture_handler_sleep">スリープ状態にする</string>
     <string name="gesture_handler_open_notifications">通知パネルを開く</string>
