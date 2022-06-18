@@ -203,8 +203,6 @@
     <string name="smartspace_calendar_label">Personalizzazione del calendario nel widget At a Glance</string>
     <string name="smartspace_calendar_description">Consente di visualizzare la data nei sistemi di calendario non gregoriani.</string>
     <string name="search_provider_app_search">Ricerca app</string>
-    <string name="always_open_website_label">Apri sempre Il sito</string>
-    <string name="always_open_website_description">Apri il sito web del provider di ricerca anche se la loro app è installata.</string>
     <string name="search_provider">Provider di ricerca</string>
     <string name="status_bar_label">Barra di stato</string>
     <string name="show_notification_count">Mostra conteggio notifiche</string>
@@ -213,7 +211,7 @@
     <string name="reset_custom_icons_confirmation">Tutte le icone personalizzate saranno resettate? Vuoi continuare?</string>
     <string name="taskbar_label">Barra delle applicazioni</string>
     <string name="enable_taskbar_experimental">Abilita la barra delle applicazioni (sperimentale)</string>
-    <string name="error_no_market_or_browser_installed">No app market or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">In carica</string>
@@ -260,7 +258,7 @@
     <string name="invalid_backup_file">File di backup non valido.</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Carica in %2$s"</string>
     <string name="wallpaper_depth_effect">Effetto di profondità dello sfondo</string>
-    <string name="gesture_double_tap">Doppio tocco</string>
+    <string name="gesture_double_tap">Double Tap</string>
     <string name="gesture_handler_no_op">Non fare niente</string>
     <string name="gesture_handler_sleep">Sospendi</string>
     <string name="gesture_handler_open_notifications">Apri il pannello delle notifiche</string>
