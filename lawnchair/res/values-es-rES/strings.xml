@@ -80,7 +80,7 @@
         <item quantity="other">%1$d Aplicaciones</item>
     </plurals>
     <string name="hotseat_qsb_label">Mostrar Barra de Búsqueda</string>
-    <string name="qsb_search_provider_app_required">App required.</string>
+    <string name="qsb_search_provider_app_required">Aplicación necesaria.</string>
     <string name="dt2s_admin_hint_title">Permisos de administrador requeridos</string>
     <string name="dt2s_admin_hint">Para usar el doble toque para apagar la pantalla, establece Lawnchair como una app de administrador de dispositivos. Pulsa en \"Abrir Configuración\", luego en \"Activar esta aplicación de administrador de dispositivos.\"</string>
     <string name="dt2s_admin_warning">Se desactivará el doble toque para dormir.</string>
@@ -200,7 +200,7 @@
     <string name="icon_picker_description">Puede hacer que Lawnchair se congele.</string>
     <string name="font_picker_label">Configuración de Fuente</string>
     <string name="font_picker_description">Algunos textos permanecen sin cambios.</string>
-    <string name="smartspace_calendar_label">Personalización de calendario de visualización rápida</string>
+    <string name="smartspace_calendar_label">Personalización del calendario de un vistazo</string>
     <string name="smartspace_calendar_description">Permitir mostrar fechas en sistemas de calendario no gregorianos.</string>
     <string name="search_provider_app_search">Búsqueda de Aplicaciones</string>
     <string name="search_provider">Proveedor de Búsqueda</string>
@@ -210,7 +210,7 @@
     <string name="reset_custom_icons">Restablecer iconos personalizados</string>
     <string name="reset_custom_icons_confirmation">Todos los iconos personalizados se restablecerán. ¿Desea continuar?</string>
     <string name="taskbar_label">Barra de tareas</string>
-    <string name="enable_taskbar_experimental">Habilitar Barra de Tareas</string>
+    <string name="enable_taskbar_experimental">Habilitar barra de tareas (Experimental)</string>
     <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
@@ -220,7 +220,7 @@
     <string name="accessibility_smartspace_page">Página %1$d de %2$d</string>
     <string name="smartspace_widget">De un vistazo</string>
     <string name="smartspace_widget_description">Qué mostrar</string>
-    <string name="smartspace_widget_placeholder_date">Vie, 3 de Mar</string>
+    <string name="smartspace_widget_placeholder_date">Vie, 3 mar</string>
     <string name="quickstep_incompatible">Integración del sistema incompatible</string>
     <string name="quickstep_incompatible_description">Su dispositivo está configurado para tener gestos del sistema (conocidos como Quickstep) proporcionados por %1$s, pero esta versión de %1$s no es compatible con tu versión de Android. Para continuar utilizando tu dispositivo, por favor desinstala las actualizaciones de %1$s o deshabilita %1$s como proveedor de gestos de sistema.</string>
     <string name="preview_label">Vista previa</string>
@@ -245,7 +245,7 @@
     <string name="themed_icons_home_and_drawer_label">Pantalla de inicio &amp; Cajón de aplicaciones</string>
     <string name="create_backup">Crear copia de seguridad</string>
     <string name="create_backup_action">Crear</string>
-    <string name="what_to_backup">Que para respaldar</string>
+    <string name="what_to_backup">¿Qué respaldar?</string>
     <string name="backup_content_layout_and_settings">Diseño y ajustes</string>
     <string name="backup_content_wallpaper">Fondo de Pantalla</string>
     <string name="backup_create_success">Copia de seguridad creada.</string>
@@ -275,6 +275,6 @@
     <string name="gesture_home_tap">Pulsación al botón de Inicio</string>
     <string name="gesture_back_tap">Pulsación al botón atrás</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="app_label">App</string>
-    <string name="website_label">Website</string>
+    <string name="app_label">Aplicación</string>
+    <string name="website_label">Página web</string>
 </resources>
