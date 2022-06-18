@@ -203,8 +203,6 @@
     <string name="smartspace_calendar_label">Customização do Calendário no Resumo</string>
     <string name="smartspace_calendar_description">Permitir mostrar data em sistema de calendário não Gregoriano.</string>
     <string name="search_provider_app_search">Pesquisa de aplicativos</string>
-    <string name="always_open_website_label">Sempre abrir site</string>
-    <string name="always_open_website_description">Abra o site do provedor de pesquisa mesmo que o aplicativo esteja instalado.</string>
     <string name="search_provider">Procurar Provedor</string>
     <string name="status_bar_label">Barra de Status</string>
     <string name="show_notification_count">Mostrar Contador de Notificações</string>
@@ -213,7 +211,7 @@
     <string name="reset_custom_icons_confirmation">Todos os ícones personalizados serão redefinidos. Você quer continuar?</string>
     <string name="taskbar_label">Barra de tarefas</string>
     <string name="enable_taskbar_experimental">Habilitar Barra de Tarefas (Experimental)</string>
-    <string name="error_no_market_or_browser_installed">No app market or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Carregamento</string>
@@ -260,7 +258,7 @@
     <string name="invalid_backup_file">Arquivo de backup inválido.</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Completo em %2$s"</string>
     <string name="wallpaper_depth_effect">Efeito de Profundidade do Plano de Fundo</string>
-    <string name="gesture_double_tap">Toque Duplo</string>
+    <string name="gesture_double_tap">Double Tap</string>
     <string name="gesture_handler_no_op">Não Fazer Nada</string>
     <string name="gesture_handler_sleep">Suspender</string>
     <string name="gesture_handler_open_notifications">Abrir Painel de Notificação</string>
