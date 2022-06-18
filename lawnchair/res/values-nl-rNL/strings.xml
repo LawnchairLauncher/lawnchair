@@ -203,8 +203,6 @@
     <string name="smartspace_calendar_label">At a Glance kalender aanpassingen</string>
     <string name="smartspace_calendar_description">Laat weergeven datum toe in niet-Gregoriaanse kalendersystemen</string>
     <string name="search_provider_app_search">Apps Doorzoeken</string>
-    <string name="always_open_website_label">Altijd de website openen</string>
-    <string name="always_open_website_description">Altijd de website openen van de zoek provider, ook al is de app geïnstalleerd.</string>
     <string name="search_provider">Zoek Provider</string>
     <string name="status_bar_label">Statusbalk</string>
     <string name="show_notification_count">Toon aantal notificaties</string>
@@ -213,7 +211,7 @@
     <string name="reset_custom_icons_confirmation">Alle aangepaste pictogrammen worden gereset. Wilt u doorgaan?</string>
     <string name="taskbar_label">Taakbalk</string>
     <string name="enable_taskbar_experimental">Activeer taakbalk (Experimenteel)</string>
-    <string name="error_no_market_or_browser_installed">Geen appwikel of browser geïnstalleerd.</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Aan het opladen</string>
@@ -260,7 +258,7 @@
     <string name="invalid_backup_file">Ongeldige back-up bestand.</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Vol in %2$s"</string>
     <string name="wallpaper_depth_effect">Achtergrond Diepte Effect</string>
-    <string name="gesture_double_tap">Dubbel-Tik</string>
+    <string name="gesture_double_tap">Double Tap</string>
     <string name="gesture_handler_no_op">Niets doen</string>
     <string name="gesture_handler_sleep">Slapen</string>
     <string name="gesture_handler_open_notifications">Open notificatie paneel</string>
