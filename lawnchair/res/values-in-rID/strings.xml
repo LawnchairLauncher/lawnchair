@@ -202,8 +202,6 @@
     <string name="smartspace_calendar_label">Kustomisasi Kalender Sekilas</string>
     <string name="smartspace_calendar_description">Izinkan menampilkan tanggal dalam sistem kalender non-Gregorian.</string>
     <string name="search_provider_app_search">Pencarian App</string>
-    <string name="always_open_website_label">Selalu Buka Laman Web</string>
-    <string name="always_open_website_description">Buka situs web pencarian bahkan jika aplikasi telah terinstal.</string>
     <string name="search_provider">Penyedia Pencarian</string>
     <string name="status_bar_label">Bar Status</string>
     <string name="show_notification_count">Tampilkan Jumlah Notifikasi</string>
@@ -212,7 +210,7 @@
     <string name="reset_custom_icons_confirmation">Semua ikon kustom akan diatur ulang. Apakah Anda ingin melanjutkan?</string>
     <string name="taskbar_label">Bilah Tugas</string>
     <string name="enable_taskbar_experimental">Aktifkan Bilah Tugas (Eksperimental)</string>
-    <string name="error_no_market_or_browser_installed">No app market or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Mengisi daya</string>
@@ -259,7 +257,7 @@
     <string name="invalid_backup_file">File cadangan tidak valid.</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Penuh dalam %2$s"</string>
     <string name="wallpaper_depth_effect">Efek Kedalaman Wallpaper</string>
-    <string name="gesture_double_tap">Ketuk Dua Kali</string>
+    <string name="gesture_double_tap">Double Tap</string>
     <string name="gesture_handler_no_op">Tidak Ada Tindakan</string>
     <string name="gesture_handler_sleep">Tidur</string>
     <string name="gesture_handler_open_notifications">Buka Panel Notifikasi</string>
