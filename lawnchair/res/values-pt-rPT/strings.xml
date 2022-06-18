@@ -211,7 +211,7 @@
     <string name="reset_custom_icons_confirmation">Todos os ícones personalizados vão ser redefinidos. Quer continuar?</string>
     <string name="taskbar_label">Barra de tarefas</string>
     <string name="enable_taskbar_experimental">Ativar Barra de Tarefas (Experimental)</string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">Nenhuma loja de aplicações ou navegador instalado.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Carregando</string>
@@ -258,7 +258,7 @@
     <string name="invalid_backup_file">Ficheiro de cópia de segurança inválido.</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Completo em %2$s"</string>
     <string name="wallpaper_depth_effect">Efeito de Profundidade do Papel de Parede</string>
-    <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_double_tap">Duplo Toque</string>
     <string name="gesture_handler_no_op">Não Fazer Nada</string>
     <string name="gesture_handler_sleep">Suspender</string>
     <string name="gesture_handler_open_notifications">Abrir Painel de Notificações</string>
