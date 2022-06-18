@@ -16,6 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">Набор иконок</string>
+    <string name="icon_style">Стиль значка</string>
     <string name="settings">Настройки</string>
     <string name="home_screen_label">Домашний экран</string>
     <string name="home_screen_description">Лента, Сетка, Иконки</string>
@@ -35,6 +36,9 @@
     <string name="max_folder_columns">Макс. количество столбцов в папке</string>
     <string name="max_folder_rows">Макс. количество строк в папке</string>
     <string name="home_screen_grid">Сетка главного экрана</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">Столбцы</string>
     <string name="grid">Сетка</string>
     <string name="rows">Строки</string>
@@ -78,6 +82,7 @@
         <item quantity="other">%1$d Приложения</item>
     </plurals>
     <string name="hotseat_qsb_label">Показать строку поиска</string>
+    <string name="qsb_search_provider_app_required">App required.</string>
     <string name="dt2s_admin_hint_title">Необходимы права администратора</string>
     <string name="dt2s_admin_hint">Чтобы использовать функцию \"Нажмите дважды для выключения\", выберите Lawnchair как приложение администратора устройства. Для этого откройте Настройки, потом нажмите на \"Активировать приложение администратора устройства.\"</string>
     <string name="dt2s_admin_warning">Двойной тап для блокировки будет отключен.</string>
@@ -109,6 +114,7 @@
     <string name="wallpaper_scrolling_label">Прокрутка обоев</string>
     <string name="show_sys_ui_scrim">Тень под строкой состояния</string>
     <string name="show_status_bar">Отображать строку состояния</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">Что показывать</string>
     <string name="missing_notification_access_label">Доступ к уведомлениям</string>
     <string name="missing_notification_access_description">Необходимо разрешение доступа к уведомлениям.</string>
@@ -196,9 +202,9 @@
     <string name="icon_picker_description">Может привести к замиранию Lawnchair.</string>
     <string name="font_picker_label">Настройка шрифта</string>
     <string name="font_picker_description">Некоторый текст останется без изменений.</string>
+    <string name="smartspace_calendar_label">Настройки календаря на виджете \"Самое главное\"</string>
+    <string name="smartspace_calendar_description">Разрешить показывать дату в негригорианских календарных системах.</string>
     <string name="search_provider_app_search">Поиск приложений</string>
-    <string name="always_open_website_label">Всегда открывать сайт</string>
-    <string name="always_open_website_description">Открывать сайт поставщика поиска, даже если установлено приложение.</string>
     <string name="search_provider">Поисковик</string>
     <string name="status_bar_label">Строка состояния</string>
     <string name="show_notification_count">Показывать количество уведомлений</string>
@@ -207,6 +213,7 @@
     <string name="reset_custom_icons_confirmation">Все пользовательские иконки будут сброшены. Вы хотите продолжить?</string>
     <string name="taskbar_label">Панель задач</string>
     <string name="enable_taskbar_experimental">Включить панель задач (экспериментально)</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Зарядка</string>
@@ -219,12 +226,19 @@
     <string name="quickstep_incompatible">Несовместимая системная интеграция</string>
     <string name="quickstep_incompatible_description">Ваше устройство настроено на использование системных жестов (известных как Quickstep), предоставляемых %1$s, но эта версия %1$s не совместима с вашей версией Android. Чтобы продолжить использование вашего устройства, удалите обновления %1$s или отключите %1$s как поставщика системных жестов.</string>
     <string name="preview_label">Предпросмотр</string>
+    <string name="smartspace_calendar">Календарь</string>
+    <string name="smartspace_date_and_time">Дата &amp; Время</string>
+    <string name="smartspace_date">Дата</string>
+    <string name="smartspace_time">Время</string>
+    <string name="smartspace_time_24_hour_format">24-часовой формат</string>
     <string name="smartspace_weather">Погода</string>
     <string name="smartspace_battery_status">Состояние батареи</string>
     <string name="smartspace_now_playing">Сейчас играет</string>
     <string name="smartspace_requires_setup">Нажмите для настройки</string>
     <string name="event_provider_missing_notification_dots">Чтобы использовать <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включите точки уведомлений.</string>
     <string name="smartspace_media_info_separator">" — "</string>
+    <string name="smartspace_calendar_gregorian">Григорианский</string>
+    <string name="smartspace_calendar_persian">Персидский</string>
     <string name="pref_fonts_add_fonts">Добавить шрифты</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF поддерживается.</string>
     <string name="delete">Удалить</string>
@@ -244,4 +258,24 @@
     <string name="backup_restore_success">Резервная копия восстановлена.</string>
     <string name="backup_restore_error">Не удалось восстановить резервную копию.</string>
     <string name="invalid_backup_file">Файл резервной копии недействителен.</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Полная через %2$s"</string>
+    <string name="wallpaper_depth_effect">Глубина обоев</string>
+    <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_handler_no_op">Ничего</string>
+    <string name="gesture_handler_sleep">Сон</string>
+    <string name="gesture_handler_open_notifications">Открыть панель уведомлений</string>
+    <string name="gesture_handler_open_app_option">Открыть приложение</string>
+    <string name="gesture_handler_open_app_config">Открыть %1$s</string>
+    <string name="pick_app_for_gesture">Выбрать приложение</string>
+    <string name="gesture_handler_open_app_drawer">Открыть меню приложений</string>
+    <string name="gesture_handler_open_app_search">Открыть поиск приложений</string>
+    <string name="gesture_handler_open_search">Открыть поиск</string>
+    <string name="gestures_label">Жесты</string>
+    <string name="gesture_swipe_up">Свайп вверх</string>
+    <string name="gesture_swipe_down">Свайп вниз</string>
+    <string name="gesture_home_tap">Кнопка \"Домой\"</string>
+    <string name="gesture_back_tap">Кнопка \"Назад\"</string>
+    <string name="x_and_y">%s &amp; %s</string>
+    <string name="app_label">App</string>
+    <string name="website_label">Website</string>
 </resources>
