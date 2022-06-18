@@ -269,6 +269,7 @@
     <string name="gesture_handler_open_app_search">بازکردن جستجوی برنامه‌ها</string>
     <string name="gesture_handler_open_search">بازکردن جستجو</string>
     <string name="gestures_label">ژست‌های حرکتی</string>
+    <string name="gestures_description">Taps and Swipes</string>
     <string name="gesture_swipe_up">به بالا کشیدن</string>
     <string name="gesture_swipe_down">به پایین کشیدن</string>
     <string name="gesture_home_tap">زدن دکمه خانه</string>
