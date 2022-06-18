@@ -205,8 +205,6 @@
     <string name="smartspace_calendar_label">Налаштування календаря у віджеті \"Найголовніше\"</string>
     <string name="smartspace_calendar_description">Дозволити показувати дату у негригоріанських календарних системах.</string>
     <string name="search_provider_app_search">Пошук додатків</string>
-    <string name="always_open_website_label">Завжди відкривати сайт</string>
-    <string name="always_open_website_description">Відкрити сайт пошукового запиту, навіть якщо встановлено додаток.</string>
     <string name="search_provider">Пошукова система</string>
     <string name="status_bar_label">Рядок стану</string>
     <string name="show_notification_count">Показувати кількість сповіщень</string>
@@ -215,7 +213,7 @@
     <string name="reset_custom_icons_confirmation">Усі користувацькі іконки будуть скинуті. Продовжити?</string>
     <string name="taskbar_label">Панель задач</string>
     <string name="enable_taskbar_experimental">Увімкнути Панель задач (експериментальна)</string>
-    <string name="error_no_market_or_browser_installed">No app market or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Зарядка</string>
@@ -262,7 +260,7 @@
     <string name="invalid_backup_file">Недійсний файл резервної копії.</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Повна через %2$s"</string>
     <string name="wallpaper_depth_effect">Глибина шпалер</string>
-    <string name="gesture_double_tap">Подвійне натискання</string>
+    <string name="gesture_double_tap">Double Tap</string>
     <string name="gesture_handler_no_op">Нічого</string>
     <string name="gesture_handler_sleep">Сон</string>
     <string name="gesture_handler_open_notifications">Відкрити панель сповіщень</string>
