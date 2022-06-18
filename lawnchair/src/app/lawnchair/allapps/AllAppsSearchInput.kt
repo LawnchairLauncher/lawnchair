@@ -34,7 +34,7 @@ import com.android.launcher3.allapps.*
 import com.android.launcher3.allapps.search.AllAppsSearchBarController
 import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.util.Themes
-import com.patrykmichalik.preferencemanager.firstBlocking
+import com.patrykmichalik.opto.core.firstBlocking
 import java.util.*
 import kotlin.math.max
 

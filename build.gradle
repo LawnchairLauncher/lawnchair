@@ -1,8 +1,8 @@
 buildscript {
     ext {
         kotlin_version = '1.6.21'
-        compose_version = '1.2.0-beta02'
-        accompanist_version = '0.24.9-beta'
+        compose_version = '1.2.0-rc01'
+        accompanist_version = '0.24.10-beta'
         libsu_version = '3.1.2'
         protocVersion = '3.18.0'
         room_version = '2.4.2'
@@ -78,7 +78,7 @@ allprojects {
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
         kotlinOptions {
-            freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+            freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
         }
     }
 }
@@ -355,7 +355,7 @@ dependencies {
     implementation "androidx.compose.ui:ui-text-google-fonts:$compose_version"
     implementation "androidx.compose.foundation:foundation:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.material3:material3:1.0.0-alpha12"
+    implementation "androidx.compose.material3:material3:1.0.0-alpha13"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     implementation "androidx.compose.runtime:runtime-rxjava2:$compose_version"
     implementation "androidx.compose.compiler:compiler:$compose_version"
@@ -372,12 +372,12 @@ dependencies {
     implementation "com.google.accompanist:accompanist-pager:$accompanist_version"
     implementation "com.google.accompanist:accompanist-placeholder-material:$accompanist_version"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
-    implementation 'com.google.android.material:material:1.6.0'
+    implementation "com.google.android.material:material:1.6.1"
     implementation "io.github.fornewid:material-motion-compose-core:0.8.4"
     implementation 'dev.kdrag0n:colorkt:1.0.5'
     implementation 'io.coil-kt:coil-compose:2.0.0'
     implementation 'me.xdrop:fuzzywuzzy:1.4.0'
-    implementation "com.patrykmichalik:preference-manager:1.0.7"
+    implementation "com.patrykmichalik:opto:1.0.12"
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
     implementation "com.squareup.retrofit2:converter-gson:2.9.0"

@@ -23,7 +23,7 @@ import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.preferences2.PreferenceManager2
 import com.android.quickstep.SysUINavigationMode
 import com.android.quickstep.util.VibratorWrapper
-import com.patrykmichalik.preferencemanager.Preference
+import com.patrykmichalik.opto.domain.Preference
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -72,7 +72,7 @@ class GestureController(private val launcher: LawnchairLauncher) {
         }
     }
 
-    private fun handler(pref: Preference<GestureHandlerConfig, String>) = pref.get()
+    private fun handler(pref: Preference<GestureHandlerConfig, String, *>) = pref.get()
         .distinctUntilChanged()
         .map { it.createHandler(launcher) }
         .shareIn(

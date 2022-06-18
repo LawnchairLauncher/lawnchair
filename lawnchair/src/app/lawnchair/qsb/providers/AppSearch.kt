@@ -11,7 +11,8 @@ object AppSearch : QsbSearchProvider(
     icon = R.drawable.ic_qsb_search,
     themingMethod = ThemingMethod.TINT,
     packageName = "",
-    website = ""
+    website = "",
+    type = QsbSearchProviderType.LOCAL
 ) {
     override suspend fun launch(launcher: Launcher, forceWebsite: Boolean) {
         launcher.animateToAllApps()

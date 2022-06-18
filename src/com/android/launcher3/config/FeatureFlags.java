@@ -22,7 +22,7 @@ import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.DeviceFlag;
 import com.android.systemui.shared.system.BlurUtils;
-import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;

@@ -51,7 +51,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.Themes;
 import com.android.systemui.plugins.ResourceProvider;
-import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.util.ViewExtensionsKt;

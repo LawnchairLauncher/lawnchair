@@ -22,7 +22,7 @@ import app.lawnchair.preferences2.IdpPreference
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.firstBlocking
 import com.android.launcher3.InvariantDeviceProfile
-import com.patrykmichalik.preferencemanager.Preference
+import com.patrykmichalik.opto.domain.Preference
 import kotlinx.coroutines.launch
 import kotlin.reflect.KProperty
 
@@ -109,7 +109,7 @@ private fun <P, T> getAdapter(
 }
 
 @Composable
-fun <T> Preference<T, *>.getAdapter(): PreferenceAdapter<T> {
+fun <T> Preference<T, *, *>.getAdapter(): PreferenceAdapter<T> {
     return createStateAdapter(state = asState(), set = this::set)
 }
 
