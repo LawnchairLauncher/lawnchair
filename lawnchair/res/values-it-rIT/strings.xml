@@ -269,6 +269,7 @@
     <string name="gesture_handler_open_app_search">Apri ricerca app</string>
     <string name="gesture_handler_open_search">Apri ricerca</string>
     <string name="gestures_label">Gesti</string>
+    <string name="gestures_description">Tocchi e scorrimenti</string>
     <string name="gesture_swipe_up">Scorri su</string>
     <string name="gesture_swipe_down">Scorri giù</string>
     <string name="gesture_home_tap">Tocco sul pulsante home</string>
