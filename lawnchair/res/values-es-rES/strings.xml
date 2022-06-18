@@ -19,14 +19,14 @@
     <string name="icon_style">Estilo del icono</string>
     <string name="settings">Ajustes</string>
     <string name="home_screen_label">Pantalla de Inicio</string>
-    <string name="home_screen_description">Nuevo, cuadrícula, iconos</string>
+    <string name="home_screen_description">Feed, cuadrículas, iconos</string>
     <string name="general_label">General</string>
     <string name="general_description">Colores, Paquete de Íconos, Puntos de Notificación</string>
     <string name="home_screen_rotation_label">Rotación de Pantalla de Inicio</string>
     <string name="home_screen_rotaton_description">Cuando se rota el dispositivo.</string>
     <string name="auto_add_shortcuts_label">Añadir Nuevas Aplicaciones a la Pantalla de Inicio</string>
     <string name="dock_label">Dock</string>
-    <string name="dock_description">Barra de búsqueda, Número de iconos</string>
+    <string name="dock_description">Barra de búsqueda, número de iconos</string>
     <string name="app_drawer_label">Cajón de Aplicaciones</string>
     <string name="app_drawer_description">Aplicaciones ocultas, Número de columnas, Iconos</string>
     <string name="folders_label">Carpetas</string>
@@ -43,7 +43,7 @@
     <string name="grid">Cuadrícula</string>
     <string name="rows">Filas</string>
     <string name="icons">Iconos</string>
-    <string name="icon_size">Tamaño de Iconos</string>
+    <string name="icon_size">Tamaño de iconos</string>
     <string name="label_size">Tamaño de Etiqueta</string>
     <string name="show_home_labels">Mostrar etiquetas</string>
     <string name="notification_dots">Puntos de Notificación</string>
@@ -54,8 +54,8 @@
     <string name="acknowledgements">Reconocimientos</string>
     <string name="devops">Opciones de desarrollador</string>
     <string name="quickswitch_maintenance">Mantenimiento de QuickSwitch</string>
-    <string name="all_apps_search_bar_hint">Buscar Aplicaciones</string>
-    <string name="settings_button_text">Configuración de Inicio</string>
+    <string name="all_apps_search_bar_hint">Buscar aplicaciones</string>
+    <string name="settings_button_text">Configuración de inicio</string>
     <string name="development">Desarrollo</string>
     <string name="app_info_drop_target_label">Información de la aplicación</string>
     <string name="item_removed">Elemento eliminado.</string>
@@ -108,7 +108,7 @@
     <string name="system">Sistema</string>
     <string name="wallpaper">Fondo de Pantalla</string>
     <string name="custom">Personalizado</string>
-    <string name="quickstep_description">Botón \"Borrar todo\", Radio de esquina</string>
+    <string name="quickstep_description">Botón \"Borrar todo\", radio de esquina</string>
     <string name="wallpaper_scrolling_label">Desplazar fondo</string>
     <string name="show_sys_ui_scrim">Sombra superior</string>
     <string name="show_status_bar">Mostrar Barra de estado</string>
@@ -211,7 +211,7 @@
     <string name="reset_custom_icons_confirmation">Todos los iconos personalizados se restablecerán. ¿Desea continuar?</string>
     <string name="taskbar_label">Barra de tareas</string>
     <string name="enable_taskbar_experimental">Habilitar barra de tareas (Experimental)</string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">No hay tienda de aplicaciones ni navegador instalado.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Cargando</string>
@@ -222,10 +222,10 @@
     <string name="smartspace_widget_description">Qué mostrar</string>
     <string name="smartspace_widget_placeholder_date">Vie, 3 mar</string>
     <string name="quickstep_incompatible">Integración del sistema incompatible</string>
-    <string name="quickstep_incompatible_description">Su dispositivo está configurado para tener gestos del sistema (conocidos como Quickstep) proporcionados por %1$s, pero esta versión de %1$s no es compatible con tu versión de Android. Para continuar utilizando tu dispositivo, por favor desinstala las actualizaciones de %1$s o deshabilita %1$s como proveedor de gestos de sistema.</string>
+    <string name="quickstep_incompatible_description">Su dispositivo está configurado para tener gestos del sistema (conocidos como Quickstep) proporcionados por %1$s, pero esta versión de %1$s no es compatible con tu versión de Android. Para continuar utilizando tu dispositivo, por favor desinstala las actualizaciones de %1$s o deshabilita %1$s como proveedor de gestos del sistema.</string>
     <string name="preview_label">Vista previa</string>
     <string name="smartspace_calendar">Calendario</string>
-    <string name="smartspace_date_and_time">Fecha y hora</string>
+    <string name="smartspace_date_and_time">Fecha &amp; hora</string>
     <string name="smartspace_date">Fecha</string>
     <string name="smartspace_time">Hora</string>
     <string name="smartspace_time_24_hour_format">Formato de 24 horas</string>
@@ -242,7 +242,7 @@
     <string name="delete">Eliminar</string>
     <string name="themed_icons_off_label">Apagado</string>
     <string name="themed_icons_home_label">Pantalla de Inicio</string>
-    <string name="themed_icons_home_and_drawer_label">Pantalla de inicio &amp; Cajón de aplicaciones</string>
+    <string name="themed_icons_home_and_drawer_label">Pantalla de inicio &amp; cajón de aplicaciones</string>
     <string name="create_backup">Crear copia de seguridad</string>
     <string name="create_backup_action">Crear</string>
     <string name="what_to_backup">¿Qué respaldar?</string>
@@ -252,13 +252,13 @@
     <string name="backup_create_error">Error al crear copia de seguridad.</string>
     <string name="restore_backup">Restaurar copia de seguridad</string>
     <string name="restore_backup_action">Restaurar</string>
-    <string name="what_to_restore">Qué restaurar</string>
+    <string name="what_to_restore">¿Qué restaurar?</string>
     <string name="backup_restore_success">Copia de seguridad restaurada.</string>
     <string name="backup_restore_error">Error al restaurar copia de seguridad.</string>
     <string name="invalid_backup_file">Copia de seguridad no válida.</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Cargado en %2$s"</string>
     <string name="wallpaper_depth_effect">Efecto de profundidad del fondo de pantalla</string>
-    <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_double_tap">Doble toque</string>
     <string name="gesture_handler_no_op">No hacer nada</string>
     <string name="gesture_handler_sleep">Modo reposo</string>
     <string name="gesture_handler_open_notifications">Desplegar el panel de notificaciones</string>
@@ -269,11 +269,11 @@
     <string name="gesture_handler_open_app_search">Abrir búsqueda de aplicaciones</string>
     <string name="gesture_handler_open_search">Abrir búsqueda</string>
     <string name="gestures_label">Gestos</string>
-    <string name="gestures_description">Taps and Swipes</string>
+    <string name="gestures_description">Toques y deslizamientos</string>
     <string name="gesture_swipe_up">Deslizar hacia arriba</string>
     <string name="gesture_swipe_down">Deslizar hacia abajo</string>
-    <string name="gesture_home_tap">Pulsación al botón de Inicio</string>
-    <string name="gesture_back_tap">Pulsación al botón atrás</string>
+    <string name="gesture_home_tap">Pulsar el botón inicio</string>
+    <string name="gesture_back_tap">Pulsar el botón atrás</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="app_label">Aplicación</string>
     <string name="website_label">Página web</string>
