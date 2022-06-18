@@ -16,9 +16,10 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">Paquete de iconos</string>
+    <string name="icon_style">Estilo del icono</string>
     <string name="settings">Ajustes</string>
     <string name="home_screen_label">Pantalla de Inicio</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Nuevo, cuadrícula, iconos</string>
     <string name="general_label">General</string>
     <string name="general_description">Colores, Paquete de Íconos, Puntos de Notificación</string>
     <string name="home_screen_rotation_label">Rotación de Pantalla de Inicio</string>
@@ -35,6 +36,9 @@
     <string name="max_folder_columns">Máx. Columnas de Carpetas</string>
     <string name="max_folder_rows">Máx. Filas de Carpetas</string>
     <string name="home_screen_grid">Cuadrícula de Pantalla de Inicio</string>
+    <string name="home_screen_lock">Bloquear pantalla de inicio</string>
+    <string name="home_screen_unlock">Desbloquear pantalla de inicio</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Mostrar botón de bloqueo en la ventana emergente</string>
     <string name="columns">Columnas</string>
     <string name="grid">Cuadrícula</string>
     <string name="rows">Filas</string>
@@ -76,6 +80,7 @@
         <item quantity="other">%1$d Aplicaciones</item>
     </plurals>
     <string name="hotseat_qsb_label">Mostrar Barra de Búsqueda</string>
+    <string name="qsb_search_provider_app_required">App required.</string>
     <string name="dt2s_admin_hint_title">Permisos de administrador requeridos</string>
     <string name="dt2s_admin_hint">Para usar el doble toque para apagar la pantalla, establece Lawnchair como una app de administrador de dispositivos. Pulsa en \"Abrir Configuración\", luego en \"Activar esta aplicación de administrador de dispositivos.\"</string>
     <string name="dt2s_admin_warning">Se desactivará el doble toque para dormir.</string>
@@ -107,6 +112,7 @@
     <string name="wallpaper_scrolling_label">Desplazar fondo</string>
     <string name="show_sys_ui_scrim">Sombra superior</string>
     <string name="show_status_bar">Mostrar Barra de estado</string>
+    <string name="layout">Diseño</string>
     <string name="what_to_show">Qué mostrar</string>
     <string name="missing_notification_access_label">Acceso a las notificaciones requerido</string>
     <string name="missing_notification_access_description">Acceso a las notificaciones requerido.</string>
@@ -194,9 +200,9 @@
     <string name="icon_picker_description">Puede hacer que Lawnchair se congele.</string>
     <string name="font_picker_label">Configuración de Fuente</string>
     <string name="font_picker_description">Algunos textos permanecen sin cambios.</string>
+    <string name="smartspace_calendar_label">Personalización de calendario de visualización rápida</string>
+    <string name="smartspace_calendar_description">Permitir mostrar fechas en sistemas de calendario no gregorianos.</string>
     <string name="search_provider_app_search">Búsqueda de Aplicaciones</string>
-    <string name="always_open_website_label">Siempre Abrir Sitio Web</string>
-    <string name="always_open_website_description">Abrir siempre Sitio web del proveedor aunque la app ya está instalada.</string>
     <string name="search_provider">Proveedor de Búsqueda</string>
     <string name="status_bar_label">Barra de estado</string>
     <string name="show_notification_count">Mostrar contador de notificaciones</string>
@@ -204,7 +210,8 @@
     <string name="reset_custom_icons">Restablecer iconos personalizados</string>
     <string name="reset_custom_icons_confirmation">Todos los iconos personalizados se restablecerán. ¿Desea continuar?</string>
     <string name="taskbar_label">Barra de tareas</string>
-    <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
+    <string name="enable_taskbar_experimental">Habilitar Barra de Tareas</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Cargando</string>
@@ -217,12 +224,19 @@
     <string name="quickstep_incompatible">Integración del sistema incompatible</string>
     <string name="quickstep_incompatible_description">Su dispositivo está configurado para tener gestos del sistema (conocidos como Quickstep) proporcionados por %1$s, pero esta versión de %1$s no es compatible con tu versión de Android. Para continuar utilizando tu dispositivo, por favor desinstala las actualizaciones de %1$s o deshabilita %1$s como proveedor de gestos de sistema.</string>
     <string name="preview_label">Vista previa</string>
+    <string name="smartspace_calendar">Calendario</string>
+    <string name="smartspace_date_and_time">Fecha y hora</string>
+    <string name="smartspace_date">Fecha</string>
+    <string name="smartspace_time">Hora</string>
+    <string name="smartspace_time_24_hour_format">Formato de 24 horas</string>
     <string name="smartspace_weather">Clima</string>
     <string name="smartspace_battery_status">Estado de la batería</string>
     <string name="smartspace_now_playing">Reproduciendo</string>
     <string name="smartspace_requires_setup">Toca para configurar</string>
     <string name="event_provider_missing_notification_dots">Para usar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activa los puntos de notificación.</string>
     <string name="smartspace_media_info_separator">" — "</string>
+    <string name="smartspace_calendar_gregorian">Gregoriano</string>
+    <string name="smartspace_calendar_persian">Persa</string>
     <string name="pref_fonts_add_fonts">Añadir fuentes</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF soportados.</string>
     <string name="delete">Eliminar</string>
@@ -231,15 +245,35 @@
     <string name="themed_icons_home_and_drawer_label">Pantalla de inicio &amp; Cajón de aplicaciones</string>
     <string name="create_backup">Crear copia de seguridad</string>
     <string name="create_backup_action">Crear</string>
-    <string name="what_to_backup">What to Back Up</string>
+    <string name="what_to_backup">Que para respaldar</string>
     <string name="backup_content_layout_and_settings">Diseño y ajustes</string>
     <string name="backup_content_wallpaper">Fondo de Pantalla</string>
-    <string name="backup_create_success">Backup created.</string>
-    <string name="backup_create_error">Failed to create backup.</string>
+    <string name="backup_create_success">Copia de seguridad creada.</string>
+    <string name="backup_create_error">Error al crear copia de seguridad.</string>
     <string name="restore_backup">Restaurar copia de seguridad</string>
     <string name="restore_backup_action">Restaurar</string>
     <string name="what_to_restore">Qué restaurar</string>
-    <string name="backup_restore_success">Backup restored.</string>
-    <string name="backup_restore_error">Failed to restore backup.</string>
-    <string name="invalid_backup_file">Invalid backup file.</string>
+    <string name="backup_restore_success">Copia de seguridad restaurada.</string>
+    <string name="backup_restore_error">Error al restaurar copia de seguridad.</string>
+    <string name="invalid_backup_file">Copia de seguridad no válida.</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Cargado en %2$s"</string>
+    <string name="wallpaper_depth_effect">Efecto de profundidad del fondo de pantalla</string>
+    <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_handler_no_op">No hacer nada</string>
+    <string name="gesture_handler_sleep">Modo reposo</string>
+    <string name="gesture_handler_open_notifications">Desplegar el panel de notificaciones</string>
+    <string name="gesture_handler_open_app_option">Abrir aplicación</string>
+    <string name="gesture_handler_open_app_config">Abrir %1$s</string>
+    <string name="pick_app_for_gesture">Seleccionar aplicación</string>
+    <string name="gesture_handler_open_app_drawer">Abrir cajón de aplicaciones</string>
+    <string name="gesture_handler_open_app_search">Abrir búsqueda de aplicaciones</string>
+    <string name="gesture_handler_open_search">Abrir búsqueda</string>
+    <string name="gestures_label">Gestos</string>
+    <string name="gesture_swipe_up">Deslizar hacia arriba</string>
+    <string name="gesture_swipe_down">Deslizar hacia abajo</string>
+    <string name="gesture_home_tap">Pulsación al botón de Inicio</string>
+    <string name="gesture_back_tap">Pulsación al botón atrás</string>
+    <string name="x_and_y">%s &amp; %s</string>
+    <string name="app_label">App</string>
+    <string name="website_label">Website</string>
 </resources>
