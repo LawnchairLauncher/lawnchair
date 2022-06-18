@@ -269,6 +269,7 @@
     <string name="gesture_handler_open_app_search">App zoeken openen</string>
     <string name="gesture_handler_open_search">Zoeken openen</string>
     <string name="gestures_label">Gebaren</string>
+    <string name="gestures_description">Taps and Swipes</string>
     <string name="gesture_swipe_up">Veeg omhoog</string>
     <string name="gesture_swipe_down">Veeg omlaag</string>
     <string name="gesture_home_tap">Thuisknop tik</string>
