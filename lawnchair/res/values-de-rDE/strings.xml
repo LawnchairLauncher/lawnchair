@@ -211,7 +211,7 @@
     <string name="reset_custom_icons_confirmation">Alle benutzerdefinierten Symbole werden zurückgesetzt. Möchtest du fortfahren?</string>
     <string name="taskbar_label">Taskbar</string>
     <string name="enable_taskbar_experimental">Taskbar aktivieren (experimentell)</string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">Kein Appstore oder Browser installiert.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Wird geladen</string>
@@ -258,7 +258,7 @@
     <string name="invalid_backup_file">Ungültige Sicherungsdatei.</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Voll in %2$s"</string>
     <string name="wallpaper_depth_effect">Hintergrundbild Tiefeneffekt</string>
-    <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_double_tap">Doppeltipp</string>
     <string name="gesture_handler_no_op">Nichts tun</string>
     <string name="gesture_handler_sleep">Ruhezustand</string>
     <string name="gesture_handler_open_notifications">Benachrichtigungsleiste öffnen</string>
