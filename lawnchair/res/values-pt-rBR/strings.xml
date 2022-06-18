@@ -80,7 +80,7 @@
         <item quantity="other">%1$d aplicativos</item>
     </plurals>
     <string name="hotseat_qsb_label">Exibir Barra de Pesquisa</string>
-    <string name="qsb_search_provider_app_required">Aplicativo Necessário.</string>
+    <string name="qsb_search_provider_app_required">Aplicativo necessário.</string>
     <string name="dt2s_admin_hint_title">Admin permission required</string>
     <string name="dt2s_admin_hint">Para usar o Toque Duplo para Bloquear, defina o Lawnchair como um aplicativo administrador do dispositivo. Toque em Abrir Configurações e depois em \"Ativar o aplicativo de administrador do dispositivo\"</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
@@ -260,7 +260,7 @@
     <string name="wallpaper_depth_effect">Efeito de Profundidade do Plano de Fundo</string>
     <string name="gesture_double_tap">Toque Duplo</string>
     <string name="gesture_handler_no_op">Não Fazer Nada</string>
-    <string name="gesture_handler_sleep">Suspender</string>
+    <string name="gesture_handler_sleep">Desligar a tela</string>
     <string name="gesture_handler_open_notifications">Abrir Painel de Notificação</string>
     <string name="gesture_handler_open_app_option">Abrir Aplicativo</string>
     <string name="gesture_handler_open_app_config">Abrir %1$s</string>
@@ -269,6 +269,7 @@
     <string name="gesture_handler_open_app_search">Abrir Pesquisa de Aplicativos</string>
     <string name="gesture_handler_open_search">Abrir Pesquisa</string>
     <string name="gestures_label">Gestos</string>
+    <string name="gestures_description">Taps and Swipes</string>
     <string name="gesture_swipe_up">Deslizar para Cima</string>
     <string name="gesture_swipe_down">Deslizar para Baixo</string>
     <string name="gesture_home_tap">Toque no botão Home</string>
