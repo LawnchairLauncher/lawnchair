@@ -16,6 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">Pacchetto icone</string>
+    <string name="icon_style">Stile delle icone</string>
     <string name="settings">Impostazioni</string>
     <string name="home_screen_label">Schermata home</string>
     <string name="home_screen_description">Feed, griglia, icone</string>
@@ -35,6 +36,9 @@
     <string name="max_folder_columns">Colonne massime per la cartella</string>
     <string name="max_folder_rows">Righe massime per la cartella</string>
     <string name="home_screen_grid">Griglia della schermata home</string>
+    <string name="home_screen_lock">Blocca la schermata home</string>
+    <string name="home_screen_unlock">Sblocca schermata home</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Mostra pulsante di blocco nel pop-up</string>
     <string name="columns">Colonne</string>
     <string name="grid">Griglia</string>
     <string name="rows">Righe</string>
@@ -76,6 +80,7 @@
         <item quantity="other">%1$d Applicazioni</item>
     </plurals>
     <string name="hotseat_qsb_label">Mostra la Barra di Ricerca</string>
+    <string name="qsb_search_provider_app_required">App richiesta.</string>
     <string name="dt2s_admin_hint_title">Permesso di amministratore richiesto</string>
     <string name="dt2s_admin_hint">Per usare il doppio tocco per attivare la modalità standby, imposta Lawnchair come app amministratore del dispositivo. Tocca Apri impostazioni, poi tocca \"Attiva app come amministratore del dispositivo\"</string>
     <string name="dt2s_admin_warning">Il doppio tocco per bloccare lo schermo sarà disabilitato.</string>
@@ -107,6 +112,7 @@
     <string name="wallpaper_scrolling_label">Scorrimento dello sfondo</string>
     <string name="show_sys_ui_scrim">Ombra in alto</string>
     <string name="show_status_bar">Mostra barra di stato</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">Cosa mostrare</string>
     <string name="missing_notification_access_label">Accesso alle notifiche necessario</string>
     <string name="missing_notification_access_description">Accesso alle notifiche necessario.</string>
@@ -194,9 +200,9 @@
     <string name="icon_picker_description">Può causare il blocco di Lawnchair.</string>
     <string name="font_picker_label">Personalizzazione carattere</string>
     <string name="font_picker_description">Alcuni testi rimangono invariati.</string>
+    <string name="smartspace_calendar_label">Personalizzazione del calendario nel widget At a Glance</string>
+    <string name="smartspace_calendar_description">Consente di visualizzare la data nei sistemi di calendario non gregoriani.</string>
     <string name="search_provider_app_search">Ricerca app</string>
-    <string name="always_open_website_label">Apri sempre Il sito</string>
-    <string name="always_open_website_description">Apri il sito web del provider di ricerca anche se la loro app è installata.</string>
     <string name="search_provider">Provider di ricerca</string>
     <string name="status_bar_label">Barra di stato</string>
     <string name="show_notification_count">Mostra conteggio notifiche</string>
@@ -205,6 +211,7 @@
     <string name="reset_custom_icons_confirmation">Tutte le icone personalizzate saranno resettate? Vuoi continuare?</string>
     <string name="taskbar_label">Barra delle applicazioni</string>
     <string name="enable_taskbar_experimental">Abilita la barra delle applicazioni (sperimentale)</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">In carica</string>
@@ -217,12 +224,19 @@
     <string name="quickstep_incompatible">Integrazione di sistema incompatibile</string>
     <string name="quickstep_incompatible_description">Il tuo dispositivo è configurato per avere i gesti di sistema (noti come Quickstep) forniti da %1$s, ma questa versione di %1$s non è compatibile con la tua versione di Android. Per continuare ad usare il tuo dispositivo, disinstalla gli aggiornamenti di %1$s o disabilita %1$s come provider dei gesti di sistema.</string>
     <string name="preview_label">Anteprima</string>
+    <string name="smartspace_calendar">Calendario</string>
+    <string name="smartspace_date_and_time">Data &amp; ora</string>
+    <string name="smartspace_date">Data</string>
+    <string name="smartspace_time">Ora</string>
+    <string name="smartspace_time_24_hour_format">Formato 24 ore</string>
     <string name="smartspace_weather">Meteo</string>
     <string name="smartspace_battery_status">Stato batteria</string>
     <string name="smartspace_now_playing">In riproduzione</string>
     <string name="smartspace_requires_setup">Tocca per configurare</string>
     <string name="event_provider_missing_notification_dots">Per utilizzare <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, abilita i badge di notifica.</string>
     <string name="smartspace_media_info_separator">" — "</string>
+    <string name="smartspace_calendar_gregorian">Gregoriano</string>
+    <string name="smartspace_calendar_persian">Persiano</string>
     <string name="pref_fonts_add_fonts">Aggiungi set di caratteri</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supportati.</string>
     <string name="delete">Elimina</string>
@@ -242,4 +256,24 @@
     <string name="backup_restore_success">Backup ripristinato.</string>
     <string name="backup_restore_error">Ripristino del backup non riuscito.</string>
     <string name="invalid_backup_file">File di backup non valido.</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Carica in %2$s"</string>
+    <string name="wallpaper_depth_effect">Effetto di profondità dello sfondo</string>
+    <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_handler_no_op">Non fare niente</string>
+    <string name="gesture_handler_sleep">Sospendi</string>
+    <string name="gesture_handler_open_notifications">Apri il pannello delle notifiche</string>
+    <string name="gesture_handler_open_app_option">Apri app</string>
+    <string name="gesture_handler_open_app_config">Apri %1$s</string>
+    <string name="pick_app_for_gesture">Scegli app</string>
+    <string name="gesture_handler_open_app_drawer">Apri menu delle app</string>
+    <string name="gesture_handler_open_app_search">Apri ricerca app</string>
+    <string name="gesture_handler_open_search">Apri ricerca</string>
+    <string name="gestures_label">Gesti</string>
+    <string name="gesture_swipe_up">Scorri su</string>
+    <string name="gesture_swipe_down">Scorri giù</string>
+    <string name="gesture_home_tap">Tocco sul pulsante home</string>
+    <string name="gesture_back_tap">Tocco sul pulsante indietro</string>
+    <string name="x_and_y">%s &amp; %s</string>
+    <string name="app_label">App</string>
+    <string name="website_label">Sito web</string>
 </resources>
