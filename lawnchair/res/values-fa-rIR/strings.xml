@@ -211,7 +211,7 @@
     <string name="reset_custom_icons_confirmation">تمام آیکون‌های شخصی‌سازی شده مجددا تنظیم خواهند شد. آیا میخواهید ادامه دهید؟</string>
     <string name="taskbar_label">نوار وظیفه</string>
     <string name="enable_taskbar_experimental">فعال کردن نوار وظیفه (آزمایشی)</string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">هیچ فروشگاه برنامه یا مرورگری نصب نیست.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s، %2$s</string>
     <string name="smartspace_battery_charging">درحال شارژ</string>
@@ -258,7 +258,7 @@
     <string name="invalid_backup_file">فایل بکاپ نامعتبر.</string>
     <string name="battery_charging_percentage_charging_time">"%1$d٪ — کامل در %2$s"</string>
     <string name="wallpaper_depth_effect">افکت عمق کاغذ دیواری</string>
-    <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_double_tap">دو ضربه سریع</string>
     <string name="gesture_handler_no_op">انجام هیچ‌کار</string>
     <string name="gesture_handler_sleep">خاموش کردن صفحه نمایش</string>
     <string name="gesture_handler_open_notifications">باز کردن پنل اعلان</string>
@@ -269,7 +269,7 @@
     <string name="gesture_handler_open_app_search">بازکردن جستجوی برنامه‌ها</string>
     <string name="gesture_handler_open_search">بازکردن جستجو</string>
     <string name="gestures_label">ژست‌های حرکتی</string>
-    <string name="gestures_description">Taps and Swipes</string>
+    <string name="gestures_description">ضربه‌ها و کشیدن‌ها</string>
     <string name="gesture_swipe_up">به بالا کشیدن</string>
     <string name="gesture_swipe_down">به پایین کشیدن</string>
     <string name="gesture_home_tap">زدن دکمه خانه</string>
