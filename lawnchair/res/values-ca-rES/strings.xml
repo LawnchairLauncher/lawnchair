@@ -269,7 +269,7 @@
     <string name="gesture_handler_open_app_search">Obrir cerca d\'aplicacions</string>
     <string name="gesture_handler_open_search">Obrir cerca</string>
     <string name="gestures_label">Gestos</string>
-    <string name="gestures_description">Taps and Swipes</string>
+    <string name="gestures_description">Tocs I Lliscaments</string>
     <string name="gesture_swipe_up">Lliscar cap a dalt</string>
     <string name="gesture_swipe_down">Deslligar abaix</string>
     <string name="gesture_home_tap">Toc al botó de pàgina principal</string>
