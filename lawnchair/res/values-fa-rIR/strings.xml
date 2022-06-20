@@ -250,11 +250,11 @@
     <string name="backup_content_wallpaper">کاغذ دیواری</string>
     <string name="backup_create_success">پشتیبان ساخته‌شد.</string>
     <string name="backup_create_error">ساخت بکاپ انجام نشد.</string>
-    <string name="restore_backup">بازیابی بکاپ</string>
-    <string name="restore_backup_action">بازیابی</string>
-    <string name="what_to_restore">موارد بازیابی</string>
-    <string name="backup_restore_success">بکاپ بازیابی شد.</string>
-    <string name="backup_restore_error">بازیابی بکاپ انجام نشد.</string>
+    <string name="restore_backup">بازنشانی بکاپ</string>
+    <string name="restore_backup_action">بازنشانی</string>
+    <string name="what_to_restore">موارد بازنشانی</string>
+    <string name="backup_restore_success">بکاپ بازنشانی شد.</string>
+    <string name="backup_restore_error">بازنشانی بکاپ انجام نشد.</string>
     <string name="invalid_backup_file">فایل بکاپ نامعتبر.</string>
     <string name="battery_charging_percentage_charging_time">"%1$d٪ — کامل در %2$s"</string>
     <string name="wallpaper_depth_effect">افکت عمق کاغذ دیواری</string>
