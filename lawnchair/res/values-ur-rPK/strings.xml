@@ -16,6 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">آئکن پیک</string>
+    <string name="icon_style">Icon Style</string>
     <string name="settings">ترتیبات</string>
     <string name="home_screen_label">ہوم اسکرین</string>
     <string name="home_screen_description">Feed, Grid, Icons</string>
@@ -35,6 +36,9 @@
     <string name="max_folder_columns">زیادہ سے زیادہ۔ فولڈر کے کالم</string>
     <string name="max_folder_rows">زیادہ سے زیادہ۔ فولڈر کی قطاریں</string>
     <string name="home_screen_grid">Home Screen Grid</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">Columns</string>
     <string name="grid">گرڈ</string>
     <string name="rows">Rows</string>
@@ -76,6 +80,7 @@
         <item quantity="other">ایپس%1$d</item>
     </plurals>
     <string name="hotseat_qsb_label">سرچ بار کو دکھائیں</string>
+    <string name="qsb_search_provider_app_required">App required.</string>
     <string name="dt2s_admin_hint_title">Admin Permissions Required</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">Double-Tap to Sleep will be turned off.</string>
@@ -107,6 +112,7 @@
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
     <string name="show_sys_ui_scrim">Top Shadow</string>
     <string name="show_status_bar">Show Status Bar</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">What to Show</string>
     <string name="missing_notification_access_label">Notification Access Needed</string>
     <string name="missing_notification_access_description">Notification access needed.</string>
@@ -194,9 +200,9 @@
     <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
     <string name="font_picker_label">Font Customization</string>
     <string name="font_picker_description">Some text remains unchanged.</string>
+    <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
+    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
     <string name="search_provider_app_search">App Search</string>
-    <string name="always_open_website_label">Always Open Website</string>
-    <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
     <string name="search_provider">Search Provider</string>
     <string name="status_bar_label">Status Bar</string>
     <string name="show_notification_count">Show Notification Count</string>
@@ -205,6 +211,7 @@
     <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
     <string name="taskbar_label">Taskbar</string>
     <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Charging</string>
@@ -217,12 +224,19 @@
     <string name="quickstep_incompatible">Incompatible System Integration</string>
     <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
     <string name="preview_label">Preview</string>
+    <string name="smartspace_calendar">Calendar</string>
+    <string name="smartspace_date_and_time">Date &amp; Time</string>
+    <string name="smartspace_date">Date</string>
+    <string name="smartspace_time">Time</string>
+    <string name="smartspace_time_24_hour_format">24-Hour Format</string>
     <string name="smartspace_weather">Weather</string>
     <string name="smartspace_battery_status">Battery Status</string>
     <string name="smartspace_now_playing">Now Playing</string>
     <string name="smartspace_requires_setup">Tap to Set Up</string>
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
     <string name="smartspace_media_info_separator">" — "</string>
+    <string name="smartspace_calendar_gregorian">Gregorian</string>
+    <string name="smartspace_calendar_persian">Persian</string>
     <string name="pref_fonts_add_fonts">Add Fonts</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
     <string name="delete">Delete</string>
@@ -242,4 +256,24 @@
     <string name="backup_restore_success">Backup restored.</string>
     <string name="backup_restore_error">Failed to restore backup.</string>
     <string name="invalid_backup_file">Invalid backup file.</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
+    <string name="wallpaper_depth_effect">Wallpaper Depth Effect</string>
+    <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_handler_no_op">Do Nothing</string>
+    <string name="gesture_handler_sleep">Sleep</string>
+    <string name="gesture_handler_open_notifications">Open Notification Panel</string>
+    <string name="gesture_handler_open_app_option">Open App</string>
+    <string name="gesture_handler_open_app_config">Open %1$s</string>
+    <string name="pick_app_for_gesture">Pick App</string>
+    <string name="gesture_handler_open_app_drawer">Open App Drawer</string>
+    <string name="gesture_handler_open_app_search">Open App Search</string>
+    <string name="gesture_handler_open_search">Open Search</string>
+    <string name="gestures_label">Gestures</string>
+    <string name="gesture_swipe_up">Swipe Up</string>
+    <string name="gesture_swipe_down">Swipe Down</string>
+    <string name="gesture_home_tap">Home Button Tap</string>
+    <string name="gesture_back_tap">Back Button Tap</string>
+    <string name="x_and_y">%s &amp; %s</string>
+    <string name="app_label">App</string>
+    <string name="website_label">Website</string>
 </resources>

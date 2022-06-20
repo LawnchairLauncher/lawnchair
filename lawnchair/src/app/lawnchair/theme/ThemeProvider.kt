@@ -18,8 +18,8 @@ import app.lawnchair.ui.theme.getSystemAccent
 import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.MainThreadInitializedObject
-import com.patrykmichalik.preferencemanager.firstBlocking
-import com.patrykmichalik.preferencemanager.onEach
+import com.patrykmichalik.opto.core.firstBlocking
+import com.patrykmichalik.opto.core.onEach
 import dev.kdrag0n.colorkt.Color
 import dev.kdrag0n.colorkt.conversion.ConversionGraph.convert
 import dev.kdrag0n.colorkt.rgb.Srgb

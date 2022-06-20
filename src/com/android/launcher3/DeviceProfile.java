@@ -46,7 +46,7 @@ import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.WindowBounds;
-import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.io.PrintWriter;
 

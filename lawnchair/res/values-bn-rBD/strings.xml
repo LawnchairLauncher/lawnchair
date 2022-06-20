@@ -16,9 +16,10 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">আইকন প্যাক</string>
+    <string name="icon_style">Icon Style</string>
     <string name="settings">সেটিংস</string>
     <string name="home_screen_label">মূল পর্দা</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">সংবাদ, সারি, আইকনস</string>
     <string name="general_label">সাধারণ</string>
     <string name="general_description">বিজ্ঞাপন বিন্দু, প্রতীক গুচ্ছ</string>
     <string name="home_screen_rotation_label">মূল পেজ ঘূর্ণন</string>
@@ -35,6 +36,9 @@
     <string name="max_folder_columns">সর্বাধিক. ফোল্ডারের কলাম-সমুহ</string>
     <string name="max_folder_rows">সর্বাধিক. ফোল্ডারের সারি</string>
     <string name="home_screen_grid">হোম স্ক্রীন গ্রিড</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">কলাম</string>
     <string name="grid">গ্রিড</string>
     <string name="rows">সারি</string>
@@ -56,7 +60,7 @@
     <string name="app_info_drop_target_label">অ্যাপ তথ্য</string>
     <string name="item_removed">আইটেম সরানো হয়েছে.</string>
     <string name="all_apps_no_search_results">কোনও অ্যাপ্লিকেশন মিলছে না \"<xliff:g example="Android" id="query">%1$s</xliff:g>\".</string>
-    <string name="translucent_background">Translucent Background</string>
+    <string name="translucent_background">স্বচ্ছ ব্যাকগ্রাউন্ড</string>
     <string name="background_opacity">ব্যাকগ্রাউন্ডের অস্বচ্ছতা</string>
     <string name="background_lightness_label">ব্যাকগ্রাউন্ড লাইটনেস</string>
     <string name="adaptive_icons">অ্যাডাপ্টিভ আইকন</string>
@@ -76,6 +80,7 @@
         <item quantity="other">%1$dটি অ্যাপস</item>
     </plurals>
     <string name="hotseat_qsb_label">সার্চ বার দেখান</string>
+    <string name="qsb_search_provider_app_required">App required.</string>
     <string name="dt2s_admin_hint_title">এডমিনের অনুমতি আবশ্যক</string>
     <string name="dt2s_admin_hint">ঘুমাতে ডবল-ট্যাপ ব্যবহার করুন, লনচেয়ারকে ডিভাইস অ্যাডমিন অ্যাপ হিসেবে সেট করুন। সেটিংস খুলুন আলতো চাপুন, তারপর \"এই ডিভাইস অ্যাডমিন অ্যাপটি সক্রিয় করুন\" এ আলতো চাপুন।</string>
     <string name="dt2s_admin_warning">ডাবল-ট্যাপে লক হওয়া বন্ধ হয়ে যাবে.</string>
@@ -107,6 +112,7 @@
     <string name="wallpaper_scrolling_label">স্ক্রোল ওয়ালপেপার</string>
     <string name="show_sys_ui_scrim">শীর্ষ ছায়া</string>
     <string name="show_status_bar">স্ট্যাটাস বার দেখান</string>
+    <string name="layout">Layout</string>
     <string name="what_to_show">কি দেখাতে হবে</string>
     <string name="missing_notification_access_label">বিজ্ঞপ্তি অ্যাক্সেস প্রয়োজন</string>
     <string name="missing_notification_access_description">বিজ্ঞপ্তি অ্যাক্সেস প্রয়োজন.</string>
@@ -138,13 +144,13 @@
     <string name="icon_shape_label">আইকন আকৃতি</string>
     <string name="icon_shape_system">সিস্টেম</string>
     <string name="icon_shape_circle">বৃত্ত</string>
-    <string name="icon_shape_square">Square</string>
+    <string name="icon_shape_square">বর্গ</string>
     <string name="icon_shape_rounded_square">গোলাকার স্কোয়ার</string>
     <string name="icon_shape_squircle">কাঠবিড়ালি</string>
-    <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_teardrop">Teardrop</string>
-    <string name="icon_shape_cylinder">Cylinder</string>
-    <string name="icon_shape_cupertino">iOS</string>
+    <string name="icon_shape_sammy">ওয়ান ইউয়াই</string>
+    <string name="icon_shape_teardrop">জলফোঁটা</string>
+    <string name="icon_shape_cylinder">বেলন</string>
+    <string name="icon_shape_cupertino">আই ও এস</string>
     <string name="customize_button_text">কাস্টমাইজ করুন</string>
     <string name="app_title_label">শিরোনাম</string>
     <string name="hide_from_drawer">অ্যাপ ড্রয়ার থেকে লুকান</string>
@@ -159,8 +165,8 @@
     <string name="all_apps_search_market_message">আরো অ্যাপ খোঁজ করুন</string>
     <string name="show_app_search_bar">সার্চ বার দেখান</string>
     <string name="lawnchair_bug_report">Lawnchair বাগ রিপোর্ট</string>
-    <string name="crash_report_notif_title">%1$s Crashed</string>
-    <string name="action_upload_crash_report">Upload Crash Log</string>
+    <string name="crash_report_notif_title">%1$s সমস্যা হয়েছে</string>
+    <string name="action_upload_crash_report">সমস্যার উৎস আপলোড করুন</string>
     <string name="action_copy_link">লিংক কপি করুন</string>
     <string name="action_copy">কপি</string>
     <string name="copied_toast">ক্লিপবোর্ডে কপি করা হয়েছে।</string>
@@ -169,7 +175,7 @@
     <string name="dogbin_uploading">আপলোড হচ্ছে…</string>
     <string name="bugreport_channel_name">বাগ রিপোর্ট</string>
     <string name="status_channel_name">আপলোডের অবস্থা</string>
-    <string name="bugreport_group_summary">%d new reports.</string>
+    <string name="bugreport_group_summary">%d নতুন রিপোর্ট.</string>
     <string name="bugreport_group_summary_multiple">একাধিক নতুন রিপোর্ট।</string>
     <string name="themed_icon_title">আবহ অনুযায়ী প্রতীক</string>
     <string name="corner_radius_label">কোণের ব্যাসার্ধ</string>
@@ -190,21 +196,22 @@
     <string name="recents_clear_all">সব মুছে ফেলুন</string>
     <string name="pick_icon_from_label">এখানে থেকে প্রতীক বাছাই করুন</string>
     <string name="experimental_features_label">পরীক্ষামূলক বৈশিষ্ট্য সমূহ</string>
-    <string name="icon_picker_label">Per-App Icon Customization</string>
-    <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
-    <string name="font_picker_label">Font Customization</string>
-    <string name="font_picker_description">Some text remains unchanged.</string>
-    <string name="search_provider_app_search">App Search</string>
-    <string name="always_open_website_label">সবসময় ওয়েবসাইট খুলুন</string>
-    <string name="always_open_website_description">যদি সার্চ প্রদানকারীর অ্যাপ ইন্সটল করা থাকে তবুও তাদের ওয়েবসাইটে যান।</string>
+    <string name="icon_picker_label">অ্যাপ-প্রতি আইকন বদলানো</string>
+    <string name="icon_picker_description">লনচেয়ার বন্ধ হয়ে যেতে পারে.</string>
+    <string name="font_picker_label">ফন্ট বদলানো</string>
+    <string name="font_picker_description">কিছু লেখা অপরিবর্তিত থেকে যেতে পারে.</string>
+    <string name="smartspace_calendar_label">\"আট আ গ্লান্স\" ক্যালেন্ডার পরিবর্তন</string>
+    <string name="smartspace_calendar_description">নন-জর্জিয়ান ক্যালেন্ডারে তারিখ প্রদর্শন করার অনুমুতি প্রদান করুন.</string>
+    <string name="search_provider_app_search">অ্যাপ্লিকেশান খুঁজুন</string>
     <string name="search_provider">সার্চ প্রদানকারী</string>
     <string name="status_bar_label">স্ট্যাটাস বার</string>
-    <string name="show_notification_count">Show Notification Count</string>
-    <string name="icon_picker_load_failed">Couldn’t load more icons.</string>
+    <string name="show_notification_count">নোটিফিকেশান-এর সংখ্যা প্রদর্শন করুন</string>
+    <string name="icon_picker_load_failed">আরও আইকন প্রদর্শন করা সম্ভব হয় নি.</string>
     <string name="reset_custom_icons">Reset Custom Icons</string>
     <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
     <string name="taskbar_label">Taskbar</string>
     <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Charging</string>
@@ -217,15 +224,22 @@
     <string name="quickstep_incompatible">Incompatible System Integration</string>
     <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
     <string name="preview_label">Preview</string>
-    <string name="smartspace_weather">Weather</string>
+    <string name="smartspace_calendar">Calendar</string>
+    <string name="smartspace_date_and_time">Date &amp; Time</string>
+    <string name="smartspace_date">তারিখ</string>
+    <string name="smartspace_time">সময়</string>
+    <string name="smartspace_time_24_hour_format">২৪ ঘণ্টা ফরম্যাট</string>
+    <string name="smartspace_weather">আবহাওয়া</string>
     <string name="smartspace_battery_status">Battery Status</string>
     <string name="smartspace_now_playing">Now Playing</string>
     <string name="smartspace_requires_setup">Tap to Set Up</string>
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
     <string name="smartspace_media_info_separator">" — "</string>
+    <string name="smartspace_calendar_gregorian">Gregorian</string>
+    <string name="smartspace_calendar_persian">Persian</string>
     <string name="pref_fonts_add_fonts">Add Fonts</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
-    <string name="delete">Delete</string>
+    <string name="delete">মুছে ফেলুন</string>
     <string name="themed_icons_off_label">Off</string>
     <string name="themed_icons_home_label">মূল পর্দা</string>
     <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
@@ -242,4 +256,24 @@
     <string name="backup_restore_success">Backup restored.</string>
     <string name="backup_restore_error">Failed to restore backup.</string>
     <string name="invalid_backup_file">Invalid backup file.</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
+    <string name="wallpaper_depth_effect">Wallpaper Depth Effect</string>
+    <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_handler_no_op">Do Nothing</string>
+    <string name="gesture_handler_sleep">Sleep</string>
+    <string name="gesture_handler_open_notifications">Open Notification Panel</string>
+    <string name="gesture_handler_open_app_option">Open App</string>
+    <string name="gesture_handler_open_app_config">Open %1$s</string>
+    <string name="pick_app_for_gesture">Pick App</string>
+    <string name="gesture_handler_open_app_drawer">Open App Drawer</string>
+    <string name="gesture_handler_open_app_search">Open App Search</string>
+    <string name="gesture_handler_open_search">Open Search</string>
+    <string name="gestures_label">Gestures</string>
+    <string name="gesture_swipe_up">Swipe Up</string>
+    <string name="gesture_swipe_down">Swipe Down</string>
+    <string name="gesture_home_tap">Home Button Tap</string>
+    <string name="gesture_back_tap">Back Button Tap</string>
+    <string name="x_and_y">%s &amp; %s</string>
+    <string name="app_label">App</string>
+    <string name="website_label">Website</string>
 </resources>

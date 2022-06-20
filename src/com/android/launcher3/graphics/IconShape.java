@@ -47,7 +47,7 @@ import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.IconNormalizer;
 import com.android.launcher3.views.ClipPathView;
-import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

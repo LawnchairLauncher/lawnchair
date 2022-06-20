@@ -16,18 +16,30 @@
 
 package app.lawnchair.ui.preferences
 
-import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.qsb.providers.QsbSearchProvider
+import app.lawnchair.ui.preferences.components.DividerColumn
+import app.lawnchair.ui.preferences.components.ExpandAndShrink
+import app.lawnchair.ui.preferences.components.NavigationActionPreference
+import app.lawnchair.ui.preferences.components.PreferenceGroup
+import app.lawnchair.ui.preferences.components.PreferenceLayout
+import app.lawnchair.ui.preferences.components.SliderPreference
+import app.lawnchair.ui.preferences.components.SwitchPreference
 import com.android.launcher3.R
 
+object DockRoutes {
+    const val SEARCH_PROVIDER = "searchProvider"
+}
+
 fun NavGraphBuilder.dockGraph(route: String) {
-    preferenceGraph(route, { DockPreferences() })
+    preferenceGraph(route, { DockPreferences() }) { subRoute ->
+        searchProviderGraph(subRoute(DockRoutes.SEARCH_PROVIDER))
+    }
 }
 
 @Composable
@@ -54,11 +66,15 @@ fun DockPreferences() {
                         valueRange = 0F..1F,
                         showAsPercentage = true,
                     )
-                    QsbProviderPreference()
-                    SwitchPreference(
-                        adapter = prefs2.hotseatQsbForceWebsite.getAdapter(),
-                        label = stringResource(R.string.always_open_website_label),
-                        description = stringResource(R.string.always_open_website_description),
+                    val hotseatQsbProviderAdapter by preferenceManager2().hotseatQsbProvider.getAdapter()
+                    NavigationActionPreference(
+                        label = stringResource(R.string.search_provider),
+                        destination = subRoute(DockRoutes.SEARCH_PROVIDER),
+                        subtitle = stringResource(
+                            id = QsbSearchProvider.values()
+                                .first { it == hotseatQsbProviderAdapter }
+                                .name,
+                        ),
                     )
                 }
             }

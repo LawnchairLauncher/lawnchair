@@ -88,6 +88,7 @@
     </plurals>
 
     <string name="hotseat_qsb_label">Show Search Bar</string>
+    <string name="qsb_search_provider_app_required">App required.</string>
     <string name="dt2s_admin_hint_title">Admin Permissions Required</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">Double-Tap to Sleep will be turned off.</string>
@@ -230,8 +231,7 @@
     <string name="search_provider_wikipedia" translatable="false">Wikipedia</string>
     <string name="search_provider_presearch" translatable="false">Presearch</string>
     <string name="search_provider_bing" translatable="false">Bing</string>
-    <string name="always_open_website_label">Always Open Website</string>
-    <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
+    <string name="search_provider_sesame" translatable="false">Sesame</string>
     <string name="search_provider">Search Provider</string>
     <string name="status_bar_label">Status Bar</string>
     <string name="show_notification_count">Show Notification Count</string>
@@ -240,6 +240,7 @@
     <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
     <string name="taskbar_label">Taskbar</string>
     <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
 
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
@@ -300,7 +301,7 @@
     <string name="google_folder_title" translatable="false">Google</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
     <string name="wallpaper_depth_effect">Wallpaper Depth Effect</string>
-    <string name="gesture_double_tap">Double-Tap</string>
+    <string name="gesture_double_tap">Double Tap</string>
     <string name="gesture_handler_no_op">Do Nothing</string>
     <string name="gesture_handler_sleep">Sleep</string>
     <string name="gesture_handler_open_notifications">Open Notification Panel</string>
@@ -311,9 +312,12 @@
     <string name="gesture_handler_open_app_search">Open App Search</string>
     <string name="gesture_handler_open_search">Open Search</string>
     <string name="gestures_label">Gestures</string>
+    <string name="gestures_description">Taps and Swipes</string>
     <string name="gesture_swipe_up">Swipe Up</string>
     <string name="gesture_swipe_down">Swipe Down</string>
     <string name="gesture_home_tap">Home Button Tap</string>
     <string name="gesture_back_tap">Back Button Tap</string>
     <string name="x_and_y">%s &amp; %s</string>
+    <string name="app_label">App</string>
+    <string name="website_label">Website</string>
 </resources>

@@ -12,7 +12,8 @@ object GoogleGo : QsbSearchProvider(
     packageName = "com.google.android.apps.searchlite",
     action = "android.search.action.GLOBAL_SEARCH",
     supportVoiceIntent = true,
-    website = "https://www.google.com/"
+    website = "https://www.google.com/",
+    type = QsbSearchProviderType.APP
 ) {
 
     override fun handleCreateVoiceIntent(): Intent =

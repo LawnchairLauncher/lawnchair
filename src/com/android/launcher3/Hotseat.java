@@ -31,7 +31,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 
-import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.util.function.Consumer;
 

@@ -16,6 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">图标包</string>
+    <string name="icon_style">图标风格</string>
     <string name="settings">设置</string>
     <string name="home_screen_label">主屏幕</string>
     <string name="home_screen_description">订阅、网格、图标</string>
@@ -35,6 +36,9 @@
     <string name="max_folder_columns">最大文件夹列数</string>
     <string name="max_folder_rows">最大文件夹行数</string>
     <string name="home_screen_grid">桌面图标行列数</string>
+    <string name="home_screen_lock">锁定主屏幕布局</string>
+    <string name="home_screen_unlock">解锁主屏幕布局</string>
+    <string name="home_screen_lock_toggle_from_home_popup">在弹出窗口中显示锁定按钮</string>
     <string name="columns">列数</string>
     <string name="grid">网格</string>
     <string name="rows">行数</string>
@@ -54,7 +58,7 @@
     <string name="settings_button_text">主页设置</string>
     <string name="development">开发者</string>
     <string name="app_info_drop_target_label">应用信息</string>
-    <string name="item_removed">该项已被删除</string>
+    <string name="item_removed">项目已移除。</string>
     <string name="all_apps_no_search_results">没有找到匹配 “<xliff:g example="Android" id="query">%1$s</xliff:g>” 的应用。</string>
     <string name="translucent_background">半透明背景</string>
     <string name="background_opacity">背景不透明度</string>
@@ -75,6 +79,7 @@
         <item quantity="other">%1$d 个应用</item>
     </plurals>
     <string name="hotseat_qsb_label">显示搜索栏</string>
+    <string name="qsb_search_provider_app_required">需要应用。</string>
     <string name="dt2s_admin_hint_title">需要管理员权限</string>
     <string name="dt2s_admin_hint">若要使用双击息屏，请设置Lawnchair 为设备管理应用。点击\"打开设置\"，然后点击\"启用此设备管理应用\"。</string>
     <string name="dt2s_admin_warning">双击息屏功能将被关闭。</string>
@@ -101,11 +106,12 @@
     <string name="loading">正在加载……</string>
     <string name="system">系统</string>
     <string name="wallpaper">壁纸</string>
-    <string name="custom">自定</string>
+    <string name="custom">自定义</string>
     <string name="quickstep_description">清除所有按钮，圆角半径</string>
-    <string name="wallpaper_scrolling_label">滚动壁纸</string>
+    <string name="wallpaper_scrolling_label">壁纸跟随屏幕滚动</string>
     <string name="show_sys_ui_scrim">顶部阴影</string>
     <string name="show_status_bar">显示状态栏</string>
+    <string name="layout">布局</string>
     <string name="what_to_show">选择要显示的项目</string>
     <string name="missing_notification_access_label">需要通知权限</string>
     <string name="missing_notification_access_description">需要通知权限。</string>
@@ -193,9 +199,9 @@
     <string name="icon_picker_description">可能会导致Lawnchair冻结。</string>
     <string name="font_picker_label">字体自定义</string>
     <string name="font_picker_description">部分文本保持不变。</string>
+    <string name="smartspace_calendar_label">资讯一览日历自定义</string>
+    <string name="smartspace_calendar_description">允许显示非公历日期</string>
     <string name="search_provider_app_search">应用搜索</string>
-    <string name="always_open_website_label">始终打开网站</string>
-    <string name="always_open_website_description">使用网页搜索（即使已安装相应应用）。</string>
     <string name="search_provider">搜索提供商</string>
     <string name="status_bar_label">状态栏</string>
     <string name="show_notification_count">显示通知计数</string>
@@ -203,25 +209,33 @@
     <string name="reset_custom_icons">重置自定义图标</string>
     <string name="reset_custom_icons_confirmation">所有自定义图标将被重置。您想要继续吗？</string>
     <string name="taskbar_label">任务栏</string>
-    <string name="enable_taskbar_experimental">启用任务栏(实验性)</string>
+    <string name="enable_taskbar_experimental">启用任务栏 (实验性)</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_battery_charging">充电中</string>
-    <string name="smartspace_battery_full">充电完成</string>
+    <string name="smartspace_battery_charging">正在充电</string>
+    <string name="smartspace_battery_full">已充满电</string>
     <string name="smartspace_battery_low">电池电量低</string>
     <string name="accessibility_smartspace_page">第 %1$d 页，共 %2$d 页</string>
-    <string name="smartspace_widget">一目了然</string>
+    <string name="smartspace_widget">资讯一览</string>
     <string name="smartspace_widget_description">选择要显示的项目</string>
     <string name="smartspace_widget_placeholder_date">Fri, Mar 3</string>
     <string name="quickstep_incompatible">不兼容的系统集成</string>
     <string name="quickstep_incompatible_description">您的设备被配置为由 %1$s提供的系统手势(称为Quickstep) ，但这个版本的 %1$s 与您的 Android 版本不兼容。 要继续使用您的设备，请卸载 %1$s 更新或禁用 %1$s 作为系统手势提供者。</string>
     <string name="preview_label">预览</string>
+    <string name="smartspace_calendar">日历</string>
+    <string name="smartspace_date_and_time">日期 &amp; 时间</string>
+    <string name="smartspace_date">日期</string>
+    <string name="smartspace_time">时间</string>
+    <string name="smartspace_time_24_hour_format">24 小时制</string>
     <string name="smartspace_weather">天气</string>
     <string name="smartspace_battery_status">电池状态</string>
     <string name="smartspace_now_playing">正在播放</string>
     <string name="smartspace_requires_setup">点击以设置</string>
     <string name="event_provider_missing_notification_dots">要使用 <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, 请启用通知圆点。</string>
     <string name="smartspace_media_info_separator">" — "</string>
+    <string name="smartspace_calendar_gregorian">公历</string>
+    <string name="smartspace_calendar_persian">波斯历</string>
     <string name="pref_fonts_add_fonts">添加字体</string>
     <string name="pref_fonts_add_fonts_summary">支持 OTF &amp; TTF</string>
     <string name="delete">删除</string>
@@ -234,11 +248,31 @@
     <string name="backup_content_layout_and_settings">布局和设置</string>
     <string name="backup_content_wallpaper">壁纸</string>
     <string name="backup_create_success">备份已创建。</string>
-    <string name="backup_create_error">创建备份失败.</string>
+    <string name="backup_create_error">创建备份失败。</string>
     <string name="restore_backup">恢复备份</string>
     <string name="restore_backup_action">恢复</string>
     <string name="what_to_restore">选择要恢复的内容</string>
     <string name="backup_restore_success">备份已恢复。</string>
     <string name="backup_restore_error">恢复备份失败。</string>
     <string name="invalid_backup_file">无效的备份文件。</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — %2$s后充满"</string>
+    <string name="wallpaper_depth_effect">壁纸深度效果</string>
+    <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_handler_no_op">不执行任何操作</string>
+    <string name="gesture_handler_sleep">睡眠</string>
+    <string name="gesture_handler_open_notifications">打开通知面板</string>
+    <string name="gesture_handler_open_app_option">打开应用</string>
+    <string name="gesture_handler_open_app_config">打开 %1$s</string>
+    <string name="pick_app_for_gesture">选择应用</string>
+    <string name="gesture_handler_open_app_drawer">打开应用抽屉</string>
+    <string name="gesture_handler_open_app_search">打开应用搜索</string>
+    <string name="gesture_handler_open_search">打开搜索</string>
+    <string name="gestures_label">手势</string>
+    <string name="gesture_swipe_up">向上滑动</string>
+    <string name="gesture_swipe_down">向下滑动</string>
+    <string name="gesture_home_tap">点击主屏幕按钮</string>
+    <string name="gesture_back_tap">点击后退按钮</string>
+    <string name="x_and_y">%s &amp; %s</string>
+    <string name="app_label">应用</string>
+    <string name="website_label">网站</string>
 </resources>

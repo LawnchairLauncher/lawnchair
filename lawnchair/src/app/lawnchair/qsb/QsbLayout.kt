@@ -34,7 +34,7 @@ import com.android.launcher3.R
 import com.android.launcher3.qsb.QsbContainerView
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
-import com.patrykmichalik.preferencemanager.firstBlocking
+import com.patrykmichalik.opto.core.firstBlocking
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapLatest

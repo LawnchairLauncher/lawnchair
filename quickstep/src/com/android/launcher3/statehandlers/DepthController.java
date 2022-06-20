@@ -33,6 +33,8 @@ import android.view.View;
 import android.view.ViewRootImpl;
 import android.view.ViewTreeObserver;
 
+import androidx.datastore.preferences.core.Preferences;
+
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
@@ -43,8 +45,8 @@ import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.systemui.shared.system.BlurUtils;
 import com.android.systemui.shared.system.WallpaperManagerCompat;
-import com.patrykmichalik.preferencemanager.Preference;
-import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
+import com.patrykmichalik.opto.domain.Preference;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import app.lawnchair.preferences.BasePreferenceManager;
 import app.lawnchair.preferences.PreferenceManager;
@@ -172,7 +174,7 @@ public class DepthController implements StateHandler<LauncherState>,
 
     public DepthController(Launcher l) {
         mLauncher = l;
-        Preference<Boolean, Boolean> depthPref = PreferenceManager2.getInstance(l).getWallpaperDepthEffect();
+        Preference<Boolean, Boolean, ?> depthPref = PreferenceManager2.getInstance(l).getWallpaperDepthEffect();
         mEnableDepth = PreferenceExtensionsKt.firstBlocking(depthPref);
     }
 

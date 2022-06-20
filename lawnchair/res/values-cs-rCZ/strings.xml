@@ -16,6 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">Sada ikon</string>
+    <string name="icon_style">Styl ikon</string>
     <string name="settings">Nastavení</string>
     <string name="home_screen_label">Domovská stránka</string>
     <string name="home_screen_description">Feed, mřížka, ikony</string>
@@ -35,6 +36,9 @@
     <string name="max_folder_columns">Maximální počet sloupců složek</string>
     <string name="max_folder_rows">Maximální počet řádků složek</string>
     <string name="home_screen_grid">Mřížka domovské obrazovky</string>
+    <string name="home_screen_lock">Uzamknout domovskou obrazovku</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
     <string name="columns">Sloupce</string>
     <string name="grid">Mřížka</string>
     <string name="rows">Řádky</string>
@@ -78,6 +82,7 @@
         <item quantity="other">%1$d Aplikace</item>
     </plurals>
     <string name="hotseat_qsb_label">Zobrazit vyhledávací lištu</string>
+    <string name="qsb_search_provider_app_required">App required.</string>
     <string name="dt2s_admin_hint_title">Vyžadována oprávnění správce</string>
     <string name="dt2s_admin_hint">Chcete-li použít dvojité poklepání k uspání zařízení, nastavte Lawnchair jako aplikaci pro správu zařízení. Klepněte na tlačítko Otevřít nastavení a poté na tlačítko „Aktivovat aplikaci pro správu zařízení.“</string>
     <string name="dt2s_admin_warning">Uspání dvojitým poklepáním bude vypnuto.</string>
@@ -109,6 +114,7 @@
     <string name="wallpaper_scrolling_label">Posouvat tapetu</string>
     <string name="show_sys_ui_scrim">Horní stín</string>
     <string name="show_status_bar">Zobrazit stavový řádek</string>
+    <string name="layout">Rozložení</string>
     <string name="what_to_show">Co zobrazit</string>
     <string name="missing_notification_access_label">Je vyžadován přístup k oznámením</string>
     <string name="missing_notification_access_description">Je vyžadován přístup k oznámením.</string>
@@ -196,9 +202,9 @@
     <string name="icon_picker_description">Může způsobit zatuhnutí Lawnchair.</string>
     <string name="font_picker_label">Přizpůsobení písma</string>
     <string name="font_picker_description">Některý text zůstává beze změny.</string>
+    <string name="smartspace_calendar_label">Přizpůsobení glanc kalendáře</string>
+    <string name="smartspace_calendar_description">Povolit zobrazení data v kalendářích ne-Gregoriánských systémů.</string>
     <string name="search_provider_app_search">Hledání aplikací</string>
-    <string name="always_open_website_label">Vždy otevřít webovou stránku</string>
-    <string name="always_open_website_description">Otevřít webovou stránku poskytovatele vyhledávání, i když je jejich aplikace nainstalována.</string>
     <string name="search_provider">Poskytovatel vyhledávání</string>
     <string name="status_bar_label">Stavový řádek</string>
     <string name="show_notification_count">Zobrazit počet oznámení</string>
@@ -207,6 +213,7 @@
     <string name="reset_custom_icons_confirmation">Všechny vlastní ikony budou obnoveny. Přejete si pokračovat?</string>
     <string name="taskbar_label">Hlavní panel</string>
     <string name="enable_taskbar_experimental">Povolit hlavní panel (experimentální)</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Nabíjení</string>
@@ -219,12 +226,19 @@
     <string name="quickstep_incompatible">Nekompatibilní systémová integrace</string>
     <string name="quickstep_incompatible_description">Vaše zařízení je nakonfigurováno tak, aby systémová gesta (známá jako Quickstep) byla poskytována aplikací %1$s, ale tato verze aplikace %1$s není kompatibilní s\u00a0vaší verzí Android. Chcete‑li nadále používat vaše zařízení, odinstalujte aktualizace aplikace %1$s, nebo zakažte aplikaci %1$s jako poskytovatele systémových gest.</string>
     <string name="preview_label">Náhled</string>
+    <string name="smartspace_calendar">Kalendář</string>
+    <string name="smartspace_date_and_time">Date &amp; Time</string>
+    <string name="smartspace_date">Date</string>
+    <string name="smartspace_time">Time</string>
+    <string name="smartspace_time_24_hour_format">24-Hour Format</string>
     <string name="smartspace_weather">Počasí</string>
     <string name="smartspace_battery_status">Stav baterie</string>
     <string name="smartspace_now_playing">Právě hraje</string>
     <string name="smartspace_requires_setup">Klepnutím nastavíte</string>
     <string name="event_provider_missing_notification_dots">Chcete‑li použít <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, povolte puntíky s\u00a0oznámením.</string>
     <string name="smartspace_media_info_separator">" — "</string>
+    <string name="smartspace_calendar_gregorian">Gregoriánský</string>
+    <string name="smartspace_calendar_persian">Perský</string>
     <string name="pref_fonts_add_fonts">Přidat písma</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF jsou podporované.</string>
     <string name="delete">Odstranit</string>
@@ -233,10 +247,10 @@
     <string name="themed_icons_home_and_drawer_label">Plocha a\u00a0Seznam aplikací</string>
     <string name="create_backup">Vytvořit zálohu</string>
     <string name="create_backup_action">Vytvořit</string>
-    <string name="what_to_backup">Co má být zálohováno</string>
+    <string name="what_to_backup">Co zálohovat</string>
     <string name="backup_content_layout_and_settings">Rozložení a\u00a0nastavení</string>
     <string name="backup_content_wallpaper">Tapeta</string>
-    <string name="backup_create_success">Záloha byla vytvořena.</string>
+    <string name="backup_create_success">Záloha vytvořena.</string>
     <string name="backup_create_error">Nepodařilo se vytvořit zálohu.</string>
     <string name="restore_backup">Obnovit ze zálohy</string>
     <string name="restore_backup_action">Obnovit</string>
@@ -244,4 +258,24 @@
     <string name="backup_restore_success">Obnoveno ze zálohy.</string>
     <string name="backup_restore_error">Nepodařilo se obnovit ze zálohy.</string>
     <string name="invalid_backup_file">Neplatný soubor zálohy.</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
+    <string name="wallpaper_depth_effect">Efekt hloubky tapety</string>
+    <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_handler_no_op">Nedělat nic</string>
+    <string name="gesture_handler_sleep">Spánek</string>
+    <string name="gesture_handler_open_notifications">Otevřít panel oznámení</string>
+    <string name="gesture_handler_open_app_option">Otevřít aplikaci</string>
+    <string name="gesture_handler_open_app_config">Otevřít %1$s</string>
+    <string name="pick_app_for_gesture">Vybrat aplikaci</string>
+    <string name="gesture_handler_open_app_drawer">Otevřít seznam aplikací</string>
+    <string name="gesture_handler_open_app_search">Otevřít vyhledání aplikace</string>
+    <string name="gesture_handler_open_search">Otevřít vyhledávání</string>
+    <string name="gestures_label">Gesta</string>
+    <string name="gesture_swipe_up">Přejetí nahoru</string>
+    <string name="gesture_swipe_down">Přejetí dolů</string>
+    <string name="gesture_home_tap">Klepnutí na tlačítko Domů</string>
+    <string name="gesture_back_tap">Klepnutí tlačítka Zpět</string>
+    <string name="x_and_y">%s &amp; %s</string>
+    <string name="app_label">App</string>
+    <string name="website_label">Website</string>
 </resources>
