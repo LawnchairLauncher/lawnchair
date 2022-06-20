@@ -256,7 +256,7 @@
     <string name="backup_restore_success">Backup restaurado.</string>
     <string name="backup_restore_error">Falha ao restaurar o backup.</string>
     <string name="invalid_backup_file">Arquivo de backup inválido.</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — Completo em %2$s"</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Termina em %2$s"</string>
     <string name="wallpaper_depth_effect">Efeito de Profundidade do Plano de Fundo</string>
     <string name="gesture_double_tap">Toque Duplo</string>
     <string name="gesture_handler_no_op">Não Fazer Nada</string>
