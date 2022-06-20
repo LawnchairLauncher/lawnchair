@@ -147,6 +147,8 @@ public class TouchInteractionService extends Service
      */
     public class TISBinder extends IOverviewProxy.Stub {
 
+        @Nullable private Runnable mOnOverviewTargetChangeListener = null;
+
         @BinderThread
         public void onInitialize(Bundle bundle) {
             ISystemUiProxy proxy = ISystemUiProxy.Stub.asInterface(
@@ -327,6 +329,18 @@ public class TouchInteractionService extends Service
         public void setGestureBlockedTaskId(int taskId) {
             mDeviceState.setGestureBlockingTaskId(taskId);
         }
+
+        /** Sets a listener to be run on Overview Target updates. */
+        public void setOverviewTargetChangeListener(@Nullable Runnable listener) {
+            mOnOverviewTargetChangeListener = listener;
+        }
+
+        protected void onOverviewTargetChange() {
+            if (mOnOverviewTargetChangeListener != null) {
+                mOnOverviewTargetChangeListener.run();
+                mOnOverviewTargetChangeListener = null;
+            }
+        }
     }
 
     private static boolean sConnected = false;
@@ -487,6 +501,7 @@ public class TouchInteractionService extends Service
         if (newOverviewActivity != null) {
             mTaskbarManager.setActivity(newOverviewActivity);
         }
+        mTISBinder.onOverviewTargetChange();
     }
 
     @UiThread
