@@ -84,8 +84,8 @@
     <string name="dt2s_admin_hint_title">دسترسی ادمین نیاز است</string>
     <string name="dt2s_admin_hint">برای استفاده از قابلیت خواب توسطِ دو ضربه سریع، Lawnchair را به عنوان یک برنامه‌ی مدیرِ دستگاه بگذارید. بر روی باز کردن تنظیمات ضربه بزنید، سپس بر روی “فعال سازیِ این برنامه‌ی مدیرِ دستگاه.” ضربه بزنید</string>
     <string name="dt2s_admin_warning">دو ضربه سریع برای خواب خاموش خواهد شد.</string>
-    <string name="dt2s_a11y_hint_title">فعال‌سازی سرویس دسترسی</string>
-    <string name="dt2s_a11y_hint">برای استفاده از قابلیت خواب توسطِ دو ضربه سریع، سرویس دسترسیِ Lawnchair را روشن کنید. بر روی باز کردن تنظیمات ضربه بزنید، سپس Lawnchair را انتخاب کنید و استفاده از Lawnchair را روشن کنید.</string>
+    <string name="dt2s_a11y_hint_title">فعال‌سازی سرویس دسترس‌پذیری</string>
+    <string name="dt2s_a11y_hint">برای استفاده از قابلیت خواب توسطِ دو ضربه سریع، سرویس دسترس‌پذیریِ Lawnchair را روشن کنید. بر روی باز کردن تنظیمات ضربه بزنید، سپس Lawnchair را انتخاب کنید و استفاده از Lawnchair را روشن کنید.</string>
     <string name="dt2s_warning_open_settings">باز کردن تنظیمات</string>
     <string name="minus_one_enable">اخبار</string>
     <string name="minus_one_unavailable">هیچ اخباری نصب نشده است.</string>
