@@ -268,7 +268,7 @@
     <string name="gesture_handler_open_app_search">開啟應用程式搜尋</string>
     <string name="gesture_handler_open_search">開啟搜尋</string>
     <string name="gestures_label">手勢</string>
-    <string name="gestures_description">Taps and Swipes</string>
+    <string name="gestures_description">輕觸與滑動</string>
     <string name="gesture_swipe_up">向上滑動</string>
     <string name="gesture_swipe_down">向下滑動</string>
     <string name="gesture_home_tap">輕觸主畫面按鈕</string>
