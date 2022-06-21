@@ -261,7 +261,7 @@
     <string name="backup_restore_error">Falha ao restaurar cópia de segurança.</string>
     <string name="invalid_backup_file">Ficheiro de cópia de segurança inválido.</string>
     <string name="wallpaper_depth_effect_label">Efeito de Profundidade do Papel de Parede</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_description">Aproximar e afastar do papel de parede quando transitar entre estados.</string>
     <string name="gestures_label">Gestos</string>
     <!-- Gestures -->
     <string name="gesture_double_tap">Duplo Toque</string>
