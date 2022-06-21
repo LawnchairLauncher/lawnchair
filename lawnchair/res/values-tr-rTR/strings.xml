@@ -261,7 +261,7 @@
     <string name="backup_restore_error">Yedek geri yüklenirken bir hata meydana geldi.</string>
     <string name="invalid_backup_file">Geçersiz yedekleme dosyası.</string>
     <string name="wallpaper_depth_effect_label">Duvar Kağıdı Derinlik Efekti</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_description">Durumlar arasında geçiş yaparken duvar kağıdını yakinlastirin ve uzaklaştırın.</string>
     <string name="gestures_label">Hareketler</string>
     <!-- Gestures -->
     <string name="gesture_double_tap">Çift dokunma</string>
