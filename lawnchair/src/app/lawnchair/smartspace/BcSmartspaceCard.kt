@@ -149,13 +149,7 @@ class BcSmartspaceCard @JvmOverloads constructor(
         }
     }
 
-    private fun isStringRTL(string: String): Boolean {
-        if (TextUtils.isEmpty(string)) {
-            return false
-        }
-        val c = string[0]
-        return c.code in 0x590..0x6ff
-    }
+    private fun isStringRTL(string: String) = string.firstOrNull()?.code in 0x590..0x6ff
 
     private fun setSubtitle(subtitle: CharSequence?, charSequence2: CharSequence?) {
         val subtitleView = subtitleTextView ?: return
