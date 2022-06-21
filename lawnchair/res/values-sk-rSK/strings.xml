@@ -263,7 +263,7 @@
     <string name="backup_restore_error">Obnovenie zálohy zlyhalo.</string>
     <string name="invalid_backup_file">Neplatný záložný súbor.</string>
     <string name="wallpaper_depth_effect_label">Efekt hĺbky pozadia</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_description">Priblížiť a oddialiť pozadie pri prechode medzi stavmi.</string>
     <string name="gestures_label">Gestá</string>
     <!-- Gestures -->
     <string name="gesture_double_tap">Dvojité ťuknutie</string>
