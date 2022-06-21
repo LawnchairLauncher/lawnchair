@@ -261,7 +261,7 @@
     <string name="backup_restore_error">Ripristino del backup non riuscito.</string>
     <string name="invalid_backup_file">File di backup non valido.</string>
     <string name="wallpaper_depth_effect_label">Effetto di profondità dello sfondo</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_description">Zoom dello sfondo in determinate occasioni.</string>
     <string name="gestures_label">Gesti</string>
     <!-- Gestures -->
     <string name="gesture_double_tap">Doppio tocco</string>
