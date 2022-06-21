@@ -261,7 +261,7 @@
     <string name="backup_restore_error">Falha ao restaurar o backup.</string>
     <string name="invalid_backup_file">Arquivo de backup inválido.</string>
     <string name="wallpaper_depth_effect_label">Efeito de Profundidade do Plano de Fundo</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_description">Aumente e diminua o zoom do papel de parede ao fazer a transição entre os estados.</string>
     <string name="gestures_label">Gestos</string>
     <!-- Gestures -->
     <string name="gesture_double_tap">Toque Duplo</string>
