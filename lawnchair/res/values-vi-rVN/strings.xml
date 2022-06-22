@@ -262,6 +262,7 @@
     <string name="wallpaper_depth_effect_label">Hiệu ứng chiều sâu hình nền</string>
     <string name="wallpaper_depth_effect_description">Phóng to và thu nhỏ hình nền khi chuyển đổi trạng thái.</string>
     <string name="gestures_label">Cử chỉ</string>
+    <string name="gestures_description">Chạm và vuốt</string>
     <!-- Gestures -->
     <string name="gesture_double_tap">Nhấn 2 lần</string>
     <string name="gesture_swipe_up">Vuốt lên</string>
