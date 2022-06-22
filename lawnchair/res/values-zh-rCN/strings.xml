@@ -79,7 +79,7 @@
         <item quantity="other">%1$d 个应用</item>
     </plurals>
     <string name="hotseat_qsb_label">显示搜索栏</string>
-    <string name="qsb_search_provider_app_required">需要应用。</string>
+    <string name="qsb_search_provider_app_required">需要安装App</string>
     <string name="dt2s_admin_hint_title">需要管理员权限</string>
     <string name="dt2s_admin_hint">若要使用双击息屏，请设置Lawnchair 为设备管理应用。点击\"打开设置\"，然后点击\"启用此设备管理应用\"。</string>
     <string name="dt2s_admin_warning">双击息屏功能将被关闭。</string>
@@ -260,7 +260,7 @@
     <string name="backup_restore_error">恢复备份失败。</string>
     <string name="invalid_backup_file">无效的备份文件。</string>
     <string name="wallpaper_depth_effect_label">壁纸深度效果</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_description">在状态之间过渡时缩放壁纸。</string>
     <string name="gestures_label">手势</string>
     <string name="gestures_description">点击、滑动</string>
     <!-- Gestures -->
