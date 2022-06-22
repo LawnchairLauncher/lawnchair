@@ -263,6 +263,7 @@
     <string name="wallpaper_depth_effect_label">افکت عمق کاغذ دیواری</string>
     <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
     <string name="gestures_label">ژست‌های حرکتی</string>
+    <string name="gestures_description">ضربه‌ها و کشیدن‌ها</string>
     <!-- Gestures -->
     <string name="gesture_double_tap">دو ضربه سریع</string>
     <string name="gesture_swipe_up">به بالا کشیدن</string>
