@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.compat.AccessibilityManagerCompat;
@@ -86,15 +87,20 @@ public abstract class FastScrollRecyclerView extends RecyclerView  {
      * Returns the available scroll height:
      *   AvailableScrollHeight = Total height of the all items - last page height
      */
-    protected abstract int getAvailableScrollHeight();
+    protected int getAvailableScrollHeight() {
+        // AvailableScrollHeight = Total height of the all items - first page height
+        int firstPageHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
+        int totalHeightOfAllItems = getItemsHeight(/* untilIndex= */ getAdapter().getItemCount());
+        int availableScrollHeight = totalHeightOfAllItems - firstPageHeight;
+        return Math.max(0, availableScrollHeight);
+    }
 
     /**
      * Returns the available scroll bar height:
      *   AvailableScrollBarHeight = Total height of the visible view - thumb height
      */
     protected int getAvailableScrollBarHeight() {
-        int availableScrollBarHeight = getScrollbarTrackHeight() - mScrollbar.getThumbHeight();
-        return availableScrollBarHeight;
+        return getScrollbarTrackHeight() - mScrollbar.getThumbHeight();
     }
 
     /**
@@ -152,12 +158,51 @@ public abstract class FastScrollRecyclerView extends RecyclerView  {
     }
 
     /**
-     * Maps the touch (from 0..1) to the adapter position that should be visible.
-     * <p>Override in each subclass of this base class.
-     *
      * @return the scroll top of this recycler view.
      */
-    public abstract int getCurrentScrollY();
+    public int getCurrentScrollY() {
+        Adapter adapter = getAdapter();
+        if (adapter == null) {
+            return -1;
+        }
+        if (adapter.getItemCount() == 0 || getChildCount() == 0) {
+            return -1;
+        }
+
+        int itemPosition = NO_POSITION;
+        View child = null;
+
+        LayoutManager layoutManager = getLayoutManager();
+        if (layoutManager instanceof LinearLayoutManager) {
+            // Use the LayoutManager as the source of truth for visible positions. During
+            // animations, the view group child may not correspond to the visible views that appear
+            // at the top.
+            itemPosition = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
+            child = layoutManager.findViewByPosition(itemPosition);
+        }
+
+        if (child == null) {
+            // If the layout manager returns null for any reason, which can happen before layout
+            // has occurred for the position, then look at the child of this view as a ViewGroup.
+            child = getChildAt(0);
+            itemPosition = getChildAdapterPosition(child);
+        }
+        if (itemPosition == NO_POSITION) {
+            return -1;
+        }
+        return getPaddingTop() + getItemsHeight(itemPosition)
+                - layoutManager.getDecoratedTop(child);
+    }
+
+    /**
+     * Returns the sum of the height, in pixels, of this list adapter's items from index
+     * 0 (inclusive) until {@code untilIndex} (exclusive). If untilIndex is same as the itemCount,
+     * it returns the full height of all the items.
+     *
+     * <p>If the untilIndex is larger than the total number of items in this adapter, returns the
+     * sum of all items' height.
+     */
+    protected abstract int getItemsHeight(int untilIndex);
 
     /**
      * Maps the touch (from 0..1) to the adapter position that should be visible.
