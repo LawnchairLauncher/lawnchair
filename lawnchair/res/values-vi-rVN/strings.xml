@@ -260,7 +260,7 @@
     <string name="backup_restore_error">Khôi phục bản sao lưu thất bại.</string>
     <string name="invalid_backup_file">Tệp sao lưu không hợp lệ.</string>
     <string name="wallpaper_depth_effect_label">Hiệu ứng chiều sâu hình nền</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_description">Phóng to và thu nhỏ hình nền khi chuyển đổi trạng thái.</string>
     <string name="gestures_label">Cử chỉ</string>
     <!-- Gestures -->
     <string name="gesture_double_tap">Nhấn 2 lần</string>
