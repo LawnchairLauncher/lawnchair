@@ -263,6 +263,7 @@
     <string name="wallpaper_depth_effect_label">Effetto di profondità dello sfondo</string>
     <string name="wallpaper_depth_effect_description">Zoom dello sfondo in determinate occasioni.</string>
     <string name="gestures_label">Gesti</string>
+    <string name="gestures_description">Tocchi e scorrimenti</string>
     <!-- Gestures -->
     <string name="gesture_double_tap">Doppio tocco</string>
     <string name="gesture_swipe_up">Scorri su</string>
