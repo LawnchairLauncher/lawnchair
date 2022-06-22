@@ -15,6 +15,7 @@
  */
 package com.android.quickstep.fallback;
 
+import static com.android.launcher3.testing.TestProtocol.BAD_STATE;
 import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.fallback.RecentsState.DEFAULT;
 import static com.android.quickstep.fallback.RecentsState.HOME;
@@ -27,6 +28,7 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import androidx.annotation.Nullable;
@@ -219,6 +221,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         setOverviewStateEnabled(true);
         setOverviewGridEnabled(toState.displayOverviewTasksAsGrid(mActivity.getDeviceProfile()));
         setOverviewFullscreenEnabled(toState.isFullScreen());
+        Log.d(BAD_STATE, "FRV onStateTransitionStart setFreezeVisibility=true, toState=" + toState);
         setFreezeViewVisibility(true);
     }
 
@@ -230,6 +233,8 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         }
         boolean isOverlayEnabled = finalState == DEFAULT || finalState == MODAL_TASK;
         setOverlayEnabled(isOverlayEnabled);
+        Log.d(BAD_STATE, "FRV onStateTransitionComplete setFreezeVisibility=false, finalState="
+                + finalState);
         setFreezeViewVisibility(false);
 
         if (isOverlayEnabled) {

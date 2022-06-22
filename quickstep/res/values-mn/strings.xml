@@ -25,8 +25,7 @@
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Апп ашиглалтын тохиргоо"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Бүгдийг устгах"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Саяхны аппууд"</string>
-    <!-- no translation found for task_view_closed (9170038230110856166) -->
-    <skip />
+    <string name="task_view_closed" msgid="9170038230110856166">"Ажлыг хаасан"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 минут"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"Өнөөдөр <xliff:g id="TIME">%1$s</xliff:g> үлдсэн"</string>
@@ -41,7 +40,7 @@
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Үгүй, баярлалаа"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Тохиргоо"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Хамгийн их ашигладаг аппуудыг энд харуулах бөгөөд хэвшлээс хамаарч өөрчилдөг"</string>
-    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Санал болгож буй аппуудыг авахын тулд доод мөрөөс аппуудыг чирж гаргаарай"</string>
+    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Санал болгож буй аппуудыг авахын тулд доод мөрөөс аппуудыг чирч гаргаарай"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Санал болгож буй аппуудыг хоосон зайд нэмсэн"</string>
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Санал болгож буй аппуудыг идэвхжүүлсэн"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Санал болгож буй аппуудыг идэвхгүй болгосон"</string>

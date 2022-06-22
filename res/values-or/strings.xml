@@ -53,9 +53,9 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"ବାର୍ତ୍ତାଳାପଗୁଡ଼ିକ"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"ଉପଯୋଗୀ ସୂଚନା ଆପଣଙ୍କ ପାଖରେ ସହଜରେ ଉପଲବ୍ଧ"</string>
     <string name="widget_education_content" msgid="745542879510751525">"ଆପଗୁଡ଼ିକୁ ନଖୋଲି ସୂଚନା ପାଇବା ପାଇଁ, ଆପଣ ଆପଣଙ୍କ ମୂଳସ୍କ୍ରିନରେ ୱିଜେଟଗୁଡ଼ିକୁ ଯୋଗ କରିପାରିବେ"</string>
-    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"ୱିଜେଟ୍ ସେଟିଂସ୍ ପରିବର୍ତ୍ତନ କରିବାକୁ ଟାପ୍ କରନ୍ତୁ"</string>
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"ୱିଜେଟ ସେଟିଂସ ପରିବର୍ତ୍ତନ କରିବାକୁ ଟାପ କରନ୍ତୁ"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"ବୁଝିଗଲି"</string>
-    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"ୱିଜେଟ୍ ସେଟିଂସ୍ ପରିବର୍ତ୍ତନ କରନ୍ତୁ"</string>
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"ୱିଜେଟ ସେଟିଂସ ପରିବର୍ତ୍ତନ କରନ୍ତୁ"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ଆପ୍‌ ଖୋଜନ୍ତୁ"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ଆପ୍‌ ଲୋଡ୍‌ ହେଉଛି..."</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ସହିତ ମେଳ ହେଉଥିବା କୌଣସି ଆପ୍‌ ମିଳିଲା ନାହିଁ"</string>
@@ -79,10 +79,10 @@
     <string name="pin_prediction" msgid="4196423321649756498">"ପୂର୍ବାନୁମାନକୁ ପିନ୍ କରନ୍ତୁ"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"ସର୍ଟକଟ୍‍ ଇନଷ୍ଟଲ୍‌ କରନ୍ତୁ"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"ୟୁଜରଙ୍କ ବିନା ହସ୍ତକ୍ଷେପରେ ଶର୍ଟକଟ୍‌ ଯୋଡ଼ିବାକୁ ଆପକୁ ଅନୁମତି ଦିଏ।"</string>
-    <string name="permlab_read_settings" msgid="1941457408239617576">"ହୋମ୍‌ ସେଟିଙ୍ଗ ଏବଂ ଶର୍ଟକଟ୍‌ ପଢ଼ନ୍ତୁ"</string>
-    <string name="permdesc_read_settings" msgid="5833423719057558387">"ହୋମରେ ସେଟିଙ୍ଗ ପଢ଼ିବାକୁ ଆପ ଏବଂ ଶର୍ଟକଟକୁ ଅନୁମତି ଦିଏ।"</string>
-    <string name="permlab_write_settings" msgid="3574213698004620587">"ହୋମ୍‌ ସେଟିଙ୍ଗ ଏବଂ ଶର୍ଟକଟ୍‌ ଲେଖନ୍ତୁ"</string>
-    <string name="permdesc_write_settings" msgid="5440712911516509985">"ହୋମରେ ସେଟିଙ୍ଗ ଏବଂ ଶର୍ଟକଟ୍‌ ପରିବର୍ତ୍ତନ କରିବାକୁ ଆପକୁ ଅନୁମତି ଦିଏ।"</string>
+    <string name="permlab_read_settings" msgid="1941457408239617576">"ହୋମ ସେଟିଂସ ଏବଂ ସର୍ଟକଟ ପଢ଼ନ୍ତୁ"</string>
+    <string name="permdesc_read_settings" msgid="5833423719057558387">"ହୋମରେ ସେଟିଂସ ଏବଂ ସର୍ଟକଟକୁ ପଢ଼ିବା ପାଇଁ ଆପକୁ ଅନୁମତି ଦିଏ।"</string>
+    <string name="permlab_write_settings" msgid="3574213698004620587">"ହୋମ ସେଟିଂସ ଏବଂ ସର୍ଟକଟ ଲେଖନ୍ତୁ"</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"ହୋମରେ ସେଟିଂସ ଏବଂ ସର୍ଟକଟକୁ ପରିବର୍ତ୍ତନ କରିବା ପାଇଁ ଆପକୁ ଅନୁମତି ଦିଏ।"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"ଫୋନ୍‌ କଲ୍‌ କରିବାକୁ <xliff:g id="APP_NAME">%1$s</xliff:g>କୁ ଅନୁମତି ଦିଆଯାଇ ନାହିଁ"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"ୱିଜେଟ୍ ଲୋଡ୍ କରାଯାଇପାରିବ ନାହିଁ"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"ୱିଜେଟ ସେଟିଂସ"</string>
@@ -103,7 +103,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ଫୋଲ୍ଡର୍: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> କିମ୍ବା ଅଧିକ ଆଇଟମ୍"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ୱାଲପେପର୍‌"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ୱାଲପେପର୍ ଏବଂ ଷ୍ଟାଇଲ୍"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"ହୋମ୍‌ ସେଟିଂସ୍"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"ହୋମ ସେଟିଂସ"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ଆପଣଙ୍କ ଆଡମିନଙ୍କ ଦ୍ୱାରା ଅକ୍ଷମ କରାଯାଇଛି"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"ହୋମ୍‌ ସ୍କ୍ରିନ୍ ବୁଲାଇବାକୁ ଅନୁମତି ଦିଅନ୍ତୁ"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ଯେତେବେଳେ ଫୋନକୁ ବୁଲାଯାଇଥାଏ"</string>
@@ -112,7 +112,7 @@
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"ବନ୍ଦ କରନ୍ତୁ"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"ବିଜ୍ଞପ୍ତି ଆକ୍ସେସ୍‌ ଆବଶ୍ୟକ ଅଟେ"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"ବିଜ୍ଞପ୍ତି ବିନ୍ଦୁ ଦେଖାଇବାକୁ, <xliff:g id="NAME">%1$s</xliff:g> ପାଇଁ ଆପ୍‌ ବିଜ୍ଞପ୍ତି ଅନ୍‌ କରନ୍ତୁ"</string>
-    <string name="title_change_settings" msgid="1376365968844349552">"ସେଟିଂସ୍ ପରିବର୍ତ୍ତନ କରନ୍ତୁ"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"ସେଟିଂସ ପରିବର୍ତ୍ତନ କରନ୍ତୁ"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"ବିଜ୍ଞପ୍ତି ଡଟ୍‌ଗୁଡ଼ିକୁ ଦେଖାନ୍ତୁ"</string>
     <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"ହୋମ୍ ସ୍କ୍ରିନରେ ଆପ୍ ଆଇକନଗୁଡ଼ିକୁ ଯୋଗ କରନ୍ତୁ"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ନୂଆ ଆପ୍‌ ପାଇଁ"</string>

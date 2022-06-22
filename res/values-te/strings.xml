@@ -140,7 +140,7 @@
     <string name="add_to_folder_with_app" msgid="4534929978967147231">"<xliff:g id="NAME">%1$s</xliff:g> గల ఫోల్డర్‌కు జోడించు"</string>
     <string name="added_to_folder" msgid="4793259502305558003">"అంశం ఫోల్డర్‌కు జోడించబడింది"</string>
     <string name="create_folder_with" msgid="4050141361160214248">"ఈ పేరుతో ఫోల్డర్‌ను క్రియేట్ చేయండి: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="folder_created" msgid="6409794597405184510">"ఫోల్డర్ సృష్టించబడింది"</string>
+    <string name="folder_created" msgid="6409794597405184510">"ఫోల్డర్ క్రియేట్ చేయబడింది"</string>
     <string name="action_move_to_workspace" msgid="1603837886334246317">"హోమ్‌స్క్రీన్‌కు తరలించు"</string>
     <string name="action_resize" msgid="1802976324781771067">"పరిమాణం మార్చు"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"వెడల్పును పెంచు"</string>

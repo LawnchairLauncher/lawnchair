@@ -105,7 +105,7 @@
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Bakgrunn og stil"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Startsideinnstillinger"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Administratoren har slått av funksjonen"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"Tillat rotasjon av startskjermen"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Tillat at startskjermen roterer"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Når telefonen roteres"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Varselsprikker"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"På"</string>
