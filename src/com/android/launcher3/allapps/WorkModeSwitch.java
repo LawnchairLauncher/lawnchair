@@ -24,7 +24,6 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
-import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.widget.Button;
 
@@ -53,7 +52,6 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
     private int mFlags;
     private boolean mWorkEnabled;
     private boolean mOnWorkTab;
-
 
     public WorkModeSwitch(Context context) {
         this(context, null, 0);
@@ -90,7 +88,7 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
     @Override
     public void setInsets(Rect insets) {
         mInsets.set(insets);
-        ViewGroup.MarginLayoutParams lp = (MarginLayoutParams) getLayoutParams();
+        MarginLayoutParams lp = (MarginLayoutParams) getLayoutParams();
         if (lp != null) {
             int bottomMargin = getResources().getDimensionPixelSize(R.dimen.work_fab_margin_bottom);
             if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
@@ -99,6 +97,7 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
             }
 
             DeviceProfile dp = ActivityContext.lookupContext(getContext()).getDeviceProfile();
+            lp.rightMargin = lp.leftMargin = dp.allAppsLeftRightPadding;
             if (!dp.isGestureMode) {
                 if (dp.isTaskbarPresent) {
                     bottomMargin += dp.taskbarSize;
@@ -110,7 +109,6 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
             lp.bottomMargin = bottomMargin;
         }
     }
-
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
