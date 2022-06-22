@@ -81,9 +81,7 @@ public class WorkEduCard extends FrameLayout implements View.OnClickListener,
         button.setAllCaps(false);
         FontManager.INSTANCE.get(getContext()).setCustomFont(button, R.id.font_button);
 
-        LinearLayout wrapper = ViewCompat.requireViewById(this, R.id.wrapper);
-        wrapper.setBackground(DrawableTokens.WorkCard.resolve(getContext()));
-        MarginLayoutParams lp = ((MarginLayoutParams) wrapper.getLayoutParams());
+        MarginLayoutParams lp = ((MarginLayoutParams) findViewById(R.id.wrapper).getLayoutParams());
         lp.width = mLauncher.getAppsView().getActiveRecyclerView().getTabWidth();
 
         TextView title = ViewCompat.requireViewById(this, R.id.work_apps_paused_title);

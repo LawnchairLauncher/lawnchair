@@ -25,6 +25,7 @@
         android:orientation="vertical"
         android:paddingHorizontal="@dimen/work_card_padding_horizontal"
         android:paddingVertical="@dimen/work_card_padding_horizontal"
+        android:background="@drawable/work_card"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
         android:id="@+id/wrapper">
