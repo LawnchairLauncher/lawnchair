@@ -263,6 +263,7 @@
     <string name="wallpaper_depth_effect_label">Hintergrundbild Tiefeneffekt</string>
     <string name="wallpaper_depth_effect_description">Bei Zustandsänderungen in den Bildschirmhintergrund hinein- und aus ihm herauszoomen.</string>
     <string name="gestures_label">Gesten</string>
+    <string name="gestures_description">Tippen und Wischen</string>
     <!-- Gestures -->
     <string name="gesture_double_tap">Doppeltipp</string>
     <string name="gesture_swipe_up">Nach oben wischen</string>
