@@ -183,10 +183,8 @@ import java.util.function.Supplier;
 
         mTaskBarRecentsAnimationListener = new TaskBarRecentsAnimationListener(callbacks);
         callbacks.addListener(mTaskBarRecentsAnimationListener);
-        RecentsView recentsView = mLauncher.getOverviewPanel();
-        recentsView.setTaskLaunchListener(() -> {
-            mTaskBarRecentsAnimationListener.endGestureStateOverride(true);
-        });
+        ((RecentsView) mLauncher.getOverviewPanel()).setTaskLaunchListener(() ->
+                mTaskBarRecentsAnimationListener.endGestureStateOverride(true));
         return animatorSet;
     }
 
@@ -491,6 +489,7 @@ import java.util.function.Supplier;
         private void endGestureStateOverride(boolean finishedToApp) {
             mCallbacks.removeListener(this);
             mTaskBarRecentsAnimationListener = null;
+            ((RecentsView) mLauncher.getOverviewPanel()).setTaskLaunchListener(null);
 
             // Update the resumed state immediately to ensure a seamless handoff
             boolean launcherResumed = !finishedToApp;
