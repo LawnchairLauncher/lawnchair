@@ -17,10 +17,8 @@ winsonc@google.com
 zakcohen@google.com
 santie@google.com
 vadimt@google.com
-mett@google.com
 jonmiranda@google.com
 pinyaoting@google.com
-sfufa@google.com
 gwasserman@google.com
 jamesoleary@google.com
 joshtrask@google.com
@@ -30,8 +28,6 @@ hwwang@google.com
 tracyzhou@google.com
 peanutbutter@google.com
 xuqiu@google.com
-sreyasr@google.com
-thiruram@google.com
 brianji@google.com
 
 per-file FeatureFlags.java, globs = set noparent
