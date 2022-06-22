@@ -263,6 +263,7 @@
     <string name="wallpaper_depth_effect_label">Efeito de Profundidade do Plano de Fundo</string>
     <string name="wallpaper_depth_effect_description">Aumente e diminua o zoom do papel de parede ao fazer a transição entre os estados.</string>
     <string name="gestures_label">Gestos</string>
+    <string name="gestures_description">Toques e Deslizes</string>
     <!-- Gestures -->
     <string name="gesture_double_tap">Toque Duplo</string>
     <string name="gesture_swipe_up">Deslizar para Cima</string>
