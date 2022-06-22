@@ -129,9 +129,8 @@ class BcSmartspaceCard @JvmOverloads constructor(
 
     fun setTitle(title: CharSequence?, contentDescription: CharSequence?, hasIcon: Boolean) {
         val titleView = titleTextView ?: return
-        val isRtlLayout = TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == View.LAYOUT_DIRECTION_RTL
-        val isRtlText = isStringRTL(title.toString())
-        titleView.textAlignment = if (isRtlLayout && !isRtlText) TEXT_ALIGNMENT_TEXT_END else TEXT_ALIGNMENT_TEXT_START
+        val isRTL = TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == View.LAYOUT_DIRECTION_RTL
+        titleView.textAlignment = if (isRTL) TEXT_ALIGNMENT_TEXT_END else TEXT_ALIGNMENT_TEXT_START
         titleView.text = title
         titleView.setCompoundDrawablesRelative(
             if (hasIcon) iconDrawable else null, null,
@@ -147,14 +146,6 @@ class BcSmartspaceCard @JvmOverloads constructor(
         if (hasIcon) {
             setFormattedContentDescription(titleView, title, contentDescription)
         }
-    }
-
-    private fun isStringRTL(string: String): Boolean {
-        if (TextUtils.isEmpty(string)) {
-            return false
-        }
-        val c = string[0]
-        return c.code in 0x590..0x6ff
     }
 
     private fun setSubtitle(subtitle: CharSequence?, charSequence2: CharSequence?) {

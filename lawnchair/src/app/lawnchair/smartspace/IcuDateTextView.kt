@@ -61,6 +61,7 @@ class IcuDateTextView @JvmOverloads constructor(
         if (isShown) {
             val timeText = getTimeText(updateFormatter)
             if (text != timeText) {
+                textAlignment = if (shouldAlignToTextEnd()) TEXT_ALIGNMENT_TEXT_END else TEXT_ALIGNMENT_TEXT_START
                 text = timeText
                 contentDescription = timeText
             }
