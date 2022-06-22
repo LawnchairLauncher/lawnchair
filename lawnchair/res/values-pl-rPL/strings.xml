@@ -265,6 +265,7 @@
     <string name="wallpaper_depth_effect_label">Efekt głębi tapety</string>
     <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
     <string name="gestures_label">Gesty</string>
+    <string name="gestures_description">Dotknięcia i przesunięcia</string>
     <!-- Gestures -->
     <string name="gesture_double_tap">Podwójne dotknięcie</string>
     <string name="gesture_swipe_up">Przeciągnij w górę</string>
