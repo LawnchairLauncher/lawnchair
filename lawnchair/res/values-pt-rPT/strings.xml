@@ -263,6 +263,7 @@
     <string name="wallpaper_depth_effect_label">Efeito de Profundidade do Papel de Parede</string>
     <string name="wallpaper_depth_effect_description">Aproximar e afastar do papel de parede quando transitar entre estados.</string>
     <string name="gestures_label">Gestos</string>
+    <string name="gestures_description">Toques e Deslizes</string>
     <!-- Gestures -->
     <string name="gesture_double_tap">Duplo Toque</string>
     <string name="gesture_swipe_up">Deslizar para Cima</string>
