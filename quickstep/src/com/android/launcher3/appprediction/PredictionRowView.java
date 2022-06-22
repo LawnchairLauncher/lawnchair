@@ -19,7 +19,6 @@ package com.android.launcher3.appprediction;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -249,12 +248,6 @@ public class PredictionRowView<T extends Context & ActivityContext & DeviceProfi
         if (getVisibility() != GONE) {
             AlphaUpdateListener.updateVisibility(this);
         }
-    }
-
-    @Override
-    public void setInsets(Rect insets, DeviceProfile grid) {
-        int leftRightPadding = grid.allAppsLeftRightPadding;
-        setPadding(leftRightPadding, getPaddingTop(), leftRightPadding, getPaddingBottom());
     }
 
     @Override
