@@ -263,7 +263,7 @@
     <string name="backup_restore_error">Błąd podczas przywracania kopii zapasowej.</string>
     <string name="invalid_backup_file">Niewłaściwy plik kopii zapasowej.</string>
     <string name="wallpaper_depth_effect_label">Efekt głębi tapety</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_description">Przybliżanie i oddalanie tapety podczas przechodzenia między stanami.</string>
     <string name="gestures_label">Gesty</string>
     <string name="gestures_description">Dotknięcia i przesunięcia</string>
     <!-- Gestures -->
