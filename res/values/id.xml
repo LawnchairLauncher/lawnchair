@@ -16,7 +16,6 @@
 -->
 <resources>
     <item type="id" name="apps_list_view_work" />
-    <item type="id" name="tag_widget_entry" />
     <item type="id" name="view_type_widgets_space" />
     <item type="id" name="view_type_widgets_list" />
     <item type="id" name="view_type_widgets_header" />
