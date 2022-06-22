@@ -19,6 +19,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 
 import android.app.ActivityOptions;
 import android.app.ActivityTaskManager;
+import android.app.IActivityTaskManagerHidden;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.IBinder;
@@ -34,6 +35,8 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
+
+import dev.rikka.tools.refine.Refine;
 
 /** Provides a Quickstep specific animation when launching an activity from an app widget. */
 class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
@@ -69,11 +72,17 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
             // In the event this pending intent eventually launches an activity, i.e. a trampoline,
             // use the Quickstep transition animation.
             try {
-                ActivityTaskManager.getService()
-                        .registerRemoteAnimationForNextActivityStart(
-                                pendingIntent.getCreatorPackage(),
-                                activityOptions.options.getRemoteAnimationAdapter(),
-                                launchCookie);
+                IActivityTaskManagerHidden atm = Refine.unsafeCast(ActivityTaskManager.getService());
+                try {
+                    atm.registerRemoteAnimationForNextActivityStart(
+                            pendingIntent.getCreatorPackage(),
+                            activityOptions.options.getRemoteAnimationAdapter(),
+                            launchCookie);
+                } catch (NoSuchMethodError e) {
+                    atm.registerRemoteAnimationForNextActivityStart(
+                            pendingIntent.getCreatorPackage(),
+                            activityOptions.options.getRemoteAnimationAdapter());
+                }
             } catch (RemoteException e) {
                 // Do nothing.
             }
