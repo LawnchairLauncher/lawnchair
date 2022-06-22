@@ -17,6 +17,7 @@
 package app.lawnchair.preferences2
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.*
@@ -351,7 +352,14 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
     ) = preference(
         key = key,
         defaultValue = defaultValue,
-        parse = Json::decodeFromString,
+        parse = { value ->
+            try {
+                return@preference Json.decodeFromString(value)
+            } catch (e: Throwable) {
+                Log.d("PreferenceManager2", "failed to parse preference $key=$value")
+                return@preference defaultValue
+            }
+        },
         save = Json::encodeToString,
     )
 
