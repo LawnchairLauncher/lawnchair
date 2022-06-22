@@ -310,6 +310,7 @@
     <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
 
     <string name="gestures_label">Gestures</string>
+    <string name="gestures_description">Taps and Swipes</string>
 
     <!-- Gestures -->
     <string name="gesture_double_tap">Double Tap</string>
