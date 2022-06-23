@@ -156,7 +156,7 @@
     <string name="hide_from_drawer">Oculta del calaix d\'aplicacions</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Cantons arrodonits</string>
-    <string name="allow_widget_overlap">Allow Overlap</string>
+    <string name="allow_widget_overlap">Permetre Sobreposició</string>
     <string name="suggestion_pref_screen_title">Suggeriments</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Etiqueta</string>
@@ -262,7 +262,7 @@
     <string name="backup_restore_error">Ha fallat la restauració de la còpia.</string>
     <string name="invalid_backup_file">El fitxer de la còpia és invàlid.</string>
     <string name="wallpaper_depth_effect_label">Efecte de profunditat del fons de pantalla</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_description">Zoom dins i fora del fons de pantalla mentre hi ha una transició entre estats.</string>
     <string name="gestures_label">Gestos</string>
     <string name="gestures_description">Tocs I Lliscaments</string>
     <!-- Gestures -->
