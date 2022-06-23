@@ -155,6 +155,7 @@
     <string name="hide_from_drawer">アプリドロワーから隠す</string>
     <string name="action_lens">レンズ</string>
     <string name="force_rounded_widgets">角丸</string>
+    <string name="allow_widget_overlap">Allow Overlap</string>
     <string name="suggestion_pref_screen_title">サジェスト</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">ラベル</string>
