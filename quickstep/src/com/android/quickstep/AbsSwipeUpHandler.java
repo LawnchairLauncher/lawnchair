@@ -1136,7 +1136,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mInputConsumerProxy.enable();
         }
         if (endTarget == HOME) {
-            duration = mActivity.getDeviceProfile().isTaskbarPresent
+            duration = mActivity != null && mActivity.getDeviceProfile().isTaskbarPresent
                     ? StaggeredWorkspaceAnim.DURATION_TASKBAR_MS
                     : StaggeredWorkspaceAnim.DURATION_MS;
             // Early detach the nav bar once the endTarget is determined as HOME
