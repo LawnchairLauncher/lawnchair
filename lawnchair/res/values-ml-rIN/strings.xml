@@ -156,6 +156,7 @@
     <string name="hide_from_drawer">ആപ്പ് ഡ്രോയറിൽ നിന്ന് മറയ്ക്കുക</string>
     <string name="action_lens">ലെൻസ്</string>
     <string name="force_rounded_widgets">വൃത്താകൃതിയിലുള്ള കോണുകൾ</string>
+    <string name="allow_widget_overlap">Allow Overlap</string>
     <string name="suggestion_pref_screen_title">നിർദ്ദേശങ്ങൾ</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">ലേബൽ</string>
