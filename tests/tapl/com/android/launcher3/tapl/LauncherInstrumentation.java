@@ -171,7 +171,7 @@ public final class LauncherInstrumentation {
     private static final String WIDGETS_RES_ID = "primary_widgets_list_view";
     private static final String CONTEXT_MENU_RES_ID = "popup_container";
     private static final String TASKBAR_RES_ID = "taskbar_view";
-    public static final int WAIT_TIME_MS = 60000;
+    public static final int WAIT_TIME_MS = 30000;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
     private static final String ANDROID_PACKAGE = "android";
 
