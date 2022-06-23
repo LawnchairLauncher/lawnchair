@@ -158,6 +158,7 @@
     <string name="hide_from_drawer">Skrij iz predala aplikacij</string>
     <string name="action_lens">Leča</string>
     <string name="force_rounded_widgets">Zaokroženi vogali</string>
+    <string name="allow_widget_overlap">Allow Overlap</string>
     <string name="suggestion_pref_screen_title">Predlogi</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Oznaka</string>
