@@ -228,10 +228,11 @@ public final class Workspace extends Home {
     private void dragIcon(UiObject2 workspace, HomeAppIcon homeAppIcon, int pageDelta) {
         int pageWidth = mLauncher.getDevice().getDisplayWidth() / pagesPerScreen();
         int targetX = (pageWidth / 2) + pageWidth * pageDelta;
+        int targetY = mLauncher.getVisibleBounds(workspace).centerY();
         dragIconToWorkspace(
                 mLauncher,
                 homeAppIcon,
-                new Point(targetX, mLauncher.getVisibleBounds(workspace).centerY()),
+                () -> new Point(targetX, targetY),
                 false,
                 false,
                 () -> mLauncher.expectEvent(
@@ -386,7 +387,7 @@ public final class Workspace extends Home {
     }
 
     static void dragIconToWorkspace(LauncherInstrumentation launcher, Launchable launchable,
-            Point dest, boolean startsActivity, boolean isWidgetShortcut,
+            Supplier<Point> dest, boolean startsActivity, boolean isWidgetShortcut,
             Runnable expectLongClickEvents) {
         Runnable expectDropEvents = null;
         if (startsActivity || isWidgetShortcut) {
@@ -394,7 +395,7 @@ public final class Workspace extends Home {
                     LauncherInstrumentation.EVENT_START);
         }
         dragIconToWorkspace(
-                launcher, launchable, () -> dest, expectLongClickEvents, expectDropEvents);
+                launcher, launchable, dest, expectLongClickEvents, expectDropEvents);
     }
 
     /**
