@@ -158,6 +158,7 @@
     <string name="hide_from_drawer">Paslėpti iš Programų lentos</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Suapvalinti kraštai</string>
+    <string name="allow_widget_overlap">Allow Overlap</string>
     <string name="suggestion_pref_screen_title">Pasiūlimai</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Ūžrašas</string>
