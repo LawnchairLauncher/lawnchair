@@ -155,7 +155,7 @@
     <string name="hide_from_drawer">从应用抽屉隐藏</string>
     <string name="action_lens">智能镜头</string>
     <string name="force_rounded_widgets">圆角</string>
-    <string name="allow_widget_overlap">Allow Overlap</string>
+    <string name="allow_widget_overlap">允许重叠</string>
     <string name="suggestion_pref_screen_title">建议</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">标签</string>
