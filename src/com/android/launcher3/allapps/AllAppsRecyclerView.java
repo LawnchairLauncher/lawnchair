@@ -31,7 +31,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.MotionEvent;
-import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -342,24 +341,7 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
     }
 
     @Override
-    public int getCurrentScrollY() {
-        // Return early if there are no items or we haven't been measured
-        List<AllAppsGridAdapter.AdapterItem> items = mApps.getAdapterItems();
-        if (items.isEmpty() || mNumAppsPerRow == 0 || getChildCount() == 0) {
-            return -1;
-        }
-
-        // Calculate the y and offset for the item
-        View child = getChildAt(0);
-        int position = getChildAdapterPosition(child);
-        if (position == NO_POSITION) {
-            return -1;
-        }
-        return getPaddingTop() +
-                getCurrentScrollY(position, getLayoutManager().getDecoratedTop(child));
-    }
-
-    public int getCurrentScrollY(int position, int offset) {
+    protected int getItemsHeight(int position) {
         List<AllAppsGridAdapter.AdapterItem> items = mApps.getAdapterItems();
         AllAppsGridAdapter.AdapterItem posItem = position < items.size()
                 ? items.get(position) : null;
@@ -400,17 +382,7 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
             }
             mCachedScrollPositions.put(position, y);
         }
-        return y - offset;
-    }
-
-    /**
-     * Returns the available scroll height:
-     * AvailableScrollHeight = Total height of the all items - last page height
-     */
-    @Override
-    protected int getAvailableScrollHeight() {
-        return getPaddingTop() + getCurrentScrollY(getAdapter().getItemCount(), 0)
-                - getHeight() + getPaddingBottom();
+        return y;
     }
 
     public int getScrollBarTop() {
