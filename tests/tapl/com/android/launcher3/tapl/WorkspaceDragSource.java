@@ -17,6 +17,8 @@ package com.android.launcher3.tapl;
 
 import android.graphics.Point;
 
+import java.util.function.Supplier;
+
 /** Launchable that can serve as a source for dragging and dropping to the workspace. */
 interface WorkspaceDragSource {
 
@@ -36,7 +38,7 @@ interface WorkspaceDragSource {
             Workspace.dragIconToWorkspace(
                     launcher,
                     launchable,
-                    new Point(
+                    () -> new Point(
                             launchableCenter.x >= width
                                     ? launchableCenter.x - width / 2
                                     : launchableCenter.x + width / 2,
@@ -44,6 +46,40 @@ interface WorkspaceDragSource {
                     startsActivity,
                     isWidgetShortcut,
                     launchable::addExpectedEventsForLongClick);
+        }
+    }
+
+    /**
+     * Drag an object to the given cell in workspace. The target cell must be empty.
+     *
+     * @param cellX zero based column number, starting from the left of the screen.
+     * @param cellY zero based row number, starting from the top of the screen.     *
+     */
+    default HomeAppIcon dragToWorkspace(int cellX, int cellY) {
+        Launchable launchable = getLaunchable();
+        final String iconName = launchable.getObject().getText();
+        LauncherInstrumentation launcher = launchable.mLauncher;
+        try (LauncherInstrumentation.Closable e = launcher.eventsCheck();
+             LauncherInstrumentation.Closable c = launcher.addContextLayer(
+                     String.format("want to drag the icon to cell(%d, %d)", cellX, cellY))) {
+            final Supplier<Point> dest = () -> Workspace.getCellCenter(launcher, cellX, cellY);
+            Workspace.dragIconToWorkspace(
+                    launcher,
+                    launchable,
+                    dest,
+                    launchable::addExpectedEventsForLongClick,
+                    /*expectDropEvents= */ null);
+
+            try (LauncherInstrumentation.Closable ignore = launcher.addContextLayer("dragged")) {
+                WorkspaceAppIcon appIcon =
+                        (WorkspaceAppIcon) launcher.getWorkspace().getWorkspaceAppIcon(iconName);
+                launcher.assertTrue(
+                        String.format(
+                                "The %s icon should be in the cell (%d, %d).", iconName, cellX,
+                                cellY),
+                        appIcon.isInCell(cellX, cellY));
+                return appIcon;
+            }
         }
     }
 
