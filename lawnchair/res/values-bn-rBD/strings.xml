@@ -156,6 +156,7 @@
     <string name="hide_from_drawer">অ্যাপ ড্রয়ার থেকে লুকান</string>
     <string name="action_lens">লেন্স</string>
     <string name="force_rounded_widgets">গোলাকার কোণ</string>
+    <string name="allow_widget_overlap">Allow Overlap</string>
     <string name="suggestion_pref_screen_title">পরামর্শ</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">নাম</string>
