@@ -201,7 +201,7 @@
     <string name="font_picker_label">Tùy chỉnh font</string>
     <string name="font_picker_description">Một số văn bản vẫn không thay đổi.</string>
     <string name="smartspace_calendar_label">Tùy chỉnh lịch Xem nhanh</string>
-    <string name="smartspace_calendar_description">Cho phép hiện ngày trên hệ thống lịch khác Gregory.</string>
+    <string name="smartspace_calendar_description">Cho phép hiện ngày bằng hệ thống lịch khác Gregory.</string>
     <string name="search_provider_app_search">Tìm kiếm ứng dụng</string>
     <string name="always_open_website_label">Luôn mở trang web</string>
     <string name="always_open_website_description">Mở trang web của nhà cung cấp dịch vụ tìm kiếm cho dù ứng dụng của họ đã được cài đặt.</string>
