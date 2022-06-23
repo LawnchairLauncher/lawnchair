@@ -155,7 +155,12 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
                     mWorkModeSwitch.getResources().getDimensionPixelSize(R.dimen.qsb_widget_height);
         }
         if (!mAllApps.mActivityContext.getDeviceProfile().isGestureMode){
-            workFabMarginBottom += mAllApps.mActivityContext.getDeviceProfile().getInsets().bottom;
+            if (mDeviceProfile.isTaskbarPresent){
+                workFabMarginBottom += mDeviceProfile.taskbarSize;
+            } else {
+                workFabMarginBottom +=
+                        mAllApps.mActivityContext.getDeviceProfile().getInsets().bottom;
+            }
         }
         lp.bottomMargin = workFabMarginBottom;
         int allAppsContainerWidth = mAllApps.getVisibleContainerView().getWidth();
