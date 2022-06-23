@@ -158,7 +158,7 @@
     <string name="hide_from_drawer">Ukryj w szufladzie aplikacji</string>
     <string name="action_lens">Obiektyw</string>
     <string name="force_rounded_widgets">Zaokrąglone rogi</string>
-    <string name="allow_widget_overlap">Allow Overlap</string>
+    <string name="allow_widget_overlap">Pozwól na nakładanie się</string>
     <string name="suggestion_pref_screen_title">Sugestie</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Etykieta</string>
