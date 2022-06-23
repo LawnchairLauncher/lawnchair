@@ -191,12 +191,10 @@ public class TaskbarEduController implements TaskbarControllers.LoggableTaskbarC
     public void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "TaskbarEduController:");
 
-        pw.println(String.format("%s\tisShowingEdu=%b", prefix, mTaskbarEduView != null));
-        pw.println(String.format("%s\tmWaveAnimTranslationY=%.2f", prefix, mWaveAnimTranslationY));
-        pw.println(String.format(
-                "%s\tmWaveAnimTranslationYReturnOvershoot=%.2f",
-                prefix,
-                mWaveAnimTranslationYReturnOvershoot));
+        pw.println(prefix + "\tisShowingEdu=" + (mTaskbarEduView != null));
+        pw.println(prefix + "\tmWaveAnimTranslationY=" + mWaveAnimTranslationY);
+        pw.println(prefix + "\tmWaveAnimTranslationYReturnOvershoot="
+                + mWaveAnimTranslationYReturnOvershoot);
     }
 
     /**

@@ -22,12 +22,10 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.os.SystemProperties;
 
-import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.util.LayoutUtils;
@@ -95,13 +93,7 @@ public class OverviewState extends LauncherState {
 
     @Override
     public boolean isTaskbarStashed(Launcher launcher) {
-        if (launcher instanceof BaseQuickstepLauncher) {
-            LauncherTaskbarUIController uiController =
-                    ((BaseQuickstepLauncher) launcher).getTaskbarUIController();
-
-            return uiController != null && uiController.supportsVisualStashing();
-        }
-        return super.isTaskbarStashed(launcher);
+        return true;
     }
 
     @Override
