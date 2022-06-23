@@ -52,6 +52,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SystemUiController;
+import com.android.launcher3.util.SystemUiController.SystemUiControllerFlags;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.quickstep.views.TaskView.FullscreenDrawParams;
 import com.android.systemui.shared.recents.model.Task;
@@ -247,6 +248,7 @@ public class TaskThumbnailView extends View {
     }
 
 
+    @SystemUiControllerFlags
     public int getSysUiStatusNavFlags() {
         if (mThumbnailData != null) {
             int flags = 0;
