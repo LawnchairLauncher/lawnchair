@@ -156,6 +156,7 @@
     <string name="hide_from_drawer">ऐप ड्रॉअर से छुपाएं</string>
     <string name="action_lens">लैंस</string>
     <string name="force_rounded_widgets">गोलाकार किनारे</string>
+    <string name="allow_widget_overlap">Allow Overlap</string>
     <string name="suggestion_pref_screen_title">सुझाव</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">लेबल</string>
