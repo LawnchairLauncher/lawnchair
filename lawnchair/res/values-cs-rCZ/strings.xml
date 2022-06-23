@@ -158,6 +158,7 @@
     <string name="hide_from_drawer">Skrýt v seznamu aplikací</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Zaoblené rohy</string>
+    <string name="allow_widget_overlap">Allow Overlap</string>
     <string name="suggestion_pref_screen_title">Návrhy</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Popisek</string>
