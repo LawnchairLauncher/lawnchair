@@ -156,6 +156,7 @@
     <string name="hide_from_drawer">செயலி இழுப்பறையிலிருந்து மறை</string>
     <string name="action_lens">வில்லை</string>
     <string name="force_rounded_widgets">வட்டவடிவ மூலைகள்</string>
+    <string name="allow_widget_overlap">Allow Overlap</string>
     <string name="suggestion_pref_screen_title">பரிந்துரைகள்</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">சிட்டை</string>
