@@ -48,7 +48,7 @@ object DrawableTokens {
         }
 
         addDrawableMapping<GradientDrawable>(R.drawable.widget_resize_frame) {
-            it.setColor(ColorTokens.WorkspaceAccentColor)
+            it.setTint(ColorTokens.WorkspaceAccentColor)
         }
 
         addDrawableMapping<GradientDrawable>(R.drawable.work_card) {
