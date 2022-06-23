@@ -158,7 +158,7 @@
     <string name="hide_from_drawer">Skrýt v seznamu aplikací</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Zaoblené rohy</string>
-    <string name="allow_widget_overlap">Allow Overlap</string>
+    <string name="allow_widget_overlap">Povolit překrývání</string>
     <string name="suggestion_pref_screen_title">Návrhy</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Popisek</string>
@@ -264,7 +264,7 @@
     <string name="backup_restore_error">Nepodařilo se obnovit ze zálohy.</string>
     <string name="invalid_backup_file">Neplatný soubor zálohy.</string>
     <string name="wallpaper_depth_effect_label">Efekt hloubky tapety</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_description">Přiblížit a oddálit tapetu při přechodu mezi stavy.</string>
     <string name="gestures_label">Gesta</string>
     <string name="gestures_description">Poklepání a potažení</string>
     <!-- Gestures -->
