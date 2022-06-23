@@ -260,7 +260,7 @@
     <string name="backup_restore_error">Gagal memulihkan cadangan.</string>
     <string name="invalid_backup_file">File cadangan tidak valid.</string>
     <string name="wallpaper_depth_effect_label">Efek Kedalaman Wallpaper</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_description">Perbesar dan perkecil wallpaper saat transisi antar status layar.</string>
     <string name="gestures_label">Gestur</string>
     <string name="gestures_description">Ketukan dan Usapan</string>
     <!-- Gestures -->
