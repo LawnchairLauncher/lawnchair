@@ -157,6 +157,7 @@
     <string name="hide_from_drawer">Ascunde din lista aplicațiilor</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Colțuri rotunjite</string>
+    <string name="allow_widget_overlap">Allow Overlap</string>
     <string name="suggestion_pref_screen_title">Sugestii</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Etichetă</string>
