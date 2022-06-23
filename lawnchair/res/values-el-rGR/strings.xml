@@ -156,6 +156,7 @@
     <string name="hide_from_drawer">Hide from App Drawer</string>
     <string name="action_lens">Φακός</string>
     <string name="force_rounded_widgets">Στρογγυλές Γωνίες</string>
+    <string name="allow_widget_overlap">Allow Overlap</string>
     <string name="suggestion_pref_screen_title">Προτάσεις</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Ετικέτα</string>
