@@ -158,6 +158,7 @@
     <string name="hide_from_drawer">Скрыть из меню приложений</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Скруглённые углы</string>
+    <string name="allow_widget_overlap">Allow Overlap</string>
     <string name="suggestion_pref_screen_title">Рекомендации</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Метка</string>
