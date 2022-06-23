@@ -158,6 +158,7 @@
     <string name="hide_from_drawer">הסתר ממגירת היישומים</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">פינות מעוגלות</string>
+    <string name="allow_widget_overlap">Allow Overlap</string>
     <string name="suggestion_pref_screen_title">המלצות</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">תוית</string>
