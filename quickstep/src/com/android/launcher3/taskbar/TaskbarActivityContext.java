@@ -263,7 +263,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 mLastRequestedNonFullscreenHeight,
                 type,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                        | WindowManager.LayoutParams.FLAG_SLIPPERY,
+                        | WindowManager.LayoutParams.FLAG_SLIPPERY
+                        | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
                 PixelFormat.TRANSLUCENT);
         windowLayoutParams.setTitle(WINDOW_TITLE);
         windowLayoutParams.packageName = getPackageName();
