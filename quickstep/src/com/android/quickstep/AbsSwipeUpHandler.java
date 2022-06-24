@@ -861,6 +861,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
 
         if (mRecentsView != null) {
+            final View rv = mRecentsView;
             mRecentsView.getViewTreeObserver().addOnDrawListener(new OnDrawListener() {
                 boolean mHandled = false;
 
@@ -876,8 +877,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     InteractionJankMonitorWrapper.begin(mRecentsView,
                             InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
 
-                    mRecentsView.post(() ->
-                            mRecentsView.getViewTreeObserver().removeOnDrawListener(this));
+                    rv.post(() -> rv.getViewTreeObserver().removeOnDrawListener(this));
                 }
             });
         }
