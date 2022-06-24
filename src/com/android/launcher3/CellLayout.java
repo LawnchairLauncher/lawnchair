@@ -1202,13 +1202,14 @@ public class CellLayout extends ViewGroup {
             int row = cellY + 1;
             int col = workspace.mIsRtl ? mCountX - cellX : cellX + 1;
             int panelCount = workspace.getPanelCount();
+            int screenId = workspace.getIdForScreen(this);
+            int pageIndex = workspace.getPageIndexForScreenId(screenId);
             if (panelCount > 1) {
                 // Increment the column if the target is on the right side of a two panel home
-                int screenId = workspace.getIdForScreen(this);
-                int pageIndex = workspace.getPageIndexForScreenId(screenId);
                 col += (pageIndex % panelCount) * mCountX;
             }
-            return getContext().getString(R.string.move_to_empty_cell, row, col);
+            return getContext().getString(R.string.move_to_empty_cell_description, row, col,
+                    workspace.getPageDescription(pageIndex));
         }
     }
 
