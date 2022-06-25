@@ -16,6 +16,7 @@
 package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
 
 import android.animation.Animator;
@@ -435,7 +436,7 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         if (tag instanceof ItemInfo) {
             ItemInfo item = (ItemInfo) tag;
             TaskbarViewController taskbarViewController = mControllers.taskbarViewController;
-            if (item.container == CONTAINER_ALL_APPS) {
+            if (item.container == CONTAINER_ALL_APPS || item.container == CONTAINER_PREDICTION) {
                 // Since all apps closes when the drag starts, target the all apps button instead.
                 target = taskbarViewController.getAllAppsButtonView();
             } else if (item.container >= 0) {
