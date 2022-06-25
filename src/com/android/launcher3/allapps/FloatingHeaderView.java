@@ -17,6 +17,7 @@ package com.android.launcher3.allapps;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.ArrayMap;
@@ -84,7 +85,7 @@ public class FloatingHeaderView extends LinearLayout implements
     // These two values are necessary to ensure that the header protection is drawn correctly.
     private final int mHeaderTopAdjustment;
     private final int mHeaderBottomAdjustment;
-    private final boolean mHeaderProtectionSupported;
+    private boolean mHeaderProtectionSupported;
 
     protected ViewGroup mTabLayout;
     private AllAppsRecyclerView mMainRV;
@@ -122,9 +123,14 @@ public class FloatingHeaderView extends LinearLayout implements
         mHeaderBottomAdjustment = context.getResources()
                 .getDimensionPixelSize(R.dimen.all_apps_header_bottom_adjustment);
         mHeaderProtectionSupported = context.getResources().getBoolean(
-                R.bool.config_header_protection_supported)
-                // TODO(b/208599118) Support header protection for bottom sheet.
-                && !ActivityContext.lookupContext(context).getDeviceProfile().isTablet;
+                R.bool.config_header_protection_supported);
+    }
+
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mHeaderProtectionSupported = getContext().getResources().getBoolean(
+                R.bool.config_header_protection_supported);
     }
 
     @Override
