@@ -42,17 +42,10 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SC
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_Y;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_SCRIM_FADE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
-import static com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController.ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD;
-import static com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController.ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD;
-import static com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController.ALL_APPS_SCRIM_OPAQUE_THRESHOLD;
-import static com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController.ALL_APPS_SCRIM_VISIBLE_THRESHOLD;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
-import static com.android.systemui.animation.Interpolators.EMPHASIZED_ACCELERATE;
-import static com.android.systemui.animation.Interpolators.EMPHASIZED_DECELERATE;
 
 import android.animation.ValueAnimator;
 
@@ -60,8 +53,8 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.touch.AllAppsSwipeController;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.util.RecentsAtomicAnimationFactory;
@@ -182,23 +175,9 @@ public class QuickstepAtomicAnimationFactory extends
             }
             config.duration = Math.max(config.duration, mHintToNormalDuration);
         } else if (fromState == ALL_APPS && toState == NORMAL) {
-            boolean isTablet = mActivity.getDeviceProfile().isTablet;
-            config.setInterpolator(ANIM_ALL_APPS_FADE,
-                    isTablet ? FINAL_FRAME : Interpolators.clampToProgress(LINEAR,
-                            1 - ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD,
-                            1 - ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD));
-            config.setInterpolator(ANIM_SCRIM_FADE, Interpolators.clampToProgress(LINEAR,
-                    1 - ALL_APPS_SCRIM_OPAQUE_THRESHOLD,
-                    1 - ALL_APPS_SCRIM_VISIBLE_THRESHOLD));
-            config.setInterpolator(ANIM_VERTICAL_PROGRESS, EMPHASIZED_ACCELERATE);
-            if (!isTablet) {
-                config.setInterpolator(ANIM_WORKSPACE_FADE, INSTANT);
-            }
+            AllAppsSwipeController.applyAllAppsToNormalConfig(mActivity, config);
         } else if (fromState == NORMAL && toState == ALL_APPS) {
-            if (mActivity.getDeviceProfile().isTablet) {
-                config.setInterpolator(ANIM_VERTICAL_PROGRESS, EMPHASIZED_DECELERATE);
-            }
-            // TODO(b/231682175): centralize this setup in AllAppsSwipeController
+            AllAppsSwipeController.applyNormalToAllAppsAnimConfig(mActivity, config);
         }
     }
 }

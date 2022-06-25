@@ -3427,7 +3427,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         return getPageDescription(page);
     }
 
-    private String getPageDescription(int page) {
+    /**
+     * @param page page index.
+     * @return Description of the page at the given page index.
+     */
+    public String getPageDescription(int page) {
         int nScreens = getChildCount();
         int extraScreenId = mScreenOrder.indexOf(EXTRA_EMPTY_SCREEN_ID);
         if (extraScreenId >= 0 && nScreens > 1) {
