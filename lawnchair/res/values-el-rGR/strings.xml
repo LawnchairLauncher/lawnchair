@@ -118,7 +118,7 @@
     <string name="missing_notification_access_description">Απαιτείται Πρόσβαση Ειδοποιήσεων.</string>
     <string name="msg_missing_notification_access">Για να χρησιμοποιήσετε τις Κουκκίδες Ειδοποιήσεων, παραχωρήστε στο <xliff:g id="name" example="My App">%1$s</xliff:g> πρόσβαση στις ειδοποιήσεις.</string>
     <string name="title_change_settings">Αλλαγή Ρυθμίσεων</string>
-    <string name="debug_restart_launcher">Επανεκκίνηση του εκκινητή Lawnchair</string>
+    <string name="debug_restart_launcher">Επανεκκίνηση του Lawnchair</string>
     <string name="pref_fonts_missing_font">Η γραμματοσειρά δεν βρέθηκε.</string>
     <string name="font_variant_italic">Πλάγια γραμματοσειρά</string>
     <string name="font_weight_thin">Λεπτή γραμματοσειρά</string>
