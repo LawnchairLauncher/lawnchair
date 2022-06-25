@@ -156,7 +156,7 @@
     <string name="hide_from_drawer">مخفی‌ در کشوی برنامه‌ها</string>
     <string name="action_lens">لنز</string>
     <string name="force_rounded_widgets">گوشه‌های گرد</string>
-    <string name="allow_widget_overlap">Allow Overlap</string>
+    <string name="allow_widget_overlap">اجازه همپوشانی داده شود</string>
     <string name="suggestion_pref_screen_title">پیشنهادها</string>
     <string name="n_percent">%1$d٪</string>
     <string name="label">نام</string>
@@ -262,7 +262,7 @@
     <string name="backup_restore_error">بازنشانی بکاپ انجام نشد.</string>
     <string name="invalid_backup_file">فایل بکاپ نامعتبر.</string>
     <string name="wallpaper_depth_effect_label">افکت عمق کاغذ دیواری</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_description">هنگام انتقال بین حالت ها، تصویر زمینه را بزرگنمایی و بزرگنمایی شود.</string>
     <string name="gestures_label">ژست‌های حرکتی</string>
     <string name="gestures_description">ضربه‌ها و کشیدن‌ها</string>
     <!-- Gestures -->
