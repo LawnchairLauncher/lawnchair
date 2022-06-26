@@ -44,7 +44,7 @@
     <string name="rows">Zeilen</string>
     <string name="icons">Symbole</string>
     <string name="icon_size">Symbolgröße</string>
-    <string name="label_size">Labelgröße</string>
+    <string name="label_size">Beschriftungsgröße</string>
     <string name="show_home_labels">Beschriftung anzeigen</string>
     <string name="notification_dots">Benachrichtigungspunkte</string>
     <string name="smartspace_preferences">Voreinstellungen</string>
