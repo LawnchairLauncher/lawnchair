@@ -25,6 +25,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import android.content.Intent;
 import android.graphics.Point;
@@ -189,6 +190,17 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 mLauncher.getWorkspace().switchToAllApps());
         assertTrue("Launcher internal state is not All Apps",
                 isInState(() -> LauncherState.ALL_APPS));
+    }
+
+    @Test
+    @PortraitLandscape
+    public void testAllAppsDeadzoneForTablet() throws Exception {
+        assumeTrue(mLauncher.isTablet());
+
+        mLauncher.getWorkspace().switchToAllApps().dismissByTappingOutsideForTablet(
+                true /* tapRight */);
+        mLauncher.getWorkspace().switchToAllApps().dismissByTappingOutsideForTablet(
+                false /* tapRight */);
     }
 
     @Test
