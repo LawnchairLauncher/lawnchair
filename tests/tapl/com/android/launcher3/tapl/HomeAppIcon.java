@@ -22,6 +22,8 @@ import android.graphics.Rect;
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
 
+import java.util.function.Supplier;
+
 /**
  * App icon on the workspace or all apps.
  */
@@ -100,9 +102,46 @@ public abstract class HomeAppIcon extends AppIcon implements FolderDragTarget, W
         }
     }
 
+    /**
+     * Drag an object to the given cell in hotseat. The target cell should be expected to be empty.
+     *
+     * @param cellInd zero based index number of the hotseat cells.
+     * @return the workspace app icon.
+     */
+    @NonNull
+    public WorkspaceAppIcon dragToHotseat(int cellInd) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     String.format("want to drag the icon to hotseat cell %d", cellInd))
+        ) {
+            final Supplier<Point> dest = () -> Workspace.getHotseatCellCenter(mLauncher, cellInd);
+
+            Workspace.dragIconToHotseat(
+                    mLauncher,
+                    this,
+                    dest,
+                    () -> addExpectedEventsForLongClick(),
+                    /*expectDropEvents= */ null);
+            try (LauncherInstrumentation.Closable ignore = mLauncher.addContextLayer("dragged")) {
+                WorkspaceAppIcon appIcon =
+                        (WorkspaceAppIcon) mLauncher.getWorkspace().getHotseatAppIcon(mAppName);
+                mLauncher.assertTrue(
+                        String.format("The %s icon should be in the hotseat cell %d.", mAppName,
+                                cellInd),
+                        appIcon.isInHotseatCell(cellInd));
+                return appIcon;
+            }
+        }
+    }
+
     /** This method requires public access, however should not be called in tests. */
     @Override
     public Launchable getLaunchable() {
         return this;
+    }
+
+    boolean isInHotseatCell(int cellInd) {
+        final Point center = Workspace.getHotseatCellCenter(mLauncher, cellInd);
+        return mObject.getVisibleBounds().contains(center.x, center.y);
     }
 }
