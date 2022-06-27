@@ -131,7 +131,7 @@ public class HotseatEduController {
     private int placeFoldersInWorkspace(ArrayDeque<FolderInfo> folders) {
         if (folders.isEmpty()) return 0;
 
-        Workspace workspace = mLauncher.getWorkspace();
+        Workspace<?> workspace = mLauncher.getWorkspace();
         InvariantDeviceProfile idp = mLauncher.getDeviceProfile().inv;
 
         GridOccupancy[] occupancyList = new GridOccupancy[workspace.getChildCount()];
@@ -176,7 +176,7 @@ public class HotseatEduController {
      * @return pageId where items are migrated
      */
     private int migrateHotseatWhole() {
-        Workspace workspace = mLauncher.getWorkspace();
+        Workspace<?> workspace = mLauncher.getWorkspace();
 
         int pageId = -1;
         int toRow = 0;

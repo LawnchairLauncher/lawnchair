@@ -43,6 +43,7 @@ import android.widget.Toast;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.folder.Folder;
@@ -58,14 +59,18 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.SearchActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
+import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
 import com.android.launcher3.widget.WidgetManagerHelper;
+
+import java.util.Collections;
 
 /**
  * Class for handling clicks on workspace and all-apps items
@@ -95,8 +100,7 @@ public class ItemClickHandler {
                 onClickFolderIcon(v);
             }
         } else if (tag instanceof AppInfo) {
-            startAppShortcutOrInfoActivity(v, (AppInfo) tag, launcher
-            );
+            startAppShortcutOrInfoActivity(v, (AppInfo) tag, launcher);
         } else if (tag instanceof LauncherAppWidgetInfo) {
             if (v instanceof PendingAppWidgetHostView) {
                 onClickPendingWidget((PendingAppWidgetHostView) v, launcher);
@@ -171,7 +175,9 @@ public class ItemClickHandler {
                         (d, i) -> startMarketIntentForPackage(v, launcher, packageName))
                 .setNeutralButton(R.string.abandoned_clean_this,
                         (d, i) -> launcher.getWorkspace()
-                                .removeAbandonedPromise(packageName, user))
+                                .persistRemoveItemsByMatcher(ItemInfoMatcher.ofPackages(
+                                        Collections.singleton(packageName), user),
+                                        "user explicitly removes the promise app icon"))
                 .create().show();
     }
 
@@ -205,6 +211,12 @@ public class ItemClickHandler {
     public static boolean handleDisabledItemClicked(WorkspaceItemInfo shortcut, Context context) {
         final int disabledFlags = shortcut.runtimeStatusFlags
                 & WorkspaceItemInfo.FLAG_DISABLED_MASK;
+        // Handle the case where the disabled reason is DISABLED_REASON_VERSION_LOWER.
+        // Show an AlertDialog for the user to choose either updating the app or cancel the launch.
+        if (maybeCreateAlertDialogForShortcut(shortcut, context)) {
+            return true;
+        }
+
         if ((disabledFlags
                 & ~FLAG_DISABLED_SUSPENDED
                 & ~FLAG_DISABLED_QUIET_USER) == 0) {
@@ -228,6 +240,38 @@ public class ItemClickHandler {
             Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
             return true;
         }
+    }
+
+    private static boolean maybeCreateAlertDialogForShortcut(final WorkspaceItemInfo shortcut,
+            Context context) {
+        try {
+            final Launcher launcher = Launcher.getLauncher(context);
+            if (shortcut.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
+                    && shortcut.isDisabledVersionLower()) {
+
+                new AlertDialog.Builder(context)
+                        .setTitle(R.string.dialog_update_title)
+                        .setMessage(R.string.dialog_update_message)
+                        .setPositiveButton(R.string.dialog_update, (d, i) -> {
+                            // Direct the user to the play store to update the app
+                            context.startActivity(shortcut.getMarketIntent(context));
+                        })
+                        .setNeutralButton(R.string.dialog_remove, (d, i) -> {
+                            // Remove the icon if launcher is successfully initialized
+                            launcher.getWorkspace().persistRemoveItemsByMatcher(ItemInfoMatcher
+                                    .ofShortcutKeys(Collections.singleton(ShortcutKey
+                                            .fromItemInfo(shortcut))),
+                                    "user explicitly removes disabled shortcut");
+                        })
+                        .create()
+                        .show();
+                return true;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating alert dialog", e);
+        }
+
+        return false;
     }
 
     /**

@@ -76,7 +76,7 @@
     </style>
 
     <style name="LauncherTheme.DarkMainColor" parent="@style/LauncherTheme">
-        <item name="disabledIconAlpha">.254</item>
+        <item name="disabledIconAlpha">.54</item>
 
     </style>
 
@@ -201,6 +201,14 @@
         <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
         <item name="android:includeFontPadding">false</item>
         <item name="android:importantForAccessibility">no</item>
+    </style>
+
+    <style name="AllAppsButtonTheme">
+        <item name="allAppsButtonBgColor">@color/all_apps_button_bg_color</item>
+        <item name="allAppsButtonColor1">@color/all_apps_button_color_1</item>
+        <item name="allAppsButtonColor2">@color/all_apps_button_color_2</item>
+        <item name="allAppsButtonColor3">@color/all_apps_button_color_3</item>
+        <item name="allAppsButtonColor4">@color/all_apps_button_color_4</item>
     </style>
 
     <style name="AllAppsTheme">

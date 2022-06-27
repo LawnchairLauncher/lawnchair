@@ -20,6 +20,8 @@ import static android.view.HapticFeedbackConstants.CLOCK_TICK;
 
 import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
 
+import static com.android.launcher3.util.UiThreadHelper.hideKeyboardAsync;
+
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
@@ -43,7 +45,7 @@ import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.launcher3.BaseRecyclerView;
+import com.android.launcher3.FastScrollRecyclerView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.FastScrollThumbDrawable;
@@ -127,7 +129,7 @@ public class RecyclerViewFastScroller extends View {
     private String mPopupSectionName;
     private Insets mSystemGestureInsets;
 
-    protected BaseRecyclerView mRv;
+    protected FastScrollRecyclerView mRv;
     private RecyclerView.OnScrollListener mOnScrollListener;
 
     private int mDownX;
@@ -172,7 +174,7 @@ public class RecyclerViewFastScroller extends View {
         ta.recycle();
     }
 
-    public void setRecyclerView(BaseRecyclerView rv, TextView popupView) {
+    public void setRecyclerView(FastScrollRecyclerView rv, TextView popupView) {
         if (mRv != null && mOnScrollListener != null) {
             mRv.removeOnScrollListener(mOnScrollListener);
         }
@@ -306,6 +308,7 @@ public class RecyclerViewFastScroller extends View {
     }
 
     private void calcTouchOffsetAndPrepToFastScroll(int downY, int lastY) {
+        hideKeyboardAsync(ActivityContext.lookupContext(getContext()), getWindowToken());
         mIsDragging = true;
         if (mCanThumbDetach) {
             mIsThumbDetached = true;

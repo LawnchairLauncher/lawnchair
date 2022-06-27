@@ -26,6 +26,7 @@ import static com.android.launcher3.Utilities.ATLEAST_S;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.Process;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Size;
@@ -48,7 +49,6 @@ import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.RoundDrawableWrapper;
 import com.android.launcher3.icons.cache.HandlerRunnable;
@@ -372,14 +372,11 @@ public class WidgetCell extends LinearLayout {
     /** Used to show the badge when the widget is in the recommended section
      */
     public void showBadge() {
-        Drawable badge = mWidgetPreviewLoader.getBadgeForUser(mItem.user,
-                BaseIconFactory.getBadgeSizeForIconSize(
-                        mActivity.getDeviceProfile().allAppsIconSizePx));
-        if (badge == null) {
+        if (Process.myUserHandle().equals(mItem.user)) {
             mWidgetBadge.setVisibility(View.GONE);
         } else {
             mWidgetBadge.setVisibility(View.VISIBLE);
-            mWidgetBadge.setImageDrawable(badge);
+            mWidgetBadge.setImageResource(R.drawable.ic_work_app_badge);
         }
     }
 

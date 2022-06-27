@@ -97,10 +97,12 @@ public class LauncherProvider extends ContentProvider {
      * Represents the schema of the database. Changes in scheme need not be backwards compatible.
      * When increasing the scheme version, ensure that downgrade_schema.json is updated
      */
-    public static final int SCHEMA_VERSION = 30;
+    public static final int SCHEMA_VERSION = 31;
 
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".settings";
     public static final String KEY_LAYOUT_PROVIDER_AUTHORITY = "KEY_LAYOUT_PROVIDER_AUTHORITY";
+
+    private static final int TEST_WORKSPACE_LAYOUT_RES_XML = R.xml.default_test_workspace;
 
     static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
 
@@ -108,6 +110,8 @@ public class LauncherProvider extends ContentProvider {
     protected String mProviderAuthority;
 
     private long mLastRestoreTimestamp = 0L;
+
+    private boolean mUseTestWorkspaceLayout;
 
     /**
      * $ adb shell dumpsys activity provider com.android.launcher3
@@ -158,6 +162,7 @@ public class LauncherProvider extends ContentProvider {
     private synchronized boolean prepForMigration(String dbFile, String targetTableName,
             Supplier<DatabaseHelper> src, Supplier<DatabaseHelper> dst) {
         if (TextUtils.equals(dbFile, mOpenHelper.getDatabaseName())) {
+            Log.e("b/198965093", "prepForMigration - target db is same as current: " + dbFile);
             return false;
         }
 
@@ -390,6 +395,14 @@ public class LauncherProvider extends ContentProvider {
                 mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
                 return null;
             }
+            case LauncherSettings.Settings.METHOD_SET_USE_TEST_WORKSPACE_LAYOUT_FLAG: {
+                mUseTestWorkspaceLayout = true;
+                return null;
+            }
+            case LauncherSettings.Settings.METHOD_CLEAR_USE_TEST_WORKSPACE_LAYOUT_FLAG: {
+                mUseTestWorkspaceLayout = false;
+                return null;
+            }
             case LauncherSettings.Settings.METHOD_LOAD_DEFAULT_FAVORITES: {
                 loadDefaultFavoritesIfNecessary();
                 return null;
@@ -427,7 +440,7 @@ public class LauncherProvider extends ContentProvider {
                 Bundle result = new Bundle();
                 result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
                         prepForMigration(
-                                InvariantDeviceProfile.INSTANCE.get(getContext()).dbFile,
+                                arg /* dbFile */,
                                 Favorites.TMP_TABLE,
                                 () -> mOpenHelper,
                                 () -> DatabaseHelper.createDatabaseHelper(
@@ -609,7 +622,8 @@ public class LauncherProvider extends ContentProvider {
 
     private DefaultLayoutParser getDefaultLayoutParser(AppWidgetHost widgetHost) {
         InvariantDeviceProfile idp = LauncherAppState.getIDP(getContext());
-        int defaultLayout = idp.defaultLayoutId;
+        int defaultLayout = mUseTestWorkspaceLayout
+                ? TEST_WORKSPACE_LAYOUT_RES_XML : idp.defaultLayoutId;
 
         if (getContext().getSystemService(UserManager.class).isDemoUser()
                 && idp.demoModeLayoutId != 0) {
@@ -864,6 +878,19 @@ public class LauncherProvider extends ContentProvider {
                             Favorites.SCREEN, IntArray.wrap(-777, -778)), null);
                 }
                 case 30: {
+                    if (FeatureFlags.QSB_ON_FIRST_SCREEN) {
+                        // Clean up first row in screen 0 as it might contain junk data.
+                        Log.d(TAG, "Cleaning up first row");
+                        db.delete(Favorites.TABLE_NAME,
+                                String.format(Locale.ENGLISH,
+                                        "%1$s = %2$d AND %3$s = %4$d AND %5$s = %6$d",
+                                        Favorites.SCREEN, 0,
+                                        Favorites.CONTAINER, Favorites.CONTAINER_DESKTOP,
+                                        Favorites.CELLY, 0), null);
+                    }
+                    return;
+                }
+                case 31: {
                     // DB Upgraded successfully
                     return;
                 }

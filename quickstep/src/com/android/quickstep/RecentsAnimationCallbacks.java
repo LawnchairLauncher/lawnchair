@@ -104,8 +104,7 @@ public class RecentsAnimationCallbacks implements
                 .map(RemoteAnimationTargetCompat::unwrap)
                 .toArray(RemoteAnimationTarget[]::new);
 
-        RemoteAnimationTarget[] nonAppTargets =
-                mSystemUiProxy.onGoingToRecentsLegacy(mCancelled, nonHomeApps);
+        RemoteAnimationTarget[] nonAppTargets = mSystemUiProxy.onGoingToRecentsLegacy(nonHomeApps);
 
         RecentsAnimationTargets targets = new RecentsAnimationTargets(appTargets,
                 wallpaperTargets, RemoteAnimationTargetCompat.wrap(nonAppTargets),
@@ -145,6 +144,18 @@ public class RecentsAnimationCallbacks implements
         });
     }
 
+    @BinderThread
+    @Override
+    public boolean onSwitchToScreenshot(Runnable onFinished) {
+        Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
+            for (RecentsAnimationListener listener : getListeners()) {
+                if (listener.onSwitchToScreenshot(onFinished)) return;
+            }
+            onFinished.run();
+        });
+        return true;
+    }
+
     private final void onAnimationFinished(RecentsAnimationController controller) {
         Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
             for (RecentsAnimationListener listener : getListeners()) {
@@ -180,5 +191,12 @@ public class RecentsAnimationCallbacks implements
          * Callback made when a task started from the recents is ready for an app transition.
          */
         default void onTasksAppeared(@NonNull RemoteAnimationTargetCompat[] appearedTaskTarget) {}
+
+        /**
+         * @return whether this will call onFinished or not (onFinished should only be called once).
+         */
+        default boolean onSwitchToScreenshot(Runnable onFinished) {
+            return false;
+        }
     }
 }

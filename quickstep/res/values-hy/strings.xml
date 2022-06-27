@@ -52,7 +52,7 @@
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Համոզվեք, որ մատը չափազանց մոտ չեք սահեցնում էկրանին ներքևի հատվածին։"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Հետ գնալու ժեստի զգայունությունը փոփոխեք կարգավորումներում"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Սահեցրեք մատը՝ հետ գնալու համար"</string>
-    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Վերջին էկրանին վերադառնալու համար էկրանի աջ կամ ձախ եզրից մատը սահեցրեք դեպի կենտրոն։"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Վերջին էկրան վերադառնալու համար էկրանի աջ կամ ձախ եզրից մատը սահեցրեք դեպի կենտրոն։"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Համոզվեք, որ մատն էկրանի ներքևի եզրից վերև եք սահեցնում։"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Համոզվեք, որ դադար չեք տալիս նախքան բաց թողնելը։"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Համոզվեք, որ մատն ուղիղ վերև եք սահեցնում։"</string>
@@ -76,6 +76,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Պատրաստ է"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Մատը սահեցրեք վերև՝ հիմնական էկրան անցնելու համար"</string>
     <string name="allset_description" msgid="6350320429953234580">"Դուք արդեն կարող եք օգտագործել ձեր հեռախոսը"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"Դուք արդեն կարող եք օգտագործել ձեր պլանշետը"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Նավիգացիայի համակարգային կարգավորումներ"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Կիսվել"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Սքրինշոթ անել"</string>
@@ -97,4 +98,13 @@
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Հետ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Փակել"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Պատրաստ է"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Սկիզբ"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Հատուկ գործառ․"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Հետ"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME փոխանջատիչ"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Վերջինները"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"Ծանուցումներ"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Արագ կարգավորումներ"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Տեղափոխել վերևի ձախ անկյուն"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Տեղափոխել ներքևի աջ անկյուն"</string>
 </resources>

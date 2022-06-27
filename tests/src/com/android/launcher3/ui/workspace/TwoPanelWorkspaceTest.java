@@ -19,6 +19,7 @@ package com.android.launcher3.ui.workspace;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -47,20 +48,12 @@ import java.util.stream.Collectors;
 @RunWith(AndroidJUnit4.class)
 public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
 
-    Workspace mWorkspace;
-
     @Before
     public void setUp() throws Exception {
         super.setUp();
         TaplTestsLauncher3.initialize(this);
-        mWorkspace = mLauncher.getWorkspace();
-    }
 
-    @Test
-    public void testDragIconToRightPanel() {
-        if (!mLauncher.isTwoPanels()) {
-            return;
-        }
+        assumeTrue(mLauncher.isTwoPanels());
 
         // Pre verifying the screens
         executeOnLauncher(launcher -> {
@@ -68,8 +61,14 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
             assertItemsOnPage(launcher, 0, "Play Store", "Maps");
             assertPageEmpty(launcher, 1);
         });
+    }
 
-        mWorkspace.dragIcon(mWorkspace.getHotseatAppIcon("Chrome"), 1);
+    @Test
+    @PortraitLandscape
+    public void testDragIconToRightPanel() {
+        Workspace workspace = mLauncher.getWorkspace();
+
+        workspace.dragIcon(workspace.getHotseatAppIcon("Chrome"), 1);
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1);
@@ -79,19 +78,65 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
     }
 
     @Test
-    public void testDragIconToPage2() {
-        if (!mLauncher.isTwoPanels()) {
-            return;
-        }
+    @PortraitLandscape
+    public void testSinglePageDragIconWhenMultiplePageScrollingIsPossible() {
+        Workspace workspace = mLauncher.getWorkspace();
 
-        // Pre verifying the screens
+        workspace.dragIcon(workspace.getHotseatAppIcon("Chrome"), 2);
+
+        workspace.flingBackward();
+
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Maps"), 3);
+
         executeOnLauncher(launcher -> {
-            assertPagesExist(launcher, 0, 1);
-            assertItemsOnPage(launcher, 0, "Play Store", "Maps");
+            assertPagesExist(launcher, 0, 1, 2, 3);
+            assertItemsOnPage(launcher, 0, "Play Store");
             assertPageEmpty(launcher, 1);
+            assertItemsOnPage(launcher, 2, "Chrome");
+            assertItemsOnPage(launcher, 3, "Maps");
         });
 
-        mWorkspace.dragIcon(mWorkspace.getWorkspaceAppIcon("Maps"), 2);
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Maps"), 3);
+
+        executeOnLauncher(launcher -> {
+            assertPagesExist(launcher, 0, 1, 2, 3, 4, 5);
+            assertItemsOnPage(launcher, 0, "Play Store");
+            assertPageEmpty(launcher, 1);
+            assertItemsOnPage(launcher, 2, "Chrome");
+            assertPageEmpty(launcher, 3);
+            assertPageEmpty(launcher, 4);
+            assertItemsOnPage(launcher, 5, "Maps");
+        });
+
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Maps"), -1);
+
+        executeOnLauncher(launcher -> {
+            assertPagesExist(launcher, 0, 1, 2, 3);
+            assertItemsOnPage(launcher, 0, "Play Store");
+            assertPageEmpty(launcher, 1);
+            assertItemsOnPage(launcher, 2, "Chrome");
+            assertItemsOnPage(launcher, 3, "Maps");
+        });
+
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Maps"), -1);
+
+        workspace.flingForward();
+
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Chrome"), -2);
+
+        executeOnLauncher(launcher -> {
+            assertPagesExist(launcher, 0, 1);
+            assertItemsOnPage(launcher, 0, "Chrome", "Play Store");
+            assertItemsOnPage(launcher, 1, "Maps");
+        });
+    }
+
+    @Test
+    @PortraitLandscape
+    public void testDragIconToPage2() {
+        Workspace workspace = mLauncher.getWorkspace();
+
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Maps"), 2);
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 2, 3);
@@ -103,19 +148,11 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @PortraitLandscape
     public void testDragIconToPage3() {
-        if (!mLauncher.isTwoPanels()) {
-            return;
-        }
+        Workspace workspace = mLauncher.getWorkspace();
 
-        // Pre verifying the screens
-        executeOnLauncher(launcher -> {
-            assertPagesExist(launcher, 0, 1);
-            assertItemsOnPage(launcher, 0, "Play Store", "Maps");
-            assertPageEmpty(launcher, 1);
-        });
-
-        mWorkspace.dragIcon(mWorkspace.getHotseatAppIcon("Phone"), 3);
+        workspace.dragIcon(workspace.getHotseatAppIcon("Phone"), 3);
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 2, 3);
@@ -126,22 +163,59 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
         });
     }
 
-
     @Test
-    public void testEmptyPageDoesNotGetRemovedIfPagePairIsNotEmpty() {
-        if (!mLauncher.isTwoPanels()) {
-            return;
-        }
+    @PortraitLandscape
+    public void testMultiplePageDragIcon() {
+        Workspace workspace = mLauncher.getWorkspace();
 
-        // Pre verifying the screens
+        workspace.dragIcon(workspace.getHotseatAppIcon("Messages"), 2);
+
+        workspace.flingBackward();
+
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Maps"), 5);
+
         executeOnLauncher(launcher -> {
-            assertPagesExist(launcher, 0, 1);
-            assertItemsOnPage(launcher, 0, "Play Store", "Maps");
+            assertPagesExist(launcher, 0, 1, 2, 3, 4, 5);
+            assertItemsOnPage(launcher, 0, "Play Store");
             assertPageEmpty(launcher, 1);
+            assertItemsOnPage(launcher, 2, "Messages");
+            assertPageEmpty(launcher, 3);
+            assertPageEmpty(launcher, 4);
+            assertItemsOnPage(launcher, 5, "Maps");
         });
 
-        mWorkspace.dragIcon(mWorkspace.getWorkspaceAppIcon("Maps"), 3);
-        mWorkspace.dragIcon(mWorkspace.getHotseatAppIcon("Chrome"), 0);
+        workspace.flingBackward();
+
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Messages"), 4);
+
+        executeOnLauncher(launcher -> {
+            assertPagesExist(launcher, 0, 1, 4, 5, 6, 7);
+            assertItemsOnPage(launcher, 0, "Play Store");
+            assertPageEmpty(launcher, 1);
+            assertPageEmpty(launcher, 4);
+            assertItemsOnPage(launcher, 5, "Maps");
+            assertItemsOnPage(launcher, 6, "Messages");
+            assertPageEmpty(launcher, 7);
+        });
+
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Messages"), -3);
+
+        executeOnLauncher(launcher -> {
+            assertPagesExist(launcher, 0, 1, 4, 5);
+            assertItemsOnPage(launcher, 0, "Play Store");
+            assertItemsOnPage(launcher, 1, "Messages");
+            assertPageEmpty(launcher, 4);
+            assertItemsOnPage(launcher, 5, "Maps");
+        });
+    }
+
+    @Test
+    @PortraitLandscape
+    public void testEmptyPageDoesNotGetRemovedIfPagePairIsNotEmpty() {
+        Workspace workspace = mLauncher.getWorkspace();
+
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Maps"), 3);
+        workspace.dragIcon(workspace.getHotseatAppIcon("Chrome"), 0);
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 2, 3);
@@ -151,7 +225,7 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
             assertItemsOnPage(launcher, 3, "Maps");
         });
 
-        mWorkspace.dragIcon(mWorkspace.getWorkspaceAppIcon("Maps"), -1);
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Maps"), -1);
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 2, 3);
@@ -163,8 +237,8 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
 
         // Move Chrome to the right panel as well, to make sure pages are not deleted whichever
         // page is the empty one
-        mWorkspace.flingForward();
-        mWorkspace.dragIcon(mWorkspace.getWorkspaceAppIcon("Chrome"), 1);
+        workspace.flingForward();
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Chrome"), 1);
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 2, 3);
@@ -175,57 +249,40 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
         });
     }
 
-
     @Test
+    @PortraitLandscape
     public void testEmptyPagesGetRemovedIfBothPagesAreEmpty() {
-        if (!mLauncher.isTwoPanels()) {
-            return;
-        }
+        Workspace workspace = mLauncher.getWorkspace();
 
-        // Pre verifying the screens
-        executeOnLauncher(launcher -> {
-            assertPagesExist(launcher, 0, 1);
-            assertItemsOnPage(launcher, 0, "Play Store", "Maps");
-            assertPageEmpty(launcher, 1);
-        });
-
-        mWorkspace.dragIcon(mWorkspace.getWorkspaceAppIcon("Play Store"), 2);
-        mWorkspace.dragIcon(mWorkspace.getHotseatAppIcon("Camera"), 1);
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Play Store"), 2);
+        workspace.dragIcon(workspace.getHotseatAppIcon("Chrome"), 1);
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 2, 3);
             assertItemsOnPage(launcher, 0, "Maps");
             assertPageEmpty(launcher, 1);
             assertItemsOnPage(launcher, 2, "Play Store");
-            assertItemsOnPage(launcher, 3, "Camera");
+            assertItemsOnPage(launcher, 3, "Chrome");
         });
 
-        mWorkspace.dragIcon(mWorkspace.getWorkspaceAppIcon("Camera"), -1);
-        mWorkspace.flingForward();
-        mWorkspace.dragIcon(mWorkspace.getWorkspaceAppIcon("Play Store"), -2);
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Chrome"), -1);
+        workspace.flingForward();
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Play Store"), -2);
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1);
             assertItemsOnPage(launcher, 0, "Play Store", "Maps");
-            assertItemsOnPage(launcher, 1, "Camera");
+            assertItemsOnPage(launcher, 1, "Chrome");
         });
     }
 
     @Test
+    @PortraitLandscape
     public void testMiddleEmptyPagesGetRemoved() {
-        if (!mLauncher.isTwoPanels()) {
-            return;
-        }
+        Workspace workspace = mLauncher.getWorkspace();
 
-        // Pre verifying the screens
-        executeOnLauncher(launcher -> {
-            assertPagesExist(launcher, 0, 1);
-            assertItemsOnPage(launcher, 0, "Play Store", "Maps");
-            assertPageEmpty(launcher, 1);
-        });
-
-        mWorkspace.dragIcon(mWorkspace.getWorkspaceAppIcon("Maps"), 2);
-        mWorkspace.dragIcon(mWorkspace.getHotseatAppIcon("Messages"), 3);
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Maps"), 2);
+        workspace.dragIcon(workspace.getHotseatAppIcon("Messages"), 3);
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 2, 3, 4, 5);
@@ -237,8 +294,8 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
             assertItemsOnPage(launcher, 5, "Messages");
         });
 
-        mWorkspace.flingBackward();
-        mWorkspace.dragIcon(mWorkspace.getWorkspaceAppIcon("Maps"), 2);
+        workspace.flingBackward();
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Maps"), 2);
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 4, 5);

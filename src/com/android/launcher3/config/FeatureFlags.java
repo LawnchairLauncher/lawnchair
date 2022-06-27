@@ -52,7 +52,7 @@ public final class FeatureFlags {
      * Enable moving the QSB on the 0th screen of the workspace. This is not a configuration feature
      * and should be modified at a project level.
      */
-    public static final boolean QSB_ON_FIRST_SCREEN = true;
+    public static final boolean QSB_ON_FIRST_SCREEN = BuildConfig.QSB_ON_FIRST_SCREEN;
 
     /**
      * Feature flag to handle define config changes dynamically instead of killing the process.
@@ -79,9 +79,6 @@ public final class FeatureFlags {
     public static final BooleanFlag KEYGUARD_ANIMATION = getDebugFlag(
             "KEYGUARD_ANIMATION", false, "Enable animation for keyguard going away on wallpaper");
 
-    public static final BooleanFlag ADAPTIVE_ICON_WINDOW_ANIM = getDebugFlag(
-            "ADAPTIVE_ICON_WINDOW_ANIM", true, "Use adaptive icons for window animations.");
-
     public static final BooleanFlag ENABLE_QUICKSTEP_LIVE_TILE = getDebugFlag(
             "ENABLE_QUICKSTEP_LIVE_TILE", true, "Enable live tile in Quickstep overview");
 
@@ -92,11 +89,21 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_DEVICE_SEARCH = new DeviceFlag(
             "ENABLE_DEVICE_SEARCH", true, "Allows on device search in all apps");
 
+    public static final BooleanFlag ENABLE_FLOATING_SEARCH_BAR =
+            getDebugFlag("ENABLE_FLOATING_SEARCH_BAR", false,
+                    "Keep All Apps search bar at the bottom (but above keyboard if open)");
+
+    public static final BooleanFlag ENABLE_QUICK_SEARCH = new DeviceFlag("ENABLE_QUICK_SEARCH",
+            true, "Use quick search behavior.");
+
+    public static final BooleanFlag COLLECT_SEARCH_HISTORY = new DeviceFlag(
+            "COLLECT_SEARCH_HISTORY", false, "Allow launcher to collect search history for log");
+
     public static final BooleanFlag ENABLE_TWOLINE_ALLAPPS = getDebugFlag(
             "ENABLE_TWOLINE_ALLAPPS", false, "Enables two line label inside all apps.");
 
     public static final BooleanFlag ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING = new DeviceFlag(
-            "ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING", true,
+            "ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING", false,
             "Allows on device search in all apps logging");
 
     public static final BooleanFlag IME_STICKY_SNACKBAR_EDU = getDebugFlag(
@@ -132,12 +139,12 @@ public final class FeatureFlags {
 
     public static final BooleanFlag ENABLE_BULK_WORKSPACE_ICON_LOADING = getDebugFlag(
             "ENABLE_BULK_WORKSPACE_ICON_LOADING",
-            false,
+            true,
             "Enable loading workspace icons in bulk.");
 
     public static final BooleanFlag ENABLE_BULK_ALL_APPS_ICON_LOADING = getDebugFlag(
             "ENABLE_BULK_ALL_APPS_ICON_LOADING",
-            false,
+            true,
             "Enable loading all apps icons in bulk.");
 
     // Keep as DeviceFlag for remote disable in emergency.
@@ -190,19 +197,9 @@ public final class FeatureFlags {
             "ENABLE_APP_PREDICTIONS_WHILE_VISIBLE", true, "Allows app "
             + "predictions to be updated while they are visible to the user.");
 
-    public static final BooleanFlag ENABLE_TASKBAR = getDebugFlag(
-            "ENABLE_TASKBAR", true, "Allows a system Taskbar to be shown on larger devices.");
-
-    public static final BooleanFlag ENABLE_TASKBAR_EDU = getDebugFlag("ENABLE_TASKBAR_EDU", true,
-            "Enables showing taskbar education the first time an app is opened.");
-
     public static final BooleanFlag ENABLE_TASKBAR_POPUP_MENU = getDebugFlag(
-            "ENABLE_TASKBAR_POPUP_MENU", false, "Enables long pressing taskbar icons to show the"
+            "ENABLE_TASKBAR_POPUP_MENU", true, "Enables long pressing taskbar icons to show the"
                     + " popup menu.");
-
-    public static final BooleanFlag ENABLE_OVERVIEW_GRID = getDebugFlag(
-            "ENABLE_OVERVIEW_GRID", true, "Uses grid overview layout. "
-            + "Only applicable on large screen devices.");
 
     public static final BooleanFlag ENABLE_TWO_PANEL_HOME = getDebugFlag(
             "ENABLE_TWO_PANEL_HOME", true,
@@ -244,6 +241,41 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_ICON_LABEL_AUTO_SCALING = getDebugFlag(
             "ENABLE_ICON_LABEL_AUTO_SCALING", true,
             "Enables scaling/spacing for icon labels to make more characters visible");
+
+    public static final BooleanFlag ENABLE_ALL_APPS_IN_TASKBAR = getDebugFlag(
+            "ENABLE_ALL_APPS_IN_TASKBAR", true,
+            "Enables accessing All Apps from the system Taskbar.");
+
+    public static final BooleanFlag ENABLE_ALL_APPS_BUTTON_IN_HOTSEAT = getDebugFlag(
+            "ENABLE_ALL_APPS_BUTTON_IN_HOTSEAT", false,
+            "Enables displaying the all apps button in the hotseat.");
+
+    public static final BooleanFlag ENABLE_ALL_APPS_ONE_SEARCH_IN_TASKBAR = getDebugFlag(
+            "ENABLE_ALL_APPS_ONE_SEARCH_IN_TASKBAR", false,
+            "Enables One Search box in Taskbar All Apps.");
+
+    public static final BooleanFlag ENABLE_SPLIT_FROM_WORKSPACE = getDebugFlag(
+            "ENABLE_SPLIT_FROM_WORKSPACE", true,
+            "Enable initiating split screen from workspace.");
+
+    public static final BooleanFlag ENABLE_NEW_MIGRATION_LOGIC = getDebugFlag(
+            "ENABLE_NEW_MIGRATION_LOGIC", true,
+            "Enable the new grid migration logic, keeping pages when src < dest");
+
+    public static final BooleanFlag ENABLE_ONE_SEARCH_MOTION = new DeviceFlag(
+            "ENABLE_ONE_SEARCH_MOTION", true, "Enables animations in OneSearch.");
+
+    public static final BooleanFlag ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS = new DeviceFlag(
+            "ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS", true,
+            "Enable option to show keyboard when going to all-apps");
+
+    public static final BooleanFlag USE_LOCAL_ICON_OVERRIDES = getDebugFlag(
+            "USE_LOCAL_ICON_OVERRIDES", true,
+            "Use inbuilt monochrome icons if app doesn't provide one");
+
+    public static final BooleanFlag ENABLE_DISMISS_PREDICTION_UNDO = getDebugFlag(
+            "ENABLE_DISMISS_PREDICTION_UNDO", false,
+            "Show an 'Undo' snackbar when users dismiss a predicted hotseat item");
 
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {

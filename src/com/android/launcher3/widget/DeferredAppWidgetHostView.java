@@ -16,7 +16,6 @@
 
 package com.android.launcher3.widget;
 
-import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -30,9 +29,6 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import com.android.launcher3.R;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 /**
  * A widget host views created while the host has not bind to the system service.
@@ -73,34 +69,23 @@ public class DeferredAppWidgetHostView extends LauncherAppWidgetHostView {
             return;
         }
 
-        // Use double padding so that there is extra space between background and text
+        // Use double padding so that there is extra space between background and text if possible.
         int availableWidth = getMeasuredWidth() - 2 * (getPaddingLeft() + getPaddingRight());
+        if (availableWidth <= 0) {
+            availableWidth = getMeasuredWidth() - (getPaddingLeft() + getPaddingRight());
+        }
         if (mSetupTextLayout != null && mSetupTextLayout.getText().equals(info.label)
                 && mSetupTextLayout.getWidth() == availableWidth) {
             return;
         }
-        try {
-            mSetupTextLayout = new StaticLayout(info.label, mPaint, availableWidth,
-                    Layout.Alignment.ALIGN_CENTER, 1, 0, true);
-        } catch (IllegalArgumentException e) {
-            @SuppressLint("DrawAllocation") StringWriter stringWriter = new StringWriter();
-            @SuppressLint("DrawAllocation") PrintWriter printWriter = new PrintWriter(stringWriter);
-            mActivity.getDeviceProfile().dump(/*prefix=*/"", printWriter);
-            printWriter.flush();
-            String message = "b/203530620 "
-                    + "- availableWidth: " + availableWidth
-                    + ", getMeasuredWidth: " + getMeasuredWidth()
-                    + ", getPaddingLeft: " + getPaddingLeft()
-                    + ", getPaddingRight: " + getPaddingRight()
-                    + ", deviceProfile: " + stringWriter.toString();
-            throw new IllegalArgumentException(message, e);
-        }
+        mSetupTextLayout = new StaticLayout(info.label, mPaint, availableWidth,
+                Layout.Alignment.ALIGN_CENTER, 1, 0, true);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         if (mSetupTextLayout != null) {
-            canvas.translate(getPaddingLeft() * 2,
+            canvas.translate((getWidth() - mSetupTextLayout.getWidth()) / 2,
                     (getHeight() - mSetupTextLayout.getHeight()) / 2);
             mSetupTextLayout.draw(canvas);
         }

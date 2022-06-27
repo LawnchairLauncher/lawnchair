@@ -42,17 +42,22 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
     }
 
     @Override
-    public Integer getIntroductionTitle() {
+    public int getIntroductionTitle() {
         return R.string.overview_gesture_intro_title;
     }
 
     @Override
-    public Integer getIntroductionSubtitle() {
+    public int getIntroductionSubtitle() {
         return R.string.overview_gesture_intro_subtitle;
     }
 
     @Override
-    public Integer getSuccessFeedbackSubtitle() {
+    public int getSpokenIntroductionSubtitle() {
+        return R.string.overview_gesture_spoken_intro_subtitle;
+    }
+
+    @Override
+    public int getSuccessFeedbackSubtitle() {
         return mTutorialFragment.getNumSteps() > 1 && mTutorialFragment.isAtFinalStep()
                 ? R.string.overview_gesture_feedback_complete_with_follow_up
                 : R.string.overview_gesture_feedback_complete_without_follow_up;
@@ -61,7 +66,7 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
     @Override
     protected int getMockAppTaskLayoutResId() {
         return mTutorialFragment.isLargeScreen()
-                ? R.layout.gesture_tutorial_foldable_mock_conversation_list
+                ? R.layout.gesture_tutorial_tablet_mock_conversation_list
                 : R.layout.gesture_tutorial_mock_conversation_list;
     }
 

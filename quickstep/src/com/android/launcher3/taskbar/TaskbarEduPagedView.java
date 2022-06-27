@@ -52,7 +52,7 @@ public class TaskbarEduPagedView extends PagedView<PageIndicatorDots> {
     }
 
     @Override
-    protected int getChildGap() {
+    protected int getChildGap(int fromIndex, int toIndex) {
         return mTaskbarEduView.getPaddingLeft() + mTaskbarEduView.getPaddingRight();
     }
 

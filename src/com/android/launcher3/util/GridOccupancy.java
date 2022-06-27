@@ -7,7 +7,7 @@ import com.android.launcher3.model.data.ItemInfo;
 /**
  * Utility object to manage the occupancy in a grid.
  */
-public class GridOccupancy {
+public class GridOccupancy extends AbsGridOccupancy {
 
     private final int mCountX;
     private final int mCountY;
@@ -30,24 +30,7 @@ public class GridOccupancy {
      * @return true if a vacant cell was found
      */
     public boolean findVacantCell(int[] vacantOut, int spanX, int spanY) {
-        for (int y = 0; (y + spanY) <= mCountY; y++) {
-            for (int x = 0; (x + spanX) <= mCountX; x++) {
-                boolean available = !cells[x][y];
-                out:
-                for (int i = x; i < x + spanX; i++) {
-                    for (int j = y; j < y + spanY; j++) {
-                        available = available && !cells[i][j];
-                        if (!available) break out;
-                    }
-                }
-                if (available) {
-                    vacantOut[0] = x;
-                    vacantOut[1] = y;
-                    return true;
-                }
-            }
-        }
-        return false;
+        return super.findVacantCell(vacantOut, cells, mCountX, mCountY, spanX, spanY);
     }
 
     public void copyTo(GridOccupancy dest) {

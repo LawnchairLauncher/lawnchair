@@ -76,6 +76,7 @@
     <string name="allset_title" msgid="5021126669778966707">"ಎಲ್ಲವೂ ಸಿದ್ಧವಾಗಿದೆ!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"ಮುಖಪುಟಕ್ಕೆ ಹೋಗಲು ಮೇಲಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ"</string>
     <string name="allset_description" msgid="6350320429953234580">"ನಿಮ್ಮ ಫೋನ್ ಬಳಸುವುದನ್ನು ಪ್ರಾರಂಭಿಸಲು ನೀವು ಸಿದ್ದರಾಗಿರುವಿರಿ"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್‌‌ ಬಳಸುವುದನ್ನು ಪ್ರಾರಂಭಿಸಲು ನೀವು ಸಿದ್ದರಾಗಿರುವಿರಿ"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"ಸಿಸ್ಟಂ ನ್ಯಾವಿಗೇಶನ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"ಹಂಚಿಕೊಳ್ಳಿ"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ಸ್ಕ್ರೀನ್‌ಶಾಟ್"</string>
@@ -83,7 +84,7 @@
     <string name="toast_split_select_app" msgid="5453865907322018352">"ಸ್ಪ್ಲಿಟ್ ಸ್ಕ್ರೀನ್ ಅನ್ನು ಬಳಸಲು ಬೇರೊಂದು ಆ್ಯಪ್ ಮೇಲೆ ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
     <string name="toast_split_app_unsupported" msgid="3271526028981899666">"ಸ್ಪ್ಲಿಟ್ ಸ್ಕ್ರೀನ್ ಅನ್ನು ಆ್ಯಪ್ ಬೆಂಬಲಿಸುವುದಿಲ್ಲ."</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ಆ್ಯಪ್ ಅಥವಾ ನಿಮ್ಮ ಸಂಸ್ಥೆಯು ಈ ಕ್ರಿಯೆಯನ್ನು ಅನುಮತಿಸುವುದಿಲ್ಲ"</string>
-    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"ನ್ಯಾವಿಗೇಶನ್ ಟ್ಯುಟೋರಿಯಲ್ ಸ್ಕಿಪ್ ಮಾಡಬೇಕೇ?"</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"ನ್ಯಾವಿಗೇಷನ್ ಟ್ಯುಟೋರಿಯಲ್ ಸ್ಕಿಪ್ ಮಾಡಿ?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"<xliff:g id="NAME">%1$s</xliff:g> ಆ್ಯಪ್‌ನಲ್ಲಿ ಇದನ್ನು ನಂತರ ಕಾಣಬಹುದು"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"ರದ್ದುಮಾಡಿ"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ಸ್ಕಿಪ್ ಮಾಡಿ"</string>
@@ -97,4 +98,13 @@
     <string name="taskbar_edu_previous" msgid="459202320127201702">"ಹಿಂದೆ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ಮುಚ್ಚಿರಿ"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ಮುಗಿದಿದೆ"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"ಮುಖಪುಟ"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"ಪ್ರವೇಶಿಸುವಿಕೆ"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"ಹಿಂದೆ"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME ಪರಿವರ್ತಕ"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"ಇತ್ತೀಚಿನವು"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"ಅಧಿಸೂಚನೆಗಳು"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"ತ್ವರಿತ ಸೆಟ್ಟಿಂಗ್‍ಗಳು"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ಮೇಲಿನ/ಎಡಭಾಗಕ್ಕೆ ಸರಿಸಿ"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ಕೆಳಗಿನ/ಬಲಭಾಗಕ್ಕೆ ಸರಿಸಿ"</string>
 </resources>

@@ -96,7 +96,9 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
         }
         bindUpdatedWorkspaceItems(updatedWorkspaceItemInfos);
         if (!removedKeys.isEmpty()) {
-            deleteAndBindComponentsRemoved(ItemInfoMatcher.ofShortcutKeys(removedKeys));
+            deleteAndBindComponentsRemoved(ItemInfoMatcher.ofShortcutKeys(removedKeys),
+                    "removed during unlock because it's no longer available"
+                            + " (possibly due to clear data)");
         }
 
         // Remove shortcut id map for that user

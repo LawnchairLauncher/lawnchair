@@ -16,10 +16,12 @@
 
 package com.android.launcher3.tapl;
 
+import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_SCROLLED;
+
 import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
-import static com.android.launcher3.testing.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
 
+import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 
 import android.graphics.Point;
@@ -31,12 +33,17 @@ import android.view.MotionEvent;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
+import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.WorkspaceCellCenterRequest;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -49,6 +56,7 @@ public final class Workspace extends Home {
     private static final int DEFAULT_DRAG_STEPS = 10;
     private static final String DROP_BAR_RES_ID = "drop_target_bar";
     private static final String DELETE_TARGET_TEXT_ID = "delete_target_text";
+    private static final String UNINSTALL_TARGET_TEXT_ID = "uninstall_target_text";
 
     static final Pattern EVENT_CTRL_W_DOWN = Pattern.compile(
             "Key event: KeyEvent.*?action=ACTION_DOWN.*?keyCode=KEYCODE_W"
@@ -56,7 +64,7 @@ public final class Workspace extends Home {
     static final Pattern EVENT_CTRL_W_UP = Pattern.compile(
             "Key event: KeyEvent.*?action=ACTION_UP.*?keyCode=KEYCODE_W"
                     + ".*?metaState=META_CTRL_ON");
-    private static final Pattern LONG_CLICK_EVENT = Pattern.compile("onWorkspaceItemLongClick");
+    static final Pattern LONG_CLICK_EVENT = Pattern.compile("onWorkspaceItemLongClick");
 
     private final UiObject2 mHotseat;
 
@@ -71,7 +79,7 @@ public final class Workspace extends Home {
      * @return the All Apps object.
      */
     @NonNull
-    public AllApps switchToAllApps() {
+    public HomeAllApps switchToAllApps() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c =
                      mLauncher.addContextLayer("want to switch from workspace to all apps")) {
@@ -81,8 +89,8 @@ public final class Workspace extends Home {
             final int windowCornerRadius = (int) Math.ceil(mLauncher.getWindowCornerRadius());
             final int startY = deviceHeight - Math.max(bottomGestureMargin, windowCornerRadius) - 1;
             final int swipeHeight = mLauncher.getTestInfo(
-                    TestProtocol.REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT).
-                    getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+                    TestProtocol.REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT)
+                    .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
             LauncherInstrumentation.log(
                     "switchToAllApps: deviceHeight = " + deviceHeight + ", startY = " + startY
                             + ", swipeHeight = " + swipeHeight + ", slop = "
@@ -98,8 +106,20 @@ public final class Workspace extends Home {
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "swiped to all apps")) {
-                return new AllApps(mLauncher);
+                return new HomeAllApps(mLauncher);
             }
+        }
+    }
+
+    /**
+     * Returns the home qsb.
+     *
+     * The qsb must already be visible when calling this method.
+     */
+    public HomeQsb getQsb() {
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to get the home qsb")) {
+            return new HomeQsb(mLauncher);
         }
     }
 
@@ -110,13 +130,13 @@ public final class Workspace extends Home {
      * @return app icon, if found, null otherwise.
      */
     @Nullable
-    public AppIcon tryGetWorkspaceAppIcon(String appName) {
+    public HomeAppIcon tryGetWorkspaceAppIcon(String appName) {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to get a workspace icon")) {
             final UiObject2 workspace = verifyActiveContainer();
             final UiObject2 icon = workspace.findObject(
                     AppIcon.getAppIconSelector(appName, mLauncher));
-            return icon != null ? new AppIcon(mLauncher, icon) : null;
+            return icon != null ? new WorkspaceAppIcon(mLauncher, icon) : null;
         }
     }
 
@@ -128,10 +148,10 @@ public final class Workspace extends Home {
      * @return app icon.
      */
     @NonNull
-    public AppIcon getWorkspaceAppIcon(String appName) {
+    public HomeAppIcon getWorkspaceAppIcon(String appName) {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to get a workspace icon")) {
-            return new AppIcon(mLauncher,
+            return new WorkspaceAppIcon(mLauncher,
                     mLauncher.waitForObjectInContainer(
                             verifyActiveContainer(),
                             AppIcon.getAppIconSelector(appName, mLauncher)));
@@ -165,33 +185,39 @@ public final class Workspace extends Home {
     }
 
     /**
-     * Drags an icon to the (currentPage + pageDelta) page if the page already exists.
-     * If the target page doesn't exist, the icon will be put onto an existing page that is the
-     * closest to the target page.
+     * Drags an icon to the (currentPage + pageDelta) page.
+     * If the target page doesn't exist yet, a new page will be created.
+     * In case the target page can't be created (e.g. existing pages are 0, 1, current: 0,
+     * pageDelta: 3, the latest page that can be created is 2) the icon will be dragged onto the
+     * page that can be created and is closest to the target page.
      *
-     * @param appIcon   - icon to drag.
-     * @param pageDelta - how many pages should the icon be dragged from the current page.
-     *                    It can be a negative value.
+     * @param homeAppIcon - icon to drag.
+     * @param pageDelta   - how many pages should the icon be dragged from the current page.
+     *                    It can be a negative value. currentPage + pageDelta should be greater
+     *                    than or equal to 0.
      */
-    public void dragIcon(AppIcon appIcon, int pageDelta) {
+    public void dragIcon(HomeAppIcon homeAppIcon, int pageDelta) {
+        if (mHotseat.getVisibleBounds().height() > mHotseat.getVisibleBounds().width()) {
+            throw new UnsupportedOperationException(
+                    "dragIcon does NOT support dragging when the hotseat is on the side.");
+        }
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             final UiObject2 workspace = verifyActiveContainer();
             try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                     "dragging icon to page with delta: " + pageDelta)) {
-                dragIcon(workspace, appIcon, pageDelta);
+                dragIcon(workspace, homeAppIcon, pageDelta);
                 verifyActiveContainer();
             }
         }
     }
 
-    private void dragIcon(UiObject2 workspace, AppIcon appIcon, int pageDelta) {
+    private void dragIcon(UiObject2 workspace, HomeAppIcon homeAppIcon, int pageDelta) {
         int pageWidth = mLauncher.getDevice().getDisplayWidth() / pagesPerScreen();
         int targetX = (pageWidth / 2) + pageWidth * pageDelta;
         dragIconToWorkspace(
                 mLauncher,
-                appIcon,
+                homeAppIcon,
                 new Point(targetX, mLauncher.getVisibleBounds(workspace).centerY()),
-                "popup_container",
                 false,
                 false,
                 () -> mLauncher.expectEvent(
@@ -204,48 +230,119 @@ public final class Workspace extends Home {
     }
 
     @NonNull
-    public AppIcon getHotseatAppIcon(String appName) {
-        return new AppIcon(mLauncher, mLauncher.waitForObjectInContainer(
+    public HomeAppIcon getHotseatAppIcon(String appName) {
+        return new WorkspaceAppIcon(mLauncher, mLauncher.waitForObjectInContainer(
                 mHotseat, AppIcon.getAppIconSelector(appName, mLauncher)));
     }
 
-    private static int getStartDragThreshold(LauncherInstrumentation launcher) {
-        return launcher.getTestInfo(TestProtocol.REQUEST_START_DRAG_THRESHOLD).getInt(
-                TestProtocol.TEST_INFO_RESPONSE_FIELD);
-    }
-
-    /*
-     * Get the center point of the delete icon in the drop target bar.
+    /**
+     * @return map of text -> center of the view. In case of icons with the same name, the one with
+     *     lower x coordinate is selected.
      */
-    private Point getDeleteDropPoint() {
-        return mLauncher.waitForObjectInContainer(
-                mLauncher.waitForLauncherObject(DROP_BAR_RES_ID),
-                DELETE_TARGET_TEXT_ID).getVisibleCenter();
+    public Map<String, Point> getWorkspaceIconsPositions() {
+        final UiObject2 workspace = verifyActiveContainer();
+        List<UiObject2> workspaceIcons =
+                mLauncher.waitForObjectsInContainer(workspace, AppIcon.getAnyAppIconSelector());
+        return workspaceIcons.stream()
+                .collect(
+                        Collectors.toMap(
+                                /* keyMapper= */ UiObject2::getText,
+                                /* valueMapper= */ UiObject2::getVisibleCenter,
+                                /* mergeFunction= */ (p1, p2) -> p1.x < p2.x ? p1 : p2));
+    }
+    /*
+     * Get the center point of the delete/uninstall icon in the drop target bar.
+     */
+    private static Point getDropPointFromDropTargetBar(
+            LauncherInstrumentation launcher, String targetId) {
+        return launcher.waitForObjectInContainer(
+                launcher.waitForLauncherObject(DROP_BAR_RES_ID),
+                targetId).getVisibleCenter();
     }
 
     /**
      * Delete the appIcon from the workspace.
      *
-     * @param appIcon to be deleted.
+     * @param homeAppIcon to be deleted.
      * @return validated workspace after the existing appIcon being deleted.
      */
-    public Workspace deleteAppIcon(AppIcon appIcon) {
+    public Workspace deleteAppIcon(HomeAppIcon homeAppIcon) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "removing app icon from workspace")) {
             dragIconToWorkspace(
-                    mLauncher, appIcon,
-                    () -> getDeleteDropPoint(),
-                    true, /* decelerating */
-                    appIcon.getLongPressIndicator(),
+                    mLauncher,
+                    homeAppIcon,
+                    () -> getDropPointFromDropTargetBar(mLauncher, DELETE_TARGET_TEXT_ID),
                     () -> mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT),
-                    null);
+                    /* expectDropEvents= */ null);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "dragged the app to the drop bar")) {
                 return new Workspace(mLauncher);
             }
         }
+    }
+
+    /**
+     * Uninstall the appIcon by dragging it to the 'uninstall' drop point of the drop_target_bar.
+     *
+     * @param launcher              the root TAPL instrumentation object of {@link
+     *                              LauncherInstrumentation} type.
+     * @param homeAppIcon           to be uninstalled.
+     * @param launcher              the root TAPL instrumentation object of {@link
+     *                              LauncherInstrumentation} type.
+     * @param homeAppIcon           to be uninstalled.
+     * @param expectLongClickEvents the runnable to be executed to verify expected longclick event.
+     * @return validated workspace after the existing appIcon being uninstalled.
+     */
+    static Workspace uninstallAppIcon(LauncherInstrumentation launcher, HomeAppIcon homeAppIcon,
+            Runnable expectLongClickEvents) {
+        try (LauncherInstrumentation.Closable c = launcher.addContextLayer(
+                "uninstalling app icon")) {
+            dragIconToWorkspace(
+                    launcher,
+                    homeAppIcon,
+                    () -> getDropPointFromDropTargetBar(launcher, UNINSTALL_TARGET_TEXT_ID),
+                    expectLongClickEvents,
+                    /* expectDropEvents= */null);
+
+            launcher.waitUntilLauncherObjectGone(DROP_BAR_RES_ID);
+
+            final BySelector installerAlert = By.text(Pattern.compile(
+                    "Do you want to uninstall this app\\?",
+                    Pattern.DOTALL | Pattern.MULTILINE));
+            final UiDevice device = launcher.getDevice();
+            assertTrue("uninstall alert is not shown", device.wait(
+                    Until.hasObject(installerAlert), LauncherInstrumentation.WAIT_TIME_MS));
+            final UiObject2 ok = device.findObject(By.text("OK"));
+            assertNotNull("OK button is not shown", ok);
+            launcher.clickObject(ok);
+            assertTrue("Uninstall alert is not dismissed after clicking OK", device.wait(
+                    Until.gone(installerAlert), LauncherInstrumentation.WAIT_TIME_MS));
+
+            try (LauncherInstrumentation.Closable c1 = launcher.addContextLayer(
+                    "uninstalled app by dragging to the drop bar")) {
+                return new Workspace(launcher);
+            }
+        }
+    }
+
+    /**
+     * Get cell layout's grids size. The return point's x and y values are the cell counts in X and
+     * Y directions respectively, not the values in pixels.
+     */
+    public Point getIconGridDimensions() {
+        int[] countXY = mLauncher.getTestInfo(
+                TestProtocol.REQUEST_WORKSPACE_CELL_LAYOUT_SIZE).getIntArray(
+                TestProtocol.TEST_INFO_RESPONSE_FIELD);
+        return new Point(countXY[0], countXY[1]);
+    }
+
+    static Point getCellCenter(LauncherInstrumentation launcher, int cellX, int cellY) {
+        return launcher.getTestInfo(WorkspaceCellCenterRequest.builder().setCellX(
+                cellX).setCellY(cellY).build()).getParcelable(
+                TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
     /**
@@ -257,31 +354,6 @@ public final class Workspace extends Home {
         final UiObject2 workspace = verifyActiveContainer();
         return mLauncher.getObjectsInContainer(workspace, "folder_icon_name").stream().map(
                 o -> new FolderIcon(mLauncher, o)).collect(Collectors.toList());
-    }
-
-    /**
-     * Drag an icon up with a short distance that makes workspace go to spring loaded state.
-     *
-     * @return the position after dragging.
-     */
-    private static Point dragIconToSpringLoaded(LauncherInstrumentation launcher, long downTime,
-            UiObject2 icon,
-            String longPressIndicator, Runnable expectLongClickEvents) {
-        final Point iconCenter = icon.getVisibleCenter();
-        final Point dragStartCenter = new Point(iconCenter.x,
-                iconCenter.y - getStartDragThreshold(launcher));
-
-        launcher.runToState(() -> {
-            launcher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN,
-                    iconCenter, LauncherInstrumentation.GestureScope.INSIDE);
-            LauncherInstrumentation.log("dragIconToSpringLoaded: sent down");
-            expectLongClickEvents.run();
-            launcher.waitForLauncherObject(longPressIndicator);
-            LauncherInstrumentation.log("dragIconToSpringLoaded: indicator");
-            launcher.movePointer(iconCenter, dragStartCenter, DEFAULT_DRAG_STEPS, false,
-                    downTime, true, LauncherInstrumentation.GestureScope.INSIDE);
-        }, SPRING_LOADED_STATE_ORDINAL, "long-pressing and triggering drag start");
-        return dragStartCenter;
     }
 
     private static void dropDraggedIcon(LauncherInstrumentation launcher, Point dest, long downTime,
@@ -300,36 +372,57 @@ public final class Workspace extends Home {
     }
 
     static void dragIconToWorkspace(LauncherInstrumentation launcher, Launchable launchable,
-            Point dest, String longPressIndicator, boolean startsActivity, boolean isWidgetShortcut,
+            Point dest, boolean startsActivity, boolean isWidgetShortcut,
             Runnable expectLongClickEvents) {
         Runnable expectDropEvents = null;
         if (startsActivity || isWidgetShortcut) {
             expectDropEvents = () -> launcher.expectEvent(TestProtocol.SEQUENCE_MAIN,
                     LauncherInstrumentation.EVENT_START);
         }
-        dragIconToWorkspace(launcher, launchable, () -> dest, false, longPressIndicator,
-                expectLongClickEvents, expectDropEvents);
+        dragIconToWorkspace(
+                launcher, launchable, () -> dest, expectLongClickEvents, expectDropEvents);
     }
 
     /**
-     * Drag icon in workspace to else where.
+     * Drag icon in workspace to else where and drop it immediately.
+     * (There is no slow down time before drop event)
      * This function expects the launchable is inside the workspace and there is no drop event.
      */
-    static void dragIconToWorkspace(LauncherInstrumentation launcher, Launchable launchable,
-            Supplier<Point> destSupplier, String longPressIndicator) {
-        dragIconToWorkspace(launcher, launchable, destSupplier, false, longPressIndicator,
-                () -> launcher.expectEvent(TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT), null);
+    static void dragIconToWorkspace(
+            LauncherInstrumentation launcher, Launchable launchable, Supplier<Point> destSupplier) {
+        dragIconToWorkspace(
+                launcher,
+                launchable,
+                destSupplier,
+                /* isDecelerating= */ false,
+                () -> launcher.expectEvent(TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT),
+                /* expectDropEvents= */ null);
     }
 
     static void dragIconToWorkspace(
-            LauncherInstrumentation launcher, Launchable launchable, Supplier<Point> dest,
-            boolean isDecelerating, String longPressIndicator, Runnable expectLongClickEvents,
+            LauncherInstrumentation launcher,
+            Launchable launchable,
+            Supplier<Point> dest,
+            Runnable expectLongClickEvents,
+            @Nullable Runnable expectDropEvents) {
+        dragIconToWorkspace(launcher, launchable, dest, /* isDecelerating */ true,
+                expectLongClickEvents, expectDropEvents);
+    }
+
+    static void dragIconToWorkspace(
+            LauncherInstrumentation launcher,
+            Launchable launchable,
+            Supplier<Point> dest,
+            boolean isDecelerating,
+            Runnable expectLongClickEvents,
             @Nullable Runnable expectDropEvents) {
         try (LauncherInstrumentation.Closable ignored = launcher.addContextLayer(
                 "want to drag icon to workspace")) {
             final long downTime = SystemClock.uptimeMillis();
-            Point dragStart = dragIconToSpringLoaded(launcher, downTime,
-                    launchable.getObject(), longPressIndicator, expectLongClickEvents);
+            Point dragStart = launchable.startDrag(
+                    downTime,
+                    expectLongClickEvents,
+                    /* runToSpringLoadedState= */ true);
             Point targetDest = dest.get();
             int displayX = launcher.getRealDisplaySize().x;
 
@@ -338,9 +431,11 @@ public final class Workspace extends Home {
             while (targetDest.x > displayX || targetDest.x < 0) {
                 int edgeX = targetDest.x > 0 ? displayX : 0;
                 Point screenEdge = new Point(edgeX, targetDest.y);
-                launcher.movePointer(dragStart, screenEdge, DEFAULT_DRAG_STEPS, isDecelerating,
-                        downTime, true, LauncherInstrumentation.GestureScope.INSIDE);
-                launcher.waitForIdle(); // Wait for the page change to happen
+                Point finalDragStart = dragStart;
+                executeAndWaitForPageScroll(launcher,
+                        () -> launcher.movePointer(finalDragStart, screenEdge, DEFAULT_DRAG_STEPS,
+                                true, downTime, downTime, true,
+                                LauncherInstrumentation.GestureScope.INSIDE));
                 targetDest.x += displayX * (targetDest.x > 0 ? -1 : 1);
                 dragStart = screenEdge;
             }
@@ -348,9 +443,17 @@ public final class Workspace extends Home {
             // targetDest.x is now between 0 and displayX so we found the target page,
             // we just have to put move the icon to the destination and drop it
             launcher.movePointer(dragStart, targetDest, DEFAULT_DRAG_STEPS, isDecelerating,
-                    downTime, true, LauncherInstrumentation.GestureScope.INSIDE);
+                    downTime, SystemClock.uptimeMillis(), false,
+                    LauncherInstrumentation.GestureScope.INSIDE);
             dropDraggedIcon(launcher, targetDest, downTime, expectDropEvents);
         }
+    }
+
+    private static void executeAndWaitForPageScroll(LauncherInstrumentation launcher,
+            Runnable command) {
+        launcher.executeAndWaitForEvent(command,
+                event -> event.getEventType() == TYPE_VIEW_SCROLLED,
+                () -> "Page scroll didn't happen", "Scrolling page");
     }
 
     /**

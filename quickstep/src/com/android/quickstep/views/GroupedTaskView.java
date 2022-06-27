@@ -5,14 +5,17 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITIO
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 
 import android.content.Context;
+import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
 import com.android.launcher3.util.TransformingTouchDelegate;
@@ -23,6 +26,7 @@ import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
 import java.util.HashMap;
 import java.util.function.Consumer;
@@ -51,7 +55,6 @@ public class GroupedTaskView extends TaskView {
     private TransformingTouchDelegate mIcon2TouchDelegate;
     @Nullable private StagedSplitBounds mSplitBoundsConfig;
     private final DigitalWellBeingToast mDigitalWellBeingToast2;
-
 
     public GroupedTaskView(Context context) {
         this(context, null);
@@ -169,8 +172,14 @@ public class GroupedTaskView extends TaskView {
         RunnableList endCallback = new RunnableList();
         RecentsView recentsView = getRecentsView();
         // Callbacks run from remote animation when recents animation not currently running
+        InteractionJankMonitorWrapper.begin(this,
+                InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER, "Enter form GroupedTaskView");
         recentsView.getSplitPlaceholder().launchTasks(this /*groupedTaskView*/,
-                success -> endCallback.executeAllAndDestroy(),
+                success -> {
+                    endCallback.executeAllAndDestroy();
+                    InteractionJankMonitorWrapper.end(
+                            InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
+                },
                 false /* freezeTaskList */);
 
         // Callbacks get run from recentsView for case when recents animation already running
@@ -180,9 +189,8 @@ public class GroupedTaskView extends TaskView {
 
     @Override
     public void launchTask(@NonNull Consumer<Boolean> callback, boolean freezeTaskList) {
-        getRecentsView().getSplitPlaceholder().launchTasks(mTask, mSecondaryTask,
-                STAGE_POSITION_TOP_OR_LEFT, callback, freezeTaskList,
-                getSplitRatio());
+        getRecentsView().getSplitPlaceholder().launchTasks(mTask.key.id, mSecondaryTask.key.id,
+                STAGE_POSITION_TOP_OR_LEFT, callback, freezeTaskList, getSplitRatio());
     }
 
     @Override
@@ -205,6 +213,20 @@ public class GroupedTaskView extends TaskView {
     }
 
     @Override
+    protected int getChildTaskIndexAtPosition(PointF position) {
+        if (isCoordInView(mIconView2, position) || isCoordInView(mSnapshotView2, position)) {
+            return 1;
+        }
+        return super.getChildTaskIndexAtPosition(position);
+    }
+
+    private boolean isCoordInView(View v, PointF position) {
+        float[] localPos = new float[]{position.x, position.y};
+        Utilities.mapCoordInSelfToDescendant(v, this, localPos);
+        return Utilities.pointInView(v, localPos[0], localPos[1], 0f /* slop */);
+    }
+
+    @Override
     public void onRecycle() {
         super.onRecycle();
         mSnapshotView2.setThumbnail(mSecondaryTask, null);
@@ -222,7 +244,7 @@ public class GroupedTaskView extends TaskView {
         }
         getPagedOrientationHandler().measureGroupedTaskViewThumbnailBounds(mSnapshotView,
                 mSnapshotView2, widthSize, heightSize, mSplitBoundsConfig,
-                mActivity.getDeviceProfile());
+                mActivity.getDeviceProfile(), getLayoutDirection() == LAYOUT_DIRECTION_RTL);
         updateIconPlacement();
     }
 
@@ -236,12 +258,13 @@ public class GroupedTaskView extends TaskView {
     public void setOrientationState(RecentsOrientedState orientationState) {
         super.setOrientationState(orientationState);
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        boolean isGridTask = deviceProfile.overviewShowAsGrid && !isFocusedTask();
+        boolean isGridTask = deviceProfile.isTablet && !isFocusedTask();
         int iconDrawableSize = isGridTask ? deviceProfile.overviewTaskIconDrawableSizeGridPx
                 : deviceProfile.overviewTaskIconDrawableSizePx;
         mIconView2.setDrawableSize(iconDrawableSize, iconDrawableSize);
         mIconView2.setRotation(getPagedOrientationHandler().getDegreesRotated());
         updateIconPlacement();
+        updateSecondaryDwbPlacement();
     }
 
     private void updateIconPlacement() {
@@ -255,7 +278,15 @@ public class GroupedTaskView extends TaskView {
 
         getPagedOrientationHandler().setSplitIconParams(mIconView, mIconView2,
                 taskIconHeight, mSnapshotView.getMeasuredWidth(), mSnapshotView.getMeasuredHeight(),
-                isRtl, deviceProfile, mSplitBoundsConfig);
+                getMeasuredHeight(), getMeasuredWidth(), isRtl, deviceProfile,
+                mSplitBoundsConfig);
+    }
+
+    private void updateSecondaryDwbPlacement() {
+        if (mSecondaryTask == null) {
+            return;
+        }
+        mDigitalWellBeingToast2.initialize(mSecondaryTask);
     }
 
     @Override

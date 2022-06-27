@@ -22,8 +22,9 @@ import android.view.ViewGroup;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.DisplayController.NavigationMode;
 import com.android.quickstep.LauncherActivityInterface;
-import com.android.quickstep.SysUINavigationMode;
 
 public class LayoutUtils {
 
@@ -32,7 +33,7 @@ public class LayoutUtils {
      */
     public static float getDefaultSwipeHeight(Context context, DeviceProfile dp) {
         float swipeHeight = dp.allAppsCellHeightPx - dp.allAppsIconTextSizePx;
-        if (SysUINavigationMode.getMode(context) == SysUINavigationMode.Mode.NO_BUTTON) {
+        if (DisplayController.getNavigationMode(context) == NavigationMode.NO_BUTTON) {
             swipeHeight -= dp.getInsets().bottom;
         }
         return swipeHeight;

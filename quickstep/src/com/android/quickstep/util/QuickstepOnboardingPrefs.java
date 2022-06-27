@@ -21,20 +21,21 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
+import static com.android.launcher3.util.DisplayController.NavigationMode.NO_BUTTON;
 
 import android.content.SharedPreferences;
 
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.appprediction.AppsDividerView;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.OnboardingPrefs;
-import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.views.AllAppsEduView;
 
 /**
@@ -50,8 +51,8 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<QuickstepLauncher>
             stateManager.addStateListener(new StateListener<LauncherState>() {
                 @Override
                 public void onStateTransitionComplete(LauncherState finalState) {
-                    boolean swipeUpEnabled = SysUINavigationMode.INSTANCE
-                            .get(mLauncher).getMode().hasGestures;
+                    boolean swipeUpEnabled =
+                            DisplayController.getNavigationMode(mLauncher).hasGestures;
                     LauncherState prevState = stateManager.getLastState();
 
                     if (((swipeUpEnabled && finalState == OVERVIEW) || (!swipeUpEnabled
@@ -87,7 +88,7 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<QuickstepLauncher>
             });
         }
 
-        if (SysUINavigationMode.getMode(launcher) == NO_BUTTON
+        if (DisplayController.getNavigationMode(launcher) == NO_BUTTON
                 && FeatureFlags.ENABLE_ALL_APPS_EDU.get()) {
             stateManager.addStateListener(new StateListener<LauncherState>() {
                 private static final int MAX_NUM_SWIPES_TO_TRIGGER_EDU = 3;
@@ -128,6 +129,25 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<QuickstepLauncher>
                         if (view != null) {
                             view.close(false);
                         }
+                    }
+                }
+            });
+        }
+
+        if (!hasReachedMaxCount(ALL_APPS_VISITED_COUNT)) {
+            mLauncher.getStateManager().addStateListener(new StateListener<LauncherState>() {
+                @Override
+                public void onStateTransitionComplete(LauncherState finalState) {
+                    if (finalState == ALL_APPS) {
+                        incrementEventCount(ALL_APPS_VISITED_COUNT);
+                        return;
+                    }
+
+                    boolean hasReachedMaxCount = hasReachedMaxCount(ALL_APPS_VISITED_COUNT);
+                    mLauncher.getAppsView().getFloatingHeaderView().findFixedRowByType(
+                            AppsDividerView.class).setShowAllAppsLabel(!hasReachedMaxCount);
+                    if (hasReachedMaxCount) {
+                        mLauncher.getStateManager().removeStateListener(this);
                     }
                 }
             });

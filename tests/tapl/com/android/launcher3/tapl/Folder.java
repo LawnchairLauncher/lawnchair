@@ -40,10 +40,10 @@ public class Folder {
      * Find an app icon with given name or raise assertion error.
      */
     @NonNull
-    public AppIcon getAppIcon(String appName) {
+    public HomeAppIcon getAppIcon(String appName) {
         try (LauncherInstrumentation.Closable ignored = mLauncher.addContextLayer(
                 "Want to get app icon in folder")) {
-            return new AppIcon(mLauncher,
+            return new WorkspaceAppIcon(mLauncher,
                     mLauncher.waitForObjectInContainer(
                             mContainer,
                             AppIcon.getAppIconSelector(appName, mLauncher)));

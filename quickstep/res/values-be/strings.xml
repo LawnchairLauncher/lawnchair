@@ -76,6 +76,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Гатова!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Каб перайсці на галоўны экран, правядзіце пальцам уверх"</string>
     <string name="allset_description" msgid="6350320429953234580">"Вы можаце пачаць карыстанне тэлефонам"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"Вы можаце пачаць карыстанне планшэтам"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Налады навігацыі ў сістэме"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Абагуліць"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Здымак экрана"</string>
@@ -97,4 +98,13 @@
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Назад"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Закрыць"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Гатова"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Галоўны экран"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Спецыяльныя"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Назад"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"Выключальнік IME"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Нядаўнія"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"Апавяшчэнні"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Хуткія налады"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Перамясціць уверх/улева"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Перамясціць уніз/управа"</string>
 </resources>

@@ -19,6 +19,7 @@ package com.android.launcher3;
 import static android.view.MotionEvent.ACTION_DOWN;
 
 import static com.android.launcher3.CellLayout.FOLDER;
+import static com.android.launcher3.CellLayout.HOTSEAT;
 import static com.android.launcher3.CellLayout.WORKSPACE;
 
 import android.app.WallpaperManager;
@@ -146,7 +147,8 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
             // No need to add padding when cell layout border spacing is present.
             boolean noPaddingX =
                     (dp.cellLayoutBorderSpacePx.x > 0 && mContainerType == WORKSPACE)
-                            || (dp.folderCellLayoutBorderSpacePx.x > 0 && mContainerType == FOLDER);
+                            || (dp.folderCellLayoutBorderSpacePx.x > 0 && mContainerType == FOLDER)
+                            || (dp.hotseatBorderSpace > 0 && mContainerType == HOTSEAT);
             int cellPaddingX = noPaddingX
                     ? 0
                     : mContainerType == WORKSPACE
@@ -251,7 +253,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
         // While the folder is open, the position of the icon cannot change.
         lp.canReorder = false;
-        if (mContainerType == CellLayout.HOTSEAT) {
+        if (mContainerType == HOTSEAT) {
             CellLayout cl = (CellLayout) getParent();
             cl.setFolderLeaveBehindCell(lp.cellX, lp.cellY);
         }
@@ -260,7 +262,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
     @Override
     public void clearFolderLeaveBehind(FolderIcon child) {
         ((CellLayout.LayoutParams) child.getLayoutParams()).canReorder = true;
-        if (mContainerType == CellLayout.HOTSEAT) {
+        if (mContainerType == HOTSEAT) {
             CellLayout cl = (CellLayout) getParent();
             cl.clearFolderLeaveBehind();
         }

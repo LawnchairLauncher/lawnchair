@@ -19,9 +19,10 @@ import android.view.View;
 
 import androidx.annotation.CallSuper;
 
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
-import com.android.launcher3.model.data.WorkspaceItemInfo;
 
+import java.io.PrintWriter;
 import java.util.stream.Stream;
 
 /**
@@ -48,13 +49,19 @@ public class TaskbarUIController {
         return true;
     }
 
+    public boolean supportsVisualStashing() {
+        if (mControllers == null) return false;
+        return !mControllers.taskbarActivityContext.isThreeButtonNav();
+    }
+
     protected void onStashedInAppChanged() { }
 
     public Stream<ItemInfoWithIcon> getAppIconsForEdu() {
         return Stream.empty();
     }
 
-    public void onTaskbarIconLaunched(WorkspaceItemInfo item) { }
+    /** Called when an icon is launched. */
+    public void onTaskbarIconLaunched(ItemInfo item) { }
 
     public View getRootView() {
         return mControllers.taskbarActivityContext.getDragLayer();
@@ -66,5 +73,31 @@ public class TaskbarUIController {
      */
     public void setSystemGestureInProgress(boolean inProgress) {
         mControllers.taskbarStashController.setSystemGestureInProgress(inProgress);
+    }
+
+    /**
+     * Manually closes the all apps window.
+     */
+    public void hideAllApps() {
+        mControllers.taskbarAllAppsController.hide();
+    }
+
+    /**
+     * User expands PiP to full-screen (or split-screen) mode, try to hide the Taskbar.
+     */
+    public void onExpandPip() {
+        if (mControllers != null) {
+            final TaskbarStashController stashController = mControllers.taskbarStashController;
+            stashController.updateStateForFlag(TaskbarStashController.FLAG_IN_APP, true);
+            stashController.applyState();
+        }
+    }
+
+    @CallSuper
+    protected void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(String.format(
+                "%sTaskbarUIController: using an instance of %s",
+                prefix,
+                getClass().getSimpleName()));
     }
 }

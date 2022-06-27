@@ -17,9 +17,6 @@
 package com.android.quickstep.views;
 
 import static android.provider.Settings.ACTION_APP_USAGE_SETTINGS;
-import static android.view.Gravity.BOTTOM;
-import static android.view.Gravity.CENTER_HORIZONTAL;
-import static android.view.Gravity.START;
 
 import static com.android.launcher3.Utilities.prefixTextWithIcon;
 import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
@@ -147,12 +144,6 @@ public final class DigitalWellBeingToast {
 
     public void initialize(Task task) {
         mTask = task;
-
-        if (task.key.userId != UserHandle.myUserId()) {
-            setNoLimit();
-            return;
-        }
-
         THREAD_POOL_EXECUTOR.execute(() -> {
             final AppUsageLimit usageLimit = mLauncherApps.getAppUsageLimit(
                     task.getTopComponent().getPackageName(),
@@ -175,9 +166,9 @@ public final class DigitalWellBeingToast {
 
     public void setSplitConfiguration(StagedSplitBounds stagedSplitBounds) {
         mStagedSplitBounds = stagedSplitBounds;
-        if (mStagedSplitBounds == null ||
-                !mActivity.getDeviceProfile().overviewShowAsGrid ||
-                mTaskView.isFocusedTask()) {
+        if (mStagedSplitBounds == null
+                || !mActivity.getDeviceProfile().isTablet
+                || mTaskView.isFocusedTask()) {
             mSplitBannerConfig = SPLIT_BANNER_FULLSCREEN;
             return;
         }
@@ -315,7 +306,7 @@ public final class DigitalWellBeingToast {
 
     private void setBanner(@Nullable View view) {
         mBanner = view;
-        if (view != null) {
+        if (view != null && mTaskView.getRecentsView() != null) {
             setupAndAddBanner();
             setBannerOutline();
         }
@@ -329,7 +320,7 @@ public final class DigitalWellBeingToast {
                 mTaskView.getThumbnail().getLayoutParams()).bottomMargin;
         PagedOrientationHandler orientationHandler = mTaskView.getPagedOrientationHandler();
         Pair<Float, Float> translations = orientationHandler
-                .setDwbLayoutParamsAndGetTranslations(mTaskView.getMeasuredWidth(),
+                .getDwbLayoutTranslations(mTaskView.getMeasuredWidth(),
                         mTaskView.getMeasuredHeight(), mStagedSplitBounds, deviceProfile,
                         mTaskView.getThumbnails(), mTask.key.id, mBanner);
         mSplitOffsetTranslationX = translations.first;

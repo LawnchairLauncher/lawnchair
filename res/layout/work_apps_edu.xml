@@ -16,40 +16,52 @@
 <com.android.launcher3.allapps.WorkEduCard xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
+    android:paddingTop="@dimen/work_edu_card_margin"
+    android:paddingBottom="@dimen/work_edu_card_bottom_margin"
     android:gravity="center">
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingHorizontal="@dimen/work_card_padding_horizontal"
-        android:paddingVertical="@dimen/work_card_padding_horizontal"
+        android:orientation="horizontal"
         android:background="@drawable/work_card"
         android:layout_gravity="center_horizontal"
-        android:gravity="center"
+        android:paddingEnd="@dimen/work_card_margin"
+        android:paddingStart="@dimen/work_card_margin"
+        android:paddingTop="@dimen/work_card_margin"
         android:id="@+id/wrapper">
-
         <TextView
             style="@style/PrimaryHeadline"
             android:textColor="?android:attr/textColorPrimary"
             android:id="@+id/work_apps_paused_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/work_card_padding_horizontal"
+            android:layout_marginBottom="@dimen/work_card_margin"
+            android:layout_marginEnd="@dimen/work_card_margin"
             android:text="@string/work_profile_edu_work_apps"
-            android:textAlignment="center"
-            android:textSize="20sp" />
-
-        <Button
+            android:textDirection="locale"
+            android:textSize="18sp" />
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/work_card_button_height"
-            android:id="@+id/action_btn"
-            android:textColor="?attr/workProfileOverlayTextColor"
-            android:text="@string/work_profile_edu_accept"
-            android:textAlignment="center"
-            android:background="@drawable/rounded_action_button"
+            android:layout_height="@dimen/padded_rounded_button_height"
+            android:orientation="horizontal">
+            <FrameLayout
+                android:layout_width="@dimen/rounded_button_width"
+                android:layout_height="@dimen/rounded_button_width"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/rounded_action_button"
+                android:padding="@dimen/rounded_button_padding">
+                <ImageButton
+                    android:id="@+id/action_btn"
+                    android:layout_width="@dimen/x_icon_size"
+                    android:layout_height="@dimen/x_icon_size"
+                    android:layout_gravity="center"
+                    android:padding="@dimen/x_icon_padding"
+                    android:contentDescription="@string/accessibility_close"
+                    android:src="@drawable/ic_remove_no_shadow" />
+            </FrameLayout>
+        </RelativeLayout>
+    </RelativeLayout>
 
-            android:textSize="14sp" />
-    </LinearLayout>
+
+
 </com.android.launcher3.allapps.WorkEduCard>

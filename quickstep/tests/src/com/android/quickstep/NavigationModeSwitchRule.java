@@ -20,9 +20,7 @@ import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
 import static com.android.quickstep.NavigationModeSwitchRule.Mode.ALL;
 import static com.android.quickstep.NavigationModeSwitchRule.Mode.THREE_BUTTON;
-import static com.android.quickstep.NavigationModeSwitchRule.Mode.TWO_BUTTON;
 import static com.android.quickstep.NavigationModeSwitchRule.Mode.ZERO_BUTTON;
-import static com.android.systemui.shared.system.QuickStepContract.NAV_BAR_MODE_2BUTTON_OVERLAY;
 import static com.android.systemui.shared.system.QuickStepContract.NAV_BAR_MODE_3BUTTON_OVERLAY;
 import static com.android.systemui.shared.system.QuickStepContract.NAV_BAR_MODE_GESTURAL_OVERLAY;
 
@@ -35,6 +33,7 @@ import androidx.test.uiautomator.UiDevice;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -61,7 +60,7 @@ public class NavigationModeSwitchRule implements TestRule {
     public static final int WAIT_TIME_MS = 10000;
 
     public enum Mode {
-        THREE_BUTTON, TWO_BUTTON, ZERO_BUTTON, ALL
+        THREE_BUTTON, ZERO_BUTTON, ALL
     }
 
     // Annotation for tests that need to be run with quickstep enabled and disabled.
@@ -73,8 +72,8 @@ public class NavigationModeSwitchRule implements TestRule {
 
     private final LauncherInstrumentation mLauncher;
 
-    static final SysUINavigationMode SYS_UI_NAVIGATION_MODE =
-            SysUINavigationMode.INSTANCE.get(getInstrumentation().getTargetContext());
+    static final DisplayController DISPLAY_CONTROLLER =
+            DisplayController.INSTANCE.get(getInstrumentation().getTargetContext());
 
     public NavigationModeSwitchRule(LauncherInstrumentation launcher) {
         mLauncher = launcher;
@@ -99,9 +98,6 @@ public class NavigationModeSwitchRule implements TestRule {
                         if (mode == ZERO_BUTTON || mode == ALL) {
                             evaluateWithZeroButtons();
                         }
-                        if (mode == TWO_BUTTON || mode == ALL) {
-                            evaluateWithTwoButtons();
-                        }
                         if (mode == THREE_BUTTON || mode == ALL) {
                             evaluateWithThreeButtons();
                         }
@@ -123,13 +119,6 @@ public class NavigationModeSwitchRule implements TestRule {
                     }
                 }
 
-                private void evaluateWithTwoButtons() throws Throwable {
-                    if (setActiveOverlay(mLauncher, NAV_BAR_MODE_2BUTTON_OVERLAY,
-                            LauncherInstrumentation.NavigationModel.TWO_BUTTON, description)) {
-                        base.evaluate();
-                    }
-                }
-
                 private void evaluateWithZeroButtons() throws Throwable {
                     if (setActiveOverlay(mLauncher, NAV_BAR_MODE_GESTURAL_OVERLAY,
                             LauncherInstrumentation.NavigationModel.ZERO_BUTTON, description)) {
@@ -145,14 +134,12 @@ public class NavigationModeSwitchRule implements TestRule {
     public static String getCurrentOverlayPackage(int currentInteractionMode) {
         return QuickStepContract.isGesturalMode(currentInteractionMode)
                 ? NAV_BAR_MODE_GESTURAL_OVERLAY
-                : QuickStepContract.isSwipeUpMode(currentInteractionMode)
-                        ? NAV_BAR_MODE_2BUTTON_OVERLAY
-                        : NAV_BAR_MODE_3BUTTON_OVERLAY;
+                : NAV_BAR_MODE_3BUTTON_OVERLAY;
     }
 
     private static LauncherInstrumentation.NavigationModel currentSysUiNavigationMode() {
         return LauncherInstrumentation.getNavigationModel(
-                SysUINavigationMode.getMode(
+                DisplayController.getNavigationMode(
                         getInstrumentation().
                                 getTargetContext()).
                         resValue);
@@ -173,18 +160,18 @@ public class NavigationModeSwitchRule implements TestRule {
         if (currentSysUiNavigationMode() != expectedMode) {
             final CountDownLatch latch = new CountDownLatch(1);
             final Context targetContext = getInstrumentation().getTargetContext();
-            final SysUINavigationMode.NavigationModeChangeListener listener =
-                    newMode -> {
-                        if (LauncherInstrumentation.getNavigationModel(newMode.resValue)
+            final DisplayController.DisplayInfoChangeListener listener =
+                    (context, info, flags) -> {
+                        if (LauncherInstrumentation.getNavigationModel(info.navigationMode.resValue)
                                 == expectedMode) {
                             latch.countDown();
                         }
                     };
             targetContext.getMainExecutor().execute(() ->
-                    SYS_UI_NAVIGATION_MODE.addModeChangeListener(listener));
+                    DISPLAY_CONTROLLER.addChangeListener(listener));
             latch.await(60, TimeUnit.SECONDS);
             targetContext.getMainExecutor().execute(() ->
-                    SYS_UI_NAVIGATION_MODE.removeModeChangeListener(listener));
+                    DISPLAY_CONTROLLER.removeChangeListener(listener));
 
             assertTrue(launcher, "Navigation mode didn't change to " + expectedMode,
                     currentSysUiNavigationMode() == expectedMode, description);
@@ -220,7 +207,7 @@ public class NavigationModeSwitchRule implements TestRule {
         if (!condition) {
             final AssertionError assertionError = new AssertionError(message);
             if (description != null) {
-                FailureWatcher.onError(launcher.getDevice(), description, assertionError);
+                FailureWatcher.onError(launcher, description, assertionError);
             }
             throw assertionError;
         }

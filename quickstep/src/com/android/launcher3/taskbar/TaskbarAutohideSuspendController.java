@@ -15,21 +15,27 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.taskbar.Utilities.appendFlag;
+
 import androidx.annotation.IntDef;
 
 import com.android.quickstep.SystemUiProxy;
 
+import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.StringJoiner;
 
 /**
  * Normally Taskbar will auto-hide when entering immersive (fullscreen) apps. This controller allows
  * us to suspend that behavior in certain cases (e.g. opening a Folder or dragging an icon).
  */
-public class TaskbarAutohideSuspendController {
+public class TaskbarAutohideSuspendController implements
+        TaskbarControllers.LoggableTaskbarController {
 
     public static final int FLAG_AUTOHIDE_SUSPEND_FULLSCREEN = 1 << 0;
     public static final int FLAG_AUTOHIDE_SUSPEND_DRAGGING = 1 << 1;
+
     @IntDef(flag = true, value = {
             FLAG_AUTOHIDE_SUSPEND_FULLSCREEN,
             FLAG_AUTOHIDE_SUSPEND_DRAGGING,
@@ -59,5 +65,21 @@ public class TaskbarAutohideSuspendController {
             mAutohideSuspendFlags &= ~flag;
         }
         mSystemUiProxy.notifyTaskbarAutohideSuspend(mAutohideSuspendFlags != 0);
+    }
+
+    @Override
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarAutohideSuspendController:");
+
+        pw.println(String.format(
+                "%s\tmAutohideSuspendFlags=%s", prefix, getStateString(mAutohideSuspendFlags)));
+    }
+
+    private static String getStateString(int flags) {
+        StringJoiner str = new StringJoiner("|");
+        appendFlag(str, flags, FLAG_AUTOHIDE_SUSPEND_FULLSCREEN,
+                "FLAG_AUTOHIDE_SUSPEND_FULLSCREEN");
+        appendFlag(str, flags, FLAG_AUTOHIDE_SUSPEND_DRAGGING, "FLAG_AUTOHIDE_SUSPEND_DRAGGING");
+        return str.toString();
     }
 }

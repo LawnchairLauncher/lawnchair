@@ -85,6 +85,9 @@ public class DeleteDropTarget extends ButtonDropTarget {
     }
 
     @Override
+    protected void setupItemInfo(ItemInfo info) {}
+
+    @Override
     protected boolean supportsDrop(ItemInfo info) {
         return true;
     }
@@ -160,7 +163,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         // Remove the item from launcher and the db, we can ignore the containerInfo in this call
         // because we already remove the drag view from the folder (if the drag originated from
         // a folder) in Folder.beginDrag()
-        mLauncher.removeItem(view, item, true /* deleteFromDb */);
+        mLauncher.removeItem(view, item, true /* deleteFromDb */, "removed by accessibility drop");
         mLauncher.getWorkspace().stripEmptyScreens();
         mLauncher.getDragLayer()
                 .announceForAccessibility(getContext().getString(R.string.item_removed));

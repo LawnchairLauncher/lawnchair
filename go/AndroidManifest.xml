@@ -54,6 +54,10 @@
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
             android:enabled="false"
             tools:node="replace" />
+
+        <service
+            android:name="com.android.launcher3.model.AppShareabilityJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>

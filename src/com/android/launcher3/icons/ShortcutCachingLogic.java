@@ -71,8 +71,8 @@ public class ShortcutCachingLogic implements CachingLogic<ShortcutInfo> {
             Drawable unbadgedDrawable = ShortcutCachingLogic.getIcon(
                     context, info, LauncherAppState.getIDP(context).fillResIconDpi);
             if (unbadgedDrawable == null) return BitmapInfo.LOW_RES_INFO;
-            return new BitmapInfo(li.createScaledBitmapWithoutShadow(
-                    unbadgedDrawable, 0), Themes.getColorAccent(context));
+            return new BitmapInfo(li.createScaledBitmapWithoutShadow(unbadgedDrawable),
+                    Themes.getColorAccent(context));
         }
     }
 

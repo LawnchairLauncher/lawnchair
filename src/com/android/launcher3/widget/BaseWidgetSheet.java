@@ -16,6 +16,8 @@
 package com.android.launcher3.widget;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -23,6 +25,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.WindowInsets;
 import android.widget.Toast;
 
 import androidx.annotation.GuardedBy;
@@ -43,7 +46,9 @@ import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.launcher3.views.AbstractSlideInView;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.ArrowTipView;
 
 /**
@@ -54,11 +59,6 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
         PopupDataProvider.PopupDataChangeListener, Insettable {
     /** The default number of cells that can fit horizontally in a widget sheet. */
     protected static final int DEFAULT_MAX_HORIZONTAL_SPANS = 4;
-    /**
-     * The maximum scale, [0, 1], of the device screen width that the widgets picker can consume
-     * on large screen devices.
-     */
-    protected static final float MAX_WIDTH_SCALE_FOR_LARGER_SCREEN = 0.89f;
 
     protected static final String KEY_WIDGETS_EDUCATION_TIP_SEEN =
             "launcher.widgets_education_tip_seen";
@@ -69,10 +69,15 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
 
     private int mContentHorizontalMarginInPx;
 
+    protected int mNavBarScrimHeight;
+    private final Paint mNavBarScrimPaint;
+
     public BaseWidgetSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContentHorizontalMarginInPx = getResources().getDimensionPixelSize(
                 R.dimen.widget_list_horizontal_margin);
+        mNavBarScrimPaint = new Paint();
+        mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
     }
 
     protected int getScrimColor(Context context) {
@@ -82,6 +87,9 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        WindowInsets windowInsets = WindowManagerProxy.INSTANCE.get(getContext())
+                .normalizeWindowInsets(getContext(), getRootWindowInsets(), new Rect());
+        mNavBarScrimHeight = getNavBarScrimHeight(windowInsets);
         mActivityContext.getPopupDataProvider().setChangeListener(this);
     }
 
@@ -135,6 +143,30 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
         }
     }
 
+    private int getNavBarScrimHeight(WindowInsets insets) {
+        if (Utilities.ATLEAST_Q) {
+            return insets.getTappableElementInsets().bottom;
+        } else {
+            return insets.getStableInsetBottom();
+        }
+    }
+
+    @Override
+    public WindowInsets onApplyWindowInsets(WindowInsets insets) {
+        mNavBarScrimHeight = getNavBarScrimHeight(insets);
+        return super.onApplyWindowInsets(insets);
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        super.dispatchDraw(canvas);
+
+        if (mNavBarScrimHeight > 0) {
+            canvas.drawRect(0, getHeight() - mNavBarScrimHeight, getWidth(), getHeight(),
+                    mNavBarScrimPaint);
+        }
+    }
+
     /** Called when the horizontal margin of the content view has changed. */
     protected abstract void onContentHorizontalMarginChanged(int contentHorizontalMarginInPx);
 
@@ -146,7 +178,10 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     protected void doMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
         int widthUsed;
-        if (mInsets.bottom > 0) {
+        if (deviceProfile.isTablet) {
+            int margin = deviceProfile.allAppsLeftRightMargin;
+            widthUsed = Math.max(2 * margin, 2 * (mInsets.left + mInsets.right));
+        } else if (mInsets.bottom > 0) {
             widthUsed = mInsets.left + mInsets.right;
         } else {
             Rect padding = deviceProfile.workspacePadding;
@@ -154,18 +189,8 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
                     2 * (mInsets.left + mInsets.right));
         }
 
-        if (deviceProfile.isTablet || deviceProfile.isTwoPanels) {
-            // In large screen devices, we restrict the width of the widgets picker to show part of
-            // the home screen. Let's ensure the minimum width used is at least the minimum width
-            // that isn't taken by the widgets picker.
-            int minUsedWidth = (int) (deviceProfile.availableWidthPx
-                    * (1 - MAX_WIDTH_SCALE_FOR_LARGER_SCREEN));
-            widthUsed = Math.max(widthUsed, minUsedWidth);
-        }
-
-        int heightUsed = mInsets.top + deviceProfile.edgeMarginPx;
         measureChildWithMargins(mContent, widthMeasureSpec,
-                widthUsed, heightMeasureSpec, heightUsed);
+                widthUsed, heightMeasureSpec, deviceProfile.bottomSheetTopPadding);
         setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
                 MeasureSpec.getSize(heightMeasureSpec));
     }
@@ -173,7 +198,9 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     /** Returns the number of cells that can fit horizontally in a given {@code content}. */
     protected int computeMaxHorizontalSpans(View content, int contentHorizontalPaddingPx) {
         DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
-        int availableWidth = content.getMeasuredWidth() - contentHorizontalPaddingPx;
+        int availableWidth = content.getMeasuredWidth()
+                - contentHorizontalPaddingPx
+                - (2 * mContentHorizontalMarginInPx);
         Point cellSize = deviceProfile.getCellSize();
         if (cellSize.x > 0) {
             return availableWidth / cellSize.x;
@@ -306,5 +333,12 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     protected boolean hasSeenEducationTip() {
         return mActivityContext.getSharedPrefs().getBoolean(KEY_WIDGETS_EDUCATION_TIP_SEEN, false)
                 || Utilities.IS_RUNNING_IN_TEST_HARNESS;
+    }
+
+    @Override
+    protected void setTranslationShift(float translationShift) {
+        super.setTranslationShift(translationShift);
+        Launcher launcher = ActivityContext.lookupContext(getContext());
+        launcher.onWidgetsTransition(1 - translationShift);
     }
 }

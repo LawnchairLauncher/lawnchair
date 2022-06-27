@@ -127,7 +127,7 @@ public final class OverviewTask {
     /**
      * Clicks at the task.
      */
-    public Background open() {
+    public LaunchedAppState open() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             verifyActiveContainer();
             mLauncher.executeAndWaitForEvent(
@@ -137,7 +137,7 @@ public final class OverviewTask {
                             + mTask.getParent().getContentDescription(),
                     "clicking an overview task");
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, TASK_START_EVENT);
-            return new Background(mLauncher);
+            return new LaunchedAppState(mLauncher);
         }
     }
 }

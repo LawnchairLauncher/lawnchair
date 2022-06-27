@@ -76,6 +76,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Tudo pronto!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Deslize rapidamente para cima para aceder ao ecrã principal"</string>
     <string name="allset_description" msgid="6350320429953234580">"Já pode começar a utilizar o seu telemóvel"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"Já pode começar a usar o seu tablet"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Definições de navegação do sistema"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Partilhar"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Fazer captura de ecrã"</string>
@@ -97,4 +98,13 @@
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Anterior"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Fechar"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Concluir"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Início"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Acessibilidade"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Voltar"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"Comutador IME"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Recentes"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"Notificações"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Definiç. rápidas"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Mover para a parte superior esquerda"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Mover para a part superior direita"</string>
 </resources>
