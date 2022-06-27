@@ -420,7 +420,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                     return recentsCoords;
                 }, new Handler());
         recentsButton.setOnClickListener(v -> {
-            navButtonController.onButtonClick(BUTTON_RECENTS);
+            navButtonController.onButtonClick(BUTTON_RECENTS, v);
             mHitboxExtender.onRecentsButtonClicked();
         });
         mPropertyHolders.add(new StatePropertyHolder(recentsButton,
@@ -634,9 +634,9 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         buttonView.setImageResource(drawableId);
         buttonView.setContentDescription(parent.getContext().getString(
                 navButtonController.getButtonContentDescription(buttonType)));
-        buttonView.setOnClickListener(view -> navButtonController.onButtonClick(buttonType));
+        buttonView.setOnClickListener(view -> navButtonController.onButtonClick(buttonType, view));
         buttonView.setOnLongClickListener(view ->
-                navButtonController.onButtonLongClick(buttonType));
+                navButtonController.onButtonLongClick(buttonType, view));
         return buttonView;
     }
 
