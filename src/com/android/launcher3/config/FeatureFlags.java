@@ -277,6 +277,10 @@ public final class FeatureFlags {
             "ENABLE_DISMISS_PREDICTION_UNDO", false,
             "Show an 'Undo' snackbar when users dismiss a predicted hotseat item");
 
+    public static final BooleanFlag ENABLE_CACHED_WIDGET = getDebugFlag(
+            "ENABLE_CACHED_WIDGET", true,
+            "Show previously cached widgets as opposed to deferred widget where available");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
