@@ -262,7 +262,7 @@
     <string name="backup_restore_error">بازنشانی بکاپ انجام نشد.</string>
     <string name="invalid_backup_file">فایل بکاپ نامعتبر.</string>
     <string name="wallpaper_depth_effect_label">افکت عمق کاغذ دیواری</string>
-    <string name="wallpaper_depth_effect_description">هنگام انتقال بین حالت ها، تصویر زمینه را بزرگنمایی و بزرگنمایی شود.</string>
+    <string name="wallpaper_depth_effect_description">هنگام انتقال بین حالت‌ها، تصویر زمینه بزرگ‌نمایی و کوچک‌نمایی شود.</string>
     <string name="gestures_label">ژست‌های حرکتی</string>
     <string name="gestures_description">ضربه‌ها و کشیدن‌ها</string>
     <!-- Gestures -->
