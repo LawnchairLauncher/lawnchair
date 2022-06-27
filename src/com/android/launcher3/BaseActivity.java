@@ -77,8 +77,8 @@ public abstract class BaseActivity extends Activity implements AppLauncher,
             new ArrayList<>();
 
     protected DeviceProfile mDeviceProfile;
-    protected StatsLogManager mStatsLogManager;
     protected SystemUiController mSystemUiController;
+    private StatsLogManager mStatsLogManager;
 
 
     public static final int ACTIVITY_STATE_STARTED = 1 << 0;
