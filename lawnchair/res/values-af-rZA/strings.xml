@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">Ikoon pakket</string>
-    <string name="icon_style">Icon Style</string>
+    <string name="icon_style">Ikoon styl</string>
     <string name="settings">Instellings</string>
     <string name="home_screen_label">Huis skerm</string>
     <string name="home_screen_description">Voer, rooster, Ikone</string>
@@ -36,9 +36,9 @@
     <string name="max_folder_columns">Maks. Folderkolomme</string>
     <string name="max_folder_rows">Maks. Folderrye</string>
     <string name="home_screen_grid">Tuisskermrooster</string>
-    <string name="home_screen_lock">Lock Home Screen</string>
-    <string name="home_screen_unlock">Unlock Home Screen</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_lock">Sluit tuisskerm</string>
+    <string name="home_screen_unlock">Ontsluit tuisskerm</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Wys sluitknoppie in opspringer</string>
     <string name="columns">Kolomme</string>
     <string name="grid">Rooster</string>
     <string name="rows">Rye</string>
@@ -80,7 +80,7 @@
         <item quantity="other">%1$d toepassings</item>
     </plurals>
     <string name="hotseat_qsb_label">Wys soekbalk</string>
-    <string name="qsb_search_provider_app_required">App required.</string>
+    <string name="qsb_search_provider_app_required">Toepassing word vereis.</string>
     <string name="dt2s_admin_hint_title">Admin Toestemmings vereis</string>
     <string name="dt2s_admin_hint">Om Dubbeltik om te slaap te gebruik, stel Lawnchair as \'n toesteladministrasie-toepassing. Tik Maak Instellings oop, tik dan op \"Aktiveer hierdie toesteladministrasie-toepassing.\"</string>
     <string name="dt2s_admin_warning">Dubbeltik om te slaap sal afgeskakel word.</string>
@@ -112,7 +112,7 @@
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
     <string name="show_sys_ui_scrim">Top skaduwee</string>
     <string name="show_status_bar">Wys Statusbalk</string>
-    <string name="layout">Layout</string>
+    <string name="layout">Uitleg</string>
     <string name="what_to_show">Wat om te wys</string>
     <string name="missing_notification_access_label">Kennisgewingtoegang benodig</string>
     <string name="missing_notification_access_description">Kennisgewingtoegang benodig.</string>
@@ -156,7 +156,7 @@
     <string name="hide_from_drawer">Versteek uit App-laai</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Afgeronde Hoeke</string>
-    <string name="allow_widget_overlap">Allow Overlap</string>
+    <string name="allow_widget_overlap">Laat oorvleueling toe</string>
     <string name="suggestion_pref_screen_title">Voorstelle</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Etiket</string>
@@ -201,8 +201,8 @@
     <string name="icon_picker_description">Kan Lawnchair laat vries.</string>
     <string name="font_picker_label">Lettertipe aanpassing</string>
     <string name="font_picker_description">Sommige teks bly onveranderd.</string>
-    <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
+    <string name="smartspace_calendar_label">In \'n oogopslag Kalenderaanpassing</string>
+    <string name="smartspace_calendar_description">Laat toe om datum in nie-Gregoriaanse kalenderstelsels te wys.</string>
     <string name="search_provider_app_search">App Soek</string>
     <string name="always_open_website_label">Maak altyd webwerf oop</string>
     <string name="always_open_website_description">Maak soekverskaffer se webwerf oop, selfs al is hul toepassing geïnstalleer.</string>
