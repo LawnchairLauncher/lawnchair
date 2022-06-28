@@ -261,6 +261,8 @@ public interface TaskShortcutFactory {
      * Does NOT add split options in the following scenarios:
      * * The taskView to add split options is already showing split screen tasks
      * * There aren't at least 2 tasks in overview to show split options for
+     * * Split isn't supported by the task itself (non resizable activity)
+     * * We aren't currently in multi-window
      * * The taskView to show split options for is the focused task AND we haven't started
      * scrolling in overview (if we haven't scrolled, there's a split overview action button so
      * we don't need this menu option)
@@ -270,9 +272,12 @@ public interface TaskShortcutFactory {
         public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
                 TaskIdAttributeContainer taskContainer) {
             DeviceProfile deviceProfile = activity.getDeviceProfile();
-            TaskView taskView = taskContainer.getTaskView();
-            RecentsView recentsView = taskView.getRecentsView();
-            PagedOrientationHandler orientationHandler = recentsView.getPagedOrientationHandler();
+            final Task task  = taskContainer.getTask();
+            final TaskView taskView = taskContainer.getTaskView();
+            final RecentsView recentsView = taskView.getRecentsView();
+            final PagedOrientationHandler orientationHandler =
+                    recentsView.getPagedOrientationHandler();
+
             int[] taskViewTaskIds = taskView.getTaskIds();
             boolean taskViewHasMultipleTasks = taskViewTaskIds[0] != -1 &&
                     taskViewTaskIds[1] != -1;
@@ -280,9 +285,14 @@ public interface TaskShortcutFactory {
             boolean isFocusedTask = deviceProfile.isTablet && taskView.isFocusedTask();
             boolean isTaskInExpectedScrollPosition =
                     recentsView.isTaskInExpectedScrollPosition(recentsView.indexOfChild(taskView));
+            boolean isTaskSplitNotSupported = !task.isDockable;
+            boolean hideForExistingMultiWindow = activity.getDeviceProfile().isMultiWindowMode;
 
-            if (taskViewHasMultipleTasks || notEnoughTasksToSplit
-                    || (isFocusedTask && isTaskInExpectedScrollPosition)) {
+            if (taskViewHasMultipleTasks ||
+                    notEnoughTasksToSplit ||
+                    isTaskSplitNotSupported ||
+                    hideForExistingMultiWindow ||
+                    (isFocusedTask && isTaskInExpectedScrollPosition)) {
                 return null;
             }
 
