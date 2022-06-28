@@ -156,7 +156,7 @@
     <string name="hide_from_drawer">Ocultar del Cajón</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Esquinas Redondeadas</string>
-    <string name="allow_widget_overlap">Allow Overlap</string>
+    <string name="allow_widget_overlap">Permitir Superposición</string>
     <string name="suggestion_pref_screen_title">Sugerencias</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Etiqueta</string>
@@ -262,7 +262,7 @@
     <string name="backup_restore_error">Error al restaurar copia de seguridad.</string>
     <string name="invalid_backup_file">Copia de seguridad no válida.</string>
     <string name="wallpaper_depth_effect_label">Efecto de profundidad del fondo de pantalla</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_description">Acerque y aleje el fondo de pantalla al cambiar entre estados.</string>
     <string name="gestures_label">Gestos</string>
     <string name="gestures_description">Toques y deslizamientos</string>
     <!-- Gestures -->
