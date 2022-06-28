@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.statemanager;
 
+import static com.android.launcher3.LauncherState.FLAG_CLOSE_POPUPS;
 import static com.android.launcher3.LauncherState.FLAG_NON_INTERACTIVE;
 
 import android.os.Handler;
@@ -23,6 +24,7 @@ import android.view.View;
 
 import androidx.annotation.CallSuper;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.LauncherRootView;
 import com.android.launcher3.Utilities;
@@ -86,6 +88,10 @@ public abstract class StatefulActivity<STATE_TYPE extends BaseState<STATE_TYPE>>
     public void onStateSetStart(STATE_TYPE state) {
         if (mDeferredResumePending) {
             handleDeferredResume();
+        }
+
+        if (state.hasFlag(FLAG_CLOSE_POPUPS)) {
+            AbstractFloatingView.closeAllOpenViews(this, !state.hasFlag(FLAG_NON_INTERACTIVE));
         }
     }
 
