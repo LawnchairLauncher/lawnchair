@@ -22,7 +22,7 @@
     <string name="home_screen_description">Feed, Raster, Symbole</string>
     <string name="general_label">Pangkalahatan</string>
     <string name="general_description">Mga tuldok ng pag-abiso, Icon Pack</string>
-    <string name="home_screen_rotation_label">Paggalaw ng Home Screen</string>
+    <string name="home_screen_rotation_label">Pag-iikot ng Home Screen</string>
     <string name="home_screen_rotaton_description">Kapag ihiniga ang device.</string>
     <string name="auto_add_shortcuts_label">Ilagay ang mga Bagong App sa Home Screen</string>
     <string name="dock_label">Dock</string>
@@ -32,7 +32,7 @@
     <string name="folders_label">Mga Folder</string>
     <string name="folders_description">Bilang ng Row at Column</string>
     <string name="app_drawer_columns">Mga Haligi ng Drawer ng App</string>
-    <string name="dock_icons">Dock Icons</string>
+    <string name="dock_icons">Mga icon ng Dock</string>
     <string name="max_folder_columns">Pinakamadaming Haligi ng Folder</string>
     <string name="max_folder_rows">Pinakamadaming Rows ng Folder</string>
     <string name="home_screen_grid">Grid ng Home Screen</string>
@@ -42,7 +42,7 @@
     <string name="columns">Mga hanay</string>
     <string name="grid">Grid</string>
     <string name="rows">Mga hilera</string>
-    <string name="icons">Icons</string>
+    <string name="icons">Mga Icon</string>
     <string name="icon_size">Laki ng Icon</string>
     <string name="label_size">Laki ng Label</string>
     <string name="show_home_labels">Ipakita ang Mga Label</string>
