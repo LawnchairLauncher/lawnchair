@@ -173,11 +173,12 @@ public class WidgetsRecyclerView extends FastScrollRecyclerView implements OnIte
     @Override
     protected int getItemsHeight(int untilIndex) {
         // Initialize cache
-        int childCount = Math.min(getChildCount(), getAdapter().getItemCount());
+        int childCount = getChildCount();
         int startPosition;
         if (childCount > 0
                 && ((startPosition = getChildAdapterPosition(getChildAt(0))) != NO_POSITION)) {
-            for (int i = 0; i < childCount; i++) {
+            int loopCount = Math.min(getChildCount(), getAdapter().getItemCount() - startPosition);
+            for (int i = 0; i < loopCount; i++) {
                 mCachedSizes.put(
                         mAdapter.getItemViewType(startPosition + i),
                         getChildAt(i).getMeasuredHeight());
