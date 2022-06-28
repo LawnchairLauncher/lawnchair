@@ -1831,4 +1831,26 @@ public final class LauncherInstrumentation {
         return ResourceUtils.getBoolByName(
                 "config_supportsRoundedCornersOnWindows", resources, false);
     }
+
+    /**
+     * Taps outside container to dismiss.
+     * @param container container to be dismissed
+     * @param tapRight tap on the right of the container if true, or left otherwise
+     */
+    void touchOutsideContainer(UiObject2 container, boolean tapRight) {
+        try (LauncherInstrumentation.Closable c = addContextLayer(
+                "want to tap outside container on the " + (tapRight ? "right" : "left"))) {
+            Rect containerBounds = getVisibleBounds(container);
+            final long downTime = SystemClock.uptimeMillis();
+            final Point tapTarget = new Point(
+                    tapRight
+                            ? (containerBounds.right + getRealDisplaySize().x) / 2
+                            : containerBounds.left / 2,
+                    containerBounds.top + 1);
+            sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, tapTarget,
+                    LauncherInstrumentation.GestureScope.INSIDE);
+            sendPointer(downTime, downTime, MotionEvent.ACTION_UP, tapTarget,
+                    LauncherInstrumentation.GestureScope.INSIDE);
+        }
+    }
 }

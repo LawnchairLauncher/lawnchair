@@ -304,7 +304,8 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
             mTouchHandler.handleTouchEvent(ev, mFastScrollerOffset);
             return true;
         }
-        if (isSearching()) {
+        if (isSearching()
+                && mActivityContext.getDragLayer().isEventOverView(getVisibleContainerView(), ev)) {
             // if in search state, consume touch event.
             return true;
         }
