@@ -51,9 +51,9 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.SplitConfigurationOptions;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
-import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.Collections;
@@ -538,7 +538,8 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         // We calculate the "midpoint" of the thumbnail area, and place the icons there.
         // This is the place where the thumbnail area splits by default, in a near-50/50 split.
         // It is usually not exactly 50/50, due to insets/screen cutouts.
-        int fullscreenInsetThickness = deviceProfile.getInsets().top;
+        int fullscreenInsetThickness = deviceProfile.getInsets().top
+                - deviceProfile.getInsets().bottom;
         int fullscreenMidpointFromBottom = ((deviceProfile.heightPx - fullscreenInsetThickness)
                 / 2);
         float midpointFromBottomPct = (float) fullscreenMidpointFromBottom / deviceProfile.heightPx;
