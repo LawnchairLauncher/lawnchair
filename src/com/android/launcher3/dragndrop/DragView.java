@@ -363,7 +363,10 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
             // If the content is already removed, ignore
             return;
         }
-        View newContent = getViewFromDrawable(getContext(), crossFadeDrawable);
+        ImageView newContent = getViewFromDrawable(getContext(), crossFadeDrawable);
+        // We need to fill the ImageView with the content, otherwise the shapes of the final view
+        // and the drag view might not match exactly
+        newContent.setScaleType(ImageView.ScaleType.FIT_XY);
         newContent.measure(makeMeasureSpec(mWidth, EXACTLY), makeMeasureSpec(mHeight, EXACTLY));
         newContent.layout(0, 0, mWidth, mHeight);
         addViewInLayout(newContent, 0, new LayoutParams(mWidth, mHeight));
@@ -573,7 +576,7 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
         }
     }
 
-    private static View getViewFromDrawable(Context context, Drawable drawable) {
+    private static ImageView getViewFromDrawable(Context context, Drawable drawable) {
         ImageView iv = new ImageView(context);
         iv.setImageDrawable(drawable);
         return iv;
