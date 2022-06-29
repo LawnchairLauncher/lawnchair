@@ -164,7 +164,7 @@ android_app {
         "ext_tests/res",
     ],
     optimize: {
-        proguard_flags_files: ["proguard.flags"],
+        proguard_flags_files: ["proguard.pro"],
         // Proguard is disable for testing. Derivarive prjects to keep proguard enabled
         enabled: false,
     },
@@ -238,7 +238,7 @@ filegroup {
 // Proguard files for Launcher3
 filegroup {
     name: "launcher-proguard-rules",
-    srcs: ["proguard.flags"],
+    srcs: ["proguard.pro"],
 }
 
 // Library with all the dependencies for building Launcher Go
