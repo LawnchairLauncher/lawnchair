@@ -207,7 +207,7 @@ public final class TaskbarAllAppsController {
     private LayoutParams createLayoutParams() {
         LayoutParams layoutParams = new LayoutParams(
                 TYPE_APPLICATION_OVERLAY,
-                0,
+                WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
                 PixelFormat.TRANSLUCENT);
         layoutParams.setTitle(WINDOW_TITLE);
         layoutParams.gravity = Gravity.BOTTOM;
