@@ -38,8 +38,9 @@ import android.widget.LinearLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.Collections;
@@ -106,7 +107,25 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
         return new PointF(-margin, margin);
     }
 
+    @Override
+    public void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect, SplitBounds splitInfo,
+            int desiredStagePosition) {
+        float topLeftTaskPercent = splitInfo.appsStackedVertically
+                ? splitInfo.topTaskPercent
+                : splitInfo.leftTaskPercent;
+        float dividerBarPercent = splitInfo.appsStackedVertically
+                ? splitInfo.dividerHeightPercent
+                : splitInfo.dividerWidthPercent;
 
+        // In seascape, the primary thumbnail is counterintuitively placed at the physical bottom of
+        // the screen. This is to preserve consistency when the user rotates: From the user's POV,
+        // the primary should always be on the left.
+        if (desiredStagePosition == SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT) {
+            outRect.top += (int) (outRect.height() * (topLeftTaskPercent + dividerBarPercent));
+        } else {
+            outRect.bottom = outRect.top + (int) (outRect.height() * topLeftTaskPercent);
+        }
+    }
 
     @Override
     public Pair<Float, Float> getDwbLayoutTranslations(int taskViewWidth,
@@ -215,7 +234,8 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
         // We calculate the "midpoint" of the thumbnail area, and place the icons there.
         // This is the place where the thumbnail area splits by default, in a near-50/50 split.
         // It is usually not exactly 50/50, due to insets/screen cutouts.
-        int fullscreenInsetThickness = deviceProfile.getInsets().top;
+        int fullscreenInsetThickness = deviceProfile.getInsets().top
+                - deviceProfile.getInsets().bottom;
         int fullscreenMidpointFromBottom = ((deviceProfile.heightPx
                 - fullscreenInsetThickness) / 2);
         float midpointFromBottomPct = (float) fullscreenMidpointFromBottom / deviceProfile.heightPx;
@@ -232,14 +252,14 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
         if (splitConfig.initiatedFromSeascape) {
             // if the split was initiated from seascape,
             // the task on the right (secondary) is slightly larger
-            primaryIconView.setTranslationY(-bottomToMidpointOffset - insetOffset);
-            secondaryIconView.setTranslationY(-bottomToMidpointOffset - insetOffset
+            primaryIconView.setTranslationY(-bottomToMidpointOffset - insetOffset
                     + taskIconHeight);
+            secondaryIconView.setTranslationY(-bottomToMidpointOffset - insetOffset);
         } else {
             // if not,
             // the task on the left (primary) is slightly larger
-            primaryIconView.setTranslationY(-bottomToMidpointOffset);
-            secondaryIconView.setTranslationY(-bottomToMidpointOffset + taskIconHeight);
+            primaryIconView.setTranslationY(-bottomToMidpointOffset + taskIconHeight);
+            secondaryIconView.setTranslationY(-bottomToMidpointOffset);
         }
 
         primaryIconView.setLayoutParams(primaryIconParams);
