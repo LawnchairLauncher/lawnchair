@@ -391,7 +391,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
                 .withCornerRadius(getCurrentCornerRadius());
 
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            builder.withLayer(mDrawsBelowRecents ? Integer.MIN_VALUE : 0);
+            builder.withLayer(mDrawsBelowRecents ? Integer.MIN_VALUE + 1 : Integer.MAX_VALUE);
         }
     }
 
