@@ -22,6 +22,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_SHOW;
 import static com.android.launcher3.taskbar.Utilities.appendFlag;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SWITCHER_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
 
 import android.animation.Animator;
@@ -30,13 +31,15 @@ import android.animation.AnimatorSet;
 import android.annotation.Nullable;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.WindowInsets;
 
+import androidx.annotation.NonNull;
+
+import com.android.internal.jank.InteractionJankMonitor;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorListeners;
-import com.android.launcher3.taskbar.allapps.TaskbarAllAppsSlideInView;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.AnimatedFloat;
@@ -44,6 +47,8 @@ import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.function.IntPredicate;
 
@@ -52,6 +57,8 @@ import java.util.function.IntPredicate;
  * create a cohesive animation between stashed/unstashed states.
  */
 public class TaskbarStashController implements TaskbarControllers.LoggableTaskbarController {
+
+    private static final String TAG = "TaskbarStashController";
 
     public static final int FLAG_IN_APP = 1 << 0;
     public static final int FLAG_STASHED_IN_APP_MANUAL = 1 << 1; // long press, persisted
@@ -149,6 +156,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     private @Nullable AnimatorSet mAnimator;
     private boolean mIsSystemGestureInProgress;
     private boolean mIsImeShowing;
+    private boolean mIsImeSwitcherShowing;
 
     private boolean mEnableManualStashingForTests = false;
 
@@ -401,6 +409,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             mAnimator.cancel();
         }
         mAnimator = new AnimatorSet();
+        addJankMonitorListener(mAnimator, /* appearing= */ !mIsStashed);
 
         if (!supportsVisualStashing()) {
             // Just hide/show the icons and background instead of stashing into a handle.
@@ -496,6 +505,28 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         });
     }
 
+    private void addJankMonitorListener(AnimatorSet animator, boolean expanding) {
+        Optional<View> optionalView =
+                Arrays.stream(mControllers.taskbarViewController.getIconViews()).findFirst();
+        if (optionalView.isEmpty()) {
+            Log.wtf(TAG, "No views to start Interaction jank monitor with.", new Exception());
+            return;
+        }
+        View v = optionalView.get();
+        int action = expanding ? InteractionJankMonitor.CUJ_TASKBAR_EXPAND :
+                InteractionJankMonitor.CUJ_TASKBAR_COLLAPSE;
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(@NonNull Animator animation) {
+                InteractionJankMonitor.getInstance().begin(v, action);
+            }
+
+            @Override
+            public void onAnimationEnd(@NonNull Animator animation) {
+                InteractionJankMonitor.getInstance().end(action);
+            }
+        });
+    }
     /**
      * Creates and starts a partial stash animation, hinting at the new state that will trigger when
      * long press is detected.
@@ -571,9 +602,11 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         }
 
         // Only update the following flags when system gesture is not in progress.
-        maybeResetStashedInAppAllApps(hasAnyFlag(FLAG_STASHED_IN_APP_IME) == mIsImeShowing);
-        if (hasAnyFlag(FLAG_STASHED_IN_APP_IME) != mIsImeShowing) {
-            updateStateForFlag(FLAG_STASHED_IN_APP_IME, mIsImeShowing);
+        boolean shouldStashForIme = shouldStashForIme();
+        maybeResetStashedInAppAllApps(
+                hasAnyFlag(FLAG_STASHED_IN_APP_IME) == shouldStashForIme);
+        if (hasAnyFlag(FLAG_STASHED_IN_APP_IME) != shouldStashForIme) {
+            updateStateForFlag(FLAG_STASHED_IN_APP_IME, shouldStashForIme);
             applyState(TASKBAR_STASH_DURATION_FOR_IME, getTaskbarStashStartDelayForIme());
         }
     }
@@ -625,13 +658,18 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
         // Only update FLAG_STASHED_IN_APP_IME when system gesture is not in progress.
         mIsImeShowing = hasAnyFlag(systemUiStateFlags, SYSUI_STATE_IME_SHOWING);
+        mIsImeSwitcherShowing = hasAnyFlag(systemUiStateFlags, SYSUI_STATE_IME_SWITCHER_SHOWING);
         if (!mIsSystemGestureInProgress) {
-            updateStateForFlag(FLAG_STASHED_IN_APP_IME, mIsImeShowing);
+            updateStateForFlag(FLAG_STASHED_IN_APP_IME, shouldStashForIme());
             animDuration = TASKBAR_STASH_DURATION_FOR_IME;
             startDelay = getTaskbarStashStartDelayForIme();
         }
 
         applyState(skipAnim ? 0 : animDuration, skipAnim ? 0 : startDelay);
+    }
+
+    private boolean shouldStashForIme() {
+        return mIsImeShowing || mIsImeSwitcherShowing;
     }
 
     /**
@@ -699,6 +737,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         pw.println(String.format(
                 "%s\tmIsSystemGestureInProgress=%b", prefix, mIsSystemGestureInProgress));
         pw.println(String.format("%s\tmIsImeShowing=%b", prefix, mIsImeShowing));
+        pw.println(String.format("%s\tmIsImeSwitcherShowing=%b", prefix, mIsImeSwitcherShowing));
     }
 
     private static String getStateString(int flags) {

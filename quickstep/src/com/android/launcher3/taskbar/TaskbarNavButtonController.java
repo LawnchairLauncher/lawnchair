@@ -33,6 +33,8 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_S
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
+import android.view.View;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
@@ -113,7 +115,9 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
         mHandler = handler;
     }
 
-    public void onButtonClick(@TaskbarButton int buttonType) {
+    public void onButtonClick(@TaskbarButton int buttonType, View view) {
+        // Provide the same haptic feedback that the system offers for virtual keys.
+        view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
         switch (buttonType) {
             case BUTTON_BACK:
                 logEvent(LAUNCHER_TASKBAR_BACK_BUTTON_TAP);
@@ -144,7 +148,9 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
         }
     }
 
-    public boolean onButtonLongClick(@TaskbarButton int buttonType) {
+    public boolean onButtonLongClick(@TaskbarButton int buttonType, View view) {
+        // Provide the same haptic feedback that the system offers for virtual keys.
+        view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
         switch (buttonType) {
             case BUTTON_HOME:
                 logEvent(LAUNCHER_TASKBAR_HOME_BUTTON_LONGPRESS);

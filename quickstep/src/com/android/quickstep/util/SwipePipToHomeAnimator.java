@@ -253,7 +253,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
                     rotatedPosition.degree, rotatedPosition.positionX, rotatedPosition.positionY);
         } else {
             return mSurfaceTransactionHelper.scaleAndCrop(tx, mLeash, mSourceRectHint, mAppBounds,
-                    bounds, insets);
+                    bounds, insets, progress);
         }
     }
 
