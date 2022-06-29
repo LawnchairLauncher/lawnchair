@@ -17,9 +17,11 @@ package com.android.launcher3.taskbar
 
 import android.graphics.Insets
 import android.graphics.Region
+import android.view.InsetsFrameProvider
 import android.view.InsetsState.ITYPE_BOTTOM_MANDATORY_GESTURES
 import android.view.InsetsState
 import android.view.WindowManager
+import android.view.WindowManager.LayoutParams.TYPE_INPUT_METHOD
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.AbstractFloatingView.TYPE_TASKBAR_ALL_APPS
 import com.android.launcher3.DeviceProfile
@@ -87,8 +89,14 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
         }
 
         var imeInsetsSize = Insets.of(0, 0, 0, taskbarHeightForIme)
+        var insetsSizeOverride = arrayOf(
+            InsetsFrameProvider.InsetsSizeOverride(
+                TYPE_INPUT_METHOD,
+                imeInsetsSize
+            )
+        )
         for (provider in windowLayoutParams.providedInsets) {
-            provider.imeInsetsSize = imeInsetsSize
+            provider.insetsSizeOverrides = insetsSizeOverride
         }
     }
 
@@ -141,9 +149,16 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
         pw.println(prefix + "TaskbarInsetsController:")
         pw.println("$prefix\twindowHeight=${windowLayoutParams.height}")
         for (provider in windowLayoutParams.providedInsets) {
-            pw.println("$prefix\tprovidedInsets: (type=" + InsetsState.typeToString(provider.type)
-                    + " insetsSize=" + provider.insetsSize
-                    + " imeInsetsSize=" + provider.imeInsetsSize + ")")
+            pw.print("$prefix\tprovidedInsets: (type=" + InsetsState.typeToString(provider.type)
+                    + " insetsSize=" + provider.insetsSize)
+            if (provider.insetsSizeOverrides != null) {
+                pw.print(" insetsSizeOverrides={")
+                for (overrideSize in provider.insetsSizeOverrides) {
+                    pw.print(overrideSize)
+                }
+                pw.print("})")
+            }
+            pw.println()
         }
     }
 }
