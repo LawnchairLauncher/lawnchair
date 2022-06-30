@@ -78,16 +78,17 @@ public class ImageActionsApi {
         addImageAndSendIntent(crop, intent, true, exceptionCallback);
     }
 
-    @UiThread
     private void addImageAndSendIntent(@Nullable Rect crop, Intent intent, boolean setData,
             @Nullable Runnable exceptionCallback) {
-        if (mBitmapSupplier.get() == null) {
-            Log.e(TAG, "No snapshot available, not starting share.");
-            return;
-        }
 
-        UI_HELPER_EXECUTOR.execute(() -> persistBitmapAndStartActivity(mContext,
-                mBitmapSupplier.get(), crop, intent, (uri, intentForUri) -> {
+        UI_HELPER_EXECUTOR.execute(() -> {
+            Bitmap bitmap = mBitmapSupplier.get();
+            if (bitmap == null) {
+                Log.e(TAG, "No snapshot available, not starting share.");
+                return;
+            }
+            persistBitmapAndStartActivity(mContext,
+                    bitmap, crop, intent, (uri, intentForUri) -> {
                     intentForUri.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
                     if (setData) {
                         intentForUri.setData(uri);
@@ -95,7 +96,8 @@ public class ImageActionsApi {
                         intentForUri.putExtra(EXTRA_STREAM, uri);
                     }
                     return new Intent[]{intentForUri};
-                }, TAG, exceptionCallback));
+                }, TAG, exceptionCallback);
+        });
     }
 
     /**
