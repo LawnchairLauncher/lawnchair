@@ -24,7 +24,7 @@
     <string name="general_description">Warna, Titik Notifikasi, Paket Ikon</string>
     <string name="home_screen_rotation_label">Rotasi Layar Beranda</string>
     <string name="home_screen_rotaton_description">Ketika perangkat dirotasi.</string>
-    <string name="auto_add_shortcuts_label">Tambahkan aplikasi baru ke layar beranda</string>
+    <string name="auto_add_shortcuts_label">Tambahkan Aplikasi Baru ke Layar Beranda</string>
     <string name="dock_label">Dock</string>
     <string name="dock_description">Bilah pencarian, Jumlah Ikon</string>
     <string name="app_drawer_label">Halaman Aplikasi</string>
@@ -155,7 +155,7 @@
     <string name="hide_from_drawer">Sembunyikan dari Layar Aplikasi</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Sudut Lengkung</string>
-    <string name="allow_widget_overlap">Allow Overlap</string>
+    <string name="allow_widget_overlap">Izinkan Tumpang Tindih</string>
     <string name="suggestion_pref_screen_title">Saran</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Label</string>
