@@ -554,6 +554,18 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         }
     }
 
+    @Test
+    @PortraitLandscape
+    public void testAddDeleteShortcutOnHotseat() {
+        mLauncher.getWorkspace()
+                .deleteAppIcon(mLauncher.getWorkspace().getHotseatAppIcon(0))
+                .switchToAllApps()
+                .getAppIcon(APP_NAME)
+                .dragToHotseat(0);
+        mLauncher.getWorkspace().deleteAppIcon(
+                mLauncher.getWorkspace().getHotseatAppIcon(APP_NAME));
+    }
+
     /**
      * @return List of workspace grid coordinates. Those are not pixels. See {@link
      *     Workspace#getIconGridDimensions()}

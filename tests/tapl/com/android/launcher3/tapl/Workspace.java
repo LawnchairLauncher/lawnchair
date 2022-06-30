@@ -39,6 +39,7 @@ import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
+import com.android.launcher3.testing.HotseatCellCenterRequest;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.testing.WorkspaceCellCenterRequest;
 
@@ -251,6 +252,24 @@ public final class Workspace extends Home {
     }
 
     /**
+     * Returns an icon for the given cell; fails if the icon doesn't exist.
+     *
+     * @param cellInd zero based index number of the hotseat cells.
+     * @return app icon.
+     */
+    @NonNull
+    public HomeAppIcon getHotseatAppIcon(int cellInd) {
+        List<UiObject2> icons = mHotseat.findObjects(AppIcon.getAnyAppIconSelector());
+        final Point center = getHotseatCellCenter(mLauncher, cellInd);
+        return icons.stream()
+                .filter(icon -> icon.getVisibleBounds().contains(center.x, center.y))
+                .findFirst()
+                .map(icon -> new WorkspaceAppIcon(mLauncher, icon))
+                .orElseThrow(() ->
+                        new AssertionError("Unable to get a hotseat icon on " + cellInd));
+    }
+
+    /**
      * @return map of text -> center of the view. In case of icons with the same name, the one with
      *     lower x coordinate is selected.
      */
@@ -358,6 +377,11 @@ public final class Workspace extends Home {
         return launcher.getTestInfo(WorkspaceCellCenterRequest.builder().setCellX(
                 cellX).setCellY(cellY).build()).getParcelable(
                 TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
+    static Point getHotseatCellCenter(LauncherInstrumentation launcher, int cellInd) {
+        return launcher.getTestInfo(HotseatCellCenterRequest.builder()
+                .setCellInd(cellInd).build()).getParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
     /**
@@ -469,6 +493,25 @@ public final class Workspace extends Home {
         launcher.executeAndWaitForEvent(command,
                 event -> event.getEventType() == TYPE_VIEW_SCROLLED,
                 () -> "Page scroll didn't happen", "Scrolling page");
+    }
+
+    static void dragIconToHotseat(
+            LauncherInstrumentation launcher,
+            Launchable launchable,
+            Supplier<Point> dest,
+            Runnable expectLongClickEvents,
+            @Nullable Runnable expectDropEvents) {
+        final long downTime = SystemClock.uptimeMillis();
+        Point dragStart = launchable.startDrag(
+                downTime,
+                expectLongClickEvents,
+                /* runToSpringLoadedState= */ true);
+        Point targetDest = dest.get();
+
+        launcher.movePointer(dragStart, targetDest, DEFAULT_DRAG_STEPS, true,
+                downTime, SystemClock.uptimeMillis(), false,
+                LauncherInstrumentation.GestureScope.INSIDE);
+        dropDraggedIcon(launcher, targetDest, downTime, expectDropEvents);
     }
 
     /**
