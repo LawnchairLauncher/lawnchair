@@ -22,8 +22,8 @@ import android.view.VelocityTracker;
 
 import com.android.launcher3.Alarm;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
-import com.android.launcher3.testing.TestProtocol;
 
 /**
  * Given positions along x- or y-axis, tracks velocity and acceleration and determines when there is
@@ -42,6 +42,12 @@ public class MotionPauseDetector {
      * After {@link #mMakePauseHarderToTrigger}, must move slowly for this long to trigger a pause.
      */
     private static final long HARDER_TRIGGER_TIMEOUT = 400;
+
+    /**
+     * When running in a test harness, if no motion is added for this amount of time, assume the
+     * motion has paused. (We use an increased timeout since sometimes test devices can be slow.)
+     */
+    private static final long TEST_HARNESS_TRIGGER_TIMEOUT = 2000;
 
     private final float mSpeedVerySlow;
     private final float mSpeedSlow;
@@ -119,9 +125,11 @@ public class MotionPauseDetector {
      * @param pointerIndex Index for the pointer being tracked in the motion event
      */
     public void addPosition(MotionEvent ev, int pointerIndex) {
-        long timeoutMs = TestProtocol.sForcePauseTimeout != null
-                ? TestProtocol.sForcePauseTimeout
-                : mMakePauseHarderToTrigger ? HARDER_TRIGGER_TIMEOUT : FORCE_PAUSE_TIMEOUT;
+        long timeoutMs = Utilities.IS_RUNNING_IN_TEST_HARNESS
+                ? TEST_HARNESS_TRIGGER_TIMEOUT
+                : mMakePauseHarderToTrigger
+                        ? HARDER_TRIGGER_TIMEOUT
+                        : FORCE_PAUSE_TIMEOUT;
         mForcePauseTimeout.setAlarm(timeoutMs);
         float newVelocity = mVelocityProvider.addMotionEvent(ev, ev.getPointerId(pointerIndex));
         if (mPreviousVelocity != null) {
