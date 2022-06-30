@@ -159,7 +159,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     private LayoutTransition mLayoutTransition;
     @Thunk final WallpaperManager mWallpaperManager;
 
-    private ShortcutAndWidgetContainer mDragSourceInternal;
+    protected ShortcutAndWidgetContainer mDragSourceInternal;
 
     @Thunk final IntSparseArrayMap<CellLayout> mWorkspaceScreens = new IntSparseArrayMap<>();
     @Thunk final IntArray mScreenOrder = new IntArray();
@@ -195,7 +195,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     @Thunk final Launcher mLauncher;
     @Thunk DragController mDragController;
 
-    private final int[] mTempXY = new int[2];
+    protected final int[] mTempXY = new int[2];
     private final float[] mTempFXY = new float[2];
     private final Rect mTempRect = new Rect();
     @Thunk float[] mDragViewVisualCenter = new float[2];
