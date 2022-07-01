@@ -330,4 +330,8 @@ public class SplitSelectStateController {
     private boolean isInitialTaskIntentSet() {
         return (mInitialTaskId != INVALID_TASK_ID || mInitialTaskIntent != null);
     }
+
+    public int getInitialTaskId() {
+        return mInitialTaskId;
+    }
 }

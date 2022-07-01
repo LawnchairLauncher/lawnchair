@@ -36,6 +36,7 @@ import com.android.launcher3.icons.IconProvider.IconChangeListener;
 import com.android.launcher3.util.Executors.SimpleThreadFactory;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.quickstep.util.GroupTask;
+import com.android.quickstep.util.TaskVisualsChangeListener;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -54,7 +55,8 @@ import java.util.function.Consumer;
  * Singleton class to load and manage recents model.
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class RecentsModel implements IconChangeListener, TaskStackChangeListener {
+public class RecentsModel implements IconChangeListener, TaskStackChangeListener,
+        TaskVisualsChangeListener {
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<RecentsModel> INSTANCE =
@@ -77,6 +79,7 @@ public class RecentsModel implements IconChangeListener, TaskStackChangeListener
 
         IconProvider iconProvider = new IconProvider(context);
         mIconCache = new TaskIconCache(context, RECENTS_MODEL_EXECUTOR, iconProvider);
+        mIconCache.registerTaskVisualsChangeListener(this);
         mThumbnailCache = new TaskThumbnailCache(context, RECENTS_MODEL_EXECUTOR);
 
         TaskStackChangeListeners.getInstance().registerTaskStackListener(this);
@@ -204,6 +207,13 @@ public class RecentsModel implements IconChangeListener, TaskStackChangeListener
     }
 
     @Override
+    public void onTaskIconChanged(int taskId) {
+        for (TaskVisualsChangeListener listener : mThumbnailChangeListeners) {
+            listener.onTaskIconChanged(taskId);
+        }
+    }
+
+    @Override
     public void onSystemIconStateChanged(String iconState) {
         mIconCache.clearCache();
     }
@@ -225,22 +235,6 @@ public class RecentsModel implements IconChangeListener, TaskStackChangeListener
     public void dump(String prefix, PrintWriter writer) {
         writer.println(prefix + "RecentsModel:");
         mTaskList.dump("  ", writer);
-    }
-
-    /**
-     * Listener for receiving various task properties changes
-     */
-    public interface TaskVisualsChangeListener {
-
-        /**
-         * Called whn the task thumbnail changes
-         */
-        Task onTaskThumbnailChanged(int taskId, ThumbnailData thumbnailData);
-
-        /**
-         * Called when the icon for a task changes
-         */
-        void onTaskIconChanged(String pkg, UserHandle user);
     }
 
     /**
