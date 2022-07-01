@@ -108,8 +108,6 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     private static final int FLAG_SCREEN_PINNING_ACTIVE = 1 << 11;
     private static final int FLAG_VOICE_INTERACTION_WINDOW_SHOWING = 1 << 12;
 
-    private static final int MASK_IME_SWITCHER_VISIBLE = FLAG_SWITCHER_SUPPORTED | FLAG_IME_VISIBLE;
-
     private static final String NAV_BUTTONS_SEPARATE_WINDOW_TITLE = "Taskbar Nav Buttons";
 
     public static final int ALPHA_INDEX_IMMERSIVE_MODE = 0;
@@ -191,7 +189,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                     isThreeButtonNav ? mStartContextualContainer : mEndContextualContainer,
                     mControllers.navButtonController, R.id.ime_switcher);
             mPropertyHolders.add(new StatePropertyHolder(imeSwitcherButton,
-                    flags -> ((flags & MASK_IME_SWITCHER_VISIBLE) != 0)
+                    flags -> ((flags & FLAG_SWITCHER_SUPPORTED) != 0)
                             && ((flags & FLAG_ROTATION_BUTTON_VISIBLE) == 0)));
         }
 
@@ -504,6 +502,13 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
      */
     public boolean isImeVisible() {
         return (mState & FLAG_IME_VISIBLE) != 0;
+    }
+
+    /**
+     * Returns true if IME switcher is visible
+     */
+    public boolean isImeSwitcherVisible() {
+        return (mState & FLAG_SWITCHER_SUPPORTED) != 0;
     }
 
     /**

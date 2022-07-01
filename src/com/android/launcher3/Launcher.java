@@ -305,7 +305,6 @@ public class Launcher extends StatefulActivity<LauncherState>
     Workspace<?> mWorkspace;
     @Thunk
     DragLayer mDragLayer;
-    private DragController mDragController;
 
     private WidgetManagerHelper mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
@@ -369,6 +368,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     private RotationHelper mRotationHelper;
 
     protected LauncherOverlayManager mOverlayManager;
+    protected DragController mDragController;
     // If true, overlay callbacks are deferred
     private boolean mDeferOverlayCallbacks;
     private final Runnable mDeferredOverlayCallbacks = this::checkIfOverlayStillDeferred;
@@ -465,7 +465,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         mIconCache = app.getIconCache();
         mAccessibilityDelegate = createAccessibilityDelegate();
 
-        mDragController = new LauncherDragController(this);
+        initDragController();
         mAllAppsController = new AllAppsTransitionController(this);
         mStateManager = new StateManager<>(this, NORMAL);
 
@@ -612,6 +612,13 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         mOldConfig.setTo(newConfig);
         super.onConfigurationChanged(newConfig);
+    }
+
+    /**
+     * Initializes the drag controller.
+     */
+    protected void initDragController() {
+        mDragController = new LauncherDragController(this);
     }
 
     @Override
