@@ -33,7 +33,6 @@ import static com.android.launcher3.AbstractFloatingView.getTopOpenViewWithType;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherState.ALL_APPS;
-import static com.android.launcher3.LauncherState.FLAG_CLOSE_POPUPS;
 import static com.android.launcher3.LauncherState.FLAG_MULTI_PAGE;
 import static com.android.launcher3.LauncherState.FLAG_NON_INTERACTIVE;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -266,7 +265,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     protected static final int REQUEST_LAST = 100;
 
     // Type: int
-    private static final String RUNTIME_STATE = "launcher.state";
+    protected static final String RUNTIME_STATE = "launcher.state";
     // Type: PendingRequestArgs
     private static final String RUNTIME_STATE_PENDING_REQUEST_ARGS = "launcher.request_args";
     // Type: int
@@ -277,6 +276,9 @@ public class Launcher extends StatefulActivity<LauncherState>
     private static final String RUNTIME_STATE_WIDGET_PANEL = "launcher.widget_panel";
     // Type int[]
     private static final String RUNTIME_STATE_CURRENT_SCREEN_IDS = "launcher.current_screen_ids";
+
+    // Type PendingSplitSelectInfo<Parcelable>
+    protected static final String PENDING_SPLIT_SELECT_INFO = "launcher.pending_split_select_info";
 
     public static final String ON_CREATE_EVT = "Launcher.onCreate";
     public static final String ON_START_EVT = "Launcher.onStart";
