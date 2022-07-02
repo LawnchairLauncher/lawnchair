@@ -39,6 +39,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.popup.QuickstepSystemShortcut;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager.StateListener;
+import com.android.launcher3.util.PendingSplitSelectInfo;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.util.SplitSelectStateController;
@@ -86,6 +87,21 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
             mActivity.getAllAppsController().setState(state);
         }
         super.onTaskLaunchAnimationEnd(success);
+    }
+
+    @Override
+    public void onTaskIconChanged(int taskId) {
+        // If Launcher needs to return to split select state, do it now, after the icon has updated.
+        if (mActivity.hasPendingSplitSelectInfo()) {
+            PendingSplitSelectInfo recoveryData = mActivity.getPendingSplitSelectInfo();
+            if (recoveryData.getStagedTaskId() == taskId) {
+                initiateSplitSelect(
+                        getTaskViewByTaskId(recoveryData.getStagedTaskId()),
+                        recoveryData.getStagePosition()
+                );
+                mActivity.finishSplitSelectRecovery();
+            }
+        }
     }
 
     @Override
