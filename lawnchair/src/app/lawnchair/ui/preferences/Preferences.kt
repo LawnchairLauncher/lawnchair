@@ -30,6 +30,7 @@ import app.lawnchair.backup.ui.createBackupGraph
 import app.lawnchair.backup.ui.restoreBackupGraph
 import app.lawnchair.ui.preferences.about.aboutGraph
 import app.lawnchair.ui.preferences.components.SystemUi
+import app.lawnchair.ui.preferences.components.colorpreference.colorSelectionGraph
 import app.lawnchair.ui.util.ProvideBottomSheetHandler
 import app.lawnchair.util.ProvideLifecycleState
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -45,6 +46,7 @@ object Routes {
     const val FOLDERS = "folders"
     const val QUICKSTEP = "quickstep"
     const val FONT_SELECTION = "fontSelection"
+    const val COLOR_SELECTION = "colorSelection"
     const val DEBUG_MENU = "debugMenu"
     const val SELECT_ICON = "selectIcon"
     const val ICON_PICKER = "iconPicker"
@@ -97,6 +99,7 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
                         quickstepGraph(route = subRoute(Routes.QUICKSTEP))
                         aboutGraph(route = subRoute(Routes.ABOUT))
                         fontSelectionGraph(route = subRoute(Routes.FONT_SELECTION))
+                        colorSelectionGraph(route = subRoute(Routes.COLOR_SELECTION))
                         debugMenuGraph(route = subRoute(Routes.DEBUG_MENU))
                         selectIconGraph(route = subRoute(Routes.SELECT_ICON))
                         iconPickerGraph(route = subRoute(Routes.ICON_PICKER))

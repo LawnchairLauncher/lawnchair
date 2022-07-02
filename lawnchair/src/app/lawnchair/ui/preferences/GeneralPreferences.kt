@@ -27,7 +27,6 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
-import app.lawnchair.ui.preferences.components.AccentColorPreference
 import app.lawnchair.ui.preferences.components.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.FontPreference
 import app.lawnchair.ui.preferences.components.IconShapePreference
@@ -38,6 +37,7 @@ import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
 import app.lawnchair.ui.preferences.components.SwitchPreference
 import app.lawnchair.ui.preferences.components.ThemePreference
+import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import app.lawnchair.ui.preferences.components.notificationDotsEnabled
 import app.lawnchair.ui.preferences.components.notificationServiceEnabled
 import com.android.launcher3.R
@@ -110,7 +110,10 @@ fun GeneralPreferences() {
         }
         PreferenceGroup(heading = stringResource(id = R.string.colors)) {
             ThemePreference()
-            AccentColorPreference()
+            ColorPreference(
+                preference = prefs2.accentColor,
+                label = stringResource(id = R.string.accent_color),
+            )
         }
         val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.getAdapter()
         PreferenceGroup(
