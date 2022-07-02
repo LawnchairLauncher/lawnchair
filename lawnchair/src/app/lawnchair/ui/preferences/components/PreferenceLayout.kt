@@ -39,6 +39,7 @@ fun PreferenceLayout(
     scrollState: ScrollState? = rememberScrollState(),
     label: String,
     actions: @Composable RowScope.() -> Unit = {},
+    bottomBar: @Composable () -> Unit = { BottomSpacer() },
     backArrowVisible: Boolean = true,
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -47,6 +48,7 @@ fun PreferenceLayout(
         floating = rememberFloatingState(scrollState),
         label = label,
         actions = actions,
+        bottomBar = bottomBar,
     ) {
         PreferenceColumn(
             verticalArrangement = verticalArrangement,
