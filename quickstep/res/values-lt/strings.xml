@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Norėd. pak. grįžimo gesto jautr., eikite į sk. „Nustatymai“"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Norėdami grįžti, perbraukite"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Norėdami grįžti į ankstesnį ekraną, perbr. nuo kairiojo arba dešinio krašto link ekrano vidurio."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Jei norite grįžti į ankstesnį ekraną, perbraukite dviem pirštais nuo kairiojo arba dešiniojo krašto link ekrano vidurio."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Turite perbraukti aukštyn nuo apatinio ekrano krašto."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Nepristabdykite prieš pakeldami pirštą."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Turite tiesiai perbraukti aukštyn."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Atlikote perėjimo į pagrindinį ekraną gestą."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Perbraukite, kad pereitumėte į pagrindinį ekraną"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Perbraukite aukštyn nuo ekrano apačios. Atlikus šį gestą, visada nukreipiama į pagrindinį ekraną."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Perbraukite dviem pirštais nuo ekrano apačios. Šis gestas visada nukreipia į pagrindinį ekraną."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Turite perbraukti aukštyn nuo apatinio ekrano krašto."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Pabandykite palaikyti langą ilgiau prieš pakeldami pirštą."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Turite tiesiai perbraukti aukštyn, o tada pristabdyti."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Atlikote programų perjungimo gestą."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Perbraukite, kad perjungtumėte programas"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Norėdami perjungti programas, perbraukite aukštyn nuo ekrano apačios, palaikykite ir paleiskite."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Perjunkite programas perbraukę dviem pirštais aukštyn nuo ekrano apačios, palaikę ir paleidę."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Viskas nustatyta"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Atlikta"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Nustatymai"</string>

@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Geri qayıtma jestinin həssaslığını dəyişmək üçün Ayarlara keçin"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Geri qayıtmaq üçün sürüşdürün"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Sonuncu ekrana qayıtmaq üçün ekranın sol, yaxud sağ kənarından mərkəzinə doğru sürüşdürün."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Sonuncu ekrana qayıtmaq üçün 2 barmaqla ekranın sol, yaxud sağ kənarından mərkəzinə doğru sürüşdürün."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Ekranın ən kənar aşağısından yuxarı sürüşdürün."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Buraxmazdan əvvəl durdurmadığınıza əmin olun."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Birbaşa yuxarı sürüşdürün."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Əsas səhifəyə keçmə jestini tamamladınız."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Əsas səhifəyə keçmək üçün sürüşdürün"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Ekranın aşağısından yuxarısına sürüşdürün. Bu jest həmişə Əsas səhifəyə aparır."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"2 barmaqla ekranın aşağısından yuxarısına sürüşdürün. Bu jest həmişə Əsas səhifəyə aparır."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Ekranın ən kənar aşağısından yuxarı sürüşdürün."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Barmağı buraxmadan öncə displeydə bir müddət saxlayın."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Sürüşdürüb ekranın yuxarı kənarında saxlayın."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Tətbiqləri keçirmə jestini tamamladınız."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Tətbiqi keçirmək üçün sürüşdürün"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Tətbiqlər arasında keçid üçün ekranın aşağısından yuxarı doğru sürüşdürüb saxlayın, sonra buraxın."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Tətbiqlər arasında keçid üçün 2 barmaqla ekranın aşağısından yuxarı doğru sürüşdürüb saxlayın, sonra buraxın."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Tam hazır"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Oldu"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Ayarlar"</string>

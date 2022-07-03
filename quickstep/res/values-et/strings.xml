@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Tagasiliigutuse tundlikkuse muutmiseks avage menüü Seaded"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Tagasiliikumiseks pühkige"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Eelmisele ekraanikuvale naasmiseks pühkige vasakust või paremast servast ekraanikuva keskele."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Eelmisele ekraanikuvale naasmiseks pühkige vasakust või paremast servast kahe sõrmega ekraanikuva keskele."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Pühkige kindlasti ekraanikuva alumisest servast üles."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Veenduge, et te enne vabastamist liigutust ei peataks."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Pühkige kindlasti otse üles."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Tegite avakuvale minemise liigutuse."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Pühkige avakuvale minemiseks"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Pühkige ekraani alaosast üles. See liigutus viib teid alati tagasi avakuvale."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Pühkige ekraanikuva alumisest servast 2 sõrmega üles. See liigutus viib teid alati tagasi avakuvale."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Pühkige kindlasti ekraanikuva alumisest servast üles."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Hoidke sõrme aknal pisut kauem, enne kui vabastate."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Pühkige kindlasti otse üles, seejärel peatuge."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Tegite rakenduste vahel vahetamise liigutuse."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Pühkige rakenduste vahetamiseks"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Rakenduste vahel vahetamiseks pühkige ekraanikuva alaosast üles, hoidke ja seejärel vabastage."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Rakenduste vahel vahetamiseks pühkige kuva alaosast kahe sõrmega üles, hoidke ja seejärel vabastage."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Valmis"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Valmis"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Seaded"</string>

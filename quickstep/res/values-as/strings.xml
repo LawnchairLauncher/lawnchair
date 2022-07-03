@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"উভতি যোৱাৰ নির্দেশটোৰ সংবেদনশীলতা সলনি কৰিবলৈ ছেটিঙলৈ যাওক"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"উভতি যাবলৈ ছোৱাইপ কৰক"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"অন্তিম স্ক্ৰীনখনলৈ উভতি যাবলৈ বাওঁ অথবা সোঁ প্ৰান্তৰৰ পৰা মাজলৈ ছোৱাইপ কৰক।"</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"অন্তিম স্ক্ৰীনখনলৈ উভতি যাবলৈ ২ টা আঙুলিৰে স্ক্ৰীনখনৰ বাওঁ অথবা সোঁ প্ৰান্তৰৰ পৰা মাজলৈ ছোৱাইপ কৰক।"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"আপুনি স্ক্ৰীনৰ তলৰ প্ৰান্তৰ পৰা ওপৰলৈ ছোৱাইপ কৰাটো নিশ্চিত কৰক।"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"আপুনি এৰি দিয়াৰ পূৰ্বে অলপো নোৰোৱাটো নিশ্চিত কৰক।"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"আপুনি পোনকৈ ওপৰলৈ ছোৱাইপ কৰাটো নিশ্চিত কৰক।"</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"আপুনি গৃহ স্ক্ৰীনলৈ যোৱাৰ নিৰ্দেশটো সম্পূৰ্ণ কৰিলে।"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"গৃহ স্ক্ৰীনলৈ যাবলৈ ছোৱাইপ কৰক"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"আপোনাৰ স্ক্ৰীনৰ তলৰ অংশৰ পৰা ওপৰলৈ ছোৱাইপ কৰক। এই নিৰ্দেশটোৱে আপোনাক সদায় গৃহ স্ক্ৰীনলৈ লৈ যায়।"</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"স্ক্ৰীনখনৰ একেবাৰে তলৰ পৰা ২ টা আঙুলিৰে ওপৰলৈ ছোৱাইপ কৰক। এই নিৰ্দেশটোৱে আপোনাক সদায় গৃহ স্ক্ৰীনলৈ লৈ যায়।"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"আপুনি স্ক্ৰীনৰ তলৰ প্ৰান্তৰ পৰা ওপৰলৈ ছোৱাইপ কৰাটো নিশ্চিত কৰক।"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"এৰি দিয়াৰ পূৰ্বে ৱিণ্ডখন দীৰ্ঘ সময়ৰ বাবে ধৰি ৰাখিবলৈ চেষ্টা কৰক।"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"আপুনি স্ক্ৰীনৰ ওপৰলৈ পোনকৈ ছোৱাইপ কৰি তাৰ পাছত ৰোৱাটো নিশ্চিত কৰক।"</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"আপুনি এপ্‌ সলনি কৰাৰ নিৰ্দেশটো সম্পূৰ্ণ কৰিলে।"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"এপ্‌ সলনি কৰিবলৈ ছোৱাইপ কৰক"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"এপ্‌সমূহ সালসলনিকৈ ব্যৱহাৰ কৰিবলৈ আপোনাৰ স্ক্ৰীনৰ একেবাৰে তলৰ অংশৰ পৰা ওপৰলৈ ছোৱাইপ কৰি ধৰি ৰাখক আৰু তাৰ পাছত এৰি দিয়ক।"</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"এপ্‌সমূহ সালসলনিকৈ ব্যৱহাৰ কৰিবলৈ ২ টা আঙুলিৰে আপোনাৰ স্ক্ৰীনৰ একেবাৰে তলৰ অংশৰ পৰা ওপৰলৈ ছোৱাইপ কৰি ধৰি ৰাখক আৰু তাৰ পাছত এৰি দিয়ক।"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"সম্পূৰ্ণ সাজু"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"হ’ল"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"ছেটিং"</string>

@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Osetljivost pok. za nazad možete da promenite u Podešavanjima"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Prevucite da biste se vratili unazad"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Da biste se vratili na poslednji ekran, prevucite od leve ili desne ivice do sredine ekrana."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Da biste se vratili na poslednji ekran, prevucite pomoću dva prsta od leve ili desne ivice do sredine ekrana."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Obavezno prevucite nagore od donje ivice ekrana."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Nikako ne stajte pre otpuštanja."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Obavezno prevucite pravo nagore."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Dovršili ste pokret za povratak na početnu stranicu."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Prevucite da biste otišli na početnu stranicu"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Prevucite nagore od dna ekrana. Ovaj pokret vas uvek vodi na početni ekran."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Prevucite pomoću dva prsta nagore od dna ekrana. Ovim pokretom uvek otvarate početni ekran."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Obavezno prevucite nagore od donje ivice ekrana."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Probajte da držite prozor duže pre otpuštanja."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Obavezno prevucite pravo nagore, pa zastanite."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Dovršili ste pokret za promenu aplikacija."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Prevucite da biste zamenili aplikacije"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Za prelazak sa jedne aplikacije na drugu prevucite nagore od dna ekrana, zadržite, pa pustite."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Za prelazak između aplikacija prevucite pomoću dva prsta nagore od dna ekrana, zadržite, pa pustite."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"To je to"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Gotovo"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Podešavanja"</string>

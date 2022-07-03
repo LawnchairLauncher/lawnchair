@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"لتغيير مستوى حساسية إيماءة الرجوع، انتقِل إلى \"الإعدادات\""</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"مرِّر سريعًا للرجوع."</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"للرجوع إلى الشاشة السابقة، مرِّر سريعًا من الحافة اليسرى أو الحافة اليمنى إلى وسط الشاشة."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"للرجوع إلى الشاشة السابقة، عليك التمرير سريعًا بإصبعين من الحافة اليسرى أو اليمنى نحو وسط الشاشة."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"تأكّد من التمرير سريعًا من الحافة السفلى للشاشة إلى أعلاها."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"تأكّد من عدم التوقّف قليلاً قبل رفع إصبعك."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"تأكّد من التمرير إلى الأعلى مباشرةً."</string>
@@ -60,13 +61,15 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"أكملت التدريب على إيماءة الانتقال إلى الشاشة الرئيسية."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"مرِّر سريعًا للانتقال إلى الشاشة الرئيسية"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"مرِّر سريعًا من أسفل الشاشة إلى أعلاها. تنقلك هذه الإيماءة دائمًا إلى الشاشة الرئيسية."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"مرِّر سريعًا بإصبعين من أسفل الشاشة إلى أعلاها. تنقلك هذه الإيماءة دائمًا إلى الشاشة الرئيسية."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"تأكّد من التمرير سريعًا من الحافة السفلى للشاشة إلى أعلاها."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"حاوِل إبقاء إصبعك على النافذة لمدة أطول قبل رفعه."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"تأكّد من التمرير سريعًا للأعلى مباشرةً ثم التوقّف قليلاً."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"لقد تعرّفت على كيفية استخدام الإيماءات. لإيقاف الإيماءات، انتقِل إلى \"الإعدادات\"."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"أكملت التدريب على إيماءة التبديل بين التطبيقات."</string>
-    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"مرِّر سريعًا للتبديل بين التطبيقات"</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"التمرير سريعًا للتبديل بين التطبيقات"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"للتبديل بين التطبيقات، مرِّر سريعًا من أسفل الشاشة لأعلاها مع تثبيت إصبعك ثم ارفعه."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"للتبديل بين التطبيقات، مرِّر سريعًا من أسفل الشاشة إلى أعلاها بإصبعين مع تثبيتهما، ثم ارفعهما."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"اكتمل التدريب على الإيماءة"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"تم"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"الإعدادات"</string>

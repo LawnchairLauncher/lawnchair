@@ -51,8 +51,9 @@
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"អ្នក​បានបញ្ចប់​ចលនា​ថយក្រោយ​ហើយ។"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"ត្រូវប្រាកដថា​អ្នកមិនអូស​ទៅជិត​ផ្នែកខាងក្រោម​នៃអេក្រង់ពេក​។"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ដើម្បីប្ដូរកម្រិត​រំញោចនឹង​ចលនាថយក្រោយ សូមចូលទៅកាន់​ការកំណត់"</string>
-    <string name="back_gesture_intro_title" msgid="19551256430224428">"អូស​ដើម្បី​ត្រឡប់​ទៅវិញ"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"អូស​ដើម្បី​ថយក្រោយ"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"ដើម្បី​ត្រឡប់ទៅ​អេក្រង់​ចុងក្រោយវិញ សូមអូស​ពីគែម​ខាងឆ្វេង ឬខាងស្ដាំ​ទៅផ្នែកកណ្ដាល​នៃអេក្រង់​។"</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"ដើម្បី​ត្រឡប់​ទៅ​អេក្រង់​ចុងក្រោយ​វិញ អូស​ដោយ​ប្រើ​ម្រាមដៃពីរ​ពី​គែម​ខាង​ឆ្វេង ឬ​ខាង​ស្ដាំ​ទៅផ្នែក​​កណ្ដាលនៃ​អេក្រង់។"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ត្រូវប្រាកដថា​អ្នកអូសឡើងលើ​ពីគែមខាងក្រោម​នៃអេក្រង់​។"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"ត្រូវប្រាកដថា​អ្នកមិនផ្អាក មុនពេល​ដកដៃ​។"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"ត្រូវប្រាកដថា​អ្នកអូស​ត្រង់ឡើងលើ​។"</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"អ្នក​បានបញ្ចប់​ចលនា​ចូលទៅកាន់​ទំព័រដើម​ហើយ។"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"អូស​ដើម្បីចូល​ទៅកាន់​អេក្រង់ដើម"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"អូស​ឡើងលើ​ពីផ្នែកខាងក្រោម​នៃ​អេក្រង់របស់អ្នក។ ចលនា​នេះ​នាំ​អ្នក​ទៅ​អេក្រង់ដើម​ជានិច្ច។"</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"អូសឡើងលើដោយប្រើម្រាមដៃពីរពីផ្នែកខាងក្រោមនៃ​អេក្រង់។ ចលនានេះ​តែងតែ​នាំអ្នក​ទៅ​អេក្រង់​ដើម​ជា​និច្ច។"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"ត្រូវប្រាកដថា​អ្នកអូសឡើងលើ​ពីគែមខាងក្រោម​នៃអេក្រង់​។"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"សាកល្បង​សង្កត់វិនដូ​ឱ្យបានយូរ​ជាងនេះ មុនពេល​ដកដៃ​។"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"ត្រូវប្រាកដថា​អ្នកអូស​ត្រង់ឡើងលើ រួចផ្អាក។"</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"អ្នក​បានបញ្ចប់​ចលនា​ប្ដូរកម្មវិធី​ហើយ។"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"អូស​ដើម្បីប្ដូរ​កម្មវិធី"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"ដើម្បីប្ដូររវាងកម្មវិធី សូមអូសឡើងលើពីផ្នែកខាងក្រោមនៃអេក្រង់របស់អ្នក រួចចុចឱ្យជាប់ បន្ទាប់មកដកដៃចេញ។"</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"ដើម្បីប្ដូរកម្មវិធី អូសឡើងលើ​ដោយប្រើម្រាមដៃពីរពី​ផ្នែក​ខាងក្រោមនៃ​អេក្រង់របស់អ្នក សង្កត់ ហើយ​លែងវិញ។"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"រួចហើយ"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"រួចរាល់"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"ការកំណត់"</string>

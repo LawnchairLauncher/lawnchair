@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"برای تغییر حساسیت اشاره برگشت، به «تنظیمات» بروید"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"تند بکشید تا به‌عقب برگردید"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"برای برگشتن به صفحه آخر، از لبه سمت چپ یا راست تند به وسط صفحه بکشید."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"برای برگشتن به صفحه قبلی، با ۲ انگشت از لبه سمت چپ یا راست تند به‌وسط صفحه بکشید."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"دقت کنید که از لبه پایینی صفحه تند به بالا بکشید."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"دقت کنید که تا قبل‌از رها کردن، کشیدن را متوقف نکنید."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"دقت کنید که مستقیماً تند به بالا بکشید."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"اشاره رفتن به «صفحه اصلی» را تکمیل کردید."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"تند کشیدن برای رفتن به صفحه اصلی"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"از پایین صفحه، تند به‌سمت بالا بکشید. این اشاره همیشه شما را به صفحه اصلی می‌برد."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"با ۲ انگشت از پایین صفحه تند به‌بالا بکشید. این اشاره همیشه شما را به صفحه اصلی می‌برد."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"دقت کنید که از لبه پایینی صفحه تند به بالا بکشید."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"سعی کنید قبل‌از رها کردن، پنجره را برای مدت طولانی‌تری نگه دارید."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"دقت کنید که مستقیماً تند به بالا بکشید و سپس توقف کنید."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"اشاره جابه‌جا شدن بین برنامه‌ها را تکمیل کردید."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"برای جابه‌جا شدن بین برنامه‌ها، تند به‌بالا بکشید"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"برای جابه‌جا شدن بین برنامه‌ها، از پایین صفحه تند به‌بالا بکشید، نگه دارید، و سپس رها کنید."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"برای جابه‌جایی بین برنامه‌ها، با ۲ انگشت از پایین صفحه تند به‌بالا بکشید، نگه دارید، و سپس رها کنید."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"همه چیز آماده است"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"تمام"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"تنظیمات"</string>

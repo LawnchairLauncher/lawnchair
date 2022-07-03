@@ -31,16 +31,16 @@
     <string name="time_left_for_app" msgid="3111996412933644358">"Nog <xliff:g id="TIME">%1$s</xliff:g> vandaag"</string>
     <string name="title_app_suggestions" msgid="4185902664111965088">"App-suggesties"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Je voorspelde apps"</string>
-    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"App-suggesties ontvangen op de onderste rij van je startscherm"</string>
-    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"App-suggesties ontvangen op de rij met favorieten op het startscherm"</string>
-    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Open je meestgebruikte apps gemakkelijk vanaf het startscherm. De suggesties veranderen op basis van je routines. Apps op de onderste rij worden naar je startscherm verplaatst."</string>
-    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Open je meestgebruikte apps gemakkelijk vanaf het startscherm. De suggesties veranderen op basis van je routines. Apps op de rij met favorieten worden naar het startscherm verplaatst."</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Open je meestgebruikte apps gemakkelijk vanaf het startscherm. De suggesties veranderen op basis van je routines. Apps op de onderste rij worden naar een nieuwe map verplaatst."</string>
-    <string name="hotseat_edu_accept" msgid="1611544083278999837">"App-suggesties ontvangen"</string>
+    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"App-suggesties krijgen op de onderste rij van je startscherm"</string>
+    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"App-suggesties krijgen op de rij met favorieten op het startscherm"</string>
+    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Open je meestgebruikte apps makkelijk vanaf het startscherm. De suggesties veranderen op basis van je routines. Apps in de onderste rij worden naar je startscherm verplaatst."</string>
+    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Open je meestgebruikte apps makkelijk vanaf het startscherm. De suggesties veranderen op basis van je routines. Apps in de rij met favorieten worden naar het startscherm verplaatst."</string>
+    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Open je meestgebruikte apps makkelijk vanaf het startscherm. De suggesties veranderen op basis van je routines. Apps in de onderste rij worden naar een nieuwe map verplaatst."</string>
+    <string name="hotseat_edu_accept" msgid="1611544083278999837">"App-suggesties krijgen"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Nee, bedankt"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Instellingen"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"De meestgebruikte apps worden hier weergegeven en kunnen veranderen op basis van je routines"</string>
-    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Sleep apps weg van de onderste rij om app-suggesties te ontvangen"</string>
+    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Sleep apps weg van de onderste rij om app-suggesties te krijgen"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"App-suggesties toegevoegd aan lege ruimte"</string>
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"App-suggesties staan aan"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"App-suggesties staan uit"</string>
@@ -53,13 +53,15 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Open Instellingen om de gevoeligheid van Terug te wijzigen"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Swipe om terug te gaan"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Swipe vanaf de linker- of rechterrand naar het midden om terug te gaan naar het vorige scherm."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Als je wilt teruggaan naar het laatste scherm, swipe je met 2 vingers vanaf de linker- of rechterrand naar het midden van het scherm."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Swipe vanaf de onderrand van het scherm omhoog."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Pauzeer niet voordat je loslaat."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Swipe recht omhoog."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Je weet nu hoe je weer naar het startscherm gaat. Ontdek als volgende hoe je weer teruggaat."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Je hebt geleerd hoe je weer naar het startscherm gaat. Ontdek nu hoe je weer teruggaat."</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Je weet nu hoe je teruggaat naar het startscherm."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Swipe om naar het startscherm te gaan"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Swipe omhoog vanaf de onderkant van het scherm. Met dit gebaar ga je altijd naar het startscherm."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Swipe met 2 vingers omhoog vanaf de onderkant van het scherm. Met dit gebaar ga je altijd naar het startscherm."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Swipe vanaf de onderrand van het scherm omhoog."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Houd het venster langer vast voordat je loslaat."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Swipe recht omhoog en pauzeer dan."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Je weet nu hoe je het gebaar Schakelen tussen apps maakt."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Swipe om tussen apps te schakelen"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Swipe omhoog vanaf de onderkant van het scherm, houd vast en laat los om tussen apps te schakelen."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Swipe met 2 vingers omhoog vanaf de onderkant van het scherm, houd vast en laat los om tussen apps te schakelen."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Klaar"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Klaar"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Instellingen"</string>

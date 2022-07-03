@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"பின்செல் சைகையின் உணர்திறனை மாற்ற அமைப்புகளுக்குச் செல்க"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"பின்செல்ல ஸ்வைப் செய்யுங்கள்"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"முந்தைய திரைக்கு மீண்டும் செல்ல, இடது/வலது ஓரத்திலிருந்து திரையின் மையப் பகுதிக்கு ஸ்வைப் செய்க."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"முந்தைய திரைக்கு மீண்டும் செல்ல, 2 விரல்களால் இடது அல்லது வலது ஓரத்திலிருந்து திரையின் மையப் பகுதிக்கு ஸ்வைப் செய்யுங்கள்."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"திரையின் கீழ் ஓரத்திலிருந்து மேல்நோக்கி ஸ்வைப் செய்வதை உறுதிசெய்துகொள்ளுங்கள்."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"விடுவிப்பதற்கு முன்பாக இடைநிறுத்தவில்லை என்பதை உறுதிசெய்துகொள்ளுங்கள்."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"மேல்நோக்கி நேராக ஸ்வைப் செய்வதை உறுதிசெய்துகொள்ளுங்கள்."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"முகப்புக்குச் செல் சைகைப் பயிற்சியை முடித்துவிட்டீர்கள்."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"முகப்புக்குச் செல்ல ஸ்வைப் செய்யுங்கள்"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"திரையின் கீழிருந்து மேலாக ஸ்வைப் செய்க. இந்தச் சைகை எப்போதும் முகப்புத் திரைக்கு அழைத்துச் செல்லும்."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"2 விரலால் திரையின் கீழிருந்து மேலாக ஸ்வைப் செய்க. இந்தச் சைகை முகப்புத் திரைக்கு அழைத்துச் செல்லும்."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"திரையின் கீழ் ஓரத்திலிருந்து மேல்நோக்கி ஸ்வைப் செய்வதை உறுதிசெய்துகொள்ளுங்கள்."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"விடுவிப்பதற்கு முன்பாக நீண்டநேரம் சாளரத்தை அழுத்திப் பிடித்திருங்கள்."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"மேல்நோக்கி நேராக ஸ்வைப் செய்தபிறகு இடைநிறுத்துவதை உறுதிசெய்துகொள்ளுங்கள்."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"ஆப்ஸுக்கிடையே மாறும் சைகைப் பயிற்சியை முடித்துவிட்டீர்கள்."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"ஆப்ஸுக்கிடையே மாற ஸ்வைப் செய்யுங்கள்"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"ஆப்ஸுக்கு இடையே மாற, திரையின் கீழிலிருந்து மேலாக ஸ்வைப் செய்து, பிடித்திருந்து, பிறகு விடுவிக்கவும்."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"ஆப்ஸுக்கிடையே மாற, திரையின் கீழிருந்து மேலாக 2 விரலால் ஸ்வைப் செய்து, பிடித்து, பிறகு விடுவிக்கவும்."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"எல்லாம் தயார்"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"முடிந்தது"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"அமைப்புகள்"</string>
