@@ -114,6 +114,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"জাননী সম্পৰ্কীয় বিন্দুবোৰ দেখুৱাবলৈ <xliff:g id="NAME">%1$s</xliff:g>ৰ বাবে এপৰ জাননীসমূহ অন কৰক"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ছেটিং সলনি কৰক"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"জাননী বিন্দু দেখুৱাওক"</string>
+    <string name="developer_options_title" msgid="700788437593726194">"বিকাশকৰ্তাৰ বিকল্পসমূহ"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"গৃহ স্ক্ৰীনত এপৰ চিহ্ন যোগ দিয়ক"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"নতুন এপসমূহৰ বাবে"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"অজ্ঞাত"</string>
@@ -124,14 +125,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> ইনষ্টল কৰি থকা হৈছে, <xliff:g id="PROGRESS">%2$s</xliff:g> সম্পূৰ্ণ হৈছে"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ডাউনল’ড কৰি থকা হৈছে, <xliff:g id="PROGRESS">%2$s</xliff:g> সম্পূৰ্ণ হ’ল"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ইনষ্টল হোৱালৈ অপেক্ষা কৰি থকা হৈছে"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"এপ্‌টো আপডে’ট কৰা প্ৰয়োজন"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"এই চিহ্নটোৰ এপ্‌টো আপডে’ট কৰা হোৱা নাই। আপুনি এই শ্বৰ্টকাটটো পুনৰ সক্ষম কৰিবলৈ মেনুৱেলী আপডে’ট কৰিব পাৰে অথবা চিহ্নটো আঁতৰাব পাৰে।"</string>
+    <string name="dialog_update" msgid="2178028071796141234">"আপডে’ট কৰক"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"আঁতৰাওক"</string>
     <string name="widgets_list" msgid="796804551140113767">"ৱিজেটৰ তালিকা"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"ৱিজেটৰ তালিকা বন্ধ কৰা হ’ল"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"গৃহ স্ক্ৰীনত যোগ কৰক"</string>
@@ -171,8 +168,10 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"কৰ্মস্থানৰ এপ্‌সমূহ অফ হৈ আছে। আপোনাৰ কৰ্মস্থানৰ এপ্‌সমূহে আপোনালৈ জাননী পঠিয়াব, আপোনাৰ বেটাৰী ব্যৱহাৰ কৰিব অথবা আপোনাৰ অৱস্থান এক্সেছ কৰিব নোৱাৰে"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"কর্মস্থানৰ এপ্‌সমূহ প্ৰতীকেৰে চিহ্নিত কৰা হয় আৰু সেইবোৰ আপোনাৰ আইটি প্ৰশাসকৰ বাবে দৃশ্যমান হয়"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"বুজি পালোঁ"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"কৰ্মস্থানৰ এপ্‌সমূহ অফ কৰক"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"কৰ্মস্থানৰ এপ্‌ পজ কৰক"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"কৰ্মস্থানৰ এপ্‌সমূহ অন কৰক"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ফিল্টাৰ"</string>
+    <string name="search_pref_screen_title" msgid="3258959643336315962">"আপোনাৰ ফ’নৰ বস্তু সন্ধান কৰক"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"আপোনাৰ টেবলেটৰ বস্তু সন্ধান কৰক"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"বিফল: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
