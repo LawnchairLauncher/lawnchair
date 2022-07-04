@@ -1,6 +1,7 @@
 name: Bug report
 description: Create a report to help us address issues you are facing with the app
 title: "[BUG] "
+labels: [bug]
 body:
   - type: markdown
     attributes:
@@ -37,6 +38,14 @@ body:
     attributes:
       label: Expected behavior
       description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual behavior
+      description: A clear and concise description of what actually happened.
     validations:
       required: true
 
