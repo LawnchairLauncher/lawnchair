@@ -16,10 +16,10 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">ഐക്കൺ പായ്ക്ക്</string>
-    <string name="icon_style">Icon Style</string>
+    <string name="icon_style">ഐക്കൺ ശൈലി</string>
     <string name="settings">ക്രമീകരണം</string>
     <string name="home_screen_label">Home Screen</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">പ്രതികരണം, ഗ്രിഡ്, ഐക്കണുകൾ</string>
     <string name="general_label">പൊതുവായ</string>
     <string name="general_description">നിറങ്ങൾ, ഐക്കൺ പായ്ക്ക്, അറിയിപ്പ് ഡോട്ടുകൾ</string>
     <string name="home_screen_rotation_label">ഹോം സ്ക്രീൻ റൊട്ടേഷൻ</string>
