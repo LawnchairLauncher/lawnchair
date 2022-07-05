@@ -65,6 +65,7 @@ abstract class DeviceProfileBaseTest {
 
         whenever(info.isTablet(any())).thenReturn(false)
         whenever(info.getDensityDpi()).thenReturn(560)
+        whenever(info.smallestSizeDp(any())).thenReturn(411f)
 
         inv = newScalableInvariantDeviceProfile()
     }
@@ -79,6 +80,7 @@ abstract class DeviceProfileBaseTest {
 
         whenever(info.isTablet(any())).thenReturn(true)
         whenever(info.getDensityDpi()).thenReturn(320)
+        whenever(info.smallestSizeDp(any())).thenReturn(800f)
 
         inv = newScalableInvariantDeviceProfile()
     }
