@@ -930,15 +930,12 @@ public class DeviceProfile {
      * Gets the space in px from the bottom of last item in the vertical-bar hotseat to the
      * bottom of the screen.
      */
-    public int getVerticalHotseatLastItemBottomOffset() {
+    private int getVerticalHotseatLastItemBottomOffset() {
         int cellHeight = calculateCellHeight(
                 heightPx - mHotseatPadding.top - mHotseatPadding.bottom, hotseatBorderSpace,
                 numShownHotseatIcons);
-        int hotseatSize = (cellHeight * numShownHotseatIcons)
-                + (hotseatBorderSpace * (numShownHotseatIcons - 1));
-        int extraHotseatEndSpacing = (heightPx - hotseatSize) / 2;
         int extraIconEndSpacing = (cellHeight - iconSizePx) / 2;
-        return extraHotseatEndSpacing + extraIconEndSpacing + mHotseatPadding.bottom;
+        return extraIconEndSpacing + mHotseatPadding.bottom;
     }
 
     /**
@@ -953,7 +950,7 @@ public class DeviceProfile {
     /**
      * Gets the scaled bottom of the workspace in px for the spring-loaded edit state.
      */
-    private float getCellLayoutSpringLoadShrunkBottom() {
+    public float getCellLayoutSpringLoadShrunkBottom() {
         int topOfHotseat = hotseatBarSizePx + springLoadedHotseatBarTopMarginPx;
         workspaceSpringLoadShrunkBottom =
                 heightPx - (isVerticalBarLayout() ? getVerticalHotseatLastItemBottomOffset()
