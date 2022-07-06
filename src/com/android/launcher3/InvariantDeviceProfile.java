@@ -777,10 +777,8 @@ public class InvariantDeviceProfile {
                     R.styleable.GridDisplayOption_numSearchContainerColumns, numColumns);
 
             dbFile = a.getString(R.styleable.GridDisplayOption_dbFile);
-            defaultLayoutId = a.getResourceId(deviceType == TYPE_MULTI_DISPLAY && a.hasValue(
-                    R.styleable.GridDisplayOption_defaultSplitDisplayLayoutId)
-                    ? R.styleable.GridDisplayOption_defaultSplitDisplayLayoutId
-                    : R.styleable.GridDisplayOption_defaultLayoutId, 0);
+            defaultLayoutId = a.getResourceId(
+                    R.styleable.GridDisplayOption_defaultLayoutId, 0);
             demoModeLayoutId = a.getResourceId(
                     R.styleable.GridDisplayOption_demoModeLayoutId, defaultLayoutId);
 
