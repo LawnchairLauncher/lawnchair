@@ -112,6 +112,8 @@ abstract class DeviceProfileBaseTest {
             ).toTypedArray()
             hotseatBorderSpaces = FloatArray(4) { 16f }
             hotseatColumnSpan = IntArray(4) { 4 }
+            hotseatBarBottomSpace = FloatArray(4) { 48f }
+            hotseatQsbSpace = FloatArray(4) { 36f }
             iconSize = FloatArray(4) { 56f }
             allAppsIconSize = FloatArray(4) { 56f }
             iconTextSize = FloatArray(4) { 14f }
