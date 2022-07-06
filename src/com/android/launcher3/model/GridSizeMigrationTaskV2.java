@@ -110,9 +110,8 @@ public class GridSizeMigrationTaskV2 {
     private static boolean needsToMigrate(
             DeviceGridState srcDeviceState, DeviceGridState destDeviceState) {
         boolean needsToMigrate = !destDeviceState.isCompatible(srcDeviceState);
-        // TODO(b/198965093): Revert this change after bug is fixed
         if (needsToMigrate) {
-            Log.d("b/198965093", "Migration is needed. destDeviceState: " + destDeviceState
+            Log.i(TAG, "Migration is needed. destDeviceState: " + destDeviceState
                     + ", srcDeviceState: " + srcDeviceState);
         }
         return needsToMigrate;
