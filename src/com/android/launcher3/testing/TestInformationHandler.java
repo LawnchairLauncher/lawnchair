@@ -154,10 +154,6 @@ public class TestInformationHandler implements ResourceBasedOverride {
                         mDeviceProfile.isTwoPanels);
                 return response;
 
-            case TestProtocol.REQUEST_SET_FORCE_PAUSE_TIMEOUT:
-                TestProtocol.sForcePauseTimeout = Long.parseLong(arg);
-                return response;
-
             case TestProtocol.REQUEST_GET_HAD_NONTEST_EVENTS:
                 response.putBoolean(
                         TestProtocol.TEST_INFO_RESPONSE_FIELD, TestLogging.sHadEventsNotFromTest);
