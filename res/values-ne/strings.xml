@@ -92,8 +92,8 @@
     <string name="disabled_app_label" msgid="6673129024321402780">"असक्षम पारिएको <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} सँग सम्बन्धित # सूचना छ}other{{app_name} सँग सम्बन्धित # वटा सूचना छन्}}"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"पृष्ठ %2$d को %1$d"</string>
-    <string name="workspace_scroll_format" msgid="8458889198184077399">"गृह स्क्रिन %1$d को %2$d"</string>
-    <string name="workspace_new_page" msgid="257366611030256142">"नयाँ गृह स्क्रिन पृष्ठ"</string>
+    <string name="workspace_scroll_format" msgid="8458889198184077399">"होम स्क्रिन %1$d को %2$d"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"नयाँ होम स्क्रिन पृष्ठ"</string>
     <string name="folder_opened" msgid="94695026776264709">"फोल्डर खुल्यो <xliff:g id="WIDTH">%1$d</xliff:g> बाट <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="4625795376335528256">"फोल्डरलाई बन्द गर्न ट्याप गर्नुहोस्"</string>
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"पुनःनामाकरणलाई सुरक्षित गर्न ट्याप गर्नुहोस्"</string>
