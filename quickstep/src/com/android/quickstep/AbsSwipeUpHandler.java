@@ -444,7 +444,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             });
 
         setupRecentsViewUi();
-        linkRecentsViewScroll();
+        mRecentsView.runOnPageScrollsInitialized(this::linkRecentsViewScroll);
         activity.runOnBindToTouchInteractionService(this::onLauncherBindToService);
 
         mActivity.registerActivityLifecycleCallbacks(mLifecycleCallbacks);
