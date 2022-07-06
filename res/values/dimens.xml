@@ -32,10 +32,7 @@
     <dimen name="dynamic_grid_cell_padding_x">8dp</dimen>
 
     <!-- Hotseat -->
-    <dimen name="dynamic_grid_hotseat_top_padding">8dp</dimen>
-    <dimen name="dynamic_grid_hotseat_bottom_padding">2dp</dimen>
     <dimen name="dynamic_grid_hotseat_bottom_tall_padding">0dp</dimen>
-    <dimen name="inline_qsb_bottom_margin">0dp</dimen>
     <dimen name="spring_loaded_hotseat_top_margin">76dp</dimen>
 
     <!-- Qsb -->
@@ -44,13 +41,10 @@
       it is close to the bottom of the screen -->
     <item name="qsb_center_factor" format="float" type="dimen">0.325</item>
 
-    <!-- Extra bottom padding for non-tall devices. -->
-    <dimen name="dynamic_grid_hotseat_bottom_non_tall_padding">0dp</dimen>
-    <dimen name="dynamic_grid_hotseat_extra_vertical_size">34dp</dimen>
     <dimen name="dynamic_grid_hotseat_side_padding">0dp</dimen>
 
     <!-- Scalable Grid -->
-    <dimen name="scalable_grid_qsb_bottom_margin">42dp</dimen>
+    <dimen name="min_qsb_margin">8dp</dimen>
 
     <!-- Workspace page indicator -->
     <dimen name="workspace_page_indicator_height">24dp</dimen>
@@ -364,6 +358,7 @@
     <dimen name="taskbar_size">0dp</dimen>
     <dimen name="taskbar_stashed_size">0dp</dimen>
     <dimen name="qsb_widget_height">0dp</dimen>
+    <dimen name="qsb_shadow_height">0dp</dimen>
     <dimen name="taskbar_icon_size">44dp</dimen>
     <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
     <dimen name="taskbar_icon_spacing">8dp</dimen>

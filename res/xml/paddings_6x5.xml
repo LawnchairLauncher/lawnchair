@@ -17,60 +17,29 @@
 
 <device-paddings xmlns:launcher="http://schemas.android.com/apk/res-auto" >
 
-    <!--  Some non default screen sizes  -->
     <device-padding
-        launcher:maxEmptySpace="30dp">
+        launcher:maxEmptySpace="100dp">
         <workspaceTopPadding
-            launcher:a="0.34"
+            launcher:a="0.31"
             launcher:b="0"/>
         <workspaceBottomPadding
-            launcher:a="0.26"
+            launcher:a="0.69"
             launcher:b="0"/>
         <hotseatBottomPadding
-            launcher:a="0.4"
-            launcher:b="0"/>
-    </device-padding>
-
-    <device-padding
-        launcher:maxEmptySpace="170dp">
-        <workspaceTopPadding
             launcher:a="0"
-            launcher:b="20dp"/>
-        <workspaceBottomPadding
-            launcher:a="0.4"
-            launcher:b="0"
-            launcher:c="20dp"/>
-        <hotseatBottomPadding
-            launcher:a="0.6"
-            launcher:b="0"
-            launcher:c="20dp"/>
-    </device-padding>
-
-    <device-padding
-        launcher:maxEmptySpace="410dp">
-        <workspaceTopPadding
-            launcher:a="0"
-            launcher:b="112dp"/>
-        <workspaceBottomPadding
-            launcher:a="0.4"
-            launcher:b="0"
-            launcher:c="112dp"/>
-        <hotseatBottomPadding
-            launcher:a="0.6"
-            launcher:b="0"
-            launcher:c="112dp"/>
+            launcher:b="0"/>
     </device-padding>
 
     <device-padding
         launcher:maxEmptySpace="9999dp">
         <workspaceTopPadding
-            launcher:a="0.40"
-            launcher:c="36dp"/>
+            launcher:a="0.48"
+            launcher:b="0"/>
         <workspaceBottomPadding
-            launcher:a="0.60"
-            launcher:c="36dp"/>
+            launcher:a="0.52"
+            launcher:b="0"/>
         <hotseatBottomPadding
             launcher:a="0"
-            launcher:b="36dp"/>
+            launcher:b="0"/>
     </device-padding>
 </device-paddings>

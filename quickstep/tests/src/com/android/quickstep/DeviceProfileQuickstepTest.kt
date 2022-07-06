@@ -48,8 +48,8 @@ class DeviceProfileQuickstepTest : DeviceProfileBaseTest() {
 
         val dp = newDP()
 
-        assertThat(dp.cellLayoutWidth).isEqualTo(1235)
-        assertThat(dp.cellLayoutHeight).isEqualTo(1235)
+        assertThat(dp.cellLayoutWidth).isEqualTo(1237)
+        assertThat(dp.cellLayoutHeight).isEqualTo(1215)
     }
 
     @Test
@@ -67,8 +67,8 @@ class DeviceProfileQuickstepTest : DeviceProfileBaseTest() {
 
         val dp = newDP()
 
-        assertThat(dp.getCellSize().y).isEqualTo(264)
-        assertThat(dp.getCellSize().x).isEqualTo(258)
+        assertThat(dp.getCellSize().y).isEqualTo(260)
+        assertThat(dp.getCellSize().x).isEqualTo(259)
     }
 
     @Test
@@ -117,6 +117,6 @@ class DeviceProfileQuickstepTest : DeviceProfileBaseTest() {
 
         assertThat(dp.isVerticalBarLayout).isEqualTo(false)
         assertThat(dp.cellLayoutSpringLoadShrunkTop).isEqualTo(364)
-        assertThat(dp.cellLayoutSpringLoadShrunkBottom).isEqualTo(2199)
+        assertThat(dp.cellLayoutSpringLoadShrunkBottom).isEqualTo(2185)
     }
 }
