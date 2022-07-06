@@ -114,6 +114,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Каб паказваліся значкі апавяшчэнняў, уключыце апавяшчэнні праграм для <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Змяніць налады"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Паказваць значкі апавяшчэнняў"</string>
+    <string name="developer_options_title" msgid="700788437593726194">"Параметры распрацоўшчыка"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Дадаваць значкі праграм на галоўны экран"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Для новых праграм"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Невядома"</string>
@@ -124,14 +125,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Усталёўваецца праграма \"<xliff:g id="NAME">%1$s</xliff:g>\", завершана <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Ідзе спампоўка <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> завершана"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> чакае ўсталёўкі"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"Неабходна абнавіць праграму"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"Гэта версія праграмы састарэла. Абнавіце праграму ўручную, каб зноў карыстацца гэтым ярлыком, або выдаліце значок."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"Абнавіць"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"Выдаліць"</string>
     <string name="widgets_list" msgid="796804551140113767">"Спіс віджэтаў"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Спіс віджэтаў закрыты"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Дадаць на галоўны экран"</string>
@@ -171,8 +168,10 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Працоўныя праграмы выключаны. Яны не могуць адпраўляць вам апавяшчэнні, выкарыстоўваць акумулятар або атрымліваць доступ да вашага месцазнаходжання"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Працоўныя праграмы пазначаны спецыяльнымі значкамі, а таксама бачныя IT-адміністратару"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Зразумела"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Выключыць працоўныя праграмы"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Прыпыніць працоўныя праграмы"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Уключыць працоўныя праграмы"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Фільтр"</string>
+    <string name="search_pref_screen_title" msgid="3258959643336315962">"Пошук на тэлефоне"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Пошук на планшэце"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Не ўдалося: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
