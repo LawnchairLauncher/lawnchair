@@ -84,7 +84,6 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -101,7 +100,6 @@ public final class LauncherInstrumentation {
     private static final String TAG = "Tapl";
     private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 15;
     private static final int GESTURE_STEP_MS = 16;
-    private static final long FORCE_PAUSE_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(2);
 
     static final Pattern EVENT_TOUCH_DOWN = getTouchEventPattern("ACTION_DOWN");
     static final Pattern EVENT_TOUCH_UP = getTouchEventPattern("ACTION_UP");
@@ -360,10 +358,6 @@ public final class LauncherInstrumentation {
 
     float getExactScreenCenterX() {
         return getRealDisplaySize().x / 2f;
-    }
-
-    private void setForcePauseTimeout(long timeout) {
-        getTestInfo(TestProtocol.REQUEST_SET_FORCE_PAUSE_TIMEOUT, Long.toString(timeout));
     }
 
     public void setEnableRotation(boolean on) {
@@ -886,7 +880,6 @@ public final class LauncherInstrumentation {
             final String action;
             if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
                 checkForAnomaly(false, true);
-                setForcePauseTimeout(FORCE_PAUSE_TIMEOUT_MS);
 
                 final Point displaySize = getRealDisplaySize();
                 // The swipe up to home gesture starts from inside the launcher when the user is
