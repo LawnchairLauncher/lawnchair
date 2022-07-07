@@ -114,7 +114,7 @@
     <string name="show_sys_ui_scrim">Горња сенка</string>
     <string name="show_status_bar">Прикажи статусну траку</string>
     <string name="layout">Распоред</string>
-    <string name="what_to_show">Шта се приказује</string>
+    <string name="what_to_show">Шта желите да се приказује?</string>
     <string name="missing_notification_access_label">Приступ обавештењима</string>
     <string name="missing_notification_access_description">Потребан је приступ обавештењима.</string>
     <string name="msg_missing_notification_access">Да бисте користили тачке за обавештења, доделите апликацији <xliff:g id="name" example="My App">%1$s</xliff:g> приступ обавештењима.</string>
@@ -203,25 +203,25 @@
     <string name="font_picker_label">Прилагођавање фонта</string>
     <string name="font_picker_description">Неки текст остаје неизмењен.</string>
     <string name="smartspace_calendar_label">Прилагођавање календара у виџету „Кратак преглед”</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
+    <string name="smartspace_calendar_description">Омогућава приказ датума у календарским системима који нису грегоријански.</string>
     <string name="search_provider_app_search">Претрага апликација</string>
     <string name="always_open_website_label">Увек отварај веб-сајт</string>
     <string name="always_open_website_description">Отвара веб-сајт претраживача чак и када је инсталирана апликација.</string>
     <string name="search_provider">Претраживач</string>
     <string name="status_bar_label">Статусна трака</string>
-    <string name="show_notification_count">Show Notification Count</string>
-    <string name="icon_picker_load_failed">Couldn’t load more icons.</string>
-    <string name="reset_custom_icons">Reset Custom Icons</string>
-    <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
+    <string name="show_notification_count">Прикажи број обавештења</string>
+    <string name="icon_picker_load_failed">Није могуће учитати још икона.</string>
+    <string name="reset_custom_icons">Ресетуј прилагођене иконе</string>
+    <string name="reset_custom_icons_confirmation">Све прилагођене иконе ће се ресетовати. Желите ли да наставите?</string>
     <string name="taskbar_label">Трака задатака</string>
     <string name="enable_taskbar_experimental">Омогући траку задатака (експериментално)</string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">Није инсталирана продавница апликација или прегледач.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_battery_charging">Charging</string>
+    <string name="smartspace_battery_charging">Пуни се</string>
     <string name="smartspace_battery_full">Напуњено</string>
     <string name="smartspace_battery_low">Батерија је на измаку</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — напуњена за %2$s"</string>
     <string name="accessibility_smartspace_page">Страница %1$d од %2$d</string>
     <string name="smartspace_widget">Кратак преглед</string>
     <string name="smartspace_widget_description">Шта се приказује</string>
@@ -234,14 +234,14 @@
     <string name="smartspace_time_24_hour_format">24-часовни формат</string>
     <string name="smartspace_weather">Временска прогноза</string>
     <string name="smartspace_battery_status">Статус батерије</string>
-    <string name="smartspace_now_playing">Now Playing</string>
-    <string name="smartspace_requires_setup">Tap to Set Up</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
+    <string name="smartspace_now_playing">Репродукује се</string>
+    <string name="smartspace_requires_setup">Додирните за подешавање</string>
+    <string name="event_provider_missing_notification_dots">Да бисте користили <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, омогућите тачке за обавештења.</string>
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="smartspace_calendar_gregorian">Грегоријански</string>
     <string name="smartspace_calendar_persian">Персијски</string>
     <string name="quickstep_incompatible">Некомпатибилна интеграција са системом</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
+    <string name="quickstep_incompatible_description">Уређај је подешен да користи системске покрете (познате као Quickstep), које пружа %1$s, али ова верзија апликације %1$s није компатибилна са вашом верзијом Android-а. Да бисте наставили да користите уређај, деинсталирајте ажурирања апликације %1$s или онемогућите %1$s као добављача системских покрета.</string>
     <string name="pref_fonts_add_fonts">Додај фонтове</string>
     <string name="pref_fonts_add_fonts_summary">Подржани су OTF и TTF формати.</string>
     <string name="delete">Избриши</string>
@@ -263,7 +263,7 @@
     <string name="backup_restore_error">Није могуће вратити резервну копију.</string>
     <string name="invalid_backup_file">Неважећи фајл резервне копије.</string>
     <string name="wallpaper_depth_effect_label">Ефекат дубине позадине</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_description">Увећајте или умањите приказ позадине при прелазу између стања.</string>
     <string name="gestures_label">Покрети</string>
     <string name="gestures_description">Додири и превлачења</string>
     <!-- Gestures -->
@@ -274,14 +274,14 @@
     <string name="gesture_back_tap">Дугме Назад</string>
     <string name="gesture_handler_no_op">Не ради ништа</string>
     <string name="gesture_handler_sleep">Пређи у режим спавања</string>
-    <string name="gesture_handler_open_notifications">Open Notification Panel</string>
-    <string name="gesture_handler_open_app_option">Open App</string>
-    <string name="gesture_handler_open_app_config">Open %1$s</string>
-    <string name="gesture_handler_open_app_drawer">Open App Drawer</string>
-    <string name="gesture_handler_open_app_search">Open App Search</string>
-    <string name="gesture_handler_open_search">Open Search</string>
-    <string name="pick_app_for_gesture">Pick App</string>
-    <string name="x_and_y">%s &amp; %s</string>
+    <string name="gesture_handler_open_notifications">Отвори траку са обавештењима</string>
+    <string name="gesture_handler_open_app_option">Отвори апликацију</string>
+    <string name="gesture_handler_open_app_config">Отвори %1$s</string>
+    <string name="gesture_handler_open_app_drawer">Отвори листу апликација</string>
+    <string name="gesture_handler_open_app_search">Отвори претрагу апликација</string>
+    <string name="gesture_handler_open_search">Отвори претрагу</string>
+    <string name="pick_app_for_gesture">Изаберите апликацију</string>
+    <string name="x_and_y">%s и %s</string>
     <string name="app_label">Апликација</string>
     <string name="website_label">Веб-сајт</string>
 </resources>
