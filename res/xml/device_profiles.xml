@@ -199,6 +199,8 @@
             launcher:allAppsBorderSpaceLandscape="16"
             launcher:hotseatBorderSpace="58"
             launcher:hotseatBorderSpaceLandscape="50.4"
+            launcher:hotseatBarBottomSpace="76"
+            launcher:hotseatBarBottomSpaceLandscape="40"
             launcher:canBeDefault="true" />
 
     </grid-option>

@@ -299,9 +299,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                         isRtl ? -halfQsbIconWidthDiff : halfQsbIconWidthDiff,
                         hotseatIconCenter - childCenter, LINEAR);
 
-                int qsbContentHeight = child.getHeight() - child.getPaddingTop()
-                        - child.getPaddingBottom();
-                float scale = ((float) taskbarDp.iconSizePx) / qsbContentHeight;
+                float scale = ((float) taskbarDp.iconSizePx) / launcherDp.hotseatQsbVisualHeight;
                 setter.addFloat(child, SCALE_PROPERTY, scale, 1f, LINEAR);
 
                 setter.addFloat(child, VIEW_ALPHA, 0f, 1f,

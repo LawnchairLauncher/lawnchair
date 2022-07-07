@@ -78,8 +78,9 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     private static final int INDEX_VISIBILITY_ALPHA = 1;
     private static final int INDEX_FULLSCREEN_ALPHA = 2;
     private static final int INDEX_HIDDEN_FLAGS_ALPHA = 3;
+    private static final int INDEX_SHARE_TARGET_ALPHA = 4;
 
-    private final MultiValueAlpha mMultiValueAlpha;
+    private MultiValueAlpha mMultiValueAlpha;
     private Button mSplitButton;
 
     @ActionsHiddenFlags
@@ -105,13 +106,14 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     public OverviewActionsView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr, 0);
-        mMultiValueAlpha = new MultiValueAlpha(this, 5);
-        mMultiValueAlpha.setUpdateVisibility(true);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        mMultiValueAlpha = new MultiValueAlpha(findViewById(R.id.action_buttons), 5);
+        mMultiValueAlpha.setUpdateVisibility(true);
+
         findViewById(R.id.action_screenshot).setOnClickListener(this);
 
         mSplitButton = findViewById(R.id.action_split);
@@ -191,6 +193,10 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     public AlphaProperty getFullscreenAlpha() {
         return mMultiValueAlpha.getProperty(INDEX_FULLSCREEN_ALPHA);
+    }
+
+    public AlphaProperty getShareTargetAlpha() {
+        return mMultiValueAlpha.getProperty(INDEX_SHARE_TARGET_ALPHA);
     }
 
     /**

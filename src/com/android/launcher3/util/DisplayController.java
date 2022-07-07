@@ -66,6 +66,7 @@ import java.util.Set;
 public class DisplayController implements ComponentCallbacks, SafeCloseable {
 
     private static final String TAG = "DisplayController";
+    private static final boolean DEBUG = false;
 
     public static final MainThreadInitializedObject<DisplayController> INSTANCE =
             new MainThreadInitializedObject<>(DisplayController::new);
@@ -243,10 +244,9 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
                 || !newInfo.mPerDisplayBounds.equals(oldInfo.mPerDisplayBounds)) {
             change |= CHANGE_SUPPORTED_BOUNDS;
         }
-        Log.d("b/198965093", "handleInfoChange"
-                + "\n\tchange: 0b" + Integer.toBinaryString(change)
-                + "\n\tConfiguration diff: 0x" + Integer.toHexString(
-                        newInfo.mConfiguration.diff(oldInfo.mConfiguration)));
+        if (DEBUG) {
+            Log.d(TAG, "handleInfoChange - change: 0b" + Integer.toBinaryString(change));
+        }
 
         if (change != 0) {
             mInfo = newInfo;
@@ -286,9 +286,6 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         private final ArrayMap<CachedDisplayInfo, WindowBounds[]> mPerDisplayBounds =
                 new ArrayMap<>();
 
-        // TODO(b/198965093): Remove after investigation
-        private Configuration mConfiguration;
-
         public Info(Context displayInfoContext) {
             /* don't need system overrides for external displays */
             this(displayInfoContext, new WindowManagerProxy(), new ArrayMap<>());
@@ -310,21 +307,18 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
             mScreenSizeDp = new PortraitSize(config.screenHeightDp, config.screenWidthDp);
             navigationMode = parseNavigationMode(displayInfoContext);
 
-            // TODO(b/198965093): Remove after investigation
-            mConfiguration = config;
-
             mPerDisplayBounds.putAll(perDisplayBoundsCache);
             WindowBounds[] cachedValue = mPerDisplayBounds.get(normalizedDisplayInfo);
 
             WindowBounds realBounds = wmProxy.getRealBounds(displayInfoContext, displayInfo);
             if (cachedValue == null) {
                 // Unexpected normalizedDisplayInfo is found, recreate the cache
-                Log.e("b/198965093", "Unexpected normalizedDisplayInfo found, invalidating cache");
+                Log.e(TAG, "Unexpected normalizedDisplayInfo found, invalidating cache");
                 mPerDisplayBounds.clear();
                 mPerDisplayBounds.putAll(wmProxy.estimateInternalDisplayBounds(displayInfoContext));
                 cachedValue = mPerDisplayBounds.get(normalizedDisplayInfo);
                 if (cachedValue == null) {
-                    Log.e("b/198965093", "normalizedDisplayInfo not found in estimation: "
+                    Log.e(TAG, "normalizedDisplayInfo not found in estimation: "
                             + normalizedDisplayInfo);
                     supportedBounds.add(realBounds);
                 }
@@ -342,12 +336,13 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
             }
             mPerDisplayBounds.values().forEach(
                     windowBounds -> Collections.addAll(supportedBounds, windowBounds));
-            Log.e("b/198965093", "mConfiguration: " + mConfiguration);
-            Log.d("b/198965093", "displayInfo: " + displayInfo);
-            Log.d("b/198965093", "realBounds: " + realBounds);
-            Log.d("b/198965093", "normalizedDisplayInfo: " + normalizedDisplayInfo);
-            mPerDisplayBounds.forEach((key, value) -> Log.d("b/198965093",
-                    "perDisplayBounds - " + key + ": " + Arrays.deepToString(value)));
+            if (DEBUG) {
+                Log.d(TAG, "displayInfo: " + displayInfo);
+                Log.d(TAG, "realBounds: " + realBounds);
+                Log.d(TAG, "normalizedDisplayInfo: " + normalizedDisplayInfo);
+                mPerDisplayBounds.forEach((key, value) -> Log.d(TAG,
+                        "perDisplayBounds - " + key + ": " + Arrays.deepToString(value)));
+            }
         }
 
         /**

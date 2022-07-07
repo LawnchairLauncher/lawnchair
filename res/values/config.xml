@@ -131,6 +131,11 @@
     <item type="id" name="search_container_all_apps" />
     <item type="id" name="search_container_hotseat" />
 
+    <!-- Scalable Grid configuration -->
+    <!-- This is a float because it is converted to dp later in DeviceProfile -->
+    <dimen name="hotseat_bar_bottom_space_default">48</dimen>
+    <dimen name="hotseat_qsb_space_default">0</dimen>
+
     <!-- Recents -->
     <item type="id" name="overview_panel"/>
 
