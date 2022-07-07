@@ -16,10 +16,10 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">Тема иконица</string>
-    <string name="icon_style">Icon Style</string>
+    <string name="icon_style">Стил икона</string>
     <string name="settings">Подешавања</string>
     <string name="home_screen_label">Почетна страна</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">Фид, мрежа, иконе</string>
     <string name="general_label">Општа подешавања</string>
     <string name="general_description">Боје, пакети икона и тачке за обавештења</string>
     <string name="home_screen_rotation_label">Ротација почетне стране</string>
