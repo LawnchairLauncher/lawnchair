@@ -55,12 +55,12 @@
     <string name="devops">DevOps</string>
     <string name="quickswitch_maintenance">Одржавање QuickSwitch-а</string>
     <string name="all_apps_search_bar_hint">Претражите апликације</string>
-    <string name="settings_button_text">Подешавања почетне</string>
+    <string name="settings_button_text">Подешавања почетног екрана</string>
     <string name="development">Развој</string>
     <string name="app_info_drop_target_label">Информације о апликацији</string>
     <string name="item_removed">Ставка је уклоњена.</string>
-    <string name="all_apps_no_search_results">Није пронађена ниједна апликација која се подудара са “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
-    <string name="translucent_background">Translucent Background</string>
+    <string name="all_apps_no_search_results">Није пронађена апликација која одговара упиту „<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="translucent_background">Полупрозирна позадина</string>
     <string name="background_opacity">Прозирност позадине</string>
     <string name="background_lightness_label">Осветљеност позадине</string>
     <string name="adaptive_icons">Адаптивне иконице</string>
@@ -81,7 +81,7 @@
         <item quantity="other">%1$d Aпликације</item>
     </plurals>
     <string name="hotseat_qsb_label">Прикажи траку за претрагу</string>
-    <string name="qsb_search_provider_app_required">App required.</string>
+    <string name="qsb_search_provider_app_required">Потребна је апликација.</string>
     <string name="dt2s_admin_hint_title">Потребне су дозволе за администрацију</string>
     <string name="dt2s_admin_hint">Да бисте користили функцију „Додирните двапут за стање спавања”, подесите Lawnchair као апликацију за администратора уређаја. У подешавањима додирните „Активирај ову апликацију за администратора уређаја”.</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
@@ -102,18 +102,18 @@
     <string name="window_corner_radius_label">Радијус угла екрана</string>
     <string name="override_window_corner_radius_label">Прилагођени радијус угла екрана</string>
     <string name="window_corner_radius_description">Када превучете нагоре и отворите Недавно, тренутна апликација ће пратити ваш прст и смањити се у картицу. Помоћу овог клизача подесите радијус угла картице када је готово у режиму целог екрана како би одговарала угловима екрана.</string>
-    <string name="system_icons">Системске иконице</string>
-    <string name="accent_color">Акцентна боја</string>
+    <string name="system_icons">Системске иконе</string>
+    <string name="accent_color">Боја за наглашавање</string>
     <string name="done">Готово</string>
     <string name="loading">Учитавање…</string>
     <string name="system">Систем</string>
     <string name="wallpaper">Позадина</string>
-    <string name="custom">Произвољно</string>
+    <string name="custom">Прилагођено</string>
     <string name="quickstep_description">Дугме „Обриши све”, радијус угла</string>
-    <string name="wallpaper_scrolling_label">Листање позадине</string>
+    <string name="wallpaper_scrolling_label">Скроловање позадине</string>
     <string name="show_sys_ui_scrim">Горња сенка</string>
-    <string name="show_status_bar">Show Status Bar</string>
-    <string name="layout">Layout</string>
+    <string name="show_status_bar">Прикажи статусну траку</string>
+    <string name="layout">Распоред</string>
     <string name="what_to_show">Шта се приказује</string>
     <string name="missing_notification_access_label">Приступ обавештењима</string>
     <string name="missing_notification_access_description">Потребан је приступ обавештењима.</string>
@@ -145,7 +145,7 @@
     <string name="icon_shape_label">Облик икона</string>
     <string name="icon_shape_system">Систем</string>
     <string name="icon_shape_circle">Круг</string>
-    <string name="icon_shape_square">Square</string>
+    <string name="icon_shape_square">Квадрат</string>
     <string name="icon_shape_rounded_square">Заобљени квадрат</string>
     <string name="icon_shape_squircle">Заокругљени квадрат</string>
     <string name="icon_shape_sammy">One UI</string>
