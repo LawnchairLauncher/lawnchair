@@ -281,6 +281,10 @@ public final class FeatureFlags {
             "ENABLE_CACHED_WIDGET", true,
             "Show previously cached widgets as opposed to deferred widget where available");
 
+    public static final BooleanFlag USE_SEARCH_REQUEST_TIMEOUT_OVERRIDES = getDebugFlag(
+            "USE_SEARCH_REQUEST_TIMEOUT_OVERRIDES", false,
+            "Use local overrides for search request timeout");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
