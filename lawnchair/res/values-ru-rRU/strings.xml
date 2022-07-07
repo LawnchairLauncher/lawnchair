@@ -38,7 +38,7 @@
     <string name="home_screen_grid">Сетка главного экрана</string>
     <string name="home_screen_lock">Блокировка домашнего экрана</string>
     <string name="home_screen_unlock">Разблокировать домашний экран</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Показывать кнопку блокировки в всплывающем окне</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Показывать кнопку блокировки во всплывающем окне</string>
     <string name="columns">Столбцы</string>
     <string name="grid">Сетка</string>
     <string name="rows">Строки</string>
@@ -110,7 +110,7 @@
     <string name="system">Система</string>
     <string name="wallpaper">Обои</string>
     <string name="custom">Настраиваемый</string>
-    <string name="quickstep_description">Радиус углов кнопки \"Очистить всё\"</string>
+    <string name="quickstep_description">Радиус углов, кнопка \"Очистить всё\"</string>
     <string name="wallpaper_scrolling_label">Прокрутка обоев</string>
     <string name="show_sys_ui_scrim">Тень под строкой состояния</string>
     <string name="show_status_bar">Отображать строку состояния</string>
@@ -158,7 +158,7 @@
     <string name="hide_from_drawer">Скрыть из меню приложений</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Скруглённые углы</string>
-    <string name="allow_widget_overlap">Allow Overlap</string>
+    <string name="allow_widget_overlap">Разрешить наложения</string>
     <string name="suggestion_pref_screen_title">Рекомендации</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Метка</string>
@@ -264,7 +264,7 @@
     <string name="backup_restore_error">Не удалось восстановить резервную копию.</string>
     <string name="invalid_backup_file">Файл резервной копии недействителен.</string>
     <string name="wallpaper_depth_effect_label">Глубина обоев</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_description">Приближать и отдалять обои при переключении между приложениями.</string>
     <string name="gestures_label">Жесты</string>
     <string name="gestures_description">Касания и свайпы</string>
     <!-- Gestures -->
