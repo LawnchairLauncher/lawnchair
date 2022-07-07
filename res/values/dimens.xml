@@ -22,8 +22,6 @@
     <dimen name="dynamic_grid_edge_margin">10.77dp</dimen>
     <dimen name="dynamic_grid_left_right_margin">8dp</dimen>
     <dimen name="dynamic_grid_icon_drawable_padding">7dp</dimen>
-    <!-- Minimum space between workspace and hotseat in spring loaded mode -->
-    <dimen name="dynamic_grid_min_spring_loaded_space">8dp</dimen>
     <!-- Minimum amount of next page visible in spring loaded mode -->
     <dimen name="dynamic_grid_spring_loaded_min_next_space_visible">24dp</dimen>
 
@@ -362,6 +360,9 @@
     <dimen name="taskbar_icon_size">44dp</dimen>
     <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
     <dimen name="taskbar_icon_spacing">8dp</dimen>
+    <dimen name="taskbar_nav_buttons_size">0dp</dimen>
+    <dimen name="taskbar_contextual_button_margin">0dp</dimen>
+    <dimen name="taskbar_hotseat_nav_spacing">0dp</dimen>
 
     <!-- Size of the maximum radius for the enforced rounded rectangles. -->
     <dimen name="enforced_rounded_corner_max_radius">16dp</dimen>

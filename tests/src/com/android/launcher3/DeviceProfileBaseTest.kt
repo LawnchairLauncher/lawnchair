@@ -23,6 +23,8 @@ import com.android.launcher3.util.WindowBounds
 import org.junit.Before
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.mock
+import java.io.PrintWriter
+import java.io.StringWriter
 import org.mockito.Mockito.`when` as whenever
 
 abstract class DeviceProfileBaseTest {
@@ -55,8 +57,9 @@ abstract class DeviceProfileBaseTest {
         isGestureMode
     )
 
-    protected fun initializeVarsForPhone(isLandscape: Boolean = false) {
-        val (x, y) = if (isLandscape)
+    protected fun initializeVarsForPhone(isGestureMode: Boolean = true,
+                                         isVerticalBar: Boolean = false) {
+        val (x, y) = if (isVerticalBar)
             Pair(3120, 1440)
         else
             Pair(1440, 3120)
@@ -67,10 +70,17 @@ abstract class DeviceProfileBaseTest {
         whenever(info.getDensityDpi()).thenReturn(560)
         whenever(info.smallestSizeDp(any())).thenReturn(411f)
 
-        inv = newScalableInvariantDeviceProfile()
+        this.isGestureMode = isGestureMode
+
+        inv = newScalableInvariantDeviceProfile().apply {
+            deviceType = InvariantDeviceProfile.TYPE_PHONE
+            transposeLayoutWithOrientation = isVerticalBar
+        }
     }
 
-    protected fun initializeVarsForTablet(isLandscape: Boolean = false) {
+    protected fun initializeVarsForTablet(isLandscape: Boolean = false,
+                                          isTwoPanel: Boolean = false,
+                                          isGestureMode: Boolean = true) {
         val (x, y) = if (isLandscape)
             Pair(2560, 1600)
         else
@@ -82,7 +92,19 @@ abstract class DeviceProfileBaseTest {
         whenever(info.getDensityDpi()).thenReturn(320)
         whenever(info.smallestSizeDp(any())).thenReturn(800f)
 
-        inv = newScalableInvariantDeviceProfile()
+        this.isGestureMode = isGestureMode
+        useTwoPanels = isTwoPanel
+
+        inv = newScalableInvariantDeviceProfile().apply {
+            deviceType = if (isTwoPanel)
+                InvariantDeviceProfile.TYPE_MULTI_DISPLAY else InvariantDeviceProfile.TYPE_TABLET
+            inlineQsb = booleanArrayOf(
+                    false,
+                    isLandscape,
+                    false,
+                    false
+            )
+        }
     }
 
     /**
@@ -137,4 +159,12 @@ abstract class DeviceProfileBaseTest {
                 false
             )
         }
+
+    fun dump(dp: DeviceProfile): StringWriter {
+        val stringWriter = StringWriter()
+        val printWriter = PrintWriter(stringWriter)
+        dp.dump("", printWriter)
+        printWriter.flush()
+        return stringWriter
+    }
 }
