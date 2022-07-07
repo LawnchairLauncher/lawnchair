@@ -22,11 +22,11 @@
     <string name="home_screen_description">Фид, мрежа, иконе</string>
     <string name="general_label">Општа</string>
     <string name="general_description">Боје, пакети икона и тачке за обавештења</string>
-    <string name="home_screen_rotation_label">Ротација почетне стране</string>
-    <string name="home_screen_rotaton_description">Када је уређај у ротацији.</string>
-    <string name="auto_add_shortcuts_label">Додај нове апликације на почетну страну</string>
-    <string name="dock_label">Доњи ред</string>
-    <string name="dock_description">Трака за претрагу, Број иконица</string>
+    <string name="home_screen_rotation_label">Ротација почетног екрана</string>
+    <string name="home_screen_rotaton_description">Када се уређај ротира.</string>
+    <string name="auto_add_shortcuts_label">Додај нове апликације на почетни екран</string>
+    <string name="dock_label">Док</string>
+    <string name="dock_description">Трака за претрагу, број икона</string>
     <string name="app_drawer_label">Фиока апликација</string>
     <string name="app_drawer_description">Сакривене апликације, Број колона, Иконице</string>
     <string name="folders_label">Фолдери</string>
