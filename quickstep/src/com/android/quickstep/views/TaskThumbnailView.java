@@ -560,33 +560,16 @@ public class TaskThumbnailView extends View {
                 thumbnailScale = targetW / (croppedWidth * scale);
             }
 
-            Rect splitScreenInsets = dp.getInsets();
             if (!isRotated) {
-                // No Rotation
-                mClippedInsets.offsetTo(thumbnailClipHint.left * scale,
-                        thumbnailClipHint.top * scale);
                 mMatrix.setTranslate(
                         -thumbnailClipHint.left * scale,
                         -thumbnailClipHint.top * scale);
             } else {
-                setThumbnailRotation(deltaRotate, thumbnailClipHint, scale, thumbnailBounds, dp);
+                setThumbnailRotation(deltaRotate, thumbnailBounds);
             }
 
-            final float widthWithInsets;
-            final float heightWithInsets;
-            if (isOrientationDifferent) {
-                widthWithInsets = thumbnailBounds.height() * thumbnailScale;
-                heightWithInsets = thumbnailBounds.width() * thumbnailScale;
-            } else {
-                widthWithInsets = thumbnailBounds.width() * thumbnailScale;
-                heightWithInsets = thumbnailBounds.height() * thumbnailScale;
-            }
-            mClippedInsets.left *= thumbnailScale;
-            mClippedInsets.top *= thumbnailScale;
-            mClippedInsets.right = Math.max(0,
-                    widthWithInsets - mClippedInsets.left - canvasWidth);
-            mClippedInsets.bottom = Math.max(0,
-                    heightWithInsets - mClippedInsets.top - canvasHeight);
+            float canvasScreenRatio = canvasWidth / (float) dp.widthPx;
+            mClippedInsets.set(0, 0, 0, dp.taskbarSize * canvasScreenRatio);
 
             mMatrix.postScale(thumbnailScale, thumbnailScale);
             mIsOrientationChanged = isOrientationDifferent;
@@ -607,44 +590,32 @@ public class TaskThumbnailView extends View {
             return deltaRotation == Surface.ROTATION_90 || deltaRotation == Surface.ROTATION_270;
         }
 
-        private void setThumbnailRotation(int deltaRotate, RectF thumbnailInsets, float scale,
-                Rect thumbnailPosition, DeviceProfile dp) {
-            float newLeftInset = 0;
-            float newTopInset = 0;
+        private void setThumbnailRotation(int deltaRotate, Rect thumbnailPosition) {
             float translateX = 0;
             float translateY = 0;
 
             mMatrix.setRotate(90 * deltaRotate);
             switch (deltaRotate) { /* Counter-clockwise */
                 case Surface.ROTATION_90:
-                    newLeftInset = thumbnailInsets.bottom;
-                    newTopInset = thumbnailInsets.left;
                     translateX = thumbnailPosition.height();
                     break;
                 case Surface.ROTATION_270:
-                    newLeftInset = thumbnailInsets.top;
-                    newTopInset = thumbnailInsets.right;
                     translateY = thumbnailPosition.width();
                     break;
                 case Surface.ROTATION_180:
-                    newLeftInset = -thumbnailInsets.top;
-                    newTopInset = -thumbnailInsets.left;
                     translateX = thumbnailPosition.width();
                     translateY = thumbnailPosition.height();
                     break;
             }
-            mClippedInsets.offsetTo(newLeftInset * scale, newTopInset * scale);
             mMatrix.postTranslate(translateX, translateY);
-            if (TaskView.useFullThumbnail(dp)) {
-                mMatrix.postTranslate(-mClippedInsets.left, -mClippedInsets.top);
-            }
         }
 
         /**
          * Insets to used for clipping the thumbnail (in case it is drawing outside its own space)
          */
         public RectF getInsetsToDrawInFullscreen(DeviceProfile dp) {
-            return TaskView.useFullThumbnail(dp) ? mClippedInsets : EMPTY_RECT_F;
+            return dp.isTaskbarPresent && !dp.isTaskbarPresentInApps
+                    ? mClippedInsets : EMPTY_RECT_F;
         }
     }
 }

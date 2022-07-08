@@ -164,13 +164,6 @@ public class TaskView extends FrameLayout implements Reusable {
         return deviceProfile.isTablet;
     }
 
-    /**
-     * Should the TaskView scale down to fit whole thumbnail in fullscreen.
-     */
-    public static boolean useFullThumbnail(DeviceProfile deviceProfile) {
-        return deviceProfile.isTablet && !deviceProfile.isTaskbarPresentInApps;
-    }
-
     private static final float EDGE_SCALE_DOWN_FACTOR_CAROUSEL = 0.03f;
     private static final float EDGE_SCALE_DOWN_FACTOR_GRID = 0.00f;
 
@@ -1576,13 +1569,11 @@ public class TaskView extends FrameLayout implements Reusable {
             RectF insets = pph.getInsetsToDrawInFullscreen(dp);
 
             float currentInsetsLeft = insets.left * fullscreenProgress;
+            float currentInsetsTop = insets.top * fullscreenProgress;
             float currentInsetsRight = insets.right * fullscreenProgress;
-            float insetsBottom = insets.bottom;
-            if (dp.isTaskbarPresentInApps) {
-                insetsBottom = Math.max(0, insetsBottom - dp.taskbarSize);
-            }
-            mCurrentDrawnInsets.set(currentInsetsLeft, insets.top * fullscreenProgress,
-                    currentInsetsRight, insetsBottom * fullscreenProgress);
+            float currentInsetsBottom = insets.bottom * fullscreenProgress;
+            mCurrentDrawnInsets.set(
+                    currentInsetsLeft, currentInsetsTop, currentInsetsRight, currentInsetsBottom);
 
             mCurrentDrawnCornerRadius =
                     Utilities.mapRange(fullscreenProgress, mCornerRadius, mWindowCornerRadius)
