@@ -4014,7 +4014,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 stagePosition);
         mSplitHiddenTaskViewIndex = indexOfChild(taskView);
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            finishRecentsAnimation(true, null);
+            finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
+                    null /* onFinishComplete */);
         }
     }
 
