@@ -21,7 +21,6 @@ import static com.android.launcher3.util.OnboardingPrefs.ALL_APPS_VISITED_COUNT;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.text.Layout;
@@ -33,7 +32,6 @@ import android.view.View;
 import androidx.annotation.ColorInt;
 import androidx.core.content.ContextCompat;
 
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.FloatingHeaderRow;
 import com.android.launcher3.allapps.FloatingHeaderView;
@@ -236,12 +234,6 @@ public class AppsDividerView extends View implements FloatingHeaderRow {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec),
                 getPaddingBottom() + getPaddingTop());
-    }
-
-    @Override
-    public void setInsets(Rect insets, DeviceProfile grid) {
-        int leftRightPadding = grid.allAppsLeftRightPadding;
-        setPadding(leftRightPadding, getPaddingTop(), leftRightPadding, getPaddingBottom());
     }
 
     @Override
