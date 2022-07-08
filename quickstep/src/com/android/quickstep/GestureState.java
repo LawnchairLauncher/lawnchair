@@ -38,6 +38,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -82,11 +83,11 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
 
     private static final String TAG = "GestureState";
 
-    private static final ArrayList<String> STATE_NAMES = new ArrayList<>();
+    private static final List<String> STATE_NAMES = new ArrayList<>();
     public static final GestureState DEFAULT_STATE = new GestureState();
 
     private static int FLAG_COUNT = 0;
-    private static int getFlagForIndex(String name) {
+    private static int getNextStateFlag(String name) {
         if (DEBUG_STATES) {
             STATE_NAMES.add(name);
         }
@@ -97,36 +98,36 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
 
     // Called when the end target as been set
     public static final int STATE_END_TARGET_SET =
-            getFlagForIndex("STATE_END_TARGET_SET");
+            getNextStateFlag("STATE_END_TARGET_SET");
 
     // Called when the end target animation has finished
     public static final int STATE_END_TARGET_ANIMATION_FINISHED =
-            getFlagForIndex("STATE_END_TARGET_ANIMATION_FINISHED");
+            getNextStateFlag("STATE_END_TARGET_ANIMATION_FINISHED");
 
     // Called when the recents animation has been requested to start
     public static final int STATE_RECENTS_ANIMATION_INITIALIZED =
-            getFlagForIndex("STATE_RECENTS_ANIMATION_INITIALIZED");
+            getNextStateFlag("STATE_RECENTS_ANIMATION_INITIALIZED");
 
     // Called when the recents animation is started and the TaskAnimationManager has been updated
     // with the controller and targets
     public static final int STATE_RECENTS_ANIMATION_STARTED =
-            getFlagForIndex("STATE_RECENTS_ANIMATION_STARTED");
+            getNextStateFlag("STATE_RECENTS_ANIMATION_STARTED");
 
     // Called when the recents animation is canceled
     public static final int STATE_RECENTS_ANIMATION_CANCELED =
-            getFlagForIndex("STATE_RECENTS_ANIMATION_CANCELED");
+            getNextStateFlag("STATE_RECENTS_ANIMATION_CANCELED");
 
     // Called when the recents animation finishes
     public static final int STATE_RECENTS_ANIMATION_FINISHED =
-            getFlagForIndex("STATE_RECENTS_ANIMATION_FINISHED");
+            getNextStateFlag("STATE_RECENTS_ANIMATION_FINISHED");
 
     // Always called when the recents animation ends (regardless of cancel or finish)
     public static final int STATE_RECENTS_ANIMATION_ENDED =
-            getFlagForIndex("STATE_RECENTS_ANIMATION_ENDED");
+            getNextStateFlag("STATE_RECENTS_ANIMATION_ENDED");
 
     // Called when RecentsView stops scrolling and settles on a TaskView.
     public static final int STATE_RECENTS_SCROLLING_FINISHED =
-            getFlagForIndex("STATE_RECENTS_SCROLLING_FINISHED");
+            getNextStateFlag("STATE_RECENTS_SCROLLING_FINISHED");
 
     // Needed to interact with the current activity
     private final Intent mHomeIntent;
