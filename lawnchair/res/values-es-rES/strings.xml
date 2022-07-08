@@ -156,7 +156,7 @@
     <string name="hide_from_drawer">Ocultar del Cajón</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Esquinas Redondeadas</string>
-    <string name="allow_widget_overlap">Permitir Superposición</string>
+    <string name="allow_widget_overlap">Permitir superposición</string>
     <string name="suggestion_pref_screen_title">Sugerencias</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Etiqueta</string>
