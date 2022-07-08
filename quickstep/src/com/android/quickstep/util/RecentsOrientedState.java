@@ -221,8 +221,7 @@ public class RecentsOrientedState implements
 
     private boolean updateHandler() {
         mRecentsActivityRotation = inferRecentsActivityRotation(mDisplayRotation);
-        if (mRecentsActivityRotation == mTouchRotation || (isRecentsActivityRotationAllowed()
-                && (mFlags & FLAG_SWIPE_UP_NOT_RUNNING) != 0)) {
+        if (mRecentsActivityRotation == mTouchRotation || isRecentsActivityRotationAllowed()) {
             mOrientationHandler = PagedOrientationHandler.PORTRAIT;
         } else if (mTouchRotation == ROTATION_90) {
             mOrientationHandler = PagedOrientationHandler.LANDSCAPE;
