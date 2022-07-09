@@ -4014,7 +4014,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 stagePosition);
         mSplitHiddenTaskViewIndex = indexOfChild(taskView);
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            finishRecentsAnimation(true, null);
+            finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
+                    null /* onFinishComplete */);
         }
     }
 
@@ -4873,10 +4874,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     private void updateEnabledOverlays() {
-        int overlayEnabledPage = mOverlayEnabled ? getNextPage() : -1;
         int taskCount = getTaskViewCount();
         for (int i = 0; i < taskCount; i++) {
-            requireTaskViewAt(i).setOverlayEnabled(i == overlayEnabledPage);
+            TaskView taskView = requireTaskViewAt(i);
+            taskView.setOverlayEnabled(mOverlayEnabled && isTaskViewFullyVisible(taskView));
         }
     }
 

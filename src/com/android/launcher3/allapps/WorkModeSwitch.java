@@ -22,14 +22,16 @@ import android.graphics.Insets;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.view.WindowInsets;
 import android.widget.Button;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.KeyboardInsetAnimationCallback;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.StringCache;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip;
@@ -49,7 +51,6 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
     private int mFlags;
     private boolean mWorkEnabled;
     private boolean mOnWorkTab;
-
 
     public WorkModeSwitch(Context context) {
         this(context, null, 0);
@@ -85,15 +86,28 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
 
     @Override
     public void setInsets(Rect insets) {
-        int bottomInset = insets.bottom - mInsets.bottom;
         mInsets.set(insets);
-        ViewGroup.MarginLayoutParams marginLayoutParams =
-                (ViewGroup.MarginLayoutParams) getLayoutParams();
-        if (marginLayoutParams != null) {
-            marginLayoutParams.bottomMargin = bottomInset + marginLayoutParams.bottomMargin;
+        MarginLayoutParams lp = (MarginLayoutParams) getLayoutParams();
+        if (lp != null) {
+            int bottomMargin = getResources().getDimensionPixelSize(R.dimen.work_fab_margin_bottom);
+            if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
+                bottomMargin <<= 1;  // Double margin to add space above search bar.
+                bottomMargin += getResources().getDimensionPixelSize(R.dimen.qsb_widget_height);
+            }
+
+            DeviceProfile dp = ActivityContext.lookupContext(getContext()).getDeviceProfile();
+            lp.rightMargin = lp.leftMargin = dp.allAppsLeftRightPadding;
+            if (!dp.isGestureMode) {
+                if (dp.isTaskbarPresent) {
+                    bottomMargin += dp.taskbarSize;
+                } else {
+                    bottomMargin += insets.bottom;
+                }
+            }
+
+            lp.bottomMargin = bottomMargin;
         }
     }
-
 
     @Override
     public void onActivePageChanged(int page) {
