@@ -42,7 +42,7 @@ body:
     id: feature-examples
     attributes:
       label: Example(s)
-      description: Post screenshots/drawings/links/etc of the feature request, or proof-of-concepts images about the feature.
+      description: Post screenshots/drawings/links/etc of the feature request, or proof-of-concept images about the feature.
     validations:
       required: true
 
