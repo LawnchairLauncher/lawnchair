@@ -34,9 +34,9 @@ import android.widget.LinearLayout;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.util.SplitConfigurationOptions;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
-import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 
 import java.util.List;
 
@@ -241,6 +241,41 @@ public interface PagedOrientationHandler {
      * @param outStartRect The start rect that will directly be modified
      */
     void fixBoundsForHomeAnimStartRect(RectF outStartRect, DeviceProfile deviceProfile);
+
+    /**
+     * Determine the target translation for animating the FloatingTaskView out. This value could
+     * either be an x-coordinate or a y-coordinate, depending on which way the FloatingTaskView was
+     * docked.
+     *
+     * @param floatingTask The FloatingTaskView.
+     * @param onScreenRect The current on-screen dimensions of the FloatingTaskView.
+     * @param stagePosition STAGE_POSITION_TOP_OR_LEFT or STAGE_POSITION_BOTTOM_OR_RIGHT.
+     * @param dp The device profile.
+     * @return A float. When an animation translates the FloatingTaskView to this position, it will
+     * appear to tuck away off the edge of the screen.
+     */
+    float getFloatingTaskOffscreenTranslationTarget(View floatingTask, RectF onScreenRect,
+            @StagePosition int stagePosition, DeviceProfile dp);
+
+    /**
+     * Sets the translation of a FloatingTaskView along its "slide-in/slide-out" axis (could be
+     * either x or y), depending on how the view is oriented.
+     *
+     * @param floatingTask The FloatingTaskView to be translated.
+     * @param translation The target translation value.
+     * @param dp The current device profile.
+     */
+    void setFloatingTaskPrimaryTranslation(View floatingTask, float translation, DeviceProfile dp);
+
+    /**
+     * Gets the translation of a FloatingTaskView along its "slide-in/slide-out" axis (could be
+     * either x or y), depending on how the view is oriented.
+     *
+     * @param floatingTask The FloatingTaskView in question.
+     * @param dp The current device profile.
+     * @return The current translation value.
+     */
+    Float getFloatingTaskPrimaryTranslation(View floatingTask, DeviceProfile dp);
 
     class ChildBounds {
 
