@@ -102,6 +102,7 @@
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">Biểu tượng hệ thống</string>
     <string name="accent_color">Màu chủ đạo</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">Xong</string>
     <string name="loading">Đang tải…</string>
     <string name="system">Hệ thống</string>
@@ -164,6 +165,16 @@
     <string name="dynamic">Linh hoạt</string>
     <string name="all_apps_search_market_message">Tìm thêm ứng dụng</string>
     <string name="show_app_search_bar">Hiện thanh tìm kiếm</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Báo lỗi Lawnchair</string>
     <string name="crash_report_notif_title">%1$s đã dừng</string>
     <string name="action_upload_crash_report">Tải lên bản ghi lỗi</string>
