@@ -104,6 +104,7 @@
     <string name="window_corner_radius_description">Kada prevučete nagore i otvorite Nedavno, trenutna aplikacija će pratiti vaš prst i smanjiti se u karticu. Pomoću ovog klizača podesite radijus ugla kartice kada je skoro u režimu celog ekrana kako bi odgovarala uglovima ekrana.</string>
     <string name="system_icons">Sistemske ikone</string>
     <string name="accent_color">Boja za naglašavanje</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">Gotovo</string>
     <string name="loading">Učitavanje…</string>
     <string name="system">Sistemska</string>
@@ -166,6 +167,16 @@
     <string name="dynamic">Dinamička</string>
     <string name="all_apps_search_market_message">Pretražite više aplikacija</string>
     <string name="show_app_search_bar">Prikaži traku za pretragu</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Izveštaj o grešci u Lawnchairu</string>
     <string name="crash_report_notif_title">%1$s je otkazao</string>
     <string name="action_upload_crash_report">Otpremi evidenciju o otkazivanju</string>
