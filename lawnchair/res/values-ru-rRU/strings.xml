@@ -105,6 +105,7 @@
     <string name="window_corner_radius_description">Когда вы проводите вверх, чтобы открыть Недавние, текущее приложение следует за пальцем, уменьшаясь в карточку. Используйте этот ползунок для настройки радиуса угла карточки, когда она почти развернута, чтобы она соответствовала углам экрана.</string>
     <string name="system_icons">Системные иконки</string>
     <string name="accent_color">Цветовой акцент</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">Готово</string>
     <string name="loading">Загрузка…</string>
     <string name="system">Система</string>
@@ -167,6 +168,16 @@
     <string name="dynamic">Динамический</string>
     <string name="all_apps_search_market_message">Поиск дополнительных приложений</string>
     <string name="show_app_search_bar">Показать строку поиска</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Отчёт об ошибке в Lawnchair</string>
     <string name="crash_report_notif_title">%1$s произошел сбой</string>
     <string name="action_upload_crash_report">Загрузить журнал сбоя</string>
