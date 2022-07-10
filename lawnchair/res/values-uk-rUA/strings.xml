@@ -105,6 +105,7 @@
     <string name="window_corner_radius_description">Проведіть пальцем угору, щоб відкрити Нещодавні, поточний додаток слідує за вашим пальцем, стихаючи на картці. Використовуйте цей повзунок, щоб налаштувати радіус кута карти, коли він майже повноекранний режим, так щоб він співпадав з кутами вашого екрану.</string>
     <string name="system_icons">Системні іконки</string>
     <string name="accent_color">Колір акценту</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">Виконано</string>
     <string name="loading">Завантаження…</string>
     <string name="system">Системний</string>
@@ -167,6 +168,16 @@
     <string name="dynamic">Динамічнi</string>
     <string name="all_apps_search_market_message">Пошук інших додатків</string>
     <string name="show_app_search_bar">Показувати Рядок Пошуку</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Звіт про помилку Lawnchair</string>
     <string name="crash_report_notif_title">%1$s Збій</string>
     <string name="action_upload_crash_report">Завантажити журнал збоїв</string>
