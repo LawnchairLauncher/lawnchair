@@ -104,6 +104,7 @@
     <string name="window_corner_radius_description">Când glisezi în sus pentru a porni Recente, aplicația prezentă îți urmărește degetul, micșorându-se într-un card. Utilizează acest glisor pentru a ajusta raza colțurilor cardului când este aproape în ecran complet pentru ca aceasta să se potrivească colțurilor ecranului tău.</string>
     <string name="system_icons">Pictogramele sistemului</string>
     <string name="accent_color">Culoare accent</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">Terminat</string>
     <string name="loading">Se încarcă…</string>
     <string name="system">Sistem</string>
@@ -166,6 +167,16 @@
     <string name="dynamic">Dynamic</string>
     <string name="all_apps_search_market_message">Caută mai multe aplicații</string>
     <string name="show_app_search_bar">Arată Bara de Căutare</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Raport Bug Lawnchair</string>
     <string name="crash_report_notif_title">%1$s Crashed</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
