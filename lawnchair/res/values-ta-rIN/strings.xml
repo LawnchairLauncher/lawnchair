@@ -103,6 +103,7 @@
     <string name="window_corner_radius_description">அண்மையவையைத் திறக்க மேலே தேய்த்தால், தற்போதைய செயலி உம் விரலைப் பின்தொடர்ந்து அட்டையாகச் சுருக்கும். அட்டையின் மூலை ஆரம் உம் திரை மூலையை அது கிட்டத்தட்ட முழுதிரையிலிருக்கும்போது பொருந்துமாறு அனுசரிக்க இச்சறுக்கியைப் பயன்படுத்து.</string>
     <string name="system_icons">இயங்குதளச் சின்னங்கள்</string>
     <string name="accent_color">உரப்பு நிறம்</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">முடிந்தது</string>
     <string name="loading">ஏற்றுகிறது…</string>
     <string name="system">இயங்குதளம்</string>
@@ -165,6 +166,16 @@
     <string name="dynamic">இயங்குநிலை</string>
     <string name="all_apps_search_market_message">மேலும் செயலிகளுக்காகத் தேடு</string>
     <string name="show_app_search_bar">தேடல் பட்டை காட்டு</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Lawnchair பிழை அறிக்கை</string>
     <string name="crash_report_notif_title">%1$s சிதைந்தது</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
