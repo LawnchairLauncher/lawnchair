@@ -103,6 +103,7 @@
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">Rendszerikonok</string>
     <string name="accent_color">Kiemelő szín</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">Kész</string>
     <string name="loading">Betöltés…</string>
     <string name="system">Rendszer</string>
@@ -165,6 +166,16 @@
     <string name="dynamic">Dinamikus</string>
     <string name="all_apps_search_market_message">További Applikációk keresése</string>
     <string name="show_app_search_bar">Keresősáv megjelenítése</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Lawnchair hibajelentés</string>
     <string name="crash_report_notif_title">%1$s összeomlott</string>
     <string name="action_upload_crash_report">Összeomlási napló feltöltése</string>
