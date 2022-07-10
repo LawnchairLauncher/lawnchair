@@ -103,6 +103,7 @@
     <string name="window_corner_radius_description">Wanneer jy op swiep om Recents oop te maak, volg die huidige toepassing jou vinger en krimp tot \'n kaart. Gebruik hierdie skuifbalk om die hoekradius van die kaart aan te pas wanneer dit amper volskerm is sodat dit by die hoeke van jou skerm pas.</string>
     <string name="system_icons">Stelsel ikone</string>
     <string name="accent_color">Aksentkleur</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">Klaar</string>
     <string name="loading">Laai tans…</string>
     <string name="system">Stelsel</string>
@@ -165,6 +166,16 @@
     <string name="dynamic">Dinamies</string>
     <string name="all_apps_search_market_message">Soek vir meer toepassings</string>
     <string name="show_app_search_bar">Wys soekbalk</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
     <string name="crash_report_notif_title">%1$s het omgeval</string>
     <string name="action_upload_crash_report">Laai Crash Log op</string>
