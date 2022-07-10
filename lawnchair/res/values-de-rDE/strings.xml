@@ -103,6 +103,7 @@
     <string name="window_corner_radius_description">Wenn du nach oben wischst, um die zuletzt verwendeten Apps zu öffnen, folgt die aktuelle App deinem Finger und verkleinert sich zu einer Karte. Verwende diesen Regler, um den Eckenradius der Karte anzupassen, wenn sie fast im Vollbildmodus ist, sodass er mit den Ecken deines Bildschirms übereinstimmt.</string>
     <string name="system_icons">System-Symbole</string>
     <string name="accent_color">Akzentfarbe</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">Erledigt</string>
     <string name="loading">Laden…</string>
     <string name="system">System</string>
@@ -165,6 +166,16 @@
     <string name="dynamic">Dynamisch</string>
     <string name="all_apps_search_market_message">Weitere Apps suchen</string>
     <string name="show_app_search_bar">Suchleiste anzeigen</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Lawnchair-Fehlerbericht</string>
     <string name="crash_report_notif_title">%1$s abgestürzt</string>
     <string name="action_upload_crash_report">Absturzprotokoll hochladen</string>
