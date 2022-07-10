@@ -103,6 +103,7 @@
     <string name="window_corner_radius_description">Kapag nag-swipe ka pataas para buksan ang Recents, sinusundan ng kasalukuyang app ang iyong daliri, lumiliit sa isang card. Gamitin ang slider na ito upang isaayos ang radius ng sulok ng card kapag halos full-screen na ito upang tumugma ito sa mga sulok ng iyong screen.</string>
     <string name="system_icons">Icons ng System</string>
     <string name="accent_color">Accent Color</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">Tapos na</string>
     <string name="loading">Maghintay lamang…</string>
     <string name="system">System</string>
@@ -165,6 +166,16 @@
     <string name="dynamic">Dinamika</string>
     <string name="all_apps_search_market_message">Maghanap ng Higit pang Mga App</string>
     <string name="show_app_search_bar">Ipakita ang Search Bar</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Ulat sa Lawchair Bug</string>
     <string name="crash_report_notif_title">Nag-crash ang %1$s</string>
     <string name="action_upload_crash_report">I-upload ang Crash Log</string>
