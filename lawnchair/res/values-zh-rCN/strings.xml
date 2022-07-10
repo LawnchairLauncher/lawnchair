@@ -102,7 +102,7 @@
     <string name="window_corner_radius_description">当您向上滑动以打开最近应用菜单时，当前应用程序显示会跟随您的手指移动。 使用滑块以调整卡片的圆角半径，使它接近全屏，贴合您屏幕的边缘。</string>
     <string name="system_icons">系统图标</string>
     <string name="accent_color">强调颜色</string>
-    <string name="invalid_color">Invalid Color</string>
+    <string name="invalid_color">无效颜色</string>
     <string name="done">完成</string>
     <string name="loading">正在加载……</string>
     <string name="system">系统</string>
@@ -170,11 +170,11 @@
     <string name="rgb_green">Green</string>
     <string name="rgb_blue">Blue</string>
     <string name="hsb">HSB</string>
-    <string name="hsb_hue">Hue</string>
-    <string name="hsb_saturation">Saturation</string>
-    <string name="hsb_brightness">Brightness</string>
+    <string name="hsb_hue">色相</string>
+    <string name="hsb_saturation">饱和度</string>
+    <string name="hsb_brightness">亮度</string>
     <string name="hex">Hex</string>
-    <string name="color_sliders">Sliders</string>
+    <string name="color_sliders">滑块</string>
     <string name="lawnchair_bug_report">Lawnchair 错误报告</string>
     <string name="crash_report_notif_title">%1$s 已崩溃</string>
     <string name="action_upload_crash_report">上传崩溃日志</string>
