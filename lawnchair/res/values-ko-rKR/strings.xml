@@ -102,6 +102,7 @@
     <string name="window_corner_radius_description">최근앱보기에서 앱 미리보기 창에대한 가장자리 모서리 둥글기에 대한 설정입니다. 화면의 둥글기에 맞게 혹은 기호에 맞춰 가장자리 둥글기를 조정하세요</string>
     <string name="system_icons">시스템 아이콘</string>
     <string name="accent_color">강조 색상</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">완료</string>
     <string name="loading">불러오는 중...</string>
     <string name="system">시스템</string>
@@ -164,6 +165,16 @@
     <string name="dynamic">자동</string>
     <string name="all_apps_search_market_message">더 많은 앱 검색하기</string>
     <string name="show_app_search_bar">검색 창 활성화</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Lawnchair 버그 신고하기</string>
     <string name="crash_report_notif_title">%1$s가 종료되었습니다</string>
     <string name="action_upload_crash_report">Upload Crash Log</string>
