@@ -107,6 +107,7 @@
     <string name="window_corner_radius_description">عند السحب لأعلى لفتح التطبيقات الحديثة، يتبع التطبيق الحالي إصبعك، ويتقلص إلى بطاقة. استخدم شريط التمرير هذا لضبط تحدب الزاوية في البطاقة عندما تكون ملء الشاشة تقريباً بحيث تطابق تحدب زوايا الشاشة.</string>
     <string name="system_icons">أيقونات النظام</string>
     <string name="accent_color">لون اللمحة</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">تمّ</string>
     <string name="loading">يتم التحميل…</string>
     <string name="system">نظام</string>
@@ -169,6 +170,16 @@
     <string name="dynamic">ديناميكية</string>
     <string name="all_apps_search_market_message">البحث عن مزيد من التطبيقات</string>
     <string name="show_app_search_bar">إظهار شريط البحث</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">تقرير الأخطاء Lawnchair</string>
     <string name="crash_report_notif_title">%1$s توقف عن العمل</string>
     <string name="action_upload_crash_report">رفع سجل الأعطال</string>
