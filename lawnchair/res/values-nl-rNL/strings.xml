@@ -103,6 +103,7 @@
     <string name="window_corner_radius_description">Als je veegt om de recente apps te openen volgt de huidige app je vinger, deze vormt zich in een kaart. Gebruik deze schuifregelaar om de hoek straal van de kaart aan te passen wanneer het bijna volledig scherm is, zodat het overeenkomt met de hoeken van uw scherm.</string>
     <string name="system_icons">Systeem iconen</string>
     <string name="accent_color">Accent kleur</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">Voltooid</string>
     <string name="loading">Aan het laden…</string>
     <string name="system">Systeem</string>
@@ -165,6 +166,16 @@
     <string name="dynamic">Dynamisch</string>
     <string name="all_apps_search_market_message">Zoeken naar Meer Apps</string>
     <string name="show_app_search_bar">Zoekbalk weergeven</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Lawnchair Bug Melding</string>
     <string name="crash_report_notif_title">%1$s is Gecrasht</string>
     <string name="action_upload_crash_report">Upload Crash Logboek</string>
