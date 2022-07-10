@@ -102,6 +102,7 @@
     <string name="window_corner_radius_description">当您向上滑动以打开最近应用菜单时，当前应用程序显示会跟随您的手指移动。 使用滑块以调整卡片的圆角半径，使它接近全屏，贴合您屏幕的边缘。</string>
     <string name="system_icons">系统图标</string>
     <string name="accent_color">强调颜色</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">完成</string>
     <string name="loading">正在加载……</string>
     <string name="system">系统</string>
@@ -164,6 +165,16 @@
     <string name="dynamic">动态的</string>
     <string name="all_apps_search_market_message">搜索更多应用</string>
     <string name="show_app_search_bar">显示搜索栏</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Lawnchair 错误报告</string>
     <string name="crash_report_notif_title">%1$s 已崩溃</string>
     <string name="action_upload_crash_report">上传崩溃日志</string>
@@ -212,7 +223,7 @@
     <string name="reset_custom_icons">重置自定义图标</string>
     <string name="reset_custom_icons_confirmation">所有自定义图标将被重置。您想要继续吗？</string>
     <string name="taskbar_label">任务栏</string>
-    <string name="enable_taskbar_experimental">启用任务栏 (实验性)</string>
+    <string name="enable_taskbar_experimental">启用任务栏(实验性)</string>
     <string name="error_no_market_or_browser_installed">没有安装应用商店或浏览器。</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
