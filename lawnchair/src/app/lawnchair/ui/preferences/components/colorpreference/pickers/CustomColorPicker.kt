@@ -66,7 +66,10 @@ fun CustomColorPicker(
 
     Column(modifier = modifier) {
 
-        PreferenceGroup(heading = stringResource(id = R.string.hex)) {
+        PreferenceGroup(
+            heading = stringResource(id = R.string.hex),
+            modifier = Modifier.padding(top = 8.dp),
+        ) {
 
             Row(
                 modifier = Modifier.padding(16.dp),
@@ -105,6 +108,7 @@ fun CustomColorPicker(
 
         PreferenceGroup(
             heading = stringResource(id = R.string.color_sliders),
+            modifier = Modifier.padding(top = 8.dp),
         ) {
 
             Column {

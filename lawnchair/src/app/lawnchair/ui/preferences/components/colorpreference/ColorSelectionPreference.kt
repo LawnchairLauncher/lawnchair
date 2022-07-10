@@ -84,10 +84,8 @@ fun ColorSelection(
                 horizontalAlignment = Alignment.End
             ) {
                 Button(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    onClick = {
-                        adapter.onChange(newValue = selectedColor.value)
-                    },
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
+                    onClick = { adapter.onChange(newValue = selectedColor.value) },
                 ) {
                     Text(text = stringResource(id = R.string.apply_grid))
                 }
