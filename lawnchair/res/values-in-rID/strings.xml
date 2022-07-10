@@ -102,6 +102,7 @@
     <string name="window_corner_radius_description">Saat Anda menggesek ke atas untuk membuka Aplikasi Terkini, aplikasi saat ini mengikuti jari Anda, menyusut menjadi kartu. Gunakan penggeser ini untuk menyesuaikan radius sudut kartu saat hampir layar penuh sehingga cocok.</string>
     <string name="system_icons">Ikon sistem</string>
     <string name="accent_color">Warna Aksen</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">Selesai</string>
     <string name="loading">Memuat…</string>
     <string name="system">Sistem</string>
@@ -164,6 +165,16 @@
     <string name="dynamic">Dinamis</string>
     <string name="all_apps_search_market_message">Cari Aplikasi Lainnya</string>
     <string name="show_app_search_bar">Tampilkan Bilah Pencarian</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Laporan Bug Lawnchair</string>
     <string name="crash_report_notif_title">%1$s berhenti</string>
     <string name="action_upload_crash_report">Unggah Log Mogok</string>
