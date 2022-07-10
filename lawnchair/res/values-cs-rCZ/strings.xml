@@ -105,6 +105,7 @@
     <string name="window_corner_radius_description">Když přejetím prstem nahoru otevřete nedávné aplikace, aktuální aplikace následuje prst a mění se na kartu. Použijte tento posuvník pro nastavení poloměru rohů karty tak, aby při velikosti blízké plné obrazovce polomer rohů karty odpovídal co nejvíc poloměru zakřivení rohů obrazovky.</string>
     <string name="system_icons">Systémové Ikony</string>
     <string name="accent_color">Barva odstínu</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">Hotovo</string>
     <string name="loading">Načítání…</string>
     <string name="system">Systém</string>
@@ -167,6 +168,16 @@
     <string name="dynamic">Dynamická</string>
     <string name="all_apps_search_market_message">Vyhledat další aplikace</string>
     <string name="show_app_search_bar">Zobrazit vyhledávací lištu</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Hlášení o chybě v Lawnchair</string>
     <string name="crash_report_notif_title">%1$s přestal fungovat</string>
     <string name="action_upload_crash_report">Nahrát protokol pádů</string>
