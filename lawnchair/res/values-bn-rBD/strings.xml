@@ -103,6 +103,7 @@
     <string name="window_corner_radius_description">আপনি যখন সাম্প্রতিক খুলতে সোয়াইপ করেন, বর্তমান অ্যাপটি আপনার আঙুল অনুসরণ করে, একটি কার্ডে সঙ্কুচিত হয়। কার্ডের কোণার ব্যাসার্ধ সামঞ্জস্য করতে এই স্লাইডারটি ব্যবহার করুন যখন এটি প্রায় পূর্ণ-স্ক্রীন হয় যাতে এটি আপনার স্ক্রিনের কোণগুলির সাথে মেলে.</string>
     <string name="system_icons">সিস্টেম আইকনস</string>
     <string name="accent_color">সুরের ধাপের রঙ</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">সম্পন্ন</string>
     <string name="loading">লোড হচ্ছে…</string>
     <string name="system">সিস্টেম</string>
@@ -165,6 +166,16 @@
     <string name="dynamic">পরিবর্তনশীল</string>
     <string name="all_apps_search_market_message">আরো অ্যাপ খোঁজ করুন</string>
     <string name="show_app_search_bar">সার্চ বার দেখান</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Lawnchair বাগ রিপোর্ট</string>
     <string name="crash_report_notif_title">%1$s সমস্যা হয়েছে</string>
     <string name="action_upload_crash_report">সমস্যার উৎস আপলোড করুন</string>
