@@ -103,6 +103,7 @@
     <string name="window_corner_radius_description">Quan llisques adalt per a obrir Recents, la aplicació actual segueix el teu dit, reduint-se a una tarjeta. Utilitza aquest control lliscant per a ajustar el radi de la cantonada de la tarjeta quan estigui prop de la pantalla completa, de manera que coincideixi amb la teua pantalla.</string>
     <string name="system_icons">Icones del Sistema</string>
     <string name="accent_color">Color d\'èmfasi</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">Feta</string>
     <string name="loading">Carregant…</string>
     <string name="system">Sistema</string>
@@ -165,6 +166,16 @@
     <string name="dynamic">Dinàmic</string>
     <string name="all_apps_search_market_message">Cerca més aplicacions</string>
     <string name="show_app_search_bar">Mostra la Barra de Cerca</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Informa un error de Lawnchair</string>
     <string name="crash_report_notif_title">%1$s ha deixat de funcionar</string>
     <string name="action_upload_crash_report">Pujar register d\'errors</string>
