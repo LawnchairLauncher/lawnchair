@@ -103,7 +103,7 @@
     <string name="window_corner_radius_description">Quando scorri verso l\'alto per aprire le app recenti, l\'applicazione corrente segue il dito, restringendosi in una scheda. Utilizza questo cursore per regolare il raggio d\'angolo della carta quando è quasi a schermo intero in modo che corrisponda agli angoli dello schermo.</string>
     <string name="system_icons">Icone di sistema</string>
     <string name="accent_color">Colore primario</string>
-    <string name="invalid_color">Invalid Color</string>
+    <string name="invalid_color">Colore non valido</string>
     <string name="done">Fatto</string>
     <string name="loading">Caricamento…</string>
     <string name="system">Sistema</string>
@@ -167,13 +167,13 @@
     <string name="all_apps_search_market_message">Cerca altre app</string>
     <string name="show_app_search_bar">Mostra la Barra di Ricerca</string>
     <string name="rgb">RGB</string>
-    <string name="rgb_red">Red</string>
-    <string name="rgb_green">Green</string>
-    <string name="rgb_blue">Blue</string>
+    <string name="rgb_red">Rosso</string>
+    <string name="rgb_green">Verde</string>
+    <string name="rgb_blue">Blu</string>
     <string name="hsb">HSB</string>
     <string name="hsb_hue">Hue</string>
-    <string name="hsb_saturation">Saturation</string>
-    <string name="hsb_brightness">Brightness</string>
+    <string name="hsb_saturation">Saturazione</string>
+    <string name="hsb_brightness">Luminosità</string>
     <string name="hex">Hex</string>
     <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Segnalazione bug di Lawnchair</string>
