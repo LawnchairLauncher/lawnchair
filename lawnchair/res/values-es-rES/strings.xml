@@ -103,6 +103,7 @@
     <string name="window_corner_radius_description">Cuando deslizas hacia abajo para abrir Recientes, la aplicación actual sigue tu dedo, encogiéndose en una tarjeta. Utiliza este control deslizante para ajustar el radio de esquina de la tarjeta cuando es casi de pantalla completa de tal forma que coincida con las esquinas de tu pantalla.</string>
     <string name="system_icons">Iconos del sistema</string>
     <string name="accent_color">Color de acento</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">Hecho</string>
     <string name="loading">Cargando…</string>
     <string name="system">Sistema</string>
@@ -165,6 +166,16 @@
     <string name="dynamic">Dinámico</string>
     <string name="all_apps_search_market_message">Buscar más Aplicaciones</string>
     <string name="show_app_search_bar">Mostrar Barra de Búsqueda</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Reportar error de Lawnchair</string>
     <string name="crash_report_notif_title">%1$s ha dejado de funcionar</string>
     <string name="action_upload_crash_report">Cargar registro de error</string>
