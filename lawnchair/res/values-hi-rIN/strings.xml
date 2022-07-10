@@ -103,6 +103,7 @@
     <string name="window_corner_radius_description">जब आप रिसेंटस स्क्रीन खोलने के लिए ऊपर स्वाइप करते हैं तब चालू ऐप आपकी ऊंगली के हिसाब से छोटा होते हुए कार्ड में बदल जाता है। इस स्लाइडर का उपयोग करके आप उस कार्ड के किनारों को अपने फोन के किनारों के समान कर सकते हैं।</string>
     <string name="system_icons">सिस्टम चिह्न</string>
     <string name="accent_color">लहजे का रंग</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">हो गया</string>
     <string name="loading">हो रहा है...</string>
     <string name="system">तंत्र</string>
@@ -165,6 +166,16 @@
     <string name="dynamic">क्रियाशील</string>
     <string name="all_apps_search_market_message">और ऐप खोजें</string>
     <string name="show_app_search_bar">खोज बार दिखाएँ</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">लॉन चेयर बग रिपोर्ट</string>
     <string name="crash_report_notif_title">%1$s अचानक बंद हुआ</string>
     <string name="action_upload_crash_report">क्रैशलोग अपलोड करें</string>
