@@ -11,7 +11,8 @@ body:
         Before posting any question or ask for support, first read the project's README.md file and
         the WIKI pages or any other additional documentation that might be listed
         in the project's README.md file.
-
+        
+  - type: textarea
     id: question
     attributes:
       label: Describe your question or ask for support
