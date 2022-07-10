@@ -102,6 +102,7 @@
     <string name="window_corner_radius_description">上にスワイプして「Recents」を開くと、現在のアプリが指の動きに沿ってカード状に縮小されます。このスライダーを使って、フルスクリーンに近い状態のカードの角の半径が、画面の角と一致するように調整します。</string>
     <string name="system_icons">システムアイコン</string>
     <string name="accent_color">アクセントカラー</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">完了</string>
     <string name="loading">読み込み中…</string>
     <string name="system">システム</string>
@@ -164,6 +165,16 @@
     <string name="dynamic">ダイナミック</string>
     <string name="all_apps_search_market_message">その他のアプリを検索</string>
     <string name="show_app_search_bar">検索バーを表示</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Lawnchairのバグレポート</string>
     <string name="crash_report_notif_title">%1$s がクラッシュしました</string>
     <string name="action_upload_crash_report">クラッシュログをアップロード</string>
