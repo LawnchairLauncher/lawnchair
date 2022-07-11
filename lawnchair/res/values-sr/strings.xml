@@ -20,7 +20,7 @@
     <string name="settings">Подешавања</string>
     <string name="home_screen_label">Почетни екран</string>
     <string name="home_screen_description">Фид, мрежа, иконе</string>
-    <string name="general_label">Општа</string>
+    <string name="general_label">Општа подешавања</string>
     <string name="general_description">Боје, пакети икона и тачке за обавештења</string>
     <string name="home_screen_rotation_label">Ротација почетног екрана</string>
     <string name="home_screen_rotaton_description">Када се уређај ротира.</string>
