@@ -36,9 +36,9 @@
     <string name="max_folder_columns">Макс. колонок тек</string>
     <string name="max_folder_rows">Макс. рядків тек</string>
     <string name="home_screen_grid">Сітка головного екрану</string>
-    <string name="home_screen_lock">Lock Home Screen</string>
-    <string name="home_screen_unlock">Unlock Home Screen</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_lock">Заблокувати домашній екран</string>
+    <string name="home_screen_unlock">Розблокувати домашній екран</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Показувати кнопку блокування в спливаючому вікні</string>
     <string name="columns">Стовпці</string>
     <string name="grid">Решітка</string>
     <string name="rows">Рядки</string>
@@ -82,7 +82,7 @@
         <item quantity="other">%1$d Додатки</item>
     </plurals>
     <string name="hotseat_qsb_label">Показувати Рядок Пошуку</string>
-    <string name="qsb_search_provider_app_required">App required.</string>
+    <string name="qsb_search_provider_app_required">Необхідний додаток.</string>
     <string name="dt2s_admin_hint_title">Потрібен Дозвіл Адміністратора</string>
     <string name="dt2s_admin_hint">Щоб використовувати «Подвійне Натискання в Сплячий Режим», надайте дозвіл адміністратора. Натисніть «Відкрити Налаштування», потім натисніть «Активувати цю програму адміністратора пристрою.»</string>
     <string name="dt2s_admin_warning">«Подвійне Натискання в Сплячий Режим» буде відключено.</string>
@@ -105,6 +105,7 @@
     <string name="window_corner_radius_description">Проведіть пальцем угору, щоб відкрити Нещодавні, поточний додаток слідує за вашим пальцем, стихаючи на картці. Використовуйте цей повзунок, щоб налаштувати радіус кута карти, коли він майже повноекранний режим, так щоб він співпадав з кутами вашого екрану.</string>
     <string name="system_icons">Системні іконки</string>
     <string name="accent_color">Колір акценту</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">Виконано</string>
     <string name="loading">Завантаження…</string>
     <string name="system">Системний</string>
@@ -114,7 +115,7 @@
     <string name="wallpaper_scrolling_label">Пролистати шпалери</string>
     <string name="show_sys_ui_scrim">Найвища тінь</string>
     <string name="show_status_bar">Показати рядок стану</string>
-    <string name="layout">Layout</string>
+    <string name="layout">Макет</string>
     <string name="what_to_show">Що показати</string>
     <string name="missing_notification_access_label">Необхідний доступ до сповіщень</string>
     <string name="missing_notification_access_description">Потрібний доступ до сповіщень.</string>
@@ -158,6 +159,7 @@
     <string name="hide_from_drawer">Сховати з панелі програм</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Закруглені кути</string>
+    <string name="allow_widget_overlap">Allow Overlap</string>
     <string name="suggestion_pref_screen_title">Пропозиції</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Мітка</string>
@@ -166,6 +168,16 @@
     <string name="dynamic">Динамічнi</string>
     <string name="all_apps_search_market_message">Пошук інших додатків</string>
     <string name="show_app_search_bar">Показувати Рядок Пошуку</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Звіт про помилку Lawnchair</string>
     <string name="crash_report_notif_title">%1$s Збій</string>
     <string name="action_upload_crash_report">Завантажити журнал збоїв</string>
@@ -205,6 +217,8 @@
     <string name="smartspace_calendar_label">Налаштування календаря у віджеті \"Найголовніше\"</string>
     <string name="smartspace_calendar_description">Дозволити показувати дату у негригоріанських календарних системах.</string>
     <string name="search_provider_app_search">Пошук додатків</string>
+    <string name="always_open_website_label">Завжди відкривати сайт</string>
+    <string name="always_open_website_description">Відкрити сайт пошукового запиту, навіть якщо встановлено додаток.</string>
     <string name="search_provider">Пошукова система</string>
     <string name="status_bar_label">Рядок стану</string>
     <string name="show_notification_count">Показувати кількість сповіщень</string>
@@ -213,18 +227,17 @@
     <string name="reset_custom_icons_confirmation">Усі користувацькі іконки будуть скинуті. Продовжити?</string>
     <string name="taskbar_label">Панель задач</string>
     <string name="enable_taskbar_experimental">Увімкнути Панель задач (експериментальна)</string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">Не встановлено жодного магазину додатків або браузера.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Зарядка</string>
     <string name="smartspace_battery_full">Заряджено</string>
     <string name="smartspace_battery_low">Низький заряд батареї</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Повна через %2$s"</string>
     <string name="accessibility_smartspace_page">Сторінка %1$d з %2$d</string>
     <string name="smartspace_widget">Найголовніше</string>
     <string name="smartspace_widget_description">Що показати</string>
     <string name="smartspace_widget_placeholder_date">Пт, 3 Березня</string>
-    <string name="quickstep_incompatible">Несумісна системна інтеграція</string>
-    <string name="quickstep_incompatible_description">Ваш пристрій налаштовано на використання системних жестів (відомих як Quickstep), які надає %1$s, але ця версія %1$s несумісна з вашою версією Android. Щоб продовжити використовувати свій пристрій, видаліть оновлення %1$s або вимкніть %1$s як постачальника системних жестів.</string>
     <string name="preview_label">Перегляд</string>
     <string name="smartspace_calendar">Календар</string>
     <string name="smartspace_date_and_time">Дата &amp; Час</string>
@@ -239,12 +252,15 @@
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="smartspace_calendar_gregorian">Григоріанський</string>
     <string name="smartspace_calendar_persian">Перська</string>
+    <string name="quickstep_incompatible">Несумісна системна інтеграція</string>
+    <string name="quickstep_incompatible_description">Ваш пристрій налаштовано на використання системних жестів (відомих як Quickstep), які надає %1$s, але ця версія %1$s несумісна з вашою версією Android. Щоб продовжити використовувати свій пристрій, видаліть оновлення %1$s або вимкніть %1$s як постачальника системних жестів.</string>
     <string name="pref_fonts_add_fonts">Додати шрифти</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF підтримується.</string>
     <string name="delete">Видалити</string>
     <string name="themed_icons_off_label">Вимкнено</string>
     <string name="themed_icons_home_label">Домашній Екран</string>
     <string name="themed_icons_home_and_drawer_label">Домашній екран &amp; Меню додатків</string>
+    <!-- Backup -->
     <string name="create_backup">Створити резервну копію</string>
     <string name="create_backup_action">Створити</string>
     <string name="what_to_backup">Що резервувати</string>
@@ -258,24 +274,26 @@
     <string name="backup_restore_success">Резервна копія відновлена.</string>
     <string name="backup_restore_error">Не вдалося відновити резервну копію.</string>
     <string name="invalid_backup_file">Недійсний файл резервної копії.</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — Повна через %2$s"</string>
-    <string name="wallpaper_depth_effect">Глибина шпалер</string>
-    <string name="gesture_double_tap">Double Tap</string>
+    <string name="wallpaper_depth_effect_label">Глибина шпалер</string>
+    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="gestures_label">Жести</string>
+    <string name="gestures_description">Натискання і свайпи</string>
+    <!-- Gestures -->
+    <string name="gesture_double_tap">Подвійне натискання</string>
+    <string name="gesture_swipe_up">Провести вгору</string>
+    <string name="gesture_swipe_down">Провести вниз</string>
+    <string name="gesture_home_tap">Кнопка \"Додому\"</string>
+    <string name="gesture_back_tap">Кнопка \"Назад\"</string>
     <string name="gesture_handler_no_op">Нічого</string>
     <string name="gesture_handler_sleep">Сон</string>
     <string name="gesture_handler_open_notifications">Відкрити панель сповіщень</string>
     <string name="gesture_handler_open_app_option">Відкрити додаток</string>
     <string name="gesture_handler_open_app_config">Відкрити %1$s</string>
-    <string name="pick_app_for_gesture">Обрати додаток</string>
     <string name="gesture_handler_open_app_drawer">Відкрити меню додатків</string>
     <string name="gesture_handler_open_app_search">Відкрити пошук додатків</string>
     <string name="gesture_handler_open_search">Відкрити пошук</string>
-    <string name="gestures_label">Жести</string>
-    <string name="gesture_swipe_up">Провести вгору</string>
-    <string name="gesture_swipe_down">Провести вниз</string>
-    <string name="gesture_home_tap">Кнопка \"Додому\"</string>
-    <string name="gesture_back_tap">Кнопка \"Назад\"</string>
+    <string name="pick_app_for_gesture">Обрати додаток</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="app_label">App</string>
-    <string name="website_label">Website</string>
+    <string name="app_label">Додаток</string>
+    <string name="website_label">Веб-сайт</string>
 </resources>

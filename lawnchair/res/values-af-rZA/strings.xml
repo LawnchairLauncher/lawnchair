@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">Ikoon pakket</string>
-    <string name="icon_style">Icon Style</string>
+    <string name="icon_style">Ikoon styl</string>
     <string name="settings">Instellings</string>
     <string name="home_screen_label">Huis skerm</string>
     <string name="home_screen_description">Voer, rooster, Ikone</string>
@@ -36,9 +36,9 @@
     <string name="max_folder_columns">Maks. Folderkolomme</string>
     <string name="max_folder_rows">Maks. Folderrye</string>
     <string name="home_screen_grid">Tuisskermrooster</string>
-    <string name="home_screen_lock">Lock Home Screen</string>
-    <string name="home_screen_unlock">Unlock Home Screen</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_lock">Sluit tuisskerm</string>
+    <string name="home_screen_unlock">Ontsluit tuisskerm</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Wys sluitknoppie in opspringer</string>
     <string name="columns">Kolomme</string>
     <string name="grid">Rooster</string>
     <string name="rows">Rye</string>
@@ -80,7 +80,7 @@
         <item quantity="other">%1$d toepassings</item>
     </plurals>
     <string name="hotseat_qsb_label">Wys soekbalk</string>
-    <string name="qsb_search_provider_app_required">App required.</string>
+    <string name="qsb_search_provider_app_required">Toepassing word vereis.</string>
     <string name="dt2s_admin_hint_title">Admin Toestemmings vereis</string>
     <string name="dt2s_admin_hint">Om Dubbeltik om te slaap te gebruik, stel Lawnchair as \'n toesteladministrasie-toepassing. Tik Maak Instellings oop, tik dan op \"Aktiveer hierdie toesteladministrasie-toepassing.\"</string>
     <string name="dt2s_admin_warning">Dubbeltik om te slaap sal afgeskakel word.</string>
@@ -103,6 +103,7 @@
     <string name="window_corner_radius_description">Wanneer jy op swiep om Recents oop te maak, volg die huidige toepassing jou vinger en krimp tot \'n kaart. Gebruik hierdie skuifbalk om die hoekradius van die kaart aan te pas wanneer dit amper volskerm is sodat dit by die hoeke van jou skerm pas.</string>
     <string name="system_icons">Stelsel ikone</string>
     <string name="accent_color">Aksentkleur</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">Klaar</string>
     <string name="loading">Laai tans…</string>
     <string name="system">Stelsel</string>
@@ -112,7 +113,7 @@
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
     <string name="show_sys_ui_scrim">Top skaduwee</string>
     <string name="show_status_bar">Wys Statusbalk</string>
-    <string name="layout">Layout</string>
+    <string name="layout">Uitleg</string>
     <string name="what_to_show">Wat om te wys</string>
     <string name="missing_notification_access_label">Kennisgewingtoegang benodig</string>
     <string name="missing_notification_access_description">Kennisgewingtoegang benodig.</string>
@@ -156,6 +157,7 @@
     <string name="hide_from_drawer">Versteek uit App-laai</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Afgeronde Hoeke</string>
+    <string name="allow_widget_overlap">Laat oorvleueling toe</string>
     <string name="suggestion_pref_screen_title">Voorstelle</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Etiket</string>
@@ -164,6 +166,16 @@
     <string name="dynamic">Dinamies</string>
     <string name="all_apps_search_market_message">Soek vir meer toepassings</string>
     <string name="show_app_search_bar">Wys soekbalk</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
     <string name="crash_report_notif_title">%1$s het omgeval</string>
     <string name="action_upload_crash_report">Laai Crash Log op</string>
@@ -200,9 +212,11 @@
     <string name="icon_picker_description">Kan Lawnchair laat vries.</string>
     <string name="font_picker_label">Lettertipe aanpassing</string>
     <string name="font_picker_description">Sommige teks bly onveranderd.</string>
-    <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
+    <string name="smartspace_calendar_label">In \'n oogopslag Kalenderaanpassing</string>
+    <string name="smartspace_calendar_description">Laat toe om datum in nie-Gregoriaanse kalenderstelsels te wys.</string>
     <string name="search_provider_app_search">App Soek</string>
+    <string name="always_open_website_label">Maak altyd webwerf oop</string>
+    <string name="always_open_website_description">Maak soekverskaffer se webwerf oop, selfs al is hul toepassing geïnstalleer.</string>
     <string name="search_provider">Soek Verskaffer</string>
     <string name="status_bar_label">Statusbalk</string>
     <string name="show_notification_count">Wys kennisgewingtelling</string>
@@ -217,12 +231,11 @@
     <string name="smartspace_battery_charging">Laai</string>
     <string name="smartspace_battery_full">Gelaai</string>
     <string name="smartspace_battery_low">Battery laag</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
     <string name="accessibility_smartspace_page">Bladsy %1$d van %2$d</string>
     <string name="smartspace_widget">Op die oog af</string>
     <string name="smartspace_widget_description">Wat om te wys</string>
     <string name="smartspace_widget_placeholder_date">Vrydag, 3 Maart</string>
-    <string name="quickstep_incompatible">Onversoenbare stelselintegrasie</string>
-    <string name="quickstep_incompatible_description">Jou toestel is opgestel om stelselgebare (bekend as Quickstep) te hê wat verskaf word deur%1$s, maar hierdie weergawe van%1$s is nie versoenbaar met jou Android-weergawe nie. Deïnstalleer asseblief om voort te gaan om jou toestel te gebruik%1$s opdaterings of deaktiveer %1$s as \'n stelselgebareverskaffer.</string>
     <string name="preview_label">Voorskou</string>
     <string name="smartspace_calendar">Calendar</string>
     <string name="smartspace_date_and_time">Date &amp; Time</string>
@@ -237,12 +250,15 @@
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="smartspace_calendar_gregorian">Gregorian</string>
     <string name="smartspace_calendar_persian">Persian</string>
+    <string name="quickstep_incompatible">Onversoenbare stelselintegrasie</string>
+    <string name="quickstep_incompatible_description">Jou toestel is opgestel om stelselgebare (bekend as Quickstep) te hê wat verskaf word deur%1$s, maar hierdie weergawe van%1$s is nie versoenbaar met jou Android-weergawe nie. Deïnstalleer asseblief om voort te gaan om jou toestel te gebruik%1$s opdaterings of deaktiveer %1$s as \'n stelselgebareverskaffer.</string>
     <string name="pref_fonts_add_fonts">Voeg lettertipes by</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF ondersteun.</string>
     <string name="delete">Vee uit</string>
     <string name="themed_icons_off_label">Af</string>
     <string name="themed_icons_home_label">Huis skerm</string>
     <string name="themed_icons_home_and_drawer_label">Tuisskerm &amp; App-laai</string>
+    <!-- Backup -->
     <string name="create_backup">Skep rugsteun</string>
     <string name="create_backup_action">Skep</string>
     <string name="what_to_backup">Wat om te rugsteun</string>
@@ -256,23 +272,25 @@
     <string name="backup_restore_success">Rugsteun herstel.</string>
     <string name="backup_restore_error">Kon nie rugsteun herstel nie.</string>
     <string name="invalid_backup_file">Ongeldige rugsteunlêer.</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
-    <string name="wallpaper_depth_effect">Wallpaper Depth Effect</string>
+    <string name="wallpaper_depth_effect_label">Wallpaper Depth Effect</string>
+    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="gestures_label">Gestures</string>
+    <string name="gestures_description">Taps and Swipes</string>
+    <!-- Gestures -->
     <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_swipe_up">Swipe Up</string>
+    <string name="gesture_swipe_down">Swipe Down</string>
+    <string name="gesture_home_tap">Home Button Tap</string>
+    <string name="gesture_back_tap">Back Button Tap</string>
     <string name="gesture_handler_no_op">Do Nothing</string>
     <string name="gesture_handler_sleep">Sleep</string>
     <string name="gesture_handler_open_notifications">Open Notification Panel</string>
     <string name="gesture_handler_open_app_option">Open App</string>
     <string name="gesture_handler_open_app_config">Open %1$s</string>
-    <string name="pick_app_for_gesture">Pick App</string>
     <string name="gesture_handler_open_app_drawer">Open App Drawer</string>
     <string name="gesture_handler_open_app_search">Open App Search</string>
     <string name="gesture_handler_open_search">Open Search</string>
-    <string name="gestures_label">Gestures</string>
-    <string name="gesture_swipe_up">Swipe Up</string>
-    <string name="gesture_swipe_down">Swipe Down</string>
-    <string name="gesture_home_tap">Home Button Tap</string>
-    <string name="gesture_back_tap">Back Button Tap</string>
+    <string name="pick_app_for_gesture">Pick App</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="app_label">App</string>
     <string name="website_label">Website</string>

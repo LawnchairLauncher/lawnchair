@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">Symbol-Paket</string>
-    <string name="icon_style">Symbolform</string>
+    <string name="icon_style">Symbolstil</string>
     <string name="settings">Einstellungen</string>
     <string name="home_screen_label">Startseite</string>
     <string name="home_screen_description">Feed, Raster, Symbole</string>
@@ -44,7 +44,7 @@
     <string name="rows">Zeilen</string>
     <string name="icons">Symbole</string>
     <string name="icon_size">Symbolgröße</string>
-    <string name="label_size">Labelgröße</string>
+    <string name="label_size">Beschriftungsgröße</string>
     <string name="show_home_labels">Beschriftung anzeigen</string>
     <string name="notification_dots">Benachrichtigungspunkte</string>
     <string name="smartspace_preferences">Voreinstellungen</string>
@@ -103,6 +103,7 @@
     <string name="window_corner_radius_description">Wenn du nach oben wischst, um die zuletzt verwendeten Apps zu öffnen, folgt die aktuelle App deinem Finger und verkleinert sich zu einer Karte. Verwende diesen Regler, um den Eckenradius der Karte anzupassen, wenn sie fast im Vollbildmodus ist, sodass er mit den Ecken deines Bildschirms übereinstimmt.</string>
     <string name="system_icons">System-Symbole</string>
     <string name="accent_color">Akzentfarbe</string>
+    <string name="invalid_color">Ungültige Farbe</string>
     <string name="done">Erledigt</string>
     <string name="loading">Laden…</string>
     <string name="system">System</string>
@@ -156,6 +157,7 @@
     <string name="hide_from_drawer">Aus der App-Übersicht ausblenden</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Abgerundete Ecken</string>
+    <string name="allow_widget_overlap">Überlappen zulassen</string>
     <string name="suggestion_pref_screen_title">Vorschläge</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Titel</string>
@@ -164,6 +166,16 @@
     <string name="dynamic">Dynamisch</string>
     <string name="all_apps_search_market_message">Weitere Apps suchen</string>
     <string name="show_app_search_bar">Suchleiste anzeigen</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Rot</string>
+    <string name="rgb_green">Grün</string>
+    <string name="rgb_blue">Blau</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Farbton</string>
+    <string name="hsb_saturation">Sättigung</string>
+    <string name="hsb_brightness">Helligkeit</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Regler</string>
     <string name="lawnchair_bug_report">Lawnchair-Fehlerbericht</string>
     <string name="crash_report_notif_title">%1$s abgestürzt</string>
     <string name="action_upload_crash_report">Absturzprotokoll hochladen</string>
@@ -203,6 +215,8 @@
     <string name="smartspace_calendar_label">Auf einen Blick Kalenderanpassung</string>
     <string name="smartspace_calendar_description">Ermögliche die Anzeige des Datums in Nicht-Gregorianischen Kalendersystemen.</string>
     <string name="search_provider_app_search">App-Suche</string>
+    <string name="always_open_website_label">Website immer öffnen</string>
+    <string name="always_open_website_description">Website des Suchanbieters auch öffnen, wenn dessen App installiert ist.</string>
     <string name="search_provider">Suchanbieter</string>
     <string name="status_bar_label">Statusleiste</string>
     <string name="show_notification_count">Benachrichtigungszähler anzeigen</string>
@@ -211,18 +225,17 @@
     <string name="reset_custom_icons_confirmation">Alle benutzerdefinierten Symbole werden zurückgesetzt. Möchtest du fortfahren?</string>
     <string name="taskbar_label">Taskbar</string>
     <string name="enable_taskbar_experimental">Taskbar aktivieren (experimentell)</string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">Kein Appstore oder Browser installiert.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Wird geladen</string>
     <string name="smartspace_battery_full">Geladen</string>
     <string name="smartspace_battery_low">Akku schwach</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Voll in %2$s"</string>
     <string name="accessibility_smartspace_page">Seite %1$d von %2$d</string>
     <string name="smartspace_widget">Auf einen Blick</string>
     <string name="smartspace_widget_description">Was soll angezeigt werden</string>
     <string name="smartspace_widget_placeholder_date">Fr, 3. Mär</string>
-    <string name="quickstep_incompatible">Inkompatible Systemintegration</string>
-    <string name="quickstep_incompatible_description">Dein Gerät ist so konfiguriert, dass Systemgesten (bekannt als Quickstep) von %1$s bereitgestellt werden, diese Version von %1$s ist jedoch nicht mit deiner Android-Version kompatibel. Um dein Gerät weiter zu verwenden, deinstalliere bitte %1$s-Aktualisierungen oder deaktiviere %1$s als Systemgesten-Provider.</string>
     <string name="preview_label">Vorschau</string>
     <string name="smartspace_calendar">Kalender</string>
     <string name="smartspace_date_and_time">Datum &amp; Uhrzeit</string>
@@ -237,12 +250,15 @@
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="smartspace_calendar_gregorian">Gregorianisch</string>
     <string name="smartspace_calendar_persian">Persisch</string>
+    <string name="quickstep_incompatible">Inkompatible Systemintegration</string>
+    <string name="quickstep_incompatible_description">Dein Gerät ist so konfiguriert, dass Systemgesten (bekannt als Quickstep) von %1$s bereitgestellt werden, diese Version von %1$s ist jedoch nicht mit deiner Android-Version kompatibel. Um dein Gerät weiter zu verwenden, deinstalliere bitte %1$s-Aktualisierungen oder deaktiviere %1$s als Systemgesten-Provider.</string>
     <string name="pref_fonts_add_fonts">Schriftarten hinzufügen</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF werden unterstützt.</string>
     <string name="delete">Löschen</string>
     <string name="themed_icons_off_label">Aus</string>
     <string name="themed_icons_home_label">Startseite</string>
     <string name="themed_icons_home_and_drawer_label">Startbildschirm &amp; App-Übersicht</string>
+    <!-- Backup -->
     <string name="create_backup">Sicherung erstellen</string>
     <string name="create_backup_action">Erstellen</string>
     <string name="what_to_backup">Was gesichert wird</string>
@@ -256,23 +272,25 @@
     <string name="backup_restore_success">Sicherung wiederhergestellt.</string>
     <string name="backup_restore_error">Fehler beim Wiederherstellen der Sicherung.</string>
     <string name="invalid_backup_file">Ungültige Sicherungsdatei.</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — Voll in %2$s"</string>
-    <string name="wallpaper_depth_effect">Hintergrundbild Tiefeneffekt</string>
-    <string name="gesture_double_tap">Double Tap</string>
+    <string name="wallpaper_depth_effect_label">Hintergrundbild Tiefeneffekt</string>
+    <string name="wallpaper_depth_effect_description">Bei Zustandsänderungen in den Bildschirmhintergrund hinein- und aus ihm herauszoomen.</string>
+    <string name="gestures_label">Gesten</string>
+    <string name="gestures_description">Tippen und Wischen</string>
+    <!-- Gestures -->
+    <string name="gesture_double_tap">Doppeltipp</string>
+    <string name="gesture_swipe_up">Nach oben wischen</string>
+    <string name="gesture_swipe_down">Nach unten wischen</string>
+    <string name="gesture_home_tap">Home-Taste Tippen</string>
+    <string name="gesture_back_tap">Zurück-Taste tippen</string>
     <string name="gesture_handler_no_op">Nichts tun</string>
     <string name="gesture_handler_sleep">Ruhezustand</string>
     <string name="gesture_handler_open_notifications">Benachrichtigungsleiste öffnen</string>
     <string name="gesture_handler_open_app_option">App öffnen</string>
     <string name="gesture_handler_open_app_config">%1$s öffnen</string>
-    <string name="pick_app_for_gesture">App auswählen</string>
     <string name="gesture_handler_open_app_drawer">App-Übersicht öffnen</string>
     <string name="gesture_handler_open_app_search">App-Suche öffnen</string>
     <string name="gesture_handler_open_search">Suche öffnen</string>
-    <string name="gestures_label">Gesten</string>
-    <string name="gesture_swipe_up">Nach oben wischen</string>
-    <string name="gesture_swipe_down">Nach unten wischen</string>
-    <string name="gesture_home_tap">Home-Taste Tippen</string>
-    <string name="gesture_back_tap">Zurück-Taste tippen</string>
+    <string name="pick_app_for_gesture">App auswählen</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="app_label">App</string>
     <string name="website_label">Webseite</string>

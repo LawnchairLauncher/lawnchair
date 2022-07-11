@@ -45,18 +45,18 @@
     <string name="icons">Biểu tượng</string>
     <string name="icon_size">Kích thước biểu tượng</string>
     <string name="label_size">Kích thước tên ứng dụng</string>
-    <string name="show_home_labels">Hiện thị tên</string>
+    <string name="show_home_labels">Hiện tên ứng dụng</string>
     <string name="notification_dots">Dấu chấm thông báo</string>
     <string name="smartspace_preferences">Tùy chỉnh</string>
     <string name="about_label">Giới thiệu</string>
     <string name="news">Tin tức</string>
     <string name="support">Hỗ trợ</string>
     <string name="acknowledgements">Ghi nhận</string>
-    <string name="devops">Tuỳ chọn của lập trình viên</string>
+    <string name="devops">DevOps</string>
     <string name="quickswitch_maintenance">Duy trì QuickSwitch</string>
-    <string name="all_apps_search_bar_hint">Tìm ứng dụng</string>
+    <string name="all_apps_search_bar_hint">Tìm kiếm ứng dụng</string>
     <string name="settings_button_text">Cài đặt màn hình chính</string>
-    <string name="development">Sự phát triển</string>
+    <string name="development">Phát triển</string>
     <string name="app_info_drop_target_label">Thông tin ứng dụng</string>
     <string name="item_removed">Mục đã bị xoá.</string>
     <string name="all_apps_no_search_results">Không tìm thấy ứng dụng khớp \"<xliff:g example="Android" id="query">%1$s</xliff:g>\".</string>
@@ -79,7 +79,7 @@
         <item quantity="other">%1$d Ứng dụng</item>
     </plurals>
     <string name="hotseat_qsb_label">Hiện thanh tìm kiếm</string>
-    <string name="qsb_search_provider_app_required">Yêu cầu nhà cung cấp tìm kiếm.</string>
+    <string name="qsb_search_provider_app_required">Yêu cầu ứng dụng.</string>
     <string name="dt2s_admin_hint_title">Cần cấp Quyền Quản trị</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">Nhấp đôi để khoá màn hình sẽ được tắt.</string>
@@ -102,6 +102,7 @@
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">Biểu tượng hệ thống</string>
     <string name="accent_color">Màu chủ đạo</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">Xong</string>
     <string name="loading">Đang tải…</string>
     <string name="system">Hệ thống</string>
@@ -109,10 +110,10 @@
     <string name="custom">Tùy chỉnh</string>
     <string name="quickstep_description">Nút xoá tất cả, độ cong của góc</string>
     <string name="wallpaper_scrolling_label">Hình nền cuộn</string>
-    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_sys_ui_scrim">Đổ bóng phía trên</string>
     <string name="show_status_bar">Hiện thanh trạng thái</string>
     <string name="layout">Bố cục</string>
-    <string name="what_to_show">What to Show</string>
+    <string name="what_to_show">Hiện những gì</string>
     <string name="missing_notification_access_label">Cần quyền truy cập thông báo</string>
     <string name="missing_notification_access_description">Cần quyền truy cập thông báo.</string>
     <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
@@ -155,6 +156,7 @@
     <string name="hide_from_drawer">Ẩn khỏi ngăn kéo ứng dụng</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Bo tròn góc</string>
+    <string name="allow_widget_overlap">Cho phép widget chồng lên nhau</string>
     <string name="suggestion_pref_screen_title">Gợi ý</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Nhãn</string>
@@ -163,6 +165,16 @@
     <string name="dynamic">Linh hoạt</string>
     <string name="all_apps_search_market_message">Tìm thêm ứng dụng</string>
     <string name="show_app_search_bar">Hiện thanh tìm kiếm</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Báo lỗi Lawnchair</string>
     <string name="crash_report_notif_title">%1$s đã dừng</string>
     <string name="action_upload_crash_report">Tải lên bản ghi lỗi</string>
@@ -200,8 +212,10 @@
     <string name="font_picker_label">Tùy chỉnh font</string>
     <string name="font_picker_description">Một số văn bản vẫn không thay đổi.</string>
     <string name="smartspace_calendar_label">Tùy chỉnh lịch Xem nhanh</string>
-    <string name="smartspace_calendar_description">Cho phép hiện ngày trên hệ thống lịch khác Gregory.</string>
+    <string name="smartspace_calendar_description">Cho phép hiện ngày bằng hệ thống lịch khác Gregory.</string>
     <string name="search_provider_app_search">Tìm kiếm ứng dụng</string>
+    <string name="always_open_website_label">Luôn mở trang web</string>
+    <string name="always_open_website_description">Mở trang web của nhà cung cấp dịch vụ tìm kiếm cho dù ứng dụng của họ đã được cài đặt.</string>
     <string name="search_provider">Nhà cung cấp dịch vụ tìm kiếm</string>
     <string name="status_bar_label">Thanh trạng thái</string>
     <string name="show_notification_count">Hiện số đếm thông báo</string>
@@ -210,18 +224,17 @@
     <string name="reset_custom_icons_confirmation">Mọi biểu tượng tùy chỉnh sẽ được đặt lại. Bạn có muốn tiếp tục không?</string>
     <string name="taskbar_label">Thanh tác vụ</string>
     <string name="enable_taskbar_experimental">Bật Thanh tác vụ (thử nghiệm)</string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">Không có cửa hàng ứng dụng hay trình duyệt được cài đặt.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Đang sạc</string>
     <string name="smartspace_battery_full">Đã sạc đầy</string>
     <string name="smartspace_battery_low">Pin yếu</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Sẽ đầy sau %2$s"</string>
     <string name="accessibility_smartspace_page">Trang %1$d của %2$d</string>
     <string name="smartspace_widget">Xem nhanh</string>
     <string name="smartspace_widget_description">What to Show</string>
     <string name="smartspace_widget_placeholder_date">Thứ Sáu, 3 thg 3</string>
-    <string name="quickstep_incompatible">Tích hợp hệ thống không tương thích</string>
-    <string name="quickstep_incompatible_description">Thiết bị của bạn được thiết lập để hỗ trợ cử chỉ hệ thống (gọi là Quickstep) được cung cấp bởi %1$s, nhưng phiên bản này của %1$s không tương thích với phiên bản Android của bạn. Để tiếp tục sử dụng thiết bị, vui lòng gỡ cài đặt bản cập nhật của %1$s hoặc vô hiệu hóa %1$s khỏi cung cấp cử chỉ hệ thống.</string>
     <string name="preview_label">Xem trước</string>
     <string name="smartspace_calendar">Lịch</string>
     <string name="smartspace_date_and_time">Ngày &amp; giờ</string>
@@ -236,12 +249,15 @@
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="smartspace_calendar_gregorian">Gregory</string>
     <string name="smartspace_calendar_persian">Ba Tư</string>
+    <string name="quickstep_incompatible">Tích hợp hệ thống không tương thích</string>
+    <string name="quickstep_incompatible_description">Thiết bị của bạn được thiết lập để hỗ trợ cử chỉ hệ thống (gọi là Quickstep) được cung cấp bởi %1$s, nhưng phiên bản này của %1$s không tương thích với phiên bản Android của bạn. Để tiếp tục sử dụng thiết bị, vui lòng gỡ cài đặt bản cập nhật của %1$s hoặc vô hiệu hóa %1$s khỏi cung cấp cử chỉ hệ thống.</string>
     <string name="pref_fonts_add_fonts">Thêm phông chữ</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF được hỗ trợ.</string>
     <string name="delete">Xoá</string>
     <string name="themed_icons_off_label">Tắt</string>
     <string name="themed_icons_home_label">Màn hình chính</string>
     <string name="themed_icons_home_and_drawer_label">Màn hình chính &amp; Ngăn kéo ứng dụng</string>
+    <!-- Backup -->
     <string name="create_backup">Tạo bản sao lưu</string>
     <string name="create_backup_action">Tạo</string>
     <string name="what_to_backup">Sao lưu những gì</string>
@@ -255,23 +271,25 @@
     <string name="backup_restore_success">Đã khôi phục bản sao lưu.</string>
     <string name="backup_restore_error">Khôi phục bản sao lưu thất bại.</string>
     <string name="invalid_backup_file">Tệp sao lưu không hợp lệ.</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — Sẽ đầy sau %2$s"</string>
-    <string name="wallpaper_depth_effect">Hình nền có hiệu ứng chiều sâu</string>
-    <string name="gesture_double_tap">Double Tap</string>
+    <string name="wallpaper_depth_effect_label">Hiệu ứng chiều sâu hình nền</string>
+    <string name="wallpaper_depth_effect_description">Phóng to và thu nhỏ hình nền khi chuyển đổi trạng thái.</string>
+    <string name="gestures_label">Cử chỉ</string>
+    <string name="gestures_description">Chạm và vuốt</string>
+    <!-- Gestures -->
+    <string name="gesture_double_tap">Nhấn 2 lần</string>
+    <string name="gesture_swipe_up">Vuốt lên</string>
+    <string name="gesture_swipe_down">Vuốt xuống</string>
+    <string name="gesture_home_tap">Chạm phím trang chính</string>
+    <string name="gesture_back_tap">Chạm phím quay lại</string>
     <string name="gesture_handler_no_op">Không làm gì cả</string>
     <string name="gesture_handler_sleep">Ngủ</string>
     <string name="gesture_handler_open_notifications">Mở bảng thông báo</string>
     <string name="gesture_handler_open_app_option">Mở ứng dụng</string>
     <string name="gesture_handler_open_app_config">Mở %1$s</string>
-    <string name="pick_app_for_gesture">Chọn ứng dụng</string>
     <string name="gesture_handler_open_app_drawer">Mở ngăn kéo ứng dụng</string>
     <string name="gesture_handler_open_app_search">Mở tìm kiếm ứng dụng</string>
     <string name="gesture_handler_open_search">Mở tìm kiếm</string>
-    <string name="gestures_label">Cử chỉ</string>
-    <string name="gesture_swipe_up">Vuốt lên</string>
-    <string name="gesture_swipe_down">Vuốt xuống</string>
-    <string name="gesture_home_tap">Chạm phím về màn hình chính</string>
-    <string name="gesture_back_tap">Chạm phím quay lại</string>
+    <string name="pick_app_for_gesture">Chọn ứng dụng</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="app_label">Ứng dụng</string>
     <string name="website_label">Trang web</string>

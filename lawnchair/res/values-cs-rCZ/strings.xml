@@ -37,8 +37,8 @@
     <string name="max_folder_rows">Maximální počet řádků složek</string>
     <string name="home_screen_grid">Mřížka domovské obrazovky</string>
     <string name="home_screen_lock">Uzamknout domovskou obrazovku</string>
-    <string name="home_screen_unlock">Unlock Home Screen</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_unlock">Odemknout domovskou obrazovku</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Zobrazit tlačítko zámku v popapu</string>
     <string name="columns">Sloupce</string>
     <string name="grid">Mřížka</string>
     <string name="rows">Řádky</string>
@@ -82,7 +82,7 @@
         <item quantity="other">%1$d Aplikace</item>
     </plurals>
     <string name="hotseat_qsb_label">Zobrazit vyhledávací lištu</string>
-    <string name="qsb_search_provider_app_required">App required.</string>
+    <string name="qsb_search_provider_app_required">Vyžadována aplikace.</string>
     <string name="dt2s_admin_hint_title">Vyžadována oprávnění správce</string>
     <string name="dt2s_admin_hint">Chcete-li použít dvojité poklepání k uspání zařízení, nastavte Lawnchair jako aplikaci pro správu zařízení. Klepněte na tlačítko Otevřít nastavení a poté na tlačítko „Aktivovat aplikaci pro správu zařízení.“</string>
     <string name="dt2s_admin_warning">Uspání dvojitým poklepáním bude vypnuto.</string>
@@ -105,6 +105,7 @@
     <string name="window_corner_radius_description">Když přejetím prstem nahoru otevřete nedávné aplikace, aktuální aplikace následuje prst a mění se na kartu. Použijte tento posuvník pro nastavení poloměru rohů karty tak, aby při velikosti blízké plné obrazovce polomer rohů karty odpovídal co nejvíc poloměru zakřivení rohů obrazovky.</string>
     <string name="system_icons">Systémové Ikony</string>
     <string name="accent_color">Barva odstínu</string>
+    <string name="invalid_color">Neplatná barva</string>
     <string name="done">Hotovo</string>
     <string name="loading">Načítání…</string>
     <string name="system">Systém</string>
@@ -158,6 +159,7 @@
     <string name="hide_from_drawer">Skrýt v seznamu aplikací</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Zaoblené rohy</string>
+    <string name="allow_widget_overlap">Povolit překrývání</string>
     <string name="suggestion_pref_screen_title">Návrhy</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Popisek</string>
@@ -166,6 +168,16 @@
     <string name="dynamic">Dynamická</string>
     <string name="all_apps_search_market_message">Vyhledat další aplikace</string>
     <string name="show_app_search_bar">Zobrazit vyhledávací lištu</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Červená</string>
+    <string name="rgb_green">Zelená</string>
+    <string name="rgb_blue">Modrá</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Odstín</string>
+    <string name="hsb_saturation">Sytost</string>
+    <string name="hsb_brightness">Jas</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Posuvníky</string>
     <string name="lawnchair_bug_report">Hlášení o chybě v Lawnchair</string>
     <string name="crash_report_notif_title">%1$s přestal fungovat</string>
     <string name="action_upload_crash_report">Nahrát protokol pádů</string>
@@ -205,6 +217,8 @@
     <string name="smartspace_calendar_label">Přizpůsobení glanc kalendáře</string>
     <string name="smartspace_calendar_description">Povolit zobrazení data v kalendářích ne-Gregoriánských systémů.</string>
     <string name="search_provider_app_search">Hledání aplikací</string>
+    <string name="always_open_website_label">Vždy otevřít webovou stránku</string>
+    <string name="always_open_website_description">Otevřít webovou stránku poskytovatele vyhledávání, i když je jejich aplikace nainstalována.</string>
     <string name="search_provider">Poskytovatel vyhledávání</string>
     <string name="status_bar_label">Stavový řádek</string>
     <string name="show_notification_count">Zobrazit počet oznámení</string>
@@ -213,18 +227,17 @@
     <string name="reset_custom_icons_confirmation">Všechny vlastní ikony budou obnoveny. Přejete si pokračovat?</string>
     <string name="taskbar_label">Hlavní panel</string>
     <string name="enable_taskbar_experimental">Povolit hlavní panel (experimentální)</string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">Není nainstalovaný obchod ani prohlížeč.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Nabíjení</string>
     <string name="smartspace_battery_full">Nabito</string>
     <string name="smartspace_battery_low">Nízký stav baterie</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
     <string name="accessibility_smartspace_page">Strana %1$d z\u00a0%2$d</string>
     <string name="smartspace_widget">Přehled událostí</string>
     <string name="smartspace_widget_description">Co zobrazit</string>
     <string name="smartspace_widget_placeholder_date">Pá, 3.\u00a0března</string>
-    <string name="quickstep_incompatible">Nekompatibilní systémová integrace</string>
-    <string name="quickstep_incompatible_description">Vaše zařízení je nakonfigurováno tak, aby systémová gesta (známá jako Quickstep) byla poskytována aplikací %1$s, ale tato verze aplikace %1$s není kompatibilní s\u00a0vaší verzí Android. Chcete‑li nadále používat vaše zařízení, odinstalujte aktualizace aplikace %1$s, nebo zakažte aplikaci %1$s jako poskytovatele systémových gest.</string>
     <string name="preview_label">Náhled</string>
     <string name="smartspace_calendar">Kalendář</string>
     <string name="smartspace_date_and_time">Date &amp; Time</string>
@@ -235,16 +248,19 @@
     <string name="smartspace_battery_status">Stav baterie</string>
     <string name="smartspace_now_playing">Právě hraje</string>
     <string name="smartspace_requires_setup">Klepnutím nastavíte</string>
-    <string name="event_provider_missing_notification_dots">Chcete‑li použít <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, povolte puntíky s\u00a0oznámením.</string>
+    <string name="event_provider_missing_notification_dots">Chcete‑li použít <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, povolte puntíky oznámení.</string>
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="smartspace_calendar_gregorian">Gregoriánský</string>
     <string name="smartspace_calendar_persian">Perský</string>
+    <string name="quickstep_incompatible">Nekompatibilní systémová integrace</string>
+    <string name="quickstep_incompatible_description">Vaše zařízení je nakonfigurováno tak, aby systémová gesta (známá jako Quickstep) byla poskytována aplikací %1$s, ale tato verze aplikace %1$s není kompatibilní s\u00a0vaší verzí Androidu. Chcete‑li nadále používat vaše zařízení, odinstalujte aktualizace aplikace %1$s, nebo zakažte aplikaci %1$s jako poskytovatele systémových gest.</string>
     <string name="pref_fonts_add_fonts">Přidat písma</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF jsou podporované.</string>
     <string name="delete">Odstranit</string>
     <string name="themed_icons_off_label">Vyp.</string>
     <string name="themed_icons_home_label">Domovská stránka</string>
     <string name="themed_icons_home_and_drawer_label">Plocha a\u00a0Seznam aplikací</string>
+    <!-- Backup -->
     <string name="create_backup">Vytvořit zálohu</string>
     <string name="create_backup_action">Vytvořit</string>
     <string name="what_to_backup">Co zálohovat</string>
@@ -258,24 +274,26 @@
     <string name="backup_restore_success">Obnoveno ze zálohy.</string>
     <string name="backup_restore_error">Nepodařilo se obnovit ze zálohy.</string>
     <string name="invalid_backup_file">Neplatný soubor zálohy.</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
-    <string name="wallpaper_depth_effect">Efekt hloubky tapety</string>
-    <string name="gesture_double_tap">Double Tap</string>
+    <string name="wallpaper_depth_effect_label">Efekt hloubky tapety</string>
+    <string name="wallpaper_depth_effect_description">Přiblížit a oddálit tapetu při přechodu mezi stavy.</string>
+    <string name="gestures_label">Gesta</string>
+    <string name="gestures_description">Poklepání a potažení</string>
+    <!-- Gestures -->
+    <string name="gesture_double_tap">Dvojité poklepání</string>
+    <string name="gesture_swipe_up">Přejetí nahoru</string>
+    <string name="gesture_swipe_down">Přejetí dolů</string>
+    <string name="gesture_home_tap">Klepnutí na tlačítko Domů</string>
+    <string name="gesture_back_tap">Klepnutí tlačítka Zpět</string>
     <string name="gesture_handler_no_op">Nedělat nic</string>
     <string name="gesture_handler_sleep">Spánek</string>
     <string name="gesture_handler_open_notifications">Otevřít panel oznámení</string>
     <string name="gesture_handler_open_app_option">Otevřít aplikaci</string>
     <string name="gesture_handler_open_app_config">Otevřít %1$s</string>
-    <string name="pick_app_for_gesture">Vybrat aplikaci</string>
     <string name="gesture_handler_open_app_drawer">Otevřít seznam aplikací</string>
     <string name="gesture_handler_open_app_search">Otevřít vyhledání aplikace</string>
     <string name="gesture_handler_open_search">Otevřít vyhledávání</string>
-    <string name="gestures_label">Gesta</string>
-    <string name="gesture_swipe_up">Přejetí nahoru</string>
-    <string name="gesture_swipe_down">Přejetí dolů</string>
-    <string name="gesture_home_tap">Klepnutí na tlačítko Domů</string>
-    <string name="gesture_back_tap">Klepnutí tlačítka Zpět</string>
+    <string name="pick_app_for_gesture">Vybrat aplikaci</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="app_label">App</string>
-    <string name="website_label">Website</string>
+    <string name="app_label">Aplikace</string>
+    <string name="website_label">Web</string>
 </resources>
