@@ -31,7 +31,7 @@
     <string name="app_drawer_description">Apps Ocultos, Número de Colunas, Ícones</string>
     <string name="folders_label">Pastas</string>
     <string name="folders_description">Número de Linhas e Colunas</string>
-    <string name="app_drawer_columns">Colunas da gaveta de aplicativos</string>
+    <string name="app_drawer_columns">Colunas na Gaveta de Aplicativos</string>
     <string name="dock_icons">Ícones da Dock</string>
     <string name="max_folder_columns">Máx. Colunas nas Pastas</string>
     <string name="max_folder_rows">Máx. Linhas nas Pastas</string>
