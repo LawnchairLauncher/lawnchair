@@ -82,6 +82,8 @@ public class AllSetActivity extends Activity {
 
     private static final int MAX_SWIPE_DURATION = 350;
 
+    private static final float ANIMATION_PAUSE_ALPHA_THRESHOLD = 0.1f;
+
     private TISBindHelper mTISBindHelper;
     private TISBinder mBinder;
 
@@ -144,6 +146,10 @@ public class AllSetActivity extends Activity {
     }
 
     private void runOnUiHelperThread(Runnable runnable) {
+        if (!isResumed()
+                || getContentViewAlphaForSwipeProgress() <= ANIMATION_PAUSE_ALPHA_THRESHOLD) {
+            return;
+        }
         Executors.UI_HELPER_EXECUTOR.execute(runnable);
     }
 
@@ -192,6 +198,7 @@ public class AllSetActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        maybeResumeOrPauseBackgroundAnimation();
         if (mBinder != null) {
             mBinder.getTaskbarManager().setSetupUIVisible(true);
             mBinder.setSwipeUpProxy(this::createSwipeUpProxy);
@@ -210,6 +217,7 @@ public class AllSetActivity extends Activity {
     protected void onPause() {
         super.onPause();
         clearBinderOverride();
+        maybeResumeOrPauseBackgroundAnimation();
         if (mSwipeProgress.value >= 1) {
             finishAndRemoveTask();
         }
@@ -244,10 +252,25 @@ public class AllSetActivity extends Activity {
         return mSwipeProgress;
     }
 
+    private float getContentViewAlphaForSwipeProgress() {
+        return Utilities.mapBoundToRange(
+                mSwipeProgress.value, 0, HINT_BOTTOM_FACTOR, 1, 0, LINEAR);
+    }
+
+    private void maybeResumeOrPauseBackgroundAnimation() {
+        boolean shouldPlayAnimation =
+                getContentViewAlphaForSwipeProgress() > ANIMATION_PAUSE_ALPHA_THRESHOLD
+                        && isResumed();
+        if (mAnimatedBackground.isAnimating() && !shouldPlayAnimation) {
+            mAnimatedBackground.pauseAnimation();
+        } else if (!mAnimatedBackground.isAnimating() && shouldPlayAnimation) {
+            mAnimatedBackground.resumeAnimation();
+        }
+    }
+
     private void onSwipeProgressUpdate() {
         mBackground.setProgress(mSwipeProgress.value);
-        float alpha = Utilities.mapBoundToRange(
-                mSwipeProgress.value, 0, HINT_BOTTOM_FACTOR, 1, 0, LINEAR);
+        float alpha = getContentViewAlphaForSwipeProgress();
         mContentView.setAlpha(alpha);
         mContentView.setTranslationY((alpha - 1) * mSwipeUpShift);
 
@@ -259,12 +282,7 @@ public class AllSetActivity extends Activity {
             mLauncherStartAnim.setPlayFraction(Utilities.mapBoundToRange(
                     mSwipeProgress.value, 0, 1, 0, 1, FAST_OUT_SLOW_IN));
         }
-
-        if (alpha == 0f) {
-            mAnimatedBackground.pauseAnimation();
-        } else if (!mAnimatedBackground.isAnimating()) {
-            mAnimatedBackground.resumeAnimation();
-        }
+        maybeResumeOrPauseBackgroundAnimation();
     }
 
     /**
