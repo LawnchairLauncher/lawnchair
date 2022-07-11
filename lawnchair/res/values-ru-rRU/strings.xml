@@ -105,7 +105,7 @@
     <string name="window_corner_radius_description">Когда вы проводите вверх, чтобы открыть Недавние, текущее приложение следует за пальцем, уменьшаясь в карточку. Используйте этот ползунок для настройки радиуса угла карточки, когда она почти развернута, чтобы она соответствовала углам экрана.</string>
     <string name="system_icons">Системные иконки</string>
     <string name="accent_color">Цветовой акцент</string>
-    <string name="invalid_color">Invalid Color</string>
+    <string name="invalid_color">Недопустимый цвет</string>
     <string name="done">Готово</string>
     <string name="loading">Загрузка…</string>
     <string name="system">Система</string>
@@ -169,11 +169,11 @@
     <string name="all_apps_search_market_message">Поиск дополнительных приложений</string>
     <string name="show_app_search_bar">Показать строку поиска</string>
     <string name="rgb">RGB</string>
-    <string name="rgb_red">Red</string>
-    <string name="rgb_green">Green</string>
-    <string name="rgb_blue">Blue</string>
+    <string name="rgb_red">Красный</string>
+    <string name="rgb_green">Зелёный</string>
+    <string name="rgb_blue">Синий</string>
     <string name="hsb">HSB</string>
-    <string name="hsb_hue">Hue</string>
+    <string name="hsb_hue">Оттенок</string>
     <string name="hsb_saturation">Saturation</string>
     <string name="hsb_brightness">Brightness</string>
     <string name="hex">Hex</string>
