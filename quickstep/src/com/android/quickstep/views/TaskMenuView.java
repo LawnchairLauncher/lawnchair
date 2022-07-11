@@ -56,8 +56,6 @@ import com.android.quickstep.TaskUtils;
 import com.android.quickstep.util.TaskCornerRadius;
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
 
-import app.lawnchair.theme.drawable.DrawableTokens;
-
 /**
  * Contains options for a recent task when long-pressing its icon.
  */
@@ -93,7 +91,6 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
     protected void onFinishInflate() {
         super.onFinishInflate();
         mTaskName = findViewById(R.id.task_name);
-        mTaskName.setBackground(DrawableTokens.TaskMenuItemBg.resolve(getContext()));
         mOptionLayout = findViewById(R.id.menu_option_layout);
     }
 
@@ -259,7 +256,6 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
                 menuOption.onClick(view);
             }
         });
-        menuOptionView.setBackground(DrawableTokens.TaskMenuItemBg.resolve(mActivity));
         mOptionLayout.addView(menuOptionView);
     }
 

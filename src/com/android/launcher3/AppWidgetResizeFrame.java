@@ -1,7 +1,6 @@
 package com.android.launcher3;
 
 import static android.appwidget.AppWidgetHostView.getDefaultPaddingForWidget;
-
 import static com.android.launcher3.CellLayout.SPRING_LOADED_PROGRESS;
 import static com.android.launcher3.LauncherAnimUtils.LAYOUT_HEIGHT;
 import static com.android.launcher3.LauncherAnimUtils.LAYOUT_WIDTH;
@@ -46,7 +45,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import app.lawnchair.theme.color.ColorTokens;
-import app.lawnchair.theme.drawable.DrawableTokens;
 
 public class AppWidgetResizeFrame extends AbstractFloatingView implements View.OnKeyListener {
     private static final int SNAP_DURATION = 150;
@@ -209,10 +207,9 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         DragLayer dl = launcher.getDragLayer();
         AppWidgetResizeFrame frame = (AppWidgetResizeFrame) launcher.getLayoutInflater()
                 .inflate(R.layout.app_widget_resize_frame, dl, false);
-        ImageView imageView = frame.findViewById(R.id.widget_resize_frame);
-        imageView.setImageDrawable(DrawableTokens.WidgetResizeFrame.resolve(launcher));
         if (widget.hasEnforcedCornerRadius()) {
             float enforcedCornerRadius = widget.getEnforcedCornerRadius();
+            ImageView imageView = frame.findViewById(R.id.widget_resize_frame);
             Drawable d = imageView.getDrawable();
             if (d instanceof GradientDrawable) {
                 GradientDrawable gd = (GradientDrawable) d.mutate();

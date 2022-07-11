@@ -12,7 +12,7 @@ import com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_LANDSCAPE
 import com.android.launcher3.InvariantDeviceProfile.INDEX_ALL_APPS
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.MainThreadInitializedObject
-import com.patrykmichalik.preferencemanager.firstBlocking
+import com.patrykmichalik.opto.core.firstBlocking
 
 class DeviceProfileOverrides(context: Context) {
     private val prefs = PreferenceManager.getInstance(context)

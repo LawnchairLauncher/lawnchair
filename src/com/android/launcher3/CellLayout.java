@@ -72,6 +72,7 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -81,6 +82,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Stack;
 
+import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.theme.drawable.DrawableTokens;
 
@@ -206,6 +208,7 @@ public class CellLayout extends ViewGroup {
     // Related to accessible drag and drop
     DragAndDropAccessibilityDelegate mTouchHelper;
 
+    PreferenceManager2 mPreferenceManager2;
 
     public static final FloatProperty<CellLayout> SPRING_LOADED_PROGRESS =
             new FloatProperty<CellLayout>("spring_loaded_progress") {
@@ -240,6 +243,8 @@ public class CellLayout extends ViewGroup {
         setClipToPadding(false);
         mActivity = ActivityContext.lookupContext(context);
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+
+        mPreferenceManager2 = PreferenceManager2.getInstance(context);
 
         mBorderSpace = mContainerType == FOLDER
                 ? new Point(deviceProfile.folderCellLayoutBorderSpacePx)
@@ -1878,6 +1883,11 @@ public class CellLayout extends ViewGroup {
         if (cellX < 0 || cellY < 0) return false;
 
         mIntersectingViews.clear();
+        if (PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getAllowWidgetOverlap())) {
+            // let's pretend no intersections exist
+            solution.intersectingViews = new ArrayList<>(mIntersectingViews);
+            return true;
+        }
         mOccupiedRect.set(cellX, cellY, cellX + spanX, cellY + spanY);
 
         // Mark the desired location of the view currently being dragged.
@@ -2717,7 +2727,7 @@ public class CellLayout extends ViewGroup {
 
     public boolean isOccupied(int x, int y) {
         if (x < mCountX && y < mCountY) {
-            return mOccupied.cells[x][y];
+            return mOccupied.cells[x][y] && !PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getAllowWidgetOverlap());
         } else {
             throw new RuntimeException("Position exceeds the bound of this CellLayout");
         }
@@ -2983,6 +2993,6 @@ public class CellLayout extends ViewGroup {
     }
 
     public boolean isRegionVacant(int x, int y, int spanX, int spanY) {
-        return mOccupied.isRegionVacant(x, y, spanX, spanY);
+        return mOccupied.isRegionVacant(x, y, spanX, spanY) || PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getAllowWidgetOverlap());
     }
 }

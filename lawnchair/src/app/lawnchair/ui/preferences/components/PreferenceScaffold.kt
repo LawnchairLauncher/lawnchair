@@ -15,6 +15,7 @@ fun PreferenceScaffold(
     floating: State<Boolean> = remember { mutableStateOf(false) },
     label: String,
     actions: @Composable RowScope.() -> Unit = {},
+    bottomBar: @Composable () -> Unit = { BottomSpacer() },
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
@@ -26,7 +27,7 @@ fun PreferenceScaffold(
                 actions = actions,
             )
         },
-        bottomBar = { BottomSpacer() },
+        bottomBar = bottomBar,
         contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues()
     ) {
         content(it)

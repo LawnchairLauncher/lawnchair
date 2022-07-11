@@ -53,11 +53,13 @@ import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSparseArrayMap;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
 
 import app.lawnchair.LawnchairApp;
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Extension of {@link Cursor} with utility methods for workspace loading.
@@ -104,16 +106,19 @@ public class LoaderCursor extends CursorWrapper {
     public int itemType;
     public int restoreFlag;
 
+    private final PreferenceManager2 preferenceManager2;
+
     public LoaderCursor(Cursor cursor, Uri contentUri, LauncherAppState app,
             UserManagerState userManagerState) {
         super(cursor);
-
         allUsers = userManagerState.allUsers;
         mContentUri = contentUri;
         mContext = app.getContext();
         mIconCache = app.getIconCache();
         mIDP = app.getInvariantDeviceProfile();
         mPM = mContext.getPackageManager();
+
+        preferenceManager2 = PreferenceManager2.getInstance(mContext);
 
         // Init column indices
         iconIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.ICON);
@@ -204,8 +209,7 @@ public class LoaderCursor extends CursorWrapper {
      * Returns the title or empty string
      */
     private String getTitle() {
-        String title = getString(titleIndex);
-        return TextUtils.isEmpty(title) ? "" : Utilities.trim(title);
+        return Utilities.trim(getString(titleIndex));
     }
 
     /**
@@ -478,7 +482,7 @@ public class LoaderCursor extends CursorWrapper {
                     + " into cell (" + containerIndex + "-" + item.screenId + ":"
                     + item.cellX + "," + item.cellX + "," + item.spanX + "," + item.spanY
                     + ") already occupied");
-            return false;
+            return PreferenceExtensionsKt.firstBlocking(preferenceManager2.getAllowWidgetOverlap());
         }
     }
 }

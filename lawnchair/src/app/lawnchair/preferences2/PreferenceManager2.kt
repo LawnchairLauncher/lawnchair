@@ -17,6 +17,7 @@
 package app.lawnchair.preferences2
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.*
@@ -35,8 +36,8 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.DynamicResource
 import com.android.launcher3.util.MainThreadInitializedObject
-import com.patrykmichalik.preferencemanager.PreferenceManager
-import com.patrykmichalik.preferencemanager.firstBlocking
+import com.patrykmichalik.opto.core.PreferenceManager
+import com.patrykmichalik.opto.core.firstBlocking
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
@@ -125,6 +126,12 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
     val roundedWidgets = preference(
         key = booleanPreferencesKey(name = "rounded_widgets"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_rounded_widgets),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
+    val allowWidgetOverlap = preference(
+        key = booleanPreferencesKey(name = "allow_widget_overlap"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_allow_widget_overlap),
         onSet = { reloadHelper.reloadGrid() },
     )
 
@@ -343,12 +350,19 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
 
     private inline fun <reified T> serializablePreference(
         key: Preferences.Key<String>,
-        defaultValue: T
+        defaultValue: T,
     ) = preference(
         key = key,
         defaultValue = defaultValue,
-        parse = { Json.decodeFromString(it) },
-        save = { Json.encodeToString(it) }
+        parse = { value ->
+            try {
+                return@preference Json.decodeFromString(value)
+            } catch (e: Throwable) {
+                Log.d("PreferenceManager2", "failed to parse preference $key=$value")
+                return@preference defaultValue
+            }
+        },
+        save = Json::encodeToString,
     )
 
     init {

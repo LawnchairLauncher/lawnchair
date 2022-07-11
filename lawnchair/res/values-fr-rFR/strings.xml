@@ -16,6 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">Pack d\'icônes</string>
+    <string name="icon_style">Style d\'icône</string>
     <string name="settings">Paramètres</string>
     <string name="home_screen_label">Écran d\'accueil</string>
     <string name="home_screen_description">Flux, Grille, Icônes</string>
@@ -35,6 +36,9 @@
     <string name="max_folder_columns">Nombre maximum de colonnes des dossiers</string>
     <string name="max_folder_rows">Nombre maximum de lignes des dossiers</string>
     <string name="home_screen_grid">Grille de l\'écran d\'accueil</string>
+    <string name="home_screen_lock">Verrouillage de l\'écran d\'accueil</string>
+    <string name="home_screen_unlock">Déverrouiller l\'écran d\'accueil</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Afficher le bouton de verrouillage dans la fenêtre contextuelle</string>
     <string name="columns">Colonnes</string>
     <string name="grid">Grille</string>
     <string name="rows">Rangées</string>
@@ -76,6 +80,7 @@
         <item quantity="other">Applications %1$d</item>
     </plurals>
     <string name="hotseat_qsb_label">Afficher la barre de recherche</string>
+    <string name="qsb_search_provider_app_required">Application requise.</string>
     <string name="dt2s_admin_hint_title">Admin permission required</string>
     <string name="dt2s_admin_hint">Pour utiliser le double appui pour mettre en veille, définissez Lawnchair avec les permissions d\'administrateur. Appuyez sur \"Ouvrir les paramètres\", puis appuyez sur \"Activer l\'application avec les permissions d\'administrateur\"</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
@@ -98,6 +103,7 @@
     <string name="window_corner_radius_description">Lorsque vous faites glisser vers le haut pour ouvrir Récents, l\'application actuelle suit votre doigt et se replie sur une carte. Utilisez ce curseur pour régler le rayon d\'angle de la carte quand il est presque en plein écran de telle sorte qu\'il corresponde aux coins de votre écran.</string>
     <string name="system_icons">Icônes système</string>
     <string name="accent_color">Couleur d\'accentuation</string>
+    <string name="invalid_color">Invalid Color</string>
     <string name="done">Terminé</string>
     <string name="loading">Chargement…</string>
     <string name="system">Système</string>
@@ -107,6 +113,7 @@
     <string name="wallpaper_scrolling_label">Défiler le fond d\'écran</string>
     <string name="show_sys_ui_scrim">Ombre du haut</string>
     <string name="show_status_bar">Afficher la barre d\'état</string>
+    <string name="layout">Mise en page</string>
     <string name="what_to_show">Qu\'afficher</string>
     <string name="missing_notification_access_label">Accès aux notifications requis</string>
     <string name="missing_notification_access_description">Accès aux notifications requis.</string>
@@ -150,6 +157,7 @@
     <string name="hide_from_drawer">Masquer dans le tiroir d\'applications</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Coins arrondis</string>
+    <string name="allow_widget_overlap">Autoriser les superpositions</string>
     <string name="suggestion_pref_screen_title">Suggestions</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Étiquette</string>
@@ -158,6 +166,16 @@
     <string name="dynamic">Dynamique</string>
     <string name="all_apps_search_market_message">Rechercher plus d\'applications</string>
     <string name="show_app_search_bar">Afficher la barre de recherche</string>
+    <string name="rgb">RGB</string>
+    <string name="rgb_red">Red</string>
+    <string name="rgb_green">Green</string>
+    <string name="rgb_blue">Blue</string>
+    <string name="hsb">HSB</string>
+    <string name="hsb_hue">Hue</string>
+    <string name="hsb_saturation">Saturation</string>
+    <string name="hsb_brightness">Brightness</string>
+    <string name="hex">Hex</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Rapport de bug Lawnchair</string>
     <string name="crash_report_notif_title">%1$s a planté</string>
     <string name="action_upload_crash_report">Télécharger le journal de plantage</string>
@@ -194,6 +212,8 @@
     <string name="icon_picker_description">Pourrait causer le gel de Lawnchair.</string>
     <string name="font_picker_label">Personnalisation de la police</string>
     <string name="font_picker_description">Certains textes restent inchangés.</string>
+    <string name="smartspace_calendar_label">Personnalisation du calendrier en un coup d’œil</string>
+    <string name="smartspace_calendar_description">Autoriser l\'affichage de la date dans les systèmes de calendrier non grégoriens.</string>
     <string name="search_provider_app_search">Recherche d\'appli</string>
     <string name="always_open_website_label">Toujours ouvrir le site web</string>
     <string name="always_open_website_description">Ouvrir le site web du fournisseur de recherche même si son appli est installée.</string>
@@ -204,42 +224,74 @@
     <string name="reset_custom_icons">Réinitialiser les icônes personnalisées</string>
     <string name="reset_custom_icons_confirmation">Toutes les icônes personnalisées seront réinitialisées. Voulez-vous continuer ?</string>
     <string name="taskbar_label">Barre des tâches</string>
-    <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
+    <string name="enable_taskbar_experimental">Activer la barre des tâches (expérimental)</string>
+    <string name="error_no_market_or_browser_installed">Aucun app store ou navigateur installé.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Recharge en cours</string>
     <string name="smartspace_battery_full">Chargé</string>
     <string name="smartspace_battery_low">Batterie faible</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Chargé dans %2$s"</string>
     <string name="accessibility_smartspace_page">Page %1$d sur %2$d</string>
     <string name="smartspace_widget">Widget Aperçu</string>
     <string name="smartspace_widget_description">Qu\'afficher</string>
     <string name="smartspace_widget_placeholder_date">Ven, 3 Mar</string>
-    <string name="quickstep_incompatible">Intégration au système incompatible</string>
-    <string name="quickstep_incompatible_description">Votre appareil est configuré pour avoir la navigation par gestes (appelé Quickstep) fourni par %1$s, mais cette version de %1$s n\'est pas compatible avec votre version d\'Android. Pour continuer à utiliser votre appareil, merci de désinstaller les mises à jour de %1$s ou d\'enlever %1$s en tant que fournisseur de gestes.</string>
     <string name="preview_label">Aperçu</string>
+    <string name="smartspace_calendar">Calendrier</string>
+    <string name="smartspace_date_and_time">Date &amp; Heure</string>
+    <string name="smartspace_date">Date</string>
+    <string name="smartspace_time">Heure</string>
+    <string name="smartspace_time_24_hour_format">Format 24 Heures</string>
     <string name="smartspace_weather">Météo</string>
     <string name="smartspace_battery_status">État de la batterie</string>
     <string name="smartspace_now_playing">En cours de lecture</string>
     <string name="smartspace_requires_setup">Appuyez pour configurer</string>
     <string name="event_provider_missing_notification_dots">Pour utiliser <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activez les pastilles de notifications.</string>
     <string name="smartspace_media_info_separator">" — "</string>
+    <string name="smartspace_calendar_gregorian">Grégorien</string>
+    <string name="smartspace_calendar_persian">Persan</string>
+    <string name="quickstep_incompatible">Intégration au système incompatible</string>
+    <string name="quickstep_incompatible_description">Votre appareil est configuré pour avoir la navigation par gestes (appelé Quickstep) fourni par %1$s, mais cette version de %1$s n\'est pas compatible avec votre version d\'Android. Pour continuer à utiliser votre appareil, merci de désinstaller les mises à jour de %1$s ou d\'enlever %1$s en tant que fournisseur de gestes.</string>
     <string name="pref_fonts_add_fonts">Ajouter des polices</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF pris en charge.</string>
     <string name="delete">Supprimer</string>
-    <string name="themed_icons_off_label">Off</string>
+    <string name="themed_icons_off_label">Désactivées</string>
     <string name="themed_icons_home_label">Écran d\'accueil</string>
-    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
-    <string name="create_backup">Create Backup</string>
-    <string name="create_backup_action">Create</string>
-    <string name="what_to_backup">What to Back Up</string>
-    <string name="backup_content_layout_and_settings">Layout and Settings</string>
+    <string name="themed_icons_home_and_drawer_label">Écran d\'accueil &amp; tiroir d\'applications</string>
+    <!-- Backup -->
+    <string name="create_backup">Créer une sauvegarde</string>
+    <string name="create_backup_action">Créer</string>
+    <string name="what_to_backup">Que sauvegarder</string>
+    <string name="backup_content_layout_and_settings">Mise en page et réglages</string>
     <string name="backup_content_wallpaper">Fond d\'écran</string>
-    <string name="backup_create_success">Sauvegarde crée.</string>
-    <string name="backup_create_error">Impossible de créer une sauvegarde.</string>
-    <string name="restore_backup">Restore Backup</string>
-    <string name="restore_backup_action">Restore</string>
-    <string name="what_to_restore">What to Restore</string>
+    <string name="backup_create_success">Sauvegarde créée.</string>
+    <string name="backup_create_error">Impossible de créer la sauvegarde.</string>
+    <string name="restore_backup">Restaurer une sauvegarde</string>
+    <string name="restore_backup_action">Restaurer</string>
+    <string name="what_to_restore">Que restaurer</string>
     <string name="backup_restore_success">Sauvegarde restaurée.</string>
     <string name="backup_restore_error">Échec de la restauration de la sauvegarde.</string>
     <string name="invalid_backup_file">Fichier de sauvegarde invalide.</string>
+    <string name="wallpaper_depth_effect_label">Effet de profondeur du fond d\'écran</string>
+    <string name="wallpaper_depth_effect_description">Zoom avant et arrière du fond d\'écran lors de la transition entre états.</string>
+    <string name="gestures_label">Gestes</string>
+    <string name="gestures_description">Coups et glissements</string>
+    <!-- Gestures -->
+    <string name="gesture_double_tap">Tapoter deux fois</string>
+    <string name="gesture_swipe_up">Glisser vers le haut</string>
+    <string name="gesture_swipe_down">Glisser vers le bas</string>
+    <string name="gesture_home_tap">Toucher le bouton d\'accueil</string>
+    <string name="gesture_back_tap">Toucher le bouton Retour</string>
+    <string name="gesture_handler_no_op">Ne rien faire</string>
+    <string name="gesture_handler_sleep">Mise en veille</string>
+    <string name="gesture_handler_open_notifications">Ouvrir le panneau des notifications</string>
+    <string name="gesture_handler_open_app_option">Ouvrir l\'application</string>
+    <string name="gesture_handler_open_app_config">Ouvrir %1$s</string>
+    <string name="gesture_handler_open_app_drawer">Ouvrir le tiroir d\'applications</string>
+    <string name="gesture_handler_open_app_search">Ouvrir la recherche d\'applications</string>
+    <string name="gesture_handler_open_search">Ouvrir la recherche</string>
+    <string name="pick_app_for_gesture">Sélectionner une application</string>
+    <string name="x_and_y">%s &amp; %s</string>
+    <string name="app_label">Application</string>
+    <string name="website_label">Site internet</string>
 </resources>

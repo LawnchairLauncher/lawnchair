@@ -28,7 +28,7 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.icons.GraphicsUtils
 import com.android.launcher3.icons.IconProvider
 import com.android.launcher3.util.MainThreadInitializedObject
-import com.patrykmichalik.preferencemanager.firstBlocking
+import com.patrykmichalik.opto.core.firstBlocking
 
 class IconShapeManager(private val context: Context) {
 

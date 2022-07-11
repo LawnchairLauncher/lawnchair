@@ -13,7 +13,7 @@ import com.android.launcher3.anim.PendingAnimation
 import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.states.StateAnimationConfig
 import com.android.quickstep.AnimatedFloat
-import com.patrykmichalik.preferencemanager.onEach
+import com.patrykmichalik.opto.core.onEach
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 

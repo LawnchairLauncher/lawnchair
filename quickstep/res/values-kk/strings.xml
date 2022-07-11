@@ -25,26 +25,25 @@
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Қолданбаны пайдалану параметрлері"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Барлығын өшіру"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Соңғы пайдаланылған қолданбалар"</string>
-    <!-- no translation found for task_view_closed (9170038230110856166) -->
-    <skip />
+    <string name="task_view_closed" msgid="9170038230110856166">"Тапсырма жабылды."</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 мин"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"Бүгін <xliff:g id="TIME">%1$s</xliff:g> қалды"</string>
-    <string name="title_app_suggestions" msgid="4185902664111965088">"Ұсынылған қолданбалар"</string>
+    <string name="title_app_suggestions" msgid="4185902664111965088">"Қолданба ұсыныстары"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Ұсынылатын қолданбалар"</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Негізгі экранның төменгі жолында қолданбаларды ұсыну"</string>
-    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Ұсынылған қолданбалар негізгі экранда таңдаулылар арасында көрсетілетін болады"</string>
+    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Қолданба ұсыныстары негізгі экрандағы таңдаулылар жолында көрсетілетін болады"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Жиі пайдаланылатын қолданбаларға негізгі экраннан кіруге болады. Ұсыныстар күнделікті әрекеттеріңізге сәйкес өзгереді. Төменгі қатардағы қолданбалар негізгі экранға қарай жоғары жылжиды."</string>
     <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Жиі пайдаланылатын қолданбаларға негізгі экраннан оңай кіре аласыз. Ұсыныстар күнделікті әрекеттеріңізге сәйкес өзгереді. Таңдаулылар жолындағы қолданбалар негізгі экранға ауысады."</string>
     <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Жиі пайдаланылатын қолданбаларға негізгі экраннан кіруге болады. Ұсыныстар күнделікті әрекеттеріңізге сәйкес өзгереді. Төменгі қатардағы қолданбалар жаңа қалтаға жылжиды."</string>
-    <string name="hotseat_edu_accept" msgid="1611544083278999837">"Ұсынылған қолданбаларды көру"</string>
+    <string name="hotseat_edu_accept" msgid="1611544083278999837">"Қолданба ұсыныстарын алу"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Жоқ, рақмет"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Параметрлер"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Жиі пайдаланылатын қолданбалар осы жерде көрсетіледі. Олар күнделікті әрекеттеріңізге сәйкес өзгереді."</string>
-    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Ұсынылған қолданбаларды көру үшін төменгі қатардан керектерін сүйреп шығарыңыз."</string>
-    <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Ұсынылған қолданбалар бос орынға қосылды."</string>
-    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Ұсынылған қолданбалар функциясы қосылды."</string>
-    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"\"Ұсынылған қолданбалар\" функциясы өшірулі."</string>
+    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Қолданба ұсыныстарын алу үшін төменгі қатардан керектерін сүйреп шығарыңыз."</string>
+    <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Қолданба ұсыныстары бос орынға қойылып отырады."</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"\"Қолданба ұсыныстары\" функциясы қосылды."</string>
+    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"\"Қолданба ұсыныстары\" функциясы өшірулі."</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Болжалды қолданба: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Экранның оң немесе сол жиегінен сырғытыңыз."</string>
     <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Экранның оң немесе сол жиегінен ортасына қарай сырғытып, саусағыңызды жіберіңіз."</string>

@@ -25,8 +25,7 @@
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"एपको उपयोगका सेटिङहरू"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"सबै मेटाउनुहोस्"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"हालसालैका एपहरू"</string>
-    <!-- no translation found for task_view_closed (9170038230110856166) -->
-    <skip />
+    <string name="task_view_closed" msgid="9170038230110856166">"कार्य बन्द गरियो"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; १ मिनेट"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"आज: <xliff:g id="TIME">%1$s</xliff:g> बाँकी"</string>
@@ -43,7 +42,7 @@
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"सबैभन्दा बढी प्रयोग हुने एपहरू यहाँ देखिन्छन् र यी एपहरूको क्रम तपाईंले एप प्रयोग गर्ने समयतालिकाअनुसार बदलिरहन्छ"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"एपसम्बन्धी सिफारिस प्राप्त गर्न फेदको रोमा रहेका एपहरू ड्र्याग गरी हटाउनुहोस्"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"खाली ठाउँमा सिफारिस गरिएका एपहरू थपिए"</string>
-    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"सिफारिस गरिएका एपहरू देखाउने सुविधा सक्षम पारिएका छन्"</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"सिफारिस गरिएका एप देखाउने सुविधा अन गरिएको छ"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"सिफारिस गरिएका एपहरू देखाउने सुविधा असक्षम पारिएको छ"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"पूर्वानुमान गरिएको एप: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"स्क्रिनको सबैभन्दा दायाँ किनारा वा सबैभन्दा बायाँ किनाराबाट स्वाइप गर्नुहोस्।"</string>

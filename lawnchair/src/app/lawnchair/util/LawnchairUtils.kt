@@ -44,7 +44,7 @@ import com.android.launcher3.R
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Themes
 import com.android.systemui.shared.system.QuickStepContract
-import com.patrykmichalik.preferencemanager.firstBlocking
+import com.patrykmichalik.opto.core.firstBlocking
 import org.json.JSONArray
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException

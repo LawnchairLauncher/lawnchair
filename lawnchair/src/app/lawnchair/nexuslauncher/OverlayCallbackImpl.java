@@ -15,7 +15,7 @@ import com.google.android.libraries.launcherclient.ISerializableScrollCallback;
 import com.google.android.libraries.launcherclient.LauncherClient;
 import com.google.android.libraries.launcherclient.LauncherClientCallbacks;
 import com.google.android.libraries.launcherclient.StaticInteger;
-import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import app.lawnchair.FeedBridge;
 import app.lawnchair.LawnchairLauncher;

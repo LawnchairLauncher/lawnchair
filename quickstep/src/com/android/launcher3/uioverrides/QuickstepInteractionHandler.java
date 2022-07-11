@@ -19,8 +19,10 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 
 import android.app.ActivityOptions;
 import android.app.ActivityTaskManager;
+import android.app.IActivityTaskManagerHidden;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import android.util.Pair;
@@ -33,6 +35,8 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
+
+import dev.rikka.tools.refine.Refine;
 
 /** Provides a Quickstep specific animation when launching an activity from an app widget. */
 class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
@@ -58,24 +62,33 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
         Pair<Intent, ActivityOptions> options = remoteResponse.getLaunchOptions(view);
         ActivityOptionsWrapper activityOptions = mLauncher.getAppTransitionManager()
                 .getActivityLaunchOptions(hostView);
+        Object itemInfo = hostView.getTag();
+        IBinder launchCookie = null;
+        if (itemInfo instanceof ItemInfo) {
+            launchCookie = mLauncher.getLaunchCookie((ItemInfo) itemInfo);
+            activityOptions.options.setLaunchCookie(launchCookie);
+        }
         if (Utilities.ATLEAST_S && !pendingIntent.isActivity()) {
             // In the event this pending intent eventually launches an activity, i.e. a trampoline,
             // use the Quickstep transition animation.
             try {
-                ActivityTaskManager.getService()
-                        .registerRemoteAnimationForNextActivityStart(
-                                pendingIntent.getCreatorPackage(),
-                                activityOptions.options.getRemoteAnimationAdapter());
+                IActivityTaskManagerHidden atm = Refine.unsafeCast(ActivityTaskManager.getService());
+                try {
+                    atm.registerRemoteAnimationForNextActivityStart(
+                            pendingIntent.getCreatorPackage(),
+                            activityOptions.options.getRemoteAnimationAdapter(),
+                            launchCookie);
+                } catch (NoSuchMethodError e) {
+                    atm.registerRemoteAnimationForNextActivityStart(
+                            pendingIntent.getCreatorPackage(),
+                            activityOptions.options.getRemoteAnimationAdapter());
+                }
             } catch (RemoteException e) {
                 // Do nothing.
             }
         }
         activityOptions.options.setPendingIntentLaunchFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         activityOptions.options.setSplashscreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_EMPTY);
-        Object itemInfo = hostView.getTag();
-        if (itemInfo instanceof ItemInfo) {
-            mLauncher.addLaunchCookie((ItemInfo) itemInfo, activityOptions.options);
-        }
         options = Pair.create(options.first, activityOptions.options);
         if (pendingIntent.isActivity()) {
             logAppLaunch(itemInfo);

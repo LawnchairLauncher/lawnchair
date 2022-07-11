@@ -43,8 +43,6 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.Themes;
 
 import app.lawnchair.theme.color.ColorTokens;
-import app.lawnchair.theme.drawable.DrawableToken;
-import app.lawnchair.theme.drawable.DrawableTokens;
 
 /**
  * Implements a DropTarget.
@@ -102,7 +100,6 @@ public abstract class ButtonDropTarget extends TextView
         super.onFinishInflate();
         mText = getText();
         setContentDescription(mText);
-        setBackground(DrawableTokens.DropTargetBackground.resolve(getContext()));
         setTextColor();
     }
 

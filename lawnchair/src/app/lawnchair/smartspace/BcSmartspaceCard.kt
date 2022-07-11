@@ -3,6 +3,7 @@ package app.lawnchair.smartspace
 import android.content.Context
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -128,6 +129,8 @@ class BcSmartspaceCard @JvmOverloads constructor(
 
     fun setTitle(title: CharSequence?, contentDescription: CharSequence?, hasIcon: Boolean) {
         val titleView = titleTextView ?: return
+        val isRTL = TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == View.LAYOUT_DIRECTION_RTL
+        titleView.textAlignment = if (isRTL) TEXT_ALIGNMENT_TEXT_END else TEXT_ALIGNMENT_TEXT_START
         titleView.text = title
         titleView.setCompoundDrawablesRelative(
             if (hasIcon) iconDrawable else null, null,

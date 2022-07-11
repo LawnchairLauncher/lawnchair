@@ -59,19 +59,9 @@ fun HomeScreenPreferences() {
                 label = stringResource(id = R.string.auto_add_shortcuts_label),
                 enabled = lockHomeScreenAdapter.state.value.not(),
             )
-            SwitchPreference(
-                prefs.wallpaperScrolling.getAdapter(),
-                label = stringResource(id = R.string.wallpaper_scrolling_label),
-            )
-            if (Utilities.ATLEAST_R) {
-                SwitchPreference(
-                    prefs2.wallpaperDepthEffect.getAdapter(),
-                    label = stringResource(id = R.string.wallpaper_depth_effect),
-                )
-            }
             GestureHandlerPreference(
                 adapter = prefs2.doubleTapGestureHandler.getAdapter(),
-                label = stringResource(id = R.string.gesture_double_tap)
+                label = stringResource(id = R.string.gesture_double_tap),
             )
             val feedAvailable = OverlayCallbackImpl.minusOneAvailable(LocalContext.current)
             SwitchPreference(
@@ -80,6 +70,19 @@ fun HomeScreenPreferences() {
                 description = if (feedAvailable) null else stringResource(id = R.string.minus_one_unavailable),
                 enabled = feedAvailable,
             )
+        }
+        PreferenceGroup(heading = stringResource(id = R.string.wallpaper)) {
+            SwitchPreference(
+                prefs.wallpaperScrolling.getAdapter(),
+                label = stringResource(id = R.string.wallpaper_scrolling_label),
+            )
+            if (Utilities.ATLEAST_R) {
+                SwitchPreference(
+                    prefs2.wallpaperDepthEffect.getAdapter(),
+                    label = stringResource(id = R.string.wallpaper_depth_effect_label),
+                    description = stringResource(id = R.string.wallpaper_depth_effect_description),
+                )
+            }
             SwitchPreference(
                 adapter = prefs2.showTopShadow.getAdapter(),
                 label = stringResource(id = R.string.show_sys_ui_scrim),
@@ -153,6 +156,10 @@ fun HomeScreenPreferences() {
             SwitchPreference(
                 adapter = prefs2.roundedWidgets.getAdapter(),
                 label = stringResource(id = R.string.force_rounded_widgets),
+            )
+            SwitchPreference(
+                adapter = prefs2.allowWidgetOverlap.getAdapter(),
+                label = stringResource(id = R.string.allow_widget_overlap),
             )
         }
     }

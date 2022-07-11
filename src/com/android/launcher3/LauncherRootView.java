@@ -19,7 +19,7 @@ import androidx.annotation.RequiresApi;
 import com.android.launcher3.graphics.SysUiScrim;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.uioverrides.ApiWrapper;
-import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.util.Collections;
 import java.util.List;
