@@ -80,7 +80,11 @@ sealed class ColorOption {
             } catch (e: IllegalArgumentException) {
                 // ignore
             }
-            return SystemAccent
+            return when {
+                Utilities.ATLEAST_S -> SystemAccent
+                Utilities.ATLEAST_O_MR1 -> WallpaperPrimary
+                else -> LawnchairBlue
+            }
         }
     }
 }
