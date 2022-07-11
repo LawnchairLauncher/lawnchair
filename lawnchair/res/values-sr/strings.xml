@@ -20,13 +20,13 @@
     <string name="settings">Подешавања</string>
     <string name="home_screen_label">Почетни екран</string>
     <string name="home_screen_description">Фид, мрежа, иконе</string>
-    <string name="general_label">Општа подешавања</string>
+    <string name="general_label">Опште</string>
     <string name="general_description">Боје, пакети икона и тачке за обавештења</string>
     <string name="home_screen_rotation_label">Ротација почетног екрана</string>
     <string name="home_screen_rotaton_description">Када се уређај ротира.</string>
     <string name="auto_add_shortcuts_label">Додај нове апликације на почетни екран</string>
     <string name="dock_label">Док</string>
-    <string name="dock_description">Трака за претрагу, број икона</string>
+    <string name="dock_description">Оквир за претрагу, број икона</string>
     <string name="app_drawer_label">Листа апликација</string>
     <string name="app_drawer_description">Скривене апликације, број колона, иконе</string>
     <string name="folders_label">Фолдери</string>
@@ -80,7 +80,7 @@
         <item quantity="few">%1$d апликације</item>
         <item quantity="other">%1$d апликација</item>
     </plurals>
-    <string name="hotseat_qsb_label">Прикажи траку за претрагу</string>
+    <string name="hotseat_qsb_label">Прикажи оквир за претрагу</string>
     <string name="qsb_search_provider_app_required">Потребна је апликација.</string>
     <string name="dt2s_admin_hint_title">Потребне су администраторске дозволе</string>
     <string name="dt2s_admin_hint">Да бисте користили функцију „Додирните двапут за стање спавања”, подесите Lawnchair као апликацију за администратора уређаја. У подешавањима додирните „Активирај ову апликацију за администратора уређаја”.</string>
@@ -134,8 +134,8 @@
     <string name="font_weight_extra_black">Дебели</string>
     <string name="font_label">Фонт (експериментално)</string>
     <string name="reset_font">Ресетуј</string>
-    <string name="search_input_action_clear_results">Обриши поље за претрагу</string>
-    <string name="pref_category_search">Претражи</string>
+    <string name="search_input_action_clear_results">Обриши оквир за претрагу</string>
+    <string name="pref_category_search">Претрага</string>
     <string name="pref_search_auto_show_keyboard">Аутоматски приказуј тастатуру</string>
     <string name="label_search">Претражите</string>
     <string name="label_lens">Google објектив</string>
@@ -166,7 +166,7 @@
     <string name="colors">Боје</string>
     <string name="dynamic">Динамичка</string>
     <string name="all_apps_search_market_message">Претражите више апликација</string>
-    <string name="show_app_search_bar">Прикажи траку за претрагу</string>
+    <string name="show_app_search_bar">Прикажи оквир за претрагу</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Црвена</string>
     <string name="rgb_green">Зелена</string>
@@ -192,7 +192,7 @@
     <string name="bugreport_group_summary_multiple">Више нових извештаја.</string>
     <string name="themed_icon_title">Тематске иконе</string>
     <string name="corner_radius_label">Радијус угла</string>
-    <string name="search_bar_label">Поље за претрагу</string>
+    <string name="search_bar_label">Оквир за претрагу</string>
     <string name="apply_accent_color_label">Примени боју за наглашавање</string>
     <string name="show_search_result_types">Прикажи у резултатима претраге</string>
     <string name="search_pref_result_people_title">Људи</string>
