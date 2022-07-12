@@ -413,4 +413,7 @@
     <dimen name="bottom_sheet_handle_height">4dp</dimen>
     <dimen name="bottom_sheet_handle_margin">16dp</dimen>
     <dimen name="bottom_sheet_handle_corner_radius">2dp</dimen>
+
+    <!-- State transition -->
+    <item name="workspace_content_scale" format="float" type="dimen">0.97</item>
 </resources>
