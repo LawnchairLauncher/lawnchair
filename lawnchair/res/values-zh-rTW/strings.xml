@@ -171,10 +171,10 @@
     <string name="rgb_blue">藍</string>
     <string name="hsb">HSB</string>
     <string name="hsb_hue">色相</string>
-    <string name="hsb_saturation">Saturation</string>
-    <string name="hsb_brightness">Brightness</string>
-    <string name="hex">Hex</string>
-    <string name="color_sliders">Sliders</string>
+    <string name="hsb_saturation">飽和度</string>
+    <string name="hsb_brightness">明度</string>
+    <string name="hex">Hex 色碼</string>
+    <string name="color_sliders">滑桿</string>
     <string name="lawnchair_bug_report">Lawnchair 問題回報</string>
     <string name="crash_report_notif_title">%1$s 已停止運作</string>
     <string name="action_upload_crash_report">上傳錯誤日誌</string>
@@ -272,7 +272,7 @@
     <string name="backup_restore_error">還原備份失敗。</string>
     <string name="invalid_backup_file">無效的備份檔案</string>
     <string name="wallpaper_depth_effect_label">桌布景深效果</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_description">狀態切換時顯示桌布縮放特效</string>
     <string name="gestures_label">手勢</string>
     <string name="gestures_description">輕觸與滑動</string>
     <!-- Gestures -->
