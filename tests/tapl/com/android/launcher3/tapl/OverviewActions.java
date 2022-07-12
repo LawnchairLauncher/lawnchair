@@ -41,6 +41,8 @@ public class OverviewActions {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "want to click screenshot button and exit screenshot ui")) {
+            mLauncher.setIndefiniteAccessibilityInteractiveUiTimeout(true);
+
             UiObject2 screenshot = mLauncher.waitForObjectInContainer(mOverviewActions,
                     "action_screenshot");
 
@@ -62,6 +64,8 @@ public class OverviewActions {
                     return new Overview(mLauncher);
                 }
             }
+        } finally {
+            mLauncher.setIndefiniteAccessibilityInteractiveUiTimeout(false);
         }
     }
 

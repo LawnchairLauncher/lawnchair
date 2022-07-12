@@ -373,6 +373,17 @@ public final class LauncherInstrumentation {
         sActiveContainer = new WeakReference<>(container);
     }
 
+    /**
+     * Sets the accesibility interactive timeout to be effectively indefinite (UI using this
+     * accesibility timeout will not automatically dismiss if true).
+     */
+    void setIndefiniteAccessibilityInteractiveUiTimeout(boolean indefiniteTimeout) {
+        final String cmd = indefiniteTimeout
+                ? "settings put secure accessibility_interactive_ui_timeout_ms 10000"
+                : "settings delete secure accessibility_interactive_ui_timeout_ms";
+        logShellCommand(cmd);
+    }
+
     public NavigationModel getNavigationModel() {
         final Context baseContext = mInstrumentation.getTargetContext();
         try {
