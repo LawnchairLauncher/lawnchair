@@ -18,6 +18,11 @@ package {
 }
 
 filegroup {
+    name: "launcher3-quickstep-manifest",
+    srcs: ["AndroidManifest.xml"],
+}
+
+filegroup {
     name: "launcher3-quickstep-robolectric-src",
     path: "robolectric_tests",
     srcs: ["robolectric_tests/src/**/*.java"],
