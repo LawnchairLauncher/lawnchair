@@ -136,6 +136,10 @@
         <attr name="layout_ignoreInsets" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="StickyScroller_Layout">
+        <attr name="layout_sticky" format="boolean" />
+    </declare-styleable>
+
     <declare-styleable name="GridDisplayOption">
         <attr name="name" format="string" />
 
