@@ -206,7 +206,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
                             /* spanX= */ 1, /* spanY= */ 1);
                     // TODO(b/234322284): return the real center point.
                     return new Point(cellRect.left + (cellRect.right - cellRect.left) / 3,
-                            cellRect.centerY());
+                            cellRect.top + (cellRect.bottom - cellRect.top) / 3);
                 });
             }
 
