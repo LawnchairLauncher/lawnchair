@@ -432,6 +432,22 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     @Test
+    public void testDisableRotationCheck() throws Exception {
+        try {
+            mLauncher.setExpectedRotationCheckEnabled(false);
+            mLauncher.setEnableRotation(false);
+            final AllApps allApps = mLauncher.getWorkspace().switchToAllApps();
+            final AppIcon app = allApps.getAppIcon("TestActivity7");
+            mLauncher.getDevice().setOrientationLeft();
+            mLauncher.goHome();
+        } finally {
+            mLauncher.setExpectedRotationCheckEnabled(true);
+            mLauncher.setEnableRotation(true);
+            mLauncher.getDevice().setOrientationNatural();
+        }
+    }
+
+    @Test
     @PortraitLandscape
     public void testDeleteFromWorkspace() throws Exception {
         // test delete both built-in apps and user-installed app from workspace
