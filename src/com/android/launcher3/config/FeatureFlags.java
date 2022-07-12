@@ -285,6 +285,9 @@ public final class FeatureFlags {
             "USE_SEARCH_REQUEST_TIMEOUT_OVERRIDES", false,
             "Use local overrides for search request timeout");
 
+    public static final BooleanFlag CONTINUOUS_VIEW_TREE_CAPTURE = getDebugFlag(
+            "CONTINUOUS_VIEW_TREE_CAPTURE", false, "Capture View tree every frame");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {

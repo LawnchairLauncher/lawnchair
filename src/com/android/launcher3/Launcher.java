@@ -194,6 +194,7 @@ import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.UiThreadHelper;
+import com.android.launcher3.util.ViewCapture;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.FloatingIconView;
@@ -388,6 +389,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     private LauncherState mPrevLauncherState;
 
     private StringCache mStringCache;
+    private ViewCapture mViewCapture;
 
     @Override
     @TargetApi(Build.VERSION_CODES.S)
@@ -1478,6 +1480,14 @@ public class Launcher extends StatefulActivity<LauncherState>
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         mOverlayManager.onAttachedToWindow();
+        if (FeatureFlags.CONTINUOUS_VIEW_TREE_CAPTURE.get()) {
+            View root = getDragLayer().getRootView();
+            if (mViewCapture != null) {
+                root.getViewTreeObserver().removeOnDrawListener(mViewCapture);
+            }
+            mViewCapture = new ViewCapture(root);
+            root.getViewTreeObserver().addOnDrawListener(mViewCapture);
+        }
     }
 
     @Override
@@ -2996,6 +3006,10 @@ public class Launcher extends StatefulActivity<LauncherState>
                 + " mPendingActivityResult=" + mPendingActivityResult);
         writer.println(prefix + "\tmRotationHelper: " + mRotationHelper);
         writer.println(prefix + "\tmAppWidgetHost.isListening: " + mAppWidgetHost.isListening());
+
+        if (mViewCapture != null) {
+            writer.println(prefix + "\tmViewCapture: " + mViewCapture.dumpToString());
+        }
 
         // Extra logging for general debugging
         mDragLayer.dump(prefix, writer);
