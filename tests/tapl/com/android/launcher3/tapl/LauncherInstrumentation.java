@@ -169,6 +169,7 @@ public final class LauncherInstrumentation {
     private static final String WIDGETS_RES_ID = "primary_widgets_list_view";
     private static final String CONTEXT_MENU_RES_ID = "popup_container";
     private static final String TASKBAR_RES_ID = "taskbar_view";
+    private static final String SPLIT_PLACEHOLDER_RES_ID = "split_placeholder";
     public static final int WAIT_TIME_MS = 30000;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
     private static final String ANDROID_PACKAGE = "android";
@@ -724,6 +725,7 @@ public final class LauncherInstrumentation {
                     waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
                     waitUntilLauncherObjectGone(TASKBAR_RES_ID);
+                    waitUntilLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
 
                     return waitForLauncherObject(WORKSPACE_RES_ID);
                 }
@@ -732,6 +734,7 @@ public final class LauncherInstrumentation {
                     waitUntilLauncherObjectGone(APPS_RES_ID);
                     waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
                     waitUntilLauncherObjectGone(TASKBAR_RES_ID);
+                    waitUntilLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
 
                     return waitForLauncherObject(WIDGETS_RES_ID);
                 }
@@ -741,16 +744,26 @@ public final class LauncherInstrumentation {
                     waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
                     waitUntilLauncherObjectGone(TASKBAR_RES_ID);
+                    waitUntilLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
 
                     return waitForLauncherObject(APPS_RES_ID);
                 }
-                case OVERVIEW:
+                case OVERVIEW: {
+                    waitUntilLauncherObjectGone(APPS_RES_ID);
+                    waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
+                    waitUntilLauncherObjectGone(WIDGETS_RES_ID);
+                    waitUntilLauncherObjectGone(TASKBAR_RES_ID);
+                    waitUntilLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
+
+                    return waitForLauncherObject(OVERVIEW_RES_ID);
+                }
                 case SPLIT_SCREEN_SELECT: {
                     waitUntilLauncherObjectGone(APPS_RES_ID);
                     waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
                     waitUntilLauncherObjectGone(TASKBAR_RES_ID);
 
+                    waitForLauncherObject(SPLIT_PLACEHOLDER_RES_ID);
                     return waitForLauncherObject(OVERVIEW_RES_ID);
                 }
                 case FALLBACK_OVERVIEW: {
@@ -758,6 +771,7 @@ public final class LauncherInstrumentation {
                     waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
                     waitUntilLauncherObjectGone(TASKBAR_RES_ID);
+                    waitUntilLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
 
                     return waitForFallbackLauncherObject(OVERVIEW_RES_ID);
                 }
@@ -766,6 +780,7 @@ public final class LauncherInstrumentation {
                     waitUntilLauncherObjectGone(APPS_RES_ID);
                     waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
+                    waitUntilLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
 
                     if (isTablet() && !isFallbackOverview()) {
                         waitForLauncherObject(TASKBAR_RES_ID);
