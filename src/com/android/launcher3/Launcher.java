@@ -30,7 +30,10 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_ICON_SURFACE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_SNACKBAR;
 import static com.android.launcher3.AbstractFloatingView.getTopOpenViewWithType;
+import static com.android.launcher3.LauncherAnimUtils.HOTSEAT_SCALE_PROPERTY_FACTORY;
+import static com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_WIDGET_TRANSITION;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
+import static com.android.launcher3.LauncherAnimUtils.WORKSPACE_SCALE_PROPERTY_FACTORY;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.FLAG_MULTI_PAGE;
@@ -96,6 +99,7 @@ import android.os.Trace;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
+import android.util.FloatProperty;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.KeyEvent;
@@ -301,6 +305,11 @@ public class Launcher extends StatefulActivity<LauncherState>
     private static final String DISPLAY_ALL_APPS_TRACE_METHOD_NAME = "DisplayAllApps";
     public static final int DISPLAY_WORKSPACE_TRACE_COOKIE = 0;
     public static final int DISPLAY_ALL_APPS_TRACE_COOKIE = 1;
+
+    private static final FloatProperty<Workspace<?>> WORKSPACE_WIDGET_SCALE =
+            WORKSPACE_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_WIDGET_TRANSITION);
+    private static final FloatProperty<Hotseat> HOTSEAT_WIDGET_SCALE =
+            HOTSEAT_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_WIDGET_TRANSITION);
 
     private Configuration mOldConfig;
 
@@ -3239,7 +3248,12 @@ public class Launcher extends StatefulActivity<LauncherState>
      * @param progress Transition progress from 0 to 1; where 0 => home and 1 => widgets.
      */
     public void onWidgetsTransition(float progress) {
-        // No-Op
+        if (mDeviceProfile.isTablet) {
+            float scale =
+                    Utilities.comp(Utilities.comp(mDeviceProfile.workspaceContentScale) * progress);
+            WORKSPACE_WIDGET_SCALE.set(getWorkspace(), scale);
+            HOTSEAT_WIDGET_SCALE.set(getHotseat(), scale);
+        }
     }
 
     private static class NonConfigInstance {
