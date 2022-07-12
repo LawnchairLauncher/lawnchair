@@ -102,7 +102,7 @@
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">系統圖示</string>
     <string name="accent_color">重點色彩</string>
-    <string name="invalid_color">Invalid Color</string>
+    <string name="invalid_color">無效色彩</string>
     <string name="done">完成</string>
     <string name="loading">正在載入…</string>
     <string name="system">系統</string>
@@ -166,11 +166,11 @@
     <string name="all_apps_search_market_message">搜尋更多應用程式</string>
     <string name="show_app_search_bar">顯示搜尋列</string>
     <string name="rgb">RGB</string>
-    <string name="rgb_red">Red</string>
-    <string name="rgb_green">Green</string>
-    <string name="rgb_blue">Blue</string>
+    <string name="rgb_red">紅</string>
+    <string name="rgb_green">綠</string>
+    <string name="rgb_blue">藍</string>
     <string name="hsb">HSB</string>
-    <string name="hsb_hue">Hue</string>
+    <string name="hsb_hue">色相</string>
     <string name="hsb_saturation">Saturation</string>
     <string name="hsb_brightness">Brightness</string>
     <string name="hex">Hex</string>
