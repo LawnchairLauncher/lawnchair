@@ -27,6 +27,7 @@ import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import static com.android.quickstep.fallback.RecentsState.OVERVIEW_SPLIT_SELECT;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
+import static com.android.quickstep.views.RecentsView.OVERVIEW_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_GRID_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 import static com.android.quickstep.views.RecentsView.TASK_MODALNESS;
@@ -105,6 +106,8 @@ public class FallbackRecentsStateController implements StateHandler<RecentsState
         boolean showAsGrid = state.displayOverviewTasksAsGrid(mActivity.getDeviceProfile());
         setter.setFloat(mRecentsView, RECENTS_GRID_PROGRESS, showAsGrid ? 1f : 0f,
                 showAsGrid ? INSTANT : FINAL_FRAME);
+        setter.setFloat(mRecentsView, OVERVIEW_PROGRESS, state == RecentsState.DEFAULT ? 1f : 0f,
+                INSTANT);
 
         setter.setViewBackgroundColor(mActivity.getScrimView(), state.getScrimColor(mActivity),
                 config.getInterpolator(ANIM_SCRIM_FADE, LINEAR));
