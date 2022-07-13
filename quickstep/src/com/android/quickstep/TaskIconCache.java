@@ -263,7 +263,8 @@ public class TaskIconCache implements DisplayInfoChangeListener {
         if (mIconFactory == null) {
             mIconFactory = new BaseIconFactory(mContext,
                     DisplayController.INSTANCE.get(mContext).getInfo().getDensityDpi(),
-                    mContext.getResources().getDimensionPixelSize(R.dimen.taskbar_icon_size));
+                    mContext.getResources().getDimensionPixelSize(
+                            R.dimen.task_icon_cache_default_icon_size));
         }
         return mIconFactory;
     }
