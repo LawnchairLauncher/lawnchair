@@ -1,5 +1,6 @@
 package com.android.quickstep.views;
 
+import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.util.SplitConfigurationOptions.DEFAULT_SPLIT_RATIO;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
@@ -312,5 +313,12 @@ public class GroupedTaskView extends TaskView {
         mIconView2.setIconColorTint(tintColor, amount);
         mSnapshotView2.setDimAlpha(amount);
         mDigitalWellBeingToast2.setBannerColorTint(tintColor, amount);
+    }
+
+    @Override
+    protected void applyThumbnailSplashAlpha() {
+        super.applyThumbnailSplashAlpha();
+        mSnapshotView2.setSplashAlpha(
+                Utilities.mapToRange(mOverviewProgress, 0f, 1f, 1f, 0f, LINEAR));
     }
 }

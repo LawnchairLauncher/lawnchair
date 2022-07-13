@@ -18,6 +18,7 @@ package com.android.quickstep.views;
 
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.widget.Toast.LENGTH_SHORT;
+import static android.window.SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR;
 
 import static com.android.launcher3.Utilities.comp;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
@@ -333,6 +334,7 @@ public class TaskView extends FrameLayout implements Reusable {
     protected final DigitalWellBeingToast mDigitalWellBeingToast;
     private float mFullscreenProgress;
     private float mGridProgress;
+    protected float mOverviewProgress;
     private float mNonGridScale = 1;
     private float mDismissScale = 1;
     protected final FullscreenDrawParams mCurrentFullscreenParams;
@@ -391,7 +393,6 @@ public class TaskView extends FrameLayout implements Reusable {
     private final PointF mLastTouchDownPosition = new PointF();
 
     private boolean mIsClickableAsLiveTile = true;
-
 
     public TaskView(Context context) {
         this(context, null);
@@ -660,6 +661,9 @@ public class TaskView extends FrameLayout implements Reusable {
             if (freezeTaskList) {
                 ActivityOptionsCompat.setFreezeRecentTasksList(opts);
             }
+            // TODO(b/202826469): Replace setSplashScreenStyle with setDisableStartingWindow.
+            opts.setSplashScreenStyle(mSnapshotView.shouldShowSplashView()
+                    ? SPLASH_SCREEN_STYLE_SOLID_COLOR : opts.getSplashScreenStyle());
             Task.TaskKey key = mTask.key;
             UI_HELPER_EXECUTOR.execute(() -> {
                 if (!ActivityManagerWrapper.getInstance().startActivityFromRecents(key, opts)) {
@@ -1058,6 +1062,21 @@ public class TaskView extends FrameLayout implements Reusable {
         float gridProgress = GRID_INTERPOLATOR.getInterpolation(mGridProgress);
         scale *= Utilities.mapRange(gridProgress, mNonGridScale, 1f);
         return scale;
+    }
+
+    /**
+     * Updates progress of task view for entering/exiting overview on swipe up/down.
+     *
+     * <p>Updates the alpha of any splash screen over the thumbnail if it exists.
+     */
+    public void setOverviewProgress(float overviewProgress) {
+        mOverviewProgress = overviewProgress;
+        applyThumbnailSplashAlpha();
+    }
+
+    protected void applyThumbnailSplashAlpha() {
+        mSnapshotView.setSplashAlpha(
+                Utilities.mapToRange(mOverviewProgress, 0f, 1f, 1f, 0f, LINEAR));
     }
 
     private void setSplitSelectTranslationX(float x) {

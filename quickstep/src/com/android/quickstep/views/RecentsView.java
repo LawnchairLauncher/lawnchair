@@ -363,6 +363,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 }
             };
 
+    /**
+     * Progress of Recents view from carousel layout to grid layout. If Recents is not shown as a
+     * grid, then the value remains 0.
+     */
     public static final FloatProperty<RecentsView> RECENTS_GRID_PROGRESS =
             new FloatProperty<RecentsView>("recentsGrid") {
                 @Override
@@ -373,6 +377,23 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 @Override
                 public Float get(RecentsView view) {
                     return view.mGridProgress;
+                }
+            };
+
+    /**
+     * Progress to and from the OVERVIEW state, where being in OverviewState has a value of 1, and
+     * being in any other LauncherState has a value of 0.
+     */
+    public static final FloatProperty<RecentsView> OVERVIEW_PROGRESS =
+            new FloatProperty<RecentsView>("overviewProgress") {
+                @Override
+                public void setValue(RecentsView view, float overviewProgress) {
+                    view.setOverviewProgress(overviewProgress);
+                }
+
+                @Override
+                public Float get(RecentsView view) {
+                    return view.mOverviewProgress;
                 }
             };
 
@@ -466,6 +487,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected float mTaskViewsSecondarySplitTranslation = 0;
     // Progress from 0 to 1 where 0 is a carousel and 1 is a 2 row grid.
     private float mGridProgress = 0;
+    private float mOverviewProgress = 0;
     private boolean mShowAsGridLastOnLayout = false;
     private final IntSet mTopRowIdSet = new IntSet();
 
@@ -2661,6 +2683,18 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mClearAllButton.setGridProgress(gridProgress);
     }
 
+    private void setOverviewProgress(float overviewProgress) {
+        int taskCount = getTaskViewCount();
+        if (taskCount == 0) {
+            return;
+        }
+
+        mOverviewProgress = overviewProgress;
+        for (int i = 0; i < taskCount; i++) {
+            requireTaskViewAt(i).setOverviewProgress(overviewProgress);
+        }
+    }
+
     private void enableLayoutTransitions() {
         if (mLayoutTransition == null) {
             mLayoutTransition = new LayoutTransition();
@@ -4301,6 +4335,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         properties));
             }
         }
+        anim.play(ObjectAnimator.ofFloat(recentsView, OVERVIEW_PROGRESS, 1, 0));
         return anim;
     }
 
@@ -4360,6 +4395,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     BACKGROUND_APP.getDepth(mActivity));
             anim.play(depthAnimator);
         }
+        anim.play(ObjectAnimator.ofFloat(this, OVERVIEW_PROGRESS, 1f, 0f));
+
         anim.play(progressAnim);
         anim.setInterpolator(interpolator);
 
