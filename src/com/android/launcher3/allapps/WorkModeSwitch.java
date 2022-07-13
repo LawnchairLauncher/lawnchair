@@ -16,6 +16,7 @@
 package com.android.launcher3.allapps;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TURN_OFF_WORK_APPS_TAP;
+import static com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.getTabWidth;
 
 import android.content.Context;
 import android.graphics.Insets;
@@ -96,7 +97,6 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
             }
 
             DeviceProfile dp = ActivityContext.lookupContext(getContext()).getDeviceProfile();
-            lp.rightMargin = lp.leftMargin = dp.allAppsLeftRightPadding;
             if (!dp.isGestureMode) {
                 if (dp.isTaskbarPresent) {
                     bottomMargin += dp.taskbarSize;
@@ -107,6 +107,18 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
 
             lp.bottomMargin = bottomMargin;
         }
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        DeviceProfile dp = ActivityContext.lookupContext(getContext()).getDeviceProfile();
+        View parent = (View) getParent();
+        int size = parent.getWidth() - parent.getPaddingLeft() - parent.getPaddingRight()
+                - 2 * dp.allAppsLeftRightPadding;
+        int tabWidth = getTabWidth(getContext(), size);
+        int shift = (size - tabWidth) / 2 + dp.allAppsLeftRightPadding;
+        setTranslationX(Utilities.isRtl(getResources()) ? shift : -shift);
     }
 
     @Override

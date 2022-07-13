@@ -200,7 +200,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
     final Handler mHandler;
 
-    private final float mContentScale;
     private final float mClosingWindowTransY;
     private final float mMaxShadowRadius;
 
@@ -245,7 +244,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         mBackAnimationController = new LauncherBackAnimationController(mLauncher, this);
 
         Resources res = mLauncher.getResources();
-        mContentScale = res.getFloat(R.dimen.content_scale);
         mClosingWindowTransY = res.getDimensionPixelSize(R.dimen.closing_window_trans_y);
         mMaxShadowRadius = res.getDimensionPixelSize(R.dimen.max_shadow_radius);
 
@@ -483,8 +481,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 : new float[]{0, 1};
 
         float[] scales = isAppOpening
-                ? new float[]{1, mContentScale}
-                : new float[]{mContentScale, 1};
+                ? new float[]{1, mDeviceProfile.workspaceContentScale}
+                : new float[]{mDeviceProfile.workspaceContentScale, 1};
 
         // Pause expensive view updates as they can lead to layer thrashing and skipped frames.
         mLauncher.pauseExpensiveViewUpdates();

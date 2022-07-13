@@ -23,7 +23,9 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.pageindicators.PageIndicator;
+import com.android.launcher3.views.ActivityContext;
 
 /**
  * Supports two indicator colors, dedicated for personal and work tabs.
@@ -70,6 +72,26 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     @Override
     public boolean hasOverlappingRendering() {
         return false;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (getPaddingLeft() == 0 && getPaddingRight() == 0) {
+            // If any padding is not specified, restrict the width to emulate padding
+            int size = MeasureSpec.getSize(widthMeasureSpec);
+            size = getTabWidth(getContext(), size);
+            widthMeasureSpec = MeasureSpec.makeMeasureSpec(size, MeasureSpec.EXACTLY);
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    /**
+     * Returns distance between left and right app icons
+     */
+    public static int getTabWidth(Context context, int totalWidth) {
+        DeviceProfile grid = ActivityContext.lookupContext(context).getDeviceProfile();
+        int iconPadding = totalWidth / grid.numShownAllAppsColumns - grid.allAppsIconSizePx;
+        return totalWidth - iconPadding;
     }
 
     /**

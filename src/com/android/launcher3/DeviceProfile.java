@@ -107,6 +107,7 @@ public class DeviceProfile {
     public Rect cellLayoutPaddingPx = new Rect();
 
     public final int edgeMarginPx;
+    public final float workspaceContentScale;
     public float workspaceSpringLoadShrunkTop;
     public float workspaceSpringLoadShrunkBottom;
     public final int workspaceSpringLoadedBottomSpace;
@@ -298,6 +299,7 @@ public class DeviceProfile {
         }
 
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
+        workspaceContentScale = res.getFloat(R.dimen.workspace_content_scale);
 
         desiredWorkspaceHorizontalMarginPx = getHorizontalMarginPx(inv, res);
         desiredWorkspaceHorizontalMarginOriginalPx = desiredWorkspaceHorizontalMarginPx;
