@@ -52,6 +52,7 @@ public class AssistContentRequester {
     }
 
     private final IActivityTaskManager mActivityTaskManager;
+    private final String mAttributionTag;
     private final String mPackageName;
     private final Executor mCallbackExecutor;
     private final Executor mSystemInteractionExecutor;
@@ -62,6 +63,7 @@ public class AssistContentRequester {
 
     public AssistContentRequester(Context context) {
         mActivityTaskManager = ActivityTaskManager.getService();
+        mAttributionTag = context.getAttributionTag();
         mPackageName = context.getApplicationContext().getPackageName();
         mCallbackExecutor = Executors.MAIN_EXECUTOR;
         mSystemInteractionExecutor = Executors.UI_HELPER_EXECUTOR;
@@ -78,7 +80,8 @@ public class AssistContentRequester {
         mSystemInteractionExecutor.execute(() -> {
             try {
                 mActivityTaskManager.requestAssistDataForTask(
-                        new AssistDataReceiver(callback, this), taskId, mPackageName);
+                        new AssistDataReceiver(callback, this), taskId, mPackageName,
+                        mAttributionTag);
             } catch (RemoteException e) {
                 Log.e(TAG, "Requesting assist content failed for task: " + taskId, e);
             }
