@@ -41,7 +41,7 @@
     </com.android.launcher3.widget.picker.WidgetPagedView>
 
     <!-- SearchAndRecommendationsView contains the tab layout as well -->
-    <com.android.launcher3.widget.picker.SearchAndRecommendationsView
+    <com.android.launcher3.views.StickyHeaderLayout
         android:id="@+id/search_and_recommendations_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
             android:background="?android:attr/colorBackground"
             android:paddingBottom="8dp"
             android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
-            android:clipToPadding="false">
+            launcher:layout_sticky="true">
             <include layout="@layout/widgets_search_bar" />
         </FrameLayout>
 
@@ -92,7 +92,8 @@
             android:paddingLeft="@dimen/widget_tabs_horizontal_padding"
             android:paddingRight="@dimen/widget_tabs_horizontal_padding"
             android:background="?android:attr/colorBackground"
-            style="@style/TextHeadline">
+            style="@style/TextHeadline"
+            launcher:layout_sticky="true">
 
             <Button
                 android:id="@+id/tab_personal"
@@ -121,5 +122,5 @@
                 style="?android:attr/borderlessButtonStyle" />
         </com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip>
 
-    </com.android.launcher3.widget.picker.SearchAndRecommendationsView>
+    </com.android.launcher3.views.StickyHeaderLayout>
 </merge>
