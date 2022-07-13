@@ -238,13 +238,9 @@ public class TaskThumbnailView extends View {
         boundsToBitmapSpace.mapRect(boundsInBitmapSpace, viewRect);
 
         DeviceProfile dp = mActivity.getDeviceProfile();
-        int leftInset = TaskView.clipLeft(dp) ? Math.round(boundsInBitmapSpace.left) : 0;
-        int topInset = TaskView.clipTop(dp) ? Math.round(boundsInBitmapSpace.top) : 0;
-        int rightInset = TaskView.clipRight(dp) ? Math.round(
-                bitmapRect.right - boundsInBitmapSpace.right) : 0;
-        int bottomInset = TaskView.clipBottom(dp)
+        int bottomInset = dp.isTablet
                 ? Math.round(bitmapRect.bottom - boundsInBitmapSpace.bottom) : 0;
-        return Insets.of(leftInset, topInset, rightInset, bottomInset);
+        return Insets.of(0, 0, 0, bottomInset);
     }
 
 
@@ -435,18 +431,9 @@ public class TaskThumbnailView extends View {
             int thumbnailRotation = thumbnailData.rotation;
             int deltaRotate = getRotationDelta(currentRotation, thumbnailRotation);
             RectF thumbnailClipHint = new RectF();
-            if (TaskView.clipLeft(dp)) {
-                thumbnailClipHint.left = thumbnailData.insets.left;
-            }
-            if (TaskView.clipRight(dp)) {
-                thumbnailClipHint.right = thumbnailData.insets.right;
-            }
-            if (TaskView.clipTop(dp)) {
-                thumbnailClipHint.top = thumbnailData.insets.top;
-            }
-            if (TaskView.clipBottom(dp)) {
-                thumbnailClipHint.bottom = thumbnailData.insets.bottom;
-            }
+            float canvasScreenRatio = canvasWidth / (float) dp.widthPx;
+            float scaledTaskbarSize = dp.taskbarSize * canvasScreenRatio;
+            thumbnailClipHint.bottom = dp.isTablet ? scaledTaskbarSize : 0;
 
             float scale = thumbnailData.scale;
             final float thumbnailScale;
@@ -486,18 +473,10 @@ public class TaskThumbnailView extends View {
 
                 if (isAspectLargelyDifferent) {
                     // Crop letterbox insets if insets isn't already clipped
-                    if (!TaskView.clipLeft(dp)) {
-                        thumbnailClipHint.left = thumbnailData.letterboxInsets.left;
-                    }
-                    if (!TaskView.clipRight(dp)) {
-                        thumbnailClipHint.right = thumbnailData.letterboxInsets.right;
-                    }
-                    if (!TaskView.clipTop(dp)) {
-                        thumbnailClipHint.top = thumbnailData.letterboxInsets.top;
-                    }
-                    if (!TaskView.clipBottom(dp)) {
-                        thumbnailClipHint.bottom = thumbnailData.letterboxInsets.bottom;
-                    }
+                    thumbnailClipHint.left = thumbnailData.letterboxInsets.left;
+                    thumbnailClipHint.right = thumbnailData.letterboxInsets.right;
+                    thumbnailClipHint.top = thumbnailData.letterboxInsets.top;
+                    thumbnailClipHint.bottom = thumbnailData.letterboxInsets.bottom;
                     availableWidth = surfaceWidth
                             - (thumbnailClipHint.left + thumbnailClipHint.right);
                     availableHeight = surfaceHeight
@@ -568,8 +547,7 @@ public class TaskThumbnailView extends View {
                 setThumbnailRotation(deltaRotate, thumbnailBounds);
             }
 
-            float canvasScreenRatio = canvasWidth / (float) dp.widthPx;
-            mClippedInsets.set(0, 0, 0, dp.taskbarSize * canvasScreenRatio);
+            mClippedInsets.set(0, 0, 0, scaledTaskbarSize);
 
             mMatrix.postScale(thumbnailScale, thumbnailScale);
             mIsOrientationChanged = isOrientationDifferent;
