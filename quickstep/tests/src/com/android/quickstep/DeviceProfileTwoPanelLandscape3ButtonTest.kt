@@ -483,4 +483,114 @@ class DeviceProfileTwoPanelLandscape3ButtonTest : DeviceProfileBaseTest() {
     fun hotseatBarEndOffset() {
         assertThat(dp.hotseatBarEndOffset).isEqualTo(428)
     }
+
+    @Test
+    fun overviewGridRectLeft() {
+        assertThat(dp.overviewGridRect.left).isEqualTo(128)
+    }
+
+    @Test
+    fun overviewGridRectTop() {
+        assertThat(dp.overviewGridRect.top).isEqualTo(160)
+    }
+
+    @Test
+    fun overviewGridRectRight() {
+        assertThat(dp.overviewGridRect.right).isEqualTo(2432)
+    }
+
+    @Test
+    fun overviewGridRectBottom() {
+        assertThat(dp.overviewGridRect.bottom).isEqualTo(1340)
+    }
+
+    @Test
+    fun taskDimensionX() {
+        assertThat(dp.taskDimension.x).isEqualTo(2560)
+    }
+
+    @Test
+    fun taskDimensionY() {
+        assertThat(dp.taskDimension.y).isEqualTo(1480)
+    }
+
+    @Test
+    fun overviewTaskRectLeft() {
+        assertThat(dp.overviewTaskRect.left).isEqualTo(384)
+    }
+
+    @Test
+    fun overviewTaskRectTop() {
+        assertThat(dp.overviewTaskRect.top).isEqualTo(232)
+    }
+
+    @Test
+    fun overviewTaskRectRight() {
+        assertThat(dp.overviewTaskRect.right).isEqualTo(2176)
+    }
+
+    @Test
+    fun overviewTaskRectBottom() {
+        assertThat(dp.overviewTaskRect.bottom).isEqualTo(1268)
+    }
+
+    @Test
+    fun overviewGridTaskDimensionX() {
+        assertThat(dp.overviewGridTaskDimension.x).isEqualTo(723)
+    }
+
+    @Test
+    fun overviewGridTaskDimensionY() {
+        assertThat(dp.overviewGridTaskDimension.y).isEqualTo(418)
+    }
+
+    @Test
+    fun overviewModalTaskRectLeft() {
+        assertThat(dp.overviewModalTaskRect.left).isEqualTo(294)
+    }
+
+    @Test
+    fun overviewModalTaskRectTop() {
+        assertThat(dp.overviewModalTaskRect.top).isEqualTo(128)
+    }
+
+    @Test
+    fun overviewModalTaskRectRight() {
+        assertThat(dp.overviewModalTaskRect.right).isEqualTo(2266)
+    }
+
+    @Test
+    fun overviewModalTaskRectBottom() {
+        assertThat(dp.overviewModalTaskRect.bottom).isEqualTo(1268)
+    }
+
+    @Test
+    fun getGridTaskRectLeft() {
+        assertThat(dp.getOverviewGridTaskRect(isRecentsRtl).left).isEqualTo(1453)
+    }
+
+    @Test
+    fun getGridTaskRectTop() {
+        assertThat(dp.getOverviewGridTaskRect(isRecentsRtl).top).isEqualTo(232)
+    }
+
+    @Test
+    fun getGridTaskRectRight() {
+        assertThat(dp.getOverviewGridTaskRect(isRecentsRtl).right).isEqualTo(2176)
+    }
+
+    @Test
+    fun getGridTaskRectBottom() {
+        assertThat(dp.getOverviewGridTaskRect(isRecentsRtl).bottom).isEqualTo(650)
+    }
+
+    @Test
+    fun overviewTaskScale() {
+        assertThat(dp.overviewTaskWorkspaceScale).isEqualTo(0.8526749f)
+    }
+
+    @Test
+    fun overviewModalTaskScale() {
+        assertThat(dp.overviewModalTaskScale).isEqualTo(1.1003861f)
+    }
 }
