@@ -41,7 +41,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.uioverrides.PredictedAppIcon;
 import com.android.launcher3.views.AbstractSlideInView;
 
@@ -107,8 +106,7 @@ public class HotseatEduDialog extends AbstractSlideInView<Launcher> implements I
         mDismissBtn.setOnClickListener(this::onDismiss);
 
         LinearLayout buttonContainer = findViewById(R.id.button_container);
-        int adjustedMarginEnd = ApiWrapper.getHotseatEndOffset(context)
-                - buttonContainer.getPaddingEnd();
+        int adjustedMarginEnd = grid.hotseatBarEndOffset - buttonContainer.getPaddingEnd();
         if (InvariantDeviceProfile.INSTANCE.get(context)
                 .getDeviceProfile(context).isTaskbarPresent && adjustedMarginEnd > 0) {
             ((LinearLayout.LayoutParams) buttonContainer.getLayoutParams()).setMarginEnd(
