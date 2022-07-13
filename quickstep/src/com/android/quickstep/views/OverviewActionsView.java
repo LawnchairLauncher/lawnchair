@@ -31,7 +31,6 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
-import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.NavigationMode;
 import com.android.launcher3.util.MultiValueAlpha;
@@ -206,10 +205,9 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         if (mDp == null) {
             return;
         }
-        boolean alignFor3ButtonTaskbar = mDp.isTaskbarPresent && !mDp.isGestureMode;
-        if (alignFor3ButtonTaskbar) {
+        if (mDp.areNavButtonsInline) {
             // Add extra horizontal spacing
-            int additionalPadding = ApiWrapper.getHotseatEndOffset(getContext());
+            int additionalPadding = mDp.hotseatBarEndOffset;
             if (isLayoutRtl()) {
                 setPadding(mInsets.left + additionalPadding, 0, mInsets.right, 0);
             } else {

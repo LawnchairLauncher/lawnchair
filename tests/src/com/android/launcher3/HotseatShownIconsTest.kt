@@ -32,33 +32,6 @@ import org.junit.runner.RunWith
 class HotseatShownIconsTest : DeviceProfileBaseTest() {
 
     @Test
-    fun hotseat_size_is_normal_for_handhelds() {
-        initializeVarsForPhone()
-        inv = newScalableInvariantDeviceProfile().apply {
-            deviceType = TYPE_PHONE
-        }
-
-        val dp = newDP()
-
-        assertThat(dp.isQsbInline).isFalse()
-        assertThat(dp.numShownHotseatIcons).isEqualTo(4)
-    }
-
-    @Test
-    fun hotseat_size_is_max_when_large_screen() {
-        initializeVarsForTablet(isLandscape = true)
-        inv = newScalableInvariantDeviceProfile().apply {
-            deviceType = TYPE_MULTI_DISPLAY
-        }
-        useTwoPanels = true
-
-        val dp = newDP()
-
-        assertThat(dp.isQsbInline).isFalse()
-        assertThat(dp.numShownHotseatIcons).isEqualTo(6)
-    }
-
-    @Test
     fun hotseat_size_is_shrunk_if_needed_when_large_screen() {
         initializeVarsForTablet(isLandscape = true)
         inv = newScalableInvariantDeviceProfile().apply {

@@ -42,7 +42,6 @@ import com.android.launcher3.icons.ThemedIconDrawable;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.AllAppsButton;
@@ -292,7 +291,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             countExcludingQsb--;
         }
         int spaceNeeded = countExcludingQsb * (mItemMarginLeftRight * 2 + mIconTouchSize);
-        int navSpaceNeeded = ApiWrapper.getHotseatEndOffset(getContext());
+        int navSpaceNeeded = deviceProfile.hotseatBarEndOffset;
         boolean layoutRtl = isLayoutRtl();
         int iconEnd = right - (right - left - spaceNeeded) / 2;
         boolean needMoreSpaceForNav = layoutRtl ?
