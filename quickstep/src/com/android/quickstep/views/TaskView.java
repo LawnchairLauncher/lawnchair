@@ -136,34 +136,6 @@ public class TaskView extends FrameLayout implements Reusable {
     /** The maximum amount that a task view can be scrimmed, dimmed or tinted. */
     public static final float MAX_PAGE_SCRIM_ALPHA = 0.4f;
 
-    /**
-     * Should the TaskView display clip off the left inset in RecentsView.
-     */
-    public static boolean clipLeft(DeviceProfile deviceProfile) {
-        return false;
-    }
-
-    /**
-     * Should the TaskView display clip off the top inset in RecentsView.
-     */
-    public static boolean clipTop(DeviceProfile deviceProfile) {
-        return false;
-    }
-
-    /**
-     * Should the TaskView display clip off the right inset in RecentsView.
-     */
-    public static boolean clipRight(DeviceProfile deviceProfile) {
-        return false;
-    }
-
-    /**
-     * Should the TaskView display clip off the bottom inset in RecentsView.
-     */
-    public static boolean clipBottom(DeviceProfile deviceProfile) {
-        return deviceProfile.isTablet;
-    }
-
     private static final float EDGE_SCALE_DOWN_FACTOR_CAROUSEL = 0.03f;
     private static final float EDGE_SCALE_DOWN_FACTOR_GRID = 0.00f;
 
