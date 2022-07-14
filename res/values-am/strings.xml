@@ -81,7 +81,7 @@
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"መተግበሪያው ያለተጠቃሚ ጣልቃ ገብነት አቋራጭ እንዲያክል ያስችለዋል።"</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"የመነሻ ቅንብሮች እና አቋራጮችን ያነባል"</string>
     <string name="permdesc_read_settings" msgid="4208061150510996676">"ቅንብሮችን እና አቋራጮችን በመነሻ ለማንበብ ለትግበራ ይፈቅዳል።"</string>
-    <string name="permlab_write_settings" msgid="4820028712156303762">"መነሻ ቅንብሮች እና አቋራጮች ፃፍ"</string>
+    <string name="permlab_write_settings" msgid="4820028712156303762">"መነሻ ቅንብሮች እና አቋራጮች ጻፍ"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"ቅንብሮችን እና አቋራጮችን በመነሻ ለመለወጥ ለመተግበሪያ ይፈቅዳል።"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> የስልክ ጥሪዎችን ለማድረግ አልተፈቀደለትም"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"ምግብርን መጫን አልተቻለም"</string>
@@ -137,7 +137,7 @@
     <string name="item_removed" msgid="851119963877842327">"ንጥል ነገር ተንቀሳቅሷል"</string>
     <string name="undo" msgid="4151576204245173321">"ቀልብስ"</string>
     <string name="action_move" msgid="4339390619886385032">"ንጥልን አንቀሳቅስ"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"ወደ ረድፍ <xliff:g id="NUMBER_0">%1$s</xliff:g> ዓምድ <xliff:g id="NUMBER_1">%2$s</xliff:g> አንቀሳቅስ"</string>
+    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"በ<xliff:g id="STRING">%3$s</xliff:g> ውስጥ ወደ ረድፍ <xliff:g id="NUMBER_0">%1$s</xliff:g> ዓምድ <xliff:g id="NUMBER_1">%2$s</xliff:g> ይውሰዱ"</string>
     <string name="move_to_position" msgid="6750008980455459790">"ወደ አቀማመጥ <xliff:g id="NUMBER">%1$s</xliff:g> አንቀሳቅስ"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"ወደ ተወዳጆች አቀማመጥ <xliff:g id="NUMBER">%1$s</xliff:g> አንቀሳቅስ"</string>
     <string name="item_moved" msgid="4606538322571412879">"ንጥል ተንቀሳቅሷል"</string>

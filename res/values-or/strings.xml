@@ -88,7 +88,7 @@
     <string name="gadget_setup_text" msgid="8348374825537681407">"ୱିଜେଟ ସେଟିଂସ"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"ସେଟଅପ ସମ୍ପୂର୍ଣ୍ଣ କରିବାକୁ ଟାପ କରନ୍ତୁ"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ଏହା ଏକ ସିଷ୍ଟମ୍‌ ଆପ୍‌ ଅଟେ ଏବଂ ଏହା ଅନଇନଷ୍ଟଲ୍‌ କରାଯାଇ ପାରିବ ନାହିଁ।"</string>
-    <string name="folder_hint_text" msgid="5174843001373488816">"ନାମ ସମ୍ପାଦନ କରନ୍ତୁ"</string>
+    <string name="folder_hint_text" msgid="5174843001373488816">"ନାମ ଏଡିଟ କରନ୍ତୁ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> ଅକ୍ଷମ କରାଗଲା"</string>
     <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name}ର #ଟି ବିଜ୍ଞପ୍ତି ଅଛି}other{{app_name}ର #ଟି ବିଜ୍ଞପ୍ତି ଅଛି}}"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"ମୋଟ %2$dରୁ %1$d ନମ୍ବର ପୃଷ୍ଠା"</string>
@@ -137,7 +137,7 @@
     <string name="item_removed" msgid="851119963877842327">"ଆଇଟମକୁ କାଢ଼ି ଦିଆଯାଇଛି"</string>
     <string name="undo" msgid="4151576204245173321">"ପୂର୍ବବତ୍‍"</string>
     <string name="action_move" msgid="4339390619886385032">"ଆଇଟମ୍‌ ଘୁଞ୍ଚାନ୍ତୁ"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"ଧାଡ଼ି <xliff:g id="NUMBER_0">%1$s</xliff:g> ସ୍ତମ୍ଭ <xliff:g id="NUMBER_1">%2$s</xliff:g>କୁ ନିଅନ୍ତୁ"</string>
+    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"<xliff:g id="STRING">%3$s</xliff:g>ରେ ଧାଡି <xliff:g id="NUMBER_0">%1$s</xliff:g> ସ୍ତମ୍ଭ <xliff:g id="NUMBER_1">%2$s</xliff:g>କୁ ମୁଭ କରନ୍ତୁ"</string>
     <string name="move_to_position" msgid="6750008980455459790">"<xliff:g id="NUMBER">%1$s</xliff:g> ସ୍ଥିତିକୁ ନିଅନ୍ତୁ"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"ପସନ୍ଦର ସ୍ଥିତି <xliff:g id="NUMBER">%1$s</xliff:g>କୁ ନିଅନ୍ତୁ"</string>
     <string name="item_moved" msgid="4606538322571412879">"ଆଇଟମ୍‌ ଘୁଞ୍ଚେଇ ଦିଆଗଲା"</string>

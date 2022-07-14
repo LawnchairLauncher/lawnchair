@@ -137,7 +137,7 @@
     <string name="item_removed" msgid="851119963877842327">"Element został usunięty"</string>
     <string name="undo" msgid="4151576204245173321">"Cofnij"</string>
     <string name="action_move" msgid="4339390619886385032">"Przenieś element"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"Przenieś do wiersza <xliff:g id="NUMBER_0">%1$s</xliff:g> w kolumnie <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"Przenieś do wiersza <xliff:g id="NUMBER_0">%1$s</xliff:g> w kolumnie <xliff:g id="NUMBER_1">%2$s</xliff:g>, komórka: <xliff:g id="STRING">%3$s</xliff:g>"</string>
     <string name="move_to_position" msgid="6750008980455459790">"Przenieś do pozycji <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"Przenieś do pozycji ulubionych: <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="item_moved" msgid="4606538322571412879">"Element został przeniesiony"</string>
