@@ -60,7 +60,6 @@ import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
@@ -280,17 +279,8 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public static void getTaskDimension(DeviceProfile dp, PointF out) {
         out.x = dp.widthPx;
         out.y = dp.heightPx;
-        if (TaskView.clipLeft(dp)) {
-            out.x -= dp.getInsets().left;
-        }
-        if (TaskView.clipRight(dp)) {
-            out.x -= dp.getInsets().right;
-        }
-        if (TaskView.clipTop(dp)) {
-            out.y -= dp.getInsets().top;
-        }
-        if (TaskView.clipBottom(dp)) {
-            out.y -= Math.max(dp.getInsets().bottom, dp.taskbarSize);
+        if (dp.isTablet) {
+            out.y -= dp.taskbarSize;
         }
     }
 

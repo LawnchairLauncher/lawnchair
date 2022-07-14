@@ -36,12 +36,14 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Property;
 import android.view.Surface;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -50,6 +52,7 @@ import androidx.core.graphics.ColorUtils;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.SystemUiController.SystemUiControllerFlags;
@@ -64,6 +67,7 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 public class TaskThumbnailView extends View {
     private static final MainThreadInitializedObject<FullscreenDrawParams> TEMP_PARAMS =
             new MainThreadInitializedObject<>(FullscreenDrawParams::new);
+    private static final float MAX_PCT_BEFORE_ASPECT_RATIOS_CONSIDERED_DIFFERENT = 0.1f;
 
     public static final Property<TaskThumbnailView, Float> DIM_ALPHA =
             new FloatProperty<TaskThumbnailView>("dimAlpha") {
@@ -83,6 +87,7 @@ public class TaskThumbnailView extends View {
     private TaskOverlay mOverlay;
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint mSplashBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mClearPaint = new Paint();
     private final Paint mDimmingPaintAfterClearing = new Paint();
     private final int mDimColor;
@@ -91,6 +96,8 @@ public class TaskThumbnailView extends View {
     private final Rect mPreviewRect = new Rect();
     private final PreviewPositionHelper mPreviewPositionHelper = new PreviewPositionHelper();
     private TaskView.FullscreenDrawParams mFullscreenParams;
+    private ImageView mSplashView;
+    private Drawable mSplashViewDrawable;
 
     @Nullable
     private Task mTask;
@@ -101,6 +108,8 @@ public class TaskThumbnailView extends View {
 
     /** How much this thumbnail is dimmed, 0 not dimmed at all, 1 totally dimmed. */
     private float mDimAlpha = 0f;
+    /** Controls visibility of the splash view, 0 is transparent, 255 fully opaque. */
+    private int mSplashAlpha = 0;
 
     private boolean mOverlayEnabled;
 
@@ -116,6 +125,7 @@ public class TaskThumbnailView extends View {
         super(context, attrs, defStyleAttr);
         mPaint.setFilterBitmap(true);
         mBackgroundPaint.setColor(Color.WHITE);
+        mSplashBackgroundPaint.setColor(Color.WHITE);
         mClearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         mActivity = BaseActivity.fromContext(context);
         // Initialize with placeholder value. It is overridden later by TaskView
@@ -135,6 +145,8 @@ public class TaskThumbnailView extends View {
         int color = task == null ? Color.BLACK : task.colorBackground | 0xFF000000;
         mPaint.setColor(color);
         mBackgroundPaint.setColor(color);
+        mSplashBackgroundPaint.setColor(color);
+        updateSplashView(mTask.icon);
     }
 
     /**
@@ -152,6 +164,9 @@ public class TaskThumbnailView extends View {
         boolean thumbnailWasNull = mThumbnailData == null;
         mThumbnailData =
                 (thumbnailData != null && thumbnailData.thumbnail != null) ? thumbnailData : null;
+        if (mTask != null) {
+            updateSplashView(mTask.icon);
+        }
         if (refreshNow) {
             refresh(thumbnailWasNull && mThumbnailData != null);
         }
@@ -202,6 +217,18 @@ public class TaskThumbnailView extends View {
         updateThumbnailPaintFilter();
     }
 
+    /**
+     * Sets the alpha of the splash view.
+     */
+    public void setSplashAlpha(float splashAlpha) {
+        mSplashAlpha = (int) (splashAlpha * 255);
+        if (mSplashViewDrawable != null) {
+            mSplashViewDrawable.setAlpha(mSplashAlpha);
+        }
+        mSplashBackgroundPaint.setAlpha(mSplashAlpha);
+        invalidate();
+    }
+
     public TaskOverlay getTaskOverlay() {
         if (mOverlay == null) {
             mOverlay = getTaskView().getRecentsView().getTaskOverlayFactory().createOverlay(this);
@@ -238,13 +265,9 @@ public class TaskThumbnailView extends View {
         boundsToBitmapSpace.mapRect(boundsInBitmapSpace, viewRect);
 
         DeviceProfile dp = mActivity.getDeviceProfile();
-        int leftInset = TaskView.clipLeft(dp) ? Math.round(boundsInBitmapSpace.left) : 0;
-        int topInset = TaskView.clipTop(dp) ? Math.round(boundsInBitmapSpace.top) : 0;
-        int rightInset = TaskView.clipRight(dp) ? Math.round(
-                bitmapRect.right - boundsInBitmapSpace.right) : 0;
-        int bottomInset = TaskView.clipBottom(dp)
+        int bottomInset = dp.isTablet
                 ? Math.round(bitmapRect.bottom - boundsInBitmapSpace.bottom) : 0;
-        return Insets.of(leftInset, topInset, rightInset, bottomInset);
+        return Insets.of(0, 0, 0, bottomInset);
     }
 
 
@@ -261,6 +284,12 @@ public class TaskThumbnailView extends View {
             return flags;
         }
         return 0;
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        updateSplashView(mSplashViewDrawable);
     }
 
     @Override
@@ -313,6 +342,17 @@ public class TaskThumbnailView extends View {
         }
 
         canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mPaint);
+
+        // Draw splash above thumbnail to hide inconsistencies in rotation and aspect ratios.
+        if (shouldShowSplashView()) {
+            if (mSplashView != null) {
+                canvas.drawRoundRect(x, y, width + 1, height + 1, cornerRadius,
+                        cornerRadius, mSplashBackgroundPaint);
+
+                mSplashView.layout((int) x, (int) (y + 1), (int) width, (int) height - 1);
+                mSplashView.draw(canvas);
+            }
+        }
     }
 
     public TaskView getTaskView() {
@@ -324,6 +364,78 @@ public class TaskThumbnailView extends View {
             mOverlayEnabled = overlayEnabled;
 
             refreshOverlay();
+        }
+    }
+
+    /**
+     * Determine if the splash should be shown over top of the thumbnail.
+     *
+     * <p>We want to show the splash if the aspect ratio or rotation of the thumbnail would be
+     * different from the task.
+     */
+    boolean shouldShowSplashView() {
+        return isThumbnailAspectRatioDifferentFromThumbnailData()
+                || isThumbnailRotationDifferentFromTask();
+    }
+
+    private void updateSplashView(Drawable icon) {
+        if (icon == null || icon.getConstantState() == null) {
+            return;
+        }
+        mSplashViewDrawable = icon.getConstantState().newDrawable().mutate();
+        mSplashViewDrawable.setAlpha(mSplashAlpha);
+        ImageView imageView = mSplashView == null ? new ImageView(getContext()) : mSplashView;
+        imageView.setImageDrawable(mSplashViewDrawable);
+
+        imageView.setScaleType(ImageView.ScaleType.MATRIX);
+        Matrix matrix = new Matrix();
+
+        float drawableWidth = mSplashViewDrawable.getIntrinsicWidth();
+        float drawableHeight = mSplashViewDrawable.getIntrinsicHeight();
+        float viewWidth = getMeasuredWidth();
+        float viewCenterX = viewWidth / 2f;
+        float viewHeight = getMeasuredHeight();
+        float viewCenterY = viewHeight / 2f;
+        float centeredDrawableLeft = (viewWidth - drawableWidth) / 2f;
+        float centeredDrawableTop = (viewHeight - drawableHeight) / 2f;
+        float nonGridScale = getTaskView() == null ? 1 : 1 / getTaskView().getNonGridScale();
+        float recentsMaxScale = getTaskView() == null || getTaskView().getRecentsView() == null
+                ? 1 : 1 / getTaskView().getRecentsView().getMaxScaleForFullScreen();
+        float scale = nonGridScale * recentsMaxScale;
+
+        // Center the image in the view.
+        matrix.setTranslate(centeredDrawableLeft, centeredDrawableTop);
+        // Apply scale transformation after translation, pivoting around center of view.
+        matrix.postScale(scale, scale, viewCenterX, viewCenterY);
+
+        imageView.setImageMatrix(matrix);
+        mSplashView = imageView;
+    }
+
+    private boolean isThumbnailAspectRatioDifferentFromThumbnailData() {
+        if (mThumbnailData == null || mThumbnailData.thumbnail == null) {
+            return false;
+        }
+
+        float thumbnailViewAspect = getWidth() / (float) getHeight();
+        float thumbnailDataAspect =
+                mThumbnailData.thumbnail.getWidth() / (float) mThumbnailData.thumbnail.getHeight();
+
+        return Utilities.isRelativePercentDifferenceGreaterThan(thumbnailViewAspect,
+                thumbnailDataAspect, MAX_PCT_BEFORE_ASPECT_RATIOS_CONSIDERED_DIFFERENT);
+    }
+
+    private boolean isThumbnailRotationDifferentFromTask() {
+        RecentsView recents = getTaskView().getRecentsView();
+        if (recents == null || mThumbnailData == null) {
+            return false;
+        }
+
+        if (recents.getPagedOrientationHandler() == PagedOrientationHandler.PORTRAIT) {
+            int currentRotation = recents.getPagedViewOrientedState().getRecentsActivityRotation();
+            return (currentRotation - mThumbnailData.rotation) % 2 != 0;
+        } else {
+            return recents.getPagedOrientationHandler().getRotation() != mThumbnailData.rotation;
         }
     }
 
@@ -435,18 +547,9 @@ public class TaskThumbnailView extends View {
             int thumbnailRotation = thumbnailData.rotation;
             int deltaRotate = getRotationDelta(currentRotation, thumbnailRotation);
             RectF thumbnailClipHint = new RectF();
-            if (TaskView.clipLeft(dp)) {
-                thumbnailClipHint.left = thumbnailData.insets.left;
-            }
-            if (TaskView.clipRight(dp)) {
-                thumbnailClipHint.right = thumbnailData.insets.right;
-            }
-            if (TaskView.clipTop(dp)) {
-                thumbnailClipHint.top = thumbnailData.insets.top;
-            }
-            if (TaskView.clipBottom(dp)) {
-                thumbnailClipHint.bottom = thumbnailData.insets.bottom;
-            }
+            float canvasScreenRatio = canvasWidth / (float) dp.widthPx;
+            float scaledTaskbarSize = dp.taskbarSize * canvasScreenRatio;
+            thumbnailClipHint.bottom = dp.isTablet ? scaledTaskbarSize : 0;
 
             float scale = thumbnailData.scale;
             final float thumbnailScale;
@@ -476,8 +579,9 @@ public class TaskThumbnailView extends View {
                 float availableAspect = isRotated
                         ? availableHeight / availableWidth
                         : availableWidth / availableHeight;
-                boolean isAspectLargelyDifferent = Utilities.isRelativePercentDifferenceGreaterThan(
-                        canvasAspect, availableAspect, 0.1f);
+                boolean isAspectLargelyDifferent =
+                        Utilities.isRelativePercentDifferenceGreaterThan(canvasAspect,
+                                availableAspect, MAX_PCT_BEFORE_ASPECT_RATIOS_CONSIDERED_DIFFERENT);
                 if (isRotated && isAspectLargelyDifferent) {
                     // Do not rotate thumbnail if it would not improve fit
                     isRotated = false;
@@ -486,18 +590,10 @@ public class TaskThumbnailView extends View {
 
                 if (isAspectLargelyDifferent) {
                     // Crop letterbox insets if insets isn't already clipped
-                    if (!TaskView.clipLeft(dp)) {
-                        thumbnailClipHint.left = thumbnailData.letterboxInsets.left;
-                    }
-                    if (!TaskView.clipRight(dp)) {
-                        thumbnailClipHint.right = thumbnailData.letterboxInsets.right;
-                    }
-                    if (!TaskView.clipTop(dp)) {
-                        thumbnailClipHint.top = thumbnailData.letterboxInsets.top;
-                    }
-                    if (!TaskView.clipBottom(dp)) {
-                        thumbnailClipHint.bottom = thumbnailData.letterboxInsets.bottom;
-                    }
+                    thumbnailClipHint.left = thumbnailData.letterboxInsets.left;
+                    thumbnailClipHint.right = thumbnailData.letterboxInsets.right;
+                    thumbnailClipHint.top = thumbnailData.letterboxInsets.top;
+                    thumbnailClipHint.bottom = thumbnailData.letterboxInsets.bottom;
                     availableWidth = surfaceWidth
                             - (thumbnailClipHint.left + thumbnailClipHint.right);
                     availableHeight = surfaceHeight
@@ -568,8 +664,7 @@ public class TaskThumbnailView extends View {
                 setThumbnailRotation(deltaRotate, thumbnailBounds);
             }
 
-            float canvasScreenRatio = canvasWidth / (float) dp.widthPx;
-            mClippedInsets.set(0, 0, 0, dp.taskbarSize * canvasScreenRatio);
+            mClippedInsets.set(0, 0, 0, scaledTaskbarSize);
 
             mMatrix.postScale(thumbnailScale, thumbnailScale);
             mIsOrientationChanged = isOrientationDifferent;
