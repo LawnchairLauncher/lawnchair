@@ -46,6 +46,10 @@ import static com.android.quickstep.GestureState.STATE_END_TARGET_SET;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_CANCELED;
 import static com.android.quickstep.GestureState.STATE_RECENTS_SCROLLING_FINISHED;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.CANCEL_RECENTS_ANIMATION;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.FINISH_RECENTS_ANIMATION;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.ON_SETTLED_ON_END_TARGET;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.START_RECENTS_ANIMATION;
 import static com.android.quickstep.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
@@ -100,6 +104,7 @@ import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.BaseActivityInterface.AnimationFactory;
 import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
+import com.android.quickstep.util.ActiveGestureErrorDetector;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
@@ -320,8 +325,21 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         initStateCallbacks();
     }
 
+    @Nullable
+    private static ActiveGestureErrorDetector.GestureEvent getTrackedEventForState(int stateFlag) {
+        if (stateFlag == STATE_GESTURE_STARTED) {
+            return ActiveGestureErrorDetector.GestureEvent.STATE_GESTURE_STARTED;
+        } else if (stateFlag == STATE_GESTURE_COMPLETED) {
+            return ActiveGestureErrorDetector.GestureEvent.STATE_GESTURE_COMPLETED;
+        } else if (stateFlag == STATE_GESTURE_CANCELLED) {
+            return ActiveGestureErrorDetector.GestureEvent.STATE_GESTURE_CANCELLED;
+        }
+        return null;
+    }
+
     private void initStateCallbacks() {
-        mStateCallback = new MultiStateCallback(STATE_NAMES.toArray(new String[0]));
+        mStateCallback = new MultiStateCallback(
+                STATE_NAMES.toArray(new String[0]), AbsSwipeUpHandler::getTrackedEventForState);
 
         mStateCallback.runOnceAtState(STATE_LAUNCHER_PRESENT | STATE_GESTURE_STARTED,
                 this::onLauncherPresentAndGestureStarted);
@@ -800,7 +818,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     public void onRecentsAnimationStart(RecentsAnimationController controller,
             RecentsAnimationTargets targets) {
         super.onRecentsAnimationStart(controller, targets);
-        ActiveGestureLog.INSTANCE.addLog("startRecentsAnimationCallback", targets.apps.length);
+        ActiveGestureLog.INSTANCE.addLog(
+                /* event= */ "startRecentsAnimationCallback",
+                /* extras= */ targets.apps.length,
+                /* gestureEvent= */ START_RECENTS_ANIMATION);
         mRemoteTargetHandles = mTargetGluer.assignTargetsForSplitScreen(mContext, targets);
         mRecentsAnimationController = controller;
         mRecentsAnimationTargets = targets;
@@ -843,7 +864,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     @Override
     public void onRecentsAnimationCanceled(HashMap<Integer, ThumbnailData> thumbnailDatas) {
-        ActiveGestureLog.INSTANCE.addLog("cancelRecentsAnimation");
+        ActiveGestureLog.INSTANCE.addLog(
+                /* event= */ "cancelRecentsAnimation",
+                /* gestureEvent= */ CANCEL_RECENTS_ANIMATION);
         mActivityInitListener.unregister();
         // Cache the recents animation controller so we can defer its cleanup to after having
         // properly cleaned up the screenshot without accidentally using it.
@@ -1010,7 +1033,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 }
                 break;
         }
-        ActiveGestureLog.INSTANCE.addLog("onSettledOnEndTarget " + endTarget);
+        ActiveGestureLog.INSTANCE.addLog(
+                /* event= */ "onSettledOnEndTarget " + endTarget,
+                /* gestureEvent= */ ON_SETTLED_ON_END_TARGET);
     }
 
     /** @return Whether this was the task we were waiting to appear, and thus handled it. */
@@ -1575,7 +1600,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private void resumeLastTask() {
         if (mRecentsAnimationController != null) {
             mRecentsAnimationController.finish(false /* toRecents */, null);
-            ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", false);
+            ActiveGestureLog.INSTANCE.addLog(
+                    /* event= */ "finishRecentsAnimation",
+                    /* extras= */ false,
+                    /* gestureEvent= */ FINISH_RECENTS_ANIMATION);
         }
         doLogGesture(LAST_TASK, null);
         reset();
@@ -1779,7 +1807,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mRecentsAnimationController.finish(true /* toRecents */,
                     () -> mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
         }
-        ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", true);
+        ActiveGestureLog.INSTANCE.addLog(
+                /* event= */ "finishRecentsAnimation",
+                /* extras= */ true,
+                /* gestureEvent= */ FINISH_RECENTS_ANIMATION);
     }
 
     private void finishCurrentTransitionToHome() {
@@ -1791,7 +1822,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             finishRecentsControllerToHome(
                     () -> mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
         }
-        ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", true);
+        ActiveGestureLog.INSTANCE.addLog(
+                /* event= */ "finishRecentsAnimation",
+                /* extras= */ true,
+                /* gestureEvent= */ FINISH_RECENTS_ANIMATION);
         doLogGesture(HOME, mRecentsView == null ? null : mRecentsView.getCurrentPageTaskView());
     }
 
@@ -1979,7 +2013,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 mRecentsAnimationController.finish(false /* toRecents */,
                         null /* onFinishComplete */);
                 mActivityInterface.onLaunchTaskSuccess();
-                ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", false);
+                ActiveGestureLog.INSTANCE.addLog(
+                        /* event= */ "finishRecentsAnimation",
+                        /* extras= */ false,
+                        /* gestureEvent= */ FINISH_RECENTS_ANIMATION);
             }
         }
     }
