@@ -22,6 +22,7 @@ import android.view.InsetsState.ITYPE_BOTTOM_MANDATORY_GESTURES
 import android.view.InsetsState
 import android.view.WindowManager
 import android.view.WindowManager.LayoutParams.TYPE_INPUT_METHOD
+import android.view.WindowManager.LayoutParams.TYPE_VOICE_INTERACTION
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.AbstractFloatingView.TYPE_TASKBAR_ALL_APPS
 import com.android.launcher3.DeviceProfile
@@ -88,11 +89,17 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
             }
         }
 
-        var imeInsetsSize = Insets.of(0, 0, 0, taskbarHeightForIme)
-        var insetsSizeOverride = arrayOf(
+        val imeInsetsSize = Insets.of(0, 0, 0, taskbarHeightForIme)
+        // Use 0 insets for the VoiceInteractionWindow (assistant) when gesture nav is enabled.
+        val visInsetsSize = Insets.of(0, 0, 0, if (context.isGestureNav) 0 else tappableHeight)
+        val insetsSizeOverride = arrayOf(
             InsetsFrameProvider.InsetsSizeOverride(
                 TYPE_INPUT_METHOD,
                 imeInsetsSize
+            ),
+            InsetsFrameProvider.InsetsSizeOverride(
+                TYPE_VOICE_INTERACTION,
+                visInsetsSize
             )
         )
         for (provider in windowLayoutParams.providedInsets) {
@@ -153,7 +160,8 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
                     + " insetsSize=" + provider.insetsSize)
             if (provider.insetsSizeOverrides != null) {
                 pw.print(" insetsSizeOverrides={")
-                for (overrideSize in provider.insetsSizeOverrides) {
+                for ((i, overrideSize) in provider.insetsSizeOverrides.withIndex()) {
+                    if (i > 0) pw.print(", ")
                     pw.print(overrideSize)
                 }
                 pw.print("})")
