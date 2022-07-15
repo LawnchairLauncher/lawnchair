@@ -73,11 +73,11 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mModel = LauncherAppState.getInstance(this).getModel();
+        mOnboardingPrefs = new OnboardingPrefs<>(this, Utilities.getPrefs(this));
+        mSecondaryDisplayPredictions = SecondaryDisplayPredictions.newInstance(this);
         if (getWindow().getDecorView().isAttachedToWindow()) {
             initUi();
         }
-        mOnboardingPrefs = new OnboardingPrefs<>(this, Utilities.getPrefs(this));
-        mSecondaryDisplayPredictions = SecondaryDisplayPredictions.newInstance(this);
     }
 
     @Override
