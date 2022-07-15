@@ -1629,7 +1629,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         // Cleanup when switching handlers
         mInputConsumerProxy.unregisterCallback();
         mActivityInitListener.unregister();
-        ActivityManagerWrapper.getInstance().unregisterTaskStackListener(mActivityRestartListener);
+        TaskStackChangeListeners.getInstance().unregisterTaskStackListener(
+                mActivityRestartListener);
         mTaskSnapshot = null;
     }
 
