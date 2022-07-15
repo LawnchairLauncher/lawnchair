@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="icon_pack">Pachet de pictograme</string>
-    <string name="icon_style">Icon Style</string>
+    <string name="icon_style">Stilul iconițelor</string>
     <string name="settings">Setări</string>
     <string name="home_screen_label">Ecran principal</string>
     <string name="home_screen_description">Descriere_ecran_de_pornire</string>
@@ -36,9 +36,9 @@
     <string name="max_folder_columns">Numărul maxim de coloane pentru dosare</string>
     <string name="max_folder_rows">Numărul maxim de rânduri pentru dosare</string>
     <string name="home_screen_grid">Grilă ecran principal</string>
-    <string name="home_screen_lock">Lock Home Screen</string>
-    <string name="home_screen_unlock">Unlock Home Screen</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_lock">Blochează ecranul de pornire</string>
+    <string name="home_screen_unlock">Deblochează ecranul de pornire</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Arată butonul de blocare în Pop-Up</string>
     <string name="columns">Coloane</string>
     <string name="grid">Grilă</string>
     <string name="rows">Rânduri</string>
@@ -104,7 +104,7 @@
     <string name="window_corner_radius_description">Când glisezi în sus pentru a porni Recente, aplicația prezentă îți urmărește degetul, micșorându-se într-un card. Utilizează acest glisor pentru a ajusta raza colțurilor cardului când este aproape în ecran complet pentru ca aceasta să se potrivească colțurilor ecranului tău.</string>
     <string name="system_icons">Pictogramele sistemului</string>
     <string name="accent_color">Culoare accent</string>
-    <string name="invalid_color">Invalid Color</string>
+    <string name="invalid_color">Culoare invalidă</string>
     <string name="done">Terminat</string>
     <string name="loading">Se încarcă…</string>
     <string name="system">Sistem</string>
@@ -146,12 +146,12 @@
     <string name="icon_shape_label">Formă icoană</string>
     <string name="icon_shape_system">Sistem</string>
     <string name="icon_shape_circle">Cerc</string>
-    <string name="icon_shape_square">Square</string>
+    <string name="icon_shape_square">Pătrat</string>
     <string name="icon_shape_rounded_square">Pătrat rotunjit</string>
     <string name="icon_shape_squircle">Supercerc</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_teardrop">Teardrop</string>
-    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_cylinder">Cilindru</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="customize_button_text">Personalizeaza</string>
     <string name="app_title_label">Titlu</string>
@@ -164,18 +164,18 @@
     <string name="label">Etichetă</string>
     <string name="presets">Presetări</string>
     <string name="colors">Culori</string>
-    <string name="dynamic">Dynamic</string>
+    <string name="dynamic">Dinamic</string>
     <string name="all_apps_search_market_message">Caută mai multe aplicații</string>
     <string name="show_app_search_bar">Arată Bara de Căutare</string>
-    <string name="rgb">RGB</string>
-    <string name="rgb_red">Red</string>
-    <string name="rgb_green">Green</string>
-    <string name="rgb_blue">Blue</string>
-    <string name="hsb">HSB</string>
-    <string name="hsb_hue">Hue</string>
-    <string name="hsb_saturation">Saturation</string>
-    <string name="hsb_brightness">Brightness</string>
-    <string name="hex">Hex</string>
+    <string name="rgb">RVA</string>
+    <string name="rgb_red">Roșu</string>
+    <string name="rgb_green">Verde</string>
+    <string name="rgb_blue">Albastru</string>
+    <string name="hsb">NSL</string>
+    <string name="hsb_hue">Nuanță</string>
+    <string name="hsb_saturation">Saturație</string>
+    <string name="hsb_brightness">Luminozitate</string>
+    <string name="hex">Cod hexadecimal</string>
     <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Raport Bug Lawnchair</string>
     <string name="crash_report_notif_title">%1$s Crashed</string>
