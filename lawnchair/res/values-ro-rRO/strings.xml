@@ -19,7 +19,7 @@
     <string name="icon_style">Stilul pictogramelor</string>
     <string name="settings">Setări</string>
     <string name="home_screen_label">Ecran principal</string>
-    <string name="home_screen_description">Feed, Grilă, Pictograme</string>
+    <string name="home_screen_description">Secțiune de noutăți, Grilă, Pictograme</string>
     <string name="general_label">General</string>
     <string name="general_description">Pictograme pentru Notificări, Pachet Pictograme</string>
     <string name="home_screen_rotation_label">Rotația ecranului de pornire</string>
@@ -176,7 +176,7 @@
     <string name="hsb_saturation">Saturație</string>
     <string name="hsb_brightness">Luminozitate</string>
     <string name="hex">Cod hexadecimal</string>
-    <string name="color_sliders">Sliders</string>
+    <string name="color_sliders">Bare de glisare</string>
     <string name="lawnchair_bug_report">Raport Bug Lawnchair</string>
     <string name="crash_report_notif_title">%1$s a eșuat</string>
     <string name="action_upload_crash_report">Încarcă raportul de eșuare</string>
@@ -213,7 +213,7 @@
     <string name="icon_picker_description">Poate provoca Lawnchair să se oprească.</string>
     <string name="font_picker_label">Personalizare font</string>
     <string name="font_picker_description">Unele porțiuni de text vor rămâne neschimbate.</string>
-    <string name="smartspace_calendar_label">Personalizare calendar pentru „At a Glance”</string>
+    <string name="smartspace_calendar_label">Personalizarea calendarului din secțiunea „Informații pe scurt”</string>
     <string name="smartspace_calendar_description">Permite afișarea datei în sistemele de calendar non-Gregorian.</string>
     <string name="search_provider_app_search">Căutare aplicații</string>
     <string name="always_open_website_label">Deschide întotdeauna site-ul web</string>
@@ -234,10 +234,10 @@
     <string name="smartspace_battery_low">Bateria este descărcată</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Bateria va fi plină în %2$s"</string>
     <string name="accessibility_smartspace_page">Pagina %1$d din %2$d</string>
-    <string name="smartspace_widget">At a Glance</string>
+    <string name="smartspace_widget">Informații pe scurt</string>
     <string name="smartspace_widget_description">Ce trebuie afișat</string>
     <string name="smartspace_widget_placeholder_date">Vineri, 3 Martie</string>
-    <string name="preview_label">Preview</string>
+    <string name="preview_label">Previzualizează</string>
     <string name="smartspace_calendar">Calendar</string>
     <string name="smartspace_date_and_time">Data &amp; ora</string>
     <string name="smartspace_date">Data</string>
@@ -252,11 +252,11 @@
     <string name="smartspace_calendar_gregorian">Gregorian</string>
     <string name="smartspace_calendar_persian">Persan</string>
     <string name="quickstep_incompatible">Integrare incompatibilă a sistemului</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
+    <string name="quickstep_incompatible_description">Dispozitivul este configurat pentru a avea gesturi de sistem (cunoscute drept Quickstep) furnizate de %1$s, dar această versiune de %1$s nu este compatibilă cu versiunea de Android. Pentru a continua să utilizați dispozitivul, vă rugăm să dezinstalați %1$s actualizări sau să dezactivați %1$s ca furnizor de gesturi de sistem.</string>
     <string name="pref_fonts_add_fonts">Adaugă fonturi</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF sunt acceptate.</string>
     <string name="delete">Șterge</string>
-    <string name="themed_icons_off_label">Off</string>
+    <string name="themed_icons_off_label">Dezactivat</string>
     <string name="themed_icons_home_label">Ecran principal</string>
     <string name="themed_icons_home_and_drawer_label">Ecranul de pornire &amp; Sertarul de aplicații</string>
     <!-- Backup -->
@@ -276,7 +276,7 @@
     <string name="wallpaper_depth_effect_label">Efect de adâncime pentru imaginea de fundal</string>
     <string name="wallpaper_depth_effect_description">Mărește și micșorează imaginea de fundal când treci între stări.</string>
     <string name="gestures_label">Gesturi</string>
-    <string name="gestures_description">Taps and Swipes</string>
+    <string name="gestures_description">Atingeri și glisări</string>
     <!-- Gestures -->
     <string name="gesture_double_tap">Atinge ecranul de două ori</string>
     <string name="gesture_swipe_up">Glisează în sus</string>
