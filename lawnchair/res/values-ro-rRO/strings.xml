@@ -218,11 +218,11 @@
     <string name="search_provider_app_search">Căutare aplicații</string>
     <string name="always_open_website_label">Deschide întotdeauna site-ul web</string>
     <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
-    <string name="search_provider">Search Provider</string>
+    <string name="search_provider">Furnizor de căutare</string>
     <string name="status_bar_label">Bară de stare</string>
-    <string name="show_notification_count">Show Notification Count</string>
-    <string name="icon_picker_load_failed">Couldn’t load more icons.</string>
-    <string name="reset_custom_icons">Reset Custom Icons</string>
+    <string name="show_notification_count">Arată numărul notificărilor</string>
+    <string name="icon_picker_load_failed">Nu s-au putut încărca mai multe pictograme.</string>
+    <string name="reset_custom_icons">Resetează pictogramele personalizate</string>
     <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
     <string name="taskbar_label">Taskbar</string>
     <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
