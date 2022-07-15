@@ -25,14 +25,14 @@
     <string name="home_screen_rotation_label">Rotația ecranului de pornire</string>
     <string name="home_screen_rotaton_description">Când dispozitivul este rotit.</string>
     <string name="auto_add_shortcuts_label">Adaugă aplicații noi pe ecranul principal</string>
-    <string name="dock_label">Bara de activități rapide</string>
+    <string name="dock_label">Bara inferioară de aplicații</string>
     <string name="dock_description">Bara de căutare, Numărul pictogramelor</string>
     <string name="app_drawer_label">Sertarul cu aplicații</string>
     <string name="app_drawer_description">Aplicații Ascunse, Număr de Coloane, Pictograme</string>
     <string name="folders_label">Dosare</string>
     <string name="folders_description">Numărul de rânduri și de coloane</string>
     <string name="app_drawer_columns">Coloane în sertarul de aplicații</string>
-    <string name="dock_icons">Pictograme pentru bara de activități</string>
+    <string name="dock_icons">Pictograme pentru bara inferioară de aplicații</string>
     <string name="max_folder_columns">Numărul maxim de coloane pentru dosare</string>
     <string name="max_folder_rows">Numărul maxim de rânduri pentru dosare</string>
     <string name="home_screen_grid">Grilă ecran principal</string>
@@ -46,7 +46,7 @@
     <string name="icon_size">Mărimea pictogramelor</string>
     <string name="label_size">Mărimea etichetelor</string>
     <string name="show_home_labels">Arată etichetele</string>
-    <string name="notification_dots">Punctulețe pentru notificări</string>
+    <string name="notification_dots">Insigne de notificări pentru aplicații</string>
     <string name="smartspace_preferences">Preferințe</string>
     <string name="about_label">Despre</string>
     <string name="news">Știri</string>
@@ -59,8 +59,8 @@
     <string name="development">Dezvoltare</string>
     <string name="app_info_drop_target_label">Informații despre aplicație</string>
     <string name="item_removed">Elementul a fost șters.</string>
-    <string name="all_apps_no_search_results">Nicio aplicație găsită pentru „<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
-    <string name="translucent_background">Fundal_translucent</string>
+    <string name="all_apps_no_search_results">Nicio aplicație nu a fost găsită pentru „<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="translucent_background">Fundal translucid</string>
     <string name="background_opacity">Opacitatea fundalului</string>
     <string name="background_lightness_label">Luminozitate fundal</string>
     <string name="adaptive_icons">Pictograme Adaptive</string>
@@ -103,19 +103,19 @@
     <string name="override_window_corner_radius_label">Rază colțuri ecran personalizată</string>
     <string name="window_corner_radius_description">Când glisezi în sus pentru a porni Recente, aplicația prezentă îți urmărește degetul, micșorându-se într-un card. Utilizează acest glisor pentru a ajusta raza colțurilor cardului când este aproape în ecran complet pentru ca aceasta să se potrivească colțurilor ecranului tău.</string>
     <string name="system_icons">Pictogramele sistemului</string>
-    <string name="accent_color">Culoare accent</string>
+    <string name="accent_color">Culoare de accent</string>
     <string name="invalid_color">Culoare invalidă</string>
     <string name="done">Terminat</string>
     <string name="loading">Se încarcă…</string>
     <string name="system">Sistem</string>
     <string name="wallpaper">Fundal</string>
     <string name="custom">Personalizat</string>
-    <string name="quickstep_description">Buton “Șterge tot”, Raza colțurilor</string>
+    <string name="quickstep_description">Butonul „Elimină tot”, Raza colțurilor</string>
     <string name="wallpaper_scrolling_label">Derulează imaginea de fundal</string>
     <string name="show_sys_ui_scrim">Umbra de sus</string>
-    <string name="show_status_bar">Arata_status_bar</string>
+    <string name="show_status_bar">Arată bara de stare</string>
     <string name="layout">Aspect</string>
-    <string name="what_to_show">Ce trebuie afișat</string>
+    <string name="what_to_show">Ce poate fi afișat</string>
     <string name="missing_notification_access_label">Acces la notificări necesar</string>
     <string name="missing_notification_access_description">Acces la notificări necesar.</string>
     <string name="msg_missing_notification_access">Pentru a utiliza Puncte Notificare, acordă accesul la notificări pentru <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
@@ -149,10 +149,10 @@
     <string name="icon_shape_square">Pătrat</string>
     <string name="icon_shape_rounded_square">Pătrat rotunjit</string>
     <string name="icon_shape_squircle">Supercerc</string>
-    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_sammy">În stil One UI</string>
     <string name="icon_shape_teardrop">Lacrimă</string>
     <string name="icon_shape_cylinder">Cilindru</string>
-    <string name="icon_shape_cupertino">în stil iOS</string>
+    <string name="icon_shape_cupertino">În stil iOS</string>
     <string name="customize_button_text">Personalizeaza</string>
     <string name="app_title_label">Titlu</string>
     <string name="hide_from_drawer">Ascunde din lista aplicațiilor</string>
@@ -176,10 +176,10 @@
     <string name="hsb_saturation">Saturație</string>
     <string name="hsb_brightness">Luminozitate</string>
     <string name="hex">Cod hexadecimal</string>
-    <string name="color_sliders">Bare de glisare</string>
+    <string name="color_sliders">Sliders</string>
     <string name="lawnchair_bug_report">Raport Bug Lawnchair</string>
     <string name="crash_report_notif_title">%1$s a eșuat</string>
-    <string name="action_upload_crash_report">Încarcă raportul de prăbușire</string>
+    <string name="action_upload_crash_report">Încarcă raportul de eșuare</string>
     <string name="action_copy_link">Copiază link</string>
     <string name="action_copy">Copiază</string>
     <string name="copied_toast">Copiat în clipboard.</string>
@@ -190,7 +190,7 @@
     <string name="status_channel_name">Stare de încărcare</string>
     <string name="bugreport_group_summary">%d rapoarte noi.</string>
     <string name="bugreport_group_summary_multiple">Mai multe rapoarte noi.</string>
-    <string name="themed_icon_title">Themed Icons</string>
+    <string name="themed_icon_title">Pictograme tematice</string>
     <string name="corner_radius_label">Raza colțurilor</string>
     <string name="search_bar_label">Bară de căutare</string>
     <string name="apply_accent_color_label">Aplică culoarea de accent</string>
@@ -212,21 +212,21 @@
     <string name="icon_picker_label">Personalizarea pictogramelor în funcție de aplicație</string>
     <string name="icon_picker_description">Poate provoca Lawnchair să se oprească.</string>
     <string name="font_picker_label">Personalizare font</string>
-    <string name="font_picker_description">Unele texte rămân neschimbate.</string>
-    <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
+    <string name="font_picker_description">Unele porțiuni de text vor rămâne neschimbate.</string>
+    <string name="smartspace_calendar_label">Personalizare calendar pentru „At a Glance”</string>
     <string name="smartspace_calendar_description">Permite afișarea datei în sistemele de calendar non-Gregorian.</string>
     <string name="search_provider_app_search">Căutare aplicații</string>
     <string name="always_open_website_label">Deschide întotdeauna site-ul web</string>
-    <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
-    <string name="search_provider">Furnizor de căutare</string>
+    <string name="always_open_website_description">Deschide site-ul web al furnizorului de căutare chiar dacă aplicația lor este instalată.</string>
+    <string name="search_provider">Furnizorul de căutare</string>
     <string name="status_bar_label">Bară de stare</string>
     <string name="show_notification_count">Arată numărul notificărilor</string>
     <string name="icon_picker_load_failed">Nu s-au putut încărca mai multe pictograme.</string>
     <string name="reset_custom_icons">Resetează pictogramele personalizate</string>
     <string name="reset_custom_icons_confirmation">Toate pictogramele personalizate vor fi resetate. Doriți să continuați?</string>
-    <string name="taskbar_label">Bară de activități</string>
+    <string name="taskbar_label">Bara de activități</string>
     <string name="enable_taskbar_experimental">Activează bara de activități (experimental)</string>
-    <string name="error_no_market_or_browser_installed">Niciun magazin de aplicații sau browser instalat.</string>
+    <string name="error_no_market_or_browser_installed">Niciun magazin de aplicații sau browser este instalat.</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Bateria se încarcă</string>
@@ -247,7 +247,7 @@
     <string name="smartspace_battery_status">Starea bateriei</string>
     <string name="smartspace_now_playing">Acum se redă</string>
     <string name="smartspace_requires_setup">Atinge pentru a configura</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
+    <string name="event_provider_missing_notification_dots">Pentru a folosi <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activează insignele de notificări pentru aplicații.</string>
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="smartspace_calendar_gregorian">Gregorian</string>
     <string name="smartspace_calendar_persian">Persan</string>
@@ -258,7 +258,7 @@
     <string name="delete">Șterge</string>
     <string name="themed_icons_off_label">Off</string>
     <string name="themed_icons_home_label">Ecran principal</string>
-    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
+    <string name="themed_icons_home_and_drawer_label">Ecranul de pornire &amp; Sertarul de aplicații</string>
     <!-- Backup -->
     <string name="create_backup">Creează o copie de rezervă</string>
     <string name="create_backup_action">Creează</string>
@@ -273,8 +273,8 @@
     <string name="backup_restore_success">Copia de rezervă a fost restaurată.</string>
     <string name="backup_restore_error">Restaurarea copiei de rezervă a eșuat.</string>
     <string name="invalid_backup_file">Copia de rezervă este invalidă.</string>
-    <string name="wallpaper_depth_effect_label">Wallpaper Depth Effect</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_label">Efect de adâncime pentru imaginea de fundal</string>
+    <string name="wallpaper_depth_effect_description">Mărește și micșorează imaginea de fundal când treci între stări.</string>
     <string name="gestures_label">Gesturi</string>
     <string name="gestures_description">Taps and Swipes</string>
     <!-- Gestures -->
@@ -285,13 +285,13 @@
     <string name="gesture_back_tap">Back Button Tap</string>
     <string name="gesture_handler_no_op">Fă nimic</string>
     <string name="gesture_handler_sleep">Sleep</string>
-    <string name="gesture_handler_open_notifications">Open Notification Panel</string>
-    <string name="gesture_handler_open_app_option">Open App</string>
-    <string name="gesture_handler_open_app_config">Open %1$s</string>
-    <string name="gesture_handler_open_app_drawer">Open App Drawer</string>
-    <string name="gesture_handler_open_app_search">Open App Search</string>
-    <string name="gesture_handler_open_search">Open Search</string>
-    <string name="pick_app_for_gesture">Pick App</string>
+    <string name="gesture_handler_open_notifications">Deschide panoul de notificări</string>
+    <string name="gesture_handler_open_app_option">Deschide aplicația</string>
+    <string name="gesture_handler_open_app_config">Deschide %1$s</string>
+    <string name="gesture_handler_open_app_drawer">Deschide sertarul de aplicații</string>
+    <string name="gesture_handler_open_app_search">Deschide câmpul de căutare a aplicațiilor</string>
+    <string name="gesture_handler_open_search">Deschide câmpul de căutare</string>
+    <string name="pick_app_for_gesture">Alege o aplicație</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="app_label">Aplicație</string>
     <string name="website_label">Site web</string>
