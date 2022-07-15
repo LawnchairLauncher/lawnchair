@@ -38,7 +38,7 @@
     <string name="home_screen_grid">Grilă ecran principal</string>
     <string name="home_screen_lock">Blochează ecranul de pornire</string>
     <string name="home_screen_unlock">Deblochează ecranul de pornire</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Arată butonul de blocare în Pop-Up</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Arată butonul „Blochează” în Pop-Up</string>
     <string name="columns">Coloane</string>
     <string name="grid">Grilă</string>
     <string name="rows">Rânduri</string>
@@ -245,7 +245,7 @@
     <string name="smartspace_time_24_hour_format">Format de 24 de ore</string>
     <string name="smartspace_weather">Vremea</string>
     <string name="smartspace_battery_status">Starea bateriei</string>
-    <string name="smartspace_now_playing">Acum se redă</string>
+    <string name="smartspace_now_playing">Se redă acum</string>
     <string name="smartspace_requires_setup">Atinge pentru a configura</string>
     <string name="event_provider_missing_notification_dots">Pentru a folosi <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activează insignele de notificări pentru aplicații.</string>
     <string name="smartspace_media_info_separator">" — "</string>
@@ -278,13 +278,13 @@
     <string name="gestures_label">Gesturi</string>
     <string name="gestures_description">Taps and Swipes</string>
     <!-- Gestures -->
-    <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_double_tap">Atinge ecranul de două ori</string>
     <string name="gesture_swipe_up">Glisează în sus</string>
     <string name="gesture_swipe_down">Glisează în jos</string>
-    <string name="gesture_home_tap">Home Button Tap</string>
-    <string name="gesture_back_tap">Back Button Tap</string>
-    <string name="gesture_handler_no_op">Fă nimic</string>
-    <string name="gesture_handler_sleep">Sleep</string>
+    <string name="gesture_home_tap">Apasă butonul „Acasă”</string>
+    <string name="gesture_back_tap">Apasă butonul „Înapoi”</string>
+    <string name="gesture_handler_no_op">Nu efectua nicio acțiune</string>
+    <string name="gesture_handler_sleep">Pune telefonul în modul „Somn”</string>
     <string name="gesture_handler_open_notifications">Deschide panoul de notificări</string>
     <string name="gesture_handler_open_app_option">Deschide aplicația</string>
     <string name="gesture_handler_open_app_config">Deschide %1$s</string>
