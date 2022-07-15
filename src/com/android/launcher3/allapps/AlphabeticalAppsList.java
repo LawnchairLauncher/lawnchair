@@ -50,7 +50,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
 
     public static final String TAG = "AlphabeticalAppsList";
 
-    private final WorkAdapterProvider mWorkAdapterProvider;
+    private final WorkProfileManager mWorkProviderManager;
 
     /**
      * Info about a fast scroller section, depending if sections are merged, the fast scroller
@@ -92,11 +92,11 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
     private Predicate<ItemInfo> mItemFilter;
 
     public AlphabeticalAppsList(Context context, @Nullable AllAppsStore appsStore,
-            WorkAdapterProvider adapterProvider) {
+            WorkProfileManager workProfileManager) {
         mAllAppsStore = appsStore;
         mActivityContext = ActivityContext.lookupContext(context);
         mAppNameComparator = new AppInfoComparator(context);
-        mWorkAdapterProvider = adapterProvider;
+        mWorkProviderManager = workProfileManager;
         mNumAppsPerRowAllApps = mActivityContext.getDeviceProfile().inv.numAllAppsColumns;
         if (mAllAppsStore != null) {
             mAllAppsStore.addUpdateListener(this);
@@ -260,9 +260,9 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
             }
         } else {
             int position = 0;
-            if (mWorkAdapterProvider != null) {
-                position += mWorkAdapterProvider.addWorkItems(mAdapterItems);
-                if (!mWorkAdapterProvider.shouldShowWorkApps()) {
+            if (mWorkProviderManager != null) {
+                position += mWorkProviderManager.addWorkItems(mAdapterItems);
+                if (!mWorkProviderManager.shouldShowWorkApps()) {
                     return;
                 }
             }
