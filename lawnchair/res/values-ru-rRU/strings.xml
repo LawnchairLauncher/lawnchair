@@ -174,10 +174,10 @@
     <string name="rgb_blue">Синий</string>
     <string name="hsb">HSB</string>
     <string name="hsb_hue">Оттенок</string>
-    <string name="hsb_saturation">Saturation</string>
-    <string name="hsb_brightness">Brightness</string>
+    <string name="hsb_saturation">Насыщенность</string>
+    <string name="hsb_brightness">Яркость</string>
     <string name="hex">Hex</string>
-    <string name="color_sliders">Sliders</string>
+    <string name="color_sliders">Ползунки</string>
     <string name="lawnchair_bug_report">Отчёт об ошибке в Lawnchair</string>
     <string name="crash_report_notif_title">%1$s произошел сбой</string>
     <string name="action_upload_crash_report">Загрузить журнал сбоя</string>
