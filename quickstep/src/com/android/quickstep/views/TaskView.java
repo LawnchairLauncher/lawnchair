@@ -866,10 +866,9 @@ public class TaskView extends FrameLayout implements Reusable {
 
         int thumbnailTopMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
         int taskIconHeight = deviceProfile.overviewTaskIconSizePx;
-        int taskMargin = isGridTask ? deviceProfile.overviewTaskMarginGridPx
-                : deviceProfile.overviewTaskMarginPx;
-        int taskIconMargin = thumbnailTopMargin - taskIconHeight - taskMargin;
-        orientationHandler.setTaskIconParams(iconParams, taskIconMargin, taskIconHeight,
+        int taskMargin = deviceProfile.overviewTaskMarginPx;
+
+        orientationHandler.setTaskIconParams(iconParams, taskMargin, taskIconHeight,
                 thumbnailTopMargin, isRtl);
         iconParams.width = iconParams.height = taskIconHeight;
         mIconView.setLayoutParams(iconParams);

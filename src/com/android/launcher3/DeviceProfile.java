@@ -191,7 +191,6 @@ public class DeviceProfile {
 
     // Overview
     public int overviewTaskMarginPx;
-    public int overviewTaskMarginGridPx;
     public int overviewTaskIconSizePx;
     public int overviewTaskIconDrawableSizePx;
     public int overviewTaskIconDrawableSizeGridPx;
@@ -426,25 +425,18 @@ public class DeviceProfile {
         }
 
         overviewTaskMarginPx = res.getDimensionPixelSize(R.dimen.overview_task_margin);
-        overviewTaskMarginGridPx = res.getDimensionPixelSize(R.dimen.overview_task_margin_grid);
         overviewTaskIconSizePx = res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_size);
         overviewTaskIconDrawableSizePx =
                 res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_drawable_size);
         overviewTaskIconDrawableSizeGridPx =
                 res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_drawable_size_grid);
-        overviewTaskThumbnailTopMarginPx = overviewTaskIconSizePx + overviewTaskMarginPx * 2;
+        overviewTaskThumbnailTopMarginPx = overviewTaskIconSizePx + overviewTaskMarginPx;
         overviewActionsTopMarginPx = res.getDimensionPixelSize(R.dimen.overview_actions_top_margin);
         overviewPageSpacing = res.getDimensionPixelSize(R.dimen.overview_page_spacing);
         overviewActionsButtonSpacing = res.getDimensionPixelSize(
                 R.dimen.overview_actions_button_spacing);
         overviewActionsHeight = res.getDimensionPixelSize(R.dimen.overview_actions_height);
-        // Grid task's top margin is only overviewTaskIconSizePx + overviewTaskMarginGridPx, but
-        // overviewTaskThumbnailTopMarginPx is applied to all TaskThumbnailView, so exclude the
-        // extra  margin when calculating row spacing.
-        int extraTopMargin = overviewTaskThumbnailTopMarginPx - overviewTaskIconSizePx
-                - overviewTaskMarginGridPx;
-        overviewRowSpacing = res.getDimensionPixelSize(R.dimen.overview_grid_row_spacing)
-                - extraTopMargin;
+        overviewRowSpacing = res.getDimensionPixelSize(R.dimen.overview_grid_row_spacing);
         overviewGridSideMargin = res.getDimensionPixelSize(R.dimen.overview_grid_side_margin);
 
         // Calculate all of the remaining variables.
@@ -1379,7 +1371,6 @@ public class DeviceProfile {
         writer.println(prefix + pxToDpStr("workspaceBottomPadding", workspaceBottomPadding));
 
         writer.println(prefix + pxToDpStr("overviewTaskMarginPx", overviewTaskMarginPx));
-        writer.println(prefix + pxToDpStr("overviewTaskMarginGridPx", overviewTaskMarginGridPx));
         writer.println(prefix + pxToDpStr("overviewTaskIconSizePx", overviewTaskIconSizePx));
         writer.println(prefix + pxToDpStr("overviewTaskIconDrawableSizePx",
                 overviewTaskIconDrawableSizePx));
