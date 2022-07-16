@@ -75,7 +75,7 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"நிறுவல் நீக்கு"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ஆப்ஸ் தகவல்"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"நிறுவு"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"ஆப்ஸ் பரிந்துரைக்காதே"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"பரிந்துரைக்காதே"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"கணிக்கப்பட்ட ஆப்ஸைப் பின் செய்தல்"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"குறுக்குவழிகளை நிறுவுதல்"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"பயனரின் அனுமதி இல்லாமல் குறுக்குவழிகளைச் சேர்க்கப் ஆப்ஸை அனுமதிக்கிறது."</string>
@@ -137,7 +137,7 @@
     <string name="item_removed" msgid="851119963877842327">"அகற்றப்பட்டது"</string>
     <string name="undo" msgid="4151576204245173321">"செயல்தவிர்"</string>
     <string name="action_move" msgid="4339390619886385032">"நகர்த்து"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"<xliff:g id="NUMBER_0">%1$s</xliff:g> வரிசை, <xliff:g id="NUMBER_1">%2$s</xliff:g> நெடுவரிசைக்கு நகர்த்து"</string>
+    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"<xliff:g id="STRING">%3$s</xliff:g> என்பதில் <xliff:g id="NUMBER_0">%1$s</xliff:g>வது வரிசை <xliff:g id="NUMBER_1">%2$s</xliff:g>வது நெடுவரிசைக்கு நகர்த்தப்படும்"</string>
     <string name="move_to_position" msgid="6750008980455459790">"நிலை <xliff:g id="NUMBER">%1$s</xliff:g>க்கு நகர்த்து"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"விரும்பும் நிலை <xliff:g id="NUMBER">%1$s</xliff:g>க்கு நகர்த்து"</string>
     <string name="item_moved" msgid="4606538322571412879">"உருப்படி நகர்த்தப்பட்டது"</string>

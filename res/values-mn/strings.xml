@@ -137,7 +137,7 @@
     <string name="item_removed" msgid="851119963877842327">"Зүйлийг устгалаа"</string>
     <string name="undo" msgid="4151576204245173321">"Болих"</string>
     <string name="action_move" msgid="4339390619886385032">"Зөөх"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"<xliff:g id="NUMBER_0">%1$s</xliff:g> мөр <xliff:g id="NUMBER_1">%2$s</xliff:g> баганад зөөх"</string>
+    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"<xliff:g id="STRING">%3$s</xliff:g> дахь <xliff:g id="NUMBER_0">%1$s</xliff:g>-р мөр, <xliff:g id="NUMBER_1">%2$s</xliff:g>-р багана руу зөөх"</string>
     <string name="move_to_position" msgid="6750008980455459790">"Байршил <xliff:g id="NUMBER">%1$s</xliff:g>-д зөөх"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"Дуртай байршил болох <xliff:g id="NUMBER">%1$s</xliff:g>-д зөөх"</string>
     <string name="item_moved" msgid="4606538322571412879">"Зөөвөрлөсөн зүйл"</string>
