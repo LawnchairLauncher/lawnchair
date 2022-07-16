@@ -2234,6 +2234,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 }
             }
         }
+        if (animatorSet == null) {
+            setOverviewProgress(1);
+        } else {
+            animatorSet.play(ObjectAnimator.ofFloat(this, OVERVIEW_PROGRESS, 1));
+        }
     }
 
     /**
