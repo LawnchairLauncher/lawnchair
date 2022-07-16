@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -17,9 +18,9 @@ fun <T> ColorDot(
     modifier: Modifier = Modifier
 ) {
     val color = if (MaterialTheme.colors.isLight) {
-        entry.lightColor()
+        entry.lightColor(LocalContext.current)
     } else {
-        entry.darkColor()
+        entry.darkColor(LocalContext.current)
     }
 
     ColorDot(
