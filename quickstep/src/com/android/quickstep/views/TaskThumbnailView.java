@@ -221,7 +221,7 @@ public class TaskThumbnailView extends View {
      * Sets the alpha of the splash view.
      */
     public void setSplashAlpha(float splashAlpha) {
-        mSplashAlpha = (int) (splashAlpha * 255);
+        mSplashAlpha = (int) (Utilities.boundToRange(splashAlpha, 0f, 1f) * 255);
         if (mSplashViewDrawable != null) {
             mSplashViewDrawable.setAlpha(mSplashAlpha);
         }
