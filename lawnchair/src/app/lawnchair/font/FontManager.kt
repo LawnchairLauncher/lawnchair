@@ -13,18 +13,12 @@ import app.lawnchair.util.runOnMainThread
 import com.android.launcher3.R
 import com.android.launcher3.util.MainThreadInitializedObject
 import kotlinx.coroutines.launch
-import rikka.layoutinflater.view.LayoutInflaterFactory.OnViewCreatedListener
 
 class FontManager private constructor(private val context: Context) {
 
     private val fontCache = FontCache.INSTANCE.get(context)
 
     private val specMap = createFontMap()
-
-    val onViewCreatedListener = OnViewCreatedListener { view, _, _, _, attrs ->
-        if (view !is TextView) return@OnViewCreatedListener
-        overrideFont(view, attrs)
-    }
 
     private fun createFontMap(): Map<Int, FontSpec> {
         val sansSerif = Typeface.SANS_SERIF

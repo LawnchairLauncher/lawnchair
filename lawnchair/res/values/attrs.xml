@@ -66,9 +66,4 @@
     <declare-styleable name="FallbackSearchInputView">
         <attr name="customFontType" />
     </declare-styleable>
-
-    <declare-styleable name="ResourceTokenOverride">
-        <attr name="android:background" />
-        <attr name="android:src" />
-    </declare-styleable>
 </resources>

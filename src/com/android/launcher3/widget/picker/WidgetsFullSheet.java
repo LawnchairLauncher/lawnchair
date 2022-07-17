@@ -186,6 +186,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     protected void onFinishInflate() {
         super.onFinishInflate();
         mContent = findViewById(R.id.container);
+        mContent.setBackground(DrawableTokens.BgWidgetsFullSheet.resolve(getContext()));
 
         View collapseHandle = findViewById(R.id.collapse_handle);
         collapseHandle.setBackgroundColor(ColorTokens.TextColorSecondary.resolveColor(getContext()));
