@@ -81,7 +81,7 @@
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"መተግበሪያው ያለተጠቃሚ ጣልቃ ገብነት አቋራጭ እንዲያክል ያስችለዋል።"</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"የመነሻ ቅንብሮች እና አቋራጮችን ያነባል"</string>
     <string name="permdesc_read_settings" msgid="4208061150510996676">"ቅንብሮችን እና አቋራጮችን በመነሻ ለማንበብ ለትግበራ ይፈቅዳል።"</string>
-    <string name="permlab_write_settings" msgid="4820028712156303762">"መነሻ ቅንብሮች እና አቋራጮች ፃፍ"</string>
+    <string name="permlab_write_settings" msgid="4820028712156303762">"መነሻ ቅንብሮች እና አቋራጮች ጻፍ"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"ቅንብሮችን እና አቋራጮችን በመነሻ ለመለወጥ ለመተግበሪያ ይፈቅዳል።"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> የስልክ ጥሪዎችን ለማድረግ አልተፈቀደለትም"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"ምግብርን መጫን አልተቻለም"</string>
