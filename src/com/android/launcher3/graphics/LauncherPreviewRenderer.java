@@ -43,6 +43,8 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
+import android.util.Size;
+import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -52,6 +54,8 @@ import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.widget.TextClock;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
@@ -177,10 +181,12 @@ public class LauncherPreviewRenderer extends ContextWrapper
     private final Map<Integer, CellLayout> mWorkspaceScreens = new HashMap<>();
     private final AppWidgetHost mAppWidgetHost;
     private final SparseIntArray mWallpaperColorResources;
+    private final SparseArray<Size> mLauncherWidgetSpanInfo;
 
     public LauncherPreviewRenderer(Context context,
             InvariantDeviceProfile idp,
-            WallpaperColors wallpaperColorsOverride) {
+            WallpaperColors wallpaperColorsOverride,
+            @Nullable final SparseArray<Size> launcherWidgetSpanInfo) {
 
         super(context);
         mUiHandler = new Handler(Looper.getMainLooper());
@@ -223,6 +229,9 @@ public class LauncherPreviewRenderer extends ContextWrapper
 
         mHotseat = mRootView.findViewById(R.id.hotseat);
         mHotseat.resetLayout(false);
+
+        mLauncherWidgetSpanInfo = launcherWidgetSpanInfo == null ? new SparseArray<>() :
+                launcherWidgetSpanInfo;
 
         CellLayout firstScreen = mRootView.findViewById(R.id.workspace);
         firstScreen.setPadding(mDp.workspacePadding.left + mDp.cellLayoutPaddingPx.left,

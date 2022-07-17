@@ -89,7 +89,7 @@
     <string name="blocked_by_policy" msgid="2071401072261365546">"ଆପ୍ କିମ୍ବା ଆପଣଙ୍କ ସଂସ୍ଥା ଦ୍ୱାରା ଏହି କାର୍ଯ୍ୟକୁ ଅନୁମତି ଦିଆଯାଇ ନାହିଁ"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"ନାଭିଗେସନ୍ ଟ୍ୟୁଟୋରିଆଲକୁ ବାଦ୍ ଦେବେ?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"ଆପଣ ପରେ ଏହାକୁ <xliff:g id="NAME">%1$s</xliff:g> ଆପରେ ପାଇପାରିବେ"</string>
-    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"ବାତିଲ୍ କରନ୍ତୁ"</string>
+    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"ବାତିଲ କରନ୍ତୁ"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ବାଦ୍ ଦିଅନ୍ତୁ"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"ସ୍କ୍ରିନ ଘୂରାନ୍ତୁ"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ଟାସ୍କବାର୍ ଶିକ୍ଷା ଦେଖାଯାଇଛି"</string>

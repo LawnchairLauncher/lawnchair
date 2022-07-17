@@ -120,8 +120,9 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
         setter.setFloat(mRecentsView, RECENTS_GRID_PROGRESS, showAsGrid ? 1f : 0f,
                 showAsGrid ? INSTANT : FINAL_FRAME);
 
-        setter.setFloat(mRecentsView, OVERVIEW_PROGRESS,
-                toState == LauncherState.OVERVIEW ? 1f : 0f, INSTANT);
+        boolean toOverview = toState == LauncherState.OVERVIEW;
+        setter.setFloat(mRecentsView, OVERVIEW_PROGRESS, toOverview ? 1f : 0f,
+                toOverview ? INSTANT : FINAL_FRAME);
     }
 
     abstract FloatProperty getTaskModalnessProperty();
