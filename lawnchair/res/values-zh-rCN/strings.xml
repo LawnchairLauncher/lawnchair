@@ -166,9 +166,9 @@
     <string name="all_apps_search_market_message">搜索更多应用</string>
     <string name="show_app_search_bar">显示搜索栏</string>
     <string name="rgb">RGB</string>
-    <string name="rgb_red">Red</string>
-    <string name="rgb_green">Green</string>
-    <string name="rgb_blue">Blue</string>
+    <string name="rgb_red">红</string>
+    <string name="rgb_green">绿</string>
+    <string name="rgb_blue">蓝</string>
     <string name="hsb">HSB</string>
     <string name="hsb_hue">色相</string>
     <string name="hsb_saturation">饱和度</string>
