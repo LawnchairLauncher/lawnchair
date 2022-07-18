@@ -30,7 +30,6 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsPagedView;
-import com.android.launcher3.allapps.WorkAdapterProvider;
 import com.android.launcher3.allapps.WorkEduCard;
 import com.android.launcher3.allapps.WorkPausedCard;
 import com.android.launcher3.allapps.WorkProfileManager;
@@ -155,7 +154,7 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
     public void testEdu() {
         waitForWorkTabSetup();
         executeOnLauncher(l -> {
-            l.getSharedPrefs().edit().putInt(WorkAdapterProvider.KEY_WORK_EDU_STEP, 0).commit();
+            l.getSharedPrefs().edit().putInt(WorkProfileManager.KEY_WORK_EDU_STEP, 0).commit();
             ((AllAppsPagedView) l.getAppsView().getContentView()).setCurrentPage(WORK_PAGE);
             l.getAppsView().getWorkManager().reset();
         });

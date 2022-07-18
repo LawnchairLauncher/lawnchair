@@ -63,6 +63,11 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
     // A divider that separates the apps list and the search market button
     public static final int VIEW_TYPE_ALL_APPS_DIVIDER = 1 << 4;
 
+    public static final int VIEW_TYPE_WORK_EDU_CARD = 1 << 5;
+    public static final int VIEW_TYPE_WORK_DISABLED_CARD = 1 << 6;
+
+    public static final int NEXT_ID = 7;
+
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
@@ -225,6 +230,12 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.all_apps_divider, parent, false));
+            case VIEW_TYPE_WORK_EDU_CARD:
+                return new ViewHolder(mLayoutInflater.inflate(
+                        R.layout.work_apps_edu, parent, false));
+            case VIEW_TYPE_WORK_DISABLED_CARD:
+                return new ViewHolder(mLayoutInflater.inflate(
+                        R.layout.work_apps_paused, parent, false));
             default:
                 BaseAdapterProvider adapterProvider = getAdapterProvider(viewType);
                 if (adapterProvider != null) {
@@ -258,7 +269,11 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 }
                 break;
             case VIEW_TYPE_ALL_APPS_DIVIDER:
+            case VIEW_TYPE_WORK_DISABLED_CARD:
                 // nothing to do
+                break;
+            case VIEW_TYPE_WORK_EDU_CARD:
+                ((WorkEduCard) holder.itemView).setPosition(position);
                 break;
             default:
                 BaseAdapterProvider adapterProvider = getAdapterProvider(holder.getItemViewType());
