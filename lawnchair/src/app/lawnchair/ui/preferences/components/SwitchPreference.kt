@@ -19,7 +19,12 @@ package app.lawnchair.ui.preferences.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -80,6 +85,8 @@ fun SwitchPreference(
                         .background(dividerColor())
                 )
             }
+
+            val thumbIcon = if (checked) Icons.Rounded.Check else Icons.Rounded.Close
             Switch(
                 modifier = Modifier
                     .addIf(onClick != null) {
@@ -90,6 +97,13 @@ fun SwitchPreference(
                 checked = checked,
                 onCheckedChange = null,
                 enabled = enabled,
+                thumbContent = {
+                    Icon(
+                        imageVector = thumbIcon,
+                        contentDescription = null,
+                        modifier = Modifier.size(SwitchDefaults.IconSize),
+                    )
+                },
             )
         },
         enabled = enabled,
