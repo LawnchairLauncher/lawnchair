@@ -424,11 +424,13 @@ public class DeviceProfile {
         if (areNavButtonsInline) {
             /*
              * 3 nav buttons +
+             * Spacing between nav buttons +
              * Little space at the end for contextual buttons +
              * Little space between icons and nav buttons
              */
             hotseatBarEndOffset = 3 * res.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size)
-                    + res.getDimensionPixelSize(R.dimen.taskbar_contextual_button_margin)
+                    + 2 * res.getDimensionPixelSize(R.dimen.taskbar_button_space_inbetween)
+                    + res.getDimensionPixelSize(inv.inlineNavButtonsEndSpacing)
                     + res.getDimensionPixelSize(R.dimen.taskbar_hotseat_nav_spacing);
         } else {
             hotseatBarEndOffset = 0;

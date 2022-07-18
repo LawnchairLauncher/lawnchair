@@ -250,11 +250,11 @@
     <dimen name="taskbar_icon_touch_size">48dp</dimen>
     <dimen name="taskbar_icon_drag_icon_size">54dp</dimen>
     <dimen name="taskbar_folder_margin">16dp</dimen>
-    <dimen name="taskbar_nav_buttons_spacing">16dp</dimen>
+    <dimen name="taskbar_contextual_button_padding">16dp</dimen>
     <dimen name="taskbar_contextual_padding_top">8dp</dimen>
     <dimen name="taskbar_nav_buttons_size">44dp</dimen>
-    <dimen name="taskbar_contextual_button_margin">40dp</dimen>
-    <dimen name="taskbar_hotseat_nav_spacing">42dp</dimen>
+    <dimen name="taskbar_contextual_button_margin">47dp</dimen>
+    <dimen name="taskbar_hotseat_nav_spacing">24dp</dimen>
     <dimen name="taskbar_contextual_buttons_size">35dp</dimen>
     <dimen name="taskbar_stashed_size">24dp</dimen>
     <dimen name="taskbar_stashed_handle_width">220dp</dimen>
@@ -268,4 +268,12 @@
     <dimen name="taskbar_back_button_left_margin_kids">48dp</dimen>
     <dimen name="taskbar_home_button_left_margin_kids">48dp</dimen>
     <dimen name="taskbar_icon_size_kids">32dp</dimen>
+
+    <!--  Taskbar 3 button spacing  -->
+    <dimen name="taskbar_button_space_inbetween">24dp</dimen>
+    <dimen name="taskbar_button_margin_5_5">26dp</dimen>
+    <dimen name="taskbar_button_margin_6_5">26dp</dimen>
+    <dimen name="taskbar_button_margin_4_5">47dp</dimen>
+    <dimen name="taskbar_button_margin_4_4">47dp</dimen>
+    <dimen name="taskbar_button_margin_default">47dp</dimen>
 </resources>

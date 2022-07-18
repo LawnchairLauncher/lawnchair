@@ -481,7 +481,7 @@ class DeviceProfileTabletPortrait3ButtonTest : DeviceProfileBaseTest() {
 
     @Test
     fun hotseatBarEndOffset() {
-        assertThat(dp.hotseatBarEndOffset).isEqualTo(428)
+        assertThat(dp.hotseatBarEndOffset).isEqualTo(502)
     }
 
     @Test

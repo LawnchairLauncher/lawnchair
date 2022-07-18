@@ -461,7 +461,7 @@ class DeviceProfileTabletLandscape3ButtonTest : DeviceProfileBaseTest() {
 
     @Test
     fun getHotseatLayoutPaddingLeft() {
-        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(1443)
+        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(1305)
     }
 
     @Test
@@ -471,7 +471,7 @@ class DeviceProfileTabletLandscape3ButtonTest : DeviceProfileBaseTest() {
 
     @Test
     fun getHotseatLayoutPaddingRight() {
-        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(428)
+        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(566)
     }
 
     @Test
@@ -481,7 +481,7 @@ class DeviceProfileTabletLandscape3ButtonTest : DeviceProfileBaseTest() {
 
     @Test
     fun hotseatBarEndOffset() {
-        assertThat(dp.hotseatBarEndOffset).isEqualTo(428)
+        assertThat(dp.hotseatBarEndOffset).isEqualTo(566)
     }
 
     @Test

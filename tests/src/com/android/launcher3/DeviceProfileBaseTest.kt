@@ -136,6 +136,7 @@ abstract class DeviceProfileBaseTest {
             hotseatBorderSpaces = FloatArray(4) { 16f }
             hotseatColumnSpan = IntArray(4) { 4 }
             hotseatBarBottomSpace = FloatArray(4) { 48f }
+            inlineNavButtonsEndSpacing = R.dimen.taskbar_button_margin_4_4
             hotseatQsbSpace = FloatArray(4) { 36f }
             iconSize = FloatArray(4) { 56f }
             allAppsIconSize = FloatArray(4) { 56f }
