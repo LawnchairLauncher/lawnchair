@@ -1,5 +1,6 @@
 package app.lawnchair.ui.preferences.components.colorpreference.pickers
 
+import android.graphics.Color.argb
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
@@ -228,60 +229,67 @@ private fun HsvColorPicker(
     onSliderValuesChange: (ColorOption.CustomColor) -> Unit,
 ) {
 
-    val hue = remember { mutableStateOf(intColorToHsvColorArray(selectedColor)[0]) }
-    val saturation = remember { mutableStateOf(intColorToHsvColorArray(selectedColor)[1]) }
-    val brightness = remember { mutableStateOf(intColorToHsvColorArray(selectedColor)[2]) }
+    var hue by remember { mutableStateOf(intColorToHsvColorArray(selectedColor)[0]) }
+    var saturation by remember { mutableStateOf(intColorToHsvColorArray(selectedColor)[1]) }
+    var brightness by remember { mutableStateOf(intColorToHsvColorArray(selectedColor)[2]) }
+    val coroutineScope = rememberCoroutineScope()
+
+    fun updateColor(
+        newHue: Float? = null,
+        newSaturation: Float? = null,
+        newBrightness: Float? = null,
+    ) {
+        coroutineScope.launch {
+
+            if (newHue != null) hue = newHue
+            if (newSaturation != null) saturation = newSaturation
+            if (newBrightness != null) brightness = newBrightness
+
+            onSliderValuesChange(
+                ColorOption.CustomColor(
+                    hsvValuesToIntColor(
+                        hue = newHue ?: hue,
+                        saturation = newSaturation ?: saturation,
+                        brightness = newBrightness ?: brightness,
+                    ),
+                ),
+            )
+        }
+    }
 
     DividerColumn {
 
         HsbColorSlider(
             type = HsbSliderType.HUE,
-            value = hue.value,
-            onValueChange = { newValue ->
-                hue.value = newValue
-            },
+            value = hue,
+            onValueChange = { newValue -> updateColor(newHue = newValue) },
         )
         HsbColorSlider(
             type = HsbSliderType.SATURATION,
-            value = saturation.value,
-            onValueChange = { newValue ->
-                saturation.value = newValue
-            },
+            value = saturation,
+            onValueChange = { newValue -> updateColor(newSaturation = newValue) },
         )
         HsbColorSlider(
             type = HsbSliderType.BRIGHTNESS,
-            value = brightness.value,
-            onValueChange = { newValue ->
-                brightness.value = newValue
-            },
+            value = brightness,
+            onValueChange = { newValue -> updateColor(newBrightness = newValue) },
         )
 
         LaunchedEffect(key1 = selectedColor) {
-            val hsv = intColorToHsvColorArray(selectedColor)
-            hue.value = hsv[0]
-            saturation.value = hsv[1]
-            brightness.value = hsv[2]
+
+            if (selectedColor ==
+                hsvValuesToIntColor(hue, saturation, brightness)
+            ) return@LaunchedEffect
+
+            intColorToHsvColorArray(selectedColor).also {
+                hue = it[0]
+                saturation = it[1]
+                brightness = it[2]
+            }
+
             onSelectedColorChange()
         }
-
-        LaunchedEffect(
-            key1 = hue.value,
-            key2 = saturation.value,
-            key3 = brightness.value,
-        ) {
-            onSliderValuesChange(
-                ColorOption.CustomColor(
-                    hsvValuesToIntColor(
-                        hue = hue.value,
-                        saturation = saturation.value,
-                        brightness = brightness.value,
-                    ),
-                ),
-            )
-        }
-
     }
-
 }
 
 @Composable
@@ -292,63 +300,64 @@ private fun RgbColorPicker(
     onSliderValuesChange: (ColorOption.CustomColor) -> Unit,
 ) {
 
-    val red = remember { mutableStateOf(selectedColor.red) }
-    val green = remember { mutableStateOf(selectedColor.green) }
-    val blue = remember { mutableStateOf(selectedColor.blue) }
+    var red by remember { mutableStateOf(selectedColor.red) }
+    var green by remember { mutableStateOf(selectedColor.green) }
+    var blue by remember { mutableStateOf(selectedColor.blue) }
+    val coroutineScope = rememberCoroutineScope()
+
+    fun updateColor(
+        newRed: Int? = null,
+        newGreen: Int? = null,
+        newBlue: Int? = null,
+    ) {
+        coroutineScope.launch {
+
+            if (newRed != null) red = newRed
+            if (newGreen != null) green = newGreen
+            if (newBlue != null) blue = newBlue
+
+            onSliderValuesChange(
+                ColorOption.CustomColor(
+                    argb(
+                        255,
+                        newRed ?: red,
+                        newGreen ?: green,
+                        newBlue ?: blue,
+                    ),
+                ),
+            )
+        }
+    }
 
     DividerColumn {
 
         RgbColorSlider(
             label = stringResource(id = R.string.rgb_red),
-            value = red.value,
+            value = red,
             colorStart = selectedColorCompose.copy(red = 0f),
             colorEnd = selectedColorCompose.copy(red = 1f),
-            onValueChange = { newValue ->
-                red.value = newValue.toInt()
-            },
+            onValueChange = { newValue -> updateColor(newRed = newValue.toInt()) },
         )
         RgbColorSlider(
             label = stringResource(id = R.string.rgb_green),
-            value = green.value,
+            value = green,
             colorStart = selectedColorCompose.copy(green = 0f),
             colorEnd = selectedColorCompose.copy(green = 1f),
-            onValueChange = { newValue ->
-                green.value = newValue.toInt()
-            },
+            onValueChange = { newValue -> updateColor(newGreen = newValue.toInt()) },
         )
         RgbColorSlider(
             label = stringResource(id = R.string.rgb_blue),
-            value = blue.value,
+            value = blue,
             colorStart = selectedColorCompose.copy(blue = 0f),
             colorEnd = selectedColorCompose.copy(blue = 1f),
-            onValueChange = { newValue ->
-                blue.value = newValue.toInt()
-            },
+            onValueChange = { newValue -> updateColor(newBlue = newValue.toInt()) },
         )
 
         LaunchedEffect(key1 = selectedColor) {
-            red.value = selectedColor.red
-            green.value = selectedColor.green
-            blue.value = selectedColor.blue
+            red = selectedColor.red
+            green = selectedColor.green
+            blue = selectedColor.blue
             onSelectedColorChange()
         }
-
-        LaunchedEffect(
-            key1 = red.value,
-            key2 = green.value,
-            key3 = blue.value,
-        ) {
-            onSliderValuesChange(
-                ColorOption.CustomColor(
-                    android.graphics.Color.argb(
-                        255,
-                        red.value,
-                        green.value,
-                        blue.value,
-                    )
-                )
-            )
-        }
     }
-
 }
