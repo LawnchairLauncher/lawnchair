@@ -43,7 +43,6 @@ import android.annotation.IdRes;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Outline;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -57,7 +56,6 @@ import android.view.MotionEvent;
 import android.view.TouchDelegate;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewOutlineProvider;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
@@ -325,8 +323,6 @@ public class TaskView extends FrameLayout implements Reusable {
                 }
             };
 
-    private final TaskOutlineProvider mOutlineProvider;
-
     @Nullable
     protected Task mTask;
     protected TaskThumbnailView mSnapshotView;
@@ -409,10 +405,6 @@ public class TaskView extends FrameLayout implements Reusable {
 
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
         mDigitalWellBeingToast = new DigitalWellBeingToast(mActivity, this);
-
-        mOutlineProvider = new TaskOutlineProvider(getContext(), mCurrentFullscreenParams,
-                mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx);
-        setOutlineProvider(mOutlineProvider);
     }
 
     public void setTaskViewId(int id) {
@@ -1266,33 +1258,6 @@ public class TaskView extends FrameLayout implements Reusable {
         mEndQuickswitchCuj = endQuickswitchCuj;
     }
 
-    private static final class TaskOutlineProvider extends ViewOutlineProvider {
-
-        private int mMarginTop;
-        private FullscreenDrawParams mFullscreenParams;
-
-        TaskOutlineProvider(Context context, FullscreenDrawParams fullscreenParams, int topMargin) {
-            mMarginTop = topMargin;
-            mFullscreenParams = fullscreenParams;
-        }
-
-        public void updateParams(FullscreenDrawParams params, int topMargin) {
-            mFullscreenParams = params;
-            mMarginTop = topMargin;
-        }
-
-        @Override
-        public void getOutline(View view, Outline outline) {
-            RectF insets = mFullscreenParams.mCurrentDrawnInsets;
-            float scale = mFullscreenParams.mScale;
-            outline.setRoundRect(0,
-                    (int) (mMarginTop * scale),
-                    (int) ((insets.left + view.getWidth() + insets.right) * scale),
-                    (int) ((insets.top + view.getHeight() + insets.bottom) * scale),
-                    mFullscreenParams.mCurrentDrawnCornerRadius);
-        }
-    }
-
     private int getExpectedViewHeight(View view) {
         int expectedHeight;
         int h = view.getLayoutParams().height;
@@ -1398,11 +1363,6 @@ public class TaskView extends FrameLayout implements Reusable {
         mSnapshotView.getTaskOverlay().setFullscreenProgress(progress);
 
         updateSnapshotRadius();
-
-        mOutlineProvider.updateParams(
-                mCurrentFullscreenParams,
-                mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx);
-        invalidateOutline();
     }
 
     protected void updateSnapshotRadius() {
