@@ -22,7 +22,7 @@
     <View
         android:id="@+id/bottom_sheet_handle_area"
         android:layout_width="match_parent"
-        android:layout_height="36dp" />
+        android:layout_height="@dimen/bottom_sheet_handle_area_height" />
 
     <View
         android:id="@+id/bottom_sheet_handle"
