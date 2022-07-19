@@ -563,10 +563,13 @@ public abstract class AbstractLauncherUiTest {
                     break;
                 }
                 case OVERVIEW: {
-                    checkLauncherStateInOverview(launcher, expectedContainerType, isStarted,
-                            isResumed);
-                    assertTrue(TestProtocol.stateOrdinalToString(ordinal),
-                            ordinal == TestProtocol.OVERVIEW_STATE_ORDINAL);
+                    verifyOverviewState(launcher, expectedContainerType, isStarted, isResumed,
+                            ordinal, TestProtocol.OVERVIEW_STATE_ORDINAL);
+                    break;
+                }
+                case SPLIT_SCREEN_SELECT: {
+                    verifyOverviewState(launcher, expectedContainerType, isStarted, isResumed,
+                            ordinal, TestProtocol.OVERVIEW_SPLIT_SELECT_ORDINAL);
                     break;
                 }
                 case TASKBAR_ALL_APPS:
@@ -632,5 +635,9 @@ public abstract class AbstractLauncherUiTest {
         return homeAppIcon;
     }
 
-
+    private void verifyOverviewState(Launcher launcher, ContainerType expectedContainerType,
+            boolean isStarted, boolean isResumed, int ordinal, int expectedOrdinal) {
+        checkLauncherStateInOverview(launcher, expectedContainerType, isStarted, isResumed);
+        assertEquals(TestProtocol.stateOrdinalToString(ordinal), ordinal, expectedOrdinal);
+    }
 }

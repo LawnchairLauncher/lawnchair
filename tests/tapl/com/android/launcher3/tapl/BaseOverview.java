@@ -19,6 +19,7 @@ package com.android.launcher3.tapl;
 import android.graphics.Rect;
 
 import androidx.annotation.NonNull;
+import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
@@ -166,6 +167,27 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                         mLauncher.getVisibleBounds(t2).width()));
 
         return new OverviewTask(mLauncher, widestTask, this);
+    }
+
+    /** Returns an overview task matching TestActivity {@param activityNumber}. */
+    @NonNull
+    public OverviewTask getTestActivityTask(int activityNumber) {
+        final List<UiObject2> taskViews = getTasks();
+        mLauncher.assertNotEquals("Unable to find a task", 0, taskViews.size());
+
+        final String activityName = "TestActivity" + activityNumber;
+        UiObject2 task = null;
+        for (UiObject2 taskView : taskViews) {
+            // TODO(b/239452415): Use equals instead of descEndsWith
+            if (taskView.getParent().hasObject(By.descEndsWith(activityName))) {
+                task = taskView;
+                break;
+            }
+        }
+        mLauncher.assertNotNull(
+                "Unable to find a task with " + activityName + " from the task list", task);
+
+        return new OverviewTask(mLauncher, task, this);
     }
 
     /**
