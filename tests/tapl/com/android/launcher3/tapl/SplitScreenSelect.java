@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 The Android Open Source Project
+ * Copyright (C) 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,25 +19,17 @@ package com.android.launcher3.tapl;
 import com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
 
 /**
- * Overview pane.
+ * Represents a special state in Overview where the initial split app is shoved to the side and a
+ * second split app can be selected.
  */
-public class Overview extends BaseOverview {
+public class SplitScreenSelect extends Overview {
 
-    Overview(LauncherInstrumentation launcher) {
+    SplitScreenSelect(LauncherInstrumentation launcher) {
         super(launcher);
     }
 
     @Override
     protected ContainerType getContainerType() {
-        return ContainerType.OVERVIEW;
-    }
-
-    @Override
-    public void dismissAllTasks() {
-        super.dismissAllTasks();
-        try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
-                "dismissed all tasks")) {
-            new Workspace(mLauncher);
-        }
+        return ContainerType.SPLIT_SCREEN_SELECT;
     }
 }

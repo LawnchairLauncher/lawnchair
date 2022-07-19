@@ -42,6 +42,8 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 import com.android.quickstep.SystemUiProxy;
@@ -171,6 +173,8 @@ public class SplitSelectStateController {
     public void launchTasks(int taskId1, @Nullable PendingIntent taskPendingIntent,
             @Nullable Intent fillInIntent, int taskId2, @StagePosition int stagePosition,
             Consumer<Boolean> callback, boolean freezeTaskList, float splitRatio) {
+        TestLogging.recordEvent(
+                TestProtocol.SEQUENCE_MAIN, "launchSplitTasks");
         // Assume initial task is for top/left part of screen
         final int[] taskIds = stagePosition == STAGE_POSITION_TOP_OR_LEFT
                 ? new int[]{taskId1, taskId2}

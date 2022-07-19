@@ -121,8 +121,8 @@ public final class LauncherInstrumentation {
     // Types for launcher containers that the user is interacting with. "Background" is a
     // pseudo-container corresponding to inactive launcher covered by another app.
     public enum ContainerType {
-        WORKSPACE, HOME_ALL_APPS, OVERVIEW, WIDGETS, FALLBACK_OVERVIEW, LAUNCHED_APP,
-        TASKBAR_ALL_APPS
+        WORKSPACE, HOME_ALL_APPS, OVERVIEW, SPLIT_SCREEN_SELECT, WIDGETS, FALLBACK_OVERVIEW,
+        LAUNCHED_APP, TASKBAR_ALL_APPS
     }
 
     public enum NavigationModel {ZERO_BUTTON, THREE_BUTTON}
@@ -744,7 +744,8 @@ public final class LauncherInstrumentation {
 
                     return waitForLauncherObject(APPS_RES_ID);
                 }
-                case OVERVIEW: {
+                case OVERVIEW:
+                case SPLIT_SCREEN_SELECT: {
                     waitUntilLauncherObjectGone(APPS_RES_ID);
                     waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
@@ -1087,6 +1088,14 @@ public final class LauncherInstrumentation {
         final UiObject2 object = mDevice.wait(
                 Until.findObject(By.res(SYSTEMUI_PACKAGE, resId)), WAIT_TIME_MS);
         assertNotNull("Can't find a systemui object with id: " + resId, object);
+        return object;
+    }
+
+    @NonNull
+    UiObject2 waitForSystemUiObject(BySelector selector) {
+        final UiObject2 object = TestHelpers.wait(
+                Until.findObject(selector), WAIT_TIME_MS);
+        assertNotNull("Can't find a systemui object with selector: " + selector, object);
         return object;
     }
 
