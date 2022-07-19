@@ -65,12 +65,9 @@ public class OverviewState extends LauncherState {
 
     @Override
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
-        RecentsView recentsView = launcher.getOverviewPanel();
-        float workspacePageHeight = launcher.getDeviceProfile().getCellLayoutHeight();
-        recentsView.getTaskSize(sTempRect);
-        float scale = (float) sTempRect.height() / workspacePageHeight;
         float parallaxFactor = 0.5f;
-        return new ScaleAndTranslation(scale, 0, -getDefaultSwipeHeight(launcher) * parallaxFactor);
+        return new ScaleAndTranslation(launcher.getDeviceProfile().overviewTaskWorkspaceScale, 0,
+                -getDefaultSwipeHeight(launcher) * parallaxFactor);
     }
 
     @Override
