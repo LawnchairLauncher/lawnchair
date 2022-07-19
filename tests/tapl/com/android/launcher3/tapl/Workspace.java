@@ -90,7 +90,7 @@ public final class Workspace extends Home {
             final int windowCornerRadius = (int) Math.ceil(mLauncher.getWindowCornerRadius());
             final int startY = deviceHeight - Math.max(bottomGestureMargin, windowCornerRadius) - 1;
             final int swipeHeight = mLauncher.getTestInfo(
-                    TestProtocol.REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT)
+                            TestProtocol.REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT)
                     .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
             LauncherInstrumentation.log(
                     "switchToAllApps: deviceHeight = " + deviceHeight + ", startY = " + startY
@@ -271,7 +271,7 @@ public final class Workspace extends Home {
 
     /**
      * @return map of text -> center of the view. In case of icons with the same name, the one with
-     *     lower x coordinate is selected.
+     * lower x coordinate is selected.
      */
     public Map<String, Point> getWorkspaceIconsPositions() {
         final UiObject2 workspace = verifyActiveContainer();
@@ -284,6 +284,7 @@ public final class Workspace extends Home {
                                 /* valueMapper= */ UiObject2::getVisibleCenter,
                                 /* mergeFunction= */ (p1, p2) -> p1.x < p2.x ? p1 : p2));
     }
+
     /*
      * Get the center point of the delete/uninstall icon in the drop target bar.
      */
@@ -579,6 +580,32 @@ public final class Workspace extends Home {
                     timeout);
             return widget != null ? new Widget(mLauncher, widget) : null;
         }
+    }
+
+    /**
+     * @param cellX X position of the widget trying to get.
+     * @param cellY Y position of the widget trying to get.
+     * @return returns the Widget in the given position in the Launcher or an Exception if no such
+     * widget is in that position.
+     */
+    @NonNull
+    public Widget getWidgetAtCell(int cellX, int cellY) {
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "getting widget at cell position " + cellX + "," + cellY)) {
+            final List<UiObject2> widgets = mLauncher.waitForObjectsBySelector(
+                    By.clazz("com.android.launcher3.widget.LauncherAppWidgetHostView"));
+            Point coordinateInScreen = Workspace.getCellCenter(mLauncher, cellX, cellY);
+            for (UiObject2 widget : widgets) {
+                if (widget.getVisibleBounds().contains(coordinateInScreen.x,
+                        coordinateInScreen.y)) {
+                    return new Widget(mLauncher, widget);
+                }
+            }
+        }
+        mLauncher.fail("Unable to find widget at cell " + cellX + "," + cellY);
+        // This statement is unreachable because mLauncher.fail throws an exception
+        // but is needed for compiling
+        return null;
     }
 
     @Nullable

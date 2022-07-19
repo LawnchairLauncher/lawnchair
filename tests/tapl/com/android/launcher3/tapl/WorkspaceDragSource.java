@@ -32,21 +32,34 @@ interface WorkspaceDragSource {
         Launchable launchable = getLaunchable();
         LauncherInstrumentation launcher = launchable.mLauncher;
         try (LauncherInstrumentation.Closable e = launcher.eventsCheck()) {
-            final Point launchableCenter = launchable.getObject().getVisibleCenter();
-            final Point displaySize = launcher.getRealDisplaySize();
-            final int width = displaySize.x / 2;
-            Workspace.dragIconToWorkspace(
-                    launcher,
-                    launchable,
-                    () -> new Point(
-                            launchableCenter.x >= width
-                                    ? launchableCenter.x - width / 2
-                                    : launchableCenter.x + width / 2,
-                            displaySize.y / 2),
-                    startsActivity,
-                    isWidgetShortcut,
-                    launchable::addExpectedEventsForLongClick);
+            internalDragToWorkspace(startsActivity, isWidgetShortcut);
         }
+    }
+
+    /**
+     * TODO(Redesign WorkspaceDragSource to have actual private methods)
+     * Temporary private method
+     *
+     * @param startsActivity   whether it's expected to start an activity.
+     * @param isWidgetShortcut whether we drag a widget shortcut
+     */
+    default void internalDragToWorkspace(boolean startsActivity, boolean isWidgetShortcut) {
+        Launchable launchable = getLaunchable();
+        LauncherInstrumentation launcher = launchable.mLauncher;
+        final Point launchableCenter = launchable.getObject().getVisibleCenter();
+        final Point displaySize = launcher.getRealDisplaySize();
+        final int width = displaySize.x / 2;
+        Workspace.dragIconToWorkspace(
+                launcher,
+                launchable,
+                () -> new Point(
+                        launchableCenter.x >= width
+                                ? launchableCenter.x - width / 2
+                                : launchableCenter.x + width / 2,
+                        displaySize.y / 2),
+                startsActivity,
+                isWidgetShortcut,
+                launchable::addExpectedEventsForLongClick);
     }
 
     /**
