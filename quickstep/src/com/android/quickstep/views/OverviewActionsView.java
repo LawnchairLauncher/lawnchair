@@ -204,7 +204,11 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         if (mDp == null) {
             return;
         }
-        if (mDp.areNavButtonsInline) {
+        boolean largeScreenLandscape = mDp.isTablet && !mDp.isTwoPanels && mDp.isLandscape;
+        // If in 3-button mode, shift action buttons to accommodate 3-button layout.
+        // (Special exception for landscape tablets, where there is enough room and we don't need to
+        // shift the action buttons.)
+        if (mDp.areNavButtonsInline && !largeScreenLandscape) {
             // Add extra horizontal spacing
             int additionalPadding = mDp.hotseatBarEndOffset;
             if (isLayoutRtl()) {
