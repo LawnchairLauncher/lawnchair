@@ -141,6 +141,7 @@ public interface ActivityContext {
     default void applyOverwritesToLogItem(LauncherAtom.ItemInfo.Builder itemInfoBuilder) { }
 
     /** Onboarding preferences for any onboarding data within this context. */
+    @Nullable
     default OnboardingPrefs<?> getOnboardingPrefs() {
         return null;
     }
