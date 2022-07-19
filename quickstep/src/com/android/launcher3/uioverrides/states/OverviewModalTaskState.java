@@ -18,8 +18,6 @@ package com.android.launcher3.uioverrides.states;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
 
 import android.content.Context;
-import android.graphics.Point;
-import android.graphics.Rect;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Launcher;
@@ -71,13 +69,6 @@ public class OverviewModalTaskState extends OverviewState {
     }
 
     public static float[] getOverviewScaleAndOffsetForModalState(BaseDraggingActivity activity) {
-        Point taskSize = activity.<RecentsView>getOverviewPanel().getSelectedTaskSize();
-        Rect modalTaskSize = new Rect();
-        activity.<RecentsView>getOverviewPanel().getModalTaskSize(modalTaskSize);
-
-        float scale = Math.min((float) modalTaskSize.height() / taskSize.y,
-                (float) modalTaskSize.width() / taskSize.x);
-
-        return new float[] {scale, NO_OFFSET};
+        return new float[] {activity.getDeviceProfile().overviewModalTaskScale, NO_OFFSET};
     }
 }

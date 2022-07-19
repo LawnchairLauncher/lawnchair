@@ -37,6 +37,7 @@ abstract class DeviceProfileBaseTest {
     protected var transposeLayoutWithOrientation: Boolean = false
     protected var useTwoPanels: Boolean = false
     protected var isGestureMode: Boolean = true
+    protected var isRecentsRtl: Boolean = true
 
     @Before
     fun setUp() {
@@ -163,7 +164,7 @@ abstract class DeviceProfileBaseTest {
     fun dump(dp: DeviceProfile): StringWriter {
         val stringWriter = StringWriter()
         val printWriter = PrintWriter(stringWriter)
-        dp.dump("", printWriter)
+        dp.dump(context, "", printWriter)
         printWriter.flush()
         return stringWriter
     }
