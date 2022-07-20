@@ -57,7 +57,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Handles updates due to changes in package manager (app installed/updated/removed)
@@ -343,7 +345,12 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                     .or(ItemInfoMatcher.ofComponents(removedComponents, mUser))
                     .and(ItemInfoMatcher.ofItemIds(forceKeepShortcuts).negate());
             deleteAndBindComponentsRemoved(removeMatch,
-                    "removed because the corresponding package or component is removed");
+                    "removed because the corresponding package or component is removed. "
+                            + "mOp=" + mOp + " removedPackages=" + removedPackages.stream().collect(
+                                    Collectors.joining(",", "[", "]"))
+                            + " removedComponents=" + removedComponents.stream()
+                            .filter(Objects::nonNull).map(ComponentName::toShortString)
+                            .collect(Collectors.joining(",", "[", "]")));
 
             // Remove any queued items from the install queue
             ItemInstallQueue.INSTANCE.get(context)
