@@ -88,6 +88,7 @@ import com.android.launcher3.model.data.SearchActionItemInfo;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
+import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
@@ -525,9 +526,10 @@ public final class Utilities {
     }
 
     public static int pxFromSp(float size, DisplayMetrics metrics, float scale) {
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
-                size, metrics) * scale);
+        float value = scale * TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, size, metrics);
+        return ResourceUtils.roundPxValueFromFloat(value);
     }
+
 
     public static String createDbSelectionQuery(String columnName, IntArray values) {
         return String.format(Locale.ENGLISH, "%s IN (%s)", columnName, values.toConcatString());

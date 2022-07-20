@@ -21,6 +21,7 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
 public class ResourceUtils {
+    private static final float EPSILON = 0.0001f;
     public static final int DEFAULT_NAVBAR_VALUE = 48;
     public static final int INVALID_RESOURCE_HANDLE = -1;
     public static final String NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE = "navigation_bar_width";
@@ -71,7 +72,25 @@ public class ResourceUtils {
     }
 
     public static int pxFromDp(float size, DisplayMetrics metrics, float scale) {
-        return size < 0 ? INVALID_RESOURCE_HANDLE : Math.round(scale
-                * TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, metrics));
+        float value = scale * TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, metrics);
+        return size < 0 ? INVALID_RESOURCE_HANDLE : roundPxValueFromFloat(value);
+    }
+
+    /**
+     * Rounds a pixel value, taking into account floating point errors.
+     *
+     * <p>If a dp (or sp) value typically returns a half pixel, such as 20dp at a 2.625 density
+     * returning 52.5px, there is a small chance that due to floating-point errors, the value will
+     * be stored as 52.499999. As we round to the nearest pixel, this could cause a 1px difference
+     * in final values, which we correct for in this method.
+     */
+    public static int roundPxValueFromFloat(float value) {
+        float fraction = (float) (value - Math.floor(value));
+        if (Math.abs(0.5f - fraction) < EPSILON) {
+            // Note: we add for negative values as well, as Math.round brings -.5 to the next
+            // "highest" value, e.g. Math.round(-2.5) == -2 [i.e. (int)Math.floor(a + 0.5d)]
+            value += EPSILON;
+        }
+        return Math.round(value);
     }
 }
