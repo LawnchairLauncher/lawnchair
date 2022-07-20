@@ -220,7 +220,6 @@ public class RecentsAnimationController {
      */
     public void enableInputConsumer() {
         UI_HELPER_EXECUTOR.submit(() -> {
-            mController.hideCurrentInputMethod();
             mController.setInputConsumerEnabled(true);
         });
     }
