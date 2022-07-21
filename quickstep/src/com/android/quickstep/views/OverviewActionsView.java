@@ -93,7 +93,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     @Nullable
     protected DeviceProfile mDp;
-    private final Rect mTaskSize = new Rect();
 
     public OverviewActionsView(Context context) {
         this(context, null);
@@ -205,7 +204,11 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         if (mDp == null) {
             return;
         }
-        if (mDp.areNavButtonsInline) {
+        boolean largeScreenLandscape = mDp.isTablet && !mDp.isTwoPanels && mDp.isLandscape;
+        // If in 3-button mode, shift action buttons to accommodate 3-button layout.
+        // (Special exception for landscape tablets, where there is enough room and we don't need to
+        // shift the action buttons.)
+        if (mDp.areNavButtonsInline && !largeScreenLandscape) {
             // Add extra horizontal spacing
             int additionalPadding = mDp.hotseatBarEndOffset;
             if (isLayoutRtl()) {
@@ -240,16 +243,15 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         }
 
         // Align to bottom of task Rect.
-        return mDp.heightPx - mTaskSize.bottom - mDp.overviewActionsTopMarginPx
+        return mDp.heightPx - mDp.overviewTaskRect.bottom - mDp.overviewActionsTopMarginPx
                 - mDp.overviewActionsHeight;
     }
 
     /**
-     * Updates device profile and task size for this view to draw with.
+     * Updates device profile for this view to draw with.
      */
-    public void updateDimension(DeviceProfile dp, Rect taskSize) {
+    public void updateDimension(DeviceProfile dp) {
         mDp = dp;
-        mTaskSize.set(taskSize);
         updateVerticalMargin(DisplayController.getNavigationMode(getContext()));
 
         requestLayout();

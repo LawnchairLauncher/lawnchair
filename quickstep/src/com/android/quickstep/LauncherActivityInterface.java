@@ -70,14 +70,14 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
-    public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect,
+    public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
             PagedOrientationHandler orientationHandler) {
-        calculateTaskSize(context, dp, outRect);
         if (dp.isVerticalBarLayout()
                 && DisplayController.getNavigationMode(context) != NavigationMode.NO_BUTTON) {
-            return dp.isSeascape() ? outRect.left : (dp.widthPx - outRect.right);
+            return dp.isSeascape()
+                    ? dp.overviewTaskRect.left : (dp.widthPx - dp.overviewTaskRect.right);
         } else {
-            return LayoutUtils.getShelfTrackingDistance(context, dp, orientationHandler);
+            return LayoutUtils.getShelfTrackingDistance(dp, orientationHandler);
         }
     }
 

@@ -25,7 +25,6 @@ import static android.view.Surface.ROTATION_90;
 import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SettingsCache.ROTATION_SETTING_URI;
-import static com.android.quickstep.BaseActivityInterface.getTaskDimension;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
@@ -398,8 +397,8 @@ public class RecentsOrientedState implements
      * Returns the scale and pivot so that the provided taskRect can fit the provided full size
      */
     public float getFullScreenScaleAndPivot(Rect taskView, DeviceProfile dp, PointF outPivot) {
-        getTaskDimension(dp, outPivot);
-        float scale = Math.min(outPivot.x / taskView.width(), outPivot.y / taskView.height());
+        float scale = Math.min(dp.taskDimension.x / taskView.width(),
+                dp.taskDimension.y / taskView.height());
         if (scale == 1) {
             outPivot.set(taskView.centerX(), taskView.centerY());
         } else {

@@ -86,7 +86,6 @@ public class OverviewActions {
                     "clicked select button")) {
                 return getSelectModeButtons();
             }
-
         }
     }
 
@@ -101,6 +100,24 @@ public class OverviewActions {
                 "want to get select mode buttons")) {
             UiObject2 selectModeButtons = mLauncher.waitForLauncherObject("select_mode_buttons");
             return new SelectModeButtons(selectModeButtons, mLauncher);
+        }
+    }
+
+    /**
+     * Clicks split button and enters split select mode.
+     */
+    @NonNull
+    public SplitScreenSelect clickSplit() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to click split button to enter split select mode")) {
+            UiObject2 split = mLauncher.waitForObjectInContainer(mOverviewActions,
+                    "action_split");
+            mLauncher.clickLauncherObject(split);
+            try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer(
+                    "clicked split")) {
+                return new SplitScreenSelect(mLauncher);
+            }
         }
     }
 }

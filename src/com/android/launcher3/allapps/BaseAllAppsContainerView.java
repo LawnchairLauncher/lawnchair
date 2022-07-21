@@ -147,8 +147,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
 
         mWorkManager = new WorkProfileManager(
                 mActivityContext.getSystemService(UserManager.class),
-                this,
-                Utilities.getPrefs(mActivityContext), mActivityContext.getDeviceProfile());
+                this, Utilities.getPrefs(mActivityContext));
         mAH = Arrays.asList(null, null, null);
         mAH.set(AdapterHolder.MAIN, new AdapterHolder(AdapterHolder.MAIN));
         mAH.set(AdapterHolder.WORK, new AdapterHolder(AdapterHolder.WORK));
@@ -603,6 +602,8 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         if (mAH.get(currentActivePage).mRecyclerView != null) {
             mAH.get(currentActivePage).mRecyclerView.bindFastScrollbar();
         }
+        // Header keeps track of active recycler view to properly render header protection.
+        mHeader.setActiveRV(currentActivePage);
         reset(true /* animate */);
 
         mWorkManager.onActivePageChanged(currentActivePage);
@@ -800,12 +801,9 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
             mType = type;
             mAppsList = new AlphabeticalAppsList<>(mActivityContext,
                     isSearch() ? null : mAllAppsStore,
-                    isWork() ? mWorkManager.getAdapterProvider() : null);
-
+                    isWork() ? mWorkManager : null);
             BaseAdapterProvider[] adapterProviders =
-                    isWork() ? new BaseAdapterProvider[]{mMainAdapterProvider,
-                            mWorkManager.getAdapterProvider()}
-                            : new BaseAdapterProvider[]{mMainAdapterProvider};
+                    new BaseAdapterProvider[]{mMainAdapterProvider};
 
             mAdapter = createAdapter(mAppsList, adapterProviders);
             mAppsList.setAdapter(mAdapter);
