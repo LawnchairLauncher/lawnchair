@@ -38,7 +38,7 @@
     <string name="home_screen_grid">ഹോം സ്ക്രീനിലെ കളം</string>
     <string name="home_screen_lock">ലോക്ക് ഹോം സ്‌ക്രീൻ</string>
     <string name="home_screen_unlock">അൺലോക്ക് ഹോം സ്‌ക്രീൻ</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_lock_toggle_from_home_popup">ഹോം_സ്ക്രീൻ_ലോക്ക്</string>
     <string name="columns">നിരകൾ</string>
     <string name="grid">കളം</string>
     <string name="rows">വരികൾ</string>
@@ -60,7 +60,7 @@
     <string name="app_info_drop_target_label">ആപ്പ് വിവരം</string>
     <string name="item_removed">ഇനം നീക്കംചെയ്തു.</string>
     <string name="all_apps_no_search_results">No apps found matching “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
-    <string name="translucent_background">Translucent Background</string>
+    <string name="translucent_background">അല്പം സുതാര്യമായ_ പശ്ചാത്തലം</string>
     <string name="background_opacity">പശ്ചാത്തല ഒപാസിറ്റി</string>
     <string name="background_lightness_label">പശ്ചാത്തല ലാഘവത്വം</string>
     <string name="adaptive_icons">അഡാപ്റ്റീവ് ഐക്കണുകൾ</string>
@@ -80,7 +80,7 @@
         <item quantity="other">%1$d ആപ്പുകൾ</item>
     </plurals>
     <string name="hotseat_qsb_label">തിരയൽ ബാർ കാണിക്കുക</string>
-    <string name="qsb_search_provider_app_required">App required.</string>
+    <string name="qsb_search_provider_app_required">qsb_തിരയൽ_സ്രോതസ്സ്_അപ്ലിക്കേഷൻ_നിർബന്ധമാണ്</string>
     <string name="dt2s_admin_hint_title">കാര്യസ്ത്യാധികാരം ആവശ്യമാണ്</string>
     <string name="dt2s_admin_hint">ഉറങ്ങാൻ രണ്ടുതവണ ടാപ്പ് ചെയ്യാൻ, ലോൺചെയർ ഒരു ഉപകരണ അഡ്‌മിൻ ആപ്പായി സജ്ജീകരിക്കുക. ക്രമീകരണങ്ങൾ തുറക്കുക, തുടർന്ന് \"ഈ ഉപകരണ അഡ്‌മിൻ ആപ്പ് സജീവമാക്കുക\" ടാപ്പ് ചെയ്യുക</string>
     <string name="dt2s_admin_warning">ഉറങ്ങാൻ രണ്ടുതവണ ടാപ്പ് ചെയ്യുന്നത് ഓഫാകും.</string>
@@ -103,7 +103,7 @@
     <string name="window_corner_radius_description">സമീപകാലങ്ങൾ തുറക്കാൻ നിങ്ങൾ മുകളിലേക്ക് സ്വൈപ്പ് ചെയ്യുമ്പോൾ, നിലവിലെ ആപ്പ് നിങ്ങളുടെ വിരലിനെ പിന്തുടരുന്നു, ഒരു കാർഡായി ചുരുങ്ങുന്നു. നിങ്ങളുടെ സ്‌ക്രീനിന്റെ കോണുകളുമായി പൊരുത്തപ്പെടുന്ന തരത്തിൽ ഏതാണ്ട് പൂർണ്ണ സ്‌ക്രീൻ ആയിരിക്കുമ്പോൾ കാർഡിന്റെ കോർണർ ആരം ക്രമീകരിക്കാൻ ഈ സ്ലൈഡർ ഉപയോഗിക്കുക.</string>
     <string name="system_icons">സിസ്റ്റം ഐക്കണുകൾ</string>
     <string name="accent_color">ആക്സന്റ് നിറം</string>
-    <string name="invalid_color">Invalid Color</string>
+    <string name="invalid_color">അസാധുവായ നിറം</string>
     <string name="done">ചെയ്തു</string>
     <string name="loading">ലോഡ് ചെയുന്നു…</string>
     <string name="system">സിസ്റ്റം</string>
@@ -112,7 +112,7 @@
     <string name="quickstep_description">എല്ലാം മായികാനുള്ള ബട്ടൺ, മൂലയുടെ ആരം</string>
     <string name="wallpaper_scrolling_label">വാൾപേപ്പർ സ്ക്രോൾ ചെയ്യുക</string>
     <string name="show_sys_ui_scrim">മുകളിലെ നിഴൽ</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_status_bar">സ്റ്റാറ്റസ് ബാർ കാണിക്കുക</string>
     <string name="layout">Layout</string>
     <string name="what_to_show">എന്തു കാണികണം</string>
     <string name="missing_notification_access_label">നോട്ടിഫിക്കേഷൻ അക്സസ്സ് ആവശ്യമാണ്</string>
