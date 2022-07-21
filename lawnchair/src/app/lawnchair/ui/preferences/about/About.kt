@@ -111,12 +111,6 @@ private val product = listOf(
         socialUrl = "https://twitter.com/paphonb",
     ),
     TeamMember(
-        name = "Patryk Michalik",
-        role = Role.Development,
-        photoUrl = "https://raw.githubusercontent.com/patrykmichalik/brand/master/logo-on-indigo.png",
-        socialUrl = "https://patrykmichalik.com",
-    ),
-    TeamMember(
         name = "raphtlw",
         role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/47694127",
