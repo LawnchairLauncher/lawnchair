@@ -22,6 +22,7 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITIO
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
 import static com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
+import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
 import static com.android.quickstep.util.RecentsOrientedState.postDisplayRotation;
 import static com.android.quickstep.util.RecentsOrientedState.preDisplayRotation;
 import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
@@ -387,7 +388,14 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
                 .withCornerRadius(getCurrentCornerRadius());
 
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            builder.withLayer(mDrawsBelowRecents ? Integer.MIN_VALUE + 1 : Integer.MAX_VALUE);
+            // In legacy transitions, the animation leashes remain in same hierarchy in the
+            // TaskDisplayArea, so we don't want to bump the layer too high otherwise it will
+            // conflict with layers that WM core positions (ie. the input consumers).  For shell
+            // transitions, the animation leashes are reparented to an animation container so we
+            // can bump layers as needed.
+            builder.withLayer(mDrawsBelowRecents
+                    ? Integer.MIN_VALUE + 1
+                    : ENABLE_SHELL_TRANSITIONS ? Integer.MAX_VALUE : 0);
         }
     }
 
