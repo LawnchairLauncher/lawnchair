@@ -28,75 +28,75 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"Comanda rapidă nu este disponibilă"</string>
     <string name="home_screen" msgid="5629429142036709174">"Pagina de pornire"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Ecran împărțit"</string>
-    <string name="split_screen_position_top" msgid="1504965011158689649">"Împărțiți în sus"</string>
-    <string name="split_screen_position_left" msgid="7537793098851830883">"Împărțiți în stânga"</string>
-    <string name="split_screen_position_right" msgid="1569377524925193369">"Împărțiți în dreapta"</string>
+    <string name="split_screen_position_top" msgid="1504965011158689649">"Împarte în sus"</string>
+    <string name="split_screen_position_left" msgid="7537793098851830883">"Împarte în stânga"</string>
+    <string name="split_screen_position_right" msgid="1569377524925193369">"Împarte în dreapta"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Informații despre aplicație pentru %1$s"</string>
-    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Atingeți și țineți apăsat pentru a muta un widget."</string>
-    <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Atingeți de două ori și țineți apăsat pentru a muta un widget sau folosiți acțiuni personalizate."</string>
+    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Atinge și ține apăsat pentru a muta un widget."</string>
+    <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Atinge de două ori și ține apăsat pentru a muta un widget sau folosește acțiuni personalizate."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d lățime și %2$d înălțime"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"Widgetul <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
-    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Atingeți lung widgetul pentru a-l muta pe ecranul de pornire"</string>
-    <string name="add_to_home_screen" msgid="9168649446635919791">"Adăugați pe ecranul de pornire"</string>
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Atinge lung widgetul pentru a-l muta pe ecranul de pornire"</string>
+    <string name="add_to_home_screen" msgid="9168649446635919791">"Adaugă pe ecranul de pornire"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Widgetul <xliff:g id="WIDGET_NAME">%1$s</xliff:g> a fost adăugat pe ecranul de pornire"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# widget}few{# widgeturi}other{# de widgeturi}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# comandă rapidă}few{# comenzi rapide}other{# de comenzi rapide}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g> <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widgeturi"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Căutare"</string>
-    <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Ștergeți textul din caseta de căutare"</string>
+    <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Șterge textul din caseta de căutare"</string>
     <string name="no_widgets_available" msgid="4337693382501046170">"Widgeturile și comenzile rapide nu sunt disponibile"</string>
     <string name="no_search_results" msgid="3787956167293097509">"Nu au fost găsite widgeturi sau comenzi rapide"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Personale"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Serviciu"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Conversații"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"Informații utile la îndemâna dvs."</string>
-    <string name="widget_education_content" msgid="1731667670753497052">"Pentru a primi informații fără să deschideți aplicațiile, puteți adăuga widgeturi pe ecranul de pornire"</string>
-    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Atingeți ca să schimbați setările pentru widgeturi"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"Informații utile la îndemâna ta"</string>
+    <string name="widget_education_content" msgid="1731667670753497052">"Pentru a primi informații fără să deschizi aplicațiile, poți adăuga widgeturi pe ecranul de pornire"</string>
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Atinge ca să schimbi setările pentru widgeturi"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"OK"</string>
-    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Modificați setările pentru widgeturi"</string>
-    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Căutați aplicații"</string>
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Modifică setările pentru widgeturi"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Caută aplicații"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Se încarcă aplicații…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Nu s-a găsit nicio aplicație pentru „<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"Căutați mai multe aplicații"</string>
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"Caută mai multe aplicații"</string>
     <string name="label_application" msgid="8531721983832654978">"Aplicație"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"Toate aplicațiile"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Notificări"</string>
-    <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Atingeți și țineți apăsat pentru a muta comanda rapidă."</string>
-    <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Atingeți de două ori și țineți apăsat pentru a muta o comandă rapidă sau folosiți acțiuni personalizate."</string>
+    <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Atinge și ține apăsat ca să muți comanda rapidă."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Atinge de două ori și ține apăsat pentru a muta o comandă rapidă sau folosește acțiuni personalizate."</string>
     <string name="out_of_space" msgid="6455557115204099579">"Nu există spațiu liber pe acest ecran de pornire"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Spațiu epuizat în bara Preferate"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Lista de aplicații"</string>
     <string name="all_apps_search_results" msgid="5889367432531296759">"Rezultatele căutării"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Lista de aplicații personale"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Lista de aplicații de serviciu"</string>
-    <string name="remove_drop_target_label" msgid="7812859488053230776">"Eliminați"</string>
-    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Dezinstalați"</string>
+    <string name="remove_drop_target_label" msgid="7812859488053230776">"Elimină"</string>
+    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Dezinstalează"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Informații despre aplicații"</string>
-    <string name="install_drop_target_label" msgid="2539096853673231757">"Instalați"</string>
+    <string name="install_drop_target_label" msgid="2539096853673231757">"Instalează"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Nu sugera aplicația"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Fixează predicția"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"instalează comenzi rapide"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Permite unei aplicații să adauge comenzi rapide fără intervenția utilizatorului."</string>
-    <string name="permlab_read_settings" msgid="5136500343007704955">"citiți setările și comenzile rapide de pe ecranul de pornire"</string>
+    <string name="permlab_read_settings" msgid="5136500343007704955">"citește setările și comenzile rapide de pe ecranul de pornire"</string>
     <string name="permdesc_read_settings" msgid="4208061150510996676">"Permite aplicației să citească setările și comenzile rapide de pe ecranul de pornire."</string>
-    <string name="permlab_write_settings" msgid="4820028712156303762">"scrieți setările și comenzile rapide de pe ecranul de pornire"</string>
+    <string name="permlab_write_settings" msgid="4820028712156303762">"scrie setările și comenzile rapide de pe ecranul de pornire"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"Permite aplicației să modifice setările și comenzile rapide de pe ecranul de pornire."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> nu are permisiunea de a apela"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Widgetul nu poate fi încărcat"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Setări pentru widget"</string>
-    <string name="gadget_complete_setup_text" msgid="309040266978007925">"Atingeți pentru a finaliza configurarea"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"Atinge pentru a finaliza configurarea"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Aceasta este o aplicație de sistem și nu poate fi dezinstalată."</string>
-    <string name="folder_hint_text" msgid="5174843001373488816">"Modificați numele"</string>
+    <string name="folder_hint_text" msgid="5174843001373488816">"Modifică numele"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"S-a dezactivat <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} are # notificare}few{{app_name} are # notificări}other{{app_name} are # de notificări}}"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Pagina %1$d din %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Ecranul de pornire %1$d din %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Pagină nouă pe ecranul de pornire"</string>
     <string name="folder_opened" msgid="94695026776264709">"Dosar deschis, <xliff:g id="WIDTH">%1$d</xliff:g> pe <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
-    <string name="folder_tap_to_close" msgid="4625795376335528256">"Atingeți pentru a închide dosarul"</string>
-    <string name="folder_tap_to_rename" msgid="4017685068016979677">"Atingeți pentru a salva noul nume"</string>
+    <string name="folder_tap_to_close" msgid="4625795376335528256">"Atinge pentru a închide dosarul"</string>
+    <string name="folder_tap_to_rename" msgid="4017685068016979677">"Atinge pentru a salva noul nume"</string>
     <string name="folder_closed" msgid="4100806530910930934">"Dosar închis"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Dosar redenumit <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Dosar: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> elemente"</string>
@@ -105,58 +105,58 @@
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Imagine de fundal și stil"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Setări ecran de pornire"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Dezactivată de administrator"</string>
-    <string name="allow_rotation_title" msgid="7222049633713050106">"Permiteți rotirea ecranului de pornire"</string>
+    <string name="allow_rotation_title" msgid="7222049633713050106">"Permite rotirea ecranului de pornire"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Când telefonul este rotit"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Puncte de notificare"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Activate"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Dezactivate"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Este necesar accesul la notificări"</string>
-    <string name="msg_missing_notification_access" msgid="281113995110910548">"Pentru a afișa punctele de notificare, activați notificările din aplicație pentru <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="title_change_settings" msgid="1376365968844349552">"Modificați setările"</string>
-    <string name="notification_dots_service_title" msgid="4284221181793592871">"Afișați punctele de notificare"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"Pentru a afișa punctele de notificare, activează notificările din aplicație pentru <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"Modifică setările"</string>
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"Afișează punctele de notificare"</string>
     <string name="developer_options_title" msgid="700788437593726194">"Opțiuni dezvoltator"</string>
-    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Adăugați pictograme de aplicații pe ecranul de pornire"</string>
+    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Adaugă pictograme de aplicații pe ecranul de pornire"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Pentru aplicații noi"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Necunoscut"</string>
-    <string name="abandoned_clean_this" msgid="7610119707847920412">"Eliminați"</string>
-    <string name="abandoned_search" msgid="891119232568284442">"Căutați"</string>
+    <string name="abandoned_clean_this" msgid="7610119707847920412">"Elimină"</string>
+    <string name="abandoned_search" msgid="891119232568284442">"Caută"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Aplicația nu este instalată"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Aplicația pentru această pictogramă nu este instalată. Puteți să ștergeți pictograma sau să căutați aplicația și s-o instalați manual."</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Aplicația pentru această pictogramă nu este instalată. Poți să ștergi pictograma sau să cauți aplicația și s-o instalezi manual."</string>
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> se instalează, <xliff:g id="PROGRESS">%2$s</xliff:g> finalizat"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> se descarcă (finalizat <xliff:g id="PROGRESS">%2$s</xliff:g>)"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> așteaptă instalarea"</string>
     <string name="dialog_update_title" msgid="114234265740994042">"Este necesară actualizarea aplicației"</string>
-    <string name="dialog_update_message" msgid="4176784553982226114">"Aplicația pentru această pictogramă nu este actualizată. Puteți să actualizați manual ca să reactivați comanda rapidă sau să eliminați pictograma."</string>
-    <string name="dialog_update" msgid="2178028071796141234">"Actualizați"</string>
-    <string name="dialog_remove" msgid="6510806469849709407">"Eliminați"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"Aplicația pentru această pictogramă nu este actualizată. Poți să actualizezi manual ca să reactivezi comanda rapidă sau să elimini pictograma."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"Actualizează"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"Elimină"</string>
     <string name="widgets_list" msgid="796804551140113767">"Listă de widgeturi"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Lista de widgeturi este închisă"</string>
-    <string name="action_add_to_workspace" msgid="215894119683164916">"Adăugați pe ecranul de pornire"</string>
-    <string name="action_move_here" msgid="2170188780612570250">"Mutați elementul aici"</string>
+    <string name="action_add_to_workspace" msgid="215894119683164916">"Adaugă pe ecranul de pornire"</string>
+    <string name="action_move_here" msgid="2170188780612570250">"Mută elementul aici"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Element adăugat pe ecranul de pornire"</string>
     <string name="item_removed" msgid="851119963877842327">"Element eliminat"</string>
-    <string name="undo" msgid="4151576204245173321">"Anulați"</string>
-    <string name="action_move" msgid="4339390619886385032">"Mutați elementul"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"Mutați pe rândul <xliff:g id="NUMBER_0">%1$s</xliff:g>, coloana <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
-    <string name="move_to_position" msgid="6750008980455459790">"Mutați pe poziția <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
-    <string name="move_to_hotseat_position" msgid="6295412897075147808">"Mutați în preferate, pe poziția <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="undo" msgid="4151576204245173321">"Anulează"</string>
+    <string name="action_move" msgid="4339390619886385032">"Mută elementul"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"Mută pe rândul <xliff:g id="NUMBER_0">%1$s</xliff:g>, coloana <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"Mută pe poziția <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"Mută în preferate, pe poziția <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="item_moved" msgid="4606538322571412879">"Element mutat"</string>
-    <string name="add_to_folder" msgid="9040534766770853243">"Adăugați în dosar: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="add_to_folder_with_app" msgid="4534929978967147231">"Adăugați în dosarul cu <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"Adaugă în dosar: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"Adaugă în dosarul cu <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="added_to_folder" msgid="4793259502305558003">"Element adăugat în dosar"</string>
-    <string name="create_folder_with" msgid="4050141361160214248">"Creați dosar cu: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"Creează dosar cu: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"Dosar creat"</string>
-    <string name="action_move_to_workspace" msgid="39528912300293768">"Mutați pe ecranul de pornire"</string>
-    <string name="action_resize" msgid="1802976324781771067">"Redimensionați"</string>
-    <string name="action_increase_width" msgid="8773715375078513326">"Creșteți lățimea"</string>
-    <string name="action_increase_height" msgid="459390020612501122">"Creșteți înălțimea"</string>
-    <string name="action_decrease_width" msgid="1374549771083094654">"Reduceți lățimea"</string>
-    <string name="action_decrease_height" msgid="282377193880900022">"Reduceți înălțimea"</string>
+    <string name="action_move_to_workspace" msgid="39528912300293768">"Mută pe ecranul de pornire"</string>
+    <string name="action_resize" msgid="1802976324781771067">"Redimensionează"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"Crește lățimea"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"Crește înălțimea"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"Redu lățimea"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"Redu înălțimea"</string>
     <string name="widget_resized" msgid="9130327887929620">"Widgetul a fost redimensionat la lățimea <xliff:g id="NUMBER_0">%1$s</xliff:g> și înălțimea <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Comenzi rapide"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Comenzi rapide și notificări"</string>
-    <string name="action_dismiss_notification" msgid="5909461085055959187">"Închideți"</string>
-    <string name="accessibility_close" msgid="2277148124685870734">"Închideți"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"Închide"</string>
+    <string name="accessibility_close" msgid="2277148124685870734">"Închide"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Notificare închisă"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personale"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Profesionale"</string>
@@ -164,14 +164,14 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Aplicațiile pentru lucru sunt marcate și vizibile pentru administratorul IT"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Aplicațiile pentru lucru sunt întrerupte"</string>
-    <string name="work_apps_paused_body" msgid="261634750995824906">"Aplicațiile pentru lucru nu pot să vă trimită notificări, să folosească bateria sau să vă acceseze locația"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Aplicațiile pentru lucru sunt dezactivate. Acestea nu pot să vă trimită notificări, să folosească bateria sau să vă acceseze locația."</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"Aplicațiile pentru lucru nu pot să-ți trimită notificări, să folosească bateria sau să-ți acceseze locația"</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Aplicațiile pentru lucru sunt dezactivate. Acestea nu pot să-ți trimită notificări, să folosească bateria sau să-ți acceseze locația."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Aplicațiile pentru lucru sunt marcate și vizibile pentru administratorul IT"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Întrerupeți aplicațiile pentru lucru"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Activați aplicațiile pentru lucru"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Întrerupe aplicațiile pentru lucru"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Activează aplicațiile pentru lucru"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtru"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"Căutați pe telefon"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Căutați pe tabletă"</string>
+    <string name="search_pref_screen_title" msgid="3258959643336315962">"Caută pe telefon"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Caută pe tabletă"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Eșuare: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
