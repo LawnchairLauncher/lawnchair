@@ -169,6 +169,13 @@ public final class FeatureFlags {
             "ENABLE_SMARTSPACE_DISMISS", true,
             "Adds a menu option to dismiss the current Enhanced Smartspace card.");
 
+    /**
+     * Enables region sampling for text color: Needs system health assessment before turning on
+     */
+    public static final BooleanFlag ENABLE_REGION_SAMPLING =  getDebugFlag(
+            "ENABLE_REGION_SAMPLING", false,
+            "Enable region sampling to determine color of text on screen.");
+
     public static final BooleanFlag ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS =
             getDebugFlag(
             "ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS", false,
