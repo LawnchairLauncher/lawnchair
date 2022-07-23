@@ -106,6 +106,10 @@ fun GeneralPreferences() {
                     adapter = prefs2.showNotificationCount.getAdapter(),
                     label = stringResource(id = R.string.show_notification_count),
                 )
+                ColorPreference(
+                    preference = prefs2.notificationDotColor,
+                    label = stringResource(id = R.string.notification_dots_color),
+                )
             }
         }
         PreferenceGroup(heading = stringResource(id = R.string.colors)) {

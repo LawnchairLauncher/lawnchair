@@ -54,6 +54,8 @@
     <string name="label_size">Label Size</string>
     <string name="show_home_labels">Show Labels</string>
     <string name="notification_dots">Notification Dots</string>
+    <string name="notification_dots_color">Notification Dot Color</string>
+    <string name="app_icon_color">App Icon Color</string>
     <string name="smartspace_preferences">Preferences</string>
     <string name="about_label">About</string>
     <string name="news">News</string>

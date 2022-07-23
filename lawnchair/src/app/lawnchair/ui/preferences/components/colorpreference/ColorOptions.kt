@@ -21,3 +21,5 @@ val staticColors = listOf(
 val dynamicColors = listOf(ColorOption.SystemAccent, ColorOption.WallpaperPrimary)
     .filter(ColorOption::isSupported)
     .map(ColorOption::colorPreferenceEntry)
+
+val dynamicColorsForNotificationDot = dynamicColors + listOf(ColorOption.AppIcon.colorPreferenceEntry)

@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreferenceEntry
@@ -80,9 +81,9 @@ fun <T> ColorSwatch(
     selected: Boolean
 ) {
     val color = if (MaterialTheme.colors.isLight) {
-        entry.lightColor()
+        entry.lightColor(LocalContext.current)
     } else {
-        entry.darkColor()
+        entry.darkColor(LocalContext.current)
     }
 
     Box(

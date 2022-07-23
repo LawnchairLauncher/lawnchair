@@ -21,6 +21,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.theme.color.ColorOption
@@ -43,7 +44,7 @@ fun ColorPreference(
     val navController = LocalNavController.current
     PreferenceTemplate(
         title = { Text(text = label) },
-        endWidget = { ColorDot(Color(adapter.state.value.colorPreferenceEntry.lightColor())) },
+        endWidget = { ColorDot(Color(adapter.state.value.colorPreferenceEntry.lightColor(LocalContext.current))) },
         description = {
             Text(text = adapter.state.value.colorPreferenceEntry.label())
         },

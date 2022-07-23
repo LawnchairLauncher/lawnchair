@@ -50,6 +50,9 @@
     <!-- which accent color to use by default -->
     <string name="config_default_accent_color" translatable="false">default</string>
 
+    <!-- which notification dot color to use by default -->
+    <string name="config_default_notification_dot_color" translatable="false">app_icon</string>
+
     <bool name="config_default_dark_status_bar">false</bool>
     <bool name="config_default_dock_search_bar">true</bool>
     <bool name="config_default_show_notification_count">false</bool>
