@@ -44,7 +44,6 @@ import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.MultiAdditivePropertyFactory;
 import com.android.launcher3.util.MultiValueAlpha;
-import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.views.ScrimView;
 
 /**
@@ -229,7 +228,6 @@ public class AllAppsTransitionController
     public void setStateWithAnimation(LauncherState toState,
             StateAnimationConfig config, PendingAnimation builder) {
         if (NORMAL.equals(toState) && mLauncher.isInState(ALL_APPS)) {
-            UiThreadHelper.hideKeyboardAsync(mLauncher, mLauncher.getAppsView().getWindowToken());
             builder.addEndListener(success -> {
                 // Reset pull back progress and alpha after switching states.
                 ALL_APPS_PULL_BACK_TRANSLATION.set(this, 0f);
@@ -311,6 +309,7 @@ public class AllAppsTransitionController
         if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) return;
         if (Float.compare(mProgress, 1f) == 0) {
             mAppsView.reset(false /* animate */);
+            mLauncher.getAppsView().getSearchUiManager().getEditText().hideKeyboard();
         }
     }
 }
