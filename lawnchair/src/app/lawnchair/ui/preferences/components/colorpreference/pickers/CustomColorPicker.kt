@@ -1,6 +1,10 @@
 package app.lawnchair.ui.preferences.components.colorpreference.pickers
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.graphics.Color.argb
+import android.widget.Toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
@@ -183,44 +187,93 @@ fun CustomColorPicker(
 
 @Composable
 private fun HexColorPicker(
+    modifier: Modifier = Modifier,
     textFieldValue: TextFieldValue,
     onTextFieldValueChange: (TextFieldValue) -> Unit,
 ) {
 
+    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+    val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
     val invalidString = colorStringToIntColor(textFieldValue.text) == null
 
-    OutlinedTextField(
-        textStyle = LocalTextStyle.current.copy(
-            fontSize = 18.sp,
-            textAlign = TextAlign.Start,
-        ),
-        isError = invalidString,
-        value = textFieldValue,
-        onValueChange = onTextFieldValueChange,
-        singleLine = true,
-        keyboardOptions = KeyboardOptions(
-            capitalization = KeyboardCapitalization.Characters,
-            autoCorrect = false,
-            imeAction = ImeAction.Done,
-        ),
-        keyboardActions = KeyboardActions(
-            onDone = {
-                focusManager.clearFocus()
-            },
-        ),
-        trailingIcon = {
-            Crossfade(targetState = invalidString) {
-                if (it) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_warning),
-                        contentDescription = stringResource(id = R.string.invalid_color),
-                    )
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly,
+    ) {
+
+        OutlinedTextField(
+            modifier = Modifier.weight(1f),
+            textStyle = LocalTextStyle.current.copy(
+                fontSize = 18.sp,
+                textAlign = TextAlign.Start,
+            ),
+            isError = invalidString,
+            value = textFieldValue,
+            onValueChange = onTextFieldValueChange,
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Characters,
+                autoCorrect = false,
+                imeAction = ImeAction.Done,
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                },
+            ),
+            trailingIcon = {
+                Crossfade(targetState = invalidString) {
+                    if (it) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_warning),
+                            contentDescription = stringResource(id = R.string.invalid_color),
+                        )
+                    }
                 }
-            }
-        },
-    )
+            },
+        )
+
+        Spacer(modifier = Modifier.requiredWidth(16.dp))
+
+        IconButton(
+            onClick = {
+                val clip =
+                    ClipData.newPlainText(context.getString(R.string.hex), textFieldValue.text)
+                clipboardManager.setPrimaryClip(clip)
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.copied_toast),
+                    Toast.LENGTH_SHORT
+                ).show()
+            },
+            content = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_copy),
+                    contentDescription = stringResource(id = R.string.action_copy),
+                )
+            },
+        )
+
+        IconButton(
+            onClick = {
+                clipboardManager.primaryClip?.getItemAt(0)?.text?.let {
+                    onTextFieldValueChange(textFieldValue.copy(text = it.toString()))
+                    focusManager.clearFocus()
+                }
+            },
+            content = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_content_paste),
+                    contentDescription = stringResource(id = R.string.action_paste),
+                )
+            },
+        )
+
+    }
+
 }
 
 @Composable

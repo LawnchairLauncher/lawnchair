@@ -200,6 +200,7 @@
 
     <string name="action_copy_link">Copy Link</string>
     <string name="action_copy">Copy</string>
+    <string name="action_paste">Paste</string>
     <string name="copied_toast">Copied to clipboard.</string>
     <string name="action_share">Share</string>
 
