@@ -33,9 +33,12 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -43,6 +46,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statehandlers.DepthController;
@@ -105,8 +109,8 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         activity.getStateManager().goToState(startState, activityVisible);
     }
 
-    /** Gets swipe-up destination and length. */
-    public abstract int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
+    public abstract int getSwipeUpDestinationAndLength(
+            DeviceProfile dp, Context context, Rect outRect,
             PagedOrientationHandler orientationHandler);
 
     /** Called when the animation to home has fully settled. */
@@ -208,6 +212,129 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             return;
         }
         recentsView.switchToScreenshot(thumbnailDatas, runnable);
+    }
+
+    /**
+     * Calculates the taskView size for the provided device configuration.
+     */
+    public final void calculateTaskSize(Context context, DeviceProfile dp, Rect outRect) {
+        Resources res = context.getResources();
+        float maxScale = res.getFloat(R.dimen.overview_max_scale);
+        if (dp.isTablet) {
+            Rect gridRect = new Rect();
+            calculateGridSize(dp, gridRect);
+
+            calculateTaskSizeInternal(context, dp, gridRect, maxScale, Gravity.CENTER, outRect);
+        } else {
+            int taskMargin = dp.overviewTaskMarginPx;
+            calculateTaskSizeInternal(context, dp,
+                    dp.overviewTaskThumbnailTopMarginPx,
+                    dp.getOverviewActionsClaimedSpace(),
+                    res.getDimensionPixelSize(R.dimen.overview_minimum_next_prev_size) + taskMargin,
+                    maxScale,
+                    Gravity.CENTER,
+                    outRect);
+        }
+    }
+
+    private void calculateTaskSizeInternal(Context context, DeviceProfile dp, int claimedSpaceAbove,
+            int claimedSpaceBelow, int minimumHorizontalPadding, float maxScale, int gravity,
+            Rect outRect) {
+        Rect insets = dp.getInsets();
+
+        Rect potentialTaskRect = new Rect(0, 0, dp.widthPx, dp.heightPx);
+        potentialTaskRect.inset(insets.left, insets.top, insets.right, insets.bottom);
+        potentialTaskRect.inset(
+                minimumHorizontalPadding,
+                claimedSpaceAbove,
+                minimumHorizontalPadding,
+                claimedSpaceBelow);
+
+        calculateTaskSizeInternal(context, dp, potentialTaskRect, maxScale, gravity, outRect);
+    }
+
+    private void calculateTaskSizeInternal(Context context, DeviceProfile dp,
+            Rect potentialTaskRect, float maxScale, int gravity, Rect outRect) {
+        PointF taskDimension = getTaskDimension(dp);
+
+        float scale = Math.min(
+                potentialTaskRect.width() / taskDimension.x,
+                potentialTaskRect.height() / taskDimension.y);
+        scale = Math.min(scale, maxScale);
+        int outWidth = Math.round(scale * taskDimension.x);
+        int outHeight = Math.round(scale * taskDimension.y);
+
+        Gravity.apply(gravity, outWidth, outHeight, potentialTaskRect, outRect);
+    }
+
+    private static PointF getTaskDimension(DeviceProfile dp) {
+        PointF dimension = new PointF();
+        getTaskDimension(dp, dimension);
+        return dimension;
+    }
+
+    /**
+     * Gets the dimension of the task in the current system state.
+     */
+    public static void getTaskDimension(DeviceProfile dp, PointF out) {
+        out.x = dp.widthPx;
+        out.y = dp.heightPx;
+        if (dp.isTablet) {
+            out.y -= dp.taskbarSize;
+        }
+    }
+
+    /**
+     * Calculates the overview grid size for the provided device configuration.
+     */
+    public final void calculateGridSize(DeviceProfile dp, Rect outRect) {
+        Rect insets = dp.getInsets();
+        int topMargin = dp.overviewTaskThumbnailTopMarginPx;
+        int bottomMargin = dp.getOverviewActionsClaimedSpace();
+        int sideMargin = dp.overviewGridSideMargin;
+
+        outRect.set(0, 0, dp.widthPx, dp.heightPx);
+        outRect.inset(Math.max(insets.left, sideMargin), insets.top + topMargin,
+                Math.max(insets.right, sideMargin), Math.max(insets.bottom, bottomMargin));
+    }
+
+    /**
+     * Calculates the overview grid non-focused task size for the provided device configuration.
+     */
+    public final void calculateGridTaskSize(Context context, DeviceProfile dp, Rect outRect,
+            PagedOrientationHandler orientedState) {
+        Resources res = context.getResources();
+        Rect taskRect = new Rect();
+        calculateTaskSize(context, dp, taskRect);
+
+        float rowHeight =
+                (taskRect.height() + dp.overviewTaskThumbnailTopMarginPx - dp.overviewRowSpacing)
+                        / 2f;
+
+        PointF taskDimension = getTaskDimension(dp);
+        float scale = (rowHeight - dp.overviewTaskThumbnailTopMarginPx) / taskDimension.y;
+        int outWidth = Math.round(scale * taskDimension.x);
+        int outHeight = Math.round(scale * taskDimension.y);
+
+        int gravity = Gravity.TOP;
+        gravity |= orientedState.getRecentsRtlSetting(res) ? Gravity.RIGHT : Gravity.LEFT;
+        Gravity.apply(gravity, outWidth, outHeight, taskRect, outRect);
+    }
+
+    /**
+     * Calculates the modal taskView size for the provided device configuration
+     */
+    public final void calculateModalTaskSize(Context context, DeviceProfile dp, Rect outRect) {
+        calculateTaskSize(context, dp, outRect);
+        float maxScale = context.getResources().getFloat(R.dimen.overview_modal_max_scale);
+        calculateTaskSizeInternal(
+                context, dp,
+                dp.overviewTaskMarginPx,
+                dp.heightPx - outRect.bottom - dp.getInsets().bottom,
+                Math.round((dp.availableWidthPx - outRect.width() * maxScale) / 2),
+                1f /*maxScale*/,
+                Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM,
+                outRect);
     }
 
     /**
