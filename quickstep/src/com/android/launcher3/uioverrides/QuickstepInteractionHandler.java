@@ -79,9 +79,13 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
                             activityOptions.options.getRemoteAnimationAdapter(),
                             launchCookie);
                 } catch (NoSuchMethodError e) {
-                    atm.registerRemoteAnimationForNextActivityStart(
+                    try {
+                        atm.registerRemoteAnimationForNextActivityStart(
                             pendingIntent.getCreatorPackage(),
                             activityOptions.options.getRemoteAnimationAdapter());
+                    } catch (NoSuchMethodError err) {
+                        // Do nothing.
+                    }
                 }
             } catch (RemoteException e) {
                 // Do nothing.
