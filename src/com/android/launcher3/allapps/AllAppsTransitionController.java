@@ -232,6 +232,7 @@ public class AllAppsTransitionController
                 // Reset pull back progress and alpha after switching states.
                 ALL_APPS_PULL_BACK_TRANSLATION.set(this, 0f);
                 ALL_APPS_PULL_BACK_ALPHA.set(this, 1f);
+                mLauncher.getAppsView().getSearchUiManager().getEditText().hideKeyboard();
             });
         }
 
@@ -239,7 +240,6 @@ public class AllAppsTransitionController
         if (Float.compare(mProgress, targetProgress) == 0) {
             setAlphas(toState, config, builder);
             // Fail fast
-            onProgressAnimationEnd();
             return;
         }
 
