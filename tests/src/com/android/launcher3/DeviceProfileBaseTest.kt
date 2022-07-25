@@ -114,7 +114,6 @@ abstract class DeviceProfileBaseTest {
                     PointF(16f, 16f)
             ).toTypedArray()
             folderBorderSpace = 16f
-            hotseatBorderSpaces = FloatArray(4) { 16f }
             inlineNavButtonsEndSpacing = R.dimen.taskbar_button_margin_4_5
 
             horizontalMargin = FloatArray(4) { 22f }
@@ -135,8 +134,6 @@ abstract class DeviceProfileBaseTest {
             ).toTypedArray()
 
             numShownHotseatIcons = 4
-
-            numShrunkenHotseatIcons = 4
 
             numDatabaseHotseatIcons = 4
 
@@ -200,7 +197,6 @@ abstract class DeviceProfileBaseTest {
                     PointF(16f, 64f),
                     PointF(16f, 64f)
             ).toTypedArray()
-            hotseatBorderSpaces = floatArrayOf(58f, 50.4f, 58f, 58f)
             inlineNavButtonsEndSpacing = R.dimen.taskbar_button_margin_6_5
 
             horizontalMargin = floatArrayOf(54f, 120f, 54f, 54f)
@@ -221,8 +217,6 @@ abstract class DeviceProfileBaseTest {
             ).toTypedArray()
 
             numShownHotseatIcons = 6
-
-            numShrunkenHotseatIcons = 5
 
             numDatabaseHotseatIcons = 6
 
@@ -297,7 +291,6 @@ abstract class DeviceProfileBaseTest {
                     PointF(20f, 20f)
             ).toTypedArray()
             folderBorderSpace = 16f
-            hotseatBorderSpaces = floatArrayOf(36f, 36f, 18f, 23.3f)
             inlineNavButtonsEndSpacing = R.dimen.taskbar_button_margin_4_4
 
             horizontalMargin = floatArrayOf(21.5f, 21.5f, 22.5f, 30.5f)
@@ -318,8 +311,6 @@ abstract class DeviceProfileBaseTest {
             ).toTypedArray()
 
             numShownHotseatIcons = 6
-
-            numShrunkenHotseatIcons = 6
 
             numDatabaseHotseatIcons = 6
 
