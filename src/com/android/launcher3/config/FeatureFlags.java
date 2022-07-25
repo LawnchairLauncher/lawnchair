@@ -288,6 +288,10 @@ public final class FeatureFlags {
     public static final BooleanFlag CONTINUOUS_VIEW_TREE_CAPTURE = getDebugFlag(
             "CONTINUOUS_VIEW_TREE_CAPTURE", false, "Capture View tree every frame");
 
+    public static final BooleanFlag SECONDARY_DRAG_N_DROP_TO_PIN = getDebugFlag(
+            "SECONDARY_DRAG_N_DROP_TO_PIN", false,
+            "Enable dragging and dropping to pin apps within secondary display");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
