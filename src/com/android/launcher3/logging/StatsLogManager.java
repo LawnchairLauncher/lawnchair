@@ -56,6 +56,7 @@ public class StatsLogManager implements ResourceBasedOverride {
     private InstanceId mInstanceId;
 
     protected @Nullable ActivityContext mActivityContext = null;
+    private KeyboardStateManager mKeyboardStateManager;
 
     /**
      * Returns event enum based on the two state transition information when swipe
@@ -814,6 +815,16 @@ public class StatsLogManager implements ResourceBasedOverride {
             logger.withInstanceId(mInstanceId);
         }
         return logger;
+    }
+
+    /**
+     * Returns a singleton KeyboardStateManager.
+     */
+    public KeyboardStateManager keyboardStateManager() {
+        if (mKeyboardStateManager == null) {
+            mKeyboardStateManager = new KeyboardStateManager();
+        }
+        return mKeyboardStateManager;
     }
 
     protected StatsLogger createLogger() {

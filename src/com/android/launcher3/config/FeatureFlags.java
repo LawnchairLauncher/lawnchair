@@ -288,6 +288,11 @@ public final class FeatureFlags {
     public static final BooleanFlag SHOW_SEARCH_EDUCARD_QSB = new DeviceFlag(
             "SHOW_SEARCH_EDUCARD_QSB", false, "Shows Search Educard for QSB entry in OneSearch.");
 
+    public static final BooleanFlag ENABLE_IME_LATENCY_LOGGER = getDebugFlag(
+            "ENABLE_IME_LATENCY_LOGGER", false,
+            "Enable option to log the keyboard latency for both atomic and controlled keyboard "
+                    + "animations on an EditText");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
