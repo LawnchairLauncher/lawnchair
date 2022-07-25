@@ -30,7 +30,6 @@ import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_OVERLAY;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPELEFT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPERIGHT;
-import static com.android.launcher3.testing.shared.TestProtocol.BAD_STATE;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -1248,7 +1247,6 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         // different effects based on device performance. On at least one relatively high-end
         // device I've tried, translating the launcher causes things to get quite laggy.
         mLauncher.getDragLayer().setTranslationX(transX);
-        Log.d(BAD_STATE, "Workspace onOverlayScrollChanged DragLayer ALPHA_INDEX_OVERLAY=" + alpha);
         mLauncher.getDragLayer().getAlphaProperty(ALPHA_INDEX_OVERLAY).setValue(alpha);
     }
 
