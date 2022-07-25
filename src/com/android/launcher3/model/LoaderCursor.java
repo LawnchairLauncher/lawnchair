@@ -291,12 +291,16 @@ public class LoaderCursor extends CursorWrapper {
 
         // from the db
         if (TextUtils.isEmpty(info.title)) {
-            info.title = getTitle();
-        }
+            if (loadIcon) {
+                info.title = getTitle();
 
-        // fall back to the class name of the activity
-        if (info.title == null) {
-            info.title = componentName.getClassName();
+                // fall back to the class name of the activity
+                if (info.title == null) {
+                    info.title = componentName.getClassName();
+                }
+            } else {
+                info.title = "";
+            }
         }
 
         info.contentDescription = mPM.getUserBadgedLabel(info.title, info.user);
