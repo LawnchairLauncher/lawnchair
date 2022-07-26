@@ -18,8 +18,8 @@ package com.android.launcher3.tapl;
 
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_SCROLLED;
 
-import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
-import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.ALL_APPS_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
@@ -39,9 +39,9 @@ import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
-import com.android.launcher3.testing.HotseatCellCenterRequest;
-import com.android.launcher3.testing.TestProtocol;
-import com.android.launcher3.testing.WorkspaceCellCenterRequest;
+import com.android.launcher3.testing.shared.HotseatCellCenterRequest;
+import com.android.launcher3.testing.shared.TestProtocol;
+import com.android.launcher3.testing.shared.WorkspaceCellCenterRequest;
 
 import java.util.List;
 import java.util.Map;

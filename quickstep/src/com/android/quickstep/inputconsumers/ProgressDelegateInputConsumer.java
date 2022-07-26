@@ -30,7 +30,7 @@ import android.view.MotionEvent;
 
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.testing.TestLogging;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.AnimatedFloat;
