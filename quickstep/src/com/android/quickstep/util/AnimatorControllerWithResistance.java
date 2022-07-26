@@ -36,6 +36,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.views.RecentsView;
 
 /**
@@ -154,9 +155,10 @@ public class AnimatorControllerWithResistance {
      */
     public static <SCALE, TRANSLATION> PendingAnimation createRecentsResistanceAnim(
             RecentsParams<SCALE, TRANSLATION> params) {
-        Rect startRect = new Rect(params.dp.overviewTaskRect);
+        Rect startRect = new Rect();
         PagedOrientationHandler orientationHandler = params.recentsOrientedState
                 .getOrientationHandler();
+        LauncherActivityInterface.INSTANCE.calculateTaskSize(params.context, params.dp, startRect);
         long distanceToCover = startRect.bottom;
         PendingAnimation resistAnim = params.resistAnim != null
                 ? params.resistAnim
