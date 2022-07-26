@@ -2049,8 +2049,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
         float scrollOffset = Math.abs(mRecentsView.getScrollOffset(mRecentsView.getCurrentPage()));
         int maxScrollOffset = mRecentsView.getPagedOrientationHandler().getPrimaryValue(
-                mActivity.getDeviceProfile().overviewTaskRect.width(),
-                mActivity.getDeviceProfile().overviewTaskRect.height());
+                mRecentsView.getLastComputedTaskSize().width(),
+                mRecentsView.getLastComputedTaskSize().height());
         maxScrollOffset += mRecentsView.getPageSpacing();
 
         float maxScaleProgress =
