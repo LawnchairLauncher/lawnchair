@@ -37,7 +37,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewRootImpl;
-import android.window.SurfaceSyncer;
+import android.window.SurfaceSyncGroup;
 
 import androidx.annotation.Nullable;
 
@@ -505,11 +505,11 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                 // maybeOnDragEnd()
                 SurfaceControl.Transaction transaction = new SurfaceControl.Transaction();
                 transaction.remove(dragSurface);
-                SurfaceSyncer syncer = new SurfaceSyncer();
-                int syncId = syncer.setupSync(transaction::close);
-                syncer.addToSync(syncId, viewRoot.getView());
-                syncer.addTransactionToSync(syncId, transaction);
-                syncer.markSyncReady(syncId);
+                SurfaceSyncGroup syncGroup = new SurfaceSyncGroup();
+                syncGroup.addSyncCompleteCallback(mActivity.getMainExecutor(), transaction::close);
+                syncGroup.addToSync(viewRoot);
+                syncGroup.addTransactionToSync(transaction);
+                syncGroup.markSyncReady();
                 mReturnAnimator = null;
             }
         });
