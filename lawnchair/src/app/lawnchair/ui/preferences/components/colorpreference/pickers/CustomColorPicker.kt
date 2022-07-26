@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ContentCopy
+import androidx.compose.material.icons.rounded.ContentPaste
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -33,6 +36,7 @@ import androidx.core.graphics.green
 import androidx.core.graphics.red
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.ui.preferences.components.Chip
+import app.lawnchair.ui.preferences.components.ClickableIcon
 import app.lawnchair.ui.preferences.components.DividerColumn
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.colorpreference.*
@@ -238,7 +242,8 @@ private fun HexColorPicker(
 
         Spacer(modifier = Modifier.requiredWidth(16.dp))
 
-        IconButton(
+        ClickableIcon(
+            imageVector = Icons.Rounded.ContentCopy,
             onClick = {
                 val clip =
                     ClipData.newPlainText(context.getString(R.string.hex), textFieldValue.text)
@@ -249,26 +254,15 @@ private fun HexColorPicker(
                     Toast.LENGTH_SHORT
                 ).show()
             },
-            content = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_copy),
-                    contentDescription = stringResource(id = R.string.action_copy),
-                )
-            },
         )
 
-        IconButton(
+        ClickableIcon(
+            imageVector = Icons.Rounded.ContentPaste,
             onClick = {
                 clipboardManager.primaryClip?.getItemAt(0)?.text?.let {
                     onTextFieldValueChange(textFieldValue.copy(text = it.toString()))
                     focusManager.clearFocus()
                 }
-            },
-            content = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_content_paste),
-                    contentDescription = stringResource(id = R.string.action_paste),
-                )
             },
         )
 
