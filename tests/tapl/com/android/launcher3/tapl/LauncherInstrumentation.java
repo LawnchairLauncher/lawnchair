@@ -178,6 +178,7 @@ public final class LauncherInstrumentation {
     private final UiDevice mDevice;
     private final Instrumentation mInstrumentation;
     private int mExpectedRotation = Surface.ROTATION_0;
+    private boolean mExpectedRotationCheckEnabled = true;
     private final Uri mTestProviderUri;
     private final Deque<String> mDiagnosticContext = new LinkedList<>();
     private Function<Long, String> mSystemHealthSupplier;
@@ -667,6 +668,10 @@ public final class LauncherInstrumentation {
         mExpectedRotation = expectedRotation;
     }
 
+    public void setExpectedRotationCheckEnabled(boolean expectedRotationCheckEnabled) {
+        mExpectedRotationCheckEnabled = expectedRotationCheckEnabled;
+    }
+
     public String getNavigationModeMismatchError(boolean waitForCorrectState) {
         final int waitTime = waitForCorrectState ? WAIT_TIME_MS : 0;
         final NavigationModel navigationModel = getNavigationModel();
@@ -700,8 +705,10 @@ public final class LauncherInstrumentation {
     private UiObject2 verifyContainerType(ContainerType containerType) {
         waitForLauncherInitialized();
 
-        assertEquals("Unexpected display rotation",
-                mExpectedRotation, mDevice.getDisplayRotation());
+        if (mExpectedRotationCheckEnabled) {
+            assertEquals("Unexpected display rotation",
+                    mExpectedRotation, mDevice.getDisplayRotation());
+        }
 
         final String error = getNavigationModeMismatchError(true);
         assertTrue(error, error == null);
