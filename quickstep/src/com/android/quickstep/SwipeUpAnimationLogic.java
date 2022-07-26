@@ -49,6 +49,7 @@ import java.util.function.Consumer;
 public abstract class SwipeUpAnimationLogic implements
         RecentsAnimationCallbacks.RecentsAnimationListener{
 
+    protected static final Rect TEMP_RECT = new Rect();
     protected final RemoteTargetGluer mTargetGluer;
 
     protected DeviceProfile mDp;
@@ -91,7 +92,7 @@ public abstract class SwipeUpAnimationLogic implements
     protected void initTransitionEndpoints(DeviceProfile dp) {
         mDp = dp;
         mTransitionDragLength = mGestureState.getActivityInterface().getSwipeUpDestinationAndLength(
-                dp, mContext, mRemoteTargetHandles[0].getTaskViewSimulator()
+                dp, mContext, TEMP_RECT, mRemoteTargetHandles[0].getTaskViewSimulator()
                         .getOrientationState().getOrientationHandler());
         mDragLengthFactor = (float) dp.heightPx / mTransitionDragLength;
 

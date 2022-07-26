@@ -1391,8 +1391,9 @@ public class TaskView extends FrameLayout implements Reusable {
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
         if (deviceProfile.isTablet) {
             final int thumbnailPadding = deviceProfile.overviewTaskThumbnailTopMarginPx;
-            final int taskWidth = deviceProfile.overviewTaskRect.width();
-            final int taskHeight = deviceProfile.overviewTaskRect.height();
+            final Rect lastComputedTaskSize = getRecentsView().getLastComputedTaskSize();
+            final int taskWidth = lastComputedTaskSize.width();
+            final int taskHeight = lastComputedTaskSize.height();
 
             int boxWidth;
             int boxHeight;
@@ -1403,9 +1404,10 @@ public class TaskView extends FrameLayout implements Reusable {
                 boxWidth = taskWidth;
                 boxHeight = taskHeight;
             } else {
-                // Otherwise task is in grid.
-                boxWidth = deviceProfile.overviewGridTaskDimension.x;
-                boxHeight = deviceProfile.overviewGridTaskDimension.y;
+                // Otherwise task is in grid, and should use lastComputedGridTaskSize.
+                Rect lastComputedGridTaskSize = getRecentsView().getLastComputedGridTaskSize();
+                boxWidth = lastComputedGridTaskSize.width();
+                boxHeight = lastComputedGridTaskSize.height();
             }
 
             // Bound width/height to the box size.

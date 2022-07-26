@@ -93,6 +93,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     @Nullable
     protected DeviceProfile mDp;
+    private final Rect mTaskSize = new Rect();
 
     public OverviewActionsView(Context context) {
         this(context, null);
@@ -243,15 +244,16 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         }
 
         // Align to bottom of task Rect.
-        return mDp.heightPx - mDp.overviewTaskRect.bottom - mDp.overviewActionsTopMarginPx
+        return mDp.heightPx - mTaskSize.bottom - mDp.overviewActionsTopMarginPx
                 - mDp.overviewActionsHeight;
     }
 
     /**
-     * Updates device profile for this view to draw with.
+     * Updates device profile and task size for this view to draw with.
      */
-    public void updateDimension(DeviceProfile dp) {
+    public void updateDimension(DeviceProfile dp, Rect taskSize) {
         mDp = dp;
+        mTaskSize.set(taskSize);
         updateVerticalMargin(DisplayController.getNavigationMode(getContext()));
 
         requestLayout();

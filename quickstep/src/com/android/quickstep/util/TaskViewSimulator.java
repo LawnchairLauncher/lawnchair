@@ -144,8 +144,12 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         if (mDp == null) {
             return 1;
         }
-        mTaskRect.set(
-                mIsGridTask ? mDp.getOverviewGridTaskRect(mIsRecentsRtl) : mDp.overviewTaskRect);
+        if (mIsGridTask) {
+            mSizeStrategy.calculateGridTaskSize(mContext, mDp, mTaskRect,
+                    mOrientationState.getOrientationHandler());
+        } else {
+            mSizeStrategy.calculateTaskSize(mContext, mDp, mTaskRect);
+        }
 
         Rect fullTaskSize;
         if (mSplitBounds != null) {
