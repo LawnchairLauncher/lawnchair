@@ -19,7 +19,7 @@ import static android.content.Intent.ACTION_CONFIGURATION_CHANGED;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION;
 
-import static com.android.launcher3.ResourceUtils.INVALID_RESOURCE_HANDLE;
+import static com.android.launcher3.testing.shared.ResourceUtils.INVALID_RESOURCE_HANDLE;
 import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NAVIGATION_MODE_2_BUTTON;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NAVIGATION_MODE_3_BUTTON;
@@ -46,7 +46,7 @@ import android.view.Display;
 import androidx.annotation.AnyThread;
 import androidx.annotation.UiThread;
 
-import com.android.launcher3.ResourceUtils;
+import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 import com.android.launcher3.util.window.CachedDisplayInfo;

@@ -35,9 +35,7 @@ android_library {
     ],
     srcs: [
         "tests/tapl/**/*.java",
-        "src/com/android/launcher3/ResourceUtils.java",
-        "src/com/android/launcher3/testing/TestProtocol.java",
-        "src/com/android/launcher3/testing/*Request.java",
+        "src/com/android/launcher3/testing/shared/**/*.java",
     ],
     resource_dirs: [ ],
     manifest: "tests/tapl/AndroidManifest.xml",

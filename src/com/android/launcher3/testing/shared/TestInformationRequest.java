@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.testing;
+package com.android.launcher3.testing.shared;
 
 import android.os.Parcelable;
 

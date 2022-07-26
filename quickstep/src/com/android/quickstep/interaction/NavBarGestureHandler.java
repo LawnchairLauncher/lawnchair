@@ -44,7 +44,7 @@ import android.view.ViewConfiguration;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
-import com.android.launcher3.ResourceUtils;
+import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.NavigationMode;

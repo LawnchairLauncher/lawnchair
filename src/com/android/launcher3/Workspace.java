@@ -30,7 +30,7 @@ import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_OVERLAY;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPELEFT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPERIGHT;
-import static com.android.launcher3.testing.TestProtocol.BAD_STATE;
+import static com.android.launcher3.testing.shared.TestProtocol.BAD_STATE;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
