@@ -559,13 +559,11 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
     public void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "TaskbarDragController:");
 
-        pw.println(String.format("%s\tmDragIconSize=%dpx", prefix, mDragIconSize));
-        pw.println(String.format("%s\tmTempXY=%s", prefix, Arrays.toString(mTempXY)));
-        pw.println(String.format("%s\tmRegistrationX=%d", prefix, mRegistrationX));
-        pw.println(String.format("%s\tmRegistrationY=%d", prefix, mRegistrationY));
-        pw.println(String.format(
-                "%s\tmIsSystemDragInProgress=%b", prefix, mIsSystemDragInProgress));
-        pw.println(String.format(
-                "%s\tisInternalDragInProgess=%b", prefix, super.isDragging()));
+        pw.println(prefix + "\tmDragIconSize=" + mDragIconSize);
+        pw.println(prefix + "\tmTempXY=" + Arrays.toString(mTempXY));
+        pw.println(prefix + "\tmRegistrationX=" + mRegistrationX);
+        pw.println(prefix + "\tmRegistrationY=" + mRegistrationY);
+        pw.println(prefix + "\tmIsSystemDragInProgress=" + mIsSystemDragInProgress);
+        pw.println(prefix + "\tisInternalDragInProgess=" + super.isDragging());
     }
 }
