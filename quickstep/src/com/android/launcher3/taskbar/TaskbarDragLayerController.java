@@ -144,10 +144,9 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
     public void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "TaskbarDragLayerController:");
 
-        pw.println(String.format("%s\tmBgOffset=%.2f", prefix, mBgOffset.value));
-        pw.println(String.format("%s\tmFolderMargin=%dpx", prefix, mFolderMargin));
-        pw.println(String.format(
-                "%s\tmLastSetBackgroundAlpha=%.2f", prefix, mLastSetBackgroundAlpha));
+        pw.println(prefix + "\tmBgOffset=" + mBgOffset.value);
+        pw.println(prefix + "\tmFolderMargin=" + mFolderMargin);
+        pw.println(prefix + "\tmLastSetBackgroundAlpha=" + mLastSetBackgroundAlpha);
     }
 
     /**

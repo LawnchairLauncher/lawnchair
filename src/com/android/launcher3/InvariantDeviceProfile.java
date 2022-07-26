@@ -127,6 +127,7 @@ public class InvariantDeviceProfile {
     public PointF[] borderSpaces;
     public float folderBorderSpace;
     public float[] hotseatBorderSpaces;
+    public int inlineNavButtonsEndSpacing;
 
     public float[] horizontalMargin;
 
@@ -338,6 +339,8 @@ public class InvariantDeviceProfile {
         isScalable = closestProfile.isScalable;
         devicePaddingId = closestProfile.devicePaddingId;
         this.deviceType = deviceType;
+
+        inlineNavButtonsEndSpacing = closestProfile.inlineNavButtonsEndSpacing;
 
         mExtraAttrs = closestProfile.extraAttrs;
 
@@ -735,6 +738,7 @@ public class InvariantDeviceProfile {
 
         private final int[] hotseatColumnSpan = new int[COUNT_SIZES];
 
+        private int inlineNavButtonsEndSpacing;
         private final String dbFile;
 
         private final int defaultLayoutId;
@@ -785,6 +789,9 @@ public class InvariantDeviceProfile {
                     R.styleable.GridDisplayOption_hotseatColumnSpanTwoPanelPortrait,
                     numColumns);
 
+            inlineNavButtonsEndSpacing =
+                    a.getResourceId(R.styleable.GridDisplayOption_inlineNavButtonsEndSpacing,
+                    R.dimen.taskbar_button_margin_default);
             numFolderRows = a.getInt(
                     R.styleable.GridDisplayOption_numFolderRows, numRows);
             numFolderColumns = a.getInt(

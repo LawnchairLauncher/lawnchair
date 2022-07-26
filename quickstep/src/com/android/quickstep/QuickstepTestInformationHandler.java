@@ -2,6 +2,7 @@ package com.android.quickstep;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -31,7 +32,8 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
             }
 
             case TestProtocol.REQUEST_BACKGROUND_TO_OVERVIEW_SWIPE_HEIGHT: {
-                final float swipeHeight = LayoutUtils.getShelfTrackingDistance(mDeviceProfile,
+                final float swipeHeight =
+                        LayoutUtils.getShelfTrackingDistance(mContext, mDeviceProfile,
                                 PagedOrientationHandler.PORTRAIT);
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, (int) swipeHeight);
                 return response;
@@ -41,8 +43,10 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                 if (!mDeviceProfile.isTablet) {
                     return null;
                 }
-                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
-                        mDeviceProfile.overviewTaskRect.height());
+                Rect focusedTaskRect = new Rect();
+                LauncherActivityInterface.INSTANCE.calculateTaskSize(mContext, mDeviceProfile,
+                        focusedTaskRect);
+                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, focusedTaskRect.height());
                 return response;
             }
 
@@ -50,10 +54,10 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                 if (!mDeviceProfile.isTablet) {
                     return null;
                 }
-                boolean isRecentsRtl = PagedOrientationHandler.PORTRAIT.getRecentsRtlSetting(
-                        mContext.getResources());
-                response.putParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD,
-                        mDeviceProfile.getOverviewGridTaskRect(isRecentsRtl));
+                Rect gridTaskRect = new Rect();
+                LauncherActivityInterface.INSTANCE.calculateGridTaskSize(mContext, mDeviceProfile,
+                        gridTaskRect, PagedOrientationHandler.PORTRAIT);
+                response.putParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD, gridTaskRect);
                 return response;
             }
 

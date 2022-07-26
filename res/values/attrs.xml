@@ -176,6 +176,10 @@
         <!-- defaults to numColumns, if not specified -->
         <attr name="hotseatColumnSpanTwoPanelPortrait" format="integer" />
 
+        <!-- Spacing to have at the end of the nav buttons in large screen 3 button nav,
+             defaults to @dimen/taskbar_button_margin_default -->
+        <attr name="inlineNavButtonsEndSpacing" format="reference" />
+
         <attr name="dbFile" format="string" />
         <attr name="defaultLayoutId" format="reference" />
         <attr name="defaultSplitDisplayLayoutId" format="reference" />
