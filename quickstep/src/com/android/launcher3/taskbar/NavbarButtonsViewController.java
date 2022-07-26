@@ -785,17 +785,12 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     public void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "NavbarButtonsViewController:");
 
-        pw.println(String.format("%s\tmState=%s", prefix, getStateString(mState)));
-        pw.println(String.format(
-                "%s\tmLightIconColor=0x%s", prefix, Integer.toHexString(mLightIconColor)));
-        pw.println(String.format(
-                "%s\tmDarkIconColor=0x%s", prefix, Integer.toHexString(mDarkIconColor)));
-        pw.println(String.format(
-                "%s\tmFloatingRotationButtonBounds=%s", prefix, mFloatingRotationButtonBounds));
-        pw.println(String.format(
-                "%s\tmSysuiStateFlags=%s",
-                prefix,
-                QuickStepContract.getSystemUiStateString(mSysuiStateFlags)));
+        pw.println(prefix + "\tmState=" + getStateString(mState));
+        pw.println(prefix + "\tmLightIconColor=" + Integer.toHexString(mLightIconColor));
+        pw.println(prefix + "\tmDarkIconColor=" + Integer.toHexString(mDarkIconColor));
+        pw.println(prefix + "\tmFloatingRotationButtonBounds=" + mFloatingRotationButtonBounds);
+        pw.println(prefix + "\tmSysuiStateFlags=" + QuickStepContract.getSystemUiStateString(
+                mSysuiStateFlags));
     }
 
     private static String getStateString(int flags) {
