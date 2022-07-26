@@ -74,4 +74,10 @@
 
     <!-- Gesture Tutorial mock taskbar -->
     <dimen name="gesture_tutorial_taskbar_padding_start_end">218dp</dimen>
+
+    <!--  Taskbar 3 button spacing  -->
+    <dimen name="taskbar_button_margin_5_5">94.5dp</dimen>
+    <dimen name="taskbar_button_margin_6_5">94.5dp</dimen>
+    <dimen name="taskbar_button_margin_4_5">84dp</dimen>
+    <dimen name="taskbar_button_margin_4_4">79dp</dimen>
 </resources>
