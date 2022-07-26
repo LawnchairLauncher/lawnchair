@@ -209,10 +209,9 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
     public void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "StashedHandleViewController:");
 
-        pw.println(String.format(
-                "%s\tisStashedHandleVisible=%b", prefix, isStashedHandleVisible()));
-        pw.println(String.format("%s\tmStashedHandleWidth=%dpx", prefix, mStashedHandleWidth));
-        pw.println(String.format("%s\tmStashedHandleHeight=%dpx", prefix, mStashedHandleHeight));
+        pw.println(prefix + "\tisStashedHandleVisible=" + isStashedHandleVisible());
+        pw.println(prefix + "\tmStashedHandleWidth=" + mStashedHandleWidth);
+        pw.println(prefix + "\tmStashedHandleHeight=" + mStashedHandleHeight);
         mRegionSamplingHelper.dump(prefix, pw);
     }
 }

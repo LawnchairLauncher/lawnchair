@@ -373,6 +373,19 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     @Override
     public void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "TaskbarViewController:");
+
+        mTaskbarIconAlpha.dump(
+                prefix + "\t",
+                pw,
+                "mTaskbarIconAlpha",
+                "ALPHA_INDEX_HOME",
+                "ALPHA_INDEX_KEYGUARD",
+                "ALPHA_INDEX_STASH",
+                "ALPHA_INDEX_RECENTS_DISABLED",
+                "ALPHA_INDEX_NOTIFICATION_EXPANDED",
+                "ALPHA_INDEX_ASSISTANT_INVOKED",
+                "ALPHA_INDEX_IME_BUTTON_NAV");
+
         mModelCallbacks.dumpLogs(prefix + "\t", pw);
     }
 
