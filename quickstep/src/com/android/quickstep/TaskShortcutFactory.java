@@ -27,6 +27,7 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+import android.view.WindowInsets;
 import android.window.SplashScreen;
 
 import androidx.annotation.Nullable;
@@ -101,40 +102,10 @@ public interface TaskShortcutFactory {
         }
     };
 
-    abstract class MultiWindowFactory implements TaskShortcutFactory {
-
-        private final int mIconRes;
-        private final int mTextRes;
-        private final LauncherEvent mLauncherEvent;
-
-        MultiWindowFactory(int iconRes, int textRes, LauncherEvent launcherEvent) {
-            mIconRes = iconRes;
-            mTextRes = textRes;
-            mLauncherEvent = launcherEvent;
-        }
-
-        protected abstract boolean isAvailable(BaseDraggingActivity activity, int displayId);
-        protected abstract ActivityOptions makeLaunchOptions(Activity activity);
-        protected abstract boolean onActivityStarted(BaseDraggingActivity activity);
-
-        @Override
-        public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
-                TaskIdAttributeContainer taskContainer) {
-            final Task task  = taskContainer.getTask();
-            if (!task.isDockable) {
-                return null;
-            }
-            if (!isAvailable(activity, task.key.displayId)) {
-                return null;
-            }
-            return Collections.singletonList(new MultiWindowSystemShortcut(mIconRes,
-                    mTextRes, activity, taskContainer, this, mLauncherEvent));
-        }
-    }
-
     class SplitSelectSystemShortcut extends SystemShortcut {
         private final TaskView mTaskView;
         private final SplitPositionOption mSplitPositionOption;
+
         public SplitSelectSystemShortcut(BaseDraggingActivity target, TaskView taskView,
                 SplitPositionOption option) {
             super(option.iconResId, option.textResId, target, taskView.getItemInfo(), taskView);
@@ -148,19 +119,17 @@ public interface TaskShortcutFactory {
         }
     }
 
-    class MultiWindowSystemShortcut extends SystemShortcut<BaseDraggingActivity> {
+    class FreeformSystemShortcut extends SystemShortcut<BaseDraggingActivity> {
 
         private Handler mHandler;
 
         private final RecentsView mRecentsView;
         private final TaskThumbnailView mThumbnailView;
         private final TaskView mTaskView;
-        private final MultiWindowFactory mFactory;
         private final LauncherEvent mLauncherEvent;
 
-        public MultiWindowSystemShortcut(int iconRes, int textRes, BaseDraggingActivity activity,
-                TaskIdAttributeContainer taskContainer, MultiWindowFactory factory,
-                LauncherEvent launcherEvent) {
+        public FreeformSystemShortcut(int iconRes, int textRes, BaseDraggingActivity activity,
+                TaskIdAttributeContainer taskContainer, LauncherEvent launcherEvent) {
             super(iconRes, textRes, activity, taskContainer.getItemInfo(),
                     taskContainer.getTaskView());
             mLauncherEvent = launcherEvent;
@@ -168,55 +137,30 @@ public interface TaskShortcutFactory {
             mTaskView = taskContainer.getTaskView();
             mRecentsView = activity.getOverviewPanel();
             mThumbnailView = taskContainer.getThumbnailView();
-            mFactory = factory;
         }
 
         @Override
         public void onClick(View view) {
-            Task.TaskKey taskKey = mTaskView.getTask().key;
-            final int taskId = taskKey.id;
-
-            final View.OnLayoutChangeListener onLayoutChangeListener =
-                    new View.OnLayoutChangeListener() {
-                        @Override
-                        public void onLayoutChange(View v, int l, int t, int r, int b,
-                                int oldL, int oldT, int oldR, int oldB) {
-                            mTaskView.getRootView().removeOnLayoutChangeListener(this);
-                            mRecentsView.clearIgnoreResetTask(taskId);
-
-                            // Start animating in the side pages once launcher has been resized
-                            mRecentsView.dismissTask(mTaskView, false, false);
-                        }
-                    };
-
-            final DeviceProfile.OnDeviceProfileChangeListener onDeviceProfileChangeListener =
-                    new DeviceProfile.OnDeviceProfileChangeListener() {
-                        @Override
-                        public void onDeviceProfileChanged(DeviceProfile dp) {
-                            mTarget.removeOnDeviceProfileChangeListener(this);
-                            if (dp.isMultiWindowMode) {
-                                mTaskView.getRootView().addOnLayoutChangeListener(
-                                        onLayoutChangeListener);
-                            }
-                        }
-                    };
-
             dismissTaskMenuView(mTarget);
+            RecentsView rv = mTarget.getOverviewPanel();
+            rv.switchToScreenshot(() -> {
+                rv.finishRecentsAnimation(true /* toHome */, () -> {
+                    mTarget.returnToHomescreen();
+                    rv.getHandler().post(this::startActivity);
+                });
+            });
+        }
 
-            ActivityOptions options = mFactory.makeLaunchOptions(mTarget);
+        private void startActivity() {
+            final Task.TaskKey taskKey = mTaskView.getTask().key;
+            final int taskId = taskKey.id;
+            final ActivityOptions options = makeLaunchOptions(mTarget);
             if (options != null) {
                 options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
             }
             if (options != null
                     && ActivityManagerWrapper.getInstance().startActivityFromRecents(taskId,
                             options)) {
-                if (!mFactory.onActivityStarted(mTarget)) {
-                    return;
-                }
-                // Add a device profile change listener to kick off animating the side tasks
-                // once we enter multiwindow mode and relayout
-                mTarget.addOnDeviceProfileChangeListener(onDeviceProfileChangeListener);
-
                 final Runnable animStartedListener = () -> {
                     // Hide the task view and wait for the window to be resized
                     // TODO: Consider animating in launcher and do an in-place start activity
@@ -254,6 +198,18 @@ public interface TaskShortcutFactory {
                 mTarget.getStatsLogManager().logger().withItemInfo(mTaskView.getItemInfo())
                         .log(mLauncherEvent);
             }
+        }
+
+        private ActivityOptions makeLaunchOptions(Activity activity) {
+            ActivityOptions activityOptions = ActivityOptionsCompat.makeFreeformOptions();
+            // Arbitrary bounds only because freeform is in dev mode right now
+            final View decorView = activity.getWindow().getDecorView();
+            final WindowInsets insets = decorView.getRootWindowInsets();
+            final Rect r = new Rect(0, 0, decorView.getWidth() / 2, decorView.getHeight() / 2);
+            r.offsetTo(insets.getSystemWindowInsetLeft() + 50,
+                    insets.getSystemWindowInsetTop() + 50);
+            activityOptions.setLaunchBounds(r);
+            return activityOptions;
         }
     }
 
@@ -304,27 +260,25 @@ public interface TaskShortcutFactory {
         }
     };
 
-    TaskShortcutFactory FREE_FORM = new MultiWindowFactory(R.drawable.ic_split_screen,
-            R.string.recent_task_option_freeform, LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP) {
-
+    TaskShortcutFactory FREE_FORM = new TaskShortcutFactory() {
         @Override
-        protected boolean isAvailable(BaseDraggingActivity activity, int displayId) {
+        public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
+                TaskIdAttributeContainer taskContainer) {
+            final Task task  = taskContainer.getTask();
+            if (!task.isDockable) {
+                return null;
+            }
+            if (!isAvailable(activity, task.key.displayId)) {
+                return null;
+            }
+
+            return Collections.singletonList(new FreeformSystemShortcut(R.drawable.ic_split_screen,
+                    R.string.recent_task_option_freeform, activity, taskContainer,
+                    LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP));
+        }
+
+        private boolean isAvailable(BaseDraggingActivity activity, int displayId) {
             return ActivityManagerWrapper.getInstance().supportsFreeformMultiWindow(activity);
-        }
-
-        @Override
-        protected ActivityOptions makeLaunchOptions(Activity activity) {
-            ActivityOptions activityOptions = ActivityOptionsCompat.makeFreeformOptions();
-            // Arbitrary bounds only because freeform is in dev mode right now
-            Rect r = new Rect(50, 50, 200, 200);
-            activityOptions.setLaunchBounds(r);
-            return activityOptions;
-        }
-
-        @Override
-        protected boolean onActivityStarted(BaseDraggingActivity activity) {
-            activity.returnToHomescreen();
-            return true;
         }
     };
 

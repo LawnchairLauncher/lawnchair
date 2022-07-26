@@ -71,7 +71,7 @@
     <string name="all_apps_search_results" msgid="5889367432531296759">"సెర్చ్ ఫలితాలు"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"వ్యక్తిగత యాప్‌ల లిస్ట్‌"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"కార్యాలయ యాప్‌ల లిస్ట్‌"</string>
-    <string name="remove_drop_target_label" msgid="7812859488053230776">"తీసివేయి"</string>
+    <string name="remove_drop_target_label" msgid="7812859488053230776">"తీసివేయండి"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"అన్ఇన్‌స్టాల్ చేయండి"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"యాప్ సమాచారం"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ఇన్‌స్టాల్ చేయండి"</string>
@@ -118,7 +118,7 @@
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"యాప్ చిహ్నాలను మొదటి స్క్రీన్‌కు జోడించండి"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"కొత్త యాప్‌ల కోసం"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"తెలియదు"</string>
-    <string name="abandoned_clean_this" msgid="7610119707847920412">"తీసివేయి"</string>
+    <string name="abandoned_clean_this" msgid="7610119707847920412">"తీసివేయండి"</string>
     <string name="abandoned_search" msgid="891119232568284442">"సెర్చ్"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ఈ యాప్ ఇన్‌స్టాల్ చేయబడలేదు"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ఈ ఐకాన్‌కు చెందిన యాప్ ఇన్‌స్టాల్ చేయలేదు. మీరు దీన్ని తీసివేయవచ్చు లేదా ఆ యాప్ కోసం సెర్చ్ చేసి, దాన్ని మాన్యువల్‌గా ఇన్‌స్టాల్ చేయవచ్చు."</string>
@@ -155,7 +155,7 @@
     <string name="widget_resized" msgid="9130327887929620">"విడ్జెట్ పరిమాణం వెడల్పు <xliff:g id="NUMBER_0">%1$s</xliff:g>కి, ఎత్తు <xliff:g id="NUMBER_1">%2$s</xliff:g>కి మార్చబడింది"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"షార్ట్‌కట్స్"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"షార్ట్‌కట్‌లు మరియు నోటిఫికేషన్‌లు"</string>
-    <string name="action_dismiss_notification" msgid="5909461085055959187">"తీసివేయి"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"తీసివేయండి"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"మూసివేస్తుంది"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"నోటిఫికేషన్ తీసివేయబడింది"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"వ్యక్తిగతం"</string>
