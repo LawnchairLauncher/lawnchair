@@ -34,7 +34,7 @@ import com.android.launcher3.DropTarget;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.ActivityContext;
 

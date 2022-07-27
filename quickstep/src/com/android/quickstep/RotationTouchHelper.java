@@ -31,7 +31,7 @@ import android.content.res.Resources;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
