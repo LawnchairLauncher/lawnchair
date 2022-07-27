@@ -15,8 +15,8 @@
  */
 package com.android.launcher3.tapl;
 
-import static com.android.launcher3.testing.TestProtocol.REQUEST_DISABLE_MANUAL_TASKBAR_STASHING;
-import static com.android.launcher3.testing.TestProtocol.REQUEST_ENABLE_MANUAL_TASKBAR_STASHING;
+import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_DISABLE_MANUAL_TASKBAR_STASHING;
+import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_ENABLE_MANUAL_TASKBAR_STASHING;
 
 import android.graphics.Point;
 import android.os.SystemClock;

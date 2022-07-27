@@ -212,6 +212,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
+    @ScreenRecord // b/238461765
     public void testSwitchToOverview() throws Exception {
         assertNotNull("Workspace.switchToOverview() returned null",
                 mLauncher.goHome().switchToOverview());

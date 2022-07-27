@@ -24,13 +24,11 @@ import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 
 import android.animation.ValueAnimator;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.quickstep.SystemUiProxy;

@@ -29,7 +29,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.testing.TestLogging;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.GestureState;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.testing;
+package com.android.launcher3.testing.shared;
 
 /**
  * Protocol for custom accessibility events for communication with UI Automation tests.
