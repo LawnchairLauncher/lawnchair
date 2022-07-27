@@ -19,7 +19,7 @@ package com.android.launcher3.tapl;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
 import static com.android.launcher3.tapl.OverviewTask.TASK_START_EVENT;
-import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_STATE_ORDINAL;
 
 import android.graphics.Point;
 import android.os.SystemClock;
@@ -28,7 +28,7 @@ import android.view.MotionEvent;
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
 
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 
 import java.util.List;
 import java.util.regex.Pattern;

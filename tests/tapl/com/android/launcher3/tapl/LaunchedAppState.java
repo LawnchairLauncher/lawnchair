@@ -16,9 +16,9 @@
 
 package com.android.launcher3.tapl;
 
-import static com.android.launcher3.testing.TestProtocol.REQUEST_DISABLE_MANUAL_TASKBAR_STASHING;
-import static com.android.launcher3.testing.TestProtocol.REQUEST_ENABLE_MANUAL_TASKBAR_STASHING;
-import static com.android.launcher3.testing.TestProtocol.REQUEST_STASHED_TASKBAR_HEIGHT;
+import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_DISABLE_MANUAL_TASKBAR_STASHING;
+import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_ENABLE_MANUAL_TASKBAR_STASHING;
+import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_STASHED_TASKBAR_HEIGHT;
 
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -27,7 +27,7 @@ import android.view.MotionEvent;
 
 import androidx.test.uiautomator.By;
 
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 
 /**
  * Background state operations specific to when an app has been launched.
