@@ -16,7 +16,6 @@
 package com.android.launcher3.allapps;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -32,7 +31,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.views.AppLauncher;
 
 import java.util.ArrayList;
@@ -77,13 +75,6 @@ public class ActivityAllAppsContainerView<T extends Context & AppLauncher
 
     /** Updates all apps container with the latest search query. */
     public void setLastSearchQuery(String query) {
-        Intent marketSearchIntent = PackageManagerHelper.getMarketSearchIntent(
-                mActivityContext, query);
-        OnClickListener marketSearchClickListener = (v) -> mActivityContext.startActivitySafely(v,
-                marketSearchIntent, null);
-        for (int i = 0; i < mAH.size(); i++) {
-            mAH.get(i).mAdapter.setLastSearchQuery(query, marketSearchClickListener);
-        }
         mIsSearching = true;
         rebindAdapters();
         mHeader.setCollapsed(true);
