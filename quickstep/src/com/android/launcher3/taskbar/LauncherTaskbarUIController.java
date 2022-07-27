@@ -354,6 +354,13 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     @Override
+    public void onExpandPip() {
+        super.onExpandPip();
+        mTaskbarLauncherStateController.updateStateForFlag(FLAG_RESUMED, false);
+        mTaskbarLauncherStateController.applyState();
+    }
+
+    @Override
     public void dumpLogs(String prefix, PrintWriter pw) {
         super.dumpLogs(prefix, pw);
 
