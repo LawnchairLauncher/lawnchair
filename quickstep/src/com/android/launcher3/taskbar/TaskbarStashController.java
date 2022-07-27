@@ -728,16 +728,14 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     public void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "TaskbarStashController:");
 
-        pw.println(String.format("%s\tmStashedHeight=%dpx", prefix, mStashedHeight));
-        pw.println(String.format("%s\tmUnstashedHeight=%dpx", prefix, mUnstashedHeight));
-        pw.println(String.format("%s\tmIsStashed=%b", prefix, mIsStashed));
-        pw.println(String.format(
-                "%s\tappliedState=%s", prefix, getStateString(mStatePropertyHolder.mPrevFlags)));
-        pw.println(String.format("%s\tmState=%s", prefix, getStateString(mState)));
-        pw.println(String.format(
-                "%s\tmIsSystemGestureInProgress=%b", prefix, mIsSystemGestureInProgress));
-        pw.println(String.format("%s\tmIsImeShowing=%b", prefix, mIsImeShowing));
-        pw.println(String.format("%s\tmIsImeSwitcherShowing=%b", prefix, mIsImeSwitcherShowing));
+        pw.println(prefix + "\tmStashedHeight=" + mStashedHeight);
+        pw.println(prefix + "\tmUnstashedHeight=" + mUnstashedHeight);
+        pw.println(prefix + "\tmIsStashed=" + mIsStashed);
+        pw.println(prefix + "\tappliedState=" + getStateString(mStatePropertyHolder.mPrevFlags));
+        pw.println(prefix + "\tmState=" + getStateString(mState));
+        pw.println(prefix + "\tmIsSystemGestureInProgress=" + mIsSystemGestureInProgress);
+        pw.println(prefix + "\tmIsImeShowing=" + mIsImeShowing);
+        pw.println(prefix + "\tmIsImeSwitcherShowing=" + mIsImeSwitcherShowing);
     }
 
     private static String getStateString(int flags) {

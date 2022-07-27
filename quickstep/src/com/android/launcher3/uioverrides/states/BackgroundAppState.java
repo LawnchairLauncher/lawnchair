@@ -50,7 +50,8 @@ public class BackgroundAppState extends OverviewState {
             return super.getVerticalProgress(launcher);
         }
         RecentsView recentsView = launcher.getOverviewPanel();
-        int transitionLength = LayoutUtils.getShelfTrackingDistance(launcher.getDeviceProfile(),
+        int transitionLength = LayoutUtils.getShelfTrackingDistance(launcher,
+                launcher.getDeviceProfile(),
                 recentsView.getPagedOrientationHandler());
         AllAppsTransitionController controller = launcher.getAllAppsController();
         float scrollRange = Math.max(controller.getShiftRange(), 1);

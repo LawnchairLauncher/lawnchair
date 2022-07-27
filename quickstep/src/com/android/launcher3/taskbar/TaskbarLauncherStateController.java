@@ -35,6 +35,7 @@ import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.AnimatedFloat;
@@ -367,11 +368,14 @@ import java.util.function.Supplier;
     private void playStateTransitionAnim(AnimatorSet animatorSet, long duration,
             boolean committed) {
         boolean isInStashedState = mLauncherState.isTaskbarStashed(mLauncher);
-        float toAlignment = mLauncherState.isTaskbarAlignedWithHotseat(mLauncher) ? 1 : 0;
+        boolean willStashVisually =
+                isInStashedState && mControllers.taskbarStashController.supportsVisualStashing();
+        float toAlignment =
+                mLauncherState.isTaskbarAlignedWithHotseat(mLauncher) && !willStashVisually ? 1 : 0;
 
-        TaskbarStashController controller = mControllers.taskbarStashController;
-        controller.updateStateForFlag(FLAG_IN_STASHED_LAUNCHER_STATE, isInStashedState);
-        Animator stashAnimator = controller.applyStateWithoutStart(duration);
+        TaskbarStashController stashController = mControllers.taskbarStashController;
+        stashController.updateStateForFlag(FLAG_IN_STASHED_LAUNCHER_STATE, isInStashedState);
+        Animator stashAnimator = stashController.applyStateWithoutStart(duration);
         if (stashAnimator != null) {
             stashAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -391,9 +395,13 @@ import java.util.function.Supplier;
             });
             animatorSet.play(stashAnimator);
         }
-
-        // If we're already animating to the value, just leave it be instead of restarting it.
+        if (mIconAlignmentForLauncherState.value == toAlignment) {
+            // Already at expected value, but make sure we run the callback at the end.
+            animatorSet.addListener(AnimatorListeners.forEndCallback(
+                    this::onIconAlignmentRatioChangedForStateTransition));
+        }
         if (!mIconAlignmentForLauncherState.isAnimatingToValue(toAlignment)) {
+            // If we're already animating to the value, just leave it be instead of restarting it.
             mIconAlignmentForLauncherState.finishAnimation();
             animatorSet.play(mIconAlignmentForLauncherState.animateToValue(toAlignment)
                     .setDuration(duration));

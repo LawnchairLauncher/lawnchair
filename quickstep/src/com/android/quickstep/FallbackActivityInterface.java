@@ -60,13 +60,13 @@ public final class FallbackActivityInterface extends
 
     /** 2 */
     @Override
-    public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context,
+    public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect,
             PagedOrientationHandler orientationHandler) {
+        calculateTaskSize(context, dp, outRect);
         if (dp.isVerticalBarLayout() && DisplayController.getNavigationMode(context) != NO_BUTTON) {
-            return dp.isSeascape()
-                    ? dp.overviewTaskRect.left : (dp.widthPx - dp.overviewTaskRect.right);
+            return dp.isSeascape() ? outRect.left : (dp.widthPx - outRect.right);
         } else {
-            return dp.heightPx - dp.overviewTaskRect.bottom;
+            return dp.heightPx - outRect.bottom;
         }
     }
 

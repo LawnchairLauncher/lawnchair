@@ -208,14 +208,18 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         return (getVisibleElements(launcher) & elements) == elements;
     }
 
-    /** Returns whether taskbar is stashed and thus should replace hotseat with a handle */
+    /**
+     * Returns whether taskbar is stashed and thus should either:
+     * 1) replace hotseat or taskbar icons with a handle in gesture navigation mode or
+     * 2) fade out the hotseat or taskbar icons in 3-button navigation mode.
+     */
     public boolean isTaskbarStashed(Launcher launcher) {
         return false;
     }
 
     /** Returns whether taskbar is aligned with the hotseat vs position inside apps */
     public boolean isTaskbarAlignedWithHotseat(Launcher launcher) {
-        return !isTaskbarStashed(launcher);
+        return true;
     }
 
     /**

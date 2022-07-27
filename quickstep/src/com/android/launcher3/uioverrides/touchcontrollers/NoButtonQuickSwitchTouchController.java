@@ -120,8 +120,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         mSwipeDetector = new BothAxesSwipeDetector(mLauncher, this);
         mRecentsView = mLauncher.getOverviewPanel();
         mXRange = mLauncher.getDeviceProfile().widthPx / 2f;
-        mYRange = LayoutUtils.getShelfTrackingDistance(mLauncher.getDeviceProfile(),
-                mRecentsView.getPagedOrientationHandler());
+        mYRange = LayoutUtils.getShelfTrackingDistance(
+            mLauncher, mLauncher.getDeviceProfile(), mRecentsView.getPagedOrientationHandler());
         mMaxYProgress = mLauncher.getDeviceProfile().heightPx / mYRange;
         mMotionPauseDetector = new MotionPauseDetector(mLauncher);
         mMotionPauseMinDisplacement = mLauncher.getResources().getDimension(
@@ -232,6 +232,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         mRecentsView.setFullscreenProgress(fromState.getOverviewFullscreenProgress());
         mLauncher.getActionsView().getVisibilityAlpha().setValue(
                 (fromState.getVisibleElements(mLauncher) & OVERVIEW_ACTIONS) != 0 ? 1f : 0f);
+        mRecentsView.setTaskIconScaledDown(true);
 
         float[] scaleAndOffset = toState.getOverviewScaleAndOffset(mLauncher);
         // As we drag right, animate the following properties:
@@ -321,6 +322,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         boolean verticalFling = mSwipeDetector.isFling(velocity.y);
         boolean noFling = !horizontalFling && !verticalFling;
         if (mMotionPauseDetector.isPaused() && noFling) {
+            // Going to Overview.
             cancelAnimations();
 
             StateAnimationConfig config = new StateAnimationConfig();
@@ -331,6 +333,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     onAnimationToStateCompleted(OVERVIEW);
+                    // Animate the icon after onAnimationToStateCompleted() so it doesn't clobber.
+                    mRecentsView.animateUpTaskIconScale();
                 }
             });
             overviewAnim.start();
