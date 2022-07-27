@@ -622,7 +622,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
     /** Adds the given view to WindowManager with the provided LayoutParams (creates new window). */
     public void addWindowView(View view, WindowManager.LayoutParams windowLayoutParams) {
-        mWindowManager.addView(view, windowLayoutParams);
+        if (!view.isAttachedToWindow()) {
+            mWindowManager.addView(view, windowLayoutParams);
+        }
     }
 
     /** Removes the given view from WindowManager. See {@link #addWindowView}. */
