@@ -35,7 +35,7 @@ import org.junit.rules.TestRule;
  * Base class for all instrumentation tests that deal with Quickstep.
  */
 public abstract class AbstractQuickStepTest extends AbstractLauncherUiTest {
-    static final boolean ENABLE_SHELL_TRANSITIONS =
+    public static final boolean ENABLE_SHELL_TRANSITIONS =
             SystemProperties.getBoolean("persist.wm.debug.shell_transit", false);
     @Override
     protected TestRule getRulesInsideActivityMonitor() {
