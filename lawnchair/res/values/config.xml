@@ -53,6 +53,9 @@
     <!-- which notification dot color to use by default -->
     <string name="config_default_notification_dot_color" translatable="false">app_icon</string>
 
+    <!-- which time format to use by default on smartspace -->
+    <string name="config_default_smartspace_time_format" translatable="false">system</string>
+
     <bool name="config_default_dark_status_bar">false</bool>
     <bool name="config_default_dock_search_bar">true</bool>
     <bool name="config_default_show_notification_count">false</bool>
@@ -78,7 +81,6 @@
     <bool name="config_default_show_component_names">false</bool>
     <bool name="config_default_smartspace_show_date">true</bool>
     <bool name="config_default_smartspace_show_time">false</bool>
-    <bool name="config_default_smartspace_24_hour_format">false</bool>
 
     <item name="config_default_home_icon_size_factor" type="dimen" format="float">1.0</item>
     <item name="config_default_folder_preview_background_opacity" type="dimen" format="float">1.0</item>
