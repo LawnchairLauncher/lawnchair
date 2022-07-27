@@ -278,11 +278,11 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         public final float fontScale;
         private final int densityDpi;
         public final NavigationMode navigationMode;
-
         private final PortraitSize mScreenSizeDp;
 
+        // WindowBounds
+        public final WindowBounds realBounds;
         public final Set<WindowBounds> supportedBounds = new ArraySet<>();
-
         private final ArrayMap<CachedDisplayInfo, WindowBounds[]> mPerDisplayBounds =
                 new ArrayMap<>();
 
@@ -310,7 +310,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
             mPerDisplayBounds.putAll(perDisplayBoundsCache);
             WindowBounds[] cachedValue = mPerDisplayBounds.get(normalizedDisplayInfo);
 
-            WindowBounds realBounds = wmProxy.getRealBounds(displayInfoContext, displayInfo);
+            realBounds = wmProxy.getRealBounds(displayInfoContext, displayInfo);
             if (cachedValue == null) {
                 // Unexpected normalizedDisplayInfo is found, recreate the cache
                 Log.e(TAG, "Unexpected normalizedDisplayInfo found, invalidating cache");

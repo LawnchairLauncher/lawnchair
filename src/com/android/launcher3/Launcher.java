@@ -636,7 +636,10 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     public void onIdpChanged(boolean modelPropertiesChanged) {
-        initDeviceProfile(mDeviceProfile.inv);
+        if (!initDeviceProfile(mDeviceProfile.inv)) {
+            return;
+        }
+
         dispatchDeviceProfileChanged();
         reapplyUi();
         mDragLayer.recreateControllers();
@@ -659,9 +662,17 @@ public class Launcher extends StatefulActivity<LauncherState>
         mDragLayer.onOneHandedModeStateChanged(activated);
     }
 
-    protected void initDeviceProfile(InvariantDeviceProfile idp) {
+    /**
+     * Returns {@code true} if a new DeviceProfile is initialized, and {@code false} otherwise.
+     */
+    protected boolean initDeviceProfile(InvariantDeviceProfile idp) {
         // Load configuration-specific DeviceProfile
-        mDeviceProfile = idp.getDeviceProfile(this);
+        DeviceProfile deviceProfile = idp.getDeviceProfile(this);
+        if (mDeviceProfile == deviceProfile) {
+            return false;
+        }
+
+        mDeviceProfile = deviceProfile;
         if (isInMultiWindowMode()) {
             mDeviceProfile = mDeviceProfile.getMultiWindowProfile(
                     this, getMultiWindowDisplaySize());
@@ -669,6 +680,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         onDeviceProfileInitiated();
         mModelWriter = mModel.getWriter(getDeviceProfile().isVerticalBarLayout(), true, this);
+        return true;
     }
 
     public RotationHelper getRotationHelper() {
