@@ -247,8 +247,12 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         return mLauncher.hasLauncherObject(mLauncher.getOverviewObjectSelector("clear_all"));
     }
 
+    protected boolean isActionsViewVisible() {
+        return true;
+    }
+
     private void verifyActionsViewVisibility() {
-        if (!hasTasks()) {
+        if (!hasTasks() || !isActionsViewVisible()) {
             return;
         }
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
