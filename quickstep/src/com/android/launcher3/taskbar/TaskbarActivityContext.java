@@ -173,13 +173,15 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
         mAccessibilityDelegate = new TaskbarShortcutMenuAccessibilityDelegate(this);
 
+        final boolean isDesktopMode = getPackageManager().hasSystemFeature(FEATURE_PC);
+
         // Construct controllers.
         mControllers = new TaskbarControllers(this,
                 new TaskbarDragController(this),
                 buttonController,
-                getPackageManager().hasSystemFeature(FEATURE_PC)
-                        ? new DesktopNavbarButtonsViewController(this, navButtonsView) :
-                        new NavbarButtonsViewController(this, navButtonsView),
+                isDesktopMode
+                        ? new DesktopNavbarButtonsViewController(this, navButtonsView)
+                        : new NavbarButtonsViewController(this, navButtonsView),
                 new RotationButtonController(this,
                         c.getColor(R.color.taskbar_nav_icon_light_color),
                         c.getColor(R.color.taskbar_nav_icon_dark_color),
@@ -202,7 +204,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new TaskbarForceVisibleImmersiveController(this),
                 new TaskbarAllAppsController(this, dp),
                 new TaskbarInsetsController(this),
-                new VoiceInteractionWindowController(this));
+                new VoiceInteractionWindowController(this),
+                isDesktopMode
+                        ? new DesktopTaskbarRecentAppsController(this)
+                        : TaskbarRecentAppsController.DEFAULT);
     }
 
     public void init(@NonNull TaskbarSharedState sharedState) {

@@ -126,6 +126,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
 
     public void onDestroy() {
         LauncherAppState.getInstance(mActivity).getModel().removeCallbacks(mModelCallbacks);
+        mModelCallbacks.unregisterListeners();
     }
 
     public boolean areIconsVisible() {
@@ -387,6 +388,16 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                 "ALPHA_INDEX_IME_BUTTON_NAV");
 
         mModelCallbacks.dumpLogs(prefix + "\t", pw);
+    }
+
+    /** Called when there's a change in running apps to update the UI. */
+    public void commitRunningAppsToUI() {
+        mModelCallbacks.commitRunningAppsToUI();
+    }
+
+    /** Call TaskbarModelCallbacks to update running apps. */
+    public void updateRunningApps() {
+        mModelCallbacks.updateRunningApps();
     }
 
     /**
