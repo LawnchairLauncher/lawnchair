@@ -77,7 +77,8 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
 
         mAppsView = findViewById(R.id.apps_view);
         mAppsView.setOnIconLongClickListener(this::onIconLongClicked);
-
+        mActivity.getSecondaryDisplayPredictions()
+                .setLongClickListener(mAppsView, this::onIconLongClicked);
         // Setup workspace
         mWorkspace = findViewById(R.id.workspace_grid);
         mPinnedAppsAdapter = new PinnedAppsAdapter(mActivity, mAppsView.getAppsStore(),

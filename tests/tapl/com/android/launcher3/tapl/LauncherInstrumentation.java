@@ -23,7 +23,7 @@ import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
 
 import static com.android.launcher3.tapl.Folder.FOLDER_CONTENT_RES_ID;
 import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
-import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 
 import android.app.ActivityManager;
 import android.app.Instrumentation;
@@ -65,9 +65,9 @@ import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
-import com.android.launcher3.ResourceUtils;
-import com.android.launcher3.testing.TestInformationRequest;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.ResourceUtils;
+import com.android.launcher3.testing.shared.TestInformationRequest;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.systemui.shared.system.ContextUtils;
 import com.android.systemui.shared.system.QuickStepContract;
 

@@ -30,7 +30,7 @@ import android.util.SparseArray;
 
 import androidx.annotation.WorkerThread;
 
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.lang.ref.WeakReference;

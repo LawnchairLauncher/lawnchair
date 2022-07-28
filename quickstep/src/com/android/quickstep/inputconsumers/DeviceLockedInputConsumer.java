@@ -42,7 +42,7 @@ import android.view.VelocityTracker;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.testing.TestLogging;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.GestureState;

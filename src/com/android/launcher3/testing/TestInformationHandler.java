@@ -41,6 +41,9 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.testing.shared.HotseatCellCenterRequest;
+import com.android.launcher3.testing.shared.TestProtocol;
+import com.android.launcher3.testing.shared.WorkspaceCellCenterRequest;
 import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 

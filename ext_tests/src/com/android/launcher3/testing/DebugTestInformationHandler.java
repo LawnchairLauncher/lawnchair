@@ -33,6 +33,7 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutAndWidgetContainer;
+import com.android.launcher3.testing.shared.TestProtocol;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -15,7 +15,7 @@
  */
 package com.android.quickstep.fallback;
 
-import static com.android.launcher3.testing.TestProtocol.BAD_STATE;
+import static com.android.launcher3.testing.shared.TestProtocol.BAD_STATE;
 import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.fallback.RecentsState.DEFAULT;
 import static com.android.quickstep.fallback.RecentsState.HOME;

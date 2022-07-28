@@ -16,7 +16,7 @@
 
 package com.android.launcher3.tapl;
 
-import static com.android.launcher3.testing.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
 
 import android.graphics.Point;
 import android.view.MotionEvent;
@@ -26,7 +26,7 @@ import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 
 /**
  * Ancestor for AppIcon and AppMenuItem.
