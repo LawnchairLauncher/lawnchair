@@ -57,7 +57,9 @@ public abstract class FastScrollRecyclerView extends RecyclerView  {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        bindFastScrollbar();
+        if (mScrollbar == null || !mScrollbar.hasRecyclerView()) {
+            bindFastScrollbar();
+        }
     }
 
     public void bindFastScrollbar() {
