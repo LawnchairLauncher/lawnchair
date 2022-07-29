@@ -37,6 +37,10 @@ import com.android.quickstep.views.TaskView;
  */
 public class OverviewState extends LauncherState {
 
+    private static final int OVERVIEW_SLIDE_IN_DURATION = 380;
+    private static final int OVERVIEW_POP_IN_DURATION = 250;
+    private static final int OVERVIEW_EXIT_DURATION = 250;
+
     protected static final Rect sTempRect = new Rect();
 
     private static final int STATE_FLAGS = FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED
@@ -57,8 +61,15 @@ public class OverviewState extends LauncherState {
 
     @Override
     public int getTransitionDuration(Context context, boolean isToState) {
-        // In gesture modes, overview comes in all the way from the side, so give it more time.
-        return DisplayController.getNavigationMode(context).hasGestures ? 380 : 250;
+        if (isToState) {
+            // In gesture modes, overview comes in all the way from the side, so give it more time.
+            return DisplayController.getNavigationMode(context).hasGestures
+                    ? OVERVIEW_SLIDE_IN_DURATION
+                    : OVERVIEW_POP_IN_DURATION;
+        } else {
+            // When exiting Overview, exit quickly.
+            return OVERVIEW_EXIT_DURATION;
+        }
     }
 
     @Override
