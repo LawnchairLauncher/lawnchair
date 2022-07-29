@@ -174,6 +174,11 @@ public class RecyclerViewFastScroller extends View {
         ta.recycle();
     }
 
+    /** @return whether there is a RecyclerView bound to this scroller. */
+    public boolean hasRecyclerView() {
+        return mRv != null;
+    }
+
     public void setRecyclerView(FastScrollRecyclerView rv, TextView popupView) {
         if (mRv != null && mOnScrollListener != null) {
             mRv.removeOnScrollListener(mOnScrollListener);
