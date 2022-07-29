@@ -292,17 +292,6 @@
 
     <style name="TextTitle" parent="@android:style/TextAppearance.DeviceDefault" />
 
-    <style name="AllAppsEmptySearchBackground">
-        <item name="android:colorPrimary">#E0E0E0</item>
-        <item name="android:colorControlHighlight">#19BDBDBD</item>
-        <item name="android:colorForeground">@color/all_apps_bg_hand_fill</item>
-    </style>
-    <style name="AllAppsEmptySearchBackground.Dark">
-        <item name="android:colorPrimary">#9AA0A6</item>
-        <item name="android:colorControlHighlight">#19DFE1E5</item>
-        <item name="android:colorForeground">@color/all_apps_bg_hand_fill_dark</item>
-    </style>
-
     <style name="Button.TopRounded.Bordered" parent="@android:style/Widget.Material.Button">
         <item name="android:background">@drawable/button_top_rounded_bordered_ripple</item>
         <item name="android:stateListAnimator">@null</item>
