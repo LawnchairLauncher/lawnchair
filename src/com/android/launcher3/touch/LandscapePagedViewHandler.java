@@ -523,6 +523,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         iconParams.rightMargin = -taskIconHeight - taskIconMargin / 2;
         iconParams.leftMargin = 0;
         iconParams.topMargin = thumbnailTopMargin / 2;
+        iconParams.bottomMargin = 0;
     }
 
     @Override

@@ -340,11 +340,6 @@ class DeviceProfilePhoneTest : DeviceProfileBaseTest() {
     }
 
     @Test
-    fun overviewTaskMarginGridPx() {
-        assertThat(dp.overviewTaskMarginGridPx).isEqualTo(0)
-    }
-
-    @Test
     fun overviewTaskIconSizePx() {
         assertThat(dp.overviewTaskIconSizePx).isEqualTo(168)
     }
@@ -361,7 +356,7 @@ class DeviceProfilePhoneTest : DeviceProfileBaseTest() {
 
     @Test
     fun overviewTaskThumbnailTopMarginPx() {
-        assertThat(dp.overviewTaskThumbnailTopMarginPx).isEqualTo(280)
+        assertThat(dp.overviewTaskThumbnailTopMarginPx).isEqualTo(224)
     }
 
     @Test
@@ -386,7 +381,7 @@ class DeviceProfilePhoneTest : DeviceProfileBaseTest() {
 
     @Test
     fun overviewRowSpacing() {
-        assertThat(dp.overviewRowSpacing).isEqualTo(-112)
+        assertThat(dp.overviewRowSpacing).isEqualTo(0)
     }
 
     @Test
