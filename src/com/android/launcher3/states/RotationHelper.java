@@ -23,19 +23,21 @@ import static android.util.DisplayMetrics.DENSITY_DEVICE_STABLE;
 import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.util.window.WindowManagerProxy.MIN_TABLET_WIDTH;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.UiThreadHelper;
 
 /**
  * Utility class to manage launcher rotation
  */
 public class RotationHelper implements OnSharedPreferenceChangeListener,
-        DeviceProfile.OnDeviceProfileChangeListener {
+        DisplayController.DisplayInfoChangeListener {
 
     private static final String TAG = "RotationHelper";
 
@@ -119,8 +121,8 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
     }
 
     @Override
-    public void onDeviceProfileChanged(DeviceProfile dp) {
-        boolean ignoreAutoRotateSettings = dp.isTablet;
+    public void onDisplayInfoChanged(Context context, DisplayController.Info info, int flags) {
+        boolean ignoreAutoRotateSettings = info.isTablet(info.realBounds);
         if (mIgnoreAutoRotateSettings != ignoreAutoRotateSettings) {
             setIgnoreAutoRotateSettings(ignoreAutoRotateSettings);
             notifyChange();
@@ -157,8 +159,10 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
     public void initialize() {
         if (!mInitialized) {
             mInitialized = true;
-            setIgnoreAutoRotateSettings(mActivity.getDeviceProfile().isTablet);
-            mActivity.addOnDeviceProfileChangeListener(this);
+            DisplayController displayController = DisplayController.INSTANCE.get(mActivity);
+            DisplayController.Info info = displayController.getInfo();
+            setIgnoreAutoRotateSettings(info.isTablet(info.realBounds));
+            displayController.addChangeListener(this);
             notifyChange();
         }
     }
@@ -166,7 +170,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
     public void destroy() {
         if (!mDestroyed) {
             mDestroyed = true;
-            mActivity.removeOnDeviceProfileChangeListener(this);
+            DisplayController.INSTANCE.get(mActivity).removeChangeListener(this);
             mActivity = null;
             if (mSharedPrefs != null) {
                 mSharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
