@@ -216,6 +216,7 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
         iconParams.leftMargin = -taskIconHeight - taskIconMargin / 2;
         iconParams.rightMargin = 0;
         iconParams.topMargin = thumbnailTopMargin / 2;
+        iconParams.bottomMargin = 0;
     }
 
     @Override

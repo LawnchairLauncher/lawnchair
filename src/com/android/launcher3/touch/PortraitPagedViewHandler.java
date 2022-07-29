@@ -52,9 +52,9 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.SplitConfigurationOptions;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
-import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.List;
@@ -658,8 +658,9 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     public void setTaskIconParams(FrameLayout.LayoutParams iconParams, int taskIconMargin,
             int taskIconHeight, int thumbnailTopMargin, boolean isRtl) {
         iconParams.gravity = TOP | CENTER_HORIZONTAL;
+        // Reset margins, since they may have been set on rotation
         iconParams.leftMargin = iconParams.rightMargin = 0;
-        iconParams.topMargin = taskIconMargin;
+        iconParams.topMargin = iconParams.bottomMargin = 0;
     }
 
     @Override
