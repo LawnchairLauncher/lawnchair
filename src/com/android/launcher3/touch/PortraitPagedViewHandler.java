@@ -757,4 +757,36 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
             return new Pair<>(secondary, primary);
         }
     }
+
+    @Override
+    public float getFloatingTaskOffscreenTranslationTarget(View floatingTask, RectF onScreenRect,
+            @StagePosition int stagePosition, DeviceProfile dp) {
+        if (dp.isLandscape) {
+            float currentTranslationX = floatingTask.getTranslationX();
+            return stagePosition == STAGE_POSITION_TOP_OR_LEFT
+                    ? currentTranslationX - onScreenRect.width()
+                    : currentTranslationX + onScreenRect.width();
+        } else {
+            float currentTranslationY = floatingTask.getTranslationY();
+            return currentTranslationY - onScreenRect.height();
+        }
+    }
+
+    @Override
+    public void setFloatingTaskPrimaryTranslation(View floatingTask, float translation,
+            DeviceProfile dp) {
+        if (dp.isLandscape) {
+            floatingTask.setTranslationX(translation);
+        } else {
+            floatingTask.setTranslationY(translation);
+        }
+
+    }
+
+    @Override
+    public Float getFloatingTaskPrimaryTranslation(View floatingTask, DeviceProfile dp) {
+        return dp.isLandscape
+                ? floatingTask.getTranslationX()
+                : floatingTask.getTranslationY();
+    }
 }
