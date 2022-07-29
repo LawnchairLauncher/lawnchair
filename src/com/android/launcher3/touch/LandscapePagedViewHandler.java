@@ -581,4 +581,22 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
             FloatProperty secondary, DeviceProfile deviceProfile) {
         return new Pair<>(primary, secondary);
     }
+
+    @Override
+    public float getFloatingTaskOffscreenTranslationTarget(View floatingTask, RectF onScreenRect,
+            @StagePosition int stagePosition, DeviceProfile dp) {
+        float currentTranslationY = floatingTask.getTranslationY();
+        return currentTranslationY - onScreenRect.height();
+    }
+
+    @Override
+    public void setFloatingTaskPrimaryTranslation(View floatingTask, float translation,
+            DeviceProfile dp) {
+        floatingTask.setTranslationY(translation);
+    }
+
+    @Override
+    public Float getFloatingTaskPrimaryTranslation(View floatingTask, DeviceProfile dp) {
+        return floatingTask.getTranslationY();
+    }
 }
