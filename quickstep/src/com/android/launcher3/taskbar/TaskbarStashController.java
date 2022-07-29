@@ -210,7 +210,10 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                 StashedHandleViewController.ALPHA_INDEX_STASHED);
         mTaskbarStashedHandleHintScale = stashedHandleController.getStashedHandleHintScale();
 
-        boolean isManuallyStashedInApp = supportsManualStashing()
+        // We use supportsVisualStashing() here instead of supportsManualStashing() because we want
+        // it to work properly for tests that recreate taskbar. This check is here just to ensure
+        // that taskbar unstashes when going to 3 button mode (supportsVisualStashing() false).
+        boolean isManuallyStashedInApp = supportsVisualStashing()
                 && mPrefs.getBoolean(SHARED_PREFS_STASHED_KEY, DEFAULT_STASHED_PREF);
         boolean isInSetup = !mActivity.isUserSetupComplete() || setupUIVisible;
         updateStateForFlag(FLAG_STASHED_IN_APP_MANUAL, isManuallyStashedInApp);
@@ -218,7 +221,10 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         updateStateForFlag(FLAG_IN_SETUP, isInSetup);
         updateStateForFlag(FLAG_STASHED_SMALL_SCREEN, isPhoneMode()
                 && !mActivity.isThreeButtonNav());
-        applyState();
+        // For now, assume we're in an app, since LauncherTaskbarUIController won't be able to tell
+        // us that we're paused until a bit later. This avoids flickering upon recreating taskbar.
+        updateStateForFlag(FLAG_IN_APP, true);
+        applyState(/* duration = */ 0);
 
         notifyStashChange(/* visible */ false, /* stashed */ isStashedInApp());
     }
@@ -228,8 +234,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * state.
      */
     public boolean supportsVisualStashing() {
-        return mControllers.uiController.supportsVisualStashing() ||
-                (isPhoneMode() && !mActivity.isThreeButtonNav());
+        return !mActivity.isThreeButtonNav() && mControllers.uiController.supportsVisualStashing();
     }
 
     /**
