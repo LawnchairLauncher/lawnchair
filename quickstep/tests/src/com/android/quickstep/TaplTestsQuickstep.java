@@ -181,21 +181,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     @PortraitLandscape
-    public void testSplitFromOverview() {
-        assumeTrue(!mLauncher.isTablet());
-
-        startTestActivity(2);
-        startTestActivity(3);
-
-        mLauncher.goHome().switchToOverview().getCurrentTask()
-                .tapMenu()
-                .tapSplitMenuItem()
-                .getTestActivityTask(2)
-                .open();
-    }
-
-    @Test
-    @PortraitLandscape
     public void testSplitFromOverviewForTablet() {
         assumeTrue(mLauncher.isTablet());
 
