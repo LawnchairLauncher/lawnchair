@@ -496,8 +496,8 @@ public class CellLayout extends ViewGroup {
 
                     // Draw reorder drag target.
                     debugPaint.setColor(Color.RED);
-                    canvas.drawCircle(cellCenter[0], cellCenter[1], getReorderRadius(targetCell),
-                            debugPaint);
+                    canvas.drawCircle(cellCenter[0], cellCenter[1],
+                            getReorderRadius(targetCell, 1, 1), debugPaint);
 
                     // Draw folder creation drag target.
                     if (canCreateFolder) {
@@ -912,18 +912,18 @@ public class CellLayout extends ViewGroup {
         DeviceProfile grid = mActivity.getDeviceProfile();
         float iconVisibleRadius = ICON_VISIBLE_AREA_FACTOR * grid.iconSizePx / 2;
         // Halfway between reorder radius and icon.
-        return (getReorderRadius(targetCell) + iconVisibleRadius) / 2;
+        return (getReorderRadius(targetCell, 1, 1) + iconVisibleRadius) / 2;
     }
 
     /**
      * Returns the max distance from the center of a cell that will start to reorder on drag over.
      */
-    public float getReorderRadius(int[] targetCell) {
+    public float getReorderRadius(int[] targetCell, int spanX, int spanY) {
         int[] centerPoint = mTmpPoint;
         getWorkspaceCellVisualCenter(targetCell[0], targetCell[1], centerPoint);
 
         Rect cellBoundsWithSpacing = mTempRect;
-        cellToRect(targetCell[0], targetCell[1], 1, 1, cellBoundsWithSpacing);
+        cellToRect(targetCell[0], targetCell[1], spanX, spanY, cellBoundsWithSpacing);
         cellBoundsWithSpacing.inset(-mBorderSpace.x / 2, -mBorderSpace.y / 2);
 
         if (canCreateFolder(getChildAt(targetCell[0], targetCell[1]))) {
