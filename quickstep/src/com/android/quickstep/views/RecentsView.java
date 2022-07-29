@@ -2238,7 +2238,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             @Nullable AnimatorSet animatorSet, GestureState.GestureEndTarget endTarget,
             TaskViewSimulator[] taskViewSimulators) {
         mCurrentGestureEndTarget = endTarget;
-        if (endTarget == GestureState.GestureEndTarget.RECENTS) {
+        boolean isOverviewEndTarget = endTarget == GestureState.GestureEndTarget.RECENTS;
+        if (isOverviewEndTarget) {
             updateGridProperties();
         }
 
@@ -2267,10 +2268,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 }
             }
         }
+        int overviewProgress = isOverviewEndTarget ? 1 : 0;
         if (animatorSet == null) {
-            setOverviewProgress(1);
+            setOverviewProgress(overviewProgress);
         } else {
-            animatorSet.play(ObjectAnimator.ofFloat(this, OVERVIEW_PROGRESS, 1));
+            animatorSet.play(ObjectAnimator.ofFloat(this, OVERVIEW_PROGRESS, overviewProgress));
         }
     }
 
