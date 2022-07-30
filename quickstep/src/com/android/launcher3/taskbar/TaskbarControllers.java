@@ -53,6 +53,7 @@ public class TaskbarControllers {
     public final TaskbarAllAppsController taskbarAllAppsController;
     public final TaskbarInsetsController taskbarInsetsController;
     public final VoiceInteractionWindowController voiceInteractionWindowController;
+    public final TaskbarRecentAppsController taskbarRecentAppsController;
 
     @Nullable private LoggableTaskbarController[] mControllersToLog = null;
 
@@ -82,7 +83,8 @@ public class TaskbarControllers {
             TaskbarForceVisibleImmersiveController taskbarForceVisibleImmersiveController,
             TaskbarAllAppsController taskbarAllAppsController,
             TaskbarInsetsController taskbarInsetsController,
-            VoiceInteractionWindowController voiceInteractionWindowController) {
+            VoiceInteractionWindowController voiceInteractionWindowController,
+            TaskbarRecentAppsController taskbarRecentAppsController) {
         this.taskbarActivityContext = taskbarActivityContext;
         this.taskbarDragController = taskbarDragController;
         this.navButtonController = navButtonController;
@@ -102,6 +104,7 @@ public class TaskbarControllers {
         this.taskbarAllAppsController = taskbarAllAppsController;
         this.taskbarInsetsController = taskbarInsetsController;
         this.voiceInteractionWindowController = voiceInteractionWindowController;
+        this.taskbarRecentAppsController = taskbarRecentAppsController;
     }
 
     /**
@@ -130,6 +133,7 @@ public class TaskbarControllers {
         navButtonController.init(this);
         taskbarInsetsController.init(this);
         voiceInteractionWindowController.init(this);
+        taskbarRecentAppsController.init(this);
 
         mControllersToLog = new LoggableTaskbarController[] {
                 taskbarDragController, navButtonController, navbarButtonsViewController,
@@ -178,6 +182,7 @@ public class TaskbarControllers {
         navButtonController.onDestroy();
         taskbarInsetsController.onDestroy();
         voiceInteractionWindowController.onDestroy();
+        taskbarRecentAppsController.onDestroy();
 
         mControllersToLog = null;
     }

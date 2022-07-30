@@ -20,12 +20,14 @@ import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
+import android.app.ActivityManager;
 import android.app.PendingIntent;
 import android.app.PictureInPictureParams;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Insets;
 import android.graphics.Rect;
@@ -108,12 +110,14 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
     private boolean mLastNavButtonAnimate;
     private boolean mHasNavButtonAlphaBeenSet = false;
     private Runnable mPendingSetNavButtonAlpha = null;
+    private Context mContext;
 
     // TODO(141886704): Find a way to remove this
     private int mLastSystemUiStateFlags;
 
     public SystemUiProxy(Context context) {
         DisplayController.INSTANCE.get(context).addChangeListener(this);
+        mContext = context;
     }
 
     @Override
@@ -864,6 +868,22 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
                 return new ArrayList<>(Arrays.asList(rawTasks));
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call getRecentTasks", e);
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     * Gets the set of running tasks.
+     */
+    public ArrayList<ActivityManager.RunningTaskInfo> getRunningTasks(int numTasks) {
+        if (mRecentTasks != null
+                && mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_PC)) {
+            try {
+                return new ArrayList<ActivityManager.RunningTaskInfo>(
+                        Arrays.asList(mRecentTasks.getRunningTasks(numTasks)));
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call getRunningTasks", e);
             }
         }
         return new ArrayList<>();

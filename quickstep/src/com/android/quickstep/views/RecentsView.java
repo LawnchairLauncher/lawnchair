@@ -397,6 +397,39 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 }
             };
 
+    public static final FloatProperty<RecentsView> FIRST_FLOATING_TASK_TRANSLATE_OFFSCREEN =
+            new FloatProperty<RecentsView>("firstFloatingTaskTranslateOffscreen") {
+                @Override
+                public void setValue(RecentsView view, float translation) {
+                    view.getPagedOrientationHandler().setFloatingTaskPrimaryTranslation(
+                            view.mFirstFloatingTaskView,
+                            translation,
+                            view.mActivity.getDeviceProfile()
+                    );
+                }
+
+                @Override
+                public Float get(RecentsView view) {
+                    return view.getPagedOrientationHandler().getFloatingTaskPrimaryTranslation(
+                            view.mFirstFloatingTaskView,
+                            view.mActivity.getDeviceProfile()
+                    );
+                }
+            };
+
+    public static final FloatProperty<RecentsView> SPLIT_INSTRUCTIONS_FADE =
+            new FloatProperty<RecentsView>("splitInstructionsFade") {
+                @Override
+                public void setValue(RecentsView view, float fade) {
+                    view.mSplitInstructionsView.setAlpha(1 - fade);
+                }
+
+                @Override
+                public Float get(RecentsView view) {
+                    return 1 - view.mSplitInstructionsView.getAlpha();
+                }
+            };
+
     // OverScroll constants
     private static final int OVERSCROLL_PAGE_SNAP_ANIMATION_DURATION = 270;
 
@@ -2205,7 +2238,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             @Nullable AnimatorSet animatorSet, GestureState.GestureEndTarget endTarget,
             TaskViewSimulator[] taskViewSimulators) {
         mCurrentGestureEndTarget = endTarget;
-        if (endTarget == GestureState.GestureEndTarget.RECENTS) {
+        boolean isOverviewEndTarget = endTarget == GestureState.GestureEndTarget.RECENTS;
+        if (isOverviewEndTarget) {
             updateGridProperties();
         }
 
@@ -2234,10 +2268,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 }
             }
         }
+        int overviewProgress = isOverviewEndTarget ? 1 : 0;
         if (animatorSet == null) {
-            setOverviewProgress(1);
+            setOverviewProgress(overviewProgress);
         } else {
-            animatorSet.play(ObjectAnimator.ofFloat(this, OVERVIEW_PROGRESS, 1));
+            animatorSet.play(ObjectAnimator.ofFloat(this, OVERVIEW_PROGRESS, overviewProgress));
         }
     }
 
@@ -5289,6 +5324,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Nullable
     public RecentsAnimationController getRecentsAnimationController() {
         return mRecentsAnimationController;
+    }
+
+    @Nullable
+    public FloatingTaskView getFirstFloatingTaskView() {
+        return mFirstFloatingTaskView;
     }
 
     /** Update the current activity locus id to show the enabled state of Overview */

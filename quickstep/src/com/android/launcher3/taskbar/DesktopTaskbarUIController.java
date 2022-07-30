@@ -32,11 +32,14 @@ public class DesktopTaskbarUIController extends TaskbarUIController {
 
     @Override
     protected void init(TaskbarControllers taskbarControllers) {
+        super.init(taskbarControllers);
         mLauncher.getHotseat().setIconsAlpha(0f);
+        mControllers.taskbarViewController.updateRunningApps();
     }
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
         mLauncher.getHotseat().setIconsAlpha(1f);
     }
 

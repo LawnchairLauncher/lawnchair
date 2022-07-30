@@ -20,6 +20,7 @@ import static android.app.WindowConfiguration.ACTIVITY_TYPE_ASSISTANT;
 import static android.app.WindowConfiguration.ACTIVITY_TYPE_HOME;
 import static android.content.Intent.ACTION_CHOOSER;
 import static android.content.Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS;
+import static android.view.Display.DEFAULT_DISPLAY;
 
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 
@@ -31,9 +32,9 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SplitConfigurationOptions;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitStageInfo;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 import com.android.launcher3.util.SplitConfigurationOptions.StageType;
-import com.android.launcher3.util.SplitConfigurationOptions.SplitStageInfo;
 import com.android.launcher3.util.TraceHelper;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
@@ -85,6 +86,19 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
     public void onTaskMovedToFront(RunningTaskInfo taskInfo) {
         mOrderedTaskList.removeIf(rto -> rto.taskId == taskInfo.taskId);
         mOrderedTaskList.addFirst(taskInfo);
+
+        // Keep the home display's top running task in the first while adding a non-home
+        // display's task to the list, to avoid showing non-home display's task upon going to
+        // Recents animation.
+        if (taskInfo.displayId != DEFAULT_DISPLAY) {
+            final RunningTaskInfo topTaskOnHomeDisplay = mOrderedTaskList.stream()
+                    .filter(rto -> rto.displayId == DEFAULT_DISPLAY).findFirst().orElse(null);
+            if (topTaskOnHomeDisplay != null) {
+                mOrderedTaskList.removeIf(rto -> rto.taskId == topTaskOnHomeDisplay.taskId);
+                mOrderedTaskList.addFirst(topTaskOnHomeDisplay);
+            }
+        }
+
         if (mOrderedTaskList.size() >= HISTORY_SIZE) {
             // If we grow in size, remove the last taskInfo which is not part of the split task.
             Iterator<RunningTaskInfo> itr = mOrderedTaskList.descendingIterator();

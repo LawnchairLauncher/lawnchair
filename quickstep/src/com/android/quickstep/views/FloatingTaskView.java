@@ -260,6 +260,10 @@ public class FloatingTaskView extends FrameLayout {
                 mActivity.getDeviceProfile(), mStagePosition);
     }
 
+    public int getStagePosition() {
+        return mStagePosition;
+    }
+
     private static class SplitOverlayProperties {
 
         private final float finalTaskViewScaleX;
