@@ -15,17 +15,12 @@
  */
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_ALL_APPS_DIVIDER;
-import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_EMPTY_SEARCH;
-import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_SEARCH_MARKET;
-
 import android.content.Context;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.LabelComparator;
@@ -173,13 +168,6 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
     }
 
     /**
-     * Returns whether there are no filtered results.
-     */
-    public boolean hasNoFilteredResults() {
-        return hasSearchResults() && mAccessibilityResultsCount == 0;
-    }
-
-    /**
      * Sets results list for search
      */
     public boolean setSearchResults(ArrayList<AdapterItem> results) {
@@ -249,15 +237,6 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         // ordered set of sections
         if (hasSearchResults()) {
             mAdapterItems.addAll(mSearchResults);
-            if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
-                // Append the search market item
-                if (hasNoFilteredResults()) {
-                    mAdapterItems.add(new AdapterItem(VIEW_TYPE_EMPTY_SEARCH));
-                } else {
-                    mAdapterItems.add(new AdapterItem(VIEW_TYPE_ALL_APPS_DIVIDER));
-                }
-                mAdapterItems.add(new AdapterItem(VIEW_TYPE_SEARCH_MARKET));
-            }
         } else {
             int position = 0;
             if (mWorkProviderManager != null) {

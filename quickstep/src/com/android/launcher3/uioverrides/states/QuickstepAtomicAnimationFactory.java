@@ -22,13 +22,15 @@ import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.HINT_STATE_TWO_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.WorkspaceStateTransitionAnimation.getWorkspaceSpringScaleAnimator;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
-import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.launcher3.anim.Interpolators.EMPHASIZED_ACCELERATE;
+import static com.android.launcher3.anim.Interpolators.EMPHASIZED_DECELERATE;
 import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -39,6 +41,8 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_DEPTH;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_ACTIONS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SPLIT_SELECT_FLOATING_TASK_TRANSLATE_OFFSCREEN;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SPLIT_SELECT_INSTRUCTIONS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_Y;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_SCRIM_FADE;
@@ -87,9 +91,16 @@ public class QuickstepAtomicAnimationFactory extends
     public void prepareForAtomicAnimation(LauncherState fromState, LauncherState toState,
             StateAnimationConfig config) {
         RecentsView overview = mActivity.getOverviewPanel();
-        if (toState == NORMAL && fromState == OVERVIEW) {
+        if ((fromState == OVERVIEW || fromState == OVERVIEW_SPLIT_SELECT) && toState == NORMAL) {
+            if (fromState == OVERVIEW_SPLIT_SELECT) {
+                config.setInterpolator(ANIM_OVERVIEW_SPLIT_SELECT_FLOATING_TASK_TRANSLATE_OFFSCREEN,
+                        clampToProgress(EMPHASIZED_ACCELERATE, 0, 0.4f));
+                config.setInterpolator(ANIM_OVERVIEW_SPLIT_SELECT_INSTRUCTIONS_FADE,
+                        clampToProgress(LINEAR, 0, 0.33f));
+            }
+
             config.setInterpolator(ANIM_OVERVIEW_ACTIONS_FADE, clampToProgress(LINEAR, 0, 0.25f));
-            config.setInterpolator(ANIM_SCRIM_FADE, LINEAR);
+            config.setInterpolator(ANIM_SCRIM_FADE, clampToProgress(LINEAR, 0.33f, 1));
             config.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL);
             config.setInterpolator(ANIM_WORKSPACE_FADE, ACCEL);
 
@@ -98,8 +109,7 @@ public class QuickstepAtomicAnimationFactory extends
                 // Overview is going offscreen, so keep it at its current scale and opacity.
                 config.setInterpolator(ANIM_OVERVIEW_SCALE, FINAL_FRAME);
                 config.setInterpolator(ANIM_OVERVIEW_FADE, FINAL_FRAME);
-                config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X,
-                        clampToProgress(FAST_OUT_SLOW_IN, 0, 0.75f));
+                config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, EMPHASIZED_DECELERATE);
                 config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, FINAL_FRAME);
             } else {
                 config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, ACCEL_DEACCEL);

@@ -52,9 +52,9 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.SplitConfigurationOptions;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
-import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.List;
@@ -658,8 +658,9 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     public void setTaskIconParams(FrameLayout.LayoutParams iconParams, int taskIconMargin,
             int taskIconHeight, int thumbnailTopMargin, boolean isRtl) {
         iconParams.gravity = TOP | CENTER_HORIZONTAL;
+        // Reset margins, since they may have been set on rotation
         iconParams.leftMargin = iconParams.rightMargin = 0;
-        iconParams.topMargin = taskIconMargin;
+        iconParams.topMargin = iconParams.bottomMargin = 0;
     }
 
     @Override
@@ -755,5 +756,37 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
         } else {
             return new Pair<>(secondary, primary);
         }
+    }
+
+    @Override
+    public float getFloatingTaskOffscreenTranslationTarget(View floatingTask, RectF onScreenRect,
+            @StagePosition int stagePosition, DeviceProfile dp) {
+        if (dp.isLandscape) {
+            float currentTranslationX = floatingTask.getTranslationX();
+            return stagePosition == STAGE_POSITION_TOP_OR_LEFT
+                    ? currentTranslationX - onScreenRect.width()
+                    : currentTranslationX + onScreenRect.width();
+        } else {
+            float currentTranslationY = floatingTask.getTranslationY();
+            return currentTranslationY - onScreenRect.height();
+        }
+    }
+
+    @Override
+    public void setFloatingTaskPrimaryTranslation(View floatingTask, float translation,
+            DeviceProfile dp) {
+        if (dp.isLandscape) {
+            floatingTask.setTranslationX(translation);
+        } else {
+            floatingTask.setTranslationY(translation);
+        }
+
+    }
+
+    @Override
+    public Float getFloatingTaskPrimaryTranslation(View floatingTask, DeviceProfile dp) {
+        return dp.isLandscape
+                ? floatingTask.getTranslationX()
+                : floatingTask.getTranslationY();
     }
 }

@@ -23,16 +23,22 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_MODAL;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SPLIT_SELECT_FLOATING_TASK_TRANSLATE_OFFSCREEN;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SPLIT_SELECT_INSTRUCTIONS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_Y;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import static com.android.launcher3.testing.shared.TestProtocol.BAD_STATE;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
+import static com.android.quickstep.views.RecentsView.FIRST_FLOATING_TASK_TRANSLATE_OFFSCREEN;
 import static com.android.quickstep.views.RecentsView.OVERVIEW_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_GRID_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
+import static com.android.quickstep.views.RecentsView.SPLIT_INSTRUCTIONS_FADE;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
 
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.FloatProperty;
 import android.util.Log;
 
@@ -40,9 +46,12 @@ import androidx.annotation.NonNull;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
+import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.RecentsView;
 
 /**
@@ -105,6 +114,49 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
                 config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_X, LINEAR));
         setter.setFloat(mRecentsView, TASK_SECONDARY_TRANSLATION, 0f,
                 config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, LINEAR));
+
+        if (mRecentsView.isSplitSelectionActive()) {
+            // TODO (b/238651489): Refactor state management to avoid need for double check
+            FloatingTaskView floatingTask = mRecentsView.getFirstFloatingTaskView();
+            if (floatingTask != null) {
+                DragLayer dragLayer = mLauncher.getDragLayer();
+                RectF onScreenRectF = new RectF();
+                Utilities.getBoundsForViewInDragLayer(mLauncher.getDragLayer(), floatingTask,
+                        new Rect(0, 0, floatingTask.getWidth(), floatingTask.getHeight()),
+                        false, null, onScreenRectF);
+                // Get the part of the floatingTask that intersects with the DragLayer (i.e. the
+                // on-screen portion)
+                onScreenRectF.intersect(
+                        dragLayer.getLeft(),
+                        dragLayer.getTop(),
+                        dragLayer.getRight(),
+                        dragLayer.getBottom()
+                );
+
+                setter.setFloat(
+                        mRecentsView,
+                        FIRST_FLOATING_TASK_TRANSLATE_OFFSCREEN,
+                        mRecentsView.getPagedOrientationHandler()
+                                .getFloatingTaskOffscreenTranslationTarget(
+                                        floatingTask,
+                                        onScreenRectF,
+                                        floatingTask.getStagePosition(),
+                                        mLauncher.getDeviceProfile()
+                                ),
+                        config.getInterpolator(
+                                ANIM_OVERVIEW_SPLIT_SELECT_FLOATING_TASK_TRANSLATE_OFFSCREEN,
+                                LINEAR
+                        ));
+                setter.setFloat(
+                        mRecentsView,
+                        SPLIT_INSTRUCTIONS_FADE,
+                        1,
+                        config.getInterpolator(
+                                ANIM_OVERVIEW_SPLIT_SELECT_INSTRUCTIONS_FADE,
+                                LINEAR
+                        ));
+            }
+        }
 
         float recentsAlpha = toState.overviewUi ? 1 : 0;
         Log.d(BAD_STATE, "BaseRecentsViewStateController setStateWithAnimationInternal toState="
