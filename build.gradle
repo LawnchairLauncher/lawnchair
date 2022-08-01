@@ -29,7 +29,6 @@ buildscript {
 }
 
 final String FRAMEWORK_PREBUILTS_DIR = "prebuilts"
-final def keystorePropertiesFile = rootProject.file("keystore.properties")
 
 allprojects {
     repositories {
@@ -168,27 +167,26 @@ android {
         kotlinCompilerExtensionVersion = compose_compiler_version
     }
 
+    final def keystorePropertiesFile = rootProject.file("keystore.properties")
+    def releaseSigning = signingConfigs.debug
     if (keystorePropertiesFile.exists()) {
         final def keystoreProperties = new Properties()
         keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-
-        signingConfigs {
-            release {
-                keyAlias keystoreProperties['keyAlias']
-                keyPassword keystoreProperties['keyPassword']
-                storeFile rootProject.file(keystoreProperties['storeFile'])
-                storePassword keystoreProperties['storePassword']
-            }
+        releaseSigning = signingConfigs.create("release") {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile rootProject.file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
         }
     }
 
     buildTypes {
         debug {
-
+            signingConfig releaseSigning
         }
 
         release {
-            if (keystorePropertiesFile.exists()) signingConfig signingConfigs.release
+            signingConfig releaseSigning
             minifyEnabled true
             shrinkResources true
             proguardFiles "proguard-android-optimize.txt", "proguard.pro"
