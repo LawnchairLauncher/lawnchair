@@ -28,8 +28,6 @@ buildscript {
     }
 }
 
-final String FRAMEWORK_PREBUILTS_DIR = "prebuilts"
-
 allprojects {
     repositories {
         google()
@@ -137,6 +135,7 @@ android {
         buildConfigField "String", "COMMIT_HASH", "\"${buildCommit}\""
         buildConfigField "boolean", "ENABLE_AUTO_INSTALLS_LAYOUT", "false"
 
+        resValue("string", "launcher_component", "${applicationId}/app.lawnchair.LawnchairLauncher")
         manifestPlaceholders.quickstepMinSdk = quickstepMinSdk
         manifestPlaceholders.quickstepMaxSdk = quickstepMaxSdk
         buildConfigField "int", "QUICKSTEP_MIN_SDK", quickstepMinSdk
@@ -152,7 +151,6 @@ android {
         variant.outputs.all {
             outputFileName = "Lawnchair ${variant.versionName}.apk"
         }
-        resValue("string", "launcher_component", "${applicationId}/app.lawnchair.LawnchairLauncher")
     }
 
     lint {
@@ -232,7 +230,6 @@ android {
 
         withQuickstep {
             dimension "recents"
-
             minSdk 26
         }
 
@@ -323,6 +320,8 @@ android {
 }
 
 dependencies {
+    final def FRAMEWORK_PREBUILTS_DIR = "prebuilts"
+
     implementation "androidx.dynamicanimation:dynamicanimation:${ANDROID_X_VERSION}"
     implementation "androidx.recyclerview:recyclerview:${ANDROID_X_VERSION}"
     implementation "androidx.preference:preference-ktx:${ANDROID_X_VERSION}"
@@ -396,7 +395,7 @@ dependencies {
     // Persian Date
     implementation 'com.github.samanzamani:PersianDate:1.5.4'
 
-    api 'com.airbnb.android:lottie:5.0.3'
+    implementation 'com.airbnb.android:lottie:5.0.3'
 }
 
 protobuf {
