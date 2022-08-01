@@ -61,6 +61,7 @@ import android.provider.Settings;
 import android.view.MotionEvent;
 
 import androidx.annotation.BinderThread;
+import androidx.annotation.NonNull;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DisplayController;
@@ -124,7 +125,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
     };
 
     private int mGestureBlockingTaskId = -1;
-    private Region mExclusionRegion;
+    private @NonNull Region mExclusionRegion = new Region();
     private SystemGestureExclusionListenerCompat mExclusionListener;
 
     public RecentsAnimationDeviceState(Context context) {
@@ -162,6 +163,10 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
             @Override
             @BinderThread
             public void onExclusionChanged(Region region) {
+                if (region == null) {
+                    // Don't think this is possible but just in case, don't let it be null.
+                    region = new Region();
+                }
                 // Assignments are atomic, it should be safe on binder thread
                 mExclusionRegion = region;
             }
@@ -498,7 +503,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
     public boolean isInExclusionRegion(MotionEvent event) {
         // mExclusionRegion can change on binder thread, use a local instance here.
         Region exclusionRegion = mExclusionRegion;
-        return mMode == NO_BUTTON && exclusionRegion != null
+        return mMode == NO_BUTTON
                 && exclusionRegion.contains((int) event.getX(), (int) event.getY());
     }
 
@@ -587,7 +592,8 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
         pw.println("  isUserUnlocked=" + mIsUserUnlocked);
         pw.println("  isOneHandedModeEnabled=" + mIsOneHandedModeEnabled);
         pw.println("  isSwipeToNotificationEnabled=" + mIsSwipeToNotificationEnabled);
-        pw.println("  deferredGestureRegion=" + mDeferredGestureRegion);
+        pw.println("  deferredGestureRegion=" + mDeferredGestureRegion.getBounds());
+        pw.println("  exclusionRegion=" + mExclusionRegion.getBounds());
         pw.println("  pipIsActive=" + mPipIsActive);
         mRotationTouchHelper.dump(pw);
     }
