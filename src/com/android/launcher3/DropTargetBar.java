@@ -175,7 +175,7 @@ public class DropTargetBar extends FrameLayout
             secondButton.setPadding(horizontalPadding, verticalPadding, horizontalPadding,
                     verticalPadding);
 
-            float scale = dp.getWorkspaceSpringLoadScale();
+            float scale = dp.getWorkspaceSpringLoadScale(mLauncher);
             int scaledPanelWidth = (int) (dp.getCellLayoutWidth() * scale);
 
             int availableWidth;
@@ -232,7 +232,7 @@ public class DropTargetBar extends FrameLayout
 
         DeviceProfile dp = mLauncher.getDeviceProfile();
         // Center vertical bar over scaled workspace, accounting for hotseat offset.
-        float scale = dp.getWorkspaceSpringLoadScale();
+        float scale = dp.getWorkspaceSpringLoadScale(mLauncher);
         Workspace<?> ws = mLauncher.getWorkspace();
         int barCenter;
         if (dp.isTwoPanels) {

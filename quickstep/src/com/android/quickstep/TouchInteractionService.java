@@ -65,7 +65,6 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
-import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.provider.RestoreDbTask;
@@ -73,6 +72,7 @@ import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarManager;
 import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.tracing.LauncherTraceProto;
 import com.android.launcher3.tracing.TouchInteractionServiceProto;
@@ -1015,7 +1015,7 @@ public class TouchInteractionService extends Service
             pw.println("ProtoTrace:");
             pw.println("  file=" + ProtoTracer.INSTANCE.get(this).getTraceFile());
             if (createdOverviewActivity != null) {
-                createdOverviewActivity.getDeviceProfile().dump("", pw);
+                createdOverviewActivity.getDeviceProfile().dump(this, "", pw);
             }
             mTaskbarManager.dumpLogs("", pw);
         }
