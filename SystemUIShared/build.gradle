@@ -5,8 +5,8 @@ android {
     compileSdk COMPILE_SDK
 
     defaultConfig {
-        minSdk 26
-        targetSdk 28
+        minSdk MIN_SDK
+        targetSdk TARGET_SDK
     }
 
     sourceSets {

@@ -3,6 +3,8 @@ buildscript {
         ANDROID_X_VERSION = "1+"
         BUILD_TOOLS_VERSION = "32.0.0"
         COMPILE_SDK = 32
+        TARGET_SDK = 32
+        MIN_SDK = 26
         kotlin_version = "1.7.10"
         compose_version = "1.2.0"
         compose_compiler_version = "1.3.0-beta01"
@@ -132,13 +134,9 @@ def quickstepMaxSdk = "32"
 android {
     compileSdk COMPILE_SDK
 
-    lint {
-        checkReleaseBuilds false
-    }
-
     defaultConfig {
-        minSdk 26
-        targetSdk 32
+        minSdk MIN_SDK
+        targetSdk TARGET_SDK
         versionCode 12_01_00_04
         versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
@@ -162,6 +160,10 @@ android {
             outputFileName = "Lawnchair ${variant.versionName}.apk"
         }
         resValue("string", "launcher_component", "${applicationId}/app.lawnchair.LawnchairLauncher")
+    }
+
+    lint {
+        checkReleaseBuilds false
     }
 
     buildFeatures {
