@@ -60,7 +60,6 @@ import static com.android.launcher3.popup.SystemShortcut.INSTALL;
 import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
 import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
-import static com.android.launcher3.testing.shared.TestProtocol.BAD_STATE;
 import static com.android.launcher3.util.ItemInfoMatcher.forFolderMatch;
 
 import android.animation.Animator;
@@ -513,7 +512,6 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         if (!mModel.addCallbacksAndLoad(this)) {
             if (!internalStateHandled) {
-                Log.d(BAD_STATE, "Launcher onCreate not binding sync, prevent drawing");
                 // If we are not binding synchronously, pause drawing until initial bind complete,
                 // so that the system could continue to show the device loading prompt
                 mOnInitialBindListener = Boolean.FALSE::booleanValue;
