@@ -20,10 +20,10 @@ import static com.android.launcher3.InvariantDeviceProfile.INDEX_DEFAULT;
 import static com.android.launcher3.InvariantDeviceProfile.INDEX_LANDSCAPE;
 import static com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_LANDSCAPE;
 import static com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_PORTRAIT;
-import static com.android.launcher3.testing.shared.ResourceUtils.pxFromDp;
 import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.Utilities.pxFromSp;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ICON_OVERLAP_FACTOR;
+import static com.android.launcher3.testing.shared.ResourceUtils.pxFromDp;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -108,8 +108,6 @@ public class DeviceProfile {
 
     public final int edgeMarginPx;
     public final float workspaceContentScale;
-    private float mWorkspaceSpringLoadShrunkTop;
-    private float mWorkspaceSpringLoadShrunkBottom;
     public final int workspaceSpringLoadedMinNextPageVisiblePx;
 
     private final int extraSpace;
@@ -219,7 +217,6 @@ public class DeviceProfile {
     // Insets
     private final Rect mInsets = new Rect();
     public final Rect workspacePadding = new Rect();
-    private final Rect mHotseatBarPadding = new Rect();
     // When true, nav bar is on the left side of the screen.
     private boolean mIsSeascape;
 
@@ -910,40 +907,39 @@ public class DeviceProfile {
      * Gets the space in px from the bottom of last item in the vertical-bar hotseat to the
      * bottom of the screen.
      */
-    private int getVerticalHotseatLastItemBottomOffset() {
+    private int getVerticalHotseatLastItemBottomOffset(Context context) {
+        Rect hotseatBarPadding = getHotseatLayoutPadding(context);
         int cellHeight = calculateCellHeight(
-                heightPx - mHotseatBarPadding.top - mHotseatBarPadding.bottom, hotseatBorderSpace,
+                heightPx - hotseatBarPadding.top - hotseatBarPadding.bottom, hotseatBorderSpace,
                 numShownHotseatIcons);
         int extraIconEndSpacing = (cellHeight - iconSizePx) / 2;
-        return extraIconEndSpacing + mHotseatBarPadding.bottom;
+        return extraIconEndSpacing + hotseatBarPadding.bottom;
     }
 
     /**
      * Gets the scaled top of the workspace in px for the spring-loaded edit state.
      */
     public float getCellLayoutSpringLoadShrunkTop() {
-        mWorkspaceSpringLoadShrunkTop = mInsets.top + dropTargetBarTopMarginPx + dropTargetBarSizePx
+        return mInsets.top + dropTargetBarTopMarginPx + dropTargetBarSizePx
                 + dropTargetBarBottomMarginPx;
-        return mWorkspaceSpringLoadShrunkTop;
     }
 
     /**
      * Gets the scaled bottom of the workspace in px for the spring-loaded edit state.
      */
-    public float getCellLayoutSpringLoadShrunkBottom() {
+    public float getCellLayoutSpringLoadShrunkBottom(Context context) {
         int topOfHotseat = hotseatBarSizePx + springLoadedHotseatBarTopMarginPx;
-        mWorkspaceSpringLoadShrunkBottom =
-                heightPx - (isVerticalBarLayout() ? getVerticalHotseatLastItemBottomOffset()
-                        : topOfHotseat);
-        return mWorkspaceSpringLoadShrunkBottom;
+        return heightPx - (isVerticalBarLayout()
+                ? getVerticalHotseatLastItemBottomOffset(context) : topOfHotseat);
     }
 
     /**
      * Gets the scale of the workspace for the spring-loaded edit state.
      */
-    public float getWorkspaceSpringLoadScale() {
-        float scale = (getCellLayoutSpringLoadShrunkBottom() - getCellLayoutSpringLoadShrunkTop())
-                / getCellLayoutHeight();
+    public float getWorkspaceSpringLoadScale(Context context) {
+        float scale =
+                (getCellLayoutSpringLoadShrunkBottom(context) - getCellLayoutSpringLoadShrunkTop())
+                        / getCellLayoutHeight();
         scale = Math.min(scale, 1f);
 
         // Reduce scale if next pages would not be visible after scaling the workspace
@@ -1028,6 +1024,7 @@ public class DeviceProfile {
      * Returns the padding for hotseat view
      */
     public Rect getHotseatLayoutPadding(Context context) {
+        Rect hotseatBarPadding = new Rect();
         if (isVerticalBarLayout()) {
             // The hotseat icons will be placed in the middle of the hotseat cells.
             // Changing the hotseatCellHeightPx is not affecting hotseat icon positions
@@ -1041,10 +1038,10 @@ public class DeviceProfile {
                     + diffOverlapFactor), 0);
 
             if (isSeascape()) {
-                mHotseatBarPadding.set(mInsets.left + hotseatBarSidePaddingStartPx, paddingTop,
+                hotseatBarPadding.set(mInsets.left + hotseatBarSidePaddingStartPx, paddingTop,
                         hotseatBarSidePaddingEndPx, paddingBottom);
             } else {
-                mHotseatBarPadding.set(hotseatBarSidePaddingEndPx, paddingTop,
+                hotseatBarPadding.set(hotseatBarSidePaddingEndPx, paddingTop,
                         mInsets.right + hotseatBarSidePaddingStartPx, paddingBottom);
             }
         } else if (isTaskbarPresent) {
@@ -1061,26 +1058,26 @@ public class DeviceProfile {
             int hotseatWidth = Math.min(requiredWidth, availableWidthPx - hotseatBarEndOffset);
             int sideSpacing = (availableWidthPx - hotseatWidth) / 2;
 
-            mHotseatBarPadding.set(sideSpacing, hotseatBarTopPadding, sideSpacing,
+            hotseatBarPadding.set(sideSpacing, hotseatBarTopPadding, sideSpacing,
                     hotseatBarBottomPadding);
 
             boolean isRtl = Utilities.isRtl(context.getResources());
             if (isRtl) {
-                mHotseatBarPadding.right += additionalQsbSpace;
+                hotseatBarPadding.right += additionalQsbSpace;
             } else {
-                mHotseatBarPadding.left += additionalQsbSpace;
+                hotseatBarPadding.left += additionalQsbSpace;
             }
 
             if (hotseatBarEndOffset > sideSpacing) {
                 int diff = isRtl
                         ? sideSpacing - hotseatBarEndOffset
                         : hotseatBarEndOffset - sideSpacing;
-                mHotseatBarPadding.left -= diff;
-                mHotseatBarPadding.right += diff;
+                hotseatBarPadding.left -= diff;
+                hotseatBarPadding.right += diff;
             }
         } else if (isScalableGrid) {
             int sideSpacing = (availableWidthPx - qsbWidth) / 2;
-            mHotseatBarPadding.set(sideSpacing,
+            hotseatBarPadding.set(sideSpacing,
                     0,
                     sideSpacing,
                     getHotseatBarBottomPadding());
@@ -1092,7 +1089,7 @@ public class DeviceProfile {
             float workspaceCellWidth = (float) widthPx / inv.numColumns;
             float hotseatCellWidth = (float) widthPx / numShownHotseatIcons;
             int hotseatAdjustment = Math.round((workspaceCellWidth - hotseatCellWidth) / 2);
-            mHotseatBarPadding.set(
+            hotseatBarPadding.set(
                     hotseatAdjustment + workspacePadding.left + cellLayoutPaddingPx.left
                             + mInsets.left,
                     0,
@@ -1100,7 +1097,7 @@ public class DeviceProfile {
                             + mInsets.right,
                     getHotseatBarBottomPadding());
         }
-        return mHotseatBarPadding;
+        return hotseatBarPadding;
     }
 
     /**
@@ -1238,8 +1235,8 @@ public class DeviceProfile {
         return "\t" + name + ": " + value + "px (" + dpiFromPx(value, mMetrics.densityDpi) + "dp)";
     }
 
-    // LINT.IfChange
-    public void dump(String prefix, PrintWriter writer) {
+    /** Dumps various DeviceProfile variables to the specified writer. */
+    public void dump(Context context, String prefix, PrintWriter writer) {
         writer.println(prefix + "DeviceProfile:");
         writer.println(prefix + "\t1 dp = " + mMetrics.density + " px");
 
@@ -1285,9 +1282,12 @@ public class DeviceProfile {
                 cellLayoutBorderSpacePx.x));
         writer.println(prefix + pxToDpStr("cellLayoutBorderSpacePx Vertical",
                 cellLayoutBorderSpacePx.y));
-        writer.println(prefix + pxToDpStr("cellLayoutPaddingPx.left", cellLayoutPaddingPx.left));
-        writer.println(prefix + pxToDpStr("cellLayoutPaddingPx.top", cellLayoutPaddingPx.top));
-        writer.println(prefix + pxToDpStr("cellLayoutPaddingPx.right", cellLayoutPaddingPx.right));
+        writer.println(
+                prefix + pxToDpStr("cellLayoutPaddingPx.left", cellLayoutPaddingPx.left));
+        writer.println(
+                prefix + pxToDpStr("cellLayoutPaddingPx.top", cellLayoutPaddingPx.top));
+        writer.println(
+                prefix + pxToDpStr("cellLayoutPaddingPx.right", cellLayoutPaddingPx.right));
         writer.println(
                 prefix + pxToDpStr("cellLayoutPaddingPx.bottom", cellLayoutPaddingPx.bottom));
 
@@ -1337,10 +1337,15 @@ public class DeviceProfile {
         writer.println(prefix + pxToDpStr("hotseatQsbHeight", hotseatQsbHeight));
         writer.println(prefix + pxToDpStr("springLoadedHotseatBarTopMarginPx",
                 springLoadedHotseatBarTopMarginPx));
-        writer.println(prefix + pxToDpStr("mHotseatBarPadding.top", mHotseatBarPadding.top));
-        writer.println(prefix + pxToDpStr("mHotseatBarPadding.bottom", mHotseatBarPadding.bottom));
-        writer.println(prefix + pxToDpStr("mHotseatBarPadding.left", mHotseatBarPadding.left));
-        writer.println(prefix + pxToDpStr("mHotseatBarPadding.right", mHotseatBarPadding.right));
+        Rect hotseatLayoutPadding = getHotseatLayoutPadding(context);
+        writer.println(prefix + pxToDpStr("getHotseatLayoutPadding(context).top",
+                hotseatLayoutPadding.top));
+        writer.println(prefix + pxToDpStr("getHotseatLayoutPadding(context).bottom",
+                hotseatLayoutPadding.bottom));
+        writer.println(prefix + pxToDpStr("getHotseatLayoutPadding(context).left",
+                hotseatLayoutPadding.left));
+        writer.println(prefix + pxToDpStr("getHotseatLayoutPadding(context).right",
+                hotseatLayoutPadding.right));
         writer.println(prefix + "\tnumShownHotseatIcons: " + numShownHotseatIcons);
         writer.println(prefix + pxToDpStr("hotseatBorderSpace", hotseatBorderSpace));
         writer.println(prefix + "\tisQsbInline: " + isQsbInline);
@@ -1393,30 +1398,17 @@ public class DeviceProfile {
         writer.println(
                 prefix + pxToDpStr("dropTargetBarBottomMarginPx", dropTargetBarBottomMarginPx));
 
-        writer.println(
-                prefix + pxToDpStr("workspaceSpringLoadShrunkTop", mWorkspaceSpringLoadShrunkTop));
-        writer.println(prefix + pxToDpStr("workspaceSpringLoadShrunkBottom",
-                mWorkspaceSpringLoadShrunkBottom));
+        writer.println(prefix + pxToDpStr("getCellLayoutSpringLoadShrunkTop()",
+                getCellLayoutSpringLoadShrunkTop()));
+        writer.println(prefix + pxToDpStr("getCellLayoutSpringLoadShrunkBottom()",
+                getCellLayoutSpringLoadShrunkBottom(context)));
         writer.println(prefix + pxToDpStr("workspaceSpringLoadedMinNextPageVisiblePx",
                 workspaceSpringLoadedMinNextPageVisiblePx));
-        writer.println(
-                prefix + pxToDpStr("getWorkspaceSpringLoadScale()", getWorkspaceSpringLoadScale()));
+        writer.println(prefix + pxToDpStr("getWorkspaceSpringLoadScale()",
+                getWorkspaceSpringLoadScale(context)));
         writer.println(prefix + pxToDpStr("getCellLayoutHeight()", getCellLayoutHeight()));
         writer.println(prefix + pxToDpStr("getCellLayoutWidth()", getCellLayoutWidth()));
     }
-    // LINT.ThenChange(
-    //     packages/apps/Launcher3/quickstep/tests/src/com/android/quickstep/DeviceProfilePhoneTest.kt,
-    //     packages/apps/Launcher3/quickstep/tests/src/com/android/quickstep/DeviceProfileVerticalBarTest.kt,
-    //     packages/apps/Launcher3/quickstep/tests/src/com/android/quickstep/DeviceProfilePhone3ButtonTest.kt,
-    //     packages/apps/Launcher3/quickstep/tests/src/com/android/quickstep/DeviceProfileVerticalBar3ButtonTest.kt,
-    //     packages/apps/Launcher3/quickstep/tests/src/com/android/quickstep/DeviceProfileTabletLandscapeTest.kt,
-    //     packages/apps/Launcher3/quickstep/tests/src/com/android/quickstep/DeviceProfileTabletPortraitTest.kt,
-    //     packages/apps/Launcher3/quickstep/tests/src/com/android/quickstep/DeviceProfileTabletLandscape3ButtonTest.kt,
-    //     packages/apps/Launcher3/quickstep/tests/src/com/android/quickstep/DeviceProfileTabletPortrait3ButtonTest.kt,
-    //     packages/apps/Launcher3/quickstep/tests/src/com/android/quickstep/DeviceProfileTwoPanelLandscapeTest.kt,
-    //     packages/apps/Launcher3/quickstep/tests/src/com/android/quickstep/DeviceProfileTwoPanelPortraitTest.kt,
-    //     packages/apps/Launcher3/quickstep/tests/src/com/android/quickstep/DeviceProfileTwoPanelLandscape3ButtonTest.kt,
-    //     packages/apps/Launcher3/quickstep/tests/src/com/android/quickstep/DeviceProfileTwoPanelPortrait3ButtonTest.kt)
 
     private static Context getContext(Context c, Info info, int orientation, WindowBounds bounds) {
         Configuration config = new Configuration(c.getResources().getConfiguration());
