@@ -314,10 +314,10 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                 int qsbEnd;
                 if (layoutRtl) {
                     qsbStart = iconEnd + mItemMarginLeftRight;
-                    qsbEnd = qsbStart + deviceProfile.qsbWidth;
+                    qsbEnd = qsbStart + deviceProfile.hotseatQsbWidth;
                 } else {
                     qsbEnd = iconEnd - mItemMarginLeftRight;
-                    qsbStart = qsbEnd - deviceProfile.qsbWidth;
+                    qsbStart = qsbEnd - deviceProfile.hotseatQsbWidth;
                 }
                 int qsbTop = (bottom - top - deviceProfile.hotseatQsbHeight) / 2;
                 int qsbBottom = qsbTop + deviceProfile.hotseatQsbHeight;

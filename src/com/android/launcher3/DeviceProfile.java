@@ -38,7 +38,6 @@ import android.view.Surface;
 
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.DevicePaddings.DevicePadding;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.IconNormalizer;
@@ -54,6 +53,8 @@ import java.util.List;
 public class DeviceProfile {
 
     private static final int DEFAULT_DOT_SIZE = 100;
+    private static final float ALL_APPS_TABLET_MAX_ROWS = 5.5f;
+
     // Ratio of empty space, qsb should take up to appear visually centered.
     private final float mQsbCenterFactor;
 
@@ -167,12 +168,11 @@ public class DeviceProfile {
     // Start is the side next to the nav bar, end is the side next to the workspace
     public final int hotseatBarSidePaddingStartPx;
     public final int hotseatBarSidePaddingEndPx;
+    public int hotseatQsbWidth; // only used when isQsbInline
     public final int hotseatQsbHeight;
     public final int hotseatQsbVisualHeight;
     private final int hotseatQsbShadowHeight;
     public int hotseatBorderSpace;
-
-    public int qsbWidth; // only used when isQsbInline
 
     // All apps
     public Point allAppsBorderSpacePx;
@@ -309,10 +309,6 @@ public class DeviceProfile {
                 + res.getDimensionPixelSize(R.dimen.bottom_sheet_extra_top_padding)
                 + (isTablet ? 0 : edgeMarginPx); // phones need edgeMarginPx additional padding
 
-        allAppsTopPadding = isTablet ? bottomSheetTopPadding : 0;
-        allAppsShiftRange = isTablet
-                ? heightPx - allAppsTopPadding
-                : res.getDimensionPixelSize(R.dimen.all_apps_starting_vertical_translate);
         folderLabelTextScale = res.getFloat(R.dimen.folder_label_text_scale);
         folderContentPaddingLeftRight =
                 res.getDimensionPixelSize(R.dimen.folder_content_padding_left_right);
@@ -463,7 +459,21 @@ public class DeviceProfile {
 
         // Hotseat and QSB width depends on updated cellSize and workspace padding
         hotseatBorderSpace = calculateHotseatBorderSpace();
-        qsbWidth = calculateQsbWidth();
+        hotseatQsbWidth = calculateQsbWidth();
+
+        // AllApps height calculation depends on updated cellSize
+        if (isTablet) {
+            int collapseHandleHeight =
+                    res.getDimensionPixelOffset(R.dimen.bottom_sheet_handle_area_height);
+            int contentHeight = heightPx - collapseHandleHeight - hotseatQsbHeight;
+            int targetContentHeight = (int) (allAppsCellHeightPx * ALL_APPS_TABLET_MAX_ROWS);
+            allAppsTopPadding = Math.max(mInsets.top, contentHeight - targetContentHeight);
+            allAppsShiftRange = heightPx - allAppsTopPadding;
+        } else {
+            allAppsTopPadding = 0;
+            allAppsShiftRange =
+                    res.getDimensionPixelSize(R.dimen.all_apps_starting_vertical_translate);
+        }
 
         flingToDeleteThresholdVelocity = res.getDimensionPixelSize(
                 R.dimen.drag_flingToDeleteMinVelocity);
@@ -1052,7 +1062,7 @@ public class DeviceProfile {
                     hotseatBarSizePx - hotseatBarBottomPadding - hotseatCellHeightPx;
 
             // Push icons to the side
-            int additionalQsbSpace = isQsbInline ? qsbWidth + hotseatBorderSpace : 0;
+            int additionalQsbSpace = isQsbInline ? hotseatQsbWidth + hotseatBorderSpace : 0;
             int requiredWidth = iconSizePx * numShownHotseatIcons
                     + hotseatBorderSpace * (numShownHotseatIcons - 1)
                     + additionalQsbSpace;
@@ -1077,7 +1087,7 @@ public class DeviceProfile {
                 hotseatBarPadding.right += diff;
             }
         } else if (isScalableGrid) {
-            int sideSpacing = (availableWidthPx - qsbWidth) / 2;
+            int sideSpacing = (availableWidthPx - hotseatQsbWidth) / 2;
             hotseatBarPadding.set(sideSpacing,
                     0,
                     sideSpacing,
@@ -1350,7 +1360,7 @@ public class DeviceProfile {
         writer.println(prefix + "\tnumShownHotseatIcons: " + numShownHotseatIcons);
         writer.println(prefix + pxToDpStr("hotseatBorderSpace", hotseatBorderSpace));
         writer.println(prefix + "\tisQsbInline: " + isQsbInline);
-        writer.println(prefix + pxToDpStr("qsbWidth", qsbWidth));
+        writer.println(prefix + pxToDpStr("hotseatQsbWidth", hotseatQsbWidth));
 
         writer.println(prefix + "\tisTaskbarPresent:" + isTaskbarPresent);
         writer.println(prefix + "\tisTaskbarPresentInApps:" + isTaskbarPresentInApps);
