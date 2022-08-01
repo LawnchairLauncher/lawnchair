@@ -83,6 +83,12 @@ allprojects {
             freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
         }
     }
+
+    tasks.matching {
+        it.name.contains("transformClassesWithHiddenApiRefine")
+    }.configureEach {
+        notCompatibleWithConfigurationCache("https://github.com/RikkaApps/HiddenApiRefinePlugin/issues/9")
+    }
 }
 
 apply plugin: 'com.android.application'
@@ -321,22 +327,6 @@ android {
     }
 
     addFrameworkJar('framework-12l.jar')
-}
-
-allprojects {
-    repositories {
-        maven { url "../../../prebuilts/sdk/current/androidx/m2repository" }
-        maven { url "../../../prebuilts/fullsdk-darwin/extras/android/m2repository" }
-        maven { url "../../../prebuilts/fullsdk-linux/extras/android/m2repository" }
-        mavenCentral()
-        google()
-    }
-
-    tasks.matching {
-        it.name.contains("transformClassesWithHiddenApiRefine")
-    }.configureEach {
-        notCompatibleWithConfigurationCache("https://github.com/RikkaApps/HiddenApiRefinePlugin/issues/9")
-    }
 }
 
 dependencies {
