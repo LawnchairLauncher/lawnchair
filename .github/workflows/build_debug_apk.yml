@@ -29,6 +29,7 @@ jobs:
         run: ./gradlew assembleLawnWithQuickstepDebug
       - name: Sign debug APK
         uses: r0adkll/sign-android-release@v1
+        if: github.repository == 'LawnchairLauncher/lawnchair'
         id: sign-debug-apk
         with:
           releaseDirectory: build/outputs/apk/lawnWithQuickstep/debug
@@ -37,6 +38,7 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
       - name: Rename artifact
+        if: github.repository == 'LawnchairLauncher/lawnchair'
         run: |
           oldArtifactPath="${{ steps.sign-debug-apk.outputs.signedReleaseFile }}"
           newArtifactPath="${oldArtifactPath%'-signed.apk'}.apk"
@@ -44,11 +46,13 @@ jobs:
           mv "$oldArtifactPath" "$newArtifactPath"
       - name: Upload artifact
         uses: actions/upload-artifact@v3
+        if: github.repository == 'LawnchairLauncher/lawnchair'
         with:
           name: Debug APK
           path: ${{ env.ARTIFACT_PATH }}
   send-notifications:
     runs-on: ubuntu-latest
+    if: github.repository == 'LawnchairLauncher/lawnchair'
     needs: build-debug-apk
     steps:
       - name: Check out repository
