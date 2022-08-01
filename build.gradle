@@ -1,5 +1,8 @@
 buildscript {
     ext {
+        ANDROID_X_VERSION = "1+"
+        BUILD_TOOLS_VERSION = "32.0.0"
+        COMPILE_SDK = 32
         kotlin_version = "1.7.0"
         compose_version = "1.2.0-rc03"
         compose_compiler_version = "1.2.0"
@@ -14,7 +17,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.2.1'
-        classpath PROTOBUF_CLASS_PATH
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.16'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
         classpath 'com.google.android.gms:oss-licenses-plugin:0.10.5'
