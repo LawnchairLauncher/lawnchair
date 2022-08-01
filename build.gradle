@@ -29,10 +29,6 @@ buildscript {
 final String FRAMEWORK_PREBUILTS_DIR = "prebuilts"
 final def keystorePropertiesFile = rootProject.file("keystore.properties")
 
-wrapper {
-    gradleVersion = '6.8.3'
-}
-
 allprojects {
     repositories {
         google()
