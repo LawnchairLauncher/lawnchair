@@ -130,16 +130,15 @@ def quickstepMinSdk = "32"
 def quickstepMaxSdk = "32"
 
 android {
-    compileSdkVersion COMPILE_SDK
-    buildToolsVersion BUILD_TOOLS_VERSION
+    compileSdk COMPILE_SDK
 
-    lintOptions {
+    lint {
         checkReleaseBuilds false
     }
 
     defaultConfig {
-        minSdkVersion 26
-        targetSdkVersion 32
+        minSdk 26
+        targetSdk 32
         versionCode 12_01_00_04
         versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
@@ -240,7 +239,7 @@ android {
         withQuickstep {
             dimension "recents"
 
-            minSdkVersion 26
+            minSdk 26
         }
 
         withoutQuickstep {

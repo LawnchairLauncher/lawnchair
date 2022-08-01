@@ -2,14 +2,11 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion COMPILE_SDK
-    buildToolsVersion BUILD_TOOLS_VERSION
+    compileSdk COMPILE_SDK
 
     defaultConfig {
-        minSdkVersion 26
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        minSdk 26
+        targetSdk 28
     }
 
     sourceSets {
@@ -21,7 +18,7 @@ android {
         }
     }
 
-    lintOptions {
+    lint {
         abortOnError false
     }
 
