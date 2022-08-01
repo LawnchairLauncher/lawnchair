@@ -21,8 +21,6 @@ jobs:
           distribution: 'zulu'
           java-version: 11
       - uses: gradle/gradle-build-action@v2
-      - name: Grant execution permission to Gradle Wrapper
-        run: chmod +x gradlew
       - name: Build release APK
         run: ./gradlew assembleLawnWithQuickstepRelease
       - name: Sign release APK
