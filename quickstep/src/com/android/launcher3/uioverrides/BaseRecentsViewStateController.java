@@ -28,7 +28,6 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SP
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_Y;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
-import static com.android.launcher3.testing.shared.TestProtocol.BAD_STATE;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
 import static com.android.quickstep.views.RecentsView.FIRST_FLOATING_TASK_TRANSLATE_OFFSCREEN;
 import static com.android.quickstep.views.RecentsView.OVERVIEW_PROGRESS;
@@ -40,7 +39,6 @@ import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.FloatProperty;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -77,10 +75,7 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
         ADJACENT_PAGE_HORIZONTAL_OFFSET.set(mRecentsView, scaleAndOffset[1]);
         TASK_SECONDARY_TRANSLATION.set(mRecentsView, 0f);
 
-        float recentsAlpha = state.overviewUi ? 1f : 0;
-        Log.d(BAD_STATE, "BaseRecentsViewStateController setState state=" + state
-                + ", alpha=" + recentsAlpha);
-        getContentAlphaProperty().set(mRecentsView, recentsAlpha);
+        getContentAlphaProperty().set(mRecentsView, state.overviewUi ? 1f : 0);
         getTaskModalnessProperty().set(mRecentsView, state.getOverviewModalness());
         RECENTS_GRID_PROGRESS.set(mRecentsView,
                 state.displayOverviewTasksAsGrid(mLauncher.getDeviceProfile()) ? 1f : 0f);
@@ -90,8 +85,6 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
     @Override
     public void setStateWithAnimation(LauncherState toState, StateAnimationConfig config,
             PendingAnimation builder) {
-        Log.d(BAD_STATE, "BaseRecentsViewStateController setStateWithAnimation state=" + toState
-                + ", config.skipOverview=" + config.hasAnimationFlag(SKIP_OVERVIEW));
         if (config.hasAnimationFlag(SKIP_OVERVIEW)) {
             return;
         }
@@ -158,10 +151,7 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
             }
         }
 
-        float recentsAlpha = toState.overviewUi ? 1 : 0;
-        Log.d(BAD_STATE, "BaseRecentsViewStateController setStateWithAnimationInternal toState="
-                + toState + ", alpha=" + recentsAlpha);
-        setter.setFloat(mRecentsView, getContentAlphaProperty(), recentsAlpha,
+        setter.setFloat(mRecentsView, getContentAlphaProperty(), toState.overviewUi ? 1 : 0,
                 config.getInterpolator(ANIM_OVERVIEW_FADE, AGGRESSIVE_EASE_IN_OUT));
 
         setter.setFloat(
