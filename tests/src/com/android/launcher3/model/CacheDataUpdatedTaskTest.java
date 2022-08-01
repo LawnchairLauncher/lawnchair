@@ -1,5 +1,7 @@
 package com.android.launcher3.model;
 
+import static com.android.launcher3.testing.shared.TestProtocol.INCORRECT_INFO_UPDATED;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
@@ -14,6 +16,7 @@ import android.graphics.Color;
 import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -26,6 +29,7 @@ import com.android.launcher3.icons.cache.CachingLogic;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.LauncherModelHelper;
 
 import org.junit.After;
@@ -43,12 +47,15 @@ import java.util.HashSet;
 @RunWith(AndroidJUnit4.class)
 public class CacheDataUpdatedTaskTest {
 
+    private static final String TAG = "CacheDataUpdatedTaskTest";
+
     private static final String NEW_LABEL_PREFIX = "new-label-";
 
     private LauncherModelHelper mModelHelper;
 
     @Before
     public void setup() throws Exception {
+        TestProtocol.sDebugTracing = true;
         mModelHelper = new LauncherModelHelper();
         mModelHelper.initializeData("cache_data_updated_task_data");
 
@@ -88,6 +95,7 @@ public class CacheDataUpdatedTaskTest {
     @After
     public void tearDown() {
         mModelHelper.destroy();
+        TestProtocol.sDebugTracing = false;
     }
 
     private CacheDataUpdatedTask newTask(int op, String... pkg) {
@@ -111,6 +119,7 @@ public class CacheDataUpdatedTaskTest {
         // Verify that only app1 var updated in allAppsList
         assertFalse(mModelHelper.getAllAppsList().data.isEmpty());
         for (AppInfo info : mModelHelper.getAllAppsList().data) {
+            Log.i(INCORRECT_INFO_UPDATED, "testCacheUpdate_update_apps: checking info=" + info);
             if (info.componentName.getPackageName().equals("app1")) {
                 assertFalse(info.bitmap.isNullOrLowRes());
             } else {
