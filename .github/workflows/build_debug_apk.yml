@@ -9,6 +9,7 @@ on:
       - '**'
       - '!12.1-dev-localization'
       - '!12.1-alpha'
+  pull_request:
 
 jobs:
   build-debug-apk:
