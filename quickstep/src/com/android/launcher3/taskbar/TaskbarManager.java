@@ -30,6 +30,7 @@ import android.content.res.Configuration;
 import android.hardware.display.DisplayManager;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.SystemProperties;
 import android.provider.Settings;
 import android.view.Display;
 
@@ -57,6 +58,9 @@ import java.io.PrintWriter;
  * Class to manage taskbar lifecycle
  */
 public class TaskbarManager {
+
+    public static final boolean FLAG_HIDE_NAVBAR_WINDOW =
+            SystemProperties.getBoolean("persist.wm.debug.hide_navbar_window", false);
 
     private static final Uri USER_SETUP_COMPLETE_URI = Settings.Secure.getUriFor(
             Settings.Secure.USER_SETUP_COMPLETE);
@@ -147,7 +151,7 @@ public class TaskbarManager {
                 } else {
                     // Config change might be handled without re-creating the taskbar
                     if (mTaskbarActivityContext != null) {
-                        if (dp != null && dp.isTaskbarPresent) {
+                        if (dp != null && isTaskbarPresent(dp)) {
                             mTaskbarActivityContext.updateDeviceProfile(dp);
                         }
                         mTaskbarActivityContext.onConfigurationChanged(configDiff);
@@ -159,7 +163,8 @@ public class TaskbarManager {
             @Override
             public void onLowMemory() { }
         };
-        mShutdownReceiver = new SimpleBroadcastReceiver(i -> destroyExistingTaskbar());
+        mShutdownReceiver = new SimpleBroadcastReceiver(i ->
+                destroyExistingTaskbar());
         mDispInfoChangeListener = (context, info, flags) -> {
             if ((flags & CHANGE_FLAGS) != 0) {
                 recreateTaskbar();
@@ -179,7 +184,9 @@ public class TaskbarManager {
     private void destroyExistingTaskbar() {
         if (mTaskbarActivityContext != null) {
             mTaskbarActivityContext.onDestroy();
-            mTaskbarActivityContext = null;
+            if (!FLAG_HIDE_NAVBAR_WINDOW) {
+                mTaskbarActivityContext = null;
+            }
         }
     }
 
@@ -260,24 +267,32 @@ public class TaskbarManager {
         }
     }
 
+    /**
+     * This method is called multiple times (ex. initial init, then when user unlocks) in which case
+     * we fully want to destroy an existing taskbar and create a new one.
+     * In other case (folding/unfolding) we don't need to remove and add window.
+     */
     private void recreateTaskbar() {
+        DeviceProfile dp = mUserUnlocked ?
+                LauncherAppState.getIDP(mContext).getDeviceProfile(mContext) : null;
+
         destroyExistingTaskbar();
 
-        DeviceProfile dp =
-                mUserUnlocked ? LauncherAppState.getIDP(mContext).getDeviceProfile(mContext) : null;
-
-        boolean isTaskBarEnabled = dp != null && dp.isTaskbarPresent;
-
+        boolean isTaskBarEnabled = dp != null && isTaskbarPresent(dp);
         if (!isTaskBarEnabled) {
             SystemUiProxy.INSTANCE.get(mContext)
                     .notifyTaskbarStatus(/* visible */ false, /* stashed */ false);
             return;
         }
 
-        mTaskbarActivityContext = new TaskbarActivityContext(mContext, dp, mNavButtonController,
-                mUnfoldProgressProvider);
-
+        if (mTaskbarActivityContext == null) {
+            mTaskbarActivityContext = new TaskbarActivityContext(mContext, dp, mNavButtonController,
+                    mUnfoldProgressProvider);
+        } else {
+            mTaskbarActivityContext.updateDeviceProfile(dp);
+        }
         mTaskbarActivityContext.init(mSharedState);
+
         if (mActivity != null) {
             mTaskbarActivityContext.setUIController(
                     createTaskbarUIControllerForActivity(mActivity));
@@ -299,6 +314,18 @@ public class TaskbarManager {
         if (mTaskbarActivityContext != null) {
             mTaskbarActivityContext.setSetupUIVisible(isVisible);
         }
+    }
+
+    /**
+     * @return {@code true} if provided device profile isn't a large screen profile
+     *                      and we are using a single window for taskbar and navbar.
+     */
+    public static boolean isPhoneMode(DeviceProfile deviceProfile) {
+        return TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW && deviceProfile.isPhone;
+    }
+
+    private boolean isTaskbarPresent(DeviceProfile deviceProfile) {
+        return FLAG_HIDE_NAVBAR_WINDOW || deviceProfile.isTaskbarPresent;
     }
 
     public void onRotationProposal(int rotation, boolean isValid) {
