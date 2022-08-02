@@ -537,7 +537,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
             View contentView = View.inflate(
                     sandboxActivity, R.layout.gesture_tutorial_dialog, null);
             AlertDialog tutorialDialog = new AlertDialog
-                    .Builder(sandboxActivity, R.style.Theme_AppCompat_Dialog_Alert)
+                    .Builder(sandboxActivity, androidx.appcompat.R.style.Theme_AppCompat_Dialog_Alert)
                     .setView(contentView)
                     .create();
 
