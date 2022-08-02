@@ -20,6 +20,7 @@ import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP;
+import static com.android.launcher3.taskbar.TaskbarManager.isPhoneMode;
 import static com.android.quickstep.AnimatedFloat.VALUE;
 
 import android.annotation.NonNull;
@@ -35,6 +36,7 @@ import androidx.core.view.OneShotPreDrawListener;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AlphaUpdateListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -108,7 +110,9 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     public void init(TaskbarControllers controllers) {
         mControllers = controllers;
         mTaskbarView.init(new TaskbarViewCallbacks());
-        mTaskbarView.getLayoutParams().height = mActivity.getDeviceProfile().taskbarSize;
+        mTaskbarView.getLayoutParams().height = isPhoneMode(mActivity.getDeviceProfile())
+                ? mActivity.getResources().getDimensionPixelSize(R.dimen.taskbar_size)
+                : mActivity.getDeviceProfile().taskbarSize;
         mThemeIconsColor = ThemedIconDrawable.getColors(mTaskbarView.getContext())[0];
 
         mTaskbarIconScaleForStash.updateValue(1f);
