@@ -444,7 +444,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                         4 - rotationChange);
             }
         }
-        if (mDeviceProfile.isTaskbarPresentInApps) {
+        if (mDeviceProfile.isTaskbarPresentInApps && !target.willShowImeOnTarget) {
             // Animate to above the taskbar.
             bounds.bottom -= target.contentInsets.bottom;
         }
