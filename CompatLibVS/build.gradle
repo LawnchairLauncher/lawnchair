@@ -5,6 +5,7 @@ plugins {
 
 android {
     compileSdk COMPILE_SDK
+    namespace "app.lawnchair.compatlib.twelve"
 
     defaultConfig {
         minSdk MIN_SDK
