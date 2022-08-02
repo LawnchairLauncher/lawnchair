@@ -81,6 +81,11 @@ public abstract class DebugQuickstepTestInformationHandler extends QuickstepTest
                 return response;
             }
 
+            case TestProtocol.REQUEST_RECREATE_TASKBAR:
+                // Allow null-pointer to catch illegal states.
+                runOnTISBinder(tisBinder -> tisBinder.getTaskbarManager().recreateTaskbar());
+                return response;
+
             default:
                 response = super.call(method, arg, extras);
                 if (response != null) return response;
