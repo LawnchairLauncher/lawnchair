@@ -29,9 +29,11 @@ jobs:
       - name: Build debug APK
         run: ./gradlew assembleLawnWithQuickstepDebug
       - name: Sign debug APK
-        uses: r0adkll/sign-android-release@v1
         if: github.repository == 'LawnchairLauncher/lawnchair'
         id: sign-debug-apk
+        uses: r0adkll/sign-android-release@v1
+        env:
+          BUILD_TOOLS_VERSION: "32.0.0"
         with:
           releaseDirectory: build/outputs/apk/lawnWithQuickstep/debug
           signingKeyBase64: ${{ secrets.KEYSTORE }}

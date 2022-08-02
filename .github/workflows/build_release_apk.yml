@@ -24,9 +24,11 @@ jobs:
       - name: Build release APK
         run: ./gradlew assembleLawnWithQuickstepRelease
       - name: Sign release APK
-        uses: r0adkll/sign-android-release@v1
         if: github.repository == 'LawnchairLauncher/lawnchair'
         id: sign-release-apk
+        uses: r0adkll/sign-android-release@v1
+        env:
+          BUILD_TOOLS_VERSION: "32.0.0"
         with:
           releaseDirectory: build/outputs/apk/lawnWithQuickstep/release
           signingKeyBase64: ${{ secrets.KEYSTORE }}
