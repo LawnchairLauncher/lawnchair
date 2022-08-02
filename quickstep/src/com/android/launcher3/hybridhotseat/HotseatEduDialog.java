@@ -15,8 +15,7 @@
  */
 package com.android.launcher3.hybridhotseat;
 
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent
-        .LAUNCHER_HOTSEAT_EDU_ACCEPT;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_EDU_ACCEPT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_EDU_DENY;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_EDU_SEEN;
 
@@ -39,7 +38,6 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.uioverrides.PredictedAppIcon;
 import com.android.launcher3.views.AbstractSlideInView;
@@ -111,12 +109,6 @@ public class HotseatEduDialog extends AbstractSlideInView<Launcher> implements I
                 .getDeviceProfile(context).isTaskbarPresent && adjustedMarginEnd > 0) {
             ((LinearLayout.LayoutParams) buttonContainer.getLayoutParams()).setMarginEnd(
                     adjustedMarginEnd);
-        }
-
-        // update ui to reflect which migration method is going to be used
-        if (FeatureFlags.HOTSEAT_MIGRATE_TO_FOLDER.get()) {
-            ((TextView) findViewById(R.id.hotseat_edu_content)).setText(
-                    R.string.hotseat_edu_message_migrate_alt);
         }
     }
 

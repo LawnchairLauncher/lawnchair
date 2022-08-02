@@ -29,7 +29,6 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.appprediction.AppsDividerView;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.StateListener;
@@ -88,8 +87,7 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<QuickstepLauncher>
             });
         }
 
-        if (DisplayController.getNavigationMode(launcher) == NO_BUTTON
-                && FeatureFlags.ENABLE_ALL_APPS_EDU.get()) {
+        if (DisplayController.getNavigationMode(launcher) == NO_BUTTON) {
             stateManager.addStateListener(new StateListener<LauncherState>() {
                 private static final int MAX_NUM_SWIPES_TO_TRIGGER_EDU = 3;
 
