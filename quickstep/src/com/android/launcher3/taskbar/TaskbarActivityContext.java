@@ -23,8 +23,8 @@ import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
-import static com.android.launcher3.testing.shared.ResourceUtils.getBoolByName;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
+import static com.android.launcher3.testing.shared.ResourceUtils.getBoolByName;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_VOICE_INTERACTION_WINDOW_SHOWING;
@@ -846,6 +846,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         pw.println(String.format(
                 "%s\tmBindInProgress=%b", prefix, mBindingItems));
         mControllers.dumpLogs(prefix + "\t", pw);
-        mDeviceProfile.dump(prefix, pw);
+        mDeviceProfile.dump(this, prefix, pw);
     }
 }

@@ -34,7 +34,7 @@ class HotseatShownIconsTest : DeviceProfileBaseTest() {
     @Test
     fun hotseat_size_is_shrunk_if_needed_when_large_screen() {
         initializeVarsForTablet(isLandscape = true)
-        inv = newScalableInvariantDeviceProfile().apply {
+        inv = inv!!.apply {
             deviceType = TYPE_MULTI_DISPLAY
             inlineQsb = booleanArrayOf(
                 false,
@@ -64,7 +64,7 @@ class HotseatShownIconsTest : DeviceProfileBaseTest() {
     @Test
     fun hotseat_size_is_shrunk_even_in_portrait_when_large_screen() {
         initializeVarsForTablet()
-        inv = newScalableInvariantDeviceProfile().apply {
+        inv = inv!!.apply {
             deviceType = TYPE_MULTI_DISPLAY
             inlineQsb = booleanArrayOf(
                 false,
@@ -90,7 +90,7 @@ class HotseatShownIconsTest : DeviceProfileBaseTest() {
     @Test
     fun hotseat_size_is_default_when_small_screen() {
         initializeVarsForPhone()
-        inv = newScalableInvariantDeviceProfile().apply {
+        inv = inv!!.apply {
             deviceType = TYPE_MULTI_DISPLAY
         }
         useTwoPanels = true
@@ -103,7 +103,7 @@ class HotseatShownIconsTest : DeviceProfileBaseTest() {
     @Test
     fun hotseat_size_is_not_shrunk_on_gesture_tablet() {
         initializeVarsForTablet(isLandscape = true)
-        inv = newScalableInvariantDeviceProfile().apply {
+        inv = inv!!.apply {
             deviceType = TYPE_TABLET
             inlineQsb = booleanArrayOf(
                     false,
@@ -129,7 +129,7 @@ class HotseatShownIconsTest : DeviceProfileBaseTest() {
     @Test
     fun hotseat_size_is_shrunk_if_needed_on_tablet() {
         initializeVarsForTablet(isLandscape = true)
-        inv = newScalableInvariantDeviceProfile().apply {
+        inv = inv!!.apply {
             deviceType = TYPE_TABLET
             inlineQsb = booleanArrayOf(
                 false,
@@ -159,7 +159,7 @@ class HotseatShownIconsTest : DeviceProfileBaseTest() {
     @Test
     fun hotseat_size_is_shrunk_even_in_portrait_on_tablet() {
         initializeVarsForTablet()
-        inv = newScalableInvariantDeviceProfile().apply {
+        inv = inv!!.apply {
             deviceType = TYPE_TABLET
             inlineQsb = booleanArrayOf(
                 false,
