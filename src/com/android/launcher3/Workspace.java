@@ -2424,7 +2424,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         } else if ((mDragMode == DRAG_MODE_NONE || mDragMode == DRAG_MODE_REORDER)
                 && !mReorderAlarm.alarmPending()
                 && (mLastReorderX != reorderX || mLastReorderY != reorderY)
-                && targetCellDistance < mDragTargetLayout.getReorderRadius(mTargetCell)) {
+                && targetCellDistance < mDragTargetLayout.getReorderRadius(mTargetCell, item.spanX,
+                item.spanY)) {
 
             int[] resultSpan = new int[2];
             mDragTargetLayout.performReorder((int) mDragViewVisualCenter[0],
