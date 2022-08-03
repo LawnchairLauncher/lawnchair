@@ -52,6 +52,7 @@ import java.io.PrintWriter;
 
 import app.lawnchair.DeviceProfileOverrides;
 import app.lawnchair.preferences2.PreferenceManager2;
+import app.lawnchair.theme.color.ColorOption;
 
 @SuppressLint("NewApi")
 public class DeviceProfile {
@@ -502,11 +503,15 @@ public class DeviceProfile {
             typeface = ResourcesCompat.getFont(context, R.font.inter_regular);
         }
 
+        // Load dot color
+        ColorOption colorOption = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getNotificationDotColor());
+        int color = colorOption.getColorPreferenceEntry().getLightColor().invoke(context);
+
         // This is done last, after iconSizePx is calculated above.
         Path dotPath = GraphicsUtils.getShapePath(DEFAULT_DOT_SIZE);
-        mDotRendererWorkSpace = new DotRenderer(iconSizePx, dotPath, DEFAULT_DOT_SIZE, showNotificationCount, typeface);
+        mDotRendererWorkSpace = new DotRenderer(iconSizePx, dotPath, DEFAULT_DOT_SIZE, showNotificationCount, typeface, color);
         mDotRendererAllApps = iconSizePx == allAppsIconSizePx ? mDotRendererWorkSpace :
-                new DotRenderer(allAppsIconSizePx, dotPath, DEFAULT_DOT_SIZE, showNotificationCount, typeface);
+                new DotRenderer(allAppsIconSizePx, dotPath, DEFAULT_DOT_SIZE, showNotificationCount, typeface, color);
     }
 
     private int getHorizontalMarginPx(InvariantDeviceProfile idp, Resources res) {

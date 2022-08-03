@@ -80,6 +80,7 @@ class ThemeProvider(private val context: Context) {
             getColorScheme(wallpaperPrimary ?: ColorOption.LawnchairBlue.color)
         }
         is ColorOption.CustomColor -> getColorScheme(accentColor.color)
+        else -> getColorScheme(ColorOption.LawnchairBlue.color)
     }
 
     private val systemColorScheme get() = when {

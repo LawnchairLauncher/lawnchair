@@ -43,7 +43,7 @@
   public float getProgress();
 }
 
-# BUG(70852369): Surpress additional warnings after changing from Proguard to R8
+# BUG(70852369): Suppress additional warnings after changing from Proguard to R8
 -dontwarn android.app.**
 -dontwarn android.graphics.**
 -dontwarn android.os.**

@@ -1,7 +1,8 @@
 buildscript {
     ext {
-        kotlin_version = '1.6.21'
-        compose_version = '1.2.0-rc01'
+        kotlin_version = "1.7.0"
+        compose_version = "1.2.0-rc03"
+        compose_compiler_version = "1.2.0"
         accompanist_version = '0.24.10-beta'
         libsu_version = '3.1.2'
         protocVersion = '3.18.0'
@@ -18,6 +19,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
         classpath 'com.google.android.gms:oss-licenses-plugin:0.10.5'
         classpath 'dev.rikka.tools.refine:gradle-plugin:3.1.1'
+        classpath "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.7.0-1.0.6"
     }
 }
 
@@ -89,7 +91,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'com.google.protobuf'
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 apply plugin: 'kotlin-parcelize'
-apply plugin: 'kotlin-kapt'
+apply plugin: "com.google.devtools.ksp"
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 apply plugin: 'dev.rikka.tools.refine'
 
@@ -115,7 +117,7 @@ if (ciBuild) {
 }
 
 def version = "12.1.0"
-def releaseName = "Alpha 3"
+def releaseName = "Beta 1"
 def versionDisplayName = "${version} ${isReleaseBuild ? releaseName : devReleaseName}"
 def majorVersion = versionDisplayName.split("\\.")[0]
 
@@ -133,7 +135,7 @@ android {
     defaultConfig {
         minSdkVersion 26
         targetSdkVersion 32
-        versionCode 12_01_00_03
+        versionCode 12_01_00_04
         versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
         buildConfigField "String", "MAJOR_VERSION", "\"${majorVersion}\""
@@ -147,6 +149,8 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+
+        ksp { arg("room.schemaLocation", "$projectDir/schemas".toString()) }
     }
 
     applicationVariants.all { variant ->
@@ -161,7 +165,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = compose_version
+        kotlinCompilerExtensionVersion = compose_compiler_version
     }
 
     if (keystorePropertiesFile.exists()) {
@@ -353,21 +357,20 @@ dependencies {
     androidTestImplementation "androidx.annotation:annotation:${ANDROID_X_VERSION}"
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:3.1.1'
-    implementation 'dev.rikka.rikkax.layoutinflater:layoutinflater:1.2.0'
 
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.ui:ui-tooling:$compose_version"
     implementation "androidx.compose.ui:ui-text-google-fonts:$compose_version"
     implementation "androidx.compose.foundation:foundation:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.material3:material3:1.0.0-alpha13"
+    implementation "androidx.compose.material3:material3:1.0.0-alpha14"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     implementation "androidx.compose.runtime:runtime-rxjava2:$compose_version"
-    implementation "androidx.compose.compiler:compiler:$compose_version"
+    implementation "androidx.compose.compiler:compiler:$compose_compiler_version"
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
-    implementation 'androidx.activity:activity-compose:1.4.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1'
-    implementation "androidx.navigation:navigation-compose:2.4.2"
+    implementation "androidx.activity:activity-compose:1.5.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0"
+    implementation "androidx.navigation:navigation-compose:2.5.0"
     implementation "androidx.palette:palette-ktx:${ANDROID_X_VERSION}"
     implementation "androidx.slice:slice-core:1.1.0-alpha02"
     implementation "com.google.accompanist:accompanist-drawablepainter:$accompanist_version"
@@ -389,7 +392,8 @@ dependencies {
 
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-rxjava2:$room_version"
+    ksp "androidx.room:room-compiler:$room_version"
 
     implementation "com.github.topjohnwu.libsu:core:$libsu_version"
     implementation "com.github.topjohnwu.libsu:service:$libsu_version"
@@ -398,7 +402,7 @@ dependencies {
     implementation 'com.github.LawnchairLauncher:oss-notices:1.0.2'
 
     // Persian Date
-    implementation 'com.github.samanzamani:PersianDate:1.5.0'
+    implementation 'com.github.samanzamani:PersianDate:1.5.4'
 
     api 'com.airbnb.android:lottie:5.0.3'
 }

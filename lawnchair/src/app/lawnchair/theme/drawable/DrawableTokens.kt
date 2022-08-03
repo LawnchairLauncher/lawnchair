@@ -8,53 +8,28 @@ import com.android.launcher3.R
 
 object DrawableTokens {
 
-    private val privateDrawableMapping = mutableMapOf<Int, DrawableToken<*>>()
-    val drawableMapping: Map<Int, DrawableToken<*>> get() = privateDrawableMapping
-
     @JvmField
     val BgCellLayout = ResourceDrawableToken<Drawable>(R.drawable.bg_celllayout)
         .setTint(ColorTokens.ColorAccent)
 
-    init {
-        addDrawableMapping<RippleDrawable>(R.drawable.bg_overview_clear_all_button) {
-            it.mutate { context, scheme, uiColorMode ->
-                val background = getDrawable(0) as GradientDrawable
-                background.setColor(ColorTokens.Surface.resolveColor(context, scheme, uiColorMode))
-            }
+    @JvmField
+    val BgOverviewClearAllButton = ResourceDrawableToken<RippleDrawable>(R.drawable.bg_overview_clear_all_button)
+        .mutate { context, scheme, uiColorMode ->
+            val background = getDrawable(0) as GradientDrawable
+            background.setColor(ColorTokens.Surface.resolveColor(context, scheme, uiColorMode))
         }
 
-        addDrawableMapping<GradientDrawable>(R.drawable.bg_widgets_full_sheet) {
-            it.setColor(ColorTokens.ColorBackground)
-        }
+    @JvmField
+    val BgWidgetsFullSheet = ResourceDrawableToken<GradientDrawable>(R.drawable.bg_widgets_full_sheet)
+        .setColor(ColorTokens.ColorBackground)
 
-        addDrawableMapping<GradientDrawable>(R.drawable.bg_widgets_searchbox) {
-            it.setColor(ColorTokens.Surface)
-        }
+    @JvmField
+    val BgWidgetsSearchbox = ResourceDrawableToken<GradientDrawable>(R.drawable.bg_widgets_searchbox)
+        .setColor(ColorTokens.Surface)
 
-        addDrawableMapping<Drawable>(R.drawable.drop_target_background) {
-            it.setTint(ColorTokens.WorkspaceAccentColor)
-        }
-
-        addDrawableMapping<GradientDrawable>(R.drawable.task_menu_item_bg) {
-            it.setColor(ColorTokens.ColorPrimary)
-        }
-
-        addDrawableMapping<GradientDrawable>(R.drawable.bg_rounded_corner_bottom_sheet) {
-            it.setColor(ColorTokens.Surface)
-        }
-
-        addDrawableMapping<GradientDrawable>(R.drawable.widgets_recommendation_background) {
-            it.setColor(ColorTokens.Surface)
-        }
-
-        addDrawableMapping<GradientDrawable>(R.drawable.widget_resize_frame) {
-            it.setTint(ColorTokens.WorkspaceAccentColor)
-        }
-
-        addDrawableMapping<GradientDrawable>(R.drawable.work_card) {
-            it.setColor(ColorTokens.Surface)
-        }
-    }
+    @JvmField
+    val DropTargetBackground = ResourceDrawableToken<Drawable>(R.drawable.drop_target_background)
+        .setTint(ColorTokens.WorkspaceAccentColor)
 
     @JvmField
     val MiddleItemPrimary = ResourceDrawableToken<GradientDrawable>(R.drawable.middle_item_primary)
@@ -87,6 +62,22 @@ object DrawableTokens {
     @JvmField
     val SingleItemPrimary = ResourceDrawableToken<GradientDrawable>(R.drawable.single_item_primary)
         .setColor(ColorTokens.PopupColorPrimary)
+
+    @JvmField
+    val TaskMenuItemBg = ResourceDrawableToken<GradientDrawable>(R.drawable.task_menu_item_bg)
+        .setColor(ColorTokens.ColorPrimary)
+
+    @JvmField
+    val WidgetsBottomSheetBackground = ResourceDrawableToken<GradientDrawable>(R.drawable.bg_rounded_corner_bottom_sheet)
+        .setColor(ColorTokens.Surface)
+
+    @JvmField
+    val WidgetsRecommendationBackground = ResourceDrawableToken<GradientDrawable>(R.drawable.widgets_recommendation_background)
+        .setColor(ColorTokens.Surface)
+
+    @JvmField
+    val WidgetResizeFrame = ResourceDrawableToken<GradientDrawable>(R.drawable.widget_resize_frame)
+        .setTint(ColorTokens.WorkspaceAccentColor)
 
     @JvmField
     val AllAppsTabsBackground = NewDrawable { context, scheme, uiColorMode ->
@@ -129,11 +120,6 @@ object DrawableTokens {
         list
     }
 
-    private fun <T : Drawable> addDrawableMapping(
-        resId: Int,
-        customizer: (DrawableToken<T>) -> DrawableToken<*> = { it }
-    ) {
-        val token = customizer(ResourceDrawableToken(resId))
-        privateDrawableMapping[resId] = token
-    }
+    @JvmField val WorkCard = ResourceDrawableToken<GradientDrawable>(R.drawable.work_card)
+        .setColor(ColorTokens.Surface)
 }

@@ -171,11 +171,11 @@
     <string name="rgb_green">Verde</string>
     <string name="rgb_blue">Blu</string>
     <string name="hsb">HSB</string>
-    <string name="hsb_hue">Hue</string>
+    <string name="hsb_hue">Tonalità</string>
     <string name="hsb_saturation">Saturazione</string>
     <string name="hsb_brightness">Luminosità</string>
     <string name="hex">Hex</string>
-    <string name="color_sliders">Sliders</string>
+    <string name="color_sliders">Cursori</string>
     <string name="lawnchair_bug_report">Segnalazione bug di Lawnchair</string>
     <string name="crash_report_notif_title">%1$s è crashato</string>
     <string name="action_upload_crash_report">Carica log del crash</string>

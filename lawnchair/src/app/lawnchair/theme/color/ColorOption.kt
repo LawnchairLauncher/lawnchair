@@ -20,8 +20,8 @@ sealed class ColorOption {
         override val colorPreferenceEntry = ColorPreferenceEntry<ColorOption>(
             this,
             { stringResource(id = R.string.system) },
-            { LocalContext.current.getSystemAccent(false) },
-            { LocalContext.current.getSystemAccent(true) }
+            { context -> context.getSystemAccent(false) },
+            { context -> context.getSystemAccent(true) }
         )
 
         override fun toString() = "system_accent"
@@ -33,8 +33,7 @@ sealed class ColorOption {
         override val colorPreferenceEntry = ColorPreferenceEntry<ColorOption>(
             this,
             { stringResource(id = R.string.wallpaper) },
-            {
-                val context = LocalContext.current
+            { context ->
                 val wallpaperManager = WallpaperManagerCompat.INSTANCE.get(context)
                 val primaryColor = wallpaperManager.wallpaperColors?.primaryColor
                 primaryColor ?: LawnchairBlue.color
@@ -62,12 +61,25 @@ sealed class ColorOption {
         override fun toString() = "custom|#${String.format("%08x", color)}"
     }
 
+    object AppIcon : ColorOption() {
+        override val isSupported = false
+
+        override val colorPreferenceEntry = ColorPreferenceEntry<ColorOption>(
+            this,
+            { stringResource(id = R.string.app_icon_color) },
+            { 0 }
+        )
+
+        override fun toString() = "app_icon"
+    }
+
     companion object {
         val LawnchairBlue = CustomColor(0xFF007FFF)
 
         fun fromString(stringValue: String) = when (stringValue) {
             "system_accent" -> SystemAccent
             "wallpaper_primary" -> WallpaperPrimary
+            "app_icon" -> AppIcon
             else -> instantiateCustomColor(stringValue)
         }
 

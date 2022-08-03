@@ -44,14 +44,23 @@ fun NavGraphBuilder.colorSelectionGraph(route: String) {
             val preferenceManager2 = preferenceManager2()
             val pref = when (prefKey) {
                 preferenceManager2.accentColor.key.name -> preferenceManager2.accentColor
+                preferenceManager2.notificationDotColor.key.name -> preferenceManager2.notificationDotColor
                 else -> return@composable
             }
             val label = when (prefKey) {
                 preferenceManager2.accentColor.key.name -> stringResource(id = R.string.accent_color)
+                preferenceManager2.notificationDotColor.key.name -> stringResource(id = R.string.notification_dots_color)
                 else -> return@composable
             }
-            ColorSelection(label = label, preference = pref)
-
+            val dynamicEntries = when (prefKey) {
+                preferenceManager2.notificationDotColor.key.name -> dynamicColorsForNotificationDot
+                else -> dynamicColors
+            }
+            ColorSelection(
+                label = label,
+                preference = pref,
+                dynamicEntries = dynamicEntries,
+            )
         }
     }
 }
@@ -67,13 +76,11 @@ fun ColorSelection(
 
     val adapter = preference.getAdapter()
     val appliedColor by adapter
-    val appliedEntry = dynamicEntries.firstOrNull { it.value == appliedColor }
-        ?: staticEntries.firstOrNull { it.value == appliedColor }
     val selectedColor = remember { mutableStateOf(appliedColor) }
     val defaultTabIndex = when {
         dynamicEntries.any { it.value == appliedColor } -> 0
-        appliedEntry?.value is ColorOption.CustomColor -> 2
-        else -> 1
+        staticEntries.any { it.value == appliedColor } -> 1
+        else -> 2
     }
 
     PreferenceLayout(
@@ -84,8 +91,11 @@ fun ColorSelection(
                 horizontalAlignment = Alignment.End
             ) {
                 Button(
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
+                    enabled = selectedColor.value != appliedColor,
                     onClick = { adapter.onChange(newValue = selectedColor.value) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(all = 16.dp),
                 ) {
                     Text(text = stringResource(id = R.string.apply_grid))
                 }

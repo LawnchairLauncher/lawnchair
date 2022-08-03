@@ -94,7 +94,7 @@ class FlagManager constructor(
     fun isEnabled(id: Int): Boolean? {
         val data: String? = Settings.Secure.getString(
             context.contentResolver, keyToSettingsPrefix(id))
-        if (data == null || data?.isEmpty()) {
+        if (data?.isEmpty() == true) {
             return null
         }
         val json: JSONObject

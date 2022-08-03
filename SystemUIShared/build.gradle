@@ -51,4 +51,5 @@ dependencies {
     implementation project(':CompatLib')
     implementation project(':CompatLibVR')
     implementation project(':CompatLibVS')
+    implementation "org.json:json:20220320"
 }
