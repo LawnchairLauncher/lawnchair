@@ -48,6 +48,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.model.DeviceGridState;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.testing.shared.ResourceUtils;
@@ -396,10 +397,12 @@ public class InvariantDeviceProfile {
 
         final List<DeviceProfile> localSupportedProfiles = new ArrayList<>();
         defaultWallpaperSize = new Point(displayInfo.currentSize);
+        SparseArray<DotRenderer> dotRendererCache = new SparseArray<>();
         for (WindowBounds bounds : displayInfo.supportedBounds) {
             localSupportedProfiles.add(new DeviceProfile.Builder(context, this, displayInfo)
                     .setUseTwoPanels(deviceType == TYPE_MULTI_DISPLAY)
                     .setWindowBounds(bounds)
+                    .setDotRendererCache(dotRendererCache)
                     .build());
 
             // Wallpaper size should be the maximum of the all possible sizes Launcher expects
