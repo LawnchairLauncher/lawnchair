@@ -62,7 +62,7 @@ fun DockPreferences() {
                     SliderPreference(
                         label = stringResource(id = R.string.corner_radius_label),
                         adapter = prefs.hotseatQsbCornerRadius.getAdapter(),
-                        step = 0.1F,
+                        step = 0.05F,
                         valueRange = 0F..1F,
                         showAsPercentage = true,
                     )
