@@ -20,6 +20,7 @@ import static android.view.HapticFeedbackConstants.LONG_PRESS;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_SHOW;
+import static com.android.launcher3.taskbar.TaskbarManager.isPhoneMode;
 import static com.android.launcher3.taskbar.Utilities.appendFlag;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SWITCHER_SHOWING;
@@ -30,6 +31,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.annotation.Nullable;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -38,6 +40,7 @@ import androidx.annotation.NonNull;
 
 import com.android.internal.jank.InteractionJankMonitor;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.testing.shared.TestProtocol;
@@ -69,6 +72,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     public static final int FLAG_IN_STASHED_LAUNCHER_STATE = 1 << 6;
     public static final int FLAG_STASHED_IN_APP_ALL_APPS = 1 << 7; // All apps is visible.
     public static final int FLAG_IN_SETUP = 1 << 8; // In the Setup Wizard
+    public static final int FLAG_STASHED_SMALL_SCREEN = 1 << 9; // phone screen gesture nav, stashed
 
     // If any of these flags are enabled, isInApp should return true.
     private static final int FLAGS_IN_APP = FLAG_IN_APP | FLAG_IN_SETUP;
@@ -76,7 +80,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     // If we're in an app and any of these flags are enabled, taskbar should be stashed.
     private static final int FLAGS_STASHED_IN_APP = FLAG_STASHED_IN_APP_MANUAL
             | FLAG_STASHED_IN_APP_PINNED | FLAG_STASHED_IN_APP_EMPTY | FLAG_STASHED_IN_APP_SETUP
-            | FLAG_STASHED_IN_APP_IME | FLAG_STASHED_IN_APP_ALL_APPS;
+            | FLAG_STASHED_IN_APP_IME | FLAG_STASHED_IN_APP_ALL_APPS |
+            FLAG_STASHED_SMALL_SCREEN;
 
     private static final int FLAGS_STASHED_IN_APP_IGNORING_IME =
             FLAGS_STASHED_IN_APP & ~FLAG_STASHED_IN_APP_IME;
@@ -166,15 +171,25 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                 boolean inApp = hasAnyFlag(flags, FLAGS_IN_APP);
                 boolean stashedInApp = hasAnyFlag(flags, FLAGS_STASHED_IN_APP);
                 boolean stashedLauncherState = hasAnyFlag(flags, FLAG_IN_STASHED_LAUNCHER_STATE);
-                return (inApp && stashedInApp) || (!inApp && stashedLauncherState);
+                boolean stashedForSmallScreen = hasAnyFlag(flags, FLAG_STASHED_SMALL_SCREEN);
+                return (inApp && stashedInApp) || (!inApp && stashedLauncherState)
+                        || stashedForSmallScreen;
             });
 
     public TaskbarStashController(TaskbarActivityContext activity) {
         mActivity = activity;
         mPrefs = Utilities.getPrefs(mActivity);
         mSystemUiProxy = SystemUiProxy.INSTANCE.get(activity);
-        mUnstashedHeight = mActivity.getDeviceProfile().taskbarSize;
-        mStashedHeight = mActivity.getDeviceProfile().stashedTaskbarSize;
+        if (isPhoneMode(mActivity.getDeviceProfile())) {
+            // DeviceProfile's taskbar vars aren't initialized w/ the flag off
+            Resources resources = mActivity.getResources();
+            mUnstashedHeight = resources.getDimensionPixelSize(R.dimen.taskbar_size);
+            mStashedHeight = resources.getDimensionPixelOffset(R.dimen.taskbar_stashed_size);
+        } else {
+            mUnstashedHeight = mActivity.getDeviceProfile().taskbarSize;
+            mStashedHeight = mActivity.getDeviceProfile().stashedTaskbarSize;
+        }
+
     }
 
     public void init(TaskbarControllers controllers, boolean setupUIVisible) {
@@ -202,6 +217,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         updateStateForFlag(FLAG_STASHED_IN_APP_MANUAL, isManuallyStashedInApp);
         updateStateForFlag(FLAG_STASHED_IN_APP_SETUP, isInSetup);
         updateStateForFlag(FLAG_IN_SETUP, isInSetup);
+        updateStateForFlag(FLAG_STASHED_SMALL_SCREEN, isPhoneMode(mActivity.getDeviceProfile()));
         applyState();
 
         notifyStashChange(/* visible */ false, /* stashed */ isStashedInApp());
@@ -212,7 +228,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * state.
      */
     public boolean supportsVisualStashing() {
-        return mControllers.uiController.supportsVisualStashing();
+        return mControllers.uiController.supportsVisualStashing() ||
+                isPhoneMode(mActivity.getDeviceProfile());
     }
 
     /**
@@ -266,7 +283,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * Returns whether the taskbar should be stashed in the current LauncherState.
      */
     public boolean isInStashedLauncherState() {
-        return hasAnyFlag(FLAG_IN_STASHED_LAUNCHER_STATE) && supportsVisualStashing();
+        return (hasAnyFlag(FLAG_IN_STASHED_LAUNCHER_STATE) && supportsVisualStashing());
     }
 
     private boolean hasAnyFlag(int flagMask) {
@@ -295,6 +312,10 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * @see WindowInsets.Type#systemBars()
      */
     public int getContentHeightToReportToApps() {
+        if (isPhoneMode(mActivity.getDeviceProfile())) {
+            return getStashedHeight();
+        }
+
         if (supportsVisualStashing() && hasAnyFlag(FLAGS_REPORT_STASHED_INSETS_TO_APP)) {
             DeviceProfile dp = mActivity.getDeviceProfile();
             if (hasAnyFlag(FLAG_STASHED_IN_APP_SETUP) && dp.isTaskbarPresent && !dp.isLandscape) {
@@ -410,10 +431,17 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         }
         mAnimator = new AnimatorSet();
         addJankMonitorListener(mAnimator, /* appearing= */ !mIsStashed);
+        final float stashTranslation = isPhoneMode(mActivity.getDeviceProfile()) ? 0 :
+                (mUnstashedHeight - mStashedHeight) / 2f;
 
         if (!supportsVisualStashing()) {
             // Just hide/show the icons and background instead of stashing into a handle.
             mAnimator.play(mIconAlphaForStash.animateToValue(isStashed ? 0 : 1)
+                    .setDuration(duration));
+            mAnimator.playTogether(mTaskbarBackgroundOffset.animateToValue(isStashed ? 1 : 0)
+                    .setDuration(duration));
+            mAnimator.playTogether(mIconTranslationYForStash.animateToValue(isStashed ?
+                            stashTranslation : 0)
                     .setDuration(duration));
             mAnimator.play(mTaskbarImeBgAlpha.animateToValue(
                     hasAnyFlag(FLAG_STASHED_IN_APP_IME) ? 0 : 1).setDuration(duration));
@@ -438,7 +466,6 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         if (isStashed) {
             firstHalfDurationScale = 0.75f;
             secondHalfDurationScale = 0.5f;
-            final float stashTranslation = (mUnstashedHeight - mStashedHeight) / 2f;
 
             fullLengthAnimatorSet.play(mIconTranslationYForStash.animateToValue(stashTranslation));
             if (animateBg) {
@@ -450,7 +477,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
             firstHalfAnimatorSet.playTogether(
                     mIconAlphaForStash.animateToValue(0),
-                    mIconScaleForStash.animateToValue(STASHED_TASKBAR_SCALE)
+                    mIconScaleForStash.animateToValue(isPhoneMode(mActivity.getDeviceProfile()) ?
+                            0 : STASHED_TASKBAR_SCALE)
             );
             secondHalfAnimatorSet.playTogether(
                     mTaskbarStashedHandleAlpha.animateToValue(1)
