@@ -110,7 +110,7 @@ class DeviceProfileTest : DeviceProfileBaseTest() {
                 "\tnumShownHotseatIcons: 4\n" +
                 "\thotseatBorderSpace: 95.0px (36.190475dp)\n" +
                 "\tisQsbInline: false\n" +
-                "\tqsbWidth: 913.0px (347.8095dp)\n" +
+                "\thotseatQsbWidth: 913.0px (347.8095dp)\n" +
                 "\tisTaskbarPresent:false\n" +
                 "\tisTaskbarPresentInApps:false\n" +
                 "\ttaskbarSize: 0.0px (0.0dp)\n" +
@@ -229,7 +229,7 @@ class DeviceProfileTest : DeviceProfileBaseTest() {
                 "\tnumShownHotseatIcons: 4\n" +
                 "\thotseatBorderSpace: 95.0px (36.190475dp)\n" +
                 "\tisQsbInline: false\n" +
-                "\tqsbWidth: 913.0px (347.8095dp)\n" +
+                "\thotseatQsbWidth: 913.0px (347.8095dp)\n" +
                 "\tisTaskbarPresent:false\n" +
                 "\tisTaskbarPresentInApps:false\n" +
                 "\ttaskbarSize: 0.0px (0.0dp)\n" +
@@ -349,7 +349,7 @@ class DeviceProfileTest : DeviceProfileBaseTest() {
                 "\tnumShownHotseatIcons: 5\n" +
                 "\thotseatBorderSpace: 101.0px (50.5dp)\n" +
                 "\tisQsbInline: true\n" +
-                "\tqsbWidth: 855.0px (427.5dp)\n" +
+                "\thotseatQsbWidth: 855.0px (427.5dp)\n" +
                 "\tisTaskbarPresent:true\n" +
                 "\tisTaskbarPresentInApps:true\n" +
                 "\ttaskbarSize: 120.0px (60.0dp)\n" +
@@ -469,7 +469,7 @@ class DeviceProfileTest : DeviceProfileBaseTest() {
                 "\tnumShownHotseatIcons: 6\n" +
                 "\thotseatBorderSpace: 100.0px (50.0dp)\n" +
                 "\tisQsbInline: true\n" +
-                "\tqsbWidth: 640.0px (320.0dp)\n" +
+                "\thotseatQsbWidth: 640.0px (320.0dp)\n" +
                 "\tisTaskbarPresent:true\n" +
                 "\tisTaskbarPresentInApps:true\n" +
                 "\ttaskbarSize: 120.0px (60.0dp)\n" +
@@ -560,8 +560,8 @@ class DeviceProfileTest : DeviceProfileBaseTest() {
                 "\tfolderCellLayoutBorderSpacePx Horizontal: 0.0px (0.0dp)\n" +
                 "\tfolderCellLayoutBorderSpacePx Vertical: 0.0px (0.0dp)\n" +
                 "\tbottomSheetTopPadding: 704.0px (352.0dp)\n" +
-                "\tallAppsShiftRange: 1856.0px (928.0dp)\n" +
-                "\tallAppsTopPadding: 704.0px (352.0dp)\n" +
+                "\tallAppsShiftRange: 1936.0px (968.0dp)\n" +
+                "\tallAppsTopPadding: 624.0px (312.0dp)\n" +
                 "\tallAppsIconSizePx: 120.0px (60.0dp)\n" +
                 "\tallAppsIconTextSizePx: 28.0px (14.0dp)\n" +
                 "\tallAppsIconDrawablePaddingPx: 14.0px (7.0dp)\n" +
@@ -589,7 +589,7 @@ class DeviceProfileTest : DeviceProfileBaseTest() {
                 "\tnumShownHotseatIcons: 5\n" +
                 "\thotseatBorderSpace: 116.0px (58.0dp)\n" +
                 "\tisQsbInline: false\n" +
-                "\tqsbWidth: 1300.0px (650.0dp)\n" +
+                "\thotseatQsbWidth: 1300.0px (650.0dp)\n" +
                 "\tisTaskbarPresent:true\n" +
                 "\tisTaskbarPresentInApps:true\n" +
                 "\ttaskbarSize: 120.0px (60.0dp)\n" +
@@ -680,8 +680,8 @@ class DeviceProfileTest : DeviceProfileBaseTest() {
                 "\tfolderCellLayoutBorderSpacePx Horizontal: 0.0px (0.0dp)\n" +
                 "\tfolderCellLayoutBorderSpacePx Vertical: 0.0px (0.0dp)\n" +
                 "\tbottomSheetTopPadding: 704.0px (352.0dp)\n" +
-                "\tallAppsShiftRange: 1856.0px (928.0dp)\n" +
-                "\tallAppsTopPadding: 704.0px (352.0dp)\n" +
+                "\tallAppsShiftRange: 1936.0px (968.0dp)\n" +
+                "\tallAppsTopPadding: 624.0px (312.0dp)\n" +
                 "\tallAppsIconSizePx: 120.0px (60.0dp)\n" +
                 "\tallAppsIconTextSizePx: 28.0px (14.0dp)\n" +
                 "\tallAppsIconDrawablePaddingPx: 14.0px (7.0dp)\n" +
@@ -709,7 +709,7 @@ class DeviceProfileTest : DeviceProfileBaseTest() {
                 "\tnumShownHotseatIcons: 6\n" +
                 "\thotseatBorderSpace: 116.0px (58.0dp)\n" +
                 "\tisQsbInline: false\n" +
-                "\tqsbWidth: 1300.0px (650.0dp)\n" +
+                "\thotseatQsbWidth: 1300.0px (650.0dp)\n" +
                 "\tisTaskbarPresent:true\n" +
                 "\tisTaskbarPresentInApps:true\n" +
                 "\ttaskbarSize: 120.0px (60.0dp)\n" +
@@ -829,7 +829,7 @@ class DeviceProfileTest : DeviceProfileBaseTest() {
                 "\tnumShownHotseatIcons: 6\n" +
                 "\thotseatBorderSpace: 61.0px (23.238094dp)\n" +
                 "\tisQsbInline: false\n" +
-                "\tqsbWidth: 1467.0px (558.8571dp)\n" +
+                "\thotseatQsbWidth: 1467.0px (558.8571dp)\n" +
                 "\tisTaskbarPresent:true\n" +
                 "\tisTaskbarPresentInApps:true\n" +
                 "\ttaskbarSize: 158.0px (60.190475dp)\n" +
@@ -949,7 +949,7 @@ class DeviceProfileTest : DeviceProfileBaseTest() {
                 "\tnumShownHotseatIcons: 6\n" +
                 "\thotseatBorderSpace: 105.0px (40.0dp)\n" +
                 "\tisQsbInline: false\n" +
-                "\tqsbWidth: 1467.0px (558.8571dp)\n" +
+                "\thotseatQsbWidth: 1467.0px (558.8571dp)\n" +
                 "\tisTaskbarPresent:true\n" +
                 "\tisTaskbarPresentInApps:true\n" +
                 "\ttaskbarSize: 158.0px (60.190475dp)\n" +
@@ -1069,7 +1069,7 @@ class DeviceProfileTest : DeviceProfileBaseTest() {
                 "\tnumShownHotseatIcons: 6\n" +
                 "\thotseatBorderSpace: 47.0px (17.904762dp)\n" +
                 "\tisQsbInline: false\n" +
-                "\tqsbWidth: 1236.0px (470.85715dp)\n" +
+                "\thotseatQsbWidth: 1236.0px (470.85715dp)\n" +
                 "\tisTaskbarPresent:true\n" +
                 "\tisTaskbarPresentInApps:true\n" +
                 "\ttaskbarSize: 158.0px (60.190475dp)\n" +
@@ -1189,7 +1189,7 @@ class DeviceProfileTest : DeviceProfileBaseTest() {
                 "\tnumShownHotseatIcons: 6\n" +
                 "\thotseatBorderSpace: 84.0px (32.0dp)\n" +
                 "\tisQsbInline: false\n" +
-                "\tqsbWidth: 1236.0px (470.85715dp)\n" +
+                "\thotseatQsbWidth: 1236.0px (470.85715dp)\n" +
                 "\tisTaskbarPresent:true\n" +
                 "\tisTaskbarPresentInApps:true\n" +
                 "\ttaskbarSize: 158.0px (60.190475dp)\n" +
@@ -1308,7 +1308,7 @@ class DeviceProfileTest : DeviceProfileBaseTest() {
                 "\tnumShownHotseatIcons: 4\n" +
                 "\thotseatBorderSpace: 0.0px (0.0dp)\n" +
                 "\tisQsbInline: false\n" +
-                "\tqsbWidth: 1525.0px (580.9524dp)\n" +
+                "\thotseatQsbWidth: 1525.0px (580.9524dp)\n" +
                 "\tisTaskbarPresent:false\n" +
                 "\tisTaskbarPresentInApps:false\n" +
                 "\ttaskbarSize: 0.0px (0.0dp)\n" +
@@ -1427,7 +1427,7 @@ class DeviceProfileTest : DeviceProfileBaseTest() {
                 "\tnumShownHotseatIcons: 4\n" +
                 "\thotseatBorderSpace: 0.0px (0.0dp)\n" +
                 "\tisQsbInline: false\n" +
-                "\tqsbWidth: 1621.0px (617.5238dp)\n" +
+                "\thotseatQsbWidth: 1621.0px (617.5238dp)\n" +
                 "\tisTaskbarPresent:false\n" +
                 "\tisTaskbarPresentInApps:false\n" +
                 "\ttaskbarSize: 0.0px (0.0dp)\n" +
