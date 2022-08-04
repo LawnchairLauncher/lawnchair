@@ -91,12 +91,12 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
         MarginLayoutParams lp = (MarginLayoutParams) getLayoutParams();
         if (lp != null) {
             int bottomMargin = getResources().getDimensionPixelSize(R.dimen.work_fab_margin_bottom);
+            DeviceProfile dp = ActivityContext.lookupContext(getContext()).getDeviceProfile();
             if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
                 bottomMargin <<= 1;  // Double margin to add space above search bar.
-                bottomMargin += getResources().getDimensionPixelSize(R.dimen.qsb_widget_height);
+                bottomMargin += dp.hotseatQsbHeight;
             }
 
-            DeviceProfile dp = ActivityContext.lookupContext(getContext()).getDeviceProfile();
             if (!dp.isGestureMode) {
                 if (dp.isTaskbarPresent) {
                     bottomMargin += dp.taskbarSize;
