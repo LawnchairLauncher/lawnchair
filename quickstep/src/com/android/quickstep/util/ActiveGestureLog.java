@@ -25,12 +25,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Random;
 
 /**
  * A log to keep track of the active gesture.
  */
 public class ActiveGestureLog {
+
+    private static final int MAX_GESTURES_TRACKED = 10;
 
     public static final ActiveGestureLog INSTANCE = new ActiveGestureLog();
 
@@ -47,14 +48,12 @@ public class ActiveGestureLog {
     private static final int TYPE_BOOL_FALSE = 4;
     private static final int TYPE_INPUT_CONSUMER = 5;
 
-    private final String name;
-    private final EventEntry[] logs;
+    private final EventLog[] logs;
     private int nextIndex;
-    private int mLogId;
+    private int mCurrentLogId = 100;
 
     private ActiveGestureLog() {
-        this.name = "touch_interaction_log";
-        this.logs = new EventEntry[40];
+        this.logs = new EventLog[MAX_GESTURES_TRACKED];
         this.nextIndex = 0;
     }
 
@@ -76,72 +75,93 @@ public class ActiveGestureLog {
 
     private void addLog(
             int type, String event, float extras, @NonNull CompoundString compoundString) {
-        // Merge the logs if it's a duplicate
-        int last = (nextIndex + logs.length - 1) % logs.length;
-        int secondLast = (nextIndex + logs.length - 2) % logs.length;
-        if (isEntrySame(logs[last], type, event, compoundString)
-                && isEntrySame(logs[secondLast], type, event, compoundString)) {
-            logs[last].update(type, event, extras, compoundString, mLogId);
-            logs[secondLast].duplicateCount++;
+        EventLog lastEventLog = logs[(nextIndex + logs.length - 1) % logs.length];
+        if (lastEventLog == null || mCurrentLogId != lastEventLog.logId) {
+            EventLog eventLog = new EventLog(mCurrentLogId);
+            EventEntry eventEntry = new EventEntry();
+
+            eventEntry.update(type, event, extras, compoundString);
+            eventLog.eventEntries.add(eventEntry);
+            logs[nextIndex] = eventLog;
+            nextIndex = (nextIndex + 1) % logs.length;
             return;
         }
 
-        if (logs[nextIndex] == null) {
-            logs[nextIndex] = new EventEntry();
+        // Update the last EventLog
+        List<EventEntry> lastEventEntries = lastEventLog.eventEntries;
+        EventEntry lastEntry = lastEventEntries.size() > 0
+                ? lastEventEntries.get(lastEventEntries.size() - 1) : null;
+        EventEntry secondLastEntry = lastEventEntries.size() > 1
+                ? lastEventEntries.get(lastEventEntries.size() - 2) : null;
+
+        // Update the last EventEntry if it's a duplicate
+        if (isEntrySame(lastEntry, type, event, compoundString)
+                && isEntrySame(secondLastEntry, type, event, compoundString)) {
+            lastEntry.update(type, event, extras, compoundString);
+            secondLastEntry.duplicateCount++;
+            return;
         }
-        logs[nextIndex].update(type, event, extras, compoundString, mLogId);
-        nextIndex = (nextIndex + 1) % logs.length;
+        EventEntry eventEntry = new EventEntry();
+
+        eventEntry.update(type, event, extras, compoundString);
+        lastEventEntries.add(eventEntry);
     }
 
     public void clear() {
-        Arrays.setAll(logs, (i) -> null);
+        Arrays.fill(logs, null);
     }
 
     public void dump(String prefix, PrintWriter writer) {
-        writer.println(prefix + "EventLog (" + name + ") history:");
-        SimpleDateFormat sdf = new SimpleDateFormat("  HH:mm:ss.SSSZ  ", Locale.US);
+        writer.println(prefix + "ActiveGestureLog history:");
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SSSZ  ", Locale.US);
         Date date = new Date();
 
         for (int i = 0; i < logs.length; i++) {
-            EventEntry log = logs[(nextIndex + logs.length - i - 1) % logs.length];
-            if (log == null) {
+            EventLog eventLog = logs[(nextIndex + logs.length - i - 1) % logs.length];
+            if (eventLog == null) {
                 continue;
             }
-            date.setTime(log.time);
+            writer.println(prefix + "\tLogs for logId: " + eventLog.logId);
 
-            StringBuilder msg = new StringBuilder(prefix).append(sdf.format(date))
-                    .append(log.event);
-            switch (log.type) {
-                case TYPE_BOOL_FALSE:
-                    msg.append(": false");
-                    break;
-                case TYPE_BOOL_TRUE:
-                    msg.append(": true");
-                    break;
-                case TYPE_FLOAT:
-                    msg.append(": ").append(log.extras);
-                    break;
-                case TYPE_INTEGER:
-                    msg.append(": ").append((int) log.extras);
-                    break;
-                case TYPE_INPUT_CONSUMER:
-                    msg.append(log.mCompoundString);
-                    break;
-                default: // fall out
+            List<EventEntry> eventEntries = eventLog.eventEntries;
+            for (int j = eventEntries.size() - 1; j >= 0; j--) {
+                EventEntry eventEntry = eventEntries.get(j);
+                date.setTime(eventEntry.time);
+
+                StringBuilder msg = new StringBuilder(prefix + "\t\t").append(sdf.format(date))
+                        .append(eventEntry.event);
+                switch (eventEntry.type) {
+                    case TYPE_BOOL_FALSE:
+                        msg.append(": false");
+                        break;
+                    case TYPE_BOOL_TRUE:
+                        msg.append(": true");
+                        break;
+                    case TYPE_FLOAT:
+                        msg.append(": ").append(eventEntry.extras);
+                        break;
+                    case TYPE_INTEGER:
+                        msg.append(": ").append((int) eventEntry.extras);
+                        break;
+                    case TYPE_INPUT_CONSUMER:
+                        msg.append(eventEntry.mCompoundString);
+                        break;
+                    default: // fall out
+                }
+                if (eventEntry.duplicateCount > 0) {
+                    msg.append(" & ").append(eventEntry.duplicateCount).append(" similar events");
+                }
+                writer.println(msg);
             }
-            if (log.duplicateCount > 0) {
-                msg.append(" & ").append(log.duplicateCount).append(" similar events");
-            }
-            msg.append(" traceId: ").append(log.traceId);
-            writer.println(msg);
         }
     }
 
-    /** Returns a 3 digit random number between 100-999 */
-    public int generateAndSetLogId() {
-        Random r = new Random();
-        mLogId = r.nextInt(900) + 100;
-        return mLogId;
+    /**
+     * Increments and returns the current log ID. This should be used every time a new log trace
+     * is started.
+     */
+    public int incrementLogId() {
+        return mCurrentLogId++;
     }
 
     private boolean isEntrySame(
@@ -161,21 +181,29 @@ public class ActiveGestureLog {
         @NonNull private CompoundString mCompoundString;
         private long time;
         private int duplicateCount;
-        private int traceId;
 
         public void update(
                 int type,
                 String event,
                 float extras,
-                @NonNull CompoundString compoundString,
-                int traceId) {
+                @NonNull CompoundString compoundString) {
             this.type = type;
             this.event = event;
             this.extras = extras;
             this.mCompoundString = compoundString;
-            this.traceId = traceId;
             time = System.currentTimeMillis();
             duplicateCount = 0;
+        }
+    }
+
+    /** An entire log of entries associated with a single log ID */
+    private static class EventLog {
+
+        private final List<EventEntry> eventEntries = new ArrayList<>();
+        private final int logId;
+
+        protected EventLog(int logId) {
+            this.logId = logId;
         }
     }
 

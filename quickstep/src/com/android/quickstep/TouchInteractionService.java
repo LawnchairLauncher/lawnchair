@@ -701,7 +701,7 @@ public class TouchInteractionService extends Service
 
     public GestureState createGestureState(GestureState previousGestureState) {
         GestureState gestureState = new GestureState(mOverviewComponentObserver,
-                ActiveGestureLog.INSTANCE.generateAndSetLogId());
+                ActiveGestureLog.INSTANCE.incrementLogId());
         if (mTaskAnimationManager.isRecentsAnimationRunning()) {
             gestureState.updateRunningTask(previousGestureState.getRunningTask());
             gestureState.updateLastStartedTaskId(previousGestureState.getLastStartedTaskId());
