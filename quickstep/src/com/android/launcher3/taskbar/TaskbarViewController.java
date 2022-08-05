@@ -295,10 +295,11 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                 boolean isRtl = Utilities.isRtl(child.getResources());
                 float hotseatIconCenter = isRtl
                         ? launcherDp.widthPx - hotseatPadding.right + borderSpacing
-                        + launcherDp.qsbWidth / 2f
-                        : hotseatPadding.left - borderSpacing - launcherDp.qsbWidth / 2f;
+                        + launcherDp.hotseatQsbWidth / 2f
+                        : hotseatPadding.left - borderSpacing - launcherDp.hotseatQsbWidth / 2f;
                 float childCenter = (child.getLeft() + child.getRight()) / 2f;
-                float halfQsbIconWidthDiff = (launcherDp.qsbWidth - taskbarDp.iconSizePx) / 2f;
+                float halfQsbIconWidthDiff =
+                        (launcherDp.hotseatQsbWidth - taskbarDp.iconSizePx) / 2f;
                 setter.addFloat(child, ICON_TRANSLATE_X,
                         isRtl ? -halfQsbIconWidthDiff : halfQsbIconWidthDiff,
                         hotseatIconCenter - childCenter, LINEAR);
@@ -312,7 +313,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                                 : Interpolators.clampToProgress(LINEAR, 0.84f, 1f));
                 setter.addOnFrameListener(animator -> AlphaUpdateListener.updateVisibility(child));
 
-                float qsbInsetFraction = halfQsbIconWidthDiff / launcherDp.qsbWidth;
+                float qsbInsetFraction = halfQsbIconWidthDiff / launcherDp.hotseatQsbWidth;
                 if (child instanceof  HorizontalInsettableView) {
                     setter.addFloat((HorizontalInsettableView) child,
                             HorizontalInsettableView.HORIZONTAL_INSETS, qsbInsetFraction, 0,
