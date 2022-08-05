@@ -1330,7 +1330,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 if (windowAnimation == null) {
                     continue;
                 }
-                windowAnimation.start(mContext, velocityPxPerMs);
+                DeviceProfile dp = mActivity == null ? null : mActivity.getDeviceProfile();
+                windowAnimation.start(mContext, dp, velocityPxPerMs);
                 mRunningWindowAnim[i] = RunningWindowAnim.wrap(windowAnimation);
             }
             homeAnimFactory.setSwipeVelocity(velocityPxPerMs.y);

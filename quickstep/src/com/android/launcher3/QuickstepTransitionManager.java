@@ -1433,7 +1433,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         animation.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                anim.start(mLauncher, velocityPxPerS);
+                anim.start(mLauncher, mDeviceProfile, velocityPxPerS);
             }
         });
         return anim;
