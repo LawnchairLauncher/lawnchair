@@ -3027,7 +3027,10 @@ public class Launcher extends StatefulActivity<LauncherState>
         writer.println(prefix + "\tmAppWidgetHost.isListening: " + mAppWidgetHost.isListening());
 
         if (mViewCapture != null) {
-            writer.println(prefix + "\tmViewCapture: " + mViewCapture.dumpToString());
+            writer.print(prefix + "\tmViewCapture: ");
+            writer.flush();
+            mViewCapture.dump(fd);
+            writer.println();
         }
 
         // Extra logging for general debugging

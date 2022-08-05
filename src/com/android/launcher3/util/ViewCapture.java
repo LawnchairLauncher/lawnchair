@@ -21,6 +21,7 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.os.Trace;
 import android.util.Base64;
+import android.util.Base64OutputStream;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,9 @@ import com.android.launcher3.view.ViewCaptureData.ExportedData;
 import com.android.launcher3.view.ViewCaptureData.FrameData;
 import com.android.launcher3.view.ViewCaptureData.ViewNode;
 
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.concurrent.FutureTask;
 
 /**
@@ -73,7 +77,7 @@ public class ViewCapture implements OnDrawListener {
     /**
      * Creates a proto of all the data captured so far.
      */
-    public String dumpToString() {
+    public void dump(FileDescriptor out) {
         Handler handler = mRoot.getHandler();
         if (handler == null) {
             handler = Executors.MAIN_EXECUTOR.getHandler();
@@ -84,12 +88,15 @@ public class ViewCapture implements OnDrawListener {
         } else {
             handler.post(task);
         }
-        try {
-            return Base64.encodeToString(task.get().toByteArray(),
+        try (OutputStream os = new FileOutputStream(out)) {
+            ExportedData data = task.get();
+            Base64OutputStream encodedOS = new Base64OutputStream(os,
                     Base64.NO_CLOSE | Base64.NO_PADDING | Base64.NO_WRAP);
+            data.writeTo(encodedOS);
+            encodedOS.close();
+            os.flush();
         } catch (Exception e) {
             Log.e(TAG, "Error capturing proto", e);
-            return "--error--";
         }
     }
 
