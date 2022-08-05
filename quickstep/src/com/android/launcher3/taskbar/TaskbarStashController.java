@@ -20,7 +20,6 @@ import static android.view.HapticFeedbackConstants.LONG_PRESS;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_SHOW;
-import static com.android.launcher3.taskbar.TaskbarManager.isPhoneMode;
 import static com.android.launcher3.taskbar.Utilities.appendFlag;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SWITCHER_SHOWING;
@@ -180,7 +179,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         mActivity = activity;
         mPrefs = Utilities.getPrefs(mActivity);
         mSystemUiProxy = SystemUiProxy.INSTANCE.get(activity);
-        if (isPhoneMode(mActivity.getDeviceProfile())) {
+        if (isPhoneMode()) {
             // DeviceProfile's taskbar vars aren't initialized w/ the flag off
             Resources resources = mActivity.getResources();
             mUnstashedHeight = resources.getDimensionPixelSize(R.dimen.taskbar_size);
@@ -217,7 +216,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         updateStateForFlag(FLAG_STASHED_IN_APP_MANUAL, isManuallyStashedInApp);
         updateStateForFlag(FLAG_STASHED_IN_APP_SETUP, isInSetup);
         updateStateForFlag(FLAG_IN_SETUP, isInSetup);
-        updateStateForFlag(FLAG_STASHED_SMALL_SCREEN, isPhoneMode(mActivity.getDeviceProfile()));
+        updateStateForFlag(FLAG_STASHED_SMALL_SCREEN, isPhoneMode()
+                && !mActivity.isThreeButtonNav());
         applyState();
 
         notifyStashChange(/* visible */ false, /* stashed */ isStashedInApp());
@@ -229,7 +229,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      */
     public boolean supportsVisualStashing() {
         return mControllers.uiController.supportsVisualStashing() ||
-                isPhoneMode(mActivity.getDeviceProfile());
+                (isPhoneMode() && !mActivity.isThreeButtonNav());
     }
 
     /**
@@ -286,6 +286,13 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         return (hasAnyFlag(FLAG_IN_STASHED_LAUNCHER_STATE) && supportsVisualStashing());
     }
 
+    /**
+     * @return {@code true} if we're not on a large screen AND using gesture nav
+     */
+    private boolean isPhoneMode() {
+        return TaskbarManager.isPhoneMode(mActivity.getDeviceProfile());
+    }
+
     private boolean hasAnyFlag(int flagMask) {
         return hasAnyFlag(mState, flagMask);
     }
@@ -312,7 +319,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * @see WindowInsets.Type#systemBars()
      */
     public int getContentHeightToReportToApps() {
-        if (isPhoneMode(mActivity.getDeviceProfile())) {
+        if (isPhoneMode() && !mActivity.isThreeButtonNav()) {
             return getStashedHeight();
         }
 
@@ -431,7 +438,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         }
         mAnimator = new AnimatorSet();
         addJankMonitorListener(mAnimator, /* appearing= */ !mIsStashed);
-        final float stashTranslation = isPhoneMode(mActivity.getDeviceProfile()) ? 0 :
+        final float stashTranslation = isPhoneMode() ? 0 :
                 (mUnstashedHeight - mStashedHeight) / 2f;
 
         if (!supportsVisualStashing()) {
@@ -477,7 +484,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
             firstHalfAnimatorSet.playTogether(
                     mIconAlphaForStash.animateToValue(0),
-                    mIconScaleForStash.animateToValue(isPhoneMode(mActivity.getDeviceProfile()) ?
+                    mIconScaleForStash.animateToValue(isPhoneMode() ?
                             0 : STASHED_TASKBAR_SCALE)
             );
             secondHalfAnimatorSet.playTogether(
