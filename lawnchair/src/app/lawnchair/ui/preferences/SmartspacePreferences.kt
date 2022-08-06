@@ -141,6 +141,11 @@ fun SmartspaceDateAndTimePreferences() {
                     label = stringResource(id = R.string.smartspace_date),
                     enabled = if (showDateAdapter.state.value) !calendarHasMinimumContent else true,
                 )
+                val calendarSelectionEnabled =
+                    preferenceManager2.enableSmartspaceCalendarSelection.getAdapter()
+                ExpandAndShrink(visible = calendarSelectionEnabled.state.value && showDateAdapter.state.value) {
+                    SmartspaceCalendarPreference()
+                }
                 SwitchPreference(
                     adapter = showTimeAdapter,
                     label = stringResource(id = R.string.smartspace_time),
@@ -150,11 +155,6 @@ fun SmartspaceDateAndTimePreferences() {
                     SmartspaceTimeFormatPreference()
                 }
             }
-        }
-        val calendarSelectionEnabled =
-            preferenceManager2.enableSmartspaceCalendarSelection.getAdapter()
-        ExpandAndShrink(visible = calendarSelectionEnabled.state.value && showDateAdapter.state.value) {
-            SmartspaceCalendarPreference()
         }
     }
 }
