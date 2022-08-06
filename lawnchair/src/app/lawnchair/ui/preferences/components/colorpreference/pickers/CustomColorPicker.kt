@@ -1,6 +1,10 @@
 package app.lawnchair.ui.preferences.components.colorpreference.pickers
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.graphics.Color.argb
+import android.widget.Toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
@@ -8,6 +12,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ContentCopy
+import androidx.compose.material.icons.rounded.ContentPaste
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -29,6 +36,7 @@ import androidx.core.graphics.green
 import androidx.core.graphics.red
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.ui.preferences.components.Chip
+import app.lawnchair.ui.preferences.components.ClickableIcon
 import app.lawnchair.ui.preferences.components.DividerColumn
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.colorpreference.*
@@ -183,44 +191,83 @@ fun CustomColorPicker(
 
 @Composable
 private fun HexColorPicker(
+    modifier: Modifier = Modifier,
     textFieldValue: TextFieldValue,
     onTextFieldValueChange: (TextFieldValue) -> Unit,
 ) {
 
+    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+    val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
     val invalidString = colorStringToIntColor(textFieldValue.text) == null
 
-    OutlinedTextField(
-        textStyle = LocalTextStyle.current.copy(
-            fontSize = 18.sp,
-            textAlign = TextAlign.Start,
-        ),
-        isError = invalidString,
-        value = textFieldValue,
-        onValueChange = onTextFieldValueChange,
-        singleLine = true,
-        keyboardOptions = KeyboardOptions(
-            capitalization = KeyboardCapitalization.Characters,
-            autoCorrect = false,
-            imeAction = ImeAction.Done,
-        ),
-        keyboardActions = KeyboardActions(
-            onDone = {
-                focusManager.clearFocus()
-            },
-        ),
-        trailingIcon = {
-            Crossfade(targetState = invalidString) {
-                if (it) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_warning),
-                        contentDescription = stringResource(id = R.string.invalid_color),
-                    )
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly,
+    ) {
+
+        OutlinedTextField(
+            modifier = Modifier.weight(1f),
+            textStyle = LocalTextStyle.current.copy(
+                fontSize = 18.sp,
+                textAlign = TextAlign.Start,
+            ),
+            isError = invalidString,
+            value = textFieldValue,
+            onValueChange = onTextFieldValueChange,
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Characters,
+                autoCorrect = false,
+                imeAction = ImeAction.Done,
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                },
+            ),
+            trailingIcon = {
+                Crossfade(targetState = invalidString) {
+                    if (it) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_warning),
+                            contentDescription = stringResource(id = R.string.invalid_color),
+                        )
+                    }
                 }
-            }
-        },
-    )
+            },
+        )
+
+        Spacer(modifier = Modifier.requiredWidth(16.dp))
+
+        ClickableIcon(
+            imageVector = Icons.Rounded.ContentCopy,
+            onClick = {
+                val clip =
+                    ClipData.newPlainText(context.getString(R.string.hex), textFieldValue.text)
+                clipboardManager.setPrimaryClip(clip)
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.copied_toast),
+                    Toast.LENGTH_SHORT
+                ).show()
+            },
+        )
+
+        ClickableIcon(
+            imageVector = Icons.Rounded.ContentPaste,
+            onClick = {
+                clipboardManager.primaryClip?.getItemAt(0)?.text?.let {
+                    onTextFieldValueChange(textFieldValue.copy(text = it.toString()))
+                    focusManager.clearFocus()
+                }
+            },
+        )
+
+    }
+
 }
 
 @Composable
