@@ -110,7 +110,7 @@ import java.util.stream.Stream;
  */
 public abstract class BaseQuickstepLauncher extends Launcher {
 
-    private DepthController mDepthController = new DepthController(this);
+    private DepthController mDepthController;
     private QuickstepTransitionManager mAppTransitionManager;
 
     /**
@@ -247,7 +247,6 @@ public abstract class BaseQuickstepLauncher extends Launcher {
     @Override
     public void onScrollChanged(float progress) {
         super.onScrollChanged(progress);
-        mDepthController.onOverlayScrollChanged(progress);
         onTaskbarInAppDisplayProgressUpdate(progress, MINUS_ONE_PAGE_PROGRESS_INDEX);
     }
 
@@ -345,6 +344,7 @@ public abstract class BaseQuickstepLauncher extends Launcher {
         mAppTransitionManager.registerRemoteTransitions();
 
         mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
+        mDepthController = new DepthController(this);
     }
 
     private void onTISConnected(TISBinder binder) {
