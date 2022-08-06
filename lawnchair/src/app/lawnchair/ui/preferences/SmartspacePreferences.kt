@@ -153,7 +153,7 @@ fun SmartspaceDateAndTimePreferences() {
         }
         val calendarSelectionEnabled =
             preferenceManager2.enableSmartspaceCalendarSelection.getAdapter()
-        if (calendarSelectionEnabled.state.value) {
+        ExpandAndShrink(visible = calendarSelectionEnabled.state.value && showDateAdapter.state.value) {
             SmartspaceCalendarPreference()
         }
     }
