@@ -6,9 +6,11 @@ import android.content.IntentFilter
 import android.icu.text.DateFormat
 import android.icu.text.DisplayContext
 import android.os.SystemClock
+import android.text.format.DateFormat.is24HourFormat
 import android.util.AttributeSet
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.smartspace.model.SmartspaceCalendar
+import app.lawnchair.smartspace.model.SmartspaceTimeFormat
 import app.lawnchair.util.broadcastReceiverFlow
 import app.lawnchair.util.repeatOnAttached
 import app.lawnchair.util.subscribeBlocking
@@ -71,7 +73,10 @@ class IcuDateTextView @JvmOverloads constructor(
     }
 
     private fun shouldAlignToTextEnd(): Boolean {
-        val shouldNotAlignToEnd = dateTimeOptions.showTime && dateTimeOptions.time24HourFormat && !dateTimeOptions.showDate
+        val is24HourFormatManual = dateTimeOptions.timeFormat is SmartspaceTimeFormat.TwentyFourHourFormat
+        val is24HourFormatOnSystem = dateTimeOptions.timeFormat is SmartspaceTimeFormat.FollowSystem && is24HourFormat(context)
+        val is24HourFormat = is24HourFormatManual || is24HourFormatOnSystem
+        val shouldNotAlignToEnd = dateTimeOptions.showTime && is24HourFormat && !dateTimeOptions.showDate
         return calendar == SmartspaceCalendar.Persian && !shouldNotAlignToEnd
     }
 
@@ -96,8 +101,12 @@ class IcuDateTextView @JvmOverloads constructor(
         var format: String
         if (dateTimeOptions.showTime) {
             format = context.getString(
-                if (dateTimeOptions.time24HourFormat) R.string.smartspace_icu_date_pattern_persian_time
-                else R.string.smartspace_icu_date_pattern_persian_time_12h
+                when {
+                    dateTimeOptions.timeFormat is SmartspaceTimeFormat.TwelveHourFormat -> R.string.smartspace_icu_date_pattern_persian_time_12h
+                    dateTimeOptions.timeFormat is SmartspaceTimeFormat.TwentyFourHourFormat -> R.string.smartspace_icu_date_pattern_persian_time
+                    is24HourFormat(context) -> R.string.smartspace_icu_date_pattern_persian_time
+                    else -> R.string.smartspace_icu_date_pattern_persian_time_12h
+                }
             )
             if (dateTimeOptions.showDate) format = context.getString(R.string.smartspace_icu_date_pattern_persian_date) + format
         } else {
@@ -111,8 +120,12 @@ class IcuDateTextView @JvmOverloads constructor(
         var format: String
         if (dateTimeOptions.showTime) {
             format = context.getString(
-                if (dateTimeOptions.time24HourFormat) R.string.smartspace_icu_date_pattern_gregorian_time
-                else R.string.smartspace_icu_date_pattern_gregorian_time_12h
+                when {
+                    dateTimeOptions.timeFormat is SmartspaceTimeFormat.TwelveHourFormat -> R.string.smartspace_icu_date_pattern_gregorian_time_12h
+                    dateTimeOptions.timeFormat is SmartspaceTimeFormat.TwentyFourHourFormat -> R.string.smartspace_icu_date_pattern_gregorian_time
+                    is24HourFormat(context) -> R.string.smartspace_icu_date_pattern_gregorian_time
+                    else -> R.string.smartspace_icu_date_pattern_gregorian_time_12h
+                }
             )
             if (dateTimeOptions.showDate) format += context.getString(R.string.smartspace_icu_date_pattern_gregorian_date)
         } else {
@@ -141,16 +154,16 @@ class IcuDateTextView @JvmOverloads constructor(
 data class DateTimeOptions(
     val showDate: Boolean,
     val showTime: Boolean,
-    val time24HourFormat: Boolean,
+    val timeFormat: SmartspaceTimeFormat,
 ) {
     companion object {
         fun fromPrefs(prefs: PreferenceManager2) =
             combine(
                 prefs.smartspaceShowDate.get(),
                 prefs.smartspaceShowTime.get(),
-                prefs.smartspace24HourFormat.get()
-            ) { showDate, showTime, time24HourFormat ->
-                DateTimeOptions(showDate, showTime, time24HourFormat)
+                prefs.smartspaceTimeFormat.get(),
+            ) { showDate, showTime, timeFormat ->
+                DateTimeOptions(showDate, showTime, timeFormat)
             }
     }
 }

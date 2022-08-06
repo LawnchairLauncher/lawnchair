@@ -22,6 +22,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.smartspace.SmartspaceViewContainer
 import app.lawnchair.smartspace.model.SmartspaceCalendar
+import app.lawnchair.smartspace.model.SmartspaceTimeFormat
 import app.lawnchair.smartspace.provider.SmartspaceProvider
 import app.lawnchair.ui.preferences.components.DividerColumn
 import app.lawnchair.ui.preferences.components.ExpandAndShrink
@@ -123,7 +124,7 @@ fun SmartspaceDateAndTimePreferences() {
         val calendarAdapter = preferenceManager2.smartspaceCalendar.getAdapter()
         val showDateAdapter = preferenceManager2.smartspaceShowDate.getAdapter()
         val showTimeAdapter = preferenceManager2.smartspaceShowTime.getAdapter()
-        val use24HourFormatAdapter = preferenceManager2.smartspace24HourFormat.getAdapter()
+        val use24HourFormatAdapter = preferenceManager2.smartspaceTimeFormat.getAdapter()
 
         val calendarHasMinimumContent = !showDateAdapter.state.value || !showTimeAdapter.state.value
 
@@ -146,10 +147,7 @@ fun SmartspaceDateAndTimePreferences() {
                     enabled = if (showTimeAdapter.state.value) !calendarHasMinimumContent else true,
                 )
                 ExpandAndShrink(visible = showTimeAdapter.state.value) {
-                    SwitchPreference(
-                        adapter = use24HourFormatAdapter,
-                        label = stringResource(id = R.string.smartspace_time_24_hour_format),
-                    )
+                    SmartspaceTimeFormatPreference()
                 }
             }
         }
@@ -159,6 +157,24 @@ fun SmartspaceDateAndTimePreferences() {
             SmartspaceCalendarPreference()
         }
     }
+}
+
+@Composable
+fun SmartspaceTimeFormatPreference() {
+
+    val entries = remember {
+        SmartspaceTimeFormat.values().map { format ->
+            ListPreferenceEntry(format) { stringResource(id = format.nameResourceId) }
+        }
+    }
+
+    val adapter = preferenceManager2().smartspaceTimeFormat.getAdapter()
+
+    ListPreference(
+        adapter = adapter,
+        entries = entries,
+        label = stringResource(id = R.string.smartspace_time_format),
+    )
 }
 
 @Composable

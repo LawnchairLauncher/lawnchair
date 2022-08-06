@@ -29,6 +29,7 @@ import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.smartspace.model.SmartspaceCalendar
+import app.lawnchair.smartspace.model.SmartspaceTimeFormat
 import app.lawnchair.theme.color.ColorOption
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
@@ -313,9 +314,11 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         defaultValue = context.resources.getBoolean(R.bool.config_default_smartspace_show_time),
     )
 
-    val smartspace24HourFormat = preference(
-        key = booleanPreferencesKey("smartspace_24_hour_format"),
-        defaultValue = context.resources.getBoolean(R.bool.config_default_smartspace_24_hour_format),
+    val smartspaceTimeFormat = preference(
+        key = stringPreferencesKey("smartspace_time_format"),
+        defaultValue = SmartspaceTimeFormat.fromString(context.getString(R.string.config_default_smartspace_time_format)),
+        parse = { SmartspaceTimeFormat.fromString(it) },
+        save = { it.toString() },
     )
 
     val smartspaceCalendar = preference(
