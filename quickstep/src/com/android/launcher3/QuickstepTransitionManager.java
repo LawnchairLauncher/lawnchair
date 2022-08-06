@@ -78,6 +78,7 @@ import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.Pair;
 import android.util.Size;
+import android.view.CrossWindowBlurListeners;
 import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewRootImpl;
@@ -93,6 +94,7 @@ import androidx.core.graphics.ColorUtils;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.LauncherAnimationRunner.RemoteAnimationFactory;
 import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.shortcuts.DeepShortcutView;
@@ -142,8 +144,6 @@ import java.util.List;
  * Manages the opening and closing app transitions from Launcher
  */
 public class QuickstepTransitionManager implements OnDeviceProfileChangeListener {
-
-    private static final String TAG = "QuickstepTransition";
 
     private static final boolean ENABLE_SHELL_STARTING_SURFACE =
             SystemProperties.getBoolean("persist.debug.shell_starting_surface", true);
@@ -1044,54 +1044,37 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     private ObjectAnimator getBackgroundAnimator() {
         // When launching an app from overview that doesn't map to a task, we still want to just
         // blur the wallpaper instead of the launcher surface as well
-        boolean allowBlurringLauncher = mLauncher.getStateManager().getState() != OVERVIEW;
-        DepthController depthController = mLauncher.getDepthController();
+        boolean allowBlurringLauncher = mLauncher.getStateManager().getState() != OVERVIEW
+                && BlurUtils.supportsBlursOnWindows();
+
+        MyDepthController depthController = new MyDepthController(mLauncher);
         ObjectAnimator backgroundRadiusAnim = ObjectAnimator.ofFloat(depthController, DEPTH,
-                BACKGROUND_APP.getDepth(mLauncher))
+                        BACKGROUND_APP.getDepth(mLauncher))
                 .setDuration(APP_LAUNCH_DURATION);
+
         if (allowBlurringLauncher) {
-            final SurfaceControl dimLayer;
-            if (BlurUtils.supportsBlursOnWindows()) {
-                // Create a temporary effect layer, that lives on top of launcher, so we can apply
-                // the blur to it. The EffectLayer will be fullscreen, which will help with caching
-                // optimizations on the SurfaceFlinger side:
-                // - Results would be able to be cached as a texture
-                // - There won't be texture allocation overhead, because EffectLayers don't have
-                //   buffers
-                ViewRootImpl viewRootImpl = mLauncher.getDragLayer().getViewRootImpl();
-                SurfaceControl parent = viewRootImpl != null
-                        ? viewRootImpl.getSurfaceControl()
-                        : null;
-                dimLayer = new SurfaceControl.Builder()
-                        .setName("Blur layer")
-                        .setParent(parent)
-                        .setOpaque(false)
-                        .setHidden(false)
-                        .setEffectLayer()
-                        .build();
-            } else {
-                dimLayer = null;
-            }
+            // Create a temporary effect layer, that lives on top of launcher, so we can apply
+            // the blur to it. The EffectLayer will be fullscreen, which will help with caching
+            // optimizations on the SurfaceFlinger side:
+            // - Results would be able to be cached as a texture
+            // - There won't be texture allocation overhead, because EffectLayers don't have
+            //   buffers
+            ViewRootImpl viewRootImpl = mLauncher.getDragLayer().getViewRootImpl();
+            SurfaceControl parent = viewRootImpl != null
+                    ? viewRootImpl.getSurfaceControl()
+                    : null;
+            SurfaceControl dimLayer = new SurfaceControl.Builder()
+                    .setName("Blur layer")
+                    .setParent(parent)
+                    .setOpaque(false)
+                    .setHidden(false)
+                    .setEffectLayer()
+                    .build();
 
-            depthController.setSurface(dimLayer);
-            backgroundRadiusAnim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    depthController.setIsInLaunchTransition(true);
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    depthController.setIsInLaunchTransition(false);
-                    depthController.setSurface(null);
-                    if (dimLayer != null) {
-                        new SurfaceControl.Transaction()
-                                .remove(dimLayer)
-                                .apply();
-                    }
-                }
-            });
+            backgroundRadiusAnim.addListener(AnimatorListeners.forEndCallback(() ->
+                    new SurfaceControl.Transaction().remove(dimLayer).apply()));
         }
+
         return backgroundRadiusAnim;
     }
 
@@ -1934,6 +1917,19 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 return 0f;
             }
             return Utilities.mapToRange(progress, start, end, 1, 0, ACCEL_1_5);
+        }
+    }
+
+    private static class MyDepthController extends DepthController {
+        MyDepthController(Launcher l) {
+            super(l);
+            setCrossWindowBlursEnabled(
+                    CrossWindowBlurListeners.getInstance().isCrossWindowBlurEnabled());
+        }
+
+        @Override
+        public void setSurface(SurfaceControl surface) {
+            super.setSurface(surface);
         }
     }
 }

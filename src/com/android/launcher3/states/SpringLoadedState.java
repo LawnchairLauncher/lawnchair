@@ -58,7 +58,7 @@ public class SpringLoadedState extends LauncherState {
         float myCenter = ws.getTop() + halfHeight;
         float cellTopFromCenter = halfHeight - ws.getChildAt(0).getTop();
         float actualCellTop = myCenter - cellTopFromCenter * scale;
-        return new ScaleAndTranslation(scale, 0, (shrunkTop - actualCellTop) / scale);
+        return new ScaleAndTranslation(scale, 0, shrunkTop - actualCellTop);
     }
 
     @Override
