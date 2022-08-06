@@ -682,9 +682,11 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         updateButtonLayoutSpacing();
     }
 
-    /** Adds the correct spacing to 3 button nav container. No-op if using gesture nav */
+    /**
+     * Adds the correct spacing to 3 button nav container. No-op if using gesture nav or kids mode.
+     */
     private void updateButtonLayoutSpacing() {
-        if (!mContext.isThreeButtonNav()) {
+        if (!mContext.isThreeButtonNav() || mContext.isNavBarKidsModeActive()) {
             return;
         }
         DeviceProfile dp = mContext.getDeviceProfile();
