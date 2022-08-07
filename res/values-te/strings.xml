@@ -59,7 +59,6 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"యాప్‌ల కోసం సెర్చ్ చేయండి"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"అప్లికేషన్‌లను లోడ్ చేస్తోంది…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"కి సరిపోలే అప్లికేషన్‌లేవీ కనుగొనబడలేదు"</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"మరిన్ని యాప్‌ల కోసం సెర్చ్ చేయండి"</string>
     <string name="label_application" msgid="8531721983832654978">"యాప్"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"అన్ని యాప్‌లు"</string>
     <string name="notifications_header" msgid="1404149926117359025">"నోటిఫికేషన్‌లు"</string>
