@@ -26,33 +26,23 @@ jobs:
           distribution: 'zulu'
           java-version: 17
       - uses: gradle/gradle-build-action@v2
-      - name: Build debug APK
-        run: ./gradlew assembleLawnWithQuickstepDebug
-      - name: Sign debug APK
-        if: github.repository == 'LawnchairLauncher/lawnchair'
-        id: sign-debug-apk
-        uses: r0adkll/sign-android-release@v1
-        env:
-          BUILD_TOOLS_VERSION: "32.0.0"
-        with:
-          releaseDirectory: build/outputs/apk/lawnWithQuickstep/debug
-          signingKeyBase64: ${{ secrets.KEYSTORE }}
-          alias: ${{ secrets.KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
-      - name: Rename artifact
+      - name: Write sign info
         if: github.repository == 'LawnchairLauncher/lawnchair'
         run: |
-          oldArtifactPath="${{ steps.sign-debug-apk.outputs.signedReleaseFile }}"
-          newArtifactPath="${oldArtifactPath%'-signed.apk'}.apk"
-          echo "ARTIFACT_PATH=$newArtifactPath" >> $GITHUB_ENV
-          mv "$oldArtifactPath" "$newArtifactPath"
+          if [ ! -z "${{ secrets.KEYSTORE }}" ]; then
+            echo storePassword='${{ secrets.KEYSTORE_PASSWORD }}' >> keystore.properties
+            echo keyAlias='${{ secrets.KEY_ALIAS }}' >> keystore.properties
+            echo keyPassword='${{ secrets.KEY_PASSWORD }}' >> keystore.properties
+            echo storeFile='${{ github.workspace }}/key.jks' >> keystore.properties
+            echo ${{ secrets.KEYSTORE }} | base64 --decode > ${{ github.workspace }}/key.jks
+          fi
+      - name: Build debug APK
+        run: ./gradlew assembleLawnWithQuickstepDebug
       - name: Upload artifact
         uses: actions/upload-artifact@v3
-        if: github.repository == 'LawnchairLauncher/lawnchair'
         with:
           name: Debug APK
-          path: ${{ env.ARTIFACT_PATH }}
+          path: build/outputs/apk/lawnWithQuickstep/debug/*.apk
   send-notifications:
     runs-on: ubuntu-latest
     if: github.repository == 'LawnchairLauncher/lawnchair'
