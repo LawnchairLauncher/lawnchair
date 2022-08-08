@@ -151,7 +151,7 @@ private val supportAndPr = listOf(
     ),
     TeamMember(
         name = "SuperDragonXD",
-        role = Role.SupportAndPr,
+        role = Role.Support,
         photoUrl = "https://avatars.githubusercontent.com/u/70206496",
         socialUrl = "https://github.com/SuperDragonXD",
     ),
