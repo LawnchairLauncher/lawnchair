@@ -1,7 +1,7 @@
 Lawnchair 12.1 Alpha 4 has arrived! It has the following new features:
 
-- Gesture support
-- The option to toggle Wallpaper depth effect
+- App Gesture support
+- The option to toggle Wallpaper depth effect (Android 11+)
 - Custom color picker (thanks to @yasandev and @DariaRnD)
 - An option to select the Notification Dot color in Notification Dots (thanks to @yasandev and @DariaRnD)
 - The ability to lock Home Screen & show Lock Button in Pop-Up (thanks to @yasandev and @DariaRnD)
