@@ -24,6 +24,18 @@ filegroup {
       "src/**/*.java",
       "src/**/*.kt"
     ],
+    exclude_srcs: [
+        ":launcher-non-quickstep-tests-src"
+    ],
+}
+
+// Source code used for non-quickstep tests
+filegroup {
+    name: "launcher-non-quickstep-tests-src",
+    srcs: [
+       "src/com/android/launcher3/nonquickstep/**/*.java",
+       "src/com/android/launcher3/nonquickstep/**/*.kt",
+    ],
 }
 
 // Source code used for oop test helpers
@@ -84,6 +96,7 @@ android_test {
     name: "Launcher3Tests",
     srcs: [
         ":launcher-tests-src",
+        ":launcher-non-quickstep-tests-src",
     ],
     static_libs: ["Launcher3TestLib"],
     libs: [
