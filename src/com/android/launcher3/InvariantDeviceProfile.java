@@ -128,7 +128,6 @@ public class InvariantDeviceProfile {
 
     public PointF[] borderSpaces;
     public float folderBorderSpace;
-    public float[] hotseatBorderSpaces;
     public int inlineNavButtonsEndSpacing;
 
     public float[] horizontalMargin;
@@ -144,11 +143,6 @@ public class InvariantDeviceProfile {
      * Number of icons inside the hotseat area.
      */
     public int numShownHotseatIcons;
-
-    /**
-     * Number of icons inside the hotseat area when using 3 buttons navigation.
-     */
-    public int numShrunkenHotseatIcons;
 
     /**
      * Number of icons inside the hotseat area that is stored in the database. This is greater than
@@ -176,7 +170,7 @@ public class InvariantDeviceProfile {
     public String dbFile;
     public int defaultLayoutId;
     int demoModeLayoutId;
-    boolean[] inlineQsb = new boolean[COUNT_SIZES];
+    public boolean[] inlineQsb = new boolean[COUNT_SIZES];
 
     /**
      * An immutable list of supported profiles.
@@ -364,11 +358,9 @@ public class InvariantDeviceProfile {
         horizontalMargin = displayOption.horizontalMargin;
 
         numShownHotseatIcons = closestProfile.numHotseatIcons;
-        numShrunkenHotseatIcons = closestProfile.numShrunkenHotseatIcons;
         numDatabaseHotseatIcons = deviceType == TYPE_MULTI_DISPLAY
                 ? closestProfile.numDatabaseHotseatIcons : closestProfile.numHotseatIcons;
         hotseatColumnSpan = closestProfile.hotseatColumnSpan;
-        hotseatBorderSpaces = displayOption.hotseatBorderSpaces;
         hotseatBarBottomSpace = displayOption.hotseatBarBottomSpace;
         hotseatQsbSpace = displayOption.hotseatQsbSpace;
 
@@ -737,7 +729,6 @@ public class InvariantDeviceProfile {
         private final int numAllAppsColumns;
         private final int numDatabaseAllAppsColumns;
         private final int numHotseatIcons;
-        private final int numShrunkenHotseatIcons;
         private final int numDatabaseHotseatIcons;
 
         private final int[] hotseatColumnSpan = new int[COUNT_SIZES];
@@ -777,8 +768,6 @@ public class InvariantDeviceProfile {
 
             numHotseatIcons = a.getInt(
                     R.styleable.GridDisplayOption_numHotseatIcons, numColumns);
-            numShrunkenHotseatIcons = a.getInt(
-                    R.styleable.GridDisplayOption_numShrunkenHotseatIcons, numHotseatIcons / 2);
             numDatabaseHotseatIcons = a.getInt(
                     R.styleable.GridDisplayOption_numExtendedHotseatIcons, 2 * numHotseatIcons);
 
@@ -842,8 +831,6 @@ public class InvariantDeviceProfile {
         private float folderBorderSpace;
         private final PointF[] borderSpaces = new PointF[COUNT_SIZES];
         private final float[] horizontalMargin = new float[COUNT_SIZES];
-        //TODO(http://b/228998082) remove this when 3 button spaces are fixed
-        private final float[] hotseatBorderSpaces = new float[COUNT_SIZES];
         private final float[] hotseatBarBottomSpace = new float[COUNT_SIZES];
         private final float[] hotseatQsbSpace = new float[COUNT_SIZES];
 
@@ -1059,18 +1046,6 @@ public class InvariantDeviceProfile {
                     R.styleable.ProfileDisplayOption_horizontalMarginTwoPanelPortrait,
                     horizontalMargin[INDEX_DEFAULT]);
 
-            hotseatBorderSpaces[INDEX_DEFAULT] = a.getFloat(
-                    R.styleable.ProfileDisplayOption_hotseatBorderSpace, borderSpace);
-            hotseatBorderSpaces[INDEX_LANDSCAPE] = a.getFloat(
-                    R.styleable.ProfileDisplayOption_hotseatBorderSpaceLandscape,
-                    hotseatBorderSpaces[INDEX_DEFAULT]);
-            hotseatBorderSpaces[INDEX_TWO_PANEL_LANDSCAPE] = a.getFloat(
-                    R.styleable.ProfileDisplayOption_hotseatBorderSpaceTwoPanelLandscape,
-                    hotseatBorderSpaces[INDEX_DEFAULT]);
-            hotseatBorderSpaces[INDEX_TWO_PANEL_PORTRAIT] = a.getFloat(
-                    R.styleable.ProfileDisplayOption_hotseatBorderSpaceTwoPanelPortrait,
-                    hotseatBorderSpaces[INDEX_DEFAULT]);
-
             hotseatBarBottomSpace[INDEX_DEFAULT] = a.getFloat(
                     R.styleable.ProfileDisplayOption_hotseatBarBottomSpace,
                     ResourcesCompat.getFloat(context.getResources(),
@@ -1133,7 +1108,6 @@ public class InvariantDeviceProfile {
                 minCellSize[i].x *= w;
                 minCellSize[i].y *= w;
                 horizontalMargin[i] *= w;
-                hotseatBorderSpaces[i] *= w;
                 hotseatBarBottomSpace[i] *= w;
                 hotseatQsbSpace[i] *= w;
                 allAppsCellSize[i].x *= w;
@@ -1158,7 +1132,6 @@ public class InvariantDeviceProfile {
                 minCellSize[i].x += p.minCellSize[i].x;
                 minCellSize[i].y += p.minCellSize[i].y;
                 horizontalMargin[i] += p.horizontalMargin[i];
-                hotseatBorderSpaces[i] += p.hotseatBorderSpaces[i];
                 hotseatBarBottomSpace[i] += p.hotseatBarBottomSpace[i];
                 hotseatQsbSpace[i] += p.hotseatQsbSpace[i];
                 allAppsCellSize[i].x += p.allAppsCellSize[i].x;
