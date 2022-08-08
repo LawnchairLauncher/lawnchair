@@ -122,6 +122,12 @@ private val product = listOf(
         photoUrl = "https://avatars.githubusercontent.com/u/7065700",
         socialUrl = "https://twitter.com/skittles9823",
     ),
+    TeamMember(
+        name = "Yasan",
+        role = Role.Development,
+        photoUrl = "https://avatars.githubusercontent.com/u/41836211",
+        socialUrl = "https:/yasan.dev",
+    ),
 )
 
 private val supportAndPr = listOf(
@@ -142,6 +148,12 @@ private val supportAndPr = listOf(
         role = Role.SupportAndPr,
         photoUrl = "https://avatars.githubusercontent.com/u/29402532",
         socialUrl = "https://twitter.com/rikkoedoot",
+    ),
+    TeamMember(
+        name = "SuperDragonXD",
+        role = Role.Support,
+        photoUrl = "https://avatars.githubusercontent.com/u/70206496",
+        socialUrl = "https://github.com/SuperDragonXD",
     ),
 )
 

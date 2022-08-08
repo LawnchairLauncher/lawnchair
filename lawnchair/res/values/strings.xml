@@ -200,6 +200,7 @@
 
     <string name="action_copy_link">Copy Link</string>
     <string name="action_copy">Copy</string>
+    <string name="action_paste">Paste</string>
     <string name="copied_toast">Copied to clipboard.</string>
     <string name="action_share">Share</string>
 
@@ -282,6 +283,9 @@
     <string name="smartspace_date_and_time">Date &amp; Time</string>
     <string name="smartspace_date">Date</string>
     <string name="smartspace_time">Time</string>
+    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_follow_system">Follow System</string>
+    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
     <string name="smartspace_time_24_hour_format">24-Hour Format</string>
     <string name="smartspace_weather">Weather</string>
     <string name="smartspace_battery_status">Battery Status</string>

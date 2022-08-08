@@ -115,7 +115,7 @@ if (ciBuild) {
 }
 
 def version = "12.1.0"
-def releaseName = "Beta 1"
+def releaseName = "Alpha 4"
 def versionDisplayName = "${version} ${isReleaseBuild ? releaseName : devReleaseName}"
 def majorVersion = versionDisplayName.split("\\.")[0]
 
@@ -128,7 +128,7 @@ android {
     defaultConfig {
         minSdk MIN_SDK
         targetSdk TARGET_SDK
-        versionCode 12_01_00_04
+        versionCode 12_01_00_05
         versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
         buildConfigField "String", "MAJOR_VERSION", "\"${majorVersion}\""
@@ -353,6 +353,7 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling:$compose_version"
     implementation "androidx.compose.ui:ui-text-google-fonts:$compose_version"
     implementation "androidx.compose.foundation:foundation:$compose_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.material3:material3:1.0.0-alpha14"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"

@@ -1,3 +1,14 @@
-Lawnchair 12.1.0 Alpha 3 is now available. We released version 12.1.0 Alpha 2 earlier today, but we unpublished it shortly after due to a critical bug that affected it.
+Lawnchair 12.1 Alpha 4 has arrived! It has the following new features:
 
-Compared to version 12.1.0 Alpha 1, Lawnchair 12.1.0 Alpha 3 introduces backup functionality and resolves an issue where, on devices with Spanish set as the system display language, Lawnchair would crash on being opened.
+• App Gesture support
+• The option to toggle Wallpaper depth effect (Android 11+)
+• Custom color picker (thanks to <a href="https://github.com/yasandev">@yasandev</a> and <a href="https://github.com/DariaRnD">Daria Hamrah Paytakht</a>)
+• An option to select the Notification Dot color in Notification Dots (thanks to <a href="https://github.com/yasandev">@yasandev</a> and <a href="https://github.com/DariaRnD">Daria Hamrah Paytakht</a>)
+• The ability to lock Home Screen & show Lock Button in Pop-Up (thanks to <a href="https://github.com/yasandev">@yasandev</a> and <a href="https://github.com/DariaRnD">Daria Hamrah Paytakht</a>)
+• The ability to customize date & time format on At a Glance widget (thanks to <a href="https://github.com/yasandev">@yasandev</a> and <a href="https://github.com/DariaRnD">Daria Hamrah Paytakht</a>)
+• Sesame, Bing, Wikipedia & Presearch search providers for Dock (thanks to <a href="https://github.com/yasandev">@yasandev</a> and <a href="https://github.com/DariaRnD">Daria Hamrah Paytakht</a>)
+• The option to allow widget overlap (thanks to <a href="https://github.com/yasandev">@yasandev</a> and <a href="https://github.com/DariaRnD">Daria Hamrah Paytakht</a>)
+• The option to toggle enforced widget corner radius on Android 12+ (thanks to <a href="https://github.com/yasandev">@yasandev</a> and <a href="https://github.com/DariaRnD">Daria Hamrah Paytakht</a>)
+• The option to select Gregorian or Persian as the calendar system used on At a glance widget (Experimental)(thanks to <a href="https://github.com/yasandev">@yasandev</a> and <a href="https://github.com/DariaRnD">Daria Hamrah Paytakht</a>)
+
+Also included in this version are bug fixes and other improvements. Thanks go to <a href="https://github.com/dercodeling">@dercodeling</a>, <a href="https://github.com/felixonmars">Felix Yan</a>, <a  href="https://github.com/xdevs23">Simão Gomes Viana</a>, <a href="https://github.com/marshmello61">Mayur Varde</a>, <a href="https://github.com/Goooler">@Goooler</a>, and <a href="https://github.com/SuperDragonXD">@SuperDragonXD</a> for their contributions.
