@@ -117,7 +117,7 @@ if (ciBuild) {
 }
 
 def version = "12.1.0"
-def releaseName = "Beta 1"
+def releaseName = "Alpha 4"
 def versionDisplayName = "${version} ${isReleaseBuild ? releaseName : devReleaseName}"
 def majorVersion = versionDisplayName.split("\\.")[0]
 
@@ -135,7 +135,7 @@ android {
     defaultConfig {
         minSdkVersion 26
         targetSdkVersion 32
-        versionCode 12_01_00_04
+        versionCode 12_01_00_05
         versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
         buildConfigField "String", "MAJOR_VERSION", "\"${majorVersion}\""
