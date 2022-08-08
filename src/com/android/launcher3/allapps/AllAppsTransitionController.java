@@ -227,7 +227,7 @@ public class AllAppsTransitionController
     @Override
     public void setStateWithAnimation(LauncherState toState,
             StateAnimationConfig config, PendingAnimation builder) {
-        if (NORMAL.equals(toState) && mLauncher.isInState(ALL_APPS)) {
+        if (mLauncher.isInState(ALL_APPS) && !ALL_APPS.equals(toState)) {
             builder.addEndListener(success -> {
                 // Reset pull back progress and alpha after switching states.
                 ALL_APPS_PULL_BACK_TRANSLATION.set(this, 0f);
