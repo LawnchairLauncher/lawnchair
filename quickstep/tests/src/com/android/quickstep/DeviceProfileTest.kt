@@ -338,18 +338,18 @@ class DeviceProfileTest : DeviceProfileBaseTest() {
                 "\thotseatBarBottomSpacePx: 80.0px (40.0dp)\n" +
                 "\thotseatBarSidePaddingStartPx: 0.0px (0.0dp)\n" +
                 "\thotseatBarSidePaddingEndPx: 0.0px (0.0dp)\n" +
-                "\thotseatBarEndOffset: 597.0px (298.5dp)\n" +
+                "\thotseatBarEndOffset: 705.0px (352.5dp)\n" +
                 "\thotseatQsbSpace: 64.0px (32.0dp)\n" +
                 "\thotseatQsbHeight: 126.0px (63.0dp)\n" +
                 "\tspringLoadedHotseatBarTopMarginPx: 128.0px (64.0dp)\n" +
                 "\tgetHotseatLayoutPadding(context).top: -8.0px (-4.0dp)\n" +
                 "\tgetHotseatLayoutPadding(context).bottom: 73.0px (36.5dp)\n" +
-                "\tgetHotseatLayoutPadding(context).left: 959.0px (479.5dp)\n" +
-                "\tgetHotseatLayoutPadding(context).right: 597.0px (298.5dp)\n" +
-                "\tnumShownHotseatIcons: 5\n" +
-                "\thotseatBorderSpace: 101.0px (50.5dp)\n" +
+                "\tgetHotseatLayoutPadding(context).left: 954.0px (477.0dp)\n" +
+                "\tgetHotseatLayoutPadding(context).right: 705.0px (352.5dp)\n" +
+                "\tnumShownHotseatIcons: 6\n" +
+                "\thotseatBorderSpace: 36.0px (18.0dp)\n" +
                 "\tisQsbInline: true\n" +
-                "\thotseatQsbWidth: 855.0px (427.5dp)\n" +
+                "\thotseatQsbWidth: 619.0px (309.5dp)\n" +
                 "\tisTaskbarPresent:true\n" +
                 "\tisTaskbarPresentInApps:true\n" +
                 "\ttaskbarSize: 120.0px (60.0dp)\n" +
@@ -578,16 +578,16 @@ class DeviceProfileTest : DeviceProfileBaseTest() {
                 "\thotseatBarBottomSpacePx: 72.0px (36.0dp)\n" +
                 "\thotseatBarSidePaddingStartPx: 0.0px (0.0dp)\n" +
                 "\thotseatBarSidePaddingEndPx: 0.0px (0.0dp)\n" +
-                "\thotseatBarEndOffset: 460.0px (230.0dp)\n" +
+                "\thotseatBarEndOffset: 558.0px (279.0dp)\n" +
                 "\thotseatQsbSpace: 64.0px (32.0dp)\n" +
                 "\thotseatQsbHeight: 126.0px (63.0dp)\n" +
                 "\tspringLoadedHotseatBarTopMarginPx: 216.0px (108.0dp)\n" +
                 "\tgetHotseatLayoutPadding(context).top: 158.0px (79.0dp)\n" +
                 "\tgetHotseatLayoutPadding(context).bottom: 65.0px (32.5dp)\n" +
-                "\tgetHotseatLayoutPadding(context).left: 76.0px (38.0dp)\n" +
-                "\tgetHotseatLayoutPadding(context).right: 460.0px (230.0dp)\n" +
+                "\tgetHotseatLayoutPadding(context).left: 150.0px (75.0dp)\n" +
+                "\tgetHotseatLayoutPadding(context).right: 558.0px (279.0dp)\n" +
                 "\tnumShownHotseatIcons: 5\n" +
-                "\thotseatBorderSpace: 116.0px (58.0dp)\n" +
+                "\thotseatBorderSpace: 73.0px (36.5dp)\n" +
                 "\tisQsbInline: false\n" +
                 "\thotseatQsbWidth: 1300.0px (650.0dp)\n" +
                 "\tisTaskbarPresent:true\n" +
@@ -824,10 +824,10 @@ class DeviceProfileTest : DeviceProfileBaseTest() {
                 "\tspringLoadedHotseatBarTopMarginPx: 116.0px (44.190475dp)\n" +
                 "\tgetHotseatLayoutPadding(context).top: 197.0px (75.04762dp)\n" +
                 "\tgetHotseatLayoutPadding(context).bottom: 43.0px (16.380953dp)\n" +
-                "\tgetHotseatLayoutPadding(context).left: 216.0px (82.28571dp)\n" +
+                "\tgetHotseatLayoutPadding(context).left: 106.0px (40.38095dp)\n" +
                 "\tgetHotseatLayoutPadding(context).right: 744.0px (283.42856dp)\n" +
                 "\tnumShownHotseatIcons: 6\n" +
-                "\thotseatBorderSpace: 61.0px (23.238094dp)\n" +
+                "\thotseatBorderSpace: 83.0px (31.619047dp)\n" +
                 "\tisQsbInline: false\n" +
                 "\thotseatQsbWidth: 1467.0px (558.8571dp)\n" +
                 "\tisTaskbarPresent:true\n" +
@@ -1064,10 +1064,10 @@ class DeviceProfileTest : DeviceProfileBaseTest() {
                 "\tspringLoadedHotseatBarTopMarginPx: 171.0px (65.14286dp)\n" +
                 "\tgetHotseatLayoutPadding(context).top: 219.0px (83.42857dp)\n" +
                 "\tgetHotseatLayoutPadding(context).bottom: 87.0px (33.142857dp)\n" +
-                "\tgetHotseatLayoutPadding(context).left: 128.0px (48.761906dp)\n" +
+                "\tgetHotseatLayoutPadding(context).left: 78.0px (29.714285dp)\n" +
                 "\tgetHotseatLayoutPadding(context).right: 660.0px (251.42857dp)\n" +
                 "\tnumShownHotseatIcons: 6\n" +
-                "\thotseatBorderSpace: 47.0px (17.904762dp)\n" +
+                "\thotseatBorderSpace: 57.0px (21.714285dp)\n" +
                 "\tisQsbInline: false\n" +
                 "\thotseatQsbWidth: 1236.0px (470.85715dp)\n" +
                 "\tisTaskbarPresent:true\n" +

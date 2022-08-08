@@ -158,9 +158,6 @@
 
         <!-- numHotseatIcons defaults to numColumns, if not specified -->
         <attr name="numHotseatIcons" format="integer" />
-        <!-- Number of icons to use when shrinking the hotseat size,
-         defaults to numHotseatIcons / 2 -->
-        <attr name="numShrunkenHotseatIcons" format="integer" />
         <!-- Number of icons to use when extending the hotseat size,
          defaults to 2 * numHotseatIcons -->
         <attr name="numExtendedHotseatIcons" format="integer" />
@@ -327,15 +324,6 @@
         <!-- space below the cell in two panels, defaults to allAppsBorderSpaceTwoPanelLandscape
         if not specified -->
         <attr name="allAppsBorderSpaceTwoPanelLandscapeVertical" format="float" />
-
-        <!-- defaults to borderSpaceDps, if not specified -->
-        <attr name="hotseatBorderSpace" format="float" />
-        <!-- defaults to hotseatBorderSpace, if not specified -->
-        <attr name="hotseatBorderSpaceLandscape" format="float" />
-        <!-- defaults to hotseatBorderSpace, if not specified -->
-        <attr name="hotseatBorderSpaceTwoPanelLandscape" format="float" />
-        <!-- defaults to hotseatBorderSpace, if not specified -->
-        <attr name="hotseatBorderSpaceTwoPanelPortrait" format="float" />
 
         <!-- defaults to res.hotseat_bar_bottom_space_default, if not specified -->
         <attr name="hotseatBarBottomSpace" format="float" />
