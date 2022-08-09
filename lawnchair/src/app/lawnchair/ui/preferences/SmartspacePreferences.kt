@@ -124,7 +124,6 @@ fun SmartspaceDateAndTimePreferences() {
         val calendarAdapter = preferenceManager2.smartspaceCalendar.getAdapter()
         val showDateAdapter = preferenceManager2.smartspaceShowDate.getAdapter()
         val showTimeAdapter = preferenceManager2.smartspaceShowTime.getAdapter()
-        val use24HourFormatAdapter = preferenceManager2.smartspaceTimeFormat.getAdapter()
 
         val calendarHasMinimumContent = !showDateAdapter.state.value || !showTimeAdapter.state.value
 
