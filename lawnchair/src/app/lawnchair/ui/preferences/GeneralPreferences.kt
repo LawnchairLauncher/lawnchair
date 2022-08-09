@@ -29,6 +29,7 @@ import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.FontPreference
+import app.lawnchair.ui.preferences.components.IconShapePreview
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.NotificationDotsPreference
 import app.lawnchair.ui.preferences.components.PreferenceGroup
@@ -99,6 +100,9 @@ fun GeneralPreferences() {
                 label = stringResource(id = R.string.icon_shape_label),
                 destination = subRoute(name = GeneralRoutes.ICON_SHAPE),
                 subtitle = iconShapeSubtitle,
+                endWidget = {
+                    IconShapePreview(iconShape = iconShapeAdapter.state.value)
+                }
             )
             val enableFontSelection = prefs2.enableFontSelection.asState().value
             if (enableFontSelection) {
