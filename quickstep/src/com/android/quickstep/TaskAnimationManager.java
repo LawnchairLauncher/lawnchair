@@ -45,7 +45,7 @@ import com.android.systemui.shared.system.RemoteTransitionCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAnimationListener {
@@ -156,30 +156,21 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             public void onTasksAppeared(RemoteAnimationTargetCompat[] appearedTaskTargets) {
                 RemoteAnimationTargetCompat appearedTaskTarget = appearedTaskTargets[0];
                 BaseActivityInterface activityInterface = mLastGestureState.getActivityInterface();
-                // Convert appTargets to type RemoteAnimationTarget for all apps except Home app
-                final ArrayList<RemoteAnimationTargetCompat> tmpNonHomeApps = new ArrayList<>();
-                final ArrayList<RemoteAnimationTargetCompat> tmpHomeApps = new ArrayList<>();
+
                 for (RemoteAnimationTargetCompat compat : appearedTaskTargets) {
-                    if (compat.activityType != ACTIVITY_TYPE_HOME) {
-                        tmpNonHomeApps.add(compat);
-                    } else {
-                        tmpHomeApps.add(compat);
+                    if (compat.activityType == ACTIVITY_TYPE_HOME
+                            && activityInterface.getCreatedActivity() instanceof RecentsActivity) {
+                        // When receive opening home activity while recents is running, enter home
+                        // and dismiss recents.
+                        ((RecentsActivity) activityInterface.getCreatedActivity()).startHome();
+                        return;
                     }
                 }
-                RemoteAnimationTarget[] nonHomeApps = tmpNonHomeApps.stream()
-                        .map(RemoteAnimationTargetCompat::unwrap)
-                        .toArray(RemoteAnimationTarget[]::new);
-                RemoteAnimationTarget[] homeApps = tmpHomeApps.stream()
-                        .map(RemoteAnimationTargetCompat::unwrap)
-                        .toArray(RemoteAnimationTarget[]::new);
-                if (homeApps.length > 0
-                        && activityInterface.getCreatedActivity() instanceof RecentsActivity) {
-                    ((RecentsActivity) activityInterface.getCreatedActivity()).startHome();
-                    return;
-                }
 
-                RemoteAnimationTarget[] nonAppTargets =
-                        SystemUiProxy.INSTANCE.getNoCreate().onStartingSplitLegacy(nonHomeApps);
+                RemoteAnimationTarget[] nonAppTargets = SystemUiProxy.INSTANCE.getNoCreate()
+                        .onStartingSplitLegacy(Arrays.stream(appearedTaskTargets)
+                                .map(RemoteAnimationTargetCompat::unwrap)
+                                .toArray(RemoteAnimationTarget[]::new));
 
                 if (ENABLE_QUICKSTEP_LIVE_TILE.get() && activityInterface.isInLiveTileMode()
                         && activityInterface.getCreatedActivity() != null) {

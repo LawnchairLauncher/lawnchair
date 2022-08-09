@@ -59,7 +59,6 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"खोजसम्बन्धी एपहरू"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"एपहरू लोड गर्दै…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" सँग मिल्दो कुनै एप भेटिएन"</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"थप एपहरू खोज्नुहोस्"</string>
     <string name="label_application" msgid="8531721983832654978">"एप"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"सबै एप"</string>
     <string name="notifications_header" msgid="1404149926117359025">"सूचनाहरू"</string>
