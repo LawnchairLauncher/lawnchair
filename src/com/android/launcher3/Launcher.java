@@ -1505,7 +1505,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                 root.getViewTreeObserver().removeOnDrawListener(mViewCapture);
             }
             mViewCapture = new ViewCapture(root);
-            root.getViewTreeObserver().addOnDrawListener(mViewCapture);
+            mViewCapture.attach();
         }
     }
 
