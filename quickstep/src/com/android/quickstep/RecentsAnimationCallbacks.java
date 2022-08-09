@@ -16,7 +16,6 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
 
 import android.graphics.Rect;
 import android.util.ArraySet;
@@ -97,18 +96,6 @@ public class RecentsAnimationCallbacks implements
             RemoteAnimationTargetCompat[] appTargets,
             RemoteAnimationTargetCompat[] wallpaperTargets,
             Rect homeContentInsets, Rect minimizedHomeBounds) {
-        // Convert appTargets to type RemoteAnimationTarget for all apps except Home app
-        RemoteAnimationTarget[] nonHomeApps = Arrays.stream(appTargets)
-                .filter(remoteAnimationTarget ->
-                        remoteAnimationTarget.activityType != ACTIVITY_TYPE_HOME)
-                .map(RemoteAnimationTargetCompat::unwrap)
-                .toArray(RemoteAnimationTarget[]::new);
-
-        RemoteAnimationTarget[] nonAppTargets = mSystemUiProxy.onGoingToRecentsLegacy(nonHomeApps);
-
-        RecentsAnimationTargets targets = new RecentsAnimationTargets(appTargets,
-                wallpaperTargets, RemoteAnimationTargetCompat.wrap(nonAppTargets),
-                homeContentInsets, minimizedHomeBounds);
         mController = new RecentsAnimationController(animationController,
                 mAllowMinimizeSplitScreen, this::onAnimationFinished);
 
@@ -116,6 +103,13 @@ public class RecentsAnimationCallbacks implements
             Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(),
                     mController::finishAnimationToApp);
         } else {
+            final RemoteAnimationTarget[] nonAppTargets = mSystemUiProxy.onGoingToRecentsLegacy(
+                    Arrays.stream(appTargets).map(RemoteAnimationTargetCompat::unwrap)
+                            .toArray(RemoteAnimationTarget[]::new));
+            final RecentsAnimationTargets targets = new RecentsAnimationTargets(appTargets,
+                    wallpaperTargets, RemoteAnimationTargetCompat.wrap(nonAppTargets),
+                    homeContentInsets, minimizedHomeBounds);
+
             Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
                 for (RecentsAnimationListener listener : getListeners()) {
                     listener.onRecentsAnimationStart(mController, targets);

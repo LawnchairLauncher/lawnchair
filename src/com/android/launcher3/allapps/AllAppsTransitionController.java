@@ -232,7 +232,15 @@ public class AllAppsTransitionController
                 // Reset pull back progress and alpha after switching states.
                 ALL_APPS_PULL_BACK_TRANSLATION.set(this, 0f);
                 ALL_APPS_PULL_BACK_ALPHA.set(this, 1f);
-                mLauncher.getAppsView().getSearchUiManager().getEditText().hideKeyboard();
+
+                // We only want to close the keyboard if the animation has completed successfully.
+                // The reason is that with keyboard sync, if the user swipes down from All Apps with
+                // the keyboard open and then changes their mind and swipes back up, we want the
+                // keyboard to remain open. However an onCancel signal is sent to the listeners
+                // (success = false), so we need to check for that.
+                if (success) {
+                    mLauncher.getAppsView().getSearchUiManager().getEditText().hideKeyboard();
+                }
             });
         }
 
