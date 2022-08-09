@@ -157,6 +157,7 @@
 
     <item name="swipe_up_rect_scale_damping_ratio" type="dimen" format="float">0.75</item>
     <item name="swipe_up_rect_scale_stiffness" type="dimen" format="float">200</item>
+    <item name="swipe_up_rect_scale_higher_stiffness" type="dimen" format="float">400</item>
 
     <item name="swipe_up_rect_xy_fling_friction" type="dimen" format="float">1.5</item>
 
