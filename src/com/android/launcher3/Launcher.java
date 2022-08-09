@@ -615,14 +615,18 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        int diff = newConfig.diff(mOldConfig);
-        if ((diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0) {
+    public void handleConfigurationChanged(Configuration newConfig) {
+        if (compareConfiguration(mOldConfig, newConfig)) {
             onIdpChanged(false);
         }
 
         mOldConfig.setTo(newConfig);
-        super.onConfigurationChanged(newConfig);
+        super.handleConfigurationChanged(newConfig);
+    }
+
+    protected boolean compareConfiguration(Configuration oldConfig, Configuration newConfig) {
+        int diff = newConfig.diff(oldConfig);
+        return (diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0;
     }
 
     /**

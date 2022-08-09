@@ -55,6 +55,8 @@ public class LauncherRootView extends InsettableFrameLayout {
 
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
+        mActivity.handleConfigurationChanged(mActivity.getResources().getConfiguration());
+
         insets = WindowManagerProxy.INSTANCE.get(getContext())
                 .normalizeWindowInsets(getContext(), insets, mTempRect);
         handleSystemWindowInsets(mTempRect);
