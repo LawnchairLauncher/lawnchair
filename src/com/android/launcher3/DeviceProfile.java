@@ -144,7 +144,6 @@ public class DeviceProfile {
 
     // Folder content
     public Point folderCellLayoutBorderSpacePx;
-    public int folderCellLayoutBorderSpaceOriginalPx;
     public int folderContentPaddingLeftRight;
     public int folderContentPaddingTop;
 
@@ -321,9 +320,8 @@ public class DeviceProfile {
                 pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].x, mMetrics),
                 pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].y, mMetrics));
         cellLayoutBorderSpaceOriginalPx = new Point(cellLayoutBorderSpacePx);
-        folderCellLayoutBorderSpaceOriginalPx = pxFromDp(inv.folderBorderSpace, mMetrics);
-        folderCellLayoutBorderSpacePx = new Point(folderCellLayoutBorderSpaceOriginalPx,
-                folderCellLayoutBorderSpaceOriginalPx);
+        folderCellLayoutBorderSpacePx = new Point(pxFromDp(inv.folderBorderSpaces.x, mMetrics),
+                pxFromDp(inv.folderBorderSpaces.y, mMetrics));
 
         workspacePageIndicatorHeight = res.getDimensionPixelSize(
                 R.dimen.workspace_page_indicator_height);
@@ -919,16 +917,14 @@ public class DeviceProfile {
         int textHeight = Utilities.calculateTextHeight(folderChildTextSizePx);
 
         if (isScalableGrid) {
-            int minWidth = folderChildIconSizePx + iconDrawablePaddingPx * 2;
-            int minHeight = folderChildIconSizePx + iconDrawablePaddingPx * 2 + textHeight;
+            folderCellWidthPx = pxFromDp(inv.folderCellSize.x, mMetrics, scale);
+            folderCellHeightPx = pxFromDp(inv.folderCellSize.y, mMetrics, scale);
 
-            folderCellWidthPx = (int) Math.max(minWidth, cellWidthPx * scale);
-            folderCellHeightPx = (int) Math.max(minHeight, cellHeightPx * scale);
-
-            int scaledSpace = (int) (folderCellLayoutBorderSpaceOriginalPx * scale);
-            folderCellLayoutBorderSpacePx = new Point(scaledSpace, scaledSpace);
-            folderContentPaddingLeftRight = scaledSpace;
-            folderContentPaddingTop = scaledSpace;
+            folderCellLayoutBorderSpacePx = new Point(
+                    pxFromDp(inv.folderBorderSpaces.x, mMetrics, scale),
+                    pxFromDp(inv.folderBorderSpaces.y, mMetrics, scale));
+            folderContentPaddingLeftRight = folderCellLayoutBorderSpacePx.x;
+            folderContentPaddingTop = pxFromDp(inv.folderTopPadding, mMetrics, scale);
         } else {
             int cellPaddingX = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_x_padding)
                     * scale);
@@ -1391,12 +1387,13 @@ public class DeviceProfile {
         writer.println(prefix + pxToDpStr("folderChildTextSizePx", folderChildTextSizePx));
         writer.println(prefix + pxToDpStr("folderChildDrawablePaddingPx",
                 folderChildDrawablePaddingPx));
-        writer.println(prefix + pxToDpStr("folderCellLayoutBorderSpaceOriginalPx",
-                folderCellLayoutBorderSpaceOriginalPx));
         writer.println(prefix + pxToDpStr("folderCellLayoutBorderSpacePx Horizontal",
                 folderCellLayoutBorderSpacePx.x));
         writer.println(prefix + pxToDpStr("folderCellLayoutBorderSpacePx Vertical",
                 folderCellLayoutBorderSpacePx.y));
+        writer.println(prefix + pxToDpStr("folderContentPaddingLeftRight",
+                folderContentPaddingLeftRight));
+        writer.println(prefix + pxToDpStr("folderTopPadding", folderContentPaddingTop));
 
         writer.println(prefix + pxToDpStr("bottomSheetTopPadding", bottomSheetTopPadding));
 
