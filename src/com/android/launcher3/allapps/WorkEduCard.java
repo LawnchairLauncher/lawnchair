@@ -72,8 +72,6 @@ public class WorkEduCard extends FrameLayout implements
     protected void onFinishInflate() {
         super.onFinishInflate();
         findViewById(R.id.action_btn).setOnClickListener(this);
-        MarginLayoutParams lp = ((MarginLayoutParams) findViewById(R.id.wrapper).getLayoutParams());
-        lp.width = mActivityContext.getAppsView().getFloatingHeaderView().getTabWidth();
     }
 
     @Override
