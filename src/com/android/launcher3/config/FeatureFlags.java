@@ -297,6 +297,11 @@ public final class FeatureFlags {
             "SECONDARY_DRAG_N_DROP_TO_PIN", false,
             "Enable dragging and dropping to pin apps within secondary display");
 
+    // TODO(b/241843710): Deep Shortcut Icons can be rendered, but do not persist.
+    public static final BooleanFlag ENABLE_SECONDARY_DEEP_SHORTCUTS = getDebugFlag(
+            "ENABLE_SECONDARY_DEEP_SHORTCUTS", false,
+            "Enable deep shortcut pinning within secondary display");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
