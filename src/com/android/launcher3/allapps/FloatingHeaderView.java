@@ -30,7 +30,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.BaseAllAppsContainerView.AdapterHolder;
@@ -156,22 +155,6 @@ public class FloatingHeaderView extends LinearLayout implements
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         PluginManagerWrapper.INSTANCE.get(getContext()).removePluginListener(this);
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        mTabLayout.getLayoutParams().width = getTabWidth();
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
-    /**
-     * Returns distance between left and right app icons
-     */
-    public int getTabWidth() {
-        DeviceProfile grid = ActivityContext.lookupContext(getContext()).getDeviceProfile();
-        int totalWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
-        int iconPadding = totalWidth / grid.numShownAllAppsColumns - grid.allAppsIconSizePx;
-        return totalWidth - iconPadding - grid.allAppsIconDrawablePaddingPx;
     }
 
     private void recreateAllRowsArray() {
@@ -423,15 +406,6 @@ public class FloatingHeaderView extends LinearLayout implements
         p.y = getTop() - mCurrentRV.getTop() - ((ViewGroup) mCurrentRV.getParent()).getTop();
     }
 
-    public boolean hasVisibleContent() {
-        for (FloatingHeaderRow row : mAllRows) {
-            if (row.hasVisibleContent()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public boolean isHeaderProtectionSupported() {
         return mHeaderProtectionSupported;
     }
@@ -443,10 +417,9 @@ public class FloatingHeaderView extends LinearLayout implements
 
     @Override
     public void setInsets(Rect insets) {
-        DeviceProfile grid = ActivityContext.lookupContext(getContext()).getDeviceProfile();
-        for (FloatingHeaderRow row : mAllRows) {
-            row.setInsets(insets, grid);
-        }
+        int leftRightPadding = ActivityContext.lookupContext(getContext())
+                .getDeviceProfile().allAppsLeftRightPadding;
+        setPadding(leftRightPadding, getPaddingTop(), leftRightPadding, getPaddingBottom());
     }
 
     public <T extends FloatingHeaderRow> T findFixedRowByType(Class<T> type) {
