@@ -270,6 +270,18 @@ public class TouchInteractionService extends Service
             MAIN_EXECUTOR.execute(ProxyScreenStatusProvider.INSTANCE::onScreenTurnedOn);
         }
 
+        @BinderThread
+        @Override
+        public void onScreenTurningOn() {
+            MAIN_EXECUTOR.execute(ProxyScreenStatusProvider.INSTANCE::onScreenTurningOn);
+        }
+
+        @BinderThread
+        @Override
+        public void onScreenTurningOff() {
+            MAIN_EXECUTOR.execute(ProxyScreenStatusProvider.INSTANCE::onScreenTurningOff);
+        }
+
         /**
          * Preloads the Overview activity.
          *

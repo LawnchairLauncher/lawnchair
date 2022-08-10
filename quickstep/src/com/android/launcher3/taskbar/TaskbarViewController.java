@@ -71,7 +71,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     public static final int ALPHA_INDEX_NOTIFICATION_EXPANDED = 4;
     public static final int ALPHA_INDEX_ASSISTANT_INVOKED = 5;
     public static final int ALPHA_INDEX_IME_BUTTON_NAV = 6;
-    private static final int NUM_ALPHA_CHANNELS = 7;
+    public static final int ALPHA_INDEX_SMALL_SCREEN = 7;
+    private static final int NUM_ALPHA_CHANNELS = 8;
 
     private final TaskbarActivityContext mActivity;
     private final TaskbarView mTaskbarView;
@@ -390,7 +391,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                 "ALPHA_INDEX_RECENTS_DISABLED",
                 "ALPHA_INDEX_NOTIFICATION_EXPANDED",
                 "ALPHA_INDEX_ASSISTANT_INVOKED",
-                "ALPHA_INDEX_IME_BUTTON_NAV");
+                "ALPHA_INDEX_IME_BUTTON_NAV",
+                "ALPHA_INDEX_SMALL_SCREEN");
 
         mModelCallbacks.dumpLogs(prefix + "\t", pw);
     }
