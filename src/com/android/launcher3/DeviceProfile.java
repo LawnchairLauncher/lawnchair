@@ -399,7 +399,7 @@ public class DeviceProfile {
         // Add a bit of space between nav bar and hotseat in vertical bar layout.
         hotseatBarSidePaddingStartPx = isVerticalBarLayout() ? workspacePageIndicatorHeight : 0;
         updateHotseatSizes(pxFromDp(inv.iconSize[INDEX_DEFAULT], mMetrics));
-        if (areNavButtonsInline) {
+        if (areNavButtonsInline && !isPhone) {
             /*
              * 3 nav buttons +
              * Spacing between nav buttons +
