@@ -15,6 +15,9 @@
  */
 package com.android.launcher3;
 
+import static android.app.WindowConfiguration.WINDOW_CONFIG_ROTATION;
+import static android.content.pm.ActivityInfo.CONFIG_WINDOW_CONFIGURATION;
+
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.FLAG_HIDE_BACK_BUTTON;
@@ -43,6 +46,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.res.Configuration;
 import android.hardware.SensorManager;
 import android.hardware.devicestate.DeviceStateManager;
 import android.os.Bundle;
@@ -647,6 +651,20 @@ public abstract class BaseQuickstepLauncher extends Launcher {
                 mActionsView.updateVerticalMargin(info.navigationMode);
             }
         }
+    }
+
+    @Override
+    protected boolean compareConfiguration(Configuration oldConfig, Configuration newConfig) {
+        int diff = newConfig.diff(oldConfig);
+        if ((diff & CONFIG_WINDOW_CONFIGURATION) != 0) {
+            long windowDiff =
+                    newConfig.windowConfiguration.diff(oldConfig.windowConfiguration, false);
+            if ((windowDiff & WINDOW_CONFIG_ROTATION) != 0) {
+                return true;
+            }
+        }
+
+        return super.compareConfiguration(oldConfig, newConfig);
     }
 
     @Override
