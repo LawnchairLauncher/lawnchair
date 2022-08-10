@@ -18,8 +18,6 @@ package com.android.launcher3;
 
 import static android.app.PendingIntent.FLAG_IMMUTABLE;
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
-import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
-import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
 import static android.content.pm.ActivityInfo.CONFIG_UI_MODE;
 import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
@@ -310,8 +308,6 @@ public class Launcher extends StatefulActivity<LauncherState>
     private static final FloatProperty<Hotseat> HOTSEAT_WIDGET_SCALE =
             HOTSEAT_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_WIDGET_TRANSITION);
 
-    private Configuration mOldConfig;
-
     @Thunk
     Workspace<?> mWorkspace;
     @Thunk
@@ -466,7 +462,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         super.onCreate(savedInstanceState);
 
         LauncherAppState app = LauncherAppState.getInstance(this);
-        mOldConfig = new Configuration(getResources().getConfiguration());
         mModel = app.getModel();
 
         mRotationHelper = new RotationHelper(this);
@@ -614,21 +609,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         dispatchDeviceProfileChanged();
     }
 
-    @Override
-    public void handleConfigurationChanged(Configuration newConfig) {
-        if (compareConfiguration(mOldConfig, newConfig)) {
-            onIdpChanged(false);
-        }
-
-        mOldConfig.setTo(newConfig);
-        super.handleConfigurationChanged(newConfig);
-    }
-
-    protected boolean compareConfiguration(Configuration oldConfig, Configuration newConfig) {
-        int diff = newConfig.diff(oldConfig);
-        return (diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0;
-    }
-
     /**
      * Initializes the drag controller.
      */
@@ -638,6 +618,11 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     public void onIdpChanged(boolean modelPropertiesChanged) {
+        onHandleConfigurationChanged();
+    }
+
+    @Override
+    protected void onHandleConfigurationChanged() {
         if (!initDeviceProfile(mDeviceProfile.inv)) {
             return;
         }
