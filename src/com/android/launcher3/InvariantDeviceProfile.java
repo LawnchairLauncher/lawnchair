@@ -1004,7 +1004,9 @@ public class InvariantDeviceProfile {
 
             allAppsIconSizes[INDEX_DEFAULT] = a.getFloat(
                     R.styleable.ProfileDisplayOption_allAppsIconSize, iconSizes[INDEX_DEFAULT]);
-            allAppsIconSizes[INDEX_LANDSCAPE] = allAppsIconSizes[INDEX_DEFAULT];
+            allAppsIconSizes[INDEX_LANDSCAPE] = a.getFloat(
+                    R.styleable.ProfileDisplayOption_allAppsIconSizeLandscape,
+                    iconSizes[INDEX_DEFAULT]);
             allAppsIconSizes[INDEX_TWO_PANEL_PORTRAIT] = a.getFloat(
                     R.styleable.ProfileDisplayOption_allAppsIconSizeTwoPanelPortrait,
                     allAppsIconSizes[INDEX_DEFAULT]);
