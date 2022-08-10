@@ -1,3 +1,17 @@
+// https://docs.gradle.com/enterprise/gradle-plugin/
+plugins {
+    id "com.gradle.enterprise" version "3.10.3"
+}
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+        publishAlwaysIf(System.getenv("GITHUB_ACTIONS") == "true")
+        publishOnFailure()
+    }
+}
+
 include ':iconloaderlib'
 project(':iconloaderlib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/iconloaderlib')
 

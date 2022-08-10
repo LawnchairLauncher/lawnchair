@@ -4,11 +4,12 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk COMPILE_SDK
+    namespace "app.lawnchair.compatlib"
 
     defaultConfig {
-        minSdk 26
-        targetSdk 31
+        minSdk MIN_SDK
+        targetSdk TARGET_SDK
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"

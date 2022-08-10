@@ -5,11 +5,11 @@ plugins {
 
 android {
     namespace 'app.lawnchair.hidden_api'
-    compileSdk 32
+    compileSdk COMPILE_SDK
 
     defaultConfig {
-        minSdk 26
-        targetSdk 32
+        minSdk MIN_SDK
+        targetSdk TARGET_SDK
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
