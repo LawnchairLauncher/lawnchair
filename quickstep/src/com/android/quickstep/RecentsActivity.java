@@ -15,8 +15,10 @@
  */
 package com.android.quickstep;
 
+import static android.app.WindowConfiguration.WINDOW_CONFIG_ROTATION;
 import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
 import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
+import static android.content.pm.ActivityInfo.CONFIG_WINDOW_CONFIGURATION;
 
 import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.QuickstepTransitionManager.STATUS_BAR_TRANSITION_DURATION;
@@ -348,13 +350,23 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        int diff = newConfig.diff(mOldConfig);
-        if ((diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0) {
+    public void handleConfigurationChanged(Configuration newConfig) {
+        if (compareConfiguration(mOldConfig, newConfig)) {
             onHandleConfigChanged();
         }
         mOldConfig.setTo(newConfig);
-        super.onConfigurationChanged(newConfig);
+        super.handleConfigurationChanged(newConfig);
+    }
+
+    private boolean compareConfiguration(Configuration oldConfig, Configuration newConfig) {
+        int diff = newConfig.diff(oldConfig);
+        if ((diff & CONFIG_WINDOW_CONFIGURATION) != 0) {
+            long windowDiff =
+                    newConfig.windowConfiguration.diff(oldConfig.windowConfiguration, false);
+            return (windowDiff & WINDOW_CONFIG_ROTATION) != 0;
+        }
+
+        return (diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0;
     }
 
     @Override
