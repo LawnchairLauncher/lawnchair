@@ -6,7 +6,7 @@ buildscript {
         TARGET_SDK = 32
         MIN_SDK = 26
         kotlin_version = "1.7.10"
-        compose_version = "1.2.0"
+        compose_version = "1.2.1"
         compose_compiler_version = "1.3.0"
         accompanist_version = '0.25.0'
         libsu_version = '5.0.2'
@@ -320,7 +320,7 @@ dependencies {
     final def FRAMEWORK_PREBUILTS_DIR = "prebuilts"
 
     implementation "androidx.dynamicanimation:dynamicanimation:1.0.0"
-    implementation "androidx.recyclerview:recyclerview:1.2.0"
+    implementation "androidx.recyclerview:recyclerview:1.2.1"
     implementation "androidx.preference:preference-ktx:1.2.0"
     implementation project(':iconloaderlib')
     implementation project(':searchuilib')
