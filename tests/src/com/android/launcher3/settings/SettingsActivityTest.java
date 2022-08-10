@@ -79,7 +79,7 @@ public class SettingsActivityTest {
     @Ignore  // b/199309785
     public void testSettings_aboutTap_launchesActivity() {
         ActivityScenario.launch(SettingsActivity.class);
-        onView(withId(R.id.recycler_view)).perform(
+        onView(withId(androidx.preference.R.id.recycler_view)).perform(
                 actionOnItem(hasDescendant(withText("About")), click()));
 
         intended(allOf(
@@ -94,7 +94,7 @@ public class SettingsActivityTest {
     public void testSettings_developerOptionsTap_launchesActivityWithFragment() {
         PluginPrefs.setHasPlugins(mApplicationContext);
         ActivityScenario.launch(SettingsActivity.class);
-        onView(withId(R.id.recycler_view)).perform(
+        onView(withId(androidx.preference.R.id.recycler_view)).perform(
                 actionOnItem(hasDescendant(withText("Developer Options")), click()));
 
         intended(allOf(
