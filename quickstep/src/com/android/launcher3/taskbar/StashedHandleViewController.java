@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.taskbar;
 
-import static com.android.launcher3.taskbar.TaskbarManager.isPhoneMode;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
@@ -96,7 +94,7 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
         mControllers = controllers;
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
         Resources resources = mActivity.getResources();
-        if (isPhoneMode(mActivity.getDeviceProfile())) {
+        if (isPhoneGestureNavMode(mActivity.getDeviceProfile())) {
             mStashedHandleView.getLayoutParams().height =
                     resources.getDimensionPixelSize(R.dimen.taskbar_size);
             mStashedHandleWidth =
@@ -108,7 +106,7 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
         }
 
         mTaskbarStashedHandleAlpha.getProperty(ALPHA_INDEX_STASHED).setValue(
-                isPhoneMode(deviceProfile) ? 1 : 0);
+                isPhoneGestureNavMode(deviceProfile) ? 1 : 0);
         mTaskbarStashedHandleHintScale.updateValue(1f);
 
         final int stashedTaskbarHeight = mControllers.taskbarStashController.getStashedHeight();
@@ -136,7 +134,7 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
             view.setPivotY(stashedCenterY);
         });
         initRegionSampler();
-        if (isPhoneMode(deviceProfile)) {
+        if (isPhoneGestureNavMode(deviceProfile)) {
             onIsStashedChanged(true);
         }
     }
@@ -162,6 +160,10 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
     public void onDestroy() {
         mRegionSamplingHelper.stopAndDestroy();
         mRegionSamplingHelper = null;
+    }
+
+    private boolean isPhoneGestureNavMode(DeviceProfile deviceProfile) {
+        return TaskbarManager.isPhoneMode(deviceProfile) && !mActivity.isThreeButtonNav();
     }
 
     public MultiValueAlpha getStashedHandleAlpha() {
