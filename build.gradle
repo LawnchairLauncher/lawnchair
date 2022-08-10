@@ -49,9 +49,6 @@ allprojects {
             tasks.withType(JavaCompile) {
                 options.bootstrapClasspath = files([frameworkJar] + (options.bootstrapClasspath.files as Iterable<File>))
             }
-            tasks.withType(org.jetbrains.kotlin.gradle.internal.KaptWithoutKotlincTask) {
-                it.classpath.from(files([frameworkJar]))
-            }
             tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
                 it.classpath.from(files([frameworkJar]))
             }
