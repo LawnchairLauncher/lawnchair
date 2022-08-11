@@ -281,6 +281,8 @@
         <!-- defaults to iconImageSize, if not specified -->
         <attr name="allAppsIconSize" format="float" />
         <!-- defaults to allAppsIconSize, if not specified -->
+        <attr name="allAppsIconSizeLandscape" format="float" />
+        <!-- defaults to allAppsIconSize, if not specified -->
         <attr name="allAppsIconSizeTwoPanelPortrait" format="float" />
         <!-- defaults to allAppsIconSize, if not specified -->
         <attr name="allAppsIconSizeTwoPanelLandscape" format="float" />

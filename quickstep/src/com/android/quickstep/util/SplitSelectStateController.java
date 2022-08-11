@@ -242,8 +242,9 @@ public class SplitSelectStateController {
         @Override
         public void startAnimation(@NonNull IBinder transition, @NonNull TransitionInfo info,
                 @NonNull SurfaceControl.Transaction t, @NonNull Runnable finishCallback) {
-            TaskViewUtils.composeRecentsSplitLaunchAnimator(mInitialTaskId,
-                    mInitialTaskPendingIntent, mSecondTaskId, info, t, () -> {
+            TaskViewUtils.composeRecentsSplitLaunchAnimator(mLaunchingTaskView, mStateManager,
+                    mDepthController, mInitialTaskId, mInitialTaskPendingIntent, mSecondTaskId,
+                    info, t, () -> {
                     finishCallback.run();
                     if (mSuccessCallback != null) {
                         mSuccessCallback.accept(true);
