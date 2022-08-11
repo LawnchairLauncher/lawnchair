@@ -119,7 +119,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     // The size we should return to when we call setTaskbarWindowFullscreen(false)
     private int mLastRequestedNonFullscreenHeight;
 
-    private final NavigationMode mNavMode;
+    private NavigationMode mNavMode;
     private final boolean mImeDrawsImeNavBar;
     private final ViewCache mViewCache = new ViewCache();
 
@@ -235,7 +235,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     /** Updates {@link DeviceProfile} instances for any Taskbar windows. */
-    public void updateDeviceProfile(DeviceProfile dp) {
+    public void updateDeviceProfile(DeviceProfile dp, NavigationMode navMode) {
+        mNavMode = navMode;
         mControllers.taskbarAllAppsController.updateDeviceProfile(dp);
         mDeviceProfile = dp.copy(this);
         updateIconSize(getResources());
@@ -608,7 +609,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      */
     public int getDefaultTaskbarWindowHeight() {
         if (FLAG_HIDE_NAVBAR_WINDOW && mDeviceProfile.isPhone) {
-            return getResources().getDimensionPixelSize(R.dimen.taskbar_stashed_size);
+            Resources resources = getResources();
+            return isThreeButtonNav() ?
+                    resources.getDimensionPixelSize(R.dimen.taskbar_size) :
+                    resources.getDimensionPixelSize(R.dimen.taskbar_stashed_size);
         }
         return mDeviceProfile.taskbarSize + Math.max(getLeftCornerRadius(), getRightCornerRadius());
     }

@@ -277,6 +277,7 @@
 
     <!--  Taskbar 3 button spacing  -->
     <dimen name="taskbar_button_space_inbetween">24dp</dimen>
+    <dimen name="taskbar_button_space_inbetween_phone">40dp</dimen>
     <dimen name="taskbar_button_margin_5_5">26dp</dimen>
     <dimen name="taskbar_button_margin_6_5">75dp</dimen>
     <dimen name="taskbar_button_margin_4_5">47dp</dimen>

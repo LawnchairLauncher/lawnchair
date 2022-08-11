@@ -265,6 +265,11 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_ONE_SEARCH_MOTION = new DeviceFlag(
             "ENABLE_ONE_SEARCH_MOTION", true, "Enables animations in OneSearch.");
 
+    public static final BooleanFlag ENABLE_KEYBOARD_TRANSITION_SYNC = new DeviceFlag(
+            "ENABLE_KEYBOARD_TRANSITION_SYNC", false,
+            "Enable option to synchronize the keyboard open and close animations when transitioning"
+                    + " between home and all apps");
+
     public static final BooleanFlag ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS = new DeviceFlag(
             "ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS", true,
             "Enable option to show keyboard when going to all-apps");

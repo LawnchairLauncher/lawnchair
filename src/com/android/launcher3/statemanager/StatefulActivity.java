@@ -18,6 +18,7 @@ package com.android.launcher3.statemanager;
 import static com.android.launcher3.LauncherState.FLAG_CLOSE_POPUPS;
 import static com.android.launcher3.LauncherState.FLAG_NON_INTERACTIVE;
 
+import android.content.res.Configuration;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -186,4 +187,16 @@ public abstract class StatefulActivity<STATE_TYPE extends BaseState<STATE_TYPE>>
     public void runOnBindToTouchInteractionService(Runnable r) {
         r.run();
     }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        handleConfigurationChanged(newConfig);
+        super.onConfigurationChanged(newConfig);
+    }
+
+    /**
+     * Handles configuration change when system calls {@link #onConfigurationChanged}, or on other
+     * situations that configuration might change.
+     */
+    public void handleConfigurationChanged(Configuration newConfig) {}
 }
