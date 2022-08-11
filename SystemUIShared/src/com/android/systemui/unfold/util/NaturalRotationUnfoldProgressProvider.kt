@@ -28,12 +28,12 @@ class NaturalRotationUnfoldProgressProvider(
 
     fun init() {
         try {
-            windowManagerInterface.watchRotation(rotationWatcher, context.display.displayId)
+            windowManagerInterface.watchRotation(rotationWatcher, context.display!!.displayId)
         } catch (e: RemoteException) {
             throw e.rethrowFromSystemServer()
         }
 
-        onRotationChanged(context.display.rotation)
+        onRotationChanged(context.display!!.rotation)
     }
 
     private fun onRotationChanged(rotation: Int) {
