@@ -389,10 +389,39 @@ public final class TaskViewUtils {
      * device is considered in multiWindowMode and things like insets and stuff change
      * and calculations have to be adjusted in the animations for that
      */
-    public static void composeRecentsSplitLaunchAnimator(int initialTaskId,
-            @Nullable PendingIntent initialTaskPendingIntent, int secondTaskId,
+    public static void composeRecentsSplitLaunchAnimator(GroupedTaskView launchingTaskView,
+            @NonNull StateManager stateManager, @Nullable DepthController depthController,
+            int initialTaskId, @Nullable PendingIntent initialTaskPendingIntent, int secondTaskId,
             @NonNull TransitionInfo transitionInfo, SurfaceControl.Transaction t,
             @NonNull Runnable finishCallback) {
+        if (launchingTaskView != null) {
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    finishCallback.run();
+                }
+            });
+
+            final RemoteAnimationTargetCompat[] appTargets =
+                    RemoteAnimationTargetCompat.wrapApps(transitionInfo, t, null /* leashMap */);
+            final RemoteAnimationTargetCompat[] wallpaperTargets =
+                    RemoteAnimationTargetCompat.wrapNonApps(
+                            transitionInfo, true /* wallpapers */, t, null /* leashMap */);
+            final RemoteAnimationTargetCompat[] nonAppTargets =
+                    RemoteAnimationTargetCompat.wrapNonApps(
+                            transitionInfo, false /* wallpapers */, t, null /* leashMap */);
+            final RecentsView recentsView = launchingTaskView.getRecentsView();
+            composeRecentsLaunchAnimator(animatorSet, launchingTaskView,
+                    appTargets, wallpaperTargets, nonAppTargets,
+                    true, stateManager,
+                    recentsView, depthController);
+
+            t.apply();
+            animatorSet.start();
+            return;
+        }
+
         // TODO: consider initialTaskPendingIntent
         TransitionInfo.Change splitRoot1 = null;
         TransitionInfo.Change splitRoot2 = null;
@@ -657,6 +686,7 @@ public final class TaskViewUtils {
             public void onAnimationStart(Animator animation) {
                 if (shown) {
                     for (SurfaceControl leash : auxiliarySurfaces) {
+                        t.setLayer(leash, Integer.MAX_VALUE);
                         t.setAlpha(leash, 0);
                         t.show(leash);
                     }
