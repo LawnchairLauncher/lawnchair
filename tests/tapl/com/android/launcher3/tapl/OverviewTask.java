@@ -182,6 +182,6 @@ public final class OverviewTask {
     }
 
     boolean isTaskSplit() {
-        return mTask.hasObject(By.res("bottomright_snapshot"));
+        return mLauncher.findObjectInContainer(mTask.getParent(), "bottomright_snapshot") != null;
     }
 }
