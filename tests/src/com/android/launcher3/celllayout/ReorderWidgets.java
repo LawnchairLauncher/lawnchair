@@ -38,6 +38,7 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.ui.TestViewHelpers;
+import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
@@ -173,22 +174,26 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
         runTestCase(testCaseMap.get(iconGridDimensions));
     }
 
+    @ScreenRecord // b/242323136
     @Test
     public void simpleReorder() {
         runTestCaseMap(SimpleReorderCase.TEST_BY_GRID_SIZE,
                 SimpleReorderCase.class.getSimpleName());
     }
 
+    @ScreenRecord // b/242323136
     @Test
     public void pushTest() {
         runTestCaseMap(PushReorderCase.TEST_BY_GRID_SIZE, PushReorderCase.class.getSimpleName());
     }
 
+    @ScreenRecord // b/242323136
     @Test
     public void fullReorder() {
         runTestCaseMap(FullReorderCase.TEST_BY_GRID_SIZE, FullReorderCase.class.getSimpleName());
     }
 
+    @ScreenRecord // b/242323136
     @Test
     public void moveOutReorder() {
         runTestCaseMap(MoveOutReorderCase.TEST_BY_GRID_SIZE,
