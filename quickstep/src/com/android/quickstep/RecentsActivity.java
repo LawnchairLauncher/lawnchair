@@ -15,11 +15,6 @@
  */
 package com.android.quickstep;
 
-import static android.app.WindowConfiguration.WINDOW_CONFIG_ROTATION;
-import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
-import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
-import static android.content.pm.ActivityInfo.CONFIG_WINDOW_CONFIGURATION;
-
 import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.QuickstepTransitionManager.STATUS_BAR_TRANSITION_DURATION;
 import static com.android.launcher3.QuickstepTransitionManager.STATUS_BAR_TRANSITION_PRE_DELAY;
@@ -112,8 +107,6 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     private @Nullable TaskbarManager mTaskbarManager;
     private @Nullable FallbackTaskbarUIController mTaskbarUIController;
 
-    private Configuration mOldConfig;
-
     private StateManager<RecentsState> mStateManager;
 
     // Strong refs to runners which are cleared when the activity is destroyed
@@ -165,7 +158,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
     @Override
     public void onMultiWindowModeChanged(boolean isInMultiWindowMode, Configuration newConfig) {
-        onHandleConfigChanged();
+        onHandleConfigurationChanged();
         super.onMultiWindowModeChanged(isInMultiWindowMode, newConfig);
     }
 
@@ -175,11 +168,8 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         ACTIVITY_TRACKER.handleNewIntent(this);
     }
 
-    /**
-         * Logic for when device configuration changes (rotation, screen size change, multi-window,
-         * etc.)
-         */
-    protected void onHandleConfigChanged() {
+    @Override
+    protected void onHandleConfigurationChanged() {
         initDeviceProfile();
 
         AbstractFloatingView.closeOpenViews(this, true,
@@ -340,33 +330,12 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
         mStateManager = new StateManager<>(this, RecentsState.BG_LAUNCHER);
 
-        mOldConfig = new Configuration(getResources().getConfiguration());
         initDeviceProfile();
         setupViews();
 
         getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
                 Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
         ACTIVITY_TRACKER.handleCreate(this);
-    }
-
-    @Override
-    public void handleConfigurationChanged(Configuration newConfig) {
-        if (compareConfiguration(mOldConfig, newConfig)) {
-            onHandleConfigChanged();
-        }
-        mOldConfig.setTo(newConfig);
-        super.handleConfigurationChanged(newConfig);
-    }
-
-    private boolean compareConfiguration(Configuration oldConfig, Configuration newConfig) {
-        int diff = newConfig.diff(oldConfig);
-        if ((diff & CONFIG_WINDOW_CONFIGURATION) != 0) {
-            long windowDiff =
-                    newConfig.windowConfiguration.diff(oldConfig.windowConfiguration, false);
-            return (windowDiff & WINDOW_CONFIG_ROTATION) != 0;
-        }
-
-        return (diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0;
     }
 
     @Override
