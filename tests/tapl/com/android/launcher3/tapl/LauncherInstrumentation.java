@@ -1124,6 +1124,16 @@ public final class LauncherInstrumentation {
     }
 
     @Nullable
+    UiObject2 findObjectInContainer(UiObject2 container, String resName) {
+        try {
+            return container.findObject(getLauncherObjectSelector(resName));
+        } catch (StaleObjectException e) {
+            fail("The container disappeared from screen");
+            return null;
+        }
+    }
+
+    @Nullable
     UiObject2 findObjectInContainer(UiObject2 container, BySelector selector) {
         try {
             return container.findObject(selector);
