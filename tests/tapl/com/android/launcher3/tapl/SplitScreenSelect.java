@@ -32,4 +32,10 @@ public class SplitScreenSelect extends Overview {
     protected ContainerType getContainerType() {
         return ContainerType.SPLIT_SCREEN_SELECT;
     }
+
+    @Override
+    protected boolean isActionsViewVisible() {
+        // We don't show overview actions in split select state.
+        return false;
+    }
 }
