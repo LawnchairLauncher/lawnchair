@@ -34,9 +34,9 @@ class SmartspaceState() : Parcelable {
         this.selectedPage = parcel.readInt()
     }
 
-    override fun writeToParcel(dest: Parcel?, flags: Int) {
-        dest?.writeParcelable(boundsOnScreen, 0)
-        dest?.writeInt(selectedPage)
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeParcelable(boundsOnScreen, 0)
+        dest.writeInt(selectedPage)
     }
 
     override fun describeContents(): Int {
