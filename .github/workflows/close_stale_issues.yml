@@ -19,4 +19,4 @@ jobs:
           days-before-pr-close: 14
           exempt-all-assignees: true
           exempt-all-milestones: true
-          operations-per-run: 90
+          operations-per-run: 250
