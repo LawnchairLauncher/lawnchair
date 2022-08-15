@@ -27,7 +27,7 @@ inline val View.viewAttachedScope: CoroutineScope
         var detached = false
         val scope = CoroutineScope(Dispatchers.Main.immediate)
         addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(v: View?) {
+            override fun onViewAttachedToWindow(v: View) {
                 if (detached) {
                     Log.e(
                         "ViewExtensions",
@@ -37,7 +37,7 @@ inline val View.viewAttachedScope: CoroutineScope
                 }
             }
 
-            override fun onViewDetachedFromWindow(v: View?) {
+            override fun onViewDetachedFromWindow(v: View) {
                 detached = true
                 scope.cancel()
             }

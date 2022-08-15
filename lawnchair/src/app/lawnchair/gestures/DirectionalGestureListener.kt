@@ -29,8 +29,7 @@ open class DirectionalGestureListener(ctx: Context?) : OnTouchListener {
         private fun shouldReactToSwipe(diff: Float, velocity: Float): Boolean =
             abs(diff) > SWIPE_THRESHOLD && abs(velocity) > SWIPE_VELOCITY_THRESHOLD
 
-        override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
-            if (e1 == null || e2 == null) return false
+        override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
             return try {
                 val diffY = e2.y - e1.y
                 val diffX = e2.x - e1.x
