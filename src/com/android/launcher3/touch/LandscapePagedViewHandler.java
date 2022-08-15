@@ -440,7 +440,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     public void setSplitInstructionsParams(View out, DeviceProfile dp, int splitInstructionsHeight,
             int splitInstructionsWidth, int threeButtonNavShift) {
         out.setPivotX(0);
-        out.setPivotY(0);
+        out.setPivotY(splitInstructionsHeight);
         out.setRotation(getDegreesRotated());
         int distanceToEdge = out.getResources().getDimensionPixelSize(
                 R.dimen.split_instructions_bottom_margin_phone_landscape);
@@ -448,8 +448,8 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         int insetCorrectionX = dp.getInsets().left;
         // Center the view in case of unbalanced insets on top or bottom of screen
         int insetCorrectionY = (dp.getInsets().bottom - dp.getInsets().top) / 2;
-        out.setTranslationX(splitInstructionsHeight + distanceToEdge - insetCorrectionX);
-        out.setTranslationY(((splitInstructionsHeight - splitInstructionsWidth) / 2f)
+        out.setTranslationX(distanceToEdge - insetCorrectionX);
+        out.setTranslationY(((-splitInstructionsHeight - splitInstructionsWidth) / 2f)
                 + insetCorrectionY);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) out.getLayoutParams();
         // Setting gravity to LEFT instead of the lint-recommended START because we always want this
