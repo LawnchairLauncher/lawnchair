@@ -1,7 +1,5 @@
 buildscript {
     ext {
-        ANDROID_X_VERSION = "1+"
-        BUILD_TOOLS_VERSION = "32.0.0"
         COMPILE_SDK = 32
         TARGET_SDK = 32
         MIN_SDK = 26
@@ -361,7 +359,7 @@ dependencies {
     implementation "androidx.activity:activity-compose:1.5.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
     implementation "androidx.navigation:navigation-compose:2.5.1"
-    implementation "androidx.palette:palette-ktx:${ANDROID_X_VERSION}"
+    implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.slice:slice-core:1.1.0-alpha02"
     implementation "com.google.accompanist:accompanist-drawablepainter:$accompanist_version"
     implementation "com.google.accompanist:accompanist-insets-ui:$accompanist_version"
