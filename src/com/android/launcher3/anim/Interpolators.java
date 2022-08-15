@@ -50,6 +50,8 @@ public class Interpolators {
     public static final Interpolator ACCEL_DEACCEL = new AccelerateDecelerateInterpolator();
 
     public static final Interpolator FAST_OUT_SLOW_IN = new PathInterpolator(0.4f, 0f, 0.2f, 1f);
+    public static final Interpolator FASTER_OUT_SLOWER_IN =
+            new PathInterpolator(0.3f, 0f, 0.1f, 1f);
 
     public static final Interpolator AGGRESSIVE_EASE = new PathInterpolator(0.2f, 0f, 0f, 1f);
     public static final Interpolator AGGRESSIVE_EASE_IN_OUT = new PathInterpolator(0.6f,0, 0.4f, 1);
