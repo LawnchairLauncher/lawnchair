@@ -36,13 +36,12 @@ android {
     }
 
     addFrameworkJar('framework-12l.jar')
-    replaceFrameworkJar('framework-12l.jar')
 }
 
 dependencies {
     compileOnly fileTree(dir: new File(rootProject.projectDir, 'prebuilts/libs'), include: 'WindowManager-Shell.jar')
     implementation "androidx.concurrent:concurrent-futures:1.1.0"
-    implementation "androidx.lifecycle:lifecycle-common-java8:2.4.1"
+    implementation "androidx.lifecycle:lifecycle-common:2.5.1"
     implementation "androidx.dynamicanimation:dynamicanimation:1.0.0"
     implementation project(':CompatLib')
     implementation project(':CompatLibVR')
