@@ -258,8 +258,6 @@ public class InvariantDeviceProfile {
                 COUNT_SIZES);
         System.arraycopy(defaultDisplayOption.borderSpaces, 0, result.borderSpaces, 0,
                 COUNT_SIZES);
-        System.arraycopy(defaultDisplayOption.inlineQsb, 0, result.inlineQsb, 0,
-                COUNT_SIZES);
 
         initGrid(context, myInfo, result, deviceType);
     }
@@ -387,7 +385,7 @@ public class InvariantDeviceProfile {
             devicePaddings = new DevicePaddings(context, devicePaddingId);
         }
 
-        inlineQsb = displayOption.inlineQsb;
+        inlineQsb = closestProfile.inlineQsb;
 
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize
@@ -723,6 +721,12 @@ public class InvariantDeviceProfile {
         private static final int DEVICE_CATEGORY_ALL =
                 DEVICE_CATEGORY_PHONE | DEVICE_CATEGORY_TABLET | DEVICE_CATEGORY_MULTI_DISPLAY;
 
+        private static final int INLINE_QSB_FOR_PORTRAIT = 1 << 0;
+        private static final int INLINE_QSB_FOR_LANDSCAPE = 1 << 1;
+        private static final int INLINE_QSB_FOR_TWO_PANEL_PORTRAIT = 1 << 2;
+        private static final int INLINE_QSB_FOR_TWO_PANEL_LANDSCAPE = 1 << 3;
+        private static final int DONT_INLINE_QSB = 0;
+
         public final String name;
         public final int numRows;
         public final int numColumns;
@@ -738,6 +742,8 @@ public class InvariantDeviceProfile {
         private final int numDatabaseHotseatIcons;
 
         private final int[] hotseatColumnSpan = new int[COUNT_SIZES];
+
+        private final boolean[] inlineQsb = new boolean[COUNT_SIZES];
 
         private int inlineNavButtonsEndSpacing;
         private final String dbFile;
@@ -811,6 +817,19 @@ public class InvariantDeviceProfile {
                         && ((deviceCategory & DEVICE_CATEGORY_MULTI_DISPLAY)
                             == DEVICE_CATEGORY_MULTI_DISPLAY));
 
+            int inlineForRotation = a.getInt(R.styleable.GridDisplayOption_inlineQsb,
+                    DONT_INLINE_QSB);
+            inlineQsb[INDEX_DEFAULT] =
+                    (inlineForRotation & INLINE_QSB_FOR_PORTRAIT) == INLINE_QSB_FOR_PORTRAIT;
+            inlineQsb[INDEX_LANDSCAPE] =
+                    (inlineForRotation & INLINE_QSB_FOR_LANDSCAPE) == INLINE_QSB_FOR_LANDSCAPE;
+            inlineQsb[INDEX_TWO_PANEL_PORTRAIT] =
+                    (inlineForRotation & INLINE_QSB_FOR_TWO_PANEL_PORTRAIT)
+                            == INLINE_QSB_FOR_TWO_PANEL_PORTRAIT;
+            inlineQsb[INDEX_TWO_PANEL_LANDSCAPE] =
+                    (inlineForRotation & INLINE_QSB_FOR_TWO_PANEL_LANDSCAPE)
+                            == INLINE_QSB_FOR_TWO_PANEL_LANDSCAPE;
+
             a.recycle();
             extraAttrs = Themes.createValueMap(context, attrs,
                     IntArray.wrap(R.styleable.GridDisplayOption));
@@ -819,18 +838,11 @@ public class InvariantDeviceProfile {
 
     @VisibleForTesting
     static final class DisplayOption {
-        private static final int INLINE_QSB_FOR_PORTRAIT = 1 << 0;
-        private static final int INLINE_QSB_FOR_LANDSCAPE = 1 << 1;
-        private static final int INLINE_QSB_FOR_TWO_PANEL_PORTRAIT = 1 << 2;
-        private static final int INLINE_QSB_FOR_TWO_PANEL_LANDSCAPE = 1 << 3;
-        private static final int DONT_INLINE_QSB = 0;
-
         public final GridOption grid;
 
         private final float minWidthDps;
         private final float minHeightDps;
         private final boolean canBeDefault;
-        private final boolean[] inlineQsb = new boolean[COUNT_SIZES];
 
         private final PointF[] minCellSize = new PointF[COUNT_SIZES];
 
@@ -860,19 +872,6 @@ public class InvariantDeviceProfile {
             minHeightDps = a.getFloat(R.styleable.ProfileDisplayOption_minHeightDps, 0);
 
             canBeDefault = a.getBoolean(R.styleable.ProfileDisplayOption_canBeDefault, false);
-
-            int inlineForRotation = a.getInt(R.styleable.ProfileDisplayOption_inlineQsb,
-                    DONT_INLINE_QSB);
-            inlineQsb[INDEX_DEFAULT] =
-                    (inlineForRotation & INLINE_QSB_FOR_PORTRAIT) == INLINE_QSB_FOR_PORTRAIT;
-            inlineQsb[INDEX_LANDSCAPE] =
-                    (inlineForRotation & INLINE_QSB_FOR_LANDSCAPE) == INLINE_QSB_FOR_LANDSCAPE;
-            inlineQsb[INDEX_TWO_PANEL_PORTRAIT] =
-                    (inlineForRotation & INLINE_QSB_FOR_TWO_PANEL_PORTRAIT)
-                            == INLINE_QSB_FOR_TWO_PANEL_PORTRAIT;
-            inlineQsb[INDEX_TWO_PANEL_LANDSCAPE] =
-                    (inlineForRotation & INLINE_QSB_FOR_TWO_PANEL_LANDSCAPE)
-                            == INLINE_QSB_FOR_TWO_PANEL_LANDSCAPE;
 
             float x;
             float y;
@@ -1119,7 +1118,6 @@ public class InvariantDeviceProfile {
                 allAppsIconSizes[i] = 0;
                 allAppsIconTextSizes[i] = 0;
                 allAppsBorderSpaces[i] = new PointF();
-                inlineQsb[i] = false;
             }
             folderBorderSpaces = new PointF();
             folderCellSize = new PointF();
@@ -1170,7 +1168,6 @@ public class InvariantDeviceProfile {
                 allAppsIconTextSizes[i] += p.allAppsIconTextSizes[i];
                 allAppsBorderSpaces[i].x += p.allAppsBorderSpaces[i].x;
                 allAppsBorderSpaces[i].y += p.allAppsBorderSpaces[i].y;
-                inlineQsb[i] |= p.inlineQsb[i];
             }
             folderBorderSpaces.x += p.folderBorderSpaces.x;
             folderBorderSpaces.y += p.folderBorderSpaces.y;
