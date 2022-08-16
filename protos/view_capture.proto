@@ -51,4 +51,6 @@ message ViewNode {
   optional int32 visibility = 16;
 
   repeated ViewNode children = 17;
+
+  optional float elevation = 18;
 }
