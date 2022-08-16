@@ -3,7 +3,7 @@ db_files
 .project
 .classpath
 .project.properties
-gen/
+**/gen
 tests/stress/gen/
 WallpaperPicker/gen/
 WallpaperPicker/.project.properties
@@ -11,7 +11,7 @@ bin/
 .idea/
 .gradle/
 local.properties
-build/
+**/build/**
 .DS_Store
 keystore.properties
 *.jks
