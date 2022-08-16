@@ -20,6 +20,7 @@ import android.graphics.PointF
 import android.graphics.Rect
 import android.util.SparseArray
 import androidx.test.core.app.ApplicationProvider
+import com.android.launcher3.DeviceProfile.DEFAULT_PROVIDER;
 import com.android.launcher3.util.DisplayController.Info
 import com.android.launcher3.util.WindowBounds
 import org.junit.Before
@@ -61,7 +62,8 @@ abstract class DeviceProfileBaseTest {
         isMultiWindowMode,
         transposeLayoutWithOrientation,
         useTwoPanels,
-        isGestureMode
+        isGestureMode,
+        DEFAULT_PROVIDER
     )
 
     protected fun initializeVarsForPhone(isGestureMode: Boolean = true,
