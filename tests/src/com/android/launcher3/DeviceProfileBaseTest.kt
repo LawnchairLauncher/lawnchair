@@ -20,6 +20,7 @@ import android.graphics.PointF
 import android.graphics.Rect
 import android.util.SparseArray
 import androidx.test.core.app.ApplicationProvider
+import com.android.launcher3.DeviceProfile.DEFAULT_PROVIDER;
 import com.android.launcher3.util.DisplayController.Info
 import com.android.launcher3.util.WindowBounds
 import org.junit.Before
@@ -61,7 +62,8 @@ abstract class DeviceProfileBaseTest {
         isMultiWindowMode,
         transposeLayoutWithOrientation,
         useTwoPanels,
-        isGestureMode
+        isGestureMode,
+        DEFAULT_PROVIDER
     )
 
     protected fun initializeVarsForPhone(isGestureMode: Boolean = true,
@@ -94,8 +96,6 @@ abstract class DeviceProfileBaseTest {
             numColumns = 4
             numSearchContainerColumns = 4
 
-            numFolderRows = 3
-            numFolderColumns = 3
             iconSize = floatArrayOf(60f, 54f, 60f, 60f)
             iconTextSize = FloatArray(4) { 14f }
             deviceType = InvariantDeviceProfile.TYPE_PHONE
@@ -113,7 +113,14 @@ abstract class DeviceProfileBaseTest {
                     PointF(16f, 16f),
                     PointF(16f, 16f)
             ).toTypedArray()
-            folderBorderSpace = 16f
+
+            numFolderRows = 3
+            numFolderColumns = 3
+            folderBorderSpaces = PointF(16f, 16f)
+            folderTopPadding = 24f
+            folderCellSize = PointF(80f, 94f)
+
+
             inlineNavButtonsEndSpacing = R.dimen.taskbar_button_margin_4_5
 
             horizontalMargin = FloatArray(4) { 22f }
@@ -197,6 +204,13 @@ abstract class DeviceProfileBaseTest {
                     PointF(16f, 64f),
                     PointF(16f, 64f)
             ).toTypedArray()
+
+            numFolderRows = 3
+            numFolderColumns = 3
+            folderBorderSpaces = PointF(16f, 16f)
+            folderTopPadding = 24f
+            folderCellSize = PointF(120f, 104f)
+
             inlineNavButtonsEndSpacing = R.dimen.taskbar_button_margin_6_5
 
             horizontalMargin = floatArrayOf(54f, 120f, 54f, 54f)
@@ -271,8 +285,6 @@ abstract class DeviceProfileBaseTest {
             numColumns = 4
             numSearchContainerColumns = 4
 
-            numFolderRows = 3
-            numFolderColumns = 4
             iconSize = floatArrayOf(60f, 52f, 52f, 60f)
             iconTextSize = floatArrayOf(14f, 14f, 12f, 14f)
             deviceType = InvariantDeviceProfile.TYPE_MULTI_DISPLAY
@@ -290,7 +302,13 @@ abstract class DeviceProfileBaseTest {
                     PointF(16f, 20f),
                     PointF(20f, 20f)
             ).toTypedArray()
-            folderBorderSpace = 16f
+
+            numFolderRows = 3
+            numFolderColumns = 3
+            folderBorderSpaces = PointF(16f, 16f)
+            folderTopPadding = 24f
+            folderCellSize = PointF(80f, 94f)
+
             inlineNavButtonsEndSpacing = R.dimen.taskbar_button_margin_4_4
 
             horizontalMargin = floatArrayOf(21.5f, 21.5f, 22.5f, 30.5f)
