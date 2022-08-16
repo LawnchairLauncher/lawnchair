@@ -82,7 +82,7 @@ public class OverviewToHomeAnim {
             // WorkspaceRevealAnim handles the depth, so don't interfere.
             config.animFlags |= StateAnimationConfig.SKIP_DEPTH_CONTROLLER;
         }
-        config.duration = startState.getTransitionDuration(mLauncher);
+        config.duration = startState.getTransitionDuration(mLauncher, false /* isToState */);
         AnimatorSet stateAnim = stateManager.createAtomicAnimation(
                 startState, NORMAL, config);
         stateAnim.addListener(new AnimationSuccessListener() {

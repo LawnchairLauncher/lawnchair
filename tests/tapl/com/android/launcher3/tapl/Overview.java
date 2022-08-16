@@ -16,12 +16,7 @@
 
 package com.android.launcher3.tapl;
 
-import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
-
-import androidx.annotation.NonNull;
-
 import com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
-import com.android.launcher3.testing.TestProtocol;
 
 /**
  * Overview pane.
@@ -35,38 +30,6 @@ public final class Overview extends BaseOverview {
     @Override
     protected ContainerType getContainerType() {
         return LauncherInstrumentation.ContainerType.OVERVIEW;
-    }
-
-    /**
-     * Swipes up to All Apps.
-     *
-     * @return the App Apps object.
-     */
-    @NonNull
-    public AllAppsFromOverview switchToAllApps() {
-        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
-             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                     "want to switch from overview to all apps")) {
-            verifyActiveContainer();
-
-            // Swipe from an app icon to the top.
-            LauncherInstrumentation.log("Overview.switchToAllApps before swipe");
-            mLauncher.swipeToState(
-                    mLauncher.getDevice().getDisplayWidth() / 2,
-                    mLauncher.getTestInfo(
-                            TestProtocol.REQUEST_HOTSEAT_TOP).
-                            getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD),
-                    mLauncher.getDevice().getDisplayWidth() / 2,
-                    0,
-                    12,
-                    ALL_APPS_STATE_ORDINAL,
-                    LauncherInstrumentation.GestureScope.INSIDE);
-
-            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
-                    "swiped all way up from overview")) {
-                return new AllAppsFromOverview(mLauncher);
-            }
-        }
     }
 
     @Override

@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.widget.picker;
 
-import static com.android.launcher3.widget.WidgetSections.NO_CATEGORY;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -43,8 +42,6 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.util.PluralMessageFormat;
 import com.android.launcher3.views.ActivityContext;
-import com.android.launcher3.widget.WidgetSections;
-import com.android.launcher3.widget.WidgetSections.WidgetSection;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
 
@@ -98,7 +95,7 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
         mTitle = findViewById(R.id.app_title);
         mSubtitle = findViewById(R.id.app_subtitle);
         mExpandToggle = findViewById(R.id.toggle);
-        findViewById(R.id.app_container).setAccessibilityDelegate(new AccessibilityDelegate() {
+        setAccessibilityDelegate(new AccessibilityDelegate() {
 
             @Override
             public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfo info) {
@@ -177,13 +174,7 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
 
     private void setIcon(PackageItemInfo info) {
         Drawable icon;
-        if (info.widgetCategory == NO_CATEGORY) {
-            icon = info.newIcon(getContext());
-        } else {
-            WidgetSection widgetSection = WidgetSections.getWidgetSections(getContext())
-                    .get(info.widgetCategory);
-            icon = getContext().getDrawable(widgetSection.mSectionDrawable);
-        }
+        icon = info.newIcon(getContext());
         applyDrawables(icon);
         mIconDrawable = icon;
         if (mIconDrawable != null) {

@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"כדי לשנות את מידת הרגישות של תנועת החזרה, יש לעבור להגדרות"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"יש להחליק כדי לחזור"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"כדי לחזור למסך הקודם, יש להחליק מהקצה השמאלי או הימני למרכז המסך."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"כדי לחזור למסך הקודם, יש להחליק עם שתי אצבעות מהקצה השמאלי או הימני למרכז המסך."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"חשוב להקפיד להחליק למעלה מהקצה התחתון של המסך."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"חשוב לוודא שלא מחכים לפני שמשחררים."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"חשוב להקפיד להחליק ישר למעלה."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"השלמת את תנועת המעבר למסך הבית."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"יש להחליק כדי לעבור למסך הבית"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"החלקה למעלה מתחתית המסך תמיד תעביר אותך למסך הבית."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"יש להחליק למעלה עם שתי אצבעות מתחתית המסך. התנועה הזו תמיד מעבירה אותך למסך הבית."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"חשוב להקפיד להחליק למעלה מהקצה התחתון של המסך."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"אפשר להחזיק את החלון זמן רב יותר לפני שמשחררים."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"חשוב להקפיד להחליק ישר למעלה ואז להמתין."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"השלמת את תנועת המעבר בין האפליקציות."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"יש להחליק כדי לעבור בין אפליקציות"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"כדי לעבור בין אפלקציות, יש להחליק למעלה מתחתית המסך, להחזיק ולאחר מכן לשחרר."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"כדי לעבור בין אפלקציות, יש להחליק למעלה עם שתי אצבעות מתחתית המסך, להחזיק ולאחר מכן לשחרר."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"הכול מוכן"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"סיום"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"הגדרות"</string>
@@ -76,6 +79,7 @@
     <string name="allset_title" msgid="5021126669778966707">"הכול מוכן!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"כדי לעבור לדף הבית, מחליקים כלפי מעלה"</string>
     <string name="allset_description" msgid="6350320429953234580">"הכול מוכן ואפשר להתחיל להשתמש בטלפון"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"הכול מוכן ואפשר להתחיל להשתמש בטאבלט"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"הגדרות הניווט של המערכת"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"שיתוף"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"צילום מסך"</string>
@@ -97,4 +101,13 @@
     <string name="taskbar_edu_previous" msgid="459202320127201702">"חזרה"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"סגירה"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"סיום"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"בית"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"נגישות"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"חזרה"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"‏כלי להחלפת IME"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"לאחרונה"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"התראות"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"הגדרות מהירות"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"העברה לפינה השמאלית/העליונה"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"העברה לפינה הימנית/התחתונה"</string>
 </resources>

@@ -55,13 +55,13 @@ import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.uioverrides.PredictedAppIcon;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
-import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.views.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -409,11 +409,11 @@ public class HotseatPredictionController implements DragController.DragListener,
     @Nullable
     @Override
     public SystemShortcut<QuickstepLauncher> getShortcut(QuickstepLauncher activity,
-            ItemInfo itemInfo) {
+            ItemInfo itemInfo, View originalView) {
         if (itemInfo.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
             return null;
         }
-        return new PinPrediction(activity, itemInfo);
+        return new PinPrediction(activity, itemInfo, originalView);
     }
 
     private void preparePredictionInfo(WorkspaceItemInfo itemInfo, int rank) {
@@ -480,8 +480,8 @@ public class HotseatPredictionController implements DragController.DragListener,
      *
      * @param matcher filter matching items that have been removed
      */
-    public void onModelItemsRemoved(ItemInfoMatcher matcher) {
-        if (mPredictedItems.removeIf(matcher::matchesInfo)) {
+    public void onModelItemsRemoved(Predicate<ItemInfo> matcher) {
+        if (mPredictedItems.removeIf(matcher)) {
             fillGapsWithPrediction(true);
         }
     }
@@ -498,9 +498,9 @@ public class HotseatPredictionController implements DragController.DragListener,
 
     private class PinPrediction extends SystemShortcut<QuickstepLauncher> {
 
-        private PinPrediction(QuickstepLauncher target, ItemInfo itemInfo) {
+        private PinPrediction(QuickstepLauncher target, ItemInfo itemInfo, View originalView) {
             super(R.drawable.ic_pin, R.string.pin_prediction, target,
-                    itemInfo);
+                    itemInfo, originalView);
         }
 
         @Override

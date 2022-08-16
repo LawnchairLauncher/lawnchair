@@ -18,12 +18,15 @@ package com.android.launcher3.model;
 import static android.app.prediction.AppTargetEvent.ACTION_DISMISS;
 import static android.app.prediction.AppTargetEvent.ACTION_LAUNCH;
 import static android.app.prediction.AppTargetEvent.ACTION_PIN;
+import static android.app.prediction.AppTargetEvent.ACTION_UNDISMISS;
 import static android.app.prediction.AppTargetEvent.ACTION_UNPIN;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_PREDICTION;
+import static com.android.launcher3.logger.LauncherAtomExtensions.ExtendedContainers.ContainerCase.DEVICE_SEARCH_RESULT_CONTAINER;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_DISMISS_PREDICTION_UNDO;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_CONVERTED_TO_ICON;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_PREDICTION_PINNED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DRAG_STARTED;
@@ -59,6 +62,7 @@ import androidx.annotation.AnyThread;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.logger.LauncherAtom.FolderContainer;
@@ -113,7 +117,8 @@ public class AppEventProducer implements StatsLogConsumer {
     @AnyThread
     private void sendEvent(AppTarget target, LauncherAtom.ItemInfo locationInfo, int eventId,
             int targetPredictor) {
-        if (target != null) {
+        // TODO: remove the running test check when b/231648228 is fixed.
+        if (target != null && !Utilities.IS_RUNNING_IN_TEST_HARNESS) {
             AppTargetEvent event = new AppTargetEvent.Builder(target, eventId)
                     .setLaunchLocation(getContainer(locationInfo))
                     .build();
@@ -137,11 +142,11 @@ public class AppEventProducer implements StatsLogConsumer {
             if (mLastDragItem == null) {
                 return;
             }
-            if (isTrackedForHotseatPrediction(atomInfo)) {
-                sendEvent(atomInfo, ACTION_PIN, CONTAINER_HOTSEAT_PREDICTION);
-            }
             if (isTrackedForHotseatPrediction(mLastDragItem)) {
                 sendEvent(mLastDragItem, ACTION_UNPIN, CONTAINER_HOTSEAT_PREDICTION);
+            }
+            if (isTrackedForHotseatPrediction(atomInfo)) {
+                sendEvent(atomInfo, ACTION_PIN, CONTAINER_HOTSEAT_PREDICTION);
             }
             if (isTrackedForWidgetPrediction(atomInfo)) {
                 sendEvent(atomInfo, ACTION_PIN, CONTAINER_WIDGETS_PREDICTION);
@@ -175,6 +180,8 @@ public class AppEventProducer implements StatsLogConsumer {
                     mContext.getPackageName(), Process.myUserHandle())
                     .build();
             sendEvent(target, atomInfo, ACTION_LAUNCH, CONTAINER_PREDICTION);
+        } else if (event == LAUNCHER_DISMISS_PREDICTION_UNDO) {
+            sendEvent(atomInfo, ACTION_UNDISMISS, CONTAINER_HOTSEAT_PREDICTION);
         }
     }
 
@@ -293,10 +300,9 @@ public class AppEventProducer implements StatsLogConsumer {
             case SEARCH_RESULT_CONTAINER:
                 return "search-results";
             case EXTENDED_CONTAINERS: {
-                switch(ci.getExtendedContainers().getContainerCase()) {
-                    case DEVICE_SEARCH_RESULT_CONTAINER:
-                    case CORRECTED_DEVICE_SEARCH_RESULT_CONTAINER:
-                        return "search-results";
+                if (ci.getExtendedContainers().getContainerCase()
+                        == DEVICE_SEARCH_RESULT_CONTAINER) {
+                    return "search-results";
                 }
             }
             default: // fall out

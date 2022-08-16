@@ -23,7 +23,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -87,8 +86,10 @@ public class TutorialStepIndicator extends LinearLayout {
         for (int i = mTotalSteps; i < getChildCount(); i++) {
             removeViewAt(i);
         }
-        int stepIndicatorColor = GraphicsUtils.getAttrColor(
+        int activeStepIndicatorColor = GraphicsUtils.getAttrColor(
                 getContext(), android.R.attr.textColorPrimary);
+        int inactiveStepIndicatorColor = GraphicsUtils.getAttrColor(
+                getContext(), android.R.attr.textColorSecondaryInverse);
         for (int i = 0; i < mTotalSteps; i++) {
             Drawable pageIndicatorPillDrawable = AppCompatResources.getDrawable(
                     getContext(), R.drawable.tutorial_step_indicator_pill);
@@ -107,10 +108,9 @@ public class TutorialStepIndicator extends LinearLayout {
             }
             if (pageIndicatorPillDrawable != null) {
                 if (i < mCurrentStep) {
-                    pageIndicatorPillDrawable.setTint(stepIndicatorColor);
+                    pageIndicatorPillDrawable.setTint(activeStepIndicatorColor);
                 } else {
-                    pageIndicatorPillDrawable.setTint(
-                            ColorUtils.setAlphaComponent(stepIndicatorColor, 0x22));
+                    pageIndicatorPillDrawable.setTint(inactiveStepIndicatorColor);
                 }
             }
         }

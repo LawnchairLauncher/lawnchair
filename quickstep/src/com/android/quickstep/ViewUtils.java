@@ -21,10 +21,8 @@ import android.view.View;
 import android.view.ViewRootImpl;
 
 import com.android.launcher3.Utilities;
-import com.android.systemui.shared.system.ViewRootImplCompat;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.LongConsumer;
 
 /**
  * Utility class for helpful methods related to {@link View} objects.
@@ -85,7 +83,7 @@ public class ViewUtils {
         }
 
         private boolean schedule() {
-            if (mViewRoot.getView() != null) {
+            if (mViewRoot != null && mViewRoot.getView() != null) {
                 mViewRoot.registerRtFrameCallback(this);
                 mViewRoot.getView().invalidate();
                 return true;

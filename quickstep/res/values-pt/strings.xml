@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Mude a sensibilidade do gesto de voltar nas configurações"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Deslize para voltar"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Para voltar à tela anterior, deslize da borda esquerda ou direita até o meio da tela."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Para voltar à tela anterior, deslize da borda esquerda ou direita até o meio da tela com dois dedos."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Deslize da borda inferior da tela para cima."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Não pare antes de soltar."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Deslize para cima."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Você concluiu o gesto para acessar a tela inicial."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Deslizar para voltar à tela inicial"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Deslize de baixo para cima na tela. Esse gesto sempre leva você para a tela inicial."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Deslize de baixo para cima na tela com dois dedos. Esse gesto sempre leva você para a tela inicial."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Deslize da borda inferior da tela para cima."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Mantenha a janela pressionada por mais tempo antes de soltar."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Deslize para cima e pare."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Você concluiu o gesto para trocar de app."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Deslizar para trocar de app"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Para mudar de app, deslize de baixo para cima, mantenha a tela pressionada por um tempo e solte."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Para mudar de app, deslize de baixo para cima na tela com dois dedos, segure por um tempo e solte."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Tudo pronto"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Concluído"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Configurações"</string>
@@ -76,6 +79,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Tudo pronto!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Deslize para cima para acessar a tela inicial"</string>
     <string name="allset_description" msgid="6350320429953234580">"Você já pode começar a usar seu smartphone"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"Você já pode começar a usar seu tablet"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Configurações de navegação do sistema"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Compartilhar"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Capturar tela"</string>
@@ -97,4 +101,13 @@
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Voltar"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Fechar"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Concluído"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Início"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Acessibilidade"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Voltar"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"Alternador do IME"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Recentes"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"Notificações"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Config. rápidas"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Mover para cima/para a esquerda"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Mover para baixo/para a direita"</string>
 </resources>

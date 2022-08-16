@@ -18,7 +18,6 @@ package com.android.launcher3.model;
 
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_LOADER_RUNNING;
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
-import static com.android.launcher3.model.ModelUtils.sortWorkspaceItemsSpatially;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.os.Process;
@@ -27,6 +26,8 @@ import android.util.Log;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel.CallbackTask;
+import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.AppInfo;
@@ -42,6 +43,7 @@ import com.android.launcher3.util.RunnableList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executor;
 
 /**
@@ -110,6 +112,42 @@ public abstract class BaseLoaderResults {
 
     public abstract void bindWidgets();
 
+    /**
+     * Sorts the set of items by hotseat, workspace (spatially from top to bottom, left to right)
+     */
+    protected void sortWorkspaceItemsSpatially(InvariantDeviceProfile profile,
+            ArrayList<ItemInfo> workspaceItems) {
+        final int screenCols = profile.numColumns;
+        final int screenCellCount = profile.numColumns * profile.numRows;
+        Collections.sort(workspaceItems, (lhs, rhs) -> {
+            if (lhs.container == rhs.container) {
+                // Within containers, order by their spatial position in that container
+                switch (lhs.container) {
+                    case LauncherSettings.Favorites.CONTAINER_DESKTOP: {
+                        int lr = (lhs.screenId * screenCellCount + lhs.cellY * screenCols
+                                + lhs.cellX);
+                        int rr = (rhs.screenId * screenCellCount + +rhs.cellY * screenCols
+                                + rhs.cellX);
+                        return Integer.compare(lr, rr);
+                    }
+                    case LauncherSettings.Favorites.CONTAINER_HOTSEAT: {
+                        // We currently use the screen id as the rank
+                        return Integer.compare(lhs.screenId, rhs.screenId);
+                    }
+                    default:
+                        if (FeatureFlags.IS_STUDIO_BUILD) {
+                            throw new RuntimeException(
+                                    "Unexpected container type when sorting workspace items.");
+                        }
+                        return 0;
+                }
+            } else {
+                // Between containers, order by hotseat, desktop
+                return Integer.compare(lhs.container, rhs.container);
+            }
+        });
+    }
+
     protected void executeCallbacksTask(CallbackTask task, Executor executor) {
         executor.execute(() -> {
             if (mMyBindingId != mBgDataModel.lastBindId) {
@@ -131,7 +169,7 @@ public abstract class BaseLoaderResults {
         return idleLock;
     }
 
-    private static class WorkspaceBinder {
+    private class WorkspaceBinder {
 
         private final Executor mUiExecutor;
         private final Callbacks mCallbacks;
@@ -166,7 +204,9 @@ public abstract class BaseLoaderResults {
         }
 
         private void bind() {
-            IntSet currentScreenIds = mCallbacks.getPagesToBindSynchronously(mOrderedScreenIds);
+            final IntSet currentScreenIds =
+                    mCallbacks.getPagesToBindSynchronously(mOrderedScreenIds);
+            Objects.requireNonNull(currentScreenIds, "Null screen ids provided by " + mCallbacks);
 
             // Separate the items that are on the current screen, and all the other remaining items
             ArrayList<ItemInfo> currentWorkspaceItems = new ArrayList<>();
@@ -226,6 +266,8 @@ public abstract class BaseLoaderResults {
                         MODEL_EXECUTOR.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                         c.onInitialBindComplete(currentScreenIds, pendingTasks);
                     }, mUiExecutor);
+
+            mCallbacks.bindStringCache(mBgDataModel.stringCache.clone());
         }
 
         private void bindWorkspaceItems(

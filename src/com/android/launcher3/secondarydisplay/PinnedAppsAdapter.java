@@ -205,8 +205,8 @@ public class PinnedAppsAdapter extends BaseAdapter implements OnSharedPreference
     /**
      * Returns a system shortcut to pin/unpin a shortcut
      */
-    public SystemShortcut getSystemShortcut(ItemInfo info) {
-        return new PinUnPinShortcut(mLauncher, info,
+    public SystemShortcut getSystemShortcut(ItemInfo info, View originalView) {
+        return new PinUnPinShortcut(mLauncher, info, originalView,
                 mPinnedApps.contains(new ComponentKey(info.getTargetComponent(), info.user)));
     }
 
@@ -214,10 +214,11 @@ public class PinnedAppsAdapter extends BaseAdapter implements OnSharedPreference
 
         private final boolean mIsPinned;
 
-        PinUnPinShortcut(SecondaryDisplayLauncher target, ItemInfo info, boolean isPinned) {
+        PinUnPinShortcut(SecondaryDisplayLauncher target, ItemInfo info, View originalView,
+                boolean isPinned) {
             super(isPinned ? R.drawable.ic_remove_no_shadow : R.drawable.ic_pin,
                     isPinned ? R.string.remove_drop_target_label : R.string.action_add_to_workspace,
-                    target, info);
+                    target, info, originalView);
             mIsPinned = isPinned;
         }
 

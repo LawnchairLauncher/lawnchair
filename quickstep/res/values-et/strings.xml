@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Tagasiliigutuse tundlikkuse muutmiseks avage menüü Seaded"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Tagasiliikumiseks pühkige"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Eelmisele ekraanikuvale naasmiseks pühkige vasakust või paremast servast ekraanikuva keskele."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Eelmisele ekraanikuvale naasmiseks pühkige vasakust või paremast servast kahe sõrmega ekraanikuva keskele."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Pühkige kindlasti ekraanikuva alumisest servast üles."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Veenduge, et te enne vabastamist liigutust ei peataks."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Pühkige kindlasti otse üles."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Tegite avakuvale minemise liigutuse."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Pühkige avakuvale minemiseks"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Pühkige ekraani alaosast üles. See liigutus viib teid alati tagasi avakuvale."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Pühkige ekraanikuva alumisest servast 2 sõrmega üles. See liigutus viib teid alati tagasi avakuvale."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Pühkige kindlasti ekraanikuva alumisest servast üles."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Hoidke sõrme aknal pisut kauem, enne kui vabastate."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Pühkige kindlasti otse üles, seejärel peatuge."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Tegite rakenduste vahel vahetamise liigutuse."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Pühkige rakenduste vahetamiseks"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Rakenduste vahel vahetamiseks pühkige ekraanikuva alaosast üles, hoidke ja seejärel vabastage."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Rakenduste vahel vahetamiseks pühkige kuva alaosast kahe sõrmega üles, hoidke ja seejärel vabastage."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Valmis"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Valmis"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Seaded"</string>
@@ -76,6 +79,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Valmis!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Avakuvale liikumiseks pühkige üles"</string>
     <string name="allset_description" msgid="6350320429953234580">"Olete valmis oma telefoni kasutama."</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"Olete valmis oma tahvelarvutit kasutama"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Süsteemi navigeerimisseaded"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Jaga"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Ekraanipilt"</string>
@@ -97,4 +101,13 @@
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Tagasi"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Sule"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Valmis"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Avaleht"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Juurdepääsetavus"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Tagasi"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME vahetaja"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Hiljutised"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"Märguanded"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Kiirseaded"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Teisalda üles/vasakule"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Teisalda alla/paremale"</string>
 </resources>

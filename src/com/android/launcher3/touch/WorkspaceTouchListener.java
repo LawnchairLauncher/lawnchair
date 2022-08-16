@@ -21,7 +21,9 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
+import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_CLOSE_TAP_OUTSIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORKSPACE_LONGPRESS;
 
 import android.graphics.PointF;
@@ -39,6 +41,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 
@@ -61,7 +64,7 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
     private final Rect mTempRect = new Rect();
     private final Launcher mLauncher;
-    private final Workspace mWorkspace;
+    private final Workspace<?> mWorkspace;
     private final PointF mTouchDownPoint = new PointF();
     private final float mTouchSlop;
 
@@ -69,7 +72,7 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
     private final GestureDetector mGestureDetector;
 
-    public WorkspaceTouchListener(Launcher launcher, Workspace workspace) {
+    public WorkspaceTouchListener(Launcher launcher, Workspace<?> workspace) {
         mLauncher = launcher;
         mWorkspace = workspace;
         // Use twice the touch slop as we are looking for long press which is more
@@ -118,6 +121,9 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
             mLongPressState = STATE_COMPLETED;
         }
 
+        boolean isInAllAppsBottomSheet = mLauncher.isInState(ALL_APPS)
+                && mLauncher.getDeviceProfile().isTablet;
+
         final boolean result;
         if (mLongPressState == STATE_COMPLETED) {
             // We have handled the touch, so workspace does not need to know anything anymore.
@@ -133,8 +139,9 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
             result = true;
         } else {
-            // We don't want to handle touch, let workspace handle it as usual.
-            result = false;
+            // We don't want to handle touch unless we're in AllApps bottom sheet, let workspace
+            // handle it as usual.
+            result = isInAllAppsBottomSheet;
         }
 
         if (action == ACTION_UP || action == ACTION_POINTER_UP) {
@@ -149,6 +156,19 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
         if (action == ACTION_UP || action == ACTION_CANCEL) {
             cancelLongPress();
+        }
+        if (action == ACTION_UP && isInAllAppsBottomSheet) {
+            mLauncher.getStateManager().goToState(NORMAL);
+            mLauncher.getStatsLogManager().logger()
+                    .withSrcState(ALL_APPS.statsLogOrdinal)
+                    .withDstState(NORMAL.statsLogOrdinal)
+                    .withContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
+                            .setWorkspace(
+                                    LauncherAtom.WorkspaceContainer.newBuilder()
+                                            .setPageIndex(
+                                                    mLauncher.getWorkspace().getCurrentPage()))
+                            .build())
+                    .log(LAUNCHER_ALLAPPS_CLOSE_TAP_OUTSIDE);
         }
 
         return result;

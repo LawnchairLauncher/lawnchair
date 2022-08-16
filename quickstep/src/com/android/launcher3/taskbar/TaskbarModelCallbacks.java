@@ -21,6 +21,7 @@ import android.view.View;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.ComponentKey;
@@ -29,11 +30,13 @@ import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Launcher model Callbacks for rendering taskbar.
@@ -50,8 +53,6 @@ public class TaskbarModelCallbacks implements
     // Initialized in init.
     private TaskbarControllers mControllers;
 
-    private boolean mBindInProgress = false;
-
     public TaskbarModelCallbacks(
             TaskbarActivityContext context, TaskbarView container) {
         mContext = context;
@@ -64,14 +65,14 @@ public class TaskbarModelCallbacks implements
 
     @Override
     public void startBinding() {
-        mBindInProgress = true;
+        mContext.setBindingItems(true);
         mHotseatItems.clear();
         mPredictedItems = Collections.emptyList();
     }
 
     @Override
     public void finishBindingItems(IntSet pagesBoundFirst) {
-        mBindInProgress = false;
+        mContext.setBindingItems(false);
         commitItemsToUI();
     }
 
@@ -126,16 +127,16 @@ public class TaskbarModelCallbacks implements
     }
 
     @Override
-    public void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher) {
+    public void bindWorkspaceComponentsRemoved(Predicate<ItemInfo> matcher) {
         if (handleItemsRemoved(matcher)) {
             commitItemsToUI();
         }
     }
 
-    private boolean handleItemsRemoved(ItemInfoMatcher matcher) {
+    private boolean handleItemsRemoved(Predicate<ItemInfo> matcher) {
         boolean modified = false;
         for (int i = mHotseatItems.size() - 1; i >= 0; i--) {
-            if (matcher.matchesInfo(mHotseatItems.valueAt(i))) {
+            if (matcher.test(mHotseatItems.valueAt(i))) {
                 modified = true;
                 mHotseatItems.removeAt(i);
             }
@@ -157,11 +158,13 @@ public class TaskbarModelCallbacks implements
         if (item.containerId == Favorites.CONTAINER_HOTSEAT_PREDICTION) {
             mPredictedItems = item.items;
             commitItemsToUI();
+        } else if (item.containerId == Favorites.CONTAINER_PREDICTION) {
+            mControllers.taskbarAllAppsController.setPredictedApps(item.items);
         }
     }
 
     private void commitItemsToUI() {
-        if (mBindInProgress) {
+        if (mContext.isBindingItems()) {
             return;
         }
 
@@ -195,5 +198,20 @@ public class TaskbarModelCallbacks implements
     @Override
     public void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMapCopy) {
         mControllers.taskbarPopupController.setDeepShortcutMap(deepShortcutMapCopy);
+    }
+
+    @Override
+    public void bindAllApplications(AppInfo[] apps, int flags) {
+        mControllers.taskbarAllAppsController.setApps(apps, flags);
+    }
+
+    protected void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarModelCallbacks:");
+
+        pw.println(String.format("%s\thotseat items count=%s", prefix, mHotseatItems.size()));
+        if (mPredictedItems != null) {
+            pw.println(
+                    String.format("%s\tpredicted items count=%s", prefix, mPredictedItems.size()));
+        }
     }
 }

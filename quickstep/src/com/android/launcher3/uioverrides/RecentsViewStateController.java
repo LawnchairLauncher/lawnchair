@@ -107,7 +107,6 @@ public final class RecentsViewStateController extends
      */
     private void handleSplitSelectionState(@NonNull LauncherState toState,
             @Nullable PendingAnimation builder) {
-        LauncherState currentState = mLauncher.getStateManager().getState();
         boolean animate = builder != null;
         PagedOrientationHandler orientationHandler =
                 ((RecentsView) mLauncher.getOverviewPanel()).getPagedOrientationHandler();
@@ -116,37 +115,25 @@ public final class RecentsViewStateController extends
                         TASK_PRIMARY_SPLIT_TRANSLATION, TASK_SECONDARY_SPLIT_TRANSLATION,
                         mLauncher.getDeviceProfile());
 
-        if (isSplitSelectionState(currentState, toState)) {
+        if (toState == OVERVIEW_SPLIT_SELECT) {
             // Animation to "dismiss" selected taskView
-            PendingAnimation splitSelectInitAnimation =
-                    mRecentsView.createSplitSelectInitAnimation();
+            PendingAnimation splitSelectInitAnimation = mRecentsView.createSplitSelectInitAnimation(
+                    toState.getTransitionDuration(mLauncher, true /* isToState */));
             // Add properties to shift remaining taskViews to get out of placeholder view
             splitSelectInitAnimation.setFloat(mRecentsView, taskViewsFloat.first,
                     toState.getSplitSelectTranslation(mLauncher), LINEAR);
             splitSelectInitAnimation.setFloat(mRecentsView, taskViewsFloat.second, 0, LINEAR);
 
-            if (!animate && isSplitSelectionState(currentState, toState)) {
+            if (!animate) {
                 splitSelectInitAnimation.buildAnim().start();
-            } else if (animate &&
-                    isSplitSelectionState(currentState, toState)) {
+            } else {
                 builder.add(splitSelectInitAnimation.buildAnim());
             }
-        }
 
-        if (isSplitSelectionState(currentState, toState)) {
             mRecentsView.applySplitPrimaryScrollOffset();
         } else {
             mRecentsView.resetSplitPrimaryScrollOffset();
         }
-    }
-
-    /**
-     * @return true if {@param toState} is {@link LauncherState#OVERVIEW_SPLIT_SELECT}
-     *          and {@param fromState} is not {@link LauncherState#OVERVIEW_SPLIT_SELECT}
-     */
-    private boolean isSplitSelectionState(@NonNull LauncherState fromState,
-            @NonNull LauncherState toState) {
-        return fromState != OVERVIEW_SPLIT_SELECT && toState == OVERVIEW_SPLIT_SELECT;
     }
 
     private void setAlphas(PropertySetter propertySetter, StateAnimationConfig config,

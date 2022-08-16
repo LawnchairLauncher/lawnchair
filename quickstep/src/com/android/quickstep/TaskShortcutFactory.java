@@ -49,7 +49,6 @@ import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecCompat;
 import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecsFuture;
 import com.android.systemui.shared.recents.view.RecentsTransition;
-import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
@@ -78,7 +77,7 @@ public interface TaskShortcutFactory {
                             TaskUtils.getTitle(taskView.getContext(), taskContainer.getTask()),
                             taskContainer.getA11yNodeId()
                     );
-            return new AppInfo(activity, taskContainer.getItemInfo(), accessibilityInfo);
+            return new AppInfo(activity, taskContainer.getItemInfo(), taskView, accessibilityInfo);
         }
 
         @Override
@@ -123,7 +122,7 @@ public interface TaskShortcutFactory {
         private final SplitPositionOption mSplitPositionOption;
         public SplitSelectSystemShortcut(BaseDraggingActivity target, TaskView taskView,
                 SplitPositionOption option) {
-            super(option.iconResId, option.textResId, target, taskView.getItemInfo());
+            super(option.iconResId, option.textResId, target, taskView.getItemInfo(), taskView);
             mTaskView = taskView;
             mSplitPositionOption = option;
         }
@@ -147,7 +146,8 @@ public interface TaskShortcutFactory {
         public MultiWindowSystemShortcut(int iconRes, int textRes, BaseDraggingActivity activity,
                 TaskIdAttributeContainer taskContainer, MultiWindowFactory factory,
                 LauncherEvent launcherEvent) {
-            super(iconRes, textRes, activity, taskContainer.getItemInfo());
+            super(iconRes, textRes, activity, taskContainer.getItemInfo(),
+                    taskContainer.getTaskView());
             mLauncherEvent = launcherEvent;
             mHandler = new Handler(Looper.getMainLooper());
             mTaskView = taskContainer.getTaskView();
@@ -190,7 +190,7 @@ public interface TaskShortcutFactory {
 
             ActivityOptions options = mFactory.makeLaunchOptions(mTarget);
             if (options != null) {
-                options.setSplashscreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
+                options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
             }
             if (options != null
                     && ActivityManagerWrapper.getInstance().startActivityFromRecents(taskId,
@@ -258,9 +258,8 @@ public interface TaskShortcutFactory {
 
         @Override
         protected ActivityOptions makeLaunchOptions(Activity activity) {
-            final ActivityCompat act = new ActivityCompat(activity);
             final int navBarPosition = WindowManagerWrapper.getInstance().getNavBarPosition(
-                    act.getDisplayId());
+                    activity.getDisplayId());
             if (navBarPosition == WindowManagerWrapper.NAV_BAR_POS_INVALID) {
                 return null;
             }
@@ -321,7 +320,7 @@ public interface TaskShortcutFactory {
         public PinSystemShortcut(BaseDraggingActivity target,
                 TaskIdAttributeContainer taskContainer) {
             super(R.drawable.ic_pin, R.string.recent_task_option_pin, target,
-                    taskContainer.getItemInfo());
+                    taskContainer.getItemInfo(), taskContainer.getTaskView());
             mTaskView = taskContainer.getTaskView();
         }
 
@@ -338,20 +337,23 @@ public interface TaskShortcutFactory {
 
     TaskShortcutFactory INSTALL = (activity, taskContainer) ->
             InstantAppResolver.newInstance(activity).isInstantApp(activity,
-                 taskContainer.getTask().getTopComponent().getPackageName())
-                    ? new SystemShortcut.Install(activity, taskContainer.getItemInfo()) : null;
+                    taskContainer.getTask().getTopComponent().getPackageName())
+                    ? new SystemShortcut.Install(activity, taskContainer.getItemInfo(),
+                    taskContainer.getTaskView()) : null;
 
     TaskShortcutFactory WELLBEING = (activity, taskContainer) ->
-            WellbeingModel.SHORTCUT_FACTORY.getShortcut(activity, taskContainer.getItemInfo());
+            WellbeingModel.SHORTCUT_FACTORY.getShortcut(activity, taskContainer.getItemInfo(),
+                    taskContainer.getTaskView());
 
     TaskShortcutFactory SCREENSHOT = (activity, taskContainer) ->
             taskContainer.getThumbnailView().getTaskOverlay()
-                    .getScreenshotShortcut(activity, taskContainer.getItemInfo());
+                    .getScreenshotShortcut(activity, taskContainer.getItemInfo(),
+                            taskContainer.getTaskView());
 
     TaskShortcutFactory MODAL = (activity, taskContainer) -> {
         if (ENABLE_OVERVIEW_SELECTIONS.get()) {
-            return taskContainer.getThumbnailView()
-                    .getTaskOverlay().getModalStateSystemShortcut(taskContainer.getItemInfo());
+            return taskContainer.getThumbnailView().getTaskOverlay().getModalStateSystemShortcut(
+                    taskContainer.getItemInfo(), taskContainer.getTaskView());
         }
         return null;
     };

@@ -19,7 +19,6 @@ package com.android.launcher3.uioverrides;
 import android.app.Person;
 import android.content.Context;
 import android.content.pm.ShortcutInfo;
-import android.view.Display;
 
 import com.android.launcher3.Utilities;
 
@@ -29,20 +28,6 @@ public class ApiWrapper {
 
     public static Person[] getPersons(ShortcutInfo si) {
         return Utilities.EMPTY_PERSON_ARRAY;
-    }
-
-    /**
-     * Returns true if the display is an internal displays
-     */
-    public static boolean isInternalDisplay(Display display) {
-        return display.getDisplayId() == Display.DEFAULT_DISPLAY;
-    }
-
-    /**
-     * Returns a unique ID representing the display
-     */
-    public static String getUniqueId(Display display) {
-        return Integer.toString(display.getDisplayId());
     }
 
     /**

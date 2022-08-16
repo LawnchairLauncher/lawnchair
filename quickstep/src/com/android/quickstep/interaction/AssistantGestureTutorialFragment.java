@@ -18,10 +18,16 @@ package com.android.quickstep.interaction;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 
 /** Shows the Home gesture interactive tutorial. */
 public class AssistantGestureTutorialFragment extends TutorialFragment {
+
+    public AssistantGestureTutorialFragment() {}
+
     @Override
     TutorialController createController(TutorialType type) {
         return new AssistantGestureTutorialController(this, type);
@@ -38,5 +44,15 @@ public class AssistantGestureTutorialFragment extends TutorialFragment {
             mTutorialController.setRippleHotspot(motionEvent.getX(), motionEvent.getY());
         }
         return super.onTouch(view, motionEvent);
+    }
+
+    @Override
+    void logTutorialStepShown(@NonNull StatsLogManager statsLogManager) {
+        // No-Op: tutorial step not currently shown to users
+    }
+
+    @Override
+    void logTutorialStepCompleted(@NonNull StatsLogManager statsLogManager) {
+        // No-Op: tutorial step not currently shown to users
     }
 }

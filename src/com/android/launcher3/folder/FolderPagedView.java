@@ -252,7 +252,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
     }
 
     @Override
-    protected int getChildGap() {
+    protected int getChildGap(int fromIndex, int toIndex) {
         return getPaddingLeft() + getPaddingRight();
     }
 

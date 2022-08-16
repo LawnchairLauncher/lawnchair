@@ -31,20 +31,20 @@
 
         <View
             android:id="@+id/collapse_handle"
-            android:layout_width="48dp"
-            android:layout_height="2dp"
-            android:layout_marginTop="16dp"
+            android:layout_width="@dimen/bottom_sheet_handle_width"
+            android:layout_height="@dimen/bottom_sheet_handle_height"
+            android:layout_marginTop="@dimen/bottom_sheet_handle_margin"
             android:layout_centerHorizontal="true"
-            android:background="?android:attr/textColorSecondary"/>
+            android:background="@drawable/bg_rounded_corner_bottom_sheet_handle"/>
 
         <TextView
+            style="@style/PrimaryHeadline"
             android:id="@+id/no_widgets_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:visibility="gone"
-            android:fontFamily="sans-serif-medium"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:layout_below="@id/search_and_recommendations_container"
             tools:text="No widgets available" />
 

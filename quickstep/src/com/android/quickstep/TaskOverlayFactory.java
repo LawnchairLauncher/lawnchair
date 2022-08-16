@@ -46,6 +46,7 @@ import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.launcher3.views.ActivityContext;
 import com.android.quickstep.TaskShortcutFactory.SplitSelectSystemShortcut;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.views.OverviewActionsView;
@@ -55,7 +56,6 @@ import com.android.quickstep.views.TaskView;
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
-import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,8 +119,8 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
      * * There aren't at least 2 tasks in overview to show split options for
      * * Device is in "Lock task mode"
      * * The taskView to show split options for is the focused task AND we haven't started
-     *   scrolling in overview (if we haven't scrolled, there's a split overview action button so
-     *   we don't need this menu option)
+     * scrolling in overview (if we haven't scrolled, there's a split overview action button so
+     * we don't need this menu option)
      */
     private static void addSplitOptions(List<SystemShortcut> outShortcuts,
             BaseDraggingActivity activity, TaskView taskView, DeviceProfile deviceProfile) {
@@ -130,7 +130,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         boolean taskViewHasMultipleTasks = taskViewTaskIds[0] != -1 &&
                 taskViewTaskIds[1] != -1;
         boolean notEnoughTasksToSplit = recentsView.getTaskViewCount() < 2;
-        boolean isFocusedTask = deviceProfile.overviewShowAsGrid && taskView.isFocusedTask();
+        boolean isFocusedTask = deviceProfile.isTablet && taskView.isFocusedTask();
         boolean isTaskInExpectedScrollPosition =
                 recentsView.isTaskInExpectedScrollPosition(recentsView.indexOfChild(taskView));
         ActivityManager activityManager =
@@ -157,13 +157,15 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
      * Subclasses can attach any system listeners in this method, must be paired with
      * {@link #removeListeners()}
      */
-    public void initListeners() { }
+    public void initListeners() {
+    }
 
     /**
      * Subclasses should remove any system listeners in this method, must be paired with
      * {@link #initListeners()}
      */
-    public void removeListeners() { }
+    public void removeListeners() {
+    }
 
     /** Note that these will be shown in order from top to bottom, if available for the task. */
     private static final TaskShortcutFactory[] MENU_OPTIONS = new TaskShortcutFactory[]{
@@ -190,7 +192,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             mApplicationContext = taskThumbnailView.getContext().getApplicationContext();
             mThumbnailView = taskThumbnailView;
             mImageApi = new ImageActionsApi(
-                mApplicationContext, mThumbnailView::getThumbnail);
+                    mApplicationContext, mThumbnailView::getThumbnail);
         }
 
         protected T getActionsView() {
@@ -264,7 +266,8 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         /**
          * Gets the modal state system shortcut.
          */
-        public SystemShortcut getModalStateSystemShortcut(WorkspaceItemInfo itemInfo) {
+        public SystemShortcut getModalStateSystemShortcut(WorkspaceItemInfo itemInfo,
+                View original) {
             return null;
         }
 
@@ -278,9 +281,10 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
          * Gets the system shortcut for the screenshot that will be added to the task menu.
          */
         public SystemShortcut getScreenshotShortcut(BaseDraggingActivity activity,
-                ItemInfo iteminfo) {
-            return new ScreenshotSystemShortcut(activity, iteminfo);
+                ItemInfo iteminfo, View originalView) {
+            return new ScreenshotSystemShortcut(activity, iteminfo, originalView);
         }
+
         /**
          * Gets the task snapshot as it is displayed on the screen.
          *
@@ -311,18 +315,29 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         }
 
         protected void showBlockedByPolicyMessage() {
+            ActivityContext activityContext = ActivityContext.lookupContext(
+                    mThumbnailView.getContext());
+            String message = activityContext.getStringCache() != null
+                    ? activityContext.getStringCache().disabledByAdminMessage
+                    : mThumbnailView.getContext().getString(R.string.blocked_by_policy);
             Toast.makeText(
                     mThumbnailView.getContext(),
-                    R.string.blocked_by_policy,
+                    message,
                     Toast.LENGTH_LONG).show();
+        }
+
+        /** Called when the snapshot has updated its full screen drawing parameters. */
+        public void setFullscreenParams(TaskView.FullscreenDrawParams fullscreenParams) {
         }
 
         private class ScreenshotSystemShortcut extends SystemShortcut {
 
             private final BaseDraggingActivity mActivity;
 
-            ScreenshotSystemShortcut(BaseDraggingActivity activity, ItemInfo itemInfo) {
-                super(R.drawable.ic_screenshot, R.string.action_screenshot, activity, itemInfo);
+            ScreenshotSystemShortcut(BaseDraggingActivity activity, ItemInfo itemInfo,
+                    View originalView) {
+                super(R.drawable.ic_screenshot, R.string.action_screenshot, activity, itemInfo,
+                        originalView);
                 mActivity = activity;
             }
 

@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package {
     // See: http://go/android-license-faq
     default_applicable_licenses: ["Android-Apache-2.0"],
@@ -19,7 +20,10 @@ package {
 // Source code used for test
 filegroup {
     name: "launcher-tests-src",
-    srcs: ["src/**/*.java"],
+    srcs: [
+      "src/**/*.java",
+      "src/**/*.kt"
+    ],
 }
 
 // Source code used for oop test helpers
@@ -28,16 +32,19 @@ filegroup {
     srcs: [
       "src/com/android/launcher3/ui/AbstractLauncherUiTest.java",
       "src/com/android/launcher3/ui/PortraitLandscapeRunner.java",
+      "src/com/android/launcher3/util/TestUtil.java",
       "src/com/android/launcher3/util/Wait.java",
       "src/com/android/launcher3/util/WidgetUtils.java",
       "src/com/android/launcher3/util/rule/FailureWatcher.java",
       "src/com/android/launcher3/util/rule/LauncherActivityRule.java",
+      "src/com/android/launcher3/util/rule/SamplerRule.java",
       "src/com/android/launcher3/util/rule/ScreenRecordRule.java",
       "src/com/android/launcher3/util/rule/ShellCommandRule.java",
       "src/com/android/launcher3/util/rule/SimpleActivityRule.java",
       "src/com/android/launcher3/util/rule/TestStabilityRule.java",
       "src/com/android/launcher3/ui/TaplTestsLauncher3.java",
       "src/com/android/launcher3/testcomponent/BaseTestingActivity.java",
+      "src/com/android/launcher3/testcomponent/OtherBaseTestingActivity.java",
       "src/com/android/launcher3/testcomponent/CustomShortcutConfigActivity.java",
       "src/com/android/launcher3/testcomponent/TestCommandReceiver.java",
       "src/com/android/launcher3/testcomponent/TestLauncherActivity.java",
@@ -61,10 +68,16 @@ android_library {
         "androidx.test.uiautomator_uiautomator",
         "mockito-target-inline-minus-junit4",
         "launcher_log_protos_lite",
-        "truth-prebuilt"
+        "truth-prebuilt",
+        "platform-test-rules",
     ],
     manifest: "AndroidManifest-common.xml",
     platform_apis: true,
+}
+
+android_library {
+    name: "Launcher3TestResources",
+    resource_dirs: ["res"],
 }
 
 android_test {

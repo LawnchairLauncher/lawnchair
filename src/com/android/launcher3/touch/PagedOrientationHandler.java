@@ -47,10 +47,6 @@ import java.util.List;
  */
 public interface PagedOrientationHandler {
 
-    int SPLIT_TRANSLATE_PRIMARY_POSITIVE = 0;
-    int SPLIT_TRANSLATE_PRIMARY_NEGATIVE = 1;
-    int SPLIT_TRANSLATE_SECONDARY_NEGATIVE = 2;
-
     PagedOrientationHandler PORTRAIT = new PortraitPagedViewHandler();
     PagedOrientationHandler LANDSCAPE = new LandscapePagedViewHandler();
     PagedOrientationHandler SEASCAPE = new SeascapePagedViewHandler();
@@ -82,12 +78,6 @@ public interface PagedOrientationHandler {
     FloatProperty<View> getPrimaryViewTranslate();
     FloatProperty<View> getSecondaryViewTranslate();
 
-    /**
-     * @param stagePosition The position where the view to be split will go
-     * @return {@link #SPLIT_TRANSLATE_*} constants to indicate which direction the
-     * dismissal should happen
-     */
-    int getSplitTaskViewDismissDirection(@StagePosition int stagePosition, DeviceProfile dp);
     int getPrimaryScroll(View view);
     float getPrimaryScale(View view);
     int getChildStart(View view);
@@ -120,10 +110,29 @@ public interface PagedOrientationHandler {
     int getDistanceToBottomOfRect(DeviceProfile dp, Rect rect);
     List<SplitPositionOption> getSplitPositionOptions(DeviceProfile dp);
     /**
-     * @param splitholderSize height of placeholder view in portrait, width in landscape
+     * @param placeholderHeight height of placeholder view in portrait, width in landscape
      */
-    void getInitialSplitPlaceholderBounds(int splitholderSize, DeviceProfile dp,
-            @StagePosition int stagePosition, Rect out);
+    void getInitialSplitPlaceholderBounds(int placeholderHeight, int placeholderInset,
+            DeviceProfile dp, @StagePosition int stagePosition, Rect out);
+
+    /**
+     * Centers an icon in the split staging area, accounting for insets.
+     * @param out The icon that needs to be centered.
+     * @param onScreenRectCenterX The x-center of the on-screen staging area (most of the Rect is
+     *                        offscreen).
+     * @param onScreenRectCenterY The y-center of the on-screen staging area (most of the Rect is
+     *                        offscreen).
+     * @param fullscreenScaleX A x-scaling factor used to convert coordinates back into pixels.
+     * @param fullscreenScaleY A y-scaling factor used to convert coordinates back into pixels.
+     * @param drawableWidth The icon's drawable (final) width.
+     * @param drawableHeight The icon's drawable (final) height.
+     * @param dp The device profile, used to report rotation and hardware insets.
+     * @param stagePosition 0 if the staging area is pinned to top/left, 1 for bottom/right.
+     */
+    void updateStagedSplitIconParams(View out, float onScreenRectCenterX,
+            float onScreenRectCenterY, float fullscreenScaleX, float fullscreenScaleY,
+            int drawableWidth, int drawableHeight, DeviceProfile dp,
+            @StagePosition int stagePosition);
 
     /**
      * @param splitDividerSize height of split screen drag handle in portrait, width in landscape
@@ -149,14 +158,15 @@ public interface PagedOrientationHandler {
 
     void measureGroupedTaskViewThumbnailBounds(View primarySnapshot, View secondarySnapshot,
             int parentWidth, int parentHeight,
-            StagedSplitBounds splitBoundsConfig, DeviceProfile dp);
+            StagedSplitBounds splitBoundsConfig, DeviceProfile dp, boolean isRtl);
 
     // Overview TaskMenuView methods
-    void setIconAndSnapshotParams(View iconView, int taskIconMargin, int taskIconHeight,
-            FrameLayout.LayoutParams snapshotParams, boolean isRtl);
+    void setTaskIconParams(FrameLayout.LayoutParams iconParams,
+            int taskIconMargin, int taskIconHeight, int thumbnailTopMargin, boolean isRtl);
     void setSplitIconParams(View primaryIconView, View secondaryIconView,
             int taskIconHeight, int primarySnapshotWidth, int primarySnapshotHeight,
-            boolean isRtl, DeviceProfile deviceProfile, StagedSplitBounds splitConfig);
+            int groupedTaskViewHeight, int groupedTaskViewWidth, boolean isRtl,
+            DeviceProfile deviceProfile, StagedSplitBounds splitConfig);
 
     /*
      * The following two methods try to center the TaskMenuView in landscape by finding the center
@@ -191,7 +201,12 @@ public interface PagedOrientationHandler {
      */
     PointF getAdditionalInsetForTaskMenu(float margin);
 
-    Pair<Float, Float> setDwbLayoutParamsAndGetTranslations(int taskViewWidth,
+    /**
+     * Calculates the position where a Digital Wellbeing Banner should be placed on its parent
+     * TaskView.
+     * @return A Pair of Floats representing the proper x and y translations.
+     */
+    Pair<Float, Float> getDwbLayoutTranslations(int taskViewWidth,
             int taskViewHeight, StagedSplitBounds splitBounds, DeviceProfile deviceProfile,
             View[] thumbnailViews, int desiredTaskId, View banner);
 
@@ -210,6 +225,12 @@ public interface PagedOrientationHandler {
      * of Launcher's (which now will always be portrait)
      */
     void adjustFloatingIconStartVelocity(PointF velocity);
+
+    /**
+     * Ensures that outStartRect left bound is within the DeviceProfile's visual boundaries
+     * @param outStartRect The start rect that will directly be modified
+     */
+    void fixBoundsForHomeAnimStartRect(RectF outStartRect, DeviceProfile deviceProfile);
 
     class ChildBounds {
 

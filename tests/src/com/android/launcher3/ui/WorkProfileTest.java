@@ -25,11 +25,14 @@ import static org.junit.Assert.assertTrue;
 import android.util.Log;
 import android.view.View;
 
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
+
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsPagedView;
 import com.android.launcher3.allapps.WorkAdapterProvider;
 import com.android.launcher3.allapps.WorkEduCard;
+import com.android.launcher3.allapps.WorkPausedCard;
 import com.android.launcher3.allapps.WorkProfileManager;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 
@@ -38,10 +41,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Objects;
+import java.util.function.Predicate;
 
 public class WorkProfileTest extends AbstractLauncherUiTest {
 
-    private static final int WORK_PAGE = AllAppsContainerView.AdapterHolder.WORK;
+    private static final int WORK_PAGE = ActivityAllAppsContainerView.AdapterHolder.WORK;
 
     private int mProfileUserId;
 
@@ -130,12 +134,14 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
             return manager.getCurrentState() == WorkProfileManager.STATE_DISABLED;
         }, LauncherInstrumentation.WAIT_TIME_MS);
 
+        waitForWorkCard("Work paused card not shown", view -> view instanceof WorkPausedCard);
+
         // start work profile toggle ON test
         executeOnLauncher(l -> {
-            AllAppsContainerView allApps = l.getAppsView();
+            ActivityAllAppsContainerView<?> allApps = l.getAppsView();
             assertEquals("Work tab is not focused", allApps.getCurrentPage(), WORK_PAGE);
-            View workPausedCard = allApps.getActiveRecyclerView().findViewHolderForAdapterPosition(
-                    0).itemView;
+            View workPausedCard = allApps.getActiveRecyclerView()
+                    .findViewHolderForAdapterPosition(0).itemView;
             workPausedCard.findViewById(R.id.enable_work_apps).performClick();
         });
         waitForLauncherCondition("Work profile toggle ON failed", launcher -> {
@@ -154,9 +160,19 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
             l.getAppsView().getWorkManager().reset();
         });
 
-        waitForLauncherCondition("Work profile education not shown",
-                l -> l.getAppsView().getActiveRecyclerView()
-                        .findViewHolderForAdapterPosition(0).itemView instanceof WorkEduCard,
-                LauncherInstrumentation.WAIT_TIME_MS);
+        waitForWorkCard("Work profile education not shown", view -> view instanceof WorkEduCard);
+    }
+
+    private void waitForWorkCard(String message, Predicate<View> workCardCheck) {
+        waitForLauncherCondition(message, l -> {
+            l.getAppsView().getAppsStore().disableDeferUpdates(DEFER_UPDATES_TEST);
+            ViewHolder holder = l.getAppsView().getActiveRecyclerView()
+                    .findViewHolderForAdapterPosition(0);
+            try {
+                return holder != null && workCardCheck.test(holder.itemView);
+            } finally {
+                l.getAppsView().getAppsStore().enableDeferUpdates(DEFER_UPDATES_TEST);
+            }
+        }, LauncherInstrumentation.WAIT_TIME_MS);
     }
 }

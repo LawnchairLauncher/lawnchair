@@ -16,6 +16,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
 import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
@@ -79,6 +80,9 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public static final int FLAG_CLOSE_POPUPS = BaseState.getFlag(6);
     public static final int FLAG_OVERVIEW_UI = BaseState.getFlag(7);
 
+    // Flag indicating that hotseat and its contents are not accessible.
+    public static final int FLAG_HOTSEAT_INACCESSIBLE = BaseState.getFlag(8);
+
 
     public static final float NO_OFFSET = 0;
     public static final float NO_SCALE = 1;
@@ -88,6 +92,14 @@ public abstract class LauncherState implements BaseState<LauncherState> {
                 @Override
                 public float getPageAlpha(int pageIndex) {
                     return 1;
+                }
+            };
+
+    protected static final PageTranslationProvider DEFAULT_PAGE_TRANSLATION_PROVIDER =
+            new PageTranslationProvider(DEACCEL_2) {
+                @Override
+                public float getPageTranslation(int pageIndex) {
+                    return 0;
                 }
             };
 
@@ -101,7 +113,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
             FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_HIDE_BACK_BUTTON |
                     FLAG_HAS_SYS_UI_SCRIM) {
         @Override
-        public int getTransitionDuration(Context context) {
+        public int getTransitionDuration(Context context, boolean isToState) {
             // Arbitrary duration, when going to NORMAL we use the state we're coming from instead.
             return 0;
         }
@@ -288,6 +300,25 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         };
     }
 
+    /**
+     * Gets the translation provider for workspace pages.
+     */
+    public PageTranslationProvider getWorkspacePageTranslationProvider(Launcher launcher) {
+        if (this != SPRING_LOADED || !launcher.getDeviceProfile().isTwoPanels) {
+            return DEFAULT_PAGE_TRANSLATION_PROVIDER;
+        }
+        final float quarterPageSpacing = launcher.getWorkspace().getPageSpacing() / 4f;
+        return new PageTranslationProvider(DEACCEL_2) {
+            @Override
+            public float getPageTranslation(int pageIndex) {
+                boolean isRtl = launcher.getWorkspace().mIsRtl;
+                boolean isFirstPage = pageIndex % 2 == 0;
+                return ((isFirstPage && !isRtl) || (!isFirstPage && isRtl)) ? -quarterPageSpacing
+                        : quarterPageSpacing;
+            }
+        };
+    }
+
     @Override
     public LauncherState getHistoryForState(LauncherState previousState) {
         // No history is supported
@@ -316,6 +347,23 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         }
 
         public abstract float getPageAlpha(int pageIndex);
+    }
+
+    /**
+     * Provider for the translation and animation interpolation of workspace pages.
+     */
+    public abstract static class PageTranslationProvider {
+
+        public final Interpolator interpolator;
+
+        public PageTranslationProvider(Interpolator interpolator) {
+            this.interpolator = interpolator;
+        }
+
+        /**
+         * Gets the translation of the workspace page at the provided page index.
+         */
+        public abstract float getPageTranslation(int pageIndex);
     }
 
     public static class ScaleAndTranslation {

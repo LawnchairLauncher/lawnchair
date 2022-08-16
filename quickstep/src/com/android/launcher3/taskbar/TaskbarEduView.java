@@ -20,6 +20,7 @@ import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Rect;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
@@ -90,6 +91,14 @@ public class TaskbarEduView extends AbstractSlideInView<TaskbarActivityContext>
             getPopupContainer().addView(mColorScrim, 0);
         }
         getPopupContainer().addView(this, 1);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        Settings.Secure.putInt(mContext.getContentResolver(),
+                Settings.Secure.LAUNCHER_TASKBAR_EDUCATION_SHOWING, 0);
     }
 
     /** Show the Education flow. */

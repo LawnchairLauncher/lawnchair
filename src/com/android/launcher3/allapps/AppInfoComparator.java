@@ -43,7 +43,9 @@ public class AppInfoComparator implements Comparator<AppInfo> {
     @Override
     public int compare(AppInfo a, AppInfo b) {
         // Order by the title in the current locale
-        int result = mLabelComparator.compare(a.title.toString(), b.title.toString());
+        int result = mLabelComparator.compare(
+                a.title == null ? "" : a.title.toString(),
+                b.title == null ? "" : b.title.toString());
         if (result != 0) {
             return result;
         }

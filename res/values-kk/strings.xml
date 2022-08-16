@@ -37,8 +37,8 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Ені: %1$d, биіктігі: %2$d"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> виджеті"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Негізгі экранда қозғалту үшін виджетті басып тұрыңыз."</string>
-    <string name="add_to_home_screen" msgid="8631549138215492708">"Негізгі экранға қосу"</string>
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Негізгі экран бойынша жылжыту үшін виджетті басып ұстаңыз."</string>
+    <string name="add_to_home_screen" msgid="9168649446635919791">"Негізгі экранға қосу"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> виджеті негізгі экранға енгізілді."</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# виджет}other{# виджет}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# таңбаша}other{# таңбаша}}"</string>
@@ -52,7 +52,7 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Жұмыс виджеттері"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Әңгімелер"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Саусақпен түртсеңіз болғаны – пайдалы ақпарат көз алдыңызда"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"Қолданбаларды ашпай-ақ ақпарат алу үшін негізгі экранға тиісті виджеттерді қосыңыз."</string>
+    <string name="widget_education_content" msgid="1731667670753497052">"Қолданбаларды ашпай-ақ ақпарат алу үшін негізгі экранға тиісті виджеттерді қосыңыз."</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Виджет параметрлерін өзгерту үшін түртіңіз."</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"Түсінікті"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Виджет параметрлерін өзгерту"</string>
@@ -65,7 +65,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"Хабарландырулар"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Таңбашаны жылжыту үшін басып тұрыңыз."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Таңбашаны жылжыту үшін екі рет түртіңіз де, ұстап тұрыңыз немесе арнаулы әрекеттерді пайдаланыңыз."</string>
-    <string name="out_of_space" msgid="6692471482459245734">"Негізгі экранда бос орын қалмады."</string>
+    <string name="out_of_space" msgid="6455557115204099579">"Негізгі экранда бос орын қалмады."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Қалаулылар науасында орын қалмады"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Қолданбалар тізімі"</string>
     <string name="all_apps_search_results" msgid="5889367432531296759">"Іздеу нәтижелері"</string>
@@ -79,10 +79,10 @@
     <string name="pin_prediction" msgid="4196423321649756498">"Болжанған қолданбаны бекіту"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"таңбаша орнату"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Қолданбаға пайдаланушының қатысуынсыз төте пернелерді қосу мүмкіндігін береді."</string>
-    <string name="permlab_read_settings" msgid="1941457408239617576">"Негізгі экрандағы параметрлер мен төте пернелерді оқу"</string>
-    <string name="permdesc_read_settings" msgid="5833423719057558387">"Қолданбаға Негізгі экрандағы параметрлер мен төте пернелерді оқу мүмкіндігін береді."</string>
-    <string name="permlab_write_settings" msgid="3574213698004620587">"Негізгі экран параметрлері мен төте пернелерін жазу"</string>
-    <string name="permdesc_write_settings" msgid="5440712911516509985">"Қолданбаға Негізгі экрандағы параметрлер мен төте пернелерді өзгерту мүмкіндігін береді."</string>
+    <string name="permlab_read_settings" msgid="5136500343007704955">"негізгі экран параметрлері мен таңбашаларын оқу"</string>
+    <string name="permdesc_read_settings" msgid="4208061150510996676">"Қолданбаға негізгі экрандағы параметрлер мен таңбашаларды оқуға мүмкіндік береді."</string>
+    <string name="permlab_write_settings" msgid="4820028712156303762">"негізгі экран параметрлері мен таңбашаларын жазу"</string>
+    <string name="permdesc_write_settings" msgid="726859348127868466">"Қолданбаға негізгі экрандағы параметрлер мен таңбашаларды өзгертуге мүмкіндік береді."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> арқылы телефон қоңырауларын соғуға рұқсат етілмеген"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Виджетті жүктеу мүмкін емес."</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Виджет параметрлері"</string>
@@ -90,7 +90,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Бұл жүйе қолданбасы, сондықтан оны алу мүмкін емес."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Атын өңдеу"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> өшірілді"</string>
-    <string name="dotted_app_label" msgid="1704091277755818896">"{count,plural,offset:1 =1{{app_name} қолданбасында # хабарландыру бар}other{{app_name} қолданбасында # хабарландыру бар}}"</string>
+    <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} қолданбасында # хабарландыру бар}other{{app_name} қолданбасында # хабарландыру бар}}"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"%1$d бет, барлығы %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%1$d негізгі экран, барлығы %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Жаңа негізгі экран беті"</string>
@@ -105,7 +105,7 @@
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Тұсқағаз және стиль"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Негізгі экран параметрлері"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Әкімші өшірді"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"Негізгі экранның бұрылуына рұқсат ету"</string>
+    <string name="allow_rotation_title" msgid="7222049633713050106">"Негізгі экранды бұруға рұқсат ету"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Телефон бұрылғанда"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Хабарландыру белгілері"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Қосулы"</string>
@@ -114,7 +114,8 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Хабарландыру белгілерін көрсету үшін <xliff:g id="NAME">%1$s</xliff:g> қолданбасының қолданба хабарландыруларын қосыңыз"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Параметрлерді өзгерту"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Хабарландыру белгілерін көрсету"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Қолданба белгішесін негізгі экранға қосу"</string>
+    <string name="developer_options_title" msgid="700788437593726194">"Әзірлеуші опциялары"</string>
+    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Қолданба белгішелерін негізгі экранға қосу"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Жаңа қолданбаларға арналған"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Белгісіз"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Алып тастау"</string>
@@ -124,9 +125,13 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> орнатылуда, <xliff:g id="PROGRESS">%2$s</xliff:g> аяқталды"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> жүктелуде, <xliff:g id="PROGRESS">%2$s</xliff:g> аяқталды"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> орнату күтілуде"</string>
+    <string name="dialog_update_title" msgid="114234265740994042">"Қолданбаны жаңарту қажет"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"Осы белгіше үшін қолданба жаңартылмаған. Оны қолмен жаңартып, осы таңбашаны қайта іске қоса аласыз немесе белгішені өшіріп тастаңыз."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"Жаңарту"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"Өшіру"</string>
     <string name="widgets_list" msgid="796804551140113767">"Виджеттер тізімі"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Видджеттер тізімі жабылды"</string>
-    <string name="action_add_to_workspace" msgid="8902165848117513641">"Негізгі экранға қосу"</string>
+    <string name="action_add_to_workspace" msgid="215894119683164916">"Негізгі экранға қосу"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Элементті мұнда жылжыту"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Элемент негізгі экранға қосылды"</string>
     <string name="item_removed" msgid="851119963877842327">"Элемент жойылды"</string>
@@ -141,7 +146,7 @@
     <string name="added_to_folder" msgid="4793259502305558003">"Элемент қалтаға қосылды"</string>
     <string name="create_folder_with" msgid="4050141361160214248">"Мына бар қалтаны жасау: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"Қалта жасалды"</string>
-    <string name="action_move_to_workspace" msgid="1603837886334246317">"Негізгі экранға жылжыту"</string>
+    <string name="action_move_to_workspace" msgid="39528912300293768">"Негізгі экранға жылжыту"</string>
     <string name="action_resize" msgid="1802976324781771067">"Өлшемін өзгерту"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"Енін арттыру"</string>
     <string name="action_increase_height" msgid="459390020612501122">"Биіктігін арттыру"</string>
@@ -163,8 +168,10 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Жұмыс қолданбалары өшірулі. Олар сізге хабарландырулар жібере, батареяңызды немесе локацияңызды пайдалана алмайды."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Жұмыс қолданбаларының танымбелгілері бар және олар әкімшіңізге көрінеді."</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Түсінікті"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Жұмыс қолданбаларын өшіру"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Жұмыс қолданбаларын тоқтата тұру"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Жұмыс қолданбаларын қосу"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Сүзгі"</string>
+    <string name="search_pref_screen_title" msgid="3258959643336315962">"Телефоннан іздеу"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Планшеттен іздеу"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Қате шықты: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

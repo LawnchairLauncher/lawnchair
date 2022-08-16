@@ -94,7 +94,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
-                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
 
@@ -138,6 +137,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="com.android.launcher3.intent.action.test_shortcut"/>
@@ -261,6 +261,15 @@
         </activity-alias>
         <activity-alias android:name="Activity14" android:exported="true"
             android:label="TestActivity14"
+            android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="Activity15" android:exported="true"
+            android:label="ThemeIconTestActivity"
+            android:icon="@drawable/test_theme_icon"
             android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

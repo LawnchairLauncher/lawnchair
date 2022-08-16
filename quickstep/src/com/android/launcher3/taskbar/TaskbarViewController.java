@@ -18,14 +18,18 @@ package com.android.launcher3.taskbar;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP;
 import static com.android.quickstep.AnimatedFloat.VALUE;
 
+import android.annotation.NonNull;
 import android.graphics.Rect;
 import android.util.FloatProperty;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.ViewTreeObserver.OnPreDrawListener;
+
+import androidx.core.graphics.ColorUtils;
+import androidx.core.view.OneShotPreDrawListener;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
@@ -33,15 +37,25 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.icons.ThemedIconDrawable;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.AnimatedFloat;
+
+import java.io.PrintWriter;
+import java.util.function.Predicate;
 
 /**
  * Handles properties/data collection, then passes the results to TaskbarView to render.
  */
-public class TaskbarViewController {
+public class TaskbarViewController implements TaskbarControllers.LoggableTaskbarController {
+
+    private static final String TAG = TaskbarViewController.class.getSimpleName();
+
     private static final Runnable NO_OP = () -> { };
 
     public static final int ALPHA_INDEX_HOME = 0;
@@ -60,6 +74,10 @@ public class TaskbarViewController {
     private final AnimatedFloat mTaskbarIconTranslationYForStash = new AnimatedFloat(
             this::updateTranslationY);
     private AnimatedFloat mTaskbarNavButtonTranslationY;
+    private AnimatedFloat mTaskbarNavButtonTranslationYForInAppDisplay;
+
+    private final AnimatedFloat mThemeIconsBackground = new AnimatedFloat(
+            this::updateIconsBackground);
 
     private final TaskbarModelCallbacks mModelCallbacks;
 
@@ -70,6 +88,8 @@ public class TaskbarViewController {
     // active only during the animation and does not need to worry about layout changes.
     private AnimatorPlaybackController mIconAlignControllerLazy = null;
     private Runnable mOnControllerPreCreateCallback = NO_OP;
+
+    private int mThemeIconsColor;
 
     public TaskbarViewController(TaskbarActivityContext activity, TaskbarView taskbarView) {
         mActivity = activity;
@@ -83,6 +103,7 @@ public class TaskbarViewController {
         mControllers = controllers;
         mTaskbarView.init(new TaskbarViewCallbacks());
         mTaskbarView.getLayoutParams().height = mActivity.getDeviceProfile().taskbarSize;
+        mThemeIconsColor = ThemedIconDrawable.getColors(mTaskbarView.getContext())[0];
 
         mTaskbarIconScaleForStash.updateValue(1f);
 
@@ -93,6 +114,8 @@ public class TaskbarViewController {
         }
         mTaskbarNavButtonTranslationY =
                 controllers.navbarButtonsViewController.getTaskbarNavButtonTranslationY();
+        mTaskbarNavButtonTranslationYForInAppDisplay = controllers.navbarButtonsViewController
+                .getTaskbarNavButtonTranslationYForInAppDisplay();
     }
 
     public void onDestroy() {
@@ -134,18 +157,8 @@ public class TaskbarViewController {
      * drawing a frame and invoked only once
      * @param listener callback that will be invoked before drawing the next frame
      */
-    public void addOneTimePreDrawListener(Runnable listener) {
-        mTaskbarView.getViewTreeObserver().addOnPreDrawListener(new OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                final ViewTreeObserver viewTreeObserver = mTaskbarView.getViewTreeObserver();
-                if (viewTreeObserver.isAlive()) {
-                    listener.run();
-                    viewTreeObserver.removeOnPreDrawListener(this);
-                }
-                return true;
-            }
-        });
+    public void addOneTimePreDrawListener(@NonNull Runnable listener) {
+        OneShotPreDrawListener.add(mTaskbarView, listener);
     }
 
     public Rect getIconLayoutBounds() {
@@ -154,6 +167,10 @@ public class TaskbarViewController {
 
     public View[] getIconViews() {
         return mTaskbarView.getIconViews();
+    }
+
+    public View getAllAppsButtonView() {
+        return mTaskbarView.getAllAppsButtonView();
     }
 
     public AnimatedFloat getTaskbarIconScaleForStash() {
@@ -176,6 +193,15 @@ public class TaskbarViewController {
     private void updateTranslationY() {
         mTaskbarView.setTranslationY(mTaskbarIconTranslationYForHome.value
                 + mTaskbarIconTranslationYForStash.value);
+    }
+
+    private void updateIconsBackground() {
+        mTaskbarView.setThemedIconsBackgroundColor(
+                ColorUtils.blendARGB(
+                        mThemeIconsColor,
+                        mTaskbarView.mThemeIconsBackground,
+                        mThemeIconsBackground.value
+                ));
     }
 
     /**
@@ -203,13 +229,20 @@ public class TaskbarViewController {
         PendingAnimation setter = new PendingAnimation(100);
         Rect hotseatPadding = launcherDp.getHotseatLayoutPadding(mActivity);
         float scaleUp = ((float) launcherDp.iconSizePx) / mActivity.getDeviceProfile().iconSizePx;
-        int hotseatCellSize =
-                (launcherDp.availableWidthPx - hotseatPadding.left - hotseatPadding.right)
-                        / launcherDp.numShownHotseatIcons;
+        int borderSpacing = launcherDp.hotseatBorderSpace;
+        int hotseatCellSize = DeviceProfile.calculateCellWidth(
+                launcherDp.availableWidthPx - hotseatPadding.left - hotseatPadding.right,
+                borderSpacing,
+                launcherDp.numShownHotseatIcons);
 
         int offsetY = launcherDp.getTaskbarOffsetY();
         setter.setFloat(mTaskbarIconTranslationYForHome, VALUE, -offsetY, LINEAR);
         setter.setFloat(mTaskbarNavButtonTranslationY, VALUE, -offsetY, LINEAR);
+        setter.setFloat(mTaskbarNavButtonTranslationYForInAppDisplay, VALUE, offsetY, LINEAR);
+
+        if (Utilities.isDarkTheme(mTaskbarView.getContext())) {
+            setter.addFloat(mThemeIconsBackground, VALUE, 0f, 1f, LINEAR);
+        }
 
         int collapsedHeight = mActivity.getDefaultTaskbarWindowHeight();
         int expandedHeight = Math.max(collapsedHeight,
@@ -217,16 +250,36 @@ public class TaskbarViewController {
         setter.addOnFrameListener(anim -> mActivity.setTaskbarWindowHeight(
                 anim.getAnimatedFraction() > 0 ? expandedHeight : collapsedHeight));
 
-        int count = mTaskbarView.getChildCount();
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < mTaskbarView.getChildCount(); i++) {
             View child = mTaskbarView.getChildAt(i);
-            ItemInfo info = (ItemInfo) child.getTag();
-            setter.setFloat(child, SCALE_PROPERTY, scaleUp, LINEAR);
 
-            float childCenter = (child.getLeft() + child.getRight()) / 2;
-            float hotseatIconCenter = hotseatPadding.left + hotseatCellSize * info.screenId
-                    + hotseatCellSize / 2;
+            int positionInHotseat;
+            if (FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get()
+                    && child == mTaskbarView.getAllAppsButtonView()) {
+                // Note that there is no All Apps button in the hotseat, this position is only used
+                // as its convenient for animation purposes.
+                positionInHotseat = Utilities.isRtl(child.getResources())
+                        ? -1
+                        : mActivity.getDeviceProfile().numShownHotseatIcons;
+
+                if (!FeatureFlags.ENABLE_ALL_APPS_BUTTON_IN_HOTSEAT.get()) {
+                    setter.setViewAlpha(child, 0, LINEAR);
+                }
+            } else if (child.getTag() instanceof ItemInfo) {
+                positionInHotseat = ((ItemInfo) child.getTag()).screenId;
+            } else {
+                Log.w(TAG, "Unsupported view found in createIconAlignmentController, v=" + child);
+                continue;
+            }
+
+            float hotseatIconCenter = hotseatPadding.left
+                    + (hotseatCellSize + borderSpacing) * positionInHotseat
+                    + hotseatCellSize / 2f;
+
+            float childCenter = (child.getLeft() + child.getRight()) / 2f;
             setter.setFloat(child, ICON_TRANSLATE_X, hotseatIconCenter - childCenter, LINEAR);
+
+            setter.setFloat(child, SCALE_PROPERTY, scaleUp, LINEAR);
         }
 
         AnimatorPlaybackController controller = setter.createPlaybackController();
@@ -235,11 +288,31 @@ public class TaskbarViewController {
     }
 
     public void onRotationChanged(DeviceProfile deviceProfile) {
-        if (areIconsVisible()) {
+        if (mControllers.taskbarStashController.isInApp()) {
             // We only translate on rotation when on home
             return;
         }
+        mActivity.setTaskbarWindowHeight(
+                deviceProfile.taskbarSize + deviceProfile.getTaskbarOffsetY());
         mTaskbarNavButtonTranslationY.updateValue(-deviceProfile.getTaskbarOffsetY());
+    }
+
+    /**
+     * Maps the given operator to all the top-level children of TaskbarView.
+     */
+    public void mapOverItems(LauncherBindableItemsContainer.ItemOperator op) {
+        mTaskbarView.mapOverItems(op);
+    }
+
+    /**
+     * Returns the first icon to match the given parameter, in priority from:
+     * 1) Icons directly on Taskbar
+     * 2) FolderIcon of the Folder containing the given icon
+     * 3) All Apps button
+     */
+    public View getFirstIconMatch(Predicate<ItemInfo> matcher) {
+        Predicate<ItemInfo> folderMatcher = ItemInfoMatcher.forFolderMatch(matcher);
+        return mTaskbarView.getFirstMatch(matcher, folderMatcher);
     }
 
     /**
@@ -248,6 +321,12 @@ public class TaskbarViewController {
      */
     public boolean isEventOverAnyItem(MotionEvent ev) {
         return mTaskbarView.isEventOverAnyItem(ev);
+    }
+
+    @Override
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarViewController:");
+        mModelCallbacks.dumpLogs(prefix + "\t", pw);
     }
 
     /**
@@ -261,6 +340,13 @@ public class TaskbarViewController {
 
         public View.OnClickListener getIconOnClickListener() {
             return mActivity.getItemOnClickListener();
+        }
+
+        public View.OnClickListener getAllAppsButtonClickListener() {
+            return v -> {
+                mActivity.getStatsLogManager().logger().log(LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP);
+                mControllers.taskbarAllAppsController.show();
+            };
         }
 
         public View.OnLongClickListener getIconOnLongClickListener() {

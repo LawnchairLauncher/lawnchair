@@ -18,6 +18,7 @@ package com.android.launcher3.statemanager;
 import android.content.Context;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.DeviceProfile.DeviceProfileListenable;
 
 /**
  * Interface representing a state of a StatefulActivity
@@ -36,7 +37,8 @@ public interface BaseState<T extends BaseState> {
     /**
      * @return How long the animation to this state should take (or from this state to NORMAL).
      */
-    int getTransitionDuration(Context context);
+    <DEVICE_PROFILE_CONTEXT extends Context & DeviceProfileListenable>
+    int getTransitionDuration(DEVICE_PROFILE_CONTEXT context, boolean isToState);
 
     /**
      * Returns the state to go back to from this state

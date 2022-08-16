@@ -19,6 +19,7 @@ package com.android.launcher3.appprediction;
 import static com.android.quickstep.InstantAppResolverImpl.COMPONENT_CLASS_MARKER;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 
 import com.android.launcher3.LauncherSettings;
@@ -38,8 +39,8 @@ public class InstantAppItemInfo extends AppInfo {
     }
 
     @Override
-    public WorkspaceItemInfo makeWorkspaceItem() {
-        WorkspaceItemInfo workspaceItemInfo = super.makeWorkspaceItem();
+    public WorkspaceItemInfo makeWorkspaceItem(Context context) {
+        WorkspaceItemInfo workspaceItemInfo = super.makeWorkspaceItem(context);
         workspaceItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
         workspaceItemInfo.status = WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON
                 | WorkspaceItemInfo.FLAG_RESTORE_STARTED

@@ -57,6 +57,8 @@ import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
+import com.android.launcher3.util.rule.SamplerRule;
+import com.android.launcher3.util.rule.ScreenRecordRule;
 import com.android.quickstep.views.RecentsView;
 
 import org.junit.After;
@@ -77,6 +79,8 @@ import java.util.function.Function;
 @RunWith(AndroidJUnit4.class)
 public class FallbackRecentsTest {
 
+    private static final String FALLBACK_LAUNCHER_TITLE = "Test launcher";
+
     private final UiDevice mDevice;
     private final LauncherInstrumentation mLauncher;
     private final ActivityInfo mOtherLauncherActivity;
@@ -89,6 +93,9 @@ public class FallbackRecentsTest {
 
     @Rule
     public final TestRule mOrderSensitiveRules;
+
+    @Rule
+    public ScreenRecordRule mScreenRecordRule = new ScreenRecordRule();
 
     public FallbackRecentsTest() throws RemoteException {
         Instrumentation instrumentation = getInstrumentation();
@@ -105,7 +112,8 @@ public class FallbackRecentsTest {
         }
 
         mOrderSensitiveRules = RuleChain
-                .outerRule(new NavigationModeSwitchRule(mLauncher))
+                .outerRule(new SamplerRule())
+                .around(new NavigationModeSwitchRule(mLauncher))
                 .around(new FailureWatcher(mDevice, mLauncher));
 
         mOtherLauncherActivity = context.getPackageManager().queryIntentActivities(
@@ -163,9 +171,9 @@ public class FallbackRecentsTest {
     public void goToOverviewFromHome() {
         mDevice.pressHome();
         assertTrue("Fallback Launcher not visible", mDevice.wait(Until.hasObject(By.pkg(
-                mOtherLauncherActivity.packageName)), WAIT_TIME_MS));
+                mOtherLauncherActivity.packageName).text(FALLBACK_LAUNCHER_TITLE)), WAIT_TIME_MS));
 
-        mLauncher.getBackground().switchToOverview();
+        mLauncher.getLaunchedAppState().switchToOverview();
     }
 
     // b/143488140
@@ -174,7 +182,7 @@ public class FallbackRecentsTest {
     public void goToOverviewFromApp() {
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
 
-        mLauncher.getBackground().switchToOverview();
+        mLauncher.getLaunchedAppState().switchToOverview();
     }
 
     protected void executeOnRecents(Consumer<RecentsActivity> f) {
@@ -200,7 +208,7 @@ public class FallbackRecentsTest {
 
     private BaseOverview pressHomeAndGoToOverview() {
         mDevice.pressHome();
-        return mLauncher.getBackground().switchToOverview();
+        return mLauncher.getLaunchedAppState().switchToOverview();
     }
 
     // b/143488140
@@ -213,7 +221,7 @@ public class FallbackRecentsTest {
         Wait.atMost("Expected three apps in the task list",
                 () -> mLauncher.getRecentTasks().size() >= 3, DEFAULT_ACTIVITY_TIMEOUT, mLauncher);
 
-        BaseOverview overview = mLauncher.getBackground().switchToOverview();
+        BaseOverview overview = mLauncher.getLaunchedAppState().switchToOverview();
         executeOnRecents(recents -> {
             assertTrue("Don't have at least 3 tasks", getTaskCount(recents) >= 3);
         });
@@ -252,7 +260,7 @@ public class FallbackRecentsTest {
         // Test dismissing all tasks.
         pressHomeAndGoToOverview().dismissAllTasks();
         assertTrue("Fallback Launcher not visible", TestHelpers.wait(Until.hasObject(By.pkg(
-                mOtherLauncherActivity.packageName)), WAIT_TIME_MS));
+                mOtherLauncherActivity.packageName).text(FALLBACK_LAUNCHER_TITLE)), WAIT_TIME_MS));
     }
 
     private int getCurrentOverviewPage(RecentsActivity recents) {

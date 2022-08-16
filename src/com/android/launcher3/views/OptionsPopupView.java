@@ -180,18 +180,6 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
      */
     public static ArrayList<OptionItem> getOptions(Launcher launcher) {
         ArrayList<OptionItem> options = new ArrayList<>();
-        options.add(new OptionItem(launcher,
-                R.string.settings_button_text,
-                R.drawable.ic_setting,
-                LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS,
-                OptionsPopupView::startSettings));
-        if (!WidgetsModel.GO_DISABLE_WIDGETS) {
-            options.add(new OptionItem(launcher,
-                    R.string.widget_button_text,
-                    R.drawable.ic_widget,
-                    LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS,
-                    OptionsPopupView::onWidgetsClicked));
-        }
         int resString = Utilities.existsStyleWallpapers(launcher) ?
                 R.string.styles_wallpaper_button_text : R.string.wallpaper_button_text;
         int resDrawable = Utilities.existsStyleWallpapers(launcher) ?
@@ -201,6 +189,18 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
                 resDrawable,
                 IGNORE,
                 OptionsPopupView::startWallpaperPicker));
+        if (!WidgetsModel.GO_DISABLE_WIDGETS) {
+            options.add(new OptionItem(launcher,
+                    R.string.widget_button_text,
+                    R.drawable.ic_widget,
+                    LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS,
+                    OptionsPopupView::onWidgetsClicked));
+        }
+        options.add(new OptionItem(launcher,
+                R.string.settings_button_text,
+                R.drawable.ic_setting,
+                LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS,
+                OptionsPopupView::startSettings));
         return options;
     }
 
@@ -229,7 +229,7 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
         Launcher launcher = Launcher.getLauncher(view.getContext());
         launcher.startActivity(new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
                 .setPackage(launcher.getPackageName())
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
         return true;
     }
 
@@ -240,7 +240,10 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
     private static boolean startWallpaperPicker(View v) {
         Launcher launcher = Launcher.getLauncher(v.getContext());
         if (!Utilities.isWallpaperAllowed(launcher)) {
-            Toast.makeText(launcher, R.string.msg_disabled_by_admin, Toast.LENGTH_SHORT).show();
+            String message = launcher.getStringCache() != null
+                    ? launcher.getStringCache().disabledByAdminMessage
+                    : launcher.getString(R.string.msg_disabled_by_admin);
+            Toast.makeText(launcher, message, Toast.LENGTH_SHORT).show();
             return false;
         }
         Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER)

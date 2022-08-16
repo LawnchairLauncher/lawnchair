@@ -24,4 +24,5 @@ public class TaskbarSharedState {
 
     public boolean setupUIVisible = false;
 
+    public boolean allAppsVisible = false;
 }

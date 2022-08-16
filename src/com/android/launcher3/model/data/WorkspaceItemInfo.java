@@ -180,10 +180,23 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
             runtimeStatusFlags |= FLAG_DISABLED_BY_PUBLISHER;
         }
         disabledMessage = shortcutInfo.getDisabledMessage();
+        if (Utilities.ATLEAST_P
+                && shortcutInfo.getDisabledReason() == ShortcutInfo.DISABLED_REASON_VERSION_LOWER) {
+            runtimeStatusFlags |= FLAG_DISABLED_VERSION_LOWER;
+        } else {
+            runtimeStatusFlags &= ~FLAG_DISABLED_VERSION_LOWER;
+        }
 
         Person[] persons = ApiWrapper.getPersons(shortcutInfo);
         personKeys = persons.length == 0 ? Utilities.EMPTY_STRING_ARRAY
             : Arrays.stream(persons).map(Person::getKey).sorted().toArray(String[]::new);
+    }
+
+    /**
+     * {@code true} if the shortcut is disabled due to its app being a lower version.
+     */
+    public boolean isDisabledVersionLower() {
+        return (runtimeStatusFlags & FLAG_DISABLED_VERSION_LOWER) != 0;
     }
 
     /** Returns the WorkspaceItemInfo id associated with the deep shortcut. */

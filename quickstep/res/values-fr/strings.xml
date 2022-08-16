@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Modifiez la sensibilité du geste retour dans les paramètres"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Balayez l\'écran pour revenir en arrière"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Pour revenir à l\'écran précédent, balayez l\'écran depuis le bord droit ou gauche jusqu\'au centre."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Pour revenir au dernier écran, balayez l\'écran avec deux doigts en partant du bord gauche ou droit vers le milieu."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Veillez à balayer l\'écran de bas en haut."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Veillez à ne pas marquer de pause dans votre geste avant de relever le doigt."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Veillez à balayer l\'écran vers le haut."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Vous avez appris le geste pour revenir à l\'écran d\'accueil."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Balayez pour revenir à l\'écran d\'accueil"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Balayez l\'écran de bas en haut. Ce geste vous ramènera toujours à l\'écran d\'accueil."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Balayez l\'écran de bas en haut avec 2 doigts. Ce geste vous ramènera toujours à l\'écran d\'accueil."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Veillez à balayer l\'écran de bas en haut."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Essayez d\'appuyer plus longtemps sur la fenêtre avant de relever le doigt."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Veillez à balayer l\'écran vers le haut, puis à marquer une pause."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Vous avez appris le geste pour passer d\'une appli à l\'autre."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Balayez pour passer d\'une appli à l\'autre"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Pour changer d\'appli, balayez l\'écran de bas en haut, appuyez de manière prolongée et relâchez."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Pour changer d\'appli, balayez l\'écran de bas en haut avec deux doigts, maintenez appuyé et relâchez."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Vous avez terminé"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"OK"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Paramètres"</string>
@@ -76,6 +79,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Tout est prêt !"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Balayez l\'écran vers le haut pour revenir à l\'accueil"</string>
     <string name="allset_description" msgid="6350320429953234580">"Vous pouvez maintenant utiliser votre téléphone"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"Vous pouvez maintenant utiliser votre tablette"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Paramètres de navigation système"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Partager"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Capture d\'écran"</string>
@@ -97,4 +101,13 @@
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Retour"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Fermer"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"OK"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Accueil"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Accessibilité"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Retour"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"Sélecteur IME"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Récents"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"Notifications"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Réglages rapides"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Déplacer en haut ou à gauche"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Déplacer en bas ou à droite"</string>
 </resources>

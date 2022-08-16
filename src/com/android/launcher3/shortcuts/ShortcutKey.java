@@ -57,11 +57,17 @@ public class ShortcutKey extends ComponentKey {
     }
 
     public static Intent makeIntent(ShortcutInfo si) {
+        return makeIntent(si.getId(), si.getPackage()).setComponent(si.getActivity());
+    }
+
+    /**
+     * Creates an intent for shortcut id and package name.
+     */
+    public static Intent makeIntent(String shortcutId, String packageName) {
         return new Intent(Intent.ACTION_MAIN)
                 .addCategory(INTENT_CATEGORY)
-                .setComponent(si.getActivity())
-                .setPackage(si.getPackage())
+                .setPackage(packageName)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
-                .putExtra(EXTRA_SHORTCUT_ID, si.getId());
+                .putExtra(EXTRA_SHORTCUT_ID, shortcutId);
     }
 }

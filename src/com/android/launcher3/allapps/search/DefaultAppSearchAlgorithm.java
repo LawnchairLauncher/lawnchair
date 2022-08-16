@@ -23,7 +23,7 @@ import android.os.Handler;
 import androidx.annotation.AnyThread;
 
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
+import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
 import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BaseModelUpdateTask;
 import com.android.launcher3.model.BgDataModel;
@@ -85,8 +85,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm<AdapterItem> {
         for (int i = 0; i < total && resultCount < MAX_RESULTS_COUNT; i++) {
             AppInfo info = apps.get(i);
             if (StringMatcherUtility.matches(queryTextLower, info.title.toString(), matcher)) {
-                AdapterItem appItem = AdapterItem.asApp(resultCount, "", info, resultCount);
-                result.add(appItem);
+                result.add(AdapterItem.asApp(info));
                 resultCount++;
             }
         }

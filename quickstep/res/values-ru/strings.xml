@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Уровень чувствительности можно изменить в настройках."</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Возврат к предыдущему экрану"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Чтобы вернуться к предыдущему экрану, проведите от левого или правого края дисплея к центру."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Чтобы вернуться на предыдущий экран, проведите двумя пальцами от левого или правого края экрана к центру."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Проведите снизу вверх от самого края экрана."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Не приостанавливайтесь перед тем, как отпустить палец."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Проведите по экрану ровно вверх."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Вы выполнили жест для перехода на главный экран."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Переход на главный экран"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Проведите вверх от нижнего края дисплея. Этот жест открывает главный экран."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Проведите двумя пальцами вверх от нижнего края экрана. Этот жест открывает главный экран."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Проведите снизу вверх от самого края экрана."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Прежде чем отпускать палец, задержите его на дисплее подольше."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Проведите по экрану ровно вверх, а затем задержите палец в крайнем положении."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Вы выполнили жест для переключения между приложениями."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Переключение между приложениями"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Чтобы переключиться между приложениями‚ проведите по экрану снизу вверх, задержите палец, а затем отпустите."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Чтобы сменить приложение, проведите двумя пальцами снизу вверх, задержите пальцы, а затем отпустите."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Готово"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Готово"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Настройки"</string>
@@ -76,6 +79,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Готово!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Чтобы перейти на главный экран, проведите вверх."</string>
     <string name="allset_description" msgid="6350320429953234580">"Теперь вы можете использовать телефон."</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"Теперь вы можете использовать планшет."</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Системные настройки навигации"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Поделиться"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Скриншот"</string>
@@ -97,4 +101,13 @@
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Назад"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Закрыть"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Готово"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Главный экран"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Спец. возмож."</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Назад"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"Переключат. IME"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Недавние"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"Уведомления"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Быстрые настройки"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Переместить вверх или влево"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Переместить вниз или вправо"</string>
 </resources>

@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
@@ -35,7 +36,7 @@ import java.util.stream.Collectors;
 /**
  * Operations on AllApps opened from Home. Also a parent for All Apps opened from Overview.
  */
-public class AllApps extends LauncherInstrumentation.VisibleContainer {
+public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
     private static final int MAX_SCROLL_ATTEMPTS = 40;
 
     private final int mHeight;
@@ -50,14 +51,8 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         // Wait for the recycler to populate.
         mLauncher.waitForObjectInContainer(appListRecycler, By.clazz(TextView.class));
         verifyNotFrozen("All apps freeze flags upon opening all apps");
-        mIconHeight = mLauncher.getTestInfo(
-                TestProtocol.REQUEST_ICON_HEIGHT).
-                getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
-    }
-
-    @Override
-    protected LauncherInstrumentation.ContainerType getContainerType() {
-        return LauncherInstrumentation.ContainerType.ALL_APPS;
+        mIconHeight = mLauncher.getTestInfo(TestProtocol.REQUEST_ICON_HEIGHT)
+                .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
     private boolean hasClickableIcon(UiObject2 allAppsContainer, UiObject2 appListRecycler,
@@ -79,7 +74,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
             LauncherInstrumentation.log("hasClickableIcon: icon has insufficient height");
             return false;
         }
-        if (iconCenterInSearchBox(allAppsContainer, icon)) {
+        if (hasSearchBox() && iconCenterInSearchBox(allAppsContainer, icon)) {
             LauncherInstrumentation.log("hasClickableIcon: icon center is under search box");
             return false;
         }
@@ -98,21 +93,21 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
     }
 
     /**
-     * Finds an icon. Fails if the icon doesn't exist. Scrolls the app list when needed to make
-     * sure the icon is visible.
+     * Finds an icon. If the icon doesn't exist, return null.
+     * Scrolls the app list when needed to make sure the icon is visible.
      *
      * @param appName name of the app.
-     * @return The app.
+     * @return The app if found, and null if not found.
      */
-    @NonNull
-    public AppIcon getAppIcon(String appName) {
+    @Nullable
+    public AppIcon tryGetAppIcon(String appName) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "getting app icon " + appName + " on all apps")) {
             final UiObject2 allAppsContainer = verifyActiveContainer();
             final UiObject2 appListRecycler = mLauncher.waitForObjectInContainer(allAppsContainer,
                     "apps_list_view");
-            final UiObject2 searchBox = getSearchBox(allAppsContainer);
+            final UiObject2 searchBox = hasSearchBox() ? getSearchBox(allAppsContainer) : null;
 
             int deviceHeight = mLauncher.getRealDisplaySize().y;
             int bottomGestureStartOnScreen = mLauncher.getBottomGestureStartOnScreen();
@@ -133,8 +128,10 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                                                 mLauncher.getVisibleBounds(icon).top
                                                         < bottomGestureStartOnScreen)
                                         .collect(Collectors.toList()),
-                                mLauncher.getVisibleBounds(searchBox).bottom
-                                        - mLauncher.getVisibleBounds(allAppsContainer).top);
+                                hasSearchBox()
+                                        ? mLauncher.getVisibleBounds(searchBox).bottom
+                                        - mLauncher.getVisibleBounds(allAppsContainer).top
+                                        : 0);
                         verifyActiveContainer();
                         final int newScroll = getAllAppsScroll();
                         mLauncher.assertTrue(
@@ -150,29 +147,49 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                 }
                 verifyActiveContainer();
             }
-
             // Ignore bottom offset selection here as there might not be any scroll more scroll
             // region available.
-            mLauncher.assertTrue("Unable to scroll to a clickable icon: " + appName,
-                    hasClickableIcon(allAppsContainer, appListRecycler, appIconSelector,
-                            deviceHeight));
+            if (hasClickableIcon(
+                    allAppsContainer, appListRecycler, appIconSelector, deviceHeight)) {
 
-            final UiObject2 appIcon = mLauncher.waitForObjectInContainer(appListRecycler,
-                    appIconSelector);
-            return new AppIcon(mLauncher, appIcon);
+                final UiObject2 appIcon = mLauncher.waitForObjectInContainer(appListRecycler,
+                        appIconSelector);
+                return createAppIcon(appIcon);
+            } else {
+                return null;
+            }
         }
     }
+
+    /**
+     * Finds an icon. Fails if the icon doesn't exist. Scrolls the app list when needed to make
+     * sure the icon is visible.
+     *
+     * @param appName name of the app.
+     * @return The app.
+     */
+    @NonNull
+    public AppIcon getAppIcon(String appName) {
+        AppIcon appIcon = tryGetAppIcon(appName);
+        mLauncher.assertNotNull("Unable to scroll to a clickable icon: " + appName, appIcon);
+        return appIcon;
+    }
+
+    @NonNull
+    protected abstract AppIcon createAppIcon(UiObject2 icon);
+
+    protected abstract boolean hasSearchBox();
 
     private void scrollBackToBeginning() {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to scroll back in all apps")) {
             LauncherInstrumentation.log("Scrolling to the beginning");
             final UiObject2 allAppsContainer = verifyActiveContainer();
-            final UiObject2 searchBox = getSearchBox(allAppsContainer);
+            final UiObject2 searchBox = hasSearchBox() ? getSearchBox(allAppsContainer) : null;
 
             int attempts = 0;
-            final Rect margins =
-                    new Rect(0, mLauncher.getVisibleBounds(searchBox).bottom + 1, 0, 5);
+            final Rect margins = new Rect(
+                    0, hasSearchBox() ? mLauncher.getVisibleBounds(searchBox).bottom + 1 : 0, 0, 5);
 
             for (int scroll = getAllAppsScroll();
                     scroll != 0;
@@ -184,7 +201,11 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                         ++attempts <= MAX_SCROLL_ATTEMPTS);
 
                 mLauncher.scroll(
-                        allAppsContainer, Direction.UP, margins, 12, false);
+                        allAppsContainer,
+                        Direction.UP,
+                        margins,
+                        /* steps= */ 12,
+                        /* slowDown= */ false);
             }
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("scrolled up")) {
@@ -213,7 +234,11 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
             final UiObject2 allAppsContainer = verifyActiveContainer();
             // Start the gesture in the center to avoid starting at elements near the top.
             mLauncher.scroll(
-                    allAppsContainer, Direction.DOWN, new Rect(0, 0, 0, mHeight / 2), 10, false);
+                    allAppsContainer,
+                    Direction.DOWN,
+                    new Rect(0, 0, 0, mHeight / 2),
+                    /* steps= */ 10,
+                    /* slowDown= */ false);
             verifyActiveContainer();
         }
     }
@@ -228,7 +253,11 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
             final UiObject2 allAppsContainer = verifyActiveContainer();
             // Start the gesture in the center, for symmetry with forward.
             mLauncher.scroll(
-                    allAppsContainer, Direction.UP, new Rect(0, mHeight / 2, 0, 0), 10, false);
+                    allAppsContainer,
+                    Direction.UP,
+                    new Rect(0, mHeight / 2, 0, 0),
+                    /* steps= */ 10,
+                    /*slowDown= */ false);
             verifyActiveContainer();
         }
     }

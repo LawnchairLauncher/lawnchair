@@ -18,9 +18,13 @@ package com.android.launcher3.taskbar;
 import android.content.pm.ActivityInfo.Config;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
+import com.android.launcher3.taskbar.allapps.TaskbarAllAppsController;
 import com.android.systemui.shared.rotation.RotationButtonController;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +34,7 @@ import java.util.List;
 public class TaskbarControllers {
 
     public final TaskbarActivityContext taskbarActivityContext;
+
     public final TaskbarDragController taskbarDragController;
     public final TaskbarNavButtonController navButtonController;
     public final NavbarButtonsViewController navbarButtonsViewController;
@@ -44,12 +49,19 @@ public class TaskbarControllers {
     public final TaskbarEduController taskbarEduController;
     public final TaskbarAutohideSuspendController taskbarAutohideSuspendController;
     public final TaskbarPopupController taskbarPopupController;
+    public final TaskbarForceVisibleImmersiveController taskbarForceVisibleImmersiveController;
+    public final TaskbarAllAppsController taskbarAllAppsController;
+    public final TaskbarInsetsController taskbarInsetsController;
+
+    @Nullable private LoggableTaskbarController[] mControllersToLog = null;
 
     /** Do not store this controller, as it may change at runtime. */
     @NonNull public TaskbarUIController uiController = TaskbarUIController.DEFAULT;
 
     private boolean mAreAllControllersInitialized;
     private final List<Runnable> mPostInitCallbacks = new ArrayList<>();
+
+    @Nullable private TaskbarSharedState mSharedState = null;
 
     public TaskbarControllers(TaskbarActivityContext taskbarActivityContext,
             TaskbarDragController taskbarDragController,
@@ -65,7 +77,10 @@ public class TaskbarControllers {
             TaskbarStashController taskbarStashController,
             TaskbarEduController taskbarEduController,
             TaskbarAutohideSuspendController taskbarAutoHideSuspendController,
-            TaskbarPopupController taskbarPopupController) {
+            TaskbarPopupController taskbarPopupController,
+            TaskbarForceVisibleImmersiveController taskbarForceVisibleImmersiveController,
+            TaskbarAllAppsController taskbarAllAppsController,
+            TaskbarInsetsController taskbarInsetsController) {
         this.taskbarActivityContext = taskbarActivityContext;
         this.taskbarDragController = taskbarDragController;
         this.navButtonController = navButtonController;
@@ -81,6 +96,9 @@ public class TaskbarControllers {
         this.taskbarEduController = taskbarEduController;
         this.taskbarAutohideSuspendController = taskbarAutoHideSuspendController;
         this.taskbarPopupController = taskbarPopupController;
+        this.taskbarForceVisibleImmersiveController = taskbarForceVisibleImmersiveController;
+        this.taskbarAllAppsController = taskbarAllAppsController;
+        this.taskbarInsetsController = taskbarInsetsController;
     }
 
     /**
@@ -88,8 +106,9 @@ public class TaskbarControllers {
      * TaskbarControllers instance, but should be careful to only access things that were created
      * in constructors for now, as some controllers may still be waiting for init().
      */
-    public void init(TaskbarSharedState sharedState) {
+    public void init(@NonNull TaskbarSharedState sharedState) {
         mAreAllControllersInitialized = false;
+        mSharedState = sharedState;
 
         taskbarDragController.init(this);
         navbarButtonsViewController.init(this);
@@ -100,14 +119,33 @@ public class TaskbarControllers {
         taskbarUnfoldAnimationController.init(this);
         taskbarKeyguardController.init(navbarButtonsViewController);
         stashedHandleViewController.init(this);
-        taskbarStashController.init(this, sharedState);
+        taskbarStashController.init(this, sharedState.setupUIVisible);
         taskbarEduController.init(this);
+        taskbarPopupController.init(this);
+        taskbarForceVisibleImmersiveController.init(this);
+        taskbarAllAppsController.init(this, sharedState.allAppsVisible);
+        navButtonController.init(this);
+        taskbarInsetsController.init(this);
+
+        mControllersToLog = new LoggableTaskbarController[] {
+                taskbarDragController, navButtonController, navbarButtonsViewController,
+                taskbarDragLayerController, taskbarScrimViewController, taskbarViewController,
+                taskbarUnfoldAnimationController, taskbarKeyguardController,
+                stashedHandleViewController, taskbarStashController, taskbarEduController,
+                taskbarAutohideSuspendController, taskbarPopupController, taskbarInsetsController
+        };
 
         mAreAllControllersInitialized = true;
         for (Runnable postInitCallback : mPostInitCallbacks) {
             postInitCallback.run();
         }
         mPostInitCallbacks.clear();
+    }
+
+    @Nullable
+    public TaskbarSharedState getSharedState() {
+        // This should only be null if called before init() and after destroy().
+        return mSharedState;
     }
 
     public void onConfigurationChanged(@Config int configChanges) {
@@ -118,6 +156,8 @@ public class TaskbarControllers {
      * Cleans up all controllers.
      */
     public void onDestroy() {
+        mSharedState = null;
+
         navbarButtonsViewController.onDestroy();
         uiController.onDestroy();
         rotationButtonController.onDestroy();
@@ -127,6 +167,13 @@ public class TaskbarControllers {
         taskbarViewController.onDestroy();
         stashedHandleViewController.onDestroy();
         taskbarAutohideSuspendController.onDestroy();
+        taskbarPopupController.onDestroy();
+        taskbarForceVisibleImmersiveController.onDestroy();
+        taskbarAllAppsController.onDestroy();
+        navButtonController.onDestroy();
+        taskbarInsetsController.onDestroy();
+
+        mControllersToLog = null;
     }
 
     /**
@@ -140,5 +187,33 @@ public class TaskbarControllers {
         } else {
             mPostInitCallbacks.add(callback);
         }
+    }
+
+    protected void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarControllers:");
+
+        if (mControllersToLog == null) {
+            pw.println(String.format(
+                    "%s\t%s", prefix, "All taskbar controllers have already been destroyed."));
+            return;
+        }
+
+        pw.println(String.format(
+                "%s\tmAreAllControllersInitialized=%b", prefix, mAreAllControllersInitialized));
+        for (LoggableTaskbarController controller : mControllersToLog) {
+            controller.dumpLogs(prefix + "\t", pw);
+        }
+        uiController.dumpLogs(prefix + "\t", pw);
+        rotationButtonController.dumpLogs(prefix + "\t", pw);
+    }
+
+    @VisibleForTesting
+    TaskbarActivityContext getTaskbarActivityContext() {
+        // Used to mock
+        return taskbarActivityContext;
+    }
+
+    protected interface LoggableTaskbarController {
+        void dumpLogs(String prefix, PrintWriter pw);
     }
 }

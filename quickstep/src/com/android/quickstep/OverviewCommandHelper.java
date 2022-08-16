@@ -32,7 +32,6 @@ import androidx.annotation.UiThread;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.util.RunnableList;
 import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
-import com.android.quickstep.util.LauncherSplitScreenListener;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -53,6 +52,12 @@ public class OverviewCommandHelper {
     public static final int TYPE_HIDE = 3;
     public static final int TYPE_TOGGLE = 4;
     public static final int TYPE_HOME = 5;
+
+    /**
+     * Use case for needing a queue is double tapping recents button in 3 button nav.
+     * Size of 2 should be enough. We'll toss in one more because we're kind hearted.
+     */
+    private final static int MAX_QUEUE_SIZE = 3;
 
     private static final String TRANSITION_NAME = "Transition:toOverview";
 
@@ -105,10 +110,15 @@ public class OverviewCommandHelper {
     }
 
     /**
-     * Adds a command to be executed next, after all pending tasks are completed
+     * Adds a command to be executed next, after all pending tasks are completed.
+     * Max commands that can be queued is {@link #MAX_QUEUE_SIZE}.
+     * Requests after reaching that limit will be silently dropped.
      */
     @BinderThread
     public void addCommand(int type) {
+        if (mPendingCommands.size() > MAX_QUEUE_SIZE) {
+            return;
+        }
         CommandInfo cmd = new CommandInfo(type);
         MAIN_EXECUTOR.execute(() -> addCommand(cmd));
     }
@@ -161,7 +171,6 @@ public class OverviewCommandHelper {
             }
             if (cmd.type == TYPE_HOME) {
                 mService.startActivity(mOverviewComponentObserver.getHomeIntent());
-                LauncherSplitScreenListener.INSTANCE.getNoCreate().notifySwipingToHome();
                 return true;
             }
         } else {
@@ -180,7 +189,6 @@ public class OverviewCommandHelper {
                     return launchTask(recents, getNextTask(recents), cmd);
                 case TYPE_HOME:
                     recents.startHome();
-                    LauncherSplitScreenListener.INSTANCE.getNoCreate().notifySwipingToHome();
                     return true;
             }
         }
@@ -209,7 +217,8 @@ public class OverviewCommandHelper {
             @Override
             public void onRecentsAnimationStart(RecentsAnimationController controller,
                     RecentsAnimationTargets targets) {
-                interactionHandler.onGestureEnded(0, new PointF(), new PointF());
+                activityInterface.runOnInitBackgroundStateUI(() ->
+                        interactionHandler.onGestureEnded(0, new PointF(), new PointF()));
                 cmd.removeListener(this);
             }
 

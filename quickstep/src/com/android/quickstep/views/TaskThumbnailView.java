@@ -19,7 +19,6 @@ package com.android.quickstep.views;
 import static android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
 import static android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS;
 
-import static com.android.launcher3.Utilities.comp;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
 
@@ -284,6 +283,7 @@ public class TaskThumbnailView extends View {
 
     public void setFullscreenParams(TaskView.FullscreenDrawParams fullscreenParams) {
         mFullscreenParams = fullscreenParams;
+        getTaskOverlay().setFullscreenParams(fullscreenParams);
         invalidate();
     }
 
@@ -291,17 +291,8 @@ public class TaskThumbnailView extends View {
             float cornerRadius) {
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             if (mTask != null && getTaskView().isRunningTask() && !getTaskView().showScreenshot()) {
-                // TODO(b/189265196): Temporary fix to align the surface with the cutout perfectly.
-                // Round up only when the live tile task is displayed in Overview.
-                float rounding = comp(mFullscreenParams.mFullscreenProgress);
-                float left = x + rounding / 2;
-                float top = y + rounding / 2;
-                float right = width - rounding;
-                float bottom = height - rounding;
-
-                canvas.drawRoundRect(left, top, right, bottom, cornerRadius, cornerRadius,
-                        mClearPaint);
-                canvas.drawRoundRect(left, top, right, bottom, cornerRadius, cornerRadius,
+                canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mClearPaint);
+                canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius,
                         mDimmingPaintAfterClearing);
                 return;
             }
@@ -310,7 +301,8 @@ public class TaskThumbnailView extends View {
         // Always draw the background since the snapshots might be translucent or partially empty
         // (For example, tasks been reparented out of dismissing split root when drag-to-dismiss
         // split screen).
-        canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mBackgroundPaint);
+        canvas.drawRoundRect(x, y + 1, width, height - 1, cornerRadius,
+                cornerRadius, mBackgroundPaint);
 
         final boolean drawBackgroundOnly = mTask == null || mTask.isLocked || mBitmapShader == null
                 || mThumbnailData == null;
@@ -461,7 +453,7 @@ public class TaskThumbnailView extends View {
             // Note: Disable rotation in grid layout.
             boolean windowingModeSupportsRotation = !dp.isMultiWindowMode
                     && thumbnailData.windowingMode == WINDOWING_MODE_FULLSCREEN
-                    && !dp.overviewShowAsGrid;
+                    && !dp.isTablet;
             isOrientationDifferent = isOrientationChange(deltaRotate)
                     && windowingModeSupportsRotation;
             if (canvasWidth == 0 || canvasHeight == 0 || scale == 0) {

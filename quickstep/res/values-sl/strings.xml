@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Občutljivost poteze za nazaj lahko spremenite v nastavitvah."</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Povlecite za vrnitev"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Če se želite vrniti na prejšnji zaslon, povlecite z levega ali desnega roba do sredine zaslona."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Če se želite vrniti na zadnji prikazani zaslon, z dvema prstoma povlecite z levega ali desnega roba do sredine zaslona."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Pazite, da povlečete s spodnjega roba zaslona navzgor."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Pazite, da ne zaustavite prsta, preden ga dvignete."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Pazite, da povlečete naravnost navzgor."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Izvedli ste potezo za pomik na začetni zaslon."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Povlecite za pomik na začetni zaslon"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Z dna zaslona s prstom povlecite navzgor. S to potezo lahko vedno odprete začetni zaslon."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Z dvema prstoma povlecite navzgor z dna zaslona. S to potezo lahko vedno odprete začetni zaslon."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Pazite, da povlečete s spodnjega roba zaslona navzgor."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Poskusite okno pridržati dalj časa, preden ga izpustite."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Pazite, da povlečete naravnost navzgor in nato zaustavite prst."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Izvedli ste potezo za preklapljanje med aplikacijami."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Povlecite za preklapljanje med aplikacijami"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Za preklapljanje med aplikacijami povlecite navzgor z dna zaslona, pridržite in nato izpustite."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Za preklop med aplikacijami z dvema prstoma povlecite navzgor z dna zaslona, pridržite in spustite."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Zdaj znate"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Končano"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Nastavitve"</string>
@@ -76,6 +79,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Končano"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Povlecite navzgor za začetni zaslon"</string>
     <string name="allset_description" msgid="6350320429953234580">"Pripravljeni ste, da začnete uporabljati telefon"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"Pripravljeni ste, da začnete uporabljati tablični računalnik."</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Nastavitve krmarjenja po sistemu"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Deli"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Posnetek zaslona"</string>
@@ -97,4 +101,13 @@
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Nazaj"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Zapri"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Končano"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Začetni zaslon"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Dostopnost"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Nazaj"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"Menjava UNV"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Nedavno"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"Obvestila"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Hitre nastavitve"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Premakni na vrh/levo"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Premakni na dno/desno"</string>
 </resources>
