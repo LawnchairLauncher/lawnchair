@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"لتغيير مستوى حساسية إيماءة الرجوع، انتقِل إلى \"الإعدادات\""</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"مرِّر سريعًا للرجوع."</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"للرجوع إلى الشاشة السابقة، مرِّر سريعًا من الحافة اليسرى أو الحافة اليمنى إلى وسط الشاشة."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"للرجوع إلى الشاشة السابقة، عليك التمرير سريعًا بإصبعين من الحافة اليسرى أو اليمنى نحو وسط الشاشة."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"تأكّد من التمرير سريعًا من الحافة السفلى للشاشة إلى أعلاها."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"تأكّد من عدم التوقّف قليلاً قبل رفع إصبعك."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"تأكّد من التمرير إلى الأعلى مباشرةً."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"أكملت التدريب على إيماءة الانتقال إلى الشاشة الرئيسية."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"مرِّر سريعًا للانتقال إلى الشاشة الرئيسية"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"مرِّر سريعًا من أسفل الشاشة إلى أعلاها. تنقلك هذه الإيماءة دائمًا إلى الشاشة الرئيسية."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"مرِّر سريعًا بإصبعين من أسفل الشاشة إلى أعلاها. تنقلك هذه الإيماءة دائمًا إلى الشاشة الرئيسية."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"تأكّد من التمرير سريعًا من الحافة السفلى للشاشة إلى أعلاها."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"حاوِل إبقاء إصبعك على النافذة لمدة أطول قبل رفعه."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"تأكّد من التمرير سريعًا للأعلى مباشرةً ثم التوقّف قليلاً."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"أكملت التدريب على إيماءة التبديل بين التطبيقات."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"التمرير سريعًا للتبديل بين التطبيقات"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"للتبديل بين التطبيقات، مرِّر سريعًا من أسفل الشاشة لأعلاها مع تثبيت إصبعك ثم ارفعه."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"للتبديل بين التطبيقات، مرِّر سريعًا من أسفل الشاشة إلى أعلاها بإصبعين مع تثبيتهما، ثم ارفعهما."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"اكتمل التدريب على الإيماءة"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"تم"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"الإعدادات"</string>
@@ -76,6 +79,7 @@
     <string name="allset_title" msgid="5021126669778966707">"اكتملت عملية الإعداد"</string>
     <string name="allset_hint" msgid="2384632994739392447">"مرِّر سريعًا للأعلى للانتقال إلى الشاشة الرئيسية."</string>
     <string name="allset_description" msgid="6350320429953234580">"يمكنك الآن بدء استخدام هاتفك."</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"يمكنك الآن بدء استخدام جهازك اللوحي."</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"إعدادات التنقّل داخل النظام"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"مشاركة"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"لقطة شاشة"</string>
@@ -97,4 +101,13 @@
     <string name="taskbar_edu_previous" msgid="459202320127201702">"رجوع"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"إغلاق"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"تم"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"الرئيسية"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"تسهيل الاستخدام"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"رجوع"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"‏مفتاح التبديل إلى IME"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"الأحدث"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"الإشعارات"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"إعدادات سريعة"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"الانتقال إلى يمين الشاشة أو أعلاها"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"الانتقال إلى يسار الشاشة أو أسفلها"</string>
 </resources>

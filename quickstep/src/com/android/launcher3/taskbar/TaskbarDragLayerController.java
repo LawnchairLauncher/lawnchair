@@ -15,24 +15,20 @@
  */
 package com.android.launcher3.taskbar;
 
-import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
-import static com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo.TOUCHABLE_INSETS_CONTENT;
-import static com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo.TOUCHABLE_INSETS_FRAME;
-import static com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo.TOUCHABLE_INSETS_REGION;
-
 import android.content.res.Resources;
 import android.graphics.Rect;
 
-import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.R;
-import com.android.launcher3.anim.AlphaUpdateListener;
+import com.android.launcher3.util.TouchController;
 import com.android.quickstep.AnimatedFloat;
 import com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo;
+
+import java.io.PrintWriter;
 
 /**
  * Handles properties/data collection, then passes the results to TaskbarDragLayer to render.
  */
-public class TaskbarDragLayerController {
+public class TaskbarDragLayerController implements TaskbarControllers.LoggableTaskbarController {
 
     private final TaskbarActivityContext mActivity;
     private final TaskbarDragLayer mTaskbarDragLayer;
@@ -144,6 +140,16 @@ public class TaskbarDragLayerController {
         mNavButtonDarkIntensityMultiplier.updateValue(1 - effectiveBgAlpha);
     }
 
+    @Override
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarDragLayerController:");
+
+        pw.println(String.format("%s\tmBgOffset=%.2f", prefix, mBgOffset.value));
+        pw.println(String.format("%s\tmFolderMargin=%dpx", prefix, mFolderMargin));
+        pw.println(String.format(
+                "%s\tmLastSetBackgroundAlpha=%.2f", prefix, mLastSetBackgroundAlpha));
+    }
+
     /**
      * Callbacks for {@link TaskbarDragLayer} to interact with its controller.
      */
@@ -154,49 +160,14 @@ public class TaskbarDragLayerController {
          * @see InsetsInfo#setTouchableInsets(int)
          */
         public void updateInsetsTouchability(InsetsInfo insetsInfo) {
-            insetsInfo.touchableRegion.setEmpty();
-            // Always have nav buttons be touchable
-            mControllers.navbarButtonsViewController.addVisibleButtonsRegion(
-                    mTaskbarDragLayer, insetsInfo.touchableRegion);
-            boolean insetsIsTouchableRegion = true;
-
-            if (mTaskbarDragLayer.getAlpha() < AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD) {
-                // Let touches pass through us.
-                insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
-            } else if (mControllers.navbarButtonsViewController.isImeVisible()) {
-                insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
-            } else if (!mControllers.uiController.isTaskbarTouchable()) {
-                // Let touches pass through us.
-                insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
-            } else if (mControllers.taskbarViewController.areIconsVisible()
-                    || AbstractFloatingView.getOpenView(mActivity, TYPE_ALL) != null) {
-                // Taskbar has some touchable elements, take over the full taskbar area
-                insetsInfo.setTouchableInsets(mActivity.isTaskbarWindowFullscreen()
-                        ? TOUCHABLE_INSETS_FRAME : TOUCHABLE_INSETS_CONTENT);
-                insetsIsTouchableRegion = false;
-            } else {
-                insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
-            }
-            mActivity.excludeFromMagnificationRegion(insetsIsTouchableRegion);
-        }
-
-        /**
-         * Called to update the {@link InsetsInfo#contentInsets}. This is reported to apps but our
-         * internal launcher will ignore these insets.
-         */
-        public void updateContentInsets(Rect outContentInsets) {
-            int contentHeight = mControllers.taskbarStashController
-                    .getContentHeightToReportToApps();
-            outContentInsets.top = mTaskbarDragLayer.getHeight() - contentHeight;
+            mControllers.taskbarInsetsController.updateInsetsTouchability(insetsInfo);
         }
 
         /**
          * Called when a child is removed from TaskbarDragLayer.
          */
         public void onDragLayerViewRemoved() {
-            if (AbstractFloatingView.getAnyView(mActivity, TYPE_ALL) == null) {
-                mActivity.setTaskbarWindowFullscreen(false);
-            }
+            mActivity.maybeSetTaskbarWindowNotFullscreen();
         }
 
         /**
@@ -204,6 +175,15 @@ public class TaskbarDragLayerController {
          */
         public int getTaskbarBackgroundHeight() {
             return mActivity.getDeviceProfile().taskbarSize;
+        }
+
+        /**
+         * Returns touch controllers.
+         */
+        public TouchController[] getTouchControllers() {
+            return new TouchController[]{mActivity.getDragController(),
+                    mControllers.taskbarForceVisibleImmersiveController,
+                    mControllers.navbarButtonsViewController.getTouchController()};
         }
     }
 }

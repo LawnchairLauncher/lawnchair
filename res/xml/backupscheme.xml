@@ -2,6 +2,11 @@
 <full-backup-content xmlns:android="http://schemas.android.com/apk/res/android">
 
     <include domain="database" path="launcher.db" />
+    <include domain="database" path="launcher_6_by_5.db" />
+    <include domain="database" path="launcher_4_by_5.db" />
+    <include domain="database" path="launcher_4_by_4.db" />
+    <include domain="database" path="launcher_3_by_3.db" />
+    <include domain="database" path="launcher_2_by_2.db" />
     <include domain="sharedpref" path="com.android.launcher3.prefs.xml" />
     <include domain="file" path="downgrade_schema.json" />
 

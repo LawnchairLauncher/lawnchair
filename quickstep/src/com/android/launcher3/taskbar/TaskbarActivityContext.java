@@ -15,18 +15,21 @@
  */
 package com.android.launcher3.taskbar;
 
-import static android.view.InsetsState.ITYPE_BOTTOM_MANDATORY_GESTURES;
+import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
+import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
+import static com.android.launcher3.ResourceUtils.getBoolByName;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
-import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_BOTTOM_TAPPABLE_ELEMENT;
-import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_EXTRA_NAVIGATION_BAR;
 
 import android.animation.AnimatorSet;
+import android.animation.ValueAnimator;
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -34,56 +37,68 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo.Config;
 import android.content.pm.LauncherApps;
 import android.content.res.Resources;
-import android.graphics.Insets;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Process;
 import android.os.SystemProperties;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.RoundedCorner;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.WindowManagerGlobal;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.popup.PopupDataProvider;
+import com.android.launcher3.taskbar.allapps.TaskbarAllAppsController;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
+import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.DisplayController.NavigationMode;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SettingsCache;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.ViewCache;
 import com.android.launcher3.views.ActivityContext;
-import com.android.quickstep.SysUINavigationMode;
-import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.rotation.RotationButtonController;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.WindowManagerWrapper;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
+
+import java.io.PrintWriter;
 
 /**
  * The {@link ActivityContext} with which we inflate Taskbar-related Views. This allows UI elements
  * that are used by both Launcher and Taskbar (such as Folder) to reference a generic
  * ActivityContext and BaseDragLayer instead of the Launcher activity and its DragLayer.
  */
-public class TaskbarActivityContext extends ContextThemeWrapper implements ActivityContext {
+public class TaskbarActivityContext extends BaseTaskbarContext {
+
+    private static final String IME_DRAWS_IME_NAV_BAR_RES_NAME = "config_imeDrawsImeNavBar";
 
     private static final boolean ENABLE_THREE_BUTTON_TASKBAR =
             SystemProperties.getBoolean("persist.debug.taskbar_three_button", false);
@@ -91,47 +106,61 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
     private static final String WINDOW_TITLE = "Taskbar";
 
-    private final LayoutInflater mLayoutInflater;
     private final TaskbarDragLayer mDragLayer;
     private final TaskbarControllers mControllers;
 
-    private DeviceProfile mDeviceProfile;
-
     private final WindowManager mWindowManager;
     private final @Nullable RoundedCorner mLeftCorner, mRightCorner;
-    private final int mTaskbarHeightForIme;
+    private DeviceProfile mDeviceProfile;
     private WindowManager.LayoutParams mWindowLayoutParams;
     private boolean mIsFullscreen;
     // The size we should return to when we call setTaskbarWindowFullscreen(false)
     private int mLastRequestedNonFullscreenHeight;
 
-    private final SysUINavigationMode.Mode mNavMode;
+    private final NavigationMode mNavMode;
+    private final boolean mImeDrawsImeNavBar;
     private final ViewCache mViewCache = new ViewCache();
 
     private final boolean mIsSafeModeEnabled;
     private final boolean mIsUserSetupComplete;
+    private final boolean mIsNavBarForceVisible;
+    private final boolean mIsNavBarKidsMode;
     private boolean mIsDestroyed = false;
     // The flag to know if the window is excluded from magnification region computation.
     private boolean mIsExcludeFromMagnificationRegion = false;
+    private boolean mBindingItems = false;
+
+    private final TaskbarShortcutMenuAccessibilityDelegate mAccessibilityDelegate;
 
     public TaskbarActivityContext(Context windowContext, DeviceProfile dp,
             TaskbarNavButtonController buttonController, ScopedUnfoldTransitionProgressProvider
             unfoldTransitionProgressProvider) {
-        super(windowContext, Themes.getActivityThemeRes(windowContext));
-        mDeviceProfile = dp;
+        super(windowContext);
+        mDeviceProfile = dp.copy(this);
 
-        mNavMode = SysUINavigationMode.getMode(windowContext);
+        final Resources resources = getResources();
+
+        mNavMode = DisplayController.getNavigationMode(windowContext);
+        mImeDrawsImeNavBar = getBoolByName(IME_DRAWS_IME_NAV_BAR_RES_NAME, resources, false);
         mIsSafeModeEnabled = TraceHelper.allowIpcs("isSafeMode",
                 () -> getPackageManager().isSafeMode());
         mIsUserSetupComplete = SettingsCache.INSTANCE.get(this).getValue(
                 Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE), 0);
+        mIsNavBarForceVisible = SettingsCache.INSTANCE.get(this).getValue(
+                Settings.Secure.getUriFor(Settings.Secure.NAV_BAR_KIDS_MODE), 0);
+        mIsNavBarKidsMode = SettingsCache.INSTANCE.get(this).getValue(
+                Settings.Secure.getUriFor(Settings.Secure.NAV_BAR_KIDS_MODE), 0);
 
-        final Resources resources = getResources();
         updateIconSize(resources);
 
-        mTaskbarHeightForIme = resources.getDimensionPixelSize(R.dimen.taskbar_ime_size);
-
-        mLayoutInflater = LayoutInflater.from(this).cloneInContext(this);
+        // Get display and corners first, as views might use them in constructor.
+        Display display = windowContext.getDisplay();
+        Context c = display.getDisplayId() == Display.DEFAULT_DISPLAY
+                ? windowContext.getApplicationContext()
+                : windowContext.getApplicationContext().createDisplayContext(display);
+        mWindowManager = c.getSystemService(WindowManager.class);
+        mLeftCorner = display.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_LEFT);
+        mRightCorner = display.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_RIGHT);
 
         // Inflate views.
         mDragLayer = (TaskbarDragLayer) mLayoutInflater.inflate(
@@ -141,19 +170,15 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         FrameLayout navButtonsView = mDragLayer.findViewById(R.id.navbuttons_view);
         StashedHandleView stashedHandleView = mDragLayer.findViewById(R.id.stashed_handle);
 
-        Display display = windowContext.getDisplay();
-        Context c = display.getDisplayId() == Display.DEFAULT_DISPLAY
-                ? windowContext.getApplicationContext()
-                : windowContext.getApplicationContext().createDisplayContext(display);
-        mWindowManager = c.getSystemService(WindowManager.class);
-        mLeftCorner = display.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_LEFT);
-        mRightCorner = display.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_RIGHT);
+        mAccessibilityDelegate = new TaskbarShortcutMenuAccessibilityDelegate(this);
 
         // Construct controllers.
         mControllers = new TaskbarControllers(this,
                 new TaskbarDragController(this),
                 buttonController,
-                new NavbarButtonsViewController(this, navButtonsView),
+                getPackageManager().hasSystemFeature(FEATURE_PC)
+                        ? new DesktopNavbarButtonsViewController(this, navButtonsView) :
+                        new NavbarButtonsViewController(this, navButtonsView),
                 new RotationButtonController(this,
                         c.getColor(R.color.taskbar_nav_icon_light_color),
                         c.getColor(R.color.taskbar_nav_icon_dark_color),
@@ -165,44 +190,22 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 new TaskbarDragLayerController(this, mDragLayer),
                 new TaskbarViewController(this, taskbarView),
                 new TaskbarScrimViewController(this, taskbarScrimView),
-                new TaskbarUnfoldAnimationController(unfoldTransitionProgressProvider,
-                        mWindowManager),
+                new TaskbarUnfoldAnimationController(this, unfoldTransitionProgressProvider,
+                        mWindowManager, WindowManagerGlobal.getWindowManagerService()),
                 new TaskbarKeyguardController(this),
                 new StashedHandleViewController(this, stashedHandleView),
                 new TaskbarStashController(this),
                 new TaskbarEduController(this),
                 new TaskbarAutohideSuspendController(this),
-                new TaskbarPopupController());
+                new TaskbarPopupController(this),
+                new TaskbarForceVisibleImmersiveController(this),
+                new TaskbarAllAppsController(this, dp),
+                new TaskbarInsetsController(this));
     }
 
-    public void init(TaskbarSharedState sharedState) {
+    public void init(@NonNull TaskbarSharedState sharedState) {
         mLastRequestedNonFullscreenHeight = getDefaultTaskbarWindowHeight();
-        mWindowLayoutParams = new WindowManager.LayoutParams(
-                MATCH_PARENT,
-                mLastRequestedNonFullscreenHeight,
-                TYPE_NAVIGATION_BAR_PANEL,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                        | WindowManager.LayoutParams.FLAG_SLIPPERY,
-                PixelFormat.TRANSLUCENT);
-        mWindowLayoutParams.setTitle(WINDOW_TITLE);
-        mWindowLayoutParams.packageName = getPackageName();
-        mWindowLayoutParams.gravity = Gravity.BOTTOM;
-        mWindowLayoutParams.setFitInsetsTypes(0);
-        mWindowLayoutParams.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
-        mWindowLayoutParams.layoutInDisplayCutoutMode = LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
-        mWindowLayoutParams.privateFlags =
-                WindowManager.LayoutParams.PRIVATE_FLAG_NO_MOVE_ANIMATION;
-
-        WindowManagerWrapper wmWrapper = WindowManagerWrapper.getInstance();
-        wmWrapper.setProvidesInsetsTypes(
-                mWindowLayoutParams,
-                new int[] { ITYPE_EXTRA_NAVIGATION_BAR, ITYPE_BOTTOM_TAPPABLE_ELEMENT,
-                        ITYPE_BOTTOM_MANDATORY_GESTURES }
-        );
-        // Adjust the frame by the rounded corners (ie. leaving just the bar as the inset) when
-        // the IME is showing
-        mWindowLayoutParams.providedInternalImeInsets = Insets.of(0,
-                getDefaultTaskbarWindowHeight() - mTaskbarHeightForIme, 0, 0);
+        mWindowLayoutParams = createDefaultWindowLayoutParams();
 
         // Initialize controllers after all are constructed.
         mControllers.init(sharedState);
@@ -211,10 +214,22 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mWindowManager.addView(mDragLayer, mWindowLayoutParams);
     }
 
-    /** Updates the Device profile instance to the latest representation of the screen. */
+    @Override
+    public DeviceProfile getDeviceProfile() {
+        return mDeviceProfile;
+    }
+
+    /** Updates {@link DeviceProfile} instances for any Taskbar windows. */
     public void updateDeviceProfile(DeviceProfile dp) {
-        mDeviceProfile = dp;
+        mControllers.taskbarAllAppsController.updateDeviceProfile(dp);
+        mDeviceProfile = dp.copy(this);
         updateIconSize(getResources());
+
+        AbstractFloatingView.closeAllOpenViewsExcept(this, false, TYPE_REBIND_SAFE);
+        // Reapply fullscreen to take potential new screen size into account.
+        setTaskbarWindowFullscreen(mIsFullscreen);
+
+        dispatchDeviceProfileChanged();
     }
 
     private void updateIconSize(Resources resources) {
@@ -224,12 +239,48 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mDeviceProfile.updateIconSize(iconScale, resources);
     }
 
+    @VisibleForTesting
+    @Override
+    public StatsLogManager getStatsLogManager() {
+        // Used to mock, can't mock a default interface method directly
+        return super.getStatsLogManager();
+    }
+
+    /** Creates LayoutParams for adding a view directly to WindowManager as a new window */
+    public WindowManager.LayoutParams createDefaultWindowLayoutParams() {
+        WindowManager.LayoutParams windowLayoutParams = new WindowManager.LayoutParams(
+                MATCH_PARENT,
+                mLastRequestedNonFullscreenHeight,
+                TYPE_NAVIGATION_BAR_PANEL,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                        | WindowManager.LayoutParams.FLAG_SLIPPERY,
+                PixelFormat.TRANSLUCENT);
+        windowLayoutParams.setTitle(WINDOW_TITLE);
+        windowLayoutParams.packageName = getPackageName();
+        windowLayoutParams.gravity = Gravity.BOTTOM;
+        windowLayoutParams.setFitInsetsTypes(0);
+        windowLayoutParams.receiveInsetsIgnoringZOrder = true;
+        windowLayoutParams.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
+        windowLayoutParams.layoutInDisplayCutoutMode = LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
+        windowLayoutParams.privateFlags =
+                WindowManager.LayoutParams.PRIVATE_FLAG_NO_MOVE_ANIMATION;
+        return windowLayoutParams;
+    }
+
     public void onConfigurationChanged(@Config int configChanges) {
         mControllers.onConfigurationChanged(configChanges);
     }
 
     public boolean isThreeButtonNav() {
-        return mNavMode == Mode.THREE_BUTTONS;
+        return mNavMode == NavigationMode.THREE_BUTTONS;
+    }
+
+    public boolean isGestureNav() {
+        return mNavMode == NavigationMode.NO_BUTTON;
+    }
+
+    public boolean imeDrawsImeNavBar() {
+        return mImeDrawsImeNavBar;
     }
 
     public int getLeftCornerRadius() {
@@ -240,19 +291,13 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         return mRightCorner == null ? 0 : mRightCorner.getRadius();
     }
 
-    @Override
-    public LayoutInflater getLayoutInflater() {
-        return mLayoutInflater;
+    public WindowManager.LayoutParams getWindowLayoutParams() {
+        return mWindowLayoutParams;
     }
 
     @Override
     public TaskbarDragLayer getDragLayer() {
         return mDragLayer;
-    }
-
-    @Override
-    public DeviceProfile getDeviceProfile() {
-        return mDeviceProfile;
     }
 
     @Override
@@ -268,14 +313,6 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     @Override
     public ViewCache getViewCache() {
         return mViewCache;
-    }
-
-    @Override
-    public boolean supportsIme() {
-        // Currently we don't support IME because we have FLAG_NOT_FOCUSABLE. We can remove that
-        // flag when opening a floating view that needs IME (such as Folder), but then that means
-        // Taskbar will be below IME and thus users can't click the back button.
-        return false;
     }
 
     @Override
@@ -334,7 +371,55 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
             folderBuilder.clearHotseat();
             itemInfoBuilder.setContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
                     .setFolder(folderBuilder));
+        } else if (oldContainer.hasAllAppsContainer()) {
+            itemInfoBuilder.setContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
+                    .setAllAppsContainer(oldContainer.getAllAppsContainer().toBuilder()
+                            .setTaskbarContainer(LauncherAtom.TaskBarContainer.newBuilder())));
+        } else if (oldContainer.hasPredictionContainer()) {
+            itemInfoBuilder.setContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
+                    .setPredictionContainer(oldContainer.getPredictionContainer().toBuilder()
+                            .setTaskbarContainer(LauncherAtom.TaskBarContainer.newBuilder())));
         }
+    }
+
+    @Override
+    public DotInfo getDotInfoForItem(ItemInfo info) {
+        return getPopupDataProvider().getDotInfoForItem(info);
+    }
+
+    @NonNull
+    @Override
+    public PopupDataProvider getPopupDataProvider() {
+        return mControllers.taskbarPopupController.getPopupDataProvider();
+    }
+
+    @Override
+    public View.AccessibilityDelegate getAccessibilityDelegate() {
+        return mAccessibilityDelegate;
+    }
+
+    @Override
+    public boolean isBindingItems() {
+        return mBindingItems;
+    }
+
+    public void setBindingItems(boolean bindingItems) {
+        mBindingItems = bindingItems;
+    }
+
+    @Override
+    public void onDragStart() {
+        setTaskbarWindowFullscreen(true);
+    }
+
+    @Override
+    public void onDragEnd() {
+        maybeSetTaskbarWindowNotFullscreen();
+    }
+
+    @Override
+    public void onPopupVisibilityChanged(boolean isVisible) {
+        setTaskbarWindowFocusable(isVisible);
     }
 
     /**
@@ -372,14 +457,17 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 | SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
         onNotificationShadeExpandChanged((systemUiStateFlags & shadeExpandedFlags) != 0, fromInit);
         mControllers.taskbarViewController.setRecentsButtonDisabled(
-                mControllers.navbarButtonsViewController.isRecentsDisabled());
+                mControllers.navbarButtonsViewController.isRecentsDisabled()
+                        || isNavBarKidsModeActive());
         mControllers.stashedHandleViewController.setIsHomeButtonDisabled(
                 mControllers.navbarButtonsViewController.isHomeDisabled());
         mControllers.taskbarKeyguardController.updateStateForSysuiFlags(systemUiStateFlags);
-        mControllers.taskbarStashController.updateStateForSysuiFlags(systemUiStateFlags, fromInit);
+        mControllers.taskbarStashController.updateStateForSysuiFlags(
+                systemUiStateFlags, fromInit || !isUserSetupComplete());
         mControllers.taskbarScrimViewController.updateStateForSysuiFlags(systemUiStateFlags,
                 fromInit);
         mControllers.navButtonController.updateSysuiFlags(systemUiStateFlags);
+        mControllers.taskbarForceVisibleImmersiveController.updateSysuiFlags(systemUiStateFlags);
     }
 
     /**
@@ -433,8 +521,31 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         setTaskbarWindowHeight(fullscreen ? MATCH_PARENT : mLastRequestedNonFullscreenHeight);
     }
 
+    /**
+     * Reverts Taskbar window to its original size, if all floating views are closed and there is
+     * no system drag operation in progress.
+     */
+    void maybeSetTaskbarWindowNotFullscreen() {
+        if (AbstractFloatingView.getAnyView(this, TYPE_ALL) == null
+                && !mControllers.taskbarDragController.isSystemDragInProgress()) {
+            setTaskbarWindowFullscreen(false);
+        }
+    }
+
     public boolean isTaskbarWindowFullscreen() {
         return mIsFullscreen;
+    }
+
+    /**
+     * Notify system to inset the rounded corner frame based on the task bar insets.
+     */
+    public void updateInsetRoundedCornerFrame(boolean shouldInsetsRoundedCorner) {
+        if (!mDragLayer.isAttachedToWindow()
+                || mWindowLayoutParams.insetsRoundedCornerFrame == shouldInsetsRoundedCorner) {
+            return;
+        }
+        mWindowLayoutParams.insetsRoundedCornerFrame = shouldInsetsRoundedCorner;
+        mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
     }
 
     /**
@@ -457,8 +568,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
             }
         }
         mWindowLayoutParams.height = height;
-        mWindowLayoutParams.providedInternalImeInsets =
-                Insets.of(0, height - mTaskbarHeightForIme, 0, 0);
+        mControllers.taskbarInsetsController.onTaskbarWindowHeightOrInsetsChanged();
         mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
     }
 
@@ -470,10 +580,39 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     }
 
     /**
-     * Returns the bottom insets taskbar provides to the IME when IME is visible.
+     * Either adds or removes {@link WindowManager.LayoutParams#FLAG_NOT_FOCUSABLE} on the taskbar
+     * window.
      */
-    public int getTaskbarHeightForIme() {
-        return mTaskbarHeightForIme;
+    public void setTaskbarWindowFocusable(boolean focusable) {
+        if (focusable) {
+            mWindowLayoutParams.flags &= ~FLAG_NOT_FOCUSABLE;
+        } else {
+            mWindowLayoutParams.flags |= FLAG_NOT_FOCUSABLE;
+        }
+        mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
+    }
+
+    /**
+     * Either adds or removes {@link WindowManager.LayoutParams#FLAG_NOT_FOCUSABLE} on the taskbar
+     * window. If we're now focusable, also move nav buttons to a separate window above IME.
+     */
+    public void setTaskbarWindowFocusableForIme(boolean focusable) {
+        if (focusable) {
+            mControllers.navbarButtonsViewController.moveNavButtonsToNewWindow();
+        } else {
+            mControllers.navbarButtonsViewController.moveNavButtonsBackToTaskbarWindow();
+        }
+        setTaskbarWindowFocusable(focusable);
+    }
+
+    /** Adds the given view to WindowManager with the provided LayoutParams (creates new window). */
+    public void addWindowView(View view, WindowManager.LayoutParams windowLayoutParams) {
+        mWindowManager.addView(view, windowLayoutParams);
+    }
+
+    /** Removes the given view from WindowManager. See {@link #addWindowView}. */
+    public void removeWindowView(View view) {
+        mWindowManager.removeViewImmediate(view);
     }
 
     protected void onTaskbarIconClicked(View view) {
@@ -485,6 +624,17 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         } else if (tag instanceof FolderInfo) {
             FolderIcon folderIcon = (FolderIcon) view;
             Folder folder = folderIcon.getFolder();
+
+            folder.setOnFolderStateChangedListener(newState -> {
+                if (newState == Folder.STATE_OPEN) {
+                    setTaskbarWindowFocusableForIme(true);
+                } else if (newState == Folder.STATE_CLOSED) {
+                    // Defer by a frame to ensure we're no longer fullscreen and thus won't jump.
+                    getDragLayer().post(() -> setTaskbarWindowFocusableForIme(false));
+                    folder.setOnFolderStateChangedListener(null);
+                }
+            });
+
             setTaskbarWindowFullscreen(true);
 
             getDragLayer().post(() -> {
@@ -511,21 +661,22 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                         Toast.makeText(this, R.string.safemode_shortcut_error,
                                 Toast.LENGTH_SHORT).show();
                     } else  if (info.isPromise()) {
+                        TestLogging.recordEvent(
+                                TestProtocol.SEQUENCE_MAIN, "start: taskbarPromiseIcon");
                         intent = new PackageManagerHelper(this)
                                 .getMarketIntent(info.getTargetPackage())
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
 
                     } else if (info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+                        TestLogging.recordEvent(
+                                TestProtocol.SEQUENCE_MAIN, "start: taskbarDeepShortcut");
                         String id = info.getDeepShortcutId();
                         String packageName = intent.getPackage();
                         getSystemService(LauncherApps.class)
                                 .startShortcut(packageName, id, null, null, info.user);
-                    } else if (info.user.equals(Process.myUserHandle())) {
-                        startActivity(intent);
                     } else {
-                        getSystemService(LauncherApps.class).startMainActivity(
-                                intent.getComponent(), info.user, intent.getSourceBounds(), null);
+                        startItemInfoActivity(info);
                     }
 
                     mControllers.uiController.onTaskbarIconLaunched(info);
@@ -535,11 +686,33 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                     Log.e(TAG, "Unable to launch. tag=" + info + " intent=" + intent, e);
                 }
             }
+        } else if (tag instanceof AppInfo) {
+            startItemInfoActivity((AppInfo) tag);
+            mControllers.uiController.onTaskbarIconLaunched((AppInfo) tag);
         } else {
             Log.e(TAG, "Unknown type clicked: " + tag);
         }
 
         AbstractFloatingView.closeAllOpenViews(this);
+    }
+
+    private void startItemInfoActivity(ItemInfo info) {
+        Intent intent = new Intent(info.getIntent())
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        try {
+            TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "start: taskbarAppIcon");
+            if (info.user.equals(Process.myUserHandle())) {
+                // TODO(b/216683257): Use startActivityForResult for search results that require it.
+                startActivity(intent);
+            } else {
+                getSystemService(LauncherApps.class).startMainActivity(
+                        intent.getComponent(), info.user, intent.getSourceBounds(), null);
+            }
+        } catch (NullPointerException | ActivityNotFoundException | SecurityException e) {
+            Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT)
+                    .show();
+            Log.e(TAG, "Unable to launch. tag=" + info + " intent=" + intent, e);
+        }
     }
 
     /**
@@ -562,6 +735,53 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         return mIsUserSetupComplete;
     }
 
+    protected boolean isNavBarKidsModeActive() {
+        return mIsNavBarKidsMode && isThreeButtonNav();
+    }
+
+    protected boolean isNavBarForceVisible() {
+        return mIsNavBarForceVisible;
+    }
+
+    /**
+     * Displays a single frame of the Launcher start from SUW animation.
+     *
+     * This animation is a combination of the Launcher resume animation, which animates the hotseat
+     * icons into position, the Taskbar unstash to hotseat animation, which animates the Taskbar
+     * stash bar into the hotseat icons, and an override to prevent showing the Taskbar all apps
+     * button.
+     *
+     * This should be used to run a Taskbar unstash to hotseat animation whose progress matches a
+     * swipe progress.
+     *
+     * @param duration a placeholder duration to be used to ensure all full-length
+     *                 sub-animations are properly coordinated. This duration should not actually
+     *                 be used since this animation tracks a swipe progress.
+     */
+    protected AnimatorPlaybackController createLauncherStartFromSuwAnim(int duration) {
+        AnimatorSet fullAnimation = new AnimatorSet();
+        fullAnimation.setDuration(duration);
+
+        TaskbarUIController uiController = mControllers.uiController;
+        if (uiController instanceof LauncherTaskbarUIController) {
+            ((LauncherTaskbarUIController) uiController).addLauncherResumeAnimation(
+                    fullAnimation, duration);
+        }
+        mControllers.taskbarStashController.addUnstashToHotseatAnimation(fullAnimation, duration);
+
+        if (!FeatureFlags.ENABLE_ALL_APPS_BUTTON_IN_HOTSEAT.get()) {
+            ValueAnimator alphaOverride = ValueAnimator.ofFloat(0, 1);
+            alphaOverride.setDuration(duration);
+            alphaOverride.addUpdateListener(a -> {
+                // Override the alpha updates in the icon alignment animation.
+                mControllers.taskbarViewController.getAllAppsButtonView().setAlpha(0);
+            });
+            fullAnimation.play(alphaOverride);
+        }
+
+        return AnimatorPlaybackController.wrap(fullAnimation, duration);
+    }
+
     /**
      * Called when we determine the touchable region.
      *
@@ -581,5 +801,27 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                     ~WindowManager.LayoutParams.PRIVATE_FLAG_EXCLUDE_FROM_SCREEN_MAGNIFICATION;
         }
         mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
+    }
+
+    public void showPopupMenuForIcon(BubbleTextView btv) {
+        setTaskbarWindowFullscreen(true);
+        btv.post(() -> mControllers.taskbarPopupController.showForIcon(btv));
+    }
+
+    protected void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarActivityContext:");
+
+        pw.println(String.format(
+                "%s\tmNavMode=%s", prefix, mNavMode));
+        pw.println(String.format(
+                "%s\tmImeDrawsImeNavBar=%b", prefix, mImeDrawsImeNavBar));
+        pw.println(String.format(
+                "%s\tmIsUserSetupComplete=%b", prefix, mIsUserSetupComplete));
+        pw.println(String.format(
+                "%s\tmWindowLayoutParams.height=%dpx", prefix, mWindowLayoutParams.height));
+        pw.println(String.format(
+                "%s\tmBindInProgress=%b", prefix, mBindingItems));
+        mControllers.dumpLogs(prefix + "\t", pw);
+        mDeviceProfile.dump(prefix, pw);
     }
 }

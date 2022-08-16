@@ -21,7 +21,10 @@
     android:layout_height="wrap_content"
     android:paddingVertical="@dimen/widget_list_header_view_vertical_padding"
     android:orientation="horizontal"
-    launcher:appIconSize="48dp">
+    android:importantForAccessibility="yes"
+    android:focusable="true"
+    launcher:appIconSize="48dp"
+    android:descendantFocusability="afterDescendants">
 
     <ImageView
         android:id="@+id/app_icon"
@@ -32,14 +35,11 @@
         tools:src="@drawable/ic_corp"/>
 
     <LinearLayout
-        android:id="@+id/app_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:focusable="true"
-        android:descendantFocusability="afterDescendants">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/app_title"

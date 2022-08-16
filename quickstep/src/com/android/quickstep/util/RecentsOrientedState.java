@@ -52,6 +52,7 @@ import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.SettingsCache;
 import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.views.TaskView;
 
 import java.lang.annotation.Retention;
@@ -101,6 +102,8 @@ public class RecentsOrientedState implements
     // Whether the swipe gesture is running, so the recents would stay locked in the
     // current orientation
     private static final int FLAG_SWIPE_UP_NOT_RUNNING = 1 << 8;
+    // Ignore shared prefs for home rotation rotation, allowing it in if the activity supports it
+    private static final int FLAG_IGNORE_ALLOW_HOME_ROTATION_PREF = 1 << 9;
 
     private static final int MASK_MULTIPLE_ORIENTATION_SUPPORTED_BY_DEVICE =
             FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_ACTIVITY
@@ -304,6 +307,7 @@ public class RecentsOrientedState implements
     private void initMultipleOrientationListeners() {
         mSharedPrefs.registerOnSharedPreferenceChangeListener(this);
         mSettingsCache.register(ROTATION_SETTING_URI, mRotationChangeListener);
+        updateAutoRotateSetting();
     }
 
     private void destroyMultipleOrientationListeners() {
@@ -340,6 +344,11 @@ public class RecentsOrientedState implements
 
     @SurfaceRotation
     public int getDisplayRotation() {
+        if (TaskAnimationManager.SHELL_TRANSITIONS_ROTATION) {
+            // When shell transitions are enabled, both the display and activity rotations should
+            // be the same once the gesture starts
+            return mRecentsActivityRotation;
+        }
         return mDisplayRotation;
     }
 
@@ -365,12 +374,17 @@ public class RecentsOrientedState implements
                 == MASK_MULTIPLE_ORIENTATION_SUPPORTED_BY_DEVICE;
     }
 
+    public void ignoreAllowHomeRotationPreference() {
+        setFlag(FLAG_IGNORE_ALLOW_HOME_ROTATION_PREF, true);
+    }
+
     public boolean isRecentsActivityRotationAllowed() {
         // Activity rotation is allowed if the multi-simulated-rotation is not supported
         // (fallback recents or tablets) or activity rotation is enabled by various settings.
         return ((mFlags & MASK_MULTIPLE_ORIENTATION_SUPPORTED_BY_DEVICE)
                 != MASK_MULTIPLE_ORIENTATION_SUPPORTED_BY_DEVICE)
-                || (mFlags & (FLAG_HOME_ROTATION_ALLOWED_IN_PREFS
+                || (mFlags & (FLAG_IGNORE_ALLOW_HOME_ROTATION_PREF
+                        | FLAG_HOME_ROTATION_ALLOWED_IN_PREFS
                         | FLAG_MULTIWINDOW_ROTATION_ALLOWED
                         | FLAG_HOME_ROTATION_FORCE_ENABLED_FOR_TESTING)) != 0;
     }
@@ -593,7 +607,7 @@ public class RecentsOrientedState implements
             width = Math.min(currentSize.x, currentSize.y);
             height = Math.max(currentSize.x, currentSize.y);
         }
-        return idp.getBestMatch(width, height);
+        return idp.getBestMatch(width, height, mRecentsActivityRotation);
     }
 
     private static String nameAndAddress(Object obj) {

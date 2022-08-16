@@ -22,8 +22,22 @@
     <dimen name="fastscroll_popup_text_size">24dp</dimen>
 
     <!-- Dynamic grid -->
+    <dimen name="dynamic_grid_edge_margin">15.28dp</dimen>
     <dimen name="dynamic_grid_icon_drawable_padding">4dp</dimen>
+    <dimen name="dynamic_grid_drop_target_size">36dp</dimen>
+    <dimen name="cell_layout_padding">20dp</dimen>
 
     <!-- Hotseat -->
     <dimen name="dynamic_grid_hotseat_side_padding">16dp</dimen>
+    <dimen name="spring_loaded_hotseat_top_margin">45dp</dimen>
+
+    <!-- Dragging -->
+    <dimen name="drop_target_button_gap">28dp</dimen>
+    <dimen name="drop_target_button_drawable_horizontal_padding">16dp</dimen>
+    <dimen name="drop_target_button_drawable_vertical_padding">2dp</dimen>
+    <dimen name="drop_target_top_margin">6dp</dimen>
+    <dimen name="drop_target_bottom_margin">6dp</dimen>
+
+    <!-- Workspace grid visualization parameters -->
+    <dimen name="grid_visualization_horizontal_cell_spacing">24dp</dimen>
 </resources>

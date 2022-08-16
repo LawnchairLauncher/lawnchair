@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Open Instellingen om de gevoeligheid van Terug te wijzigen"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Swipe om terug te gaan"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Swipe vanaf de linker- of rechterrand naar het midden om terug te gaan naar het vorige scherm."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Als je wilt teruggaan naar het laatste scherm, swipe je met 2 vingers vanaf de linker- of rechterrand naar het midden van het scherm."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Swipe vanaf de onderrand van het scherm omhoog."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Pauzeer niet voordat je loslaat."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Swipe recht omhoog."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Je weet nu hoe je teruggaat naar het startscherm."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Swipe om naar het startscherm te gaan"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Swipe omhoog vanaf de onderkant van het scherm. Met dit gebaar ga je altijd naar het startscherm."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Swipe met 2 vingers omhoog vanaf de onderkant van het scherm. Met dit gebaar ga je altijd naar het startscherm."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Swipe vanaf de onderrand van het scherm omhoog."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Houd het venster langer vast voordat je loslaat."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Swipe recht omhoog en pauzeer dan."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Je weet nu hoe je het gebaar Schakelen tussen apps maakt."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Swipe om tussen apps te schakelen"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Swipe omhoog vanaf de onderkant van het scherm, houd vast en laat los om tussen apps te schakelen."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Swipe met 2 vingers omhoog vanaf de onderkant van het scherm, houd vast en laat los om tussen apps te schakelen."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Klaar"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Klaar"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Instellingen"</string>
@@ -76,6 +79,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Klaar"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Swipe omhoog om naar het startscherm te gaan"</string>
     <string name="allset_description" msgid="6350320429953234580">"Je bent klaar om je telefoon te gebruiken"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"Je bent klaar om je tablet te gebruiken"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Navigatie-instellingen van systeem"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Delen"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Screenshot"</string>
@@ -97,4 +101,13 @@
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Terug"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Sluiten"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Klaar"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Home"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Toegankelijkheid"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Terug"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME-schakelaar"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Recent"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"Meldingen"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Snelle instellingen"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Naar boven/links verplaatsen"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Naar beneden/rechts verplaatsen"</string>
 </resources>

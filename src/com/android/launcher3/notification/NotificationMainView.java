@@ -38,11 +38,12 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.views.ActivityContext;
 
 /**
  * A {@link android.widget.FrameLayout} that contains a single notification,
@@ -320,9 +321,12 @@ public class NotificationMainView extends LinearLayout {
     }
 
     public void onChildDismissed() {
-        Launcher launcher = Launcher.getLauncher(getContext());
-        launcher.getPopupDataProvider().cancelNotification(
-                mNotificationInfo.notificationKey);
-        launcher.getStatsLogManager().logger().log(LAUNCHER_NOTIFICATION_DISMISSED);
+        ActivityContext activityContext = ActivityContext.lookupContext(getContext());
+        PopupDataProvider popupDataProvider = activityContext.getPopupDataProvider();
+        if (popupDataProvider == null) {
+            return;
+        }
+        popupDataProvider.cancelNotification(mNotificationInfo.notificationKey);
+        activityContext.getStatsLogManager().logger().log(LAUNCHER_NOTIFICATION_DISMISSED);
     }
 }

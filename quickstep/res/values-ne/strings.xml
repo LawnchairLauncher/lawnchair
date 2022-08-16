@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"\'पछाडि\' नामक इसाराको संवेदनशीलता बदल्न सेटिङमा जानुहोस्"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"पछाडि जान स्वाइप गर्नुहोस्"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"यसअघिको स्क्रिनमा फर्कन स्क्रिनको बायाँ वा दायाँ किनाराबाट मध्य भागसम्म स्वाइप गर्नुहोस्।"</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"तपाईं यसअघि जुन स्क्रिनमा हुनुहुन्थ्यो त्यही स्क्रिनमा फर्कन चाहनुहुन्छ भने २ वटा औँला प्रयोग गरी स्क्रिनको बायाँ वा दायाँ किनाराबाट मध्य भागसम्म स्वाइप गर्नुहोस्।"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्।"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"औँला उठाउनुअघि नरोकिनुहोस्।"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"सीधै माथितिर स्वाइप गर्नुहोस्।"</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"तपाईंले \'होम स्क्रिनमा जानुहोस्\' नामक इसारा प्रयोग गर्ने तरिका सिक्नुभयो।"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"होम स्क्रिनमा जान स्वाइप गर्नुहोस्"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्। यो इसारा प्रयोग गर्दा सधैँ होम स्क्रिन खुल्छ।"</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"२ वटा औँला प्रयोग गरी स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्। यो जेस्चर प्रयोग गर्दा सधैँ होम स्क्रिन खुल्छ।"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्।"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"स्क्रिनबाट औँला उठाउनुअघि एपको विन्डोमा केही बेर छोइराख्नुहोस्।"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"सीधै माथितिर स्वाइप गर्नुहोस् अनि रोकिनुहोस्।"</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"तपाईंले \'एउटा एपबाट अर्को एपमा जानुहोस्\' नामक इसारा प्रयोग गर्ने तरिका सिक्नुभयो।"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"एउटा एपबाट अर्को एपमा जान स्वाइप गर्नुहोस्"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"एउटा एपबाट अर्कोमा जान स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्, छोइराख्नुहोस् अनि औँला उठाउनुहोस्।"</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"एउटा एपबाट अर्कोमा जान २ वटा औँला प्रयोग गरी स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्, छोइराख्नुहोस् अनि औँला उठाउनुहोस्।"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"सबै तयार छ"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"सम्पन्न भयो"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"सेटिङ"</string>
@@ -76,6 +79,7 @@
     <string name="allset_title" msgid="5021126669778966707">"सबै तयार भयो!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"होममा जान माथितिर स्वाइप गर्नुहोस्"</string>
     <string name="allset_description" msgid="6350320429953234580">"तपाईं आफ्नो फोन चलाउन थाल्न सक्नुहुन्छ"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"तपाईं अब आफ्नो ट्याब्लेट चलाउन थाल्न सक्नुहुन्छ"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"सिस्टम नेभिगेसनसम्बन्धी सेटिङ"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"सेयर गर्नुहोस्"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"स्क्रिनसट"</string>
@@ -97,4 +101,13 @@
     <string name="taskbar_edu_previous" msgid="459202320127201702">"पछाडि"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"बन्द गर्नुहोस्"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"सम्पन्न भयो"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"होम"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"सर्वसुलभता"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"पछाडि जानुहोस्"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME स्विचर"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"हालसालैका बटनहरू"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"सूचनाहरू"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"द्रुत सेटिङ"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"सिरान/बायाँतिर सार्नुहोस्"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"फेद/दायाँतिर सार्नुहोस्"</string>
 </resources>

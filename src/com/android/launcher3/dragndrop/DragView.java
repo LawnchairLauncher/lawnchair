@@ -21,6 +21,7 @@ import static android.view.View.MeasureSpec.makeMeasureSpec;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.Utilities.getBadge;
+import static com.android.launcher3.icons.FastBitmapDrawable.getDisabledColorFilter;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.animation.Animator;
@@ -31,9 +32,9 @@ import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Path;
 import android.graphics.Picture;
 import android.graphics.Point;
@@ -97,6 +98,7 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
     final ValueAnimator mAnim;
     // Whether mAnim has started. Unlike mAnim.isStarted(), this is true even after mAnim ends.
     private boolean mAnimStarted;
+    private Runnable mOnAnimEndCallback = null;
 
     private int mLastTouchX;
     private int mLastTouchY;
@@ -179,6 +181,14 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
             public void onAnimationStart(Animator animation) {
                 mAnimStarted = true;
             }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                if (mOnAnimEndCallback != null) {
+                    mOnAnimEndCallback.run();
+                }
+            }
         });
 
         setDragRegion(new Rect(0, 0, width, height));
@@ -198,6 +208,10 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
         setWillNotDraw(false);
     }
 
+    public void setOnAnimationEndCallback(Runnable callback) {
+        mOnAnimEndCallback = callback;
+    }
+
     /**
      * Initialize {@code #mIconDrawable} if the item can be represented using
      * an {@link AdaptiveIconDrawable} or {@link FolderAdaptiveIcon}.
@@ -215,7 +229,8 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
             Object[] outObj = new Object[1];
             int w = mWidth;
             int h = mHeight;
-            Drawable dr = Utilities.getFullDrawable(mActivity, info, w, h, outObj);
+            Drawable dr = Utilities.getFullDrawable(mActivity, info, w, h,
+                    true /* shouldThemeIcon */, outObj);
 
             if (dr instanceof AdaptiveIconDrawable) {
                 int blurMargin = (int) mActivity.getResources()
@@ -225,9 +240,8 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
                 bounds.inset(blurMargin, blurMargin);
                 // Badge is applied after icon normalization so the bounds for badge should not
                 // be scaled down due to icon normalization.
-                Rect badgeBounds = new Rect(bounds);
                 mBadge = getBadge(mActivity, info, outObj[0]);
-                mBadge.setBounds(badgeBounds);
+                FastBitmapDrawable.setBadgeBounds(mBadge, bounds);
 
                 // Do not draw the background in case of folder as its translucent
                 final boolean shouldDrawBackground = !(dr instanceof FolderAdaptiveIcon);
@@ -280,11 +294,10 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
                     removeAllViewsInLayout();
 
                     if (info.isDisabled()) {
-                        FastBitmapDrawable d = new FastBitmapDrawable((Bitmap) null);
-                        d.setIsDisabled(true);
-                        mBgSpringDrawable.setColorFilter(d.getColorFilter());
-                        mFgSpringDrawable.setColorFilter(d.getColorFilter());
-                        mBadge.setColorFilter(d.getColorFilter());
+                        ColorFilter filter = getDisabledColorFilter();
+                        mBgSpringDrawable.setColorFilter(filter);
+                        mFgSpringDrawable.setColorFilter(filter);
+                        mBadge.setColorFilter(filter);
                     }
                     invalidate();
                 }));

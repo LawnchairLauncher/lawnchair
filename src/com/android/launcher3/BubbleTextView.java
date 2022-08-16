@@ -18,6 +18,8 @@ package com.android.launcher3;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_ICON_LABEL_AUTO_SCALING;
 import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
+import static com.android.launcher3.icons.BitmapInfo.FLAG_NO_BADGE;
+import static com.android.launcher3.icons.BitmapInfo.FLAG_THEMED;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.animation.Animator;
@@ -49,11 +51,11 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
-import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
+import com.android.launcher3.accessibility.BaseAccessibilityDelegate;
 import com.android.launcher3.dot.DotInfo;
+import com.android.launcher3.dragndrop.DragOptions.PreDragCondition;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.icons.DotRenderer;
@@ -64,12 +66,11 @@ import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
-import com.android.launcher3.model.data.PackageItemInfo;
-import com.android.launcher3.model.data.SearchActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.util.SafeCloseable;
+import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.views.ActivityContext;
-import com.android.launcher3.views.BubbleTextHolder;
 import com.android.launcher3.views.IconLabelDotView;
 
 import java.text.NumberFormat;
@@ -95,7 +96,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private static final int MAX_SEARCH_LOOP_COUNT = 20;
 
     private static final int[] STATE_PRESSED = new int[]{android.R.attr.state_pressed};
-    private static final float HIGHLIGHT_SCALE = 1.16f;
 
     private final PointF mTranslationForReorderBounce = new PointF(0, 0);
     private final PointF mTranslationForReorderPreview = new PointF(0, 0);
@@ -146,9 +146,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private final int mIconSize;
 
     @ViewDebug.ExportedProperty(category = "launcher")
+    private boolean mHideBadge = false;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mIsIconVisible = true;
     @ViewDebug.ExportedProperty(category = "launcher")
     private int mTextColor;
+    @ViewDebug.ExportedProperty(category = "launcher")
+    private ColorStateList mTextColorStateList;
     @ViewDebug.ExportedProperty(category = "launcher")
     private float mTextAlpha = 1;
 
@@ -170,7 +174,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private HandlerRunnable mIconLoadRequest;
 
     private boolean mEnableIconUpdateAnimation = false;
-    private BubbleTextHolder mBubbleTextHolder;
 
     public BubbleTextView(Context context) {
         this(context, null, 0);
@@ -240,16 +243,27 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         super.onFocusChanged(focused, direction, previouslyFocusedRect);
     }
 
+    public void setHideBadge(boolean hideBadge) {
+        mHideBadge = hideBadge;
+    }
+
     /**
      * Resets the view so it can be recycled.
      */
     public void reset() {
         mDotInfo = null;
-        mDotParams.color = Color.TRANSPARENT;
+        mDotParams.dotColor = Color.TRANSPARENT;
+        mDotParams.appColor = Color.TRANSPARENT;
         cancelDotScaleAnim();
         mDotParams.scale = 0f;
         mForceHideDot = false;
         setBackground(null);
+
+        setTag(null);
+        if (mIconLoadRequest != null) {
+            mIconLoadRequest.cancel();
+            mIconLoadRequest = null;
+        }
     }
 
     private void cancelDotScaleAnim() {
@@ -295,7 +309,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     @Override
     public void setAccessibilityDelegate(AccessibilityDelegate delegate) {
-        if (delegate instanceof LauncherAccessibilityDelegate) {
+        if (delegate instanceof BaseAccessibilityDelegate) {
             super.setAccessibilityDelegate(delegate);
         } else {
             // NO-OP
@@ -347,25 +361,22 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         setDownloadStateContentDescription(info, info.getProgressLevel());
     }
 
-    private void setItemInfo(ItemInfoWithIcon itemInfo) {
+    protected void setItemInfo(ItemInfoWithIcon itemInfo) {
         setTag(itemInfo);
-        if (mBubbleTextHolder != null) {
-            mBubbleTextHolder.onItemInfoUpdated(itemInfo);
-        }
-    }
-
-    public void setBubbleTextHolder(
-            BubbleTextHolder bubbleTextHolder) {
-        mBubbleTextHolder = bubbleTextHolder;
     }
 
     @UiThread
     protected void applyIconAndLabel(ItemInfoWithIcon info) {
         boolean useTheme = mDisplay == DISPLAY_WORKSPACE || mDisplay == DISPLAY_FOLDER
                 || mDisplay == DISPLAY_TASKBAR;
-        FastBitmapDrawable iconDrawable = info.newIcon(getContext(), useTheme);
-        mDotParams.color = IconPalette.getMutedColor(iconDrawable.getIconColor(), 0.54f);
-
+        int flags = useTheme ? FLAG_THEMED : 0;
+        if (mHideBadge) {
+            flags |= FLAG_NO_BADGE;
+        }
+        FastBitmapDrawable iconDrawable = info.newIcon(getContext(), flags);
+        mDotParams.appColor = iconDrawable.getIconColor();
+        mDotParams.dotColor = getContext().getResources()
+                .getColor(android.R.color.system_accent3_200, getContext().getTheme());
         setIcon(iconDrawable);
         applyLabel(info);
     }
@@ -631,12 +642,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     @Override
     public void setTextColor(int color) {
         mTextColor = color;
+        mTextColorStateList = null;
         super.setTextColor(getModifiedColor());
     }
 
     @Override
     public void setTextColor(ColorStateList colors) {
         mTextColor = colors.getDefaultColor();
+        mTextColorStateList = colors;
         if (Float.compare(mTextAlpha, 1) == 0) {
             super.setTextColor(colors);
         } else {
@@ -658,7 +671,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     private void setTextAlpha(float alpha) {
         mTextAlpha = alpha;
-        super.setTextColor(getModifiedColor());
+        if (mTextColorStateList != null) {
+            setTextColor(mTextColorStateList);
+        } else {
+            super.setTextColor(getModifiedColor());
+        }
     }
 
     private int getModifiedColor() {
@@ -847,6 +864,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     }
 
     protected void applyCompoundDrawables(Drawable icon) {
+        if (icon == null) {
+            // Icon can be null when we use the BubbleTextView for text only.
+            return;
+        }
+
         // If we had already set an icon before, disable relayout as the icon size is the
         // same as before.
         mDisableRelayout = mIcon != null;
@@ -890,10 +912,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             } else if (info instanceof WorkspaceItemInfo) {
                 applyFromWorkspaceItem((WorkspaceItemInfo) info);
                 mActivity.invalidateParent(info);
-            } else if (info instanceof PackageItemInfo) {
-                applyFromItemInfoWithIcon((PackageItemInfo) info);
-            } else if (info instanceof SearchActionItemInfo) {
-                applyFromItemInfoWithIcon((SearchActionItemInfo) info);
+            } else if (info != null) {
+                applyFromItemInfoWithIcon(info);
             }
 
             mDisableRelayout = false;
@@ -997,19 +1017,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         getIconBounds(mIconSize, bounds);
     }
 
-    private int getIconSizeForDisplay(int display) {
-        DeviceProfile grid = mActivity.getDeviceProfile();
-        switch (display) {
-            case DISPLAY_ALL_APPS:
-                return grid.allAppsIconSizePx;
-            case DISPLAY_FOLDER:
-                return grid.folderChildIconSizePx;
-            case DISPLAY_WORKSPACE:
-            default:
-                return grid.iconSizePx;
-        }
-    }
-
     public void getSourceVisualDragBounds(Rect bounds) {
         getIconBounds(mIconSize, bounds);
     }
@@ -1022,8 +1029,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     }
 
     private void resetIconScale() {
-        if (mIcon instanceof FastBitmapDrawable) {
-            ((FastBitmapDrawable) mIcon).resetScale();
+        if (mIcon != null) {
+            mIcon.resetScale();
         }
     }
 
@@ -1043,5 +1050,20 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         args.put("app_name", appName);
         args.put("count", notificationCount);
         return icuCountFormat.format(args);
+    }
+
+    /**
+     * Starts a long press action and returns the corresponding pre-drag condition
+     */
+    public PreDragCondition startLongPressAction() {
+        PopupContainerWithArrow popup = PopupContainerWithArrow.showForIcon(this);
+        return popup != null ? popup.createPreDragCondition(true) : null;
+    }
+
+    /**
+     * Returns true if the view can show long-press popup
+     */
+    public boolean canShowLongPressPopup() {
+        return getTag() instanceof ItemInfo && ShortcutUtil.supportsShortcuts((ItemInfo) getTag());
     }
 }

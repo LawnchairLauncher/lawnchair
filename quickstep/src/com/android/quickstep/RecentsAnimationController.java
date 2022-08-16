@@ -17,9 +17,14 @@ package com.android.quickstep;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
 
+import android.content.Context;
+import android.os.RemoteException;
+import android.util.Log;
 import android.view.IRecentsAnimationController;
 import android.view.SurfaceControl;
+import android.view.WindowManagerGlobal;
 import android.window.PictureInPictureSurfaceTransaction;
 
 import androidx.annotation.NonNull;
@@ -39,6 +44,7 @@ import java.util.function.Consumer;
  */
 public class RecentsAnimationController {
 
+    private static final String TAG = "RecentsAnimationController";
     private final RecentsAnimationControllerCompat mController;
     private final Consumer<RecentsAnimationController> mOnFinishedListener;
     private final boolean mAllowMinimizeSplitScreen;
@@ -74,7 +80,16 @@ public class RecentsAnimationController {
         if (mUseLauncherSysBarFlags != useLauncherSysBarFlags) {
             mUseLauncherSysBarFlags = useLauncherSysBarFlags;
             UI_HELPER_EXECUTOR.execute(() -> {
-                mController.setAnimationTargetsBehindSystemBars(!useLauncherSysBarFlags);
+                if (!ENABLE_SHELL_TRANSITIONS) {
+                    mController.setAnimationTargetsBehindSystemBars(!useLauncherSysBarFlags);
+                } else {
+                    try {
+                        WindowManagerGlobal.getWindowManagerService().setRecentsAppBehindSystemBars(
+                                useLauncherSysBarFlags);
+                    } catch (RemoteException e) {
+                        Log.e(TAG, "Unable to reach window manager", e);
+                    }
+                }
             });
         }
     }
@@ -83,24 +98,20 @@ public class RecentsAnimationController {
      * Indicates that the gesture has crossed the window boundary threshold and we should minimize
      * if we are in splitscreen.
      */
-    public void setSplitScreenMinimized(boolean splitScreenMinimized) {
+    public void setSplitScreenMinimized(Context context, boolean splitScreenMinimized) {
         if (!mAllowMinimizeSplitScreen) {
             return;
         }
         if (mSplitScreenMinimized != splitScreenMinimized) {
             mSplitScreenMinimized = splitScreenMinimized;
-            UI_HELPER_EXECUTOR.execute(() -> {
-                SystemUiProxy p = SystemUiProxy.INSTANCE.getNoCreate();
-                if (p != null) {
-                    p.setSplitScreenMinimized(splitScreenMinimized);
-                }
-            });
+            UI_HELPER_EXECUTOR.execute(() -> SystemUiProxy.INSTANCE.get(context)
+                    .setSplitScreenMinimized(splitScreenMinimized));
         }
     }
 
     /**
      * Remove task remote animation target from
-     * {@link RecentsAnimationCallbacks#onTaskAppeared(RemoteAnimationTargetCompat)}}.
+     * {@link RecentsAnimationCallbacks#onTasksAppeared}}.
      */
     @UiThread
     public void removeTaskTarget(@NonNull RemoteAnimationTargetCompat target) {

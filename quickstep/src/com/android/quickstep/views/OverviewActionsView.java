@@ -33,10 +33,11 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
+import com.android.launcher3.uioverrides.ApiWrapper;
+import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.DisplayController.NavigationMode;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
-import com.android.quickstep.SysUINavigationMode;
-import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.TaskOverlayFactory.OverlayUICallbacks;
 import com.android.quickstep.util.LayoutUtils;
 
@@ -55,7 +56,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             HIDDEN_NON_ZERO_ROTATION,
             HIDDEN_NO_TASKS,
             HIDDEN_NO_RECENTS,
-            HIDDEN_FOCUSED_SCROLL,
             HIDDEN_SPLIT_SCREEN})
     @Retention(RetentionPolicy.SOURCE)
     public @interface ActionsHiddenFlags { }
@@ -63,8 +63,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     public static final int HIDDEN_NON_ZERO_ROTATION = 1 << 0;
     public static final int HIDDEN_NO_TASKS = 1 << 1;
     public static final int HIDDEN_NO_RECENTS = 1 << 2;
-    public static final int HIDDEN_FOCUSED_SCROLL = 1 << 3;
-    public static final int HIDDEN_SPLIT_SCREEN = 1 << 4;
+    public static final int HIDDEN_SPLIT_SCREEN = 1 << 3;
 
     @IntDef(flag = true, value = {
             DISABLED_SCROLLING,
@@ -96,6 +95,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     @Nullable
     protected DeviceProfile mDp;
+    private final Rect mTaskSize = new Rect();
 
     public OverviewActionsView(Context context) {
         this(context, null);
@@ -145,14 +145,14 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        updateVerticalMargin(SysUINavigationMode.getMode(getContext()));
+        updateVerticalMargin(DisplayController.getNavigationMode(getContext()));
     }
 
     @Override
     public void setInsets(Rect insets) {
         mInsets.set(insets);
-        updateVerticalMargin(SysUINavigationMode.getMode(getContext()));
-        updateHorizontalPadding();
+        updateVerticalMargin(DisplayController.getNavigationMode(getContext()));
+        updatePadding();
     }
 
     public void updateHiddenFlags(@ActionsHiddenFlags int visibilityFlags, boolean enable) {
@@ -195,28 +195,64 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         return mMultiValueAlpha.getProperty(INDEX_FULLSCREEN_ALPHA);
     }
 
-    private void updateHorizontalPadding() {
-        setPadding(mInsets.left, 0, mInsets.right, 0);
+    /**
+     * Offsets OverviewActionsView horizontal position based on 3 button nav container in taskbar.
+     */
+    private void updatePadding() {
+        if (mDp == null) {
+            return;
+        }
+        boolean alignFor3ButtonTaskbar = mDp.isTaskbarPresent && !mDp.isGestureMode;
+        if (alignFor3ButtonTaskbar) {
+            // Add extra horizontal spacing
+            int additionalPadding = ApiWrapper.getHotseatEndOffset(getContext());
+            if (isLayoutRtl()) {
+                setPadding(mInsets.left + additionalPadding, 0, mInsets.right, 0);
+            } else {
+                setPadding(mInsets.left, 0, mInsets.right + additionalPadding, 0);
+            }
+        } else {
+            setPadding(mInsets.left, 0, mInsets.right, 0);
+        }
     }
 
     /** Updates vertical margins for different navigation mode or configuration changes. */
-    public void updateVerticalMargin(Mode mode) {
+    public void updateVerticalMargin(NavigationMode mode) {
         if (mDp == null) {
             return;
         }
         LayoutParams actionParams = (LayoutParams) findViewById(
                 R.id.action_buttons).getLayoutParams();
         actionParams.setMargins(
-                actionParams.leftMargin, getOverviewActionsTopMarginPx(mode, mDp),
-                actionParams.rightMargin, getOverviewActionsBottomMarginPx(mode, mDp));
+                actionParams.leftMargin, mDp.overviewActionsTopMarginPx,
+                actionParams.rightMargin, getBottomMargin());
+    }
+
+    private int getBottomMargin() {
+        if (mDp == null) {
+            return 0;
+        }
+
+        if (mDp.isVerticalBarLayout()) {
+            return mDp.getInsets().bottom;
+        }
+
+        if (!mDp.isGestureMode && mDp.isTaskbarPresent) {
+            return mDp.getOverviewActionsClaimedSpaceBelow();
+        }
+
+        // Align to bottom of task Rect.
+        return mDp.heightPx - mTaskSize.bottom - mDp.overviewActionsTopMarginPx
+                - mDp.overviewActionsHeight;
     }
 
     /**
-     * Set the device profile for this view to draw with.
+     * Updates device profile and task size for this view to draw with.
      */
-    public void setDp(DeviceProfile dp) {
+    public void updateDimension(DeviceProfile dp, Rect taskSize) {
         mDp = dp;
-        updateVerticalMargin(SysUINavigationMode.getMode(getContext()));
+        mTaskSize.set(taskSize);
+        updateVerticalMargin(DisplayController.getNavigationMode(getContext()));
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 dp.isVerticalBarLayout() ? 0 : dp.overviewActionsButtonSpacing,
@@ -238,36 +274,5 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
         mSplitButton.setVisibility(visible ? VISIBLE : GONE);
         findViewById(R.id.action_split_space).setVisibility(visible ? VISIBLE : GONE);
-    }
-
-    /** Get the top margin associated with the action buttons in Overview. */
-    public static int getOverviewActionsTopMarginPx(
-            SysUINavigationMode.Mode mode, DeviceProfile dp) {
-        // In vertical bar, use the smaller task margin for the top regardless of mode
-        if (dp.isVerticalBarLayout()) {
-            return dp.overviewTaskMarginPx;
-        }
-
-        if (mode == SysUINavigationMode.Mode.THREE_BUTTONS) {
-            return dp.overviewActionsMarginThreeButtonPx;
-        }
-
-        return dp.overviewActionsTopMarginGesturePx;
-    }
-
-    /** Get the bottom margin associated with the action buttons in Overview. */
-    public static int getOverviewActionsBottomMarginPx(
-            SysUINavigationMode.Mode mode, DeviceProfile dp) {
-        int inset = dp.getInsets().bottom;
-
-        if (dp.isVerticalBarLayout()) {
-            return inset;
-        }
-
-        if (mode == SysUINavigationMode.Mode.THREE_BUTTONS) {
-            return dp.overviewActionsMarginThreeButtonPx + inset;
-        }
-
-        return dp.overviewActionsBottomMarginGesturePx + inset;
     }
 }

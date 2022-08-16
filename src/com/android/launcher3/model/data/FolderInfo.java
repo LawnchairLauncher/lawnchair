@@ -217,7 +217,7 @@ public class FolderInfo extends ItemInfo {
         return getDefaultItemInfoBuilder()
                 .setFolderIcon(folderIcon)
                 .setRank(rank)
-                .setAttribute(getLabelState().mLogAttribute)
+                .addItemAttributes(getLabelState().mLogAttribute)
                 .setContainerInfo(getContainerInfo())
                 .build();
     }

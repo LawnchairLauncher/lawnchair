@@ -25,7 +25,7 @@
         <shape
             android:shape="rectangle">
             <corners android:radius="50dp"/>
-            <solid android:color="@color/gesture_tutorial_primary_color"/>
+            <solid android:color="?android:attr/colorAccent"/>
         </shape>
     </item>
 </layer-list>

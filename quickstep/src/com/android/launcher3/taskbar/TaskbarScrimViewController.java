@@ -25,10 +25,12 @@ import android.view.animation.PathInterpolator;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.SystemUiProxy;
 
+import java.io.PrintWriter;
+
 /**
  * Handles properties/data collection, and passes the results to {@link TaskbarScrimView} to render.
  */
-public class TaskbarScrimViewController {
+public class TaskbarScrimViewController implements TaskbarControllers.LoggableTaskbarController {
 
     private static final float SCRIM_ALPHA = 0.6f;
 
@@ -47,9 +49,6 @@ public class TaskbarScrimViewController {
     public TaskbarScrimViewController(TaskbarActivityContext activity, TaskbarScrimView scrimView) {
         mActivity = activity;
         mScrimView = scrimView;
-        mScrimView.setCornerSizes(mActivity.getLeftCornerRadius(),
-                mActivity.getRightCornerRadius());
-        mScrimView.setBackgroundHeight(mActivity.getDeviceProfile().taskbarSize);
     }
 
     /**
@@ -93,5 +92,12 @@ public class TaskbarScrimViewController {
 
     private void onClick() {
         SystemUiProxy.INSTANCE.get(mActivity).onBackPressed();
+    }
+
+    @Override
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarScrimViewController:");
+
+        pw.println(String.format("%s\tmScrimAlpha.value=%.2f", prefix, mScrimAlpha.value));
     }
 }

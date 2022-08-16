@@ -22,7 +22,7 @@ import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.HINT_STATE_TWO_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.WorkspaceStateTransitionAnimation.getSpringScaleAnimator;
+import static com.android.launcher3.WorkspaceStateTransitionAnimation.getWorkspaceSpringScaleAnimator;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
@@ -42,6 +42,7 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SC
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_Y;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_SCRIM_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
@@ -50,6 +51,8 @@ import static com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesT
 import static com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController.ALL_APPS_SCRIM_OPAQUE_THRESHOLD;
 import static com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController.ALL_APPS_SCRIM_VISIBLE_THRESHOLD;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
+import static com.android.systemui.animation.Interpolators.EMPHASIZED_ACCELERATE;
+import static com.android.systemui.animation.Interpolators.EMPHASIZED_DECELERATE;
 
 import android.animation.ValueAnimator;
 
@@ -60,7 +63,7 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
-import com.android.quickstep.SysUINavigationMode;
+import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.util.RecentsAtomicAnimationFactory;
 import com.android.quickstep.views.RecentsView;
 
@@ -97,7 +100,7 @@ public class QuickstepAtomicAnimationFactory extends
             config.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL);
             config.setInterpolator(ANIM_WORKSPACE_FADE, ACCEL);
 
-            if (SysUINavigationMode.getMode(mActivity).hasGestures
+            if (DisplayController.getNavigationMode(mActivity).hasGestures
                     && overview.getTaskViewCount() > 0) {
                 // Overview is going offscreen, so keep it at its current scale and opacity.
                 config.setInterpolator(ANIM_OVERVIEW_SCALE, FINAL_FRAME);
@@ -118,7 +121,7 @@ public class QuickstepAtomicAnimationFactory extends
             config.duration = Math.max(config.duration, scrollDuration);
             overview.snapToPage(DEFAULT_PAGE, Math.toIntExact(config.duration));
 
-            Workspace workspace = mActivity.getWorkspace();
+            Workspace<?> workspace = mActivity.getWorkspace();
             // Start from a higher workspace scale, but only if we're invisible so we don't jump.
             boolean isWorkspaceVisible = workspace.getVisibility() == VISIBLE;
             if (isWorkspaceVisible) {
@@ -139,7 +142,7 @@ public class QuickstepAtomicAnimationFactory extends
             }
         } else if ((fromState == NORMAL || fromState == HINT_STATE
                 || fromState == HINT_STATE_TWO_BUTTON) && toState == OVERVIEW) {
-            if (SysUINavigationMode.getMode(mActivity).hasGestures) {
+            if (DisplayController.getNavigationMode(mActivity).hasGestures) {
                 config.setInterpolator(ANIM_WORKSPACE_SCALE,
                         fromState == NORMAL ? ACCEL : OVERSHOOT_1_2);
                 config.setInterpolator(ANIM_WORKSPACE_TRANSLATE, ACCEL);
@@ -172,18 +175,30 @@ public class QuickstepAtomicAnimationFactory extends
         } else if (fromState == HINT_STATE && toState == NORMAL) {
             config.setInterpolator(ANIM_DEPTH, DEACCEL_3);
             if (mHintToNormalDuration == -1) {
-                ValueAnimator va = getSpringScaleAnimator(mActivity, mActivity.getWorkspace(),
+                ValueAnimator va = getWorkspaceSpringScaleAnimator(mActivity,
+                        mActivity.getWorkspace(),
                         toState.getWorkspaceScaleAndTranslation(mActivity).scale);
                 mHintToNormalDuration = (int) va.getDuration();
             }
             config.duration = Math.max(config.duration, mHintToNormalDuration);
         } else if (fromState == ALL_APPS && toState == NORMAL) {
-            config.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(DEACCEL,
-                    1 - ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD,
-                    1 - ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD));
-            config.setInterpolator(ANIM_SCRIM_FADE, Interpolators.clampToProgress(DEACCEL,
+            boolean isTablet = mActivity.getDeviceProfile().isTablet;
+            config.setInterpolator(ANIM_ALL_APPS_FADE,
+                    isTablet ? FINAL_FRAME : Interpolators.clampToProgress(LINEAR,
+                            1 - ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD,
+                            1 - ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD));
+            config.setInterpolator(ANIM_SCRIM_FADE, Interpolators.clampToProgress(LINEAR,
                     1 - ALL_APPS_SCRIM_OPAQUE_THRESHOLD,
                     1 - ALL_APPS_SCRIM_VISIBLE_THRESHOLD));
+            config.setInterpolator(ANIM_VERTICAL_PROGRESS, EMPHASIZED_ACCELERATE);
+            if (!isTablet) {
+                config.setInterpolator(ANIM_WORKSPACE_FADE, INSTANT);
+            }
+        } else if (fromState == NORMAL && toState == ALL_APPS) {
+            if (mActivity.getDeviceProfile().isTablet) {
+                config.setInterpolator(ANIM_VERTICAL_PROGRESS, EMPHASIZED_DECELERATE);
+            }
+            // TODO(b/231682175): centralize this setup in AllAppsSwipeController
         }
     }
 }

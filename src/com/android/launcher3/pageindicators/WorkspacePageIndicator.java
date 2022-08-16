@@ -187,6 +187,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
         }
     }
 
+    @Override
     public void setShouldAutoHide(boolean shouldAutoHide) {
         mShouldAutoHide = shouldAutoHide;
         if (shouldAutoHide && mLinePaint.getAlpha() > 0) {
@@ -236,6 +237,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
     /**
      * Pauses all currently running animations.
      */
+    @Override
     public void pauseAnimations() {
         for (int i = 0; i < ANIMATOR_COUNT; i++) {
             if (mAnimators[i] != null) {
@@ -247,6 +249,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
     /**
      * Force-ends all currently running or paused animations.
      */
+    @Override
     public void skipAnimationsToEnd() {
         for (int i = 0; i < ANIMATOR_COUNT; i++) {
             if (mAnimators[i] != null) {

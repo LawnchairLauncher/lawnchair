@@ -33,6 +33,8 @@
             launcher:minHeightDps="491.33"
             launcher:iconImageSize="60"
             launcher:iconTextSize="14.0"
+            launcher:allAppsBorderSpace="16"
+            launcher:allAppsCellHeight="104"
             launcher:canBeDefault="true" />
 
     </grid-option>

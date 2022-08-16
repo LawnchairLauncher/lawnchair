@@ -1,5 +1,6 @@
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BACK_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BOUNCER_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_DEVICE_DOZING;
@@ -14,10 +15,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
+import com.android.launcher3.AbstractFloatingView;
+import com.android.systemui.shared.system.QuickStepContract;
+
+import java.io.PrintWriter;
+
 /**
  * Controller for managing keyguard state for taskbar
  */
-public class TaskbarKeyguardController {
+public class TaskbarKeyguardController implements TaskbarControllers.LoggableTaskbarController {
 
     private static final int KEYGUARD_SYSUI_FLAGS = SYSUI_STATE_BOUNCER_SHOWING |
             SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING | SYSUI_STATE_DEVICE_DOZING |
@@ -35,6 +41,7 @@ public class TaskbarKeyguardController {
         @Override
         public void onReceive(Context context, Intent intent) {
             mIsScreenOff = true;
+            AbstractFloatingView.closeOpenViews(mContext, false, TYPE_ALL);
         }
     };
 
@@ -67,6 +74,10 @@ public class TaskbarKeyguardController {
         mNavbarButtonsViewController.setKeyguardVisible(keyguardShowing || dozing,
                 keyguardOccluded);
         updateIconsForBouncer();
+
+        if (keyguardShowing) {
+            AbstractFloatingView.closeOpenViews(mContext, true, TYPE_ALL);
+        }
     }
 
     public boolean isScreenOff() {
@@ -94,5 +105,17 @@ public class TaskbarKeyguardController {
 
     public void onDestroy() {
         mContext.unregisterReceiver(mScreenOffReceiver);
+    }
+
+    @Override
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarKeyguardController:");
+
+        pw.println(String.format(
+                "%s\tmKeyguardSysuiFlags=%s",
+                prefix,
+                QuickStepContract.getSystemUiStateString(mKeyguardSysuiFlags)));
+        pw.println(String.format("%s\tmBouncerShowing=%b", prefix, mBouncerShowing));
+        pw.println(String.format("%s\tmIsScreenOff=%b", prefix, mIsScreenOff));
     }
 }

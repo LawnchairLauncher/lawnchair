@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Para cambiar la sensibilidad del gesto, ve a Ajustes"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Desliza para ir atrás"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Para volver a la última pantalla, desliza el dedo desde un lateral de la pantalla hasta el centro."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Para volver a la pantalla anterior, desliza dos dedos desde el borde izquierdo o derecho hacia el centro de la pantalla."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Asegúrate de deslizar el dedo hacia arriba desde el borde inferior de la pantalla."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"No hagas ninguna pausa antes de levantar el dedo."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Asegúrate de deslizar el dedo hacia arriba."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Has completado el gesto para ir a la pantalla de inicio."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Desliza para ir a la pantalla de inicio"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Desliza hacia arriba desde la parte inferior de la pantalla. Este gesto siempre te lleva a la pantalla de inicio."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Desliza dos dedos hacia arriba desde la parte inferior de la pantalla. Si haces este gesto, siempre irás a la pantalla de inicio."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Asegúrate de deslizar el dedo hacia arriba desde el borde inferior de la pantalla."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Prueba a mantener pulsada la ventana durante más tiempo antes de soltarla."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Asegúrate de deslizar el dedo directamente hacia arriba y luego mantenlo pulsado."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Has completado el gesto para cambiar de aplicación."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Desliza el dedo para cambiar de aplicación"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Para cambiar de aplicación, desliza el dedo hacia arriba desde el borde inferior, mantenlo pulsado y suéltalo"</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Para cambiar de app, desliza dos dedos hacia arriba desde el borde inferior, mantén pulsada la pantalla y, luego, suelta."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Todo listo"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Hecho"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Ajustes"</string>
@@ -76,6 +79,7 @@
     <string name="allset_title" msgid="5021126669778966707">"¡Ya está!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Desliza el dedo hacia arriba para ir a la pantalla de inicio"</string>
     <string name="allset_description" msgid="6350320429953234580">"Ya puedes empezar a usar tu teléfono"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"Ya puedes empezar a usar tu tablet"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Ajustes de navegación del sistema"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Compartir"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Hacer captura"</string>
@@ -97,4 +101,13 @@
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Atrás"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Cerrar"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Hecho"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Inicio"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Accesibilidad"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Atrás"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"Interruptor IME"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Recientes"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"Notificaciones"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Ajustes rápidos"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Mover arriba/a la izquierda"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Mover abajo/a la derecha"</string>
 </resources>

@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Til að breyta næmi til baka-bendingar ferðu í stillingar"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Strjúktu til að fara til baka"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Til að fara til baka á síðasta skjá skaltu strjúka frá vinstri eða hægri brún að miðju skjásins."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Strjúktu frá vinstri eða hægri brún að miðju skjásins með 2 fingrum til að fara aftur á síðasta skjá."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Passaðu að strjúka upp frá neðri brún skjásins."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Passaðu að stoppa ekki áður en þú sleppir."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Passaðu að strjúka beint upp."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Þú laukst við að kynna þér bendinguna „heim“."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Strjúktu til að fara heim"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Strjúktu upp frá neðri hluta skjásins. Þetta flytur þig alltaf á heimaskjáinn."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Strjúktu frá neðri brún skjásins með 2 fingrum. Þessi bending opnar ávallt heimaskjáinn."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Passaðu að strjúka upp frá neðri brún skjásins."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Prófaðu að halda fingrinum lengur á glugganum áður en þú sleppir."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Passaðu að strjúka beint upp og stoppa svo."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Þú laukst við að kynna þér bendinguna „skipta um forrit“."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Strjúktu til að skipta á milli forrita"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Strjúktu upp frá neðri hluta skjásins, haltu og slepptu svo til að skipta á milli forrita."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Strjúktu upp frá neðri brún skjásins með 2 fingrum, haltu og slepptu til að skipta á milli forrita."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Allt til reiðu"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Lokið"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Stillingar"</string>
@@ -76,6 +79,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Allt tilbúið!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Strjúktu upp til að fara á heimaskjáinn"</string>
     <string name="allset_description" msgid="6350320429953234580">"Þú getur byrjað að nota símann"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"Þú getur byrjað að nota spjaldtölvuna"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Stillingar kerfisstjórnunar"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Deila"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Skjámynd"</string>
@@ -97,4 +101,13 @@
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Til baka"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Loka"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Lokið"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Heim"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Aðgengi"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Til baka"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"Breyta innsláttaraðferð"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Nýlegt"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"Tilkynningar"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Flýtistillingar"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Færa efst/til vinstri"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Færa neðst/til hægri"</string>
 </resources>

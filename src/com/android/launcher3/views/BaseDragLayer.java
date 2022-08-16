@@ -20,7 +20,7 @@ import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
-import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
+import static com.android.launcher3.util.window.RefreshRateTracker.getSingleFrameMs;
 
 import android.annotation.TargetApi;
 import android.app.WallpaperManager;
@@ -411,6 +411,14 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
             boolean includeRootScroll) {
         return Utilities.getDescendantCoordRelativeToAncestor(descendant, this,
                 coord, includeRootScroll);
+    }
+
+    /**
+     * Similar to {@link #mapCoordInSelfToDescendant(View descendant, float[] coord)}
+     * but accepts a Rect instead of float[].
+     */
+    public void mapRectInSelfToDescendant(View descendant, Rect rect) {
+        Utilities.mapRectInSelfToDescendant(descendant, this, rect);
     }
 
     /**

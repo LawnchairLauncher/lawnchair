@@ -27,10 +27,8 @@
 
         <FrameLayout
             android:id="@+id/gesture_tutorial_fake_hotseat_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"/>
+            android:layout_width="@dimen/gesture_tutorial_hotseat_width"
+            android:layout_height="@dimen/gesture_tutorial_hotseat_height"/>
 
     </RelativeLayout>
 
@@ -102,7 +100,7 @@
         android:background="@drawable/gesture_tutorial_ripple"/>
 
     <include
-        layout="@layout/gesture_tutorial_foldable_mock_taskbar"
+        layout="@layout/gesture_tutorial_tablet_mock_taskbar"
         android:id="@+id/gesture_tutorial_fake_taskbar_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/gesture_tutorial_mock_taskbar_height"
@@ -121,33 +119,23 @@
         android:scaleType="fitXY"
         android:visibility="gone"/>
 
-    <ImageView
-        android:id="@+id/gesture_tutorial_finger_dot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/gesture_tutorial_finger_dot"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:visibility="gone"/>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/gesture_tutorial_fragment_feedback_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
         android:paddingTop="24dp"
         android:paddingBottom="16dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
         android:background="@drawable/bg_sandbox_feedback">
 
         <TextView
             android:id="@+id/gesture_tutorial_fragment_feedback_title"
             style="@style/TextAppearance.GestureTutorial.Feedback.Title"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -158,9 +146,7 @@
             style="@style/TextAppearance.GestureTutorial.Feedback.Subtitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginTop="16dp"
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -182,7 +168,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:layout_marginEnd="16dp"
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
             android:paddingStart="26dp"
@@ -201,11 +186,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:layout_marginEnd="16dp"
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
-            android:paddingStart="26dp"
-            android:paddingEnd="26dp"
             android:text="@string/gesture_tutorial_action_button_label_skip"
             android:background="?android:attr/selectableItemBackgroundBorderless"
 
@@ -213,5 +195,14 @@
             app:layout_constraintStart_toStartOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/gesture_tutorial_finger_dot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/gesture_tutorial_finger_dot"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone"/>
 
 </com.android.quickstep.interaction.RootSandboxLayout>

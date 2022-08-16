@@ -23,6 +23,7 @@ import android.content.Intent;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.BitmapInfo.DrawableCreationFlags;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.pm.PackageInstallInfo;
@@ -70,10 +71,6 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
      */
     public static final int FLAG_DISABLED_LOCKED_USER = 1 << 5;
 
-    public static final int FLAG_DISABLED_MASK = FLAG_DISABLED_SAFEMODE
-            | FLAG_DISABLED_NOT_AVAILABLE | FLAG_DISABLED_SUSPENDED
-            | FLAG_DISABLED_QUIET_USER | FLAG_DISABLED_BY_PUBLISHER | FLAG_DISABLED_LOCKED_USER;
-
     /**
      * The item points to a system app.
      */
@@ -111,6 +108,16 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
 
     public static final int FLAG_SHOW_DOWNLOAD_PROGRESS_MASK = FLAG_INSTALL_SESSION_ACTIVE
             | FLAG_INCREMENTAL_DOWNLOAD_ACTIVE;
+
+    /**
+     * Indicates that the icon is a disabled shortcut and application updates are required.
+     */
+    public static final int FLAG_DISABLED_VERSION_LOWER = 1 << 12;
+
+    public static final int FLAG_DISABLED_MASK = FLAG_DISABLED_SAFEMODE
+            | FLAG_DISABLED_NOT_AVAILABLE | FLAG_DISABLED_SUSPENDED
+            | FLAG_DISABLED_QUIET_USER | FLAG_DISABLED_BY_PUBLISHER | FLAG_DISABLED_LOCKED_USER
+            | FLAG_DISABLED_VERSION_LOWER;
 
     /**
      * Status associated with the system state of the underlying item. This is calculated every
@@ -230,15 +237,14 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
      * Returns a FastBitmapDrawable with the icon.
      */
     public FastBitmapDrawable newIcon(Context context) {
-        return newIcon(context, false);
+        return newIcon(context, 0);
     }
 
     /**
      * Returns a FastBitmapDrawable with the icon and context theme applied
      */
-    public FastBitmapDrawable newIcon(Context context, boolean applyTheme) {
-        FastBitmapDrawable drawable = applyTheme
-                ? bitmap.newThemedIcon(context) : bitmap.newIcon(context);
+    public FastBitmapDrawable newIcon(Context context, @DrawableCreationFlags int creationFlags) {
+        FastBitmapDrawable drawable = bitmap.newIcon(context, creationFlags);
         drawable.setIsDisabled(isDisabled());
         return drawable;
     }

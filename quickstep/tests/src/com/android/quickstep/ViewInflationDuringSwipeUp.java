@@ -51,7 +51,7 @@ import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
-import com.android.launcher3.tapl.Background;
+import com.android.launcher3.tapl.LaunchedAppState;
 import com.android.launcher3.testcomponent.ListViewService;
 import com.android.launcher3.testcomponent.ListViewService.SimpleViewsFactory;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
@@ -119,13 +119,13 @@ public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
         try {
             // Go to overview once so that all views are initialized and cached
             startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
-            mLauncher.getBackground().switchToOverview().dismissAllTasks();
+            mLauncher.getLaunchedAppState().switchToOverview().dismissAllTasks();
 
             // Track view creations
             mInitTracker.startTracking();
 
             startTestActivity(2);
-            mLauncher.getBackground().switchToOverview();
+            mLauncher.getLaunchedAppState().switchToOverview();
 
             assertEquals("Views inflated during swipe up", 0, mInitTracker.viewInitCount);
         } finally {
@@ -197,7 +197,7 @@ public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
 
             addItemToScreen(item);
             assertTrue("Widget is not present",
-                    mLauncher.pressHome().tryGetWidget(info.label, DEFAULT_UI_TIMEOUT) != null);
+                    mLauncher.goHome().tryGetWidget(info.label, DEFAULT_UI_TIMEOUT) != null);
             int widgetId = item.appWidgetId;
 
             // Verify widget id
@@ -205,23 +205,23 @@ public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
 
             // Go to overview once so that all views are initialized and cached
             startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
-            mLauncher.getBackground().switchToOverview().dismissAllTasks();
+            mLauncher.getLaunchedAppState().switchToOverview().dismissAllTasks();
 
             // Track view creations
             mInitTracker.startTracking();
 
             startTestActivity(2);
-            Background background = mLauncher.getBackground();
+            LaunchedAppState launchedAppState = mLauncher.getLaunchedAppState();
 
             // Update widget
             updateBeforeSwipeUp.accept(widgetId);
 
-            background.switchToOverview();
+            launchedAppState.switchToOverview();
             assertEquals("Views inflated during swipe up", 0, mInitTracker.viewInitCount);
 
             // Widget is updated when going home
             mInitTracker.disableLog();
-            mLauncher.pressHome();
+            mLauncher.goHome();
             verifyWidget(finalWidgetText);
             assertNotEquals(1, mInitTracker.viewInitCount);
         } finally {

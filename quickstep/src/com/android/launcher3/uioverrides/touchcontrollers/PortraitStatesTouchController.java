@@ -21,12 +21,21 @@ import static com.android.launcher3.AbstractFloatingView.getTopOpenViewWithType;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.anim.Interpolators.ACCEL;
-import static com.android.launcher3.anim.Interpolators.DEACCEL;
+import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
+import static com.android.launcher3.anim.Interpolators.INSTANT;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_DEPTH;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_SCALE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_TRANSLATE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_SCRIM_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCALE;
 
 import android.view.MotionEvent;
+import android.view.animation.Interpolator;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -68,6 +77,33 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
      * Maximum clamping progress for opaque all apps scrim
      */
     public static final float ALL_APPS_SCRIM_OPAQUE_THRESHOLD = .5f;
+
+    // Custom timing for NORMAL -> ALL_APPS on phones only.
+    private static final float ALL_APPS_STATE_TRANSITION = 0.4f;
+    private static final float ALL_APPS_FULL_DEPTH_PROGRESS = 0.5f;
+
+    // Custom interpolators for NORMAL -> ALL_APPS on phones only.
+    private static final Interpolator LINEAR_EARLY =
+            Interpolators.clampToProgress(LINEAR, 0f, ALL_APPS_STATE_TRANSITION);
+    private static final Interpolator STEP_TRANSITION =
+            Interpolators.clampToProgress(FINAL_FRAME, 0f, ALL_APPS_STATE_TRANSITION);
+    // The blur to and from All Apps is set to be complete when the interpolator is at 0.5.
+    public static final Interpolator BLUR =
+            Interpolators.clampToProgress(
+                    Interpolators.mapToProgress(LINEAR, 0f, ALL_APPS_FULL_DEPTH_PROGRESS),
+                    0f, ALL_APPS_STATE_TRANSITION);
+    public static final Interpolator WORKSPACE_FADE = STEP_TRANSITION;
+    public static final Interpolator WORKSPACE_SCALE = LINEAR_EARLY;
+    public static final Interpolator HOTSEAT_FADE = STEP_TRANSITION;
+    public static final Interpolator HOTSEAT_SCALE = LINEAR_EARLY;
+    public static final Interpolator HOTSEAT_TRANSLATE = STEP_TRANSITION;
+    public static final Interpolator SCRIM_FADE = LINEAR_EARLY;
+    public static final Interpolator ALL_APPS_FADE =
+            Interpolators.clampToProgress(LINEAR, ALL_APPS_STATE_TRANSITION, 1f);
+    public static final Interpolator ALL_APPS_VERTICAL_PROGRESS =
+            Interpolators.clampToProgress(
+                    Interpolators.mapToProgress(LINEAR, ALL_APPS_STATE_TRANSITION, 1f),
+                    ALL_APPS_STATE_TRANSITION, 1f);
 
     private final PortraitOverviewStateTouchHelper mOverviewPortraitStateTouchHelper;
 
@@ -126,23 +162,51 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
     private StateAnimationConfig getNormalToAllAppsAnimation() {
         StateAnimationConfig builder = new StateAnimationConfig();
-        builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(ACCEL,
-                ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD,
-                ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD));
-        builder.setInterpolator(ANIM_SCRIM_FADE, Interpolators.clampToProgress(ACCEL,
-                ALL_APPS_SCRIM_VISIBLE_THRESHOLD,
-                ALL_APPS_SCRIM_OPAQUE_THRESHOLD));
+        if (mLauncher.getDeviceProfile().isTablet) {
+            builder.setInterpolator(ANIM_ALL_APPS_FADE, INSTANT);
+            builder.setInterpolator(ANIM_SCRIM_FADE,
+                    Interpolators.clampToProgress(LINEAR,
+                            ALL_APPS_SCRIM_VISIBLE_THRESHOLD,
+                            ALL_APPS_SCRIM_OPAQUE_THRESHOLD));
+        } else {
+            // TODO(b/231682175): centralize this setup in AllAppsSwipeController.
+            builder.setInterpolator(ANIM_DEPTH, BLUR);
+            builder.setInterpolator(ANIM_WORKSPACE_FADE, WORKSPACE_FADE);
+            builder.setInterpolator(ANIM_WORKSPACE_SCALE, WORKSPACE_SCALE);
+            builder.setInterpolator(ANIM_HOTSEAT_FADE, HOTSEAT_FADE);
+            builder.setInterpolator(ANIM_HOTSEAT_SCALE, HOTSEAT_SCALE);
+            builder.setInterpolator(ANIM_HOTSEAT_TRANSLATE, HOTSEAT_TRANSLATE);
+            builder.setInterpolator(ANIM_SCRIM_FADE, SCRIM_FADE);
+            builder.setInterpolator(ANIM_ALL_APPS_FADE, ALL_APPS_FADE);
+            builder.setInterpolator(ANIM_VERTICAL_PROGRESS, ALL_APPS_VERTICAL_PROGRESS);
+        }
         return builder;
     }
 
     private StateAnimationConfig getAllAppsToNormalAnimation() {
         StateAnimationConfig builder = new StateAnimationConfig();
-        builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(DEACCEL,
-                1 - ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD,
-                1 - ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD));
-        builder.setInterpolator(ANIM_SCRIM_FADE, Interpolators.clampToProgress(DEACCEL,
-                1 - ALL_APPS_SCRIM_OPAQUE_THRESHOLD,
-                1 - ALL_APPS_SCRIM_VISIBLE_THRESHOLD));
+        if (mLauncher.getDeviceProfile().isTablet) {
+            builder.setInterpolator(ANIM_ALL_APPS_FADE, FINAL_FRAME);
+            builder.setInterpolator(ANIM_SCRIM_FADE,
+                    Interpolators.clampToProgress(LINEAR,
+                            1 - ALL_APPS_SCRIM_OPAQUE_THRESHOLD,
+                            1 - ALL_APPS_SCRIM_VISIBLE_THRESHOLD));
+        } else {
+            // These interpolators are the reverse of the ones used above, so swiping out of All
+            // Apps feels the same as swiping into it.
+            // TODO(b/231682175): centralize this setup in AllAppsSwipeController.
+            builder.setInterpolator(ANIM_DEPTH, Interpolators.reverse(BLUR));
+            builder.setInterpolator(ANIM_WORKSPACE_FADE, Interpolators.reverse(WORKSPACE_FADE));
+            builder.setInterpolator(ANIM_WORKSPACE_SCALE, Interpolators.reverse(WORKSPACE_SCALE));
+            builder.setInterpolator(ANIM_HOTSEAT_FADE, Interpolators.reverse(HOTSEAT_FADE));
+            builder.setInterpolator(ANIM_HOTSEAT_SCALE, Interpolators.reverse(HOTSEAT_SCALE));
+            builder.setInterpolator(ANIM_HOTSEAT_TRANSLATE,
+                    Interpolators.reverse(HOTSEAT_TRANSLATE));
+            builder.setInterpolator(ANIM_SCRIM_FADE, Interpolators.reverse(SCRIM_FADE));
+            builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.reverse(ALL_APPS_FADE));
+            builder.setInterpolator(ANIM_VERTICAL_PROGRESS,
+                    Interpolators.reverse(ALL_APPS_VERTICAL_PROGRESS));
+        }
         return builder;
     }
 
@@ -221,13 +285,9 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
      * @return true if the event is over the hotseat
      */
     static boolean isTouchOverHotseat(Launcher launcher, MotionEvent ev) {
-        return (ev.getY() >= getHotseatTop(launcher));
-    }
-
-    public static int getHotseatTop(Launcher launcher) {
         DeviceProfile dp = launcher.getDeviceProfile();
         int hotseatHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
-        return launcher.getDragLayer().getHeight() - hotseatHeight;
+        return (ev.getY() >= (launcher.getDragLayer().getHeight() - hotseatHeight));
     }
 
     @Override
@@ -258,7 +318,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
     @Override
     protected void onReachedFinalState(LauncherState toState) {
-        super.onReinitToState(toState);
+        super.onReachedFinalState(toState);
         if (toState == ALL_APPS) {
             InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_OPEN_ALL_APPS);
         }

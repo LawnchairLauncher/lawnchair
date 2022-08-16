@@ -136,7 +136,7 @@ final class FloatingWidgetBackgroundView extends View {
     }
 
     /** Returns the maximum corner radius of {@param drawable}. */
-    private static float getMaxRadius(Drawable drawable) {
+    private static float getMaxRadius(@Nullable Drawable drawable) {
         if (!(drawable instanceof GradientDrawable)) return 0;
         float[] cornerRadii = ((GradientDrawable) drawable).getCornerRadii();
         float cornerRadius = ((GradientDrawable) drawable).getCornerRadius();

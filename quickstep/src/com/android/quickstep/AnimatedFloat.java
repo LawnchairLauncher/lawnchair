@@ -98,6 +98,15 @@ public class AnimatedFloat {
         }
     }
 
+    /**
+     * Starts the animation.
+     */
+    public void startAnimation() {
+        if (mValueAnimator != null) {
+            mValueAnimator.start();
+        }
+    }
+
     public void cancelAnimation() {
         if (mValueAnimator != null) {
             mValueAnimator.cancel();

@@ -44,8 +44,9 @@ import com.android.launcher3.statehandlers.DepthController.ClampedDepthProperty;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.DisplayController.NavigationMode;
 import com.android.quickstep.GestureState.GestureEndTarget;
-import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.LayoutUtils;
@@ -72,7 +73,8 @@ public final class LauncherActivityInterface extends
     public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect,
             PagedOrientationHandler orientationHandler) {
         calculateTaskSize(context, dp, outRect);
-        if (dp.isVerticalBarLayout() && SysUINavigationMode.getMode(context) != Mode.NO_BUTTON) {
+        if (dp.isVerticalBarLayout()
+                && DisplayController.getNavigationMode(context) != NavigationMode.NO_BUTTON) {
             return dp.isSeascape() ? outRect.left : (dp.widthPx - outRect.right);
         } else {
             return LayoutUtils.getShelfTrackingDistance(context, dp, orientationHandler);
@@ -133,7 +135,7 @@ public final class LauncherActivityInterface extends
             }
         };
 
-        BaseQuickstepLauncher launcher = factory.initUI();
+        BaseQuickstepLauncher launcher = factory.initBackgroundStateUI();
         // Since all apps is not visible, we can safely reset the scroll position.
         // This ensures then the next swipe up to all-apps starts from scroll 0.
         launcher.getAppsView().reset(false /* animate */);
@@ -278,6 +280,7 @@ public final class LauncherActivityInterface extends
 
     @Override
     public void closeOverlay() {
+        super.closeOverlay();
         Launcher launcher = getCreatedActivity();
         if (launcher == null) {
             return;
@@ -326,7 +329,8 @@ public final class LauncherActivityInterface extends
         if (uiController == null) {
             return super.deferStartingActivity(deviceState, ev);
         }
-        return uiController.isEventOverAnyTaskbarItem(ev);
+        return uiController.isEventOverAnyTaskbarItem(ev)
+                || super.deferStartingActivity(deviceState, ev);
     }
 
     @Override

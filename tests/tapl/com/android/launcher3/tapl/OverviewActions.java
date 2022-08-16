@@ -48,7 +48,7 @@ public class OverviewActions {
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "clicked screenshot button")) {
                 UiObject2 closeScreenshot = mLauncher.waitForSystemUiObject(
-                        "global_screenshot_dismiss_image");
+                        "screenshot_dismiss_image");
                 if (mLauncher.getNavigationModel()
                         != LauncherInstrumentation.NavigationModel.THREE_BUTTON) {
                     mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS,

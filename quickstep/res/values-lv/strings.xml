@@ -53,6 +53,7 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Atgriešanās žesta jutīguma līmeni varat mainīt iestatījumos."</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Vilkšana, lai atgrieztos"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Lai atgrieztos iepriekšējā ekrānā, velciet no kreisās vai labās malas uz ekrāna vidu."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Lai pārietu uz iepriekšējo ekrānu, ar diviem pirkstiem velciet no kreisās vai labās malas uz ekrāna vidu."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Jāvelk augšup no ekrāna apakšmalas."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Pirms atlaišanas nepārtrauciet kustību."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Jāvelk tieši uz augšu."</string>
@@ -60,6 +61,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Jūs sekmīgi veicāt sākuma ekrāna atvēršanas žestu."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Vilkšana, lai pārietu uz sākumu"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Velciet augšup no ekrāna apakšdaļas. Ar šo žestu vienmēr varat atvērt sākuma ekrānu."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Ar 2 pirkstiem velciet augšup no ekrāna apakšdaļas. Ar šo žestu vienmēr varat atvērt sākuma ekrānu."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Jāvelk augšup no ekrāna apakšmalas."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Mēģiniet ilgāk turēt logu, pirms atlaižat."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Jāvelk tieši uz augšu un pēc tam jāaptur kustība."</string>
@@ -67,6 +69,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Jūs sekmīgi veicāt lietotņu pārslēgšanas žestu."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Vilkšana, lai pārslēgtu lietotnes"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Lai pārslēgtu lietotnes, velciet augšup no ekrāna apakšdaļas, turiet un pēc tam atlaidiet."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Lai pārslēgtu lietotnes, ar 2 pirkstiem velciet no ekrāna apakšdaļas, turiet un pēc tam atlaidiet."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Gatavs"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Gatavs"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Iestatījumi"</string>
@@ -76,6 +79,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Gatavs!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Velciet augšup, lai pārietu uz sākuma ekrānu."</string>
     <string name="allset_description" msgid="6350320429953234580">"Varat sākt izmantot savu tālruni"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"Varat sākt izmantot savu planšetdatoru"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Sistēmas navigācijas iestatījumi"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Kopīgot"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Veikt ekrānuzņēmumu"</string>
@@ -97,4 +101,13 @@
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Atpakaļ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Aizvērt"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Gatavs"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Sākums"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Pieejamība"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Atpakaļ"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME pārslēdzējs"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Nesenie"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"Paziņojumi"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Ātrie iestatīj."</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Pārvietot uz augšējo/kreiso stūri"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Pārvietot uz apakšējo/labo stūri"</string>
 </resources>

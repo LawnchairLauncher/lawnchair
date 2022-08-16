@@ -383,7 +383,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
         // Handle invalid resize across CellLayouts in the two panel UI.
         if (mCellLayout.getParent() instanceof Workspace) {
-            Workspace workspace = (Workspace) mCellLayout.getParent();
+            Workspace<?> workspace = (Workspace<?>) mCellLayout.getParent();
             CellLayout pairedCellLayout = workspace.getScreenPair(mCellLayout);
             if (pairedCellLayout != null) {
                 Rect focusedCellLayoutBound = sTmpRect;
@@ -570,7 +570,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         final DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
         final CellLayout pairedCellLayout;
         if (mCellLayout.getParent() instanceof Workspace) {
-            Workspace workspace = (Workspace) mCellLayout.getParent();
+            Workspace<?> workspace = (Workspace<?>) mCellLayout.getParent();
             pairedCellLayout = workspace.getScreenPair(mCellLayout);
         } else {
             pairedCellLayout = null;

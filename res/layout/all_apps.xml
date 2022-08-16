@@ -26,6 +26,14 @@
     android:saveEnabled="false">
 
     <include
+        layout="@layout/all_apps_bottom_sheet_background"
+        android:visibility="gone" />
+
+    <include
+        layout="@layout/search_results_rv_layout"
+        android:visibility="gone" />
+
+    <include
         layout="@layout/all_apps_rv_layout"
         android:visibility="gone" />
 
@@ -33,7 +41,6 @@
         android:id="@+id/all_apps_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/search_container_all_apps"
         android:clipToPadding="false"
         android:paddingTop="@dimen/all_apps_header_top_padding"
         android:paddingBottom="@dimen/all_apps_header_bottom_padding"

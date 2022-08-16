@@ -18,19 +18,29 @@ package com.android.launcher3;
 import static android.content.Intent.EXTRA_COMPONENT_NAME;
 import static android.content.Intent.EXTRA_USER;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_ICON_SURFACE;
+
 import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
+import android.os.Messenger;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.util.Log;
 import android.view.SurfaceControl;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.android.launcher3.views.ActivityContext;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Class to encapsulate the handshake protocol between Launcher and gestureNav.
@@ -43,6 +53,7 @@ public class GestureNavContract {
     public static final String EXTRA_ICON_POSITION = "gesture_nav_contract_icon_position";
     public static final String EXTRA_ICON_SURFACE = "gesture_nav_contract_surface_control";
     public static final String EXTRA_REMOTE_CALLBACK = "android.intent.extra.REMOTE_CALLBACK";
+    public static final String EXTRA_ON_FINISH_CALLBACK = "gesture_nav_contract_finish_callback";
 
     public final ComponentName componentName;
     public final UserHandle user;
@@ -59,10 +70,15 @@ public class GestureNavContract {
      * Sends the position information to the receiver
      */
     @TargetApi(Build.VERSION_CODES.R)
-    public void sendEndPosition(RectF position, @Nullable SurfaceControl surfaceControl) {
+    public void sendEndPosition(RectF position, ActivityContext context,
+            @Nullable SurfaceControl surfaceControl) {
         Bundle result = new Bundle();
         result.putParcelable(EXTRA_ICON_POSITION, position);
         result.putParcelable(EXTRA_ICON_SURFACE, surfaceControl);
+        if (sMessageReceiver == null) {
+            sMessageReceiver = new StaticMessageReceiver();
+        }
+        result.putParcelable(EXTRA_ON_FINISH_CALLBACK, sMessageReceiver.setCurrentContext(context));
 
         Message callback = Message.obtain();
         callback.copyFrom(mCallback);
@@ -97,5 +113,43 @@ public class GestureNavContract {
             return new GestureNavContract(componentName, userHandle, callback);
         }
         return null;
+    }
+
+    /**
+     * Message used for receiving gesture nav contract information. We use a static messenger to
+     * avoid leaking too make binders in case the receiving launcher does not handle the contract
+     * properly.
+     */
+    private static StaticMessageReceiver sMessageReceiver = null;
+
+    private static class StaticMessageReceiver implements Handler.Callback {
+
+        private static final int MSG_CLOSE_LAST_TARGET = 0;
+
+        private final Messenger mMessenger =
+                new Messenger(new Handler(Looper.getMainLooper(), this));
+
+        private WeakReference<ActivityContext> mLastTarget = new WeakReference<>(null);
+
+        public Message setCurrentContext(ActivityContext context) {
+            mLastTarget = new WeakReference<>(context);
+
+            Message msg = Message.obtain();
+            msg.replyTo = mMessenger;
+            msg.what = MSG_CLOSE_LAST_TARGET;
+            return msg;
+        }
+
+        @Override
+        public boolean handleMessage(@NonNull Message message) {
+            if (message.what == MSG_CLOSE_LAST_TARGET) {
+                ActivityContext lastContext = mLastTarget.get();
+                if (lastContext != null) {
+                    AbstractFloatingView.closeOpenViews(lastContext, false, TYPE_ICON_SURFACE);
+                }
+                return true;
+            }
+            return false;
+        }
     }
 }

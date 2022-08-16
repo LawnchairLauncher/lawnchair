@@ -24,16 +24,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.views.ActivityContext;
 
 /**
  * Work profile toggle switch shown at the bottom of AllApps work tab
  */
 public class WorkPausedCard extends LinearLayout implements View.OnClickListener {
 
-    private final Launcher mLauncher;
+    private final ActivityContext mActivityContext;
     private Button mBtn;
 
     public WorkPausedCard(Context context) {
@@ -46,7 +46,7 @@ public class WorkPausedCard extends LinearLayout implements View.OnClickListener
 
     public WorkPausedCard(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mLauncher = Launcher.getLauncher(getContext());
+        mActivityContext = ActivityContext.lookupContext(getContext());
     }
 
 
@@ -61,8 +61,8 @@ public class WorkPausedCard extends LinearLayout implements View.OnClickListener
     public void onClick(View view) {
         if (Utilities.ATLEAST_P) {
             setEnabled(false);
-            mLauncher.getAppsView().getWorkManager().setWorkProfileEnabled(true);
-            mLauncher.getStatsLogManager().logger().log(LAUNCHER_TURN_ON_WORK_APPS_TAP);
+            mActivityContext.getAppsView().getWorkManager().setWorkProfileEnabled(true);
+            mActivityContext.getStatsLogManager().logger().log(LAUNCHER_TURN_ON_WORK_APPS_TAP);
         }
     }
 

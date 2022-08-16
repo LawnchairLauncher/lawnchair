@@ -33,12 +33,12 @@ import com.android.systemui.shared.plugins.PluginInstance;
 import com.android.systemui.shared.plugins.PluginManager;
 import com.android.systemui.shared.plugins.PluginManagerImpl;
 import com.android.systemui.shared.plugins.PluginPrefs;
+import com.android.systemui.shared.system.UncaughtExceptionPreHandlerManager;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 public class PluginManagerWrapper {
@@ -47,6 +47,9 @@ public class PluginManagerWrapper {
             new MainThreadInitializedObject<>(PluginManagerWrapper::new);
 
     public static final String PLUGIN_CHANGED = PluginManager.PLUGIN_CHANGED;
+
+    private static final UncaughtExceptionPreHandlerManager UNCAUGHT_EXCEPTION_PRE_HANDLER_MANAGER =
+            new UncaughtExceptionPreHandlerManager();
 
     private final Context mContext;
     private final PluginManager mPluginManager;
@@ -67,7 +70,7 @@ public class PluginManagerWrapper {
 
         mPluginManager = new PluginManagerImpl(c, instanceManagerFactory,
                 Utilities.IS_DEBUG_DEVICE,
-                Optional.ofNullable(Thread.getDefaultUncaughtExceptionHandler()), mPluginEnabler,
+                UNCAUGHT_EXCEPTION_PRE_HANDLER_MANAGER, mPluginEnabler,
                 new PluginPrefs(c), privilegedPlugins);
     }
 

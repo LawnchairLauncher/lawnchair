@@ -41,7 +41,7 @@ public class Hotseat extends CellLayout implements Insettable {
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mHasVerticalHotseat;
-    private Workspace mWorkspace;
+    private Workspace<?> mWorkspace;
     private boolean mSendTouchToWorkspace;
     @Nullable
     private Consumer<Boolean> mOnVisibilityAggregatedCallback;
@@ -84,6 +84,7 @@ public class Hotseat extends CellLayout implements Insettable {
         removeAllViewsInLayout();
         mHasVerticalHotseat = hasVerticalHotseat;
         DeviceProfile dp = mActivity.getDeviceProfile();
+        resetCellSize(dp);
         if (hasVerticalHotseat) {
             setGridSize(1, dp.numShownHotseatIcons);
         } else {
@@ -110,10 +111,9 @@ public class Hotseat extends CellLayout implements Insettable {
             mQsb.setVisibility(View.VISIBLE);
             lp.gravity = Gravity.BOTTOM;
             lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            lp.height = (grid.isTaskbarPresent
+            lp.height = grid.isTaskbarPresent
                     ? grid.workspacePadding.bottom
-                        : grid.hotseatBarSizePx)
-                    + (grid.isTaskbarPresent ? grid.taskbarSize : insets.bottom);
+                    : grid.hotseatBarSizePx + insets.bottom;
         }
 
         Rect padding = grid.getHotseatLayoutPadding(getContext());
@@ -122,7 +122,7 @@ public class Hotseat extends CellLayout implements Insettable {
         InsettableFrameLayout.dispatchInsets(this, insets);
     }
 
-    public void setWorkspace(Workspace w) {
+    public void setWorkspace(Workspace<?> w) {
         mWorkspace = w;
     }
 
@@ -173,8 +173,9 @@ public class Hotseat extends CellLayout implements Insettable {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        int width = getShortcutsAndWidgets().getMeasuredWidth();
-        mQsb.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+        int qsbWidth = mActivity.getDeviceProfile().qsbWidth;
+
+        mQsb.measure(MeasureSpec.makeMeasureSpec(qsbWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(mQsbHeight, MeasureSpec.EXACTLY));
     }
 
@@ -183,7 +184,14 @@ public class Hotseat extends CellLayout implements Insettable {
         super.onLayout(changed, l, t, r, b);
 
         int qsbWidth = mQsb.getMeasuredWidth();
-        int left = (r - l - qsbWidth) / 2;
+        int left;
+        if (mActivity.getDeviceProfile().isQsbInline) {
+            int qsbSpace = mActivity.getDeviceProfile().hotseatBorderSpace;
+            left = Utilities.isRtl(getResources()) ? r - getPaddingRight() + qsbSpace
+                    : l + getPaddingLeft() - qsbWidth - qsbSpace;
+        } else {
+            left = (r - l - qsbWidth) / 2;
+        }
         int right = left + qsbWidth;
 
         int bottom = b - t - mActivity.getDeviceProfile().getQsbOffsetY();

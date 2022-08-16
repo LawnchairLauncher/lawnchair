@@ -1,5 +1,11 @@
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_BACK_BUTTON_LONGPRESS;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_BACK_BUTTON_TAP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_HOME_BUTTON_LONGPRESS;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_HOME_BUTTON_TAP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_OVERVIEW_BUTTON_LONGPRESS;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_OVERVIEW_BUTTON_TAP;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_A11Y;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_BACK;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_HOME;
@@ -11,6 +17,7 @@ import static com.android.quickstep.OverviewCommandHelper.TYPE_TOGGLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,6 +26,7 @@ import android.os.Handler;
 
 import androidx.test.runner.AndroidJUnit4;
 
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.quickstep.OverviewCommandHelper;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TouchInteractionService;
@@ -42,6 +50,14 @@ public class TaskbarNavButtonControllerTest {
     OverviewCommandHelper mockCommandHelper;
     @Mock
     Handler mockHandler;
+    @Mock
+    StatsLogManager mockStatsLogManager;
+    @Mock
+    StatsLogManager.StatsLogger mockStatsLogger;
+    @Mock
+    TaskbarControllers mockTaskbarControllers;
+    @Mock
+    TaskbarActivityContext mockTaskbarActivityContext;
 
     private TaskbarNavButtonController mNavButtonController;
 
@@ -50,6 +66,10 @@ public class TaskbarNavButtonControllerTest {
         MockitoAnnotations.initMocks(this);
         when(mockService.getDisplayId()).thenReturn(DISPLAY_ID);
         when(mockService.getOverviewCommandHelper()).thenReturn(mockCommandHelper);
+        when(mockStatsLogManager.logger()).thenReturn(mockStatsLogger);
+        when(mockTaskbarControllers.getTaskbarActivityContext())
+                .thenReturn(mockTaskbarActivityContext);
+        doReturn(mockStatsLogManager).when(mockTaskbarActivityContext).getStatsLogManager();
         mNavButtonController = new TaskbarNavButtonController(mockService,
                 mockSystemUiProxy, mockHandler);
     }
@@ -155,5 +175,50 @@ public class TaskbarNavButtonControllerTest {
         mNavButtonController.updateSysuiFlags(SYSUI_STATE_SCREEN_PINNING);
         mNavButtonController.onButtonLongClick(BUTTON_HOME);
         verify(mockSystemUiProxy, times(0)).startAssistant(any());
+    }
+
+    @Test
+    public void testNoCallsToNullLogger() {
+        mNavButtonController.onButtonClick(BUTTON_HOME);
+        verify(mockStatsLogManager, times(0)).logger();
+        verify(mockStatsLogger, times(0)).log(any());
+    }
+
+    @Test
+    public void testNoCallsAfterNullingOut() {
+        mNavButtonController.init(mockTaskbarControllers);
+        mNavButtonController.onButtonClick(BUTTON_HOME);
+        mNavButtonController.onDestroy();
+        mNavButtonController.onButtonClick(BUTTON_HOME);
+        verify(mockStatsLogger, times(1)).log(LAUNCHER_TASKBAR_HOME_BUTTON_TAP);
+        verify(mockStatsLogger, times(0)).log(LAUNCHER_TASKBAR_HOME_BUTTON_LONGPRESS);
+    }
+
+    @Test
+    public void testLogOnTap() {
+        mNavButtonController.init(mockTaskbarControllers);
+        mNavButtonController.onButtonClick(BUTTON_HOME);
+        verify(mockStatsLogger, times(1)).log(LAUNCHER_TASKBAR_HOME_BUTTON_TAP);
+        verify(mockStatsLogger, times(0)).log(LAUNCHER_TASKBAR_HOME_BUTTON_LONGPRESS);
+    }
+
+    @Test
+    public void testLogOnLongpress() {
+        mNavButtonController.init(mockTaskbarControllers);
+        mNavButtonController.onButtonLongClick(BUTTON_HOME);
+        verify(mockStatsLogger, times(1)).log(LAUNCHER_TASKBAR_HOME_BUTTON_LONGPRESS);
+        verify(mockStatsLogger, times(0)).log(LAUNCHER_TASKBAR_HOME_BUTTON_TAP);
+    }
+
+    @Test
+    public void testBackOverviewLogOnLongpress() {
+        mNavButtonController.init(mockTaskbarControllers);
+        mNavButtonController.onButtonLongClick(BUTTON_RECENTS);
+        verify(mockStatsLogger, times(1)).log(LAUNCHER_TASKBAR_OVERVIEW_BUTTON_LONGPRESS);
+        verify(mockStatsLogger, times(0)).log(LAUNCHER_TASKBAR_OVERVIEW_BUTTON_TAP);
+
+        mNavButtonController.onButtonLongClick(BUTTON_BACK);
+        verify(mockStatsLogger, times(1)).log(LAUNCHER_TASKBAR_BACK_BUTTON_LONGPRESS);
+        verify(mockStatsLogger, times(0)).log(LAUNCHER_TASKBAR_BACK_BUTTON_TAP);
     }
 }

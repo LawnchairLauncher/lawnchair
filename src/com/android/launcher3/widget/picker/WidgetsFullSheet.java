@@ -31,6 +31,7 @@ import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Process;
 import android.os.UserHandle;
+import android.os.UserManager;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.util.SparseArray;
@@ -41,6 +42,7 @@ import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -54,7 +56,9 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
+import com.android.launcher3.model.UserManagerState;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.views.ArrowTipView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.SpringRelativeLayout;
@@ -92,14 +96,16 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private static final String KEY_WIDGETS_EDUCATION_DIALOG_SEEN =
             "launcher.widgets_education_dialog_seen";
 
-    private final Rect mInsets = new Rect();
+    private final UserManagerState mUserManagerState = new UserManagerState();
+
     private final boolean mHasWorkProfile;
     private final SparseArray<AdapterHolder> mAdapters = new SparseArray();
     private final UserHandle mCurrentUser = Process.myUserHandle();
     private final Predicate<WidgetsListBaseEntry> mPrimaryWidgetsFilter =
             entry -> mCurrentUser.equals(entry.mPkgItem.user);
     private final Predicate<WidgetsListBaseEntry> mWorkWidgetsFilter =
-            mPrimaryWidgetsFilter.negate();
+            entry -> !mCurrentUser.equals(entry.mPkgItem.user)
+                    && !mUserManagerState.isUserQuiet(entry.mPkgItem.user);
     @Nullable private ArrowTipView mLatestEducationalTip;
     private final OnLayoutChangeListener mLayoutChangeListenerToShowTips =
             new OnLayoutChangeListener() {
@@ -170,6 +176,9 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 : 0;
         mWidgetSheetContentHorizontalPadding = 2 * resources.getDimensionPixelSize(
                 R.dimen.widget_cell_horizontal_padding);
+
+        mUserManagerState.init(UserCache.INSTANCE.get(context),
+                context.getSystemService(UserManager.class));
     }
 
     public WidgetsFullSheet(Context context, AttributeSet attrs) {
@@ -199,6 +208,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             findViewById(R.id.tab_work)
                     .setOnClickListener((View view) -> mViewPager.snapToPage(1));
             mAdapters.get(AdapterHolder.WORK).setup(findViewById(R.id.work_widgets_list_view));
+            setDeviceManagementResources();
         } else {
             mViewPager = null;
         }
@@ -218,6 +228,16 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 mActivityContext.getPopupDataProvider(), /* searchModeListener= */ this);
 
         setUpEducationViewsIfNeeded();
+    }
+
+    private void setDeviceManagementResources() {
+        if (mActivityContext.getStringCache() != null) {
+            Button personalTab = findViewById(R.id.tab_personal);
+            personalTab.setText(mActivityContext.getStringCache().widgetsPersonalTab);
+
+            Button workTab = findViewById(R.id.tab_work);
+            workTab.setText(mActivityContext.getStringCache().widgetsWorkTab);
+        }
     }
 
     @Override
@@ -247,10 +267,15 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         boolean isWidgetAvailable = adapterHolder.mWidgetsListAdapter.hasVisibleEntries();
         adapterHolder.mWidgetsRecyclerView.setVisibility(isWidgetAvailable ? VISIBLE : GONE);
 
-        mNoWidgetsView.setText(
-                adapterHolder.mAdapterType == AdapterHolder.SEARCH
-                        ? R.string.no_search_results
-                        : R.string.no_widgets_available);
+        if (adapterHolder.mAdapterType == AdapterHolder.SEARCH) {
+            mNoWidgetsView.setText(R.string.no_search_results);
+        } else if (adapterHolder.mAdapterType == AdapterHolder.WORK
+                && mUserManagerState.isAnyProfileQuietModeEnabled()
+                && mActivityContext.getStringCache() != null) {
+            mNoWidgetsView.setText(mActivityContext.getStringCache().workProfilePausedTitle);
+        } else {
+            mNoWidgetsView.setText(R.string.no_widgets_available);
+        }
         mNoWidgetsView.setVisibility(isWidgetAvailable ? GONE : VISIBLE);
     }
 
@@ -303,15 +328,15 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Override
     public void setInsets(Rect insets) {
         super.setInsets(insets);
-
-        setBottomPadding(mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView, insets.bottom);
-        setBottomPadding(mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView, insets.bottom);
+        int bottomPadding = Math.max(insets.bottom, mNavBarScrimHeight);
+        setBottomPadding(mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView, bottomPadding);
+        setBottomPadding(mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView, bottomPadding);
         if (mHasWorkProfile) {
-            setBottomPadding(mAdapters.get(AdapterHolder.WORK).mWidgetsRecyclerView, insets.bottom);
+            setBottomPadding(mAdapters.get(AdapterHolder.WORK).mWidgetsRecyclerView, bottomPadding);
         }
-        ((MarginLayoutParams) mNoWidgetsView.getLayoutParams()).bottomMargin = insets.bottom;
+        ((MarginLayoutParams) mNoWidgetsView.getLayoutParams()).bottomMargin = bottomPadding;
 
-        if (insets.bottom > 0) {
+        if (bottomPadding > 0) {
             setupNavBarColor();
         } else {
             clearNavBarColor();

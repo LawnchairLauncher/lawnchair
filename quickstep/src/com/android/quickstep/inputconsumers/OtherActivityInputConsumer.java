@@ -36,12 +36,10 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.PointF;
-import android.hardware.display.DisplayManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.Display;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
@@ -63,7 +61,6 @@ import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.RotationTouchHelper;
 import com.android.quickstep.TaskAnimationManager;
-import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.quickstep.util.MotionPauseDetector;
@@ -86,6 +83,9 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     // TODO: Move to quickstep contract
     public static final float QUICKSTEP_TOUCH_SLOP_RATIO_TWO_BUTTON = 9;
     public static final float QUICKSTEP_TOUCH_SLOP_RATIO_GESTURAL = 2;
+
+    // Minimum angle of a gesture's coordinate where a release goes to overview.
+    public static final int OVERVIEW_MIN_DEGREES = 15;
 
     private final RecentsAnimationDeviceState mDeviceState;
     private final NavBarPosition mNavBarPosition;
@@ -113,8 +113,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private final PointF mLastPos = new PointF();
     private int mActivePointerId = INVALID_POINTER_ID;
 
-    private int mLastRotation = -1;
-
     // Distance after which we start dragging the window.
     private final float mTouchSlop;
 
@@ -131,8 +129,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
     // Might be displacement in X or Y, depending on the direction we are swiping from the nav bar.
     private float mStartDisplacement;
-
-    private final DisplayManager mDisplayManager;
 
     private Handler mMainThreadHandler;
     private Runnable mCancelRecentsAnimationRunnable = () -> {
@@ -176,7 +172,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mPassedPilferInputSlop = mPassedWindowMoveSlop = continuingPreviousGesture;
         mDisableHorizontalSwipe = !mPassedPilferInputSlop && disableHorizontalSwipe;
         mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
-        mDisplayManager = getSystemService(DisplayManager.class);
     }
 
     @Override
@@ -200,17 +195,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     public void onMotionEvent(MotionEvent ev) {
         if (mVelocityTracker == null) {
             return;
-        }
-
-        if (TouchInteractionService.ENABLE_PER_WINDOW_INPUT_ROTATION) {
-            final Display display = mDisplayManager.getDisplay(mDeviceState.getDisplayId());
-            final int rotation = display.getRotation();
-            if (rotation != mLastRotation) {
-                // If rotation changes, reset tracking to avoid degenerate velocities.
-                mLastPos.set(ev.getX(), ev.getY());
-                mVelocityTracker.clear();
-                mLastRotation = rotation;
-            }
         }
 
         // Proxy events to recents view
@@ -310,8 +294,9 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 // the gesture (in which case mPassedPilferInputSlop starts as true).
                 boolean haveNotPassedSlopOnContinuedGesture =
                         !mPassedSlopOnThisGesture && mPassedPilferInputSlop;
+                double degrees = Math.toDegrees(Math.atan(upDist / horizontalDist));
                 boolean isLikelyToStartNewTask = haveNotPassedSlopOnContinuedGesture
-                        || horizontalDist > upDist;
+                        || degrees <= OVERVIEW_MIN_DEGREES;
 
                 if (!mPassedPilferInputSlop) {
                     if (passedSlop) {
@@ -440,10 +425,16 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             mMainThreadHandler.removeCallbacks(mCancelRecentsAnimationRunnable);
             mMainThreadHandler.postDelayed(mCancelRecentsAnimationRunnable, 100);
         }
-        mVelocityTracker.recycle();
-        mVelocityTracker = null;
-        mMotionPauseDetector.clear();
+        cleanupAfterGesture();
         TraceHelper.INSTANCE.endSection(traceToken);
+    }
+
+    private void cleanupAfterGesture() {
+        if (mVelocityTracker != null) {
+            mVelocityTracker.recycle();
+            mVelocityTracker = null;
+        }
+        mMotionPauseDetector.clear();
     }
 
     @Override
@@ -468,6 +459,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         Preconditions.assertUIThread();
         removeListener();
         mInteractionHandler = null;
+        cleanupAfterGesture();
         mOnCompleteCallback.accept(this);
     }
 
