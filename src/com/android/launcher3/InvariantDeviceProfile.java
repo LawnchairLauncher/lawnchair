@@ -127,8 +127,11 @@ public class InvariantDeviceProfile {
     public PointF[] minCellSize;
 
     public PointF[] borderSpaces;
-    public float folderBorderSpace;
     public int inlineNavButtonsEndSpacing;
+
+    public PointF folderBorderSpaces;
+    public PointF folderCellSize;
+    public float folderTopPadding;
 
     public float[] horizontalMargin;
 
@@ -353,7 +356,10 @@ public class InvariantDeviceProfile {
         minCellSize = displayOption.minCellSize;
 
         borderSpaces = displayOption.borderSpaces;
-        folderBorderSpace = displayOption.folderBorderSpace;
+
+        folderBorderSpaces = displayOption.folderBorderSpaces;
+        folderCellSize = displayOption.folderCellSize;
+        folderTopPadding = displayOption.folderTopPadding;
 
         horizontalMargin = displayOption.horizontalMargin;
 
@@ -828,7 +834,10 @@ public class InvariantDeviceProfile {
 
         private final PointF[] minCellSize = new PointF[COUNT_SIZES];
 
-        private float folderBorderSpace;
+        private final PointF folderCellSize;
+        private final PointF folderBorderSpaces;
+        private float folderTopPadding;
+
         private final PointF[] borderSpaces = new PointF[COUNT_SIZES];
         private final float[] horizontalMargin = new float[COUNT_SIZES];
         private final float[] hotseatBarBottomSpace = new float[COUNT_SIZES];
@@ -924,7 +933,20 @@ public class InvariantDeviceProfile {
                     borderSpaceTwoPanelLandscape);
             borderSpaces[INDEX_TWO_PANEL_LANDSCAPE] = new PointF(x, y);
 
-            folderBorderSpace = borderSpace;
+            x = a.getFloat(R.styleable.ProfileDisplayOption_folderCellWidth,
+                    minCellSize[INDEX_DEFAULT].x);
+            y = a.getFloat(R.styleable.ProfileDisplayOption_folderCellHeight,
+                    minCellSize[INDEX_DEFAULT].y);
+            folderCellSize = new PointF(x, y);
+
+            float folderBorderSpace = a.getFloat(R.styleable.ProfileDisplayOption_folderBorderSpace,
+                    borderSpace);
+
+            x = y = folderBorderSpace;
+            folderBorderSpaces = new PointF(x, y);
+
+            folderTopPadding = a.getFloat(R.styleable.ProfileDisplayOption_folderTopPadding,
+                    folderBorderSpaces.y);
 
             x = a.getFloat(R.styleable.ProfileDisplayOption_allAppsCellWidth,
                     minCellSize[INDEX_DEFAULT].x);
@@ -1099,6 +1121,9 @@ public class InvariantDeviceProfile {
                 allAppsBorderSpaces[i] = new PointF();
                 inlineQsb[i] = false;
             }
+            folderBorderSpaces = new PointF();
+            folderCellSize = new PointF();
+            folderTopPadding = 0f;
         }
 
         private DisplayOption multiply(float w) {
@@ -1119,8 +1144,11 @@ public class InvariantDeviceProfile {
                 allAppsBorderSpaces[i].x *= w;
                 allAppsBorderSpaces[i].y *= w;
             }
-
-            folderBorderSpace *= w;
+            folderBorderSpaces.x *= w;
+            folderBorderSpaces.y *= w;
+            folderCellSize.x *= w;
+            folderCellSize.y *= w;
+            folderTopPadding *= w;
 
             return this;
         }
@@ -1144,8 +1172,11 @@ public class InvariantDeviceProfile {
                 allAppsBorderSpaces[i].y += p.allAppsBorderSpaces[i].y;
                 inlineQsb[i] |= p.inlineQsb[i];
             }
-
-            folderBorderSpace += p.folderBorderSpace;
+            folderBorderSpaces.x += p.folderBorderSpaces.x;
+            folderBorderSpaces.y += p.folderBorderSpaces.y;
+            folderCellSize.x += p.folderCellSize.x;
+            folderCellSize.y += p.folderCellSize.y;
+            folderTopPadding += p.folderTopPadding;
 
             return this;
         }
