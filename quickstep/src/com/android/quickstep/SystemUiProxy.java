@@ -57,6 +57,7 @@ import com.android.systemui.shared.system.smartspace.ILauncherUnlockAnimationCon
 import com.android.systemui.shared.system.smartspace.ISysuiUnlockAnimationController;
 import com.android.systemui.shared.system.smartspace.SmartspaceState;
 import com.android.wm.shell.back.IBackAnimation;
+import com.android.wm.shell.floating.IFloatingTasks;
 import com.android.wm.shell.onehanded.IOneHanded;
 import com.android.wm.shell.pip.IPip;
 import com.android.wm.shell.pip.IPipAnimationListener;
@@ -87,6 +88,7 @@ public class SystemUiProxy implements ISystemUiProxy {
     private IPip mPip;
     private ISysuiUnlockAnimationController mSysuiUnlockAnimationController;
     private ISplitScreen mSplitScreen;
+    private IFloatingTasks mFloatingTasks;
     private IOneHanded mOneHanded;
     private IShellTransitions mShellTransitions;
     private IStartingWindow mStartingWindow;
@@ -163,7 +165,7 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     public void setProxy(ISystemUiProxy proxy, IPip pip, ISplitScreen splitScreen,
-            IOneHanded oneHanded, IShellTransitions shellTransitions,
+            IFloatingTasks floatingTasks, IOneHanded oneHanded, IShellTransitions shellTransitions,
             IStartingWindow startingWindow, IRecentTasks recentTasks,
             ISysuiUnlockAnimationController sysuiUnlockAnimationController,
             IBackAnimation backAnimation) {
@@ -171,6 +173,7 @@ public class SystemUiProxy implements ISystemUiProxy {
         mSystemUiProxy = proxy;
         mPip = pip;
         mSplitScreen = splitScreen;
+        mFloatingTasks = floatingTasks;
         mOneHanded = oneHanded;
         mShellTransitions = shellTransitions;
         mStartingWindow = startingWindow;
@@ -203,7 +206,7 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     public void clearProxy() {
-        setProxy(null, null, null, null, null, null, null, null, null);
+        setProxy(null, null, null, null, null, null, null, null, null, null);
     }
 
     // TODO(141886704): Find a way to remove this
@@ -655,6 +658,20 @@ public class SystemUiProxy implements ISystemUiProxy {
             }
         }
         return null;
+    }
+
+    //
+    // Floating tasks
+    //
+
+    public void showFloatingTask(Intent intent) {
+        if (mFloatingTasks != null) {
+            try {
+                mFloatingTasks.showTask(intent);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Launcher: Failed call showFloatingTask", e);
+            }
+        }
     }
 
     //
