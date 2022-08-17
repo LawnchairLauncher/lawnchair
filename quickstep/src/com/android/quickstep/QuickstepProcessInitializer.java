@@ -16,11 +16,9 @@
 package com.android.quickstep;
 
 import android.annotation.TargetApi;
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.RemoteException;
 import android.os.UserManager;
 import android.util.Log;
 import android.view.ThreadedRenderer;
@@ -62,12 +60,5 @@ public class QuickstepProcessInitializer extends MainProcessInitializer {
         // Elevate GPU priority for Quickstep and Remote animations.
         ThreadedRenderer.setContextPriority(
                 ThreadedRenderer.EGL_CONTEXT_PRIORITY_HIGH_IMG);
-
-        // Enable binder tracing on system server for calls originating from Launcher
-        try {
-            ActivityManager.getService().enableBinderTracing();
-        } catch (RemoteException e) {
-            Log.e(TAG, "Unable to enable binder tracing", e);
-        }
     }
 }
