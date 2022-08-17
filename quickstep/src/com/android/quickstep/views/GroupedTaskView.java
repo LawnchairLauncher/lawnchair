@@ -319,4 +319,10 @@ public class GroupedTaskView extends TaskView {
         super.applyThumbnailSplashAlpha();
         mSnapshotView2.setSplashAlpha(mTaskThumbnailSplashAlpha);
     }
+
+    @Override
+    void setThumbnailVisibility(int visibility) {
+        super.setThumbnailVisibility(visibility);
+        mSnapshotView2.setVisibility(visibility);
+    }
 }

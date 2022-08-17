@@ -14,6 +14,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.FloatProperty;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -48,6 +49,29 @@ import com.android.systemui.shared.system.QuickStepContract;
  * TODO: Figure out how to copy thumbnail data from existing TaskView to this view.
  */
 public class FloatingTaskView extends FrameLayout {
+
+    public static final FloatProperty<FloatingTaskView> PRIMARY_TRANSLATE_OFFSCREEN =
+            new FloatProperty<FloatingTaskView>("floatingTaskPrimaryTranslateOffscreen") {
+        @Override
+        public void setValue(FloatingTaskView view, float translation) {
+            ((RecentsView) view.mActivity.getOverviewPanel()).getPagedOrientationHandler()
+                    .setFloatingTaskPrimaryTranslation(
+                            view,
+                            translation,
+                            view.mActivity.getDeviceProfile()
+                    );
+        }
+
+        @Override
+        public Float get(FloatingTaskView view) {
+            return ((RecentsView) view.mActivity.getOverviewPanel())
+                    .getPagedOrientationHandler()
+                    .getFloatingTaskPrimaryTranslation(
+                            view,
+                            view.mActivity.getDeviceProfile()
+                    );
+        }
+    };
 
     private FloatingTaskThumbnailView mThumbnailView;
     private SplitPlaceholderView mSplitPlaceholderView;
