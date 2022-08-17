@@ -240,6 +240,7 @@ public class ViewCapture implements OnDrawListener {
         public float translateX, translateY;
         public float scaleX, scaleY;
         public float alpha;
+        public float elevation;
 
         public int visibility;
         public boolean willNotDraw;
@@ -271,6 +272,7 @@ public class ViewCapture implements OnDrawListener {
 
             visibility = view.getVisibility();
             willNotDraw = view.willNotDraw();
+            elevation = view.getElevation();
         }
 
         /**
@@ -303,6 +305,7 @@ public class ViewCapture implements OnDrawListener {
                     .setAlpha(alpha)
                     .setVisibility(visibility)
                     .setWillNotDraw(willNotDraw)
+                    .setElevation(elevation)
                     .setClipChildren(clipChildren);
 
             ViewPropertyRef result = next;

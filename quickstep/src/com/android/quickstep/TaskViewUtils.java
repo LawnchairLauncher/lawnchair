@@ -593,6 +593,15 @@ public final class TaskViewUtils {
         Animator launcherAnim;
         final AnimatorListenerAdapter windowAnimEndListener;
         if (launcherClosing) {
+            // Since Overview is in launcher, just opening overview sets willFinishToHome to true.
+            // Now that we are closing the launcher, we need to (re)set willFinishToHome back to
+            // false. Otherwise, RecentsAnimationController can't differentiate between closing
+            // overview to 3p home vs closing overview to app.
+            final RecentsAnimationController raController =
+                    recentsView.getRecentsAnimationController();
+            if (raController != null) {
+                raController.setWillFinishToHome(false);
+            }
             Context context = v.getContext();
             DeviceProfile dp = BaseActivity.fromContext(context).getDeviceProfile();
             launcherAnim = dp.isTablet
