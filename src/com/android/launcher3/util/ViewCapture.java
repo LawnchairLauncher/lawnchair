@@ -15,18 +15,23 @@
  */
 package com.android.launcher3.util;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+
+import static java.util.stream.Collectors.toList;
 
 import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Trace;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Base64OutputStream;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnDrawListener;
+import android.view.Window;
 
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
@@ -38,7 +43,10 @@ import com.android.launcher3.view.ViewCaptureData.ViewNode;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.concurrent.Future;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Utility class for capturing view data every frame
@@ -53,6 +61,7 @@ public class ViewCapture implements OnDrawListener {
     // Launcher. This allows the first free frames avoid object allocation during view capture.
     private static final int INIT_POOL_SIZE = 300;
 
+    private final Window mWindow;
     private final View mRoot;
     private final Resources mResources;
 
@@ -67,11 +76,12 @@ public class ViewCapture implements OnDrawListener {
     private ViewRef mPool = new ViewRef();
 
     /**
-     * @param root the root view for the capture data
+     * @param window the window for the capture data
      */
-    public ViewCapture(View root) {
-        mRoot = root;
-        mResources = root.getResources();
+    public ViewCapture(Window window) {
+        mWindow = window;
+        mRoot = mWindow.getDecorView();
+        mResources = mRoot.getResources();
         mHandler = new Handler(UI_HELPER_EXECUTOR.getLooper(), this::captureViewPropertiesBg);
     }
 
@@ -80,6 +90,14 @@ public class ViewCapture implements OnDrawListener {
      */
     public void attach() {
         mHandler.post(this::initPool);
+    }
+
+    /**
+     * Removes a previously attached ViewCapture from the root
+     */
+    public void detach() {
+        mHandler.post(() -> MAIN_EXECUTOR.execute(
+                () -> mRoot.getViewTreeObserver().removeOnDrawListener(this)));
     }
 
     @Override
@@ -139,7 +157,7 @@ public class ViewCapture implements OnDrawListener {
         }
         mNodesBg[mFrameIndexBg] = result;
         ViewRef end = last;
-        Executors.MAIN_EXECUTOR.execute(() -> addToPool(start, end));
+        MAIN_EXECUTOR.execute(() -> addToPool(start, end));
         return true;
     }
 
@@ -160,7 +178,7 @@ public class ViewCapture implements OnDrawListener {
         }
 
         ViewRef end = current;
-        Executors.MAIN_EXECUTOR.execute(() ->  {
+        MAIN_EXECUTOR.execute(() ->  {
             addToPool(start, end);
             if (mRoot.isAttachedToWindow()) {
                 mRoot.getViewTreeObserver().addOnDrawListener(this);
@@ -168,38 +186,58 @@ public class ViewCapture implements OnDrawListener {
         });
     }
 
+    private String getName() {
+        String title = mWindow.getAttributes().getTitle().toString();
+        return TextUtils.isEmpty(title) ? mWindow.toString() : title;
+    }
+
     /**
-     * Creates a proto of all the data captured so far.
+     * Starts the dump process which is completed on closing the returned object.
      */
-    public void dump(FileDescriptor out) {
+    public SafeCloseable beginDump(PrintWriter writer, FileDescriptor out) {
         Future<ExportedData> task = UI_HELPER_EXECUTOR.submit(this::dumpToProto);
-        try (OutputStream os = new FileOutputStream(out)) {
-            ExportedData data = task.get();
-            Base64OutputStream encodedOS = new Base64OutputStream(os,
-                    Base64.NO_CLOSE | Base64.NO_PADDING | Base64.NO_WRAP);
-            data.writeTo(encodedOS);
-            encodedOS.close();
-            os.flush();
-        } catch (Exception e) {
-            Log.e(TAG, "Error capturing proto", e);
-        }
+
+        return () -> {
+            writer.println();
+            writer.println(" ContinuousViewCapture:");
+            writer.println(" window " + getName() + ":");
+            writer.println("  pkg:" + mRoot.getContext().getPackageName());
+            writer.print("  data:");
+            writer.flush();
+
+            try (OutputStream os = new FileOutputStream(out)) {
+                ExportedData data = task.get();
+                OutputStream encodedOS = new GZIPOutputStream(new Base64OutputStream(os,
+                        Base64.NO_CLOSE | Base64.NO_PADDING | Base64.NO_WRAP));
+                data.writeTo(encodedOS);
+                encodedOS.close();
+                os.flush();
+            } catch (Exception e) {
+                Log.e(TAG, "Error capturing proto", e);
+            }
+            writer.println();
+            writer.println("--end--");
+        };
     }
 
     @WorkerThread
     private ExportedData dumpToProto() {
         ExportedData.Builder dataBuilder = ExportedData.newBuilder();
         Resources res = mResources;
+        ArrayList<Class> classList = new ArrayList<>();
 
         int size = (mNodesBg[MEMORY_SIZE - 1] == null) ? mFrameIndexBg + 1 : MEMORY_SIZE;
         for (int i = size - 1; i >= 0; i--) {
             int index = (MEMORY_SIZE + mFrameIndexBg - i) % MEMORY_SIZE;
             ViewNode.Builder nodeBuilder = ViewNode.newBuilder();
-            mNodesBg[index].toProto(res, nodeBuilder);
+            mNodesBg[index].toProto(res, classList, nodeBuilder);
             dataBuilder.addFrameData(FrameData.newBuilder()
                     .setNode(nodeBuilder)
                     .setTimestamp(mFrameTimesBg[index]));
         }
-        return dataBuilder.build();
+        return dataBuilder
+                .addAllClassname(classList.stream().map(Class::getName).collect(toList()))
+                .build();
     }
 
     private ViewRef captureViewTree(View view, ViewRef start) {
@@ -278,10 +316,10 @@ public class ViewCapture implements OnDrawListener {
         /**
          * Converts the data to the proto representation and returns the next property ref
          * at the end of the iteration.
-         * @param res
          * @return
          */
-        public ViewPropertyRef toProto(Resources res, ViewNode.Builder outBuilder) {
+        public ViewPropertyRef toProto(Resources res, ArrayList<Class> classList,
+                ViewNode.Builder outBuilder) {
             String resolvedId;
             if (id >= 0) {
                 try {
@@ -292,7 +330,14 @@ public class ViewCapture implements OnDrawListener {
             } else {
                 resolvedId = "NO_ID";
             }
-            outBuilder.setClassname(clazz.getName() + "@" + hashCode)
+            int classnameIndex = classList.indexOf(clazz);
+            if (classnameIndex < 0) {
+                classnameIndex = classList.size();
+                classList.add(clazz);
+            }
+            outBuilder
+                    .setClassnameIndex(classnameIndex)
+                    .setHashcode(hashCode)
                     .setId(resolvedId)
                     .setLeft(left)
                     .setTop(top)
@@ -311,7 +356,7 @@ public class ViewCapture implements OnDrawListener {
             ViewPropertyRef result = next;
             for (int i = 0; (i < childCount) && (result != null); i++) {
                 ViewNode.Builder childBuilder = ViewNode.newBuilder();
-                result = result.toProto(res, childBuilder);
+                result = result.toProto(res, classList, childBuilder);
                 outBuilder.addChildren(childBuilder);
             }
             return result;
