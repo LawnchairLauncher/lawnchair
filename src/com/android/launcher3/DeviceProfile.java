@@ -38,11 +38,13 @@ import android.util.SparseArray;
 import android.view.Surface;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.DevicePaddings.DevicePadding;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.IconNormalizer;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
@@ -56,6 +58,9 @@ public class DeviceProfile {
 
     private static final int DEFAULT_DOT_SIZE = 100;
     private static final float ALL_APPS_TABLET_MAX_ROWS = 5.5f;
+
+    public static final PointF DEFAULT_SCALE = new PointF(1.0f, 1.0f);
+    public static final ViewScaleProvider DEFAULT_PROVIDER = itemInfo -> DEFAULT_SCALE;
 
     // Ratio of empty space, qsb should take up to appear visually centered.
     private final float mQsbCenterFactor;
@@ -204,7 +209,7 @@ public class DeviceProfile {
     public int overviewGridSideMargin;
 
     // Widgets
-    public final PointF appWidgetScale = new PointF(1.0f, 1.0f);
+    private final ViewScaleProvider mViewScaleProvider;
 
     // Drop Target
     public int dropTargetBarSizePx;
@@ -240,7 +245,8 @@ public class DeviceProfile {
     /** TODO: Once we fully migrate to staged split, remove "isMultiWindowMode" */
     DeviceProfile(Context context, InvariantDeviceProfile inv, Info info, WindowBounds windowBounds,
             SparseArray<DotRenderer> dotRendererCache, boolean isMultiWindowMode,
-            boolean transposeLayoutWithOrientation, boolean useTwoPanels, boolean isGestureMode) {
+            boolean transposeLayoutWithOrientation, boolean useTwoPanels, boolean isGestureMode,
+            @NonNull final ViewScaleProvider viewScaleProvider) {
 
         this.inv = inv;
         this.isLandscape = windowBounds.isLandscape();
@@ -473,6 +479,8 @@ public class DeviceProfile {
         flingToDeleteThresholdVelocity = res.getDimensionPixelSize(
                 R.dimen.drag_flingToDeleteMinVelocity);
 
+        mViewScaleProvider = viewScaleProvider;
+
         // This is done last, after iconSizePx is calculated above.
         mDotRendererWorkSpace = createDotRenderer(iconSizePx, dotRendererCache);
         mDotRendererAllApps = createDotRenderer(allAppsIconSizePx, dotRendererCache);
@@ -669,13 +677,18 @@ public class DeviceProfile {
                 .setMultiWindowMode(true)
                 .build();
 
-        profile.hideWorkspaceLabelsIfNotEnoughSpace();
-
         // We use these scales to measure and layout the widgets using their full invariant profile
         // sizes and then draw them scaled and centered to fit in their multi-window mode cellspans.
         float appWidgetScaleX = (float) profile.getCellSize().x / getCellSize().x;
         float appWidgetScaleY = (float) profile.getCellSize().y / getCellSize().y;
-        profile.appWidgetScale.set(appWidgetScaleX, appWidgetScaleY);
+        if (appWidgetScaleX != 1 || appWidgetScaleY != 1) {
+            final PointF p = new PointF(appWidgetScaleX, appWidgetScaleY);
+            profile = profile.toBuilder(context)
+                    .setViewScaleProvider(i -> p)
+                    .build();
+        }
+
+        profile.hideWorkspaceLabelsIfNotEnoughSpace();
 
         return profile;
     }
@@ -1243,6 +1256,19 @@ public class DeviceProfile {
     }
 
     /**
+     * Takes the View and return the scales of width and height depending on the DeviceProfile
+     * specifications
+     *
+     * @param itemInfo The tag of the widget view
+     * @return A PointF instance with the x set to be the scale of width, and y being the scale of
+     * height
+     */
+    @NonNull
+    public PointF getAppWidgetScale(@Nullable final ItemInfo itemInfo) {
+        return mViewScaleProvider.getScaleFromItemInfo(itemInfo);
+    }
+
+    /**
      * @return the bounds for which the open folders should be contained within
      */
     public Rect getAbsoluteOpenFolderBounds() {
@@ -1551,6 +1577,22 @@ public class DeviceProfile {
         }
     }
 
+    /**
+     * Handler that deals with ItemInfo of the views for the DeviceProfile
+     */
+    @FunctionalInterface
+    public interface ViewScaleProvider {
+        /**
+         * Get the scales from the view
+         *
+         * @param itemInfo The tag of the widget view
+         * @return PointF instance containing the scale information, or null if using the default
+         * app widget scale of this device profile.
+         */
+        @NonNull
+        PointF getScaleFromItemInfo(@Nullable ItemInfo itemInfo);
+    }
+
     public static class Builder {
         private Context mContext;
         private InvariantDeviceProfile mInv;
@@ -1562,6 +1604,7 @@ public class DeviceProfile {
         private boolean mIsMultiWindowMode = false;
         private Boolean mTransposeLayoutWithOrientation;
         private Boolean mIsGestureMode;
+        private ViewScaleProvider mViewScaleProvider = null;
 
         private SparseArray<DotRenderer> mDotRendererCache;
 
@@ -1601,6 +1644,19 @@ public class DeviceProfile {
             return this;
         }
 
+        /**
+         * Set the viewScaleProvider for the builder
+         *
+         * @param viewScaleProvider The viewScaleProvider to be set for the
+         *                                DeviceProfile
+         * @return This builder
+         */
+        @NonNull
+        public Builder setViewScaleProvider(@Nullable ViewScaleProvider viewScaleProvider) {
+            mViewScaleProvider = viewScaleProvider;
+            return this;
+        }
+
         public DeviceProfile build() {
             if (mWindowBounds == null) {
                 throw new IllegalArgumentException("Window bounds not set");
@@ -1614,9 +1670,12 @@ public class DeviceProfile {
             if (mDotRendererCache == null) {
                 mDotRendererCache = new SparseArray<>();
             }
+            if (mViewScaleProvider == null) {
+                mViewScaleProvider = DEFAULT_PROVIDER;
+            }
             return new DeviceProfile(mContext, mInv, mInfo, mWindowBounds, mDotRendererCache,
                     mIsMultiWindowMode, mTransposeLayoutWithOrientation, mUseTwoPanels,
-                    mIsGestureMode);
+                    mIsGestureMode, mViewScaleProvider);
         }
     }
 

@@ -44,6 +44,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -369,7 +370,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             float scale = 1;
             if (isWidget) {
                 DeviceProfile profile = mLauncher.getDeviceProfile();
-                scale = Utilities.shrinkRect(r, profile.appWidgetScale.x, profile.appWidgetScale.y);
+                final PointF appWidgetScale = profile.getAppWidgetScale(null);
+                scale = Utilities.shrinkRect(r, appWidgetScale.x, appWidgetScale.y);
             }
             size[0] = r.width();
             size[1] = r.height();
@@ -2884,7 +2886,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                 r.top -= widgetPadding.top;
                 r.bottom += widgetPadding.bottom;
             }
-            Utilities.shrinkRect(r, profile.appWidgetScale.x, profile.appWidgetScale.y);
+            PointF appWidgetScale = profile.getAppWidgetScale(null);
+            Utilities.shrinkRect(r, appWidgetScale.x, appWidgetScale.y);
         }
 
         mTempFXY[0] = r.left;
