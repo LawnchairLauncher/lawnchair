@@ -30,7 +30,7 @@
     <LinearLayout
         android:id="@+id/folder_footer"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/folder_label_height"
         android:clipChildren="false"
         android:orientation="horizontal"
         android:paddingLeft="12dp"
