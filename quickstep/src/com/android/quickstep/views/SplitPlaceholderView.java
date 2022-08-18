@@ -47,19 +47,6 @@ public class SplitPlaceholderView extends FrameLayout {
                 }
             };
 
-    public static final FloatProperty<SplitPlaceholderView> ICON_ALPHA =
-            new FloatProperty<SplitPlaceholderView>("SplitViewIconAlpha") {
-                @Override
-                public void setValue(SplitPlaceholderView splitPlaceholderView, float v) {
-                    splitPlaceholderView.mIconView.setAlpha(v);
-                }
-
-                @Override
-                public Float get(SplitPlaceholderView splitPlaceholderView) {
-                    return splitPlaceholderView.mIconView.getAlpha();
-                }
-            };
-
     @Nullable
     private IconView mIconView;
 

@@ -190,7 +190,7 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     public void setSplitInstructionsParams(View out, DeviceProfile dp, int splitInstructionsHeight,
             int splitInstructionsWidth, int threeButtonNavShift) {
         out.setPivotX(0);
-        out.setPivotY(splitInstructionsHeight);
+        out.setPivotY(0);
         out.setRotation(getDegreesRotated());
         int distanceToEdge = out.getResources().getDimensionPixelSize(
                 R.dimen.split_instructions_bottom_margin_phone_landscape);
@@ -198,8 +198,9 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
         int insetCorrectionX = dp.getInsets().right;
         // Center the view in case of unbalanced insets on top or bottom of screen
         int insetCorrectionY = (dp.getInsets().bottom - dp.getInsets().top) / 2;
-        out.setTranslationX(splitInstructionsWidth - distanceToEdge + insetCorrectionX);
-        out.setTranslationY(((-splitInstructionsHeight + splitInstructionsWidth) / 2f)
+        out.setTranslationX(splitInstructionsWidth - splitInstructionsHeight - distanceToEdge
+                + insetCorrectionX);
+        out.setTranslationY(((splitInstructionsHeight + splitInstructionsWidth) / 2f)
                 + insetCorrectionY);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) out.getLayoutParams();
         // Setting gravity to RIGHT instead of the lint-recommended END because we always want this

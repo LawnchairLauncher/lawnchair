@@ -188,9 +188,6 @@ public class QuickstepAtomicAnimationFactory extends
             AllAppsSwipeController.applyAllAppsToNormalConfig(mActivity, config);
         } else if (fromState == NORMAL && toState == ALL_APPS) {
             AllAppsSwipeController.applyNormalToAllAppsAnimConfig(mActivity, config);
-        } else if (fromState == OVERVIEW && toState == OVERVIEW_SPLIT_SELECT) {
-            config.setInterpolator(ANIM_OVERVIEW_ACTIONS_FADE,
-                    clampToProgress(LINEAR, 0, 0.167f));
         }
     }
 }

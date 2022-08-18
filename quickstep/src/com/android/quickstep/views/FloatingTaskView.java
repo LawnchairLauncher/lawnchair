@@ -2,9 +2,8 @@ package com.android.quickstep.views;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_TASK_MENU;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
-import static com.android.launcher3.anim.Interpolators.FASTER_OUT_SLOWER_IN;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.anim.Interpolators.clampToProgress;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -201,16 +200,10 @@ public class FloatingTaskView extends FrameLayout {
         RectF floatingTaskViewBounds = new RectF();
 
         if (fadeWithThumbnail) {
-            // FloatingTaskThumbnailView: thumbnail fades out to transparent
-            animation.addFloat(mThumbnailView, LauncherAnimUtils.VIEW_ALPHA,
-                    1, 0, clampToProgress(LINEAR, 0, 0.267f));
-
-            // SplitPlaceholderView: gray background fades in at the same time, then new icon fades
-            // in
             animation.addFloat(mSplitPlaceholderView, SplitPlaceholderView.ALPHA_FLOAT,
-                    0, 1, clampToProgress(LINEAR, 0, 0.267f));
-            animation.addFloat(mSplitPlaceholderView, SplitPlaceholderView.ICON_ALPHA,
-                    0, 1, clampToProgress(LINEAR, 0.333f, 0.5f));
+                    0, 1, ACCEL);
+            animation.addFloat(mThumbnailView, LauncherAnimUtils.VIEW_ALPHA,
+                    1, 0, DEACCEL_3);
         } else if (isStagedTask) {
             // Fade in the placeholder view when split is initiated from homescreen / all apps
             // icons.
@@ -221,15 +214,12 @@ public class FloatingTaskView extends FrameLayout {
         }
 
         MultiValueUpdateListener listener = new MultiValueUpdateListener() {
-            // SplitPlaceholderView: rectangle translates and stretches to new position
-            final FloatProp mDx = new FloatProp(0, prop.dX, 0, animDuration,
-                    clampToProgress(FASTER_OUT_SLOWER_IN, 0, 0.833f));
-            final FloatProp mDy = new FloatProp(0, prop.dY, 0, animDuration,
-                    clampToProgress(FASTER_OUT_SLOWER_IN, 0, 0.833f));
+            final FloatProp mDx = new FloatProp(0, prop.dX, 0, animDuration, LINEAR);
+            final FloatProp mDy = new FloatProp(0, prop.dY, 0, animDuration, LINEAR);
             final FloatProp mTaskViewScaleX = new FloatProp(1f, prop.finalTaskViewScaleX, 0,
-                    animDuration, clampToProgress(FASTER_OUT_SLOWER_IN, 0, 0.833f));
+                    animDuration, LINEAR);
             final FloatProp mTaskViewScaleY = new FloatProp(1f, prop.finalTaskViewScaleY, 0,
-                    animDuration, clampToProgress(FASTER_OUT_SLOWER_IN, 0, 0.833f));
+                    animDuration, LINEAR);
             @Override
             public void onUpdate(float percent, boolean initOnly) {
                 // Calculate the icon position.
