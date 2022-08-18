@@ -184,13 +184,25 @@
         <attr name="isScalable" format="boolean" />
         <attr name="devicePaddingId" format="reference" />
         <!-- By default all categories are enabled -->
-        <attr name="deviceCategory" format="integer" >
+        <attr name="deviceCategory" format="integer">
             <!-- Enable on phone only -->
             <flag name="phone" value="1" />
             <!-- Enable on tablets only -->
             <flag name="tablet" value="2" />
             <!-- Enable on multi display devices only -->
             <flag name="multi_display" value="4" />
+        </attr>
+
+        <!-- By default all are false -->
+        <attr name="inlineQsb" format="integer">
+            <!-- Enable on landscape only -->
+            <flag name="portrait" value="1" />
+            <!-- Enable on portrait only -->
+            <flag name="landscape" value="2" />
+            <!-- Enable on two panel portrait only -->
+            <flag name="twoPanelPortrait" value="4" />
+            <!-- Enable on two panel landscape only -->
+            <flag name="twoPanelLandscape" value="8" />
         </attr>
 
     </declare-styleable>
@@ -327,6 +339,19 @@
         if not specified -->
         <attr name="allAppsBorderSpaceTwoPanelLandscapeVertical" format="float" />
 
+        <!-- defaults to minCellHeight if not specified
+        when GridDisplayOption#isScalable is true. -->
+        <attr name="folderCellHeight" format="float" />
+        <!-- defaults to minCellWidth, if not specified -->
+        <attr name="folderCellWidth" format="float" />
+
+        <!-- defaults to borderSpace, if not specified -->
+        <!-- space to be used horizontally and vertically -->
+        <attr name="folderBorderSpace" format="float" />
+
+        <!-- defaults to folderBorderSpace vertical, if not specified -->
+        <attr name="folderTopPadding" format="float" />
+
         <!-- defaults to res.hotseat_bar_bottom_space_default, if not specified -->
         <attr name="hotseatBarBottomSpace" format="float" />
         <!-- defaults to hotseatBarBottomSpace, if not specified -->
@@ -373,17 +398,6 @@
         <!-- defaults to horizontalMargin if not specified -->
         <attr name="horizontalMarginTwoPanelPortrait" format="float"/>
 
-        <!-- By default all are false -->
-        <attr name="inlineQsb" format="integer" >
-            <!-- Enable on landscape only -->
-            <flag name="portrait" value="1" />
-            <!-- Enable on portrait only -->
-            <flag name="landscape" value="2" />
-            <!-- Enable on two panel portrait only -->
-            <flag name="twoPanelPortrait" value="4" />
-            <!-- Enable on two panel landscape only -->
-            <flag name="twoPanelLandscape" value="8" />
-        </attr>
     </declare-styleable>
 
     <declare-styleable name="CellLayout">
