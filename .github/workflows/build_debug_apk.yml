@@ -4,11 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - '*'
-      - '*/*'
-      - '**'
-      - '!12.1-dev-localization'
-      - '!12.1-alpha'
+      - '*-dev'
   pull_request:
 
 jobs:
