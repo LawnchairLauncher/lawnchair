@@ -35,7 +35,6 @@ import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_0_75;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
-import static com.android.launcher3.anim.Interpolators.EMPHASIZED_DECELERATE;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -114,7 +113,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.core.graphics.ColorUtils;
-import androidx.dynamicanimation.animation.SpringForce;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseActivity.MultiWindowModeChangedListener;
@@ -127,7 +125,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.launcher3.anim.SpringProperty;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -444,9 +441,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private static final float ADDITIONAL_DISMISS_TRANSLATION_INTERPOLATION_OFFSET = 0.05f;
     private static final float ANIMATION_DISMISS_PROGRESS_MIDPOINT = 0.5f;
     private static final float END_DISMISS_TRANSLATION_INTERPOLATION_OFFSET = 0.75f;
-
-    private static final float INITIAL_SPRING_DISMISS_TRANSLATION_INTERPOLATION_OFFSET = 0.133f;
-    private static final float ADDITIONAL_SPRING_DISMISS_TRANSLATION_INTERPOLATION_OFFSET = 0.033f;
 
     private static final float SIGNIFICANT_MOVE_SCREEN_WIDTH_PERCENTAGE = 0.15f;
 
@@ -2838,20 +2832,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         RectF startingTaskRect = new RectF();
         if (mSplitHiddenTaskView != null) {
-            // Split staging is initiated, hide the original TaskView except for the icon (which
-            // needs to animate out over time)
-            // If needed, visibility should be toggled back on in resetFromSplitSelectionState().
-            for (int i = 0; i < mSplitHiddenTaskView.getChildCount(); i++) {
-                View child = mSplitHiddenTaskView.getChildAt(i);
-                if (child != mSplitHiddenTaskView.mIconView) {
-                    child.setVisibility(INVISIBLE);
-                }
-            }
-
-            // Icon animates out over time
-            anim.addFloat(mSplitHiddenTaskView, TaskView.ICON_ALPHA, 1, 0,
-                    clampToProgress(LINEAR, 0, 0.167f));
-
+            mSplitHiddenTaskView.setVisibility(INVISIBLE);
             mFirstFloatingTaskView = FloatingTaskView.getFloatingTaskView(mActivity,
                     mSplitHiddenTaskView.getThumbnail(),
                     mSplitHiddenTaskView.getThumbnail().getThumbnail(),
@@ -2868,15 +2849,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     false /* fadeWithThumbnail */, true /* isStagedTask */);
         }
 
-        // SplitInstructionsView: animate in
         mSplitInstructionsView = SplitInstructionsView.getSplitInstructionsView(mActivity);
         mSplitInstructionsView.setAlpha(0);
-        anim.addFloat(mSplitInstructionsView, SplitInstructionsView.CONTAINER_ALPHA, 0, 1,
-                clampToProgress(LINEAR, 0, 0.167f));
-        anim.addFloat(mSplitInstructionsView, SplitInstructionsView.TEXT_ALPHA, 0, 1,
-                clampToProgress(LINEAR, 0.1f, 0.267f));
-        anim.addFloat(mSplitInstructionsView, mSplitInstructionsView.UNFOLD, 0.1f, 1,
-                clampToProgress(EMPHASIZED_DECELERATE, 0, 0.667f));
+        anim.addFloat(mSplitInstructionsView, SplitInstructionsView.ALPHA_FLOAT, 0, 1, ACCEL);
 
         InteractionJankMonitorWrapper.begin(this,
                 InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER, "First tile selected");
@@ -3156,22 +3131,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 // Animate task with index >= dismissed index and in the same row as the
                 // dismissed index or next focused index. Offset successive task dismissal
                 // durations for a staggered effect.
-                distanceFromDismissedTask++;
-                // If user is initiating splitscreen from the focused (large) task, we use a
-                // spring-based animation and timings. For other, smaller, repositions, we currently
-                // fall back on a less complicated linear animation and timings.
-                float animationStartProgress = isFocusedTaskDismissed && nextFocusedTaskView == null
-                        ? Utilities.boundToRange(
-                                INITIAL_SPRING_DISMISS_TRANSLATION_INTERPOLATION_OFFSET
-                                        + ADDITIONAL_SPRING_DISMISS_TRANSLATION_INTERPOLATION_OFFSET
-                                        * (int) Math.ceil(distanceFromDismissedTask / 2f), 0f,
-                        dismissTranslationInterpolationEnd)
-                        : Utilities.boundToRange(
-                                INITIAL_DISMISS_TRANSLATION_INTERPOLATION_OFFSET
-                                        + ADDITIONAL_DISMISS_TRANSLATION_INTERPOLATION_OFFSET
-                                        * distanceFromDismissedTask, 0f,
-                                dismissTranslationInterpolationEnd);
-
+                float animationStartProgress = Utilities.boundToRange(
+                        INITIAL_DISMISS_TRANSLATION_INTERPOLATION_OFFSET
+                                + ADDITIONAL_DISMISS_TRANSLATION_INTERPOLATION_OFFSET
+                                * ++distanceFromDismissedTask, 0f,
+                        dismissTranslationInterpolationEnd);
                 if (taskView == nextFocusedTaskView) {
                     // Enlarge the task to be focused next, and translate into focus position.
                     float scale = mTaskWidth / (float) mLastComputedGridTaskSize.width();
@@ -3206,36 +3170,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                             primaryTranslation +=
                                     mIsRtl ? -mSplitPlaceholderSize : mSplitPlaceholderSize;
                         }
-
-                        // Transitioning to split select -- set up staggered spring animation for
-                        // other TaskViews.
-                        Animator taskSlideIn = new SpringAnimationBuilder(taskView.mActivity)
-                                .setDampingRatio(0.85f)
-                                .setStiffness(SpringForce.STIFFNESS_LOW)
-                                .setEndValue(mIsRtl ? primaryTranslation : -primaryTranslation)
-                                .setStartValue(
-                                        taskView.getPrimaryDismissTranslationProperty()
-                                                .get(taskView)
-                                )
-                                .build(taskView, taskView.getPrimaryDismissTranslationProperty());
-                        long taskSlideInDuration = taskSlideIn.getDuration();
-                        anim.add(taskSlideIn);
-                        taskSlideIn
-                                .setDuration(taskSlideInDuration)
-                                .setStartDelay(
-                                        Math.round(animationStartProgress * anim.getDuration()));
-                    } else {
-                        // Task was dismissed individually -- translate other TaskViews to fill the
-                        // vacant space.
-
-                        // TODO (b/242075836): This dismiss animation uses a linear transition.
-                        // When the above bug is fixed, it can use the same (nicer) spring
-                        // transition as the focused task split case above.
-                        anim.setFloat(taskView, taskView.getPrimaryDismissTranslationProperty(),
-                                mIsRtl ? primaryTranslation : -primaryTranslation,
-                                clampToProgress(LINEAR, animationStartProgress,
-                                        dismissTranslationInterpolationEnd));
                     }
+
+                    anim.setFloat(taskView, taskView.getPrimaryDismissTranslationProperty(),
+                            mIsRtl ? primaryTranslation : -primaryTranslation,
+                            clampToProgress(LINEAR, animationStartProgress,
+                                    dismissTranslationInterpolationEnd));
                 }
             }
         }
@@ -3256,8 +3196,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         final boolean finalCloseGapBetweenClearAll = closeGapBetweenClearAll;
         final boolean finalSnapToLastTask = snapToLastTask;
         final boolean finalIsFocusedTaskDismissed = isFocusedTaskDismissed;
-
-        Consumer endConsumer = new Consumer<Boolean>() {
+        mPendingAnimation.addEndListener(new Consumer<Boolean>() {
             @Override
             public void accept(Boolean success) {
                 if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mEnableDrawingLiveTile
@@ -3467,9 +3406,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 onDismissAnimationEnds();
                 mPendingAnimation = null;
             }
-        };
-
-        mPendingAnimation.addListener(AnimatorListeners.forEndCallback(endConsumer));
+        });
         return anim;
     }
 
@@ -4290,6 +4227,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         resetTaskVisuals();
         mSplitHiddenTaskViewIndex = -1;
         if (mSplitHiddenTaskView != null) {
+            mSplitHiddenTaskView.setVisibility(VISIBLE);
             mSplitHiddenTaskView = null;
         }
     }

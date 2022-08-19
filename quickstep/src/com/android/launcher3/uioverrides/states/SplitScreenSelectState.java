@@ -16,8 +16,6 @@
 
 package com.android.launcher3.uioverrides.states;
 
-import android.content.Context;
-
 import com.android.launcher3.Launcher;
 import com.android.quickstep.views.RecentsView;
 
@@ -26,8 +24,6 @@ import com.android.quickstep.views.RecentsView;
  * pinned and user is selecting the second one
  */
 public class SplitScreenSelectState extends OverviewState {
-    private static final int OVERVIEW_SPLIT_SELECT_SLIDE_IN_DURATION = 500;
-
     public SplitScreenSelectState(int id) {
         super(id);
     }
@@ -41,10 +37,5 @@ public class SplitScreenSelectState extends OverviewState {
     public float getSplitSelectTranslation(Launcher launcher) {
         RecentsView recentsView = launcher.getOverviewPanel();
         return recentsView.getSplitSelectTranslation();
-    }
-
-    @Override
-    public int getTransitionDuration(Context context, boolean isToState) {
-        return OVERVIEW_SPLIT_SELECT_SLIDE_IN_DURATION;
     }
 }
