@@ -26,6 +26,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemProperties;
 import android.view.View;
 import android.view.WindowInsets;
 import android.window.SplashScreen;
@@ -278,7 +279,8 @@ public interface TaskShortcutFactory {
         }
 
         private boolean isAvailable(BaseDraggingActivity activity, int displayId) {
-            return ActivityManagerWrapper.getInstance().supportsFreeformMultiWindow(activity);
+            return ActivityManagerWrapper.getInstance().supportsFreeformMultiWindow(activity)
+                    && !SystemProperties.getBoolean("persist.wm.debug.desktop_mode", false);
         }
     };
 
