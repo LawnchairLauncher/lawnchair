@@ -25,7 +25,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatTextView;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
@@ -41,10 +40,9 @@ import com.android.launcher3.util.DisplayController;
  */
 public class SplitInstructionsView extends FrameLayout {
     private final StatefulActivity mLauncher;
-    private AppCompatTextView mTextView;
 
-    public static final FloatProperty<SplitInstructionsView> CONTAINER_ALPHA =
-            new FloatProperty<SplitInstructionsView>("SplitInstructionsContainerAlpha") {
+    public static final FloatProperty<SplitInstructionsView> ALPHA_FLOAT =
+            new FloatProperty<SplitInstructionsView>("SplitInstructionsAlpha") {
                 @Override
                 public void setValue(SplitInstructionsView splitInstructionsView, float v) {
                     splitInstructionsView.setVisibility(v != 0 ? VISIBLE : GONE);
@@ -54,32 +52,6 @@ public class SplitInstructionsView extends FrameLayout {
                 @Override
                 public Float get(SplitInstructionsView splitInstructionsView) {
                     return splitInstructionsView.getAlpha();
-                }
-            };
-
-    public static final FloatProperty<SplitInstructionsView> UNFOLD =
-            new FloatProperty<SplitInstructionsView>("SplitInstructionsUnfold") {
-                @Override
-                public void setValue(SplitInstructionsView splitInstructionsView, float v) {
-                    splitInstructionsView.setScaleY(v);
-                }
-
-                @Override
-                public Float get(SplitInstructionsView splitInstructionsView) {
-                    return splitInstructionsView.getScaleY();
-                }
-            };
-
-    public static final FloatProperty<SplitInstructionsView> TEXT_ALPHA =
-            new FloatProperty<SplitInstructionsView>("SplitInstructionsTextAlpha") {
-                @Override
-                public void setValue(SplitInstructionsView splitInstructionsView, float v) {
-                    splitInstructionsView.mTextView.setAlpha(v);
-                }
-
-                @Override
-                public Float get(SplitInstructionsView splitInstructionsView) {
-                    return splitInstructionsView.mTextView.getAlpha();
                 }
             };
 
@@ -104,9 +76,6 @@ public class SplitInstructionsView extends FrameLayout {
                         dragLayer,
                         false
                 );
-
-        splitInstructionsView.mTextView = splitInstructionsView.findViewById(
-                R.id.split_instructions_text);
 
         dragLayer.addView(splitInstructionsView);
         return splitInstructionsView;
