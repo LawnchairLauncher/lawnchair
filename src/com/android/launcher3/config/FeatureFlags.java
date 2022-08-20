@@ -169,6 +169,13 @@ public final class FeatureFlags {
             "ENABLE_SMARTSPACE_DISMISS", true,
             "Adds a menu option to dismiss the current Enhanced Smartspace card.");
 
+    /**
+     * Enables region sampling for text color: Needs system health assessment before turning on
+     */
+    public static final BooleanFlag ENABLE_REGION_SAMPLING =  getDebugFlag(
+            "ENABLE_REGION_SAMPLING", false,
+            "Enable region sampling to determine color of text on screen.");
+
     public static final BooleanFlag ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS =
             getDebugFlag(
             "ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS", false,
@@ -296,6 +303,11 @@ public final class FeatureFlags {
     public static final BooleanFlag SECONDARY_DRAG_N_DROP_TO_PIN = getDebugFlag(
             "SECONDARY_DRAG_N_DROP_TO_PIN", false,
             "Enable dragging and dropping to pin apps within secondary display");
+
+    // TODO(b/241843710): Deep Shortcut Icons can be rendered, but do not persist.
+    public static final BooleanFlag ENABLE_SECONDARY_DEEP_SHORTCUTS = getDebugFlag(
+            "ENABLE_SECONDARY_DEEP_SHORTCUTS", false,
+            "Enable deep shortcut pinning within secondary display");
 
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
