@@ -168,7 +168,7 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"As apps de trabalho estão desativadas. As apps de trabalho não podem enviar-lhe notificações, utilizar a bateria ou aceder à sua localização"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"As apps de trabalho têm um emblema e estão visíveis para o seu administrador de TI"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Colocar apps de trabalho em pausa"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Pausar apps de trabalho"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Ativar apps de trabalho"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtrar"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Pesquise no telemóvel"</string>
