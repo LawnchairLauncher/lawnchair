@@ -15,15 +15,17 @@
  */
 package com.android.quickstep.util;
 
-import android.content.Context;
-
-import com.android.launcher3.logging.EventLogArray;
-import com.android.launcher3.util.MainThreadInitializedObject;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Random;
 
 /**
  * A log to keep track of the active gesture.
  */
-public class ActiveGestureLog extends EventLogArray {
+public class ActiveGestureLog {
 
     public static final ActiveGestureLog INSTANCE = new ActiveGestureLog();
 
@@ -33,7 +35,121 @@ public class ActiveGestureLog extends EventLogArray {
      */
     public static final String INTENT_EXTRA_LOG_TRACE_ID = "INTENT_EXTRA_LOG_TRACE_ID";
 
+    private static final int TYPE_ONE_OFF = 0;
+    private static final int TYPE_FLOAT = 1;
+    private static final int TYPE_INTEGER = 2;
+    private static final int TYPE_BOOL_TRUE = 3;
+    private static final int TYPE_BOOL_FALSE = 4;
+
+    private final String name;
+    private final EventEntry[] logs;
+    private int nextIndex;
+    private int mLogId;
+
     private ActiveGestureLog() {
-        super("touch_interaction_log", 40);
+        this.name = "touch_interaction_log";
+        this.logs = new EventEntry[40];
+        this.nextIndex = 0;
+    }
+
+    public void addLog(String event) {
+        addLog(TYPE_ONE_OFF, event, 0);
+    }
+
+    public void addLog(String event, int extras) {
+        addLog(TYPE_INTEGER, event, extras);
+    }
+
+    public void addLog(String event, boolean extras) {
+        addLog(extras ? TYPE_BOOL_TRUE : TYPE_BOOL_FALSE, event, 0);
+    }
+
+    private void addLog(int type, String event, float extras) {
+        // Merge the logs if it's a duplicate
+        int last = (nextIndex + logs.length - 1) % logs.length;
+        int secondLast = (nextIndex + logs.length - 2) % logs.length;
+        if (isEntrySame(logs[last], type, event) && isEntrySame(logs[secondLast], type, event)) {
+            logs[last].update(type, event, extras, mLogId);
+            logs[secondLast].duplicateCount++;
+            return;
+        }
+
+        if (logs[nextIndex] == null) {
+            logs[nextIndex] = new EventEntry();
+        }
+        logs[nextIndex].update(type, event, extras, mLogId);
+        nextIndex = (nextIndex + 1) % logs.length;
+    }
+
+    public void clear() {
+        Arrays.setAll(logs, (i) -> null);
+    }
+
+    public void dump(String prefix, PrintWriter writer) {
+        writer.println(prefix + "EventLog (" + name + ") history:");
+        SimpleDateFormat sdf = new SimpleDateFormat("  HH:mm:ss.SSSZ  ", Locale.US);
+        Date date = new Date();
+
+        for (int i = 0; i < logs.length; i++) {
+            EventEntry log = logs[(nextIndex + logs.length - i - 1) % logs.length];
+            if (log == null) {
+                continue;
+            }
+            date.setTime(log.time);
+
+            StringBuilder msg = new StringBuilder(prefix).append(sdf.format(date))
+                    .append(log.event);
+            switch (log.type) {
+                case TYPE_BOOL_FALSE:
+                    msg.append(": false");
+                    break;
+                case TYPE_BOOL_TRUE:
+                    msg.append(": true");
+                    break;
+                case TYPE_FLOAT:
+                    msg.append(": ").append(log.extras);
+                    break;
+                case TYPE_INTEGER:
+                    msg.append(": ").append((int) log.extras);
+                    break;
+                default: // fall out
+            }
+            if (log.duplicateCount > 0) {
+                msg.append(" & ").append(log.duplicateCount).append(" similar events");
+            }
+            msg.append(" traceId: ").append(log.traceId);
+            writer.println(msg);
+        }
+    }
+
+    /** Returns a 3 digit random number between 100-999 */
+    public int generateAndSetLogId() {
+        Random r = new Random();
+        mLogId = r.nextInt(900) + 100;
+        return mLogId;
+    }
+
+    private boolean isEntrySame(EventEntry entry, int type, String event) {
+        return entry != null && entry.type == type && entry.event.equals(event);
+    }
+
+    /** A single event entry. */
+    private static class EventEntry {
+
+        private int type;
+        private String event;
+        private float extras;
+        private long time;
+        private int duplicateCount;
+        private int traceId;
+
+        public void update(int type, String event, float extras, int traceId) {
+            this.type = type;
+            this.event = event;
+            this.extras = extras;
+            this.traceId = traceId;
+            time = System.currentTimeMillis();
+            duplicateCount = 0;
+        }
     }
 }
