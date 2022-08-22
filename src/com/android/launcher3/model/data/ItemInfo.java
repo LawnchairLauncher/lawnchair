@@ -39,8 +39,10 @@ import static com.android.launcher3.shortcuts.ShortcutKey.EXTRA_SHORTCUT_ID;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Process;
 import android.os.UserHandle;
+import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -61,6 +63,7 @@ import com.android.launcher3.logger.LauncherAtom.WallpapersContainer;
 import com.android.launcher3.logger.LauncherAtomExtensions.ExtendedContainers;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.util.ContentWriter;
+import com.android.launcher3.util.SettingsCache;
 
 import java.util.Optional;
 
@@ -73,6 +76,9 @@ public class ItemInfo {
     public static final int NO_ID = -1;
     // An id that doesn't match any item, including predicted apps with have an id=NO_ID
     public static final int NO_MATCHING_ID = Integer.MIN_VALUE;
+
+    /** Hidden field Settings.Secure.NAV_BAR_KIDS_MODE */
+    private static final Uri NAV_BAR_KIDS_MODE = Settings.Secure.getUriFor("nav_bar_kids_mode");
 
     /**
      * The id in the settings database for this item
@@ -390,6 +396,9 @@ public class ItemInfo {
     protected LauncherAtom.ItemInfo.Builder getDefaultItemInfoBuilder() {
         LauncherAtom.ItemInfo.Builder itemBuilder = LauncherAtom.ItemInfo.newBuilder();
         itemBuilder.setIsWork(!Process.myUserHandle().equals(user));
+        SettingsCache settingsCache = SettingsCache.INSTANCE.getNoCreate();
+        boolean isKidsMode = settingsCache != null && settingsCache.getValue(NAV_BAR_KIDS_MODE, 0);
+        itemBuilder.setIsKidsMode(isKidsMode);
         itemBuilder.setRank(rank);
         return itemBuilder;
     }
