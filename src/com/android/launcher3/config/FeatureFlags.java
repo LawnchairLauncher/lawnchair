@@ -273,7 +273,7 @@ public final class FeatureFlags {
             "ENABLE_ONE_SEARCH_MOTION", true, "Enables animations in OneSearch.");
 
     public static final BooleanFlag ENABLE_KEYBOARD_TRANSITION_SYNC = new DeviceFlag(
-            "ENABLE_KEYBOARD_TRANSITION_SYNC", false,
+            "ENABLE_KEYBOARD_TRANSITION_SYNC", IS_STUDIO_BUILD,
             "Enable option to synchronize the keyboard open and close animations when transitioning"
                     + " between home and all apps");
 
