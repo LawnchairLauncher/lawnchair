@@ -30,7 +30,6 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderNameInfos;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logger.LauncherAtom.Attribute;
@@ -319,12 +318,6 @@ public class FolderInfo extends ItemInfo {
     public LauncherAtom.ToState getToLabelState() {
         if (title == null) {
             return LauncherAtom.ToState.TO_STATE_UNSPECIFIED;
-        }
-
-        if (!FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
-            return title.length() > 0
-                    ? LauncherAtom.ToState.TO_CUSTOM_WITH_SUGGESTIONS_DISABLED
-                    : LauncherAtom.ToState.TO_EMPTY_WITH_SUGGESTIONS_DISABLED;
         }
 
         // TODO: if suggestedFolderNames is null then it infrastructure issue, not

@@ -51,7 +51,6 @@ import androidx.core.util.Pair;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
 import com.android.launcher3.icons.cache.BaseIconCache;
 import com.android.launcher3.icons.cache.CachingLogic;
@@ -231,14 +230,8 @@ public class IconCache extends BaseIconCache {
      */
     public <T extends ItemInfoWithIcon> void getShortcutIcon(T info, ShortcutInfo si,
             @NonNull Predicate<T> fallbackIconCheck) {
-        BitmapInfo bitmapInfo;
-        if (FeatureFlags.ENABLE_DEEP_SHORTCUT_ICON_CACHE.get()) {
-            bitmapInfo = cacheLocked(ShortcutKey.fromInfo(si).componentName, si.getUserHandle(),
-                    () -> si, mShortcutCachingLogic, false, false).bitmap;
-        } else {
-            // If caching is disabled, load the full icon
-            bitmapInfo = mShortcutCachingLogic.loadIcon(mContext, si);
-        }
+        BitmapInfo bitmapInfo = cacheLocked(ShortcutKey.fromInfo(si).componentName,
+                si.getUserHandle(), () -> si, mShortcutCachingLogic, false, false).bitmap;
         if (bitmapInfo.isNullOrLowRes()) {
             bitmapInfo = getDefaultIcon(si.getUserHandle());
         }
