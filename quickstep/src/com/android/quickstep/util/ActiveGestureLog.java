@@ -15,11 +15,16 @@
  */
 package com.android.quickstep.util;
 
+import androidx.annotation.NonNull;
+
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -40,6 +45,7 @@ public class ActiveGestureLog {
     private static final int TYPE_INTEGER = 2;
     private static final int TYPE_BOOL_TRUE = 3;
     private static final int TYPE_BOOL_FALSE = 4;
+    private static final int TYPE_INPUT_CONSUMER = 5;
 
     private final String name;
     private final EventEntry[] logs;
@@ -53,23 +59,29 @@ public class ActiveGestureLog {
     }
 
     public void addLog(String event) {
-        addLog(TYPE_ONE_OFF, event, 0);
+        addLog(TYPE_ONE_OFF, event, 0, CompoundString.NO_OP);
     }
 
     public void addLog(String event, int extras) {
-        addLog(TYPE_INTEGER, event, extras);
+        addLog(TYPE_INTEGER, event, extras, CompoundString.NO_OP);
     }
 
     public void addLog(String event, boolean extras) {
-        addLog(extras ? TYPE_BOOL_TRUE : TYPE_BOOL_FALSE, event, 0);
+        addLog(extras ? TYPE_BOOL_TRUE : TYPE_BOOL_FALSE, event, 0, CompoundString.NO_OP);
     }
 
-    private void addLog(int type, String event, float extras) {
+    public void addLog(CompoundString compoundString) {
+        addLog(TYPE_INPUT_CONSUMER, "", 0, compoundString);
+    }
+
+    private void addLog(
+            int type, String event, float extras, @NonNull CompoundString compoundString) {
         // Merge the logs if it's a duplicate
         int last = (nextIndex + logs.length - 1) % logs.length;
         int secondLast = (nextIndex + logs.length - 2) % logs.length;
-        if (isEntrySame(logs[last], type, event) && isEntrySame(logs[secondLast], type, event)) {
-            logs[last].update(type, event, extras, mLogId);
+        if (isEntrySame(logs[last], type, event, compoundString)
+                && isEntrySame(logs[secondLast], type, event, compoundString)) {
+            logs[last].update(type, event, extras, compoundString, mLogId);
             logs[secondLast].duplicateCount++;
             return;
         }
@@ -77,7 +89,7 @@ public class ActiveGestureLog {
         if (logs[nextIndex] == null) {
             logs[nextIndex] = new EventEntry();
         }
-        logs[nextIndex].update(type, event, extras, mLogId);
+        logs[nextIndex].update(type, event, extras, compoundString, mLogId);
         nextIndex = (nextIndex + 1) % logs.length;
     }
 
@@ -112,6 +124,9 @@ public class ActiveGestureLog {
                 case TYPE_INTEGER:
                     msg.append(": ").append((int) log.extras);
                     break;
+                case TYPE_INPUT_CONSUMER:
+                    msg.append(log.mCompoundString);
+                    break;
                 default: // fall out
             }
             if (log.duplicateCount > 0) {
@@ -129,8 +144,12 @@ public class ActiveGestureLog {
         return mLogId;
     }
 
-    private boolean isEntrySame(EventEntry entry, int type, String event) {
-        return entry != null && entry.type == type && entry.event.equals(event);
+    private boolean isEntrySame(
+            EventEntry entry, int type, String event, CompoundString compoundString) {
+        return entry != null
+                && entry.type == type
+                && entry.event.equals(event)
+                && entry.mCompoundString.equals(compoundString);
     }
 
     /** A single event entry. */
@@ -139,17 +158,93 @@ public class ActiveGestureLog {
         private int type;
         private String event;
         private float extras;
+        @NonNull private CompoundString mCompoundString;
         private long time;
         private int duplicateCount;
         private int traceId;
 
-        public void update(int type, String event, float extras, int traceId) {
+        public void update(
+                int type,
+                String event,
+                float extras,
+                @NonNull CompoundString compoundString,
+                int traceId) {
             this.type = type;
             this.event = event;
             this.extras = extras;
+            this.mCompoundString = compoundString;
             this.traceId = traceId;
             time = System.currentTimeMillis();
             duplicateCount = 0;
+        }
+    }
+
+    /** A buildable string stored as an array for memory efficiency. */
+    public static class CompoundString {
+
+        public static final CompoundString NO_OP = new CompoundString();
+
+        private final List<String> mSubstrings;
+
+        private final boolean mIsNoOp;
+
+        private CompoundString() {
+            this(null);
+        }
+
+        public CompoundString(String substring) {
+            mIsNoOp = substring == null;
+            if (mIsNoOp) {
+                mSubstrings = null;
+                return;
+            }
+            mSubstrings = new ArrayList<>();
+            mSubstrings.add(substring);
+        }
+
+        public CompoundString append(CompoundString substring) {
+            if (mIsNoOp) {
+                return this;
+            }
+            mSubstrings.addAll(substring.mSubstrings);
+
+            return this;
+        }
+
+        public CompoundString append(String substring) {
+            if (mIsNoOp) {
+                return this;
+            }
+            mSubstrings.add(substring);
+
+            return this;
+        }
+
+        @Override
+        public String toString() {
+            if (mIsNoOp) {
+                return "ERROR: cannot use No-Op compound string";
+            }
+            StringBuilder sb = new StringBuilder();
+            for (String substring : mSubstrings) {
+                sb.append(substring);
+            }
+
+            return sb.toString();
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(mIsNoOp, mSubstrings);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof CompoundString)) {
+                return false;
+            }
+            CompoundString other = (CompoundString) obj;
+            return mIsNoOp && other.mIsNoOp && Objects.equals(mSubstrings, other.mSubstrings);
         }
     }
 }
