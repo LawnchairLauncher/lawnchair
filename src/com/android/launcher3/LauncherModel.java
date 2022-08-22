@@ -457,9 +457,6 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
 
     @Override
     public void onSessionFailure(String packageName, UserHandle user) {
-        if (!FeatureFlags.PROMISE_APPS_NEW_INSTALLS.get()) {
-            return;
-        }
         enqueueModelUpdateTask(new BaseModelUpdateTask() {
             @Override
             public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {

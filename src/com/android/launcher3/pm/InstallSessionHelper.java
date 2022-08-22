@@ -225,14 +225,12 @@ public class InstallSessionHelper {
     void tryQueuePromiseAppIcon(PackageInstaller.SessionInfo sessionInfo) {
         if (TestProtocol.sDebugTracing) {
             Log.d(TestProtocol.MISSING_PROMISE_ICON, LOG + " tryQueuePromiseAppIcon"
-                    + ", FeatureFlags=" + FeatureFlags.PROMISE_APPS_NEW_INSTALLS.get()
                     + ", SessionCommitReceiveEnabled" + SessionCommitReceiver.isEnabled(mAppContext)
                     + ", verifySessionInfo(sessionInfo)=" + verifySessionInfo(sessionInfo)
                     + ", !promiseIconAdded=" + (sessionInfo != null
                     && !promiseIconAddedForId(sessionInfo.getSessionId())));
         }
-        if (FeatureFlags.PROMISE_APPS_NEW_INSTALLS.get()
-                && SessionCommitReceiver.isEnabled(mAppContext)
+        if (SessionCommitReceiver.isEnabled(mAppContext)
                 && verifySessionInfo(sessionInfo)
                 && !promiseIconAddedForId(sessionInfo.getSessionId())) {
             FileLog.d(LOG, "Adding package name to install queue: "
