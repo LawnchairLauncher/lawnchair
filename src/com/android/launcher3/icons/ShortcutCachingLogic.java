@@ -31,7 +31,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.cache.CachingLogic;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.Themes;
@@ -78,7 +77,7 @@ public class ShortcutCachingLogic implements CachingLogic<ShortcutInfo> {
 
     @Override
     public long getLastUpdatedTime(ShortcutInfo shortcutInfo, PackageInfo info) {
-        if (shortcutInfo == null || !FeatureFlags.ENABLE_DEEP_SHORTCUT_ICON_CACHE.get()) {
+        if (shortcutInfo == null) {
             return info.lastUpdateTime;
         }
         return Math.max(shortcutInfo.getLastChangedTimestamp(), info.lastUpdateTime);

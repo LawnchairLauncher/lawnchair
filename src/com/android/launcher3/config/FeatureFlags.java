@@ -67,11 +67,6 @@ public final class FeatureFlags {
     public static final BooleanFlag PROMISE_APPS_IN_ALL_APPS = getDebugFlag(
             "PROMISE_APPS_IN_ALL_APPS", false, "Add promise icon in all-apps");
 
-    // When enabled a promise icon is added to the home screen when install session is active.
-    public static final BooleanFlag PROMISE_APPS_NEW_INSTALLS = getDebugFlag(
-            "PROMISE_APPS_NEW_INSTALLS", true,
-            "Adds a promise icon to the home screen for new install sessions.");
-
     // TODO: b/206508141: Long pressing on some icons on home screen cause launcher to crash.
     public static final BooleanFlag ENABLE_LOCAL_COLOR_POPUPS = getDebugFlag(
             "ENABLE_LOCAL_COLOR_POPUPS", false, "Enable local color extraction for popups.");
@@ -81,10 +76,6 @@ public final class FeatureFlags {
 
     public static final BooleanFlag ENABLE_QUICKSTEP_LIVE_TILE = getDebugFlag(
             "ENABLE_QUICKSTEP_LIVE_TILE", true, "Enable live tile in Quickstep overview");
-
-    public static final BooleanFlag ENABLE_QUICKSTEP_WIDGET_APP_START = getDebugFlag(
-            "ENABLE_QUICKSTEP_WIDGET_APP_START", true,
-            "Enable Quickstep animation when launching activities from an app widget");
 
     public static final BooleanFlag ENABLE_DEVICE_SEARCH = new DeviceFlag(
             "ENABLE_DEVICE_SEARCH", true, "Allows on device search in all apps");
@@ -116,29 +107,13 @@ public final class FeatureFlags {
             "ENABLE_PEOPLE_TILE_PREVIEW", false,
             "Experimental: Shows conversation shortcuts on home screen as search results");
 
-    public static final BooleanFlag FOLDER_NAME_SUGGEST = new DeviceFlag(
-            "FOLDER_NAME_SUGGEST", true,
-            "Suggests folder names instead of blank text.");
-
     public static final BooleanFlag FOLDER_NAME_MAJORITY_RANKING = getDebugFlag(
             "FOLDER_NAME_MAJORITY_RANKING", true,
             "Suggests folder names based on majority based ranking.");
 
-    public static final BooleanFlag ENABLE_PREDICTION_DISMISS = getDebugFlag(
-            "ENABLE_PREDICTION_DISMISS", true, "Allow option to dimiss apps from predicted list");
-
     public static final BooleanFlag ASSISTANT_GIVES_LAUNCHER_FOCUS = getDebugFlag(
             "ASSISTANT_GIVES_LAUNCHER_FOCUS", false,
             "Allow Launcher to handle nav bar gestures while Assistant is running over it");
-
-    public static final BooleanFlag HOTSEAT_MIGRATE_TO_FOLDER = getDebugFlag(
-            "HOTSEAT_MIGRATE_TO_FOLDER", false, "Should move hotseat items into a folder");
-
-    public static final BooleanFlag ENABLE_DEEP_SHORTCUT_ICON_CACHE = getDebugFlag(
-            "ENABLE_DEEP_SHORTCUT_ICON_CACHE", true, "R/W deep shortcut in IconCache");
-
-    public static final BooleanFlag ENABLE_THEMED_ICONS = getDebugFlag(
-            "ENABLE_THEMED_ICONS", true, "Enable themed icons on workspace");
 
     public static final BooleanFlag ENABLE_BULK_WORKSPACE_ICON_LOADING = getDebugFlag(
             "ENABLE_BULK_WORKSPACE_ICON_LOADING",
@@ -181,10 +156,6 @@ public final class FeatureFlags {
             "ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS", false,
             "Always use hardware optimization for folder animations.");
 
-    public static final BooleanFlag ENABLE_ALL_APPS_EDU = getDebugFlag(
-            "ENABLE_ALL_APPS_EDU", true,
-            "Shows user a tutorial on how to get to All Apps after X amount of attempts.");
-
     public static final BooleanFlag SEPARATE_RECENTS_ACTIVITY = getDebugFlag(
             "SEPARATE_RECENTS_ACTIVITY", false,
             "Uses a separate recents activity instead of using the integrated recents+Launcher UI");
@@ -192,10 +163,6 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_MINIMAL_DEVICE = getDebugFlag(
             "ENABLE_MINIMAL_DEVICE", false,
             "Allow user to toggle minimal device mode in launcher.");
-
-    public static final BooleanFlag EXPANDED_SMARTSPACE = new DeviceFlag(
-            "EXPANDED_SMARTSPACE", false, "Expands smartspace height to two rows. "
-              + "Any apps occupying the first row will be removed from workspace.");
 
     // TODO: b/172467144 Remove ENABLE_LAUNCHER_ACTIVITY_THEME_CROSSFADE feature flag.
     public static final BooleanFlag ENABLE_LAUNCHER_ACTIVITY_THEME_CROSSFADE = new DeviceFlag(
