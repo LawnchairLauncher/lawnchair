@@ -87,6 +87,12 @@ private val product = listOf(
         socialUrl = "https://codebucket.de",
     ),
     TeamMember(
+        name = "Goooler",
+        role = Role.Development,
+        photoUrl = "https://avatars.githubusercontent.com/u/10363352",
+        socialUrl = "https://github.com/Goooler",
+    ),
+    TeamMember(
         name = "Harsh Shandilya",
         role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/13348378",
