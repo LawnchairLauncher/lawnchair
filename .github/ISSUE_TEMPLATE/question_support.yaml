@@ -6,11 +6,10 @@ body:
   - type: markdown
     attributes:
       value: |
-        Note: We highly recommend posting your question/support request on either [Telegram](https://t.co/qYev4OkvpT) or [Discord](https://discord.com/invite/3x8qNWxgGZ).
+        Note: We highly recommend posting your question/support request on either [Telegram](https://t.co/qYev4OkvpT) or [Discord](https://discord.com/invite/3x8qNWxgGZ). You'll recieve a quicker reply there.
 
-        Before posting any question or ask for support, first read the project's README.md file and
-        the WIKI pages or any other additional documentation that might be listed
-        in the project's README.md file.
+        Before posting any question or ask for support, first read the README.md file and
+        the [FAQ](https://lawnchair.app/faq) to see if you're question is listed there.
         
   - type: textarea
     id: question

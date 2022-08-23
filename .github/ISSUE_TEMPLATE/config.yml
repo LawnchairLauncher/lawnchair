@@ -1,1 +1,7 @@
 blank_issues_enabled: false
+  - name: Telegram support group
+    url: https://t.me/lccommunity
+    about: We recommend to go to this place if you wish to ask a question and want a quicker reply.
+  - name: Discord server
+    url: https://discord.com/invite/3x8qNWxgGZ
+    about: You can also ask questions here if you use Discord instead of Telegram.
