@@ -18,6 +18,8 @@ package com.android.launcher3.ui;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
+import android.platform.test.annotations.IwTest;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertEquals;
@@ -203,6 +205,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 false /* tapRight */);
     }
 
+    @IwTest(focusArea="launcher")
     @Test
     @ScreenRecord // b/202433017
     public void testWorkspace() throws Exception {
@@ -330,6 +333,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         }
     }
 
+    @IwTest(focusArea="launcher")
     @Test
     @PortraitLandscape
     public void testDragAppIcon() throws Throwable {
