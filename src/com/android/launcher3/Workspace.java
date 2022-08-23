@@ -152,10 +152,6 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     public static final int DEFAULT_PAGE = 0;
 
-    private static final int DEFAULT_SMARTSPACE_HEIGHT = 1;
-
-    private static final int EXPANDED_SMARTSPACE_HEIGHT = 2;
-
     private LayoutTransition mLayoutTransition;
     @Thunk final WallpaperManager mWallpaperManager;
 
@@ -562,10 +558,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     .inflate(R.layout.search_container_workspace, firstPage, false);
         }
 
-        int cellVSpan = FeatureFlags.EXPANDED_SMARTSPACE.get()
-                ? EXPANDED_SMARTSPACE_HEIGHT : DEFAULT_SMARTSPACE_HEIGHT;
         int cellHSpan = mLauncher.getDeviceProfile().inv.numSearchContainerColumns;
-        CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, cellHSpan, cellVSpan);
+        CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, cellHSpan, 1);
         lp.canReorder = false;
         if (!firstPage.addViewToCellLayout(mQsb, 0, R.id.search_container_workspace, lp, true)) {
             Log.e(TAG, "Failed to add to item at (0, 0) to CellLayout");
