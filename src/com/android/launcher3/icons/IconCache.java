@@ -118,15 +118,16 @@ public class IconCache extends BaseIconCache {
     }
 
     @Override
-    protected long getSerialNumberForUser(UserHandle user) {
+    protected long getSerialNumberForUser(@NonNull UserHandle user) {
         return mUserManager.getSerialNumberForUser(user);
     }
 
     @Override
-    protected boolean isInstantApp(ApplicationInfo info) {
+    protected boolean isInstantApp(@NonNull ApplicationInfo info) {
         return mInstantAppResolver.isInstantApp(info);
     }
 
+    @NonNull
     @Override
     public BaseIconFactory getIconFactory() {
         return LauncherIcons.obtain(mContext);
@@ -135,7 +136,8 @@ public class IconCache extends BaseIconCache {
     /**
      * Updates the entries related to the given package in memory and persistent DB.
      */
-    public synchronized void updateIconsForPkg(String packageName, UserHandle user) {
+    public synchronized void updateIconsForPkg(@NonNull final String packageName,
+            @NonNull final UserHandle user) {
         removeIconsForPkg(packageName, user);
         try {
             PackageInfo info = mPackageManager.getPackageInfo(packageName,
@@ -471,7 +473,7 @@ public class IconCache extends BaseIconCache {
      * Fill in {@param infoInOut} with the corresponding icon and label.
      */
     public synchronized void getTitleAndIconForApp(
-            PackageItemInfo infoInOut, boolean useLowResIcon) {
+            @NonNull final PackageItemInfo infoInOut, final boolean useLowResIcon) {
         CacheEntry entry = getEntryForPackageLocked(
                 infoInOut.packageName, infoInOut.user, useLowResIcon);
         applyCacheEntry(entry, infoInOut);
@@ -510,10 +512,16 @@ public class IconCache extends BaseIconCache {
         return bitmap.withFlags(getUserFlagOpLocked(user));
     }
 
-    protected void applyCacheEntry(CacheEntry entry, ItemInfoWithIcon info) {
+    protected void applyCacheEntry(@NonNull final CacheEntry entry,
+            @NonNull final ItemInfoWithIcon info) {
         info.title = Utilities.trim(entry.title);
         info.contentDescription = entry.contentDescription;
-        info.bitmap = (entry.bitmap == null) ? getDefaultIcon(info.user) : entry.bitmap;
+        info.bitmap = entry.bitmap;
+        if (entry.bitmap == null) {
+            // TODO: entry.bitmap can never be null, so this should not happen at all.
+            Log.wtf(TAG, "Cannot find bitmap from the cache, default icon was loaded.");
+            info.bitmap = getDefaultIcon(info.user);
+        }
     }
 
     public Drawable getFullResIcon(LauncherActivityInfo info) {
@@ -526,6 +534,7 @@ public class IconCache extends BaseIconCache {
     }
 
     @Override
+    @NonNull
     protected String getIconSystemState(String packageName) {
         return mIconProvider.getSystemStateForPackage(mSystemState, packageName);
     }
