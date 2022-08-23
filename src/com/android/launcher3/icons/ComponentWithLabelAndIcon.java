@@ -41,7 +41,8 @@ public interface ComponentWithLabelAndIcon extends ComponentWithLabel {
 
         @NonNull
         @Override
-        public BitmapInfo loadIcon(Context context, ComponentWithLabelAndIcon object) {
+        public BitmapInfo loadIcon(@NonNull Context context,
+                @NonNull ComponentWithLabelAndIcon object) {
             Drawable d = object.getFullResIcon(LauncherAppState.getInstance(context)
                     .getIconCache());
             if (d == null) {
