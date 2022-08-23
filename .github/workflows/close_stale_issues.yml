@@ -19,4 +19,5 @@ jobs:
           days-before-pr-close: 14
           exempt-all-assignees: true
           exempt-all-milestones: true
+          close-issue-reason: not_planned
           operations-per-run: 1000
