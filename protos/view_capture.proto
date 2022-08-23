@@ -23,6 +23,7 @@ option java_outer_classname = "ViewCaptureData";
 message ExportedData {
 
   repeated FrameData frameData = 1;
+  repeated string classname = 2;
 }
 
 message FrameData {
@@ -31,26 +32,28 @@ message FrameData {
 }
 
 message ViewNode {
-  optional string classname = 1;
-  optional string id = 2;
-  optional int32 left = 3;
-  optional int32 top = 4;
-  optional int32 width = 5;
-  optional int32 height = 6;
-  optional int32 scrollX = 7;
-  optional int32 scrollY = 8;
+  optional int32 classname_index = 1;
+  optional int32 hashcode = 2;
 
-  optional float translationX = 9;
-  optional float translationY = 10;
-  optional float scaleX = 11 [default = 1];
-  optional float scaleY = 12 [default = 1];
-  optional float alpha = 13 [default = 1];
+  repeated ViewNode children = 3;
 
-  optional bool willNotDraw = 14;
-  optional bool clipChildren = 15;
-  optional int32 visibility = 16;
+  optional string id = 4;
+  optional int32 left = 5;
+  optional int32 top = 6;
+  optional int32 width = 7;
+  optional int32 height = 8;
+  optional int32 scrollX = 9;
+  optional int32 scrollY = 10;
 
-  repeated ViewNode children = 17;
+  optional float translationX = 11;
+  optional float translationY = 12;
+  optional float scaleX = 13 [default = 1];
+  optional float scaleY = 14 [default = 1];
+  optional float alpha = 15 [default = 1];
 
-  optional float elevation = 18;
+  optional bool willNotDraw = 16;
+  optional bool clipChildren = 17;
+  optional int32 visibility = 18;
+
+  optional float elevation = 19;
 }
