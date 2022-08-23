@@ -527,6 +527,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     @Test
+    @ScreenRecord // b/242163245
     public void getIconsPosition_afterIconRemoved_notContained() throws IOException {
         Point[] gridPositions = getCornersAndCenterPositions();
         createShortcutIfNotExist(STORE_APP_NAME, gridPositions[0]);
