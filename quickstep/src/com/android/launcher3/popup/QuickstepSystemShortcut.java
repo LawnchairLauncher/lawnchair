@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.UserHandle;
 import android.util.Log;
 import android.view.View;
 
@@ -71,7 +72,7 @@ public interface QuickstepSystemShortcut {
             RecentsView recentsView = mTarget.getOverviewPanel();
             recentsView.initiateSplitSelect(
                     new SplitSelectSource(mOriginalView, new BitmapDrawable(bitmap), intent,
-                            mPosition));
+                            mPosition, mItemInfo.user));
         }
     }
 
@@ -81,13 +82,15 @@ public interface QuickstepSystemShortcut {
         public final Drawable drawable;
         public final Intent intent;
         public final SplitPositionOption position;
+        public final UserHandle user;
 
         public SplitSelectSource(View view, Drawable drawable, Intent intent,
-                SplitPositionOption position) {
+                SplitPositionOption position, UserHandle user) {
             this.view = view;
             this.drawable = drawable;
             this.intent = intent;
             this.position = position;
+            this.user = user;
         }
     }
 }
