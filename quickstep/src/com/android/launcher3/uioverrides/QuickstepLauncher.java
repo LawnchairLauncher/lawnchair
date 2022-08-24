@@ -26,7 +26,6 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_WIDGET_APP_START;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.testing.shared.TestProtocol.HINT_STATE_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.HINT_STATE_TWO_BUTTON_ORDINAL;
@@ -339,9 +338,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
 
     protected LauncherAppWidgetHost createAppWidgetHost() {
         LauncherAppWidgetHost appWidgetHost = super.createAppWidgetHost();
-        if (ENABLE_QUICKSTEP_WIDGET_APP_START.get()) {
-            appWidgetHost.setInteractionHandler(new QuickstepInteractionHandler(this));
-        }
+        appWidgetHost.setInteractionHandler(new QuickstepInteractionHandler(this));
         return appWidgetHost;
     }
 

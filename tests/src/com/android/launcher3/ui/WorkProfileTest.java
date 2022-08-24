@@ -21,7 +21,7 @@ import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
+import static org.junit.Assume.assumeTrue;
 import android.util.Log;
 import android.view.View;
 
@@ -34,6 +34,7 @@ import com.android.launcher3.allapps.WorkEduCard;
 import com.android.launcher3.allapps.WorkPausedCard;
 import com.android.launcher3.allapps.WorkProfileManager;
 import com.android.launcher3.tapl.LauncherInstrumentation;
+import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 
 import org.junit.After;
 import org.junit.Before;
@@ -47,6 +48,7 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
     private static final int WORK_PAGE = ActivityAllAppsContainerView.AdapterHolder.WORK;
 
     private int mProfileUserId;
+    private boolean mWorkProfileSetupSuccessful;
 
     @Before
     @Override
@@ -56,7 +58,13 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
                 mDevice.executeShellCommand(
                         "pm create-user --profileOf 0 --managed TestProfile");
         Log.d("b/203817455", "pm create-user; output: " + output);
-        assertTrue("Failed to create work profile", output.startsWith("Success"));
+
+        if (output.startsWith("Success")){
+            assertTrue("Failed to create work profile", output.startsWith("Success"));
+            mWorkProfileSetupSuccessful = true;
+        } else {
+            return; // no need to setup launcher since all tests will skip.
+        }
 
         String[] tokens = output.split("\\s+");
         mProfileUserId = Integer.parseInt(tokens[tokens.length - 1]);
@@ -98,7 +106,9 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @ScreenRecord // b/242163855
     public void workTabExists() {
+        assumeTrue(mWorkProfileSetupSuccessful);
         waitForLauncherCondition("Personal tab is missing",
                 launcher -> launcher.getAppsView().isPersonalTabVisible(),
                 LauncherInstrumentation.WAIT_TIME_MS);
@@ -108,9 +118,10 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @ScreenRecord // b/242163822
     public void toggleWorks() {
+        assumeTrue(mWorkProfileSetupSuccessful);
         waitForWorkTabSetup();
-
         executeOnLauncher(launcher -> {
             AllAppsPagedView pagedView = (AllAppsPagedView) launcher.getAppsView().getContentView();
             pagedView.setCurrentPage(WORK_PAGE);
@@ -152,6 +163,7 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
 
     @Test
     public void testEdu() {
+        assumeTrue(mWorkProfileSetupSuccessful);
         waitForWorkTabSetup();
         executeOnLauncher(l -> {
             l.getSharedPrefs().edit().putInt(WorkProfileManager.KEY_WORK_EDU_STEP, 0).commit();

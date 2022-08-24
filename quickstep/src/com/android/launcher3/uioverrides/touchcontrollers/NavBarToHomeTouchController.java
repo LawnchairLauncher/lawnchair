@@ -25,7 +25,6 @@ import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PULL_BACK_TRANSLATION;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_ALL_APPS_EDU;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_GESTURE;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
@@ -106,7 +105,7 @@ public class NavBarToHomeTouchController implements TouchController,
         if (mStartState.overviewUi || mStartState == ALL_APPS) {
             return true;
         }
-        int typeToClose = ENABLE_ALL_APPS_EDU.get() ? TYPE_ALL & ~TYPE_ALL_APPS_EDU : TYPE_ALL;
+        int typeToClose = TYPE_ALL & ~TYPE_ALL_APPS_EDU;
         if (AbstractFloatingView.getTopOpenViewWithType(mLauncher, typeToClose) != null) {
             return true;
         }
