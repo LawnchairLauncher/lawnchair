@@ -16,7 +16,7 @@
 
 package com.android.launcher3.taskbar;
 
-import com.android.launcher3.BaseQuickstepLauncher;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 
 /**
  * A data source which integrates with a Launcher instance, used specifically for a
@@ -24,9 +24,9 @@ import com.android.launcher3.BaseQuickstepLauncher;
  */
 public class DesktopTaskbarUIController extends TaskbarUIController {
 
-    private final BaseQuickstepLauncher mLauncher;
+    private final QuickstepLauncher mLauncher;
 
-    public DesktopTaskbarUIController(BaseQuickstepLauncher launcher) {
+    public DesktopTaskbarUIController(QuickstepLauncher launcher) {
         mLauncher = launcher;
     }
 

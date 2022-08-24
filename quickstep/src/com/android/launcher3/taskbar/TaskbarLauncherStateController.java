@@ -31,13 +31,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.statemanager.StateManager;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.RecentsAnimationCallbacks;
@@ -78,7 +78,7 @@ import java.util.function.Supplier;
     private TaskbarControllers mControllers;
     private AnimatedFloat mTaskbarBackgroundAlpha;
     private MultiValueAlpha.AlphaProperty mIconAlphaForHome;
-    private BaseQuickstepLauncher mLauncher;
+    private QuickstepLauncher mLauncher;
 
     private Integer mPrevState;
     private int mState;
@@ -132,7 +132,7 @@ import java.util.function.Supplier;
                 }
             };
 
-    public void init(TaskbarControllers controllers, BaseQuickstepLauncher launcher) {
+    public void init(TaskbarControllers controllers, QuickstepLauncher launcher) {
         mCanSyncViews = false;
 
         mControllers = controllers;

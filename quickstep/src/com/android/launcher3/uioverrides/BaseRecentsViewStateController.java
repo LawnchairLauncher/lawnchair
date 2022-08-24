@@ -42,7 +42,6 @@ import android.util.FloatProperty;
 
 import androidx.annotation.NonNull;
 
-import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
@@ -61,9 +60,9 @@ import com.android.quickstep.views.RecentsView;
 public abstract class BaseRecentsViewStateController<T extends RecentsView>
         implements StateHandler<LauncherState> {
     protected final T mRecentsView;
-    protected final BaseQuickstepLauncher mLauncher;
+    protected final QuickstepLauncher mLauncher;
 
-    public BaseRecentsViewStateController(@NonNull BaseQuickstepLauncher launcher) {
+    public BaseRecentsViewStateController(@NonNull QuickstepLauncher launcher) {
         mLauncher = launcher;
         mRecentsView = launcher.getOverviewPanel();
     }

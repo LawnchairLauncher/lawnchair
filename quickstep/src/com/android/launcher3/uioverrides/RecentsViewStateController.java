@@ -36,7 +36,6 @@ import android.util.Pair;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorListeners;
@@ -57,7 +56,7 @@ import com.android.quickstep.views.RecentsView;
 public final class RecentsViewStateController extends
         BaseRecentsViewStateController<LauncherRecentsView> {
 
-    public RecentsViewStateController(BaseQuickstepLauncher launcher) {
+    public RecentsViewStateController(QuickstepLauncher launcher) {
         super(launcher);
     }
 
