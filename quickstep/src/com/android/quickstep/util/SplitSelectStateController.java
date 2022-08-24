@@ -33,6 +33,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.UserHandle;
 import android.text.TextUtils;
 import android.view.RemoteAnimationAdapter;
 import android.view.SurfaceControl;
@@ -77,6 +78,8 @@ public class SplitSelectStateController {
     private int mSecondTaskId = INVALID_TASK_ID;
     private String mSecondTaskPackageName;
     private boolean mRecentsAnimationRunning;
+    @Nullable
+    private UserHandle mUser;
     /** If not null, this is the TaskView we want to launch from */
     @Nullable
     private GroupedTaskView mLaunchingTaskView;
@@ -97,12 +100,15 @@ public class SplitSelectStateController {
         mInitialTaskId = taskId;
         mStagePosition = stagePosition;
         mInitialTaskIntent = null;
+        mUser = null;
     }
 
-    public void setInitialTaskSelect(Intent intent, @StagePosition int stagePosition) {
+    public void setInitialTaskSelect(Intent intent, @StagePosition int stagePosition,
+            @Nullable UserHandle user) {
         mInitialTaskIntent = intent;
         mStagePosition = stagePosition;
         mInitialTaskId = INVALID_TASK_ID;
+        mUser = user;
     }
 
     /**
@@ -120,9 +126,12 @@ public class SplitSelectStateController {
         } else {
             fillInIntent = null;
         }
-        final PendingIntent pendingIntent =
-                mInitialTaskIntent == null ? null : PendingIntent.getActivity(mContext, 0,
-                        mInitialTaskIntent, FLAG_MUTABLE);
+
+        final PendingIntent pendingIntent = mInitialTaskIntent == null ? null : (mUser != null
+                ? PendingIntent.getActivityAsUser(mContext, 0, mInitialTaskIntent,
+                FLAG_MUTABLE, null /* options */, mUser)
+                : PendingIntent.getActivity(mContext, 0, mInitialTaskIntent, FLAG_MUTABLE));
+
         launchTasks(mInitialTaskId, pendingIntent, fillInIntent, mSecondTaskId, mStagePosition,
                 callback, false /* freezeTaskList */, DEFAULT_SPLIT_RATIO);
     }
