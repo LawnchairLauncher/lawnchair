@@ -2,8 +2,10 @@ package com.android.quickstep.views;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_TASK_MENU;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
+import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.anim.Interpolators.clampToProgress;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -24,12 +26,12 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.InsettableFrameLayout;
-import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.launcher3.uioverrides.states.SplitScreenSelectState;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.util.MultiValueUpdateListener;
@@ -49,6 +51,31 @@ import com.android.systemui.shared.system.QuickStepContract;
  * TODO: Figure out how to copy thumbnail data from existing TaskView to this view.
  */
 public class FloatingTaskView extends FrameLayout {
+    private static final int OVERVIEW_TO_SPLIT_THUMBNAIL_FADE_TO_GRAY_START = 0;
+    private static final int OVERVIEW_TO_SPLIT_THUMBNAIL_FADE_TO_GRAY_END = 133;
+    private static final int OVERVIEW_TO_SPLIT_DOCKED_ICON_FADE_IN_START = 167;
+    private static final int OVERVIEW_TO_SPLIT_DOCKED_ICON_FADE_IN_END = 250;
+    private static final int OVERVIEW_TO_SPLIT_STAGED_RECT_SLIDE_START = 0;
+    private static final int OVERVIEW_TO_SPLIT_STAGED_RECT_SLIDE_END = 417;
+
+    private static final float OVERVIEW_TO_SPLIT_THUMBNAIL_FADE_TO_GRAY_START_OFFSET =
+            (float) OVERVIEW_TO_SPLIT_THUMBNAIL_FADE_TO_GRAY_START
+                    / SplitScreenSelectState.ENTER_DURATION;
+    private static final float OVERVIEW_TO_SPLIT_THUMBNAIL_FADE_TO_GRAY_END_OFFSET =
+            (float) OVERVIEW_TO_SPLIT_THUMBNAIL_FADE_TO_GRAY_END
+                    / SplitScreenSelectState.ENTER_DURATION;
+    private static final float OVERVIEW_TO_SPLIT_DOCKED_ICON_FADE_IN_START_OFFSET =
+            (float) OVERVIEW_TO_SPLIT_DOCKED_ICON_FADE_IN_START
+                    / SplitScreenSelectState.ENTER_DURATION;
+    private static final float OVERVIEW_TO_SPLIT_DOCKED_ICON_FADE_IN_END_OFFSET =
+            (float) OVERVIEW_TO_SPLIT_DOCKED_ICON_FADE_IN_END
+                    / SplitScreenSelectState.ENTER_DURATION;
+    private static final float OVERVIEW_TO_SPLIT_STAGED_RECT_SLIDE_START_OFFSET =
+            (float) OVERVIEW_TO_SPLIT_STAGED_RECT_SLIDE_START
+                    / SplitScreenSelectState.ENTER_DURATION;
+    private static final float OVERVIEW_TO_SPLIT_STAGED_RECT_SLIDE_END_OFFSET =
+            (float) OVERVIEW_TO_SPLIT_STAGED_RECT_SLIDE_END
+                    / SplitScreenSelectState.ENTER_DURATION;
 
     public static final FloatProperty<FloatingTaskView> PRIMARY_TRANSLATE_OFFSCREEN =
             new FloatProperty<FloatingTaskView>("floatingTaskPrimaryTranslateOffscreen") {
@@ -224,26 +251,49 @@ public class FloatingTaskView extends FrameLayout {
         RectF floatingTaskViewBounds = new RectF();
 
         if (fadeWithThumbnail) {
-            animation.addFloat(mSplitPlaceholderView, SplitPlaceholderView.ALPHA_FLOAT,
-                    0, 1, ACCEL);
-            animation.addFloat(mThumbnailView, LauncherAnimUtils.VIEW_ALPHA,
-                    1, 0, DEACCEL_3);
+            // This code block runs when animating from Overview > OverviewSplitSelect
+            // And for the second thumbnail on confirm
+
+            // FloatingTaskThumbnailView: thumbnail fades out to transparent
+            animation.setViewAlpha(mThumbnailView, 0, clampToProgress(LINEAR,
+                    OVERVIEW_TO_SPLIT_THUMBNAIL_FADE_TO_GRAY_START_OFFSET,
+                    OVERVIEW_TO_SPLIT_THUMBNAIL_FADE_TO_GRAY_END_OFFSET));
+
+            // SplitPlaceholderView: gray background fades in at the same time, then new icon fades
+            // in
+            animation.setViewAlpha(mSplitPlaceholderView, 1, clampToProgress(LINEAR,
+                    OVERVIEW_TO_SPLIT_THUMBNAIL_FADE_TO_GRAY_START_OFFSET,
+                    OVERVIEW_TO_SPLIT_THUMBNAIL_FADE_TO_GRAY_END_OFFSET));
+            animation.setViewAlpha(mSplitPlaceholderView.getIconView(), 1, clampToProgress(
+                    LINEAR, OVERVIEW_TO_SPLIT_DOCKED_ICON_FADE_IN_START_OFFSET,
+                    OVERVIEW_TO_SPLIT_DOCKED_ICON_FADE_IN_END_OFFSET));
         } else if (isStagedTask) {
+            // This code block runs when animating from Normal > OverviewSplitSelect
+            // and for the first thumbnail on confirm
+
             // Fade in the placeholder view when split is initiated from homescreen / all apps
-            // icons.
             if (mSplitPlaceholderView.getAlpha() == 0) {
-                animation.addFloat(mSplitPlaceholderView, SplitPlaceholderView.ALPHA_FLOAT,
-                        0.3f, 1, ACCEL);
+                animation.setViewAlpha(mSplitPlaceholderView, 0.3f, INSTANT);
+                animation.setViewAlpha(mSplitPlaceholderView, 1, ACCEL);
             }
         }
 
         MultiValueUpdateListener listener = new MultiValueUpdateListener() {
-            final FloatProp mDx = new FloatProp(0, prop.dX, 0, animDuration, LINEAR);
-            final FloatProp mDy = new FloatProp(0, prop.dY, 0, animDuration, LINEAR);
+            // SplitPlaceholderView: rectangle translates and stretches to new position
+            final FloatProp mDx = new FloatProp(0, prop.dX, 0, animDuration,
+                    clampToProgress(DEACCEL_2, OVERVIEW_TO_SPLIT_STAGED_RECT_SLIDE_START_OFFSET,
+                            OVERVIEW_TO_SPLIT_STAGED_RECT_SLIDE_END_OFFSET));
+            final FloatProp mDy = new FloatProp(0, prop.dY, 0, animDuration,
+                    clampToProgress(DEACCEL_2, OVERVIEW_TO_SPLIT_STAGED_RECT_SLIDE_START_OFFSET,
+                            OVERVIEW_TO_SPLIT_STAGED_RECT_SLIDE_END_OFFSET));
             final FloatProp mTaskViewScaleX = new FloatProp(1f, prop.finalTaskViewScaleX, 0,
-                    animDuration, LINEAR);
+                    animDuration, clampToProgress(DEACCEL_2,
+                    OVERVIEW_TO_SPLIT_STAGED_RECT_SLIDE_START_OFFSET,
+                    OVERVIEW_TO_SPLIT_STAGED_RECT_SLIDE_END_OFFSET));
             final FloatProp mTaskViewScaleY = new FloatProp(1f, prop.finalTaskViewScaleY, 0,
-                    animDuration, LINEAR);
+                    animDuration, clampToProgress(DEACCEL_2,
+                    OVERVIEW_TO_SPLIT_STAGED_RECT_SLIDE_START_OFFSET,
+                    OVERVIEW_TO_SPLIT_STAGED_RECT_SLIDE_END_OFFSET));
             @Override
             public void onUpdate(float percent, boolean initOnly) {
                 // Calculate the icon position.

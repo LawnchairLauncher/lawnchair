@@ -520,7 +520,7 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     public void setSplitInstructionsParams(View out, DeviceProfile dp, int splitInstructionsHeight,
             int splitInstructionsWidth, int threeButtonNavShift) {
         out.setPivotX(0);
-        out.setPivotY(0);
+        out.setPivotY(splitInstructionsHeight);
         out.setRotation(getDegreesRotated());
         int distanceToEdge;
         if ((DisplayController.getNavigationMode(out.getContext()) == THREE_BUTTONS)
