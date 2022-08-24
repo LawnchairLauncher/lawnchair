@@ -23,12 +23,12 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.testing.DebugTestInformationHandler;
 import com.android.launcher3.testing.shared.TestProtocol;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 
 import java.util.concurrent.ExecutionException;
 
@@ -64,7 +64,7 @@ public abstract class DebugQuickstepTestInformationHandler extends QuickstepTest
                 runOnUIThread(l -> {
                     enableManualTaskbarStashing(l, true);
 
-                    BaseQuickstepLauncher quickstepLauncher = (BaseQuickstepLauncher) l;
+                    QuickstepLauncher quickstepLauncher = (QuickstepLauncher) l;
                     LauncherTaskbarUIController taskbarUIController =
                             quickstepLauncher.getTaskbarUIController();
 
@@ -90,7 +90,7 @@ public abstract class DebugQuickstepTestInformationHandler extends QuickstepTest
     }
 
     private void enableManualTaskbarStashing(Launcher launcher, boolean enable) {
-        BaseQuickstepLauncher quickstepLauncher = (BaseQuickstepLauncher) launcher;
+        QuickstepLauncher quickstepLauncher = (QuickstepLauncher) launcher;
         LauncherTaskbarUIController taskbarUIController =
                 quickstepLauncher.getTaskbarUIController();
 

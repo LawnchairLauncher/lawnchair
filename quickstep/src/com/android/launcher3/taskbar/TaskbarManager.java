@@ -37,12 +37,12 @@ import android.view.Display;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.unfold.NonDestroyableScopedUnfoldTransitionProgressProvider;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
@@ -237,8 +237,8 @@ public class TaskbarManager {
      */
     private UnfoldTransitionProgressProvider getUnfoldTransitionProgressProviderForActivity(
             StatefulActivity activity) {
-        if (activity instanceof BaseQuickstepLauncher) {
-            return ((BaseQuickstepLauncher) activity).getUnfoldTransitionProgressProvider();
+        if (activity instanceof QuickstepLauncher) {
+            return ((QuickstepLauncher) activity).getUnfoldTransitionProgressProvider();
         }
         return null;
     }
@@ -247,11 +247,11 @@ public class TaskbarManager {
      * Creates a {@link TaskbarUIController} to use while the given StatefulActivity is active.
      */
     private TaskbarUIController createTaskbarUIControllerForActivity(StatefulActivity activity) {
-        if (activity instanceof BaseQuickstepLauncher) {
+        if (activity instanceof QuickstepLauncher) {
             if (mTaskbarActivityContext.getPackageManager().hasSystemFeature(FEATURE_PC)) {
-                return new DesktopTaskbarUIController((BaseQuickstepLauncher) activity);
+                return new DesktopTaskbarUIController((QuickstepLauncher) activity);
             }
-            return new LauncherTaskbarUIController((BaseQuickstepLauncher) activity);
+            return new LauncherTaskbarUIController((QuickstepLauncher) activity);
         }
         if (activity instanceof RecentsActivity) {
             return new FallbackTaskbarUIController((RecentsActivity) activity);
