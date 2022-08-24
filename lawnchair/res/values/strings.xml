@@ -19,8 +19,6 @@
     <string name="iconPackPackageDefault" translatable="false">""</string>
     <string name="derived_app_name" tools:override="true" translatable="false">Lawnchair</string>
 
-    <!-- Common -->
-
     <!-- PreferenceDashboard -->
     <string name="settings">Settings</string>
     <string name="general_label">General</string>
@@ -48,22 +46,28 @@
     <string name="app_info_drop_target_label">App Info</string>
     <string name="debug_restart_launcher">Restart Lawnchair</string>
     <string name="experimental_features_label">Experimental Features</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
-
+    
     <!-- ExperimentalFeaturesPreferences -->
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">Font Customization</string>
     <string name="font_picker_description">Some text remains unchanged.</string>
     <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
     <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
+    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
+    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
 
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Home Screen Rotation</string>
     <string name="home_screen_rotaton_description">When device is rotated.</string>
-    <string name="icon_style">Icon Style</string>
-    <string name="icon_shape_label">Icon Shape</string>
     <string name="font_label">Font (Experimental)</string>
+
+    <!-- <string name="icons" /> -->
+      <string name="icon_style">Icon Style</string>
+      <string name="icon_shape_label">Icon Shape</string>
+      <string name="auto_adaptive_icons_label">Auto Adaptive Icons</string>
+      <string name="auto_adaptive_icons_description">For all non-Adaptive icons.</string>
+      <string name="background_lightness_label">Background Lightness</string>
+      <string name="adaptive_icon_background_description">Use 100% background lightness for white.</string>
 
     <string name="notification_dots">Notification Dots</string>
       <!-- <string name="notification_dots" />-->
@@ -83,12 +87,6 @@
       <string name="theme_system_default">System</string>
       <string name="theme_follow_wallpaper">Match Wallpaper</string>
       <string name="accent_color">Accent Color</string>
-
-    <string name="auto_adaptive_icons_label">Auto Adaptive Icons</string>
-      <!-- <string name="auto_adaptive_icons_label" /> -->
-      <string name="auto_adaptive_icons_description">For all non-Adaptive icons.</string>
-      <string name="background_lightness_label">Background Lightness</string>
-      <string name="adaptive_icon_background_description">Use 100% background lightness for white.</string>
 
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
@@ -165,14 +163,16 @@
     <string name="wallpaper">Wallpaper</string>
       <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
       <string name="wallpaper_depth_effect_label">Wallpaper Depth Effect</string>
-      <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+      <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between areas of the launcher.</string>
       <string name="show_sys_ui_scrim">Top Shadow</string>
 
     <string name="layout">Layout</string>
       <string name="home_screen_grid">Home Screen Grid</string>
       <string name="home_screen_lock">Lock Home Screen</string>
+      <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
       <string name="home_screen_unlock">Unlock Home Screen</string> <!-- used in popup menu-->
-      <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+      <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-up Menu</string>
+      <string name="home_screen_locked">Home Screen is locked.</string>
 
     <string name="status_bar_label">Status Bar</string>
     <string name="show_status_bar">Show Status Bar</string>
@@ -236,6 +236,9 @@
 
     <string name="smartspace_preferences">Preferences</string>
 
+    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
+    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the "Lawnchair" widget.</string>
+    
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">Search Bar</string>

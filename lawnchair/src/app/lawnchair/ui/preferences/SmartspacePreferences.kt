@@ -50,10 +50,10 @@ fun SmartspacePreferences(fromWidget: Boolean) {
 
     PreferenceLayout(label = stringResource(id = R.string.smartspace_widget)) {
         if (!fromWidget) {
-            PreferenceGroup {
+            PreferenceGroup(description = stringResource(id = R.string.smartspace_widget_toggle_description)) {
                 SwitchPreference(
                     adapter = smartspaceAdapter,
-                    label = stringResource(id = R.string.smartspace_widget),
+                    label = stringResource(id = R.string.smartspace_widget_toggle_label)
                 )
             }
         }
