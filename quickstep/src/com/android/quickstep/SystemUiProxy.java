@@ -28,7 +28,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Insets;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -101,6 +100,7 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
     private ILauncherUnlockAnimationController mLauncherUnlockAnimationController;
     private IRecentTasksListener mRecentTasksListener;
     private final ArrayList<RemoteTransitionCompat> mRemoteTransitions = new ArrayList<>();
+    private IBinder mOriginalTransactionToken = null;
     private IOnBackInvokedCallback mBackToLauncherCallback;
 
     // Used to dedupe calls to SystemUI
@@ -199,6 +199,7 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
         for (int i = mRemoteTransitions.size() - 1; i >= 0; --i) {
             registerRemoteTransition(mRemoteTransitions.get(i));
         }
+        setupTransactionQueue();
         if (mRecentTasksListener != null && mRecentTasks != null) {
             registerRecentTasksListener(mRecentTasksListener);
         }
@@ -719,6 +720,50 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
             }
         }
         mRemoteTransitions.remove(remoteTransition);
+    }
+
+    /**
+     * Use SystemUI's transaction-queue instead of Launcher's independent one. This is necessary
+     * if Launcher and SystemUI need to coordinate transactions (eg. for shell transitions).
+     */
+    public void shareTransactionQueue() {
+        if (mOriginalTransactionToken == null) {
+            mOriginalTransactionToken = SurfaceControl.Transaction.getDefaultApplyToken();
+        }
+        setupTransactionQueue();
+    }
+
+    /**
+     * Switch back to using Launcher's independent transaction queue.
+     */
+    public void unshareTransactionQueue() {
+        if (mOriginalTransactionToken == null) {
+            return;
+        }
+        SurfaceControl.Transaction.setDefaultApplyToken(mOriginalTransactionToken);
+        mOriginalTransactionToken = null;
+    }
+
+    private void setupTransactionQueue() {
+        if (mOriginalTransactionToken == null) {
+            return;
+        }
+        if (mShellTransitions == null) {
+            SurfaceControl.Transaction.setDefaultApplyToken(mOriginalTransactionToken);
+            return;
+        }
+        final IBinder shellApplyToken;
+        try {
+            shellApplyToken = mShellTransitions.getShellApplyToken();
+        } catch (RemoteException e) {
+            Log.e(TAG, "Error getting Shell's apply token", e);
+            return;
+        }
+        if (shellApplyToken == null) {
+            Log.e(TAG, "Didn't receive apply token from Shell");
+            return;
+        }
+        SurfaceControl.Transaction.setDefaultApplyToken(shellApplyToken);
     }
 
     //

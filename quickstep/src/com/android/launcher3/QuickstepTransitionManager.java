@@ -46,6 +46,7 @@ import static com.android.launcher3.statehandlers.DepthController.DEPTH;
 import static com.android.launcher3.util.window.RefreshRateTracker.getSingleFrameMs;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 import static com.android.launcher3.views.FloatingIconView.getFloatingIconView;
+import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
 import static com.android.quickstep.TaskViewUtils.findTaskViewToLaunch;
 import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
 import static com.android.systemui.shared.system.QuickStepContract.supportsRoundedCornersOnWindows;
@@ -1119,6 +1120,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      * Registers remote animations used when closing apps to home screen.
      */
     public void registerRemoteTransitions() {
+        if (ENABLE_SHELL_TRANSITIONS) {
+            SystemUiProxy.INSTANCE.get(mLauncher).shareTransactionQueue();
+        }
         if (SEPARATE_RECENTS_ACTIVITY.get()) {
             return;
         }
@@ -1158,6 +1162,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     }
 
     private void unregisterRemoteTransitions() {
+        if (ENABLE_SHELL_TRANSITIONS) {
+            SystemUiProxy.INSTANCE.get(mLauncher).unshareTransactionQueue();
+        }
         if (SEPARATE_RECENTS_ACTIVITY.get()) {
             return;
         }
