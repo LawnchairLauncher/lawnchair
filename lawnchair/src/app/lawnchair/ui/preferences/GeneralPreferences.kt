@@ -91,6 +91,21 @@ fun GeneralPreferences() {
                 label = stringResource(id = R.string.home_screen_rotation_label),
                 description = stringResource(id = R.string.home_screen_rotaton_description),
             )
+            val enableFontSelection = prefs2.enableFontSelection.asState().value
+            if (enableFontSelection) {
+                FontPreference(
+                    fontPref = prefs.fontWorkspace,
+                    label = stringResource(id = R.string.font_label),
+                )
+            }
+        }
+        
+        val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.getAdapter()
+        PreferenceGroup(
+            heading = stringResource(id = R.string.icons),
+            description = stringResource(id = (R.string.adaptive_icon_background_description)),
+            showDescription = wrapAdaptiveIcons.state.value,
+        ) {
             NavigationActionPreference(
                 label = stringResource(id = R.string.icon_style),
                 destination = subRoute(name = GeneralRoutes.ICON_PACK),
@@ -104,42 +119,6 @@ fun GeneralPreferences() {
                     IconShapePreview(iconShape = iconShapeAdapter.state.value)
                 }
             )
-            val enableFontSelection = prefs2.enableFontSelection.asState().value
-            if (enableFontSelection) {
-                FontPreference(
-                    fontPref = prefs.fontWorkspace,
-                    label = stringResource(id = R.string.font_label),
-                )
-            }
-        }
-        PreferenceGroup(heading = stringResource(id = R.string.notification_dots)) {
-            val enabled by remember { notificationDotsEnabled(context) }.collectAsState(initial = false)
-            val serviceEnabled = notificationServiceEnabled()
-            NotificationDotsPreference(enabled = enabled, serviceEnabled = serviceEnabled)
-            if (enabled && serviceEnabled) {
-                SwitchPreference(
-                    adapter = prefs2.showNotificationCount.getAdapter(),
-                    label = stringResource(id = R.string.show_notification_count),
-                )
-                ColorPreference(
-                    preference = prefs2.notificationDotColor,
-                    label = stringResource(id = R.string.notification_dots_color),
-                )
-            }
-        }
-        PreferenceGroup(heading = stringResource(id = R.string.colors)) {
-            ThemePreference()
-            ColorPreference(
-                preference = prefs2.accentColor,
-                label = stringResource(id = R.string.accent_color),
-            )
-        }
-        val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.getAdapter()
-        PreferenceGroup(
-            heading = stringResource(id = R.string.auto_adaptive_icons_label),
-            description = stringResource(id = (R.string.adaptive_icon_background_description)),
-            showDescription = wrapAdaptiveIcons.state.value,
-        ) {
             SwitchPreference(
                 adapter = wrapAdaptiveIcons,
                 label = stringResource(id = R.string.auto_adaptive_icons_label),
@@ -152,6 +131,30 @@ fun GeneralPreferences() {
                     valueRange = 0F..1F,
                     step = 0.1f,
                     showAsPercentage = true,
+                )
+            }
+        }
+
+        PreferenceGroup(heading = stringResource(id = R.string.colors)) {
+            ThemePreference()
+            ColorPreference(
+                preference = prefs2.accentColor,
+                label = stringResource(id = R.string.accent_color),
+            )
+        }
+
+        PreferenceGroup(heading = stringResource(id = R.string.notification_dots)) {
+            val enabled by remember { notificationDotsEnabled(context) }.collectAsState(initial = false)
+            val serviceEnabled = notificationServiceEnabled()
+            NotificationDotsPreference(enabled = enabled, serviceEnabled = serviceEnabled)
+            if (enabled && serviceEnabled) {
+                SwitchPreference(
+                    adapter = prefs2.showNotificationCount.getAdapter(),
+                    label = stringResource(id = R.string.show_notification_count),
+                )
+                ColorPreference(
+                    preference = prefs2.notificationDotColor,
+                    label = stringResource(id = R.string.notification_dots_color),
                 )
             }
         }

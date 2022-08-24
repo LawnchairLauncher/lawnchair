@@ -57,6 +57,7 @@ fun HomeScreenPreferences() {
                 checked = !lockHomeScreenAdapter.state.value && addIconToHomeAdapter.state.value,
                 onCheckedChange = addIconToHomeAdapter::onChange,
                 label = stringResource(id = R.string.auto_add_shortcuts_label),
+                description = if (lockHomeScreenAdapter.state.value) stringResource(id = R.string.home_screen_locked) else null,
                 enabled = lockHomeScreenAdapter.state.value.not(),
             )
             GestureHandlerPreference(
@@ -99,6 +100,7 @@ fun HomeScreenPreferences() {
             SwitchPreference(
                 adapter = lockHomeScreenAdapter,
                 label = stringResource(id = R.string.home_screen_lock),
+                description = stringResource(id = R.string.home_screen_lock_description),
             )
             SwitchPreference(
                 adapter = prefs2.lockHomeScreenButtonOnPopUp.getAdapter(),
