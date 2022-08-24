@@ -83,6 +83,11 @@ public class BackgroundAppState extends OverviewState {
     }
 
     @Override
+    public boolean showTaskThumbnailSplash() {
+        return true;
+    }
+
+    @Override
     protected float getDepthUnchecked(Context context) {
         return 1;
     }
