@@ -21,6 +21,7 @@ import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 
 import android.content.Intent;
@@ -32,6 +33,7 @@ import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.tapl.AllApps;
 import com.android.launcher3.tapl.LaunchedAppState;
 import com.android.launcher3.tapl.LauncherInstrumentation.NavigationModel;
 import com.android.launcher3.tapl.Overview;
@@ -403,5 +405,27 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         executeOnLauncher(
                 launcher -> assertEquals("Still have tasks after dismissing all",
                         0, getTaskCount(launcher)));
+    }
+
+    @Test
+    public void testDisableRotationCheckForPhone() throws Exception {
+        assumeFalse(mLauncher.isTablet());
+        try {
+            mLauncher.setExpectedRotationCheckEnabled(false);
+            mLauncher.setEnableRotation(false);
+            final AllApps allApps = mLauncher.getWorkspace().switchToAllApps();
+            allApps.freeze();
+            try {
+                allApps.getAppIcon("TestActivity7").launch(getAppPackageName());
+            } finally {
+                allApps.unfreeze();
+            }
+            mLauncher.getDevice().setOrientationLeft();
+            mLauncher.goHome();
+        } finally {
+            mLauncher.setExpectedRotationCheckEnabled(true);
+            mLauncher.setEnableRotation(true);
+            mLauncher.getDevice().setOrientationNatural();
+        }
     }
 }
