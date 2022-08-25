@@ -32,11 +32,11 @@ import android.view.Surface;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.popup.QuickstepSystemShortcut;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager.StateListener;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.PendingSplitSelectInfo;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.LauncherActivityInterface;
@@ -46,7 +46,7 @@ import com.android.quickstep.util.SplitSelectStateController;
  * {@link RecentsView} used in Launcher activity
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, LauncherState>
+public class LauncherRecentsView extends RecentsView<QuickstepLauncher, LauncherState>
         implements StateListener<LauncherState> {
 
     public LauncherRecentsView(Context context) {

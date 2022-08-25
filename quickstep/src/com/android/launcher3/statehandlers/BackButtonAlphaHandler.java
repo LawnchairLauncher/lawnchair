@@ -20,11 +20,11 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.util.DisplayController.NavigationMode.TWO_BUTTONS;
 import static com.android.quickstep.AnimatedFloat.VALUE;
 
-import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.quickstep.AnimatedFloat;
@@ -35,10 +35,10 @@ import com.android.quickstep.SystemUiProxy;
  */
 public class BackButtonAlphaHandler implements StateHandler<LauncherState> {
 
-    private final BaseQuickstepLauncher mLauncher;
+    private final QuickstepLauncher mLauncher;
     private final AnimatedFloat mBackAlpha = new AnimatedFloat(this::updateBackAlpha);
 
-    public BackButtonAlphaHandler(BaseQuickstepLauncher launcher) {
+    public BackButtonAlphaHandler(QuickstepLauncher launcher) {
         mLauncher = launcher;
     }
 
@@ -59,6 +59,6 @@ public class BackButtonAlphaHandler implements StateHandler<LauncherState> {
 
     private void updateBackAlpha() {
         UiThreadHelper.setBackButtonAlphaAsync(mLauncher,
-                BaseQuickstepLauncher.SET_BACK_BUTTON_ALPHA, mBackAlpha.value, false /* animate */);
+                QuickstepLauncher.SET_BACK_BUTTON_ALPHA, mBackAlpha.value, false /* animate */);
     }
 }
