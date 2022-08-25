@@ -94,6 +94,7 @@ import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
 import com.android.quickstep.inputconsumers.SysUiOverlayInputConsumer;
 import com.android.quickstep.inputconsumers.TaskbarStashInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
+import com.android.quickstep.util.ActiveGestureLog.CompoundString;
 import com.android.quickstep.util.ProtoTracer;
 import com.android.quickstep.util.ProxyScreenStatusProvider;
 import com.android.quickstep.util.SplitScreenBounds;
@@ -125,6 +126,9 @@ import java.util.function.Function;
 @TargetApi(Build.VERSION_CODES.R)
 public class TouchInteractionService extends Service
         implements ProtoTraceable<LauncherTraceProto.Builder> {
+
+    private static final String SUBSTRING_PREFIX = "; ";
+    private static final String NEWLINE_PREFIX = "\n\t\t\t-> ";
 
     private static final String TAG = "TouchInteractionService";
 
@@ -619,8 +623,6 @@ public class TouchInteractionService extends Service
                 mConsumer.onConsumerAboutToBeSwitched();
                 mGestureState = newGestureState;
                 mConsumer = newConsumer(prevGestureState, mGestureState, event);
-
-                ActiveGestureLog.INSTANCE.addLog("setInputConsumer: " + mConsumer.getName());
                 mUncheckedConsumer = mConsumer;
             } else if (mDeviceState.isUserUnlocked() && mDeviceState.isFullyGesturalNavMode()
                     && mDeviceState.canTriggerAssistantAction(event)) {
@@ -628,8 +630,7 @@ public class TouchInteractionService extends Service
                 // Do not change mConsumer as if there is an ongoing QuickSwitch gesture, we
                 // should not interrupt it. QuickSwitch assumes that interruption can only
                 // happen if the next gesture is also quick switch.
-                mUncheckedConsumer = tryCreateAssistantInputConsumer(
-                        InputConsumer.NO_OP, mGestureState, event);
+                mUncheckedConsumer = tryCreateAssistantInputConsumer(mGestureState, event);
             } else if (mDeviceState.canTriggerOneHandedAction(event)) {
                 // Consume gesture event for triggering one handed feature.
                 mUncheckedConsumer = new OneHandedModeInputConsumer(this, mDeviceState,
@@ -676,17 +677,31 @@ public class TouchInteractionService extends Service
         ProtoTracer.INSTANCE.get(this).scheduleFrameUpdate();
     }
 
-    private InputConsumer tryCreateAssistantInputConsumer(InputConsumer base,
+    private InputConsumer tryCreateAssistantInputConsumer(
             GestureState gestureState, MotionEvent motionEvent) {
-        return mDeviceState.isGestureBlockedTask(gestureState.getRunningTask())
-                ? base
-                : new AssistantInputConsumer(this, gestureState, base, mInputMonitorCompat,
-                        mDeviceState, motionEvent);
+        return tryCreateAssistantInputConsumer(
+                InputConsumer.NO_OP, gestureState, motionEvent, CompoundString.NO_OP);
+    }
+
+    private InputConsumer tryCreateAssistantInputConsumer(
+            InputConsumer base,
+            GestureState gestureState,
+            MotionEvent motionEvent,
+            CompoundString reasonString) {
+        if (mDeviceState.isGestureBlockedTask(gestureState.getRunningTask())) {
+            reasonString.append(SUBSTRING_PREFIX)
+                    .append("is gesture-blocked task, using base input consumer");
+            return base;
+        } else {
+            reasonString.append(SUBSTRING_PREFIX).append("using AssistantInputConsumer");
+            return new AssistantInputConsumer(
+                    this, gestureState, base, mInputMonitorCompat, mDeviceState, motionEvent);
+        }
     }
 
     public GestureState createGestureState(GestureState previousGestureState) {
         GestureState gestureState = new GestureState(mOverviewComponentObserver,
-                ActiveGestureLog.INSTANCE.generateAndSetLogId());
+                ActiveGestureLog.INSTANCE.incrementLogId());
         if (mTaskAnimationManager.isRecentsAnimationRunning()) {
             gestureState.updateRunningTask(previousGestureState.getRunningTask());
             gestureState.updateLastStartedTaskId(previousGestureState.getLastStartedTaskId());
@@ -699,50 +714,88 @@ public class TouchInteractionService extends Service
         return gestureState;
     }
 
-    private InputConsumer newConsumer(GestureState previousGestureState,
-            GestureState newGestureState, MotionEvent event) {
+    private InputConsumer newConsumer(
+            GestureState previousGestureState, GestureState newGestureState, MotionEvent event) {
         AnimatedFloat progressProxy = mSwipeUpProxyProvider.apply(mGestureState);
         if (progressProxy != null) {
-            return new ProgressDelegateInputConsumer(this, mTaskAnimationManager,
-                    mGestureState, mInputMonitorCompat, progressProxy);
+            InputConsumer consumer = new ProgressDelegateInputConsumer(
+                    this, mTaskAnimationManager, mGestureState, mInputMonitorCompat, progressProxy);
+
+            logInputConsumerSelectionReason(consumer, newCompoundString(
+                    "mSwipeUpProxyProvider has been set, using ProgressDelegateInputConsumer"));
+
+            return consumer;
         }
 
         boolean canStartSystemGesture = mDeviceState.canStartSystemGesture();
 
         if (!mDeviceState.isUserUnlocked()) {
+            CompoundString reasonString = newCompoundString("device locked");
+            InputConsumer consumer;
             if (canStartSystemGesture) {
                 // This handles apps launched in direct boot mode (e.g. dialer) as well as apps
                 // launched while device is locked even after exiting direct boot mode (e.g. camera).
-                return createDeviceLockedInputConsumer(newGestureState);
+                consumer = createDeviceLockedInputConsumer(
+                        newGestureState, reasonString.append(SUBSTRING_PREFIX)
+                                .append("can start system gesture"));
             } else {
-                return getDefaultInputConsumer();
+                consumer = getDefaultInputConsumer(
+                        reasonString.append(SUBSTRING_PREFIX)
+                                .append("cannot start system gesture"));
             }
+            logInputConsumerSelectionReason(consumer, reasonString);
+            return consumer;
         }
 
+        CompoundString reasonString;
+        InputConsumer base;
         // When there is an existing recents animation running, bypass systemState check as this is
         // a followup gesture and the first gesture started in a valid system state.
-        InputConsumer base = canStartSystemGesture
-                || previousGestureState.isRecentsAnimationRunning()
-                        ? newBaseConsumer(previousGestureState, newGestureState, event)
-                        : getDefaultInputConsumer();
+        if (canStartSystemGesture || previousGestureState.isRecentsAnimationRunning()) {
+            reasonString = newCompoundString(canStartSystemGesture
+                    ? "can start system gesture" : "recents animation was running")
+                    .append(", trying to use base consumer");
+            base = newBaseConsumer(previousGestureState, newGestureState, event, reasonString);
+        } else {
+            reasonString = newCompoundString(
+                    "cannot start system gesture and recents animation was not running")
+                    .append(", trying to use default input consumer");
+            base = getDefaultInputConsumer(reasonString);
+        }
         if (mDeviceState.isGesturalNavMode()) {
             handleOrientationSetup(base);
         }
         if (mDeviceState.isFullyGesturalNavMode()) {
+            String reasonPrefix = "device is in gesture navigation mode";
             if (mDeviceState.canTriggerAssistantAction(event)) {
-                base = tryCreateAssistantInputConsumer(base, newGestureState, event);
+                reasonString.append(NEWLINE_PREFIX)
+                        .append(reasonPrefix)
+                        .append(SUBSTRING_PREFIX)
+                        .append("gesture can trigger the assistant")
+                        .append(", trying to use assistant input consumer");
+                base = tryCreateAssistantInputConsumer(base, newGestureState, event, reasonString);
             }
 
             // If Taskbar is present, we listen for long press to unstash it.
             TaskbarActivityContext tac = mTaskbarManager.getCurrentActivityContext();
             if (tac != null) {
+                reasonString.append(NEWLINE_PREFIX)
+                        .append(reasonPrefix)
+                        .append(SUBSTRING_PREFIX)
+                        .append("TaskbarActivityContext != null, using TaskbarStashInputConsumer");
                 base = new TaskbarStashInputConsumer(this, base, mInputMonitorCompat, tac);
             }
 
             if (mDeviceState.isBubblesExpanded()) {
+                reasonString = newCompoundString(reasonPrefix)
+                        .append(SUBSTRING_PREFIX)
+                        .append("bubbles expanded");
                 if (BUBBLES_HOME_GESTURE_ENABLED) {
+                    reasonString.append(SUBSTRING_PREFIX)
+                            .append("bubbles can handle the home gesture")
+                            .append(", trying to use default input consumer");
                     // Bubbles can handle home gesture itself.
-                    base = getDefaultInputConsumer();
+                    base = getDefaultInputConsumer(reasonString);
                 } else {
                     // If Bubbles is expanded, use the overlay input consumer, which will close
                     // Bubbles instead of going all the way home when a swipe up is detected.
@@ -750,6 +803,9 @@ public class TouchInteractionService extends Service
                     // expanded in the back. Make sure swipe up is not passed to bubbles in this
                     // case.
                     if (!mDeviceState.isNotificationPanelExpanded()) {
+                        reasonString = newCompoundString(reasonPrefix)
+                                .append(SUBSTRING_PREFIX)
+                                .append("using SysUiOverlayInputConsumer");
                         base = new SysUiOverlayInputConsumer(
                                 getBaseContext(), mDeviceState, mInputMonitorCompat);
                     }
@@ -757,6 +813,9 @@ public class TouchInteractionService extends Service
             }
 
             if (mDeviceState.isSystemUiDialogShowing()) {
+                reasonString = newCompoundString(reasonPrefix)
+                        .append(SUBSTRING_PREFIX)
+                        .append("system dialog is showing, using SysUiOverlayInputConsumer");
                 base = new SysUiOverlayInputConsumer(
                         getBaseContext(), mDeviceState, mInputMonitorCompat);
             }
@@ -764,44 +823,91 @@ public class TouchInteractionService extends Service
 
 
             if (mDeviceState.isScreenPinningActive()) {
+                reasonString = newCompoundString(reasonPrefix)
+                        .append(SUBSTRING_PREFIX)
+                        .append("screen pinning is active, using ScreenPinnedInputConsumer");
                 // Note: we only allow accessibility to wrap this, and it replaces the previous
                 // base input consumer (which should be NO_OP anyway since topTaskLocked == true).
                 base = new ScreenPinnedInputConsumer(this, newGestureState);
             }
 
             if (mDeviceState.canTriggerOneHandedAction(event)) {
-                base = new OneHandedModeInputConsumer(this, mDeviceState, base,
-                        mInputMonitorCompat);
+                reasonString.append(NEWLINE_PREFIX)
+                        .append(reasonPrefix)
+                        .append(SUBSTRING_PREFIX)
+                        .append("gesture can trigger one handed mode")
+                        .append(", using OneHandedModeInputConsumer");
+                base = new OneHandedModeInputConsumer(
+                        this, mDeviceState, base, mInputMonitorCompat);
             }
 
             if (mDeviceState.isAccessibilityMenuAvailable()) {
-                base = new AccessibilityInputConsumer(this, mDeviceState, base,
-                        mInputMonitorCompat);
+                reasonString.append(NEWLINE_PREFIX)
+                        .append(reasonPrefix)
+                        .append(SUBSTRING_PREFIX)
+                        .append("accessibility menu is available")
+                        .append(", using AccessibilityInputConsumer");
+                base = new AccessibilityInputConsumer(
+                        this, mDeviceState, base, mInputMonitorCompat);
             }
         } else {
+            String reasonPrefix = "device is not in gesture navigation mode";
             if (mDeviceState.isScreenPinningActive()) {
-                base = getDefaultInputConsumer();
+                reasonString = newCompoundString(reasonPrefix)
+                        .append(SUBSTRING_PREFIX)
+                        .append("screen pinning is active, trying to use default input consumer");
+                base = getDefaultInputConsumer(reasonString);
             }
 
             if (mDeviceState.canTriggerOneHandedAction(event)) {
-                base = new OneHandedModeInputConsumer(this, mDeviceState, base,
-                        mInputMonitorCompat);
+                reasonString.append(NEWLINE_PREFIX)
+                        .append(reasonPrefix)
+                        .append(SUBSTRING_PREFIX)
+                        .append("gesture can trigger one handed mode")
+                        .append(", using OneHandedModeInputConsumer");
+                base = new OneHandedModeInputConsumer(
+                        this, mDeviceState, base, mInputMonitorCompat);
             }
         }
+        logInputConsumerSelectionReason(base, reasonString);
         return base;
+    }
+
+    private CompoundString newCompoundString(String substring) {
+        return new CompoundString(NEWLINE_PREFIX).append(substring);
+    }
+
+    private void logInputConsumerSelectionReason(
+            InputConsumer consumer, CompoundString reasonString) {
+        if (!FeatureFlags.ENABLE_INPUT_CONSUMER_REASON_LOGGING.get()) {
+            ActiveGestureLog.INSTANCE.addLog("setInputConsumer: " + consumer.getName());
+            return;
+        }
+        ActiveGestureLog.INSTANCE.addLog(new CompoundString("setInputConsumer: ")
+                .append(consumer.getName())
+                .append(". reason(s):")
+                .append(reasonString));
     }
 
     private void handleOrientationSetup(InputConsumer baseInputConsumer) {
         baseInputConsumer.notifyOrientationSetup();
     }
 
-    private InputConsumer newBaseConsumer(GestureState previousGestureState,
-            GestureState gestureState, MotionEvent event) {
+    private InputConsumer newBaseConsumer(
+            GestureState previousGestureState,
+            GestureState gestureState,
+            MotionEvent event,
+            CompoundString reasonString) {
         if (mDeviceState.isKeyguardShowingOccluded()) {
             // This handles apps showing over the lockscreen (e.g. camera)
-            return createDeviceLockedInputConsumer(gestureState);
+            return createDeviceLockedInputConsumer(
+                    gestureState,
+                    reasonString.append(SUBSTRING_PREFIX)
+                            .append("keyguard is showing occluded")
+                            .append(", trying to use device locked input consumer"));
         }
 
+        reasonString.append(SUBSTRING_PREFIX).append("keyguard is not showing occluded");
         // Use overview input consumer for sharesheets on top of home.
         boolean forceOverviewInputConsumer = gestureState.getActivityInterface().isStarted()
                 && gestureState.getRunningTask() != null
@@ -815,23 +921,46 @@ public class TouchInteractionService extends Service
             forceOverviewInputConsumer = gestureState.getRunningTask().isHomeTask();
         }
 
+        boolean previousGestureAnimatedToLauncher =
+                previousGestureState.isRunningAnimationToLauncher();
+        // with shell-transitions, home is resumed during recents animation, so
+        // explicitly check against recents animation too.
+        boolean launcherResumedThroughShellTransition =
+                gestureState.getActivityInterface().isResumed()
+                        && !previousGestureState.isRecentsAnimationRunning();
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()
                 && gestureState.getActivityInterface().isInLiveTileMode()) {
             return createOverviewInputConsumer(
-                    previousGestureState, gestureState, event, forceOverviewInputConsumer);
+                    previousGestureState,
+                    gestureState,
+                    event,
+                    forceOverviewInputConsumer,
+                    reasonString.append(SUBSTRING_PREFIX)
+                            .append("is in live tile mode, trying to use overview input consumer"));
         } else if (gestureState.getRunningTask() == null) {
-            return getDefaultInputConsumer();
-        } else if (previousGestureState.isRunningAnimationToLauncher()
-                || (gestureState.getActivityInterface().isResumed()
-                        // with shell-transitions, home is resumed during recents animation, so
-                        // explicitly check against recents animation too.
-                        && !previousGestureState.isRecentsAnimationRunning())
+            return getDefaultInputConsumer(reasonString.append(SUBSTRING_PREFIX)
+                    .append("running task == null"));
+        } else if (previousGestureAnimatedToLauncher
+                || launcherResumedThroughShellTransition
                 || forceOverviewInputConsumer) {
             return createOverviewInputConsumer(
-                    previousGestureState, gestureState, event, forceOverviewInputConsumer);
+                    previousGestureState,
+                    gestureState,
+                    event,
+                    forceOverviewInputConsumer,
+                    reasonString.append(SUBSTRING_PREFIX)
+                            .append(previousGestureAnimatedToLauncher
+                                    ? "previous gesture animated to launcher"
+                                    : (launcherResumedThroughShellTransition
+                                            ? "launcher resumed through a shell transition"
+                                            : "forceOverviewInputConsumer == true"))
+                            .append(", trying to use overview input consumer"));
         } else if (mDeviceState.isGestureBlockedTask(gestureState.getRunningTask())) {
-            return getDefaultInputConsumer();
+            return getDefaultInputConsumer(reasonString.append(SUBSTRING_PREFIX)
+                    .append("is gesture-blocked task, trying to use default input consumer"));
         } else {
+            reasonString.append(SUBSTRING_PREFIX)
+                    .append("using OtherActivityInputConsumer");
             return createOtherActivityInputConsumer(gestureState, event);
         }
     }
@@ -853,21 +982,34 @@ public class TouchInteractionService extends Service
                 mInputMonitorCompat, mInputEventReceiver, disableHorizontalSwipe, factory);
     }
 
-    private InputConsumer createDeviceLockedInputConsumer(GestureState gestureState) {
+    private InputConsumer createDeviceLockedInputConsumer(
+            GestureState gestureState, CompoundString reasonString) {
         if (mDeviceState.isFullyGesturalNavMode() && gestureState.getRunningTask() != null) {
-            return new DeviceLockedInputConsumer(this, mDeviceState, mTaskAnimationManager,
-                    gestureState, mInputMonitorCompat);
+            reasonString.append(SUBSTRING_PREFIX)
+                    .append("device is in gesture nav mode and running task != null")
+                    .append(", using DeviceLockedInputConsumer");
+            return new DeviceLockedInputConsumer(
+                    this, mDeviceState, mTaskAnimationManager, gestureState, mInputMonitorCompat);
         } else {
-            return getDefaultInputConsumer();
+            return getDefaultInputConsumer(reasonString
+                    .append(SUBSTRING_PREFIX)
+                    .append(mDeviceState.isFullyGesturalNavMode()
+                        ? "running task == null" : "device is not in gesture nav mode")
+                    .append(", trying to use default input consumer"));
         }
     }
 
-    public InputConsumer createOverviewInputConsumer(GestureState previousGestureState,
-            GestureState gestureState, MotionEvent event,
-            boolean forceOverviewInputConsumer) {
+    public InputConsumer createOverviewInputConsumer(
+            GestureState previousGestureState,
+            GestureState gestureState,
+            MotionEvent event,
+            boolean forceOverviewInputConsumer,
+            CompoundString reasonString) {
         StatefulActivity activity = gestureState.getActivityInterface().getCreatedActivity();
         if (activity == null) {
-            return getDefaultInputConsumer();
+            return getDefaultInputConsumer(
+                    reasonString.append(SUBSTRING_PREFIX)
+                            .append("activity == null, trying to use default input consumer"));
         }
 
         if (activity.getRootView().hasWindowFocus()
@@ -876,9 +1018,13 @@ public class TouchInteractionService extends Service
                     && forceOverviewInputConsumer)
                 || (ENABLE_QUICKSTEP_LIVE_TILE.get()
                 && gestureState.getActivityInterface().isInLiveTileMode())) {
+            reasonString.append(SUBSTRING_PREFIX)
+                    .append("overview should have focus, using OverviewInputConsumer");
             return new OverviewInputConsumer(gestureState, activity, mInputMonitorCompat,
                     false /* startingInActivityBounds */);
         } else {
+            reasonString.append(SUBSTRING_PREFIX).append(
+                    "overview shouldn't have focus, using OverviewWithoutFocusInputConsumer");
             final boolean disableHorizontalSwipe = mDeviceState.isInExclusionRegion(event);
             return new OverviewWithoutFocusInputConsumer(activity, mDeviceState, gestureState,
                     mInputMonitorCompat, disableHorizontalSwipe);
@@ -906,13 +1052,21 @@ public class TouchInteractionService extends Service
         }
     }
 
+    private @NonNull InputConsumer getDefaultInputConsumer() {
+        return getDefaultInputConsumer(CompoundString.NO_OP);
+    }
+
     /**
      * Returns the {@link ResetGestureInputConsumer} if user is unlocked, else NO_OP.
      */
-    private @NonNull InputConsumer getDefaultInputConsumer() {
+    private @NonNull InputConsumer getDefaultInputConsumer(@NonNull CompoundString reasonString) {
         if (mResetGestureInputConsumer != null) {
+            reasonString.append(SUBSTRING_PREFIX).append(
+                    "mResetGestureInputConsumer initialized, using ResetGestureInputConsumer");
             return mResetGestureInputConsumer;
         } else {
+            reasonString.append(SUBSTRING_PREFIX).append(
+                    "mResetGestureInputConsumer not initialized, using no-op input consumer");
             // mResetGestureInputConsumer isn't initialized until onUserUnlocked(), so reset to
             // NO_OP until then (we never want these to be null).
             return InputConsumer.NO_OP;
