@@ -589,4 +589,16 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     public static String getAppPackageName() {
         return getInstrumentation().getContext().getPackageName();
     }
+
+    @Test
+    public void testGetAppIconName() {
+        HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
+        allApps.freeze();
+        try {
+            HomeAppIcon icon = allApps.getAppIcon(APP_NAME);
+            assertEquals("Wrong app icon name.", icon.getIconName(), APP_NAME);
+        } finally {
+            allApps.unfreeze();
+        }
+    }
 }
