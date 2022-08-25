@@ -9,29 +9,31 @@ import app.lawnchair.LawnchairLauncher
 import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.Utilities
 import com.android.systemui.plugins.shared.LauncherOverlayManager
-import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlayCallbacks
 import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlay
+import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlayCallbacks
 import com.google.android.libraries.launcherclient.ISerializableScrollCallback
 import com.google.android.libraries.launcherclient.LauncherClient
 import com.google.android.libraries.launcherclient.LauncherClientCallbacks
+import com.google.android.libraries.launcherclient.LauncherClientService
 import com.google.android.libraries.launcherclient.StaticInteger
+import com.patrykmichalik.opto.core.firstBlocking
 
 /**
- * Implements [LauncherOverlay] and passes all the corresponding events to [ ]. {@see setClient}
- *
+ * Implements [LauncherOverlay] and passes all the corresponding events to [LauncherClient],
+ * see [LauncherClientService.setClient].
  *
  * Implements [LauncherClientCallbacks] and sends all the corresponding callbacks to [ ].
  */
 class OverlayCallbackImpl(private val mLauncher: LawnchairLauncher) : LauncherOverlay,
     LauncherClientCallbacks, LauncherOverlayManager, ISerializableScrollCallback {
     private val mClient: LauncherClient
-    var mFlagsChanged = false
+    private var mFlagsChanged = false
     private var mLauncherOverlayCallbacks: LauncherOverlayCallbacks? = null
     private var mWasOverlayAttached = false
     private var mFlags = 0
 
     init {
-        val enableFeed: Boolean = PreferenceManager2.getInstance(mLauncher).enableFeed.firstBlocking<Boolean, Any>()
+        val enableFeed = PreferenceManager2.getInstance(mLauncher).enableFeed.firstBlocking()
         mClient = LauncherClient(
             mLauncher, this, StaticInteger((if (enableFeed) 1 else 0) or 2 or 4 or 8)
         )
@@ -61,10 +63,6 @@ class OverlayCallbackImpl(private val mLauncher: LawnchairLauncher) : LauncherOv
         mClient.hideOverlay(duration)
     }
 
-    override fun startSearch(config: ByteArray?, extras: Bundle?): Boolean = false
-
-    override fun onActivityCreated(activity: Activity, bundle: Bundle?) = Unit
-
     override fun onActivityStarted(activity: Activity) {
         mClient.onStart()
     }
@@ -81,8 +79,6 @@ class OverlayCallbackImpl(private val mLauncher: LawnchairLauncher) : LauncherOv
         mClient.onStop()
     }
 
-    override fun onActivitySaveInstanceState(activity: Activity, bundle: Bundle?) = Unit
-
     override fun onActivityDestroyed(activity: Activity) {
         mClient.onDestroy()
         mClient.mDestroyed = true
@@ -93,7 +89,7 @@ class OverlayCallbackImpl(private val mLauncher: LawnchairLauncher) : LauncherOv
     }
 
     override fun onServiceStateChanged(overlayAttached: Boolean, hotwordActive: Boolean) {
-        this.onServiceStateChanged(overlayAttached)
+        onServiceStateChanged(overlayAttached)
     }
 
     override fun onServiceStateChanged(overlayAttached: Boolean) {
@@ -129,7 +125,7 @@ class OverlayCallbackImpl(private val mLauncher: LawnchairLauncher) : LauncherOv
     }
 
     companion object {
-        const val PREF_PERSIST_FLAGS = "pref_persistent_flags"
+        private const val PREF_PERSIST_FLAGS = "pref_persistent_flags"
 
         fun minusOneAvailable(context: Context): Boolean {
             return FeedBridge.useBridge(context) ||
