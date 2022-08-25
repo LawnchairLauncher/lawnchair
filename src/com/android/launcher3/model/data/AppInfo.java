@@ -29,7 +29,6 @@ import android.os.UserHandle;
 import android.os.UserManager;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.LauncherSettings;
@@ -55,6 +54,7 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
      */
     public Intent intent;
 
+    @NonNull
     public ComponentName componentName;
 
     // Section name used for indexing.
@@ -151,7 +151,7 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
                         | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
     }
 
-    @Nullable
+    @NonNull
     @Override
     public ComponentName getTargetComponent() {
         return componentName;

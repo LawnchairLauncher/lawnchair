@@ -53,13 +53,13 @@ public class ViewUtils {
         final Runnable mFinishCallback;
         final BooleanSupplier mCancelled;
         final Handler mHandler;
+        boolean mSurfaceCallbackRegistered = false;
         boolean mFinished;
 
         int mDeferFrameCount = 1;
 
         FrameHandler(View view, Runnable finishCallback, BooleanSupplier cancelled) {
             mViewRoot = view.getViewRootImpl();
-            mViewRoot.addSurfaceChangedCallback(this);
             mFinishCallback = finishCallback;
             mCancelled = cancelled;
             mHandler = new Handler();
@@ -103,6 +103,10 @@ public class ViewUtils {
 
         private boolean schedule() {
             if (mViewRoot != null && mViewRoot.getView() != null) {
+                if (!mSurfaceCallbackRegistered) {
+                    mSurfaceCallbackRegistered = true;
+                    mViewRoot.addSurfaceChangedCallback(this);
+                }
                 mViewRoot.registerRtFrameCallback(this);
                 mViewRoot.getView().invalidate();
                 return true;
@@ -119,7 +123,10 @@ public class ViewUtils {
             if (mFinishCallback != null) {
                 mFinishCallback.run();
             }
-            mViewRoot.removeSurfaceChangedCallback(this);
+            if (mViewRoot != null) {
+                mViewRoot.removeSurfaceChangedCallback(this);
+                mSurfaceCallbackRegistered = false;
+            }
         }
     }
 }

@@ -4105,7 +4105,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public void initiateSplitSelect(QuickstepSystemShortcut.SplitSelectSource splitSelectSource) {
         mSplitSelectSource = splitSelectSource;
         mSplitSelectStateController.setInitialTaskSelect(splitSelectSource.intent,
-                splitSelectSource.position.stagePosition);
+                splitSelectSource.position.stagePosition, splitSelectSource.user);
     }
 
     public PendingAnimation createSplitSelectInitAnimation(int duration) {
