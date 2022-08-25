@@ -80,6 +80,7 @@ import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.TraceHelper;
+import com.android.launcher3.util.ViewCapture;
 import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
 import com.android.quickstep.inputconsumers.AssistantInputConsumer;
@@ -1184,6 +1185,8 @@ public class TouchInteractionService extends Service
                 createdOverviewActivity.getDeviceProfile().dump(this, "", pw);
             }
             mTaskbarManager.dumpLogs("", pw);
+
+            ViewCapture.INSTANCE.get(this).dump(pw, fd);
         }
     }
 
