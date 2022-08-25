@@ -35,7 +35,6 @@
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Merr aplikacione të sugjeruara në rreshtin e të preferuarave të ekranit tënd bazë"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Qasu me lehtësi në aplikacionet më të përdorura direkt në ekranin bazë. Sugjerimet do të ndryshojnë bazuar në rutinat e tua. Aplikacionet në rreshtin e poshtëm do të zhvendosen lart në ekranin tënd bazë."</string>
     <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Qasu me lehtësi në aplikacionet më të përdorura direkt në ekranin bazë. Sugjerimet do të ndryshojnë bazuar në rutinat e tua. Aplikacionet në rreshtin e të preferuarave do të zhvendosen në ekranin tënd bazë."</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Qasu me lehtësi në aplikacionet më të përdorura, direkt në ekranin bazë. Sugjerimet do të ndryshojnë bazuar në rutinat e tua. Aplikacionet në rreshtin e poshtëm do të zhvendosen në një dosje tjetër."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"Merr aplikacione të sugjeruara"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Jo, faleminderit"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Cilësimet"</string>

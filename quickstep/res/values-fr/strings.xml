@@ -35,7 +35,6 @@
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Retrouvez des suggestions d\'applications dans la zone des favoris de votre écran d\'accueil"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Les suggestions d\'applications permettent d\'afficher vos applications favorites au bas de votre écran d\'accueil. Elles s\'adaptent à vos habitudes d\'utilisation. Les icônes auparavant affichées au bas de l\'écran seront déplacées vers le haut."</string>
     <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Accédez facilement aux applications dont vous vous servez le plus, directement depuis l\'écran d\'accueil. Ces suggestions peuvent varier en fonction de vos habitudes d\'utilisation. Les applications de la zone des favoris seront transférées sur votre écran d\'accueil."</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Les suggestions d\'applications permettent d\'afficher vos applications favorites au bas de votre écran d\'accueil. Elles s\'adaptent à vos habitudes d\'utilisation. Les icônes auparavant affichées au bas de l\'écran seront placées dans un nouveau dossier."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"Activer les suggestions"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Non, merci"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Paramètres"</string>
