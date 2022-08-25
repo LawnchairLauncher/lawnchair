@@ -75,6 +75,7 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.ChecksSdkIntAtLeast;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
@@ -924,5 +925,13 @@ public final class Utilities {
             }
         }
         return options;
+    }
+
+    public static boolean bothNull(@Nullable Object a, @Nullable Object b) {
+        return a == null && b == null;
+    }
+
+    public static boolean bothNonNull(@Nullable Object a, @Nullable Object b) {
+        return a != null && b != null;
     }
 }
