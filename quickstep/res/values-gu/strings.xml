@@ -35,7 +35,6 @@
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"તમારી હોમ સ્ક્રીનની મનપસંદ પંક્તિમાં ઍપના સુઝાવો મેળવો"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"તમારી સૌથી વધુ વપરાતી ઍપને સીધી હોમ સ્ક્રીન પરથી જ સરળતાથી ઍક્સેસ કરો. સૂચનો તમારા રૂટિનના આધારે બદલાશે. નીચેની પંક્તિમાં રહેલી ઍપ તમારી હોમ સ્ક્રીન પર ખસેડાશે."</string>
     <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"તમારી સૌથી વધુ વપરાતી ઍપને સીધી હોમ સ્ક્રીન પરથી જ સરળતાથી ઍક્સેસ કરો. સૂચનો તમારા રૂટિનના આધારે બદલાશે. મનપસંદ પંક્તિમાં રહેલી ઍપ તમારી હોમ સ્ક્રીન પર ખસેડાશે."</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"તમારી સૌથી વધુ વપરાતી ઍપને સીધી હોમ સ્ક્રીન પરથી જ સરળતાથી ઍક્સેસ કરો. સૂચનો તમારા રૂટિનના આધારે બદલાશે. નીચેની પંક્તિમાં રહેલી ઍપ નવા ફોલ્ડરમાં ખસેડાશે."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"ઍપ અંગેના સુઝાવો મેળવો"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"ના, આભાર"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"સેટિંગ"</string>
