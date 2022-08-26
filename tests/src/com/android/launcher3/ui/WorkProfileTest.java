@@ -118,7 +118,6 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
     }
 
     @Test
-    @ScreenRecord // b/242163822
     public void toggleWorks() {
         assumeTrue(mWorkProfileSetupSuccessful);
         waitForWorkTabSetup();

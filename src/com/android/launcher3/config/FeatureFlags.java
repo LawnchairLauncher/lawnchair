@@ -63,6 +63,11 @@ public final class FeatureFlags {
      * Declare a new ToggleableFlag below. Give it a unique key (e.g. "QSB_ON_FIRST_SCREEN"),
      *    and set a default value for the flag. This will be the default value on Debug builds.
      */
+    public static final BooleanFlag ENABLE_INPUT_CONSUMER_REASON_LOGGING = getDebugFlag(
+            "ENABLE_INPUT_CONSUMER_REASON_LOGGING",
+            false,
+            "Log the reason why an Input Consumer was selected for a gesture.");
+
     // When enabled the promise icon is visible in all apps while installation an app.
     public static final BooleanFlag PROMISE_APPS_IN_ALL_APPS = getDebugFlag(
             "PROMISE_APPS_IN_ALL_APPS", false, "Add promise icon in all-apps");
