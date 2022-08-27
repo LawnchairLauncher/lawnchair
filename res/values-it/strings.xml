@@ -59,7 +59,6 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Cerca nelle app"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Caricamento delle app…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Nessuna app trovata corrispondente a \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"Cerca altre app"</string>
     <string name="label_application" msgid="8531721983832654978">"App"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"Tutte le app"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Notifiche"</string>
