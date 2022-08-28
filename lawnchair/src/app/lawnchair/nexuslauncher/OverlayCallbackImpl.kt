@@ -84,7 +84,7 @@ class OverlayCallbackImpl(private val mLauncher: LawnchairLauncher) : LauncherOv
         mClient.onStop()
     }
 
-    override fun onActivitySaveInstanceState(activity: Activity, bundle: Bundle?) = Unit
+    override fun onActivitySaveInstanceState(activity: Activity, bundle: Bundle) = Unit
 
     override fun onActivityDestroyed(activity: Activity) {
         mClient.onDestroy()
