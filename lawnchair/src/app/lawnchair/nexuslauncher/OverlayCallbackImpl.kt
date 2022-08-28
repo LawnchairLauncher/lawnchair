@@ -7,6 +7,7 @@ import android.os.Bundle
 import app.lawnchair.FeedBridge
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.preferences2.PreferenceManager2
+import com.android.launcher3.Launcher
 import com.android.launcher3.Utilities
 import com.android.systemui.plugins.shared.LauncherOverlayManager
 import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlay
@@ -22,7 +23,7 @@ import com.patrykmichalik.opto.core.firstBlocking
  * Implements [LauncherOverlay] and passes all the corresponding events to [LauncherClient],
  * see [LauncherClientService.setClient].
  *
- * Implements [LauncherClientCallbacks] and sends all the corresponding callbacks to [ ].
+ * Implements [LauncherClientCallbacks] and sends all the corresponding callbacks to [Launcher].
  */
 class OverlayCallbackImpl(private val mLauncher: LawnchairLauncher) : LauncherOverlay,
     LauncherClientCallbacks, LauncherOverlayManager, ISerializableScrollCallback {
