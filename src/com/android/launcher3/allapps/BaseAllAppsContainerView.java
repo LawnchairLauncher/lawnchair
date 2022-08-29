@@ -107,12 +107,13 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
                     updateHeaderScroll(((AllAppsRecyclerView) recyclerView).getCurrentScrollY());
                 }
             };
-    private final WorkProfileManager mWorkManager;
+
+    protected final WorkProfileManager mWorkManager;
 
     private final Paint mNavBarScrimPaint;
     private int mNavBarScrimHeight = 0;
 
-    private AllAppsPagedView mViewPager;
+    protected AllAppsPagedView mViewPager;
     private SearchRecyclerView mSearchRecyclerView;
 
     protected FloatingHeaderView mHeader;
@@ -349,7 +350,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
      * The container for A-Z apps (the ViewPager for main+work tabs, or main RV). This is currently
      * hidden while searching.
      **/
-    private View getAppsRecyclerViewContainer() {
+    protected View getAppsRecyclerViewContainer() {
         return mViewPager != null ? mViewPager : findViewById(R.id.apps_list_view);
     }
 
@@ -527,7 +528,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         mAllAppsStore.registerIconContainer(mAH.get(AdapterHolder.WORK).mRecyclerView);
     }
 
-    private void updateSearchResultsVisibility() {
+    protected void updateSearchResultsVisibility() {
         if (isSearching()) {
             getSearchRecyclerView().setVisibility(VISIBLE);
             getAppsRecyclerViewContainer().setVisibility(GONE);
