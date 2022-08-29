@@ -281,6 +281,10 @@ public final class FeatureFlags {
             "ENABLE_SECONDARY_DEEP_SHORTCUTS", false,
             "Enable deep shortcut pinning within secondary display");
 
+    public static final BooleanFlag FOLDABLE_WORKSPACE_REORDER = getDebugFlag(
+            "FOLDABLE_WORKSPACE_REORDER", false,
+            "In foldables, when reordering the icons and widgets, is now going to use both sides");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
