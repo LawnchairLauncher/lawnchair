@@ -106,6 +106,7 @@ import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.WallpaperOffsetInterpolator;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.LauncherAppWidgetHost;
 import com.android.launcher3.widget.LauncherAppWidgetHost.ProviderChangedListener;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
@@ -151,6 +152,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     private static final int ADJACENT_SCREEN_DROP_DURATION = 300;
 
     public static final int DEFAULT_PAGE = 0;
+
+    private final int mAllAppsIconSize;
 
     private LayoutTransition mLayoutTransition;
     @Thunk final WallpaperManager mWallpaperManager;
@@ -286,7 +289,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mLauncher = Launcher.getLauncher(context);
         mStateTransitionAnimation = new WorkspaceStateTransitionAnimation(mLauncher, this);
         mWallpaperManager = WallpaperManager.getInstance(context);
-
+        mAllAppsIconSize = mLauncher.getDeviceProfile().allAppsIconSizePx;
         mWallpaperOffset = new WallpaperOffsetInterpolator(this);
 
         setHapticFeedbackEnabled(false);
@@ -1671,8 +1674,14 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             mDragSourceInternal = (ShortcutAndWidgetContainer) child.getParent();
         }
 
-        if (child instanceof BubbleTextView && !dragOptions.isAccessibleDrag) {
-            dragOptions.preDragCondition = ((BubbleTextView) child).startLongPressAction();
+        if (child instanceof BubbleTextView) {
+            BubbleTextView btv = (BubbleTextView) child;
+            if (!dragOptions.isAccessibleDrag) {
+                dragOptions.preDragCondition = btv.startLongPressAction();
+            }
+            if (btv.isDisplaySearchResult()) {
+                dragOptions.preDragEndScale = (float) mAllAppsIconSize / btv.getIconSize();
+            }
         }
 
         final DragView dv;

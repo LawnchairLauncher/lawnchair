@@ -942,6 +942,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         return mIconSize;
     }
 
+    public boolean isDisplaySearchResult() {
+        return mDisplay == DISPLAY_SEARCH_RESULT ||
+                mDisplay == DISPLAY_SEARCH_RESULT_SMALL;
+    }
+
     private void updateTranslation() {
         super.setTranslationX(mTranslationForReorderBounce.x + mTranslationForReorderPreview.x
                 + mTranslationForMoveFromCenterAnimation.x
