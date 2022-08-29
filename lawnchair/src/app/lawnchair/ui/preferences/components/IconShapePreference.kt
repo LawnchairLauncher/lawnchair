@@ -51,12 +51,17 @@ fun NavGraphBuilder.iconShapeGraph(route: String) {
 fun iconShapeEntries(context: Context): List<ListPreferenceEntry<IconShape>> {
     val systemShape = IconShapeManager.getSystemIconShape(context)
     return listOf(
+        // Organized as seen in /lawnchair/res/values/strings.xml
         ListPreferenceEntry(systemShape) { stringResource(id = R.string.icon_shape_system) },
         ListPreferenceEntry(IconShape.Circle) { stringResource(id = R.string.icon_shape_circle) },
         ListPreferenceEntry(IconShape.Cylinder) { stringResource(id = R.string.icon_shape_cylinder) },
+        ListPreferenceEntry(IconShape.Diamond) { stringResource(id = R.string.icon_shape_diamond) },
+        ListPreferenceEntry(IconShape.Egg) { stringResource(id = R.string.icon_shape_egg) },
         ListPreferenceEntry(IconShape.Cupertino) { stringResource(id = R.string.icon_shape_cupertino) },
+        ListPreferenceEntry(IconShape.Octagon) { stringResource(id = R.string.icon_shape_octagon) },
         ListPreferenceEntry(IconShape.Sammy) { stringResource(id = R.string.icon_shape_sammy) },
         ListPreferenceEntry(IconShape.RoundedSquare) { stringResource(id = R.string.icon_shape_rounded_square) },
+        ListPreferenceEntry(IconShape.SharpSquare) { stringResource(id = R.string.icon_shape_sharp_square) },
         ListPreferenceEntry(IconShape.Square) { stringResource(id = R.string.icon_shape_square) },
         ListPreferenceEntry(IconShape.Squircle) { stringResource(id = R.string.icon_shape_squircle) },
         ListPreferenceEntry(IconShape.Teardrop) { stringResource(id = R.string.icon_shape_teardrop) },

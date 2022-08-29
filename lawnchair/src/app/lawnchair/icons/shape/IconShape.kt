@@ -206,6 +206,19 @@ open class IconShape(val topLeft: Corner,
         }
     }
 
+    object SharpSquare : IconShape(IconCornerShape.arc,
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        0f, 0f, 0f, 0f) {
+
+        override val windowTransitionRadius = 0f
+
+        override fun toString(): String {
+            return "sharpSquare"
+        }
+    }
+
     object RoundedSquare : IconShape(IconCornerShape.arc,
         IconCornerShape.arc,
         IconCornerShape.arc,
@@ -279,18 +292,59 @@ open class IconShape(val topLeft: Corner,
         }
     }
 
+    object Octagon : IconShape(IconCornerShape.cut,
+        IconCornerShape.cut,
+        IconCornerShape.cut,
+        IconCornerShape.cut,
+        .5f, .5f, .5f, .5f) {
+
+        override fun toString(): String {
+            return "octagon"
+        }
+    }
+
+    object Diamond : IconShape(IconCornerShape.cut,
+        IconCornerShape.cut,
+        IconCornerShape.cut,
+        IconCornerShape.cut,
+        1f, 1f, 1f, 1f) {
+
+        override val windowTransitionRadius = 0f
+
+        override fun toString(): String {
+            return "diamond"
+        }
+    }
+
+    object Egg : IconShape(IconCornerShape.arc,
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        1f, 1f, 0.75f, 0.75f) {
+
+        override val windowTransitionRadius = 0.85f
+
+        override fun toString(): String {
+            return "egg"
+        }
+    }
+
     companion object {
 
         fun fromString(value: String): IconShape? {
             return when (value) {
                 "circle" -> Circle
                 "square" -> Square
+                "sharpSquare" -> SharpSquare
                 "roundedSquare" -> RoundedSquare
                 "squircle" -> Squircle
                 "sammy" -> Sammy
                 "teardrop" -> Teardrop
                 "cylinder" -> Cylinder
                 "cupertino" -> Cupertino
+                "octagon" -> Octagon
+                "diamond" -> Diamond
+                "egg" -> Egg
                 "" -> null
                 else -> try {
                     parseCustomShape(value)
