@@ -272,6 +272,10 @@ public final class FeatureFlags {
     public static final BooleanFlag CONTINUOUS_VIEW_TREE_CAPTURE = getDebugFlag(
             "CONTINUOUS_VIEW_TREE_CAPTURE", false, "Capture View tree every frame");
 
+    public static final BooleanFlag FOLDABLE_WORKSPACE_REORDER = getDebugFlag(
+            "FOLDABLE_WORKSPACE_REORDER", true,
+            "In foldables, when reordering the icons and widgets, is now going to use both sides");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
