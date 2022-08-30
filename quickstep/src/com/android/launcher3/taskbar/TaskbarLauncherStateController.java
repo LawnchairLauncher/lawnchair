@@ -95,6 +95,10 @@ import java.util.function.Supplier;
     private boolean mCanSyncViews;
 
     private final Consumer<Float> mIconAlphaForHomeConsumer = alpha -> {
+        /*
+         * Hide Launcher Hotseat icons when Taskbar icons have opacity. Both icon sets
+         * should not be visible at the same time.
+         */
         mLauncher.getHotseat().setIconsAlpha(alpha > 0 ? 0 : 1);
         mLauncher.getHotseat().setQsbAlpha(
                 mLauncher.getDeviceProfile().isQsbInline && alpha > 0 ? 0 : 1);
