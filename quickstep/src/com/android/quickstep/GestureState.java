@@ -19,6 +19,7 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKG
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.SET_END_TARGET;
 
 import android.annotation.Nullable;
 import android.annotation.TargetApi;
@@ -30,6 +31,7 @@ import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.tracing.GestureStateProto;
 import com.android.launcher3.tracing.SwipeHandlerProto;
 import com.android.quickstep.TopTaskTracker.CachedTaskInfo;
+import com.android.quickstep.util.ActiveGestureErrorDetector;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -153,7 +155,8 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         mHomeIntent = componentObserver.getHomeIntent();
         mOverviewIntent = componentObserver.getOverviewIntent();
         mActivityInterface = componentObserver.getActivityInterface();
-        mStateCallback = new MultiStateCallback(STATE_NAMES.toArray(new String[0]));
+        mStateCallback = new MultiStateCallback(
+                STATE_NAMES.toArray(new String[0]), GestureState::getTrackedEventForState);
         mGestureId = gestureId;
     }
 
@@ -175,8 +178,19 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         mHomeIntent = new Intent();
         mOverviewIntent = new Intent();
         mActivityInterface = null;
-        mStateCallback = new MultiStateCallback(STATE_NAMES.toArray(new String[0]));
+        mStateCallback = new MultiStateCallback(
+                STATE_NAMES.toArray(new String[0]), GestureState::getTrackedEventForState);
         mGestureId = -1;
+    }
+
+    @Nullable
+    private static ActiveGestureErrorDetector.GestureEvent getTrackedEventForState(int stateFlag) {
+        if (stateFlag == STATE_END_TARGET_ANIMATION_FINISHED) {
+            return ActiveGestureErrorDetector.GestureEvent.STATE_END_TARGET_ANIMATION_FINISHED;
+        } else if (stateFlag == STATE_RECENTS_SCROLLING_FINISHED) {
+            return ActiveGestureErrorDetector.GestureEvent.STATE_RECENTS_SCROLLING_FINISHED;
+        }
+        return null;
     }
 
     /**
@@ -311,7 +325,9 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     public void setEndTarget(GestureEndTarget target, boolean isAtomic) {
         mEndTarget = target;
         mStateCallback.setState(STATE_END_TARGET_SET);
-        ActiveGestureLog.INSTANCE.addLog("setEndTarget " + mEndTarget);
+        ActiveGestureLog.INSTANCE.addLog(
+                /* event= */ "setEndTarget " + mEndTarget,
+                /* gestureEvent= */ SET_END_TARGET);
         if (isAtomic) {
             mStateCallback.setState(STATE_END_TARGET_ANIMATION_FINISHED);
         }
