@@ -18,12 +18,16 @@ package com.android.quickstep;
 
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
+import android.annotation.NonNull;
+import android.annotation.UserIdInt;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.UserHandle;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.ComponentKey;
@@ -47,16 +51,32 @@ public final class TaskUtils {
      * TODO: remove this once we switch to getting the icon and label from IconCache.
      */
     public static CharSequence getTitle(Context context, Task task) {
-        UserHandle user = UserHandle.of(task.key.userId);
+        return getTitle(context, task.key.userId, task.getTopComponent().getPackageName());
+    }
+
+    public static CharSequence getTitle(
+            @NonNull Context context,
+            @UserIdInt @Nullable Integer userId,
+            @Nullable String packageName) {
+        if (userId == null || packageName == null) {
+            if (userId == null) {
+                Log.e(TAG, "Failed to get title; missing userId");
+            }
+            if (packageName == null) {
+                Log.e(TAG, "Failed to get title; missing packageName");
+            }
+            return "";
+        }
+        UserHandle user = UserHandle.of(userId);
         ApplicationInfo applicationInfo = new PackageManagerHelper(context)
-                .getApplicationInfo(task.getTopComponent().getPackageName(), user, 0);
+                .getApplicationInfo(packageName, user, 0);
         if (applicationInfo == null) {
-            Log.e(TAG, "Failed to get title for task " + task);
+            Log.e(TAG, "Failed to get title for userId=" + userId + ", packageName=" + packageName);
             return "";
         }
         PackageManager packageManager = context.getPackageManager();
         return packageManager.getUserBadgedLabel(
-            applicationInfo.loadLabel(packageManager), user);
+                applicationInfo.loadLabel(packageManager), user);
     }
 
     public static ComponentKey getLaunchComponentKeyForTask(Task.TaskKey taskKey) {
