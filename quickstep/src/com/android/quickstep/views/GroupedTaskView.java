@@ -319,6 +319,6 @@ public class GroupedTaskView extends TaskView {
     protected void applyThumbnailSplashAlpha() {
         super.applyThumbnailSplashAlpha();
         mSnapshotView2.setSplashAlpha(
-                Utilities.mapToRange(mOverviewProgress, 0f, 1f, 1f, 0f, LINEAR));
+                Utilities.mapToRange(mTaskThumbnailSplashAlpha, 0f, 1f, 1f, 0f, LINEAR));
     }
 }

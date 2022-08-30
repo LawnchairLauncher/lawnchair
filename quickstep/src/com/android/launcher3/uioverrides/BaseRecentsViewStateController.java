@@ -30,15 +30,16 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TR
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
 import static com.android.quickstep.views.RecentsView.FIRST_FLOATING_TASK_TRANSLATE_OFFSCREEN;
-import static com.android.quickstep.views.RecentsView.OVERVIEW_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_GRID_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 import static com.android.quickstep.views.RecentsView.SPLIT_INSTRUCTIONS_FADE;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
+import static com.android.quickstep.views.RecentsView.TASK_THUMBNAIL_SPLASH_ALPHA;
 
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.FloatProperty;
+import android.view.animation.Interpolator;
 
 import androidx.annotation.NonNull;
 
@@ -78,7 +79,7 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
         getTaskModalnessProperty().set(mRecentsView, state.getOverviewModalness());
         RECENTS_GRID_PROGRESS.set(mRecentsView,
                 state.displayOverviewTasksAsGrid(mLauncher.getDeviceProfile()) ? 1f : 0f);
-        OVERVIEW_PROGRESS.set(mRecentsView, state == LauncherState.OVERVIEW ? 1f : 0f);
+        TASK_THUMBNAIL_SPLASH_ALPHA.set(mRecentsView, state.showTaskThumbnailSplash() ? 1f : 0f);
     }
 
     @Override
@@ -157,13 +158,19 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
                 mRecentsView, getTaskModalnessProperty(),
                 toState.getOverviewModalness(),
                 config.getInterpolator(ANIM_OVERVIEW_MODAL, LINEAR));
-        boolean showAsGrid = toState.displayOverviewTasksAsGrid(mLauncher.getDeviceProfile());
-        setter.setFloat(mRecentsView, RECENTS_GRID_PROGRESS, showAsGrid ? 1f : 0f,
-                showAsGrid ? INSTANT : FINAL_FRAME);
 
-        boolean toOverview = toState == LauncherState.OVERVIEW;
-        setter.setFloat(mRecentsView, OVERVIEW_PROGRESS, toOverview ? 1f : 0f,
-                toOverview ? INSTANT : FINAL_FRAME);
+        LauncherState fromState = mLauncher.getStateManager().getState();
+        setter.setFloat(mRecentsView, TASK_THUMBNAIL_SPLASH_ALPHA,
+                toState.showTaskThumbnailSplash() ? 1f : 0f,
+                !toState.showTaskThumbnailSplash() && fromState == LauncherState.QUICK_SWITCH
+                        ? LINEAR : INSTANT);
+
+        boolean showAsGrid = toState.displayOverviewTasksAsGrid(mLauncher.getDeviceProfile());
+        Interpolator gridProgressInterpolator = showAsGrid
+                ? fromState == LauncherState.QUICK_SWITCH ? LINEAR : INSTANT
+                : FINAL_FRAME;
+        setter.setFloat(mRecentsView, RECENTS_GRID_PROGRESS, showAsGrid ? 1f : 0f,
+                gridProgressInterpolator);
     }
 
     abstract FloatProperty getTaskModalnessProperty();
