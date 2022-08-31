@@ -1027,75 +1027,87 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         return false;
     }
 
-    private GestureEndTarget calculateEndTarget(PointF velocity, float endVelocity,
-            boolean isFlingY, boolean isCancel) {
+    private GestureEndTarget calculateEndTarget(
+            PointF velocity, float endVelocity, boolean isFlingY, boolean isCancel) {
+
         if (mGestureState.isHandlingAtomicEvent()) {
-            // Button mode, this is only used to go to recents
+            // Button mode, this is only used to go to recents.
             return RECENTS;
         }
-        final GestureEndTarget endTarget;
-        final boolean goingToNewTask;
-        if (mRecentsView != null) {
-            if (!hasTargets()) {
-                // If there are no running tasks, then we can assume that this is a continuation of
-                // the last gesture, but after the recents animation has finished
-                goingToNewTask = true;
-            } else {
-                final int runningTaskIndex = mRecentsView.getRunningTaskIndex();
-                final int taskToLaunch = mRecentsView.getNextPage();
-                goingToNewTask = runningTaskIndex >= 0 && taskToLaunch != runningTaskIndex;
-            }
-        } else {
-            goingToNewTask = false;
-        }
-        final boolean reachedOverviewThreshold = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW;
-        final boolean isFlingX = Math.abs(velocity.x) > mContext.getResources()
-                .getDimension(R.dimen.quickstep_fling_threshold_speed);
-        if (!isFlingY) {
-            if (isCancel) {
-                endTarget = LAST_TASK;
-            } else if (mDeviceState.isFullyGesturalNavMode()) {
-                if (goingToNewTask && isFlingX) {
-                    // Flinging towards new task takes precedence over mIsMotionPaused (which only
-                    // checks y-velocity).
-                    endTarget = NEW_TASK;
-                } else if (mIsMotionPaused) {
-                    endTarget = RECENTS;
-                } else if (goingToNewTask) {
-                    endTarget = NEW_TASK;
-                } else {
-                    endTarget = !reachedOverviewThreshold ? LAST_TASK : HOME;
-                }
-            } else {
-                endTarget = reachedOverviewThreshold && mGestureStarted
-                        ? RECENTS
-                        : goingToNewTask
-                                ? NEW_TASK
-                                : LAST_TASK;
-            }
-        } else {
-            // If swiping at a diagonal, base end target on the faster velocity.
-            boolean isSwipeUp = endVelocity < 0;
-            boolean willGoToNewTaskOnSwipeUp =
-                    goingToNewTask && Math.abs(velocity.x) > Math.abs(endVelocity);
 
-            if (mDeviceState.isFullyGesturalNavMode() && isSwipeUp && !willGoToNewTaskOnSwipeUp) {
-                endTarget = HOME;
-            } else if (mDeviceState.isFullyGesturalNavMode() && isSwipeUp) {
-                // If swiping at a diagonal, base end target on the faster velocity.
-                endTarget = NEW_TASK;
-            } else if (isSwipeUp) {
-                endTarget = !reachedOverviewThreshold && willGoToNewTaskOnSwipeUp
-                        ? NEW_TASK : RECENTS;
-            } else {
-                endTarget = goingToNewTask ? NEW_TASK : LAST_TASK;
-            }
+        GestureEndTarget endTarget;
+        if (isCancel) {
+            endTarget = LAST_TASK;
+        } else if (isFlingY) {
+            endTarget = calculateEndTargetForFlingY(velocity, endVelocity);
+        } else {
+            endTarget = calculateEndTargetForNonFling(velocity);
         }
 
-        if (mDeviceState.isOverviewDisabled() && (endTarget == RECENTS || endTarget == LAST_TASK)) {
+        if (mDeviceState.isOverviewDisabled() && endTarget == RECENTS) {
             return LAST_TASK;
         }
+
         return endTarget;
+    }
+
+    private GestureEndTarget calculateEndTargetForFlingY(PointF velocity, float endVelocity) {
+        final boolean isScrollingToNewTask = isScrollingToNewTask();
+        final boolean isSwipeUp = endVelocity < 0;
+        if (!isSwipeUp) {
+            return isScrollingToNewTask ? NEW_TASK : LAST_TASK;
+        }
+
+        // If swiping upward at a diagonal, base end target on the faster velocity direction.
+        boolean willGoToNewTask =
+                isScrollingToNewTask && Math.abs(velocity.x) > Math.abs(endVelocity);
+        if (!mDeviceState.isFullyGesturalNavMode()) {
+            return (!hasReachedOverviewThreshold() && willGoToNewTask) ? NEW_TASK : RECENTS;
+        }
+        return willGoToNewTask ? NEW_TASK : HOME;
+    }
+
+    private GestureEndTarget calculateEndTargetForNonFling(PointF velocity) {
+        final boolean isScrollingToNewTask = isScrollingToNewTask();
+        final boolean reachedOverviewThreshold = hasReachedOverviewThreshold();
+        if (!mDeviceState.isFullyGesturalNavMode()) {
+            return reachedOverviewThreshold && mGestureStarted
+                    ? RECENTS
+                    : (isScrollingToNewTask ? NEW_TASK : LAST_TASK);
+        }
+
+        // Fully gestural mode.
+        final boolean isFlingX = Math.abs(velocity.x) > mContext.getResources()
+                .getDimension(R.dimen.quickstep_fling_threshold_speed);
+        if (isScrollingToNewTask && isFlingX) {
+            // Flinging towards new task takes precedence over mIsMotionPaused (which only
+            // checks y-velocity).
+            return NEW_TASK;
+        } else if (mIsMotionPaused) {
+            return RECENTS;
+        } else if (isScrollingToNewTask) {
+            return NEW_TASK;
+        } else if (reachedOverviewThreshold) {
+            return HOME;
+        }
+        return LAST_TASK;
+    }
+
+    private boolean isScrollingToNewTask() {
+        if (mRecentsView == null) {
+            return false;
+        }
+        if (!hasTargets()) {
+            // If there are no running tasks, then we can assume that this is a continuation of
+            // the last gesture, but after the recents animation has finished.
+            return true;
+        }
+        int runningTaskIndex = mRecentsView.getRunningTaskIndex();
+        return runningTaskIndex >= 0 && mRecentsView.getNextPage() != runningTaskIndex;
+    }
+
+    private boolean hasReachedOverviewThreshold() {
+        return mCurrentShift.value > MIN_PROGRESS_FOR_OVERVIEW;
     }
 
     @UiThread

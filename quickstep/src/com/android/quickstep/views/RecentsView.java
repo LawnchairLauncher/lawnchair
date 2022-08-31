@@ -381,19 +381,19 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             };
 
     /**
-     * Progress to and from the OVERVIEW state, where being in OverviewState has a value of 1, and
-     * being in any other LauncherState has a value of 0.
+     * Alpha of the task thumbnail splash, where being in BackgroundAppState has a value of 1, and
+     * being in any other state has a value of 0.
      */
-    public static final FloatProperty<RecentsView> OVERVIEW_PROGRESS =
-            new FloatProperty<RecentsView>("overviewProgress") {
+    public static final FloatProperty<RecentsView> TASK_THUMBNAIL_SPLASH_ALPHA =
+            new FloatProperty<RecentsView>("taskThumbnailSplashAlpha") {
                 @Override
-                public void setValue(RecentsView view, float overviewProgress) {
-                    view.setOverviewProgress(overviewProgress);
+                public void setValue(RecentsView view, float taskThumbnailSplashAlpha) {
+                    view.setTaskThumbnailSplashAlpha(taskThumbnailSplashAlpha);
                 }
 
                 @Override
                 public Float get(RecentsView view) {
-                    return view.mOverviewProgress;
+                    return view.mTaskThumbnailSplashAlpha;
                 }
             };
 
@@ -520,7 +520,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected float mTaskViewsSecondarySplitTranslation = 0;
     // Progress from 0 to 1 where 0 is a carousel and 1 is a 2 row grid.
     private float mGridProgress = 0;
-    private float mOverviewProgress = 0;
+    private float mTaskThumbnailSplashAlpha = 0;
     private boolean mShowAsGridLastOnLayout = false;
     private final IntSet mTopRowIdSet = new IntSet();
 
@@ -1647,6 +1647,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 taskView.setStableAlpha(mContentAlpha);
                 taskView.setFullscreenProgress(mFullscreenProgress);
                 taskView.setModalness(mTaskModalness);
+                taskView.setTaskThumbnailSplashAlpha(mTaskThumbnailSplashAlpha);
             }
         }
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
@@ -2250,8 +2251,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             updateGridProperties();
         }
 
-        if (mSizeStrategy.stateFromGestureEndTarget(endTarget)
-                .displayOverviewTasksAsGrid(mActivity.getDeviceProfile())) {
+        BaseState<?> endState = mSizeStrategy.stateFromGestureEndTarget(endTarget);
+        if (endState.displayOverviewTasksAsGrid(mActivity.getDeviceProfile())) {
             TaskView runningTaskView = getRunningTaskView();
             float runningTaskPrimaryGridTranslation = 0;
             if (runningTaskView != null) {
@@ -2275,11 +2276,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 }
             }
         }
-        int overviewProgress = isOverviewEndTarget ? 1 : 0;
+        int splashAlpha = endState.showTaskThumbnailSplash() ? 1 : 0;
         if (animatorSet == null) {
-            setOverviewProgress(overviewProgress);
+            setTaskThumbnailSplashAlpha(splashAlpha);
         } else {
-            animatorSet.play(ObjectAnimator.ofFloat(this, OVERVIEW_PROGRESS, overviewProgress));
+            animatorSet.play(
+                    ObjectAnimator.ofFloat(this, TASK_THUMBNAIL_SPLASH_ALPHA, splashAlpha));
         }
     }
 
@@ -2730,15 +2732,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mClearAllButton.setGridProgress(gridProgress);
     }
 
-    private void setOverviewProgress(float overviewProgress) {
+    private void setTaskThumbnailSplashAlpha(float taskThumbnailSplashAlpha) {
         int taskCount = getTaskViewCount();
         if (taskCount == 0) {
             return;
         }
 
-        mOverviewProgress = overviewProgress;
+        mTaskThumbnailSplashAlpha = taskThumbnailSplashAlpha;
         for (int i = 0; i < taskCount; i++) {
-            requireTaskViewAt(i).setOverviewProgress(overviewProgress);
+            requireTaskViewAt(i).setTaskThumbnailSplashAlpha(taskThumbnailSplashAlpha);
         }
     }
 
@@ -4341,6 +4343,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * If launching one of the adjacent tasks, parallax the center task and other adjacent task
      * to the right.
      */
+    @SuppressLint("Recycle")
     public AnimatorSet createAdjacentPageAnimForTaskLaunch(TaskView tv) {
         AnimatorSet anim = new AnimatorSet();
 
@@ -4384,7 +4387,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         properties));
             }
         }
-        anim.play(ObjectAnimator.ofFloat(recentsView, OVERVIEW_PROGRESS, 1, 0));
+        anim.play(ObjectAnimator.ofFloat(recentsView, TASK_THUMBNAIL_SPLASH_ALPHA, 0, 1));
         return anim;
     }
 
@@ -4444,7 +4447,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     BACKGROUND_APP.getDepth(mActivity));
             anim.play(depthAnimator);
         }
-        anim.play(ObjectAnimator.ofFloat(this, OVERVIEW_PROGRESS, 1f, 0f));
+        anim.play(ObjectAnimator.ofFloat(this, TASK_THUMBNAIL_SPLASH_ALPHA, 0f, 1f));
 
         anim.play(progressAnim);
         anim.setInterpolator(interpolator);
