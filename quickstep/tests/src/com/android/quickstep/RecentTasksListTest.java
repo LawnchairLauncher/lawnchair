@@ -70,7 +70,7 @@ public class RecentTasksListTest {
 
     @Test
     public void loadTasksInBackground_onlyKeys_noValidTaskDescription() {
-        GroupedRecentTaskInfo recentTaskInfos = new GroupedRecentTaskInfo(
+        GroupedRecentTaskInfo recentTaskInfos = GroupedRecentTaskInfo.forSplitTasks(
                 new ActivityManager.RecentTaskInfo(), new ActivityManager.RecentTaskInfo(), null);
         when(mockSystemUiProxy.getRecentTasks(anyInt(), anyInt()))
                 .thenReturn(new ArrayList<>(Collections.singletonList(recentTaskInfos)));
@@ -90,8 +90,8 @@ public class RecentTasksListTest {
         task1.taskDescription = new ActivityManager.TaskDescription(taskDescription);
         ActivityManager.RecentTaskInfo task2 = new ActivityManager.RecentTaskInfo();
         task2.taskDescription = new ActivityManager.TaskDescription();
-        GroupedRecentTaskInfo recentTaskInfos = new GroupedRecentTaskInfo(
-                task1, task2, null);
+        GroupedRecentTaskInfo recentTaskInfos = GroupedRecentTaskInfo.forSplitTasks(task1, task2,
+                null);
         when(mockSystemUiProxy.getRecentTasks(anyInt(), anyInt()))
                 .thenReturn(new ArrayList<>(Collections.singletonList(recentTaskInfos)));
 
