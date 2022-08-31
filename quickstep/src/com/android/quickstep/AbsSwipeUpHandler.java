@@ -1077,15 +1077,16 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     private GestureEndTarget calculateEndTargetForFlingY(PointF velocity, float endVelocity) {
-        final boolean isScrollingToNewTask = isScrollingToNewTask();
+        // If swiping at a diagonal, base end target on the faster velocity direction.
+        final boolean willGoToNewTask =
+                isScrollingToNewTask() && Math.abs(velocity.x) > Math.abs(endVelocity);
         final boolean isSwipeUp = endVelocity < 0;
         if (!isSwipeUp) {
-            return isScrollingToNewTask ? NEW_TASK : LAST_TASK;
+            final boolean isCenteredOnNewTask =
+                    mRecentsView.getDestinationPage() != mRecentsView.getRunningTaskIndex();
+            return willGoToNewTask || isCenteredOnNewTask ? NEW_TASK : LAST_TASK;
         }
 
-        // If swiping upward at a diagonal, base end target on the faster velocity direction.
-        boolean willGoToNewTask =
-                isScrollingToNewTask && Math.abs(velocity.x) > Math.abs(endVelocity);
         if (!mDeviceState.isFullyGesturalNavMode()) {
             return (!hasReachedOverviewThreshold() && willGoToNewTask) ? NEW_TASK : RECENTS;
         }
@@ -1212,6 +1213,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     duration = Math.max(duration, mRecentsView.getScroller().getDuration());
                 }
             }
+        } else if (endTarget == LAST_TASK && mRecentsView != null
+                && mRecentsView.getNextPage() != mRecentsView.getRunningTaskIndex()) {
+            mRecentsView.snapToPage(mRecentsView.getRunningTaskIndex(), Math.toIntExact(duration));
         }
 
         // Let RecentsView handle the scrolling to the task, which we launch in startNewTask()
