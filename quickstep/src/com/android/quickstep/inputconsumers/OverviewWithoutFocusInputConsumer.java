@@ -32,7 +32,6 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationDeviceState;
-import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.TriggerSwipeUpTouchTracker;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
@@ -79,7 +78,6 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer,
     @Override
     public void onSwipeUp(boolean wasFling, PointF finalVelocity) {
         startHomeIntentSafely(mContext, mGestureState.getHomeIntent(), null);
-        ActiveGestureLog.INSTANCE.addLog("startQuickstep");
         BaseActivity activity = BaseDraggingActivity.fromContext(mContext);
         int state = (mGestureState != null && mGestureState.getEndTarget() != null)
                 ? mGestureState.getEndTarget().containerType

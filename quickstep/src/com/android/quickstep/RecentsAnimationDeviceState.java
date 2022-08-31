@@ -580,12 +580,15 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
                 && ((mSystemUiStateFlags & SYSUI_STATE_IME_SHOWING) != 0);
     }
 
+    public String getSystemUiStateString() {
+        return  QuickStepContract.getSystemUiStateString(mSystemUiStateFlags);
+    }
+
     public void dump(PrintWriter pw) {
         pw.println("DeviceState:");
         pw.println("  canStartSystemGesture=" + canStartSystemGesture());
         pw.println("  systemUiFlags=" + mSystemUiStateFlags);
-        pw.println("  systemUiFlagsDesc="
-                + QuickStepContract.getSystemUiStateString(mSystemUiStateFlags));
+        pw.println("  systemUiFlagsDesc=" + getSystemUiStateString());
         pw.println("  assistantAvailable=" + mAssistantAvailable);
         pw.println("  assistantDisabled="
                 + QuickStepContract.isAssistantGestureDisabled(mSystemUiStateFlags));

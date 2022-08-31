@@ -46,6 +46,10 @@ import static com.android.quickstep.GestureState.STATE_END_TARGET_SET;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_CANCELED;
 import static com.android.quickstep.GestureState.STATE_RECENTS_SCROLLING_FINISHED;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.CANCEL_RECENTS_ANIMATION;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.FINISH_RECENTS_ANIMATION;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.ON_SETTLED_ON_END_TARGET;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.START_RECENTS_ANIMATION;
 import static com.android.quickstep.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
@@ -100,6 +104,7 @@ import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.BaseActivityInterface.AnimationFactory;
 import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
+import com.android.quickstep.util.ActiveGestureErrorDetector;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
@@ -320,8 +325,21 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         initStateCallbacks();
     }
 
+    @Nullable
+    private static ActiveGestureErrorDetector.GestureEvent getTrackedEventForState(int stateFlag) {
+        if (stateFlag == STATE_GESTURE_STARTED) {
+            return ActiveGestureErrorDetector.GestureEvent.STATE_GESTURE_STARTED;
+        } else if (stateFlag == STATE_GESTURE_COMPLETED) {
+            return ActiveGestureErrorDetector.GestureEvent.STATE_GESTURE_COMPLETED;
+        } else if (stateFlag == STATE_GESTURE_CANCELLED) {
+            return ActiveGestureErrorDetector.GestureEvent.STATE_GESTURE_CANCELLED;
+        }
+        return null;
+    }
+
     private void initStateCallbacks() {
-        mStateCallback = new MultiStateCallback(STATE_NAMES.toArray(new String[0]));
+        mStateCallback = new MultiStateCallback(
+                STATE_NAMES.toArray(new String[0]), AbsSwipeUpHandler::getTrackedEventForState);
 
         mStateCallback.runOnceAtState(STATE_LAUNCHER_PRESENT | STATE_GESTURE_STARTED,
                 this::onLauncherPresentAndGestureStarted);
@@ -800,7 +818,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     public void onRecentsAnimationStart(RecentsAnimationController controller,
             RecentsAnimationTargets targets) {
         super.onRecentsAnimationStart(controller, targets);
-        ActiveGestureLog.INSTANCE.addLog("startRecentsAnimationCallback", targets.apps.length);
+        ActiveGestureLog.INSTANCE.addLog(
+                /* event= */ "startRecentsAnimationCallback",
+                /* extras= */ targets.apps.length,
+                /* gestureEvent= */ START_RECENTS_ANIMATION);
         mRemoteTargetHandles = mTargetGluer.assignTargetsForSplitScreen(mContext, targets);
         mRecentsAnimationController = controller;
         mRecentsAnimationTargets = targets;
@@ -843,7 +864,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     @Override
     public void onRecentsAnimationCanceled(HashMap<Integer, ThumbnailData> thumbnailDatas) {
-        ActiveGestureLog.INSTANCE.addLog("cancelRecentsAnimation");
+        ActiveGestureLog.INSTANCE.addLog(
+                /* event= */ "cancelRecentsAnimation",
+                /* gestureEvent= */ CANCEL_RECENTS_ANIMATION);
         mActivityInitListener.unregister();
         // Cache the recents animation controller so we can defer its cleanup to after having
         // properly cleaned up the screenshot without accidentally using it.
@@ -1010,7 +1033,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 }
                 break;
         }
-        ActiveGestureLog.INSTANCE.addLog("onSettledOnEndTarget " + endTarget);
+        ActiveGestureLog.INSTANCE.addLog(
+                /* event= */ "onSettledOnEndTarget " + endTarget,
+                /* gestureEvent= */ ON_SETTLED_ON_END_TARGET);
     }
 
     /** @return Whether this was the task we were waiting to appear, and thus handled it. */
@@ -1027,75 +1052,88 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         return false;
     }
 
-    private GestureEndTarget calculateEndTarget(PointF velocity, float endVelocity,
-            boolean isFlingY, boolean isCancel) {
+    private GestureEndTarget calculateEndTarget(
+            PointF velocity, float endVelocity, boolean isFlingY, boolean isCancel) {
+
         if (mGestureState.isHandlingAtomicEvent()) {
-            // Button mode, this is only used to go to recents
+            // Button mode, this is only used to go to recents.
             return RECENTS;
         }
-        final GestureEndTarget endTarget;
-        final boolean goingToNewTask;
-        if (mRecentsView != null) {
-            if (!hasTargets()) {
-                // If there are no running tasks, then we can assume that this is a continuation of
-                // the last gesture, but after the recents animation has finished
-                goingToNewTask = true;
-            } else {
-                final int runningTaskIndex = mRecentsView.getRunningTaskIndex();
-                final int taskToLaunch = mRecentsView.getNextPage();
-                goingToNewTask = runningTaskIndex >= 0 && taskToLaunch != runningTaskIndex;
-            }
-        } else {
-            goingToNewTask = false;
-        }
-        final boolean reachedOverviewThreshold = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW;
-        final boolean isFlingX = Math.abs(velocity.x) > mContext.getResources()
-                .getDimension(R.dimen.quickstep_fling_threshold_speed);
-        if (!isFlingY) {
-            if (isCancel) {
-                endTarget = LAST_TASK;
-            } else if (mDeviceState.isFullyGesturalNavMode()) {
-                if (goingToNewTask && isFlingX) {
-                    // Flinging towards new task takes precedence over mIsMotionPaused (which only
-                    // checks y-velocity).
-                    endTarget = NEW_TASK;
-                } else if (mIsMotionPaused) {
-                    endTarget = RECENTS;
-                } else if (goingToNewTask) {
-                    endTarget = NEW_TASK;
-                } else {
-                    endTarget = !reachedOverviewThreshold ? LAST_TASK : HOME;
-                }
-            } else {
-                endTarget = reachedOverviewThreshold && mGestureStarted
-                        ? RECENTS
-                        : goingToNewTask
-                                ? NEW_TASK
-                                : LAST_TASK;
-            }
-        } else {
-            // If swiping at a diagonal, base end target on the faster velocity.
-            boolean isSwipeUp = endVelocity < 0;
-            boolean willGoToNewTaskOnSwipeUp =
-                    goingToNewTask && Math.abs(velocity.x) > Math.abs(endVelocity);
 
-            if (mDeviceState.isFullyGesturalNavMode() && isSwipeUp && !willGoToNewTaskOnSwipeUp) {
-                endTarget = HOME;
-            } else if (mDeviceState.isFullyGesturalNavMode() && isSwipeUp) {
-                // If swiping at a diagonal, base end target on the faster velocity.
-                endTarget = NEW_TASK;
-            } else if (isSwipeUp) {
-                endTarget = !reachedOverviewThreshold && willGoToNewTaskOnSwipeUp
-                        ? NEW_TASK : RECENTS;
-            } else {
-                endTarget = goingToNewTask ? NEW_TASK : LAST_TASK;
-            }
+        GestureEndTarget endTarget;
+        if (isCancel) {
+            endTarget = LAST_TASK;
+        } else if (isFlingY) {
+            endTarget = calculateEndTargetForFlingY(velocity, endVelocity);
+        } else {
+            endTarget = calculateEndTargetForNonFling(velocity);
         }
 
-        if (mDeviceState.isOverviewDisabled() && (endTarget == RECENTS || endTarget == LAST_TASK)) {
+        if (mDeviceState.isOverviewDisabled() && endTarget == RECENTS) {
             return LAST_TASK;
         }
+
         return endTarget;
+    }
+
+    private GestureEndTarget calculateEndTargetForFlingY(PointF velocity, float endVelocity) {
+        // If swiping at a diagonal, base end target on the faster velocity direction.
+        final boolean willGoToNewTask =
+                isScrollingToNewTask() && Math.abs(velocity.x) > Math.abs(endVelocity);
+        final boolean isSwipeUp = endVelocity < 0;
+        if (!isSwipeUp) {
+            final boolean isCenteredOnNewTask =
+                    mRecentsView.getDestinationPage() != mRecentsView.getRunningTaskIndex();
+            return willGoToNewTask || isCenteredOnNewTask ? NEW_TASK : LAST_TASK;
+        }
+
+        if (!mDeviceState.isFullyGesturalNavMode()) {
+            return (!hasReachedOverviewThreshold() && willGoToNewTask) ? NEW_TASK : RECENTS;
+        }
+        return willGoToNewTask ? NEW_TASK : HOME;
+    }
+
+    private GestureEndTarget calculateEndTargetForNonFling(PointF velocity) {
+        final boolean isScrollingToNewTask = isScrollingToNewTask();
+        final boolean reachedOverviewThreshold = hasReachedOverviewThreshold();
+        if (!mDeviceState.isFullyGesturalNavMode()) {
+            return reachedOverviewThreshold && mGestureStarted
+                    ? RECENTS
+                    : (isScrollingToNewTask ? NEW_TASK : LAST_TASK);
+        }
+
+        // Fully gestural mode.
+        final boolean isFlingX = Math.abs(velocity.x) > mContext.getResources()
+                .getDimension(R.dimen.quickstep_fling_threshold_speed);
+        if (isScrollingToNewTask && isFlingX) {
+            // Flinging towards new task takes precedence over mIsMotionPaused (which only
+            // checks y-velocity).
+            return NEW_TASK;
+        } else if (mIsMotionPaused) {
+            return RECENTS;
+        } else if (isScrollingToNewTask) {
+            return NEW_TASK;
+        } else if (reachedOverviewThreshold) {
+            return HOME;
+        }
+        return LAST_TASK;
+    }
+
+    private boolean isScrollingToNewTask() {
+        if (mRecentsView == null) {
+            return false;
+        }
+        if (!hasTargets()) {
+            // If there are no running tasks, then we can assume that this is a continuation of
+            // the last gesture, but after the recents animation has finished.
+            return true;
+        }
+        int runningTaskIndex = mRecentsView.getRunningTaskIndex();
+        return runningTaskIndex >= 0 && mRecentsView.getNextPage() != runningTaskIndex;
+    }
+
+    private boolean hasReachedOverviewThreshold() {
+        return mCurrentShift.value > MIN_PROGRESS_FOR_OVERVIEW;
     }
 
     @UiThread
@@ -1175,6 +1213,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     duration = Math.max(duration, mRecentsView.getScroller().getDuration());
                 }
             }
+        } else if (endTarget == LAST_TASK && mRecentsView != null
+                && mRecentsView.getNextPage() != mRecentsView.getRunningTaskIndex()) {
+            mRecentsView.snapToPage(mRecentsView.getRunningTaskIndex(), Math.toIntExact(duration));
         }
 
         // Let RecentsView handle the scrolling to the task, which we launch in startNewTask()
@@ -1575,7 +1616,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private void resumeLastTask() {
         if (mRecentsAnimationController != null) {
             mRecentsAnimationController.finish(false /* toRecents */, null);
-            ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", false);
+            ActiveGestureLog.INSTANCE.addLog(
+                    /* event= */ "finishRecentsAnimation",
+                    /* extras= */ false,
+                    /* gestureEvent= */ FINISH_RECENTS_ANIMATION);
         }
         doLogGesture(LAST_TASK, null);
         reset();
@@ -1779,7 +1823,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mRecentsAnimationController.finish(true /* toRecents */,
                     () -> mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
         }
-        ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", true);
+        ActiveGestureLog.INSTANCE.addLog(
+                /* event= */ "finishRecentsAnimation",
+                /* extras= */ true,
+                /* gestureEvent= */ FINISH_RECENTS_ANIMATION);
     }
 
     private void finishCurrentTransitionToHome() {
@@ -1791,7 +1838,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             finishRecentsControllerToHome(
                     () -> mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
         }
-        ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", true);
+        ActiveGestureLog.INSTANCE.addLog(
+                /* event= */ "finishRecentsAnimation",
+                /* extras= */ true,
+                /* gestureEvent= */ FINISH_RECENTS_ANIMATION);
         doLogGesture(HOME, mRecentsView == null ? null : mRecentsView.getCurrentPageTaskView());
     }
 
@@ -1979,7 +2029,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 mRecentsAnimationController.finish(false /* toRecents */,
                         null /* onFinishComplete */);
                 mActivityInterface.onLaunchTaskSuccess();
-                ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", false);
+                ActiveGestureLog.INSTANCE.addLog(
+                        /* event= */ "finishRecentsAnimation",
+                        /* extras= */ false,
+                        /* gestureEvent= */ FINISH_RECENTS_ANIMATION);
             }
         }
     }

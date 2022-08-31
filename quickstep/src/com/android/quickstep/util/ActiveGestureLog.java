@@ -16,6 +16,9 @@
 package com.android.quickstep.util;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.android.launcher3.config.FeatureFlags;
 
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
@@ -47,6 +50,7 @@ public class ActiveGestureLog {
     private static final int TYPE_BOOL_TRUE = 3;
     private static final int TYPE_BOOL_FALSE = 4;
     private static final int TYPE_INPUT_CONSUMER = 5;
+    private static final int TYPE_GESTURE_EVENT = 6;
 
     private final EventLog[] logs;
     private int nextIndex;
@@ -57,30 +61,73 @@ public class ActiveGestureLog {
         this.nextIndex = 0;
     }
 
+    /**
+     * Track the given event for error detection.
+     *
+     * @param gestureEvent GestureEvent representing an event during the current gesture's
+     *                   execution.
+     */
+    public void trackEvent(@Nullable ActiveGestureErrorDetector.GestureEvent gestureEvent) {
+        addLog(TYPE_GESTURE_EVENT, "", 0, CompoundString.NO_OP, gestureEvent);
+    }
+
     public void addLog(String event) {
-        addLog(TYPE_ONE_OFF, event, 0, CompoundString.NO_OP);
+        addLog(event, null);
     }
 
     public void addLog(String event, int extras) {
-        addLog(TYPE_INTEGER, event, extras, CompoundString.NO_OP);
+        addLog(event, extras, null);
     }
 
     public void addLog(String event, boolean extras) {
-        addLog(extras ? TYPE_BOOL_TRUE : TYPE_BOOL_FALSE, event, 0, CompoundString.NO_OP);
+        addLog(event, extras, null);
     }
 
     public void addLog(CompoundString compoundString) {
-        addLog(TYPE_INPUT_CONSUMER, "", 0, compoundString);
+        addLog(TYPE_INPUT_CONSUMER, "", 0, compoundString, null);
+    }
+
+    /**
+     * Adds a log and track the associated event for error detection.
+     *
+     * @param gestureEvent GestureEvent representing the event being logged.
+     */
+    public void addLog(
+            String event, @Nullable ActiveGestureErrorDetector.GestureEvent gestureEvent) {
+        addLog(TYPE_ONE_OFF, event, 0, CompoundString.NO_OP, gestureEvent);
+    }
+
+    public void addLog(
+            String event,
+            int extras,
+            @Nullable ActiveGestureErrorDetector.GestureEvent gestureEvent) {
+        addLog(TYPE_INTEGER, event, extras, CompoundString.NO_OP, gestureEvent);
+    }
+
+    public void addLog(
+            String event,
+            boolean extras,
+            @Nullable ActiveGestureErrorDetector.GestureEvent gestureEvent) {
+        addLog(
+                extras ? TYPE_BOOL_TRUE : TYPE_BOOL_FALSE,
+                event,
+                0,
+                CompoundString.NO_OP,
+                gestureEvent);
     }
 
     private void addLog(
-            int type, String event, float extras, @NonNull CompoundString compoundString) {
+            int type,
+            String event,
+            float extras,
+            CompoundString compoundString,
+            @Nullable ActiveGestureErrorDetector.GestureEvent gestureEvent) {
         EventLog lastEventLog = logs[(nextIndex + logs.length - 1) % logs.length];
         if (lastEventLog == null || mCurrentLogId != lastEventLog.logId) {
             EventLog eventLog = new EventLog(mCurrentLogId);
             EventEntry eventEntry = new EventEntry();
 
-            eventEntry.update(type, event, extras, compoundString);
+            eventEntry.update(type, event, extras, compoundString, gestureEvent);
             eventLog.eventEntries.add(eventEntry);
             logs[nextIndex] = eventLog;
             nextIndex = (nextIndex + 1) % logs.length;
@@ -95,15 +142,15 @@ public class ActiveGestureLog {
                 ? lastEventEntries.get(lastEventEntries.size() - 2) : null;
 
         // Update the last EventEntry if it's a duplicate
-        if (isEntrySame(lastEntry, type, event, compoundString)
-                && isEntrySame(secondLastEntry, type, event, compoundString)) {
-            lastEntry.update(type, event, extras, compoundString);
+        if (isEntrySame(lastEntry, type, event, compoundString, gestureEvent)
+                && isEntrySame(secondLastEntry, type, event, compoundString, gestureEvent)) {
+            lastEntry.update(type, event, extras, compoundString, gestureEvent);
             secondLastEntry.duplicateCount++;
             return;
         }
         EventEntry eventEntry = new EventEntry();
 
-        eventEntry.update(type, event, extras, compoundString);
+        eventEntry.update(type, event, extras, compoundString, gestureEvent);
         lastEventEntries.add(eventEntry);
     }
 
@@ -115,12 +162,14 @@ public class ActiveGestureLog {
         writer.println(prefix + "ActiveGestureLog history:");
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SSSZ  ", Locale.US);
         Date date = new Date();
+        ArrayList<EventLog> eventLogs = new ArrayList<>();
 
         for (int i = 0; i < logs.length; i++) {
             EventLog eventLog = logs[(nextIndex + logs.length - i - 1) % logs.length];
             if (eventLog == null) {
                 continue;
             }
+            eventLogs.add(eventLog);
             writer.println(prefix + "\tLogs for logId: " + eventLog.logId);
 
             List<EventEntry> eventEntries = eventLog.eventEntries;
@@ -146,6 +195,8 @@ public class ActiveGestureLog {
                     case TYPE_INPUT_CONSUMER:
                         msg.append(eventEntry.mCompoundString);
                         break;
+                    case TYPE_GESTURE_EVENT:
+                        continue;
                     default: // fall out
                 }
                 if (eventEntry.duplicateCount > 0) {
@@ -153,6 +204,10 @@ public class ActiveGestureLog {
                 }
                 writer.println(msg);
             }
+        }
+
+        if (FeatureFlags.ENABLE_GESTURE_ERROR_DETECTION.get()) {
+            ActiveGestureErrorDetector.analyseAndDump(prefix + '\t', writer, eventLogs);
         }
     }
 
@@ -165,44 +220,59 @@ public class ActiveGestureLog {
     }
 
     private boolean isEntrySame(
-            EventEntry entry, int type, String event, CompoundString compoundString) {
+            EventEntry entry,
+            int type,
+            String event,
+            CompoundString compoundString,
+            ActiveGestureErrorDetector.GestureEvent gestureEvent) {
         return entry != null
                 && entry.type == type
                 && entry.event.equals(event)
-                && entry.mCompoundString.equals(compoundString);
+                && entry.mCompoundString.equals(compoundString)
+                && entry.gestureEvent == gestureEvent;
     }
 
     /** A single event entry. */
-    private static class EventEntry {
+    protected static class EventEntry {
 
         private int type;
         private String event;
         private float extras;
         @NonNull private CompoundString mCompoundString;
+        private ActiveGestureErrorDetector.GestureEvent gestureEvent;
         private long time;
         private int duplicateCount;
 
-        public void update(
+        private EventEntry() {}
+
+        @Nullable
+        protected ActiveGestureErrorDetector.GestureEvent getGestureEvent() {
+            return gestureEvent;
+        }
+
+        private void update(
                 int type,
                 String event,
                 float extras,
-                @NonNull CompoundString compoundString) {
+                @NonNull CompoundString compoundString,
+                ActiveGestureErrorDetector.GestureEvent gestureEvent) {
             this.type = type;
             this.event = event;
             this.extras = extras;
             this.mCompoundString = compoundString;
+            this.gestureEvent = gestureEvent;
             time = System.currentTimeMillis();
             duplicateCount = 0;
         }
     }
 
     /** An entire log of entries associated with a single log ID */
-    private static class EventLog {
+    protected static class EventLog {
 
-        private final List<EventEntry> eventEntries = new ArrayList<>();
-        private final int logId;
+        protected final List<EventEntry> eventEntries = new ArrayList<>();
+        protected final int logId;
 
-        protected EventLog(int logId) {
+        private EventLog(int logId) {
             this.logId = logId;
         }
     }
