@@ -10,6 +10,7 @@ buildscript {
         libsu_version = '5.0.2'
         protocVersion = '3.21.5'
         room_version = '2.4.3'
+        optoVersion = "1.0.15"
     }
     repositories {
         gradlePluginPortal()
@@ -379,7 +380,9 @@ dependencies {
     implementation 'dev.kdrag0n:colorkt:1.0.5'
     implementation 'io.coil-kt:coil-compose:2.1.0'
     implementation 'me.xdrop:fuzzywuzzy:1.4.0'
-    implementation "com.patrykmichalik:opto:1.0.12"
+    implementation "com.patrykmichalik.opto:domain:$optoVersion"
+    implementation "com.patrykmichalik.opto:core:$optoVersion"
+    implementation "com.patrykmichalik.opto:compose:$optoVersion"
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
     implementation "com.squareup.retrofit2:converter-gson:2.9.0"
