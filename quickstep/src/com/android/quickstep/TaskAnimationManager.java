@@ -36,6 +36,8 @@ import androidx.annotation.UiThread;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.quickstep.TopTaskTracker.CachedTaskInfo;
+import com.android.quickstep.util.ActiveGestureErrorDetector;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -136,6 +138,8 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                     // handling this call entirely
                     return;
                 }
+                ActiveGestureLog.INSTANCE.addLog("TaskAnimationManager.startRecentsAnimation",
+                        ActiveGestureErrorDetector.GestureEvent.START_RECENTS_ANIMATION);
                 mController = controller;
                 mTargets = targets;
                 mLastAppearedTaskTarget = mTargets.findTask(mLastGestureState.getRunningTaskId());

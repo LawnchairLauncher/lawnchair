@@ -29,11 +29,24 @@ import java.util.Set;
  */
 public class ActiveGestureErrorDetector {
 
+    /**
+     * Enums associated to gesture navigation events.
+     */
     public enum GestureEvent {
         MOTION_DOWN, MOTION_UP, SET_END_TARGET, ON_SETTLED_ON_END_TARGET, START_RECENTS_ANIMATION,
-        FINISH_RECENTS_ANIMATION, CANCEL_RECENTS_ANIMATION, STATE_GESTURE_STARTED,
-        STATE_GESTURE_COMPLETED, STATE_GESTURE_CANCELLED, STATE_END_TARGET_ANIMATION_FINISHED,
-        STATE_RECENTS_SCROLLING_FINISHED
+        FINISH_RECENTS_ANIMATION, CANCEL_RECENTS_ANIMATION, SET_ON_PAGE_TRANSITION_END_CALLBACK,
+        CANCEL_CURRENT_ANIMATION, CLEANUP_SCREENSHOT,
+
+        /**
+         * These GestureEvents are specifically associated to state flags that get set in
+         * {@link com.android.quickstep.MultiStateCallback}. If a state flag needs to be tracked
+         * for error detection, an enum should be added here and that state flag-enum pair should
+         * be added to the state flag's container class' {@code getTrackedEventForState} method.
+         */
+        STATE_GESTURE_STARTED, STATE_GESTURE_COMPLETED, STATE_GESTURE_CANCELLED,
+        STATE_END_TARGET_ANIMATION_FINISHED, STATE_RECENTS_SCROLLING_FINISHED,
+        STATE_CAPTURE_SCREENSHOT, STATE_SCREENSHOT_CAPTURED, STATE_HANDLER_INVALIDATED,
+        STATE_RECENTS_ANIMATION_CANCELED
     }
 
     private ActiveGestureErrorDetector() {}
@@ -90,6 +103,14 @@ public class ActiveGestureErrorDetector {
                                         + "before/without startRecentsAnimation.",
                                 writer);
                         break;
+                    case CLEANUP_SCREENSHOT:
+                        errorDetected |= printErrorIfTrue(
+                                !encounteredEvents.contains(GestureEvent.STATE_SCREENSHOT_CAPTURED),
+                                /* errorMessage= */ prefix + "\t\trecents activity screenshot was "
+                                        + "cleaned up before/without STATE_SCREENSHOT_CAPTURED "
+                                        + "being set.",
+                                writer);
+                        break;
                     case STATE_GESTURE_COMPLETED:
                         errorDetected |= printErrorIfTrue(
                                 !encounteredEvents.contains(GestureEvent.MOTION_UP),
@@ -114,12 +135,39 @@ public class ActiveGestureErrorDetector {
                                         + "before/without STATE_GESTURE_STARTED.",
                                 writer);
                         break;
+                    case STATE_SCREENSHOT_CAPTURED:
+                        errorDetected |= printErrorIfTrue(
+                                !encounteredEvents.contains(GestureEvent.STATE_CAPTURE_SCREENSHOT),
+                                /* errorMessage= */ prefix + "\t\tSTATE_SCREENSHOT_CAPTURED set "
+                                        + "before/without STATE_CAPTURE_SCREENSHOT.",
+                                writer);
+                        break;
+                    case STATE_RECENTS_SCROLLING_FINISHED:
+                        errorDetected |= printErrorIfTrue(
+                                !encounteredEvents.contains(
+                                        GestureEvent.SET_ON_PAGE_TRANSITION_END_CALLBACK),
+                                /* errorMessage= */ prefix + "\t\tSTATE_RECENTS_SCROLLING_FINISHED "
+                                        + "set before/without calling "
+                                        + "setOnPageTransitionEndCallback.",
+                                writer);
+                        break;
+                    case STATE_RECENTS_ANIMATION_CANCELED:
+                        errorDetected |= printErrorIfTrue(
+                                !encounteredEvents.contains(
+                                        GestureEvent.START_RECENTS_ANIMATION),
+                                /* errorMessage= */ prefix + "\t\tSTATE_RECENTS_ANIMATION_CANCELED "
+                                        + "set before/without startRecentsAnimation.",
+                                writer);
+                        break;
                     case MOTION_DOWN:
                     case SET_END_TARGET:
                     case START_RECENTS_ANIMATION:
+                    case SET_ON_PAGE_TRANSITION_END_CALLBACK:
+                    case CANCEL_CURRENT_ANIMATION:
                     case STATE_GESTURE_STARTED:
                     case STATE_END_TARGET_ANIMATION_FINISHED:
-                    case STATE_RECENTS_SCROLLING_FINISHED:
+                    case STATE_CAPTURE_SCREENSHOT:
+                    case STATE_HANDLER_INVALIDATED:
                     default:
                         // No-Op
                 }
@@ -181,6 +229,39 @@ public class ActiveGestureErrorDetector {
                             && !encounteredEvents.contains(GestureEvent.STATE_GESTURE_CANCELLED),
                     /* errorMessage= */ prefix + "\t\tSTATE_GESTURE_STARTED was set, but "
                             + "STATE_GESTURE_COMPLETED and STATE_GESTURE_CANCELLED weren't.",
+                    writer);
+
+            errorDetected |= printErrorIfTrue(
+                    /* condition= */ encounteredEvents.contains(
+                            GestureEvent.STATE_CAPTURE_SCREENSHOT)
+                            && !encounteredEvents.contains(GestureEvent.STATE_SCREENSHOT_CAPTURED),
+                    /* errorMessage= */ prefix + "\t\tSTATE_CAPTURE_SCREENSHOT was set, but "
+                            + "STATE_SCREENSHOT_CAPTURED wasn't.",
+                    writer);
+
+            errorDetected |= printErrorIfTrue(
+                    /* condition= */ encounteredEvents.contains(
+                            GestureEvent.SET_ON_PAGE_TRANSITION_END_CALLBACK)
+                            && !encounteredEvents.contains(
+                                    GestureEvent.STATE_RECENTS_SCROLLING_FINISHED),
+                    /* errorMessage= */ prefix + "\t\tsetOnPageTransitionEndCallback called, but "
+                            + "STATE_RECENTS_SCROLLING_FINISHED wasn't set.",
+                    writer);
+
+            errorDetected |= printErrorIfTrue(
+                    /* condition= */ !encounteredEvents.contains(
+                            GestureEvent.CANCEL_CURRENT_ANIMATION)
+                            && !encounteredEvents.contains(GestureEvent.STATE_HANDLER_INVALIDATED),
+                    /* errorMessage= */ prefix + "\t\tAbsSwipeUpHandler.cancelCurrentAnimation "
+                            + "wasn't called and STATE_HANDLER_INVALIDATED wasn't set.",
+                    writer);
+
+            errorDetected |= printErrorIfTrue(
+                    /* condition= */ encounteredEvents.contains(
+                            GestureEvent.STATE_RECENTS_ANIMATION_CANCELED)
+                            && !encounteredEvents.contains(GestureEvent.CLEANUP_SCREENSHOT),
+                    /* errorMessage= */ prefix + "\t\tSTATE_RECENTS_ANIMATION_CANCELED was set but "
+                            + "the task screenshot wasn't cleaned up.",
                     writer);
 
             if (!errorDetected) {
