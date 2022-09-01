@@ -189,6 +189,7 @@ fun CustomColorPicker(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HexColorPicker(
     modifier: Modifier = Modifier,
