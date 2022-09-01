@@ -36,6 +36,7 @@ import android.view.Display;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
@@ -277,7 +278,8 @@ public class TaskbarManager {
      * we fully want to destroy an existing taskbar and create a new one.
      * In other case (folding/unfolding) we don't need to remove and add window.
      */
-    private void recreateTaskbar() {
+    @VisibleForTesting
+    public void recreateTaskbar() {
         DeviceProfile dp = mUserUnlocked ?
                 LauncherAppState.getIDP(mContext).getDeviceProfile(mContext) : null;
 
