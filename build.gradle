@@ -88,12 +88,12 @@ allprojects {
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'org.jetbrains.kotlin.plugin.parcelize'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: "com.google.devtools.ksp"
 apply plugin: 'com.google.protobuf'
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
-apply plugin: 'kotlin-parcelize'
-apply plugin: "com.google.devtools.ksp"
-apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 apply plugin: 'dev.rikka.tools.refine'
 
 final def commitHash = { ->
