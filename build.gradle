@@ -358,7 +358,7 @@ dependencies {
     implementation "androidx.compose.foundation:foundation:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.material3:material3:1.0.0-alpha14"
+    implementation "androidx.compose.material3:material3:1.0.0-beta01"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     implementation "androidx.compose.compiler:compiler:$compose_compiler_version"
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
