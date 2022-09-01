@@ -141,7 +141,7 @@ public class DepthController extends BaseDepthController implements StateHandler
 
     @Override
     public void setState(LauncherState toState) {
-        if (mSurface == null || mIgnoreStateChangesDuringMultiWindowAnimation) {
+        if (mIgnoreStateChangesDuringMultiWindowAnimation) {
             return;
         }
 
