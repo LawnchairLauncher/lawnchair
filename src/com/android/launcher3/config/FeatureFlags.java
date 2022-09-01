@@ -68,6 +68,11 @@ public final class FeatureFlags {
             false,
             "Log the reason why an Input Consumer was selected for a gesture.");
 
+    public static final BooleanFlag ENABLE_GESTURE_ERROR_DETECTION = getDebugFlag(
+            "ENABLE_GESTURE_ERROR_DETECTION",
+            false,
+            "Analyze gesture events and log detected errors");
+
     // When enabled the promise icon is visible in all apps while installation an app.
     public static final BooleanFlag PROMISE_APPS_IN_ALL_APPS = getDebugFlag(
             "PROMISE_APPS_IN_ALL_APPS", false, "Add promise icon in all-apps");

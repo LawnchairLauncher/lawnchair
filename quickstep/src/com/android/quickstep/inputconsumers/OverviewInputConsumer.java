@@ -35,7 +35,6 @@ import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.TaskUtils;
-import com.android.quickstep.util.ActiveGestureLog;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
 /**
@@ -91,7 +90,6 @@ public class OverviewInputConsumer<S extends BaseState<S>, T extends StatefulAct
             if (!mStartingInActivityBounds) {
                 mActivityInterface.closeOverlay();
                 TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
-                ActiveGestureLog.INSTANCE.addLog("startQuickstep");
             }
             if (mInputMonitor != null) {
                 TestLogging.recordEvent(TestProtocol.SEQUENCE_PILFER, "pilferPointers");
