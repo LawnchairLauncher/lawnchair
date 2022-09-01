@@ -513,7 +513,7 @@ public class DeviceProfile {
     private int getIconToIconWidthForColumns(int columns) {
         return columns * getCellSize().x
                 + (columns - 1) * cellLayoutBorderSpacePx.x
-                - (getCellSize().x - iconSizePx);  // left and right cell space
+                - getCellHorizontalSpace();
     }
 
     private int getHorizontalMarginPx(InvariantDeviceProfile idp, Resources res) {
@@ -982,6 +982,13 @@ public class DeviceProfile {
         result.y = calculateCellHeight(shortcutAndWidgetContainerHeight, cellLayoutBorderSpacePx.y,
                 inv.numRows);
         return result;
+    }
+
+    /**
+     * Returns the left and right space on the cell, which is the cell width - icon size
+     */
+    public int getCellHorizontalSpace() {
+        return getCellSize().x - iconSizePx;
     }
 
     /**
