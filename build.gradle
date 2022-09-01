@@ -81,7 +81,7 @@ allprojects {
     }
 
     tasks.matching {
-        it.name.contains("collect*Dependencies") || it.name.contains("OssLicensesTask")
+        it.name.contains("OssLicensesTask")
     }.configureEach {
         notCompatibleWithConfigurationCache("https://github.com/google/play-services-plugins/issues/206")
     }
