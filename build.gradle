@@ -377,7 +377,7 @@ dependencies {
     implementation "com.google.android.material:material:1.6.1"
     implementation "io.github.fornewid:material-motion-compose-core:0.9.0"
     implementation 'dev.kdrag0n:colorkt:1.0.5'
-    implementation 'io.coil-kt:coil-compose:2.1.0'
+    implementation 'io.coil-kt:coil-compose:2.2.0'
     implementation 'me.xdrop:fuzzywuzzy:1.4.0'
     implementation "com.patrykmichalik.opto:domain:$optoVersion"
     implementation "com.patrykmichalik.opto:core:$optoVersion"
