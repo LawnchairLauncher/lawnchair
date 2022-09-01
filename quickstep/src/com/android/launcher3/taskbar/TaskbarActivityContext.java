@@ -773,6 +773,24 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mControllers.taskbarStashController.startUnstashHint(animateForward);
     }
 
+    /**
+     * Enables manual taskbar stashing. This method should only be used for tests that need to
+     * stash/unstash the taskbar.
+     */
+    @VisibleForTesting
+    public void enableManualStashingForTests(boolean enableManualStashing) {
+        mControllers.taskbarStashController.enableManualStashingForTests(enableManualStashing);
+    }
+
+    /**
+     * Unstashes the Taskbar if it is stashed. This method should only be used to unstash the
+     * taskbar at the end of a test.
+     */
+    @VisibleForTesting
+    public void unstashTaskbarIfStashed() {
+        mControllers.taskbarStashController.onLongPressToUnstashTaskbar();
+    }
+
     protected boolean isUserSetupComplete() {
         return mIsUserSetupComplete;
     }

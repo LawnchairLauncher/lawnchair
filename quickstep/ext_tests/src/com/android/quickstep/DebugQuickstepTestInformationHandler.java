@@ -25,12 +25,14 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.testing.DebugTestInformationHandler;
 import com.android.launcher3.testing.shared.TestProtocol;
-import com.android.launcher3.uioverrides.QuickstepLauncher;
+import com.android.quickstep.TouchInteractionService.TISBinder;
+import com.android.quickstep.util.TISBindHelper;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 
 /**
  * Class to handle requests from tests, including debug ones, to Quickstep Launcher builds.
@@ -49,29 +51,26 @@ public abstract class DebugQuickstepTestInformationHandler extends QuickstepTest
         Bundle response = new Bundle();
         switch (method) {
             case TestProtocol.REQUEST_ENABLE_MANUAL_TASKBAR_STASHING:
-                runOnUIThread(l -> {
-                    enableManualTaskbarStashing(l, true);
+                runOnTISBinder(tisBinder -> {
+                    enableManualTaskbarStashing(tisBinder, true);
                 });
                 return response;
 
             case TestProtocol.REQUEST_DISABLE_MANUAL_TASKBAR_STASHING:
-                runOnUIThread(l -> {
-                    enableManualTaskbarStashing(l, false);
+                runOnTISBinder(tisBinder -> {
+                    enableManualTaskbarStashing(tisBinder, false);
                 });
                 return response;
 
             case TestProtocol.REQUEST_UNSTASH_TASKBAR_IF_STASHED:
-                runOnUIThread(l -> {
-                    enableManualTaskbarStashing(l, true);
-
-                    QuickstepLauncher quickstepLauncher = (QuickstepLauncher) l;
-                    LauncherTaskbarUIController taskbarUIController =
-                            quickstepLauncher.getTaskbarUIController();
+                runOnTISBinder(tisBinder -> {
+                    enableManualTaskbarStashing(tisBinder, true);
 
                     // Allow null-pointer to catch illegal states.
-                    taskbarUIController.unstashTaskbarIfStashed();
+                    tisBinder.getTaskbarManager().getCurrentActivityContext()
+                            .unstashTaskbarIfStashed();
 
-                    enableManualTaskbarStashing(l, false);
+                    enableManualTaskbarStashing(tisBinder, false);
                 });
                 return response;
 
@@ -82,6 +81,11 @@ public abstract class DebugQuickstepTestInformationHandler extends QuickstepTest
                 return response;
             }
 
+            case TestProtocol.REQUEST_RECREATE_TASKBAR:
+                // Allow null-pointer to catch illegal states.
+                runOnTISBinder(tisBinder -> tisBinder.getTaskbarManager().recreateTaskbar());
+                return response;
+
             default:
                 response = super.call(method, arg, extras);
                 if (response != null) return response;
@@ -89,24 +93,26 @@ public abstract class DebugQuickstepTestInformationHandler extends QuickstepTest
         }
     }
 
-    private void enableManualTaskbarStashing(Launcher launcher, boolean enable) {
-        QuickstepLauncher quickstepLauncher = (QuickstepLauncher) launcher;
-        LauncherTaskbarUIController taskbarUIController =
-                quickstepLauncher.getTaskbarUIController();
-
+    private void enableManualTaskbarStashing(TISBinder tisBinder, boolean enable) {
         // Allow null-pointer to catch illegal states.
-        taskbarUIController.enableManualStashingForTests(enable);
+        tisBinder.getTaskbarManager().getCurrentActivityContext().enableManualStashingForTests(
+                enable);
     }
 
     /**
-     * Runs the given command on the UI thread.
+     * Runs the given command on the UI thread, after ensuring we are connected to
+     * TouchInteractionService.
      */
-    private static void runOnUIThread(UIThreadCommand command) {
+    private void runOnTISBinder(Consumer<TISBinder> connectionCallback) {
         try {
-            MAIN_EXECUTOR.submit(() -> {
-                command.execute(Launcher.ACTIVITY_TRACKER.getCreatedActivity());
-                return null;
-            }).get();
+            CountDownLatch countDownLatch = new CountDownLatch(1);
+            TISBindHelper helper = MAIN_EXECUTOR.submit(() ->
+                    new TISBindHelper(mContext, tisBinder -> {
+                        connectionCallback.accept(tisBinder);
+                        countDownLatch.countDown();
+                    })).get();
+            countDownLatch.await();
+            MAIN_EXECUTOR.submit(helper::onDestroy);
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }

@@ -168,7 +168,7 @@ public final class LauncherInstrumentation {
     private static final String OVERVIEW_RES_ID = "overview_panel";
     private static final String WIDGETS_RES_ID = "primary_widgets_list_view";
     private static final String CONTEXT_MENU_RES_ID = "popup_container";
-    private static final String TASKBAR_RES_ID = "taskbar_view";
+    static final String TASKBAR_RES_ID = "taskbar_view";
     private static final String SPLIT_PLACEHOLDER_RES_ID = "split_placeholder";
     public static final int WAIT_TIME_MS = 30000;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
@@ -1760,6 +1760,15 @@ public final class LauncherInstrumentation {
     /** Shows the taskbar if it is hidden, otherwise does nothing. */
     public void showTaskbarIfHidden() {
         getTestInfo(TestProtocol.REQUEST_UNSTASH_TASKBAR_IF_STASHED);
+    }
+
+    /**
+     * Recreates the taskbar (outside of tests this is done for certain configuration changes).
+     * The expected behavior is that the taskbar retains its current state after being recreated.
+     * For example, if taskbar is currently stashed, it should still be stashed after recreating.
+     */
+    public void recreateTaskbar() {
+        getTestInfo(TestProtocol.REQUEST_RECREATE_TASKBAR);
     }
 
     public List<String> getHotseatIconNames() {
