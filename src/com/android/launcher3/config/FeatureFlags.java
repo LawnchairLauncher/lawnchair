@@ -274,6 +274,10 @@ public final class FeatureFlags {
             "USE_SEARCH_REQUEST_TIMEOUT_OVERRIDES", false,
             "Use local overrides for search request timeout");
 
+    public static final BooleanFlag USE_APP_SEARCH_FOR_WEB = getDebugFlag(
+            "USE_APP_SEARCH_FOR_WEB", false,
+            "Use app search to request zero state web suggestions");
+
     public static final BooleanFlag CONTINUOUS_VIEW_TREE_CAPTURE = getDebugFlag(
             "CONTINUOUS_VIEW_TREE_CAPTURE", false, "Capture View tree every frame");
 
