@@ -16,6 +16,7 @@
 package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.taskbar.TaskbarLauncherStateController.FLAG_RESUMED;
+import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_EXTRA_NAVIGATION_BAR;
 
 import android.animation.Animator;
@@ -167,6 +168,13 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
                 // Resuming implicitly means device unlocked
                 mKeyguardController.setScreenOn();
             }
+        }
+
+        if (ENABLE_SHELL_TRANSITIONS
+                && !mLauncher.getStateManager().getState().isTaskbarAlignedWithHotseat(mLauncher)) {
+            // Launcher is resumed, but in a state where taskbar is still independent, so
+            // ignore the state change.
+            return null;
         }
 
         mTaskbarLauncherStateController.updateStateForFlag(FLAG_RESUMED, isResumed);
