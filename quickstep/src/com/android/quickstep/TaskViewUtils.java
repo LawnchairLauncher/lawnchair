@@ -195,7 +195,8 @@ public final class TaskViewUtils {
 
         int taskIndex = recentsView.indexOfChild(v);
         Context context = v.getContext();
-        DeviceProfile dp = BaseActivity.fromContext(context).getDeviceProfile();
+        BaseActivity baseActivity = BaseActivity.fromContext(context);
+        DeviceProfile dp = baseActivity.getDeviceProfile();
         boolean showAsGrid = dp.isTablet;
         boolean parallaxCenterAndAdjacentTask =
                 taskIndex != recentsView.getCurrentPage() && !showAsGrid;
@@ -368,7 +369,7 @@ public final class TaskViewUtils {
         });
 
         if (depthController != null) {
-            out.setFloat(depthController, DEPTH, BACKGROUND_APP.getDepth(context),
+            out.setFloat(depthController, DEPTH, BACKGROUND_APP.getDepth(baseActivity),
                     TOUCH_RESPONSE_INTERPOLATOR);
         }
     }
