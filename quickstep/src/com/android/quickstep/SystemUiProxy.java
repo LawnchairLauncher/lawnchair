@@ -510,11 +510,12 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
     }
 
     public Rect startSwipePipToHome(ComponentName componentName, ActivityInfo activityInfo,
-            PictureInPictureParams pictureInPictureParams, int launcherRotation, int shelfHeight) {
+            PictureInPictureParams pictureInPictureParams, int launcherRotation,
+            Rect hotseatKeepClearArea) {
         if (mPip != null) {
             try {
                 return mPip.startSwipePipToHome(componentName, activityInfo,
-                        pictureInPictureParams, launcherRotation, shelfHeight);
+                        pictureInPictureParams, launcherRotation, hotseatKeepClearArea);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startSwipePipToHome", e);
             }
