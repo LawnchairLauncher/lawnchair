@@ -120,6 +120,11 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
     }
 
     @Override
+    public void onStateTransitionFailed(LauncherState toState) {
+        reset();
+    }
+
+    @Override
     public void onStateTransitionComplete(LauncherState finalState) {
         if (finalState == NORMAL || finalState == SPRING_LOADED) {
             // Clean-up logic that occurs when recents is no longer in use/visible.
