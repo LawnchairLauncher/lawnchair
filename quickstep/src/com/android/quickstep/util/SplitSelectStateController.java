@@ -31,16 +31,20 @@ import android.app.ActivityThread;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ShortcutInfo;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.UserHandle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.RemoteAnimationAdapter;
 import android.view.SurfaceControl;
 import android.window.TransitionInfo;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.testing.TestLogging;
@@ -66,6 +70,7 @@ import java.util.function.Consumer;
  * and is in the process of either a) selecting a second app or b) exiting intention to invoke split
  */
 public class SplitSelectStateController {
+    private static final String TAG = "SplitSelectStateCtor";
 
     private final Context mContext;
     private final Handler mHandler;
@@ -196,7 +201,7 @@ public class SplitSelectStateController {
                     null /* sideOptions */, STAGE_POSITION_BOTTOM_OR_RIGHT, splitRatio,
                     new RemoteTransitionCompat(animationRunner, MAIN_EXECUTOR,
                             ActivityThread.currentActivityThread().getApplicationThread()));
-            // TODO: handle intent + task with shell transition
+            // TODO(b/237635859): handle intent/shortcut + task with shell transition
         } else {
             RemoteSplitLaunchAnimationRunner animationRunner =
                     new RemoteSplitLaunchAnimationRunner(taskId1, taskPendingIntent, taskId2,
@@ -215,9 +220,17 @@ public class SplitSelectStateController {
                         taskIds[1], null /* sideOptions */, STAGE_POSITION_BOTTOM_OR_RIGHT,
                         splitRatio, adapter);
             } else {
-                mSystemUiProxy.startIntentAndTaskWithLegacyTransition(taskPendingIntent,
-                        fillInIntent, taskId2, mainOpts.toBundle(), null /* sideOptions */,
-                        stagePosition, splitRatio, adapter);
+                final ShortcutInfo shortcutInfo = getShortcutInfo(mInitialTaskIntent,
+                        taskPendingIntent.getCreatorUserHandle());
+                if (shortcutInfo != null) {
+                    mSystemUiProxy.startShortcutAndTaskWithLegacyTransition(shortcutInfo, taskId2,
+                            mainOpts.toBundle(), null /* sideOptions */, stagePosition, splitRatio,
+                            adapter);
+                } else {
+                    mSystemUiProxy.startIntentAndTaskWithLegacyTransition(taskPendingIntent,
+                            fillInIntent, taskId2, mainOpts.toBundle(), null /* sideOptions */,
+                            stagePosition, splitRatio, adapter);
+                }
             }
         }
     }
@@ -228,6 +241,28 @@ public class SplitSelectStateController {
 
     public void setRecentsAnimationRunning(boolean running) {
         this.mRecentsAnimationRunning = running;
+    }
+
+    @Nullable
+    private ShortcutInfo getShortcutInfo(Intent intent, UserHandle userHandle) {
+        if (intent == null || intent.getPackage() == null) {
+            return null;
+        }
+
+        final String shortcutId = intent.getStringExtra(ShortcutKey.EXTRA_SHORTCUT_ID);
+        if (shortcutId == null) {
+            return null;
+        }
+
+        try {
+            final Context context = mContext.createPackageContextAsUser(
+                    intent.getPackage(), 0 /* flags */, userHandle);
+            return new ShortcutInfo.Builder(context, shortcutId).build();
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.w(TAG, "Failed to create a ShortcutInfo for " + intent.getPackage());
+        }
+
+        return null;
     }
 
     /**
