@@ -397,39 +397,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 }
             };
 
-    public static final FloatProperty<RecentsView> FIRST_FLOATING_TASK_TRANSLATE_OFFSCREEN =
-            new FloatProperty<RecentsView>("firstFloatingTaskTranslateOffscreen") {
-                @Override
-                public void setValue(RecentsView view, float translation) {
-                    view.getPagedOrientationHandler().setFloatingTaskPrimaryTranslation(
-                            view.mFirstFloatingTaskView,
-                            translation,
-                            view.mActivity.getDeviceProfile()
-                    );
-                }
-
-                @Override
-                public Float get(RecentsView view) {
-                    return view.getPagedOrientationHandler().getFloatingTaskPrimaryTranslation(
-                            view.mFirstFloatingTaskView,
-                            view.mActivity.getDeviceProfile()
-                    );
-                }
-            };
-
-    public static final FloatProperty<RecentsView> SPLIT_INSTRUCTIONS_FADE =
-            new FloatProperty<RecentsView>("splitInstructionsFade") {
-                @Override
-                public void setValue(RecentsView view, float fade) {
-                    view.mSplitInstructionsView.setAlpha(1 - fade);
-                }
-
-                @Override
-                public Float get(RecentsView view) {
-                    return 1 - view.mSplitInstructionsView.getAlpha();
-                }
-            };
-
     // OverScroll constants
     private static final int OVERSCROLL_PAGE_SNAP_ANIMATION_DURATION = 270;
 
@@ -2834,7 +2801,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         RectF startingTaskRect = new RectF();
         if (mSplitHiddenTaskView != null) {
-            mSplitHiddenTaskView.setVisibility(INVISIBLE);
+            // Split staging is initiated, hide the original TaskView thumbnail.
+            // Toggled back on in resetFromSplitSelectionState().
+            mSplitHiddenTaskView.setThumbnailVisibility(INVISIBLE);
+            anim.addFloat(mSplitHiddenTaskView, TaskView.ICON_ALPHA, 1, 0,
+                    clampToProgress(LINEAR, 0, 0.167f));
             mFirstFloatingTaskView = FloatingTaskView.getFloatingTaskView(mActivity,
                     mSplitHiddenTaskView.getThumbnail(),
                     mSplitHiddenTaskView.getThumbnail().getThumbnail(),
@@ -2862,6 +2833,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 InteractionJankMonitorWrapper.end(
                         InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
             } else {
+                // If transition to split select was interrupted, clean up to prevent glitches
+                resetFromSplitSelectionState();
                 InteractionJankMonitorWrapper.cancel(
                         InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
             }
@@ -4229,7 +4202,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         resetTaskVisuals();
         mSplitHiddenTaskViewIndex = -1;
         if (mSplitHiddenTaskView != null) {
-            mSplitHiddenTaskView.setVisibility(VISIBLE);
+            // Toggle thumbnail visibility back on (turned off in
+            // createInitialSplitSelectAnimation()).
+            mSplitHiddenTaskView.setThumbnailVisibility(VISIBLE);
             mSplitHiddenTaskView = null;
         }
     }
@@ -5339,6 +5314,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Nullable
     public FloatingTaskView getFirstFloatingTaskView() {
         return mFirstFloatingTaskView;
+    }
+
+    @Nullable
+    public SplitInstructionsView getSplitInstructionsView() {
+        return mSplitInstructionsView;
     }
 
     /** Update the current activity locus id to show the enabled state of Overview */
