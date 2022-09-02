@@ -15,16 +15,13 @@
  */
 package com.android.launcher3.celllayout;
 
-import static com.android.launcher3.util.WidgetUtils.createWidgetInfo;
-
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.util.Log;
 import android.view.View;
 
-import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
@@ -34,13 +31,14 @@ import com.android.launcher3.celllayout.testcases.MoveOutReorderCase;
 import com.android.launcher3.celllayout.testcases.PushReorderCase;
 import com.android.launcher3.celllayout.testcases.ReorderTestCase;
 import com.android.launcher3.celllayout.testcases.SimpleReorderCase;
-import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.tapl.Widget;
+import com.android.launcher3.tapl.WidgetResizeFrame;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TaplTestsLauncher3;
-import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.util.rule.ShellCommandRule;
-import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.views.DoubleShadowBubbleTextView;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 import org.junit.Assume;
 import org.junit.Before;
@@ -60,6 +58,8 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
 
     private static final String TAG = ReorderWidgets.class.getSimpleName();
 
+    TestWorkspaceBuilder mBoardBuilder;
+
     private View getViewAt(int cellX, int cellY) {
         return getFromLauncher(l -> l.getWorkspace().getScreenWithId(
                 l.getWorkspace().getScreenIdForPageIndex(0)).getChildAt(cellX, cellY));
@@ -76,6 +76,7 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
 
     @Before
     public void setup() throws Throwable {
+        mBoardBuilder = new TestWorkspaceBuilder(this);
         TaplTestsLauncher3.initialize(this);
         clearHomescreen();
     }
@@ -86,78 +87,44 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
     private boolean validateBoard(CellLayoutBoard board) {
         boolean match = true;
         Point cellDimensions = getCellDimensions();
-        for (TestBoardWidget widgetRect: board.getWidgets()) {
+        for (CellLayoutBoard.WidgetRect widgetRect: board.getWidgets()) {
             if (widgetRect.shouldIgnore()) {
                 continue;
             }
             View widget = getViewAt(widgetRect.getCellX(), widgetRect.getCellY());
+            assertTrue("The view selected at " + board + " is not a widget",
+                    widget instanceof LauncherAppWidgetHostView);
             match &= widgetRect.getSpanX()
                     == Math.round(widget.getWidth() / (float) cellDimensions.x);
             match &= widgetRect.getSpanY()
                     == Math.round(widget.getHeight() / (float) cellDimensions.y);
             if (!match) return match;
         }
+        for (CellLayoutBoard.IconPoint iconPoint : board.getIcons()) {
+            View icon = getViewAt(iconPoint.getCoord().x, iconPoint.getCoord().y);
+            assertTrue("The view selected at " + iconPoint.coord + " is not an Icon",
+                    icon instanceof DoubleShadowBubbleTextView);
+        }
         return match;
-    }
-
-    /**
-     * Fills the given rect in WidgetRect with 1x1 widgets. This is useful to equalize cases.
-     */
-    private void fillWithWidgets(TestBoardWidget widgetRect) {
-        int initX = widgetRect.getCellX();
-        int initY = widgetRect.getCellY();
-        for (int x = 0; x < widgetRect.getSpanX(); x++) {
-            for (int y = 0; y < widgetRect.getSpanY(); y++) {
-                int auxX = initX + x;
-                int auxY = initY + y;
-                try {
-                    // this widgets are filling, we don't care if we can't place them
-                    addWidgetInCell(
-                            new TestBoardWidget('x',
-                                    new Rect(auxX, auxY, auxX, auxY))
-                    );
-                } catch (Exception e) {
-                    Log.d(TAG, "Unable to place filling widget at " + auxX + "," + auxY);
-                }
-            }
-        }
-    }
-
-    private void addWidgetInCell(TestBoardWidget widgetRect) {
-        LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);
-        LauncherAppWidgetInfo item = createWidgetInfo(info,
-                ApplicationProvider.getApplicationContext(), true);
-        item.cellX = widgetRect.getCellX();
-        item.cellY = widgetRect.getCellY();
-
-        item.spanX = widgetRect.getSpanX();
-        item.spanY = widgetRect.getSpanY();
-        addItemToScreen(item);
-    }
-
-    private void addCorrespondingWidgetRect(TestBoardWidget widgetRect) {
-        if (widgetRect.mType == 'x') {
-            fillWithWidgets(widgetRect);
-        } else {
-            addWidgetInCell(widgetRect);
-        }
     }
 
     private void runTestCase(ReorderTestCase testCase) {
         Point mainWidgetCellPos = testCase.mStart.getMain();
 
-        testCase.mStart.getWidgets().forEach(this::addCorrespondingWidgetRect);
+        mBoardBuilder.buildBoard(testCase.mStart);
 
-        mLauncher.getWorkspace()
-                .getWidgetAtCell(mainWidgetCellPos.x, mainWidgetCellPos.y)
-                .dragWidgetToWorkspace(testCase.moveMainTo.x, testCase.moveMainTo.y)
-                .dismiss(); // dismiss resize frame
+        Widget widget = mLauncher.getWorkspace().getWidgetAtCell(mainWidgetCellPos.x,
+                mainWidgetCellPos.y);
+        assertNotNull(widget);
+        WidgetResizeFrame resizeFrame = widget.dragWidgetToWorkspace(testCase.moveMainTo.x,
+                testCase.moveMainTo.y);
+        resizeFrame.dismiss();
 
         boolean isValid = false;
         for (CellLayoutBoard board : testCase.mEnd) {
             isValid |= validateBoard(board);
         }
-        assertTrue("None of the valid boards match with the current state", isValid);
+        assertTrue("Non of the valid boards match with the current state", isValid);
     }
 
     /**
