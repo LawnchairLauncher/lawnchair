@@ -102,7 +102,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private boolean mLayoutValid = false;
     private int mOrientationStateId;
     private SplitBounds mSplitBounds;
-    private boolean mDrawsBelowRecents;
+    private Boolean mDrawsBelowRecents = null;
     private boolean mIsGridTask;
     private int mTaskRectTranslationX;
     private int mTaskRectTranslationY;
@@ -391,7 +391,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
                 .withWindowCrop(mTmpCropRect)
                 .withCornerRadius(getCurrentCornerRadius());
 
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+        // If mDrawsBelowRecents is unset, no reordering will be enforced.
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mDrawsBelowRecents != null) {
             // In legacy transitions, the animation leashes remain in same hierarchy in the
             // TaskDisplayArea, so we don't want to bump the layer too high otherwise it will
             // conflict with layers that WM core positions (ie. the input consumers).  For shell
