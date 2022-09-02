@@ -19,6 +19,10 @@ import android.graphics.Point;
 
 import java.util.Map;
 
+/**
+ * The grids represent the workspace to be build by TestWorkspaceBuilder, to see what each character
+ * in the board mean refer to {@code CellType}
+ */
 public class MoveOutReorderCase {
 
     /** 5x5 Test
