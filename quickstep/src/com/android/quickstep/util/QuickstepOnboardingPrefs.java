@@ -21,7 +21,7 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.util.DisplayController.NavigationMode.NO_BUTTON;
+import static com.android.launcher3.util.NavigationMode.NO_BUTTON;
 
 import android.content.SharedPreferences;
 
