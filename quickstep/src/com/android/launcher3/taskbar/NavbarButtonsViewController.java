@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.taskbar;
 
+import static android.view.View.AccessibilityDelegate;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
@@ -586,6 +587,26 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
      */
     public MultiValueAlpha getHomeButtonAlpha() {
         return mHomeButtonAlpha;
+    }
+
+    /**
+     * Sets the AccessibilityDelegate for the home button.
+     */
+    public void setHomeButtonAccessibilityDelegate(AccessibilityDelegate accessibilityDelegate) {
+        if (mHomeButton == null) {
+            return;
+        }
+        mHomeButton.setAccessibilityDelegate(accessibilityDelegate);
+    }
+
+    /**
+     * Sets the AccessibilityDelegate for the back button.
+     */
+    public void setBackButtonAccessibilityDelegate(AccessibilityDelegate accessibilityDelegate) {
+        if (mBackButton == null) {
+            return;
+        }
+        mBackButton.setAccessibilityDelegate(accessibilityDelegate);
     }
 
     /** Use to set the translationY for the all nav+contextual buttons */
