@@ -16,8 +16,7 @@
 package com.android.launcher3.taskbar.allapps;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
-import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
-import static com.android.systemui.animation.Interpolators.EMPHASIZED_ACCELERATE;
+import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
 
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
@@ -60,7 +59,7 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarAllApp
         if (animate) {
             mOpenCloseAnimator.setValues(
                     PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-            mOpenCloseAnimator.setInterpolator(AGGRESSIVE_EASE);
+            mOpenCloseAnimator.setInterpolator(EMPHASIZED);
             mOpenCloseAnimator.setDuration(
                     ALL_APPS.getTransitionDuration(mActivityContext, true /* isToState */)).start();
         } else {
@@ -87,7 +86,7 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarAllApp
 
     @Override
     protected Interpolator getIdleInterpolator() {
-        return EMPHASIZED_ACCELERATE;
+        return EMPHASIZED;
     }
 
     @Override

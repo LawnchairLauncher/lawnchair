@@ -265,7 +265,8 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      *
      * 0 means completely zoomed in, without blurs. 1 is zoomed out, with blurs.
      */
-    public final float getDepth(Context context) {
+    public final  <DEVICE_PROFILE_CONTEXT extends Context & DeviceProfile.DeviceProfileListenable>
+            float getDepth(DEVICE_PROFILE_CONTEXT context) {
         return getDepth(context,
                 BaseDraggingActivity.fromContext(context).getDeviceProfile().isMultiWindowMode);
     }
@@ -275,14 +276,16 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      *
      * @see #getDepth(Context).
      */
-    public final float getDepth(Context context, boolean isMultiWindowMode) {
+    public final <DEVICE_PROFILE_CONTEXT extends Context & DeviceProfile.DeviceProfileListenable>
+            float getDepth(DEVICE_PROFILE_CONTEXT context, boolean isMultiWindowMode) {
         if (isMultiWindowMode) {
             return 0;
         }
         return getDepthUnchecked(context);
     }
 
-    protected float getDepthUnchecked(Context context) {
+    protected <DEVICE_PROFILE_CONTEXT extends Context & DeviceProfile.DeviceProfileListenable>
+            float getDepthUnchecked(DEVICE_PROFILE_CONTEXT context) {
         return 0f;
     }
 
