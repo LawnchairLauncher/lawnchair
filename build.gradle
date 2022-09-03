@@ -135,7 +135,6 @@ def quickstepMinSdk = "32"
 def quickstepMaxSdk = "32"
 
 android {
-    namespace 'app.lawnchair'
     defaultConfig {
         versionCode 12_01_00_05
         versionName "${versionDisplayName}"
