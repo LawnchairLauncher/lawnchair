@@ -30,7 +30,6 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TaplTestsLauncher3;
-import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -166,7 +165,6 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
 
     @Test
     @PortraitLandscape
-    @ScreenRecord  // b/241587421
     public void testMultiplePageDragIcon() {
         Workspace workspace = mLauncher.getWorkspace();
 
