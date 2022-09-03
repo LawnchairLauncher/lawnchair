@@ -37,6 +37,8 @@ dependencyResolutionManagement {
     }
 }
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 include ':iconloaderlib'
 project(':iconloaderlib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/iconloaderlib')
 

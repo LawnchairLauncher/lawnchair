@@ -8,5 +8,5 @@ android {
 }
 
 dependencies {
-    implementation project(':CompatLib')
+    implementation projects.compatLib
 }
