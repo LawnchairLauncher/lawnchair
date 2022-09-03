@@ -4,16 +4,6 @@ plugins {
 
 android {
     namespace 'app.lawnchair.hidden_api'
-    compileSdk COMPILE_SDK
-
-    defaultConfig {
-        minSdk MIN_SDK
-        targetSdk TARGET_SDK
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
 }
 
 dependencies {

@@ -3,21 +3,6 @@ plugins {
 }
 
 android {
-    compileSdk COMPILE_SDK
     namespace "app.lawnchair.compatlib"
-
-    defaultConfig {
-        minSdk MIN_SDK
-        targetSdk TARGET_SDK
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
     addFrameworkJar('framework-12.jar')
-}
-
-dependencies {
-    implementation 'androidx.core:core-ktx:1.8.0'
 }

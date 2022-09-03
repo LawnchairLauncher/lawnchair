@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdk COMPILE_SDK
-
-    defaultConfig {
-        minSdk MIN_SDK
-        targetSdk TARGET_SDK
-    }
-
     sourceSets {
         main {
             java.srcDirs = ['src']
@@ -17,24 +10,6 @@ android {
             res.srcDirs = ['res']
         }
     }
-
-    lint {
-        abortOnError false
-    }
-
-    tasks.withType(JavaCompile) {
-        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
-    }
-
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
     addFrameworkJar('framework-12l.jar')
 }
 
