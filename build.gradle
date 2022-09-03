@@ -31,12 +31,6 @@ buildscript {
 }
 
 allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
-    }
-
     plugins.withId("com.android.library") {
         setupAndroid(project)
     }
