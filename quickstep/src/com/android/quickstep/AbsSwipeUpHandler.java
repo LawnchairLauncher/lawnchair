@@ -1535,7 +1535,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         Rect keepClearArea;
         if (!ENABLE_PIP_KEEP_CLEAR_ALGORITHM) {
             // make the height equal to hotseatBarSizePx only
-            keepClearArea = new Rect(0, 0, mDp.hotseatBarSizePx, 0);
+            keepClearArea = new Rect(0, 0, 0, mDp.hotseatBarSizePx);
             return keepClearArea;
         }
         // the keep clear area in global screen coordinates, in pixels
