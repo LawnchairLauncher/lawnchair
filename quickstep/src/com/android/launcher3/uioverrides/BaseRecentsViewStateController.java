@@ -28,11 +28,10 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SP
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_Y;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
+import static com.android.quickstep.views.FloatingTaskView.PRIMARY_TRANSLATE_OFFSCREEN;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
-import static com.android.quickstep.views.RecentsView.FIRST_FLOATING_TASK_TRANSLATE_OFFSCREEN;
 import static com.android.quickstep.views.RecentsView.RECENTS_GRID_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
-import static com.android.quickstep.views.RecentsView.SPLIT_INSTRUCTIONS_FADE;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
 import static com.android.quickstep.views.RecentsView.TASK_THUMBNAIL_SPLASH_ALPHA;
 
@@ -112,6 +111,7 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
             // TODO (b/238651489): Refactor state management to avoid need for double check
             FloatingTaskView floatingTask = mRecentsView.getFirstFloatingTaskView();
             if (floatingTask != null) {
+                // We are in split selection state currently, transitioning to another state
                 DragLayer dragLayer = mLauncher.getDragLayer();
                 RectF onScreenRectF = new RectF();
                 Utilities.getBoundsForViewInDragLayer(mLauncher.getDragLayer(), floatingTask,
@@ -127,8 +127,8 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
                 );
 
                 setter.setFloat(
-                        mRecentsView,
-                        FIRST_FLOATING_TASK_TRANSLATE_OFFSCREEN,
+                        mRecentsView.getFirstFloatingTaskView(),
+                        PRIMARY_TRANSLATE_OFFSCREEN,
                         mRecentsView.getPagedOrientationHandler()
                                 .getFloatingTaskOffscreenTranslationTarget(
                                         floatingTask,
@@ -140,14 +140,14 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
                                 ANIM_OVERVIEW_SPLIT_SELECT_FLOATING_TASK_TRANSLATE_OFFSCREEN,
                                 LINEAR
                         ));
-                setter.setFloat(
-                        mRecentsView,
-                        SPLIT_INSTRUCTIONS_FADE,
-                        1,
+                setter.setViewAlpha(
+                        mRecentsView.getSplitInstructionsView(),
+                        0,
                         config.getInterpolator(
                                 ANIM_OVERVIEW_SPLIT_SELECT_INSTRUCTIONS_FADE,
                                 LINEAR
-                        ));
+                        )
+                );
             }
         }
 

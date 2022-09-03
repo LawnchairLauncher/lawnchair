@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ShortcutInfo;
 import android.graphics.Insets;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -510,11 +511,12 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
     }
 
     public Rect startSwipePipToHome(ComponentName componentName, ActivityInfo activityInfo,
-            PictureInPictureParams pictureInPictureParams, int launcherRotation, int shelfHeight) {
+            PictureInPictureParams pictureInPictureParams, int launcherRotation,
+            Rect hotseatKeepClearArea) {
         if (mPip != null) {
             try {
                 return mPip.startSwipePipToHome(componentName, activityInfo,
-                        pictureInPictureParams, launcherRotation, shelfHeight);
+                        pictureInPictureParams, launcherRotation, hotseatKeepClearArea);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startSwipePipToHome", e);
             }
@@ -603,7 +605,21 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
                 mSplitScreen.startIntentAndTaskWithLegacyTransition(pendingIntent, fillInIntent,
                         taskId, mainOptions, sideOptions, sidePosition, splitRatio, adapter);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startTasksWithLegacyTransition");
+                Log.w(TAG, "Failed call startIntentAndTaskWithLegacyTransition");
+            }
+        }
+    }
+
+    public void startShortcutAndTaskWithLegacyTransition(ShortcutInfo shortcutInfo, int taskId,
+            Bundle mainOptions, Bundle sideOptions,
+            @SplitConfigurationOptions.StagePosition int sidePosition, float splitRatio,
+            RemoteAnimationAdapter adapter) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSplitScreen.startShortcutAndTaskWithLegacyTransition(shortcutInfo, taskId,
+                        mainOptions, sideOptions, sidePosition, splitRatio, adapter);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call startShortcutAndTaskWithLegacyTransition");
             }
         }
     }

@@ -64,6 +64,7 @@ import android.hardware.devicestate.DeviceStateManager;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.os.IBinder;
+import android.os.SystemProperties;
 import android.view.Display;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
@@ -158,6 +159,9 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class QuickstepLauncher extends Launcher {
+
+    public static final boolean ENABLE_PIP_KEEP_CLEAR_ALGORITHM =
+            SystemProperties.getBoolean("persist.wm.debug.enable_pip_keep_clear_algorithm", false);
 
     public static final boolean GO_LOW_RAM_RECENTS_ENABLED = false;
     /**
@@ -349,16 +353,18 @@ public class QuickstepLauncher extends Launcher {
      */
     private void onStateOrResumeChanging(boolean inTransition) {
         LauncherState state = getStateManager().getState();
-        boolean started = ((getActivityFlags() & ACTIVITY_STATE_STARTED)) != 0;
-        if (started) {
-            DeviceProfile profile = getDeviceProfile();
-            boolean willUserBeActive =
-                    (getActivityFlags() & ACTIVITY_STATE_USER_WILL_BE_ACTIVE) != 0;
-            boolean visible = (state == NORMAL || state == OVERVIEW)
-                    && (willUserBeActive || isUserActive())
-                    && !profile.isVerticalBarLayout();
-            UiThreadHelper.runAsyncCommand(this, SET_SHELF_HEIGHT, visible ? 1 : 0,
-                    profile.hotseatBarSizePx);
+        if (!ENABLE_PIP_KEEP_CLEAR_ALGORITHM) {
+            boolean started = ((getActivityFlags() & ACTIVITY_STATE_STARTED)) != 0;
+            if (started) {
+                DeviceProfile profile = getDeviceProfile();
+                boolean willUserBeActive =
+                        (getActivityFlags() & ACTIVITY_STATE_USER_WILL_BE_ACTIVE) != 0;
+                boolean visible = (state == NORMAL || state == OVERVIEW)
+                        && (willUserBeActive || isUserActive())
+                        && !profile.isVerticalBarLayout();
+                UiThreadHelper.runAsyncCommand(this, SET_SHELF_HEIGHT, visible ? 1 : 0,
+                        profile.hotseatBarSizePx);
+            }
         }
         if (state == NORMAL && !inTransition) {
             ((RecentsView) getOverviewPanel()).setSwipeDownShouldLaunchApp(false);

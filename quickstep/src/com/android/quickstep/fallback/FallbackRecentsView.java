@@ -227,6 +227,11 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     }
 
     @Override
+    public void onStateTransitionFailed(RecentsState toState) {
+        reset();
+    }
+
+    @Override
     public void onStateTransitionComplete(RecentsState finalState) {
         if (finalState == HOME) {
             // Clean-up logic that occurs when recents is no longer in use/visible.
