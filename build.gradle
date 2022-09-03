@@ -64,7 +64,7 @@ allprojects {
             tasks.withType(JavaCompile) {
                 options.bootstrapClasspath = files([frameworkJar] + (options.bootstrapClasspath.files as Iterable<File>))
             }
-            tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+            tasks.withType(KotlinCompile) {
                 it.classpath.from(files([frameworkJar]))
             }
         }
@@ -73,7 +73,7 @@ allprojects {
     ext.replaceFrameworkJar = { String name ->
         def frameworkJar = getFrameworkJar(name)
         gradle.projectsEvaluated {
-            tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+            tasks.withType(KotlinCompile) {
                 def originalFiles = [] + it.classpath.files
                 def newFiles = []
                 originalFiles.each { file ->
