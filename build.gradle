@@ -299,22 +299,22 @@ android {
 }
 
 dependencies {
-    final def FRAMEWORK_PREBUILTS_DIR = "prebuilts"
+    final def FRAMEWORK_PREBUILTS_DIR = "prebuilts/libs"
 
     implementation "androidx.dynamicanimation:dynamicanimation:1.0.0"
     implementation "androidx.recyclerview:recyclerview:1.2.1"
     implementation "androidx.preference:preference-ktx:1.2.0"
     implementation projects.iconloaderlib
     implementation projects.searchuilib
-    implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'SystemUI-statsd.jar')
+    implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd.jar')
 
     // Recents lib dependency
     withQuickstepImplementation projects.systemUIShared
     withQuickstepCompileOnly projects.hiddenApi
-    implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'WindowManager-Shell.jar')
+    implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell.jar')
 
     // Required for AOSP to compile. This is already included in the sysui_shared.jar
-    withoutQuickstepImplementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'plugin_core.jar')
+    withoutQuickstepImplementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'plugin_core.jar')
 
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0'
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
