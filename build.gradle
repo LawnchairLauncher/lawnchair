@@ -401,7 +401,7 @@ def setupAndroid(Project project) {
             targetCompatibility JavaVersion.VERSION_1_8
         }
         lint {
-            abortOnError false
+            abortOnError true
             checkReleaseBuilds false
         }
     }
