@@ -168,7 +168,7 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਬੰਦ ਹਨ। ਤੁਹਾਡੀਆਂ ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਤੁਹਾਨੂੰ ਸੂਚਨਾਵਾਂ ਨਹੀਂ ਭੇਜ ਸਕਦੀਆਂ, ਤੁਹਾਡੀ ਬੈਟਰੀ ਨਹੀਂ ਵਰਤ ਸਕਦੀਆਂ ਜਾਂ ਤੁਹਾਡੇ ਟਿਕਾਣੇ ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਕਰ ਸਕਦੀਆਂ"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਨੂੰ ਬੈਜ ਕੀਤਾ ਜਾਂਦਾ ਹੈ ਅਤੇ ਇਹ ਤੁਹਾਡੇ ਆਈ.ਟੀ. ਪ੍ਰਸ਼ਾਸਕ ਨੂੰ ਦਿਸਣਗੀਆਂ"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"ਸਮਝ ਲਿਆ"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ਕੰਮ ਸੰਬੰਧੀ ਐਪ ਰੋਕੋ"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਰੋਕੋ"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਚਾਲੂ ਕਰੋ"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ਫਿਲਟਰ"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"ਆਪਣਾ ਫ਼ੋਨ ਖੋਜੋ"</string>
