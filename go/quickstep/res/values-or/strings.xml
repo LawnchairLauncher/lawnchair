@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_share_drop_target_label" msgid="5804774105974539508">"ଆପ୍ ସେୟାର୍ କରନ୍ତୁ"</string>
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"ଆପ ସେୟାର କରନ୍ତୁ"</string>
     <string name="action_listen" msgid="2370304050784689486">"ଶୁଣନ୍ତୁ"</string>
     <string name="action_translate" msgid="8028378961867277746">"ଅନୁବାଦ କରନ୍ତୁ"</string>
     <string name="action_search" msgid="6269564710943755464">"Lens"</string>
     <string name="dialog_acknowledge" msgid="2804025517675853172">"ବୁଝିଗଲି"</string>
-    <string name="dialog_cancel" msgid="6464336969134856366">"ବାତିଲ୍ କରନ୍ତୁ"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"ବାତିଲ କରନ୍ତୁ"</string>
     <string name="dialog_settings" msgid="6564397136021186148">"ସେଟିଂସ"</string>
     <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"ସ୍କିନରେ ଥିବା ଟେକ୍ସଟକୁ ଅନୁବାଦ କରନ୍ତୁ କିମ୍ବା ଶୁଣନ୍ତୁ"</string>
     <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"ଆପଣଙ୍କ ସ୍କ୍ରିନରେ ଟେକ୍ସଟ, ୱେବ ଠିକଣା ଏବଂ ସ୍କ୍ରିନସଟଗୁଡ଼ିକ ପରି ସୂଚନାକୁ Google ସହ ସେୟାର କରାଯାଇପାରେ।\n\nଆପଣ କେଉଁ ସୂଚନାକୁ ସେୟାର କରନ୍ତି ତାହା ପରିବର୍ତ୍ତନ କରିବା ପାଇଁ, "<b>"ସେଟିଂସ &gt; ଆପ୍ସ &gt; ଡିଫଲ୍ଟ ଆପ୍ସ &gt; Digital assistant ଆପ"</b>"କୁ ଯାଆନ୍ତୁ।"</string>
