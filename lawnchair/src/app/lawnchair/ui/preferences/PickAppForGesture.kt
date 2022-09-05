@@ -40,7 +40,6 @@ fun PickAppForGesture() {
 
     PreferenceScaffold(
         label = stringResource(id = R.string.pick_app_for_gesture),
-        floating = rememberFloatingState(state),
     ) {
         Crossfade(targetState = optionalApps.isPresent) { present ->
             if (present) {
