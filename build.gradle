@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jmailen.gradle.kotlinter.tasks.ConfigurableKtLintTask
 
 plugins {
     id 'com.android.application' version "7.3.0-rc01"
@@ -382,6 +383,12 @@ protobuf {
                 }
             }
         }
+    }
+}
+
+tasks.withType(ConfigurableKtLintTask).configureEach {
+    exclude {
+        !it.file.path.contains("lawnchair/src/")
     }
 }
 
