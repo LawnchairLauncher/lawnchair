@@ -52,6 +52,7 @@
 
     <!-- which notification dot color to use by default -->
     <string name="config_default_notification_dot_color" translatable="false">app_icon</string>
+    <string name="config_default_folder_color" translatable="false">launcher_default</string>
 
     <!-- which time format to use by default on smartspace -->
     <string name="config_default_smartspace_time_format" translatable="false">system</string>

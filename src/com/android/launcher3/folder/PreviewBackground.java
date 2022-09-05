@@ -46,7 +46,10 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.views.ActivityContext;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
+import app.lawnchair.preferences2.PreferenceManager2;
+import app.lawnchair.theme.color.ColorOption;
 import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.util.LawnchairUtilsKt;
 
@@ -154,10 +157,20 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
                       int availableSpaceX, int topPadding) {
         mInvalidateDelegate = invalidateDelegate;
 
+        PreferenceManager2 preferenceManager2 = PreferenceManager2.INSTANCE.get(context);
+
+        // Load folder color
+        ColorOption colorOption = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getFolderColor());
+        int folderColor = colorOption.getColorPreferenceEntry().getLightColor().invoke(context);
+
         TypedArray ta = context.getTheme().obtainStyledAttributes(R.styleable.FolderIconPreview);
         mDotColor = ColorTokens.FolderDotColor.resolveColor(context);
         mStrokeColor = ColorTokens.FolderIconBorderColor.resolveColor(context);
-        mBgColor = ColorTokens.FolderPreviewColor.resolveColor(context);
+        if (folderColor != 0) {
+            mBgColor = folderColor;
+        } else {
+            mBgColor = ColorTokens.FolderPreviewColor.resolveColor(context);
+        }
         mBgColor = ColorUtils.setAlphaComponent(mBgColor, LawnchairUtilsKt.getFolderPreviewAlpha(context));
         ta.recycle();
 

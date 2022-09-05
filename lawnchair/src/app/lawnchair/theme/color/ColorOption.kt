@@ -61,16 +61,16 @@ sealed class ColorOption {
         override fun toString() = "custom|#${String.format("%08x", color)}"
     }
 
-    object AppIcon : ColorOption() {
+    object LauncherDefault : ColorOption() {
         override val isSupported = false
 
         override val colorPreferenceEntry = ColorPreferenceEntry<ColorOption>(
             this,
-            { stringResource(id = R.string.app_icon_color) },
+            { stringResource(id = R.string.launcher_default_color) },
             { 0 }
         )
 
-        override fun toString() = "app_icon"
+        override fun toString() = "launcher_default"
     }
 
     companion object {
@@ -79,7 +79,7 @@ sealed class ColorOption {
         fun fromString(stringValue: String) = when (stringValue) {
             "system_accent" -> SystemAccent
             "wallpaper_primary" -> WallpaperPrimary
-            "app_icon" -> AppIcon
+            "launcher_default" -> LauncherDefault
             else -> instantiateCustomColor(stringValue)
         }
 
