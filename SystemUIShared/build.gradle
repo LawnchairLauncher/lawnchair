@@ -1,14 +1,10 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+}
 
 android {
-    compileSdk COMPILE_SDK
-
-    defaultConfig {
-        minSdk MIN_SDK
-        targetSdk TARGET_SDK
-    }
-
+    namespace "com.android.systemui.shared"
     sourceSets {
         main {
             java.srcDirs = ['src']
@@ -17,24 +13,6 @@ android {
             res.srcDirs = ['res']
         }
     }
-
-    lint {
-        abortOnError false
-    }
-
-    tasks.withType(JavaCompile) {
-        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
-    }
-
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
     addFrameworkJar('framework-12l.jar')
 }
 
@@ -43,8 +21,8 @@ dependencies {
     implementation "androidx.concurrent:concurrent-futures:1.1.0"
     implementation "androidx.lifecycle:lifecycle-common:2.5.1"
     implementation "androidx.dynamicanimation:dynamicanimation:1.0.0"
-    implementation project(':CompatLib')
-    implementation project(':CompatLibVR')
-    implementation project(':CompatLibVS')
+    implementation projects.compatLib
+    implementation projects.compatLibVR
+    implementation projects.compatLibVS
     implementation "org.json:json:20220320"
 }

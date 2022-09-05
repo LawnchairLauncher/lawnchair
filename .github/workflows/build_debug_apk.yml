@@ -4,12 +4,26 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - '*'
-      - '*/*'
-      - '**'
-      - '!12.1-dev-localization'
-      - '!12.1-alpha'
+      - '*-dev'
+    paths-ignore:
+      - '.idea/**'
+      - '.gitattributes'
+      - '.github/**.json'
+      - '.gitignore'
+      - '.gitmodules'
+      - '**.md'
+      - 'LICENSE'
+      - 'NOTICE'
   pull_request:
+    paths-ignore:
+      - '.idea/**'
+      - '.gitattributes'
+      - '.github/**.json'
+      - '.gitignore'
+      - '.gitmodules'
+      - '**.md'
+      - 'LICENSE'
+      - 'NOTICE'
 
 jobs:
   build-debug-apk:
