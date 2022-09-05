@@ -26,6 +26,17 @@ on:
       - 'NOTICE'
 
 jobs:
+  ktlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 17
+      - uses: gradle/gradle-build-action@v2
+      - run: ./gradlew lintKotlin
+
   build-debug-apk:
     runs-on: ubuntu-latest
     continue-on-error: true
@@ -57,6 +68,7 @@ jobs:
         with:
           name: Debug APK
           path: build/outputs/apk/lawnWithQuickstep/debug/*.apk
+
   send-notifications:
     runs-on: ubuntu-latest
     if: github.repository == 'LawnchairLauncher/lawnchair'
