@@ -1,8 +1,8 @@
 package app.lawnchair.theme.color
 
 import androidx.annotation.ColorInt
-import dev.kdrag0n.colorkt.Color
 import com.android.systemui.monet.ColorScheme as MonetColorScheme
+import dev.kdrag0n.colorkt.Color
 import dev.kdrag0n.monet.theme.ColorScheme
 import dev.kdrag0n.monet.theme.ColorSwatch
 

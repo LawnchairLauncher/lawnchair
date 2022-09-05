@@ -16,18 +16,19 @@ import app.lawnchair.util.repeatOnAttached
 import app.lawnchair.util.subscribeBlocking
 import com.android.launcher3.R
 import com.patrykmichalik.opto.core.firstBlocking
+import java.util.*
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import saman.zamani.persiandate.PersianDate
 import saman.zamani.persiandate.PersianDateFormat
-import java.util.*
 
 typealias FormatterFunction = (Long) -> String
 
 class IcuDateTextView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
+    context: Context,
+    attrs: AttributeSet? = null,
 ) : DoubleShadowTextView(context, attrs) {
 
     private val prefs = PreferenceManager2.getInstance(context)
@@ -63,7 +64,8 @@ class IcuDateTextView @JvmOverloads constructor(
         if (isShown) {
             val timeText = getTimeText(updateFormatter)
             if (text != timeText) {
-                textAlignment = if (shouldAlignToTextEnd()) TEXT_ALIGNMENT_TEXT_END else TEXT_ALIGNMENT_TEXT_START
+                textAlignment =
+                    if (shouldAlignToTextEnd()) TEXT_ALIGNMENT_TEXT_END else TEXT_ALIGNMENT_TEXT_START
                 text = timeText
                 contentDescription = timeText
             }
@@ -73,10 +75,15 @@ class IcuDateTextView @JvmOverloads constructor(
     }
 
     private fun shouldAlignToTextEnd(): Boolean {
-        val is24HourFormatManual = dateTimeOptions.timeFormat is SmartspaceTimeFormat.TwentyFourHourFormat
-        val is24HourFormatOnSystem = dateTimeOptions.timeFormat is SmartspaceTimeFormat.FollowSystem && is24HourFormat(context)
+        val is24HourFormatManual =
+            dateTimeOptions.timeFormat is SmartspaceTimeFormat.TwentyFourHourFormat
+        val is24HourFormatOnSystem =
+            dateTimeOptions.timeFormat is SmartspaceTimeFormat.FollowSystem && is24HourFormat(
+                context,
+            )
         val is24HourFormat = is24HourFormatManual || is24HourFormatOnSystem
-        val shouldNotAlignToEnd = dateTimeOptions.showTime && is24HourFormat && !dateTimeOptions.showDate
+        val shouldNotAlignToEnd =
+            dateTimeOptions.showTime && is24HourFormat && !dateTimeOptions.showDate
         return calendar == SmartspaceCalendar.Persian && !shouldNotAlignToEnd
     }
 
@@ -102,17 +109,24 @@ class IcuDateTextView @JvmOverloads constructor(
         if (dateTimeOptions.showTime) {
             format = context.getString(
                 when {
-                    dateTimeOptions.timeFormat is SmartspaceTimeFormat.TwelveHourFormat -> R.string.smartspace_icu_date_pattern_persian_time_12h
-                    dateTimeOptions.timeFormat is SmartspaceTimeFormat.TwentyFourHourFormat -> R.string.smartspace_icu_date_pattern_persian_time
+                    dateTimeOptions.timeFormat is SmartspaceTimeFormat.TwelveHourFormat ->
+                        R.string.smartspace_icu_date_pattern_persian_time_12h
+                    dateTimeOptions.timeFormat is SmartspaceTimeFormat.TwentyFourHourFormat ->
+                        R.string.smartspace_icu_date_pattern_persian_time
                     is24HourFormat(context) -> R.string.smartspace_icu_date_pattern_persian_time
                     else -> R.string.smartspace_icu_date_pattern_persian_time_12h
-                }
+                },
             )
-            if (dateTimeOptions.showDate) format = context.getString(R.string.smartspace_icu_date_pattern_persian_date) + format
+            if (dateTimeOptions.showDate) format =
+                context.getString(R.string.smartspace_icu_date_pattern_persian_date) + format
         } else {
-            format = context.getString(R.string.smartspace_icu_date_pattern_persian_wday_month_day_no_year)
+            format =
+                context.getString(
+                    R.string.smartspace_icu_date_pattern_persian_wday_month_day_no_year,
+                )
         }
-        val formatter = PersianDateFormat(format, PersianDateFormat.PersianDateNumberCharacter.FARSI)
+        val formatter =
+            PersianDateFormat(format, PersianDateFormat.PersianDateNumberCharacter.FARSI)
         return { formatter.format(PersianDate(it)) }
     }
 
@@ -121,15 +135,22 @@ class IcuDateTextView @JvmOverloads constructor(
         if (dateTimeOptions.showTime) {
             format = context.getString(
                 when {
-                    dateTimeOptions.timeFormat is SmartspaceTimeFormat.TwelveHourFormat -> R.string.smartspace_icu_date_pattern_gregorian_time_12h
-                    dateTimeOptions.timeFormat is SmartspaceTimeFormat.TwentyFourHourFormat -> R.string.smartspace_icu_date_pattern_gregorian_time
+                    dateTimeOptions.timeFormat is SmartspaceTimeFormat.TwelveHourFormat ->
+                        R.string.smartspace_icu_date_pattern_gregorian_time_12h
+                    dateTimeOptions.timeFormat is SmartspaceTimeFormat.TwentyFourHourFormat ->
+                        R.string.smartspace_icu_date_pattern_gregorian_time
                     is24HourFormat(context) -> R.string.smartspace_icu_date_pattern_gregorian_time
                     else -> R.string.smartspace_icu_date_pattern_gregorian_time_12h
-                }
+                },
             )
-            if (dateTimeOptions.showDate) format += context.getString(R.string.smartspace_icu_date_pattern_gregorian_date)
+            if (dateTimeOptions.showDate) format += context.getString(
+                R.string.smartspace_icu_date_pattern_gregorian_date,
+            )
         } else {
-            format = context.getString(R.string.smartspace_icu_date_pattern_gregorian_wday_month_day_no_year)
+            format =
+                context.getString(
+                    R.string.smartspace_icu_date_pattern_gregorian_wday_month_day_no_year,
+                )
         }
         val formatter = DateFormat.getInstanceForSkeleton(format, Locale.getDefault())
         formatter.setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE)

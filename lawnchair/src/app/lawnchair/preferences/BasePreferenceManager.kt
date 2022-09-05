@@ -23,10 +23,11 @@ import androidx.core.content.edit
 import app.lawnchair.font.FontCache
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
-import org.json.JSONObject
 import java.util.concurrent.CopyOnWriteArraySet
+import org.json.JSONObject
 
-abstract class BasePreferenceManager(private val context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
+abstract class BasePreferenceManager(private val context: Context) :
+    SharedPreferences.OnSharedPreferenceChangeListener {
     val sp: SharedPreferences = Utilities.getPrefs(context)
     val prefsMap = mutableMapOf<String, BasePref<*>>()
 
@@ -94,7 +95,10 @@ abstract class BasePreferenceManager(private val context: Context) : SharedPrefe
         }
     }
 
-    abstract inner class BasePref<T>(override val key: String, private val primaryListener: ChangeListener?) : PrefEntry<T> {
+    abstract inner class BasePref<T>(
+        override val key: String,
+        private val primaryListener: ChangeListener?,
+    ) : PrefEntry<T> {
         protected var loaded = false
         private val listeners = CopyOnWriteArraySet<PreferenceChangeListener>()
 
@@ -122,7 +126,7 @@ abstract class BasePreferenceManager(private val context: Context) : SharedPrefe
     abstract inner class StringBasedPref<T>(
         key: String,
         override val defaultValue: T,
-        primaryListener: ChangeListener? = null
+        primaryListener: ChangeListener? = null,
     ) : BasePref<T>(key, primaryListener) {
         private var currentValue: T? = null
 
@@ -155,7 +159,7 @@ abstract class BasePreferenceManager(private val context: Context) : SharedPrefe
     inner class StringPref(
         key: String,
         defaultValue: String,
-        primaryListener: ChangeListener? = null
+        primaryListener: ChangeListener? = null,
     ) : StringBasedPref<String>(key, defaultValue, primaryListener) {
         override fun parse(stringValue: String) = stringValue
         override fun stringify(value: String) = value
@@ -164,7 +168,7 @@ abstract class BasePreferenceManager(private val context: Context) : SharedPrefe
     inner class BoolPref(
         key: String,
         override val defaultValue: Boolean,
-        primaryListener: ChangeListener? = null
+        primaryListener: ChangeListener? = null,
     ) : BasePref<Boolean>(key, primaryListener) {
         private var currentValue = false
 
@@ -189,7 +193,7 @@ abstract class BasePreferenceManager(private val context: Context) : SharedPrefe
     open inner class IntPref(
         key: String,
         private val defaultValueInternal: Int,
-        primaryListener: ChangeListener? = null
+        primaryListener: ChangeListener? = null,
     ) : BasePref<Int>(key, primaryListener) {
         override val defaultValue = defaultValueInternal
         private var currentValue = 0
@@ -219,7 +223,7 @@ abstract class BasePreferenceManager(private val context: Context) : SharedPrefe
     inner class IdpIntPref(
         key: String,
         private val selectDefaultValue: InvariantDeviceProfile.GridOption.() -> Int,
-        primaryListener: ChangeListener? = null
+        primaryListener: ChangeListener? = null,
     ) : IntPref(key, -1, primaryListener) {
         override val defaultValue: Int
             get() = error("unsupported")
@@ -257,7 +261,7 @@ abstract class BasePreferenceManager(private val context: Context) : SharedPrefe
     inner class FloatPref(
         key: String,
         override val defaultValue: Float,
-        primaryListener: ChangeListener? = null
+        primaryListener: ChangeListener? = null,
     ) : BasePref<Float>(key, primaryListener) {
         private var currentValue = 0f
 
@@ -282,7 +286,7 @@ abstract class BasePreferenceManager(private val context: Context) : SharedPrefe
     inner class StringSetPref(
         key: String,
         override val defaultValue: Set<String>,
-        primaryListener: ChangeListener? = null
+        primaryListener: ChangeListener? = null,
     ) : BasePref<Set<String>>(key, primaryListener) {
         private var currentValue = setOf<String>()
 
@@ -307,7 +311,7 @@ abstract class BasePreferenceManager(private val context: Context) : SharedPrefe
     inner class FontPref(
         key: String,
         defaultValue: FontCache.Font,
-        primaryListener: ChangeListener? = null
+        primaryListener: ChangeListener? = null,
     ) : StringBasedPref<FontCache.Font>(key, defaultValue, primaryListener) {
 
         override fun parse(stringValue: String): FontCache.Font {
@@ -327,7 +331,7 @@ abstract class BasePreferenceManager(private val context: Context) : SharedPrefe
         defaultValue: T,
         private val parseFunc: (stringValue: String) -> T,
         private val stringifyFunc: (value: T) -> String,
-        primaryListener: ChangeListener? = null
+        primaryListener: ChangeListener? = null,
     ) : StringBasedPref<T>(key, defaultValue, primaryListener) {
 
         override fun parse(stringValue: String) = parseFunc(stringValue)
@@ -337,7 +341,7 @@ abstract class BasePreferenceManager(private val context: Context) : SharedPrefe
 
     abstract inner class MutableMapPref<K, V>(
         key: String,
-        primaryListener: ChangeListener? = null
+        primaryListener: ChangeListener? = null,
     ) : BasePref<Map<K, V>>(key, primaryListener) {
 
         override val defaultValue = mapOf<K, V>()

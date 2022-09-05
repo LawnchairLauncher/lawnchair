@@ -52,11 +52,17 @@ import java.io.File
 class LawnchairApp : Application() {
 
     val activityHandler = ActivityHandler()
-    private val compatible = Build.VERSION.SDK_INT in BuildConfig.QUICKSTEP_MIN_SDK..BuildConfig.QUICKSTEP_MAX_SDK
+    private val compatible =
+        Build.VERSION.SDK_INT in BuildConfig.QUICKSTEP_MIN_SDK..BuildConfig.QUICKSTEP_MAX_SDK
     private val isRecentsComponent by lazy { checkRecentsComponent() }
     private val recentsEnabled get() = compatible && isRecentsComponent
     internal var accessibilityService: LawnchairAccessibilityService? = null
-    val vibrateOnIconAnimation by lazy { getSystemUiBoolean("config_vibrateOnIconAnimation", false) }
+    val vibrateOnIconAnimation by lazy {
+        getSystemUiBoolean(
+            "config_vibrateOnIconAnimation",
+            false,
+        )
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -169,10 +175,13 @@ class LawnchairApp : Application() {
             return false
         }
 
-        val isRecentsComponent = recentsComponent.packageName == packageName
-                && recentsComponent.className == RecentsActivity::class.java.name
+        val isRecentsComponent = recentsComponent.packageName == packageName &&
+            recentsComponent.className == RecentsActivity::class.java.name
         if (!isRecentsComponent) {
-            Log.d(TAG, "config_recentsComponentName ($recentsComponent) is not Lawnchair, disabling recents")
+            Log.d(
+                TAG,
+                "config_recentsComponentName ($recentsComponent) is not Lawnchair, disabling recents",
+            )
             return false
         }
 
@@ -187,7 +196,7 @@ class LawnchairApp : Application() {
         } else {
             startActivity(
                 Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
             )
             false
         }
@@ -214,7 +223,7 @@ class LawnchairApp : Application() {
                         val description = stringResource(
                             id = R.string.quickstep_incompatible_description,
                             stringResource(id = R.string.derived_app_name),
-                            Build.VERSION.RELEASE
+                            Build.VERSION.RELEASE,
                         )
                         Text(text = description)
                     },
@@ -223,23 +232,27 @@ class LawnchairApp : Application() {
                             onClick = {
                                 openAppInfo(launcher)
                                 close(true)
-                            }
+                            },
                         ) {
                             Text(text = stringResource(id = R.string.app_info_drop_target_label))
                         }
                         Spacer(modifier = Modifier.requiredWidth(8.dp))
                         Button(
-                            onClick = { close(true) }
+                            onClick = { close(true) },
                         ) {
                             Text(text = stringResource(id = android.R.string.ok))
                         }
-                    }
+                    },
                 )
             }
         }
 
         fun getUriForFile(context: Context, file: File): Uri {
-            return FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.fileprovider", file)
+            return FileProvider.getUriForFile(
+                context,
+                "${BuildConfig.APPLICATION_ID}.fileprovider",
+                file,
+            )
         }
     }
 }

@@ -5,7 +5,7 @@ import com.android.launcher3.allapps.AllAppsGridAdapter
 
 data class SearchAdapterItem(
     val searchTarget: SearchTargetCompat,
-    val background: SearchItemBackground?
+    val background: SearchItemBackground?,
 ) : AllAppsGridAdapter.AdapterItem() {
 
     companion object {
@@ -13,7 +13,7 @@ data class SearchAdapterItem(
         fun createAdapterItem(
             pos: Int,
             target: SearchTargetCompat,
-            background: SearchItemBackground?
+            background: SearchItemBackground?,
         ): SearchAdapterItem? {
             val type = LawnchairSearchAdapterProvider.viewTypeMap[target.layoutType] ?: return null
             return SearchAdapterItem(target, background).apply {

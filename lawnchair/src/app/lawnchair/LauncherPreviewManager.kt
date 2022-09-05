@@ -20,7 +20,6 @@ class LauncherPreviewManager(private val context: Context) : RememberObserver {
     }
 
     override fun onRemembered() {
-
     }
 
     override fun onForgotten() {

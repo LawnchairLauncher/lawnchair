@@ -18,8 +18,16 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.util.Themes
 
 @JvmOverloads
-fun Context.getAccentColor(darkTheme: Boolean = Themes.getAttrBoolean(this, R.attr.isMainColorDark)): Int {
-    return ColorTokens.ColorAccent.resolveColor(this, if (darkTheme) UiColorMode.Dark else UiColorMode.Light)
+fun Context.getAccentColor(
+    darkTheme: Boolean = Themes.getAttrBoolean(
+        this,
+        R.attr.isMainColorDark,
+    ),
+): Int {
+    return ColorTokens.ColorAccent.resolveColor(
+        this,
+        if (darkTheme) UiColorMode.Dark else UiColorMode.Light,
+    )
 }
 
 @ColorInt
@@ -57,7 +65,8 @@ fun Context.getSystemAccent(darkTheme: Boolean): Int {
         }
 
         val typedValue = TypedValue()
-        val theme = if (darkTheme) android.R.style.Theme_DeviceDefault else android.R.style.Theme_DeviceDefault_Light
+        val theme =
+            if (darkTheme) android.R.style.Theme_DeviceDefault else android.R.style.Theme_DeviceDefault_Light
         val contextWrapper = ContextThemeWrapper(this, theme)
         contextWrapper.theme.resolveAttribute(android.R.attr.colorAccent, typedValue, true)
         typedValue.data

@@ -4,7 +4,7 @@ import androidx.annotation.IntDef
 
 data class WallpaperColorsCompat(
     val primaryColor: Int,
-    @ColorsHints val colorHints: Int
+    @ColorsHints val colorHints: Int,
 ) {
 
     companion object {
@@ -14,10 +14,10 @@ data class WallpaperColorsCompat(
 
         @IntDef(
             value = [HINT_SUPPORTS_DARK_TEXT, HINT_SUPPORTS_DARK_THEME],
-            flag = true
+            flag = true,
         )
         @Retention(
-            AnnotationRetention.SOURCE
+            AnnotationRetention.SOURCE,
         )
         annotation class ColorsHints
     }

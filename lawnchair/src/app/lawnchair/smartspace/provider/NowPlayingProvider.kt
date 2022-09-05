@@ -18,7 +18,9 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.first
 
 class NowPlayingProvider(context: Context) : SmartspaceDataSource(
-    context, R.string.smartspace_now_playing, { smartspaceNowPlaying },
+    context,
+    R.string.smartspace_now_playing,
+    { smartspaceNowPlaying },
 ) {
 
     private val defaultIcon = Icon.createWithResource(context, R.drawable.ic_music_note)
@@ -64,8 +66,10 @@ class NowPlayingProvider(context: Context) : SmartspaceDataSource(
 
     override suspend fun startSetup(activity: Activity) {
         val intent = PreferenceActivity.createIntent(activity, "/${Routes.GENERAL}/")
-        val message = activity.getString(R.string.event_provider_missing_notification_dots,
-            activity.getString(providerName))
+        val message = activity.getString(
+            R.string.event_provider_missing_notification_dots,
+            activity.getString(providerName),
+        )
         BlankActivity.startBlankActivityDialog(
             activity,
             intent,

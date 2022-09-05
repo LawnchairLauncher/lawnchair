@@ -41,13 +41,15 @@ class ThemeProvider(private val context: Context) {
             colorSchemeMap.append(0, SystemColorScheme(context))
             registerOverlayChangedListener()
         }
-        wallpaperManager.addOnChangeListener(object : WallpaperManagerCompat.OnColorsChangedListener {
-            override fun onColorsChanged() {
-                if (accentColor is ColorOption.WallpaperPrimary) {
-                    notifyColorSchemeChanged()
+        wallpaperManager.addOnChangeListener(
+            object : WallpaperManagerCompat.OnColorsChangedListener {
+                override fun onColorsChanged() {
+                    if (accentColor is ColorOption.WallpaperPrimary) {
+                        notifyColorSchemeChanged()
+                    }
                 }
-            }
-        })
+            },
+        )
         preferenceManager2.accentColor.onEach(launchIn = coroutineScope) {
             accentColor = it
             notifyColorSchemeChanged()
@@ -69,24 +71,26 @@ class ThemeProvider(private val context: Context) {
             },
             packageFilter,
             null,
-            Handler(Looper.getMainLooper())
+            Handler(Looper.getMainLooper()),
         )
     }
 
-    val colorScheme get() = when (val accentColor = this.accentColor) {
-        is ColorOption.SystemAccent -> systemColorScheme
-        is ColorOption.WallpaperPrimary -> {
-            val wallpaperPrimary = wallpaperManager.wallpaperColors?.primaryColor
-            getColorScheme(wallpaperPrimary ?: ColorOption.LawnchairBlue.color)
+    val colorScheme
+        get() = when (val accentColor = this.accentColor) {
+            is ColorOption.SystemAccent -> systemColorScheme
+            is ColorOption.WallpaperPrimary -> {
+                val wallpaperPrimary = wallpaperManager.wallpaperColors?.primaryColor
+                getColorScheme(wallpaperPrimary ?: ColorOption.LawnchairBlue.color)
+            }
+            is ColorOption.CustomColor -> getColorScheme(accentColor.color)
+            else -> getColorScheme(ColorOption.LawnchairBlue.color)
         }
-        is ColorOption.CustomColor -> getColorScheme(accentColor.color)
-        else -> getColorScheme(ColorOption.LawnchairBlue.color)
-    }
 
-    private val systemColorScheme get() = when {
-        Utilities.ATLEAST_S -> getColorScheme(0)
-        else -> getColorScheme(context.getSystemAccent(darkTheme = false))
-    }
+    private val systemColorScheme
+        get() = when {
+            Utilities.ATLEAST_S -> getColorScheme(0)
+            else -> getColorScheme(context.getSystemAccent(darkTheme = false))
+        }
 
     private fun getColorScheme(colorInt: Int): ColorScheme {
         var colorScheme = colorSchemeMap[colorInt]

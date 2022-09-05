@@ -21,13 +21,13 @@ interface KatbinService {
 }
 
 data class KatbinUploadBody(
-    val paste: KatbinPaste
+    val paste: KatbinPaste,
 )
 
 data class KatbinPaste(
-    val content: String
+    val content: String,
 )
 
 data class KatbinUploadResult(
-    val id: String
+    val id: String,
 )

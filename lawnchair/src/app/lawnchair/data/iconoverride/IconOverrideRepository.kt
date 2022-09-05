@@ -6,9 +6,13 @@ import app.lawnchair.icons.IconPickerItem
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.MainThreadInitializedObject
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.flowOn
 import java.util.concurrent.ConcurrentLinkedQueue
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 
 class IconOverrideRepository(private val context: Context) {
 
@@ -26,7 +30,7 @@ class IconOverrideRepository(private val context: Context) {
                 .collect { overrides ->
                     _overridesMap = overrides.associateBy(
                         keySelector = { it.target },
-                        valueTransform = { it.iconPickerItem }
+                        valueTransform = { it.iconPickerItem },
                     )
                     while (updatePackageQueue.isNotEmpty()) {
                         val target = updatePackageQueue.poll() ?: continue

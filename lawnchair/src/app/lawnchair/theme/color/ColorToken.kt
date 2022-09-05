@@ -14,11 +14,14 @@ import dev.kdrag0n.colorkt.Color
 import dev.kdrag0n.monet.theme.ColorScheme
 
 interface ColorToken : ResourceToken<Color> {
-    fun resolveColor(context: Context) = resolveColor(context, UiColorMode(Themes.getAttrInteger(context, R.attr.uiColorMode)))
+    fun resolveColor(context: Context) =
+        resolveColor(context, UiColorMode(Themes.getAttrInteger(context, R.attr.uiColorMode)))
+
     fun resolveColor(context: Context, uiColorMode: UiColorMode): Int {
         val themeProvider = ThemeProvider.INSTANCE.get(context)
         return resolveColor(context, themeProvider.colorScheme, uiColorMode)
     }
+
     fun resolveColor(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Int {
         return try {
             resolve(context, scheme, uiColorMode).toAndroidColor()
@@ -31,7 +34,7 @@ interface ColorToken : ResourceToken<Color> {
 
 data class SwatchColorToken(
     private val swatch: Swatch,
-    private val shade: Shade
+    private val shade: Shade,
 ) : ColorToken {
 
     override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {
@@ -48,7 +51,7 @@ data class SwatchColorToken(
 
 data class DayNightColorToken(
     private val lightToken: ColorToken,
-    private val darkToken: ColorToken
+    private val darkToken: ColorToken,
 ) : ColorToken {
 
     override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {
@@ -66,7 +69,7 @@ data class DayNightColorToken(
 
 data class DarkTextColorToken(
     private val lightToken: ColorToken,
-    private val darkToken: ColorToken
+    private val darkToken: ColorToken,
 ) : ColorToken {
 
     override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {
@@ -79,7 +82,7 @@ data class DarkTextColorToken(
 }
 
 data class StaticColorToken(
-    private val color: Long
+    private val color: Long,
 ) : ColorToken {
 
     override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {
@@ -89,7 +92,7 @@ data class StaticColorToken(
 
 data class SetAlphaColorToken(
     private val token: ColorToken,
-    private val alpha: Float
+    private val alpha: Float,
 ) : ColorToken {
 
     override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {
@@ -100,7 +103,7 @@ data class SetAlphaColorToken(
 
 data class SetLStarColorToken(
     private val token: ColorToken,
-    private val lStar: Double
+    private val lStar: Double,
 ) : ColorToken {
 
     override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {
@@ -112,7 +115,7 @@ data class SetLStarColorToken(
 
 class WithContextColorToken(
     private val token: ColorToken,
-    private val transform: ColorToken.(Context) -> ColorToken
+    private val transform: ColorToken.(Context) -> ColorToken,
 ) : ColorToken {
 
     override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {

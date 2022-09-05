@@ -20,8 +20,6 @@ import com.android.launcher3.LauncherFiles
 import com.android.launcher3.R
 import com.android.launcher3.model.DeviceGridState
 import com.google.protobuf.Timestamp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -32,10 +30,12 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 import kotlin.math.max
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class LawnchairBackup(
     private val context: Context,
-    private val uri: Uri
+    private val uri: Uri,
 ) {
     lateinit var info: BackupInfo
     var screenshot: Bitmap? = null
@@ -44,11 +44,13 @@ class LawnchairBackup(
     suspend fun readInfoAndPreview() {
         var tmpScreenshot: Bitmap? = null
         var tmpWallpaper: Bitmap? = null
-        readZip(mapOf(
-            INFO_FILE_NAME to { info = BackupInfo.newBuilder().mergeFrom(it).build() },
-            SCREENSHOT_FILE_NAME to { tmpScreenshot = BitmapFactory.decodeStream(it) },
-            WALLPAPER_FILE_NAME to { tmpWallpaper = BitmapFactory.decodeStream(it) },
-        ))
+        readZip(
+            mapOf(
+                INFO_FILE_NAME to { info = BackupInfo.newBuilder().mergeFrom(it).build() },
+                SCREENSHOT_FILE_NAME to { tmpScreenshot = BitmapFactory.decodeStream(it) },
+                WALLPAPER_FILE_NAME to { tmpWallpaper = BitmapFactory.decodeStream(it) },
+            ),
+        )
         val size = max(info.previewWidth, info.previewHeight).coerceAtMost(4000)
         screenshot = tmpScreenshot?.scaleDownTo(size)
         wallpaper = tmpWallpaper?.scaleDownToDisplaySize(context)
@@ -58,13 +60,15 @@ class LawnchairBackup(
         val handlers = mutableMapOf<String, suspend (InputStream) -> Unit>()
         val contents = selectedContents and info.contents
         if (contents.hasFlag(INCLUDE_LAYOUT_AND_SETTINGS)) {
-            handlers.putAll(getFiles(context, forRestore = true).mapValues { entry ->
-                {
-                    val file = entry.value
-                    file.parentFile?.mkdirs()
-                    it.copyTo(file.outputStream())
-                }
-            })
+            handlers.putAll(
+                getFiles(context, forRestore = true).mapValues { entry ->
+                    {
+                        val file = entry.value
+                        file.parentFile?.mkdirs()
+                        it.copyTo(file.outputStream())
+                    }
+                },
+            )
         }
         if (contents.hasFlag(INCLUDE_WALLPAPER)) {
             handlers[WALLPAPER_FILE_NAME] = {
@@ -119,7 +123,8 @@ class LawnchairBackup(
         )
 
         fun generateBackupFileName(): String {
-            val fileName = "Lawnchair Backup ${SimpleDateFormat.getDateTimeInstance().format(Date())}"
+            val fileName =
+                "Lawnchair Backup ${SimpleDateFormat.getDateTimeInstance().format(Date())}"
             return "$fileName.lawnchairbackup"
         }
 
@@ -133,12 +138,19 @@ class LawnchairBackup(
         }
 
         @SuppressLint("MissingPermission")
-        suspend fun create(context: Context, contents: Int, screenshotBitmap: Bitmap, fileUri: Uri) {
+        suspend fun create(
+            context: Context,
+            contents: Int,
+            screenshotBitmap: Bitmap,
+            fileUri: Uri,
+        ) {
             val idp = LauncherAppState.getIDP(context)
             val createdAt = Timestamp.newBuilder()
                 .setSeconds(System.currentTimeMillis() / 1000)
-            val colorHints = WallpaperManagerCompat.INSTANCE.get(context).wallpaperColors?.colorHints ?: 0
-            val wallpaperSupportsDarkText = (colorHints and WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT) != 0
+            val colorHints =
+                WallpaperManagerCompat.INSTANCE.get(context).wallpaperColors?.colorHints ?: 0
+            val wallpaperSupportsDarkText =
+                (colorHints and WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT) != 0
             val info = BackupInfo.newBuilder()
                 .setLawnchairVersion(BuildConfig.VERSION_CODE)
                 .setBackupVersion(BACKUP_VERSION)
@@ -182,7 +194,8 @@ class LawnchairBackup(
         }
 
         private fun launcherDbFile(context: Context, forRestore: Boolean): File {
-            val dbName = if (forRestore) RESTORED_DB_FILE_NAME else LauncherAppState.getIDP(context).dbFile
+            val dbName =
+                if (forRestore) RESTORED_DB_FILE_NAME else LauncherAppState.getIDP(context).dbFile
             return context.getDatabasePath(dbName)
         }
 
@@ -196,7 +209,7 @@ class LawnchairBackup(
         }
 
         private fun prefsDataStoreFile(context: Context): File {
-            return File(context.filesDir, "datastore/${PREFS_DATASTORE_FILE_NAME}")
+            return File(context.filesDir, "datastore/$PREFS_DATASTORE_FILE_NAME")
         }
     }
 }

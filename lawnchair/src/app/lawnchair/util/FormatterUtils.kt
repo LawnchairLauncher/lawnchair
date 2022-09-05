@@ -14,7 +14,6 @@ private val Context.locale: Locale?
     get() = resources.configuration.locales[0]
 
 fun formatShortElapsedTime(context: Context, millis: Long): String? {
-
     val duration = millis.milliseconds
     val locale = context.locale
     val measureFormat = MeasureFormat.getInstance(locale, MeasureFormat.FormatWidth.SHORT)

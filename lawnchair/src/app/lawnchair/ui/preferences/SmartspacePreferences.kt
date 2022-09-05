@@ -50,10 +50,12 @@ fun SmartspacePreferences(fromWidget: Boolean) {
 
     PreferenceLayout(label = stringResource(id = R.string.smartspace_widget)) {
         if (!fromWidget) {
-            PreferenceGroup(description = stringResource(id = R.string.smartspace_widget_toggle_description)) {
+            PreferenceGroup(
+                description = stringResource(id = R.string.smartspace_widget_toggle_description),
+            ) {
                 SwitchPreference(
                     adapter = smartspaceAdapter,
-                    label = stringResource(id = R.string.smartspace_widget_toggle_label)
+                    label = stringResource(id = R.string.smartspace_widget_toggle_label),
                 )
             }
         }
@@ -120,7 +122,8 @@ fun SmartspaceDateAndTimePreferences() {
     ) {
         val preferenceManager2 = preferenceManager2()
 
-        val calendarSelectionAdapter = preferenceManager2.enableSmartspaceCalendarSelection.getAdapter()
+        val calendarSelectionAdapter =
+            preferenceManager2.enableSmartspaceCalendarSelection.getAdapter()
         val calendarAdapter = preferenceManager2.smartspaceCalendar.getAdapter()
         val showDateAdapter = preferenceManager2.smartspaceShowDate.getAdapter()
         val showTimeAdapter = preferenceManager2.smartspaceShowTime.getAdapter()
@@ -142,7 +145,9 @@ fun SmartspaceDateAndTimePreferences() {
                 )
                 val calendarSelectionEnabled =
                     preferenceManager2.enableSmartspaceCalendarSelection.getAdapter()
-                ExpandAndShrink(visible = calendarSelectionEnabled.state.value && showDateAdapter.state.value) {
+                ExpandAndShrink(
+                    visible = calendarSelectionEnabled.state.value && showDateAdapter.state.value,
+                ) {
                     SmartspaceCalendarPreference()
                 }
                 SwitchPreference(
@@ -160,7 +165,6 @@ fun SmartspaceDateAndTimePreferences() {
 
 @Composable
 fun SmartspaceTimeFormatPreference() {
-
     val entries = remember {
         SmartspaceTimeFormat.values().map { format ->
             ListPreferenceEntry(format) { stringResource(id = format.nameResourceId) }
@@ -178,7 +182,6 @@ fun SmartspaceTimeFormatPreference() {
 
 @Composable
 fun SmartspaceCalendarPreference() {
-
     val entries = remember {
         SmartspaceCalendar.values().map { calendar ->
             ListPreferenceEntry(calendar) { stringResource(id = calendar.nameResourceId) }
@@ -193,4 +196,3 @@ fun SmartspaceCalendarPreference() {
         label = stringResource(id = R.string.smartspace_calendar),
     )
 }
-

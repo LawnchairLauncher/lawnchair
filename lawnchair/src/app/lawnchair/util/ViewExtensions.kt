@@ -26,21 +26,23 @@ inline val View.viewAttachedScope: CoroutineScope
     get() {
         var detached = false
         val scope = CoroutineScope(Dispatchers.Main.immediate)
-        addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(v: View) {
-                if (detached) {
-                    Log.e(
-                        "ViewExtensions",
-                        "view attached after being detached ${this@viewAttachedScope}",
-                        Throwable()
-                    )
+        addOnAttachStateChangeListener(
+            object : View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(v: View) {
+                    if (detached) {
+                        Log.e(
+                            "ViewExtensions",
+                            "view attached after being detached ${this@viewAttachedScope}",
+                            Throwable(),
+                        )
+                    }
                 }
-            }
 
-            override fun onViewDetachedFromWindow(v: View) {
-                detached = true
-                scope.cancel()
-            }
-        })
+                override fun onViewDetachedFromWindow(v: View) {
+                    detached = true
+                    scope.cancel()
+                }
+            },
+        )
         return scope
     }

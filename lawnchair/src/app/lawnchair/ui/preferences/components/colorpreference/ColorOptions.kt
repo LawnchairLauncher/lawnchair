@@ -14,12 +14,12 @@ val staticColors = listOf(
     ColorOption.CustomColor(0xFFFFBB00),
     ColorOption.CustomColor(0xFFFF9800),
     ColorOption.CustomColor(0xFF7C5445),
-    ColorOption.CustomColor(0xFF67818E)
+    ColorOption.CustomColor(0xFF67818E),
 ).map(ColorOption::colorPreferenceEntry)
-
 
 val dynamicColors = listOf(ColorOption.SystemAccent, ColorOption.WallpaperPrimary)
     .filter(ColorOption::isSupported)
     .map(ColorOption::colorPreferenceEntry)
 
-val dynamicColorsForNotificationDot = dynamicColors + listOf(ColorOption.AppIcon.colorPreferenceEntry)
+val dynamicColorsForNotificationDot =
+    dynamicColors + listOf(ColorOption.AppIcon.colorPreferenceEntry)

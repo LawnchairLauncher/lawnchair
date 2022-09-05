@@ -147,10 +147,12 @@ public class StretchEdgeEffect extends EdgeEffectCompat {
     private Runnable mPostInvalidateOnAnimation = EMPTY_RUNNABLE;
     private final float[] mTmpOut = new float[5];
 
-    private static final Runnable EMPTY_RUNNABLE = () -> {};
+    private static final Runnable EMPTY_RUNNABLE = () -> {
+    };
 
     /**
      * Construct a new EdgeEffect with a theme appropriate for the provided context.
+     *
      * @param context Context used to provide theming and resource information for the EdgeEffect
      */
     public StretchEdgeEffect(Context context) {
@@ -184,7 +186,7 @@ public class StretchEdgeEffect extends EdgeEffectCompat {
     /**
      * Set the size of this edge effect in pixels.
      *
-     * @param width Effect width in pixels
+     * @param width  Effect width in pixels
      * @param height Effect height in pixels
      */
     @Override
@@ -249,9 +251,9 @@ public class StretchEdgeEffect extends EdgeEffectCompat {
      * @param deltaDistance Change in distance since the last call. Values may be 0 (no change) to
      *                      1.f (full length of the view) or negative values to express change
      *                      back toward the edge reached to initiate the effect.
-     * @param displacement The displacement from the starting side of the effect of the point
-     *                     initiating the pull. In the case of touch this is the finger position.
-     *                     Values may be from 0-1.
+     * @param displacement  The displacement from the starting side of the effect of the point
+     *                      initiating the pull. In the case of touch this is the finger position.
+     *                      Values may be from 0-1.
      */
     @Override
     public void onPull(float deltaDistance, float displacement) {
@@ -291,7 +293,7 @@ public class StretchEdgeEffect extends EdgeEffectCompat {
      * but returns the amount of <code>deltaDistance</code> that has been consumed. If the
      * {@link #getDistance()} is currently 0 and <code>deltaDistance</code> is negative, this
      * function will return 0 and the drawn value will remain unchanged.
-     *
+     * <p>
      * This method can be used to reverse the effect from a pull or absorb and partially consume
      * some of a motion:
      *
@@ -306,9 +308,9 @@ public class StretchEdgeEffect extends EdgeEffectCompat {
      * @param deltaDistance Change in distance since the last call. Values may be 0 (no change) to
      *                      1.f (full length of the view) or negative values to express change
      *                      back toward the edge reached to initiate the effect.
-     * @param displacement The displacement from the starting side of the effect of the point
-     *                     initiating the pull. In the case of touch this is the finger position.
-     *                     Values may be from 0-1.
+     * @param displacement  The displacement from the starting side of the effect of the point
+     *                      initiating the pull. In the case of touch this is the finger position.
+     *                      Values may be from 0-1.
      * @return The amount of <code>deltaDistance</code> that was consumed, a number between
      * 0 and <code>deltaDistance</code>.
      */
@@ -332,7 +334,7 @@ public class StretchEdgeEffect extends EdgeEffectCompat {
      * Returns the pull distance needed to be released to remove the showing effect.
      * It is determined by the {@link #onPull(float, float)} <code>deltaDistance</code> and
      * any animating values, including from {@link #onAbsorb(int)} and {@link #onRelease()}.
-     *
+     * <p>
      * This can be used in conjunction with {@link #onPullDistance(float, float)} to
      * release the currently showing effect.
      *
@@ -467,7 +469,7 @@ public class StretchEdgeEffect extends EdgeEffectCompat {
      *
      * @param canvas Canvas to draw into
      * @return true if drawing should continue beyond this frame to continue the
-     *         animation
+     * animation
      */
     @Override
     public boolean draw(Canvas canvas) {
@@ -477,6 +479,7 @@ public class StretchEdgeEffect extends EdgeEffectCompat {
     /**
      * Return the maximum height that the edge effect will be drawn at given the original
      * {@link #setSize(int, int) input size}.
+     *
      * @return The maximum height of the edge effect
      */
     @Override
@@ -493,8 +496,8 @@ public class StretchEdgeEffect extends EdgeEffectCompat {
         mStartTime = time;
 
         if (Math.abs(mVelocity) <= LINEAR_VELOCITY_TAKE_OVER
-                && Math.abs(mDistance * mHeight) < LINEAR_DISTANCE_TAKE_OVER
-                && Math.signum(mVelocity) == -Math.signum(mDistance)
+            && Math.abs(mDistance * mHeight) < LINEAR_DISTANCE_TAKE_OVER
+            && Math.signum(mVelocity) == -Math.signum(mDistance)
         ) {
             // This is close. The spring will slowly reach the destination. Instead, we
             // will interpolate linearly so that it arrives at its destination quicker.
@@ -515,14 +518,14 @@ public class StretchEdgeEffect extends EdgeEffectCompat {
         // We're always underdamped, so we can use only those equations:
         double cosCoeff = mDistance * mHeight;
         double sinCoeff = (1 / mDampedFreq) * (DAMPING_RATIO * NATURAL_FREQUENCY
-                * mDistance * mHeight + mVelocity);
+            * mDistance * mHeight + mVelocity);
         double distance = Math.pow(Math.E, -DAMPING_RATIO * NATURAL_FREQUENCY * deltaT)
-                * (cosCoeff * Math.cos(mDampedFreq * deltaT)
-                + sinCoeff * Math.sin(mDampedFreq * deltaT));
+            * (cosCoeff * Math.cos(mDampedFreq * deltaT)
+            + sinCoeff * Math.sin(mDampedFreq * deltaT));
         double velocity = distance * (-NATURAL_FREQUENCY) * DAMPING_RATIO
-                + Math.pow(Math.E, -DAMPING_RATIO * NATURAL_FREQUENCY * deltaT)
-                * (-mDampedFreq * cosCoeff * Math.sin(mDampedFreq * deltaT)
-                + mDampedFreq * sinCoeff * Math.cos(mDampedFreq * deltaT));
+            + Math.pow(Math.E, -DAMPING_RATIO * NATURAL_FREQUENCY * deltaT)
+            * (-mDampedFreq * cosCoeff * Math.sin(mDampedFreq * deltaT)
+            + mDampedFreq * sinCoeff * Math.cos(mDampedFreq * deltaT));
         mDistance = (float) distance / mHeight;
         mVelocity = (float) velocity;
         if (mDistance > 1f) {
@@ -547,7 +550,7 @@ public class StretchEdgeEffect extends EdgeEffectCompat {
         // direction if it is flung that way. We also want to stop the animation as soon as
         // it gets very close to its destination.
         return displacement < 0 || (Math.abs(velocity) < VELOCITY_THRESHOLD
-                && displacement < VALUE_THRESHOLD);
+            && displacement < VALUE_THRESHOLD);
     }
 
     private float dampStretchVector(float normalizedVec) {

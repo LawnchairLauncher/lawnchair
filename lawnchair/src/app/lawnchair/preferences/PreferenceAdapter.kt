@@ -16,15 +16,23 @@
 
 package app.lawnchair.preferences
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.preferences2.IdpPreference
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.firstBlocking
 import com.android.launcher3.InvariantDeviceProfile
 import com.patrykmichalik.opto.domain.Preference
-import kotlinx.coroutines.launch
 import kotlin.reflect.KProperty
+import kotlinx.coroutines.launch
 
 interface PreferenceAdapter<T> {
     val state: State<T>
@@ -37,7 +45,7 @@ interface PreferenceAdapter<T> {
 }
 
 private class MutableStatePreferenceAdapter<T>(
-    private val mutableState: MutableState<T>
+    private val mutableState: MutableState<T>,
 ) : PreferenceAdapter<T> {
     override val state = mutableState
 
@@ -48,7 +56,7 @@ private class MutableStatePreferenceAdapter<T>(
 
 class PreferenceAdapterImpl<T>(
     private val get: () -> T,
-    private val set: (T) -> Unit
+    private val set: (T) -> Unit,
 ) : PreferenceAdapter<T>, PreferenceChangeListener {
     private val stateInternal = mutableStateOf(get())
     override val state: State<T> get() = stateInternal
@@ -65,7 +73,7 @@ class PreferenceAdapterImpl<T>(
 
 private class StatePreferenceAdapter<T>(
     override val state: State<T>,
-    private val set: (T) -> Unit
+    private val set: (T) -> Unit,
 ) : PreferenceAdapter<T> {
 
     override fun onChange(newValue: T) {
@@ -81,7 +89,7 @@ fun BasePreferenceManager.IdpIntPref.getAdapter(): PreferenceAdapter<Int> {
     return getAdapter(
         this,
         { get(defaultGrid) },
-        { newValue -> set(newValue, defaultGrid) }
+        { newValue -> set(newValue, defaultGrid) },
     )
 }
 
@@ -98,7 +106,7 @@ fun <T> PrefEntry<T>.observeAsState() = getAdapter().state
 private fun <P, T> getAdapter(
     pref: PrefEntry<P>,
     get: () -> T,
-    set: (T) -> Unit
+    set: (T) -> Unit,
 ): PreferenceAdapter<T> {
     val adapter = remember { PreferenceAdapterImpl(get, set) }
     DisposableEffect(pref) {
@@ -125,8 +133,8 @@ fun IdpPreference.getAdapter(): PreferenceAdapter<Int> {
 @Composable
 private fun <T> createStateAdapter(
     state: State<T>,
-    set: suspend (T) -> Unit
-) : PreferenceAdapter<T> {
+    set: suspend (T) -> Unit,
+): PreferenceAdapter<T> {
     val scope = rememberCoroutineScope()
     return remember {
         StatePreferenceAdapter(state) {
@@ -139,7 +147,7 @@ private fun <T> createStateAdapter(
 fun <T, R> rememberTransformAdapter(
     adapter: PreferenceAdapter<T>,
     transformGet: (T) -> R,
-    transformSet: (R) -> T
+    transformSet: (R) -> T,
 ): PreferenceAdapter<R> = remember(adapter) {
     TransformPreferenceAdapter(adapter, transformGet, transformSet)
 }
@@ -152,7 +160,7 @@ fun <T> MutableState<T>.asPreferenceAdapter(): PreferenceAdapter<T> {
 private class TransformPreferenceAdapter<T, R>(
     private val parent: PreferenceAdapter<T>,
     private val transformGet: (T) -> R,
-    private val transformSet: (R) -> T
+    private val transformSet: (R) -> T,
 ) : PreferenceAdapter<R> {
     override val state = derivedStateOf { transformGet(parent.state.value) }
 

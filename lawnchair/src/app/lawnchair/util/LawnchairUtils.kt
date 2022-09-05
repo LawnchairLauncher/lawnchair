@@ -45,12 +45,12 @@ import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Themes
 import com.android.systemui.shared.system.QuickStepContract
 import com.patrykmichalik.opto.core.firstBlocking
-import org.json.JSONArray
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.system.exitProcess
+import org.json.JSONArray
 
 fun <T, A> ensureOnMainThread(creator: (A) -> T): (A) -> T = { it ->
     if (Looper.myLooper() == Looper.getMainLooper()) {
@@ -88,7 +88,8 @@ fun restartLauncher(context: Context, intent: Intent?) {
 
     // Create a pending intent so the application is restarted after System.exit(0) was called.
     // We use an AlarmManager to call this intent in 100ms
-    val mPendingIntent = PendingIntent.getActivity(context, 0, intent, FLAG_CANCEL_CURRENT or FLAG_IMMUTABLE)
+    val mPendingIntent =
+        PendingIntent.getActivity(context, 0, intent, FLAG_CANCEL_CURRENT or FLAG_IMMUTABLE)
     val mgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     mgr[AlarmManager.RTC, System.currentTimeMillis() + 100] = mPendingIntent
 
@@ -140,13 +141,15 @@ fun <T> JSONArray.toArrayList(): ArrayList<T> {
     return arrayList
 }
 
-val ViewGroup.recursiveChildren: Sequence<View> get() = children.flatMap {
-    if (it is ViewGroup) {
-        it.recursiveChildren + sequenceOf(it)
-    } else sequenceOf(it)
-}
+val ViewGroup.recursiveChildren: Sequence<View>
+    get() = children.flatMap {
+        if (it is ViewGroup) {
+            it.recursiveChildren + sequenceOf(it)
+        } else sequenceOf(it)
+    }
 
-private val pendingIntentTagId = Resources.getSystem().getIdentifier("pending_intent_tag", "id", "android")
+private val pendingIntentTagId =
+    Resources.getSystem().getIdentifier("pending_intent_tag", "id", "android")
 
 val View?.pendingIntent get() = this?.getTag(pendingIntentTagId) as? PendingIntent
 

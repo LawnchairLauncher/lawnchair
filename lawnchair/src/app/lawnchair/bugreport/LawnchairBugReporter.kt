@@ -25,15 +25,15 @@ class LawnchairBugReporter(private val context: Context) {
             NotificationChannel(
                 BugReportReceiver.notificationChannelId,
                 context.getString(R.string.bugreport_channel_name),
-                NotificationManager.IMPORTANCE_HIGH
-            )
+                NotificationManager.IMPORTANCE_HIGH,
+            ),
         )
         notificationManager.createNotificationChannel(
             NotificationChannel(
                 BugReportReceiver.statusChannelId,
                 context.getString(R.string.status_channel_name),
-                NotificationManager.IMPORTANCE_NONE
-            )
+                NotificationManager.IMPORTANCE_NONE,
+            ),
         )
 
         val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
@@ -67,7 +67,8 @@ class LawnchairBugReporter(private val context: Context) {
 
     inner class Report(val error: String, val throwable: Throwable? = null) {
 
-        private val fileName = "$appName bug report ${SimpleDateFormat.getDateTimeInstance().format(Date())}"
+        private val fileName =
+            "$appName bug report ${SimpleDateFormat.getDateTimeInstance().format(Date())}"
 
         fun generateBugReport(): BugReport? {
             val contents = writeContents()
@@ -75,7 +76,13 @@ class LawnchairBugReporter(private val context: Context) {
             val id = contents.hashCode()
             val reportFile = save(contentsWithHeader, id)
 
-            return BugReport(id, error, getDescription(throwable ?: return null), contentsWithHeader, reportFile)
+            return BugReport(
+                id,
+                error,
+                getDescription(throwable ?: return null),
+                contentsWithHeader,
+                reportFile,
+            )
         }
 
         private fun getDescription(throwable: Throwable): String {

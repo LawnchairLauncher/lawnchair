@@ -14,13 +14,13 @@ import android.view.KeyEvent;
 
 import androidx.core.util.Consumer;
 
-import app.lawnchair.NotificationManager;
-import app.lawnchair.util.FlowCollector;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
+import app.lawnchair.NotificationManager;
+import app.lawnchair.util.FlowCollector;
 
 /**
  * Paused mode is not supported on Marshmallow because the MediaSession is missing
@@ -42,11 +42,11 @@ public class MediaListener extends MediaController.Callback {
         mOnChange = () -> onChange.accept(this);
         NotificationManager notificationManager = NotificationManager.INSTANCE.get(context);
         mFlowCollector = new FlowCollector<>(
-                notificationManager.getNotifications(),
-                item -> {
-                    mNotifications = item;
-                    updateTracking();
-                }
+            notificationManager.getNotifications(),
+            item -> {
+                mNotifications = item;
+                updateTracking();
+            }
         );
     }
 
@@ -87,7 +87,7 @@ public class MediaListener extends MediaController.Callback {
 
         // If the current controller is not playing, stop tracking it.
         if (mTracking != null
-                && (!mControllers.contains(mTracking) || !mTracking.isPlaying())) {
+            && (!mControllers.contains(mTracking) || !mTracking.isPlaying())) {
             mTracking = null;
         }
 
@@ -95,7 +95,7 @@ public class MediaListener extends MediaController.Callback {
             // Either we are not tracking a controller and this one is valid,
             // or this one is playing while the one we track is not.
             if ((mTracking == null && mnc.isPlaying())
-                    || (mTracking != null && mnc.isPlaying() && !mTracking.isPlaying())) {
+                || (mTracking != null && mnc.isPlaying() && !mTracking.isPlaying())) {
                 mTracking = mnc;
             }
         }

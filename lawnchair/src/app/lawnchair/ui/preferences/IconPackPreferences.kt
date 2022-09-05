@@ -55,7 +55,16 @@ import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.DummyLauncherBox
+import app.lawnchair.ui.preferences.components.DummyLauncherLayout
+import app.lawnchair.ui.preferences.components.ListPreference
+import app.lawnchair.ui.preferences.components.ListPreferenceEntry
+import app.lawnchair.ui.preferences.components.NestedScrollStretch
+import app.lawnchair.ui.preferences.components.PreferenceGroup
+import app.lawnchair.ui.preferences.components.PreferenceGroupHeading
+import app.lawnchair.ui.preferences.components.PreferenceLayout
+import app.lawnchair.ui.preferences.components.WallpaperPreview
+import app.lawnchair.ui.preferences.components.invariantDeviceProfile
 import app.lawnchair.util.Constants
 import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.R
@@ -102,26 +111,26 @@ fun IconPackPreferences() {
 
     PreferenceLayout(
         label = stringResource(id = R.string.icon_style),
-        scrollState = null
+        scrollState = null,
     ) {
         if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
             Column(
                 modifier = Modifier
                     .weight(weight = 1f)
                     .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 DummyLauncherBox(
                     modifier = Modifier
                         .fillMaxHeight()
                         .padding(top = 8.dp)
-                        .clip(MaterialTheme.shapes.large)
+                        .clip(MaterialTheme.shapes.large),
                 ) {
                     WallpaperPreview(modifier = Modifier.fillMaxSize())
                     key(iconPackAdapter.state.value, themedIconsAdapter.state.value) {
                         DummyLauncherLayout(
                             idp = invariantDeviceProfile(),
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier.fillMaxSize(),
                         )
                     }
                 }
@@ -217,7 +226,8 @@ private fun getIconPackItemWidth(
     while (true) {
         gutterCount += 1f
         visibleItemCount += 1f
-        val possibleIconPackItemWidth = (availableWidth - gutterCount * gutterWidth) / visibleItemCount
+        val possibleIconPackItemWidth =
+            (availableWidth - gutterCount * gutterWidth) / visibleItemCount
         if (possibleIconPackItemWidth >= minimumWidth) {
             iconPackItemWidth = possibleIconPackItemWidth
         } else break
@@ -243,21 +253,21 @@ fun IconPackItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 16.dp, horizontal = 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Image(
                 modifier = Modifier
                     .size(56.dp)
                     .padding(bottom = 8.dp),
                 painter = rememberDrawablePainter(drawable = item.icon),
-                contentDescription = null
+                contentDescription = null,
             )
             Text(
                 text = item.name,
                 textAlign = TextAlign.Center,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 2,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
             )
         }
     }

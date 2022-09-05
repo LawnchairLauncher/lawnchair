@@ -16,7 +16,6 @@
 
 package app.lawnchair.ui.preferences
 
-import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -26,7 +25,14 @@ import app.lawnchair.preferences.not
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.search.LawnchairSearchAlgorithm
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.DividerColumn
+import app.lawnchair.ui.preferences.components.ExpandAndShrink
+import app.lawnchair.ui.preferences.components.NavigationActionPreference
+import app.lawnchair.ui.preferences.components.PreferenceGroup
+import app.lawnchair.ui.preferences.components.PreferenceLayout
+import app.lawnchair.ui.preferences.components.SliderPreference
+import app.lawnchair.ui.preferences.components.SuggestionsPreference
+import app.lawnchair.ui.preferences.components.SwitchPreference
 import com.android.launcher3.R
 
 object AppDrawerRoutes {
@@ -49,7 +55,11 @@ fun AppDrawerPreferences() {
             val hiddenApps = prefs2.hiddenApps.getAdapter().state.value
             NavigationActionPreference(
                 label = stringResource(id = R.string.hidden_apps_label),
-                subtitle = resources.getQuantityString(R.plurals.apps_count, hiddenApps.size, hiddenApps.size),
+                subtitle = resources.getQuantityString(
+                    R.plurals.apps_count,
+                    hiddenApps.size,
+                    hiddenApps.size,
+                ),
                 destination = subRoute(name = AppDrawerRoutes.HIDDEN_APPS),
             )
             SliderPreference(
@@ -61,7 +71,8 @@ fun AppDrawerPreferences() {
             )
             SuggestionsPreference()
         }
-        val deviceSearchEnabled = LawnchairSearchAlgorithm.isDeviceSearchEnabled(LocalContext.current)
+        val deviceSearchEnabled =
+            LawnchairSearchAlgorithm.isDeviceSearchEnabled(LocalContext.current)
         val showDrawerSearchBar = !prefs2.hideAppDrawerSearchBar.getAdapter()
         PreferenceGroup(heading = stringResource(id = R.string.pref_category_search)) {
             SwitchPreference(
@@ -78,7 +89,7 @@ fun AppDrawerPreferences() {
                         SwitchPreference(
                             adapter = prefs2.enableFuzzySearch.getAdapter(),
                             label = stringResource(id = R.string.fuzzy_search_title),
-                            description = stringResource(id = R.string.fuzzy_search_desc)
+                            description = stringResource(id = R.string.fuzzy_search_desc),
                         )
                     }
                 }
@@ -89,15 +100,15 @@ fun AppDrawerPreferences() {
                 PreferenceGroup(heading = stringResource(id = R.string.show_search_result_types)) {
                     SwitchPreference(
                         adapter = prefs.searchResultShortcuts.getAdapter(),
-                        label = stringResource(id = R.string.search_pref_result_shortcuts_title)
+                        label = stringResource(id = R.string.search_pref_result_shortcuts_title),
                     )
                     SwitchPreference(
                         adapter = prefs.searchResultPeople.getAdapter(),
-                        label = stringResource(id = R.string.search_pref_result_people_title)
+                        label = stringResource(id = R.string.search_pref_result_people_title),
                     )
                     SwitchPreference(
                         adapter = prefs.searchResultPixelTips.getAdapter(),
-                        label = stringResource(id = R.string.search_pref_result_tips_title)
+                        label = stringResource(id = R.string.search_pref_result_tips_title),
                     )
                 }
             }
@@ -114,7 +125,7 @@ fun AppDrawerPreferences() {
                 label = stringResource(id = R.string.row_height_label),
                 valueRange = 0.7F..1.5F,
                 step = 0.1F,
-                showAsPercentage = true
+                showAsPercentage = true,
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.icons)) {

@@ -23,20 +23,28 @@ import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme as Material2Theme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import kotlin.math.max
-import androidx.compose.material.MaterialTheme as Material2Theme
+import kotlinx.coroutines.launch
 
 internal val LocalBottomSheetHandler = staticCompositionLocalOf { BottomSheetHandler() }
 
@@ -48,7 +56,7 @@ val bottomSheetHandler: BottomSheetHandler
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ProvideBottomSheetHandler(
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     var onDismiss by remember { mutableStateOf({}) }
@@ -127,14 +135,14 @@ fun StatusBarOffset(content: @Composable () -> Unit) {
                     maxHeight = when (constraints.maxHeight) {
                         Constraints.Infinity -> Constraints.Infinity
                         else -> constraints.maxHeight - topOffset
-                    }
+                    },
                 )
                 val placeable = measurable.measure(newConstraints)
 
                 layout(placeable.width, placeable.height) {
                     placeable.placeRelative(0, 0)
                 }
-            }
+            },
     ) {
         content()
     }

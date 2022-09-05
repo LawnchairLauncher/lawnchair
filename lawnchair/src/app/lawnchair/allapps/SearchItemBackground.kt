@@ -13,13 +13,15 @@ class SearchItemBackground(
     context: Context,
     showBackground: Boolean,
     roundTop: Boolean,
-    roundBottom: Boolean
+    roundBottom: Boolean,
 ) {
     private val resources = context.resources
 
-    private val searchDecorationPadding = resources.getDimensionPixelSize(R.dimen.search_decoration_padding)
+    private val searchDecorationPadding =
+        resources.getDimensionPixelSize(R.dimen.search_decoration_padding)
     private val focusHighlight = ColorTokens.FocusHighlight.resolveColor(context)
-    private val groupHighlight = if (showBackground) ColorTokens.GroupHighlight.resolveColor(context) else 0
+    private val groupHighlight =
+        if (showBackground) ColorTokens.GroupHighlight.resolveColor(context) else 0
 
     private val cornerRadii: FloatArray
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -27,15 +29,23 @@ class SearchItemBackground(
     private val tmpRect = RectF()
 
     init {
-        val searchGroupRadius = resources.getDimensionPixelSize(R.dimen.search_group_radius).toFloat()
-        val searchResultRadius = resources.getDimensionPixelSize(R.dimen.search_result_radius).toFloat()
+        val searchGroupRadius =
+            resources.getDimensionPixelSize(R.dimen.search_group_radius).toFloat()
+        val searchResultRadius =
+            resources.getDimensionPixelSize(R.dimen.search_result_radius).toFloat()
 
         val topRadius = if (roundTop) searchGroupRadius else searchResultRadius
         val bottomRadius = if (roundBottom) searchGroupRadius else searchResultRadius
 
         cornerRadii = floatArrayOf(
-            topRadius, topRadius, topRadius, topRadius,
-            bottomRadius, bottomRadius, bottomRadius, bottomRadius
+            topRadius,
+            topRadius,
+            topRadius,
+            topRadius,
+            bottomRadius,
+            bottomRadius,
+            bottomRadius,
+            bottomRadius,
         )
     }
 

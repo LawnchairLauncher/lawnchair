@@ -1,6 +1,12 @@
 package app.lawnchair.ui.preferences.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -16,7 +22,7 @@ fun PreferenceScaffold(
     label: String,
     actions: @Composable RowScope.() -> Unit = {},
     bottomBar: @Composable () -> Unit = { BottomSpacer() },
-    content: @Composable (PaddingValues) -> Unit
+    content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -28,7 +34,8 @@ fun PreferenceScaffold(
             )
         },
         bottomBar = bottomBar,
-        contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues()
+        contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)
+            .asPaddingValues(),
     ) {
         content(it)
     }

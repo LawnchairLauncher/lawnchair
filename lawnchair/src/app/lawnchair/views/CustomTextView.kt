@@ -6,7 +6,8 @@ import android.widget.TextView
 import app.lawnchair.font.FontManager
 
 open class CustomTextView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
+    context: Context,
+    attrs: AttributeSet? = null,
 ) : TextView(context, attrs) {
 
     init {

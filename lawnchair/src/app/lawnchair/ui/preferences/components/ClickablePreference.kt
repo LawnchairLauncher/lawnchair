@@ -28,7 +28,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.AlertBottomSheetContent
 import app.lawnchair.ui.util.bottomSheetHandler
-import com.android.launcher3.R
 
 @Composable
 fun ClickablePreference(
@@ -42,23 +41,22 @@ fun ClickablePreference(
         title = { Text(text = label) },
         modifier = Modifier
             .clickable {
-               if (confirmationText != null) {
-                   bottomSheetHandler.show {
-                       PreferenceClickConfirmation(
-                           title = label,
-                           text = confirmationText,
-                           onDismissRequest = { bottomSheetHandler.hide() },
-                           onConfirm = onClick
-                       )
-                   }
-               } else {
-                   onClick()
-               }
+                if (confirmationText != null) {
+                    bottomSheetHandler.show {
+                        PreferenceClickConfirmation(
+                            title = label,
+                            text = confirmationText,
+                            onDismissRequest = { bottomSheetHandler.hide() },
+                            onConfirm = onClick,
+                        )
+                    }
+                } else {
+                    onClick()
+                }
             },
         description = { subtitle?.let { Text(text = it) } },
     )
 }
-
 
 @Composable
 fun PreferenceClickConfirmation(
@@ -72,7 +70,7 @@ fun PreferenceClickConfirmation(
         text = { Text(text = text) },
         buttons = {
             OutlinedButton(
-                onClick = onDismissRequest
+                onClick = onDismissRequest,
             ) {
                 Text(text = stringResource(id = android.R.string.cancel))
             }
@@ -81,10 +79,10 @@ fun PreferenceClickConfirmation(
                 onClick = {
                     onDismissRequest()
                     onConfirm()
-                }
+                },
             ) {
                 Text(text = stringResource(id = android.R.string.ok))
             }
-        }
+        },
     )
 }

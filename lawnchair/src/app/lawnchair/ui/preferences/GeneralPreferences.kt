@@ -99,7 +99,7 @@ fun GeneralPreferences() {
                 )
             }
         }
-        
+
         val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.getAdapter()
         PreferenceGroup(
             heading = stringResource(id = R.string.icons),
@@ -117,7 +117,7 @@ fun GeneralPreferences() {
                 subtitle = iconShapeSubtitle,
                 endWidget = {
                     IconShapePreview(iconShape = iconShapeAdapter.state.value)
-                }
+                },
             )
             SwitchPreference(
                 adapter = wrapAdaptiveIcons,
@@ -144,7 +144,9 @@ fun GeneralPreferences() {
         }
 
         PreferenceGroup(heading = stringResource(id = R.string.notification_dots)) {
-            val enabled by remember { notificationDotsEnabled(context) }.collectAsState(initial = false)
+            val enabled by remember { notificationDotsEnabled(context) }.collectAsState(
+                initial = false,
+            )
             val serviceEnabled = notificationServiceEnabled()
             NotificationDotsPreference(enabled = enabled, serviceEnabled = serviceEnabled)
             if (enabled && serviceEnabled) {

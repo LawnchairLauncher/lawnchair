@@ -45,16 +45,16 @@ import java.util.Objects;
  * or widget (@link AppWidgetManager} are published content backed by the system service,
  * {@link SearchActionCompat} is a custom object that the service can use to send search result to the
  * client.
- *
+ * <p>
  * These various types of Android primitives could be defined as {@link SearchResultType}. Some
  * times, the result type can define the layout type that that this object can be rendered in.
  * (e.g., app widget). Most times, {@link #getLayoutType()} assigned by the service
  * can recommend which layout this target should be rendered in.
- *
+ * <p>
  * The service can also use fields such as {@link #getScore()} to indicate
  * how confidence the search result is and {@link #isHidden()} to indicate
  * whether it is recommended to be shown by default.
- *
+ * <p>
  * Finally, {@link #getId()} is the unique identifier of this search target and a single
  * search target is defined by being able to express a single launcheable item. In case the
  * service want to recommend how to combine multiple search target objects to render in a group
@@ -91,13 +91,15 @@ public final class SearchTargetCompat implements Parcelable {
      * @hide
      */
     @IntDef(value = {
-            RESULT_TYPE_APPLICATION,
-            RESULT_TYPE_SHORTCUT,
-            RESULT_TYPE_SLICE,
-            RESULT_TYPE_WIDGETS
+        RESULT_TYPE_APPLICATION,
+        RESULT_TYPE_SHORTCUT,
+        RESULT_TYPE_SLICE,
+        RESULT_TYPE_WIDGETS
     })
     @Retention(RetentionPolicy.SOURCE)
-    public @interface SearchResultType {}
+    public @interface SearchResultType {
+    }
+
     private final int mResultType;
 
     /**
@@ -151,18 +153,18 @@ public final class SearchTargetCompat implements Parcelable {
     }
 
     private SearchTargetCompat(
-            int resultType,
-            @NonNull String layoutType,
-            @NonNull String id,
-            @Nullable String parentId,
-            float score, boolean hidden,
-            @NonNull String packageName,
-            @NonNull UserHandle userHandle,
-            @Nullable SearchActionCompat action,
-            @Nullable ShortcutInfo shortcutInfo,
-            @Nullable Uri sliceUri,
-            @Nullable AppWidgetProviderInfo appWidgetProviderInfo,
-            @NonNull Bundle extras) {
+        int resultType,
+        @NonNull String layoutType,
+        @NonNull String id,
+        @Nullable String parentId,
+        float score, boolean hidden,
+        @NonNull String packageName,
+        @NonNull UserHandle userHandle,
+        @Nullable SearchActionCompat action,
+        @Nullable ShortcutInfo shortcutInfo,
+        @Nullable Uri sliceUri,
+        @Nullable AppWidgetProviderInfo appWidgetProviderInfo,
+        @NonNull Bundle extras) {
         mResultType = resultType;
         mLayoutType = Objects.requireNonNull(layoutType);
         mId = Objects.requireNonNull(id);
@@ -184,24 +186,24 @@ public final class SearchTargetCompat implements Parcelable {
         if (mSliceUri != null) published++;
         if (published > 1) {
             throw new IllegalStateException("Only one of SearchAction, ShortcutInfo,"
-                    + " AppWidgetProviderInfo, SliceUri can be assigned in a SearchTargetCompat.");
+                + " AppWidgetProviderInfo, SliceUri can be assigned in a SearchTargetCompat.");
         }
     }
 
     private SearchTargetCompat(SearchTarget from) {
         this(
-                from.getResultType(),
-                from.getLayoutType(),
-                from.getId(),
-                from.getParentId(),
-                from.getScore(), from.isHidden(),
-                from.getPackageName(),
-                from.getUserHandle(),
-                SearchActionCompat.wrap(from.getSearchAction()),
-                from.getShortcutInfo(),
-                from.getSliceUri(),
-                from.getAppWidgetProviderInfo(),
-                from.getExtras()
+            from.getResultType(),
+            from.getLayoutType(),
+            from.getId(),
+            from.getParentId(),
+            from.getScore(), from.isHidden(),
+            from.getPackageName(),
+            from.getUserHandle(),
+            SearchActionCompat.wrap(from.getSearchAction()),
+            from.getShortcutInfo(),
+            from.getSliceUri(),
+            from.getAppWidgetProviderInfo(),
+            from.getExtras()
         );
     }
 
@@ -246,8 +248,8 @@ public final class SearchTargetCompat implements Parcelable {
     /**
      * Indicates whether this object should be hidden and shown only on demand.
      *
-     * @deprecated will be removed once SDK drops
      * @removed
+     * @deprecated will be removed once SDK drops
      */
     @Deprecated
     public boolean shouldHide() {
@@ -348,15 +350,15 @@ public final class SearchTargetCompat implements Parcelable {
      */
     @NonNull
     public static final Parcelable.Creator<SearchTargetCompat> CREATOR =
-            new Parcelable.Creator<SearchTargetCompat>() {
-                public SearchTargetCompat createFromParcel(Parcel parcel) {
-                    return new SearchTargetCompat(parcel);
-                }
+        new Parcelable.Creator<SearchTargetCompat>() {
+            public SearchTargetCompat createFromParcel(Parcel parcel) {
+                return new SearchTargetCompat(parcel);
+            }
 
-                public SearchTargetCompat[] newArray(int size) {
-                    return new SearchTargetCompat[size];
-                }
-            };
+            public SearchTargetCompat[] newArray(int size) {
+                return new SearchTargetCompat[size];
+            }
+        };
 
     /**
      * A builder for search target object.
@@ -433,7 +435,7 @@ public final class SearchTargetCompat implements Parcelable {
             mShortcutInfo = Objects.requireNonNull(shortcutInfo);
             if (mPackageName != null && !mPackageName.equals(shortcutInfo.getPackage())) {
                 throw new IllegalStateException("SearchTargetCompat packageName is different from "
-                        + "shortcut's packageName");
+                    + "shortcut's packageName");
             }
             mPackageName = shortcutInfo.getPackage();
             return this;
@@ -444,12 +446,12 @@ public final class SearchTargetCompat implements Parcelable {
          */
         @NonNull
         public Builder setAppWidgetProviderInfo(
-                @NonNull AppWidgetProviderInfo appWidgetProviderInfo) {
+            @NonNull AppWidgetProviderInfo appWidgetProviderInfo) {
             mAppWidgetProviderInfo = Objects.requireNonNull(appWidgetProviderInfo);
             if (mPackageName != null
-                    && !mPackageName.equals(appWidgetProviderInfo.provider.getPackageName())) {
+                && !mPackageName.equals(appWidgetProviderInfo.provider.getPackageName())) {
                 throw new IllegalStateException("SearchTargetCompat packageName is different from "
-                        + "appWidgetProviderInfo's packageName");
+                    + "appWidgetProviderInfo's packageName");
             }
             return this;
         }
@@ -501,8 +503,9 @@ public final class SearchTargetCompat implements Parcelable {
 
         /**
          * Sets whether the result should be hidden by default inside client.
-         * @deprecated will be removed once SDK drops
+         *
          * @removed
+         * @deprecated will be removed once SDK drops
          */
         @NonNull
         @Deprecated
@@ -519,9 +522,9 @@ public final class SearchTargetCompat implements Parcelable {
         @NonNull
         public SearchTargetCompat build() {
             return new SearchTargetCompat(mResultType, mLayoutType, mId, mParentId, mScore, mHidden,
-                    mPackageName, mUserHandle,
-                    mSearchAction, mShortcutInfo, mSliceUri, mAppWidgetProviderInfo,
-                    mExtras);
+                mPackageName, mUserHandle,
+                mSearchAction, mShortcutInfo, mSliceUri, mAppWidgetProviderInfo,
+                mExtras);
         }
     }
 }

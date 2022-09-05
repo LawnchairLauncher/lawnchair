@@ -12,11 +12,13 @@ import com.android.launcher3.views.SpringRelativeLayout
 open class StretchRelativeLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
+    defStyleAttr: Int = 0,
 ) : SpringRelativeLayout(context, attrs, defStyleAttr) {
 
-    protected val edgeEffectTop = StretchEdgeEffect(context, { invalidate() }, { postInvalidateOnAnimation() })
-    protected val edgeEffectBottom = StretchEdgeEffect(context, { invalidate() }, { postInvalidateOnAnimation() })
+    protected val edgeEffectTop =
+        StretchEdgeEffect(context, { invalidate() }, { postInvalidateOnAnimation() })
+    protected val edgeEffectBottom =
+        StretchEdgeEffect(context, { invalidate() }, { postInvalidateOnAnimation() })
 
     init {
         setWillNotDraw(false)

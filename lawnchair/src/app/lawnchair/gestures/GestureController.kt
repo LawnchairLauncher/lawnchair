@@ -25,7 +25,12 @@ import com.android.quickstep.SysUINavigationMode
 import com.android.quickstep.util.VibratorWrapper
 import com.patrykmichalik.opto.domain.Preference
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 
 class GestureController(private val launcher: LawnchairLauncher) {
@@ -51,7 +56,8 @@ class GestureController(private val launcher: LawnchairLauncher) {
     }
 
     fun onHomePressed() {
-        val usingGestures = SysUINavigationMode.getMode(launcher) == SysUINavigationMode.Mode.NO_BUTTON
+        val usingGestures =
+            SysUINavigationMode.getMode(launcher) == SysUINavigationMode.Mode.NO_BUTTON
         triggerHandler(homePressHandler, LawnchairApp.isRecentsEnabled && usingGestures)
     }
 
@@ -78,6 +84,6 @@ class GestureController(private val launcher: LawnchairLauncher) {
         .shareIn(
             scope,
             SharingStarted.Lazily,
-            replay = 1
+            replay = 1,
         )
 }

@@ -57,7 +57,12 @@ class GoogleFontsListing private constructor(private val context: Context) {
             fonts.add(GoogleFontInfo(family, variants))
         }
         getAdditionalFonts().forEach {
-            fonts.add(GoogleFontInfo(it, listOf("regular", "italic", "500", "500italic", "700", "700italic")))
+            fonts.add(
+                GoogleFontInfo(
+                    it,
+                    listOf("regular", "italic", "500", "500italic", "700", "700italic"),
+                ),
+            )
         }
         fonts.sort()
         return fonts
@@ -80,7 +85,8 @@ class GoogleFontsListing private constructor(private val context: Context) {
         }
     }
 
-    class GoogleFontInfo(val family: String, val variants: List<String>) : Comparable<GoogleFontInfo> {
+    class GoogleFontInfo(val family: String, val variants: List<String>) :
+        Comparable<GoogleFontInfo> {
 
         override fun compareTo(other: GoogleFontInfo): Int {
             return family.compareTo(other.family)

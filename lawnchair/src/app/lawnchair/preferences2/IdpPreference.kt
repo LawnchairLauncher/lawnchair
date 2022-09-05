@@ -17,14 +17,15 @@ class IdpPreference(
     val onSet: (Int) -> Unit = {},
 ) {
 
-    fun get(gridOption: InvariantDeviceProfile.GridOption) = preferencesDataStore.data.map { preferences ->
-        val value = preferences[key]
-        if (value == null || value == -1) {
-            defaultSelector(gridOption)
-        } else {
-            value
+    fun get(gridOption: InvariantDeviceProfile.GridOption) =
+        preferencesDataStore.data.map { preferences ->
+            val value = preferences[key]
+            if (value == null || value == -1) {
+                defaultSelector(gridOption)
+            } else {
+                value
+            }
         }
-    }
 
     suspend fun set(value: Int, gridOption: InvariantDeviceProfile.GridOption) {
         preferencesDataStore.edit { mutablePreferences ->

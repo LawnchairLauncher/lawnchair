@@ -27,5 +27,5 @@ val emptyBottomSheetContent = BottomSheetContent {
 }
 
 data class BottomSheetContent(
-    val content: @Composable () -> Unit
+    val content: @Composable () -> Unit,
 )

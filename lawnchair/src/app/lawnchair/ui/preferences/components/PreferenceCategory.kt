@@ -36,7 +36,7 @@ fun PreferenceCategory(
     label: String,
     description: String? = null,
     @DrawableRes iconResource: Int,
-    route: String
+    route: String,
 ) {
     val navController = LocalNavController.current
     val resolvedRoute = subRoute(name = route)
@@ -55,13 +55,13 @@ fun PreferenceCategory(
         startWidget = {
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(32.dp),
             ) {
                 Icon(
                     painter = painterResource(id = iconResource),
                     contentDescription = null,
                     modifier = Modifier.size(24.dp),
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
                 )
             }
         },

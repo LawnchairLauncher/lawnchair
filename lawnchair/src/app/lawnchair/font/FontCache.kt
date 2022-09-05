@@ -23,9 +23,11 @@ import android.graphics.Typeface
 import android.net.Uri
 import androidx.annotation.Keep
 import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.font.Font as ComposeFont
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.GoogleFont as ComposeGoogleFont
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.provider.FontRequest
 import androidx.core.provider.FontsContractCompat
@@ -35,15 +37,18 @@ import app.lawnchair.util.subscribeFiles
 import app.lawnchair.util.uiHelperHandler
 import com.android.launcher3.R
 import com.android.launcher3.util.MainThreadInitializedObject
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.map
-import org.json.JSONArray
-import org.json.JSONObject
 import java.io.File
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-import androidx.compose.ui.text.font.Font as ComposeFont
-import androidx.compose.ui.text.googlefonts.GoogleFont as ComposeGoogleFont
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.plus
+import org.json.JSONArray
+import org.json.JSONObject
 
 class FontCache private constructor(private val context: Context) {
 
@@ -92,7 +97,8 @@ class FontCache private constructor(private val context: Context) {
     }
 
     fun addCustomFont(uri: Uri) {
-        val name = context.contentResolver.getDisplayName(uri) ?: throw AddFontException("Couldn't get file name")
+        val name = context.contentResolver.getDisplayName(uri)
+            ?: throw AddFontException("Couldn't get file name")
         val file = TTFFont.getFile(context, name)
         val tmpFile = File(cacheDir.apply { mkdirs() }, file.name)
 
@@ -165,7 +171,8 @@ class FontCache private constructor(private val context: Context) {
                 val obj = JSONObject(jsonString)
                 val className = obj.getString(KEY_CLASS_NAME)
                 val clazz = Class.forName(className)
-                val constructor = clazz.getMethod("fromJson", Context::class.java, JSONObject::class.java)
+                val constructor =
+                    clazz.getMethod("fromJson", Context::class.java, JSONObject::class.java)
                 return constructor.invoke(null, context, obj) as Font
             }
         }
@@ -218,8 +225,9 @@ class FontCache private constructor(private val context: Context) {
 
         private val actualName: String = Uri.decode(file.name)
         override val isAvailable = typeface != null
-        override val fullDisplayName: String = if (typeface == null)
-            context.getString(R.string.pref_fonts_missing_font) else actualName
+        override val fullDisplayName: String = if (typeface == null) {
+            context.getString(R.string.pref_fonts_missing_font)
+        } else actualName
 
         override val composeFontFamily = FontFamily(typeface!!)
 
@@ -265,7 +273,8 @@ class FontCache private constructor(private val context: Context) {
 
     class SystemFont(
         val family: String,
-        val style: Int = Typeface.NORMAL) : TypefaceFont(Typeface.create(family, style)) {
+        val style: Int = Typeface.NORMAL,
+    ) : TypefaceFont(Typeface.create(family, style)) {
 
         private val hashCode = "SystemFont|$family|$style".hashCode()
 
@@ -307,11 +316,13 @@ class FontCache private constructor(private val context: Context) {
 
     class AssetFont(
         assets: AssetManager,
-        private val name: String) : TypefaceFont(Typeface.createFromAsset(assets, "$name.ttf")) {
+        private val name: String,
+    ) : TypefaceFont(Typeface.createFromAsset(assets, "$name.ttf")) {
 
         private val hashCode = "AssetFont|$name".hashCode()
 
         override val fullDisplayName = name
+
         @OptIn(ExperimentalTextApi::class)
         override val composeFontFamily = FontFamily(ComposeFont("$name.ttf", assets))
 
@@ -327,7 +338,7 @@ class FontCache private constructor(private val context: Context) {
     class ResourceFont(
         context: Context,
         resId: Int,
-        private val name: String
+        private val name: String,
     ) : TypefaceFont(ResourcesCompat.getFont(context, resId)) {
 
         private val hashCode = "ResourceFont|$name".hashCode()
@@ -349,49 +360,58 @@ class FontCache private constructor(private val context: Context) {
         private val context: Context,
         private val family: String,
         private val variant: String = "regular",
-        private val variants: Array<String> = emptyArray()) : Font() {
+        private val variants: Array<String> = emptyArray(),
+    ) : Font() {
 
         private val hashCode = "GoogleFont|$family|$variant".hashCode()
 
         override val displayName = createVariantName()
         override val fullDisplayName = "$family $displayName"
-        override val familySorter = "${GoogleFontsListing.getWeight(variant)}${GoogleFontsListing.isItalic(variant)}"
+        override val familySorter =
+            "${GoogleFontsListing.getWeight(variant)}${GoogleFontsListing.isItalic(variant)}"
 
         override val composeFontFamily = FontFamily(
             androidx.compose.ui.text.googlefonts.Font(
                 googleFont = ComposeGoogleFont(family),
                 fontProvider = provider,
                 weight = FontWeight(GoogleFontsListing.getWeight(variant).toInt()),
-                style = if (GoogleFontsListing.isItalic(variant)) FontStyle.Italic else FontStyle.Normal
-            )
+                style = if (GoogleFontsListing.isItalic(variant)) FontStyle.Italic else FontStyle.Normal,
+            ),
         )
 
         private fun createVariantName(): String {
             if (variant == "italic") return context.getString(R.string.font_variant_italic)
             val weight = GoogleFontsListing.getWeight(variant)
             val weightString = weightNameMap[weight]?.let(context::getString) ?: weight
-            val italicString = if (GoogleFontsListing.isItalic(variant))
-                " " + context.getString(R.string.font_variant_italic) else ""
+            val italicString = if (GoogleFontsListing.isItalic(variant)) {
+                " " + context.getString(R.string.font_variant_italic)
+            } else ""
             return "$weightString$italicString"
         }
 
         override suspend fun load(): Typeface? {
             val request = FontRequest(
                 "com.google.android.gms.fonts", // ProviderAuthority
-                "com.google.android.gms",  // ProviderPackage
-                GoogleFontsListing.buildQuery(family, variant),  // Query
-                R.array.com_google_android_gms_fonts_certs)
+                "com.google.android.gms", // ProviderPackage
+                GoogleFontsListing.buildQuery(family, variant), // Query
+                R.array.com_google_android_gms_fonts_certs,
+            )
 
             return suspendCoroutine {
-                FontsContractCompat.requestFont(context, request, object: FontsContractCompat.FontRequestCallback() {
-                    override fun onTypefaceRetrieved(typeface: Typeface) {
-                        it.resume(typeface)
-                    }
+                FontsContractCompat.requestFont(
+                    context,
+                    request,
+                    object : FontsContractCompat.FontRequestCallback() {
+                        override fun onTypefaceRetrieved(typeface: Typeface) {
+                            it.resume(typeface)
+                        }
 
-                    override fun onTypefaceRequestFailed(reason: Int) {
-                        it.resume(null)
-                    }
-                }, uiHelperHandler)
+                        override fun onTypefaceRequestFailed(reason: Int) {
+                            it.resume(null)
+                        }
+                    },
+                    uiHelperHandler,
+                )
             }
         }
 
@@ -416,10 +436,11 @@ class FontCache private constructor(private val context: Context) {
             if (weight == -1) return this
             val currentWeight = GoogleFontsListing.getWeight(variant).toInt()
             if (weight == currentWeight) return this
-            val newVariant = if (weight > currentWeight)
+            val newVariant = if (weight > currentWeight) {
                 findHeavier(weight, currentWeight, GoogleFontsListing.isItalic(variant))
-            else
+            } else {
                 findLighter(weight, currentWeight, GoogleFontsListing.isItalic(variant))
+            }
             if (newVariant != null) {
                 return GoogleFont(context, family, newVariant, variants)
             }
@@ -482,14 +503,14 @@ class FontCache private constructor(private val context: Context) {
             Pair("600", R.string.font_weight_semi_bold),
             Pair("700", R.string.font_weight_bold),
             Pair("800", R.string.font_weight_extra_bold),
-            Pair("900", R.string.font_weight_extra_black)
+            Pair("900", R.string.font_weight_extra_black),
         )
 
         @OptIn(ExperimentalTextApi::class)
         val provider = ComposeGoogleFont.Provider(
             providerAuthority = "com.google.android.gms.fonts",
             providerPackage = "com.google.android.gms",
-            certificates = R.array.com_google_android_gms_fonts_certs
+            certificates = R.array.com_google_android_gms_fonts_certs,
         )
     }
 

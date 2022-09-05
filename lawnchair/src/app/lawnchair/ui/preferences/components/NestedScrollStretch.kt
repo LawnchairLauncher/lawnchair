@@ -41,11 +41,15 @@ fun NestedScrollStretch(content: @Composable () -> Unit) {
                 invalidateTick.value
 
                 connection.topEdgeEffect.draw(tmpOut, StretchEdgeEffect.POSITION_TOP, this) {
-                    connection.bottomEdgeEffect.draw(tmpOut, StretchEdgeEffect.POSITION_BOTTOM, this) {
+                    connection.bottomEdgeEffect.draw(
+                        tmpOut,
+                        StretchEdgeEffect.POSITION_BOTTOM,
+                        this,
+                    ) {
                         drawContent()
                     }
                 }
-            }
+            },
     ) {
         content()
     }
@@ -55,7 +59,7 @@ private inline fun StretchEdgeEffect.draw(
     tmpOut: FloatArray,
     @StretchEdgeEffect.EdgeEffectPosition position: Int,
     scope: DrawScope,
-    crossinline block: () -> Unit
+    crossinline block: () -> Unit,
 ) {
     if (isFinished) {
         block()
@@ -104,7 +108,7 @@ private class NestedScrollStretchConnection(context: Context, invalidate: Runnab
     override fun onPostScroll(
         consumed: Offset,
         available: Offset,
-        source: NestedScrollSource
+        source: NestedScrollSource,
     ): Offset {
         val availableY = available.y
         when {

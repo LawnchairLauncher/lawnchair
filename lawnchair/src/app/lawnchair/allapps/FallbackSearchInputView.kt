@@ -11,7 +11,8 @@ import app.lawnchair.util.EditTextExtensions.setTextSelectHandleColor
 import com.android.launcher3.ExtendedEditText
 import com.android.launcher3.allapps.AllAppsContainerView
 
-class FallbackSearchInputView(context: Context, attrs: AttributeSet?) : ExtendedEditText(context, attrs) {
+class FallbackSearchInputView(context: Context, attrs: AttributeSet?) :
+    ExtendedEditText(context, attrs) {
 
     private var appsView: AllAppsContainerView? = null
 

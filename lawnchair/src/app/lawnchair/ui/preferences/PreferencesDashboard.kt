@@ -38,20 +38,20 @@ fun PreferencesDashboard() {
         label = stringResource(id = R.string.settings),
         verticalArrangement = Arrangement.Top,
         backArrowVisible = false,
-        actions = { PreferencesOverflowMenu() }
+        actions = { PreferencesOverflowMenu() },
     ) {
         PreferenceCategory(
             label = stringResource(R.string.general_label),
             description = stringResource(R.string.general_description),
             iconResource = R.drawable.ic_general,
-            route = Routes.GENERAL
+            route = Routes.GENERAL,
         )
 
         PreferenceCategory(
             label = stringResource(R.string.home_screen_label),
             description = stringResource(R.string.home_screen_description),
             iconResource = R.drawable.ic_home_screen,
-            route = Routes.HOME_SCREEN
+            route = Routes.HOME_SCREEN,
         )
 
         PreferenceCategory(
@@ -65,21 +65,21 @@ fun PreferencesDashboard() {
             label = stringResource(R.string.dock_label),
             description = stringResource(R.string.dock_description),
             iconResource = R.drawable.ic_dock,
-            route = Routes.DOCK
+            route = Routes.DOCK,
         )
 
         PreferenceCategory(
             label = stringResource(R.string.app_drawer_label),
             description = stringResource(R.string.app_drawer_description),
             iconResource = R.drawable.ic_app_drawer,
-            route = Routes.APP_DRAWER
+            route = Routes.APP_DRAWER,
         )
 
         PreferenceCategory(
             label = stringResource(R.string.folders_label),
             description = stringResource(R.string.folders_description),
             iconResource = R.drawable.ic_folder,
-            route = Routes.FOLDERS
+            route = Routes.FOLDERS,
         )
 
         PreferenceCategory(
@@ -94,7 +94,7 @@ fun PreferencesDashboard() {
                 label = stringResource(id = R.string.quickstep_label),
                 description = stringResource(id = R.string.quickstep_description),
                 iconResource = R.drawable.ic_quickstep,
-                route = Routes.QUICKSTEP
+                route = Routes.QUICKSTEP,
             )
         }
 
@@ -103,7 +103,7 @@ fun PreferencesDashboard() {
             label = stringResource(R.string.about_label),
             description = "${context.getString(R.string.derived_app_name)} ${Versioning.majorVersion}",
             iconResource = R.drawable.ic_about,
-            route = Routes.ABOUT
+            route = Routes.ABOUT,
         )
     }
 }
@@ -123,35 +123,45 @@ fun PreferencesOverflowMenu() {
     val openRestoreBackup = restoreBackupOpener()
     OverflowMenu {
         val context = LocalContext.current
-        DropdownMenuItem(onClick = {
-            openAppInfo(context)
-            hideMenu()
-        }) {
+        DropdownMenuItem(
+            onClick = {
+                openAppInfo(context)
+                hideMenu()
+            },
+        ) {
             Text(text = stringResource(id = R.string.app_info_drop_target_label))
         }
-        DropdownMenuItem(onClick = {
-            restartLauncher(context)
-            hideMenu()
-        }) {
+        DropdownMenuItem(
+            onClick = {
+                restartLauncher(context)
+                hideMenu()
+            },
+        ) {
             Text(text = stringResource(id = R.string.debug_restart_launcher))
         }
-        DropdownMenuItem(onClick = {
-            navController.navigate(experimentalFeaturesRoute)
-            hideMenu()
-        }) {
+        DropdownMenuItem(
+            onClick = {
+                navController.navigate(experimentalFeaturesRoute)
+                hideMenu()
+            },
+        ) {
             Text(text = stringResource(id = R.string.experimental_features_label))
         }
         PreferenceDivider(modifier = Modifier.padding(vertical = 8.dp))
-        DropdownMenuItem(onClick = {
-            navController.navigate("/${Routes.CREATE_BACKUP}/")
-            hideMenu()
-        }) {
+        DropdownMenuItem(
+            onClick = {
+                navController.navigate("/${Routes.CREATE_BACKUP}/")
+                hideMenu()
+            },
+        ) {
             Text(text = stringResource(id = R.string.create_backup))
         }
-        DropdownMenuItem(onClick = {
-            openRestoreBackup()
-            hideMenu()
-        }) {
+        DropdownMenuItem(
+            onClick = {
+                openRestoreBackup()
+                hideMenu()
+            },
+        ) {
             Text(text = stringResource(id = R.string.restore_backup))
         }
     }

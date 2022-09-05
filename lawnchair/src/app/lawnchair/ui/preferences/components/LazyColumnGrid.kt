@@ -1,6 +1,12 @@
 package app.lawnchair.ui.preferences.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
@@ -14,7 +20,7 @@ fun LazyListScope.verticalGridItems(
     numColumns: Int,
     horizontalGap: Dp = 0.dp,
     verticalGap: Dp = 0.dp,
-    itemContent: @Composable GridItemScope.(index: Int) -> Unit
+    itemContent: @Composable GridItemScope.(index: Int) -> Unit,
 ) {
     if (numColumns == 0) return
     val numRows = (count - 1) / numColumns + 1
@@ -29,7 +35,7 @@ fun LazyListScope.verticalGridItems(
         }
         Row(
             modifier = modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             for (col in 0 until numColumns) {
                 if (col != 0) {
@@ -54,14 +60,14 @@ fun <T> LazyListScope.verticalGridItems(
     numColumns: Int,
     horizontalGap: Dp = 0.dp,
     verticalGap: Dp = 0.dp,
-    itemContent: @Composable GridItemScope.(index: Int, item: T) -> Unit
+    itemContent: @Composable GridItemScope.(index: Int, item: T) -> Unit,
 ) {
     verticalGridItems(
         modifier = modifier,
         count = items.size,
         numColumns = numColumns,
         horizontalGap = horizontalGap,
-        verticalGap = verticalGap
+        verticalGap = verticalGap,
     ) { index ->
         itemContent(index, items[index])
     }

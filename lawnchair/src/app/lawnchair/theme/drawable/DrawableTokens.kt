@@ -1,7 +1,11 @@
 package app.lawnchair.theme.drawable
 
 import android.content.res.ColorStateList
-import android.graphics.drawable.*
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.RippleDrawable
+import android.graphics.drawable.StateListDrawable
 import androidx.appcompat.content.res.AppCompatResources
 import app.lawnchair.theme.color.ColorTokens
 import com.android.launcher3.R
@@ -13,19 +17,22 @@ object DrawableTokens {
         .setTint(ColorTokens.ColorAccent)
 
     @JvmField
-    val BgOverviewClearAllButton = ResourceDrawableToken<RippleDrawable>(R.drawable.bg_overview_clear_all_button)
-        .mutate { context, scheme, uiColorMode ->
-            val background = getDrawable(0) as GradientDrawable
-            background.setColor(ColorTokens.Surface.resolveColor(context, scheme, uiColorMode))
-        }
+    val BgOverviewClearAllButton =
+        ResourceDrawableToken<RippleDrawable>(R.drawable.bg_overview_clear_all_button)
+            .mutate { context, scheme, uiColorMode ->
+                val background = getDrawable(0) as GradientDrawable
+                background.setColor(ColorTokens.Surface.resolveColor(context, scheme, uiColorMode))
+            }
 
     @JvmField
-    val BgWidgetsFullSheet = ResourceDrawableToken<GradientDrawable>(R.drawable.bg_widgets_full_sheet)
-        .setColor(ColorTokens.ColorBackground)
+    val BgWidgetsFullSheet =
+        ResourceDrawableToken<GradientDrawable>(R.drawable.bg_widgets_full_sheet)
+            .setColor(ColorTokens.ColorBackground)
 
     @JvmField
-    val BgWidgetsSearchbox = ResourceDrawableToken<GradientDrawable>(R.drawable.bg_widgets_searchbox)
-        .setColor(ColorTokens.Surface)
+    val BgWidgetsSearchbox =
+        ResourceDrawableToken<GradientDrawable>(R.drawable.bg_widgets_searchbox)
+            .setColor(ColorTokens.Surface)
 
     @JvmField
     val DropTargetBackground = ResourceDrawableToken<Drawable>(R.drawable.drop_target_background)
@@ -36,13 +43,15 @@ object DrawableTokens {
         .setColor(ColorTokens.PopupColorPrimary)
 
     @JvmField
-    val PopupItemBackgroundBorderless = AttributeDrawableToken<Drawable>(android.R.attr.selectableItemBackgroundBorderless)
-        .mutate { context, scheme, uiColorMode ->
-            if (this is RippleDrawable) {
-                val color = ColorTokens.PopupColorTertiary.resolveColor(context, scheme, uiColorMode)
-                setColor(ColorStateList.valueOf(color))
+    val PopupItemBackgroundBorderless =
+        AttributeDrawableToken<Drawable>(android.R.attr.selectableItemBackgroundBorderless)
+            .mutate { context, scheme, uiColorMode ->
+                if (this is RippleDrawable) {
+                    val color =
+                        ColorTokens.PopupColorTertiary.resolveColor(context, scheme, uiColorMode)
+                    setColor(ColorStateList.valueOf(color))
+                }
             }
-        }
 
     @JvmField
     val RoundRectFolder = ResourceDrawableToken<GradientDrawable>(R.drawable.round_rect_folder)
@@ -68,12 +77,14 @@ object DrawableTokens {
         .setColor(ColorTokens.ColorPrimary)
 
     @JvmField
-    val WidgetsBottomSheetBackground = ResourceDrawableToken<GradientDrawable>(R.drawable.bg_rounded_corner_bottom_sheet)
-        .setColor(ColorTokens.Surface)
+    val WidgetsBottomSheetBackground =
+        ResourceDrawableToken<GradientDrawable>(R.drawable.bg_rounded_corner_bottom_sheet)
+            .setColor(ColorTokens.Surface)
 
     @JvmField
-    val WidgetsRecommendationBackground = ResourceDrawableToken<GradientDrawable>(R.drawable.widgets_recommendation_background)
-        .setColor(ColorTokens.Surface)
+    val WidgetsRecommendationBackground =
+        ResourceDrawableToken<GradientDrawable>(R.drawable.widgets_recommendation_background)
+            .setColor(ColorTokens.Surface)
 
     @JvmField
     val WidgetResizeFrame = ResourceDrawableToken<GradientDrawable>(R.drawable.widget_resize_frame)
@@ -95,7 +106,13 @@ object DrawableTokens {
         val selected = GradientDrawable()
         selected.shape = GradientDrawable.RECTANGLE
         selected.cornerRadius = cornerRadius
-        selected.setColor(ColorTokens.AllAppsTabBackgroundSelected.resolveColor(context, scheme, uiColorMode))
+        selected.setColor(
+            ColorTokens.AllAppsTabBackgroundSelected.resolveColor(
+                context,
+                scheme,
+                uiColorMode,
+            ),
+        )
 
         list.addState(intArrayOf(-android.R.attr.state_selected), unselected)
         list.addState(intArrayOf(android.R.attr.state_selected), selected)
@@ -108,11 +125,21 @@ object DrawableTokens {
         val list = StateListDrawable()
 
         val disabled = AppCompatResources.getDrawable(
-            context, R.drawable.work_apps_toggle_background_shape)
+            context,
+            R.drawable.work_apps_toggle_background_shape,
+        )
 
         val enabled = AppCompatResources.getDrawable(
-            context, R.drawable.work_apps_toggle_background_shape) as GradientDrawable
-        enabled.setColor(ColorTokens.AllAppsTabBackgroundSelected.resolveColor(context, scheme, uiColorMode))
+            context,
+            R.drawable.work_apps_toggle_background_shape,
+        ) as GradientDrawable
+        enabled.setColor(
+            ColorTokens.AllAppsTabBackgroundSelected.resolveColor(
+                context,
+                scheme,
+                uiColorMode,
+            ),
+        )
 
         list.addState(intArrayOf(-android.R.attr.state_enabled), disabled)
         list.addState(intArrayOf(), enabled)
@@ -120,6 +147,7 @@ object DrawableTokens {
         list
     }
 
-    @JvmField val WorkCard = ResourceDrawableToken<GradientDrawable>(R.drawable.work_card)
+    @JvmField
+    val WorkCard = ResourceDrawableToken<GradientDrawable>(R.drawable.work_card)
         .setColor(ColorTokens.Surface)
 }

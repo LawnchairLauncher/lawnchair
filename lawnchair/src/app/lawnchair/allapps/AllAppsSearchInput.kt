@@ -30,7 +30,11 @@ import com.android.launcher3.Insettable
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.android.launcher3.allapps.*
+import com.android.launcher3.allapps.AllAppsContainerView
+import com.android.launcher3.allapps.AllAppsGridAdapter
+import com.android.launcher3.allapps.AllAppsStore
+import com.android.launcher3.allapps.AlphabeticalAppsList
+import com.android.launcher3.allapps.SearchUiManager
 import com.android.launcher3.allapps.search.AllAppsSearchBarController
 import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.util.Themes
@@ -38,17 +42,22 @@ import com.patrykmichalik.opto.core.firstBlocking
 import java.util.*
 import kotlin.math.max
 
-class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs),
-    Insettable, SearchUiManager,
+class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
+    FrameLayout(context, attrs),
+    Insettable,
+    SearchUiManager,
     SearchCallback<AllAppsGridAdapter.AdapterItem>,
-    AllAppsStore.OnUpdateListener, ViewTreeObserver.OnGlobalLayoutListener {
+    AllAppsStore.OnUpdateListener,
+    ViewTreeObserver.OnGlobalLayoutListener {
 
     private lateinit var hint: TextView
     private lateinit var input: FallbackSearchInputView
     private lateinit var actionButton: ImageButton
 
-    private val qsbMarginTopAdjusting = resources.getDimensionPixelSize(R.dimen.qsb_margin_top_adjusting)
-    private val allAppsSearchVerticalOffset = resources.getDimensionPixelSize(R.dimen.all_apps_search_vertical_offset)
+    private val qsbMarginTopAdjusting =
+        resources.getDimensionPixelSize(R.dimen.qsb_margin_top_adjusting)
+    private val allAppsSearchVerticalOffset =
+        resources.getDimensionPixelSize(R.dimen.all_apps_search_vertical_offset)
 
     private val launcher = context.launcher
     private val searchBarController = AllAppsSearchBarController()
@@ -107,7 +116,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(c
                     enableDebugMenu.set(!enableDebugMenu.get())
                     launcher.stateManager.goToState(LauncherState.NORMAL)
                 }
-            }
+            },
         )
 
         val hide = PreferenceManager2.getInstance(context).hideAppDrawerSearchBar.firstBlocking()
@@ -126,16 +135,26 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(c
         val inputString = input.text.toString()
         val inputLowerCase = inputString.lowercase(Locale.getDefault())
         val focusedLowerCase = focusedResultTitle.lowercase(Locale.getDefault())
-        if (canShowHint
-            && !TextUtils.isEmpty(inputLowerCase) && !TextUtils.isEmpty(focusedLowerCase)
-            && focusedLowerCase.matches(Regex("^[\\x00-\\x7F]*$"))
-            && focusedLowerCase.startsWith(inputLowerCase)
+        if (canShowHint &&
+            !TextUtils.isEmpty(inputLowerCase) && !TextUtils.isEmpty(focusedLowerCase) &&
+            focusedLowerCase.matches(Regex("^[\\x00-\\x7F]*$")) &&
+            focusedLowerCase.startsWith(inputLowerCase)
         ) {
             val hintColor = Themes.getAttrColor(context, android.R.attr.textColorTertiary)
             val hintText = SpannableStringBuilder(inputString)
                 .append(focusedLowerCase.substring(inputLowerCase.length))
-            hintText.setSpan(ForegroundColorSpan(Color.TRANSPARENT), 0, inputLowerCase.length, SPAN_POINT_MARK)
-            hintText.setSpan(ForegroundColorSpan(hintColor), inputLowerCase.length, hintText.length, SPAN_POINT_MARK)
+            hintText.setSpan(
+                ForegroundColorSpan(Color.TRANSPARENT),
+                0,
+                inputLowerCase.length,
+                SPAN_POINT_MARK,
+            )
+            hintText.setSpan(
+                ForegroundColorSpan(hintColor),
+                inputLowerCase.length,
+                hintText.length,
+                SPAN_POINT_MARK,
+            )
             hint.text = hintText
             hint.isVisible = true
         }
@@ -162,7 +181,9 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(c
         this.appsView = appsView
         searchBarController.initialize(
             LawnchairSearchAlgorithm.create(context),
-            input, launcher, this
+            input,
+            launcher,
+            this,
         )
         input.initialize(appsView)
     }
@@ -183,7 +204,8 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(c
             val isKeyNotWhitespace = unicodeChar > 0 &&
                 !Character.isWhitespace(unicodeChar) && !Character.isSpaceChar(unicodeChar)
             if (isKeyNotWhitespace) {
-                val gotKey = TextKeyListener.getInstance().onKeyDown(input, searchQueryBuilder, event.keyCode, event)
+                val gotKey = TextKeyListener.getInstance()
+                    .onKeyDown(input, searchQueryBuilder, event.keyCode, event)
                 if (gotKey && searchQueryBuilder.isNotEmpty()) {
                     searchBarController.focusSearchField()
                 }
@@ -201,7 +223,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(c
 
     override fun onAppendSearchResult(
         query: String,
-        items: ArrayList<AllAppsGridAdapter.AdapterItem>?
+        items: ArrayList<AllAppsGridAdapter.AdapterItem>?,
     ) {
         if (items != null) {
             apps.appendSearchResults(items)
@@ -235,7 +257,8 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(c
         lp.topMargin = max(-allAppsSearchVerticalOffset, insets.top - qsbMarginTopAdjusting)
 
         val dp = launcher.deviceProfile
-        val horizontalPadding = dp.desiredWorkspaceHorizontalMarginPx + dp.cellLayoutPaddingLeftRightPx
+        val horizontalPadding =
+            dp.desiredWorkspaceHorizontalMarginPx + dp.cellLayoutPaddingLeftRightPx
         setPadding(horizontalPadding, paddingTop, horizontalPadding, paddingBottom)
         requestLayout()
     }

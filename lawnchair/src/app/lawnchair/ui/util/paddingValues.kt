@@ -13,19 +13,21 @@ fun rememberExtendPadding(
     start: Dp = 0.dp,
     top: Dp = 0.dp,
     end: Dp = 0.dp,
-    bottom: Dp = 0.dp
+    bottom: Dp = 0.dp,
 ): PaddingValues = remember(start, top, end, bottom) {
     CombinePaddingValues(
-        padding, PaddingValues(
+        padding,
+        PaddingValues(
             start = start,
             top = top,
             end = end,
-            bottom = bottom
-        )
+            bottom = bottom,
+        ),
     )
 }
 
-private class CombinePaddingValues(private val a: PaddingValues, private val b: PaddingValues) : PaddingValues {
+private class CombinePaddingValues(private val a: PaddingValues, private val b: PaddingValues) :
+    PaddingValues {
     override fun calculateLeftPadding(layoutDirection: LayoutDirection) =
         a.calculateLeftPadding(layoutDirection) + b.calculateLeftPadding(layoutDirection)
 

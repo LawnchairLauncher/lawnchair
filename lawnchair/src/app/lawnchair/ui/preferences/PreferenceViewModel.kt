@@ -34,10 +34,12 @@ private val iconPackIntents = listOf(
     Intent("com.novalauncher.THEME"),
     Intent("org.adw.launcher.icons.ACTION_PICK_ICON"),
     Intent("com.dlto.atom.launcher.THEME"),
-    Intent("android.intent.action.MAIN").addCategory("com.anddoes.launcher.THEME")
+    Intent("android.intent.action.MAIN").addCategory("com.anddoes.launcher.THEME"),
 )
 
-class PreferenceViewModel(private val app: Application) : AndroidViewModel(app), PreferenceInteractor {
+class PreferenceViewModel(private val app: Application) :
+    AndroidViewModel(app),
+    PreferenceInteractor {
 
     override val iconPacks = flow {
         val pm = app.packageManager
@@ -48,16 +50,16 @@ class PreferenceViewModel(private val app: Application) : AndroidViewModel(app),
                 IconPackInfo(
                     info.loadLabel(pm).toString(),
                     info.activityInfo.packageName,
-                    CustomAdaptiveIconDrawable.wrapNonNull(info.loadIcon(pm))
+                    CustomAdaptiveIconDrawable.wrapNonNull(info.loadIcon(pm)),
                 )
             }
         val lawnchairIcon = CustomAdaptiveIconDrawable.wrapNonNull(
-            ContextCompat.getDrawable(app, R.drawable.ic_launcher_home)!!
+            ContextCompat.getDrawable(app, R.drawable.ic_launcher_home)!!,
         )
         val defaultIconPack = IconPackInfo(
             name = app.getString(R.string.system_icons),
             packageName = "",
-            icon = lawnchairIcon
+            icon = lawnchairIcon,
         )
         val withSystemIcons = listOf(defaultIconPack) + iconPacks.sortedBy { it.name }
         emit(withSystemIcons)
@@ -66,7 +68,8 @@ class PreferenceViewModel(private val app: Application) : AndroidViewModel(app),
         .stateIn(viewModelScope, SharingStarted.Lazily, listOf())
 
     override val ossLibraries = flow {
-        val ossLibraries = app.getOssLibraries(thirdPartyLicenseMetadataId = R.raw.third_party_license_metadata)
+        val ossLibraries =
+            app.getOssLibraries(thirdPartyLicenseMetadataId = R.raw.third_party_license_metadata)
         emit(ossLibraries)
     }
         .flowOn(Dispatchers.Default)

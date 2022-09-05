@@ -28,7 +28,14 @@ import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.ClickablePreference
+import app.lawnchair.ui.preferences.components.ExpandAndShrink
+import app.lawnchair.ui.preferences.components.GestureHandlerPreference
+import app.lawnchair.ui.preferences.components.NavigationActionPreference
+import app.lawnchair.ui.preferences.components.PreferenceGroup
+import app.lawnchair.ui.preferences.components.PreferenceLayout
+import app.lawnchair.ui.preferences.components.SliderPreference
+import app.lawnchair.ui.preferences.components.SwitchPreference
 import app.lawnchair.util.collectAsStateBlocking
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -57,7 +64,9 @@ fun HomeScreenPreferences() {
                 checked = !lockHomeScreenAdapter.state.value && addIconToHomeAdapter.state.value,
                 onCheckedChange = addIconToHomeAdapter::onChange,
                 label = stringResource(id = R.string.auto_add_shortcuts_label),
-                description = if (lockHomeScreenAdapter.state.value) stringResource(id = R.string.home_screen_locked) else null,
+                description = if (lockHomeScreenAdapter.state.value) stringResource(
+                    id = R.string.home_screen_locked,
+                ) else null,
                 enabled = lockHomeScreenAdapter.state.value.not(),
             )
             GestureHandlerPreference(
@@ -68,7 +77,9 @@ fun HomeScreenPreferences() {
             SwitchPreference(
                 adapter = prefs2.enableFeed.getAdapter(),
                 label = stringResource(id = R.string.minus_one_enable),
-                description = if (feedAvailable) null else stringResource(id = R.string.minus_one_unavailable),
+                description = if (feedAvailable) null else stringResource(
+                    id = R.string.minus_one_unavailable,
+                ),
                 enabled = feedAvailable,
             )
         }
@@ -150,7 +161,7 @@ fun HomeScreenPreferences() {
                 ClickablePreference(
                     label = stringResource(id = R.string.reset_custom_icons),
                     confirmationText = stringResource(id = R.string.reset_custom_icons_confirmation),
-                    onClick = { scope.launch { overrideRepo.deleteAll() } }
+                    onClick = { scope.launch { overrideRepo.deleteAll() } },
                 )
             }
         }

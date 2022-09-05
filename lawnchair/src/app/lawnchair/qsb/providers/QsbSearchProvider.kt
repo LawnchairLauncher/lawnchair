@@ -89,22 +89,22 @@ open class QsbSearchProvider(
             context.startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse("market://details?id=$packageName")
-                )
+                    Uri.parse("market://details?id=$packageName"),
+                ),
             )
         } catch (e: ActivityNotFoundException) {
             try {
                 context.startActivity(
                     Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse("https://play.google.com/store/apps/details?id=$packageName")
-                    )
+                        Uri.parse("https://play.google.com/store/apps/details?id=$packageName"),
+                    ),
                 )
             } catch (e: Exception) {
                 Toast.makeText(
                     context,
                     context.getString(R.string.error_no_market_or_browser_installed),
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT,
                 ).show()
             }
         }
@@ -123,7 +123,7 @@ open class QsbSearchProvider(
             Presearch,
             Wikipedia,
             Bing,
-            Sesame
+            Sesame,
         )
 
         /**
@@ -156,9 +156,7 @@ open class QsbSearchProvider(
                 .filterNot { it == AppSearch }
                 .firstOrNull { QsbLayout.resolveIntent(context, it.createSearchIntent()) }
                 ?: AppSearch
-
         }
-
     }
 }
 

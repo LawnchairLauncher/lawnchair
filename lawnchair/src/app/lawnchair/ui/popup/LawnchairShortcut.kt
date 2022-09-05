@@ -23,10 +23,11 @@ class LawnchairShortcut {
 
     companion object {
 
-        val CUSTOMIZE: SystemShortcut.Factory<LawnchairLauncher> = SystemShortcut.Factory<LawnchairLauncher> { activity, itemInfo ->
-            if (PreferenceManager2.getInstance(activity).lockHomeScreen.firstBlocking()) null
-            else getAppInfo(activity, itemInfo)?.let { Customize(activity, it, itemInfo) }
-        }
+        val CUSTOMIZE: SystemShortcut.Factory<LawnchairLauncher> =
+            SystemShortcut.Factory<LawnchairLauncher> { activity, itemInfo ->
+                if (PreferenceManager2.getInstance(activity).lockHomeScreen.firstBlocking()) null
+                else getAppInfo(activity, itemInfo)?.let { Customize(activity, it, itemInfo) }
+            }
 
         private fun getAppInfo(launcher: LawnchairLauncher, itemInfo: ItemInfo): ModelAppInfo? {
             if (itemInfo is ModelAppInfo) return itemInfo
@@ -39,8 +40,13 @@ class LawnchairShortcut {
     class Customize(
         private val launcher: LawnchairLauncher,
         private val appInfo: ModelAppInfo,
-        itemInfo: ItemInfo
-    ) : SystemShortcut<LawnchairLauncher>(R.drawable.ic_edit, R.string.customize_button_text, launcher, itemInfo) {
+        itemInfo: ItemInfo,
+    ) : SystemShortcut<LawnchairLauncher>(
+        R.drawable.ic_edit,
+        R.string.customize_button_text,
+        launcher,
+        itemInfo,
+    ) {
 
         override fun onClick(v: View) {
             val outObj = Array<Any?>(1) { null }
@@ -54,13 +60,13 @@ class LawnchairShortcut {
             AbstractFloatingView.closeAllOpenViews(launcher)
             ComposeBottomSheet.show(
                 context = launcher,
-                contentPaddings = PaddingValues(bottom = 64.dp)
+                contentPaddings = PaddingValues(bottom = 64.dp),
             ) {
                 CustomizeAppDialog(
                     icon = icon,
                     defaultTitle = defaultTitle,
                     componentKey = appInfo.toComponentKey(),
-                    onClose = { close(true) }
+                    onClose = { close(true) },
                 )
             }
         }

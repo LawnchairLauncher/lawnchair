@@ -22,7 +22,8 @@ class ThemedSmartSpaceHostView(context: Context) : SmartSpaceHostView(context) {
 
     private val isWorkspaceDarkText = Themes.getAttrBoolean(context, R.attr.isWorkspaceDarkText)
     private val workspaceTextColor = Themes.getAttrColor(context, R.attr.workspaceTextColor)
-    private val shadowGenerator = ShadowGenerator(ResourceUtils.pxFromDp(48f, resources.displayMetrics))
+    private val shadowGenerator =
+        ShadowGenerator(ResourceUtils.pxFromDp(48f, resources.displayMetrics))
 
     private val templateTextView = LayoutInflater.from(context)
         .inflate(R.layout.smartspace_text_template, this, false) as DoubleShadowBubbleTextView
@@ -62,7 +63,7 @@ class ThemedSmartSpaceHostView(context: Context) : SmartSpaceHostView(context) {
                 shadowInfo.ambientShadowBlur,
                 shadowInfo.keyShadowOffsetX,
                 shadowInfo.keyShadowOffsetY,
-                shadowInfo.ambientShadowColor
+                shadowInfo.ambientShadowColor,
             )
         }
         tv.setTextColor(workspaceTextColor)
@@ -87,7 +88,8 @@ class ThemedSmartSpaceHostView(context: Context) : SmartSpaceHostView(context) {
 
     private fun addShadowToBitmap(bitmap: Bitmap): Bitmap {
         return if (!bitmap.isRecycled) {
-            val newBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
+            val newBitmap =
+                Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(newBitmap)
             shadowGenerator.recreateIcon(bitmap, canvas)
             newBitmap

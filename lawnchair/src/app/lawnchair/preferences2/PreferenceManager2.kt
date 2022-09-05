@@ -20,13 +20,19 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import androidx.datastore.preferences.core.*
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import app.lawnchair.font.FontCache
 import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
+import app.lawnchair.preferences.PreferenceManager as LawnchairPreferenceManager
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.smartspace.model.SmartspaceCalendar
 import app.lawnchair.smartspace.model.SmartspaceTimeFormat
@@ -34,7 +40,7 @@ import app.lawnchair.theme.color.ColorOption
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
+import com.android.launcher3.graphics.IconShape as L3IconShape
 import com.android.launcher3.util.DynamicResource
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.opto.core.PreferenceManager
@@ -47,8 +53,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import app.lawnchair.preferences.PreferenceManager as LawnchairPreferenceManager
-import com.android.launcher3.graphics.IconShape as L3IconShape
 
 class PreferenceManager2(private val context: Context) : PreferenceManager {
 
@@ -82,7 +86,8 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
 
     val iconShape = preference(
         key = stringPreferencesKey(name = "icon_shape"),
-        defaultValue = IconShape.fromString(context.getString(R.string.config_default_icon_shape)) ?: IconShape.Circle,
+        defaultValue = IconShape.fromString(context.getString(R.string.config_default_icon_shape))
+            ?: IconShape.Circle,
         parse = { IconShape.fromString(it) ?: IconShapeManager.getSystemIconShape(context) },
         save = { it.toString() },
     )
@@ -92,7 +97,9 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         parse = ColorOption::fromString,
         save = ColorOption::toString,
         onSet = { reloadHelper.reloadGrid() },
-        defaultValue = ColorOption.fromString(context.getString(R.string.config_default_notification_dot_color)),
+        defaultValue = ColorOption.fromString(
+            context.getString(R.string.config_default_notification_dot_color),
+        ),
     )
 
     val showNotificationCount = preference(
@@ -111,12 +118,14 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         defaultValue = QsbSearchProvider.resolveDefault(context),
         parse = { QsbSearchProvider.fromId(it) },
         save = { it.id },
-        onSet = { reloadHelper.recreate() }
+        onSet = { reloadHelper.recreate() },
     )
 
     val hotseatQsbForceWebsite = preference(
         key = booleanPreferencesKey(name = "dock_search_bar_force_website"),
-        defaultValue = context.resources.getBoolean(R.bool.config_default_dock_search_bar_force_website),
+        defaultValue = context.resources.getBoolean(
+            R.bool.config_default_dock_search_bar_force_website,
+        ),
     )
 
     val accentColor = preference(
@@ -124,7 +133,9 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         parse = ColorOption::fromString,
         save = ColorOption::toString,
         onSet = { reloadHelper.recreate() },
-        defaultValue = ColorOption.fromString(context.getString(R.string.config_default_accent_color)),
+        defaultValue = ColorOption.fromString(
+            context.getString(R.string.config_default_accent_color),
+        ),
     )
 
     val hiddenApps = preference(
@@ -160,15 +171,17 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
     )
 
     val lockHomeScreenButtonOnPopUp = preference(
-            key = booleanPreferencesKey(name = "lock_home_screen_on_popup"),
-            defaultValue = context.resources.getBoolean(R.bool.config_default_lock_home_screen_on_popup),
-            onSet = { reloadHelper.reloadGrid() },
+        key = booleanPreferencesKey(name = "lock_home_screen_on_popup"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_lock_home_screen_on_popup),
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val hideAppDrawerSearchBar = preference(
         key = booleanPreferencesKey(name = "hide_app_drawer_search_bar"),
-        defaultValue = context.resources.getBoolean(R.bool.config_default_hide_app_drawer_search_bar),
-        onSet = { reloadHelper.recreate() }
+        defaultValue = context.resources.getBoolean(
+            R.bool.config_default_hide_app_drawer_search_bar,
+        ),
+        onSet = { reloadHelper.recreate() },
     )
 
     val enableFontSelection = preference(
@@ -177,19 +190,25 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = { newValue ->
             if (!newValue) {
                 val fontCache = FontCache.INSTANCE.get(context)
-                LawnchairPreferenceManager.getInstance(context).fontWorkspace.set(newValue = fontCache.uiText)
+                LawnchairPreferenceManager.getInstance(context).fontWorkspace.set(
+                    newValue = fontCache.uiText,
+                )
             }
         },
     )
 
     val enableSmartspaceCalendarSelection = preference(
         key = booleanPreferencesKey(name = "enable_smartspace_calendar_selection"),
-        defaultValue = context.resources.getBoolean(R.bool.config_default_enable_smartspace_calendar_selection),
+        defaultValue = context.resources.getBoolean(
+            R.bool.config_default_enable_smartspace_calendar_selection,
+        ),
     )
 
     val autoShowKeyboardInDrawer = preference(
         key = booleanPreferencesKey(name = "auto_show_keyboard_in_drawer"),
-        defaultValue = context.resources.getBoolean(R.bool.config_default_auto_show_keyboard_in_drawer),
+        defaultValue = context.resources.getBoolean(
+            R.bool.config_default_auto_show_keyboard_in_drawer,
+        ),
     )
 
     val homeIconSizeFactor = preference(
@@ -200,13 +219,17 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
 
     val folderPreviewBackgroundOpacity = preference(
         key = floatPreferencesKey(name = "folder_preview_background_opacity"),
-        defaultValue = resourceProvider.getFloat(R.dimen.config_default_folder_preview_background_opacity),
+        defaultValue = resourceProvider.getFloat(
+            R.dimen.config_default_folder_preview_background_opacity,
+        ),
         onSet = { reloadHelper.reloadIcons() },
     )
 
     val showIconLabelsOnHomeScreen = preference(
         key = booleanPreferencesKey(name = "show_icon_labels_on_home_screen"),
-        defaultValue = context.resources.getBoolean(R.bool.config_default_show_icon_labels_on_home_screen),
+        defaultValue = context.resources.getBoolean(
+            R.bool.config_default_show_icon_labels_on_home_screen,
+        ),
         onSet = { reloadHelper.reloadGrid() },
     )
 
@@ -218,7 +241,9 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
 
     val showIconLabelsInDrawer = preference(
         key = booleanPreferencesKey(name = "show_icon_labels_in_drawer"),
-        defaultValue = context.resources.getBoolean(R.bool.config_default_show_icon_labels_in_drawer),
+        defaultValue = context.resources.getBoolean(
+            R.bool.config_default_show_icon_labels_in_drawer,
+        ),
         onSet = { reloadHelper.reloadGrid() },
     )
 
@@ -230,7 +255,9 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
 
     val drawerIconLabelSizeFactor = preference(
         key = floatPreferencesKey(name = "drawer_icon_label_size_factor"),
-        defaultValue = resourceProvider.getFloat(R.dimen.config_default_drawer_icon_label_size_factor),
+        defaultValue = resourceProvider.getFloat(
+            R.dimen.config_default_drawer_icon_label_size_factor,
+        ),
         onSet = { reloadHelper.reloadGrid() },
     )
 
@@ -286,22 +313,22 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
             reloadHelper.reloadGrid()
             reloadHelper.reloadTaskbar()
             reloadHelper.recreate()
-        }
+        },
     )
 
     val smartspaceAagWidget = preference(
         key = booleanPreferencesKey("enable_smartspace_aag_widget"),
-        defaultValue = true
+        defaultValue = true,
     )
 
     val smartspaceBatteryStatus = preference(
         key = booleanPreferencesKey("enable_smartspace_battery_status"),
-        defaultValue = true
+        defaultValue = true,
     )
 
     val smartspaceNowPlaying = preference(
         key = booleanPreferencesKey("enable_smartspace_now_playing"),
-        defaultValue = true
+        defaultValue = true,
     )
 
     val smartspaceShowDate = preference(
@@ -316,14 +343,18 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
 
     val smartspaceTimeFormat = preference(
         key = stringPreferencesKey("smartspace_time_format"),
-        defaultValue = SmartspaceTimeFormat.fromString(context.getString(R.string.config_default_smartspace_time_format)),
+        defaultValue = SmartspaceTimeFormat.fromString(
+            context.getString(R.string.config_default_smartspace_time_format),
+        ),
         parse = { SmartspaceTimeFormat.fromString(it) },
         save = { it.toString() },
     )
 
     val smartspaceCalendar = preference(
         key = stringPreferencesKey(name = "smartspace_calendar"),
-        defaultValue = SmartspaceCalendar.fromString(context.getString(R.string.config_default_smart_space_calendar)),
+        defaultValue = SmartspaceCalendar.fromString(
+            context.getString(R.string.config_default_smart_space_calendar),
+        ),
         parse = { SmartspaceCalendar.fromString(it) },
         save = { it.toString() },
     )
@@ -331,32 +362,32 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
     val wallpaperDepthEffect = preference(
         key = booleanPreferencesKey(name = "enable_wallpaper_depth_effect"),
         defaultValue = true,
-        onSet = { reloadHelper.recreate() }
+        onSet = { reloadHelper.recreate() },
     )
 
     val doubleTapGestureHandler = serializablePreference<GestureHandlerConfig>(
         key = stringPreferencesKey("double_tap_gesture_handler"),
-        defaultValue = GestureHandlerConfig.Sleep
+        defaultValue = GestureHandlerConfig.Sleep,
     )
 
     val swipeUpGestureHandler = serializablePreference<GestureHandlerConfig>(
         key = stringPreferencesKey("swipe_up_gesture_handler"),
-        defaultValue = GestureHandlerConfig.OpenAppDrawer
+        defaultValue = GestureHandlerConfig.OpenAppDrawer,
     )
 
     val swipeDownGestureHandler = serializablePreference<GestureHandlerConfig>(
         key = stringPreferencesKey("swipe_down_gesture_handler"),
-        defaultValue = GestureHandlerConfig.OpenNotifications
+        defaultValue = GestureHandlerConfig.OpenNotifications,
     )
 
     val homePressGestureHandler = serializablePreference<GestureHandlerConfig>(
         key = stringPreferencesKey("home_press_gesture_handler"),
-        defaultValue = GestureHandlerConfig.NoOp
+        defaultValue = GestureHandlerConfig.NoOp,
     )
 
     val backPressGestureHandler = serializablePreference<GestureHandlerConfig>(
         key = stringPreferencesKey("back_press_gesture_handler"),
-        defaultValue = GestureHandlerConfig.NoOp
+        defaultValue = GestureHandlerConfig.NoOp,
     )
 
     private inline fun <reified T> serializablePreference(
@@ -398,7 +429,11 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
     companion object {
         private val Context.preferencesDataStore by preferencesDataStore(
             name = "preferences",
-            produceMigrations = { listOf(SharedPreferencesMigration(context = it).produceMigration()) },
+            produceMigrations = {
+                listOf(
+                    SharedPreferencesMigration(context = it).produceMigration(),
+                )
+            },
         )
 
         @JvmField

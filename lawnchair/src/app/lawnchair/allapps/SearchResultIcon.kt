@@ -23,15 +23,22 @@ import com.android.launcher3.icons.LauncherIcons
 import com.android.launcher3.model.data.ItemInfoWithIcon
 import com.android.launcher3.model.data.PackageItemInfo
 import com.android.launcher3.model.data.SearchActionItemInfo
-import com.android.launcher3.model.data.SearchActionItemInfo.*
+import com.android.launcher3.model.data.SearchActionItemInfo.FLAG_BADGE_WITH_COMPONENT_NAME
+import com.android.launcher3.model.data.SearchActionItemInfo.FLAG_BADGE_WITH_PACKAGE
+import com.android.launcher3.model.data.SearchActionItemInfo.FLAG_PRIMARY_ICON_FROM_TITLE
+import com.android.launcher3.model.data.SearchActionItemInfo.FLAG_SHOULD_START
+import com.android.launcher3.model.data.SearchActionItemInfo.FLAG_SHOULD_START_FOR_RESULT
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.touch.ItemClickHandler
 import com.android.launcher3.touch.ItemLongClickListener
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 
-class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(context, attrs),
-    SearchResultView, View.OnClickListener, View.OnLongClickListener {
+class SearchResultIcon(context: Context, attrs: AttributeSet?) :
+    BubbleTextView(context, attrs),
+    SearchResultView,
+    View.OnClickListener,
+    View.OnLongClickListener {
 
     private val launcher = context.launcher
     private var boundId = ""
@@ -49,7 +56,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
         setOnLongClickListener(this)
         layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
-            launcher.deviceProfile.allAppsCellHeightPx
+            launcher.deviceProfile.allAppsCellHeightPx,
         )
     }
 
@@ -117,7 +124,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
             target.packageName,
             target.userHandle,
             action.title,
-            true
+            true,
         )
         if (action.intent != null) {
             info.intent = action.intent
@@ -193,7 +200,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
 
     private fun populateSearchActionItemInfo(
         target: SearchTargetCompat,
-        info: SearchActionItemInfo
+        info: SearchActionItemInfo,
     ) {
         val action = target.searchAction!!
         LauncherIcons.obtain(context).use { li ->
@@ -210,14 +217,14 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
             if (info.hasFlags(FLAG_BADGE_WITH_COMPONENT_NAME) && target.extras.containsKey("class")) {
                 try {
                     val iconProvider = IconProvider(context)
-                    val componentName = ComponentName(target.packageName, target.extras.getString("class")!!)
+                    val componentName =
+                        ComponentName(target.packageName, target.extras.getString("class")!!)
                     val activityInfo = context.packageManager.getActivityInfo(componentName, 0)
                     val activityIcon = iconProvider.getIcon(activityInfo)
                     val bitmap = li.createIconBitmap(activityIcon, 1f, iconSize)
                     val bitmapInfo = BitmapInfo.of(bitmap, packageIcon.color)
                     info.bitmap = li.badgeBitmap(info.bitmap.icon, bitmapInfo)
                 } catch (ignore: PackageManager.NameNotFoundException) {
-
                 }
             } else if (info.hasFlags(FLAG_BADGE_WITH_PACKAGE) && info.bitmap != packageIcon) {
                 info.bitmap = li.badgeBitmap(info.bitmap.icon, packageIcon)

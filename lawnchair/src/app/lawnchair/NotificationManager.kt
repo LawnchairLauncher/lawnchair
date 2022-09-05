@@ -49,7 +49,8 @@ class NotificationManager(@Suppress("UNUSED_PARAMETER") context: Context) {
     }
 
     companion object {
-        @JvmField val INSTANCE = MainThreadInitializedObject(::NotificationManager)
+        @JvmField
+        val INSTANCE = MainThreadInitializedObject(::NotificationManager)
     }
 }
 
@@ -69,7 +70,8 @@ fun StatusBarNotification.getAppName(context: Context): CharSequence {
 fun Context.getAppName(name: String): CharSequence {
     try {
         return packageManager.getApplicationLabel(
-            packageManager.getApplicationInfo(name, PackageManager.GET_META_DATA))
+            packageManager.getApplicationInfo(name, PackageManager.GET_META_DATA),
+        )
     } catch (ignored: PackageManager.NameNotFoundException) {
     }
 

@@ -11,7 +11,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.handlers.OpenAppTarget
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.AppItem
+import app.lawnchair.ui.preferences.components.AppItemPlaceholder
+import app.lawnchair.ui.preferences.components.PreferenceLazyColumn
+import app.lawnchair.ui.preferences.components.PreferenceScaffold
+import app.lawnchair.ui.preferences.components.preferenceGroupItems
+import app.lawnchair.ui.preferences.components.rememberFloatingState
 import app.lawnchair.util.App
 import app.lawnchair.util.appsList
 import com.android.launcher3.R
@@ -31,7 +36,7 @@ fun PickAppForGesture() {
     fun onSelectApp(app: App) {
         val config: GestureHandlerConfig = GestureHandlerConfig.OpenApp(
             appName = app.label,
-            target = OpenAppTarget.App(app.key)
+            target = OpenAppTarget.App(app.key),
         )
         val configString = Json.encodeToString(config)
         activity.setResult(Activity.RESULT_OK, Intent().putExtra("config", configString))

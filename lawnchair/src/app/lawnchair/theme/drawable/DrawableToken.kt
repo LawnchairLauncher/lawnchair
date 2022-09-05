@@ -15,7 +15,8 @@ import dev.kdrag0n.monet.theme.ColorScheme
 
 interface DrawableToken<T : Drawable> : ResourceToken<T>
 
-data class ResourceDrawableToken<T : Drawable>(@DrawableRes private val resId: Int) : DrawableToken<T> {
+data class ResourceDrawableToken<T : Drawable>(@DrawableRes private val resId: Int) :
+    DrawableToken<T> {
 
     @Suppress("UNCHECKED_CAST")
     override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): T {
@@ -33,7 +34,7 @@ data class AttributeDrawableToken<T : Drawable>(@AttrRes private val attr: Int) 
 
 data class MutatedDrawableToken<T : Drawable>(
     private val token: DrawableToken<T>,
-    private val mutateBlock: T.(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode) -> Unit
+    private val mutateBlock: T.(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode) -> Unit,
 ) : DrawableToken<T> {
 
     override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): T {
@@ -44,7 +45,7 @@ data class MutatedDrawableToken<T : Drawable>(
 }
 
 data class NewDrawable<T : Drawable>(
-    private val factory: (context: Context, scheme: ColorScheme, uiColorMode: UiColorMode) -> T
+    private val factory: (context: Context, scheme: ColorScheme, uiColorMode: UiColorMode) -> T,
 ) : DrawableToken<T> {
 
     override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): T {
@@ -53,23 +54,26 @@ data class NewDrawable<T : Drawable>(
 }
 
 fun <T : Drawable> DrawableToken<T>.mutate(
-    mutateBlock: T.(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode) -> Unit
+    mutateBlock: T.(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode) -> Unit,
 ) = MutatedDrawableToken(this, mutateBlock)
 
-fun <T : GradientDrawable> DrawableToken<T>.setColor(color: ColorToken) = mutate { context, scheme, uiColorMode ->
-    setColor(color.resolveColor(context, scheme, uiColorMode))
-}
+fun <T : GradientDrawable> DrawableToken<T>.setColor(color: ColorToken) =
+    mutate { context, scheme, uiColorMode ->
+        setColor(color.resolveColor(context, scheme, uiColorMode))
+    }
 
-fun <T : Drawable> DrawableToken<T>.setTint(color: ColorToken) = mutate { context, scheme, uiColorMode ->
-    setTint(color.resolveColor(context, scheme, uiColorMode))
-}
+fun <T : Drawable> DrawableToken<T>.setTint(color: ColorToken) =
+    mutate { context, scheme, uiColorMode ->
+        setTint(color.resolveColor(context, scheme, uiColorMode))
+    }
 
-fun <T : GradientDrawable> DrawableToken<T>.setStroke(widthDp: Float, color: ColorToken) = mutate { context, scheme, uiColorMode ->
-    val widthPx = TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP,
-        widthDp,
-        Resources.getSystem().displayMetrics
-    )
+fun <T : GradientDrawable> DrawableToken<T>.setStroke(widthDp: Float, color: ColorToken) =
+    mutate { context, scheme, uiColorMode ->
+        val widthPx = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            widthDp,
+            Resources.getSystem().displayMetrics,
+        )
 
-    setStroke(widthPx.toInt(), color.resolveColor(context, scheme, uiColorMode))
-}
+        setStroke(widthPx.toInt(), color.resolveColor(context, scheme, uiColorMode))
+    }

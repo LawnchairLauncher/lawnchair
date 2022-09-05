@@ -41,7 +41,8 @@ class IconPackProvider(private val context: Context) {
         val iconPack = getIconPackOrSystem(iconEntry.packPackageName) ?: return null
         iconPack.loadBlocking()
         val drawable = iconPack.getIcon(iconEntry, iconDpi) ?: return null
-        val clockMetadata = if (user == Process.myUserHandle()) iconPack.getClock(iconEntry) else null
+        val clockMetadata =
+            if (user == Process.myUserHandle()) iconPack.getClock(iconEntry) else null
         if (clockMetadata != null) {
             val clockDrawable = ClockDrawableWrapper.forMeta(Build.VERSION.SDK_INT, clockMetadata) {
                 drawable

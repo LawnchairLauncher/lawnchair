@@ -16,12 +16,14 @@ import app.lawnchair.smartspace.model.SmartspaceTarget
 import app.lawnchair.smartspace.provider.SmartspaceProvider
 import app.lawnchair.util.repeatOnAttached
 import com.android.launcher3.R
+import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlin.math.roundToInt
 
 class BcSmartspaceView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, var previewMode: Boolean = false
+    context: Context,
+    attrs: AttributeSet? = null,
+    var previewMode: Boolean = false,
 ) : FrameLayout(context, attrs) {
 
     private val provider = SmartspaceProvider.INSTANCE.get(context)
@@ -39,29 +41,30 @@ class BcSmartspaceView @JvmOverloads constructor(
         viewPager.isSaveEnabled = false
         indicator = findViewById(R.id.smartspace_page_indicator)
 
-        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                indicator.setPageOffset(position, positionOffset)
-            }
+        viewPager.addOnPageChangeListener(
+            object : ViewPager.OnPageChangeListener {
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int,
+                ) {
+                    indicator.setPageOffset(position, positionOffset)
+                }
 
-            override fun onPageSelected(position: Int) {
+                override fun onPageSelected(position: Int) {
+                }
 
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-                scrollState = state
-                if (state == 0) {
-                    pendingTargets?.let {
-                        pendingTargets = null
-                        onSmartspaceTargetsUpdate(it)
+                override fun onPageScrollStateChanged(state: Int) {
+                    scrollState = state
+                    if (state == 0) {
+                        pendingTargets?.let {
+                            pendingTargets = null
+                            onSmartspaceTargetsUpdate(it)
+                        }
                     }
                 }
-            }
-        })
+            },
+        )
 
         val targets = if (previewMode) provider.previewTargets else provider.targets
         repeatOnAttached {
@@ -87,7 +90,7 @@ class BcSmartspaceView @JvmOverloads constructor(
         val width = (MeasureSpec.getSize(widthMeasureSpec).toFloat() / scale).roundToInt()
         super.onMeasure(
             makeMeasureSpec(width, EXACTLY),
-            makeMeasureSpec(smartspaceHeight, EXACTLY)
+            makeMeasureSpec(smartspaceHeight, EXACTLY),
         )
         scaleX = scale
         scaleY = scale
@@ -128,7 +131,10 @@ class BcSmartspaceView @JvmOverloads constructor(
         if (runningAnimation != null || oldCard.parent != null) return
 
         val animParent = viewPager.parent as ViewGroup
-        oldCard.measure(makeMeasureSpec(viewPager.width, EXACTLY), makeMeasureSpec(viewPager.height, EXACTLY))
+        oldCard.measure(
+            makeMeasureSpec(viewPager.width, EXACTLY),
+            makeMeasureSpec(viewPager.height, EXACTLY),
+        )
         oldCard.layout(viewPager.left, viewPager.top, viewPager.right, viewPager.bottom)
         val shift = resources.getDimension(R.dimen.enhanced_smartspace_dismiss_margin)
         val animator = AnimatorSet()
@@ -137,8 +143,8 @@ class BcSmartspaceView @JvmOverloads constructor(
                 oldCard,
                 View.TRANSLATION_Y,
                 0f,
-                (-height).toFloat() - shift
-            )
+                (-height).toFloat() - shift,
+            ),
         )
         animator.play(ObjectAnimator.ofFloat(oldCard, View.ALPHA, 1f, 0f))
         animator.play(
@@ -146,19 +152,21 @@ class BcSmartspaceView @JvmOverloads constructor(
                 viewPager,
                 View.TRANSLATION_Y,
                 height.toFloat() + shift,
-                0f
-            )
+                0f,
+            ),
         )
-        animator.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationStart(animation: Animator) {
-                animParent.overlay.add(oldCard)
-            }
+        animator.addListener(
+            object : AnimatorListenerAdapter() {
+                override fun onAnimationStart(animation: Animator) {
+                    animParent.overlay.add(oldCard)
+                }
 
-            override fun onAnimationEnd(animation: Animator) {
-                animParent.overlay.remove(oldCard)
-                runningAnimation = null
-            }
-        })
+                override fun onAnimationEnd(animation: Animator) {
+                    animParent.overlay.remove(oldCard)
+                    runningAnimation = null
+                }
+            },
+        )
         runningAnimation = animator
         animator.start()
     }

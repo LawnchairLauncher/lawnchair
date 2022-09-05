@@ -1,6 +1,5 @@
 package app.lawnchair.ui.preferences
 
-import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -68,18 +67,18 @@ fun QuickstepPreferences() {
         PreferenceGroup(
             heading = stringResource(id = R.string.window_corner_radius_label),
             description = stringResource(id = (R.string.window_corner_radius_description)),
-            showDescription = overrideWindowCornerRadius
+            showDescription = overrideWindowCornerRadius,
         ) {
             SwitchPreference(
                 adapter = prefs.overrideWindowCornerRadius.getAdapter(),
                 label = stringResource(id = R.string.override_window_corner_radius_label),
             )
-            ExpandAndShrink(visible = overrideWindowCornerRadius,) {
+            ExpandAndShrink(visible = overrideWindowCornerRadius) {
                 SliderPreference(
                     label = stringResource(id = R.string.window_corner_radius_label),
                     adapter = prefs.windowCornerRadius.getAdapter(),
                     step = 0,
-                    valueRange = 70..150
+                    valueRange = 70..150,
                 )
             }
         }
@@ -87,11 +86,11 @@ fun QuickstepPreferences() {
         val idp = LauncherAppState.getIDP(LocalContext.current)
         if (Utilities.ATLEAST_S_V2 && idp.deviceType == InvariantDeviceProfile.TYPE_PHONE) {
             PreferenceGroup(
-                heading = stringResource(id = R.string.taskbar_label)
+                heading = stringResource(id = R.string.taskbar_label),
             ) {
                 SwitchPreference(
                     adapter = prefs2.enableTaskbarOnPhone.getAdapter(),
-                    label = stringResource(id = R.string.enable_taskbar_experimental)
+                    label = stringResource(id = R.string.enable_taskbar_experimental),
                 )
             }
         }

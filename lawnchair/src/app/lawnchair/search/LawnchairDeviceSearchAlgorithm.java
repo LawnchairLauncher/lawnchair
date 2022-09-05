@@ -172,6 +172,7 @@ public class LawnchairDeviceSearchAlgorithm extends LawnchairSearchAlgorithm imp
         MAIN_EXECUTOR.execute(() -> prefs.getDeviceSearch().set(isCompatible));
         try {
             session.destroy();
-        } catch (Exception ignore) { }
+        } catch (Exception ignore) {
+        }
     }
 }

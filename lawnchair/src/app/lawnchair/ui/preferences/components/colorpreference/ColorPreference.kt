@@ -17,8 +17,8 @@
 package app.lawnchair.ui.preferences.components.colorpreference
 
 import androidx.compose.foundation.clickable
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -26,7 +26,7 @@ import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.ui.preferences.LocalNavController
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.PreferenceTemplate
 import com.patrykmichalik.opto.domain.Preference
 
 /**
@@ -44,10 +44,22 @@ fun ColorPreference(
     val navController = LocalNavController.current
     PreferenceTemplate(
         title = { Text(text = label) },
-        endWidget = { ColorDot(Color(adapter.state.value.colorPreferenceEntry.lightColor(LocalContext.current))) },
+        endWidget = {
+            ColorDot(
+                Color(
+                    adapter.state.value.colorPreferenceEntry.lightColor(
+                        LocalContext.current,
+                    ),
+                ),
+            )
+        },
         description = {
             Text(text = adapter.state.value.colorPreferenceEntry.label())
         },
-        modifier = Modifier.clickable { navController.navigate(route = "/colorSelection/${preference.key}/") },
+        modifier = Modifier.clickable {
+            navController.navigate(
+                route = "/colorSelection/${preference.key}/",
+            )
+        },
     )
 }

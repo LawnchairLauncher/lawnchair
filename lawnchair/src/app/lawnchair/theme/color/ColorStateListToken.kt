@@ -9,20 +9,28 @@ import dev.kdrag0n.monet.theme.ColorScheme
 interface ColorStateListToken : ResourceToken<ColorStateList>
 
 data class NewColorStateList(
-    private val factory: (context: Context, scheme: ColorScheme, uiColorMode: UiColorMode) -> ColorStateList
+    private val factory: (context: Context, scheme: ColorScheme, uiColorMode: UiColorMode) -> ColorStateList,
 ) : ColorStateListToken {
 
-    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): ColorStateList {
+    override fun resolve(
+        context: Context,
+        scheme: ColorScheme,
+        uiColorMode: UiColorMode,
+    ): ColorStateList {
         return factory(context, scheme, uiColorMode)
     }
 }
 
 class DayNightColorStateList(
     private val lightToken: ColorStateListToken,
-    private val darkToken: ColorStateListToken
+    private val darkToken: ColorStateListToken,
 ) : ColorStateListToken {
 
-    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): ColorStateList {
+    override fun resolve(
+        context: Context,
+        scheme: ColorScheme,
+        uiColorMode: UiColorMode,
+    ): ColorStateList {
         return if (uiColorMode.isDarkTheme) {
             darkToken.resolve(context, scheme, uiColorMode)
         } else {

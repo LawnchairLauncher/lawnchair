@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun <T> ColorDot(
     entry: ColorPreferenceEntry<T>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val color = if (MaterialTheme.colors.isLight) {
         entry.lightColor(LocalContext.current)
@@ -25,19 +25,19 @@ fun <T> ColorDot(
 
     ColorDot(
         color = Color(color),
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
 @Composable
 fun ColorDot(
     color: Color,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier
             .size(30.dp)
             .clip(CircleShape)
-            .background(color = color)
+            .background(color = color),
     )
 }

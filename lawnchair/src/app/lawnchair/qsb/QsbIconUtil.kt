@@ -10,7 +10,7 @@ import com.android.launcher3.R
 fun ImageView.setThemedIconResource(
     @DrawableRes resId: Int,
     themed: Boolean,
-    method: ThemingMethod = ThemingMethod.THEME_BY_LAYER_ID
+    method: ThemingMethod = ThemingMethod.THEME_BY_LAYER_ID,
 ) {
     if (themed && method == ThemingMethod.THEME_BY_LAYER_ID) {
         val drawable = ResourcesCompat.getDrawable(resources, resId, null)!!
@@ -41,7 +41,6 @@ fun ImageView.setThemedIconResource(
         if (themed) setColorFilter(ColorTokens.ColorAccent.resolveColor(context))
     }
 }
-
 
 enum class ThemingMethod {
     TINT,

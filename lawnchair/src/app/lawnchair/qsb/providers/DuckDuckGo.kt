@@ -11,5 +11,5 @@ object DuckDuckGo : QsbSearchProvider(
     themingMethod = ThemingMethod.TINT,
     packageName = "com.duckduckgo.mobile.android",
     action = "com.duckduckgo.mobile.android.NEW_SEARCH",
-    website = "https://duckduckgo.com/"
+    website = "https://duckduckgo.com/",
 )

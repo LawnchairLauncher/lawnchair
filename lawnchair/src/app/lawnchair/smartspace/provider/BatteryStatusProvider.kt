@@ -16,22 +16,31 @@ import com.android.launcher3.Utilities
 import kotlinx.coroutines.flow.map
 
 class BatteryStatusProvider(context: Context) : SmartspaceDataSource(
-    context, R.string.smartspace_battery_status, { smartspaceBatteryStatus }
+    context,
+    R.string.smartspace_battery_status,
+    { smartspaceBatteryStatus },
 ) {
     private val batteryManager = context.getSystemService<BatteryManager>()
 
-    override val internalTargets = broadcastReceiverFlow(context, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-        .map { intent ->
-            val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
-            val charging = status == BatteryManager.BATTERY_STATUS_CHARGING
-            val full = status == BatteryManager.BATTERY_STATUS_FULL
-            val level = (100f
-                    * intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
-                    / intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100)).toInt()
-            listOfNotNull(getSmartspaceTarget(charging, full, level))
-        }
+    override val internalTargets =
+        broadcastReceiverFlow(context, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+            .map { intent ->
+                val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+                val charging = status == BatteryManager.BATTERY_STATUS_CHARGING
+                val full = status == BatteryManager.BATTERY_STATUS_FULL
+                val level = (
+                    100f *
+                        intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0) /
+                        intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100)
+                    ).toInt()
+                listOfNotNull(getSmartspaceTarget(charging, full, level))
+            }
 
-    private fun getSmartspaceTarget(charging: Boolean, full: Boolean, level: Int): SmartspaceTarget? {
+    private fun getSmartspaceTarget(
+        charging: Boolean,
+        full: Boolean,
+        level: Int,
+    ): SmartspaceTarget? {
         val title = when {
             full || level == 100 -> return null
             charging -> context.getString(R.string.smartspace_battery_charging)
@@ -40,9 +49,13 @@ class BatteryStatusProvider(context: Context) : SmartspaceDataSource(
         }
         val chargingTimeRemaining = computeChargeTimeRemaining()
         val subtitle = if (charging && chargingTimeRemaining > 0) {
-            val chargingTime = formatShortElapsedTimeRoundingUpToMinutes(context, chargingTimeRemaining)
+            val chargingTime =
+                formatShortElapsedTimeRoundingUpToMinutes(context, chargingTimeRemaining)
             context.getString(
-                R.string.battery_charging_percentage_charging_time, level, chargingTime)
+                R.string.battery_charging_percentage_charging_time,
+                level,
+                chargingTime,
+            )
         } else {
             context.getString(R.string.n_percent, level)
         }
@@ -53,10 +66,10 @@ class BatteryStatusProvider(context: Context) : SmartspaceDataSource(
                 id = "batteryStatusAction",
                 icon = Icon.createWithResource(context, iconResId),
                 title = title,
-                subtitle = subtitle
+                subtitle = subtitle,
             ),
             score = SmartspaceScores.SCORE_BATTERY,
-            featureType = SmartspaceTarget.FeatureType.FEATURE_CALENDAR
+            featureType = SmartspaceTarget.FeatureType.FEATURE_CALENDAR,
         )
     }
 

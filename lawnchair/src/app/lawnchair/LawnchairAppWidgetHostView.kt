@@ -14,7 +14,7 @@ import com.android.launcher3.widget.LauncherAppWidgetHostView
 
 class LawnchairAppWidgetHostView @JvmOverloads constructor(
     context: Context,
-    private var previewMode: Boolean = false
+    private var previewMode: Boolean = false,
 ) : LauncherAppWidgetHostView(context) {
 
     private var customView: ViewGroup? = null
@@ -61,14 +61,19 @@ class LawnchairAppWidgetHostView @JvmOverloads constructor(
     companion object {
 
         private val customLayouts = mapOf(
-            SmartspaceAppWidgetProvider.componentName to R.layout.smartspace_widget
+            SmartspaceAppWidgetProvider.componentName to R.layout.smartspace_widget,
         )
 
         @JvmStatic
-        fun inflateCustomView(context: Context, info: AppWidgetProviderInfo, previewMode: Boolean): ViewGroup? {
+        fun inflateCustomView(
+            context: Context,
+            info: AppWidgetProviderInfo,
+            previewMode: Boolean,
+        ): ViewGroup? {
             val layoutId = customLayouts[info.provider] ?: return null
 
-            val inflationContext = if (previewMode) Themes.createWidgetPreviewContext(context) else context
+            val inflationContext =
+                if (previewMode) Themes.createWidgetPreviewContext(context) else context
             return LayoutInflater.from(inflationContext)
                 .inflate(layoutId, null, false) as ViewGroup
         }

@@ -14,7 +14,12 @@ import com.android.launcher3.util.MainThreadInitializedObject
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.plus
 
 class HeadlessWidgetsManager(private val context: Context) {
@@ -50,7 +55,7 @@ class HeadlessWidgetsManager(private val context: Context) {
         override fun onCreateView(
             context: Context,
             appWidgetId: Int,
-            appWidget: AppWidgetProviderInfo?
+            appWidget: AppWidgetProviderInfo?,
         ): AppWidgetHostView {
             return HeadlessAppWidgetHostView(context)
         }
@@ -69,7 +74,10 @@ class HeadlessWidgetsManager(private val context: Context) {
         }
     }
 
-    inner class Widget internal constructor(val info: AppWidgetProviderInfo, private val prefKey: String) {
+    inner class Widget internal constructor(
+        val info: AppWidgetProviderInfo,
+        private val prefKey: String,
+    ) {
 
         private var widgetId = prefs.getInt(prefKey, -1)
         val isBound: Boolean
@@ -84,7 +92,7 @@ class HeadlessWidgetsManager(private val context: Context) {
             .shareIn(
                 scope,
                 SharingStarted.WhileSubscribed(),
-                replay = 1
+                replay = 1,
             )
 
         init {
@@ -99,7 +107,11 @@ class HeadlessWidgetsManager(private val context: Context) {
 
                 widgetId = host.allocateAppWidgetId()
                 widgetManager.bindAppWidgetIdIfAllowed(
-                    widgetId, info.profile, info.provider, null)
+                    widgetId,
+                    info.profile,
+                    info.provider,
+                    null,
+                )
             }
 
             prefs.edit { putInt(prefKey, widgetId) }

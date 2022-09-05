@@ -18,7 +18,11 @@ package app.lawnchair.ui.preferences.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -77,7 +81,7 @@ fun SwitchPreference(
                         .height(32.dp)
                         .width(1.dp)
                         .fillMaxHeight()
-                        .background(dividerColor())
+                        .background(dividerColor()),
                 )
             }
             Switch(
@@ -93,6 +97,6 @@ fun SwitchPreference(
             )
         },
         enabled = enabled,
-        applyPaddings = false
+        applyPaddings = false,
     )
 }

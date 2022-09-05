@@ -7,7 +7,8 @@ import app.lawnchair.views.CustomTextView
 import com.android.launcher3.views.DoubleShadowBubbleTextView.ShadowInfo
 
 open class DoubleShadowTextView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
+    context: Context,
+    attrs: AttributeSet? = null,
 ) : CustomTextView(context, attrs) {
 
     private val shadowInfo = ShadowInfo(context, attrs, 0)
@@ -29,16 +30,17 @@ open class DoubleShadowTextView @JvmOverloads constructor(
         super.onDraw(canvas)
         canvas.save()
         canvas.clipRect(
-            scrollX, scrollY + extendedPaddingTop,
+            scrollX,
+            scrollY + extendedPaddingTop,
             scrollX + width,
-            scrollY + height
+            scrollY + height,
         )
 
         paint.setShadowLayer(
             shadowInfo.keyShadowBlur,
             shadowInfo.keyShadowOffsetX,
             shadowInfo.keyShadowOffsetY,
-            shadowInfo.keyShadowColor
+            shadowInfo.keyShadowColor,
         )
         super.onDraw(canvas)
         canvas.restore()

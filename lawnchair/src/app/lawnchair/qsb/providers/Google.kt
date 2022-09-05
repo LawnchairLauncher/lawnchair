@@ -12,7 +12,10 @@ import app.lawnchair.util.recursiveChildren
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.android.launcher3.qsb.QsbContainerView
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 
 object Google : QsbSearchProvider(
     id = "google",
@@ -22,7 +25,7 @@ object Google : QsbSearchProvider(
     packageName = "com.google.android.googlequicksearchbox",
     action = "android.search.action.GLOBAL_SEARCH",
     supportVoiceIntent = true,
-    website = "https://www.google.com/"
+    website = "https://www.google.com/",
 ) {
     override suspend fun launch(launcher: Launcher, forceWebsite: Boolean) {
         if (!forceWebsite) {
@@ -30,10 +33,11 @@ object Google : QsbSearchProvider(
             val pendingIntent = subscription.firstOrNull()
             if (pendingIntent != null) {
                 launcher.startIntentSender(
-                    pendingIntent.intentSender, null,
+                    pendingIntent.intentSender,
+                    null,
                     Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK,
                     Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK,
-                    0
+                    0,
                 )
                 return
             }
@@ -42,7 +46,8 @@ object Google : QsbSearchProvider(
     }
 
     fun getSearchIntent(context: Context): Flow<PendingIntent?> {
-        val info = QsbContainerView.getSearchWidgetProviderInfo(context, Google.packageName) ?: return flowOf(null)
+        val info = QsbContainerView.getSearchWidgetProviderInfo(context, Google.packageName)
+            ?: return flowOf(null)
         val headlessWidgetsManager = HeadlessWidgetsManager.INSTANCE.get(context)
         return headlessWidgetsManager.subscribeUpdates(info, "hotseatWidgetId")
             .map(::findSearchIntent)
@@ -51,7 +56,7 @@ object Google : QsbSearchProvider(
     private fun findSearchIntent(view: AppWidgetHostView): PendingIntent? {
         view.measure(
             View.MeasureSpec.makeMeasureSpec(1000, View.MeasureSpec.EXACTLY),
-            View.MeasureSpec.makeMeasureSpec(100, View.MeasureSpec.EXACTLY)
+            View.MeasureSpec.makeMeasureSpec(100, View.MeasureSpec.EXACTLY),
         )
         return view.recursiveChildren
             .filter { it.pendingIntent != null }

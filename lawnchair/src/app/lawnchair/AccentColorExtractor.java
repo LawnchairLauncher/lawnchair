@@ -36,7 +36,6 @@ import java.util.Map;
 import app.lawnchair.theme.ThemeProvider;
 import app.lawnchair.theme.color.AndroidColor;
 import dev.kdrag0n.colorkt.Color;
-import dev.kdrag0n.colorkt.rgb.Srgb;
 import dev.kdrag0n.monet.theme.ColorScheme;
 
 @RequiresApi(api = Build.VERSION_CODES.S)
@@ -78,7 +77,7 @@ public class AccentColorExtractor extends LocalColorExtractor implements ThemePr
     @Override
     public void applyColorsOverride(Context base, WallpaperColors colors) {
         RemoteViews.ColorResources res =
-                RemoteViews.ColorResources.create(base, generateColorsOverride(colors));
+            RemoteViews.ColorResources.create(base, generateColorsOverride(colors));
         if (res != null) {
             res.apply(base);
         }
@@ -103,74 +102,74 @@ public class AccentColorExtractor extends LocalColorExtractor implements ThemePr
     private static final SparseIntArray NEUTRAL2_RES = new SparseIntArray(13);
 
     static {
-        ACCENT1_RES.put(   0, android.R.color.system_accent1_0);
-        ACCENT1_RES.put(  10, android.R.color.system_accent1_10);
-        ACCENT1_RES.put(  50, android.R.color.system_accent1_50);
-        ACCENT1_RES.put( 100, android.R.color.system_accent1_100);
-        ACCENT1_RES.put( 200, android.R.color.system_accent1_200);
-        ACCENT1_RES.put( 300, android.R.color.system_accent1_300);
-        ACCENT1_RES.put( 400, android.R.color.system_accent1_400);
-        ACCENT1_RES.put( 500, android.R.color.system_accent1_500);
-        ACCENT1_RES.put( 600, android.R.color.system_accent1_600);
-        ACCENT1_RES.put( 700, android.R.color.system_accent1_700);
-        ACCENT1_RES.put( 800, android.R.color.system_accent1_800);
-        ACCENT1_RES.put( 900, android.R.color.system_accent1_900);
+        ACCENT1_RES.put(0, android.R.color.system_accent1_0);
+        ACCENT1_RES.put(10, android.R.color.system_accent1_10);
+        ACCENT1_RES.put(50, android.R.color.system_accent1_50);
+        ACCENT1_RES.put(100, android.R.color.system_accent1_100);
+        ACCENT1_RES.put(200, android.R.color.system_accent1_200);
+        ACCENT1_RES.put(300, android.R.color.system_accent1_300);
+        ACCENT1_RES.put(400, android.R.color.system_accent1_400);
+        ACCENT1_RES.put(500, android.R.color.system_accent1_500);
+        ACCENT1_RES.put(600, android.R.color.system_accent1_600);
+        ACCENT1_RES.put(700, android.R.color.system_accent1_700);
+        ACCENT1_RES.put(800, android.R.color.system_accent1_800);
+        ACCENT1_RES.put(900, android.R.color.system_accent1_900);
         ACCENT1_RES.put(1000, android.R.color.system_accent1_1000);
 
-        ACCENT2_RES.put(   0, android.R.color.system_accent2_0);
-        ACCENT2_RES.put(  10, android.R.color.system_accent2_10);
-        ACCENT2_RES.put(  50, android.R.color.system_accent2_50);
-        ACCENT2_RES.put( 100, android.R.color.system_accent2_100);
-        ACCENT2_RES.put( 200, android.R.color.system_accent2_200);
-        ACCENT2_RES.put( 300, android.R.color.system_accent2_300);
-        ACCENT2_RES.put( 400, android.R.color.system_accent2_400);
-        ACCENT2_RES.put( 500, android.R.color.system_accent2_500);
-        ACCENT2_RES.put( 600, android.R.color.system_accent2_600);
-        ACCENT2_RES.put( 700, android.R.color.system_accent2_700);
-        ACCENT2_RES.put( 800, android.R.color.system_accent2_800);
-        ACCENT2_RES.put( 900, android.R.color.system_accent2_900);
+        ACCENT2_RES.put(0, android.R.color.system_accent2_0);
+        ACCENT2_RES.put(10, android.R.color.system_accent2_10);
+        ACCENT2_RES.put(50, android.R.color.system_accent2_50);
+        ACCENT2_RES.put(100, android.R.color.system_accent2_100);
+        ACCENT2_RES.put(200, android.R.color.system_accent2_200);
+        ACCENT2_RES.put(300, android.R.color.system_accent2_300);
+        ACCENT2_RES.put(400, android.R.color.system_accent2_400);
+        ACCENT2_RES.put(500, android.R.color.system_accent2_500);
+        ACCENT2_RES.put(600, android.R.color.system_accent2_600);
+        ACCENT2_RES.put(700, android.R.color.system_accent2_700);
+        ACCENT2_RES.put(800, android.R.color.system_accent2_800);
+        ACCENT2_RES.put(900, android.R.color.system_accent2_900);
         ACCENT2_RES.put(1000, android.R.color.system_accent2_1000);
 
-        ACCENT3_RES.put(   0, android.R.color.system_accent3_0);
-        ACCENT3_RES.put(  10, android.R.color.system_accent3_10);
-        ACCENT3_RES.put(  50, android.R.color.system_accent3_50);
-        ACCENT3_RES.put( 100, android.R.color.system_accent3_100);
-        ACCENT3_RES.put( 200, android.R.color.system_accent3_200);
-        ACCENT3_RES.put( 300, android.R.color.system_accent3_300);
-        ACCENT3_RES.put( 400, android.R.color.system_accent3_400);
-        ACCENT3_RES.put( 500, android.R.color.system_accent3_500);
-        ACCENT3_RES.put( 600, android.R.color.system_accent3_600);
-        ACCENT3_RES.put( 700, android.R.color.system_accent3_700);
-        ACCENT3_RES.put( 800, android.R.color.system_accent3_800);
-        ACCENT3_RES.put( 900, android.R.color.system_accent3_900);
+        ACCENT3_RES.put(0, android.R.color.system_accent3_0);
+        ACCENT3_RES.put(10, android.R.color.system_accent3_10);
+        ACCENT3_RES.put(50, android.R.color.system_accent3_50);
+        ACCENT3_RES.put(100, android.R.color.system_accent3_100);
+        ACCENT3_RES.put(200, android.R.color.system_accent3_200);
+        ACCENT3_RES.put(300, android.R.color.system_accent3_300);
+        ACCENT3_RES.put(400, android.R.color.system_accent3_400);
+        ACCENT3_RES.put(500, android.R.color.system_accent3_500);
+        ACCENT3_RES.put(600, android.R.color.system_accent3_600);
+        ACCENT3_RES.put(700, android.R.color.system_accent3_700);
+        ACCENT3_RES.put(800, android.R.color.system_accent3_800);
+        ACCENT3_RES.put(900, android.R.color.system_accent3_900);
         ACCENT3_RES.put(1000, android.R.color.system_accent3_1000);
 
-        NEUTRAL1_RES.put(   0, android.R.color.system_neutral1_0);
-        NEUTRAL1_RES.put(  10, android.R.color.system_neutral1_10);
-        NEUTRAL1_RES.put(  50, android.R.color.system_neutral1_50);
-        NEUTRAL1_RES.put( 100, android.R.color.system_neutral1_100);
-        NEUTRAL1_RES.put( 200, android.R.color.system_neutral1_200);
-        NEUTRAL1_RES.put( 300, android.R.color.system_neutral1_300);
-        NEUTRAL1_RES.put( 400, android.R.color.system_neutral1_400);
-        NEUTRAL1_RES.put( 500, android.R.color.system_neutral1_500);
-        NEUTRAL1_RES.put( 600, android.R.color.system_neutral1_600);
-        NEUTRAL1_RES.put( 700, android.R.color.system_neutral1_700);
-        NEUTRAL1_RES.put( 800, android.R.color.system_neutral1_800);
-        NEUTRAL1_RES.put( 900, android.R.color.system_neutral1_900);
+        NEUTRAL1_RES.put(0, android.R.color.system_neutral1_0);
+        NEUTRAL1_RES.put(10, android.R.color.system_neutral1_10);
+        NEUTRAL1_RES.put(50, android.R.color.system_neutral1_50);
+        NEUTRAL1_RES.put(100, android.R.color.system_neutral1_100);
+        NEUTRAL1_RES.put(200, android.R.color.system_neutral1_200);
+        NEUTRAL1_RES.put(300, android.R.color.system_neutral1_300);
+        NEUTRAL1_RES.put(400, android.R.color.system_neutral1_400);
+        NEUTRAL1_RES.put(500, android.R.color.system_neutral1_500);
+        NEUTRAL1_RES.put(600, android.R.color.system_neutral1_600);
+        NEUTRAL1_RES.put(700, android.R.color.system_neutral1_700);
+        NEUTRAL1_RES.put(800, android.R.color.system_neutral1_800);
+        NEUTRAL1_RES.put(900, android.R.color.system_neutral1_900);
         NEUTRAL1_RES.put(1000, android.R.color.system_neutral1_1000);
 
-        NEUTRAL2_RES.put(   0, android.R.color.system_neutral2_0);
-        NEUTRAL2_RES.put(  10, android.R.color.system_neutral2_10);
-        NEUTRAL2_RES.put(  50, android.R.color.system_neutral2_50);
-        NEUTRAL2_RES.put( 100, android.R.color.system_neutral2_100);
-        NEUTRAL2_RES.put( 200, android.R.color.system_neutral2_200);
-        NEUTRAL2_RES.put( 300, android.R.color.system_neutral2_300);
-        NEUTRAL2_RES.put( 400, android.R.color.system_neutral2_400);
-        NEUTRAL2_RES.put( 500, android.R.color.system_neutral2_500);
-        NEUTRAL2_RES.put( 600, android.R.color.system_neutral2_600);
-        NEUTRAL2_RES.put( 700, android.R.color.system_neutral2_700);
-        NEUTRAL2_RES.put( 800, android.R.color.system_neutral2_800);
-        NEUTRAL2_RES.put( 900, android.R.color.system_neutral2_900);
+        NEUTRAL2_RES.put(0, android.R.color.system_neutral2_0);
+        NEUTRAL2_RES.put(10, android.R.color.system_neutral2_10);
+        NEUTRAL2_RES.put(50, android.R.color.system_neutral2_50);
+        NEUTRAL2_RES.put(100, android.R.color.system_neutral2_100);
+        NEUTRAL2_RES.put(200, android.R.color.system_neutral2_200);
+        NEUTRAL2_RES.put(300, android.R.color.system_neutral2_300);
+        NEUTRAL2_RES.put(400, android.R.color.system_neutral2_400);
+        NEUTRAL2_RES.put(500, android.R.color.system_neutral2_500);
+        NEUTRAL2_RES.put(600, android.R.color.system_neutral2_600);
+        NEUTRAL2_RES.put(700, android.R.color.system_neutral2_700);
+        NEUTRAL2_RES.put(800, android.R.color.system_neutral2_800);
+        NEUTRAL2_RES.put(900, android.R.color.system_neutral2_900);
         NEUTRAL2_RES.put(1000, android.R.color.system_neutral2_1000);
     }
 

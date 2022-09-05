@@ -21,9 +21,15 @@ import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme as Material3Theme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,14 +40,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.material3.MaterialTheme as Material3Theme
 
 @Composable
 fun LawnchairLink(
     @DrawableRes iconResId: Int,
     label: String,
     modifier: Modifier = Modifier,
-    url: String
+    url: String,
 ) {
     val context = LocalContext.current
 
@@ -57,20 +62,20 @@ fun LawnchairLink(
                 if (intent.resolveActivity(context.packageManager) != null) {
                     context.startActivity(intent)
                 }
-            }
+            },
     ) {
         Image(
             painterResource(id = iconResId),
             contentDescription = null,
             colorFilter = ColorFilter.tint(color = LocalContentColor.current),
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(24.dp),
         )
         Spacer(modifier = Modifier.requiredHeight(4.dp))
         Text(
             text = label,
             style = Material3Theme.typography.bodyMedium,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }

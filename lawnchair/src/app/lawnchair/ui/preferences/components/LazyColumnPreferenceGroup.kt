@@ -38,7 +38,7 @@ fun LazyListScope.preferenceGroupItems(
     showDividers: Boolean = true,
     dividerStartIndent: Dp = 0.dp,
     dividerEndIndent: Dp = 0.dp,
-    itemContent: @Composable LazyItemScope.(index: Int) -> Unit
+    itemContent: @Composable LazyItemScope.(index: Int) -> Unit,
 ) {
     item {
         if (!isFirstChild) {
@@ -65,7 +65,7 @@ inline fun <T> LazyListScope.preferenceGroupItems(
     showDividers: Boolean = true,
     dividerStartIndent: Dp = 0.dp,
     dividerEndIndent: Dp = 0.dp,
-    crossinline itemContent: @Composable LazyItemScope.(index: Int, item: T) -> Unit
+    crossinline itemContent: @Composable LazyItemScope.(index: Int, item: T) -> Unit,
 ) {
     preferenceGroupItems(
         items.size,
@@ -86,7 +86,7 @@ fun PreferenceGroupItem(
     modifier: Modifier = Modifier,
     cutTop: Boolean = false,
     cutBottom: Boolean = false,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val shape = remember(cutTop, cutBottom) {
         val top = if (cutTop) 0.dp else 12.dp
@@ -96,7 +96,7 @@ fun PreferenceGroupItem(
     Surface(
         modifier = modifier.padding(horizontal = 16.dp),
         shape = shape,
-        tonalElevation = 1.dp
+        tonalElevation = 1.dp,
     ) {
         content()
     }

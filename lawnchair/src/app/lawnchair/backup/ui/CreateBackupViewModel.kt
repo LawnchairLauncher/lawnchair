@@ -14,23 +14,23 @@ import app.lawnchair.views.LauncherPreviewView
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.icons.BitmapRenderer
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import java.lang.Integer.max
 import java.lang.Integer.min
 import kotlin.coroutines.resume
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 
 class CreateBackupViewModel(
     application: Application,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
 ) : AndroidViewModel(application) {
     val screenshot = MutableStateFlow(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
     val screenshotDone = MutableStateFlow(false)
 
     val backupContents = savedStateHandle.getStateFlow(
         "contents",
-        LawnchairBackup.INCLUDE_LAYOUT_AND_SETTINGS or LawnchairBackup.INCLUDE_WALLPAPER
+        LawnchairBackup.INCLUDE_LAYOUT_AND_SETTINGS or LawnchairBackup.INCLUDE_WALLPAPER,
     )
 
     init {
@@ -60,7 +60,7 @@ class CreateBackupViewModel(
                 idp = idp,
                 dummyInsets = true,
                 dummySmartspace = true,
-                appContext = themedContext
+                appContext = themedContext,
             )
             continuation.invokeOnCancellation { previewView.destroy() }
             previewView.addOnReadyCallback {

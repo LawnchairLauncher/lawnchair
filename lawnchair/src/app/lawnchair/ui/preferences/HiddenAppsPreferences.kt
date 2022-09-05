@@ -30,7 +30,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.AppItem
+import app.lawnchair.ui.preferences.components.AppItemPlaceholder
+import app.lawnchair.ui.preferences.components.PreferenceLazyColumn
+import app.lawnchair.ui.preferences.components.PreferenceScaffold
+import app.lawnchair.ui.preferences.components.preferenceGroupItems
+import app.lawnchair.ui.preferences.components.rememberFloatingState
 import app.lawnchair.util.App
 import app.lawnchair.util.appComparator
 import app.lawnchair.util.appsList

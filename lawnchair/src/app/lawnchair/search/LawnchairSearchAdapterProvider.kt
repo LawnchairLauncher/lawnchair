@@ -17,7 +17,7 @@ import com.android.launcher3.allapps.search.DefaultSearchAdapterProvider
 
 class LawnchairSearchAdapterProvider(
     launcher: LawnchairLauncher,
-    private val appsView: AllAppsContainerView
+    private val appsView: AllAppsContainerView,
 ) : DefaultSearchAdapterProvider(launcher, appsView) {
 
     private val decorator = SearchItemDecorator(appsView)
@@ -49,7 +49,7 @@ class LawnchairSearchAdapterProvider(
     override fun onCreateViewHolder(
         layoutInflater: LayoutInflater,
         parent: ViewGroup?,
-        viewType: Int
+        viewType: Int,
     ): AllAppsGridAdapter.ViewHolder =
         AllAppsGridAdapter.ViewHolder(layoutInflater.inflate(layoutIdMap[viewType], parent, false))
 
@@ -78,7 +78,8 @@ class LawnchairSearchAdapterProvider(
 
         @JvmStatic
         fun setFirstItemQuickLaunch(items: List<SearchAdapterItem>) {
-            val hasQuickLaunch = items.any { it.searchTarget.extras.getBoolean(EXTRA_QUICK_LAUNCH, false) }
+            val hasQuickLaunch =
+                items.any { it.searchTarget.extras.getBoolean(EXTRA_QUICK_LAUNCH, false) }
             if (!hasQuickLaunch) {
                 items.firstOrNull()?.searchTarget?.extras?.apply {
                     putBoolean(EXTRA_QUICK_LAUNCH, true)

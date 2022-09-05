@@ -9,11 +9,27 @@ import app.lawnchair.LawnchairApp
 import com.android.launcher3.R
 import java.io.File
 
-data class BugReport(val timestamp: Long, val id: Int, val type: String, val description: String, val contents: String,
-                     var link: String?, var uploadError: Boolean = false, val file: File?) : Parcelable {
+data class BugReport(
+    val timestamp: Long,
+    val id: Int,
+    val type: String,
+    val description: String,
+    val contents: String,
+    var link: String?,
+    var uploadError: Boolean = false,
+    val file: File?,
+) : Parcelable {
 
     constructor(id: Int, type: String, description: String, contents: String, file: File?) : this(
-        System.currentTimeMillis(), id, type, description, contents, null, false, file)
+        System.currentTimeMillis(),
+        id,
+        type,
+        description,
+        contents,
+        null,
+        false,
+        file,
+    )
 
     constructor(parcel: Parcel) : this(
         parcel.readLong(),
@@ -23,7 +39,8 @@ data class BugReport(val timestamp: Long, val id: Int, val type: String, val des
         parcel.readString()!!,
         parcel.readString(),
         parcel.readByte() != 0.toByte(),
-        parcel.readString()?.let { File(it) })
+        parcel.readString()?.let { File(it) },
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(timestamp)

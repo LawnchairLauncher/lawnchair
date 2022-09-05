@@ -13,14 +13,16 @@ import com.android.launcher3.R
 fun SuggestionsPreference() {
     val context = LocalContext.current
     val intent = Intent("android.settings.ACTION_CONTENT_SUGGESTIONS_SETTINGS")
-    val usagePerm = context.checkCallingOrSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS)
-    if (usagePerm == PackageManager.PERMISSION_GRANTED
-        && context.packageManager.resolveActivity(intent, 0) != null) {
+    val usagePerm =
+        context.checkCallingOrSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS)
+    if (usagePerm == PackageManager.PERMISSION_GRANTED &&
+        context.packageManager.resolveActivity(intent, 0) != null
+    ) {
         ClickablePreference(
             label = stringResource(id = R.string.suggestion_pref_screen_title),
             onClick = {
                 context.startActivity(intent)
-            }
+            },
         )
     }
 }

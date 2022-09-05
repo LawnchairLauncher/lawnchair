@@ -10,10 +10,13 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.workprofile.PersonalWorkPagedView
 
 open class StretchRecyclerViewContainer @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
 ) : StretchRelativeLayout(context, attrs, defStyleAttr) {
 
-    private val childEffect = StretchEdgeEffect(context, { invalidate() }, { postInvalidateOnAnimation() })
+    private val childEffect =
+        StretchEdgeEffect(context, { invalidate() }, { postInvalidateOnAnimation() })
 
     override fun drawChild(canvas: Canvas, child: View, drawingTime: Long): Boolean {
         if (Utilities.ATLEAST_S || (child !is RecyclerView && child !is PersonalWorkPagedView)) {

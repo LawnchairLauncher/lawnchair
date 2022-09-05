@@ -24,11 +24,11 @@ import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.Executors
 import com.android.launcher3.util.PackageManagerHelper
 import com.patrykmichalik.opto.core.onEach
+import java.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio
-import java.util.*
 
 class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context) {
 
@@ -45,16 +45,18 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     }
 
     override fun doSearch(query: String, callback: SearchCallback<AllAppsGridAdapter.AdapterItem>) {
-        appState.model.enqueueModelUpdateTask(object : BaseModelUpdateTask() {
-            override fun execute(
-                app: LauncherAppState?,
-                dataModel: BgDataModel?,
-                apps: AllAppsList?
-            ) {
-                val result = getResult(apps!!.data, query)
-                resultHandler.post { callback.onSearchResult(query, result) }
-            }
-        })
+        appState.model.enqueueModelUpdateTask(
+            object : BaseModelUpdateTask() {
+                override fun execute(
+                    app: LauncherAppState?,
+                    dataModel: BgDataModel?,
+                    apps: AllAppsList?,
+                ) {
+                    val result = getResult(apps!!.data, query)
+                    resultHandler.post { callback.onSearchResult(query, result) }
+                }
+            },
+        )
     }
 
     override fun cancel(interruptActiveRequests: Boolean) {
@@ -65,7 +67,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
 
     private fun getResult(
         apps: MutableList<AppInfo>,
-        query: String
+        query: String,
     ): ArrayList<AllAppsGridAdapter.AdapterItem> {
         val appResults = if (enableFuzzySearch) {
             fuzzySearch(apps, query)
@@ -110,8 +112,11 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
 
     private fun fuzzySearch(apps: List<AppInfo>, query: String): List<AppInfo> {
         val matches = FuzzySearch.extractSorted(
-            query.lowercase(Locale.getDefault()), apps,
-            { it.title.toString() }, WeightedRatio(), 65
+            query.lowercase(Locale.getDefault()),
+            apps,
+            { it.title.toString() },
+            WeightedRatio(),
+            65,
         )
 
         return matches.take(maxResultsCount)
@@ -122,7 +127,8 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         val intent = PackageManagerHelper.getMarketSearchIntent(context, "")
         val resolveInfo = context.packageManager.resolveActivity(intent, 0) ?: return null
         val packageName = resolveInfo.activityInfo.packageName
-        val launchIntent = context.packageManager.getLaunchIntentForPackage(packageName) ?: return null
+        val launchIntent =
+            context.packageManager.getLaunchIntentForPackage(packageName) ?: return null
         return ComponentKey(launchIntent.component, Process.myUserHandle())
     }
 
@@ -130,14 +136,17 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         val id = "marketSearch:$query"
         val action = SearchActionCompat.Builder(
             id,
-            context.getString(R.string.all_apps_search_market_message)
+            context.getString(R.string.all_apps_search_market_message),
         )
             .setIcon(Icon.createWithResource(context, R.drawable.ic_launcher_home))
             .setIntent(PackageManagerHelper.getMarketSearchIntent(context, query))
             .build()
         val extras = Bundle().apply {
             if (marketSearchComponent != null) {
-                putString(SearchResultView.EXTRA_ICON_COMPONENT_KEY, marketSearchComponent.toString())
+                putString(
+                    SearchResultView.EXTRA_ICON_COMPONENT_KEY,
+                    marketSearchComponent.toString(),
+                )
             } else {
                 putBoolean(SearchResultView.EXTRA_HIDE_ICON, true)
             }

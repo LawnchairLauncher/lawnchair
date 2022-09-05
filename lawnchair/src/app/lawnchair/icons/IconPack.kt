@@ -4,9 +4,14 @@ import android.content.ComponentName
 import android.content.Context
 import android.graphics.drawable.Drawable
 import com.android.launcher3.compat.AlphabeticIndexCompat
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
 import java.util.concurrent.Semaphore
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.plus
 
 abstract class IconPack(
     protected val context: Context,
@@ -70,7 +75,7 @@ abstract class IconPack(
             .map { (sectionName, items) ->
                 IconPickerCategory(
                     title = sectionName,
-                    items = items
+                    items = items,
                 )
             }
             .sortedBy { it.title }

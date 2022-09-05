@@ -54,7 +54,7 @@ fun SliderPreference(
     val transformedAdapter = rememberTransformAdapter(
         adapter = adapter,
         transformGet = { it.toFloat() },
-        transformSet = { it.roundToInt() }
+        transformSet = { it.roundToInt() },
     )
     val start = valueRange.start.toFloat()
     val endInclusive = valueRange.endInclusive.toFloat()
@@ -91,19 +91,19 @@ fun SliderPreference(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp)
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 16.dp),
             ) {
                 Text(text = label)
                 CompositionLocalProvider(
                     LocalContentAlpha provides ContentAlpha.medium,
-                    LocalContentColor provides MaterialTheme.colors.onBackground
+                    LocalContentColor provides MaterialTheme.colors.onBackground,
                 ) {
                     val value = snapSliderValue(valueRange.start, sliderValue, step)
                     Text(
                         text = if (showAsPercentage) stringResource(
                             id = R.string.n_percent,
-                            (value * 100).roundToInt()
-                        ) else value.roundToInt().toString()
+                            (value * 100).roundToInt(),
+                        ) else value.roundToInt().toString(),
                     )
                 }
             }
@@ -118,10 +118,10 @@ fun SliderPreference(
                 modifier = Modifier
                     .padding(top = 2.dp, bottom = 12.dp)
                     .padding(horizontal = 10.dp)
-                    .height(24.dp)
+                    .height(24.dp),
             )
         },
-        applyPaddings = false
+        applyPaddings = false,
     )
 }
 

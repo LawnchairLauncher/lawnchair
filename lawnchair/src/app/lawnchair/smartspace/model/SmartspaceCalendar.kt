@@ -8,7 +8,10 @@ import com.android.launcher3.R
  *
  * @param formatCustomizationSupport If the calendar system supports date & time format customization.
  */
-open class SmartspaceCalendar(@StringRes val nameResourceId: Int, val formatCustomizationSupport: Boolean = true) {
+open class SmartspaceCalendar(
+    @StringRes val nameResourceId: Int,
+    val formatCustomizationSupport: Boolean = true,
+) {
 
     companion object {
 
@@ -26,8 +29,8 @@ open class SmartspaceCalendar(@StringRes val nameResourceId: Int, val formatCust
     object Gregorian : SmartspaceCalendar(nameResourceId = R.string.smartspace_calendar_gregorian) {
         override fun toString() = "gregorian"
     }
+
     object Persian : SmartspaceCalendar(nameResourceId = R.string.smartspace_calendar_persian) {
         override fun toString() = "persian"
     }
-
 }

@@ -23,7 +23,7 @@ class LawnchairScrimView(context: Context, attrs: AttributeSet?) : ScrimView(con
     override fun updateSysUiColors() {
         val threshold = STATUS_BAR_COLOR_FORCE_UPDATE_THRESHOLD
         val forceChange = visibility == VISIBLE &&
-                alpha > threshold && Color.alpha(mBackgroundColor) / (255f * drawerOpacity) > threshold
+            alpha > threshold && Color.alpha(mBackgroundColor) / (255f * drawerOpacity) > threshold
         with(systemUiController) {
             if (forceChange) {
                 updateUiState(SystemUiController.UI_STATE_SCRIM_VIEW, !isScrimDark)

@@ -41,8 +41,10 @@ fun SearchProviderPreferences() {
             QsbSearchProvider.values().forEach { qsbSearchProvider ->
                 val appInstalled = qsbSearchProvider.isDownloaded(context)
                 val selected = adapter.state.value == qsbSearchProvider
-                val hasAppAndWebsite = qsbSearchProvider.type == QsbSearchProviderType.APP_AND_WEBSITE
-                val showDownloadButton = qsbSearchProvider.type == QsbSearchProviderType.APP && !appInstalled
+                val hasAppAndWebsite =
+                    qsbSearchProvider.type == QsbSearchProviderType.APP_AND_WEBSITE
+                val showDownloadButton =
+                    qsbSearchProvider.type == QsbSearchProviderType.APP && !appInstalled
                 Column {
                     ListItem(
                         title = stringResource(id = qsbSearchProvider.name),
@@ -60,7 +62,11 @@ fun SearchProviderPreferences() {
                             appEnabled = appInstalled,
                             appSelected = !forceWebsiteAdapter.state.value && appInstalled,
                             onAppClick = { forceWebsiteAdapter.onChange(newValue = false) },
-                            onAppDownloadClick = { qsbSearchProvider.launchOnAppMarket(context = context) },
+                            onAppDownloadClick = {
+                                qsbSearchProvider.launchOnAppMarket(
+                                    context = context,
+                                )
+                            },
                             onWebsiteClick = { forceWebsiteAdapter.onChange(newValue = true) },
                             showAppDownloadButton = !appInstalled,
                         )
@@ -95,7 +101,7 @@ private fun ListItem(
                     selected = selected,
                     onClick = null,
                     enabled = enabled,
-                    modifier = Modifier.padding(start = 16.dp)
+                    modifier = Modifier.padding(start = 16.dp),
                 )
             },
             endWidget = {

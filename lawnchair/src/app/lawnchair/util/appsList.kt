@@ -21,7 +21,11 @@ import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
 import android.graphics.Bitmap
 import android.os.Handler
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.android.launcher3.AppFilter
 import com.android.launcher3.LauncherAppState
@@ -36,7 +40,7 @@ import java.util.Comparator.comparing
 @Composable
 fun appsList(
     filter: AppFilter = AppFilter(LocalContext.current),
-    comparator: Comparator<App> = appComparator
+    comparator: Comparator<App> = appComparator,
 ): State<Optional<List<App>>> {
     val context = LocalContext.current
     val appsState = remember { mutableStateOf(Optional.empty<List<App>>()) }

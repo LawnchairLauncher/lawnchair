@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class ViewPool<T>(
     private val context: Context,
-    private val factory: (Context) -> T
+    private val factory: (Context) -> T,
 ) : RecyclerView.RecycledViewPool() where T : View, T : ViewPool.Recyclable {
 
     private fun getOrCreateHolder(): RecyclerView.ViewHolder {
@@ -24,9 +24,10 @@ class ViewPool<T>(
         return observer.itemView as T
     }
 
-    private inner class ViewHolder(private val view: T) : RecyclerView.ViewHolder(view), RememberObserver {
+    private inner class ViewHolder(private val view: T) :
+        RecyclerView.ViewHolder(view),
+        RememberObserver {
         override fun onRemembered() {
-
         }
 
         override fun onForgotten() {

@@ -3,7 +3,13 @@ package app.lawnchair.gestures.config
 import android.content.Context
 import app.lawnchair.gestures.GestureHandler
 import app.lawnchair.gestures.NoOpGestureHandler
-import app.lawnchair.gestures.handlers.*
+import app.lawnchair.gestures.handlers.OpenAppDrawerGestureHandler
+import app.lawnchair.gestures.handlers.OpenAppGestureHandler
+import app.lawnchair.gestures.handlers.OpenAppSearchGestureHandler
+import app.lawnchair.gestures.handlers.OpenAppTarget
+import app.lawnchair.gestures.handlers.OpenNotificationsHandler
+import app.lawnchair.gestures.handlers.OpenSearchGestureHandler
+import app.lawnchair.gestures.handlers.SleepGestureHandler
 import com.android.launcher3.R
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -20,7 +26,7 @@ sealed class GestureHandlerConfig {
         val labelRes: Int,
         @Transient private val creator: (Context) -> GestureHandler = {
             throw IllegalArgumentException("default creator not supported")
-        }
+        },
     ) : GestureHandlerConfig() {
         override fun getLabel(context: Context) = context.getString(labelRes)
         override fun createHandler(context: Context) = creator(context)
@@ -36,15 +42,18 @@ sealed class GestureHandlerConfig {
 
     @Serializable
     @SerialName("openNotifications")
-    object OpenNotifications : Simple(R.string.gesture_handler_open_notifications, ::OpenNotificationsHandler)
+    object OpenNotifications :
+        Simple(R.string.gesture_handler_open_notifications, ::OpenNotificationsHandler)
 
     @Serializable
     @SerialName("openAppDrawer")
-    object OpenAppDrawer : Simple(R.string.gesture_handler_open_app_drawer, ::OpenAppDrawerGestureHandler)
+    object OpenAppDrawer :
+        Simple(R.string.gesture_handler_open_app_drawer, ::OpenAppDrawerGestureHandler)
 
     @Serializable
     @SerialName("openAppSearch")
-    object OpenAppSearch : Simple(R.string.gesture_handler_open_app_search, ::OpenAppSearchGestureHandler)
+    object OpenAppSearch :
+        Simple(R.string.gesture_handler_open_app_search, ::OpenAppSearchGestureHandler)
 
     @Serializable
     @SerialName("openSearch")
@@ -53,7 +62,9 @@ sealed class GestureHandlerConfig {
     @Serializable
     @SerialName("openApp")
     data class OpenApp(val appName: String, val target: OpenAppTarget) : GestureHandlerConfig() {
-        override fun getLabel(context: Context) = context.getString(R.string.gesture_handler_open_app_config, appName)
+        override fun getLabel(context: Context) =
+            context.getString(R.string.gesture_handler_open_app_config, appName)
+
         override fun createHandler(context: Context) = OpenAppGestureHandler(context, target)
     }
 }

@@ -84,13 +84,16 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
             val textRows = ViewCompat.requireViewById<LinearLayout>(this, R.id.text_rows)
             if (target.layoutType == LayoutType.HORIZONTAL_MEDIUM_TEXT) {
                 showDelimiter = false
-                layoutParams.height = resources.getDimensionPixelSize(R.dimen.search_result_row_medium_height)
+                layoutParams.height =
+                    resources.getDimensionPixelSize(R.dimen.search_result_row_medium_height)
                 textRows.orientation = VERTICAL
                 subtitle.setPadding(0, 0, 0, 0)
             } else {
-                layoutParams.height = resources.getDimensionPixelSize(R.dimen.search_result_small_row_height)
+                layoutParams.height =
+                    resources.getDimensionPixelSize(R.dimen.search_result_small_row_height)
                 textRows.orientation = HORIZONTAL
-                val subtitleStartPadding = resources.getDimensionPixelSize(R.dimen.search_result_subtitle_padding_start)
+                val subtitleStartPadding =
+                    resources.getDimensionPixelSize(R.dimen.search_result_subtitle_padding_start)
                 subtitle.setPaddingRelative(subtitleStartPadding, 0, 0, 0)
             }
         }

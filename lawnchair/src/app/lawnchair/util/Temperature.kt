@@ -24,8 +24,7 @@ class Temperature(val value: Int, val unit: Unit) {
     }
 
     companion object {
-
-        fun unitFromString(unit: String): Unit {
+        fun unitFromString(unit: String): Temperature.Unit {
             return when (unit) {
                 "metric" -> Unit.Celsius
                 "imperial" -> Unit.Fahrenheit

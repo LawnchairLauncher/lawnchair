@@ -1,6 +1,7 @@
 package app.lawnchair.theme
 
 import androidx.compose.material.Colors
+import androidx.compose.material3.ColorScheme as M3ColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -11,7 +12,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.kdrag0n.monet.theme.ColorScheme
 import kotlin.math.ln
-import androidx.compose.material3.ColorScheme as M3ColorScheme
 
 @Composable
 fun m3ColorScheme(colorScheme: ColorScheme, isDark: Boolean) = remember(colorScheme, isDark) {
@@ -86,6 +86,6 @@ fun materialColors(colorScheme: M3ColorScheme, isDark: Boolean) = remember(color
         onBackground = colorScheme.onBackground,
         onSurface = colorScheme.onSurface,
         onError = colorScheme.onError,
-        isLight = !isDark
+        isLight = !isDark,
     )
 }

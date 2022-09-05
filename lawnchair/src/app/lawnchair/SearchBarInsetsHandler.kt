@@ -34,7 +34,7 @@ class SearchBarInsetsHandler(private val shiftRange: Float) : WindowInsetsAnimat
         controller.setInsetsAndAlpha(
             Insets.of(0, 0, 0, bottomInset),
             1f,
-            progress.value
+            progress.value,
         )
     }
 

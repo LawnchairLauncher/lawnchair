@@ -2,9 +2,9 @@ package app.lawnchair.util
 
 import android.os.FileObserver
 import com.android.launcher3.Utilities
+import java.io.File
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import java.io.File
 
 fun File.subscribeFiles() = callbackFlow<List<File>> {
     fun sendFiles() {
@@ -19,7 +19,11 @@ fun File.subscribeFiles() = callbackFlow<List<File>> {
     awaitClose { observer.stopWatching() }
 }
 
-fun createFileObserver(file: File, events: Int, onEvent: (event: Int, path: String?) -> Unit): FileObserver {
+fun createFileObserver(
+    file: File,
+    events: Int,
+    onEvent: (event: Int, path: String?) -> Unit,
+): FileObserver {
     return if (Utilities.ATLEAST_Q) {
         object : FileObserver(file, events) {
             override fun onEvent(event: Int, path: String?) {

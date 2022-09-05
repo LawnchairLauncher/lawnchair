@@ -18,4 +18,3 @@ fun runOnThread(handler: Handler, r: () -> Unit) {
         handler.post(r)
     }
 }
-

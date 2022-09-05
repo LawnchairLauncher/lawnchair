@@ -30,7 +30,12 @@ class SystemIconPack(context: Context) : IconPack(context, "") {
     }
 
     override fun getIcon(componentName: ComponentName) =
-        IconEntry(packPackageName, ComponentKey(componentName, Process.myUserHandle()).toString(), IconType.Normal)
+        IconEntry(
+            packPackageName,
+            ComponentKey(componentName, Process.myUserHandle()).toString(),
+            IconType.Normal,
+        )
+
     override fun getCalendar(componentName: ComponentName): IconEntry? = null
     override fun getClock(entry: IconEntry): ClockMetadata? = null
 
@@ -44,7 +49,6 @@ class SystemIconPack(context: Context) : IconPack(context, "") {
     }
 
     override fun loadInternal() {
-
     }
 
     override fun getAllIcons(): Flow<List<IconPickerCategory>> = flow {
@@ -54,7 +58,7 @@ class SystemIconPack(context: Context) : IconPack(context, "") {
                     packPackageName = packPackageName,
                     drawableName = key.toString(),
                     label = info.label.toString(),
-                    IconType.Normal
+                    IconType.Normal,
                 )
             }
         emit(categorize(items))

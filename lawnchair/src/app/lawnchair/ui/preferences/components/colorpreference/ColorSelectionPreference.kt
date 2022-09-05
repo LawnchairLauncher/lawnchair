@@ -2,10 +2,17 @@ package app.lawnchair.ui.preferences.components.colorpreference
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.runtime.*
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -16,7 +23,9 @@ import androidx.navigation.navArgument
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.theme.color.ColorOption
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.BottomSpacer
+import app.lawnchair.ui.preferences.components.Chip
+import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.colorpreference.pickers.CustomColorPicker
 import app.lawnchair.ui.preferences.components.colorpreference.pickers.PresetsList
 import app.lawnchair.ui.preferences.components.colorpreference.pickers.SwatchGrid
@@ -48,8 +57,12 @@ fun NavGraphBuilder.colorSelectionGraph(route: String) {
                 else -> return@composable
             }
             val label = when (prefKey) {
-                preferenceManager2.accentColor.key.name -> stringResource(id = R.string.accent_color)
-                preferenceManager2.notificationDotColor.key.name -> stringResource(id = R.string.notification_dots_color)
+                preferenceManager2.accentColor.key.name -> stringResource(
+                    id = R.string.accent_color,
+                )
+                preferenceManager2.notificationDotColor.key.name -> stringResource(
+                    id = R.string.notification_dots_color,
+                )
                 else -> return@composable
             }
             val dynamicEntries = when (prefKey) {
@@ -73,7 +86,6 @@ fun ColorSelection(
     dynamicEntries: List<ColorPreferenceEntry<ColorOption>> = dynamicColors,
     staticEntries: List<ColorPreferenceEntry<ColorOption>> = staticColors,
 ) {
-
     val adapter = preference.getAdapter()
     val appliedColor by adapter
     val selectedColor = remember { mutableStateOf(appliedColor) }
@@ -88,7 +100,7 @@ fun ColorSelection(
         bottomBar = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.End
+                horizontalAlignment = Alignment.End,
             ) {
                 Button(
                     enabled = selectedColor.value != appliedColor,
@@ -103,14 +115,12 @@ fun ColorSelection(
             }
         },
     ) {
-
         val pagerState = rememberPagerState(defaultTabIndex)
         val scope = rememberCoroutineScope()
         val scrollToPage =
             { page: Int -> scope.launch { pagerState.animateScrollToPage(page) } }
 
         Column {
-
             Row(
                 horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -170,7 +180,6 @@ fun ColorSelection(
                     }
                 }
             }
-
         }
     }
 }

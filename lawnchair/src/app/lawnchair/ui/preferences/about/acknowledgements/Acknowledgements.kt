@@ -23,7 +23,11 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalUriHandler
@@ -39,7 +43,11 @@ import androidx.navigation.navArgument
 import app.lawnchair.ossnotices.OssLibrary
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.LocalPreferenceInteractor
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.LoadingScreen
+import app.lawnchair.ui.preferences.components.PreferenceLayout
+import app.lawnchair.ui.preferences.components.PreferenceLayoutLazyColumn
+import app.lawnchair.ui.preferences.components.PreferenceTemplate
+import app.lawnchair.ui.preferences.components.preferenceGroupItems
 import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.ui.preferences.subRoute
 import com.android.launcher3.R
@@ -53,7 +61,7 @@ fun NavGraphBuilder.licensesGraph(route: String) {
     preferenceGraph(route, { Acknowledgements() }) { subRoute ->
         composable(
             route = subRoute("{licenseIndex}"),
-            arguments = listOf(navArgument("licenseIndex") { type = NavType.IntType })
+            arguments = listOf(navArgument("licenseIndex") { type = NavType.IntType }),
         ) { backStackEntry ->
             NoticePage(index = backStackEntry.arguments!!.getInt("licenseIndex"))
         }
@@ -85,7 +93,7 @@ fun OssLibraryItem(ossLibrary: OssLibrary, index: Int) {
             Text(
                 text = ossLibrary.name,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
         },
         modifier = Modifier
@@ -101,7 +109,7 @@ fun NoticePage(index: Int) {
     val data = dataState?.value
 
     PreferenceLayout(
-        label = ossLibrary?.name ?: stringResource(id = R.string.loading)
+        label = ossLibrary?.name ?: stringResource(id = R.string.loading),
     ) {
         Crossfade(targetState = data) { it ->
             if (it != null) {
@@ -130,7 +138,7 @@ fun NoticePage(index: Int) {
                     fontSize = 14.sp,
                     onTextLayout = {
                         layoutResult.value = it
-                    }
+                    },
                 )
             } else {
                 Text(
@@ -142,7 +150,7 @@ fun NoticePage(index: Int) {
                         ),
                     text = "a".repeat(ossLibrary?.noticeLength ?: 20),
                     fontFamily = FontFamily.Monospace,
-                    fontSize = 14.sp
+                    fontSize = 14.sp,
                 )
             }
         }

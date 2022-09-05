@@ -27,7 +27,8 @@ import com.android.launcher3.model.DeviceGridState
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.MainThreadInitializedObject
 
-class PreferenceManager private constructor(private val context: Context) : BasePreferenceManager(context) {
+class PreferenceManager private constructor(private val context: Context) :
+    BasePreferenceManager(context) {
     private val idp get() = InvariantDeviceProfile.INSTANCE.get(context)
     private val reloadIcons = { idp.onPreferencesChanged(context) }
     private val reloadGrid: () -> Unit = { idp.onPreferencesChanged(context) }
@@ -56,12 +57,13 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val autoLaunchRoot = BoolPref("pref_autoLaunchRoot", false)
     val wallpaperScrolling = BoolPref("pref_wallpaperScrolling", true)
     val enableDebugMenu = BoolPref("pref_enableDebugMenu", false)
-    val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadGrid) {
-        override fun flattenKey(key: ComponentKey) = key.toString()
-        override fun unflattenKey(key: String) = ComponentKey.fromString(key)!!
-        override fun flattenValue(value: String) = value
-        override fun unflattenValue(value: String) = value
-    }
+    val customAppName =
+        object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadGrid) {
+            override fun flattenKey(key: ComponentKey) = key.toString()
+            override fun unflattenKey(key: String) = ComponentKey.fromString(key)!!
+            override fun flattenValue(value: String) = value
+            override fun unflattenValue(value: String) = value
+        }
 
     private val fontCache = FontCache.INSTANCE.get(context)
     val fontWorkspace = FontPref("pref_workspaceFont", fontCache.uiText, recreate)
@@ -84,7 +86,8 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val recentsActionShare = BoolPref("pref_recentsActionShare", isOnePlusStock)
     val recentsActionLens = BoolPref("pref_recentsActionLens", true)
     val recentsActionClearAll = BoolPref("pref_clearAllAsAction", false)
-    val recentsTranslucentBackground = BoolPref("pref_recentsTranslucentBackground", false, recreate)
+    val recentsTranslucentBackground =
+        BoolPref("pref_recentsTranslucentBackground", false, recreate)
 
     init {
         sp.registerOnSharedPreferenceChangeListener(this)

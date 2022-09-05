@@ -1,7 +1,7 @@
 package app.lawnchair.ui.preferences.components.colorpreference
 
-import android.graphics.Color.colorToHSV
 import android.graphics.Color.HSVToColor
+import android.graphics.Color.colorToHSV
 import android.graphics.Color.parseColor
 
 fun intColorToHsvColorArray(color: Int) =

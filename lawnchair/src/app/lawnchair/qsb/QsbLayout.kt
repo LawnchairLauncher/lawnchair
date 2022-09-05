@@ -68,7 +68,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         clipIconRipples()
 
         val isGoogle = searchProvider == Google ||
-                searchProvider == GoogleGo
+            searchProvider == GoogleGo
 
         val supportsLens = searchProvider == Google
 
@@ -81,7 +81,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
             gIcon.setThemedIconResource(
                 resId = iconRes,
                 themed = themed || iconRes == R.drawable.ic_qsb_search,
-                method = searchProvider.themingMethod
+                method = searchProvider.themingMethod,
             )
 
             micIcon.setIcon(isGoogle, themed)
@@ -119,7 +119,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         val cellWidth = DeviceProfile.calculateCellWidth(
             requestedWidth,
             dp.cellLayoutBorderSpacePx.x,
-            dp.numShownHotseatIcons
+            dp.numShownHotseatIcons,
         )
         val iconSize = (dp.iconSizePx * 0.92f).toInt()
         val widthReduction = cellWidth - iconSize
@@ -132,7 +132,8 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
     }
 
     private fun subscribeGoogleSearchWidget() {
-        val info = QsbContainerView.getSearchWidgetProviderInfo(context, Google.packageName) ?: return
+        val info =
+            QsbContainerView.getSearchWidgetProviderInfo(context, Google.packageName) ?: return
         context.launcherNullable?.lifecycleScope?.launch {
             val headlessWidgetsManager = HeadlessWidgetsManager.INSTANCE.get(context)
             headlessWidgetsManager.subscribeUpdates(info, "hotseatWidgetId")
@@ -143,7 +144,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
     private fun findSearchIntent(view: AppWidgetHostView) {
         view.measure(
             MeasureSpec.makeMeasureSpec(1000, MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(100, MeasureSpec.EXACTLY)
+            MeasureSpec.makeMeasureSpec(100, MeasureSpec.EXACTLY),
         )
         searchPendingIntent = view.recursiveChildren
             .filter { it.pendingIntent != null }
@@ -177,8 +178,11 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
 
     private fun setUpBackground(themed: Boolean = false) {
         val cornerRadius = getCornerRadius(context, preferenceManager)
-        val color = if (themed) Themes.getColorBackgroundFloating(context) else Themes.getAttrColor(context, R.attr.qsbFillColor)
-        with (inner) {
+        val color = if (themed) Themes.getColorBackgroundFloating(context) else Themes.getAttrColor(
+            context,
+            R.attr.qsbFillColor,
+        )
+        with(inner) {
             clipToOutline = cornerRadius > 0
             background = PaintDrawable(color).apply {
                 setCornerRadius(cornerRadius)
@@ -188,11 +192,12 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
 
     companion object {
         private const val LENS_PACKAGE = "com.google.ar.lens"
-        private const val LENS_ACTIVITY = "com.google.vr.apps.ornament.app.lens.LensLauncherActivity"
+        private const val LENS_ACTIVITY =
+            "com.google.vr.apps.ornament.app.lens.LensLauncherActivity"
 
         fun getSearchProvider(
             context: Context,
-            preferenceManager: PreferenceManager2
+            preferenceManager: PreferenceManager2,
         ): QsbSearchProvider {
             val provider = preferenceManager.hotseatQsbProvider.firstBlocking()
 
@@ -207,7 +212,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
 
         private fun getCornerRadius(
             context: Context,
-            preferenceManager: PreferenceManager
+            preferenceManager: PreferenceManager,
         ): Float {
             val resources = context.resources
             val qsbWidgetHeight = resources.getDimension(R.dimen.qsb_widget_height)

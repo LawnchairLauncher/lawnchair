@@ -17,11 +17,22 @@
 package app.lawnchair.ui.preferences.components
 
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowForward
-import androidx.compose.material3.*
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -59,7 +70,9 @@ fun TopBar(
                 .padding(horizontal = 4.dp),
         ) {
             if (backArrowVisible) {
-                CompositionLocalProvider(LocalContentColor provides navigationIconContentColor.value) {
+                CompositionLocalProvider(
+                    LocalContentColor provides navigationIconContentColor.value,
+                ) {
                     ClickableIcon(
                         imageVector = backIcon(),
                         onClick = { backDispatcher?.onBackPressed() },

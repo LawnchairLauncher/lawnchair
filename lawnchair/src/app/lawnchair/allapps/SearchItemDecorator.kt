@@ -9,17 +9,19 @@ import app.lawnchair.search.SearchAdapterItem
 import com.android.launcher3.R
 import com.android.launcher3.allapps.AllAppsContainerView
 
-class SearchItemDecorator(private val appsView: AllAppsContainerView) : RecyclerView.ItemDecoration() {
+class SearchItemDecorator(private val appsView: AllAppsContainerView) :
+    RecyclerView.ItemDecoration() {
     private val context = appsView.context
     private val resources = context.resources
 
-    private val searchDecorationPadding = resources.getDimensionPixelSize(R.dimen.search_decoration_padding)
+    private val searchDecorationPadding =
+        resources.getDimensionPixelSize(R.dimen.search_decoration_padding)
 
     override fun getItemOffsets(
         outRect: Rect,
         view: View,
         parent: RecyclerView,
-        state: RecyclerView.State
+        state: RecyclerView.State,
     ) {
         outRect.inset(0, searchDecorationPadding)
     }

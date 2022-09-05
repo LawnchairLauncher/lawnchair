@@ -68,9 +68,9 @@ fun ContributorRow(name: String, description: String, photoUrl: String, url: Str
                             .placeholder(
                                 visible = true,
                                 highlight = PlaceholderHighlight.fade(),
-                            )
+                            ),
                     )
-                }
+                },
             )
         },
     )

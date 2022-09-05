@@ -34,7 +34,9 @@ fun ExperimentalFeaturesPreferences() {
             SwitchPreference(
                 adapter = prefs.workspaceIncreaseMaxGridSize.getAdapter(),
                 label = stringResource(id = R.string.workspace_increase_max_grid_size_label),
-                description = stringResource(id = R.string.workspace_increase_max_grid_size_description),
+                description = stringResource(
+                    id = R.string.workspace_increase_max_grid_size_description,
+                ),
             )
         }
     }

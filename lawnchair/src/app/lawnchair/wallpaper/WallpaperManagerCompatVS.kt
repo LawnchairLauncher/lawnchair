@@ -24,7 +24,7 @@ internal class WallpaperManagerCompatVS(context: Context) : WallpaperManagerComp
                     notifyChange()
                 }
             },
-            Handler(Looper.getMainLooper())
+            Handler(Looper.getMainLooper()),
         )
         update(wallpaperManager.getWallpaperColors(WallpaperManager.FLAG_SYSTEM))
     }

@@ -30,15 +30,17 @@ interface PrefEntry<T> {
 
     fun subscribeChanges(view: View, onChange: Runnable) {
         val observer = PrefLifecycleObserver(this, onChange)
-        view.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(v: View) {
-                observer.connectListener()
-            }
+        view.addOnAttachStateChangeListener(
+            object : View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(v: View) {
+                    observer.connectListener()
+                }
 
-            override fun onViewDetachedFromWindow(v: View) {
-                observer.disconnectListener()
-            }
-        })
+                override fun onViewDetachedFromWindow(v: View) {
+                    observer.disconnectListener()
+                }
+            },
+        )
     }
 
     fun subscribeValues(lifecycleOwner: LifecycleOwner, onChange: Consumer<T>) {

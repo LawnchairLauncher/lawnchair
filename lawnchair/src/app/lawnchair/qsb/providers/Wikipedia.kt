@@ -1,6 +1,5 @@
 package app.lawnchair.qsb.providers
 
-import app.lawnchair.qsb.ThemingMethod
 import com.android.launcher3.R
 
 object Wikipedia : QsbSearchProvider(
@@ -9,5 +8,5 @@ object Wikipedia : QsbSearchProvider(
     icon = R.drawable.ic_wikipedia,
     packageName = "org.wikipedia",
     className = "org.wikipedia.search.SearchActivity",
-    website = "https://wikipedia.com/"
+    website = "https://wikipedia.com/",
 )
