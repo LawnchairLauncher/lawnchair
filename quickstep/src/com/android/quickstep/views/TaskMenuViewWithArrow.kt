@@ -47,7 +47,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
 
         fun showForTask(
             taskContainer: TaskIdAttributeContainer,
-            alignSecondRow: Boolean = false,
+            alignSecondRow: Boolean = false
         ): Boolean {
             val activity = BaseDraggingActivity
                 .fromContext<BaseDraggingActivity>(taskContainer.taskView.context)
@@ -55,7 +55,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
                 .inflate(
                     KtR.layout.task_menu_with_arrow,
                     activity.dragLayer,
-                    false,
+                    false
                 ) as TaskMenuViewWithArrow<*>
 
             return taskMenuViewWithArrow.populateAndShowForTask(taskContainer, alignSecondRow)
@@ -67,7 +67,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
         context,
         attrs,
-        defStyleAttr,
+        defStyleAttr
     )
 
     init {
@@ -92,11 +92,10 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
 
     private var optionMeasuredHeight = 0
     private val arrowHorizontalPadding: Int
-        get() = if (taskView.isFocusedTask) {
+        get() = if (taskView.isFocusedTask)
             resources.getDimensionPixelSize(KtR.dimen.task_menu_horizontal_padding)
-        } else {
+        else
             0
-        }
 
     private var iconView: IconView? = null
     private var scrim: View? = null
@@ -125,7 +124,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
 
     private fun populateAndShowForTask(
         taskContainer: TaskIdAttributeContainer,
-        alignSecondRow: Boolean,
+        alignSecondRow: Boolean
     ): Boolean {
         if (isAttachedToWindow) {
             return false
@@ -144,7 +143,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
         scrim = View(context).apply {
             layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
             )
             setBackgroundColor(Themes.getAttrColor(context, R.attr.overviewScrimColor))
             alpha = 0f
@@ -182,19 +181,17 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
             deviceProfile,
             optionLayout,
             dividerSpacing,
-            divider,
+            divider
         )
     }
 
     private fun addMenuOption(menuOption: SystemShortcut<*>) {
         val menuOptionView = mActivityContext.layoutInflater.inflate(
-            KtR.layout.task_view_menu_option,
-            this,
-            false,
+            KtR.layout.task_view_menu_option, this, false
         ) as LinearLayout
         menuOption.setIconAndLabelFor(
             menuOptionView.findViewById(R.id.icon),
-            menuOptionView.findViewById(R.id.text),
+            menuOptionView.findViewById(R.id.text)
         )
         val lp = menuOptionView.layoutParams as LayoutParams
         lp.width = menuWidth
@@ -205,7 +202,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
     override fun assignMarginsAndBackgrounds(viewGroup: ViewGroup) {
         assignMarginsAndBackgrounds(
             this,
-            Themes.getAttrColor(context, com.android.internal.R.attr.colorSurface),
+            Themes.getAttrColor(context, com.android.internal.R.attr.colorSurface)
         )
     }
 
@@ -213,7 +210,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
         scrim?.let {
             anim.play(
                 ObjectAnimator.ofFloat(it, View.ALPHA, 0f, scrimAlpha)
-                    .setDuration(OPEN_DURATION.toLong()),
+                    .setDuration(OPEN_DURATION.toLong())
             )
         }
     }
@@ -222,7 +219,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
         scrim?.let {
             anim.play(
                 ObjectAnimator.ofFloat(it, View.ALPHA, scrimAlpha, 0f)
-                    .setDuration(CLOSE_DURATION.toLong()),
+                    .setDuration(CLOSE_DURATION.toLong())
             )
         }
     }
@@ -242,14 +239,14 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
         iconView = IconView(context).apply {
             layoutParams = FrameLayout.LayoutParams(
                 taskContainer.iconView.width,
-                taskContainer.iconView.height,
+                taskContainer.iconView.height
             )
             x = mTempRect.left.toFloat() - insets.left
             y = mTempRect.top.toFloat() - insets.top
             drawable = taskContainer.iconView.drawable
             setDrawableSize(
                 taskContainer.iconView.drawableWidth,
-                taskContainer.iconView.drawableHeight,
+                taskContainer.iconView.drawableHeight
             )
         }
 
@@ -289,7 +286,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
             rightAlignedMenuStartX + insets.left < 0
         } else {
             leftAlignedMenuStartX + (widthWithArrow - extraHorizontalSpace) + insets.left <
-                dragLayer.width - insets.right
+                    dragLayer.width - insets.right
         }
 
         var menuStartX = if (mIsLeftAligned) leftAlignedMenuStartX else rightAlignedMenuStartX
@@ -316,7 +313,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
         popupContainer.addView(mArrow)
         mArrow.x = getArrowX()
         mArrow.y = y + (optionMeasuredHeight / 2) - (mArrowHeight / 2) +
-            extraSpaceForSecondRowAlignment
+                extraSpaceForSecondRowAlignment
 
         updateArrowColor()
 
@@ -326,11 +323,10 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
     }
 
     private fun getArrowX(): Float {
-        return if (mIsLeftAligned) {
+        return if (mIsLeftAligned)
             x - mArrowHeight
-        } else {
+        else
             x + measuredWidth + mArrowOffsetVertical
-        }
     }
 
     override fun updateArrowColor() {
@@ -339,9 +335,10 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
             mArrowHeight.toFloat(),
             mArrowPointRadius.toFloat(),
             mIsLeftAligned,
-            mArrowColor,
+            mArrowColor
         )
         elevation = mElevation
         mArrow.elevation = mElevation
     }
+
 }
