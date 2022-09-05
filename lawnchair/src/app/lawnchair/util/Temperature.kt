@@ -14,7 +14,7 @@ class Temperature(val value: Int, val unit: Unit) {
         Celsius(0f, 100f, "°C"),
         Fahrenheit(32f, 212f, "°F"),
         Kelvin(273f, 373f, "K"),
-        Rakine(491.67f, 671.64102f, "°R"),
+        Rakine(491.67f, 671.641f, "°R"),
         Delisle(-100f, 50f, "°D"),
         Newton(0f, 33f, "°N"),
         Reaumur(0f, 80f, "°Ré"),

@@ -25,7 +25,7 @@ fun OverflowMenu(block: @Composable OverflowMenuScope.() -> Unit) {
         DropdownMenu(
             expanded = showMenu.value,
             onDismissRequest = { showMenu.value = false },
-            offset = DpOffset(x = 8.dp, y = -32.dp)
+            offset = DpOffset(x = 8.dp, y = (-32).dp)
         ) {
             block(overflowMenuScope)
         }

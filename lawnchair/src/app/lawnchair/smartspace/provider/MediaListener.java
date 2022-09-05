@@ -193,8 +193,8 @@ public class MediaListener extends MediaController.Callback {
 
     public class MediaNotificationController {
 
-        private MediaController controller;
-        private StatusBarNotification sbn;
+        private final MediaController controller;
+        private final StatusBarNotification sbn;
         private MediaInfo info;
 
         private MediaNotificationController(MediaController controller, StatusBarNotification sbn) {

@@ -74,7 +74,7 @@ fun QuickstepPreferences() {
                 adapter = prefs.overrideWindowCornerRadius.getAdapter(),
                 label = stringResource(id = R.string.override_window_corner_radius_label),
             )
-            ExpandAndShrink(visible = overrideWindowCornerRadius,) {
+            ExpandAndShrink(visible = overrideWindowCornerRadius) {
                 SliderPreference(
                     label = stringResource(id = R.string.window_corner_radius_label),
                     adapter = prefs.windowCornerRadius.getAdapter(),
