@@ -75,7 +75,6 @@ fun TopBar(
             title = {
                 Text(
                     text = label,
-                    style = MaterialTheme.typography.titleLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -105,4 +104,4 @@ fun backIcon(): ImageVector =
         Icons.Rounded.ArrowForward
     }
 
-val topBarSize = 128.dp
+val topBarSize = 64.dp
