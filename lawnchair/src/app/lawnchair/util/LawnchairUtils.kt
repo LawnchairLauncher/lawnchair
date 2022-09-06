@@ -170,7 +170,7 @@ fun Context.checkPackagePermission(packageName: String, permissionName: String):
                 return info.requestedPermissionsFlags[index].hasFlag(REQUESTED_PERMISSION_GRANTED)
             }
         }
-    } catch (e: PackageManager.NameNotFoundException) {
+    } catch (_: PackageManager.NameNotFoundException) {
     }
     return false
 }

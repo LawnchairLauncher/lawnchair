@@ -36,7 +36,6 @@ import java.util.Map;
 import app.lawnchair.theme.ThemeProvider;
 import app.lawnchair.theme.color.AndroidColor;
 import dev.kdrag0n.colorkt.Color;
-import dev.kdrag0n.colorkt.rgb.Srgb;
 import dev.kdrag0n.monet.theme.ColorScheme;
 
 @RequiresApi(api = Build.VERSION_CODES.S)

@@ -61,7 +61,7 @@ class BugReportReceiver : BroadcastReceiver() {
                 .setShowWhen(true)
                 .setWhen(report.timestamp)
 
-            val count = manager.activeNotifications.filter { it.groupKey == GROUP_KEY }.count()
+            val count = manager.activeNotifications.count { it.groupKey == GROUP_KEY }
             val summary = if (count > 99 || count < 0) {
                 context.getString(R.string.bugreport_group_summary_multiple)
             } else {

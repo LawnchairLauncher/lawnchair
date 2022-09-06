@@ -30,7 +30,7 @@ class LawnchairLayoutFactory(context: Context) : LayoutInflater.Factory2 {
         if (view is TextView) {
             try {
                 fontManager.overrideFont(view, attrs)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
 
             }
         }

@@ -45,7 +45,7 @@ fun TopBar(
     actions: @Composable RowScope.() -> Unit = {},
 ) {
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
- 
+
     val containerColor: Color = MaterialTheme.colorScheme.surface
     val scrolledContainerColor: Color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.0.dp)
 

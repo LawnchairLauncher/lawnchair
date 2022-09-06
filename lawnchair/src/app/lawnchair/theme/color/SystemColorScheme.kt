@@ -5,7 +5,7 @@ import androidx.core.content.res.ResourcesCompat
 import dev.kdrag0n.colorkt.Color
 import dev.kdrag0n.monet.theme.ColorScheme
 
-class SystemColorScheme(private val context: Context) : ColorScheme() {
+class SystemColorScheme(context: Context) : ColorScheme() {
     private val resources = context.resources
 
     override val neutral1 = systemPaletteMap("neutral1")

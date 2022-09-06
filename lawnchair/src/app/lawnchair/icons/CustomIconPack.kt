@@ -183,9 +183,9 @@ class CustomIconPack(context: Context, packPackageName: String) :
                 parser.setInput(res.assets.open("$name.xml"), Xml.Encoding.UTF_8.toString())
                 parser
             }
-        } catch (e: PackageManager.NameNotFoundException) {
-        } catch (e: IOException) {
-        } catch (e: XmlPullParserException) {
+        } catch (_: PackageManager.NameNotFoundException) {
+        } catch (_: IOException) {
+        } catch (_: XmlPullParserException) {
         }
         return null
     }
