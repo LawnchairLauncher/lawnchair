@@ -15,111 +15,95 @@
   ~ limitations under the License.
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="icon_pack">Ikoon pakket</string>
-    <string name="icon_style">Ikoon styl</string>
+    <!-- PreferenceDashboard -->
     <string name="settings">Instellings</string>
-    <string name="home_screen_label">Huis skerm</string>
-    <string name="home_screen_description">Voer, rooster, Ikone</string>
     <string name="general_label">Algemeen</string>
     <string name="general_description">Notification Dots, Icon Pack</string>
-    <string name="home_screen_rotation_label">Tuisskermrotasie</string>
-    <string name="home_screen_rotaton_description">Wanneer die toestel gedraai word.</string>
-    <string name="auto_add_shortcuts_label">Voeg nuwe toepassings by tuisskerm</string>
+    <string name="home_screen_label">Huis skerm</string>
+    <string name="home_screen_description">Voer, rooster, Ikone</string>
+    <!--
+    <string name="smartspace" />
+    -->
+    <string name="what_to_show">Wat om te wys</string>
     <string name="dock_label">Hawe</string>
     <string name="dock_description">Soekbalk, ikoontelling</string>
     <string name="app_drawer_label">App-laai</string>
     <string name="app_drawer_description">Versteekte toepassings, kolomtelling, ikone</string>
     <string name="folders_label">Dopsies</string>
     <string name="folders_description">Telling van rye en kolomme</string>
-    <string name="app_drawer_columns">Programlaaikolomme</string>
-    <string name="dock_icons">Dock ikone</string>
-    <string name="max_folder_columns">Maks. Folderkolomme</string>
-    <string name="max_folder_rows">Maks. Folderrye</string>
-    <string name="home_screen_grid">Tuisskermrooster</string>
-    <string name="home_screen_lock">Sluit tuisskerm</string>
-    <string name="home_screen_unlock">Ontsluit tuisskerm</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Wys sluitknoppie in opspringer</string>
-    <string name="columns">Kolomme</string>
-    <string name="grid">Rooster</string>
-    <string name="rows">Rye</string>
-    <string name="icons">Icons</string>
-    <string name="icon_size">Ikoon grootte</string>
-    <string name="label_size">Etiket Grootte</string>
-    <string name="show_home_labels">Wys etikette</string>
-    <string name="notification_dots">Kennisgewing kolletjies</string>
-    <string name="smartspace_preferences">Voorkeure</string>
+    <string name="gestures_label">Gestures</string>
+    <string name="gestures_description">Taps and Swipes</string>
+    <string name="quickstep_label">Onlangse</string>
+    <string name="quickstep_description">Maak alles skoon, hoek radius</string>
     <string name="about_label">Oor</string>
-    <string name="news">Nuus</string>
-    <string name="support">Ondersteuning</string>
-    <string name="acknowledgements">Erkennings</string>
-    <string name="devops">DevOps</string>
-    <string name="quickswitch_maintenance">QuickSwitch Onderhoud</string>
-    <string name="all_apps_search_bar_hint">Soek toepassings</string>
-    <string name="settings_button_text">Tuisinstellings</string>
-    <string name="development">Ontwikkeling</string>
+    <!-- <string name="version" /> (unknown source) -->
+    <!-- PreferencesOverflowMenu() in PreferencesDashboard -->
     <string name="app_info_drop_target_label">App inligting</string>
-    <string name="item_removed">Item verwyder.</string>
-    <string name="all_apps_no_search_results">Geen toepassings gevind wat ooreenstem met \"<xliff:g example="Android" id="query">%1$s</xliff:g> nie.</string>
-    <string name="translucent_background">Deurskynende agtergrond</string>
-    <string name="background_opacity">Agtergrond ondeursigtigheid</string>
-    <string name="background_lightness_label">Agtergrond Ligheid</string>
-    <string name="adaptive_icons">Aanpasbare ikone</string>
-    <string name="adaptive_icon_background_description">Gebruik 100% agtergrondligheid vir wit.</string>
+    <string name="debug_restart_launcher">Herbegin Lawnchair</string>
+    <string name="experimental_features_label">Eksperimentele kenmerke</string>
+    <!-- ExperimentalFeaturesPreferences -->
+    <!-- <string name="experimental_features_label" />-->
+    <string name="font_picker_label">Lettertipe aanpassing</string>
+    <string name="font_picker_description">Sommige teks bly onveranderd.</string>
+    <string name="smartspace_calendar_label">In \'n oogopslag Kalenderaanpassing</string>
+    <string name="smartspace_calendar_description">Laat toe om datum in nie-Gregoriaanse kalenderstelsels te wys.</string>
+    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
+    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <!-- GeneralPreferences -->
+    <string name="home_screen_rotation_label">Tuisskermrotasie</string>
+    <string name="home_screen_rotaton_description">Wanneer die toestel gedraai word.</string>
+    <string name="font_label">Lettertipe (eksperimenteel)</string>
+    <!-- <string name="icons" /> -->
+    <string name="icon_style">Ikoon styl</string>
+    <string name="icon_shape_label">Ikoon Vorm</string>
     <string name="auto_adaptive_icons_label">Outo-aanpasbare ikone</string>
     <string name="auto_adaptive_icons_description">Vir alle nie-aanpasbare ikone.</string>
-    <string name="support_and_pr">Ondersteun &amp; PR</string>
-    <string name="workspace_dt2s">Dubbeltik om te slaap</string>
-    <string name="smart_space_enable">Op \'n oogopslag Widget</string>
-    <string name="design_and_development">Ontwerp &amp; Ontwikkeling</string>
-    <string name="translate">Vertaal</string>
-    <string name="product">Produk</string>
-    <string name="hidden_apps_label">Versteekte toepassings</string>
-    <string name="hidden_apps_label_with_count">Versteekte programme (%1$d)</string>
-    <plurals name="apps_count">
-        <item quantity="one">%1$d toepassing</item>
-        <item quantity="other">%1$d toepassings</item>
-    </plurals>
-    <string name="hotseat_qsb_label">Wys soekbalk</string>
-    <string name="qsb_search_provider_app_required">Toepassing word vereis.</string>
-    <string name="dt2s_admin_hint_title">Admin Toestemmings vereis</string>
-    <string name="dt2s_admin_hint">Om Dubbeltik om te slaap te gebruik, stel Lawnchair as \'n toesteladministrasie-toepassing. Tik Maak Instellings oop, tik dan op \"Aktiveer hierdie toesteladministrasie-toepassing.\"</string>
-    <string name="dt2s_admin_warning">Dubbeltik om te slaap sal afgeskakel word.</string>
-    <string name="dt2s_a11y_hint_title">Skakel Toeganklikheiddiens aan</string>
-    <string name="dt2s_a11y_hint">Skakel die Lawnchair-toeganklikheiddiens aan om Dubbeltik om te slaap te gebruik. Tik Open Settings, kies Lawnchair en skakel Gebruik Lawnchair aan.</string>
-    <string name="dt2s_warning_open_settings">Maak Instellings oop</string>
-    <string name="minus_one_enable">Voer</string>
-    <string name="minus_one_unavailable">Geen voer geïnstalleer nie.</string>
-    <string name="fuzzy_search_title">Fuzzy soektog</string>
-    <string name="fuzzy_search_desc">Geskatte passing vir toepassingsoektogte.</string>
+    <string name="background_lightness_label">Agtergrond Ligheid</string>
+    <string name="adaptive_icon_background_description">Gebruik 100% agtergrondligheid vir wit.</string>
+    <string name="notification_dots">Kennisgewing kolletjies</string>
+    <!-- <string name="notification_dots" />-->
+    <string name="show_notification_count">Wys kennisgewingtelling</string>
+    <string name="notification_dots_color">Notification Dot Color</string>
+    <!-- Notification popup -->
+    <string name="missing_notification_access_label">Kennisgewingtoegang benodig</string>
+    <string name="missing_notification_access_description">Kennisgewingtoegang benodig.</string>
+    <string name="msg_missing_notification_access">Om Kennisgewingkolletjies te gebruik, gee <xliff:g id="name" example="My App">%1$s</xliff:g> toegang tot kennisgewings.</string>
+    <string name="title_change_settings">Verander instellings</string>
+    <string name="colors">Kleure</string>
     <string name="theme_label">Tema</string>
     <string name="theme_light">Lig</string>
     <string name="theme_dark">Donker</string>
     <string name="theme_system_default">Stelsel</string>
     <string name="theme_follow_wallpaper">Pas plakpapier by</string>
-    <string name="quickstep_label">Onlangse</string>
-    <string name="clear_all_as_action_label">Maak alles skoon-knoppie onderaan</string>
-    <string name="window_corner_radius_label">Skermhoek radius</string>
-    <string name="override_window_corner_radius_label">Pasgemaakte skermhoekradius</string>
-    <string name="window_corner_radius_description">Wanneer jy op swiep om Recents oop te maak, volg die huidige toepassing jou vinger en krimp tot \'n kaart. Gebruik hierdie skuifbalk om die hoekradius van die kaart aan te pas wanneer dit amper volskerm is sodat dit by die hoeke van jou skerm pas.</string>
-    <string name="system_icons">Stelsel ikone</string>
     <string name="accent_color">Aksentkleur</string>
-    <string name="invalid_color">Invalid Color</string>
-    <string name="done">Klaar</string>
-    <string name="loading">Laai tans…</string>
-    <string name="system">Stelsel</string>
-    <string name="wallpaper">Muurpapier</string>
-    <string name="custom">Pasgemaak</string>
-    <string name="quickstep_description">Maak alles skoon, hoek radius</string>
-    <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Top skaduwee</string>
-    <string name="show_status_bar">Wys Statusbalk</string>
-    <string name="layout">Uitleg</string>
-    <string name="what_to_show">Wat om te wys</string>
-    <string name="missing_notification_access_label">Kennisgewingtoegang benodig</string>
-    <string name="missing_notification_access_description">Kennisgewingtoegang benodig.</string>
-    <string name="msg_missing_notification_access">Om Kennisgewingkolletjies te gebruik, gee <xliff:g id="name" example="My App">%1$s</xliff:g> toegang tot kennisgewings.</string>
-    <string name="title_change_settings">Verander instellings</string>
-    <string name="debug_restart_launcher">Herbegin Lawnchair</string>
+    <!-- IconPackPreferences -->
+    <!-- <string name="icon_style" /> -->
+    <string name="icon_pack">Ikoon pakket</string>
+    <string name="system_icons">Stelsel ikone</string>
+    <string name="themed_icon_title">Tema ikone</string>
+    <string name="themed_icons_off_label">Af</string>
+    <string name="themed_icons_home_label">Huis skerm</string>
+    <string name="themed_icons_home_and_drawer_label">Tuisskerm &amp; App-laai</string>
+    <string name="lawnicons_not_installed_description">Grasperke nie geïnstalleer nie.</string>
+    <!-- <string name="cancel" /> (unknown source)-->
+    <!-- IconPickerPreference -->
+    <!-- <string name="icon_shape_label" /> -->
+    <string name="icon_shape_system">Stelsel</string>
+    <string name="icon_shape_circle">Sirkel</string>
+    <string name="icon_shape_cylinder">Silinder</string>
+    <string name="icon_shape_diamond">Diamond</string>
+    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_cupertino">iOS</string>
+    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_sammy">Een UI</string>
+    <string name="icon_shape_rounded_square">Afgeronde vierkant</string>
+    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_square">Vierkantig</string>
+    <string name="icon_shape_squircle">Squircle</string>
+    <string name="icon_shape_teardrop">Traandruppel</string>
+    <!-- FontSelectionPreferences -->
+    <string name="pref_fonts_add_fonts">Voeg lettertipes by</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF ondersteun.</string>
     <string name="pref_fonts_missing_font">Lettertipe nie gevind nie.</string>
     <string name="font_variant_italic">Kursief</string>
     <string name="font_weight_thin">Dun</string>
@@ -131,41 +115,11 @@
     <string name="font_weight_bold">Vet</string>
     <string name="font_weight_extra_bold">Ekstra vet</string>
     <string name="font_weight_extra_black">Swart</string>
-    <string name="font_label">Lettertipe (eksperimenteel)</string>
     <string name="reset_font">Stel terug</string>
-    <string name="search_input_action_clear_results">Vee soekkassie uit</string>
-    <string name="pref_category_search">Soek</string>
-    <string name="pref_search_auto_show_keyboard">Wys sleutelbord outomaties</string>
-    <string name="label_search">Soek</string>
-    <string name="label_lens">Google Lens</string>
-    <string name="label_voice_search">Stemsoektog</string>
-    <string name="apply_grid">Doen aansoek</string>
-    <string name="x_by_y">%1$d × %2$d</string>
-    <string name="folder_preview_bg_opacity_label">Ikoon Agtergrond Ondeursigtigheid</string>
-    <string name="icon_shape_label">Ikoon Vorm</string>
-    <string name="icon_shape_system">Stelsel</string>
-    <string name="icon_shape_circle">Sirkel</string>
-    <string name="icon_shape_square">Vierkantig</string>
-    <string name="icon_shape_rounded_square">Afgeronde vierkant</string>
-    <string name="icon_shape_squircle">Squircle</string>
-    <string name="icon_shape_sammy">Een UI</string>
-    <string name="icon_shape_teardrop">Traandruppel</string>
-    <string name="icon_shape_cylinder">Silinder</string>
-    <string name="icon_shape_cupertino">iOS</string>
-    <string name="customize_button_text">Pasmaak</string>
-    <string name="app_title_label">Titel</string>
-    <string name="hide_from_drawer">Versteek uit App-laai</string>
-    <string name="action_lens">Lens</string>
-    <string name="force_rounded_widgets">Afgeronde Hoeke</string>
-    <string name="allow_widget_overlap">Laat oorvleueling toe</string>
-    <string name="suggestion_pref_screen_title">Voorstelle</string>
-    <string name="n_percent">%1$d%%</string>
-    <string name="label">Etiket</string>
-    <string name="presets">Voorinstellings</string>
-    <string name="colors">Kleure</string>
+    <!-- colorpreference/* -->
     <string name="dynamic">Dinamies</string>
-    <string name="all_apps_search_market_message">Soek vir meer toepassings</string>
-    <string name="show_app_search_bar">Wys soekbalk</string>
+    <string name="presets">Voorinstellings</string>
+    <string name="custom">Pasgemaak</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Red</string>
     <string name="rgb_green">Green</string>
@@ -176,56 +130,47 @@
     <string name="hsb_brightness">Brightness</string>
     <string name="hex">Hex</string>
     <string name="color_sliders">Sliders</string>
-    <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
-    <string name="crash_report_notif_title">%1$s het omgeval</string>
-    <string name="action_upload_crash_report">Laai Crash Log op</string>
-    <string name="action_copy_link">Kopieer skakel</string>
     <string name="action_copy">Kopieer</string>
+    <string name="action_paste">Paste</string>
     <string name="copied_toast">Gekopieer na knipbord.</string>
-    <string name="action_share">Deel</string>
-    <string name="action_upload_error">Oplaai het misluk</string>
-    <string name="dogbin_uploading">Laai tans op…</string>
-    <string name="bugreport_channel_name">Bug Reports</string>
-    <string name="status_channel_name">Oplaai status</string>
-    <string name="bugreport_group_summary">%d nuwe verslae.</string>
-    <string name="bugreport_group_summary_multiple">Veelvuldige nuwe verslae.</string>
-    <string name="themed_icon_title">Tema ikone</string>
-    <string name="corner_radius_label">Hoek Radius</string>
-    <string name="search_bar_label">Soekbalk</string>
-    <string name="apply_accent_color_label">Pas aksentkleur toe</string>
-    <string name="show_search_result_types">Wys in soekresultate</string>
-    <string name="search_pref_result_people_title">People</string>
-    <string name="search_pref_result_shortcuts_title">App-kortpaaie</string>
-    <string name="search_pref_result_tips_title">Pixel Wenke</string>
-    <string name="row_height_label">Ry Hoogte</string>
-    <string name="all_apps_device_search_hint">Soek</string>
-    <string name="dark_status_bar_label">Donker Statusbalk</string>
-    <string name="lawnicons_not_installed_description">Grasperke nie geïnstalleer nie.</string>
-    <string name="icon_picker_default_category">Icons</string>
-    <string name="icon_picker_reset_to_default">Herstel tot standaard</string>
-    <string name="icon_pack_external_picker">Maak Eksterne Kieser oop</string>
-    <string name="recents_actions_label">Vinnige aksies</string>
-    <string name="recents_clear_all">Vee alles uit</string>
-    <string name="pick_icon_from_label">Kies ikoon van</string>
-    <string name="experimental_features_label">Eksperimentele kenmerke</string>
-    <string name="icon_picker_label">Aanpassing van ikoon per toepassing</string>
-    <string name="icon_picker_description">Kan Lawnchair laat vries.</string>
-    <string name="font_picker_label">Lettertipe aanpassing</string>
-    <string name="font_picker_description">Sommige teks bly onveranderd.</string>
-    <string name="smartspace_calendar_label">In \'n oogopslag Kalenderaanpassing</string>
-    <string name="smartspace_calendar_description">Laat toe om datum in nie-Gregoriaanse kalenderstelsels te wys.</string>
-    <string name="search_provider_app_search">App Soek</string>
-    <string name="always_open_website_label">Maak altyd webwerf oop</string>
-    <string name="always_open_website_description">Maak soekverskaffer se webwerf oop, selfs al is hul toepassing geïnstalleer.</string>
-    <string name="search_provider">Soek Verskaffer</string>
+    <string name="invalid_color">Invalid Color</string>
+    <string name="app_icon_color">App Icon Color</string>
+    <!-- HomeScreenPreferences -->
+    <!-- <string name="general_label" /> -->
+    <string name="auto_add_shortcuts_label">Voeg nuwe toepassings by tuisskerm</string>
+    <!-- <string name="gesture_double_tap" /> -->
+    <string name="minus_one_enable">Voer</string>
+    <string name="minus_one_unavailable">Geen voer geïnstalleer nie.</string>
+    <string name="wallpaper">Muurpapier</string>
+    <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
+    <string name="wallpaper_depth_effect_label">Wallpaper Depth Effect</string>
+    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="show_sys_ui_scrim">Top skaduwee</string>
+    <string name="layout">Uitleg</string>
+    <string name="home_screen_grid">Tuisskermrooster</string>
+    <string name="home_screen_lock">Sluit tuisskerm</string>
+    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_unlock">Ontsluit tuisskerm</string>
+    <!-- used in popup menu-->
+    <string name="home_screen_lock_toggle_from_home_popup">Wys sluitknoppie in opspringer</string>
+    <string name="home_screen_locked">Home Screen is locked.</string>
     <string name="status_bar_label">Statusbalk</string>
-    <string name="show_notification_count">Wys kennisgewingtelling</string>
-    <string name="icon_picker_load_failed">Kon nie meer ikone laai nie.</string>
+    <string name="show_status_bar">Wys Statusbalk</string>
+    <string name="dark_status_bar_label">Donker Statusbalk</string>
+    <string name="icons">Icons</string>
+    <string name="icon_size">Ikoon grootte</string>
+    <string name="show_home_labels">Wys etikette</string>
+    <string name="label_size">Etiket Grootte</string>
     <string name="reset_custom_icons">Stel persoonlike ikone terug</string>
     <string name="reset_custom_icons_confirmation">Alle pasgemaakte ikone sal teruggestel word. Wil jy voortgaan?</string>
-    <string name="taskbar_label">Taakbalk</string>
-    <string name="enable_taskbar_experimental">Aktiveer taakbalk (Eksperimenteel)</string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
+    <!-- <string name="widget_button_text" /> (unknown source)-->
+    <string name="force_rounded_widgets">Afgeronde Hoeke</string>
+    <string name="allow_widget_overlap">Laat oorvleueling toe</string>
+    <!-- HomeScreenGridPreferences -->
+    <!-- <string name="home_screen_grid" /> -->
+    <string name="columns">Kolomme</string>
+    <string name="rows">Rye</string>
+    <string name="apply_grid">Doen aansoek</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Laai</string>
@@ -241,6 +186,9 @@
     <string name="smartspace_date_and_time">Date &amp; Time</string>
     <string name="smartspace_date">Date</string>
     <string name="smartspace_time">Time</string>
+    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_follow_system">Volg System</string>
+    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
     <string name="smartspace_time_24_hour_format">24-Hour Format</string>
     <string name="smartspace_weather">Weer</string>
     <string name="smartspace_battery_status">Battery Status</string>
@@ -250,33 +198,58 @@
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="smartspace_calendar_gregorian">Gregorian</string>
     <string name="smartspace_calendar_persian">Persian</string>
-    <string name="quickstep_incompatible">Onversoenbare stelselintegrasie</string>
-    <string name="quickstep_incompatible_description">Jou toestel is opgestel om stelselgebare (bekend as Quickstep) te hê wat verskaf word deur%1$s, maar hierdie weergawe van%1$s is nie versoenbaar met jou Android-weergawe nie. Deïnstalleer asseblief om voort te gaan om jou toestel te gebruik%1$s opdaterings of deaktiveer %1$s as \'n stelselgebareverskaffer.</string>
-    <string name="pref_fonts_add_fonts">Voeg lettertipes by</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF ondersteun.</string>
-    <string name="delete">Vee uit</string>
-    <string name="themed_icons_off_label">Af</string>
-    <string name="themed_icons_home_label">Huis skerm</string>
-    <string name="themed_icons_home_and_drawer_label">Tuisskerm &amp; App-laai</string>
-    <!-- Backup -->
-    <string name="create_backup">Skep rugsteun</string>
-    <string name="create_backup_action">Skep</string>
-    <string name="what_to_backup">Wat om te rugsteun</string>
-    <string name="backup_content_layout_and_settings">Uitleg en instellings</string>
-    <string name="backup_content_wallpaper">Muurpapier</string>
-    <string name="backup_create_success">Rugsteun geskep.</string>
-    <string name="backup_create_error">Kon nie rugsteun skep nie.</string>
-    <string name="restore_backup">Herstel rugsteun</string>
-    <string name="restore_backup_action">Herstel</string>
-    <string name="what_to_restore">Wat om te herstel</string>
-    <string name="backup_restore_success">Rugsteun herstel.</string>
-    <string name="backup_restore_error">Kon nie rugsteun herstel nie.</string>
-    <string name="invalid_backup_file">Ongeldige rugsteunlêer.</string>
-    <string name="wallpaper_depth_effect_label">Wallpaper Depth Effect</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
-    <string name="gestures_label">Gestures</string>
-    <string name="gestures_description">Taps and Swipes</string>
-    <!-- Gestures -->
+    <string name="smartspace_preferences">Voorkeure</string>
+    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
+    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <!-- DockPreferences -->
+    <!-- <string name="dock_label" /> -->
+    <string name="search_bar_label">Soekbalk</string>
+    <string name="hotseat_qsb_label">Wys soekbalk</string>
+    <string name="corner_radius_label">Hoek Radius</string>
+    <string name="apply_accent_color_label">Pas aksentkleur toe</string>
+    <string name="search_provider">Soek Verskaffer</string>
+    <string name="grid">Rooster</string>
+    <string name="dock_icons">Dock ikone</string>
+    <!-- SearchProviderPreferences -->
+    <!-- search_provider -->
+    <string name="search_provider_app_search">App Soek</string>
+    <string name="app_label">App</string>
+    <string name="website_label">Website</string>
+    <string name="qsb_search_provider_app_required">Toepassing word vereis.</string>
+    <!-- AppDrawerPrefences -->
+    <!-- app_drawer_label -->
+    <!-- general_label -->
+    <string name="hidden_apps_label">Versteekte toepassings</string>
+    <string name="background_opacity">Agtergrond ondeursigtigheid</string>
+    <string name="pref_category_search">Soek</string>
+    <string name="show_app_search_bar">Wys soekbalk</string>
+    <string name="pref_search_auto_show_keyboard">Wys sleutelbord outomaties</string>
+    <string name="fuzzy_search_title">Fuzzy soektog</string>
+    <string name="fuzzy_search_desc">Geskatte passing vir toepassingsoektogte.</string>
+    <!-- <string name="grid" /> -->
+    <string name="app_drawer_columns">Programlaaikolomme</string>
+    <string name="row_height_label">Ry Hoogte</string>
+    <!--
+    <string name="icons" />
+      <string name="icon_size" />
+      <string name="show_home_labels" />
+      <string name="label_size" />
+    -->
+    <!-- HiddenAppsPreferences -->
+    <string name="hidden_apps_label_with_count">Versteekte programme (%1$d)</string>
+    <plurals name="apps_count">
+        <item quantity="one">%1$d toepassing</item>
+        <item quantity="other">%1$d toepassings</item>
+    </plurals>
+    <!-- FolderPreferences -->
+    <!-- <string name="folders_label" /> -->
+    <!-- <string name="general_label" /> -->
+    <string name="folder_preview_bg_opacity_label">Ikoon Agtergrond Ondeursigtigheid</string>
+    <!-- <string name="grid" /> -->
+    <string name="max_folder_columns">Maks. Folderkolomme</string>
+    <string name="max_folder_rows">Maks. Folderrye</string>
+    <!-- GesturePreference -->
+    <!-- <string name="gestures_label" /> -->
     <string name="gesture_double_tap">Double Tap</string>
     <string name="gesture_swipe_up">Swipe Up</string>
     <string name="gesture_swipe_down">Swipe Down</string>
@@ -291,7 +264,99 @@
     <string name="gesture_handler_open_app_search">Open App Search</string>
     <string name="gesture_handler_open_search">Open Search</string>
     <string name="pick_app_for_gesture">Pick App</string>
+    <!-- QuickstepPreferences -->
+    <!-- <string name="quickstep_label" /> -->
+    <!-- <string name="general_label" /> -->
+    <string name="translucent_background">Deurskynende agtergrond</string>
+    <string name="recents_actions_label">Vinnige aksies</string>
+    <!-- <string name="screenshot" /> (unknown source) -->
+    <string name="action_share">Deel</string>
+    <string name="action_lens">Lens</string>
+    <string name="recents_clear_all">Vee alles uit</string>
+    <string name="window_corner_radius_label">Skermhoek radius</string>
+    <string name="override_window_corner_radius_label">Pasgemaakte skermhoekradius</string>
+    <string name="window_corner_radius_description">Wanneer jy op swiep om Recents oop te maak, volg die huidige toepassing jou vinger en krimp tot \'n kaart. Gebruik hierdie skuifbalk om die hoekradius van die kaart aan te pas wanneer dit amper volskerm is sodat dit by die hoeke van jou skerm pas.</string>
+    <string name="taskbar_label">Taakbalk</string>
+    <string name="enable_taskbar_experimental">Aktiveer taakbalk (Eksperimenteel)</string>
+    <!-- about/About.kt -->
+    <string name="news">Nuus</string>
+    <string name="support">Ondersteuning</string>
+    <string name="product">Produk</string>
+    <string name="design_and_development">Ontwerp &amp; Ontwikkeling</string>
+    <string name="development">Ontwikkeling</string>
+    <string name="quickswitch_maintenance">QuickSwitch Onderhoud</string>
+    <string name="devops">DevOps</string>
+    <string name="support_and_pr">Ondersteun &amp; PR</string>
+    <!--
+      <string name="support" />
+      <string name="support_and_pr" />
+      -->
+    <string name="acknowledgements">Erkennings</string>
+    <string name="translate">Vertaal</string>
+    <!-- IconPickerPreference -->
+    <string name="icon_picker_default_category">Icons</string>
+    <string name="icon_picker_reset_to_default">Herstel tot standaard</string>
+    <string name="icon_pack_external_picker">Maak Eksterne Kieser oop</string>
+    <string name="pick_icon_from_label">Kies ikoon van</string>
+    <string name="icon_picker_load_failed">Kon nie meer ikone laai nie.</string>
+    <!-- Misc -->
+    <string name="all_apps_search_bar_hint">Soek toepassings</string>
+    <string name="settings_button_text">Tuisinstellings</string>
+    <string name="item_removed">Item verwyder.</string>
+    <string name="all_apps_no_search_results">Geen toepassings gevind wat ooreenstem met \"<xliff:g example="Android" id="query">%1$s</xliff:g> nie.</string>
+    <string name="dt2s_admin_hint_title">Admin Toestemmings vereis</string>
+    <string name="dt2s_admin_hint">Om Dubbeltik om te slaap te gebruik, stel Lawnchair as \'n toesteladministrasie-toepassing. Tik Maak Instellings oop, tik dan op \"Aktiveer hierdie toesteladministrasie-toepassing.\"</string>
+    <string name="dt2s_admin_warning">Dubbeltik om te slaap sal afgeskakel word.</string>
+    <string name="dt2s_a11y_hint_title">Skakel Toeganklikheiddiens aan</string>
+    <string name="dt2s_a11y_hint">Skakel die Lawnchair-toeganklikheiddiens aan om Dubbeltik om te slaap te gebruik. Tik Open Settings, kies Lawnchair en skakel Gebruik Lawnchair aan.</string>
+    <string name="dt2s_warning_open_settings">Maak Instellings oop</string>
+    <string name="loading">Laai tans…</string>
+    <string name="system">Stelsel</string>
+    <string name="customize_button_text">Pasmaak</string>
+    <string name="label">Etiket</string>
+    <string name="hide_from_drawer">Versteek uit App-laai</string>
+    <string name="suggestion_pref_screen_title">Voorstelle</string>
+    <string name="n_percent">%1$d%%</string>
+    <!-- Bug reporting -->
+    <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
+    <string name="crash_report_notif_title">%1$s het omgeval</string>
+    <string name="action_upload_crash_report">Laai Crash Log op</string>
+    <string name="action_copy_link">Kopieer skakel</string>
+    <string name="action_upload_error">Oplaai het misluk</string>
+    <string name="dogbin_uploading">Laai tans op…</string>
+    <string name="bugreport_channel_name">Bug Reports</string>
+    <string name="status_channel_name">Oplaai status</string>
+    <string name="bugreport_group_summary">%d nuwe verslae.</string>
+    <string name="bugreport_group_summary_multiple">Veelvuldige nuwe verslae.</string>
+    <!-- Search ig -->
+    <string name="show_search_result_types">Wys in soekresultate</string>
+    <string name="search_pref_result_people_title">People</string>
+    <string name="search_pref_result_shortcuts_title">App-kortpaaie</string>
+    <string name="search_pref_result_tips_title">Pixel Wenke</string>
+    <string name="all_apps_device_search_hint">Soek</string>
+    <string name="search_input_action_clear_results">Vee soekkassie uit</string>
+    <string name="label_search">Soek</string>
+    <string name="label_lens">Google Lens</string>
+    <string name="label_voice_search">Stemsoektog</string>
+    <string name="all_apps_search_market_message">Soek vir meer toepassings</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
+    <string name="quickstep_incompatible">Onversoenbare stelselintegrasie</string>
+    <string name="quickstep_incompatible_description">Jou toestel is opgestel om stelselgebare (bekend as Quickstep) te hê wat verskaf word deur%1$s, maar hierdie weergawe van%1$s is nie versoenbaar met jou Android-weergawe nie. Deïnstalleer asseblief om voort te gaan om jou toestel te gebruik%1$s opdaterings of deaktiveer %1$s as \'n stelselgebareverskaffer.</string>
+    <string name="delete">Vee uit</string>
+    <!-- Backup -->
+    <string name="create_backup">Skep rugsteun</string>
+    <string name="create_backup_action">Skep</string>
+    <string name="what_to_backup">Wat om te rugsteun</string>
+    <string name="backup_content_layout_and_settings">Uitleg en instellings</string>
+    <string name="backup_content_wallpaper">Muurpapier</string>
+    <string name="backup_create_success">Rugsteun geskep.</string>
+    <string name="backup_create_error">Kon nie rugsteun skep nie.</string>
+    <string name="restore_backup">Herstel rugsteun</string>
+    <string name="restore_backup_action">Herstel</string>
+    <string name="what_to_restore">Wat om te herstel</string>
+    <string name="backup_restore_success">Rugsteun herstel.</string>
+    <string name="backup_restore_error">Kon nie rugsteun herstel nie.</string>
+    <string name="invalid_backup_file">Ongeldige rugsteunlêer.</string>
+    <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="app_label">App</string>
-    <string name="website_label">Website</string>
 </resources>

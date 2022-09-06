@@ -15,112 +15,95 @@
   ~ limitations under the License.
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="icon_pack">Paket ikona</string>
-    <string name="icon_style">Stil ikona</string>
+    <!-- PreferenceDashboard -->
     <string name="settings">Podešavanja</string>
-    <string name="home_screen_label">Početni ekran</string>
-    <string name="home_screen_description">Fid, mreža, ikone</string>
     <string name="general_label">Opšte</string>
     <string name="general_description">Boje, paketi ikona i tačke za obaveštenja</string>
-    <string name="home_screen_rotation_label">Rotacija početnog ekrana</string>
-    <string name="home_screen_rotaton_description">Kada se uređaj rotira.</string>
-    <string name="auto_add_shortcuts_label">Dodaj nove aplikacije na početni ekran</string>
+    <string name="home_screen_label">Početni ekran</string>
+    <string name="home_screen_description">Fid, mreža, ikone</string>
+    <!--
+    <string name="smartspace" />
+    -->
+    <string name="what_to_show">Šta želite da se prikazuje?</string>
     <string name="dock_label">Dok</string>
     <string name="dock_description">Okvir za pretragu, broj ikona</string>
     <string name="app_drawer_label">Lista aplikacija</string>
     <string name="app_drawer_description">Skrivene aplikacije, broj kolona, ikone</string>
     <string name="folders_label">Folderi</string>
     <string name="folders_description">Broj redova i kolona</string>
-    <string name="app_drawer_columns">Broj kolona na listi aplikacija</string>
-    <string name="dock_icons">Ikone u doku</string>
-    <string name="max_folder_columns">Maksimalan broj kolona u folderu</string>
-    <string name="max_folder_rows">Maksimalan broj redova u folderu</string>
-    <string name="home_screen_grid">Mreža početnog ekrana</string>
-    <string name="home_screen_lock">Zaključaj početni ekran</string>
-    <string name="home_screen_unlock">Otključaj početni ekran</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Prikaži dugme za zaključavanje u iskačućem prozoru</string>
-    <string name="columns">Kolone</string>
-    <string name="grid">Mreža</string>
-    <string name="rows">Redovi</string>
-    <string name="icons">Ikone</string>
-    <string name="icon_size">Veličina ikona</string>
-    <string name="label_size">Veličina oznaka</string>
-    <string name="show_home_labels">Prikazuj oznake</string>
-    <string name="notification_dots">Tačke za obaveštenja</string>
-    <string name="smartspace_preferences">Podešavanja</string>
+    <string name="gestures_label">Pokreti</string>
+    <string name="gestures_description">Dodiri i prevlačenja</string>
+    <string name="quickstep_label">Nedavno</string>
+    <string name="quickstep_description">Dugme „Obriši sve”, radijus ugla</string>
     <string name="about_label">O aplikaciji</string>
-    <string name="news">Novosti</string>
-    <string name="support">Podrška</string>
-    <string name="acknowledgements">Priznanja</string>
-    <string name="devops">DevOps</string>
-    <string name="quickswitch_maintenance">Održavanje QuickSwitcha</string>
-    <string name="all_apps_search_bar_hint">Pretražite aplikacije</string>
-    <string name="settings_button_text">Podešavanja početnog ekrana</string>
-    <string name="development">Razvoj</string>
+    <!-- <string name="version" /> (unknown source) -->
+    <!-- PreferencesOverflowMenu() in PreferencesDashboard -->
     <string name="app_info_drop_target_label">Informacije o aplikaciji</string>
-    <string name="item_removed">Stavka je uklonjena.</string>
-    <string name="all_apps_no_search_results">Nije pronađena aplikacija koja odgovara upitu „<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
-    <string name="translucent_background">Poluprozirna pozadina</string>
-    <string name="background_opacity">Prozirnost pozadine</string>
-    <string name="background_lightness_label">Osvetljenost pozadine</string>
-    <string name="adaptive_icons">Prilagodljive ikone</string>
-    <string name="adaptive_icon_background_description">Koristi 100% osvetljenja pozadine za belu.</string>
+    <string name="debug_restart_launcher">Restartuj Lawnchair</string>
+    <string name="experimental_features_label">Eksperimentalne funkcije</string>
+    <!-- ExperimentalFeaturesPreferences -->
+    <!-- <string name="experimental_features_label" />-->
+    <string name="font_picker_label">Prilagođavanje fonta</string>
+    <string name="font_picker_description">Neki tekst ostaje neizmenjen.</string>
+    <string name="smartspace_calendar_label">Prilagođavanje kalendara u vidžetu „Kratak pregled”</string>
+    <string name="smartspace_calendar_description">Omogućava prikaz datuma u kalendarskim sistemima koji nisu gregorijanski.</string>
+    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
+    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <!-- GeneralPreferences -->
+    <string name="home_screen_rotation_label">Rotacija početnog ekrana</string>
+    <string name="home_screen_rotaton_description">Kada se uređaj rotira.</string>
+    <string name="font_label">Font (eksperimentalno)</string>
+    <!-- <string name="icons" /> -->
+    <string name="icon_style">Stil ikona</string>
+    <string name="icon_shape_label">Oblik ikona</string>
     <string name="auto_adaptive_icons_label">Prilagodljive ikone</string>
     <string name="auto_adaptive_icons_description">Za sve neprilagodljive ikone.</string>
-    <string name="support_and_pr">Podrška i odnosi sa javnošću</string>
-    <string name="workspace_dt2s">Dodirnite dvaput za stanje spavanja</string>
-    <string name="smart_space_enable">Vidžet „Kratak pregled”</string>
-    <string name="design_and_development">Dizajn i razvoj</string>
-    <string name="translate">Prevođenje</string>
-    <string name="product">Proizvod</string>
-    <string name="hidden_apps_label">Skrivene aplikacije</string>
-    <string name="hidden_apps_label_with_count">Skrivene aplikacije (%1$d)</string>
-    <plurals name="apps_count">
-        <item quantity="one">%1$d aplikacija</item>
-        <item quantity="few">%1$d aplikacije</item>
-        <item quantity="other">%1$d aplikacija</item>
-    </plurals>
-    <string name="hotseat_qsb_label">Prikaži okvir za pretragu</string>
-    <string name="qsb_search_provider_app_required">Potrebna je aplikacija.</string>
-    <string name="dt2s_admin_hint_title">Potrebne su administratorske dozvole</string>
-    <string name="dt2s_admin_hint">Da biste koristili funkciju „Dodirnite dvaput za stanje spavanja”, podesite Lawnchair kao aplikaciju za administratora uređaja. U podešavanjima dodirnite „Aktiviraj ovu aplikaciju za administratora uređaja”.</string>
-    <string name="dt2s_admin_warning">Funkcija „Dodirnite dvaput za stanje spavanja” će biti onemogućena.</string>
-    <string name="dt2s_a11y_hint_title">Uključite uslugu pristupačnosti</string>
-    <string name="dt2s_a11y_hint">Da biste koristili funkciju „Dodirnite dvaput za stanje spavanja”, uključite uslugu pristupačnosti Lawnchaira. U podešavanjima izaberite Lawnchair i dodirnite „Koristi Lawnchair”.</string>
-    <string name="dt2s_warning_open_settings">Otvori podešavanja</string>
-    <string name="minus_one_enable">Fid</string>
-    <string name="minus_one_unavailable">Fid nije instaliran.</string>
-    <string name="fuzzy_search_title">Približna pretraga</string>
-    <string name="fuzzy_search_desc">Približni rezultati pretrage na osnovu upita.</string>
+    <string name="background_lightness_label">Osvetljenost pozadine</string>
+    <string name="adaptive_icon_background_description">Koristi 100% osvetljenja pozadine za belu.</string>
+    <string name="notification_dots">Tačke za obaveštenja</string>
+    <!-- <string name="notification_dots" />-->
+    <string name="show_notification_count">Prikazuj broj obaveštenja</string>
+    <string name="notification_dots_color">Boja tačaka za obaveštenja</string>
+    <!-- Notification popup -->
+    <string name="missing_notification_access_label">Pristup obaveštenjima</string>
+    <string name="missing_notification_access_description">Potreban je pristup obaveštenjima.</string>
+    <string name="msg_missing_notification_access">Da biste koristili tačke za obaveštenja, dodelite aplikaciji <xliff:g id="name" example="My App">%1$s</xliff:g> pristup obaveštenjima.</string>
+    <string name="title_change_settings">Promenite podešavanja</string>
+    <string name="colors">Boje</string>
     <string name="theme_label">Tema</string>
     <string name="theme_light">Svetla</string>
     <string name="theme_dark">Tamna</string>
     <string name="theme_system_default">Sistemska</string>
     <string name="theme_follow_wallpaper">Na osnovu pozadine</string>
-    <string name="quickstep_label">Nedavno</string>
-    <string name="clear_all_as_action_label">Dugme „Obriši sve” u dnu</string>
-    <string name="window_corner_radius_label">Radijus ugla ekrana</string>
-    <string name="override_window_corner_radius_label">Prilagođeni radijus ugla ekrana</string>
-    <string name="window_corner_radius_description">Kada prevučete nagore i otvorite Nedavno, trenutna aplikacija će pratiti vaš prst i smanjiti se u karticu. Pomoću ovog klizača podesite radijus ugla kartice kada je skoro u režimu celog ekrana kako bi odgovarala uglovima ekrana.</string>
-    <string name="system_icons">Sistemske ikone</string>
     <string name="accent_color">Boja za naglašavanje</string>
-    <string name="invalid_color">Nevažeća boja</string>
-    <string name="done">Gotovo</string>
-    <string name="loading">Učitavanje…</string>
-    <string name="system">Sistemska</string>
-    <string name="wallpaper">Pozadina</string>
-    <string name="custom">Prilagođena</string>
-    <string name="quickstep_description">Dugme „Obriši sve”, radijus ugla</string>
-    <string name="wallpaper_scrolling_label">Pomeranje pozadine</string>
-    <string name="show_sys_ui_scrim">Gornja senka</string>
-    <string name="show_status_bar">Prikaži statusnu traku</string>
-    <string name="layout">Raspored</string>
-    <string name="what_to_show">Šta želite da se prikazuje?</string>
-    <string name="missing_notification_access_label">Pristup obaveštenjima</string>
-    <string name="missing_notification_access_description">Potreban je pristup obaveštenjima.</string>
-    <string name="msg_missing_notification_access">Da biste koristili tačke za obaveštenja, dodelite aplikaciji <xliff:g id="name" example="My App">%1$s</xliff:g> pristup obaveštenjima.</string>
-    <string name="title_change_settings">Promenite podešavanja</string>
-    <string name="debug_restart_launcher">Restartuj Lawnchair</string>
+    <!-- IconPackPreferences -->
+    <!-- <string name="icon_style" /> -->
+    <string name="icon_pack">Paket ikona</string>
+    <string name="system_icons">Sistemske ikone</string>
+    <string name="themed_icon_title">Tematske ikone</string>
+    <string name="themed_icons_off_label">Isključeno</string>
+    <string name="themed_icons_home_label">Početni ekran</string>
+    <string name="themed_icons_home_and_drawer_label">Početni ekran i lista aplikacija</string>
+    <string name="lawnicons_not_installed_description">Lawnicons nije instaliran.</string>
+    <!-- <string name="cancel" /> (unknown source)-->
+    <!-- IconPickerPreference -->
+    <!-- <string name="icon_shape_label" /> -->
+    <string name="icon_shape_system">Sistemski</string>
+    <string name="icon_shape_circle">Krug</string>
+    <string name="icon_shape_cylinder">Valjak</string>
+    <string name="icon_shape_diamond">Diamond</string>
+    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_cupertino">iOS</string>
+    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_rounded_square">Zaobljeni kvadrat</string>
+    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_square">Kvadrat</string>
+    <string name="icon_shape_squircle">Zaokrugljeni kvadrat</string>
+    <string name="icon_shape_teardrop">Suza</string>
+    <!-- FontSelectionPreferences -->
+    <string name="pref_fonts_add_fonts">Dodaj fontove</string>
+    <string name="pref_fonts_add_fonts_summary">Podržani su OTF i TTF formati.</string>
     <string name="pref_fonts_missing_font">Font nije pronađen.</string>
     <string name="font_variant_italic">Kurziv</string>
     <string name="font_weight_thin">Najtanji</string>
@@ -132,41 +115,11 @@
     <string name="font_weight_bold">Masni</string>
     <string name="font_weight_extra_bold">Veoma masni</string>
     <string name="font_weight_extra_black">Debeli</string>
-    <string name="font_label">Font (eksperimentalno)</string>
     <string name="reset_font">Resetuj</string>
-    <string name="search_input_action_clear_results">Obriši okvir za pretragu</string>
-    <string name="pref_category_search">Pretraga</string>
-    <string name="pref_search_auto_show_keyboard">Automatski prikazuj tastaturu</string>
-    <string name="label_search">Pretražite</string>
-    <string name="label_lens">Google objektiv</string>
-    <string name="label_voice_search">Glasovna pretraga</string>
-    <string name="apply_grid">Primeni</string>
-    <string name="x_by_y">%1$d × %2$d</string>
-    <string name="folder_preview_bg_opacity_label">Neprozirnost pozadine ikona</string>
-    <string name="icon_shape_label">Oblik ikona</string>
-    <string name="icon_shape_system">Sistemski</string>
-    <string name="icon_shape_circle">Krug</string>
-    <string name="icon_shape_square">Kvadrat</string>
-    <string name="icon_shape_rounded_square">Zaobljeni kvadrat</string>
-    <string name="icon_shape_squircle">Zaokrugljeni kvadrat</string>
-    <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_teardrop">Suza</string>
-    <string name="icon_shape_cylinder">Valjak</string>
-    <string name="icon_shape_cupertino">iOS</string>
-    <string name="customize_button_text">Prilagodi</string>
-    <string name="app_title_label">Naziv</string>
-    <string name="hide_from_drawer">Sakrij sa liste aplikacija</string>
-    <string name="action_lens">Objektiv</string>
-    <string name="force_rounded_widgets">Zaobljeni uglovi</string>
-    <string name="allow_widget_overlap">Dozvoli preklapanje</string>
-    <string name="suggestion_pref_screen_title">Predlozi</string>
-    <string name="n_percent">%1$d%%</string>
-    <string name="label">Oznaka</string>
-    <string name="presets">Šabloni</string>
-    <string name="colors">Boje</string>
+    <!-- colorpreference/* -->
     <string name="dynamic">Dinamička</string>
-    <string name="all_apps_search_market_message">Pretražite više aplikacija</string>
-    <string name="show_app_search_bar">Prikaži okvir za pretragu</string>
+    <string name="presets">Šabloni</string>
+    <string name="custom">Prilagođena</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Crvena</string>
     <string name="rgb_green">Zelena</string>
@@ -177,56 +130,47 @@
     <string name="hsb_brightness">Osvetljenost</string>
     <string name="hex">Hex</string>
     <string name="color_sliders">Klizači</string>
-    <string name="lawnchair_bug_report">Izveštaj o grešci u Lawnchairu</string>
-    <string name="crash_report_notif_title">%1$s je otkazao</string>
-    <string name="action_upload_crash_report">Otpremi evidenciju o otkazivanju</string>
-    <string name="action_copy_link">Kopiraj link</string>
     <string name="action_copy">Kopiraj</string>
+    <string name="action_paste">Paste</string>
     <string name="copied_toast">Kopirano u privremenu memoriju.</string>
-    <string name="action_share">Deli</string>
-    <string name="action_upload_error">Otpremanje nije uspelo</string>
-    <string name="dogbin_uploading">Otpremanje…</string>
-    <string name="bugreport_channel_name">Izveštaji o greškama</string>
-    <string name="status_channel_name">Status otpremanja</string>
-    <string name="bugreport_group_summary">%d novih izveštaja.</string>
-    <string name="bugreport_group_summary_multiple">Više novih izveštaja.</string>
-    <string name="themed_icon_title">Tematske ikone</string>
-    <string name="corner_radius_label">Radijus ugla</string>
-    <string name="search_bar_label">Okvir za pretragu</string>
-    <string name="apply_accent_color_label">Primeni boju za naglašavanje</string>
-    <string name="show_search_result_types">Prikaži u rezultatima pretrage</string>
-    <string name="search_pref_result_people_title">Ljudi</string>
-    <string name="search_pref_result_shortcuts_title">Prečice aplikacije</string>
-    <string name="search_pref_result_tips_title">Pixel saveti</string>
-    <string name="row_height_label">Visina reda</string>
-    <string name="all_apps_device_search_hint">Pretražite</string>
-    <string name="dark_status_bar_label">Tamna statusna traka</string>
-    <string name="lawnicons_not_installed_description">Lawnicons nije instaliran.</string>
-    <string name="icon_picker_default_category">Ikone</string>
-    <string name="icon_picker_reset_to_default">Vrati na podrazumevano</string>
-    <string name="icon_pack_external_picker">Otvori spoljni birač</string>
-    <string name="recents_actions_label">Brze radnje</string>
-    <string name="recents_clear_all">Obriši sve</string>
-    <string name="pick_icon_from_label">Izaberi ikonu iz</string>
-    <string name="experimental_features_label">Eksperimentalne funkcije</string>
-    <string name="icon_picker_label">Prilagođavanje ikona za svaku aplikaciju</string>
-    <string name="icon_picker_description">Može da prouzrokuje zamrzavanje Lawnchaira.</string>
-    <string name="font_picker_label">Prilagođavanje fonta</string>
-    <string name="font_picker_description">Neki tekst ostaje neizmenjen.</string>
-    <string name="smartspace_calendar_label">Prilagođavanje kalendara u vidžetu „Kratak pregled”</string>
-    <string name="smartspace_calendar_description">Omogućava prikaz datuma u kalendarskim sistemima koji nisu gregorijanski.</string>
-    <string name="search_provider_app_search">Pretraga aplikacija</string>
-    <string name="always_open_website_label">Uvek otvaraj veb-sajt</string>
-    <string name="always_open_website_description">Otvara veb-sajt pretraživača čak i kada je instalirana aplikacija.</string>
-    <string name="search_provider">Pretraživač</string>
+    <string name="invalid_color">Nevažeća boja</string>
+    <string name="app_icon_color">Boja ikone aplikacije</string>
+    <!-- HomeScreenPreferences -->
+    <!-- <string name="general_label" /> -->
+    <string name="auto_add_shortcuts_label">Dodaj nove aplikacije na početni ekran</string>
+    <!-- <string name="gesture_double_tap" /> -->
+    <string name="minus_one_enable">Fid</string>
+    <string name="minus_one_unavailable">Fid nije instaliran.</string>
+    <string name="wallpaper">Pozadina</string>
+    <string name="wallpaper_scrolling_label">Pomeranje pozadine</string>
+    <string name="wallpaper_depth_effect_label">Efekat dubine pozadine</string>
+    <string name="wallpaper_depth_effect_description">Uvećajte ili umanjite prikaz pozadine pri prelazu između stanja.</string>
+    <string name="show_sys_ui_scrim">Gornja senka</string>
+    <string name="layout">Raspored</string>
+    <string name="home_screen_grid">Mreža početnog ekrana</string>
+    <string name="home_screen_lock">Zaključaj početni ekran</string>
+    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_unlock">Otključaj početni ekran</string>
+    <!-- used in popup menu-->
+    <string name="home_screen_lock_toggle_from_home_popup">Prikaži dugme za zaključavanje u iskačućem prozoru</string>
+    <string name="home_screen_locked">Home Screen is locked.</string>
     <string name="status_bar_label">Statusna traka</string>
-    <string name="show_notification_count">Prikazuj broj obaveštenja</string>
-    <string name="icon_picker_load_failed">Nije moguće učitati još ikona.</string>
+    <string name="show_status_bar">Prikaži statusnu traku</string>
+    <string name="dark_status_bar_label">Tamna statusna traka</string>
+    <string name="icons">Ikone</string>
+    <string name="icon_size">Veličina ikona</string>
+    <string name="show_home_labels">Prikazuj oznake</string>
+    <string name="label_size">Veličina oznaka</string>
     <string name="reset_custom_icons">Resetuj prilagođene ikone</string>
     <string name="reset_custom_icons_confirmation">Sve prilagođene ikone će se resetovati. Želite li da nastavite?</string>
-    <string name="taskbar_label">Traka zadataka</string>
-    <string name="enable_taskbar_experimental">Omogući traku zadataka (eksperimentalno)</string>
-    <string name="error_no_market_or_browser_installed">Nije instalirana prodavnica aplikacija ili pregledač.</string>
+    <!-- <string name="widget_button_text" /> (unknown source)-->
+    <string name="force_rounded_widgets">Zaobljeni uglovi</string>
+    <string name="allow_widget_overlap">Dozvoli preklapanje</string>
+    <!-- HomeScreenGridPreferences -->
+    <!-- <string name="home_screen_grid" /> -->
+    <string name="columns">Kolone</string>
+    <string name="rows">Redovi</string>
+    <string name="apply_grid">Primeni</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Puni se</string>
@@ -242,6 +186,9 @@
     <string name="smartspace_date_and_time">Datum i vreme</string>
     <string name="smartspace_date">Datum</string>
     <string name="smartspace_time">Vreme</string>
+    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_follow_system">Prati sistemska podešavanja</string>
+    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
     <string name="smartspace_time_24_hour_format">24-časovni format</string>
     <string name="smartspace_weather">Vremenska prognoza</string>
     <string name="smartspace_battery_status">Status baterije</string>
@@ -251,33 +198,59 @@
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="smartspace_calendar_gregorian">Gregorijanski</string>
     <string name="smartspace_calendar_persian">Persijski</string>
-    <string name="quickstep_incompatible">Nekompatibilna integracija sa sistemom</string>
-    <string name="quickstep_incompatible_description">Uređaj je podešen da koristi sistemske pokrete (poznate kao Quickstep), koje pruža %1$s, ali ova verzija aplikacije %1$s nije kompatibilna sa vašom verzijom Androida. Da biste nastavili da koristite uređaj, deinstalirajte ažuriranja aplikacije %1$s ili onemogućite %1$s kao dobavljača sistemskih pokreta.</string>
-    <string name="pref_fonts_add_fonts">Dodaj fontove</string>
-    <string name="pref_fonts_add_fonts_summary">Podržani su OTF i TTF formati.</string>
-    <string name="delete">Izbriši</string>
-    <string name="themed_icons_off_label">Isključeno</string>
-    <string name="themed_icons_home_label">Početni ekran</string>
-    <string name="themed_icons_home_and_drawer_label">Početni ekran i lista aplikacija</string>
-    <!-- Backup -->
-    <string name="create_backup">Napravi rezervnu kopiju</string>
-    <string name="create_backup_action">Napravi</string>
-    <string name="what_to_backup">Šta želite da sačuvate?</string>
-    <string name="backup_content_layout_and_settings">Raspored i podešavanja</string>
-    <string name="backup_content_wallpaper">Pozadina</string>
-    <string name="backup_create_success">Rezervna kopija je napravljena.</string>
-    <string name="backup_create_error">Nije moguće napraviti rezervnu kopiju.</string>
-    <string name="restore_backup">Vrati rezervnu kopiju</string>
-    <string name="restore_backup_action">Vrati</string>
-    <string name="what_to_restore">Šta želite da vratite?</string>
-    <string name="backup_restore_success">Rezervna kopija je vraćena.</string>
-    <string name="backup_restore_error">Nije moguće vratiti rezervnu kopiju.</string>
-    <string name="invalid_backup_file">Nevažeći fajl rezervne kopije.</string>
-    <string name="wallpaper_depth_effect_label">Efekat dubine pozadine</string>
-    <string name="wallpaper_depth_effect_description">Uvećajte ili umanjite prikaz pozadine pri prelazu između stanja.</string>
-    <string name="gestures_label">Pokreti</string>
-    <string name="gestures_description">Dodiri i prevlačenja</string>
-    <!-- Gestures -->
+    <string name="smartspace_preferences">Podešavanja</string>
+    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
+    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <!-- DockPreferences -->
+    <!-- <string name="dock_label" /> -->
+    <string name="search_bar_label">Okvir za pretragu</string>
+    <string name="hotseat_qsb_label">Prikaži okvir za pretragu</string>
+    <string name="corner_radius_label">Radijus ugla</string>
+    <string name="apply_accent_color_label">Primeni boju za naglašavanje</string>
+    <string name="search_provider">Pretraživač</string>
+    <string name="grid">Mreža</string>
+    <string name="dock_icons">Ikone u doku</string>
+    <!-- SearchProviderPreferences -->
+    <!-- search_provider -->
+    <string name="search_provider_app_search">Pretraga aplikacija</string>
+    <string name="app_label">Aplikacija</string>
+    <string name="website_label">Veb-sajt</string>
+    <string name="qsb_search_provider_app_required">Potrebna je aplikacija.</string>
+    <!-- AppDrawerPrefences -->
+    <!-- app_drawer_label -->
+    <!-- general_label -->
+    <string name="hidden_apps_label">Skrivene aplikacije</string>
+    <string name="background_opacity">Prozirnost pozadine</string>
+    <string name="pref_category_search">Pretraga</string>
+    <string name="show_app_search_bar">Prikaži okvir za pretragu</string>
+    <string name="pref_search_auto_show_keyboard">Automatski prikazuj tastaturu</string>
+    <string name="fuzzy_search_title">Približna pretraga</string>
+    <string name="fuzzy_search_desc">Približni rezultati pretrage na osnovu upita.</string>
+    <!-- <string name="grid" /> -->
+    <string name="app_drawer_columns">Broj kolona na listi aplikacija</string>
+    <string name="row_height_label">Visina reda</string>
+    <!--
+    <string name="icons" />
+      <string name="icon_size" />
+      <string name="show_home_labels" />
+      <string name="label_size" />
+    -->
+    <!-- HiddenAppsPreferences -->
+    <string name="hidden_apps_label_with_count">Skrivene aplikacije (%1$d)</string>
+    <plurals name="apps_count">
+        <item quantity="one">%1$d aplikacija</item>
+        <item quantity="few">%1$d aplikacije</item>
+        <item quantity="other">%1$d aplikacija</item>
+    </plurals>
+    <!-- FolderPreferences -->
+    <!-- <string name="folders_label" /> -->
+    <!-- <string name="general_label" /> -->
+    <string name="folder_preview_bg_opacity_label">Neprozirnost pozadine ikona</string>
+    <!-- <string name="grid" /> -->
+    <string name="max_folder_columns">Maksimalan broj kolona u folderu</string>
+    <string name="max_folder_rows">Maksimalan broj redova u folderu</string>
+    <!-- GesturePreference -->
+    <!-- <string name="gestures_label" /> -->
     <string name="gesture_double_tap">Dvostruki dodir</string>
     <string name="gesture_swipe_up">Prevlačenje nagore</string>
     <string name="gesture_swipe_down">Prevlačenje nadole</string>
@@ -292,7 +265,99 @@
     <string name="gesture_handler_open_app_search">Otvori pretragu aplikacija</string>
     <string name="gesture_handler_open_search">Otvori pretragu</string>
     <string name="pick_app_for_gesture">Izaberite aplikaciju</string>
+    <!-- QuickstepPreferences -->
+    <!-- <string name="quickstep_label" /> -->
+    <!-- <string name="general_label" /> -->
+    <string name="translucent_background">Poluprozirna pozadina</string>
+    <string name="recents_actions_label">Brze radnje</string>
+    <!-- <string name="screenshot" /> (unknown source) -->
+    <string name="action_share">Deli</string>
+    <string name="action_lens">Objektiv</string>
+    <string name="recents_clear_all">Obriši sve</string>
+    <string name="window_corner_radius_label">Radijus ugla ekrana</string>
+    <string name="override_window_corner_radius_label">Prilagođeni radijus ugla ekrana</string>
+    <string name="window_corner_radius_description">Kada prevučete nagore i otvorite Nedavno, trenutna aplikacija će pratiti vaš prst i smanjiti se u karticu. Pomoću ovog klizača podesite radijus ugla kartice kada je skoro u režimu celog ekrana kako bi odgovarala uglovima ekrana.</string>
+    <string name="taskbar_label">Traka zadataka</string>
+    <string name="enable_taskbar_experimental">Omogući traku zadataka (eksperimentalno)</string>
+    <!-- about/About.kt -->
+    <string name="news">Novosti</string>
+    <string name="support">Podrška</string>
+    <string name="product">Proizvod</string>
+    <string name="design_and_development">Dizajn i razvoj</string>
+    <string name="development">Razvoj</string>
+    <string name="quickswitch_maintenance">Održavanje QuickSwitcha</string>
+    <string name="devops">DevOps</string>
+    <string name="support_and_pr">Podrška i odnosi sa javnošću</string>
+    <!--
+      <string name="support" />
+      <string name="support_and_pr" />
+      -->
+    <string name="acknowledgements">Priznanja</string>
+    <string name="translate">Prevođenje</string>
+    <!-- IconPickerPreference -->
+    <string name="icon_picker_default_category">Ikone</string>
+    <string name="icon_picker_reset_to_default">Vrati na podrazumevano</string>
+    <string name="icon_pack_external_picker">Otvori spoljni birač</string>
+    <string name="pick_icon_from_label">Izaberi ikonu iz</string>
+    <string name="icon_picker_load_failed">Nije moguće učitati još ikona.</string>
+    <!-- Misc -->
+    <string name="all_apps_search_bar_hint">Pretražite aplikacije</string>
+    <string name="settings_button_text">Podešavanja početnog ekrana</string>
+    <string name="item_removed">Stavka je uklonjena.</string>
+    <string name="all_apps_no_search_results">Nije pronađena aplikacija koja odgovara upitu „<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="dt2s_admin_hint_title">Potrebne su administratorske dozvole</string>
+    <string name="dt2s_admin_hint">Da biste koristili funkciju „Dodirnite dvaput za stanje spavanja”, podesite Lawnchair kao aplikaciju za administratora uređaja. U podešavanjima dodirnite „Aktiviraj ovu aplikaciju za administratora uređaja”.</string>
+    <string name="dt2s_admin_warning">Funkcija „Dodirnite dvaput za stanje spavanja” će biti onemogućena.</string>
+    <string name="dt2s_a11y_hint_title">Uključite uslugu pristupačnosti</string>
+    <string name="dt2s_a11y_hint">Da biste koristili funkciju „Dodirnite dvaput za stanje spavanja”, uključite uslugu pristupačnosti Lawnchaira. U podešavanjima izaberite Lawnchair i dodirnite „Koristi Lawnchair”.</string>
+    <string name="dt2s_warning_open_settings">Otvori podešavanja</string>
+    <string name="loading">Učitavanje…</string>
+    <string name="system">Sistemska</string>
+    <string name="customize_button_text">Prilagodi</string>
+    <string name="label">Oznaka</string>
+    <string name="hide_from_drawer">Sakrij sa liste aplikacija</string>
+    <string name="suggestion_pref_screen_title">Predlozi</string>
+    <string name="n_percent">%1$d%%</string>
+    <!-- Bug reporting -->
+    <string name="lawnchair_bug_report">Izveštaj o grešci u Lawnchairu</string>
+    <string name="crash_report_notif_title">%1$s je otkazao</string>
+    <string name="action_upload_crash_report">Otpremi evidenciju o otkazivanju</string>
+    <string name="action_copy_link">Kopiraj link</string>
+    <string name="action_upload_error">Otpremanje nije uspelo</string>
+    <string name="dogbin_uploading">Otpremanje…</string>
+    <string name="bugreport_channel_name">Izveštaji o greškama</string>
+    <string name="status_channel_name">Status otpremanja</string>
+    <string name="bugreport_group_summary">%d novih izveštaja.</string>
+    <string name="bugreport_group_summary_multiple">Više novih izveštaja.</string>
+    <!-- Search ig -->
+    <string name="show_search_result_types">Prikaži u rezultatima pretrage</string>
+    <string name="search_pref_result_people_title">Ljudi</string>
+    <string name="search_pref_result_shortcuts_title">Prečice aplikacije</string>
+    <string name="search_pref_result_tips_title">Pixel saveti</string>
+    <string name="all_apps_device_search_hint">Pretražite</string>
+    <string name="search_input_action_clear_results">Obriši okvir za pretragu</string>
+    <string name="label_search">Pretražite</string>
+    <string name="label_lens">Google objektiv</string>
+    <string name="label_voice_search">Glasovna pretraga</string>
+    <string name="all_apps_search_market_message">Pretražite više aplikacija</string>
+    <string name="error_no_market_or_browser_installed">Nije instalirana prodavnica aplikacija ili pregledač.</string>
+    <string name="quickstep_incompatible">Nekompatibilna integracija sa sistemom</string>
+    <string name="quickstep_incompatible_description">Uređaj je podešen da koristi sistemske pokrete (poznate kao Quickstep), koje pruža %1$s, ali ova verzija aplikacije %1$s nije kompatibilna sa vašom verzijom Androida. Da biste nastavili da koristite uređaj, deinstalirajte ažuriranja aplikacije %1$s ili onemogućite %1$s kao dobavljača sistemskih pokreta.</string>
+    <string name="delete">Izbriši</string>
+    <!-- Backup -->
+    <string name="create_backup">Napravi rezervnu kopiju</string>
+    <string name="create_backup_action">Napravi</string>
+    <string name="what_to_backup">Šta želite da sačuvate?</string>
+    <string name="backup_content_layout_and_settings">Raspored i podešavanja</string>
+    <string name="backup_content_wallpaper">Pozadina</string>
+    <string name="backup_create_success">Rezervna kopija je napravljena.</string>
+    <string name="backup_create_error">Nije moguće napraviti rezervnu kopiju.</string>
+    <string name="restore_backup">Vrati rezervnu kopiju</string>
+    <string name="restore_backup_action">Vrati</string>
+    <string name="what_to_restore">Šta želite da vratite?</string>
+    <string name="backup_restore_success">Rezervna kopija je vraćena.</string>
+    <string name="backup_restore_error">Nije moguće vratiti rezervnu kopiju.</string>
+    <string name="invalid_backup_file">Nevažeći fajl rezervne kopije.</string>
+    <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s i %s</string>
-    <string name="app_label">Aplikacija</string>
-    <string name="website_label">Veb-sajt</string>
 </resources>

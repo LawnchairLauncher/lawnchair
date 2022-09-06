@@ -15,110 +15,95 @@
   ~ limitations under the License.
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="icon_pack">Paket Ikon</string>
-    <string name="icon_style">Gaya Ikon</string>
+    <!-- PreferenceDashboard -->
     <string name="settings">Pengaturan</string>
-    <string name="home_screen_label">Tampilan Depan</string>
-    <string name="home_screen_description">Umpan, Kisi, Ikon</string>
     <string name="general_label">Umum</string>
     <string name="general_description">Warna, Titik Notifikasi, Paket Ikon</string>
-    <string name="home_screen_rotation_label">Rotasi Layar Beranda</string>
-    <string name="home_screen_rotaton_description">Ketika perangkat diputar.</string>
-    <string name="auto_add_shortcuts_label">Tambahkan Aplikasi Baru ke Layar Beranda</string>
+    <string name="home_screen_label">Tampilan Depan</string>
+    <string name="home_screen_description">Umpan, Kisi, Ikon</string>
+    <!--
+    <string name="smartspace" />
+    -->
+    <string name="what_to_show">Yang Ditampilkan</string>
     <string name="dock_label">Bilah</string>
     <string name="dock_description">Bilah Pencarian, Jumlah Ikon</string>
     <string name="app_drawer_label">Halaman Aplikasi</string>
     <string name="app_drawer_description">Aplikasi Tersembunyi, Jumlah Kolom, Ikon</string>
     <string name="folders_label">Folder</string>
     <string name="folders_description">Jumlah Baris dan Kolom</string>
-    <string name="app_drawer_columns">Kolom Laci Aplikasi</string>
-    <string name="dock_icons">Ikon Bilah</string>
-    <string name="max_folder_columns">Maks. Kolom Folder</string>
-    <string name="max_folder_rows">Maks. Baris Folder</string>
-    <string name="home_screen_grid">Kisi Layar Utama</string>
-    <string name="home_screen_lock">Kunci Layar Beranda</string>
-    <string name="home_screen_unlock">Buka Kunci Layar Beranda</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Tampilkan Tombol Kunci di Pop-Up</string>
-    <string name="columns">Kolom</string>
-    <string name="grid">Kisi</string>
-    <string name="rows">Baris</string>
-    <string name="icons">Ikon</string>
-    <string name="icon_size">Ukuran Ikon</string>
-    <string name="label_size">Ukuran Label</string>
-    <string name="show_home_labels">Tampilkan Label</string>
-    <string name="notification_dots">Titik Notifikasi</string>
-    <string name="smartspace_preferences">Pengaturan</string>
+    <string name="gestures_label">Isyarat</string>
+    <string name="gestures_description">Ketukan dan Usapan</string>
+    <string name="quickstep_label">Terbaru</string>
+    <string name="quickstep_description">Tombol Hapus Semua, Radius Sudut</string>
     <string name="about_label">Tentang</string>
-    <string name="news">Berita</string>
-    <string name="support">Dukungan</string>
-    <string name="acknowledgements">Pengakuan</string>
-    <string name="devops">Opsi Developer</string>
-    <string name="quickswitch_maintenance">Pengadaan QuickSwitch</string>
-    <string name="all_apps_search_bar_hint">Cari Aplikasi</string>
-    <string name="settings_button_text">Pengaturan Beranda</string>
-    <string name="development">Pengembangan</string>
+    <!-- <string name="version" /> (unknown source) -->
+    <!-- PreferencesOverflowMenu() in PreferencesDashboard -->
     <string name="app_info_drop_target_label">Info Aplikasi</string>
-    <string name="item_removed">Item dihapus.</string>
-    <string name="all_apps_no_search_results">Tidak ada aplikasi yang cocok dengan “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
-    <string name="translucent_background">Latar Belakang Tembus</string>
-    <string name="background_opacity">Kegelapan Latar Belakang</string>
-    <string name="background_lightness_label">Kecerahan Latar Belakang</string>
-    <string name="adaptive_icons">Ikon Adaptif</string>
-    <string name="adaptive_icon_background_description">Gunakan 100% kecerahan latar untuk warna putih.</string>
+    <string name="debug_restart_launcher">Muat ulang Lawnchair</string>
+    <string name="experimental_features_label">Fitur Eksperimental</string>
+    <!-- ExperimentalFeaturesPreferences -->
+    <!-- <string name="experimental_features_label" />-->
+    <string name="font_picker_label">Kustomisasi Font</string>
+    <string name="font_picker_description">Beberapa teks tetap tidak berubah.</string>
+    <string name="smartspace_calendar_label">Kustomisasi Kalender Sekilas</string>
+    <string name="smartspace_calendar_description">Izinkan menampilkan tanggal dalam sistem kalender non-Gregorian.</string>
+    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
+    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <!-- GeneralPreferences -->
+    <string name="home_screen_rotation_label">Rotasi Layar Beranda</string>
+    <string name="home_screen_rotaton_description">Ketika perangkat diputar.</string>
+    <string name="font_label">Font (Eksperimental)</string>
+    <!-- <string name="icons" /> -->
+    <string name="icon_style">Gaya Ikon</string>
+    <string name="icon_shape_label">Ukuran Ikon</string>
     <string name="auto_adaptive_icons_label">Ikon Adaptif Otomatis</string>
     <string name="auto_adaptive_icons_description">Untuk semua Ikon Non-Adaptif.</string>
-    <string name="support_and_pr">Bantuan &amp; PR</string>
-    <string name="workspace_dt2s">Ketuk Ganda untuk Tidur</string>
-    <string name="smart_space_enable">Tampilkan Widget At a Glance</string>
-    <string name="design_and_development">Desain &amp; Pengembangan</string>
-    <string name="translate">Terjemah</string>
-    <string name="product">Produk</string>
-    <string name="hidden_apps_label">Aplikasi Tersembunyi</string>
-    <string name="hidden_apps_label_with_count">Aplikasi Tersembunyi (%1$d)</string>
-    <plurals name="apps_count">
-        <item quantity="other">%1$d Aplikasi</item>
-    </plurals>
-    <string name="hotseat_qsb_label">Tampilkan Bilah Pencarian</string>
-    <string name="qsb_search_provider_app_required">Aplikasi diperlukan.</string>
-    <string name="dt2s_admin_hint_title">Izin Admin Dibutuhkan</string>
-    <string name="dt2s_admin_hint">Untuk menggunakan Ketuk Dua Kali untuk Tidur, atur Lawnchair sebagai aplikasi admin perangkat. Ketuk \"Buka Pengaturan,\" lalu ketuk \"Aktifkan aplikasi admin perangkat ini.\"</string>
-    <string name="dt2s_admin_warning">Ketuk Dua Kali untuk Tidur akan dimatikan.</string>
-    <string name="dt2s_a11y_hint_title">Aktifkan Layanan Aksesibilitas</string>
-    <string name="dt2s_a11y_hint">Untuk menggunakan Ketuk Dua Kali untuk Tidur, aktifkan layanan aksesibilitas Lawnchair. Ketuk \"Buka Pengaturan,\" lalu pilih \"Lawnchair\" dan aktifkan \"Gunakan Lawnchair\".</string>
-    <string name="dt2s_warning_open_settings">Buka Pengaturan</string>
-    <string name="minus_one_enable">Umpan</string>
-    <string name="minus_one_unavailable">Tidak ada umpan terpasang.</string>
-    <string name="fuzzy_search_title">Pencarian Fuzzy</string>
-    <string name="fuzzy_search_desc">Perkiraan pencocokan untuk pencarian aplikasi.</string>
+    <string name="background_lightness_label">Kecerahan Latar Belakang</string>
+    <string name="adaptive_icon_background_description">Gunakan 100% kecerahan latar untuk warna putih.</string>
+    <string name="notification_dots">Titik Notifikasi</string>
+    <!-- <string name="notification_dots" />-->
+    <string name="show_notification_count">Tampilkan Jumlah Notifikasi</string>
+    <string name="notification_dots_color">Warna Titik Notifikasi</string>
+    <!-- Notification popup -->
+    <string name="missing_notification_access_label">Akses Notifikasi Diperlukan</string>
+    <string name="missing_notification_access_description">Akses notifikasi diperlukan.</string>
+    <string name="msg_missing_notification_access">Untuk menggunakan Titik Notifikasi, berikan <xliff:g id="name" example="Aplikasi Saya">%1$s</xliff:g> akses ke notifikasi.</string>
+    <string name="title_change_settings">Ubah Pengaturan</string>
+    <string name="colors">Warna</string>
     <string name="theme_label">Tema</string>
     <string name="theme_light">Terang</string>
     <string name="theme_dark">Gelap</string>
     <string name="theme_system_default">Sistem</string>
     <string name="theme_follow_wallpaper">Samakan dengan wallpaper</string>
-    <string name="quickstep_label">Terbaru</string>
-    <string name="clear_all_as_action_label">Tombol Hapus Semua di Bawah</string>
-    <string name="window_corner_radius_label">Tampilan Radius Sudut</string>
-    <string name="override_window_corner_radius_label">Radius Sudut Layar Tersesuai</string>
-    <string name="window_corner_radius_description">Saat Anda menggesek ke atas untuk membuka Aplikasi Terkini, aplikasi saat ini mengikuti jari Anda, menyusut menjadi kartu. Gunakan penggeser ini untuk menyesuaikan radius sudut kartu saat hampir layar penuh sehingga cocok.</string>
-    <string name="system_icons">Ikon sistem</string>
     <string name="accent_color">Warna Aksen</string>
-    <string name="invalid_color">Invalid Color</string>
-    <string name="done">Selesai</string>
-    <string name="loading">Memuat…</string>
-    <string name="system">Sistem</string>
-    <string name="wallpaper">Wallpaper</string>
-    <string name="custom">Kustom</string>
-    <string name="quickstep_description">Tombol Hapus Semua, Radius Sudut</string>
-    <string name="wallpaper_scrolling_label">Latar Bergulir</string>
-    <string name="show_sys_ui_scrim">Bayangan Atas</string>
-    <string name="show_status_bar">Tampilkan bar status</string>
-    <string name="layout">Tata Letak</string>
-    <string name="what_to_show">Yang Ditampilkan</string>
-    <string name="missing_notification_access_label">Akses Notifikasi Diperlukan</string>
-    <string name="missing_notification_access_description">Akses notifikasi diperlukan.</string>
-    <string name="msg_missing_notification_access">Untuk menggunakan Titik Notifikasi, berikan <xliff:g id="name" example="Aplikasi Saya">%1$s</xliff:g> akses ke notifikasi.</string>
-    <string name="title_change_settings">Ubah Pengaturan</string>
-    <string name="debug_restart_launcher">Muat ulang Lawnchair</string>
+    <!-- IconPackPreferences -->
+    <!-- <string name="icon_style" /> -->
+    <string name="icon_pack">Paket Ikon</string>
+    <string name="system_icons">Ikon sistem</string>
+    <string name="themed_icon_title">Ikon Bertema</string>
+    <string name="themed_icons_off_label">Mati</string>
+    <string name="themed_icons_home_label">Tampilan Depan</string>
+    <string name="themed_icons_home_and_drawer_label">Layar Beranda &amp; Laci Aplikasi</string>
+    <string name="lawnicons_not_installed_description">Lawnicons tidak terpasang.</string>
+    <!-- <string name="cancel" /> (unknown source)-->
+    <!-- IconPickerPreference -->
+    <!-- <string name="icon_shape_label" /> -->
+    <string name="icon_shape_system">Sistem</string>
+    <string name="icon_shape_circle">Lingkaran</string>
+    <string name="icon_shape_cylinder">Silinder</string>
+    <string name="icon_shape_diamond">Diamond</string>
+    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_cupertino">iOS</string>
+    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_rounded_square">Persegi Membulat</string>
+    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_square">Persegi</string>
+    <string name="icon_shape_squircle">Squircle</string>
+    <string name="icon_shape_teardrop">Tetesan air</string>
+    <!-- FontSelectionPreferences -->
+    <string name="pref_fonts_add_fonts">Tambahkan Font</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF didukung.</string>
     <string name="pref_fonts_missing_font">Font tidak ditemukan.</string>
     <string name="font_variant_italic">Miring</string>
     <string name="font_weight_thin">Tipis</string>
@@ -130,101 +115,62 @@
     <string name="font_weight_bold">Tebal</string>
     <string name="font_weight_extra_bold">Ekstra Tebal</string>
     <string name="font_weight_extra_black">Hitam</string>
-    <string name="font_label">Font (Eksperimental)</string>
     <string name="reset_font">Atur ulang</string>
-    <string name="search_input_action_clear_results">Hapus Hasil Pencarian</string>
-    <string name="pref_category_search">Cari</string>
-    <string name="pref_search_auto_show_keyboard">Tampilkan keyboard secara otomatis</string>
-    <string name="label_search">Pencarian</string>
-    <string name="label_lens">Google Lens</string>
-    <string name="label_voice_search">Penelusuran Suara</string>
-    <string name="apply_grid">Terapkan</string>
-    <string name="x_by_y">%1$d × %2$d</string>
-    <string name="folder_preview_bg_opacity_label">Ketebalan Transparansi Latar Belakang Ikon</string>
-    <string name="icon_shape_label">Ukuran Ikon</string>
-    <string name="icon_shape_system">Sistem</string>
-    <string name="icon_shape_circle">Lingkaran</string>
-    <string name="icon_shape_square">Persegi</string>
-    <string name="icon_shape_rounded_square">Persegi Membulat</string>
-    <string name="icon_shape_squircle">Squircle</string>
-    <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_teardrop">Tetesan air</string>
-    <string name="icon_shape_cylinder">Silinder</string>
-    <string name="icon_shape_cupertino">iOS</string>
-    <string name="customize_button_text">Kustomisasi</string>
-    <string name="app_title_label">Judul</string>
-    <string name="hide_from_drawer">Sembunyikan dari Layar Aplikasi</string>
-    <string name="action_lens">Lens</string>
-    <string name="force_rounded_widgets">Sudut Lengkung</string>
-    <string name="allow_widget_overlap">Izinkan Tumpang Tindih</string>
-    <string name="suggestion_pref_screen_title">Saran</string>
-    <string name="n_percent">%1$d%%</string>
-    <string name="label">Label</string>
-    <string name="presets">Preset</string>
-    <string name="colors">Warna</string>
+    <!-- colorpreference/* -->
     <string name="dynamic">Dinamis</string>
-    <string name="all_apps_search_market_message">Cari Aplikasi Lainnya</string>
-    <string name="show_app_search_bar">Tampilkan Bilah Pencarian</string>
+    <string name="presets">Preset</string>
+    <string name="custom">Kustom</string>
     <string name="rgb">RGB</string>
-    <string name="rgb_red">Red</string>
-    <string name="rgb_green">Green</string>
-    <string name="rgb_blue">Blue</string>
+    <string name="rgb_red">Merah</string>
+    <string name="rgb_green">Hijau</string>
+    <string name="rgb_blue">Biru</string>
     <string name="hsb">HSB</string>
-    <string name="hsb_hue">Hue</string>
-    <string name="hsb_saturation">Saturation</string>
-    <string name="hsb_brightness">Brightness</string>
+    <string name="hsb_hue">Warna</string>
+    <string name="hsb_saturation">Saturasi</string>
+    <string name="hsb_brightness">Kecerahan</string>
     <string name="hex">Hex</string>
     <string name="color_sliders">Sliders</string>
-    <string name="lawnchair_bug_report">Laporan Bug Lawnchair</string>
-    <string name="crash_report_notif_title">%1$s berhenti</string>
-    <string name="action_upload_crash_report">Unggah Log Mogok</string>
-    <string name="action_copy_link">Salin Tautan</string>
     <string name="action_copy">Salin</string>
+    <string name="action_paste">Paste</string>
     <string name="copied_toast">Disalin ke papan klip.</string>
-    <string name="action_share">Bagikan</string>
-    <string name="action_upload_error">Gagal mengunggah</string>
-    <string name="dogbin_uploading">Mengunggah…</string>
-    <string name="bugreport_channel_name">Laporan Bug</string>
-    <string name="status_channel_name">Status Unggahan</string>
-    <string name="bugreport_group_summary">%d laporan baru.</string>
-    <string name="bugreport_group_summary_multiple">Beberapa laporan baru.</string>
-    <string name="themed_icon_title">Ikon Bertema</string>
-    <string name="corner_radius_label">Radius sudut</string>
-    <string name="search_bar_label">Bilah Pencarian</string>
-    <string name="apply_accent_color_label">Terapkan Warna Aksen</string>
-    <string name="show_search_result_types">Tampilkan pada Hasil Pencarian</string>
-    <string name="search_pref_result_people_title">Orang</string>
-    <string name="search_pref_result_shortcuts_title">Pintasan Aplikasi</string>
-    <string name="search_pref_result_tips_title">Tips Pixel</string>
-    <string name="row_height_label">Tinggi Baris</string>
-    <string name="all_apps_device_search_hint">Pencarian</string>
-    <string name="dark_status_bar_label">Tingkat Kegelapan Bar Status</string>
-    <string name="lawnicons_not_installed_description">Lawnicons tidak terpasang.</string>
-    <string name="icon_picker_default_category">Ikon</string>
-    <string name="icon_picker_reset_to_default">setel ulang ke default</string>
-    <string name="icon_pack_external_picker">Buka Pemilih Eksternal</string>
-    <string name="recents_actions_label">Tindakan Cepat</string>
-    <string name="recents_clear_all">Hapus Semua</string>
-    <string name="pick_icon_from_label">Pilih Ikon Dari</string>
-    <string name="experimental_features_label">Fitur Eksperimental</string>
-    <string name="icon_picker_label">Kustomisasi Ikon Per-Aplikasi</string>
-    <string name="icon_picker_description">Dapat menyebabkan Lawnchair membeku.</string>
-    <string name="font_picker_label">Kustomisasi Font</string>
-    <string name="font_picker_description">Beberapa teks tetap tidak berubah.</string>
-    <string name="smartspace_calendar_label">Kustomisasi Kalender Sekilas</string>
-    <string name="smartspace_calendar_description">Izinkan menampilkan tanggal dalam sistem kalender non-Gregorian.</string>
-    <string name="search_provider_app_search">Pencarian App</string>
-    <string name="always_open_website_label">Selalu Buka Laman Web</string>
-    <string name="always_open_website_description">Buka situs web pencarian bahkan jika aplikasi telah terinstal.</string>
-    <string name="search_provider">Penyedia Pencarian</string>
+    <string name="invalid_color">Warna tidak valid</string>
+    <string name="app_icon_color">Warna Icon Aplikasi</string>
+    <!-- HomeScreenPreferences -->
+    <!-- <string name="general_label" /> -->
+    <string name="auto_add_shortcuts_label">Tambahkan Aplikasi Baru ke Layar Beranda</string>
+    <!-- <string name="gesture_double_tap" /> -->
+    <string name="minus_one_enable">Umpan</string>
+    <string name="minus_one_unavailable">Tidak ada umpan terpasang.</string>
+    <string name="wallpaper">Wallpaper</string>
+    <string name="wallpaper_scrolling_label">Latar Bergulir</string>
+    <string name="wallpaper_depth_effect_label">Efek Kedalaman Wallpaper</string>
+    <string name="wallpaper_depth_effect_description">Perbesar dan perkecil latar saat beralih antar layar.</string>
+    <string name="show_sys_ui_scrim">Bayangan Atas</string>
+    <string name="layout">Tata Letak</string>
+    <string name="home_screen_grid">Kisi Layar Utama</string>
+    <string name="home_screen_lock">Kunci Layar Beranda</string>
+    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_unlock">Buka Kunci Layar Beranda</string>
+    <!-- used in popup menu-->
+    <string name="home_screen_lock_toggle_from_home_popup">Tampilkan Tombol Kunci di Pop-Up</string>
+    <string name="home_screen_locked">Home Screen is locked.</string>
     <string name="status_bar_label">Bar Status</string>
-    <string name="show_notification_count">Tampilkan Jumlah Notifikasi</string>
-    <string name="icon_picker_load_failed">Tidak dapat memuat lebih banyak ikon.</string>
+    <string name="show_status_bar">Tampilkan bar status</string>
+    <string name="dark_status_bar_label">Tingkat Kegelapan Bar Status</string>
+    <string name="icons">Ikon</string>
+    <string name="icon_size">Ukuran Ikon</string>
+    <string name="show_home_labels">Tampilkan Label</string>
+    <string name="label_size">Ukuran Label</string>
     <string name="reset_custom_icons">Atur Ulang Ikon Kustom</string>
     <string name="reset_custom_icons_confirmation">Semua ikon kustom akan diatur ulang. Apakah Anda ingin melanjutkan?</string>
-    <string name="taskbar_label">Bilah Tugas</string>
-    <string name="enable_taskbar_experimental">Aktifkan Taskbar (Eksperimental)</string>
-    <string name="error_no_market_or_browser_installed">Tidak ada toko aplikasi atau peramban yang terpasang.</string>
+    <!-- <string name="widget_button_text" /> (unknown source)-->
+    <string name="force_rounded_widgets">Sudut Lengkung</string>
+    <string name="allow_widget_overlap">Izinkan Tumpang Tindih</string>
+    <!-- HomeScreenGridPreferences -->
+    <!-- <string name="home_screen_grid" /> -->
+    <string name="columns">Kolom</string>
+    <string name="rows">Baris</string>
+    <string name="apply_grid">Terapkan</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Mengisi daya</string>
@@ -240,6 +186,9 @@
     <string name="smartspace_date_and_time">Tanggal &amp; Waktu</string>
     <string name="smartspace_date">Tanggal</string>
     <string name="smartspace_time">Waktu</string>
+    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_follow_system">Ikuti sistem</string>
+    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
     <string name="smartspace_time_24_hour_format">Format 24 Jam</string>
     <string name="smartspace_weather">Cuaca</string>
     <string name="smartspace_battery_status">Status Baterai</string>
@@ -249,33 +198,57 @@
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="smartspace_calendar_gregorian">Gregorian</string>
     <string name="smartspace_calendar_persian">Persia</string>
-    <string name="quickstep_incompatible">Integrasi Sistem yang Tidak Kompatibel</string>
-    <string name="quickstep_incompatible_description">Perangkat Anda dikonfigurasi untuk menggunakan isyarat sistem (dikenal sebagai Quickstep) yang disediakan oleh %1$s, tetapi versi %1$s ini tidak kompatibel dengan versi Android Anda. Untuk terus menggunakan perangkat Anda, mohon uninstal pembaruan %1$s atau menonaktifkan %1$s sebagai penyedia isyarat sistem.</string>
-    <string name="pref_fonts_add_fonts">Tambahkan Font</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF didukung.</string>
-    <string name="delete">Hapus</string>
-    <string name="themed_icons_off_label">Mati</string>
-    <string name="themed_icons_home_label">Tampilan Depan</string>
-    <string name="themed_icons_home_and_drawer_label">Layar Beranda &amp; Laci Aplikasi</string>
-    <!-- Backup -->
-    <string name="create_backup">Buat Cadangan</string>
-    <string name="create_backup_action">Buat</string>
-    <string name="what_to_backup">Apa yang Harus Dicadangkan</string>
-    <string name="backup_content_layout_and_settings">Tata Letak dan Pengaturan</string>
-    <string name="backup_content_wallpaper">Wallpaper</string>
-    <string name="backup_create_success">Cadangan dibuat.</string>
-    <string name="backup_create_error">Gagal membuat cadangan.</string>
-    <string name="restore_backup">Pulihkan cadangan</string>
-    <string name="restore_backup_action">Pulihkan</string>
-    <string name="what_to_restore">Apa yang Harus Dipulihkan</string>
-    <string name="backup_restore_success">Cadangan dipulihkan.</string>
-    <string name="backup_restore_error">Gagal memulihkan cadangan.</string>
-    <string name="invalid_backup_file">Berkas cadangan tidak valid.</string>
-    <string name="wallpaper_depth_effect_label">Efek Kedalaman Wallpaper</string>
-    <string name="wallpaper_depth_effect_description">Perbesar dan perkecil latar saat beralih antar layar.</string>
-    <string name="gestures_label">Isyarat</string>
-    <string name="gestures_description">Ketukan dan Usapan</string>
-    <!-- Gestures -->
+    <string name="smartspace_preferences">Pengaturan</string>
+    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
+    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <!-- DockPreferences -->
+    <!-- <string name="dock_label" /> -->
+    <string name="search_bar_label">Bilah Pencarian</string>
+    <string name="hotseat_qsb_label">Tampilkan Bilah Pencarian</string>
+    <string name="corner_radius_label">Radius sudut</string>
+    <string name="apply_accent_color_label">Terapkan Warna Aksen</string>
+    <string name="search_provider">Penyedia Pencarian</string>
+    <string name="grid">Kisi</string>
+    <string name="dock_icons">Ikon Bilah</string>
+    <!-- SearchProviderPreferences -->
+    <!-- search_provider -->
+    <string name="search_provider_app_search">Pencarian App</string>
+    <string name="app_label">Apl</string>
+    <string name="website_label">Website</string>
+    <string name="qsb_search_provider_app_required">Aplikasi diperlukan.</string>
+    <!-- AppDrawerPrefences -->
+    <!-- app_drawer_label -->
+    <!-- general_label -->
+    <string name="hidden_apps_label">Aplikasi Tersembunyi</string>
+    <string name="background_opacity">Kegelapan Latar Belakang</string>
+    <string name="pref_category_search">Cari</string>
+    <string name="show_app_search_bar">Tampilkan Bilah Pencarian</string>
+    <string name="pref_search_auto_show_keyboard">Tampilkan keyboard secara otomatis</string>
+    <string name="fuzzy_search_title">Pencarian Fuzzy</string>
+    <string name="fuzzy_search_desc">Perkiraan pencocokan untuk pencarian aplikasi.</string>
+    <!-- <string name="grid" /> -->
+    <string name="app_drawer_columns">Kolom Laci Aplikasi</string>
+    <string name="row_height_label">Tinggi Baris</string>
+    <!--
+    <string name="icons" />
+      <string name="icon_size" />
+      <string name="show_home_labels" />
+      <string name="label_size" />
+    -->
+    <!-- HiddenAppsPreferences -->
+    <string name="hidden_apps_label_with_count">Aplikasi Tersembunyi (%1$d)</string>
+    <plurals name="apps_count">
+        <item quantity="other">%1$d Aplikasi</item>
+    </plurals>
+    <!-- FolderPreferences -->
+    <!-- <string name="folders_label" /> -->
+    <!-- <string name="general_label" /> -->
+    <string name="folder_preview_bg_opacity_label">Ketebalan Transparansi Latar Belakang Ikon</string>
+    <!-- <string name="grid" /> -->
+    <string name="max_folder_columns">Maks. Kolom Folder</string>
+    <string name="max_folder_rows">Maks. Baris Folder</string>
+    <!-- GesturePreference -->
+    <!-- <string name="gestures_label" /> -->
     <string name="gesture_double_tap">Ketuk Dua Kali</string>
     <string name="gesture_swipe_up">Usap ke Atas</string>
     <string name="gesture_swipe_down">Usap ke Bawah</string>
@@ -290,7 +263,99 @@
     <string name="gesture_handler_open_app_search">Buka Pencarian Aplikasi</string>
     <string name="gesture_handler_open_search">Buka Pencarian</string>
     <string name="pick_app_for_gesture">Pilih Aplikasi</string>
+    <!-- QuickstepPreferences -->
+    <!-- <string name="quickstep_label" /> -->
+    <!-- <string name="general_label" /> -->
+    <string name="translucent_background">Latar Belakang Tembus</string>
+    <string name="recents_actions_label">Tindakan Cepat</string>
+    <!-- <string name="screenshot" /> (unknown source) -->
+    <string name="action_share">Bagikan</string>
+    <string name="action_lens">Lens</string>
+    <string name="recents_clear_all">Hapus Semua</string>
+    <string name="window_corner_radius_label">Tampilan Radius Sudut</string>
+    <string name="override_window_corner_radius_label">Radius Sudut Layar Tersesuai</string>
+    <string name="window_corner_radius_description">Saat Anda menggesek ke atas untuk membuka Aplikasi Terkini, aplikasi saat ini mengikuti jari Anda, menyusut menjadi kartu. Gunakan penggeser ini untuk menyesuaikan radius sudut kartu saat hampir layar penuh sehingga cocok.</string>
+    <string name="taskbar_label">Bilah Tugas</string>
+    <string name="enable_taskbar_experimental">Aktifkan Taskbar (Eksperimental)</string>
+    <!-- about/About.kt -->
+    <string name="news">Berita</string>
+    <string name="support">Dukungan</string>
+    <string name="product">Produk</string>
+    <string name="design_and_development">Desain &amp; Pengembangan</string>
+    <string name="development">Pengembangan</string>
+    <string name="quickswitch_maintenance">Pengadaan QuickSwitch</string>
+    <string name="devops">Opsi Developer</string>
+    <string name="support_and_pr">Bantuan &amp; PR</string>
+    <!--
+      <string name="support" />
+      <string name="support_and_pr" />
+      -->
+    <string name="acknowledgements">Pengakuan</string>
+    <string name="translate">Terjemah</string>
+    <!-- IconPickerPreference -->
+    <string name="icon_picker_default_category">Ikon</string>
+    <string name="icon_picker_reset_to_default">setel ulang ke default</string>
+    <string name="icon_pack_external_picker">Buka Pemilih Eksternal</string>
+    <string name="pick_icon_from_label">Pilih Ikon Dari</string>
+    <string name="icon_picker_load_failed">Tidak dapat memuat lebih banyak ikon.</string>
+    <!-- Misc -->
+    <string name="all_apps_search_bar_hint">Cari Aplikasi</string>
+    <string name="settings_button_text">Pengaturan Beranda</string>
+    <string name="item_removed">Item dihapus.</string>
+    <string name="all_apps_no_search_results">Tidak ada aplikasi yang cocok dengan “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="dt2s_admin_hint_title">Izin Admin Dibutuhkan</string>
+    <string name="dt2s_admin_hint">Untuk menggunakan Ketuk Dua Kali untuk Tidur, atur Lawnchair sebagai aplikasi admin perangkat. Ketuk \"Buka Pengaturan,\" lalu ketuk \"Aktifkan aplikasi admin perangkat ini.\"</string>
+    <string name="dt2s_admin_warning">Ketuk Dua Kali untuk Tidur akan dimatikan.</string>
+    <string name="dt2s_a11y_hint_title">Aktifkan Layanan Aksesibilitas</string>
+    <string name="dt2s_a11y_hint">Untuk menggunakan Ketuk Dua Kali untuk Tidur, aktifkan layanan aksesibilitas Lawnchair. Ketuk \"Buka Pengaturan,\" lalu pilih \"Lawnchair\" dan aktifkan \"Gunakan Lawnchair\".</string>
+    <string name="dt2s_warning_open_settings">Buka Pengaturan</string>
+    <string name="loading">Memuat…</string>
+    <string name="system">Sistem</string>
+    <string name="customize_button_text">Kustomisasi</string>
+    <string name="label">Label</string>
+    <string name="hide_from_drawer">Sembunyikan dari Layar Aplikasi</string>
+    <string name="suggestion_pref_screen_title">Saran</string>
+    <string name="n_percent">%1$d%%</string>
+    <!-- Bug reporting -->
+    <string name="lawnchair_bug_report">Laporan Bug Lawnchair</string>
+    <string name="crash_report_notif_title">%1$s berhenti</string>
+    <string name="action_upload_crash_report">Unggah Log Mogok</string>
+    <string name="action_copy_link">Salin Tautan</string>
+    <string name="action_upload_error">Gagal mengunggah</string>
+    <string name="dogbin_uploading">Mengunggah…</string>
+    <string name="bugreport_channel_name">Laporan Bug</string>
+    <string name="status_channel_name">Status Unggahan</string>
+    <string name="bugreport_group_summary">%d laporan baru.</string>
+    <string name="bugreport_group_summary_multiple">Beberapa laporan baru.</string>
+    <!-- Search ig -->
+    <string name="show_search_result_types">Tampilkan pada Hasil Pencarian</string>
+    <string name="search_pref_result_people_title">Orang</string>
+    <string name="search_pref_result_shortcuts_title">Pintasan Aplikasi</string>
+    <string name="search_pref_result_tips_title">Tips Pixel</string>
+    <string name="all_apps_device_search_hint">Pencarian</string>
+    <string name="search_input_action_clear_results">Hapus Hasil Pencarian</string>
+    <string name="label_search">Pencarian</string>
+    <string name="label_lens">Google Lens</string>
+    <string name="label_voice_search">Penelusuran Suara</string>
+    <string name="all_apps_search_market_message">Cari Aplikasi Lainnya</string>
+    <string name="error_no_market_or_browser_installed">Tidak ada toko aplikasi atau peramban yang terpasang.</string>
+    <string name="quickstep_incompatible">Integrasi Sistem yang Tidak Kompatibel</string>
+    <string name="quickstep_incompatible_description">Perangkat Anda dikonfigurasi untuk menggunakan isyarat sistem (dikenal sebagai Quickstep) yang disediakan oleh %1$s, tetapi versi %1$s ini tidak kompatibel dengan versi Android Anda. Untuk terus menggunakan perangkat Anda, mohon uninstal pembaruan %1$s atau menonaktifkan %1$s sebagai penyedia isyarat sistem.</string>
+    <string name="delete">Hapus</string>
+    <!-- Backup -->
+    <string name="create_backup">Buat Cadangan</string>
+    <string name="create_backup_action">Buat</string>
+    <string name="what_to_backup">Apa yang Harus Dicadangkan</string>
+    <string name="backup_content_layout_and_settings">Tata Letak dan Pengaturan</string>
+    <string name="backup_content_wallpaper">Wallpaper</string>
+    <string name="backup_create_success">Cadangan dibuat.</string>
+    <string name="backup_create_error">Gagal membuat cadangan.</string>
+    <string name="restore_backup">Pulihkan cadangan</string>
+    <string name="restore_backup_action">Pulihkan</string>
+    <string name="what_to_restore">Apa yang Harus Dipulihkan</string>
+    <string name="backup_restore_success">Cadangan dipulihkan.</string>
+    <string name="backup_restore_error">Gagal memulihkan cadangan.</string>
+    <string name="invalid_backup_file">Berkas cadangan tidak valid.</string>
+    <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="app_label">Apl</string>
-    <string name="website_label">Website</string>
 </resources>

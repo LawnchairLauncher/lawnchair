@@ -15,111 +15,95 @@
   ~ limitations under the License.
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="icon_pack">আইকন প্যাক</string>
-    <string name="icon_style">Icon Style</string>
+    <!-- PreferenceDashboard -->
     <string name="settings">সেটিংস</string>
-    <string name="home_screen_label">মূল পর্দা</string>
-    <string name="home_screen_description">সংবাদ, সারি, আইকনস</string>
     <string name="general_label">সাধারণ</string>
     <string name="general_description">বিজ্ঞাপন বিন্দু, প্রতীক গুচ্ছ</string>
-    <string name="home_screen_rotation_label">মূল পেজ ঘূর্ণন</string>
-    <string name="home_screen_rotaton_description">যখন ডিভাইস ঘোরানো হয়.</string>
-    <string name="auto_add_shortcuts_label">মূল পর্দায় নতুন অ্যাপ যোগ করুন</string>
+    <string name="home_screen_label">মূল পর্দা</string>
+    <string name="home_screen_description">সংবাদ, সারি, আইকনস</string>
+    <!--
+    <string name="smartspace" />
+    -->
+    <string name="what_to_show">কি দেখাতে হবে</string>
     <string name="dock_label">ডক</string>
     <string name="dock_description">সার্চ বার, আইকন গণনা</string>
     <string name="app_drawer_label">অ্যাপ ড্রয়ার</string>
     <string name="app_drawer_description">গোপন অ্যাপস, কলাম গণনা, আইকন-সমুহ</string>
     <string name="folders_label">ফোল্ডার-সমুহ</string>
     <string name="folders_description">সারি এবং কলাম সংখ্যা</string>
-    <string name="app_drawer_columns">অ্যাপ ড্রয়ারের কলাম</string>
-    <string name="dock_icons">ডকের আইকন-সমুহ</string>
-    <string name="max_folder_columns">সর্বাধিক. ফোল্ডারের কলাম-সমুহ</string>
-    <string name="max_folder_rows">সর্বাধিক. ফোল্ডারের সারি</string>
-    <string name="home_screen_grid">হোম স্ক্রীন গ্রিড</string>
-    <string name="home_screen_lock">Lock Home Screen</string>
-    <string name="home_screen_unlock">Unlock Home Screen</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
-    <string name="columns">কলাম</string>
-    <string name="grid">গ্রিড</string>
-    <string name="rows">সারি</string>
-    <string name="icons">আইকন-সমুহ</string>
-    <string name="icon_size">আইকনের আকার</string>
-    <string name="label_size">লেবেলের আয়তন</string>
-    <string name="show_home_labels">নামগুলো দেখান</string>
-    <string name="notification_dots">নোটিফিকেশন ডট</string>
-    <string name="smartspace_preferences">পছন্দ-সমুহ</string>
+    <string name="gestures_label">Gestures</string>
+    <string name="gestures_description">Taps and Swipes</string>
+    <string name="quickstep_label">সাম্প্রতিক</string>
+    <string name="quickstep_description">Clear All বাটনের কোণার ব্যাসার্ধ</string>
     <string name="about_label">সম্পর্কে</string>
-    <string name="news">খবর</string>
-    <string name="support">সমর্থন</string>
-    <string name="acknowledgements">স্বীকৃতি</string>
-    <string name="devops">দেভ-ওপস</string>
-    <string name="quickswitch_maintenance">কুইকসুইচ রক্ষণাবেক্ষণ</string>
-    <string name="all_apps_search_bar_hint">অ্যাপস সার্চ</string>
-    <string name="settings_button_text">হোম সেটিংস</string>
-    <string name="development">বিকাশ</string>
+    <!-- <string name="version" /> (unknown source) -->
+    <!-- PreferencesOverflowMenu() in PreferencesDashboard -->
     <string name="app_info_drop_target_label">অ্যাপ তথ্য</string>
-    <string name="item_removed">আইটেম সরানো হয়েছে.</string>
-    <string name="all_apps_no_search_results">কোনও অ্যাপ্লিকেশন মিলছে না \"<xliff:g example="Android" id="query">%1$s</xliff:g>\".</string>
-    <string name="translucent_background">স্বচ্ছ ব্যাকগ্রাউন্ড</string>
-    <string name="background_opacity">ব্যাকগ্রাউন্ডের অস্বচ্ছতা</string>
-    <string name="background_lightness_label">ব্যাকগ্রাউন্ড লাইটনেস</string>
-    <string name="adaptive_icons">অ্যাডাপ্টিভ আইকন</string>
-    <string name="adaptive_icon_background_description">সাদার জন্য ১০০% ব্যাকগ্রাউন্ড লাইটনেস ব্যাবহার করুন.</string>
+    <string name="debug_restart_launcher">লনচেয়ার পুনরায় চালু করুন</string>
+    <string name="experimental_features_label">পরীক্ষামূলক বৈশিষ্ট্য সমূহ</string>
+    <!-- ExperimentalFeaturesPreferences -->
+    <!-- <string name="experimental_features_label" />-->
+    <string name="font_picker_label">ফন্ট বদলানো</string>
+    <string name="font_picker_description">কিছু লেখা অপরিবর্তিত থেকে যেতে পারে.</string>
+    <string name="smartspace_calendar_label">\"আট আ গ্লান্স\" ক্যালেন্ডার পরিবর্তন</string>
+    <string name="smartspace_calendar_description">নন-জর্জিয়ান ক্যালেন্ডারে তারিখ প্রদর্শন করার অনুমুতি প্রদান করুন.</string>
+    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
+    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <!-- GeneralPreferences -->
+    <string name="home_screen_rotation_label">মূল পেজ ঘূর্ণন</string>
+    <string name="home_screen_rotaton_description">যখন ডিভাইস ঘোরানো হয়.</string>
+    <string name="font_label">হরফ (পরীক্ষামূলক)</string>
+    <!-- <string name="icons" /> -->
+    <string name="icon_style">Icon Style</string>
+    <string name="icon_shape_label">আইকন আকৃতি</string>
     <string name="auto_adaptive_icons_label">অটো অ্যাডাপ্টিভ আইকন</string>
     <string name="auto_adaptive_icons_description">সকল নন-অ্যাডাপ্টিভ আইকনের জন্য.</string>
-    <string name="support_and_pr">সমর্থন &amp; পি আর</string>
-    <string name="workspace_dt2s">লক করতে ডাবল-ট্যাপ করুন</string>
-    <string name="smart_space_enable">তাৎক্ষণিক Widget</string>
-    <string name="design_and_development">ডিজাইন &amp; ডেভেলপমেন্ট</string>
-    <string name="translate">অনুবাদ করুন</string>
-    <string name="product">পণ্য</string>
-    <string name="hidden_apps_label">লুকানো অ্যাপস</string>
-    <string name="hidden_apps_label_with_count">লুকানো অ্যাপস (%1$d)</string>
-    <plurals name="apps_count">
-        <item quantity="one">%1$dটি অ্যাপ</item>
-        <item quantity="other">%1$dটি অ্যাপস</item>
-    </plurals>
-    <string name="hotseat_qsb_label">সার্চ বার দেখান</string>
-    <string name="qsb_search_provider_app_required">App required.</string>
-    <string name="dt2s_admin_hint_title">এডমিনের অনুমতি আবশ্যক</string>
-    <string name="dt2s_admin_hint">ঘুমাতে ডবল-ট্যাপ ব্যবহার করুন, লনচেয়ারকে ডিভাইস অ্যাডমিন অ্যাপ হিসেবে সেট করুন। সেটিংস খুলুন আলতো চাপুন, তারপর \"এই ডিভাইস অ্যাডমিন অ্যাপটি সক্রিয় করুন\" এ আলতো চাপুন।</string>
-    <string name="dt2s_admin_warning">ডাবল-ট্যাপে লক হওয়া বন্ধ হয়ে যাবে.</string>
-    <string name="dt2s_a11y_hint_title">অ্যাক্সেসিবিলিটি সার্ভিস চালু করুন</string>
-    <string name="dt2s_a11y_hint">ঘুমাতে ডাবল-ট্যাপ ব্যবহার করতে, লনচেয়ার অ্যাক্সেসিবিলিটি পরিষেবা চালু করুন। সেটিংস খুলুন আলতো চাপুন, তারপর লনচেয়ার নির্বাচন করুন এবং লনচেয়ার ব্যবহার করুন চালু করুন.</string>
-    <string name="dt2s_warning_open_settings">সেটিংস এ যান</string>
-    <string name="minus_one_enable">ফিড</string>
-    <string name="minus_one_unavailable">ফিড ইনস্টল করা হয়নি.</string>
-    <string name="fuzzy_search_title">ফাজি সার্চ</string>
-    <string name="fuzzy_search_desc">অ্যাপ্লিকেশন সার্চের জন্য আনুমানিক মিল.</string>
+    <string name="background_lightness_label">ব্যাকগ্রাউন্ড লাইটনেস</string>
+    <string name="adaptive_icon_background_description">সাদার জন্য ১০০% ব্যাকগ্রাউন্ড লাইটনেস ব্যাবহার করুন.</string>
+    <string name="notification_dots">নোটিফিকেশন ডট</string>
+    <!-- <string name="notification_dots" />-->
+    <string name="show_notification_count">নোটিফিকেশান-এর সংখ্যা প্রদর্শন করুন</string>
+    <string name="notification_dots_color">Notification Dot Color</string>
+    <!-- Notification popup -->
+    <string name="missing_notification_access_label">বিজ্ঞপ্তি অ্যাক্সেস প্রয়োজন</string>
+    <string name="missing_notification_access_description">বিজ্ঞপ্তি অ্যাক্সেস প্রয়োজন.</string>
+    <string name="msg_missing_notification_access">বিজ্ঞপ্তি বিন্দু ব্যবহার করতে, <xliff:g id="name" example="My App">%1$s</xliff:g> বিজ্ঞপ্তি অ্যাক্সেস দিন.</string>
+    <string name="title_change_settings">সেটিংস্ পরিবর্তন করুন</string>
+    <string name="colors">রং</string>
     <string name="theme_label">থিম</string>
     <string name="theme_light">হালকা</string>
     <string name="theme_dark">গাঢ়</string>
     <string name="theme_system_default">সিস্টেম</string>
     <string name="theme_follow_wallpaper">ওয়ালপেপার ম্যাচ করুন</string>
-    <string name="quickstep_label">সাম্প্রতিক</string>
-    <string name="clear_all_as_action_label">\'ক্লিয়ার অল\' বাটন একদম শেষে</string>
-    <string name="window_corner_radius_label">স্ক্রীনের কোনার মাপ</string>
-    <string name="override_window_corner_radius_label">কাস্টম স্ক্রীন কর্নার ব্যাসার্ধ</string>
-    <string name="window_corner_radius_description">আপনি যখন সাম্প্রতিক খুলতে সোয়াইপ করেন, বর্তমান অ্যাপটি আপনার আঙুল অনুসরণ করে, একটি কার্ডে সঙ্কুচিত হয়। কার্ডের কোণার ব্যাসার্ধ সামঞ্জস্য করতে এই স্লাইডারটি ব্যবহার করুন যখন এটি প্রায় পূর্ণ-স্ক্রীন হয় যাতে এটি আপনার স্ক্রিনের কোণগুলির সাথে মেলে.</string>
-    <string name="system_icons">সিস্টেম আইকনস</string>
     <string name="accent_color">সুরের ধাপের রঙ</string>
-    <string name="invalid_color">Invalid Color</string>
-    <string name="done">সম্পন্ন</string>
-    <string name="loading">লোড হচ্ছে…</string>
-    <string name="system">সিস্টেম</string>
-    <string name="wallpaper">ওয়ালপেপার</string>
-    <string name="custom">পছন্দসই</string>
-    <string name="quickstep_description">Clear All বাটনের কোণার ব্যাসার্ধ</string>
-    <string name="wallpaper_scrolling_label">স্ক্রোল ওয়ালপেপার</string>
-    <string name="show_sys_ui_scrim">শীর্ষ ছায়া</string>
-    <string name="show_status_bar">স্ট্যাটাস বার দেখান</string>
-    <string name="layout">Layout</string>
-    <string name="what_to_show">কি দেখাতে হবে</string>
-    <string name="missing_notification_access_label">বিজ্ঞপ্তি অ্যাক্সেস প্রয়োজন</string>
-    <string name="missing_notification_access_description">বিজ্ঞপ্তি অ্যাক্সেস প্রয়োজন.</string>
-    <string name="msg_missing_notification_access">বিজ্ঞপ্তি বিন্দু ব্যবহার করতে, <xliff:g id="name" example="My App">%1$s</xliff:g> বিজ্ঞপ্তি অ্যাক্সেস দিন.</string>
-    <string name="title_change_settings">সেটিংস্ পরিবর্তন করুন</string>
-    <string name="debug_restart_launcher">লনচেয়ার পুনরায় চালু করুন</string>
+    <!-- IconPackPreferences -->
+    <!-- <string name="icon_style" /> -->
+    <string name="icon_pack">আইকন প্যাক</string>
+    <string name="system_icons">সিস্টেম আইকনস</string>
+    <string name="themed_icon_title">আবহ অনুযায়ী প্রতীক</string>
+    <string name="themed_icons_off_label">Off</string>
+    <string name="themed_icons_home_label">মূল পর্দা</string>
+    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
+    <string name="lawnicons_not_installed_description">Lawnicons ইন্সটল হয় নি।</string>
+    <!-- <string name="cancel" /> (unknown source)-->
+    <!-- IconPickerPreference -->
+    <!-- <string name="icon_shape_label" /> -->
+    <string name="icon_shape_system">সিস্টেম</string>
+    <string name="icon_shape_circle">বৃত্ত</string>
+    <string name="icon_shape_cylinder">বেলন</string>
+    <string name="icon_shape_diamond">Diamond</string>
+    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_cupertino">আই ও এস</string>
+    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_sammy">ওয়ান ইউয়াই</string>
+    <string name="icon_shape_rounded_square">গোলাকার স্কোয়ার</string>
+    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_square">বর্গ</string>
+    <string name="icon_shape_squircle">কাঠবিড়ালি</string>
+    <string name="icon_shape_teardrop">জলফোঁটা</string>
+    <!-- FontSelectionPreferences -->
+    <string name="pref_fonts_add_fonts">Add Fonts</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
     <string name="pref_fonts_missing_font">ফন্ট পাওয়া যায়নি.</string>
     <string name="font_variant_italic">তির্যক</string>
     <string name="font_weight_thin">পাতলা</string>
@@ -131,41 +115,11 @@
     <string name="font_weight_bold">বোল্ড</string>
     <string name="font_weight_extra_bold">অতিরিক্ত মোটা</string>
     <string name="font_weight_extra_black">কালো</string>
-    <string name="font_label">হরফ (পরীক্ষামূলক)</string>
     <string name="reset_font">রিসেট</string>
-    <string name="search_input_action_clear_results">সার্চ বক্স সাফ করুন</string>
-    <string name="pref_category_search">অনুসন্ধান করুন</string>
-    <string name="pref_search_auto_show_keyboard">স্বয়ংক্রিয়ভাবে কীবোর্ড দেখান</string>
-    <string name="label_search">অনুসন্ধান করুন</string>
-    <string name="label_lens">গুগল লেন্স</string>
-    <string name="label_voice_search">কণ্ঠের সন্ধান</string>
-    <string name="apply_grid">আবেদন করুন</string>
-    <string name="x_by_y">%1$d × %2$d</string>
-    <string name="folder_preview_bg_opacity_label">আইকন ব্যাকগ্রাউন্ড অপাসিটি</string>
-    <string name="icon_shape_label">আইকন আকৃতি</string>
-    <string name="icon_shape_system">সিস্টেম</string>
-    <string name="icon_shape_circle">বৃত্ত</string>
-    <string name="icon_shape_square">বর্গ</string>
-    <string name="icon_shape_rounded_square">গোলাকার স্কোয়ার</string>
-    <string name="icon_shape_squircle">কাঠবিড়ালি</string>
-    <string name="icon_shape_sammy">ওয়ান ইউয়াই</string>
-    <string name="icon_shape_teardrop">জলফোঁটা</string>
-    <string name="icon_shape_cylinder">বেলন</string>
-    <string name="icon_shape_cupertino">আই ও এস</string>
-    <string name="customize_button_text">কাস্টমাইজ করুন</string>
-    <string name="app_title_label">শিরোনাম</string>
-    <string name="hide_from_drawer">অ্যাপ ড্রয়ার থেকে লুকান</string>
-    <string name="action_lens">লেন্স</string>
-    <string name="force_rounded_widgets">গোলাকার কোণ</string>
-    <string name="allow_widget_overlap">Allow Overlap</string>
-    <string name="suggestion_pref_screen_title">পরামর্শ</string>
-    <string name="n_percent">%1$d%%</string>
-    <string name="label">নাম</string>
-    <string name="presets">পূর্বনির্ধারিত অবস্থাগুলো</string>
-    <string name="colors">রং</string>
+    <!-- colorpreference/* -->
     <string name="dynamic">পরিবর্তনশীল</string>
-    <string name="all_apps_search_market_message">আরো অ্যাপ খোঁজ করুন</string>
-    <string name="show_app_search_bar">সার্চ বার দেখান</string>
+    <string name="presets">পূর্বনির্ধারিত অবস্থাগুলো</string>
+    <string name="custom">পছন্দসই</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Red</string>
     <string name="rgb_green">Green</string>
@@ -176,56 +130,47 @@
     <string name="hsb_brightness">Brightness</string>
     <string name="hex">Hex</string>
     <string name="color_sliders">Sliders</string>
-    <string name="lawnchair_bug_report">Lawnchair বাগ রিপোর্ট</string>
-    <string name="crash_report_notif_title">%1$s সমস্যা হয়েছে</string>
-    <string name="action_upload_crash_report">সমস্যার উৎস আপলোড করুন</string>
-    <string name="action_copy_link">লিংক কপি করুন</string>
     <string name="action_copy">কপি</string>
+    <string name="action_paste">Paste</string>
     <string name="copied_toast">ক্লিপবোর্ডে কপি করা হয়েছে।</string>
-    <string name="action_share">শেয়ার করুন</string>
-    <string name="action_upload_error">আপলোড ব্যর্থ হয়েছে</string>
-    <string name="dogbin_uploading">আপলোড হচ্ছে…</string>
-    <string name="bugreport_channel_name">বাগ রিপোর্ট</string>
-    <string name="status_channel_name">আপলোডের অবস্থা</string>
-    <string name="bugreport_group_summary">%d নতুন রিপোর্ট.</string>
-    <string name="bugreport_group_summary_multiple">একাধিক নতুন রিপোর্ট।</string>
-    <string name="themed_icon_title">আবহ অনুযায়ী প্রতীক</string>
-    <string name="corner_radius_label">কোণের ব্যাসার্ধ</string>
-    <string name="search_bar_label">সার্চ বার</string>
-    <string name="apply_accent_color_label">অ্যাকসেন্ট রং ব্যবহার করুন</string>
-    <string name="show_search_result_types">সার্চ ফলাফলে দেখান</string>
-    <string name="search_pref_result_people_title">জনগণ</string>
-    <string name="search_pref_result_shortcuts_title">অ্যাপ শর্টকাট</string>
-    <string name="search_pref_result_tips_title">পিক্সেল সম্পর্কিত পরামর্শ</string>
-    <string name="row_height_label">সারির উচ্চতা</string>
-    <string name="all_apps_device_search_hint">অনুসন্ধান করুন</string>
-    <string name="dark_status_bar_label">কালো স্ট্যাটাস বার</string>
-    <string name="lawnicons_not_installed_description">Lawnicons ইন্সটল হয় নি।</string>
-    <string name="icon_picker_default_category">আইকন-সমুহ</string>
-    <string name="icon_picker_reset_to_default">সাধারণ অবস্থায় ফিরে যান</string>
-    <string name="icon_pack_external_picker">বাহ্যিক বাছাইকারী চালু করুন</string>
-    <string name="recents_actions_label">তড়িৎ কার্যক্রম</string>
-    <string name="recents_clear_all">সব মুছে ফেলুন</string>
-    <string name="pick_icon_from_label">এখানে থেকে প্রতীক বাছাই করুন</string>
-    <string name="experimental_features_label">পরীক্ষামূলক বৈশিষ্ট্য সমূহ</string>
-    <string name="icon_picker_label">অ্যাপ-প্রতি আইকন বদলানো</string>
-    <string name="icon_picker_description">লনচেয়ার বন্ধ হয়ে যেতে পারে.</string>
-    <string name="font_picker_label">ফন্ট বদলানো</string>
-    <string name="font_picker_description">কিছু লেখা অপরিবর্তিত থেকে যেতে পারে.</string>
-    <string name="smartspace_calendar_label">\"আট আ গ্লান্স\" ক্যালেন্ডার পরিবর্তন</string>
-    <string name="smartspace_calendar_description">নন-জর্জিয়ান ক্যালেন্ডারে তারিখ প্রদর্শন করার অনুমুতি প্রদান করুন.</string>
-    <string name="search_provider_app_search">অ্যাপ্লিকেশান খুঁজুন</string>
-    <string name="always_open_website_label">সবসময় ওয়েবসাইট খুলুন</string>
-    <string name="always_open_website_description">যদি সার্চ প্রদানকারীর অ্যাপ ইন্সটল করা থাকে তবুও তাদের ওয়েবসাইটে যান।</string>
-    <string name="search_provider">সার্চ প্রদানকারী</string>
+    <string name="invalid_color">Invalid Color</string>
+    <string name="app_icon_color">App Icon Color</string>
+    <!-- HomeScreenPreferences -->
+    <!-- <string name="general_label" /> -->
+    <string name="auto_add_shortcuts_label">মূল পর্দায় নতুন অ্যাপ যোগ করুন</string>
+    <!-- <string name="gesture_double_tap" /> -->
+    <string name="minus_one_enable">ফিড</string>
+    <string name="minus_one_unavailable">ফিড ইনস্টল করা হয়নি.</string>
+    <string name="wallpaper">ওয়ালপেপার</string>
+    <string name="wallpaper_scrolling_label">স্ক্রোল ওয়ালপেপার</string>
+    <string name="wallpaper_depth_effect_label">Wallpaper Depth Effect</string>
+    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="show_sys_ui_scrim">শীর্ষ ছায়া</string>
+    <string name="layout">Layout</string>
+    <string name="home_screen_grid">হোম স্ক্রীন গ্রিড</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <!-- used in popup menu-->
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_locked">Home Screen is locked.</string>
     <string name="status_bar_label">স্ট্যাটাস বার</string>
-    <string name="show_notification_count">নোটিফিকেশান-এর সংখ্যা প্রদর্শন করুন</string>
-    <string name="icon_picker_load_failed">আরও আইকন প্রদর্শন করা সম্ভব হয় নি.</string>
+    <string name="show_status_bar">স্ট্যাটাস বার দেখান</string>
+    <string name="dark_status_bar_label">কালো স্ট্যাটাস বার</string>
+    <string name="icons">আইকন-সমুহ</string>
+    <string name="icon_size">আইকনের আকার</string>
+    <string name="show_home_labels">নামগুলো দেখান</string>
+    <string name="label_size">লেবেলের আয়তন</string>
     <string name="reset_custom_icons">Reset Custom Icons</string>
     <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
-    <string name="taskbar_label">Taskbar</string>
-    <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
+    <!-- <string name="widget_button_text" /> (unknown source)-->
+    <string name="force_rounded_widgets">গোলাকার কোণ</string>
+    <string name="allow_widget_overlap">Allow Overlap</string>
+    <!-- HomeScreenGridPreferences -->
+    <!-- <string name="home_screen_grid" /> -->
+    <string name="columns">কলাম</string>
+    <string name="rows">সারি</string>
+    <string name="apply_grid">আবেদন করুন</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Charging</string>
@@ -241,6 +186,9 @@
     <string name="smartspace_date_and_time">Date &amp; Time</string>
     <string name="smartspace_date">তারিখ</string>
     <string name="smartspace_time">সময়</string>
+    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_follow_system">সিস্টেমকে অনুসরণ করুন</string>
+    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
     <string name="smartspace_time_24_hour_format">২৪ ঘণ্টা ফরম্যাট</string>
     <string name="smartspace_weather">আবহাওয়া</string>
     <string name="smartspace_battery_status">Battery Status</string>
@@ -250,33 +198,58 @@
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="smartspace_calendar_gregorian">Gregorian</string>
     <string name="smartspace_calendar_persian">Persian</string>
-    <string name="quickstep_incompatible">Incompatible System Integration</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
-    <string name="pref_fonts_add_fonts">Add Fonts</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
-    <string name="delete">মুছে ফেলুন</string>
-    <string name="themed_icons_off_label">Off</string>
-    <string name="themed_icons_home_label">মূল পর্দা</string>
-    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
-    <!-- Backup -->
-    <string name="create_backup">Create Backup</string>
-    <string name="create_backup_action">Create</string>
-    <string name="what_to_backup">What to Back Up</string>
-    <string name="backup_content_layout_and_settings">Layout and Settings</string>
-    <string name="backup_content_wallpaper">ওয়ালপেপার</string>
-    <string name="backup_create_success">Backup created.</string>
-    <string name="backup_create_error">Failed to create backup.</string>
-    <string name="restore_backup">Restore Backup</string>
-    <string name="restore_backup_action">Restore</string>
-    <string name="what_to_restore">What to Restore</string>
-    <string name="backup_restore_success">Backup restored.</string>
-    <string name="backup_restore_error">Failed to restore backup.</string>
-    <string name="invalid_backup_file">Invalid backup file.</string>
-    <string name="wallpaper_depth_effect_label">Wallpaper Depth Effect</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
-    <string name="gestures_label">Gestures</string>
-    <string name="gestures_description">Taps and Swipes</string>
-    <!-- Gestures -->
+    <string name="smartspace_preferences">পছন্দ-সমুহ</string>
+    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
+    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <!-- DockPreferences -->
+    <!-- <string name="dock_label" /> -->
+    <string name="search_bar_label">সার্চ বার</string>
+    <string name="hotseat_qsb_label">সার্চ বার দেখান</string>
+    <string name="corner_radius_label">কোণের ব্যাসার্ধ</string>
+    <string name="apply_accent_color_label">অ্যাকসেন্ট রং ব্যবহার করুন</string>
+    <string name="search_provider">সার্চ প্রদানকারী</string>
+    <string name="grid">গ্রিড</string>
+    <string name="dock_icons">ডকের আইকন-সমুহ</string>
+    <!-- SearchProviderPreferences -->
+    <!-- search_provider -->
+    <string name="search_provider_app_search">অ্যাপ্লিকেশান খুঁজুন</string>
+    <string name="app_label">App</string>
+    <string name="website_label">Website</string>
+    <string name="qsb_search_provider_app_required">App required.</string>
+    <!-- AppDrawerPrefences -->
+    <!-- app_drawer_label -->
+    <!-- general_label -->
+    <string name="hidden_apps_label">লুকানো অ্যাপস</string>
+    <string name="background_opacity">ব্যাকগ্রাউন্ডের অস্বচ্ছতা</string>
+    <string name="pref_category_search">অনুসন্ধান করুন</string>
+    <string name="show_app_search_bar">সার্চ বার দেখান</string>
+    <string name="pref_search_auto_show_keyboard">স্বয়ংক্রিয়ভাবে কীবোর্ড দেখান</string>
+    <string name="fuzzy_search_title">ফাজি সার্চ</string>
+    <string name="fuzzy_search_desc">অ্যাপ্লিকেশন সার্চের জন্য আনুমানিক মিল.</string>
+    <!-- <string name="grid" /> -->
+    <string name="app_drawer_columns">অ্যাপ ড্রয়ারের কলাম</string>
+    <string name="row_height_label">সারির উচ্চতা</string>
+    <!--
+    <string name="icons" />
+      <string name="icon_size" />
+      <string name="show_home_labels" />
+      <string name="label_size" />
+    -->
+    <!-- HiddenAppsPreferences -->
+    <string name="hidden_apps_label_with_count">লুকানো অ্যাপস (%1$d)</string>
+    <plurals name="apps_count">
+        <item quantity="one">%1$dটি অ্যাপ</item>
+        <item quantity="other">%1$dটি অ্যাপস</item>
+    </plurals>
+    <!-- FolderPreferences -->
+    <!-- <string name="folders_label" /> -->
+    <!-- <string name="general_label" /> -->
+    <string name="folder_preview_bg_opacity_label">আইকন ব্যাকগ্রাউন্ড অপাসিটি</string>
+    <!-- <string name="grid" /> -->
+    <string name="max_folder_columns">সর্বাধিক. ফোল্ডারের কলাম-সমুহ</string>
+    <string name="max_folder_rows">সর্বাধিক. ফোল্ডারের সারি</string>
+    <!-- GesturePreference -->
+    <!-- <string name="gestures_label" /> -->
     <string name="gesture_double_tap">Double Tap</string>
     <string name="gesture_swipe_up">Swipe Up</string>
     <string name="gesture_swipe_down">Swipe Down</string>
@@ -291,7 +264,99 @@
     <string name="gesture_handler_open_app_search">Open App Search</string>
     <string name="gesture_handler_open_search">Open Search</string>
     <string name="pick_app_for_gesture">Pick App</string>
+    <!-- QuickstepPreferences -->
+    <!-- <string name="quickstep_label" /> -->
+    <!-- <string name="general_label" /> -->
+    <string name="translucent_background">স্বচ্ছ ব্যাকগ্রাউন্ড</string>
+    <string name="recents_actions_label">তড়িৎ কার্যক্রম</string>
+    <!-- <string name="screenshot" /> (unknown source) -->
+    <string name="action_share">শেয়ার করুন</string>
+    <string name="action_lens">লেন্স</string>
+    <string name="recents_clear_all">সব মুছে ফেলুন</string>
+    <string name="window_corner_radius_label">স্ক্রীনের কোনার মাপ</string>
+    <string name="override_window_corner_radius_label">কাস্টম স্ক্রীন কর্নার ব্যাসার্ধ</string>
+    <string name="window_corner_radius_description">আপনি যখন সাম্প্রতিক খুলতে সোয়াইপ করেন, বর্তমান অ্যাপটি আপনার আঙুল অনুসরণ করে, একটি কার্ডে সঙ্কুচিত হয়। কার্ডের কোণার ব্যাসার্ধ সামঞ্জস্য করতে এই স্লাইডারটি ব্যবহার করুন যখন এটি প্রায় পূর্ণ-স্ক্রীন হয় যাতে এটি আপনার স্ক্রিনের কোণগুলির সাথে মেলে.</string>
+    <string name="taskbar_label">Taskbar</string>
+    <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
+    <!-- about/About.kt -->
+    <string name="news">খবর</string>
+    <string name="support">সমর্থন</string>
+    <string name="product">পণ্য</string>
+    <string name="design_and_development">ডিজাইন &amp; ডেভেলপমেন্ট</string>
+    <string name="development">বিকাশ</string>
+    <string name="quickswitch_maintenance">কুইকসুইচ রক্ষণাবেক্ষণ</string>
+    <string name="devops">দেভ-ওপস</string>
+    <string name="support_and_pr">সমর্থন &amp; পি আর</string>
+    <!--
+      <string name="support" />
+      <string name="support_and_pr" />
+      -->
+    <string name="acknowledgements">স্বীকৃতি</string>
+    <string name="translate">অনুবাদ করুন</string>
+    <!-- IconPickerPreference -->
+    <string name="icon_picker_default_category">আইকন-সমুহ</string>
+    <string name="icon_picker_reset_to_default">সাধারণ অবস্থায় ফিরে যান</string>
+    <string name="icon_pack_external_picker">বাহ্যিক বাছাইকারী চালু করুন</string>
+    <string name="pick_icon_from_label">এখানে থেকে প্রতীক বাছাই করুন</string>
+    <string name="icon_picker_load_failed">আরও আইকন প্রদর্শন করা সম্ভব হয় নি.</string>
+    <!-- Misc -->
+    <string name="all_apps_search_bar_hint">অ্যাপস সার্চ</string>
+    <string name="settings_button_text">হোম সেটিংস</string>
+    <string name="item_removed">আইটেম সরানো হয়েছে.</string>
+    <string name="all_apps_no_search_results">কোনও অ্যাপ্লিকেশন মিলছে না \"<xliff:g example="Android" id="query">%1$s</xliff:g>\".</string>
+    <string name="dt2s_admin_hint_title">এডমিনের অনুমতি আবশ্যক</string>
+    <string name="dt2s_admin_hint">ঘুমাতে ডবল-ট্যাপ ব্যবহার করুন, লনচেয়ারকে ডিভাইস অ্যাডমিন অ্যাপ হিসেবে সেট করুন। সেটিংস খুলুন আলতো চাপুন, তারপর \"এই ডিভাইস অ্যাডমিন অ্যাপটি সক্রিয় করুন\" এ আলতো চাপুন।</string>
+    <string name="dt2s_admin_warning">ডাবল-ট্যাপে লক হওয়া বন্ধ হয়ে যাবে.</string>
+    <string name="dt2s_a11y_hint_title">অ্যাক্সেসিবিলিটি সার্ভিস চালু করুন</string>
+    <string name="dt2s_a11y_hint">ঘুমাতে ডাবল-ট্যাপ ব্যবহার করতে, লনচেয়ার অ্যাক্সেসিবিলিটি পরিষেবা চালু করুন। সেটিংস খুলুন আলতো চাপুন, তারপর লনচেয়ার নির্বাচন করুন এবং লনচেয়ার ব্যবহার করুন চালু করুন.</string>
+    <string name="dt2s_warning_open_settings">সেটিংস এ যান</string>
+    <string name="loading">লোড হচ্ছে…</string>
+    <string name="system">সিস্টেম</string>
+    <string name="customize_button_text">কাস্টমাইজ করুন</string>
+    <string name="label">নাম</string>
+    <string name="hide_from_drawer">অ্যাপ ড্রয়ার থেকে লুকান</string>
+    <string name="suggestion_pref_screen_title">পরামর্শ</string>
+    <string name="n_percent">%1$d%%</string>
+    <!-- Bug reporting -->
+    <string name="lawnchair_bug_report">Lawnchair বাগ রিপোর্ট</string>
+    <string name="crash_report_notif_title">%1$s সমস্যা হয়েছে</string>
+    <string name="action_upload_crash_report">সমস্যার উৎস আপলোড করুন</string>
+    <string name="action_copy_link">লিংক কপি করুন</string>
+    <string name="action_upload_error">আপলোড ব্যর্থ হয়েছে</string>
+    <string name="dogbin_uploading">আপলোড হচ্ছে…</string>
+    <string name="bugreport_channel_name">বাগ রিপোর্ট</string>
+    <string name="status_channel_name">আপলোডের অবস্থা</string>
+    <string name="bugreport_group_summary">%d নতুন রিপোর্ট.</string>
+    <string name="bugreport_group_summary_multiple">একাধিক নতুন রিপোর্ট।</string>
+    <!-- Search ig -->
+    <string name="show_search_result_types">সার্চ ফলাফলে দেখান</string>
+    <string name="search_pref_result_people_title">জনগণ</string>
+    <string name="search_pref_result_shortcuts_title">অ্যাপ শর্টকাট</string>
+    <string name="search_pref_result_tips_title">পিক্সেল সম্পর্কিত পরামর্শ</string>
+    <string name="all_apps_device_search_hint">অনুসন্ধান করুন</string>
+    <string name="search_input_action_clear_results">সার্চ বক্স সাফ করুন</string>
+    <string name="label_search">অনুসন্ধান করুন</string>
+    <string name="label_lens">গুগল লেন্স</string>
+    <string name="label_voice_search">কণ্ঠের সন্ধান</string>
+    <string name="all_apps_search_market_message">আরো অ্যাপ খোঁজ করুন</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
+    <string name="quickstep_incompatible">Incompatible System Integration</string>
+    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
+    <string name="delete">মুছে ফেলুন</string>
+    <!-- Backup -->
+    <string name="create_backup">Create Backup</string>
+    <string name="create_backup_action">Create</string>
+    <string name="what_to_backup">What to Back Up</string>
+    <string name="backup_content_layout_and_settings">Layout and Settings</string>
+    <string name="backup_content_wallpaper">ওয়ালপেপার</string>
+    <string name="backup_create_success">Backup created.</string>
+    <string name="backup_create_error">Failed to create backup.</string>
+    <string name="restore_backup">Restore Backup</string>
+    <string name="restore_backup_action">Restore</string>
+    <string name="what_to_restore">What to Restore</string>
+    <string name="backup_restore_success">Backup restored.</string>
+    <string name="backup_restore_error">Failed to restore backup.</string>
+    <string name="invalid_backup_file">Invalid backup file.</string>
+    <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="app_label">App</string>
-    <string name="website_label">Website</string>
 </resources>

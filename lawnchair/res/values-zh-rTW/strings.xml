@@ -15,110 +15,95 @@
   ~ limitations under the License.
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="icon_pack">圖示套件</string>
-    <string name="icon_style">圖示風格</string>
+    <!-- PreferenceDashboard -->
     <string name="settings">設定</string>
-    <string name="home_screen_label">主螢幕</string>
-    <string name="home_screen_description">探索、網格、圖示</string>
     <string name="general_label">一般</string>
     <string name="general_description">色彩、圖示套件、通知圓點</string>
-    <string name="home_screen_rotation_label">旋轉主螢幕</string>
-    <string name="home_screen_rotaton_description">當手機旋轉時</string>
-    <string name="auto_add_shortcuts_label">將應用程式圖示新增到主螢幕</string>
+    <string name="home_screen_label">主螢幕</string>
+    <string name="home_screen_description">探索、網格、圖示</string>
+    <!--
+    <string name="smartspace" />
+    -->
+    <string name="what_to_show">顯示內容</string>
     <string name="dock_label">底欄</string>
     <string name="dock_description">搜尋欄、圖示數量</string>
     <string name="app_drawer_label">應用程式抽屜</string>
     <string name="app_drawer_description">隱藏應用程式、行數、圖示</string>
     <string name="folders_label">資料夾</string>
     <string name="folders_description">行列數</string>
-    <string name="app_drawer_columns">所有應用程式列數</string>
-    <string name="dock_icons">底欄圖示</string>
-    <string name="max_folder_columns">最大資料夾行數</string>
-    <string name="max_folder_rows">最大資料夾列數</string>
-    <string name="home_screen_grid">主螢幕網格</string>
-    <string name="home_screen_lock">鎖定主螢幕</string>
-    <string name="home_screen_unlock">解鎖主螢幕</string>
-    <string name="home_screen_lock_toggle_from_home_popup">在彈出視窗中顯示鎖定按鈕</string>
-    <string name="columns">列數</string>
-    <string name="grid">網格</string>
-    <string name="rows">行數</string>
-    <string name="icons">圖示</string>
-    <string name="icon_size">圖示尺寸</string>
-    <string name="label_size">標籤尺寸</string>
-    <string name="show_home_labels">顯示名稱</string>
-    <string name="notification_dots">通知圓點</string>
-    <string name="smartspace_preferences">偏好設定</string>
+    <string name="gestures_label">手勢</string>
+    <string name="gestures_description">輕觸與滑動</string>
+    <string name="quickstep_label">最近使用的應用程式</string>
+    <string name="quickstep_description">「清除全部」按鈕、圓角大小</string>
     <string name="about_label">關於</string>
-    <string name="news">新聞</string>
-    <string name="support">支援</string>
-    <string name="acknowledgements">銘謝</string>
-    <string name="devops">DevOps</string>
-    <string name="quickswitch_maintenance">QuickSwitch 維護</string>
-    <string name="all_apps_search_bar_hint">搜尋應用程式</string>
-    <string name="settings_button_text">主畫面設定</string>
-    <string name="development">開發</string>
+    <!-- <string name="version" /> (unknown source) -->
+    <!-- PreferencesOverflowMenu() in PreferencesDashboard -->
     <string name="app_info_drop_target_label">應用程式資訊</string>
-    <string name="item_removed">已移除物件。</string>
-    <string name="all_apps_no_search_results">找不到應用程式「<xliff:g example="Android" id="query">%1$s</xliff:g>」。</string>
-    <string name="translucent_background">透明背景</string>
-    <string name="background_opacity">背景透明度</string>
-    <string name="background_lightness_label">背景亮度</string>
-    <string name="adaptive_icons">自適應圖示</string>
-    <string name="adaptive_icon_background_description">白色使用 100% 背景亮度</string>
+    <string name="debug_restart_launcher">Restart Lawnchair</string>
+    <string name="experimental_features_label">實驗性功能</string>
+    <!-- ExperimentalFeaturesPreferences -->
+    <!-- <string name="experimental_features_label" />-->
+    <string name="font_picker_label">自訂字型</string>
+    <string name="font_picker_description">部分文字可能無法套用。</string>
+    <string name="smartspace_calendar_label">自訂資訊一覽日曆</string>
+    <string name="smartspace_calendar_description">允許顯示非公曆的日期</string>
+    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
+    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <!-- GeneralPreferences -->
+    <string name="home_screen_rotation_label">旋轉主螢幕</string>
+    <string name="home_screen_rotaton_description">當手機旋轉時</string>
+    <string name="font_label">Font (Experimental)</string>
+    <!-- <string name="icons" /> -->
+    <string name="icon_style">圖示風格</string>
+    <string name="icon_shape_label">圖示形狀</string>
     <string name="auto_adaptive_icons_label">自動自適應圖示</string>
     <string name="auto_adaptive_icons_description">套用在所有非自適應圖示</string>
-    <string name="support_and_pr">支援 &amp; 公關</string>
-    <string name="workspace_dt2s">輕觸兩下以關閉螢幕</string>
-    <string name="smart_space_enable">At a Glance Widget</string>
-    <string name="design_and_development">設計 &amp; 開發</string>
-    <string name="translate">翻譯</string>
-    <string name="product">產品</string>
-    <string name="hidden_apps_label">隱藏的應用程式</string>
-    <string name="hidden_apps_label_with_count">隱藏的應用程式 (%1$d)</string>
-    <plurals name="apps_count">
-        <item quantity="other">%1$d 個應用程式</item>
-    </plurals>
-    <string name="hotseat_qsb_label">顯示搜尋列</string>
-    <string name="qsb_search_provider_app_required">需要應用程式。</string>
-    <string name="dt2s_admin_hint_title">需要管理員權限</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
-    <string name="dt2s_admin_warning">將停用「輕觸兩下來關閉螢幕」</string>
-    <string name="dt2s_a11y_hint_title">啟用無障礙服務</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
-    <string name="dt2s_warning_open_settings">開啟設定</string>
-    <string name="minus_one_enable">Feed</string>
-    <string name="minus_one_unavailable">尚未安裝 Feed</string>
-    <string name="fuzzy_search_title">模糊搜尋</string>
-    <string name="fuzzy_search_desc">找尋名稱相似的應用程式</string>
+    <string name="background_lightness_label">背景亮度</string>
+    <string name="adaptive_icon_background_description">白色使用 100% 背景亮度</string>
+    <string name="notification_dots">通知圓點</string>
+    <!-- <string name="notification_dots" />-->
+    <string name="show_notification_count">顯示通知數量</string>
+    <string name="notification_dots_color">通知圓點色彩</string>
+    <!-- Notification popup -->
+    <string name="missing_notification_access_label">Notification Access Needed</string>
+    <string name="missing_notification_access_description">Notification access needed.</string>
+    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
+    <string name="title_change_settings">Change Settings</string>
+    <string name="colors">色彩</string>
     <string name="theme_label">主題</string>
     <string name="theme_light">淺色</string>
     <string name="theme_dark">深色</string>
     <string name="theme_system_default">系統</string>
     <string name="theme_follow_wallpaper">偵測桌布</string>
-    <string name="quickstep_label">最近使用的應用程式</string>
-    <string name="clear_all_as_action_label">在底部顯示「清除全部」按鈕</string>
-    <string name="window_corner_radius_label">Screen Corner Radius</string>
-    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
-    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
-    <string name="system_icons">系統圖示</string>
     <string name="accent_color">重點色彩</string>
-    <string name="invalid_color">無效色彩</string>
-    <string name="done">完成</string>
-    <string name="loading">正在載入…</string>
-    <string name="system">系統</string>
-    <string name="wallpaper">桌布</string>
-    <string name="custom">自訂</string>
-    <string name="quickstep_description">「清除全部」按鈕、圓角大小</string>
-    <string name="wallpaper_scrolling_label">桌布隨頁面捲動</string>
-    <string name="show_sys_ui_scrim">狀態欄陰影</string>
-    <string name="show_status_bar">顯示狀態列</string>
-    <string name="layout">版面</string>
-    <string name="what_to_show">顯示內容</string>
-    <string name="missing_notification_access_label">Notification Access Needed</string>
-    <string name="missing_notification_access_description">Notification access needed.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
-    <string name="title_change_settings">Change Settings</string>
-    <string name="debug_restart_launcher">Restart Lawnchair</string>
+    <!-- IconPackPreferences -->
+    <!-- <string name="icon_style" /> -->
+    <string name="icon_pack">圖示套件</string>
+    <string name="system_icons">系統圖示</string>
+    <string name="themed_icon_title">圖示套用主題色</string>
+    <string name="themed_icons_off_label">關閉</string>
+    <string name="themed_icons_home_label">主螢幕</string>
+    <string name="themed_icons_home_and_drawer_label">主螢幕 &amp; 所有應用程式</string>
+    <string name="lawnicons_not_installed_description">Lawnicons 未安裝。</string>
+    <!-- <string name="cancel" /> (unknown source)-->
+    <!-- IconPickerPreference -->
+    <!-- <string name="icon_shape_label" /> -->
+    <string name="icon_shape_system">系統</string>
+    <string name="icon_shape_circle">圓形</string>
+    <string name="icon_shape_cylinder">圓柱形</string>
+    <string name="icon_shape_diamond">Diamond</string>
+    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_cupertino">iOS</string>
+    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_rounded_square">圓角矩形</string>
+    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_square">方形</string>
+    <string name="icon_shape_squircle">方圓形</string>
+    <string name="icon_shape_teardrop">水滴形</string>
+    <!-- FontSelectionPreferences -->
+    <string name="pref_fonts_add_fonts">新增字型</string>
+    <string name="pref_fonts_add_fonts_summary">支援 OTF &amp; TTF。</string>
     <string name="pref_fonts_missing_font">Font not found.</string>
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Thin</string>
@@ -130,41 +115,11 @@
     <string name="font_weight_bold">Bold</string>
     <string name="font_weight_extra_bold">Extra Bold</string>
     <string name="font_weight_extra_black">Black</string>
-    <string name="font_label">Font (Experimental)</string>
     <string name="reset_font">重設</string>
-    <string name="search_input_action_clear_results">清空搜尋方塊</string>
-    <string name="pref_category_search">搜尋</string>
-    <string name="pref_search_auto_show_keyboard">自動顯示鍵盤</string>
-    <string name="label_search">搜尋</string>
-    <string name="label_lens">Google 智慧鏡頭</string>
-    <string name="label_voice_search">語音搜尋</string>
-    <string name="apply_grid">套用</string>
-    <string name="x_by_y">%1$d × %2$d</string>
-    <string name="folder_preview_bg_opacity_label">圖示背景透明度</string>
-    <string name="icon_shape_label">圖示形狀</string>
-    <string name="icon_shape_system">系統</string>
-    <string name="icon_shape_circle">圓形</string>
-    <string name="icon_shape_square">方形</string>
-    <string name="icon_shape_rounded_square">圓角矩形</string>
-    <string name="icon_shape_squircle">方圓形</string>
-    <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_teardrop">水滴形</string>
-    <string name="icon_shape_cylinder">圓柱形</string>
-    <string name="icon_shape_cupertino">iOS</string>
-    <string name="customize_button_text">自訂</string>
-    <string name="app_title_label">標題</string>
-    <string name="hide_from_drawer">從應用程式列表隱藏</string>
-    <string name="action_lens">智慧鏡頭</string>
-    <string name="force_rounded_widgets">圓角</string>
-    <string name="allow_widget_overlap">允許重疊</string>
-    <string name="suggestion_pref_screen_title">建議</string>
-    <string name="n_percent">%1$d%%</string>
-    <string name="label">標籤</string>
-    <string name="presets">預設集</string>
-    <string name="colors">色彩</string>
+    <!-- colorpreference/* -->
     <string name="dynamic">動態</string>
-    <string name="all_apps_search_market_message">搜尋更多應用程式</string>
-    <string name="show_app_search_bar">顯示搜尋列</string>
+    <string name="presets">預設集</string>
+    <string name="custom">自訂</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">紅</string>
     <string name="rgb_green">綠</string>
@@ -175,56 +130,47 @@
     <string name="hsb_brightness">明度</string>
     <string name="hex">Hex 色碼</string>
     <string name="color_sliders">滑桿</string>
-    <string name="lawnchair_bug_report">Lawnchair 問題回報</string>
-    <string name="crash_report_notif_title">%1$s 已停止運作</string>
-    <string name="action_upload_crash_report">上傳錯誤日誌</string>
-    <string name="action_copy_link">複製連結</string>
     <string name="action_copy">複製</string>
+    <string name="action_paste">Paste</string>
     <string name="copied_toast">已複製到剪貼簿</string>
-    <string name="action_share">分享</string>
-    <string name="action_upload_error">上傳失敗</string>
-    <string name="dogbin_uploading">正在上傳…</string>
-    <string name="bugreport_channel_name">問題回報</string>
-    <string name="status_channel_name">上傳狀態</string>
-    <string name="bugreport_group_summary">%d 則新回報</string>
-    <string name="bugreport_group_summary_multiple">多則新回報。</string>
-    <string name="themed_icon_title">圖示套用主題色</string>
-    <string name="corner_radius_label">圓角大小</string>
-    <string name="search_bar_label">搜尋列</string>
-    <string name="apply_accent_color_label">套用強調色</string>
-    <string name="show_search_result_types">顯示於搜尋結果</string>
-    <string name="search_pref_result_people_title">聯絡人</string>
-    <string name="search_pref_result_shortcuts_title">應用程式捷徑</string>
-    <string name="search_pref_result_tips_title">Pixel 使用提示</string>
-    <string name="row_height_label">行高</string>
-    <string name="all_apps_device_search_hint">搜尋</string>
-    <string name="dark_status_bar_label">深色狀態列</string>
-    <string name="lawnicons_not_installed_description">Lawnicons 未安裝。</string>
-    <string name="icon_picker_default_category">圖示</string>
-    <string name="icon_picker_reset_to_default">還原預設設定</string>
-    <string name="icon_pack_external_picker">開啟外部選擇器</string>
-    <string name="recents_actions_label">快速操作</string>
-    <string name="recents_clear_all">全部清除</string>
-    <string name="pick_icon_from_label">選擇圖示...</string>
-    <string name="experimental_features_label">實驗性功能</string>
-    <string name="icon_picker_label">自訂個別應用程式</string>
-    <string name="icon_picker_description">可能導致 Lawnchair 畫面凍結</string>
-    <string name="font_picker_label">自訂字型</string>
-    <string name="font_picker_description">部分文字可能無法套用。</string>
-    <string name="smartspace_calendar_label">自訂資訊一覽日曆</string>
-    <string name="smartspace_calendar_description">允許顯示非公曆的日期</string>
-    <string name="search_provider_app_search">應用程式搜尋</string>
-    <string name="always_open_website_label">永遠開啟網站</string>
-    <string name="always_open_website_description">使用網頁而非相應的應用程式來進行搜尋</string>
-    <string name="search_provider">搜尋服務供應商</string>
+    <string name="invalid_color">無效色彩</string>
+    <string name="app_icon_color">應用程式圖示色彩</string>
+    <!-- HomeScreenPreferences -->
+    <!-- <string name="general_label" /> -->
+    <string name="auto_add_shortcuts_label">將應用程式圖示新增到主螢幕</string>
+    <!-- <string name="gesture_double_tap" /> -->
+    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_unavailable">尚未安裝 Feed</string>
+    <string name="wallpaper">桌布</string>
+    <string name="wallpaper_scrolling_label">桌布隨頁面捲動</string>
+    <string name="wallpaper_depth_effect_label">桌布景深效果</string>
+    <string name="wallpaper_depth_effect_description">狀態切換時顯示桌布縮放特效</string>
+    <string name="show_sys_ui_scrim">狀態欄陰影</string>
+    <string name="layout">版面</string>
+    <string name="home_screen_grid">主螢幕網格</string>
+    <string name="home_screen_lock">鎖定主螢幕</string>
+    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_unlock">解鎖主螢幕</string>
+    <!-- used in popup menu-->
+    <string name="home_screen_lock_toggle_from_home_popup">在彈出視窗中顯示鎖定按鈕</string>
+    <string name="home_screen_locked">Home Screen is locked.</string>
     <string name="status_bar_label">Status Bar</string>
-    <string name="show_notification_count">顯示通知數量</string>
-    <string name="icon_picker_load_failed">無法載入更多圖示。</string>
+    <string name="show_status_bar">顯示狀態列</string>
+    <string name="dark_status_bar_label">深色狀態列</string>
+    <string name="icons">圖示</string>
+    <string name="icon_size">圖示尺寸</string>
+    <string name="show_home_labels">顯示名稱</string>
+    <string name="label_size">標籤尺寸</string>
     <string name="reset_custom_icons">重設自訂圖示</string>
     <string name="reset_custom_icons_confirmation">即將重設所有自訂圖示。是否繼續？</string>
-    <string name="taskbar_label">工作列</string>
-    <string name="enable_taskbar_experimental">啟用工作列（實驗性功能）</string>
-    <string name="error_no_market_or_browser_installed">尚未安裝應用程式商店或瀏覽器</string>
+    <!-- <string name="widget_button_text" /> (unknown source)-->
+    <string name="force_rounded_widgets">圓角</string>
+    <string name="allow_widget_overlap">允許重疊</string>
+    <!-- HomeScreenGridPreferences -->
+    <!-- <string name="home_screen_grid" /> -->
+    <string name="columns">列數</string>
+    <string name="rows">行數</string>
+    <string name="apply_grid">套用</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s、%2$s</string>
     <string name="smartspace_battery_charging">充電中</string>
@@ -233,13 +179,16 @@
     <string name="battery_charging_percentage_charging_time">"%1$d%% — %2$s 分鐘後充飽"</string>
     <string name="accessibility_smartspace_page">%2$d 中的第 %1$d 頁</string>
     <string name="smartspace_widget">資訊一覽</string>
-    <string name="smartspace_widget_description">What to Show</string>
+    <string name="smartspace_widget_description">顯示內容</string>
     <string name="smartspace_widget_placeholder_date">3月3日 週三</string>
     <string name="preview_label">預覽</string>
     <string name="smartspace_calendar">日曆</string>
     <string name="smartspace_date_and_time">日期與時間</string>
     <string name="smartspace_date">日期</string>
     <string name="smartspace_time">時間</string>
+    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_follow_system">系統設定</string>
+    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
     <string name="smartspace_time_24_hour_format">24 小時制</string>
     <string name="smartspace_weather">天氣</string>
     <string name="smartspace_battery_status">電量狀態</string>
@@ -249,33 +198,57 @@
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="smartspace_calendar_gregorian">公曆</string>
     <string name="smartspace_calendar_persian">伊朗曆</string>
-    <string name="quickstep_incompatible">不支援系統整合</string>
-    <string name="quickstep_incompatible_description">您的裝置目前由 %1$s 提供系統手勢 (Quickstep)，但目前安裝的 %1$s 版本與您的 Android 版本不相容。要繼續執行，請解除安裝或停用 %1$s。</string>
-    <string name="pref_fonts_add_fonts">新增字型</string>
-    <string name="pref_fonts_add_fonts_summary">支援 OTF &amp; TTF。</string>
-    <string name="delete">刪除</string>
-    <string name="themed_icons_off_label">關閉</string>
-    <string name="themed_icons_home_label">主螢幕</string>
-    <string name="themed_icons_home_and_drawer_label">主螢幕 &amp; 所有應用程式</string>
-    <!-- Backup -->
-    <string name="create_backup">建立備份</string>
-    <string name="create_backup_action">建立</string>
-    <string name="what_to_backup">備份內容</string>
-    <string name="backup_content_layout_and_settings">版面與設定</string>
-    <string name="backup_content_wallpaper">桌布</string>
-    <string name="backup_create_success">已建立備份。</string>
-    <string name="backup_create_error">備份建立失敗。</string>
-    <string name="restore_backup">還原備份</string>
-    <string name="restore_backup_action">還原</string>
-    <string name="what_to_restore">還原內容</string>
-    <string name="backup_restore_success">已還原備份。</string>
-    <string name="backup_restore_error">還原備份失敗。</string>
-    <string name="invalid_backup_file">無效的備份檔案</string>
-    <string name="wallpaper_depth_effect_label">桌布景深效果</string>
-    <string name="wallpaper_depth_effect_description">狀態切換時顯示桌布縮放特效</string>
-    <string name="gestures_label">手勢</string>
-    <string name="gestures_description">輕觸與滑動</string>
-    <!-- Gestures -->
+    <string name="smartspace_preferences">偏好設定</string>
+    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
+    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <!-- DockPreferences -->
+    <!-- <string name="dock_label" /> -->
+    <string name="search_bar_label">搜尋列</string>
+    <string name="hotseat_qsb_label">顯示搜尋列</string>
+    <string name="corner_radius_label">圓角大小</string>
+    <string name="apply_accent_color_label">套用強調色</string>
+    <string name="search_provider">搜尋服務供應商</string>
+    <string name="grid">網格</string>
+    <string name="dock_icons">底欄圖示</string>
+    <!-- SearchProviderPreferences -->
+    <!-- search_provider -->
+    <string name="search_provider_app_search">應用程式搜尋</string>
+    <string name="app_label">應用程式</string>
+    <string name="website_label">網站</string>
+    <string name="qsb_search_provider_app_required">需要應用程式。</string>
+    <!-- AppDrawerPrefences -->
+    <!-- app_drawer_label -->
+    <!-- general_label -->
+    <string name="hidden_apps_label">隱藏的應用程式</string>
+    <string name="background_opacity">背景透明度</string>
+    <string name="pref_category_search">搜尋</string>
+    <string name="show_app_search_bar">顯示搜尋列</string>
+    <string name="pref_search_auto_show_keyboard">自動顯示鍵盤</string>
+    <string name="fuzzy_search_title">模糊搜尋</string>
+    <string name="fuzzy_search_desc">找尋名稱相似的應用程式</string>
+    <!-- <string name="grid" /> -->
+    <string name="app_drawer_columns">所有應用程式列數</string>
+    <string name="row_height_label">行高</string>
+    <!--
+    <string name="icons" />
+      <string name="icon_size" />
+      <string name="show_home_labels" />
+      <string name="label_size" />
+    -->
+    <!-- HiddenAppsPreferences -->
+    <string name="hidden_apps_label_with_count">隱藏的應用程式 (%1$d)</string>
+    <plurals name="apps_count">
+        <item quantity="other">%1$d 個應用程式</item>
+    </plurals>
+    <!-- FolderPreferences -->
+    <!-- <string name="folders_label" /> -->
+    <!-- <string name="general_label" /> -->
+    <string name="folder_preview_bg_opacity_label">圖示背景透明度</string>
+    <!-- <string name="grid" /> -->
+    <string name="max_folder_columns">最大資料夾行數</string>
+    <string name="max_folder_rows">最大資料夾列數</string>
+    <!-- GesturePreference -->
+    <!-- <string name="gestures_label" /> -->
     <string name="gesture_double_tap">輕觸兩次</string>
     <string name="gesture_swipe_up">向上滑動</string>
     <string name="gesture_swipe_down">向下滑動</string>
@@ -290,7 +263,99 @@
     <string name="gesture_handler_open_app_search">開啟應用程式搜尋</string>
     <string name="gesture_handler_open_search">開啟搜尋</string>
     <string name="pick_app_for_gesture">選取應用程式</string>
+    <!-- QuickstepPreferences -->
+    <!-- <string name="quickstep_label" /> -->
+    <!-- <string name="general_label" /> -->
+    <string name="translucent_background">透明背景</string>
+    <string name="recents_actions_label">快速操作</string>
+    <!-- <string name="screenshot" /> (unknown source) -->
+    <string name="action_share">分享</string>
+    <string name="action_lens">智慧鏡頭</string>
+    <string name="recents_clear_all">全部清除</string>
+    <string name="window_corner_radius_label">Screen Corner Radius</string>
+    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
+    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
+    <string name="taskbar_label">工作列</string>
+    <string name="enable_taskbar_experimental">啟用工作列（實驗性功能）</string>
+    <!-- about/About.kt -->
+    <string name="news">新聞</string>
+    <string name="support">支援</string>
+    <string name="product">產品</string>
+    <string name="design_and_development">設計 &amp; 開發</string>
+    <string name="development">開發</string>
+    <string name="quickswitch_maintenance">QuickSwitch 維護</string>
+    <string name="devops">DevOps</string>
+    <string name="support_and_pr">支援 &amp; 公關</string>
+    <!--
+      <string name="support" />
+      <string name="support_and_pr" />
+      -->
+    <string name="acknowledgements">銘謝</string>
+    <string name="translate">翻譯</string>
+    <!-- IconPickerPreference -->
+    <string name="icon_picker_default_category">圖示</string>
+    <string name="icon_picker_reset_to_default">還原預設設定</string>
+    <string name="icon_pack_external_picker">開啟外部選擇器</string>
+    <string name="pick_icon_from_label">選擇圖示...</string>
+    <string name="icon_picker_load_failed">無法載入更多圖示。</string>
+    <!-- Misc -->
+    <string name="all_apps_search_bar_hint">搜尋應用程式</string>
+    <string name="settings_button_text">主畫面設定</string>
+    <string name="item_removed">已移除物件。</string>
+    <string name="all_apps_no_search_results">找不到應用程式「<xliff:g example="Android" id="query">%1$s</xliff:g>」。</string>
+    <string name="dt2s_admin_hint_title">需要管理員權限</string>
+    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_warning">將停用「輕觸兩下來關閉螢幕」</string>
+    <string name="dt2s_a11y_hint_title">啟用無障礙服務</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
+    <string name="dt2s_warning_open_settings">開啟設定</string>
+    <string name="loading">正在載入…</string>
+    <string name="system">系統</string>
+    <string name="customize_button_text">自訂</string>
+    <string name="label">標籤</string>
+    <string name="hide_from_drawer">從應用程式列表隱藏</string>
+    <string name="suggestion_pref_screen_title">建議</string>
+    <string name="n_percent">%1$d%%</string>
+    <!-- Bug reporting -->
+    <string name="lawnchair_bug_report">Lawnchair 問題回報</string>
+    <string name="crash_report_notif_title">%1$s 已停止運作</string>
+    <string name="action_upload_crash_report">上傳錯誤日誌</string>
+    <string name="action_copy_link">複製連結</string>
+    <string name="action_upload_error">上傳失敗</string>
+    <string name="dogbin_uploading">正在上傳…</string>
+    <string name="bugreport_channel_name">問題回報</string>
+    <string name="status_channel_name">上傳狀態</string>
+    <string name="bugreport_group_summary">%d 則新回報</string>
+    <string name="bugreport_group_summary_multiple">多則新回報。</string>
+    <!-- Search ig -->
+    <string name="show_search_result_types">顯示於搜尋結果</string>
+    <string name="search_pref_result_people_title">聯絡人</string>
+    <string name="search_pref_result_shortcuts_title">應用程式捷徑</string>
+    <string name="search_pref_result_tips_title">Pixel 使用提示</string>
+    <string name="all_apps_device_search_hint">搜尋</string>
+    <string name="search_input_action_clear_results">清空搜尋方塊</string>
+    <string name="label_search">搜尋</string>
+    <string name="label_lens">Google 智慧鏡頭</string>
+    <string name="label_voice_search">語音搜尋</string>
+    <string name="all_apps_search_market_message">搜尋更多應用程式</string>
+    <string name="error_no_market_or_browser_installed">尚未安裝應用程式商店或瀏覽器</string>
+    <string name="quickstep_incompatible">不支援系統整合</string>
+    <string name="quickstep_incompatible_description">您的裝置目前由 %1$s 提供系統手勢 (Quickstep)，但目前安裝的 %1$s 版本與您的 Android 版本不相容。要繼續執行，請解除安裝或停用 %1$s。</string>
+    <string name="delete">刪除</string>
+    <!-- Backup -->
+    <string name="create_backup">建立備份</string>
+    <string name="create_backup_action">建立</string>
+    <string name="what_to_backup">備份內容</string>
+    <string name="backup_content_layout_and_settings">版面與設定</string>
+    <string name="backup_content_wallpaper">桌布</string>
+    <string name="backup_create_success">已建立備份。</string>
+    <string name="backup_create_error">備份建立失敗。</string>
+    <string name="restore_backup">還原備份</string>
+    <string name="restore_backup_action">還原</string>
+    <string name="what_to_restore">還原內容</string>
+    <string name="backup_restore_success">已還原備份。</string>
+    <string name="backup_restore_error">還原備份失敗。</string>
+    <string name="invalid_backup_file">無效的備份檔案</string>
+    <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="app_label">應用程式</string>
-    <string name="website_label">網站</string>
 </resources>
