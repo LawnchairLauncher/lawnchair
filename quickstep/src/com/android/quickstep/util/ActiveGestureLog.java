@@ -138,14 +138,10 @@ public class ActiveGestureLog {
         List<EventEntry> lastEventEntries = lastEventLog.eventEntries;
         EventEntry lastEntry = lastEventEntries.size() > 0
                 ? lastEventEntries.get(lastEventEntries.size() - 1) : null;
-        EventEntry secondLastEntry = lastEventEntries.size() > 1
-                ? lastEventEntries.get(lastEventEntries.size() - 2) : null;
 
         // Update the last EventEntry if it's a duplicate
-        if (isEntrySame(lastEntry, type, event, compoundString, gestureEvent)
-                && isEntrySame(secondLastEntry, type, event, compoundString, gestureEvent)) {
-            lastEntry.update(type, event, extras, compoundString, gestureEvent);
-            secondLastEntry.duplicateCount++;
+        if (isEntrySame(lastEntry, type, event, extras, compoundString, gestureEvent)) {
+            lastEntry.duplicateCount++;
             return;
         }
         EventEntry eventEntry = new EventEntry();
@@ -223,11 +219,13 @@ public class ActiveGestureLog {
             EventEntry entry,
             int type,
             String event,
+            float extras,
             CompoundString compoundString,
             ActiveGestureErrorDetector.GestureEvent gestureEvent) {
         return entry != null
                 && entry.type == type
                 && entry.event.equals(event)
+                && Float.compare(entry.extras, extras) == 0
                 && entry.mCompoundString.equals(compoundString)
                 && entry.gestureEvent == gestureEvent;
     }
@@ -342,7 +340,7 @@ public class ActiveGestureLog {
                 return false;
             }
             CompoundString other = (CompoundString) obj;
-            return mIsNoOp && other.mIsNoOp && Objects.equals(mSubstrings, other.mSubstrings);
+            return (mIsNoOp == other.mIsNoOp) && Objects.equals(mSubstrings, other.mSubstrings);
         }
     }
 }

@@ -334,6 +334,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             return ActiveGestureErrorDetector.GestureEvent.STATE_GESTURE_COMPLETED;
         } else if (stateFlag == STATE_GESTURE_CANCELLED) {
             return ActiveGestureErrorDetector.GestureEvent.STATE_GESTURE_CANCELLED;
+        } else if (stateFlag == STATE_SCREENSHOT_CAPTURED) {
+            return ActiveGestureErrorDetector.GestureEvent.STATE_SCREENSHOT_CAPTURED;
+        } else if (stateFlag == STATE_CAPTURE_SCREENSHOT) {
+            return ActiveGestureErrorDetector.GestureEvent.STATE_CAPTURE_SCREENSHOT;
+        } else if (stateFlag == STATE_HANDLER_INVALIDATED) {
+            return ActiveGestureErrorDetector.GestureEvent.STATE_HANDLER_INVALIDATED;
         }
         return null;
     }
@@ -1222,6 +1228,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         // Let RecentsView handle the scrolling to the task, which we launch in startNewTask()
         // or resumeLastTask().
         if (mRecentsView != null) {
+            ActiveGestureLog.INSTANCE.trackEvent(ActiveGestureErrorDetector.GestureEvent
+                    .SET_ON_PAGE_TRANSITION_END_CALLBACK);
             mRecentsView.setOnPageTransitionEndCallback(
                     () -> mGestureState.setState(STATE_RECENTS_SCROLLING_FINISHED));
         } else {
@@ -1535,7 +1543,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         Rect keepClearArea;
         if (!ENABLE_PIP_KEEP_CLEAR_ALGORITHM) {
             // make the height equal to hotseatBarSizePx only
-            keepClearArea = new Rect(0, 0, mDp.hotseatBarSizePx, 0);
+            keepClearArea = new Rect(0, 0, 0, mDp.hotseatBarSizePx);
             return keepClearArea;
         }
         // the keep clear area in global screen coordinates, in pixels
@@ -1699,6 +1707,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
      * handler (in case of quick switch).
      */
     private void cancelCurrentAnimation() {
+        ActiveGestureLog.INSTANCE.addLog(
+                "AbsSwipeUpHandler.cancelCurrentAnimation",
+                ActiveGestureErrorDetector.GestureEvent.CANCEL_CURRENT_ANIMATION);
         mCanceled = true;
         mCurrentShift.cancelAnimation();
 

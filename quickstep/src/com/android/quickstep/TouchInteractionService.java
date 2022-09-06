@@ -721,8 +721,10 @@ public class TouchInteractionService extends Service
             gestureState.updateRunningTask(taskInfo);
         }
         // Log initial state for the gesture.
-        ActiveGestureLog.INSTANCE.addLog(
-                "Current SystemUi state flags= " + mDeviceState.getSystemUiStateString());
+        ActiveGestureLog.INSTANCE.addLog(new CompoundString("Current running task package name=")
+                .append(taskInfo == null ? "no running task" : taskInfo.getPackageName()));
+        ActiveGestureLog.INSTANCE.addLog(new CompoundString("Current SystemUi state flags=")
+                .append(mDeviceState.getSystemUiStateString()));
         return gestureState;
     }
 
@@ -1024,12 +1026,27 @@ public class TouchInteractionService extends Service
                             .append("activity == null, trying to use default input consumer"));
         }
 
-        if (activity.getRootView().hasWindowFocus()
-                || previousGestureState.isRunningAnimationToLauncher()
-                || (ASSISTANT_GIVES_LAUNCHER_FOCUS.get()
-                    && forceOverviewInputConsumer)
-                || (ENABLE_QUICKSTEP_LIVE_TILE.get()
-                && gestureState.getActivityInterface().isInLiveTileMode())) {
+        boolean hasWindowFocus = activity.getRootView().hasWindowFocus();
+        boolean isPreviousGestureAnimatingToLauncher =
+                previousGestureState.isRunningAnimationToLauncher();
+        boolean forcingOverviewInputConsumer =
+                ASSISTANT_GIVES_LAUNCHER_FOCUS.get() && forceOverviewInputConsumer;
+        boolean isInLiveTileMode = ENABLE_QUICKSTEP_LIVE_TILE.get()
+                && gestureState.getActivityInterface().isInLiveTileMode();
+        reasonString.append(SUBSTRING_PREFIX)
+                .append(hasWindowFocus
+                        ? "activity has window focus"
+                        : (isPreviousGestureAnimatingToLauncher
+                                ? "previous gesture is still animating to launcher"
+                                : (forcingOverviewInputConsumer
+                                        ? "assistant gives launcher focus and forcing focus"
+                                        : (isInLiveTileMode
+                                                ? "device is in live mode"
+                                                : "all overview focus conditions failed"))));
+        if (hasWindowFocus
+                || isPreviousGestureAnimatingToLauncher
+                || forcingOverviewInputConsumer
+                || isInLiveTileMode) {
             reasonString.append(SUBSTRING_PREFIX)
                     .append("overview should have focus, using OverviewInputConsumer");
             return new OverviewInputConsumer(gestureState, activity, mInputMonitorCompat,
