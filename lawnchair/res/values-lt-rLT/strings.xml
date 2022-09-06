@@ -15,159 +15,111 @@
   ~ limitations under the License.
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="icon_pack">Ikonu Paketas</string>
-    <string name="icon_style">Ikonų Stilius</string>
+    <!-- PreferenceDashboard -->
     <string name="settings">Nustatymai</string>
-    <string name="home_screen_label">Namu Ekranas</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="general_label">Pagrindinis</string>
     <string name="general_description">Pranešimu taškai, Ikonu Paketas</string>
-    <string name="home_screen_rotation_label">Namu Ekrano Sukimas</string>
-    <string name="home_screen_rotaton_description">Kai Įrenginys yra pasuktas.</string>
-    <string name="auto_add_shortcuts_label">Pridėkite Naujas Programas į Namu Ekrana</string>
+    <string name="home_screen_label">Namu Ekranas</string>
+    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <!--
+    <string name="smartspace" />
+    -->
+    <string name="what_to_show">Ką Rodyti</string>
     <string name="dock_label">Pažemynis</string>
     <string name="dock_description">Ieškojimo Vieta, Ikonu Skaičius</string>
     <string name="app_drawer_label">Programu lentyna</string>
     <string name="app_drawer_description">Paslėptos Programos, Stulpeliu Skaičius, Ikonos</string>
     <string name="folders_label">Aplankai</string>
     <string name="folders_description">Eilutė ir Stulpelio Skaičius</string>
-    <string name="app_drawer_columns">Programu Lentynos Stulpeliai</string>
-    <string name="dock_icons">Pažeminio Ikonos</string>
-    <string name="max_folder_columns">Max. Folder Columns</string>
-    <string name="max_folder_rows">Max. Folder Rows</string>
-    <string name="home_screen_grid">Namų ekrano išdėstymas</string>
-    <string name="home_screen_lock">Lock Home Screen</string>
-    <string name="home_screen_unlock">Unlock Home Screen</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
-    <string name="columns">Stulpeliai</string>
-    <string name="grid">Grid</string>
-    <string name="rows">Eilės</string>
-    <string name="icons">Ikonos</string>
-    <string name="icon_size">Ikonų Dydis</string>
-    <string name="label_size">Label Size</string>
-    <string name="show_home_labels">Show Labels</string>
-    <string name="notification_dots">Pranešimų Taškai</string>
-    <string name="smartspace_preferences">Nuostatos</string>
+    <string name="gestures_label">Gestai</string>
+    <string name="gestures_description">Paspaudimai ir Braukimas</string>
+    <string name="quickstep_label">Recents</string>
+    <string name="quickstep_description">Clear All Button, Corner Radius</string>
     <string name="about_label">Apie</string>
-    <string name="news">Naujienos</string>
-    <string name="support">Remti</string>
-    <string name="acknowledgements">Acknowledgements</string>
-    <string name="devops">DevOps</string>
-    <string name="quickswitch_maintenance">QuickSwitch Maintenance</string>
-    <string name="all_apps_search_bar_hint">Ieškoti Programelių</string>
-    <string name="settings_button_text">Pagrindinio Puslapio Nustatymai</string>
-    <string name="development">Plėtra</string>
+    <!-- <string name="version" /> (unknown source) -->
+    <!-- PreferencesOverflowMenu() in PreferencesDashboard -->
     <string name="app_info_drop_target_label">Programelės Informacija</string>
-    <string name="item_removed">Elementas pašalintas.</string>
-    <string name="all_apps_no_search_results">Nerasta programelių atitinkančių \"<xliff:g example="Android" id="query">%1$s</xliff:g>\".</string>
-    <string name="translucent_background">Permatomas Fonas</string>
-    <string name="background_opacity">Fono Skaidrumas</string>
-    <string name="background_lightness_label">Fono Šviesumas</string>
-    <string name="adaptive_icons">Prisitaikančios Ikonos</string>
-    <string name="adaptive_icon_background_description">Baltai spalvai naudoti 100% fono šviesumą.</string>
+    <string name="debug_restart_launcher">Iš Naujo Paleiskite \"Lawnchair\"</string>
+    <string name="experimental_features_label">Expermentinės funkcijos</string>
+    <!-- ExperimentalFeaturesPreferences -->
+    <!-- <string name="experimental_features_label" />-->
+    <string name="font_picker_label">Šrifto tinkinimas</string>
+    <string name="font_picker_description">Kažkuris tekstas liko nepakeistas.</string>
+    <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
+    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
+    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
+    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <!-- GeneralPreferences -->
+    <string name="home_screen_rotation_label">Namu Ekrano Sukimas</string>
+    <string name="home_screen_rotaton_description">Kai Įrenginys yra pasuktas.</string>
+    <string name="font_label">Font (Experimental)</string>
+    <!-- <string name="icons" /> -->
+    <string name="icon_style">Ikonų Stilius</string>
+    <string name="icon_shape_label">Ikonų forma</string>
     <string name="auto_adaptive_icons_label">Automatiškai Prisitaikančios Ikonos</string>
     <string name="auto_adaptive_icons_description">Visoms neadaptyvioms ikonoms.</string>
-    <string name="support_and_pr">Pagalba &amp; PR</string>
-    <string name="workspace_dt2s">Dvigubas Paspaudimas Miegojimui</string>
-    <string name="smart_space_enable">Iš Pirmo Žvilgnsio Valdiklis</string>
-    <string name="design_and_development">Dizainas &amp; Plėtra</string>
-    <string name="translate">Versti</string>
-    <string name="product">Produktas</string>
-    <string name="hidden_apps_label">Paslėptos Programėlės</string>
-    <string name="hidden_apps_label_with_count">Paslėptos Programėlės (%1$d)</string>
-    <plurals name="apps_count">
-        <item quantity="one">%1$d Programėlė</item>
-        <item quantity="few">%1$d Programėlės</item>
-        <item quantity="many">%1$d Programėlės</item>
-        <item quantity="other">%1$d Programėlės</item>
-    </plurals>
-    <string name="hotseat_qsb_label">Rodyti Ieškojimo Juostą</string>
-    <string name="qsb_search_provider_app_required">Programėlė reikalinga.</string>
-    <string name="dt2s_admin_hint_title">Administratoriaus Prieiga Reikalinga</string>
-    <string name="dt2s_admin_hint">Jei norite naudoti dvigubą paspaudimą miegojimui, nustatykite \"Lawnchair\" programelę kaip prietaiso administratoriaus programėlę. Paspauskite Atidaryti Nustatymus, poto paspauskite \"Aktivuoti šią prietaiso administratoriaus programėlę.\"</string>
-    <string name="dt2s_admin_warning">Dvigubas paspaudimas miegojimui bus išjungtas.</string>
-    <string name="dt2s_a11y_hint_title">Įjungite prieinamumo paslaugą</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
-    <string name="dt2s_warning_open_settings">Open Settings</string>
-    <string name="minus_one_enable">Feed</string>
-    <string name="minus_one_unavailable">No feed installed.</string>
-    <string name="fuzzy_search_title">Fuzzy Search</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
+    <string name="background_lightness_label">Fono Šviesumas</string>
+    <string name="adaptive_icon_background_description">Baltai spalvai naudoti 100% fono šviesumą.</string>
+    <string name="notification_dots">Pranešimų Taškai</string>
+    <!-- <string name="notification_dots" />-->
+    <string name="show_notification_count">Rodyti Pranešimų Skaičių</string>
+    <string name="notification_dots_color">Notification Dot Color</string>
+    <!-- Notification popup -->
+    <string name="missing_notification_access_label">Reikalinga Pranešimų Prieiga</string>
+    <string name="missing_notification_access_description">Reikalinga pranešimų prieiga.</string>
+    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
+    <string name="title_change_settings">Keiskite Nustatymus</string>
+    <string name="colors">Spalvos</string>
     <string name="theme_label">Tema</string>
     <string name="theme_light">Šviesi</string>
     <string name="theme_dark">Tamsi</string>
     <string name="theme_system_default">Sistemos</string>
     <string name="theme_follow_wallpaper">Sekti ekrano užsklandą</string>
-    <string name="quickstep_label">Recents</string>
-    <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
-    <string name="window_corner_radius_label">Screen Corner Radius</string>
-    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
-    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
-    <string name="system_icons">System Icons</string>
     <string name="accent_color">Akcento Spalva</string>
-    <string name="invalid_color">Invalid Color</string>
-    <string name="done">Baigta</string>
-    <string name="loading">Kraunasi…</string>
-    <string name="system">Sistema</string>
-    <string name="wallpaper">Ekrano Fonas</string>
-    <string name="custom">Pasirinktinis</string>
-    <string name="quickstep_description">Clear All Button, Corner Radius</string>
-    <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Viršaus Šešėlis</string>
-    <string name="show_status_bar">Rodyti statuso juosta</string>
-    <string name="layout">Išdėstimas</string>
-    <string name="what_to_show">Ką Rodyti</string>
-    <string name="missing_notification_access_label">Reikalinga Pranešimų Prieiga</string>
-    <string name="missing_notification_access_description">Reikalinga pranešimų prieiga.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
-    <string name="title_change_settings">Keiskite Nustatymus</string>
-    <string name="debug_restart_launcher">Iš Naujo Paleiskite \"Lawnchair\"</string>
+    <!-- IconPackPreferences -->
+    <!-- <string name="icon_style" /> -->
+    <string name="icon_pack">Ikonu Paketas</string>
+    <string name="system_icons">System Icons</string>
+    <string name="themed_icon_title">Temotos Ikonos</string>
+    <string name="themed_icons_off_label">Išjungtos</string>
+    <string name="themed_icons_home_label">Namu Ekranas</string>
+    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
+    <string name="lawnicons_not_installed_description">Lawnicons neinstaliuota.</string>
+    <!-- <string name="cancel" /> (unknown source)-->
+    <!-- IconPickerPreference -->
+    <!-- <string name="icon_shape_label" /> -->
+    <string name="icon_shape_system">Sistema</string>
+    <string name="icon_shape_circle">Apskritimas</string>
+    <string name="icon_shape_cylinder">Cilindras</string>
+    <string name="icon_shape_diamond">Diamond</string>
+    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_cupertino">iOS</string>
+    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_rounded_square">Suapvalintas kvadratas</string>
+    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_square">Kvadratas</string>
+    <string name="icon_shape_squircle">Labai Suapvalintas Kvadratas</string>
+    <string name="icon_shape_teardrop">Ąšara</string>
+    <!-- FontSelectionPreferences -->
+    <string name="pref_fonts_add_fonts">Pridėti Šriftus</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
     <string name="pref_fonts_missing_font">Šriftas nerastas.</string>
     <string name="font_variant_italic">Pasvirasis šriftas</string>
     <string name="font_weight_thin">Plonas šriftas</string>
     <string name="font_weight_extra_light">Extra Light</string>
-    <string name="font_weight_light">Light</string>
+    <string name="font_weight_light">Šviesi</string>
     <string name="font_weight_regular">Regular</string>
     <string name="font_weight_medium">Medium</string>
     <string name="font_weight_semi_bold">Semibold</string>
     <string name="font_weight_bold">Bold</string>
     <string name="font_weight_extra_bold">Extra Bold</string>
     <string name="font_weight_extra_black">Black</string>
-    <string name="font_label">Font (Experimental)</string>
     <string name="reset_font">Reset</string>
-    <string name="search_input_action_clear_results">Išvalyti paieškos dėže</string>
-    <string name="pref_category_search">Search</string>
-    <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
-    <string name="label_search">Search</string>
-    <string name="label_lens">Google Lens</string>
-    <string name="label_voice_search">Balsu paieška</string>
-    <string name="apply_grid">Išsaugoti išdėstyma</string>
-    <string name="x_by_y">%1$d × %2$d</string>
-    <string name="folder_preview_bg_opacity_label">Ikonų fonų skaidrumas</string>
-    <string name="icon_shape_label">Ikonų forma</string>
-    <string name="icon_shape_system">System</string>
-    <string name="icon_shape_circle">Apskritimas</string>
-    <string name="icon_shape_square">Kvadratas</string>
-    <string name="icon_shape_rounded_square">Suapvalintas kvadratas</string>
-    <string name="icon_shape_squircle">Labai Suapvalintas Kvadratas</string>
-    <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_teardrop">Ąšara</string>
-    <string name="icon_shape_cylinder">Cilindras</string>
-    <string name="icon_shape_cupertino">iOS</string>
-    <string name="customize_button_text">Tinkinti</string>
-    <string name="app_title_label">Pavadinimas</string>
-    <string name="hide_from_drawer">Paslėpti iš Programų lentos</string>
-    <string name="action_lens">Lens</string>
-    <string name="force_rounded_widgets">Suapvalinti kraštai</string>
-    <string name="allow_widget_overlap">Allow Overlap</string>
-    <string name="suggestion_pref_screen_title">Pasiūlimai</string>
-    <string name="n_percent">%1$d%%</string>
-    <string name="label">Ūžrašas</string>
-    <string name="presets">Iš anksto nustatyti</string>
-    <string name="colors">Spalvos</string>
+    <!-- colorpreference/* -->
     <string name="dynamic">Dinamiškai</string>
-    <string name="all_apps_search_market_message">Ieškoti daugiau Programų</string>
-    <string name="show_app_search_bar">Show Search Bar</string>
+    <string name="presets">Iš anksto nustatyti</string>
+    <string name="custom">Pasirinktinis</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Red</string>
     <string name="rgb_green">Green</string>
@@ -178,56 +130,47 @@
     <string name="hsb_brightness">Šviesumas</string>
     <string name="hex">Hex</string>
     <string name="color_sliders">Slideriai</string>
-    <string name="lawnchair_bug_report">Lawnchair problemų pranešimas</string>
-    <string name="crash_report_notif_title">%1$s Užlūžo</string>
-    <string name="action_upload_crash_report">Įkelti Gedimo Įrašą</string>
-    <string name="action_copy_link">Nukopijuoti nuoruoda</string>
     <string name="action_copy">Kopijuoti</string>
+    <string name="action_paste">Paste</string>
     <string name="copied_toast">Nukopijuota į iškarpinę.</string>
-    <string name="action_share">Dalintis</string>
-    <string name="action_upload_error">Įkėlimas nepavyko</string>
-    <string name="dogbin_uploading">Įkėlima…</string>
-    <string name="bugreport_channel_name">Problemų pranešimai</string>
-    <string name="status_channel_name">Įkėlimo Statusas</string>
-    <string name="bugreport_group_summary">%d nauji pranešimai.</string>
-    <string name="bugreport_group_summary_multiple">Keli nauji pranešimai.</string>
-    <string name="themed_icon_title">Temotos Ikonos</string>
-    <string name="corner_radius_label">Šonų spinduliai</string>
-    <string name="search_bar_label">Paieškos juosta</string>
-    <string name="apply_accent_color_label">Naudoti akcento spalva</string>
-    <string name="show_search_result_types">Rodyti paieškos rezultatose</string>
-    <string name="search_pref_result_people_title">Žmonės</string>
-    <string name="search_pref_result_shortcuts_title">Programų nuorados</string>
-    <string name="search_pref_result_tips_title">\"Pixel tips\"</string>
-    <string name="row_height_label">Eilių aukštis</string>
-    <string name="all_apps_device_search_hint">Ieškokite</string>
-    <string name="dark_status_bar_label">Juoda statuso juosta</string>
-    <string name="lawnicons_not_installed_description">Lawnicons neinstaliuota.</string>
-    <string name="icon_picker_default_category">Ikonos</string>
-    <string name="icon_picker_reset_to_default">Nustatyti į gamyklinius nustatymus</string>
-    <string name="icon_pack_external_picker">Atadaryti išorinį rinkiklį</string>
-    <string name="recents_actions_label">Greiti Veiksmai</string>
-    <string name="recents_clear_all">Išvalyti visus</string>
-    <string name="pick_icon_from_label">Paimti ikona iš</string>
-    <string name="experimental_features_label">Expermentinės funkcijos</string>
-    <string name="icon_picker_label">Per-programa Ikonų tinkinimas</string>
-    <string name="icon_picker_description">Gal privers Laenchair užlūžti</string>
-    <string name="font_picker_label">Šrifto tinkinimas</string>
-    <string name="font_picker_description">Kažkuris tekstas liko nepakeistas.</string>
-    <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
-    <string name="search_provider_app_search">Programų paieška</string>
-    <string name="always_open_website_label">Visada atidaryti puslapį</string>
-    <string name="always_open_website_description">Atidaryti paieškos tekėjo puslapį net ir jeigu jų programa su instaliuota.</string>
-    <string name="search_provider">Paieškos tekėjas</string>
+    <string name="invalid_color">Invalid Color</string>
+    <string name="app_icon_color">App Icon Color</string>
+    <!-- HomeScreenPreferences -->
+    <!-- <string name="general_label" /> -->
+    <string name="auto_add_shortcuts_label">Pridėkite Naujas Programas į Namu Ekrana</string>
+    <!-- <string name="gesture_double_tap" /> -->
+    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_unavailable">No feed installed.</string>
+    <string name="wallpaper">Ekrano Fonas</string>
+    <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
+    <string name="wallpaper_depth_effect_label">Wallpaper Depth Effect</string>
+    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="show_sys_ui_scrim">Viršaus Šešėlis</string>
+    <string name="layout">Išdėstimas</string>
+    <string name="home_screen_grid">Namų ekrano išdėstymas</string>
+    <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <!-- used in popup menu-->
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_locked">Home Screen is locked.</string>
     <string name="status_bar_label">Būsenos Juosta</string>
-    <string name="show_notification_count">Rodyti Pranešimų Skaičių</string>
-    <string name="icon_picker_load_failed">Couldn’t load more icons.</string>
+    <string name="show_status_bar">Rodyti statuso juosta</string>
+    <string name="dark_status_bar_label">Juoda statuso juosta</string>
+    <string name="icons">Ikonos</string>
+    <string name="icon_size">Ikonų Dydis</string>
+    <string name="show_home_labels">Show Labels</string>
+    <string name="label_size">Label Size</string>
     <string name="reset_custom_icons">Reset Custom Icons</string>
     <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
-    <string name="taskbar_label">Užduočių Juosta</string>
-    <string name="enable_taskbar_experimental">Įjungti Užduočių Juostą (Eksperimentiška)</string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
+    <!-- <string name="widget_button_text" /> (unknown source)-->
+    <string name="force_rounded_widgets">Suapvalinti kraštai</string>
+    <string name="allow_widget_overlap">Allow Overlap</string>
+    <!-- HomeScreenGridPreferences -->
+    <!-- <string name="home_screen_grid" /> -->
+    <string name="columns">Stulpeliai</string>
+    <string name="rows">Eilės</string>
+    <string name="apply_grid">Išsaugoti išdėstyma</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Kraunama</string>
@@ -243,6 +186,9 @@
     <string name="smartspace_date_and_time">Data &amp; Laikas</string>
     <string name="smartspace_date">Data</string>
     <string name="smartspace_time">Laikas</string>
+    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_follow_system">Follow System</string>
+    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
     <string name="smartspace_time_24_hour_format">24-Valandų Formatas</string>
     <string name="smartspace_weather">Orai</string>
     <string name="smartspace_battery_status">Baterijos Statusas</string>
@@ -252,33 +198,60 @@
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="smartspace_calendar_gregorian">Grigališkas</string>
     <string name="smartspace_calendar_persian">Persų</string>
-    <string name="quickstep_incompatible">Incompatible System Integration</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
-    <string name="pref_fonts_add_fonts">Pridėti Šriftus</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
-    <string name="delete">Ištrinti</string>
-    <string name="themed_icons_off_label">Išjungtos</string>
-    <string name="themed_icons_home_label">Namu Ekranas</string>
-    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
-    <!-- Backup -->
-    <string name="create_backup">Sukurkite Atsarginę Kopiją</string>
-    <string name="create_backup_action">Sukurti</string>
-    <string name="what_to_backup">What to Back Up</string>
-    <string name="backup_content_layout_and_settings">Layout and Settings</string>
-    <string name="backup_content_wallpaper">Ekrano Fonas</string>
-    <string name="backup_create_success">Atasrginė kopija sukurta.</string>
-    <string name="backup_create_error">Nepavyko sukurti atsarginės kopijos.</string>
-    <string name="restore_backup">Atkurti Atsarginę Kopiją</string>
-    <string name="restore_backup_action">Atkurti</string>
-    <string name="what_to_restore">Ką Atkurti</string>
-    <string name="backup_restore_success">Atsarginė kopija atkurta.</string>
-    <string name="backup_restore_error">Nepavyko atkurti atsarginės kopijos.</string>
-    <string name="invalid_backup_file">Netinkamas atsarginės kopijos failas.</string>
-    <string name="wallpaper_depth_effect_label">Wallpaper Depth Effect</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
-    <string name="gestures_label">Gestai</string>
-    <string name="gestures_description">Paspaudimai ir Braukimas</string>
-    <!-- Gestures -->
+    <string name="smartspace_preferences">Nuostatos</string>
+    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
+    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <!-- DockPreferences -->
+    <!-- <string name="dock_label" /> -->
+    <string name="search_bar_label">Paieškos juosta</string>
+    <string name="hotseat_qsb_label">Rodyti Ieškojimo Juostą</string>
+    <string name="corner_radius_label">Šonų spinduliai</string>
+    <string name="apply_accent_color_label">Naudoti akcento spalva</string>
+    <string name="search_provider">Paieškos tekėjas</string>
+    <string name="grid">Grid</string>
+    <string name="dock_icons">Pažeminio Ikonos</string>
+    <!-- SearchProviderPreferences -->
+    <!-- search_provider -->
+    <string name="search_provider_app_search">Programų paieška</string>
+    <string name="app_label">Programėlė</string>
+    <string name="website_label">Interneto Svetainė</string>
+    <string name="qsb_search_provider_app_required">Programėlė reikalinga.</string>
+    <!-- AppDrawerPrefences -->
+    <!-- app_drawer_label -->
+    <!-- general_label -->
+    <string name="hidden_apps_label">Paslėptos Programėlės</string>
+    <string name="background_opacity">Fono Skaidrumas</string>
+    <string name="pref_category_search">Ieškokite</string>
+    <string name="show_app_search_bar">Rodyti Ieškojimo Juostą</string>
+    <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
+    <string name="fuzzy_search_title">Fuzzy Search</string>
+    <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
+    <!-- <string name="grid" /> -->
+    <string name="app_drawer_columns">Programu Lentynos Stulpeliai</string>
+    <string name="row_height_label">Eilių aukštis</string>
+    <!--
+    <string name="icons" />
+      <string name="icon_size" />
+      <string name="show_home_labels" />
+      <string name="label_size" />
+    -->
+    <!-- HiddenAppsPreferences -->
+    <string name="hidden_apps_label_with_count">Paslėptos Programėlės (%1$d)</string>
+    <plurals name="apps_count">
+        <item quantity="one">%1$d Programėlė</item>
+        <item quantity="few">%1$d Programėlės</item>
+        <item quantity="many">%1$d Programėlės</item>
+        <item quantity="other">%1$d Programėlės</item>
+    </plurals>
+    <!-- FolderPreferences -->
+    <!-- <string name="folders_label" /> -->
+    <!-- <string name="general_label" /> -->
+    <string name="folder_preview_bg_opacity_label">Ikonų fonų skaidrumas</string>
+    <!-- <string name="grid" /> -->
+    <string name="max_folder_columns">Max. Folder Columns</string>
+    <string name="max_folder_rows">Max. Folder Rows</string>
+    <!-- GesturePreference -->
+    <!-- <string name="gestures_label" /> -->
     <string name="gesture_double_tap">Dvigubas Paspaudimas</string>
     <string name="gesture_swipe_up">Braukite į Viršų</string>
     <string name="gesture_swipe_down">Braukite į Apačią</string>
@@ -293,7 +266,99 @@
     <string name="gesture_handler_open_app_search">Open App Search</string>
     <string name="gesture_handler_open_search">Open Search</string>
     <string name="pick_app_for_gesture">Pasirinkite Programėlę</string>
+    <!-- QuickstepPreferences -->
+    <!-- <string name="quickstep_label" /> -->
+    <!-- <string name="general_label" /> -->
+    <string name="translucent_background">Permatomas Fonas</string>
+    <string name="recents_actions_label">Greiti Veiksmai</string>
+    <!-- <string name="screenshot" /> (unknown source) -->
+    <string name="action_share">Dalintis</string>
+    <string name="action_lens">Lens</string>
+    <string name="recents_clear_all">Išvalyti visus</string>
+    <string name="window_corner_radius_label">Screen Corner Radius</string>
+    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
+    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
+    <string name="taskbar_label">Užduočių Juosta</string>
+    <string name="enable_taskbar_experimental">Įjungti Užduočių Juostą (Eksperimentiška)</string>
+    <!-- about/About.kt -->
+    <string name="news">Naujienos</string>
+    <string name="support">Remti</string>
+    <string name="product">Produktas</string>
+    <string name="design_and_development">Dizainas &amp; Plėtra</string>
+    <string name="development">Plėtra</string>
+    <string name="quickswitch_maintenance">QuickSwitch Maintenance</string>
+    <string name="devops">DevOps</string>
+    <string name="support_and_pr">Pagalba &amp; PR</string>
+    <!--
+      <string name="support" />
+      <string name="support_and_pr" />
+      -->
+    <string name="acknowledgements">Acknowledgements</string>
+    <string name="translate">Versti</string>
+    <!-- IconPickerPreference -->
+    <string name="icon_picker_default_category">Ikonos</string>
+    <string name="icon_picker_reset_to_default">Nustatyti į gamyklinius nustatymus</string>
+    <string name="icon_pack_external_picker">Atadaryti išorinį rinkiklį</string>
+    <string name="pick_icon_from_label">Paimti ikona iš</string>
+    <string name="icon_picker_load_failed">Couldn’t load more icons.</string>
+    <!-- Misc -->
+    <string name="all_apps_search_bar_hint">Ieškoti Programelių</string>
+    <string name="settings_button_text">Pagrindinio Puslapio Nustatymai</string>
+    <string name="item_removed">Elementas pašalintas.</string>
+    <string name="all_apps_no_search_results">Nerasta programelių atitinkančių \"<xliff:g example="Android" id="query">%1$s</xliff:g>\".</string>
+    <string name="dt2s_admin_hint_title">Administratoriaus Prieiga Reikalinga</string>
+    <string name="dt2s_admin_hint">Jei norite naudoti dvigubą paspaudimą miegojimui, nustatykite \"Lawnchair\" programelę kaip prietaiso administratoriaus programėlę. Paspauskite Atidaryti Nustatymus, poto paspauskite \"Aktivuoti šią prietaiso administratoriaus programėlę.\"</string>
+    <string name="dt2s_admin_warning">Dvigubas paspaudimas miegojimui bus išjungtas.</string>
+    <string name="dt2s_a11y_hint_title">Įjungite prieinamumo paslaugą</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
+    <string name="dt2s_warning_open_settings">Open Settings</string>
+    <string name="loading">Kraunasi…</string>
+    <string name="system">Sistema</string>
+    <string name="customize_button_text">Tinkinti</string>
+    <string name="label">Ūžrašas</string>
+    <string name="hide_from_drawer">Paslėpti iš Programų lentos</string>
+    <string name="suggestion_pref_screen_title">Pasiūlimai</string>
+    <string name="n_percent">%1$d%%</string>
+    <!-- Bug reporting -->
+    <string name="lawnchair_bug_report">Lawnchair problemų pranešimas</string>
+    <string name="crash_report_notif_title">%1$s Užlūžo</string>
+    <string name="action_upload_crash_report">Įkelti Gedimo Įrašą</string>
+    <string name="action_copy_link">Nukopijuoti nuoruoda</string>
+    <string name="action_upload_error">Įkėlimas nepavyko</string>
+    <string name="dogbin_uploading">Įkėlima…</string>
+    <string name="bugreport_channel_name">Problemų pranešimai</string>
+    <string name="status_channel_name">Įkėlimo Statusas</string>
+    <string name="bugreport_group_summary">%d nauji pranešimai.</string>
+    <string name="bugreport_group_summary_multiple">Keli nauji pranešimai.</string>
+    <!-- Search ig -->
+    <string name="show_search_result_types">Rodyti paieškos rezultatose</string>
+    <string name="search_pref_result_people_title">Žmonės</string>
+    <string name="search_pref_result_shortcuts_title">Programų nuorados</string>
+    <string name="search_pref_result_tips_title">\"Pixel tips\"</string>
+    <string name="all_apps_device_search_hint">Ieškokite</string>
+    <string name="search_input_action_clear_results">Išvalyti paieškos dėže</string>
+    <string name="label_search">Search</string>
+    <string name="label_lens">Google Lens</string>
+    <string name="label_voice_search">Balsu paieška</string>
+    <string name="all_apps_search_market_message">Ieškoti daugiau Programų</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
+    <string name="quickstep_incompatible">Incompatible System Integration</string>
+    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
+    <string name="delete">Ištrinti</string>
+    <!-- Backup -->
+    <string name="create_backup">Sukurkite Atsarginę Kopiją</string>
+    <string name="create_backup_action">Sukurti</string>
+    <string name="what_to_backup">What to Back Up</string>
+    <string name="backup_content_layout_and_settings">Layout and Settings</string>
+    <string name="backup_content_wallpaper">Ekrano Fonas</string>
+    <string name="backup_create_success">Atasrginė kopija sukurta.</string>
+    <string name="backup_create_error">Nepavyko sukurti atsarginės kopijos.</string>
+    <string name="restore_backup">Atkurti Atsarginę Kopiją</string>
+    <string name="restore_backup_action">Atkurti</string>
+    <string name="what_to_restore">Ką Atkurti</string>
+    <string name="backup_restore_success">Atsarginė kopija atkurta.</string>
+    <string name="backup_restore_error">Nepavyko atkurti atsarginės kopijos.</string>
+    <string name="invalid_backup_file">Netinkamas atsarginės kopijos failas.</string>
+    <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="app_label">Programėlė</string>
-    <string name="website_label">Interneto Svetainė</string>
 </resources>

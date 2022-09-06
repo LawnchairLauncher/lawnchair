@@ -15,111 +15,95 @@
   ~ limitations under the License.
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="icon_pack">Πακέτο Εικονιδίων</string>
-    <string name="icon_style">Στυλ Εικονιδίου</string>
+    <!-- PreferenceDashboard -->
     <string name="settings">Ρυθμίσεις</string>
-    <string name="home_screen_label">Αρχική Οθόνη</string>
-    <string name="home_screen_description">Ροή, Πλέγμα, Εικονίδια</string>
     <string name="general_label">Γενικά</string>
     <string name="general_description">Κουκκκίδες Ειδοποιήσεων, Πακέτο Εικονιδίων</string>
-    <string name="home_screen_rotation_label">Περιστροφή Αρχικής Οθόνης</string>
-    <string name="home_screen_rotaton_description">Όταν η συσκευή περιστρέφεται.</string>
-    <string name="auto_add_shortcuts_label">Προσθήκη Nέων Eφαρμογών Στην Αρχική Οθόνη</string>
+    <string name="home_screen_label">Αρχική Οθόνη</string>
+    <string name="home_screen_description">Ροή, Πλέγμα, Εικονίδια</string>
+    <!--
+    <string name="smartspace" />
+    -->
+    <string name="what_to_show">Τι να εμφανίσετε</string>
     <string name="dock_label">Ράφι</string>
     <string name="dock_description">Γραμμή Αναζήτησης, Αριθμός Εικονιδίων</string>
     <string name="app_drawer_label">Συρτάρι Εφαρμογών</string>
     <string name="app_drawer_description">Κρυμμένες Εφαρμογές, Αριθμός Στηλών, Εικονίδια</string>
     <string name="folders_label">Φάκελοι</string>
     <string name="folders_description">Αριθμός Γραμμών και Στηλών</string>
-    <string name="app_drawer_columns">Στήλες Συρταριού Εφαρμογών</string>
-    <string name="dock_icons">Eικονίδια Dock</string>
-    <string name="max_folder_columns">Μεγ. Στήλες Φακέλου</string>
-    <string name="max_folder_rows">Μεγ. Σειρές Φακέλου</string>
-    <string name="home_screen_grid">Πλέγμα Αρχικής Οθόνης</string>
-    <string name="home_screen_lock">Κλείδωμα Αρχικής Οθόνης</string>
-    <string name="home_screen_unlock">Ξεκλείδωμα Αρχικής Οθόνης</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Εμφάνιση Κουμπιού Κλειδώματος στο αναδυόμενο παράθυρο αρχικής οθόνης</string>
-    <string name="columns">Στήλες</string>
-    <string name="grid">Πλέγμα</string>
-    <string name="rows">Σειρές</string>
-    <string name="icons">Εικονίδια</string>
-    <string name="icon_size">Μέγεθος Εικονιδίων</string>
-    <string name="label_size">Μέγεθος Ετικέτας</string>
-    <string name="show_home_labels">Εμφάνιση Ετικετών</string>
-    <string name="notification_dots">Κουκκίδες Ειδοποιήσεων</string>
-    <string name="smartspace_preferences">Προτιμήσεις</string>
+    <string name="gestures_label">Χειρονομίες</string>
+    <string name="gestures_description">Πατήματα και Σαρώσεις</string>
+    <string name="quickstep_label">Πρόσφατα</string>
+    <string name="quickstep_description">Κουμπί Καθαρισμού Όλων, Ακτίνα Γωνίας</string>
     <string name="about_label">Πληροφορίες</string>
-    <string name="news">Νέα</string>
-    <string name="support">Υποστήριξη</string>
-    <string name="acknowledgements">Ευχαριστίες</string>
-    <string name="devops">Προγραμματιστές</string>
-    <string name="quickswitch_maintenance">Συντήρηση QuickSwitch</string>
-    <string name="all_apps_search_bar_hint">Αναζήτηση Εφαρμογών</string>
-    <string name="settings_button_text">Ρυθμίσεις Αρχικής Οθόνης</string>
-    <string name="development">Ανάπτυξη</string>
+    <!-- <string name="version" /> (unknown source) -->
+    <!-- PreferencesOverflowMenu() in PreferencesDashboard -->
     <string name="app_info_drop_target_label">Πληροφορίες Εφαρμογής</string>
-    <string name="item_removed">Το στοιχείο αφαιρέθηκε.</string>
-    <string name="all_apps_no_search_results">Δεν βρέθηκαν εφαρμογές που να ταιριάζουν με “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
-    <string name="translucent_background">Ημιδιαφανές Φόντο</string>
-    <string name="background_opacity">Αδιαφάνεια Φόντου</string>
-    <string name="background_lightness_label">Φωτεινότητα Φόντου</string>
-    <string name="adaptive_icons">Προσαρμοζόμενα Εικονίδια</string>
-    <string name="adaptive_icon_background_description">Χρησιμοποιήστε 100% φωτεινότητα φόντου για λευκό.</string>
+    <string name="debug_restart_launcher">Επανεκκίνηση του Lawnchair</string>
+    <string name="experimental_features_label">Πειραματικά Χαρακτηριστικά</string>
+    <!-- ExperimentalFeaturesPreferences -->
+    <!-- <string name="experimental_features_label" />-->
+    <string name="font_picker_label">Προσαρμογή Γραμματοσειράς</string>
+    <string name="font_picker_description">Μερικά κείμενα παραμένουν αμετάβλητα.</string>
+    <string name="smartspace_calendar_label">Προσαρμογή του Ημερολογίου Με μιας Ματιάς</string>
+    <string name="smartspace_calendar_description">Να επιτρέπεται η εμφάνιση ημερομηνίας σε μη Γρηγοριανά συστήματα ημερολογίου.</string>
+    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
+    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <!-- GeneralPreferences -->
+    <string name="home_screen_rotation_label">Περιστροφή Αρχικής Οθόνης</string>
+    <string name="home_screen_rotaton_description">Όταν η συσκευή περιστρέφεται.</string>
+    <string name="font_label">Γραμματοσειρά (Πειραματικό χαρακτηριστικό)</string>
+    <!-- <string name="icons" /> -->
+    <string name="icon_style">Στυλ Εικονιδίου</string>
+    <string name="icon_shape_label">Σχήμα Εικονιδίου</string>
     <string name="auto_adaptive_icons_label">Αυτόματα Προσαρμοζόμενα Εικονίδια</string>
     <string name="auto_adaptive_icons_description">Για όλα τα μη προσαρμοζόμενα εικονίδια.</string>
-    <string name="support_and_pr">Υποστήριξη &amp; PR</string>
-    <string name="workspace_dt2s">Διπλό πάτημα για αναστολή</string>
-    <string name="smart_space_enable">Με μια Ματιά Widget</string>
-    <string name="design_and_development">Σχεδιασμός &amp; Ανάπτυξη</string>
-    <string name="translate">Μετάφραση</string>
-    <string name="product">Προϊόν</string>
-    <string name="hidden_apps_label">Κρυμμένες Εφαρμογές</string>
-    <string name="hidden_apps_label_with_count">Κρυμμένες Εφαρμογές (%1$d)</string>
-    <plurals name="apps_count">
-        <item quantity="one">%1$d Εφαρμογή</item>
-        <item quantity="other">%1$d Εφαρμογές</item>
-    </plurals>
-    <string name="hotseat_qsb_label">Εμφάνιση Γραμμής Αναζήτησης</string>
-    <string name="qsb_search_provider_app_required">Απαιτείται εφαρμογή.</string>
-    <string name="dt2s_admin_hint_title">Admin permission required</string>
-    <string name="dt2s_admin_hint">Για να χρησιμοποιήσετε το διπλό πάτημα για ύπνο, ορίστε τον εκκινητή Lawnchair ως εφαρμογή διαχείρισης συσκευής. Πατήστε στο Ανοίξτε τις ρυθμίσεις και μετά πατήστε «Ενεργοποίηση αυτής της εφαρμογής ως διαχειριστή της συσκευής.»</string>
-    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
-    <string name="dt2s_a11y_hint_title">Accessibility service required</string>
-    <string name="dt2s_a11y_hint">Για να χρησιμοποιήσετε το διπλό πάτημα για ύπνο, ενεργοποιήστε την υπηρεσία προσβασιμότητας του εκκινητή Lawnchair. Πατήστε στο Άνοιγμα Ρυθμίσεων και μετά επιλέξτε τον Lawnchair και ενεργοποιήστε την Χρήση του Lawnchair.</string>
-    <string name="dt2s_warning_open_settings">Άνοιγμα Ρυθμίσεων</string>
-    <string name="minus_one_enable">Ροή</string>
-    <string name="minus_one_unavailable">Δεν υπάρχει εγκατεστημένη τροφοδοσία.</string>
-    <string name="fuzzy_search_title">Ασαφής Αναζήτηση</string>
-    <string name="fuzzy_search_desc">Κατά προσέγγιση αντιστοίχιση για αναζητήσεις εφαρμογών.</string>
+    <string name="background_lightness_label">Φωτεινότητα Φόντου</string>
+    <string name="adaptive_icon_background_description">Χρησιμοποιήστε 100% φωτεινότητα φόντου για λευκό.</string>
+    <string name="notification_dots">Κουκκίδες Ειδοποιήσεων</string>
+    <!-- <string name="notification_dots" />-->
+    <string name="show_notification_count">Εμφάνιση Πλήθους Ειδοποιήσεων</string>
+    <string name="notification_dots_color">Χρώμα Κουκκίδας Ειδοποιήσεων</string>
+    <!-- Notification popup -->
+    <string name="missing_notification_access_label">Απαιτείται Πρόσβαση Ειδοποιήσεων</string>
+    <string name="missing_notification_access_description">Απαιτείται Πρόσβαση Ειδοποιήσεων.</string>
+    <string name="msg_missing_notification_access">Για να χρησιμοποιήσετε τις Κουκκίδες Ειδοποιήσεων, παραχωρήστε στο <xliff:g id="name" example="My App">%1$s</xliff:g> πρόσβαση στις ειδοποιήσεις.</string>
+    <string name="title_change_settings">Αλλαγή Ρυθμίσεων</string>
+    <string name="colors">Χρώματα</string>
     <string name="theme_label">Θέμα</string>
     <string name="theme_light">Φωτεινό</string>
     <string name="theme_dark">Σκοτεινό</string>
     <string name="theme_system_default">Σύστημα</string>
     <string name="theme_follow_wallpaper">Ταίριασμα Ταπετσαρίας</string>
-    <string name="quickstep_label">Πρόσφατα</string>
-    <string name="clear_all_as_action_label">Κουμπί Καθαρισμού όλων στο κάτω μέρος</string>
-    <string name="window_corner_radius_label">Ακτίνα Γωνίας Οθόνης</string>
-    <string name="override_window_corner_radius_label">Προσαρμοσμένη Ακτίνα Γωνίας Οθόνης</string>
-    <string name="window_corner_radius_description">Όταν σύρετε προς τα πάνω για να ανοίξετε τα Πρόσφατα, η τρέχουσα εφαρμογή ακολουθεί το δάχτυλό σας και συρρικνώνεται σε μια κάρτα. Χρησιμοποιήστε αυτό το ρυθμιστικό για να ρυθμίσετε την ακτίνα γωνίας της κάρτας όταν είναι σχεδόν σε πλήρη οθόνη έτσι ώστε να ταιριάζει με τις γωνίες της οθόνης σας.</string>
-    <string name="system_icons">Εικονίδια Συστήματος</string>
     <string name="accent_color">Χρώμα Έμφασης</string>
-    <string name="invalid_color">Μη Έγκυρο Χρώμα</string>
-    <string name="done">Ολοκληρώθηκε</string>
-    <string name="loading">Φόρτωση…</string>
-    <string name="system">Σύστημα</string>
-    <string name="wallpaper">Ταπετσαρία</string>
-    <string name="custom">Προσαρμοσμένο</string>
-    <string name="quickstep_description">Κουμπί Καθαρισμού Όλων, Ακτίνα Γωνίας</string>
-    <string name="wallpaper_scrolling_label">Κύλιση Ταπετσαρίας</string>
-    <string name="show_sys_ui_scrim">Σκιά κορυφής</string>
-    <string name="show_status_bar">Εμφάνιση Γραμμής Κατάστασης</string>
-    <string name="layout">Διάταξη</string>
-    <string name="what_to_show">Τι να εμφανίσετε</string>
-    <string name="missing_notification_access_label">Απαιτείται Πρόσβαση Ειδοποιήσεων</string>
-    <string name="missing_notification_access_description">Απαιτείται Πρόσβαση Ειδοποιήσεων.</string>
-    <string name="msg_missing_notification_access">Για να χρησιμοποιήσετε τις Κουκκίδες Ειδοποιήσεων, παραχωρήστε στο <xliff:g id="name" example="My App">%1$s</xliff:g> πρόσβαση στις ειδοποιήσεις.</string>
-    <string name="title_change_settings">Αλλαγή Ρυθμίσεων</string>
-    <string name="debug_restart_launcher">Επανεκκίνηση του Lawnchair</string>
+    <!-- IconPackPreferences -->
+    <!-- <string name="icon_style" /> -->
+    <string name="icon_pack">Πακέτο Εικονιδίων</string>
+    <string name="system_icons">Εικονίδια Συστήματος</string>
+    <string name="themed_icon_title">Θεματοποιημένα Εικονίδια</string>
+    <string name="themed_icons_off_label">Ανενεργό</string>
+    <string name="themed_icons_home_label">Αρχική Οθόνη</string>
+    <string name="themed_icons_home_and_drawer_label">Αρχική Οθόνη &amp; Συρτάρι Εφαρμογών</string>
+    <string name="lawnicons_not_installed_description">Τα εικονίδια Lawnicons δεν έχουν εγκαταστάθει.</string>
+    <!-- <string name="cancel" /> (unknown source)-->
+    <!-- IconPickerPreference -->
+    <!-- <string name="icon_shape_label" /> -->
+    <string name="icon_shape_system">Σύστημα</string>
+    <string name="icon_shape_circle">Κύκλος</string>
+    <string name="icon_shape_cylinder">Κύλινδρος</string>
+    <string name="icon_shape_diamond">Diamond</string>
+    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_cupertino">iOS</string>
+    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="icon_shape_rounded_square">Στρογγυλό Τετράγωνο</string>
+    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_square">Τετράγωνο</string>
+    <string name="icon_shape_squircle">Οβάλ τετράγωνο</string>
+    <string name="icon_shape_teardrop">Δάκρυ</string>
+    <!-- FontSelectionPreferences -->
+    <string name="pref_fonts_add_fonts">Προσθήκη Γραμματοσειρών</string>
+    <string name="pref_fonts_add_fonts_summary">Υποστήριξη OTF &amp; TTF αρχείων.</string>
     <string name="pref_fonts_missing_font">Η γραμματοσειρά δεν βρέθηκε.</string>
     <string name="font_variant_italic">Πλάγια γραμματοσειρά</string>
     <string name="font_weight_thin">Λεπτή γραμματοσειρά</string>
@@ -131,41 +115,11 @@
     <string name="font_weight_bold">Έντονη γραμματοσειρά</string>
     <string name="font_weight_extra_bold">Επιπλέον έντονη γραμματοσειρά</string>
     <string name="font_weight_extra_black">Παχιά γραμματοσειρά</string>
-    <string name="font_label">Γραμματοσειρά (Πειραματικό χαρακτηριστικό)</string>
     <string name="reset_font">Επαναφορά</string>
-    <string name="search_input_action_clear_results">Καθαρισμός Πλαισίου Αναζήτησης</string>
-    <string name="pref_category_search">Αναζήτηση</string>
-    <string name="pref_search_auto_show_keyboard">Αυτόματη Εμφάνιση Πληκτρολογίου</string>
-    <string name="label_search">Αναζήτηση</string>
-    <string name="label_lens">Google Lens</string>
-    <string name="label_voice_search">Φωνητική Αναζήτηση</string>
-    <string name="apply_grid">Εφαρμογή</string>
-    <string name="x_by_y">%1$d × %2$d</string>
-    <string name="folder_preview_bg_opacity_label">Αδιαφάνεια Φόντου Εικονιδίου</string>
-    <string name="icon_shape_label">Σχήμα Εικονιδίου</string>
-    <string name="icon_shape_system">Σύστημα</string>
-    <string name="icon_shape_circle">Κύκλος</string>
-    <string name="icon_shape_square">Τετράγωνο</string>
-    <string name="icon_shape_rounded_square">Στρογγυλό Τετράγωνο</string>
-    <string name="icon_shape_squircle">Οβάλ τετράγωνο</string>
-    <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_teardrop">Δάκρυ</string>
-    <string name="icon_shape_cylinder">Κύλινδρος</string>
-    <string name="icon_shape_cupertino">iOS</string>
-    <string name="customize_button_text">Προσαρμόστε</string>
-    <string name="app_title_label">Τίτλος</string>
-    <string name="hide_from_drawer">Απόκρυψη από Συρτάρι Εφαρμογών</string>
-    <string name="action_lens">Φακός</string>
-    <string name="force_rounded_widgets">Στρογγυλές Γωνίες</string>
-    <string name="allow_widget_overlap">Να επιτρέπεται η Επικάλυψη</string>
-    <string name="suggestion_pref_screen_title">Προτάσεις</string>
-    <string name="n_percent">%1$d%%</string>
-    <string name="label">Ετικέτα</string>
-    <string name="presets">Προεπιλογές</string>
-    <string name="colors">Χρώματα</string>
+    <!-- colorpreference/* -->
     <string name="dynamic">Δυναμικό</string>
-    <string name="all_apps_search_market_message">Αναζήτηση για περισσότερες εφαρμογές</string>
-    <string name="show_app_search_bar">Εμφάνιση Γραμμής Αναζήτησης</string>
+    <string name="presets">Προεπιλογές</string>
+    <string name="custom">Προσαρμοσμένο</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Κόκκινο</string>
     <string name="rgb_green">Πράσινο</string>
@@ -176,56 +130,47 @@
     <string name="hsb_brightness">Φωτεινότητα</string>
     <string name="hex">Hex</string>
     <string name="color_sliders">Μπάρες ρύθμισης</string>
-    <string name="lawnchair_bug_report">Αναφορά σφάλματος του Lawnchair</string>
-    <string name="crash_report_notif_title">%1$s Κράσαρε</string>
-    <string name="action_upload_crash_report">Μεταφόρτωση Καταγραφής Κατάρρευσης</string>
-    <string name="action_copy_link">Αντιγραφή Συνδέσμου</string>
     <string name="action_copy">Αντιγραφή</string>
+    <string name="action_paste">Paste</string>
     <string name="copied_toast">Αντιγράφηκε στο πρόχειρο.</string>
-    <string name="action_share">Κοινοποίηση</string>
-    <string name="action_upload_error">Αποτυχία μεταφόρτωσης</string>
-    <string name="dogbin_uploading">Μεταφόρτωση…</string>
-    <string name="bugreport_channel_name">Αναφορές Σφαλμάτων</string>
-    <string name="status_channel_name">Κατάσταση Μεταφόρτωσης</string>
-    <string name="bugreport_group_summary">%d νέες αναφορές.</string>
-    <string name="bugreport_group_summary_multiple">Πολλαπλές νέες αναφορές.</string>
-    <string name="themed_icon_title">Θεματοποιημένα Εικονίδια</string>
-    <string name="corner_radius_label">Ακτίνα Γωνίας</string>
-    <string name="search_bar_label">Μπάρα Αναζήτησης</string>
-    <string name="apply_accent_color_label">Εφαρμογή Χρώματος Έμφασης</string>
-    <string name="show_search_result_types">Εμφάνιση στα Αποτελέσματα Αναζήτησης</string>
-    <string name="search_pref_result_people_title">Άτομα</string>
-    <string name="search_pref_result_shortcuts_title">Συντομεύσεις Εφαρμογών</string>
-    <string name="search_pref_result_tips_title">Συμβουλές Pixel</string>
-    <string name="row_height_label">Ύψος Γραμμής</string>
-    <string name="all_apps_device_search_hint">Αναζήτηση</string>
-    <string name="dark_status_bar_label">Σκοτεινή Γραμμή Κατάστασης</string>
-    <string name="lawnicons_not_installed_description">Τα εικονίδια Lawnicons δεν έχουν εγκαταστάθει.</string>
-    <string name="icon_picker_default_category">Εικονίδια</string>
-    <string name="icon_picker_reset_to_default">Επαναφορά στις Προεπιλογές</string>
-    <string name="icon_pack_external_picker">Άνοιγμα Εξωτερικού Επιλογέα</string>
-    <string name="recents_actions_label">Γρήγορες Ενέργειες</string>
-    <string name="recents_clear_all">Εκκαθάριση Όλων</string>
-    <string name="pick_icon_from_label">Επιλογή εικονιδίου από</string>
-    <string name="experimental_features_label">Πειραματικά Χαρακτηριστικά</string>
-    <string name="icon_picker_label">Προσαρμογή Εικονιδίου ανά Εφαρμογή</string>
-    <string name="icon_picker_description">Μπορεί να προκαλέσει πάγωμα του εκκινητή Lawnchair.</string>
-    <string name="font_picker_label">Προσαρμογή Γραμματοσειράς</string>
-    <string name="font_picker_description">Μερικά κείμενα παραμένουν αμετάβλητα.</string>
-    <string name="smartspace_calendar_label">Προσαρμογή του Ημερολογίου Με μιας Ματιάς</string>
-    <string name="smartspace_calendar_description">Να επιτρέπεται η εμφάνιση ημερομηνίας σε μη Γρηγοριανά συστήματα ημερολογίου.</string>
-    <string name="search_provider_app_search">Αναζήτηση Εφαρμογής</string>
-    <string name="always_open_website_label">Πάντα Άνοιγμα Ιστοσελίδας</string>
-    <string name="always_open_website_description">Ανοίξτε την ιστοσελίδα του παρόχου αναζήτησης ακόμα και αν η εφαρμογή τους είναι εγκατεστημένη.</string>
-    <string name="search_provider">Πάροχος Αναζήτησης</string>
+    <string name="invalid_color">Μη Έγκυρο Χρώμα</string>
+    <string name="app_icon_color">Χρώμα Εικονιδίου Εφαρμογής</string>
+    <!-- HomeScreenPreferences -->
+    <!-- <string name="general_label" /> -->
+    <string name="auto_add_shortcuts_label">Προσθήκη Nέων Eφαρμογών Στην Αρχική Οθόνη</string>
+    <!-- <string name="gesture_double_tap" /> -->
+    <string name="minus_one_enable">Ροή</string>
+    <string name="minus_one_unavailable">Δεν υπάρχει εγκατεστημένη τροφοδοσία.</string>
+    <string name="wallpaper">Ταπετσαρία</string>
+    <string name="wallpaper_scrolling_label">Κύλιση Ταπετσαρίας</string>
+    <string name="wallpaper_depth_effect_label">Εφέ Βάθους Ταπετσαρίας</string>
+    <string name="wallpaper_depth_effect_description">Μεγέθυνση και σμίκρυνση της ταπετσαρίας κατά τη μετάβαση μεταξύ καταστάσεων.</string>
+    <string name="show_sys_ui_scrim">Σκιά κορυφής</string>
+    <string name="layout">Διάταξη</string>
+    <string name="home_screen_grid">Πλέγμα Αρχικής Οθόνης</string>
+    <string name="home_screen_lock">Κλείδωμα Αρχικής Οθόνης</string>
+    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_unlock">Ξεκλείδωμα Αρχικής Οθόνης</string>
+    <!-- used in popup menu-->
+    <string name="home_screen_lock_toggle_from_home_popup">Εμφάνιση Κουμπιού Κλειδώματος στο αναδυόμενο παράθυρο αρχικής οθόνης</string>
+    <string name="home_screen_locked">Home Screen is locked.</string>
     <string name="status_bar_label">Γραμμή Κατάστασης</string>
-    <string name="show_notification_count">Εμφάνιση Πλήθους Ειδοποιήσεων</string>
-    <string name="icon_picker_load_failed">Δεν ήταν δυνατή η φόρτωση περισσότερων εικονιδίων.</string>
+    <string name="show_status_bar">Εμφάνιση Γραμμής Κατάστασης</string>
+    <string name="dark_status_bar_label">Σκοτεινή Γραμμή Κατάστασης</string>
+    <string name="icons">Εικονίδια</string>
+    <string name="icon_size">Μέγεθος Εικονιδίων</string>
+    <string name="show_home_labels">Εμφάνιση Ετικετών</string>
+    <string name="label_size">Μέγεθος Ετικέτας</string>
     <string name="reset_custom_icons">Επαναφορά Προσαρμοσμένων Εικονιδίων</string>
     <string name="reset_custom_icons_confirmation">Θα γίνει επαναφορά όλων των προσαρμοσμένων εικονιδίων. Θέλετε να συνεχίσετε;</string>
-    <string name="taskbar_label">Γραμμή Εργασιών</string>
-    <string name="enable_taskbar_experimental">Ενεργοποίηση Γραμμής Εργασιών (Πειραματικό χαρακτηριστικό)</string>
-    <string name="error_no_market_or_browser_installed">Δεν υπάρχει εγκατεστημένο κατάστημα εφαρμογών ή πρόγραμμα περιήγησης.</string>
+    <!-- <string name="widget_button_text" /> (unknown source)-->
+    <string name="force_rounded_widgets">Στρογγυλές Γωνίες</string>
+    <string name="allow_widget_overlap">Να επιτρέπεται η Επικάλυψη</string>
+    <!-- HomeScreenGridPreferences -->
+    <!-- <string name="home_screen_grid" /> -->
+    <string name="columns">Στήλες</string>
+    <string name="rows">Σειρές</string>
+    <string name="apply_grid">Εφαρμογή</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Φόρτιση</string>
@@ -241,6 +186,9 @@
     <string name="smartspace_date_and_time">Ημερομηνία &amp; Ώρα</string>
     <string name="smartspace_date">Ημερομηνία</string>
     <string name="smartspace_time">Ώρα</string>
+    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_follow_system">Follow System</string>
+    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
     <string name="smartspace_time_24_hour_format">24ωρη Μορφή</string>
     <string name="smartspace_weather">Καιρός</string>
     <string name="smartspace_battery_status">Κατάσταση Μπαταρίας</string>
@@ -250,33 +198,58 @@
     <string name="smartspace_media_info_separator">"•"</string>
     <string name="smartspace_calendar_gregorian">Γρηγοριανό</string>
     <string name="smartspace_calendar_persian">Περσικό</string>
-    <string name="quickstep_incompatible">Μη Συμβατή Ενσωμάτωση Συστήματος</string>
-    <string name="quickstep_incompatible_description">Η συσκευή σας έχει ρυθμιστεί ώστε να διαθέτει χειρονομίες συστήματος (γνωστές ως Quickstep) που παρέχονται από το %1$s, αλλά αυτή η έκδοση του %1$s δεν είναι συμβατή με την έκδοση Android που διαθέτετε. Για να συνεχίσετε να χρησιμοποιείτε τη συσκευή σας, απεγκαταστήστε τις ενημερώσεις %1$s ή απενεργοποιήστε το %1$s ως πάροχο χειρονομιών συστήματος.</string>
-    <string name="pref_fonts_add_fonts">Προσθήκη Γραμματοσειρών</string>
-    <string name="pref_fonts_add_fonts_summary">Υποστήριξη OTF &amp; TTF αρχείων.</string>
-    <string name="delete">Διαγραφή</string>
-    <string name="themed_icons_off_label">Ανενεργό</string>
-    <string name="themed_icons_home_label">Αρχική Οθόνη</string>
-    <string name="themed_icons_home_and_drawer_label">Αρχική Οθόνη &amp; Συρτάρι Εφαρμογών</string>
-    <!-- Backup -->
-    <string name="create_backup">Δημιουργία Αντιγράφου Ασφαλείας</string>
-    <string name="create_backup_action">Δημιουργία</string>
-    <string name="what_to_backup">Σε τι να δημιουργήσετε Αντίγραφο Ασφαλείας</string>
-    <string name="backup_content_layout_and_settings">Διάταξη και Ρυθμίσεις</string>
-    <string name="backup_content_wallpaper">Ταπετσαρία</string>
-    <string name="backup_create_success">Δημιουργήθηκε Αντίγραφο Ασφαλείας.</string>
-    <string name="backup_create_error">Αποτυχία δημιουργίας Αντιγράφου Ασφαλείας.</string>
-    <string name="restore_backup">Επαναφορά Αντιγράφου Ασφαλείας</string>
-    <string name="restore_backup_action">Επαναφορά</string>
-    <string name="what_to_restore">Τι να Επαναφέρετε</string>
-    <string name="backup_restore_success">Έγινε επαναφορά Αντιγράφου Ασφαλείας.</string>
-    <string name="backup_restore_error">Αποτυχία επαναφοράς Αντιγράφου Ασφαλείας.</string>
-    <string name="invalid_backup_file">Μη έγκυρο αρχείο Αντιγράφου Ασφαλείας.</string>
-    <string name="wallpaper_depth_effect_label">Εφέ Βάθους Ταπετσαρίας</string>
-    <string name="wallpaper_depth_effect_description">Μεγέθυνση και σμίκρυνση της ταπετσαρίας κατά τη μετάβαση μεταξύ καταστάσεων.</string>
-    <string name="gestures_label">Χειρονομίες</string>
-    <string name="gestures_description">Πατήματα και Σαρώσεις</string>
-    <!-- Gestures -->
+    <string name="smartspace_preferences">Προτιμήσεις</string>
+    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
+    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <!-- DockPreferences -->
+    <!-- <string name="dock_label" /> -->
+    <string name="search_bar_label">Μπάρα Αναζήτησης</string>
+    <string name="hotseat_qsb_label">Εμφάνιση Γραμμής Αναζήτησης</string>
+    <string name="corner_radius_label">Ακτίνα Γωνίας</string>
+    <string name="apply_accent_color_label">Εφαρμογή Χρώματος Έμφασης</string>
+    <string name="search_provider">Πάροχος Αναζήτησης</string>
+    <string name="grid">Πλέγμα</string>
+    <string name="dock_icons">Eικονίδια Dock</string>
+    <!-- SearchProviderPreferences -->
+    <!-- search_provider -->
+    <string name="search_provider_app_search">Αναζήτηση Εφαρμογής</string>
+    <string name="app_label">Εφαρμογή</string>
+    <string name="website_label">Ιστοσελίδα</string>
+    <string name="qsb_search_provider_app_required">Απαιτείται εφαρμογή.</string>
+    <!-- AppDrawerPrefences -->
+    <!-- app_drawer_label -->
+    <!-- general_label -->
+    <string name="hidden_apps_label">Κρυμμένες Εφαρμογές</string>
+    <string name="background_opacity">Αδιαφάνεια Φόντου</string>
+    <string name="pref_category_search">Αναζήτηση</string>
+    <string name="show_app_search_bar">Εμφάνιση Γραμμής Αναζήτησης</string>
+    <string name="pref_search_auto_show_keyboard">Αυτόματη Εμφάνιση Πληκτρολογίου</string>
+    <string name="fuzzy_search_title">Ασαφής Αναζήτηση</string>
+    <string name="fuzzy_search_desc">Κατά προσέγγιση αντιστοίχιση για αναζητήσεις εφαρμογών.</string>
+    <!-- <string name="grid" /> -->
+    <string name="app_drawer_columns">Στήλες Συρταριού Εφαρμογών</string>
+    <string name="row_height_label">Ύψος Γραμμής</string>
+    <!--
+    <string name="icons" />
+      <string name="icon_size" />
+      <string name="show_home_labels" />
+      <string name="label_size" />
+    -->
+    <!-- HiddenAppsPreferences -->
+    <string name="hidden_apps_label_with_count">Κρυμμένες Εφαρμογές (%1$d)</string>
+    <plurals name="apps_count">
+        <item quantity="one">%1$d Εφαρμογή</item>
+        <item quantity="other">%1$d Εφαρμογές</item>
+    </plurals>
+    <!-- FolderPreferences -->
+    <!-- <string name="folders_label" /> -->
+    <!-- <string name="general_label" /> -->
+    <string name="folder_preview_bg_opacity_label">Αδιαφάνεια Φόντου Εικονιδίου</string>
+    <!-- <string name="grid" /> -->
+    <string name="max_folder_columns">Μεγ. Στήλες Φακέλου</string>
+    <string name="max_folder_rows">Μεγ. Σειρές Φακέλου</string>
+    <!-- GesturePreference -->
+    <!-- <string name="gestures_label" /> -->
     <string name="gesture_double_tap">Διπλό Πάτημα</string>
     <string name="gesture_swipe_up">Σύρσιμο Επάνω</string>
     <string name="gesture_swipe_down">Σύρσιμο Κάτω</string>
@@ -291,7 +264,99 @@
     <string name="gesture_handler_open_app_search">Άνοιγμα Αναζήτησης Εφαρμογών</string>
     <string name="gesture_handler_open_search">Άνοιγμα Αναζήτησης</string>
     <string name="pick_app_for_gesture">Επιλογή Εφαρμογής</string>
+    <!-- QuickstepPreferences -->
+    <!-- <string name="quickstep_label" /> -->
+    <!-- <string name="general_label" /> -->
+    <string name="translucent_background">Ημιδιαφανές Φόντο</string>
+    <string name="recents_actions_label">Γρήγορες Ενέργειες</string>
+    <!-- <string name="screenshot" /> (unknown source) -->
+    <string name="action_share">Κοινοποίηση</string>
+    <string name="action_lens">Φακός</string>
+    <string name="recents_clear_all">Εκκαθάριση Όλων</string>
+    <string name="window_corner_radius_label">Ακτίνα Γωνίας Οθόνης</string>
+    <string name="override_window_corner_radius_label">Προσαρμοσμένη Ακτίνα Γωνίας Οθόνης</string>
+    <string name="window_corner_radius_description">Όταν σύρετε προς τα πάνω για να ανοίξετε τα Πρόσφατα, η τρέχουσα εφαρμογή ακολουθεί το δάχτυλό σας και συρρικνώνεται σε μια κάρτα. Χρησιμοποιήστε αυτό το ρυθμιστικό για να ρυθμίσετε την ακτίνα γωνίας της κάρτας όταν είναι σχεδόν σε πλήρη οθόνη έτσι ώστε να ταιριάζει με τις γωνίες της οθόνης σας.</string>
+    <string name="taskbar_label">Γραμμή Εργασιών</string>
+    <string name="enable_taskbar_experimental">Ενεργοποίηση Γραμμής Εργασιών (Πειραματικό χαρακτηριστικό)</string>
+    <!-- about/About.kt -->
+    <string name="news">Νέα</string>
+    <string name="support">Υποστήριξη</string>
+    <string name="product">Προϊόν</string>
+    <string name="design_and_development">Σχεδιασμός &amp; Ανάπτυξη</string>
+    <string name="development">Ανάπτυξη</string>
+    <string name="quickswitch_maintenance">Συντήρηση QuickSwitch</string>
+    <string name="devops">Προγραμματιστές</string>
+    <string name="support_and_pr">Υποστήριξη &amp; PR</string>
+    <!--
+      <string name="support" />
+      <string name="support_and_pr" />
+      -->
+    <string name="acknowledgements">Ευχαριστίες</string>
+    <string name="translate">Μετάφραση</string>
+    <!-- IconPickerPreference -->
+    <string name="icon_picker_default_category">Εικονίδια</string>
+    <string name="icon_picker_reset_to_default">Επαναφορά στις Προεπιλογές</string>
+    <string name="icon_pack_external_picker">Άνοιγμα Εξωτερικού Επιλογέα</string>
+    <string name="pick_icon_from_label">Επιλογή εικονιδίου από</string>
+    <string name="icon_picker_load_failed">Δεν ήταν δυνατή η φόρτωση περισσότερων εικονιδίων.</string>
+    <!-- Misc -->
+    <string name="all_apps_search_bar_hint">Αναζήτηση Εφαρμογών</string>
+    <string name="settings_button_text">Ρυθμίσεις Αρχικής Οθόνης</string>
+    <string name="item_removed">Το στοιχείο αφαιρέθηκε.</string>
+    <string name="all_apps_no_search_results">Δεν βρέθηκαν εφαρμογές που να ταιριάζουν με “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="dt2s_admin_hint_title">Admin permission required</string>
+    <string name="dt2s_admin_hint">Για να χρησιμοποιήσετε το διπλό πάτημα για ύπνο, ορίστε τον εκκινητή Lawnchair ως εφαρμογή διαχείρισης συσκευής. Πατήστε στο Ανοίξτε τις ρυθμίσεις και μετά πατήστε «Ενεργοποίηση αυτής της εφαρμογής ως διαχειριστή της συσκευής.»</string>
+    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
+    <string name="dt2s_a11y_hint_title">Accessibility service required</string>
+    <string name="dt2s_a11y_hint">Για να χρησιμοποιήσετε το διπλό πάτημα για ύπνο, ενεργοποιήστε την υπηρεσία προσβασιμότητας του εκκινητή Lawnchair. Πατήστε στο Άνοιγμα Ρυθμίσεων και μετά επιλέξτε τον Lawnchair και ενεργοποιήστε την Χρήση του Lawnchair.</string>
+    <string name="dt2s_warning_open_settings">Άνοιγμα Ρυθμίσεων</string>
+    <string name="loading">Φόρτωση…</string>
+    <string name="system">Σύστημα</string>
+    <string name="customize_button_text">Προσαρμόστε</string>
+    <string name="label">Ετικέτα</string>
+    <string name="hide_from_drawer">Απόκρυψη από Συρτάρι Εφαρμογών</string>
+    <string name="suggestion_pref_screen_title">Προτάσεις</string>
+    <string name="n_percent">%1$d%%</string>
+    <!-- Bug reporting -->
+    <string name="lawnchair_bug_report">Αναφορά σφάλματος του Lawnchair</string>
+    <string name="crash_report_notif_title">%1$s Κράσαρε</string>
+    <string name="action_upload_crash_report">Μεταφόρτωση Καταγραφής Κατάρρευσης</string>
+    <string name="action_copy_link">Αντιγραφή Συνδέσμου</string>
+    <string name="action_upload_error">Αποτυχία μεταφόρτωσης</string>
+    <string name="dogbin_uploading">Μεταφόρτωση…</string>
+    <string name="bugreport_channel_name">Αναφορές Σφαλμάτων</string>
+    <string name="status_channel_name">Κατάσταση Μεταφόρτωσης</string>
+    <string name="bugreport_group_summary">%d νέες αναφορές.</string>
+    <string name="bugreport_group_summary_multiple">Πολλαπλές νέες αναφορές.</string>
+    <!-- Search ig -->
+    <string name="show_search_result_types">Εμφάνιση στα Αποτελέσματα Αναζήτησης</string>
+    <string name="search_pref_result_people_title">Άτομα</string>
+    <string name="search_pref_result_shortcuts_title">Συντομεύσεις Εφαρμογών</string>
+    <string name="search_pref_result_tips_title">Συμβουλές Pixel</string>
+    <string name="all_apps_device_search_hint">Αναζήτηση</string>
+    <string name="search_input_action_clear_results">Καθαρισμός Πλαισίου Αναζήτησης</string>
+    <string name="label_search">Αναζήτηση</string>
+    <string name="label_lens">Google Lens</string>
+    <string name="label_voice_search">Φωνητική Αναζήτηση</string>
+    <string name="all_apps_search_market_message">Αναζήτηση για περισσότερες εφαρμογές</string>
+    <string name="error_no_market_or_browser_installed">Δεν υπάρχει εγκατεστημένο κατάστημα εφαρμογών ή πρόγραμμα περιήγησης.</string>
+    <string name="quickstep_incompatible">Μη Συμβατή Ενσωμάτωση Συστήματος</string>
+    <string name="quickstep_incompatible_description">Η συσκευή σας έχει ρυθμιστεί ώστε να διαθέτει χειρονομίες συστήματος (γνωστές ως Quickstep) που παρέχονται από το %1$s, αλλά αυτή η έκδοση του %1$s δεν είναι συμβατή με την έκδοση Android που διαθέτετε. Για να συνεχίσετε να χρησιμοποιείτε τη συσκευή σας, απεγκαταστήστε τις ενημερώσεις %1$s ή απενεργοποιήστε το %1$s ως πάροχο χειρονομιών συστήματος.</string>
+    <string name="delete">Διαγραφή</string>
+    <!-- Backup -->
+    <string name="create_backup">Δημιουργία Αντιγράφου Ασφαλείας</string>
+    <string name="create_backup_action">Δημιουργία</string>
+    <string name="what_to_backup">Σε τι να δημιουργήσετε Αντίγραφο Ασφαλείας</string>
+    <string name="backup_content_layout_and_settings">Διάταξη και Ρυθμίσεις</string>
+    <string name="backup_content_wallpaper">Ταπετσαρία</string>
+    <string name="backup_create_success">Δημιουργήθηκε Αντίγραφο Ασφαλείας.</string>
+    <string name="backup_create_error">Αποτυχία δημιουργίας Αντιγράφου Ασφαλείας.</string>
+    <string name="restore_backup">Επαναφορά Αντιγράφου Ασφαλείας</string>
+    <string name="restore_backup_action">Επαναφορά</string>
+    <string name="what_to_restore">Τι να Επαναφέρετε</string>
+    <string name="backup_restore_success">Έγινε επαναφορά Αντιγράφου Ασφαλείας.</string>
+    <string name="backup_restore_error">Αποτυχία επαναφοράς Αντιγράφου Ασφαλείας.</string>
+    <string name="invalid_backup_file">Μη έγκυρο αρχείο Αντιγράφου Ασφαλείας.</string>
+    <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="app_label">Εφαρμογή</string>
-    <string name="website_label">Ιστοσελίδα</string>
 </resources>

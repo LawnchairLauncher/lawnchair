@@ -16,29 +16,29 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="settings">Settings</string>
-    <string name="general_label">General</string>
-    <string name="general_description">Notification Dots, Icon Pack</string>
-    <string name="home_screen_label">Home Screen</string>
+    <string name="settings">स्थापना</string>
+    <string name="general_label">सर्वसाधारण</string>
+    <string name="general_description">रंग, चिन्हांचा गाठोडा, सूचना टिंब</string>
+    <string name="home_screen_label">मुख्यपृष्ठ</string>
     <string name="home_screen_description">Feed, Grid, Icons</string>
     <!--
     <string name="smartspace" />
     -->
     <string name="what_to_show">What to Show</string>
-    <string name="dock_label">Dock</string>
-    <string name="dock_description">Search Bar, Icon Count</string>
-    <string name="app_drawer_label">App Drawer</string>
-    <string name="app_drawer_description">Hidden Apps, Column Count, Icons</string>
-    <string name="folders_label">Folders</string>
-    <string name="folders_description">Row and Column Count</string>
+    <string name="dock_label">गोदद</string>
+    <string name="dock_description">शोध गज, चिन्ह मोजणी</string>
+    <string name="app_drawer_label">ॲपचा कपाट</string>
+    <string name="app_drawer_description">लपविलेले ॲप, खांब मोजणी, चिन्ह</string>
+    <string name="folders_label">पेटी</string>
+    <string name="folders_description">पंक्ती आणि खांब आकृती</string>
     <string name="gestures_label">Gestures</string>
     <string name="gestures_description">Taps and Swipes</string>
-    <string name="quickstep_label">Recents</string>
+    <string name="quickstep_label">अलीकडील</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
-    <string name="about_label">About</string>
+    <string name="about_label">आउठ</string>
     <!-- <string name="version" /> (unknown source) -->
     <!-- PreferencesOverflowMenu() in PreferencesDashboard -->
-    <string name="app_info_drop_target_label">App Info</string>
+    <string name="app_info_drop_target_label">ॲपची माहिती</string>
     <string name="debug_restart_launcher">Restart Lawnchair</string>
     <string name="experimental_features_label">Experimental Features</string>
     <!-- ExperimentalFeaturesPreferences -->
@@ -50,20 +50,20 @@
     <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
     <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
     <!-- GeneralPreferences -->
-    <string name="home_screen_rotation_label">Home Screen Rotation</string>
+    <string name="home_screen_rotation_label">मुखपृष्ठाचे चक्रगति</string>
     <string name="home_screen_rotaton_description">When device is rotated.</string>
     <string name="font_label">Font (Experimental)</string>
     <!-- <string name="icons" /> -->
-    <string name="icon_style">Icon Style</string>
+    <string name="icon_style">चिन्ह_गाठोडा</string>
     <string name="icon_shape_label">Icon Shape</string>
     <string name="auto_adaptive_icons_label">Auto Adaptive Icons</string>
     <string name="auto_adaptive_icons_description">For all non-Adaptive icons.</string>
-    <string name="background_lightness_label">Background Lightness</string>
-    <string name="adaptive_icon_background_description">Use 100% background lightness for white.</string>
-    <string name="notification_dots">Notification Dots</string>
+    <string name="background_lightness_label">पार्श्वभूमी लघिमा(हलकेपणा)</string>
+    <string name="adaptive_icon_background_description">भाषांतर करा.</string>
+    <string name="notification_dots">सूचना टिंब</string>
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Show Notification Count</string>
-    <string name="notification_dots_color">Notification Dot Color</string>
+    <string name="notification_dots_color">सूचना टिंबाचे रंग</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Notification Access Needed</string>
     <string name="missing_notification_access_description">Notification access needed.</string>
@@ -71,24 +71,24 @@
     <string name="title_change_settings">Change Settings</string>
     <string name="colors">Colors</string>
     <string name="theme_label">Theme</string>
-    <string name="theme_light">روشن</string>
-    <string name="theme_dark">اندھیرا</string>
-    <string name="theme_system_default">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">गडद</string>
+    <string name="theme_system_default">निरूती</string>
     <string name="theme_follow_wallpaper">Match Wallpaper</string>
     <string name="accent_color">Accent Color</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
-    <string name="icon_pack">Icon Pack</string>
-    <string name="system_icons">System Icons</string>
+    <string name="icon_pack">चिन्ह_गाठोडा</string>
+    <string name="system_icons">निरुतीची चिन्हे</string>
     <string name="themed_icon_title">Themed Icons</string>
     <string name="themed_icons_off_label">Off</string>
-    <string name="themed_icons_home_label">Home Screen</string>
+    <string name="themed_icons_home_label">मुख्यपृष्ठ</string>
     <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
     <string name="lawnicons_not_installed_description">Lawnicons not installed.</string>
     <!-- <string name="cancel" /> (unknown source)-->
     <!-- IconPickerPreference -->
     <!-- <string name="icon_shape_label" /> -->
-    <string name="icon_shape_system">System</string>
+    <string name="icon_shape_system">निरुती</string>
     <string name="icon_shape_circle">Circle</string>
     <string name="icon_shape_cylinder">Cylinder</string>
     <string name="icon_shape_diamond">Diamond</string>
@@ -108,7 +108,7 @@
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Thin</string>
     <string name="font_weight_extra_light">Extra Light</string>
-    <string name="font_weight_light">روشن</string>
+    <string name="font_weight_light">Light</string>
     <string name="font_weight_regular">Regular</string>
     <string name="font_weight_medium">Medium</string>
     <string name="font_weight_semi_bold">Semibold</string>
@@ -133,34 +133,34 @@
     <string name="action_copy">Copy</string>
     <string name="action_paste">Paste</string>
     <string name="copied_toast">Copied to clipboard.</string>
-    <string name="invalid_color">Invalid Color</string>
-    <string name="app_icon_color">App Icon Color</string>
+    <string name="invalid_color">अवैध्ध रंग</string>
+    <string name="app_icon_color">ॲप चिन्हाचे रंग</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
-    <string name="auto_add_shortcuts_label">Add New Apps to Home Screen</string>
+    <string name="auto_add_shortcuts_label">मुखपष्ठावर नवीन ॲप जोडा</string>
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">Feed</string>
-    <string name="minus_one_unavailable">فیڈ دستیاب نہیں ہے.</string>
+    <string name="minus_one_unavailable">No feed installed.</string>
     <string name="wallpaper">Wallpaper</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
     <string name="wallpaper_depth_effect_label">Wallpaper Depth Effect</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between areas of the launcher.</string>
     <string name="show_sys_ui_scrim">Top Shadow</string>
     <string name="layout">Layout</string>
-    <string name="home_screen_grid">Home Screen Grid</string>
-    <string name="home_screen_lock">Lock Home Screen</string>
+    <string name="home_screen_grid">मुखपृष्ठ जाळ</string>
+    <string name="home_screen_lock">मुखपृष्ठ बांधा</string>
     <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
-    <string name="home_screen_unlock">Unlock Home Screen</string>
+    <string name="home_screen_unlock">मुखपृष्ठ उघडा</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-up Menu</string>
     <string name="home_screen_locked">Home Screen is locked.</string>
     <string name="status_bar_label">Status Bar</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_status_bar">स्थिती गज दाखवा</string>
     <string name="dark_status_bar_label">Dark Status Bar</string>
-    <string name="icons">Icons</string>
-    <string name="icon_size">Icon Size</string>
-    <string name="show_home_labels">Show Labels</string>
-    <string name="label_size">Label Size</string>
+    <string name="icons">चिन्हे</string>
+    <string name="icon_size">चिन्हांचे आकार</string>
+    <string name="show_home_labels">बिजक(लेबल) दाखवा</string>
+    <string name="label_size">बिजकाचे(लेबल) आकार</string>
     <string name="reset_custom_icons">Reset Custom Icons</string>
     <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
@@ -168,8 +168,8 @@
     <string name="allow_widget_overlap">Allow Overlap</string>
     <!-- HomeScreenGridPreferences -->
     <!-- <string name="home_screen_grid" /> -->
-    <string name="columns">Columns</string>
-    <string name="rows">Rows</string>
+    <string name="columns">खांबा</string>
+    <string name="rows">पंक्ती</string>
     <string name="apply_grid">Apply</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
@@ -198,36 +198,36 @@
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="smartspace_calendar_gregorian">Gregorian</string>
     <string name="smartspace_calendar_persian">Persian</string>
-    <string name="smartspace_preferences">Preferences</string>
+    <string name="smartspace_preferences">प्राधान्य</string>
     <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
     <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">Search Bar</string>
-    <string name="hotseat_qsb_label">Show Search Bar</string>
+    <string name="hotseat_qsb_label">शोध गज दाखवा</string>
     <string name="corner_radius_label">Corner Radius</string>
     <string name="apply_accent_color_label">Apply Accent Color</string>
     <string name="search_provider">Search Provider</string>
-    <string name="grid">Grid</string>
-    <string name="dock_icons">Dock Icons</string>
+    <string name="grid">जाळी</string>
+    <string name="dock_icons">गोदद चिन्ह</string>
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">App Search</string>
     <string name="app_label">App</string>
     <string name="website_label">Website</string>
-    <string name="qsb_search_provider_app_required">App required.</string>
+    <string name="qsb_search_provider_app_required">गरजेचे ॲप.</string>
     <!-- AppDrawerPrefences -->
     <!-- app_drawer_label -->
     <!-- general_label -->
-    <string name="hidden_apps_label">Hidden Apps</string>
-    <string name="background_opacity">Background Opacity</string>
+    <string name="hidden_apps_label">लपविण्यात आलेले ॲप</string>
+    <string name="background_opacity">पार्श्वभूमी निरुता(अस्पष्टता)</string>
     <string name="pref_category_search">Search</string>
-    <string name="show_app_search_bar">Show Search Bar</string>
+    <string name="show_app_search_bar">शोध गज दाखवा</string>
     <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
     <string name="fuzzy_search_title">Fuzzy Search</string>
     <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
     <!-- <string name="grid" /> -->
-    <string name="app_drawer_columns">App Drawer Columns</string>
+    <string name="app_drawer_columns">ॲप कपाटचे खांब</string>
     <string name="row_height_label">Row Height</string>
     <!--
     <string name="icons" />
@@ -236,7 +236,7 @@
       <string name="label_size" />
     -->
     <!-- HiddenAppsPreferences -->
-    <string name="hidden_apps_label_with_count">Hidden Apps (%1$d)</string>
+    <string name="hidden_apps_label_with_count">लपविण्यात आलेले ॲप(%1$d)</string>
     <plurals name="apps_count">
         <item quantity="one">%1$d App</item>
         <item quantity="other">%1$d Apps</item>
@@ -246,8 +246,8 @@
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Icon Background Opacity</string>
     <!-- <string name="grid" /> -->
-    <string name="max_folder_columns">Max. Folder Columns</string>
-    <string name="max_folder_rows">Max. Folder Rows</string>
+    <string name="max_folder_columns">कपाटाचे कमाल खांब</string>
+    <string name="max_folder_rows">कपाटाचे कमाल पंक्ती</string>
     <!-- GesturePreference -->
     <!-- <string name="gestures_label" /> -->
     <string name="gesture_double_tap">Double Tap</string>
@@ -267,7 +267,7 @@
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
-    <string name="translucent_background">Translucent Background</string>
+    <string name="translucent_background">अर्धपारदर्शक पार्श्वभूमी</string>
     <string name="recents_actions_label">Quick Actions</string>
     <!-- <string name="screenshot" /> (unknown source) -->
     <string name="action_share">Share</string>
@@ -279,11 +279,11 @@
     <string name="taskbar_label">Taskbar</string>
     <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
     <!-- about/About.kt -->
-    <string name="news">خبر</string>
-    <string name="support">Support</string>
-    <string name="product">Product</string>
+    <string name="news">बातम्या</string>
+    <string name="support">आलंबन(साहाय्यता)</string>
+    <string name="product">निपज</string>
     <string name="design_and_development">Design &amp; Development</string>
-    <string name="development">Development</string>
+    <string name="development">उधी(विकास)</string>
     <string name="quickswitch_maintenance">QuickSwitch Maintenance</string>
     <string name="devops">DevOps</string>
     <string name="support_and_pr">Support &amp; PR</string>
@@ -291,27 +291,27 @@
       <string name="support" />
       <string name="support_and_pr" />
       -->
-    <string name="acknowledgements">Acknowledgements</string>
-    <string name="translate">Translate</string>
+    <string name="acknowledgements">पोचपावती</string>
+    <string name="translate">भाषांतरण</string>
     <!-- IconPickerPreference -->
-    <string name="icon_picker_default_category">Icons</string>
+    <string name="icon_picker_default_category">चिन्हे</string>
     <string name="icon_picker_reset_to_default">Reset to Default</string>
     <string name="icon_pack_external_picker">Open External Picker</string>
     <string name="pick_icon_from_label">Pick Icon From</string>
     <string name="icon_picker_load_failed">Couldn’t load more icons.</string>
     <!-- Misc -->
-    <string name="all_apps_search_bar_hint">Search Apps</string>
-    <string name="settings_button_text">Home Settings</string>
+    <string name="all_apps_search_bar_hint">Search apps</string>
+    <string name="settings_button_text">मुखपृष्ठ अटप</string>
     <string name="item_removed">Item removed.</string>
-    <string name="all_apps_no_search_results">No apps found matching “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
-    <string name="dt2s_admin_hint_title">ایڈمن اجازت درکار ہے</string>
+    <string name="all_apps_no_search_results">“<xliff:g example="Android" id="query">%1$s</xliff:g>” या नावाशी जुळणारे कोणतेही ॲप आढळले नाहीत.</string>
+    <string name="dt2s_admin_hint_title">विधिकाराची अनुमुदा गरजेची आहे</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
-    <string name="dt2s_admin_warning">دو بار دوبا کر سولانا غیر فعال ہو جائے گا۔.</string>
-    <string name="dt2s_a11y_hint_title">رسائی کی خدمت درکار ہے</string>
+    <string name="dt2s_admin_warning">Double-Tap to Sleep will be turned off.</string>
+    <string name="dt2s_a11y_hint_title">Turn on Accessibility Service</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Open Settings</string>
     <string name="loading">Loading…</string>
-    <string name="system">System</string>
+    <string name="system">निरुती</string>
     <string name="customize_button_text">Customize</string>
     <string name="label">Label</string>
     <string name="hide_from_drawer">Hide from App Drawer</string>

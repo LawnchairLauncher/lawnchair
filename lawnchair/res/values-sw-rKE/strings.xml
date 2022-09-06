@@ -18,7 +18,7 @@
     <!-- PreferenceDashboard -->
     <string name="settings">Settings</string>
     <string name="general_label">General</string>
-    <string name="general_description">Notification Dots, Icon Pack</string>
+    <string name="general_description">Colors, Icon Pack, Notification Dots</string>
     <string name="home_screen_label">Home Screen</string>
     <string name="home_screen_description">Feed, Grid, Icons</string>
     <!--
@@ -71,8 +71,8 @@
     <string name="title_change_settings">Change Settings</string>
     <string name="colors">Colors</string>
     <string name="theme_label">Theme</string>
-    <string name="theme_light">روشن</string>
-    <string name="theme_dark">اندھیرا</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
     <string name="theme_system_default">System</string>
     <string name="theme_follow_wallpaper">Match Wallpaper</string>
     <string name="accent_color">Accent Color</string>
@@ -108,7 +108,7 @@
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Thin</string>
     <string name="font_weight_extra_light">Extra Light</string>
-    <string name="font_weight_light">روشن</string>
+    <string name="font_weight_light">Light</string>
     <string name="font_weight_regular">Regular</string>
     <string name="font_weight_medium">Medium</string>
     <string name="font_weight_semi_bold">Semibold</string>
@@ -140,11 +140,11 @@
     <string name="auto_add_shortcuts_label">Add New Apps to Home Screen</string>
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">Feed</string>
-    <string name="minus_one_unavailable">فیڈ دستیاب نہیں ہے.</string>
+    <string name="minus_one_unavailable">No feed installed.</string>
     <string name="wallpaper">Wallpaper</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
     <string name="wallpaper_depth_effect_label">Wallpaper Depth Effect</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between areas of the launcher.</string>
     <string name="show_sys_ui_scrim">Top Shadow</string>
     <string name="layout">Layout</string>
     <string name="home_screen_grid">Home Screen Grid</string>
@@ -152,7 +152,7 @@
     <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
     <string name="home_screen_unlock">Unlock Home Screen</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-up Menu</string>
     <string name="home_screen_locked">Home Screen is locked.</string>
     <string name="status_bar_label">Status Bar</string>
     <string name="show_status_bar">Show Status Bar</string>
@@ -279,7 +279,7 @@
     <string name="taskbar_label">Taskbar</string>
     <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
     <!-- about/About.kt -->
-    <string name="news">خبر</string>
+    <string name="news">News</string>
     <string name="support">Support</string>
     <string name="product">Product</string>
     <string name="design_and_development">Design &amp; Development</string>
@@ -300,14 +300,14 @@
     <string name="pick_icon_from_label">Pick Icon From</string>
     <string name="icon_picker_load_failed">Couldn’t load more icons.</string>
     <!-- Misc -->
-    <string name="all_apps_search_bar_hint">Search Apps</string>
+    <string name="all_apps_search_bar_hint">Search apps</string>
     <string name="settings_button_text">Home Settings</string>
     <string name="item_removed">Item removed.</string>
     <string name="all_apps_no_search_results">No apps found matching “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
-    <string name="dt2s_admin_hint_title">ایڈمن اجازت درکار ہے</string>
+    <string name="dt2s_admin_hint_title">Admin Permissions Required</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
-    <string name="dt2s_admin_warning">دو بار دوبا کر سولانا غیر فعال ہو جائے گا۔.</string>
-    <string name="dt2s_a11y_hint_title">رسائی کی خدمت درکار ہے</string>
+    <string name="dt2s_admin_warning">Double-Tap to Sleep will be turned off.</string>
+    <string name="dt2s_a11y_hint_title">Turn on Accessibility Service</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Open Settings</string>
     <string name="loading">Loading…</string>
