@@ -8,7 +8,8 @@ tests/stress/gen/
 WallpaperPicker/gen/
 WallpaperPicker/.project.properties
 bin/
-.idea/
+.idea/*
+!.idea/icon.png
 .gradle/
 local.properties
 **/build/**
