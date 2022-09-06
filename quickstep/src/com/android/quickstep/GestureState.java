@@ -189,6 +189,8 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
             return ActiveGestureErrorDetector.GestureEvent.STATE_END_TARGET_ANIMATION_FINISHED;
         } else if (stateFlag == STATE_RECENTS_SCROLLING_FINISHED) {
             return ActiveGestureErrorDetector.GestureEvent.STATE_RECENTS_SCROLLING_FINISHED;
+        } else if (stateFlag == STATE_RECENTS_ANIMATION_CANCELED) {
+            return ActiveGestureErrorDetector.GestureEvent.STATE_RECENTS_ANIMATION_CANCELED;
         }
         return null;
     }
