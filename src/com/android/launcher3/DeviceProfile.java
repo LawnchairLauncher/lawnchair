@@ -1037,7 +1037,7 @@ public class DeviceProfile {
                         / getCellLayoutHeight();
         scale = Math.min(scale, 1f);
 
-        // Reduce scale if next pages would not be visible after scaling the workspace
+        // Reduce scale if next pages would not be visible after scaling the workspace.
         int workspaceWidth = availableWidthPx;
         float scaledWorkspaceWidth = workspaceWidth * scale;
         float maxAvailableWidth = workspaceWidth - (2 * workspaceSpringLoadedMinNextPageVisiblePx);
