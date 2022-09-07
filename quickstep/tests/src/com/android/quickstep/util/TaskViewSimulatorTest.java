@@ -34,6 +34,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.LauncherModelHelper;
+import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.ReflectionHelpers;
 import com.android.launcher3.util.RotationUtils;
 import com.android.launcher3.util.WindowBounds;
@@ -164,6 +165,7 @@ public class TaskViewSimulatorTest {
                 WindowManagerProxy wmProxy = mock(WindowManagerProxy.class);
                 doReturn(cdi).when(wmProxy).getDisplayInfo(any());
                 doReturn(wm).when(wmProxy).getRealBounds(any(), any());
+                doReturn(NavigationMode.NO_BUTTON).when(wmProxy).getNavigationMode(any());
 
                 ArrayMap<CachedDisplayInfo, WindowBounds[]> perDisplayBoundsCache =
                         new ArrayMap<>();

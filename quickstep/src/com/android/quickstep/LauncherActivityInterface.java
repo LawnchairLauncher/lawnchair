@@ -45,7 +45,7 @@ import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DisplayController;
-import com.android.launcher3.util.DisplayController.NavigationMode;
+import com.android.launcher3.util.NavigationMode;
 import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
