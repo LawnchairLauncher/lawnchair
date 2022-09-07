@@ -294,6 +294,9 @@ public final class FeatureFlags {
             "FOLDABLE_WORKSPACE_REORDER", false,
             "In foldables, when reordering the icons and widgets, is now going to use both sides");
 
+    public static final BooleanFlag SHOW_SEARCH_EDUCARD_QSB = new DeviceFlag(
+            "SHOW_SEARCH_EDUCARD_QSB", false, "Shows Search Educard for QSB entry in OneSearch.");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
