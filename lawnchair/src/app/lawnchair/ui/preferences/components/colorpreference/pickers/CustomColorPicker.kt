@@ -40,6 +40,7 @@ import app.lawnchair.ui.preferences.components.ClickableIcon
 import app.lawnchair.ui.preferences.components.DividerColumn
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.colorpreference.*
+import app.lawnchair.util.requireSystemService
 import com.android.launcher3.R
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -199,7 +200,7 @@ private fun HexColorPicker(
 
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
-    val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clipboardManager: ClipboardManager = context.requireSystemService()
 
     val invalidString = colorStringToIntColor(textFieldValue.text) == null
 
