@@ -116,7 +116,13 @@ public class MultiStateCallback {
             if (gestureEvent == null) {
                 continue;
             }
-            ActiveGestureLog.INSTANCE.trackEvent(gestureEvent);
+            if (gestureEvent.mLogEvent && gestureEvent.mTrackEvent) {
+                ActiveGestureLog.INSTANCE.addLog(gestureEvent.name(), gestureEvent);
+            } else if (gestureEvent.mLogEvent) {
+                ActiveGestureLog.INSTANCE.addLog(gestureEvent.name());
+            } else if (gestureEvent.mTrackEvent) {
+                ActiveGestureLog.INSTANCE.trackEvent(gestureEvent);
+            }
         }
     }
 
