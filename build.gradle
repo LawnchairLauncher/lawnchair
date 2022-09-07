@@ -202,11 +202,13 @@ android {
             dimension "app"
             applicationId 'app.lawnchair'
             testApplicationId 'com.android.launcher3.tests'
+            isDefault true
         }
 
         withQuickstep {
             dimension "recents"
             minSdk 26
+            isDefault true
         }
 
         withoutQuickstep {
