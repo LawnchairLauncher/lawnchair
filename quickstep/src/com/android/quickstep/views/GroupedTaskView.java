@@ -250,8 +250,7 @@ public class GroupedTaskView extends TaskView {
 
     @Override
     public void setOverlayEnabled(boolean overlayEnabled) {
-        super.setOverlayEnabled(overlayEnabled);
-        mSnapshotView2.setOverlayEnabled(overlayEnabled);
+        // Intentional no-op to prevent setting smart actions overlay on thumbnails
     }
 
     @Override
