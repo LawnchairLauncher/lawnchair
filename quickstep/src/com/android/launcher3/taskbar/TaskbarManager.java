@@ -45,6 +45,7 @@ import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.unfold.NonDestroyableScopedUnfoldTransitionProgressProvider;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.quickstep.RecentsActivity;
@@ -83,7 +84,7 @@ public class TaskbarManager {
     // It's destruction/creation will be managed by the activity.
     private final ScopedUnfoldTransitionProgressProvider mUnfoldProgressProvider =
             new NonDestroyableScopedUnfoldTransitionProgressProvider();
-    private DisplayController.NavigationMode mNavMode;
+    private NavigationMode mNavMode;
 
     private TaskbarActivityContext mTaskbarActivityContext;
     private StatefulActivity mActivity;

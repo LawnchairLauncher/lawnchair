@@ -19,7 +19,7 @@ package com.android.quickstep;
 
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
-import static com.android.launcher3.util.DisplayController.NavigationMode.NO_BUTTON;
+import static com.android.launcher3.util.NavigationMode.NO_BUTTON;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

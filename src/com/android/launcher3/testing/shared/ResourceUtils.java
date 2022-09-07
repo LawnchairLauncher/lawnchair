@@ -36,6 +36,8 @@ public class ResourceUtils {
     public static final String STATUS_BAR_HEIGHT_LANDSCAPE = "status_bar_height_landscape";
     public static final String STATUS_BAR_HEIGHT_PORTRAIT = "status_bar_height_portrait";
 
+    public static final String NAV_BAR_INTERACTION_MODE_RES_NAME = "config_navBarInteractionMode";
+
     public static int getNavbarSize(String resName, Resources res) {
         return getDimenByName(resName, res, DEFAULT_NAVBAR_VALUE);
     }
