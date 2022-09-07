@@ -120,10 +120,12 @@ import com.android.launcher3.util.ObjectWrapper;
 import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.util.PendingSplitSelectInfo;
 import com.android.launcher3.util.RunnableList;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
+import com.android.launcher3.util.ViewCapture;
 import com.android.launcher3.widget.LauncherAppWidgetHost;
 import com.android.quickstep.OverviewCommandHelper;
 import com.android.quickstep.RecentsModel;
@@ -194,6 +196,8 @@ public class QuickstepLauncher extends Launcher {
      * recover. In all other cases this will remain null.
      */
     private PendingSplitSelectInfo mPendingSplitSelectInfo = null;
+
+    private SafeCloseable mViewCapture;
 
     @Override
     protected void setupViews() {
@@ -410,6 +414,7 @@ public class QuickstepLauncher extends Launcher {
 
         super.onDestroy();
         mHotseatPredictionController.destroy();
+        mViewCapture.close();
     }
 
     @Override
@@ -509,6 +514,7 @@ public class QuickstepLauncher extends Launcher {
         }
         addMultiWindowModeChangedListener(mDepthController);
         initUnfoldTransitionProgressProvider();
+        mViewCapture = ViewCapture.INSTANCE.get(this).startCapture(getWindow());
     }
 
     @Override
