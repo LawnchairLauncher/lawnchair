@@ -226,6 +226,7 @@
     <dimen name="drop_target_text_size">16sp</dimen>
     <dimen name="drop_target_shadow_elevation">2dp</dimen>
     <dimen name="drop_target_bar_margin_horizontal">4dp</dimen>
+    <dimen name="drop_target_button_drawable_size">20dp</dimen>
     <dimen name="drop_target_button_drawable_padding">8dp</dimen>
     <dimen name="drop_target_button_drawable_horizontal_padding">16dp</dimen>
     <dimen name="drop_target_button_drawable_vertical_padding">8dp</dimen>

@@ -4324,25 +4324,27 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         int taskIndex = indexOfChild(tv);
         int centerTaskIndex = getCurrentPage();
-        boolean launchingCenterTask = taskIndex == centerTaskIndex;
 
         float toScale = getMaxScaleForFullScreen();
-        RecentsView recentsView = tv.getRecentsView();
+        boolean showAsGrid = showAsGrid();
+        boolean launchingCenterTask = showAsGrid
+                ? tv.isFocusedTask() && isTaskViewFullyVisible(tv)
+                : taskIndex == centerTaskIndex;
         if (launchingCenterTask) {
-            anim.play(ObjectAnimator.ofFloat(recentsView, RECENTS_SCALE_PROPERTY, toScale));
-            anim.play(ObjectAnimator.ofFloat(recentsView, FULLSCREEN_PROGRESS, 1));
-        } else {
+            anim.play(ObjectAnimator.ofFloat(this, RECENTS_SCALE_PROPERTY, toScale));
+            anim.play(ObjectAnimator.ofFloat(this, FULLSCREEN_PROGRESS, 1));
+        } else if (!showAsGrid) {
             // We are launching an adjacent task, so parallax the center and other adjacent task.
             float displacementX = tv.getWidth() * (toScale - 1f);
             float primaryTranslation = mIsRtl ? -displacementX : displacementX;
             anim.play(ObjectAnimator.ofFloat(getPageAt(centerTaskIndex),
                     mOrientationHandler.getPrimaryViewTranslate(), primaryTranslation));
-            int runningTaskIndex = recentsView.getRunningTaskIndex();
+            int runningTaskIndex = getRunningTaskIndex();
             if (ENABLE_QUICKSTEP_LIVE_TILE.get()
                     && runningTaskIndex != -1
                     && runningTaskIndex != taskIndex
-                    && recentsView.getRemoteTargetHandles() != null) {
-                for (RemoteTargetHandle remoteHandle : recentsView.getRemoteTargetHandles()) {
+                    && getRemoteTargetHandles() != null) {
+                for (RemoteTargetHandle remoteHandle : getRemoteTargetHandles()) {
                     anim.play(ObjectAnimator.ofFloat(
                             remoteHandle.getTaskViewSimulator().taskPrimaryTranslation,
                             AnimatedFloat.VALUE,
@@ -4362,7 +4364,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         properties));
             }
         }
-        anim.play(ObjectAnimator.ofFloat(recentsView, TASK_THUMBNAIL_SPLASH_ALPHA, 0, 1));
+        anim.play(ObjectAnimator.ofFloat(this, TASK_THUMBNAIL_SPLASH_ALPHA, 0, 1));
         return anim;
     }
 

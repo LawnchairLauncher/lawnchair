@@ -43,7 +43,6 @@ import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MOD
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.PendingIntent;
@@ -198,8 +197,7 @@ public final class TaskViewUtils {
         BaseActivity baseActivity = BaseActivity.fromContext(context);
         DeviceProfile dp = baseActivity.getDeviceProfile();
         boolean showAsGrid = dp.isTablet;
-        boolean parallaxCenterAndAdjacentTask =
-                taskIndex != recentsView.getCurrentPage() && !showAsGrid;
+        boolean parallaxCenterAndAdjacentTask = taskIndex != recentsView.getCurrentPage();
         int taskRectTranslationPrimary = recentsView.getScrollOffset(taskIndex);
         int taskRectTranslationSecondary = showAsGrid ? (int) v.getGridTranslationY() : 0;
 
@@ -603,11 +601,7 @@ public final class TaskViewUtils {
             if (raController != null) {
                 raController.setWillFinishToHome(false);
             }
-            Context context = v.getContext();
-            DeviceProfile dp = BaseActivity.fromContext(context).getDeviceProfile();
-            launcherAnim = dp.isTablet
-                    ? ObjectAnimator.ofFloat(recentsView, RecentsView.CONTENT_ALPHA, 0)
-                    : recentsView.createAdjacentPageAnimForTaskLaunch(taskView);
+            launcherAnim = recentsView.createAdjacentPageAnimForTaskLaunch(taskView);
             launcherAnim.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);
             launcherAnim.setDuration(RECENTS_LAUNCH_DURATION);
 
