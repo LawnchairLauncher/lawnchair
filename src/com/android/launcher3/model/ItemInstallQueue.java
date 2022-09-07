@@ -288,6 +288,7 @@ public class ItemInstallQueue {
         }
 
         @Override
+        @Nullable
         public Intent getIntent() {
             return intent;
         }
