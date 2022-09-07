@@ -195,7 +195,6 @@ import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.UiThreadHelper;
-import com.android.launcher3.util.ViewCapture;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.FloatingIconView;
@@ -393,7 +392,6 @@ public class Launcher extends StatefulActivity<LauncherState>
     private LauncherState mPrevLauncherState;
 
     private StringCache mStringCache;
-    private ViewCapture mViewCapture;
 
     @Override
     @TargetApi(Build.VERSION_CODES.S)
@@ -1488,23 +1486,11 @@ public class Launcher extends StatefulActivity<LauncherState>
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         mOverlayManager.onAttachedToWindow();
-        if (FeatureFlags.CONTINUOUS_VIEW_TREE_CAPTURE.get()) {
-            View root = getDragLayer().getRootView();
-            if (mViewCapture != null) {
-                mViewCapture.detach();
-            }
-            mViewCapture = new ViewCapture(getWindow());
-            mViewCapture.attach();
-        }
     }
 
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (mViewCapture != null) {
-            mViewCapture.detach();
-            mViewCapture = null;
-        }
         mOverlayManager.onDetachedFromWindow();
         closeContextMenu();
     }
@@ -2985,7 +2971,6 @@ public class Launcher extends StatefulActivity<LauncherState>
      */
     @Override
     public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
-        SafeCloseable viewDump = mViewCapture == null ? null : mViewCapture.beginDump(writer, fd);
         super.dump(prefix, fd, writer, args);
 
         if (args.length > 0 && TextUtils.equals(args[0], "--all")) {
@@ -3025,10 +3010,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         mStateManager.dump(prefix, writer);
         mPopupDataProvider.dump(prefix, writer);
         mDeviceProfile.dump(this, prefix, writer);
-
-        if (viewDump != null) {
-            viewDump.close();
-        }
 
         try {
             FileLog.flushAll(writer);

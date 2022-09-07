@@ -45,9 +45,9 @@ import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_STATE_O
 import static com.android.launcher3.testing.shared.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
-import static com.android.launcher3.util.DisplayController.NavigationMode.TWO_BUTTONS;
 import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.launcher3.util.NavigationMode.TWO_BUTTONS;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 
 import android.animation.AnimatorSet;
@@ -114,16 +114,18 @@ import com.android.launcher3.uioverrides.touchcontrollers.TransposedQuickSwitchT
 import com.android.launcher3.uioverrides.touchcontrollers.TwoButtonNavbarTouchController;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.DisplayController;
-import com.android.launcher3.util.DisplayController.NavigationMode;
 import com.android.launcher3.util.IntSet;
+import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.ObjectWrapper;
 import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.util.PendingSplitSelectInfo;
 import com.android.launcher3.util.RunnableList;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
+import com.android.launcher3.util.ViewCapture;
 import com.android.launcher3.widget.LauncherAppWidgetHost;
 import com.android.quickstep.OverviewCommandHelper;
 import com.android.quickstep.RecentsModel;
@@ -194,6 +196,8 @@ public class QuickstepLauncher extends Launcher {
      * recover. In all other cases this will remain null.
      */
     private PendingSplitSelectInfo mPendingSplitSelectInfo = null;
+
+    private SafeCloseable mViewCapture;
 
     @Override
     protected void setupViews() {
@@ -410,6 +414,7 @@ public class QuickstepLauncher extends Launcher {
 
         super.onDestroy();
         mHotseatPredictionController.destroy();
+        mViewCapture.close();
     }
 
     @Override
@@ -509,6 +514,7 @@ public class QuickstepLauncher extends Launcher {
         }
         addMultiWindowModeChangedListener(mDepthController);
         initUnfoldTransitionProgressProvider();
+        mViewCapture = ViewCapture.INSTANCE.get(this).startCapture(getWindow());
     }
 
     @Override
