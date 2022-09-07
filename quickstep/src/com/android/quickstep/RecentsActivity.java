@@ -131,7 +131,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
         SplitSelectStateController controller =
                 new SplitSelectStateController(this, mHandler, getStateManager(),
-                        null /* depthController */);
+                        /* depthController */ null, getStatsLogManager());
         mDragLayer.recreateControllers();
         mFallbackRecentsView.init(mActionsView, controller);
 

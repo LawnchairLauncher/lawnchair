@@ -16,6 +16,7 @@
 
 package com.android.launcher3.util;
 
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 
 /**
@@ -28,10 +29,13 @@ public class PendingSplitSelectInfo {
 
     private final int mStagedTaskId;
     private final int mStagePosition;
+    private final StatsLogManager.EventEnum mSource;
 
-    public PendingSplitSelectInfo(int stagedTaskId, int stagePosition) {
+    public PendingSplitSelectInfo(int stagedTaskId, int stagePosition,
+            StatsLogManager.EventEnum source) {
         this.mStagedTaskId = stagedTaskId;
         this.mStagePosition = stagePosition;
+        this.mSource = source;
     }
 
     public int getStagedTaskId() {
@@ -40,5 +44,9 @@ public class PendingSplitSelectInfo {
 
     public @StagePosition int getStagePosition() {
         return mStagePosition;
+    }
+
+    public StatsLogManager.EventEnum getSource() {
+        return mSource;
     }
 }

@@ -33,6 +33,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.popup.QuickstepSystemShortcut;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.util.SplitConfigurationOptions;
@@ -210,8 +211,9 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
 
     @Override
     public void initiateSplitSelect(TaskView taskView,
-            @SplitConfigurationOptions.StagePosition int stagePosition) {
-        super.initiateSplitSelect(taskView, stagePosition);
+            @SplitConfigurationOptions.StagePosition int stagePosition,
+            StatsLogManager.EventEnum splitEvent) {
+        super.initiateSplitSelect(taskView, stagePosition, splitEvent);
         mActivity.getStateManager().goToState(OVERVIEW_SPLIT_SELECT);
     }
 

@@ -32,6 +32,7 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
+import static com.android.launcher3.util.SplitConfigurationOptions.getLogEventForPosition;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
@@ -1495,7 +1496,8 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     public void initiateSplitSelect(SplitPositionOption splitPositionOption) {
-        getRecentsView().initiateSplitSelect(this, splitPositionOption.stagePosition);
+        getRecentsView().initiateSplitSelect(this, splitPositionOption.stagePosition,
+                getLogEventForPosition(splitPositionOption.stagePosition));
     }
 
     /**
