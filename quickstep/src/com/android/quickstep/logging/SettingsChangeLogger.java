@@ -46,8 +46,8 @@ import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.DeviceGridState;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
-import com.android.launcher3.util.DisplayController.NavigationMode;
 import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.SettingsCache;
 
 import org.xmlpull.v1.XmlPullParser;
