@@ -275,14 +275,6 @@ android {
             }
         }
 
-        lawnWithoutQuickstep {
-            manifest.srcFile "AndroidManifest.xml"
-        }
-
-        lawnWithQuickstep {
-            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
-        }
-
         withoutQuickstep {
             java.srcDirs = ['src_ui_overrides']
         }

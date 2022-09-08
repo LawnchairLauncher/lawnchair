@@ -33,10 +33,51 @@
         android:name="${packageName}.permission.HOTSEAT_EDU"
         tools:node="remove" />
 
-    <application>
+    <application
+        android:name="app.lawnchair.LawnchairApp"
+        android:backupAgent="com.android.launcher3.LauncherBackupAgent"
+        android:fullBackupOnly="true"
+        android:fullBackupContent="@xml/backupscheme"
+        android:hardwareAccelerated="true"
+        android:icon="@drawable/ic_launcher_home"
+        android:label="@string/derived_app_name"
+        android:theme="@style/AppTheme"
+        android:largeHeap="@bool/config_largeHeap"
+        android:restoreAnyVersion="true"
+        android:supportsRtl="true" >
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
+        <!--
+        Main launcher activity. When extending only change the name, and keep all the
+        attributes and intent filters the same
+        -->
+        <activity
+            android:name="app.lawnchair.LawnchairLauncher"
+            android:launchMode="singleTask"
+            android:clearTaskOnLaunch="true"
+            android:stateNotNeeded="true"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="unspecified"
+            android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
+            android:resizeableActivity="true"
+            android:resumeWhilePausing="true"
+            android:taskAffinity=""
+            android:exported="true"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.MONKEY"/>
+                <category android:name="android.intent.category.LAUNCHER_APP" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <meta-data
+                android:name="com.android.launcher3.grid.control"
+                android:value="${packageName}.grid_control" />
+        </activity>
 
         <activity
             android:name="app.lawnchair.ui.preferences.PreferenceActivity"
