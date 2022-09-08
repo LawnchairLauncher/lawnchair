@@ -868,6 +868,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         btv.post(() -> mControllers.taskbarPopupController.showForIcon(btv));
     }
 
+    public boolean isInApp() {
+        return mControllers.taskbarStashController.isInApp();
+    }
+
     protected void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "TaskbarActivityContext:");
 
