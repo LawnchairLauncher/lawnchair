@@ -26,6 +26,7 @@ import static com.android.launcher3.logger.LauncherAtom.Attribute.SUGGESTED_LABE
 
 import android.os.Process;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherSettings;
@@ -154,7 +155,7 @@ public class FolderInfo extends ItemInfo {
     }
 
     @Override
-    public void onAddToDatabase(ContentWriter writer) {
+    public void onAddToDatabase(@NonNull ContentWriter writer) {
         super.onAddToDatabase(writer);
         writer.put(LauncherSettings.Favorites.TITLE, title)
                 .put(LauncherSettings.Favorites.OPTIONS, options);
@@ -206,8 +207,9 @@ public class FolderInfo extends ItemInfo {
         return String.format("%s; labelState=%s", super.dumpProperties(), getLabelState());
     }
 
+    @NonNull
     @Override
-    public LauncherAtom.ItemInfo buildProto(FolderInfo fInfo) {
+    public LauncherAtom.ItemInfo buildProto(@Nullable FolderInfo fInfo) {
         FolderIcon.Builder folderIcon = FolderIcon.newBuilder()
                 .setCardinality(contents.size());
         if (LabelState.SUGGESTED.equals(getLabelState())) {
@@ -261,6 +263,7 @@ public class FolderInfo extends ItemInfo {
                                 : LabelState.SUGGESTED;
     }
 
+    @NonNull
     @Override
     public ItemInfo makeShallowCopy() {
         FolderInfo folderInfo = new FolderInfo();
@@ -272,6 +275,7 @@ public class FolderInfo extends ItemInfo {
     /**
      * Returns {@link LauncherAtom.FolderIcon} wrapped as {@link LauncherAtom.ItemInfo} for logging.
      */
+    @NonNull
     @Override
     public LauncherAtom.ItemInfo buildProto() {
         return buildProto(null);
