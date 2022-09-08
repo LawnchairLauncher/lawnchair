@@ -52,10 +52,13 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITIO
 import static com.android.launcher3.util.SystemUiController.UI_STATE_FULLSCREEN_TASK;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 import static com.android.quickstep.views.ClearAllButton.DISMISS_ALPHA;
+import static com.android.quickstep.views.OverviewActionsView.FLAG_IS_NOT_TABLET;
+import static com.android.quickstep.views.OverviewActionsView.FLAG_SINGLE_TASK;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NON_ZERO_ROTATION;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_RECENTS;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_TASKS;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_SPLIT_SCREEN;
+import static com.android.quickstep.views.OverviewActionsView.HIDDEN_SPLIT_SELECT_ACTIVE;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -3394,11 +3397,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private void updateCurrentTaskActionsVisibility() {
         boolean isCurrentSplit = getCurrentPageTaskView() instanceof GroupedTaskView;
         mActionsView.updateHiddenFlags(HIDDEN_SPLIT_SCREEN, isCurrentSplit);
-        if (isCurrentSplit) {
-            return;
-        }
-        mActionsView.setSplitButtonVisible(
-                mActivity.getDeviceProfile().isTablet && getTaskViewCount() > 1);
+        mActionsView.updateHiddenFlags(HIDDEN_SPLIT_SELECT_ACTIVE, isSplitSelectionActive());
+        mActionsView.updateSplitButtonFlags(FLAG_IS_NOT_TABLET,
+                !mActivity.getDeviceProfile().isTablet);
+        mActionsView.updateSplitButtonFlags(FLAG_SINGLE_TASK, getTaskViewCount() <= 1);
+        mActionsView.updateSplitButtonVisibility();
     }
 
     /**
