@@ -53,7 +53,9 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             HIDDEN_NON_ZERO_ROTATION,
             HIDDEN_NO_TASKS,
             HIDDEN_NO_RECENTS,
-            HIDDEN_SPLIT_SCREEN})
+            HIDDEN_SPLIT_SCREEN,
+            HIDDEN_SPLIT_SELECT_ACTIVE
+    })
     @Retention(RetentionPolicy.SOURCE)
     public @interface ActionsHiddenFlags { }
 
@@ -61,6 +63,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     public static final int HIDDEN_NO_TASKS = 1 << 1;
     public static final int HIDDEN_NO_RECENTS = 1 << 2;
     public static final int HIDDEN_SPLIT_SCREEN = 1 << 3;
+    public static final int HIDDEN_SPLIT_SELECT_ACTIVE = 1 << 4;
 
     @IntDef(flag = true, value = {
             DISABLED_SCROLLING,
@@ -79,6 +82,11 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     private static final int INDEX_HIDDEN_FLAGS_ALPHA = 3;
     private static final int INDEX_SHARE_TARGET_ALPHA = 4;
 
+    public @interface SplitButtonDisabledFlags { }
+
+    public static final int FLAG_IS_NOT_TABLET = 1 << 0;
+    public static final int FLAG_SINGLE_TASK = 1 << 1;
+
     private MultiValueAlpha mMultiValueAlpha;
     private Button mSplitButton;
 
@@ -87,6 +95,9 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     @ActionsDisabledFlags
     protected int mDisabledFlags;
+
+    @SplitButtonDisabledFlags
+    private int mSplitButtonDisabledFlags;
 
     @Nullable
     protected T mCallbacks;
@@ -182,6 +193,20 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         LayoutUtils.setViewEnabled(this, isEnabled);
     }
 
+    /**
+     * Updates the proper flags to indicate whether the "Split screen" button should be enabled.
+     *
+     * @param flag          The flag to update.
+     * @param enable        Whether to enable the disable flag: True will cause view to be disabled.
+     */
+    public void updateSplitButtonFlags(@SplitButtonDisabledFlags int flag, boolean enable) {
+        if (enable) {
+            mSplitButtonDisabledFlags |= flag;
+        } else {
+            mSplitButtonDisabledFlags &= ~flag;
+        }
+    }
+
     public AlphaProperty getContentAlpha() {
         return mMultiValueAlpha.getProperty(INDEX_CONTENT_ALPHA);
     }
@@ -263,12 +288,17 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
                 0, 0, 0);
     }
 
-    public void setSplitButtonVisible(boolean visible) {
+    /**
+     * Shows/hides the "Split" button based on the status of mHiddenFlags.
+     */
+    public void updateSplitButtonVisibility() {
         if (mSplitButton == null) {
             return;
         }
-
-        mSplitButton.setVisibility(visible ? VISIBLE : GONE);
-        findViewById(R.id.action_split_space).setVisibility(visible ? VISIBLE : GONE);
+        boolean shouldBeVisible = mSplitButtonDisabledFlags == 0
+                // and neither of these flags are active
+                && (mHiddenFlags & (HIDDEN_SPLIT_SCREEN | HIDDEN_SPLIT_SELECT_ACTIVE)) == 0;
+        mSplitButton.setVisibility(shouldBeVisible ? VISIBLE : GONE);
+        findViewById(R.id.action_split_space).setVisibility(shouldBeVisible ? VISIBLE : GONE);
     }
 }
