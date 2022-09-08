@@ -2,7 +2,7 @@ package app.lawnchair.wallpaper
 
 import android.app.WallpaperManager
 import android.content.Context
-import androidx.core.content.getSystemService
+import app.lawnchair.util.requireSystemService
 import app.lawnchair.wallpaper.WallpaperColorsCompat.Companion.HINT_SUPPORTS_DARK_THEME
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.MainThreadInitializedObject
@@ -10,7 +10,7 @@ import com.android.launcher3.util.MainThreadInitializedObject
 abstract class WallpaperManagerCompat(val context: Context) {
 
     private val listeners = mutableListOf<OnColorsChangedListener>()
-    protected val wallpaperManager = context.getSystemService<WallpaperManager>()!!
+    protected val wallpaperManager: WallpaperManager = context.requireSystemService()
 
     abstract val wallpaperColors: WallpaperColorsCompat?
 

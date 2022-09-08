@@ -10,7 +10,7 @@ import android.graphics.drawable.Icon
 import android.net.Uri
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.content.getSystemService
+import app.lawnchair.util.requireSystemService
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 
@@ -27,7 +27,7 @@ class BugReportReceiver : BroadcastReceiver() {
 
     private fun copyReport(context: Context, report: BugReport) {
         val clipData = ClipData.newPlainText(context.getString(R.string.lawnchair_bug_report), report.link ?: report.contents)
-        context.getSystemService<ClipboardManager>()!!.setPrimaryClip(clipData)
+        context.requireSystemService<ClipboardManager>().setPrimaryClip(clipData)
         Toast.makeText(context, R.string.copied_toast, Toast.LENGTH_LONG).show()
     }
 
@@ -49,7 +49,7 @@ class BugReportReceiver : BroadcastReceiver() {
         const val UPLOAD_COMPLETE_ACTION = "${BuildConfig.APPLICATION_ID}.bugreport.UPLOAD_COMPLETE"
 
         fun notify(context: Context, report: BugReport, uploading: Boolean = false) {
-            val manager = context.getSystemService<NotificationManager>()!!
+            val manager: NotificationManager = context.requireSystemService()
             val notificationId = report.notificationId
             val builder = Notification.Builder(context, notificationChannelId)
                 .setContentTitle(report.getTitle(context))
