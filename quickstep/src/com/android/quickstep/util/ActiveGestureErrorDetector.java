@@ -46,7 +46,19 @@ public class ActiveGestureErrorDetector {
         STATE_GESTURE_STARTED, STATE_GESTURE_COMPLETED, STATE_GESTURE_CANCELLED,
         STATE_END_TARGET_ANIMATION_FINISHED, STATE_RECENTS_SCROLLING_FINISHED,
         STATE_CAPTURE_SCREENSHOT, STATE_SCREENSHOT_CAPTURED, STATE_HANDLER_INVALIDATED,
-        STATE_RECENTS_ANIMATION_CANCELED
+        STATE_RECENTS_ANIMATION_CANCELED, STATE_LAUNCHER_DRAWN(true, false);
+
+        public final boolean mLogEvent;
+        public final boolean mTrackEvent;
+
+        GestureEvent() {
+            this(false, true);
+        }
+
+        GestureEvent(boolean logEvent, boolean trackEvent) {
+            mLogEvent = logEvent;
+            mTrackEvent = trackEvent;
+        }
     }
 
     private ActiveGestureErrorDetector() {}
@@ -168,6 +180,7 @@ public class ActiveGestureErrorDetector {
                     case STATE_END_TARGET_ANIMATION_FINISHED:
                     case STATE_CAPTURE_SCREENSHOT:
                     case STATE_HANDLER_INVALIDATED:
+                    case STATE_LAUNCHER_DRAWN:
                     default:
                         // No-Op
                 }
