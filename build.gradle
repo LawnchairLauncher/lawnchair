@@ -163,6 +163,25 @@ android {
         }
     }
 
+    packagingOptions.resources.excludes += [
+        "**/*.proto",
+        "**/*.bin",
+        "**/*.java",
+        "**/*.properties",
+        "**/*.version",
+        "**/*.*_module",
+        "com/**",
+        "google/**",
+        "kotlin/**",
+        "kotlinx/**",
+        "okhttp3/**",
+        "META-INF/services/**",
+        "META-INF/com/**",
+        "META-INF/licenses/**",
+        "META-INF/AL2.0",
+        "META-INF/LGPL2.1",
+    ]
+
     buildTypes {
         debug {
             signingConfig releaseSigning
