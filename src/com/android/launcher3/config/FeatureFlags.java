@@ -65,12 +65,12 @@ public final class FeatureFlags {
      */
     public static final BooleanFlag ENABLE_INPUT_CONSUMER_REASON_LOGGING = getDebugFlag(
             "ENABLE_INPUT_CONSUMER_REASON_LOGGING",
-            false,
+            true,
             "Log the reason why an Input Consumer was selected for a gesture.");
 
     public static final BooleanFlag ENABLE_GESTURE_ERROR_DETECTION = getDebugFlag(
             "ENABLE_GESTURE_ERROR_DETECTION",
-            false,
+            true,
             "Analyze gesture events and log detected errors");
 
     // When enabled the promise icon is visible in all apps while installation an app.
@@ -284,6 +284,9 @@ public final class FeatureFlags {
     public static final BooleanFlag FOLDABLE_WORKSPACE_REORDER = getDebugFlag(
             "FOLDABLE_WORKSPACE_REORDER", true,
             "In foldables, when reordering the icons and widgets, is now going to use both sides");
+
+    public static final BooleanFlag SHOW_SEARCH_EDUCARD_QSB = new DeviceFlag(
+            "SHOW_SEARCH_EDUCARD_QSB", false, "Shows Search Educard for QSB entry in OneSearch.");
 
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {

@@ -340,6 +340,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             return ActiveGestureErrorDetector.GestureEvent.STATE_CAPTURE_SCREENSHOT;
         } else if (stateFlag == STATE_HANDLER_INVALIDATED) {
             return ActiveGestureErrorDetector.GestureEvent.STATE_HANDLER_INVALIDATED;
+        } else if (stateFlag == STATE_LAUNCHER_DRAWN) {
+            return ActiveGestureErrorDetector.GestureEvent.STATE_LAUNCHER_DRAWN;
         }
         return null;
     }
