@@ -10,17 +10,6 @@
 # Don't warn about those in case this app is linking against an older
 # platform version.  We know about them, and they are safe.
 -dontwarn android.support.**
-
-# Proguard will strip methods required for talkback to properly scroll to
-# next row when focus is on the last item of last row when using a RecyclerView
-# Keep optimized and shrunk proguard to prevent issues like this when using
-# support jar.
--keep class androidx.recyclerview.widget.RecyclerView { *; }
-
-# Fragments
--keep class ** extends androidx.fragment.app.Fragment {
-    public <init>(...);
-}
 -keep class ** extends android.app.Fragment {
     public <init>(...);
 }
@@ -66,8 +55,6 @@
 -keep class org.chickenhook.restrictionbypass.** { *; }
 
 # Silence warnings from Compose tooling
--dontwarn org.jetbrains.kotlin.**
--dontwarn androidx.compose.animation.tooling.ComposeAnimation
 -dontwarn sun.misc.Unsafe
 
 # Silence warnings about classes that are available at runtime
