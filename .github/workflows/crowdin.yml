@@ -13,6 +13,7 @@ jobs:
 
   synchronize-with-crowdin:
     name: Synchronize with Crowdin
+    if: github.repository_owner == 'LawnchairLauncher'
     runs-on: ubuntu-latest
     steps:
 
