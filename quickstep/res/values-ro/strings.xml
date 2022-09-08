@@ -19,11 +19,11 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="recent_task_option_pin" msgid="7929860679018978258">"Fixați"</string>
+    <string name="recent_task_option_pin" msgid="7929860679018978258">"Fixează"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Formă liberă"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Niciun element recent"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Setări de utilizare a aplicației"</string>
-    <string name="recents_clear_all" msgid="5328176793634888831">"Ștergeți tot"</string>
+    <string name="recents_clear_all" msgid="5328176793634888831">"Șterge tot"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Aplicații recente"</string>
     <string name="task_view_closed" msgid="9170038230110856166">"Activitatea s-a încheiat"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
@@ -31,75 +31,75 @@
     <string name="time_left_for_app" msgid="3111996412933644358">"Au mai rămas <xliff:g id="TIME">%1$s</xliff:g> astăzi"</string>
     <string name="title_app_suggestions" msgid="4185902664111965088">"Sugestii de aplicații"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Aplicațiile estimate"</string>
-    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Primiți sugestii de aplicații în rândul de jos al ecranului de pornire"</string>
-    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Primiți sugestii de aplicații în rândul de preferințe al ecranului de pornire"</string>
-    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Accesați cu ușurință cele mai folosite aplicații direct din ecranul de pornire. Sugestiile se vor modifica în funcție de rutine. Aplicațiile din rândul de jos se vor muta în sus pe ecranul de pornire."</string>
-    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Accesați cu ușurință cele mai folosite aplicații direct din ecranul de pornire. Sugestiile se vor schimba în funcție de rutina dvs. Aplicațiile din rândul de preferințe se vor muta în ecranul de pornire."</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Accesați cu ușurință cele mai folosite aplicații, direct din ecranul de pornire. Sugestiile se vor modifica în funcție de rutine. Aplicațiile din rândul de jos se vor muta într-un dosar nou."</string>
-    <string name="hotseat_edu_accept" msgid="1611544083278999837">"Primiți sugestii de aplicații"</string>
+    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Primește sugestii de aplicații în rândul de jos al ecranului de pornire"</string>
+    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Primește sugestii de aplicații în rândul de preferințe al ecranului de pornire"</string>
+    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Accesează cu ușurință cele mai folosite aplicații direct din ecranul de pornire. Sugestiile se vor modifica în funcție de rutine. Aplicațiile din rândul de jos se vor muta în sus pe ecranul de pornire."</string>
+    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Accesează cu ușurință cele mai folosite aplicații direct din ecranul de pornire. Sugestiile se vor schimba în funcție de rutina ta. Aplicațiile din rândul de preferințe se vor muta în ecranul de pornire."</string>
+    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Accesează cu ușurință cele mai folosite aplicații, direct din ecranul de pornire. Sugestiile se vor modifica în funcție de rutine. Aplicațiile din rândul de jos se vor muta într-un dosar nou."</string>
+    <string name="hotseat_edu_accept" msgid="1611544083278999837">"Primește sugestii de aplicații"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Nu, mulțumesc"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Setări"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Cele mai folosite aplicații apar aici și se modifică în funcție de rutine"</string>
-    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Trageți aplicații din rândul de jos pentru a primi sugestii de aplicații"</string>
+    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Trage aplicații din rândul de jos pentru a primi sugestii de aplicații"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Sugestiile de aplicații sunt adăugate în spațiile goale"</string>
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Sugestiile de aplicații au fost activate"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Sugestiile de aplicații au fost dezactivate"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Aplicația estimată: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Glisați dinspre marginea dreaptă îndepărtată sau dinspre marginea stângă îndepărtată."</string>
-    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Glisați dinspre marginea dreaptă sau stângă spre mijlocul ecranului și eliberați."</string>
-    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Ați învățat cum să glisați dinspre dreapta pentru a reveni. În continuare, aflați cum să comutați aplicațiile."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Ați finalizat gestul „înapoi”."</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Nu glisați prea aproape de partea de jos a ecranului."</string>
-    <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Schimbați sensibilitatea gestului „Înapoi” accesând Setările"</string>
-    <string name="back_gesture_intro_title" msgid="19551256430224428">"Glisați pentru a reveni"</string>
-    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Pentru a reveni la ultimul ecran, glisați de la marginea stângă sau dreaptă spre mijlocul ecranului."</string>
-    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Pentru a reveni la ultimul ecran, glisați cu două degete dinspre marginea stângă sau dreaptă spre mijlocul ecranului."</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Glisați în sus dinspre marginea de jos a ecranului."</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Nu întrerupeți gestul înainte de a elibera."</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Glisați direct în sus."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Ați finalizat gestul „accesați ecranul de pornire”. În continuare, aflați cum să reveniți."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Ați finalizat gestul „accesați ecranul de pornire”."</string>
-    <string name="home_gesture_intro_title" msgid="836590312858441830">"Glisați pentru a accesa ecranul de pornire"</string>
-    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Glisați în sus din partea de jos a ecranului. Cu acest gest accesați întotdeauna ecranul de pornire."</string>
-    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Glisați în sus cu 2 degete din partea de jos. Cu acest gest accesați întotdeauna ecranul de pornire."</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Glisați în sus dinspre marginea de jos a ecranului."</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Încercați să țineți fereastra mai mult înainte s-o eliberați."</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Glisați direct în sus, apoi întrerupeți."</string>
-    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Ați învățat cum să folosiți gesturi. Pentru a dezactiva gesturile, accesați Setările."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Ați finalizat gestul „comutați între aplicații”."</string>
-    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Glisați pentru a comuta între aplicații"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Ca să comutați între aplicații, glisați în sus din partea de jos a ecranului, așteptați și eliberați."</string>
-    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Ca să comutați între aplicații, glisați în sus cu 2 degete din partea de jos, așteptați și eliberați"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Glisează dinspre marginea dreaptă îndepărtată sau dinspre marginea stângă îndepărtată."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Glisează dinspre marginea dreaptă sau stângă spre mijlocul ecranului și eliberează."</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Ai învățat cum să glisezi din dreapta pentru a reveni. Acum află cum să comuți aplicațiile."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Ai finalizat gestul „înapoi”."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Nu glisa prea aproape de partea de jos a ecranului."</string>
+    <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Schimbă sensibilitatea gestului „Înapoi” accesând Setările"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Glisează pentru a reveni"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Pentru a reveni la ultimul ecran, glisează de la marginea stângă sau dreaptă spre mijlocul ecranului."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Pentru a reveni la ultimul ecran, glisează cu două degete dinspre marginea stângă sau dreaptă spre mijlocul ecranului."</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Glisează în sus dinspre marginea de jos a ecranului."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Nu întrerupe gestul înainte de a elibera."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Glisează direct în sus."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Ai finalizat gestul „accesează ecranul de pornire”. Acum află cum să revii."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Ai finalizat gestul „accesează ecranul de pornire”."</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"Glisează pentru a accesa ecranul de pornire"</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Glisează în sus din partea de jos a ecranului. Cu acest gest accesezi mereu ecranul de pornire."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Glisează în sus cu două degete din partea de jos. Cu acest gest accesezi mereu ecranul de pornire."</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Glisează în sus dinspre marginea de jos a ecranului."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Încearcă să ții fereastra mai mult înainte s-o eliberezi."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Glisează direct în sus, apoi întrerupe."</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Ai învățat să folosești gesturi. Pentru a dezactiva gesturile, accesează Setările."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Ai finalizat gestul „comută între aplicații”."</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Glisează pentru a comuta între aplicații"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Ca să comuți între aplicații, glisează în sus din partea de jos a ecranului, așteaptă și eliberează."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Ca să comuți între aplicații, glisează cu două degete de jos în sus, așteaptă și eliberează"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Gata"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Gata"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Setări"</string>
-    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Reîncercați"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Reîncearcă"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Bravo!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Tutorialul <xliff:g id="CURRENT">%1$d</xliff:g> / <xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Gata!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"Glisați în sus pentru a accesa ecranul de pornire"</string>
-    <string name="allset_description" msgid="6350320429953234580">"Sunteți gata să folosiți telefonul"</string>
-    <string name="allset_description_tablet" msgid="7332070270570039247">"Sunteți gata să folosiți tableta"</string>
+    <string name="allset_hint" msgid="2384632994739392447">"Glisează în sus pentru a accesa ecranul de pornire"</string>
+    <string name="allset_description" msgid="6350320429953234580">"Ești gata să folosești telefonul"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"Ești gata să folosești tableta"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Setările de navigare ale sistemului"</annotation></string>
-    <string name="action_share" msgid="2648470652637092375">"Distribuiți"</string>
+    <string name="action_share" msgid="2648470652637092375">"Distribuie"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Captură de ecran"</string>
     <string name="action_split" msgid="2098009717623550676">"Împărțit"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"Atingeți altă aplicație pentru a folosi ecranul împărțit"</string>
+    <string name="toast_split_select_app" msgid="5453865907322018352">"Atinge altă aplicație pentru ecranul împărțit"</string>
     <string name="toast_split_app_unsupported" msgid="3271526028981899666">"Aplicația nu acceptă ecranul împărțit."</string>
-    <string name="blocked_by_policy" msgid="2071401072261365546">"Această acțiune nu este permisă de aplicație sau de organizația dvs."</string>
-    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Omiteți tutorialul de navigare?"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Îl puteți găsi mai târziu în aplicația <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Anulați"</string>
-    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Omiteți"</string>
-    <string name="accessibility_rotate_button" msgid="4771825231336502943">"Rotiți ecranul"</string>
+    <string name="blocked_by_policy" msgid="2071401072261365546">"Această acțiune nu este permisă de aplicație sau de organizația ta"</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Omiți tutorialul de navigare?"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Îl poți găsi mai târziu în aplicația <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Anulează"</string>
+    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Omite"</string>
+    <string name="accessibility_rotate_button" msgid="4771825231336502943">"Rotește ecranul"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Panoul cu informații despre bara de activități s-a afișat"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Panoul cu informații despre bara de activități s-a închis"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Folosiți bara de activități ca să comutați între aplicații"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Trageți în lateral ca să folosiți două aplicații deodată"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Atingeți lung oricând pentru a ascunde bara de activități"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Folosește bara de activități ca să comuți între aplicații"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Trage în lateral ca să folosești două aplicații deodată"</string>
+    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Atinge lung oricând pentru a ascunde bara de activități"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Înainte"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Înapoi"</string>
-    <string name="taskbar_edu_close" msgid="887022990168191073">"Închideți"</string>
+    <string name="taskbar_edu_close" msgid="887022990168191073">"Închide"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Gata"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Ecran de pornire"</string>
     <string name="taskbar_button_a11y" msgid="5241161324875094465">"Accesibilitate"</string>
@@ -108,6 +108,6 @@
     <string name="taskbar_button_recents" msgid="7273376136216613134">"Recente"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Notificări"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Setări rapide"</string>
-    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Mutați în stânga sus"</string>
-    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Mutați în dreapta jos"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Mută în stânga sus"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Mută în dreapta jos"</string>
 </resources>
