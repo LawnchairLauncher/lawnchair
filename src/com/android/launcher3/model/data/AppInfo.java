@@ -29,6 +29,7 @@ import android.os.UserHandle;
 import android.os.UserManager;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.LauncherSettings;
@@ -65,6 +66,7 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
     }
 
     @Override
+    @Nullable
     public Intent getIntent() {
         return intent;
     }
