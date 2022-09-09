@@ -34,7 +34,8 @@
         android:clipChildren="false"
         android:orientation="horizontal"
         android:paddingLeft="12dp"
-        android:paddingRight="12dp" >
+        android:paddingRight="12dp"
+        android:alpha="0">
 
         <com.android.launcher3.folder.FolderNameEditText
             android:id="@+id/folder_name"

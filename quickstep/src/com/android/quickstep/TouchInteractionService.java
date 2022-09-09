@@ -462,7 +462,8 @@ public class TouchInteractionService extends Service
         mOverviewComponentObserver = new OverviewComponentObserver(this, mDeviceState);
         mOverviewCommandHelper = new OverviewCommandHelper(this,
                 mOverviewComponentObserver, mTaskAnimationManager);
-        mResetGestureInputConsumer = new ResetGestureInputConsumer(mTaskAnimationManager);
+        mResetGestureInputConsumer = new ResetGestureInputConsumer(
+                mTaskAnimationManager, mTaskbarManager::getCurrentActivityContext);
         mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
         mInputConsumer.registerInputConsumer();
         onSystemUiFlagsChanged(mDeviceState.getSystemUiStateFlags());
