@@ -49,6 +49,7 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
 
     private int mProfileUserId;
     private boolean mWorkProfileSetupSuccessful;
+    private final String TAG = "WorkProfileTest";
 
     @Before
     @Override
@@ -57,18 +58,17 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
         String output =
                 mDevice.executeShellCommand(
                         "pm create-user --profileOf 0 --managed TestProfile");
-        Log.d("b/203817455", "pm create-user; output: " + output);
-
-        if (output.startsWith("Success")){
-            assertTrue("Failed to create work profile", output.startsWith("Success"));
-            mWorkProfileSetupSuccessful = true;
-        } else {
-            return; // no need to setup launcher since all tests will skip.
-        }
+        // b/203817455
+        updateWorkProfileSetupSuccessful("pm create-user", output);
 
         String[] tokens = output.split("\\s+");
         mProfileUserId = Integer.parseInt(tokens[tokens.length - 1]);
-        mDevice.executeShellCommand("am start-user " + mProfileUserId);
+        output = mDevice.executeShellCommand("am start-user " + mProfileUserId);
+        updateWorkProfileSetupSuccessful("am start-user", output);
+
+        if (!mWorkProfileSetupSuccessful) {
+            return; // no need to setup launcher since all tests will skip.
+        }
 
         mDevice.pressHome();
         waitForLauncherCondition("Launcher didn't start", Objects::nonNull);
@@ -109,6 +109,7 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
     @ScreenRecord // b/242163855
     public void workTabExists() {
         assumeTrue(mWorkProfileSetupSuccessful);
+        waitForWorkTabSetup();
         waitForLauncherCondition("Personal tab is missing",
                 launcher -> launcher.getAppsView().isPersonalTabVisible(),
                 LauncherInstrumentation.WAIT_TIME_MS);
@@ -184,5 +185,15 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
                 l.getAppsView().getAppsStore().enableDeferUpdates(DEFER_UPDATES_TEST);
             }
         }, LauncherInstrumentation.WAIT_TIME_MS);
+    }
+
+    private void updateWorkProfileSetupSuccessful(String cli, String output) {
+        Log.d(TAG, "updateWorkProfileSetupSuccessful, cli=" + cli + " " + "output=" + output);
+        if (output.startsWith("Success")) {
+            assertTrue(output, output.startsWith("Success"));
+            mWorkProfileSetupSuccessful = true;
+        } else {
+            mWorkProfileSetupSuccessful = false;
+        }
     }
 }
