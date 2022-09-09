@@ -134,7 +134,7 @@
     <string name="action_paste">Paste</string>
     <string name="copied_toast">Kopirano u privremenu memoriju.</string>
     <string name="invalid_color">Nevažeća boja</string>
-    <string name="app_icon_color">Boja ikone aplikacije</string>
+    <string name="launcher_default_color">Default</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Dodaj nove aplikacije na početni ekran</string>
@@ -246,6 +246,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Neprozirnost pozadine ikona</string>
+    <string name="folder_preview_bg_color_label">Icon Background Color</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Maksimalan broj kolona u folderu</string>
     <string name="max_folder_rows">Maksimalan broj redova u folderu</string>

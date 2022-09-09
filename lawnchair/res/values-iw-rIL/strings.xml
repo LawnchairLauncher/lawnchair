@@ -134,7 +134,7 @@
     <string name="action_paste">Paste</string>
     <string name="copied_toast">הועתק ללוח הכתיבה.</string>
     <string name="invalid_color">צבע לא תקני</string>
-    <string name="app_icon_color">צבע אייקון של יישום</string>
+    <string name="launcher_default_color">Default</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">הוספת יישומים חדשים למסך הבית</string>
@@ -247,6 +247,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">שקיפות רקע אייקון</string>
+    <string name="folder_preview_bg_color_label">Icon Background Color</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">מספר מרבי לטורים בתיקייה</string>
     <string name="max_folder_rows">מספר מרבי לשורות בתיקייה</string>
@@ -310,7 +311,7 @@
     <string name="dt2s_admin_hint">כדי להשתמש בלחיצה כפולה כדי להפעיל מצב שינה, יש להגדיר את Lawnchair כמנהל מכשיר. הקש על \"פתח הגדרות\" ואז על \"הפעל את אפליקציית ניהול מכשיר זו\"</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
+    <string name="dt2s_a11y_hint">בשביל להשתמש בנגיעה כפולה לכיבוי המסך, הפעל את שירותי גישה ל-Launchair. תבחר לפתוח הגדרות, ואז בחר Launchair והפעל את \"השתמש ב-Launchair\".</string>
     <string name="dt2s_warning_open_settings">פתיחת הגדרות</string>
     <string name="loading">כעת בטעינה…</string>
     <string name="system">מערכת</string>
@@ -338,12 +339,12 @@
     <string name="all_apps_device_search_hint">חיפוש</string>
     <string name="search_input_action_clear_results">נקה תיבת חיפוש</string>
     <string name="label_search">חיפוש</string>
-    <string name="label_lens">Google Lens</string>
+    <string name="label_lens">עדשת גוגל</string>
     <string name="label_voice_search">חיפוש קולי</string>
     <string name="all_apps_search_market_message">חפש עוד יישומים</string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
-    <string name="quickstep_incompatible">Incompatible System Integration</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
+    <string name="error_no_market_or_browser_installed">לא נמצאו חנות או דפדפן מותקנים.</string>
+    <string name="quickstep_incompatible">גישור לא תואם למערכת</string>
+    <string name="quickstep_incompatible_description">המכשיר שלך מוגדר עם מחוות-מערכת (ידועים כ-Quickstep) שפועלות ע\"י %1$s, אבל הגרסה הזאת של %1$s לא מתאימה לעבוד עם גרסת האנדרואיד שלך. בכדי להמשיך להשתמש במכשיר שלך, יש להסיר את עדכוני %1$s או להשבית את פעולת %1$s כמפעיל מחוות-המערכת.</string>
     <string name="delete">מחיקה</string>
     <!-- Backup -->
     <string name="create_backup">יצירת גיבוי</string>
@@ -357,8 +358,8 @@
     <string name="restore_backup_action">שיחזור</string>
     <string name="what_to_restore">מה לשחזר</string>
     <string name="backup_restore_success">גיבוי שוחזר.</string>
-    <string name="backup_restore_error">Failed to restore backup.</string>
-    <string name="invalid_backup_file">Invalid backup file.</string>
+    <string name="backup_restore_error">שיחזור הגיבוי נכשל.</string>
+    <string name="invalid_backup_file">קובץ גיבוי לא תקין.</string>
     <string name="x_by_y">%1$d × %2$d</string>
-    <string name="x_and_y">%s &amp; %s</string>
+    <string name="x_and_y">%s ו%s</string>
 </resources>

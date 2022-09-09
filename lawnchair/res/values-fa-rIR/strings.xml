@@ -50,7 +50,7 @@
     <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
     <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
     <!-- GeneralPreferences -->
-    <string name="home_screen_rotation_label">چرخش صفحه‌اصلی</string>
+    <string name="home_screen_rotation_label">چرخش صفحه‌ اصلی</string>
     <string name="home_screen_rotaton_description">هنگام چرخش دستگاه.</string>
     <string name="font_label">قلم‌ (آزمایشی)</string>
     <!-- <string name="icons" /> -->
@@ -91,13 +91,13 @@
     <string name="icon_shape_system">سیستم</string>
     <string name="icon_shape_circle">دایره</string>
     <string name="icon_shape_cylinder">سیلندر</string>
-    <string name="icon_shape_diamond">Diamond</string>
-    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_diamond">الماس</string>
+    <string name="icon_shape_egg">تخم‌مرغ</string>
     <string name="icon_shape_cupertino">آی او اس</string>
-    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_octagon">هشت وجهی</string>
     <string name="icon_shape_sammy">وان یو‌آی</string>
     <string name="icon_shape_rounded_square">مربع گرد</string>
-    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_sharp_square">مربع تیز</string>
     <string name="icon_shape_square">مربع</string>
     <string name="icon_shape_squircle">مربع دایره‌ای</string>
     <string name="icon_shape_teardrop">اشک</string>
@@ -131,10 +131,10 @@
     <string name="hex">هگز</string>
     <string name="color_sliders">لغزنده‌ها</string>
     <string name="action_copy">کپی</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_paste">چسباندن</string>
     <string name="copied_toast">در کلیپ‌بورد کپی شد.</string>
     <string name="invalid_color">رنگ نامعتبر</string>
-    <string name="app_icon_color">رنگ آیکون برنامه‌ها</string>
+    <string name="launcher_default_color">Default</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">افزودن برنامه‌های جدید به صفحه‌اصلی</string>
@@ -149,11 +149,11 @@
     <string name="layout">چیدمان</string>
     <string name="home_screen_grid">جدول صفحه‌اصلی</string>
     <string name="home_screen_lock">قفل صفحه اصلی</string>
-    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_lock_description">جلوگیری از تغییرات در چیدمان صفحه اصلی.</string>
     <string name="home_screen_unlock">باز کردن قفل صفحه اصلی</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">نشان‌دادن دکمه قفل در پنجره بازشو</string>
-    <string name="home_screen_locked">Home Screen is locked.</string>
+    <string name="home_screen_locked">صفحه اصلی قفل شده است.</string>
     <string name="status_bar_label">نوار وضعیت</string>
     <string name="show_status_bar">نشان‌دادن نوار وضعیت</string>
     <string name="dark_status_bar_label">نوار وضعیت تاریک</string>
@@ -186,9 +186,9 @@
     <string name="smartspace_date_and_time">تاریخ و زمان</string>
     <string name="smartspace_date">تاریخ</string>
     <string name="smartspace_time">زمان</string>
-    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_format">قالب ساعت</string>
     <string name="smartspace_time_follow_system">دوآپس</string>
-    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
+    <string name="smartspace_time_12_hour_format">قالب 12 ساعته</string>
     <string name="smartspace_time_24_hour_format">قالب ۲۴ ساعته</string>
     <string name="smartspace_weather">آب و هوا</string>
     <string name="smartspace_battery_status">وضعیت باتری</string>
@@ -199,7 +199,7 @@
     <string name="smartspace_calendar_gregorian">میلادی</string>
     <string name="smartspace_calendar_persian">شمسی</string>
     <string name="smartspace_preferences">تنظیمات</string>
-    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
+    <string name="smartspace_widget_toggle_label">نشان دادن در صفحه ‌اصلی</string>
     <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
@@ -245,6 +245,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">شفافیت بک‌گراند آیکون</string>
+    <string name="folder_preview_bg_color_label">Icon Background Color</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">حداکثر ستون‌های پوشه‌ها</string>
     <string name="max_folder_rows">حداکثر ردیف‌های پوشه‌ها</string>

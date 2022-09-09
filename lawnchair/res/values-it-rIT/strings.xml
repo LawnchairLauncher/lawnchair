@@ -63,7 +63,7 @@
     <string name="notification_dots">Badge di notifica</string>
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Mostra conteggio notifiche</string>
-    <string name="notification_dots_color">Notification Dot Color</string>
+    <string name="notification_dots_color">Colore badge di notifica</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Accesso alle notifiche necessario</string>
     <string name="missing_notification_access_description">Accesso alle notifiche necessario.</string>
@@ -91,10 +91,10 @@
     <string name="icon_shape_system">Sistema</string>
     <string name="icon_shape_circle">Cerchio</string>
     <string name="icon_shape_cylinder">Cilindro</string>
-    <string name="icon_shape_diamond">Diamond</string>
-    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_diamond">Diamante</string>
+    <string name="icon_shape_egg">Uovo</string>
     <string name="icon_shape_cupertino">iOS</string>
-    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_octagon">Ottagono</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Quadrato arrotondato</string>
     <string name="icon_shape_sharp_square">Sharp Square</string>
@@ -131,10 +131,10 @@
     <string name="hex">Hex</string>
     <string name="color_sliders">Cursori</string>
     <string name="action_copy">Copia</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_paste">Incolla</string>
     <string name="copied_toast">Copiato negli appunti.</string>
     <string name="invalid_color">Colore non valido</string>
-    <string name="app_icon_color">App Icon Color</string>
+    <string name="launcher_default_color">Default</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Aggiungi le nuove applicazioni alla schermata home</string>
@@ -149,11 +149,11 @@
     <string name="layout">Layout</string>
     <string name="home_screen_grid">Griglia della schermata home</string>
     <string name="home_screen_lock">Blocca la schermata home</string>
-    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_lock_description">Previene modifiche al layout della schermata home.</string>
     <string name="home_screen_unlock">Sblocca schermata home</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">Mostra pulsante di blocco nel pop-up</string>
-    <string name="home_screen_locked">Home Screen is locked.</string>
+    <string name="home_screen_locked">La schermata home è bloccata.</string>
     <string name="status_bar_label">Barra di stato</string>
     <string name="show_status_bar">Mostra barra di stato</string>
     <string name="dark_status_bar_label">Barra di stato scura</string>
@@ -186,9 +186,9 @@
     <string name="smartspace_date_and_time">Data &amp; ora</string>
     <string name="smartspace_date">Data</string>
     <string name="smartspace_time">Ora</string>
-    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_format">Formato orario</string>
     <string name="smartspace_time_follow_system">Segui il sistema</string>
-    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
+    <string name="smartspace_time_12_hour_format">Formato 12 ore</string>
     <string name="smartspace_time_24_hour_format">Formato 24 ore</string>
     <string name="smartspace_weather">Meteo</string>
     <string name="smartspace_battery_status">Stato batteria</string>
@@ -199,8 +199,8 @@
     <string name="smartspace_calendar_gregorian">Gregoriano</string>
     <string name="smartspace_calendar_persian">Persiano</string>
     <string name="smartspace_preferences">Preferenze</string>
-    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <string name="smartspace_widget_toggle_label">Mostra nella schermata home</string>
+    <string name="smartspace_widget_toggle_description">Il widget At a Glance può essere aggiunto manualmente posizionando il widget \"Lawnchair\".</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">Barra di ricerca</string>
@@ -245,6 +245,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Opacità sfondo dell\'icona</string>
+    <string name="folder_preview_bg_color_label">Icon Background Color</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Colonne massime per la cartella</string>
     <string name="max_folder_rows">Righe massime per la cartella</string>

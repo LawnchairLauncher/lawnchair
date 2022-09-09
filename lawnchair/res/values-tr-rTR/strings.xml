@@ -134,7 +134,7 @@
     <string name="action_paste">Paste</string>
     <string name="copied_toast">Panoya kopyalandı.</string>
     <string name="invalid_color">Geçersiz Renk</string>
-    <string name="app_icon_color">Uygulama Simge Rengi</string>
+    <string name="launcher_default_color">Default</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Ana Ekrana Yeni Uygulamalar Ekleyin</string>
@@ -245,6 +245,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Simge Arka Plan Saydamlığı</string>
+    <string name="folder_preview_bg_color_label">Icon Background Color</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Maksimum Klasör Sütunları</string>
     <string name="max_folder_rows">Maksimum Klasör Sıraları</string>

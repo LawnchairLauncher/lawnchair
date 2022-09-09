@@ -20,7 +20,7 @@
     <string name="general_label">பொது</string>
     <string name="general_description">நிறங்கள், சின்னச்சிப்பம், அறிவிப்பு புள்ளிகள்</string>
     <string name="home_screen_label">முகப்புத் திரை</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">ஃபீடு, கிரிட், ஐகான்கள்</string>
     <!--
     <string name="smartspace" />
     -->
@@ -31,8 +31,8 @@
     <string name="app_drawer_description">மறைபட்டச் செயலி, நெடுவரிசை எண்ணிக்கை, சின்னம்</string>
     <string name="folders_label">கோப்புறை பெயர்கள்</string>
     <string name="folders_description">கோப்புறை விளக்கம்</string>
-    <string name="gestures_label">Gestures</string>
-    <string name="gestures_description">Taps and Swipes</string>
+    <string name="gestures_label">சைகைகள்</string>
+    <string name="gestures_description">தட்டுவது மற்றும் தேய்ப்பது</string>
     <string name="quickstep_label">அண்மையவை</string>
     <string name="quickstep_description">அனைத்தயுந்துடை பொத்தான், மூலை ஆரம்</string>
     <string name="about_label">விவர பெயர்கள்</string>
@@ -45,10 +45,10 @@
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">எழுத்துரு தனிப்பயனாக்கம்</string>
     <string name="font_picker_description">சில சொற்சரம் மாறாதிருக்கும்.</string>
-    <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <string name="smartspace_calendar_label">கிளான்ஸ் காலண்டரை தனிப்பயனாக்குதல்</string>
+    <string name="smartspace_calendar_description">கிரிகோரியன் முறை அல்லாத காலண்டர் வகையில் தேதியைக் காண்பிக்க சம்மதி.</string>
+    <string name="workspace_increase_max_grid_size_label">முகப்பு திரையின் கிரிட் அளவு அதிகபட்சம் உயர்த்தப்பட்டது</string>
+    <string name="workspace_increase_max_grid_size_description">முகப்பு திரையின் அனுமதிக்கப்பட்ட கிரிட் அளவான 10x10-இல் இருந்து 20x20-ஆக உயர்த்து.</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">முகப்புத் திரைச் சுழற்சி</string>
     <string name="home_screen_rotaton_description">கருவி சுழற்றப்படும் போது.</string>
@@ -62,7 +62,7 @@
     <string name="adaptive_icon_background_description">வெள்ளைக்கு 100% பின்புல இலேசுத்தன்மை பயன்படுத்து.</string>
     <string name="notification_dots">அறிவிப்பு புள்ளிகள்</string>
     <!-- <string name="notification_dots" />-->
-    <string name="show_notification_count">Show Notification Count</string>
+    <string name="show_notification_count">அறிவிப்புகளின் எண்ணிக்கையை காண்பி</string>
     <string name="notification_dots_color">அறிவிப்பு புள்ளிகளின் வண்ணம்</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">அறிவிப்பணுகல் தேவை</string>
@@ -81,28 +81,28 @@
     <string name="icon_pack">சின்னங்கள்</string>
     <string name="system_icons">இயங்குதளச் சின்னங்கள்</string>
     <string name="themed_icon_title">தோற்றக்கருமிகுச் சின்னங்கள்</string>
-    <string name="themed_icons_off_label">Off</string>
+    <string name="themed_icons_off_label">அணை</string>
     <string name="themed_icons_home_label">முகப்புத் திரை</string>
-    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
+    <string name="themed_icons_home_and_drawer_label">முகப்பு திரை &amp; ஆப் ட்ராவெர்</string>
     <string name="lawnicons_not_installed_description">Lawnicons நிறுவப்படவில்லை.</string>
     <!-- <string name="cancel" /> (unknown source)-->
     <!-- IconPickerPreference -->
     <!-- <string name="icon_shape_label" /> -->
     <string name="icon_shape_system">இயங்குதளம்</string>
     <string name="icon_shape_circle">வட்டம்</string>
-    <string name="icon_shape_cylinder">Cylinder</string>
-    <string name="icon_shape_diamond">Diamond</string>
-    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_cylinder">சிலிண்டர்</string>
+    <string name="icon_shape_diamond">வைரம்</string>
+    <string name="icon_shape_egg">முட்டை</string>
     <string name="icon_shape_cupertino">ஐ ஓ எஸ்</string>
-    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_octagon">எண்கோணம்</string>
     <string name="icon_shape_sammy">1 யுஐ</string>
     <string name="icon_shape_rounded_square">வட்டமான சதுரம்</string>
-    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_sharp_square">கூர்மையான சதுரம்</string>
     <string name="icon_shape_square">சதுரம்</string>
     <string name="icon_shape_squircle">சதுரவட்டம்</string>
-    <string name="icon_shape_teardrop">Teardrop</string>
+    <string name="icon_shape_teardrop">கண்ணீர் துளி</string>
     <!-- FontSelectionPreferences -->
-    <string name="pref_fonts_add_fonts">Add Fonts</string>
+    <string name="pref_fonts_add_fonts">எழுத்துருக்களை சேர்க்கவும்</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
     <string name="pref_fonts_missing_font">எழுத்துரு எதுவுமில்லை.</string>
     <string name="font_variant_italic">வலச்சாய்வு</string>
@@ -120,21 +120,21 @@
     <string name="dynamic">இயங்குநிலை</string>
     <string name="presets">முன்னிருப்புகள்</string>
     <string name="custom">தனிப்பயன்</string>
-    <string name="rgb">RGB</string>
+    <string name="rgb">ஆர்ஜிபி</string>
     <string name="rgb_red">சிவப்பு</string>
     <string name="rgb_green">பச்சை </string>
     <string name="rgb_blue">நீலம்</string>
-    <string name="hsb">HSB</string>
-    <string name="hsb_hue">Hue</string>
-    <string name="hsb_saturation">Saturation</string>
-    <string name="hsb_brightness">Brightness</string>
-    <string name="hex">Hex</string>
-    <string name="color_sliders">Sliders</string>
+    <string name="hsb">ஹெச்எஸ்பி</string>
+    <string name="hsb_hue">சாயல்</string>
+    <string name="hsb_saturation">செறிவூட்டல்</string>
+    <string name="hsb_brightness">பிரகாசம்</string>
+    <string name="hex">ஹெக்ஸ்</string>
+    <string name="color_sliders">ஸ்லைடர்கள்</string>
     <string name="action_copy">நகலெடு</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_paste">ஒட்டவும்</string>
     <string name="copied_toast">நகலகத்திற்கு நகலெடுக்கப்பட்டது.</string>
     <string name="invalid_color">தவறான வண்ணம்</string>
-    <string name="app_icon_color">App Icon Color</string>
+    <string name="launcher_default_color">இயல்புநிலை</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">முகப்புத் திரையில் புதிய செயலிகளை சேர்</string>
@@ -190,7 +190,7 @@
     <string name="smartspace_time_follow_system">இயங்குதளத்தைப் பின்பற்று</string>
     <string name="smartspace_time_12_hour_format">12-Hour Format</string>
     <string name="smartspace_time_24_hour_format">24-Hour Format</string>
-    <string name="smartspace_weather">Weather</string>
+    <string name="smartspace_weather">வானிலை</string>
     <string name="smartspace_battery_status">Battery Status</string>
     <string name="smartspace_now_playing">Now Playing</string>
     <string name="smartspace_requires_setup">Tap to Set Up</string>
@@ -245,6 +245,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">சின்னம் பின்புல ஒளிபுகாமை</string>
+    <string name="folder_preview_bg_color_label">ஐகானின் பின்புற நிறம்</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">அதிகபட்ச கோப்புறை நெடுவரிசைகள்</string>
     <string name="max_folder_rows">அதிகபட்ச கோப்புறை வரிசைகள்</string>

@@ -134,7 +134,7 @@
     <string name="action_paste">Paste</string>
     <string name="copied_toast">Copié dans le presse-papiers.</string>
     <string name="invalid_color">Couleur invalide</string>
-    <string name="app_icon_color">Couleur de l\'icône de l\'application</string>
+    <string name="launcher_default_color">Default</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Ajouter les nouvelles applications à l\'écran d\'accueil</string>
@@ -245,6 +245,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Opacité de l\'arrière-plan de l\'icône</string>
+    <string name="folder_preview_bg_color_label">Icon Background Color</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Nombre maximum de colonnes des dossiers</string>
     <string name="max_folder_rows">Nombre maximum de lignes des dossiers</string>

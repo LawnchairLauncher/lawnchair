@@ -91,10 +91,10 @@
     <string name="icon_shape_system">Rendszer</string>
     <string name="icon_shape_circle">Kör</string>
     <string name="icon_shape_cylinder">Henger</string>
-    <string name="icon_shape_diamond">Diamond</string>
-    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_diamond">Gyémánt</string>
+    <string name="icon_shape_egg">Tojás</string>
     <string name="icon_shape_cupertino">iOS</string>
-    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_octagon">Nyolcszög</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Lekerekített négyszög</string>
     <string name="icon_shape_sharp_square">Sharp Square</string>
@@ -131,10 +131,10 @@
     <string name="hex">Hexa</string>
     <string name="color_sliders">Csúszkák</string>
     <string name="action_copy">Másol</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_paste">Beilleszt</string>
     <string name="copied_toast">Vágólapra másolva.</string>
     <string name="invalid_color">Érvénytelen szín</string>
-    <string name="app_icon_color">Alkalmazásikon színe</string>
+    <string name="launcher_default_color">Default</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Új alkalmazások hozzáadása a kezdőképernyőhöz</string>
@@ -153,7 +153,7 @@
     <string name="home_screen_unlock">Kezdőképernyő feloldása</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
-    <string name="home_screen_locked">Home Screen is locked.</string>
+    <string name="home_screen_locked">Kezdő képernyő lezárva.</string>
     <string name="status_bar_label">Állapotsor</string>
     <string name="show_status_bar">Állapotsor megjelenítése</string>
     <string name="dark_status_bar_label">Sötét állapotsor</string>
@@ -186,9 +186,9 @@
     <string name="smartspace_date_and_time">Dátum &amp; Idő</string>
     <string name="smartspace_date">Dátum</string>
     <string name="smartspace_time">Idő</string>
-    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_format">Idő formátum</string>
     <string name="smartspace_time_follow_system">Rendszer szerinti téma követése</string>
-    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
+    <string name="smartspace_time_12_hour_format">12 órás formátum</string>
     <string name="smartspace_time_24_hour_format">24 órás formátum</string>
     <string name="smartspace_weather">Időjárás</string>
     <string name="smartspace_battery_status">Akku állapot</string>
@@ -245,6 +245,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Ikon háttér átlátszósága</string>
+    <string name="folder_preview_bg_color_label">Icon Background Color</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Mappa oszlopok legnagyobb száma</string>
     <string name="max_folder_rows">Mappa sorok legnagyobb száma</string>
@@ -298,14 +299,14 @@
     <string name="icon_picker_reset_to_default">Alapértelmezett visszaállítása</string>
     <string name="icon_pack_external_picker">Külső választó megnyitása</string>
     <string name="pick_icon_from_label">Ikon választása innen</string>
-    <string name="icon_picker_load_failed">Couldn’t load more icons.</string>
+    <string name="icon_picker_load_failed">Nem tölthető be több ikon.</string>
     <!-- Misc -->
     <string name="all_apps_search_bar_hint">Alkalmazások keresése</string>
     <string name="settings_button_text">Kezdőképernyő beállítások</string>
     <string name="item_removed">Elem eltávolítva.</string>
     <string name="all_apps_no_search_results">Nincs megfelelő alkalmazás erre \"<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
     <string name="dt2s_admin_hint_title">Rendszergazdai jogosultság szükséges</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_hint">A dupla koppintásos altatáshoz állítsa be a Lawnchairt rendszergadai alkalmazásként. Koppintson a Beállítások megnyitására, majd koppintson a „Rendszergazdai alkalmazás aktiválása” lehetőségre.</string>
     <string name="dt2s_admin_warning">A dupla koppintásos alvás ki lesz kapcsolva.</string>
     <string name="dt2s_a11y_hint_title">Akadálymentesítési szolgáltatás bekapcsolása</string>
     <string name="dt2s_a11y_hint">A dupla koppintásos alvás bekapcsolásához kapcsolja be a Lawnchair akadálymentesítési szolgáltatást. Koppintson a „Beállítások megnyitása” gombra, majd válassza a „Lawnchair” lehetőséget, és kapcsolja be ezt: „Lawnchair használata\".</string>
@@ -314,7 +315,7 @@
     <string name="system">Rendszer</string>
     <string name="customize_button_text">Testreszabás</string>
     <string name="label">Címke</string>
-    <string name="hide_from_drawer">Hide from App Drawer</string>
+    <string name="hide_from_drawer">Elrejtés az alkalmazásfiókban</string>
     <string name="suggestion_pref_screen_title">Javaslatok</string>
     <string name="n_percent">%1$d%%</string>
     <!-- Bug reporting -->
@@ -339,9 +340,9 @@
     <string name="label_lens">Google Nagyító</string>
     <string name="label_voice_search">Hang keresés</string>
     <string name="all_apps_search_market_message">További Applikációk keresése</string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
+    <string name="error_no_market_or_browser_installed">Nincs alkalmazásbolt vagy böngésző telepítve.</string>
     <string name="quickstep_incompatible">Inkompatibilis rendszerintegráció</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
+    <string name="quickstep_incompatible_description">Az eszköze úgy van beállítva, hogy a(z) %1$s által biztosított rendszergesztusokat (más néven ez a Quickstep) tartalmazza, de a(z) %1$s ezen verziója nem kompatibilis az Android verziójával. Az eszköze használatának folytatásához távolítsa el a(z) %1$s frissítéseit vagy tiltsa le a(z) %1$s alkalmazást a rendszergesztusok szolgáltatójaként.</string>
     <string name="delete">Törlés</string>
     <!-- Backup -->
     <string name="create_backup">Biztonásgi mentés létrehozása</string>
@@ -358,5 +359,5 @@
     <string name="backup_restore_error">Biztonsági mentés visszaállítása nem sikerült.</string>
     <string name="invalid_backup_file">Biztonsági mentés fájl érvénytelen.</string>
     <string name="x_by_y">%1$d x %2$d</string>
-    <string name="x_and_y">%s &amp; %s</string>
+    <string name="x_and_y">%s és %s</string>
 </resources>
