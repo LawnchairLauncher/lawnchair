@@ -345,6 +345,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
 
             @Override
             public void onAnimationCancel(Animator animation) {
+                super.onAnimationCancel(animation);
                 onStateTransitionFailed(state);
             }
         };
