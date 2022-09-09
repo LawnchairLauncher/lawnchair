@@ -25,7 +25,7 @@
     <string name="smartspace" />
     -->
     <string name="what_to_show">O que mostrar</string>
-    <string name="dock_label">Ancorar</string>
+    <string name="dock_label">Dock</string>
     <string name="dock_description">Barra de Pesquisa, Número de Ícones</string>
     <string name="app_drawer_label">Gaveta de Aplicativos</string>
     <string name="app_drawer_description">Apps Ocultos, Número de Colunas, Ícones</string>
@@ -47,8 +47,8 @@
     <string name="font_picker_description">Algum texto permanece inalterado.</string>
     <string name="smartspace_calendar_label">Personalização do Calendário no Resumo</string>
     <string name="smartspace_calendar_description">Permitir mostrar data em sistema de calendário não-Gregoriano.</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <string name="workspace_increase_max_grid_size_label">Aumentar Tamanho Máximo da Grade da Tela Inicial</string>
+    <string name="workspace_increase_max_grid_size_description">Aumenta o tamanho máximo permitido da grade da tela inicial de 10 x 10 para 20 x 20.</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotação da Tela Inicial</string>
     <string name="home_screen_rotaton_description">Quando o dispositivo for rotacionado.</string>
@@ -91,13 +91,13 @@
     <string name="icon_shape_system">Sistema</string>
     <string name="icon_shape_circle">Círculo</string>
     <string name="icon_shape_cylinder">Cilindro</string>
-    <string name="icon_shape_diamond">Diamond</string>
-    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_diamond">Diamante</string>
+    <string name="icon_shape_egg">Ovo</string>
     <string name="icon_shape_cupertino">iOS</string>
-    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_octagon">Octógono</string>
     <string name="icon_shape_sammy">Interface de Usuário</string>
     <string name="icon_shape_rounded_square">Quadrado Arredondado</string>
-    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_sharp_square">Quadrado Afiado</string>
     <string name="icon_shape_square">Quadrado</string>
     <string name="icon_shape_squircle">Quadrado arredondado</string>
     <string name="icon_shape_teardrop">Lágrima</string>
@@ -131,10 +131,10 @@
     <string name="hex">Hex</string>
     <string name="color_sliders">Deslizantes</string>
     <string name="action_copy">Copiar</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_paste">Colar</string>
     <string name="copied_toast">Copiado para a área de transferência.</string>
     <string name="invalid_color">Cor Inválida</string>
-    <string name="app_icon_color">Cor do Ícone do App</string>
+    <string name="launcher_default_color">Padrão</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Adicionar novos aplicativos à tela inicial</string>
@@ -149,11 +149,11 @@
     <string name="layout">Aparência</string>
     <string name="home_screen_grid">Grade da Tela Inicial</string>
     <string name="home_screen_lock">Bloquear Tela Inicial</string>
-    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_lock_description">Impede mudanças no layout da tela inicial.</string>
     <string name="home_screen_unlock">Desbloquear Tela Inicial</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">Mostrar Botão de Bloqueio no Pop-Up</string>
-    <string name="home_screen_locked">Home Screen is locked.</string>
+    <string name="home_screen_locked">A Tela Inicial está bloqueada.</string>
     <string name="status_bar_label">Barra de Status</string>
     <string name="show_status_bar">Mostrar barra de status</string>
     <string name="dark_status_bar_label">Barra de Status Escura</string>
@@ -186,9 +186,9 @@
     <string name="smartspace_date_and_time">Data &amp; Hora</string>
     <string name="smartspace_date">Data</string>
     <string name="smartspace_time">Horário</string>
-    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_format">Formato da Hora</string>
     <string name="smartspace_time_follow_system">Seguir o Sistema</string>
-    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
+    <string name="smartspace_time_12_hour_format">Formato de 12 Horas</string>
     <string name="smartspace_time_24_hour_format">Formato de 24 horas</string>
     <string name="smartspace_weather">Clima</string>
     <string name="smartspace_battery_status">Estado da Bateria</string>
@@ -199,15 +199,15 @@
     <string name="smartspace_calendar_gregorian">Gregoriano</string>
     <string name="smartspace_calendar_persian">Persa</string>
     <string name="smartspace_preferences">Preferências</string>
-    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <string name="smartspace_widget_toggle_label">Mostrar na Tela Inicial</string>
+    <string name="smartspace_widget_toggle_description">Um resumo pode ser adicionado manualmente colocando o widget \"Lawnchair\".</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">Barra de Pesquisa</string>
     <string name="hotseat_qsb_label">Exibir Barra de Pesquisa</string>
     <string name="corner_radius_label">Raio do canto</string>
     <string name="apply_accent_color_label">Aplicar Cor de Destaque</string>
-    <string name="search_provider">Procurar Provedor</string>
+    <string name="search_provider">Provedor de Pesquisa</string>
     <string name="grid">Grade</string>
     <string name="dock_icons">Ícones da Dock</string>
     <!-- SearchProviderPreferences -->
@@ -245,6 +245,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Opacidade do Fundo do Ícone</string>
+    <string name="folder_preview_bg_color_label">Cor do Fundo do Ícone</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Máx. Colunas nas Pastas</string>
     <string name="max_folder_rows">Máx. Linhas nas Pastas</string>

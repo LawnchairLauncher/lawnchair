@@ -47,8 +47,8 @@
     <string name="font_picker_description">Μερικά κείμενα παραμένουν αμετάβλητα.</string>
     <string name="smartspace_calendar_label">Προσαρμογή του Ημερολογίου Με μιας Ματιάς</string>
     <string name="smartspace_calendar_description">Να επιτρέπεται η εμφάνιση ημερομηνίας σε μη Γρηγοριανά συστήματα ημερολογίου.</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <string name="workspace_increase_max_grid_size_label">Αυξημένο Μέγιστο Μέγεθος Πλέγματος Αρχικής Οθόνης</string>
+    <string name="workspace_increase_max_grid_size_description">Αυξήστε το μέγιστο επιτρεπόμενο μέγεθος πλέγματος Αρχικής Οθόνης από 10×10 έως 20×20.</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Περιστροφή Αρχικής Οθόνης</string>
     <string name="home_screen_rotaton_description">Όταν η συσκευή περιστρέφεται.</string>
@@ -91,13 +91,13 @@
     <string name="icon_shape_system">Σύστημα</string>
     <string name="icon_shape_circle">Κύκλος</string>
     <string name="icon_shape_cylinder">Κύλινδρος</string>
-    <string name="icon_shape_diamond">Diamond</string>
-    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_diamond">Διαμάντι</string>
+    <string name="icon_shape_egg">Ωοειδές</string>
     <string name="icon_shape_cupertino">iOS</string>
-    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_octagon">Οκτάγωνο</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Στρογγυλό Τετράγωνο</string>
-    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_sharp_square">Αιχμηρό Τετράγωνο</string>
     <string name="icon_shape_square">Τετράγωνο</string>
     <string name="icon_shape_squircle">Οβάλ τετράγωνο</string>
     <string name="icon_shape_teardrop">Δάκρυ</string>
@@ -131,10 +131,10 @@
     <string name="hex">Hex</string>
     <string name="color_sliders">Μπάρες ρύθμισης</string>
     <string name="action_copy">Αντιγραφή</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_paste">Επικόλληση</string>
     <string name="copied_toast">Αντιγράφηκε στο πρόχειρο.</string>
     <string name="invalid_color">Μη Έγκυρο Χρώμα</string>
-    <string name="app_icon_color">Χρώμα Εικονιδίου Εφαρμογής</string>
+    <string name="launcher_default_color">Default</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Προσθήκη Nέων Eφαρμογών Στην Αρχική Οθόνη</string>
@@ -149,11 +149,11 @@
     <string name="layout">Διάταξη</string>
     <string name="home_screen_grid">Πλέγμα Αρχικής Οθόνης</string>
     <string name="home_screen_lock">Κλείδωμα Αρχικής Οθόνης</string>
-    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_lock_description">Αποτρέπει αλλαγές στη διάταξη της αρχικής οθόνης.</string>
     <string name="home_screen_unlock">Ξεκλείδωμα Αρχικής Οθόνης</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">Εμφάνιση Κουμπιού Κλειδώματος στο αναδυόμενο παράθυρο αρχικής οθόνης</string>
-    <string name="home_screen_locked">Home Screen is locked.</string>
+    <string name="home_screen_locked">Η Αρχική Οθόνη είναι κλειδωμένη.</string>
     <string name="status_bar_label">Γραμμή Κατάστασης</string>
     <string name="show_status_bar">Εμφάνιση Γραμμής Κατάστασης</string>
     <string name="dark_status_bar_label">Σκοτεινή Γραμμή Κατάστασης</string>
@@ -186,9 +186,9 @@
     <string name="smartspace_date_and_time">Ημερομηνία &amp; Ώρα</string>
     <string name="smartspace_date">Ημερομηνία</string>
     <string name="smartspace_time">Ώρα</string>
-    <string name="smartspace_time_format">Time Format</string>
-    <string name="smartspace_time_follow_system">Follow System</string>
-    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
+    <string name="smartspace_time_format">Μορφή Ώρας</string>
+    <string name="smartspace_time_follow_system">Ακολουθεί την ώρα Συστήματος</string>
+    <string name="smartspace_time_12_hour_format">12ωρη Μορφή</string>
     <string name="smartspace_time_24_hour_format">24ωρη Μορφή</string>
     <string name="smartspace_weather">Καιρός</string>
     <string name="smartspace_battery_status">Κατάσταση Μπαταρίας</string>
@@ -199,8 +199,8 @@
     <string name="smartspace_calendar_gregorian">Γρηγοριανό</string>
     <string name="smartspace_calendar_persian">Περσικό</string>
     <string name="smartspace_preferences">Προτιμήσεις</string>
-    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <string name="smartspace_widget_toggle_label">Εμφάνιση στην Αρχική Οθόνη</string>
+    <string name="smartspace_widget_toggle_description">Το γραφικό στοιχείο \"Με μια Ματιά\" μπορεί να προστεθεί χειροκίνητα τοποθετώντας το γραφικό με ονομασία \"Lawnchair\".</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">Μπάρα Αναζήτησης</string>
@@ -245,6 +245,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Αδιαφάνεια Φόντου Εικονιδίου</string>
+    <string name="folder_preview_bg_color_label">Icon Background Color</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Μεγ. Στήλες Φακέλου</string>
     <string name="max_folder_rows">Μεγ. Σειρές Φακέλου</string>

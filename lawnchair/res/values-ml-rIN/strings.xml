@@ -134,7 +134,7 @@
     <string name="action_paste">Paste</string>
     <string name="copied_toast">ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി.</string>
     <string name="invalid_color">അസാധുവായ നിറം</string>
-    <string name="app_icon_color">ആപ്പ് ഐക്കണിന്റെ നിറം</string>
+    <string name="launcher_default_color">Default</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">പുതിയ ആപ്പുകൾ ഹോം സ്ക്രീനിൽ ചേർക്കുക</string>
@@ -245,6 +245,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">ഐക്കണിൻ്റെ പശ്ചാത്തല ഒപാസിറ്റി</string>
+    <string name="folder_preview_bg_color_label">Icon Background Color</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">ഫോൾഡറിലെ പരമാവധി നിരകൾ</string>
     <string name="max_folder_rows">ഫോൾഡറിലെ പരമാവധി വരികൾ</string>

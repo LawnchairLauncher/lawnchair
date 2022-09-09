@@ -134,7 +134,7 @@
     <string name="action_paste">Paste</string>
     <string name="copied_toast">已複製到剪貼簿</string>
     <string name="invalid_color">無效色彩</string>
-    <string name="app_icon_color">應用程式圖示色彩</string>
+    <string name="launcher_default_color">Default</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">將應用程式圖示新增到主螢幕</string>
@@ -244,6 +244,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">圖示背景透明度</string>
+    <string name="folder_preview_bg_color_label">Icon Background Color</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">最大資料夾行數</string>
     <string name="max_folder_rows">最大資料夾列數</string>

@@ -134,7 +134,7 @@
     <string name="action_paste">Paste</string>
     <string name="copied_toast">ক্লিপবোর্ডে কপি করা হয়েছে।</string>
     <string name="invalid_color">Invalid Color</string>
-    <string name="app_icon_color">App Icon Color</string>
+    <string name="launcher_default_color">Default</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">মূল পর্দায় নতুন অ্যাপ যোগ করুন</string>
@@ -245,6 +245,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">আইকন ব্যাকগ্রাউন্ড অপাসিটি</string>
+    <string name="folder_preview_bg_color_label">Icon Background Color</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">সর্বাধিক. ফোল্ডারের কলাম-সমুহ</string>
     <string name="max_folder_rows">সর্বাধিক. ফোল্ডারের সারি</string>

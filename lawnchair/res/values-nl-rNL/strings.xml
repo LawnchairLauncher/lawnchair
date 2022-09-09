@@ -134,7 +134,7 @@
     <string name="action_paste">Paste</string>
     <string name="copied_toast">Gekopieerd naar klembord.</string>
     <string name="invalid_color">Ongeldige Kleur</string>
-    <string name="app_icon_color">Kleur app-pictogram</string>
+    <string name="launcher_default_color">Default</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Voeg nieuwe apps toe aan startscherm</string>
@@ -245,6 +245,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Icoon Doorzichtigheid</string>
+    <string name="folder_preview_bg_color_label">Icon Background Color</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Max. Aantal map kolommen</string>
     <string name="max_folder_rows">Max. Aantal Map Rijen</string>

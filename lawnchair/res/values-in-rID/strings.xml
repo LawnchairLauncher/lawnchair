@@ -134,7 +134,7 @@
     <string name="action_paste">Paste</string>
     <string name="copied_toast">Disalin ke papan klip.</string>
     <string name="invalid_color">Warna tidak valid</string>
-    <string name="app_icon_color">Warna Icon Aplikasi</string>
+    <string name="launcher_default_color">Default</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Tambahkan Aplikasi Baru ke Layar Beranda</string>
@@ -244,6 +244,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Ketebalan Transparansi Latar Belakang Ikon</string>
+    <string name="folder_preview_bg_color_label">Icon Background Color</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Maks. Kolom Folder</string>
     <string name="max_folder_rows">Maks. Baris Folder</string>

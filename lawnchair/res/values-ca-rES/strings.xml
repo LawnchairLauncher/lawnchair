@@ -47,8 +47,8 @@
     <string name="font_picker_description">El text encara no té cap canvi.</string>
     <string name="smartspace_calendar_label">Personalització del calendari d\'una ullada</string>
     <string name="smartspace_calendar_description">Permet mostrar la data en sistemes de calendari no Gregorià.</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <string name="workspace_increase_max_grid_size_label">S\'ha incrementat la màxima mida de la graella de la pantalla principal</string>
+    <string name="workspace_increase_max_grid_size_description">Incrementa la màxima mida permesa en la graella de la pantalla principal de 10 x 10 a 20 x 20.</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotació de la Pantalla d\'inici</string>
     <string name="home_screen_rotaton_description">Quan es gira el dispositiu.</string>
@@ -91,13 +91,13 @@
     <string name="icon_shape_system">Sistema</string>
     <string name="icon_shape_circle">Cercle</string>
     <string name="icon_shape_cylinder">Cilindre</string>
-    <string name="icon_shape_diamond">Diamond</string>
-    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_diamond">Diamant</string>
+    <string name="icon_shape_egg">Ou</string>
     <string name="icon_shape_cupertino">iOS</string>
-    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_octagon">Octàgon</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Quadrat arrodonit</string>
-    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_sharp_square">Quadrat agut</string>
     <string name="icon_shape_square">Quadrat</string>
     <string name="icon_shape_squircle">Quadrat Superellipse</string>
     <string name="icon_shape_teardrop">Gota d\'aigua</string>
@@ -131,10 +131,10 @@
     <string name="hex">Hex</string>
     <string name="color_sliders">Deslliçadors</string>
     <string name="action_copy">Copia</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_paste">Enganxar</string>
     <string name="copied_toast">S\'ha copiat al porta-retalls.</string>
     <string name="invalid_color">Color invàlid</string>
-    <string name="app_icon_color">Color de la icona de l\'aplicació</string>
+    <string name="launcher_default_color">Default</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Afegeix les apps noves a la Pantalla d\'inici</string>
@@ -149,11 +149,11 @@
     <string name="layout">Diseny</string>
     <string name="home_screen_grid">Graella de la pantalla d\'inici</string>
     <string name="home_screen_lock">Bloquejar Pantalla Inicial</string>
-    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_lock_description">Prevén canvis a la distribució de la pantalla principal.</string>
     <string name="home_screen_unlock">Desbloquejar Pantalla Inicial</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">Mostrar botó de bloquejar en finestra emergent</string>
-    <string name="home_screen_locked">Home Screen is locked.</string>
+    <string name="home_screen_locked">La pantalla principal està bloquejada.</string>
     <string name="status_bar_label">Barra de estat</string>
     <string name="show_status_bar">Mostrar la barra d\'estat</string>
     <string name="dark_status_bar_label">Barra d\'estat fosca</string>
@@ -186,9 +186,9 @@
     <string name="smartspace_date_and_time">Data i hora</string>
     <string name="smartspace_date">Data</string>
     <string name="smartspace_time">Hora</string>
-    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_format">Format del temps</string>
     <string name="smartspace_time_follow_system">Segueix el del Sistema</string>
-    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
+    <string name="smartspace_time_12_hour_format">Format de temps de 12 hores</string>
     <string name="smartspace_time_24_hour_format">Format de 24 hores</string>
     <string name="smartspace_weather">El temps</string>
     <string name="smartspace_battery_status">Estat de bateria</string>
@@ -199,8 +199,8 @@
     <string name="smartspace_calendar_gregorian">Georgià</string>
     <string name="smartspace_calendar_persian">Persa</string>
     <string name="smartspace_preferences">Preferències</string>
-    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <string name="smartspace_widget_toggle_label">Mostrar a la pantalla principal</string>
+    <string name="smartspace_widget_toggle_description">D\'una ullada pot ser manualment afegit posant la Widget \"Lawnchair\".</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">Barra de cerca</string>
@@ -245,6 +245,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Opacitat del fons de la icona</string>
+    <string name="folder_preview_bg_color_label">Icon Background Color</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Màxim de Columnes de Carpeta</string>
     <string name="max_folder_rows">Màxim de Files de Carpeta</string>

@@ -134,7 +134,7 @@
     <string name="action_paste">Paste</string>
     <string name="copied_toast">Đã sao chép vào clipboard.</string>
     <string name="invalid_color">Màu không hợp lệ</string>
-    <string name="app_icon_color">Màu của icon ứng dụng</string>
+    <string name="launcher_default_color">Default</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Thêm ứng dụng mới vào màn hình chính</string>
@@ -244,6 +244,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Độ trong suốt nền biểu tượng</string>
+    <string name="folder_preview_bg_color_label">Icon Background Color</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Số cột tối đa của thư mục</string>
     <string name="max_folder_rows">Số hàng tối đa của thư mục</string>
@@ -332,9 +333,9 @@
     <string name="search_pref_result_people_title">Mọi người</string>
     <string name="search_pref_result_shortcuts_title">Lối tắt ứng dụng</string>
     <string name="search_pref_result_tips_title">Mẹo Pixel</string>
-    <string name="all_apps_device_search_hint">Search</string>
+    <string name="all_apps_device_search_hint">Tìm kiếm</string>
     <string name="search_input_action_clear_results">Xóa nội dung trong hộp tìm kiếm</string>
-    <string name="label_search">Search</string>
+    <string name="label_search">Tìm kiếm</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Tìm kiếm bằng giọng nói</string>
     <string name="all_apps_search_market_message">Tìm thêm ứng dụng</string>
