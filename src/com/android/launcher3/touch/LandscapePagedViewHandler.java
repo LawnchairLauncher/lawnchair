@@ -376,6 +376,19 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         return isRtl ? 1 : -1;
     }
 
+    @Override
+    public void setSecondaryTaskMenuPosition(SplitBounds splitBounds, View taskView,
+            DeviceProfile deviceProfile, View primarySnaphotView, View taskMenuView) {
+        float topLeftTaskPlusDividerPercent = splitBounds.appsStackedVertically
+                ? (splitBounds.topTaskPercent + splitBounds.dividerHeightPercent)
+                : (splitBounds.leftTaskPercent + splitBounds.dividerWidthPercent);
+        FrameLayout.LayoutParams snapshotParams =
+                (FrameLayout.LayoutParams) primarySnaphotView.getLayoutParams();
+        float additionalOffset = (taskView.getHeight() - snapshotParams.topMargin)
+                * topLeftTaskPlusDividerPercent;
+        taskMenuView.setY(taskMenuView.getY() + additionalOffset);
+    }
+
     /* -------------------- */
 
     @Override
@@ -492,8 +505,8 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
         int totalThumbnailHeight = parentHeight - spaceAboveSnapshot;
         int dividerBar = splitBoundsConfig.appsStackedVertically
-                ? splitBoundsConfig.visualDividerBounds.height()
-                : splitBoundsConfig.visualDividerBounds.width();
+                ? (int) (splitBoundsConfig.dividerHeightPercent * parentHeight)
+                : (int) (splitBoundsConfig.dividerWidthPercent * parentWidth);
         int primarySnapshotHeight;
         int primarySnapshotWidth;
         int secondarySnapshotHeight;

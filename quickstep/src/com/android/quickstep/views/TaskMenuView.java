@@ -16,8 +16,6 @@
 
 package com.android.quickstep.views;
 
-import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
-import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
 import static com.android.quickstep.views.TaskThumbnailView.DIM_ALPHA;
 
 import android.animation.Animator;
@@ -156,23 +154,6 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
                 mTaskContainer.getThumbnailView(), overscrollShift, deviceProfile));
         setY(pagedOrientationHandler.getTaskMenuY(
                 adjustedY, mTaskContainer.getThumbnailView(), overscrollShift));
-
-        // TODO(b/193432925) temporary menu placement for split screen task menus
-        TaskIdAttributeContainer[] taskIdAttributeContainers =
-                mTaskView.getTaskIdAttributeContainers();
-        if (taskIdAttributeContainers[0].getStagePosition() != STAGE_POSITION_UNDEFINED) {
-            if (mTaskContainer.getStagePosition() != STAGE_POSITION_BOTTOM_OR_RIGHT) {
-                return;
-            }
-            Rect r = new Rect();
-            mTaskContainer.getThumbnailView().getBoundsOnScreen(r);
-            if (deviceProfile.isLandscape) {
-                setX(r.left);
-            } else {
-                setY(r.top);
-
-            }
-        }
     }
 
     public void onRotationChanged() {

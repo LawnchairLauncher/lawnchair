@@ -1,5 +1,6 @@
 package com.android.quickstep.views;
 
+import static com.android.launcher3.AbstractFloatingView.getAnyView;
 import static com.android.launcher3.util.SplitConfigurationOptions.DEFAULT_SPLIT_RATIO;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
@@ -13,6 +14,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -160,6 +162,21 @@ public class GroupedTaskView extends TaskView {
             mIconLoadRequest2.cancel();
             mIconLoadRequest2 = null;
         }
+    }
+
+    @Override
+    protected boolean showTaskMenuWithContainer(IconView iconView) {
+        boolean showedTaskMenu = super.showTaskMenuWithContainer(iconView);
+        if (iconView == mIconView2 && showedTaskMenu && !isGridTask()) {
+            // Adjust the position of the secondary task's menu view (only on phones)
+            TaskMenuView taskMenuView = getAnyView(mActivity, AbstractFloatingView.TYPE_TASK_MENU);
+            DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+            getRecentsView().getPagedOrientationHandler()
+                    .setSecondaryTaskMenuPosition(mSplitBoundsConfig, this,
+                            deviceProfile, mTaskIdAttributeContainer[0].getThumbnailView(),
+                            taskMenuView);
+        }
+        return showedTaskMenu;
     }
 
     @Nullable
