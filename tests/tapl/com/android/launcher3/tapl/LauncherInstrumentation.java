@@ -68,7 +68,6 @@ import androidx.test.uiautomator.Until;
 import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.testing.shared.TestInformationRequest;
 import com.android.launcher3.testing.shared.TestProtocol;
-import com.android.systemui.shared.system.ContextUtils;
 import com.android.systemui.shared.system.QuickStepContract;
 
 import org.junit.Assert;
@@ -264,7 +263,7 @@ public final class LauncherInstrumentation {
                 SystemClock.sleep(5000);
             } else {
                 try {
-                    final int userId = ContextUtils.getUserId(getContext());
+                    final int userId = getContext().getUserId();
                     final String launcherPidCommand = "pidof " + pi.packageName;
                     final String initialPid = mDevice.executeShellCommand(launcherPidCommand)
                             .replaceAll("\\s", "");

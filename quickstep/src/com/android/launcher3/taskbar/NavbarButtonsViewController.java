@@ -17,6 +17,7 @@ package com.android.launcher3.taskbar;
 
 import static android.view.View.AccessibilityDelegate;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_REGION;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
@@ -42,7 +43,6 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_O
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_VOICE_INTERACTION_WINDOW_SHOWING;
-import static com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo.TOUCHABLE_INSETS_REGION;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
@@ -69,6 +69,7 @@ import android.view.View.OnAttachStateChangeListener;
 import android.view.View.OnClickListener;
 import android.view.View.OnHoverListener;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -88,7 +89,6 @@ import com.android.systemui.shared.rotation.FloatingRotationButton;
 import com.android.systemui.shared.rotation.RotationButton;
 import com.android.systemui.shared.rotation.RotationButtonController;
 import com.android.systemui.shared.system.QuickStepContract;
-import com.android.systemui.shared.system.ViewTreeObserverWrapper;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -167,7 +167,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     // Variables for moving nav buttons to a separate window above IME
     private boolean mAreNavButtonsInSeparateWindow = false;
     private BaseDragLayer<TaskbarActivityContext> mSeparateWindowParent; // Initialized in init.
-    private final ViewTreeObserverWrapper.OnComputeInsetsListener mSeparateWindowInsetsComputer =
+    private final ViewTreeObserver.OnComputeInternalInsetsListener mSeparateWindowInsetsComputer =
             this::onComputeInsetsForSeparateWindow;
     private final RecentsHitboxExtender mHitboxExtender = new RecentsHitboxExtender();
 
@@ -833,14 +833,14 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         mSeparateWindowParent.addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View view) {
-                ViewTreeObserverWrapper.addOnComputeInsetsListener(
-                        mSeparateWindowParent.getViewTreeObserver(), mSeparateWindowInsetsComputer);
+                mSeparateWindowParent.getViewTreeObserver().addOnComputeInternalInsetsListener(
+                        mSeparateWindowInsetsComputer);
             }
 
             @Override
             public void onViewDetachedFromWindow(View view) {
                 mSeparateWindowParent.removeOnAttachStateChangeListener(this);
-                ViewTreeObserverWrapper.removeOnComputeInsetsListener(
+                mSeparateWindowParent.getViewTreeObserver().removeOnComputeInternalInsetsListener(
                         mSeparateWindowInsetsComputer);
             }
         });
@@ -868,7 +868,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         mContext.getDragLayer().addView(mNavButtonsView);
     }
 
-    private void onComputeInsetsForSeparateWindow(ViewTreeObserverWrapper.InsetsInfo insetsInfo) {
+    private void onComputeInsetsForSeparateWindow(ViewTreeObserver.InternalInsetsInfo insetsInfo) {
         addVisibleButtonsRegion(mSeparateWindowParent, insetsInfo.touchableRegion);
         insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
     }

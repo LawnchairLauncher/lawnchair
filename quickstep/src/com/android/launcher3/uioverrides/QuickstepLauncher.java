@@ -143,7 +143,6 @@ import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.unfold.UnfoldTransitionFactory;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
@@ -850,8 +849,8 @@ public class QuickstepLauncher extends Launcher {
                         ? mAppTransitionManager.getActivityLaunchOptions(v)
                         : super.getActivityLaunchOptions(v, item);
         if (mLastTouchUpTime > 0) {
-            ActivityOptionsCompat.setLauncherSourceInfo(
-                    activityOptions.options, mLastTouchUpTime);
+            activityOptions.options.setSourceInfo(ActivityOptions.SourceInfo.TYPE_LAUNCHER,
+                    mLastTouchUpTime);
         }
         activityOptions.options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
         activityOptions.options.setLaunchDisplayId(

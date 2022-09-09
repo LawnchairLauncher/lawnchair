@@ -32,6 +32,7 @@ import android.annotation.Nullable;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.util.Log;
+import android.view.InsetsController;
 import android.view.View;
 import android.view.ViewConfiguration;
 
@@ -46,7 +47,6 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.SystemUiProxy;
-import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -96,7 +96,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * How long to stash/unstash when manually invoked via long press.
      */
     public static final long TASKBAR_STASH_DURATION =
-            WindowManagerWrapper.ANIMATION_DURATION_RESIZE;
+            InsetsController.ANIMATION_DURATION_RESIZE;
 
     /**
      * How long to stash/unstash when keyboard is appearing/disappearing.
