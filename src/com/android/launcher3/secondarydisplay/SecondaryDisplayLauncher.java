@@ -55,7 +55,6 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.Themes;
-import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.HashMap;
@@ -132,16 +131,6 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
                 mAppsView.getAppsStore()::updateNotificationDots);
 
         mModel.addCallbacksAndLoad(this);
-    }
-
-    /**
-     * hides keyboard
-     */
-    public void hideKeyboard() {
-        final View v = getWindow().peekDecorView();
-        if (v != null && v.getWindowToken() != null) {
-            UiThreadHelper.hideKeyboardAsync(this, v.getWindowToken());
-        }
     }
 
     @Override

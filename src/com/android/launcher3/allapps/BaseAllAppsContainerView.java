@@ -17,7 +17,6 @@ package com.android.launcher3.allapps;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_PERSONAL_TAB;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_WORK_TAB;
-import static com.android.launcher3.util.UiThreadHelper.hideKeyboardAsync;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -503,8 +502,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
                             mActivityContext.getStatsLogManager().logger()
                                     .log(LAUNCHER_ALLAPPS_TAP_ON_PERSONAL_TAB);
                         }
-                        hideKeyboardAsync(ActivityContext.lookupContext(getContext()),
-                                getApplicationWindowToken());
+                        mActivityContext.hideKeyboard();
                     });
             findViewById(R.id.tab_work)
                     .setOnClickListener((View view) -> {
@@ -512,8 +510,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
                             mActivityContext.getStatsLogManager().logger()
                                     .log(LAUNCHER_ALLAPPS_TAP_ON_WORK_TAB);
                         }
-                        hideKeyboardAsync(ActivityContext.lookupContext(getContext()),
-                                getApplicationWindowToken());
+                        mActivityContext.hideKeyboard();
                     });
             setDeviceManagementResources();
             onActivePageChanged(mViewPager.getNextPage());
