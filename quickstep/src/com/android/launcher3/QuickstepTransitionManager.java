@@ -57,6 +57,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.ActivityOptions;
+import android.app.WindowConfiguration;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -83,6 +85,7 @@ import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewRootImpl;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.view.animation.PathInterpolator;
@@ -125,8 +128,6 @@ import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.WorkspaceRevealAnim;
 import com.android.quickstep.views.FloatingWidgetView;
 import com.android.quickstep.views.RecentsView;
-import com.android.systemui.shared.system.ActivityCompat;
-import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.BlurUtils;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -135,7 +136,6 @@ import com.android.systemui.shared.system.RemoteAnimationDefinitionCompat;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.RemoteTransitionCompat;
-import com.android.systemui.shared.system.WindowManagerWrapper;
 import com.android.wm.shell.startingsurface.IStartingWindowListener;
 
 import java.util.ArrayList;
@@ -294,8 +294,10 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         RemoteAnimationAdapterCompat adapterCompat =
                 new RemoteAnimationAdapterCompat(runner, duration, statusBarTransitionDelay,
                         mLauncher.getIApplicationThread());
-        return new ActivityOptionsWrapper(
-                ActivityOptionsCompat.makeRemoteAnimation(adapterCompat), onEndCallback);
+        ActivityOptions options = ActivityOptions.makeRemoteAnimation(
+                adapterCompat.getWrapped(),
+                adapterCompat.getRemoteTransition().getTransition());
+        return new ActivityOptionsWrapper(options, onEndCallback);
     }
 
     /**
@@ -1087,8 +1089,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             mWallpaperOpenRunner = createWallpaperOpenRunner(false /* fromUnlock */);
 
             RemoteAnimationDefinitionCompat definition = new RemoteAnimationDefinitionCompat();
-            definition.addRemoteAnimation(WindowManagerWrapper.TRANSIT_WALLPAPER_OPEN,
-                    WindowManagerWrapper.ACTIVITY_TYPE_STANDARD,
+            definition.addRemoteAnimation(WindowManager.TRANSIT_OLD_WALLPAPER_OPEN,
+                    WindowConfiguration.ACTIVITY_TYPE_STANDARD,
                     new RemoteAnimationAdapterCompat(
                             new LauncherAnimationRunner(mHandler, mWallpaperOpenRunner,
                                     false /* startAtFrontOfQueue */),
@@ -1098,7 +1100,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             if (KEYGUARD_ANIMATION.get()) {
                 mKeyguardGoingAwayRunner = createWallpaperOpenRunner(true /* fromUnlock */);
                 definition.addRemoteAnimation(
-                        WindowManagerWrapper.TRANSIT_KEYGUARD_GOING_AWAY_ON_WALLPAPER,
+                        WindowManager.TRANSIT_OLD_KEYGUARD_GOING_AWAY_ON_WALLPAPER,
                         new RemoteAnimationAdapterCompat(
                                 new LauncherAnimationRunner(
                                         mHandler, mKeyguardGoingAwayRunner,
@@ -1107,7 +1109,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                                 mLauncher.getIApplicationThread()));
             }
 
-            new ActivityCompat(mLauncher).registerRemoteAnimations(definition);
+            mLauncher.registerRemoteAnimations(definition.getWrapped());
         }
     }
 
@@ -1143,7 +1145,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             return;
         }
         if (hasControlRemoteAppTransitionPermission()) {
-            new ActivityCompat(mLauncher).unregisterRemoteAnimations();
+            mLauncher.unregisterRemoteAnimations();
 
             // Also clear strong references to the runners registered with the remote animation
             // definition so we don't have to wait for the system gc

@@ -24,6 +24,7 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,9 +33,6 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.views.BaseDragLayer;
-import com.android.systemui.shared.system.ViewTreeObserverWrapper;
-import com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo;
-import com.android.systemui.shared.system.ViewTreeObserverWrapper.OnComputeInsetsListener;
 
 /**
  * Top-level ViewGroup that hosts the TaskbarView as well as Views created by it such as Folder.
@@ -42,7 +40,8 @@ import com.android.systemui.shared.system.ViewTreeObserverWrapper.OnComputeInset
 public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
 
     private final TaskbarBackgroundRenderer mBackgroundRenderer;
-    private final OnComputeInsetsListener mTaskbarInsetsComputer = this::onComputeTaskbarInsets;
+    private final ViewTreeObserver.OnComputeInternalInsetsListener mTaskbarInsetsComputer =
+            this::onComputeTaskbarInsets;
 
     // Initialized in init.
     private TaskbarDragLayerController.TaskbarDragLayerCallbacks mControllerCallbacks;
@@ -80,7 +79,7 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
         mControllers = mControllerCallbacks.getTouchControllers();
     }
 
-    private void onComputeTaskbarInsets(InsetsInfo insetsInfo) {
+    private void onComputeTaskbarInsets(ViewTreeObserver.InternalInsetsInfo insetsInfo) {
         if (mControllerCallbacks != null) {
             mControllerCallbacks.updateInsetsTouchability(insetsInfo);
         }
@@ -88,7 +87,7 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
 
     protected void onDestroy(boolean forceDestroy) {
         if (forceDestroy) {
-            ViewTreeObserverWrapper.removeOnComputeInsetsListener(mTaskbarInsetsComputer);
+            getViewTreeObserver().removeOnComputeInternalInsetsListener(mTaskbarInsetsComputer);
         }
     }
 
@@ -99,8 +98,7 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        ViewTreeObserverWrapper.addOnComputeInsetsListener(getViewTreeObserver(),
-                mTaskbarInsetsComputer);
+        getViewTreeObserver().addOnComputeInternalInsetsListener(mTaskbarInsetsComputer);
     }
 
     @Override
