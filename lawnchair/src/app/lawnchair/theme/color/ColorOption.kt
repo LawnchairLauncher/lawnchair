@@ -1,7 +1,6 @@
 package app.lawnchair.theme.color
 
 import android.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreferenceEntry
 import app.lawnchair.ui.theme.getSystemAccent
@@ -21,7 +20,7 @@ sealed class ColorOption {
             this,
             { stringResource(id = R.string.system) },
             { context -> context.getSystemAccent(false) },
-            { context -> context.getSystemAccent(true) }
+            { context -> context.getSystemAccent(true) },
         )
 
         override fun toString() = "system_accent"
@@ -37,7 +36,7 @@ sealed class ColorOption {
                 val wallpaperManager = WallpaperManagerCompat.INSTANCE.get(context)
                 val primaryColor = wallpaperManager.wallpaperColors?.primaryColor
                 primaryColor ?: LawnchairBlue.color
-            }
+            },
         )
 
         override fun toString() = "wallpaper_primary"
@@ -49,7 +48,7 @@ sealed class ColorOption {
         override val colorPreferenceEntry = ColorPreferenceEntry<ColorOption>(
             this,
             { stringResource(id = R.string.custom) },
-            { color }
+            { color },
         )
 
         constructor(color: Long) : this(color.toInt())
@@ -67,7 +66,7 @@ sealed class ColorOption {
         override val colorPreferenceEntry = ColorPreferenceEntry<ColorOption>(
             this,
             { stringResource(id = R.string.launcher_default_color) },
-            { 0 }
+            { 0 },
         )
 
         override fun toString() = "launcher_default"

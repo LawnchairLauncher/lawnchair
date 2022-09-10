@@ -16,7 +16,6 @@ import app.lawnchair.ui.preferences.components.AppItemPlaceholder
 import app.lawnchair.ui.preferences.components.PreferenceLazyColumn
 import app.lawnchair.ui.preferences.components.PreferenceScaffold
 import app.lawnchair.ui.preferences.components.preferenceGroupItems
-import app.lawnchair.ui.preferences.components.rememberFloatingState
 import app.lawnchair.util.App
 import app.lawnchair.util.appsList
 import com.android.launcher3.R
