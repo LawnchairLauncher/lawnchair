@@ -17,7 +17,6 @@ package com.android.launcher3.allapps;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_PERSONAL_TAB;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_WORK_TAB;
-import static com.android.launcher3.util.UiThreadHelper.hideKeyboardAsync;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -107,12 +106,13 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
                     updateHeaderScroll(((AllAppsRecyclerView) recyclerView).getCurrentScrollY());
                 }
             };
-    private final WorkProfileManager mWorkManager;
+
+    protected final WorkProfileManager mWorkManager;
 
     private final Paint mNavBarScrimPaint;
     private int mNavBarScrimHeight = 0;
 
-    private AllAppsPagedView mViewPager;
+    protected AllAppsPagedView mViewPager;
     private SearchRecyclerView mSearchRecyclerView;
 
     protected FloatingHeaderView mHeader;
@@ -349,7 +349,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
      * The container for A-Z apps (the ViewPager for main+work tabs, or main RV). This is currently
      * hidden while searching.
      **/
-    private View getAppsRecyclerViewContainer() {
+    protected View getAppsRecyclerViewContainer() {
         return mViewPager != null ? mViewPager : findViewById(R.id.apps_list_view);
     }
 
@@ -503,8 +503,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
                             mActivityContext.getStatsLogManager().logger()
                                     .log(LAUNCHER_ALLAPPS_TAP_ON_PERSONAL_TAB);
                         }
-                        hideKeyboardAsync(ActivityContext.lookupContext(getContext()),
-                                getApplicationWindowToken());
+                        mActivityContext.hideKeyboard();
                     });
             findViewById(R.id.tab_work)
                     .setOnClickListener((View view) -> {
@@ -512,8 +511,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
                             mActivityContext.getStatsLogManager().logger()
                                     .log(LAUNCHER_ALLAPPS_TAP_ON_WORK_TAB);
                         }
-                        hideKeyboardAsync(ActivityContext.lookupContext(getContext()),
-                                getApplicationWindowToken());
+                        mActivityContext.hideKeyboard();
                     });
             setDeviceManagementResources();
             onActivePageChanged(mViewPager.getNextPage());
@@ -527,7 +525,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         mAllAppsStore.registerIconContainer(mAH.get(AdapterHolder.WORK).mRecyclerView);
     }
 
-    private void updateSearchResultsVisibility() {
+    protected void updateSearchResultsVisibility() {
         if (isSearching()) {
             getSearchRecyclerView().setVisibility(VISIBLE);
             getAppsRecyclerViewContainer().setVisibility(GONE);
