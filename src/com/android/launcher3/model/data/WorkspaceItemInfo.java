@@ -24,6 +24,7 @@ import android.content.pm.ShortcutInfo;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -130,7 +131,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     }
 
     @Override
-    public void onAddToDatabase(ContentWriter writer) {
+    public void onAddToDatabase(@NonNull ContentWriter writer) {
         super.onAddToDatabase(writer);
         writer.put(Favorites.TITLE, title)
                 .put(Favorites.INTENT, getIntent())
@@ -147,6 +148,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     }
 
     @Override
+    @Nullable
     public Intent getIntent() {
         return intent;
     }

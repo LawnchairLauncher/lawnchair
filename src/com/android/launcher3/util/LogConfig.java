@@ -40,4 +40,9 @@ public class LogConfig {
      * When turned on, we enable suggest related logging.
      */
     public static final String SEARCH_LOGGING = "SearchLogging";
+
+    /**
+     * When turned on, we enable IME related latency related logging.
+     */
+    public static final String IME_LATENCY_LOGGING = "ImeLatencyLogging";
 }

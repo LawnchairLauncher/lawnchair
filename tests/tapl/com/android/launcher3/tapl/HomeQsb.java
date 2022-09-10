@@ -15,16 +15,54 @@
  */
 package com.android.launcher3.tapl;
 
+import androidx.annotation.NonNull;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.BySelector;
+import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.Until;
+
 /**
  * Operations on home screen qsb.
  */
 public class HomeQsb {
 
     private final LauncherInstrumentation mLauncher;
+    private static final String ASSISTANT_APP_PACKAGE = "com.google.android.googlequicksearchbox";
+    private static final String ASSISTANT_ICON_RES_ID = "mic_icon";
+
 
     HomeQsb(LauncherInstrumentation launcher) {
         mLauncher = launcher;
         mLauncher.waitForLauncherObject("search_container_hotseat");
+    }
+
+    /**
+     * Launch assistant app by tapping mic icon on qsb.
+     */
+    @NonNull
+    public LaunchedAppState launchAssistant() {
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to click assistant mic icon button");
+             LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            UiObject2 assistantIcon = mLauncher.waitForLauncherObject(ASSISTANT_ICON_RES_ID);
+
+            LauncherInstrumentation.log("HomeQsb.launchAssistant before click "
+                    + assistantIcon.getVisibleCenter() + " in "
+                    + mLauncher.getVisibleBounds(assistantIcon));
+
+            mLauncher.clickLauncherObject(assistantIcon);
+
+            try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("clicked")) {
+                // assert Assistant App Launched
+                BySelector selector = By.pkg(ASSISTANT_APP_PACKAGE);
+                mLauncher.assertTrue(
+                        "assistant app didn't start: (" + selector + ")",
+                        mLauncher.getDevice().wait(Until.hasObject(selector),
+                                LauncherInstrumentation.WAIT_TIME_MS)
+                );
+                return new LaunchedAppState(mLauncher);
+            }
+        }
     }
 
     /**

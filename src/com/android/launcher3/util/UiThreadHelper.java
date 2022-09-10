@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.util;
 
+import static com.android.launcher3.logging.KeyboardStateManager.KeyboardState.HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_KEYBOARD_CLOSED;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
@@ -25,7 +26,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
@@ -64,6 +64,7 @@ public class UiThreadHelper {
             WindowInsets insets = root.getRootWindowInsets();
             boolean isImeShown = insets != null && insets.isVisible(WindowInsets.Type.ime());
             if (wic != null && isImeShown) {
+                activityContext.getStatsLogManager().keyboardStateManager().setKeyboardState(HIDE);
                 // this method cannot be called cross threads
                 wic.hide(WindowInsets.Type.ime());
                 activityContext.getStatsLogManager().logger()
