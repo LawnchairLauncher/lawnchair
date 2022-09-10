@@ -194,7 +194,6 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.TraceHelper;
-import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.FloatingIconView;
@@ -1650,16 +1649,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (gnc != null) {
             AbstractFloatingView.closeOpenViews(this, false, TYPE_ICON_SURFACE);
             FloatingSurfaceView.show(this, gnc);
-        }
-    }
-
-    /**
-     * Hides the keyboard if visible
-     */
-    public void hideKeyboard() {
-        final View v = getWindow().peekDecorView();
-        if (v != null && v.getWindowToken() != null) {
-            UiThreadHelper.hideKeyboardAsync(this, v.getWindowToken());
         }
     }
 

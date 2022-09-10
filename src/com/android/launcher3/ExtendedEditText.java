@@ -16,7 +16,6 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.logging.KeyboardStateManager.KeyboardState.SHOW;
-import static com.android.launcher3.util.UiThreadHelper.hideKeyboardAsync;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -90,7 +89,7 @@ public class ExtendedEditText extends EditText {
     }
 
     public void hideKeyboard() {
-        hideKeyboardAsync(ActivityContext.lookupContext(getContext()), getWindowToken());
+        ActivityContext.lookupContext(getContext()).hideKeyboard();
         clearFocus();
     }
 
