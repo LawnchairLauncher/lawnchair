@@ -20,8 +20,6 @@ import static android.view.HapticFeedbackConstants.CLOCK_TICK;
 
 import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
 
-import static com.android.launcher3.util.UiThreadHelper.hideKeyboardAsync;
-
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
@@ -313,7 +311,7 @@ public class RecyclerViewFastScroller extends View {
     }
 
     private void calcTouchOffsetAndPrepToFastScroll(int downY, int lastY) {
-        hideKeyboardAsync(ActivityContext.lookupContext(getContext()), getWindowToken());
+        ActivityContext.lookupContext(getContext()).hideKeyboard();
         mIsDragging = true;
         if (mCanThumbDetach) {
             mIsThumbDetached = true;
