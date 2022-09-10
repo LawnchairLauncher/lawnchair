@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.allapps.BaseAllAppsContainerView.AdapterHolder.SEARCH;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -34,7 +36,6 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.views.AppLauncher;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * All apps container view with search support for use in a dragging activity.
@@ -44,6 +45,11 @@ import java.util.Objects;
 public class ActivityAllAppsContainerView<T extends Context & AppLauncher
         & DeviceProfileListenable> extends BaseAllAppsContainerView<T> {
 
+    private static final long DEFAULT_SEARCH_TRANSITION_DURATION_MS = 300;
+
+    // Used to animate Search results out and A-Z apps in, or vice-versa.
+    private final SearchTransitionController mSearchTransitionController;
+
     protected SearchUiManager mSearchUiManager;
     /**
      * View that defines the search box. Result is rendered inside the recycler view defined in the
@@ -52,6 +58,7 @@ public class ActivityAllAppsContainerView<T extends Context & AppLauncher
     private View mSearchContainer;
     /** {@code true} when rendered view is in search state instead of the scroll state. */
     private boolean mIsSearching;
+    private boolean mRebindAdaptersAfterSearchAnimation;
 
     public ActivityAllAppsContainerView(Context context) {
         this(context, null);
@@ -63,6 +70,8 @@ public class ActivityAllAppsContainerView<T extends Context & AppLauncher
 
     public ActivityAllAppsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        mSearchTransitionController = new SearchTransitionController(this);
     }
 
     public SearchUiManager getSearchUiManager() {
@@ -73,19 +82,10 @@ public class ActivityAllAppsContainerView<T extends Context & AppLauncher
         return mSearchContainer;
     }
 
-    /** Updates all apps container with the latest search query. */
-    public void setLastSearchQuery(String query) {
-        mIsSearching = true;
-        rebindAdapters();
-        mHeader.setCollapsed(true);
-    }
-
     /** Invoke when the current search session is finished. */
     public void onClearSearchResult() {
-        mIsSearching = false;
-        mHeader.setCollapsed(false);
+        animateToSearchState(false);
         rebindAdapters();
-        mHeader.reset(false);
     }
 
     /**
@@ -93,12 +93,42 @@ public class ActivityAllAppsContainerView<T extends Context & AppLauncher
      */
     public void setSearchResults(ArrayList<AdapterItem> results) {
         if (getSearchResultList().setSearchResults(results)) {
-            for (int i = 0; i < mAH.size(); i++) {
-                if (mAH.get(i).mRecyclerView != null) {
-                    mAH.get(i).mRecyclerView.onSearchResultsChanged();
-                }
-            }
+            getSearchRecyclerView().onSearchResultsChanged();
         }
+        if (results != null) {
+            animateToSearchState(true);
+        }
+    }
+
+    private void animateToSearchState(boolean goingToSearch) {
+        animateToSearchState(goingToSearch, DEFAULT_SEARCH_TRANSITION_DURATION_MS);
+    }
+
+    private void animateToSearchState(boolean goingToSearch, long durationMs) {
+        if (!mSearchTransitionController.isRunning() && goingToSearch == isSearching()) {
+            return;
+        }
+        if (goingToSearch) {
+            // Fade out the button to pause work apps.
+            mWorkManager.onActivePageChanged(SEARCH);
+        }
+        mSearchTransitionController.animateToSearchState(goingToSearch, durationMs,
+                /* onEndRunnable = */ () -> {
+                    mIsSearching = goingToSearch;
+                    updateSearchResultsVisibility();
+                    int previousPage = getCurrentPage();
+                    if (mRebindAdaptersAfterSearchAnimation) {
+                        rebindAdapters(false);
+                        mRebindAdaptersAfterSearchAnimation = false;
+                    }
+                    if (!goingToSearch) {
+                        setSearchResults(null);
+                        if (mViewPager != null) {
+                            mViewPager.setCurrentPage(previousPage);
+                        }
+                        onActivePageChanged(previousPage);
+                    }
+                });
     }
 
     @Override
@@ -121,6 +151,8 @@ public class ActivityAllAppsContainerView<T extends Context & AppLauncher
         super.reset(animate);
         // Reset the search bar after transitioning home.
         mSearchUiManager.resetSearch();
+        // Animate to A-Z with 0 time to reset the animation with proper state management.
+        animateToSearchState(false, 0);
     }
 
     @Override
@@ -157,21 +189,30 @@ public class ActivityAllAppsContainerView<T extends Context & AppLauncher
     }
 
     @Override
+    public void onActivePageChanged(int currentActivePage) {
+        if (mSearchTransitionController.isRunning()) {
+            // Will be called at the end of the animation.
+            return;
+        }
+        super.onActivePageChanged(currentActivePage);
+    }
+
+    @Override
     protected void rebindAdapters(boolean force) {
+        if (mSearchTransitionController.isRunning()) {
+            mRebindAdaptersAfterSearchAnimation = true;
+            return;
+        }
         super.rebindAdapters(force);
         if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()
-                || getMainAdapterProvider().getDecorator() == null) {
+                || getMainAdapterProvider().getDecorator() == null
+                || getSearchRecyclerView() == null) {
             return;
         }
 
         RecyclerView.ItemDecoration decoration = getMainAdapterProvider().getDecorator();
-        mAH.stream()
-                .map(adapterHolder -> adapterHolder.mRecyclerView)
-                .filter(Objects::nonNull)
-                .forEach(v -> {
-                    v.removeItemDecoration(decoration); // Remove in case it is already added.
-                    v.addItemDecoration(decoration);
-                });
+        getSearchRecyclerView().removeItemDecoration(decoration); // In case it is already added.
+        getSearchRecyclerView().addItemDecoration(decoration);
     }
 
     @Override
