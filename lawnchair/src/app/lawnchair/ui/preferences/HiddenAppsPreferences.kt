@@ -50,8 +50,11 @@ fun HiddenAppsPreferences() {
     val adapter = preferenceManager2().hiddenApps.getAdapter()
     val hiddenApps by adapter.state
     val pageTitle =
-        if (hiddenApps.isEmpty()) stringResource(id = R.string.hidden_apps_label)
-        else stringResource(id = R.string.hidden_apps_label_with_count, hiddenApps.size)
+        if (hiddenApps.isEmpty()) {
+            stringResource(id = R.string.hidden_apps_label)
+        } else {
+            stringResource(id = R.string.hidden_apps_label_with_count, hiddenApps.size)
+        }
     val optionalApps by appsList(comparator = hiddenAppsComparator(hiddenApps))
     val state = rememberLazyListState()
     PreferenceScaffold(

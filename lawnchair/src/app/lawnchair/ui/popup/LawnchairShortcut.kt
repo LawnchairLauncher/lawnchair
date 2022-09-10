@@ -25,8 +25,11 @@ class LawnchairShortcut {
 
         val CUSTOMIZE: SystemShortcut.Factory<LawnchairLauncher> =
             SystemShortcut.Factory<LawnchairLauncher> { activity, itemInfo ->
-                if (PreferenceManager2.getInstance(activity).lockHomeScreen.firstBlocking()) null
-                else getAppInfo(activity, itemInfo)?.let { Customize(activity, it, itemInfo) }
+                if (PreferenceManager2.getInstance(activity).lockHomeScreen.firstBlocking()) {
+                    null
+                } else {
+                    getAppInfo(activity, itemInfo)?.let { Customize(activity, it, itemInfo) }
+                }
             }
 
         private fun getAppInfo(launcher: LawnchairLauncher, itemInfo: ItemInfo): ModelAppInfo? {

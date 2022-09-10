@@ -41,8 +41,11 @@ class IcuDateTextView @JvmOverloads constructor(
         repeatOnAttached {
             val calendarSelectionEnabled = prefs.enableSmartspaceCalendarSelection.firstBlocking()
             val calendarFlow =
-                if (calendarSelectionEnabled) prefs.smartspaceCalendar.get()
-                else flowOf(prefs.smartspaceCalendar.defaultValue)
+                if (calendarSelectionEnabled) {
+                    prefs.smartspaceCalendar.get()
+                } else {
+                    flowOf(prefs.smartspaceCalendar.defaultValue)
+                }
             val optionsFlow = DateTimeOptions.fromPrefs(prefs)
             combine(calendarFlow, optionsFlow) { calendar, options -> calendar to options }
                 .subscribeBlocking(this) {
@@ -117,8 +120,10 @@ class IcuDateTextView @JvmOverloads constructor(
                     else -> R.string.smartspace_icu_date_pattern_persian_time_12h
                 },
             )
-            if (dateTimeOptions.showDate) format =
-                context.getString(R.string.smartspace_icu_date_pattern_persian_date) + format
+            if (dateTimeOptions.showDate) {
+                format =
+                    context.getString(R.string.smartspace_icu_date_pattern_persian_date) + format
+            }
         } else {
             format =
                 context.getString(
@@ -143,9 +148,11 @@ class IcuDateTextView @JvmOverloads constructor(
                     else -> R.string.smartspace_icu_date_pattern_gregorian_time_12h
                 },
             )
-            if (dateTimeOptions.showDate) format += context.getString(
-                R.string.smartspace_icu_date_pattern_gregorian_date,
-            )
+            if (dateTimeOptions.showDate) {
+                format += context.getString(
+                    R.string.smartspace_icu_date_pattern_gregorian_date,
+                )
+            }
         } else {
             format =
                 context.getString(

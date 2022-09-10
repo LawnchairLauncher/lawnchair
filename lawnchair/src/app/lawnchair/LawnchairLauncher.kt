@@ -223,12 +223,18 @@ class LawnchairLauncher :
 
         preferenceManager2.showStatusBar.get().distinctUntilChanged().onEach {
             with(insetsController) {
-                if (it) show(WindowInsetsCompat.Type.statusBars())
-                else hide(WindowInsetsCompat.Type.statusBars())
+                if (it) {
+                    show(WindowInsetsCompat.Type.statusBars())
+                } else {
+                    hide(WindowInsetsCompat.Type.statusBars())
+                }
             }
             with(launcher.stateManager) {
-                if (it) removeStateListener(noStatusBarStateListener)
-                else addStateListener(noStatusBarStateListener)
+                if (it) {
+                    removeStateListener(noStatusBarStateListener)
+                } else {
+                    addStateListener(noStatusBarStateListener)
+                }
             }
         }.launchIn(scope = lifecycleScope)
 

@@ -60,7 +60,9 @@ data class BugReport(
             R.string.crash_report_notif_title,
             context.getString(R.string.derived_app_name),
         )
-    } else type
+    } else {
+        type
+    }
 
     fun getFileUri(context: Context): Uri? = file?.let {
         LawnchairApp.getUriForFile(context, it)

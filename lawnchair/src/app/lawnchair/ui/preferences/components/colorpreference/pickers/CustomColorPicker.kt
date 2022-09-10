@@ -335,7 +335,9 @@ private fun HsvColorPicker(
         LaunchedEffect(key1 = selectedColor) {
             if (selectedColor ==
                 hsvValuesToIntColor(hue, saturation, brightness)
-            ) return@LaunchedEffect
+            ) {
+                return@LaunchedEffect
+            }
 
             intColorToHsvColorArray(selectedColor).also {
                 hue = it[0]

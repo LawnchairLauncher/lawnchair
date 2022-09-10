@@ -66,8 +66,11 @@ class LawnchairIconProvider @JvmOverloads constructor(
 
     override fun setIconThemeSupported(isSupported: Boolean) {
         lawniconsVersion =
-            if (isSupported) context.packageManager.getPackageVersionCode(LAWNICONS_PACKAGE_NAME)
-            else 0L
+            if (isSupported) {
+                context.packageManager.getPackageVersionCode(LAWNICONS_PACKAGE_NAME)
+            } else {
+                0L
+            }
         _themeMap = if (isSupported) null else DISABLED_MAP
     }
 

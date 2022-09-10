@@ -55,7 +55,9 @@ fun SearchProviderPreferences() {
                         onDownloadClick = { qsbSearchProvider.launchOnAppMarket(context = context) },
                         description = if (showDownloadButton) {
                             stringResource(id = R.string.qsb_search_provider_app_required)
-                        } else null,
+                        } else {
+                            null
+                        },
                     )
                     ExpandAndShrink(visible = selected && hasAppAndWebsite) {
                         Options(

@@ -227,7 +227,9 @@ class FontCache private constructor(private val context: Context) {
         override val isAvailable = typeface != null
         override val fullDisplayName: String = if (typeface == null) {
             context.getString(R.string.pref_fonts_missing_font)
-        } else actualName
+        } else {
+            actualName
+        }
 
         override val composeFontFamily = FontFamily(typeface!!)
 
@@ -385,7 +387,9 @@ class FontCache private constructor(private val context: Context) {
             val weightString = weightNameMap[weight]?.let(context::getString) ?: weight
             val italicString = if (GoogleFontsListing.isItalic(variant)) {
                 " " + context.getString(R.string.font_variant_italic)
-            } else ""
+            } else {
+                ""
+            }
             return "$weightString$italicString"
         }
 

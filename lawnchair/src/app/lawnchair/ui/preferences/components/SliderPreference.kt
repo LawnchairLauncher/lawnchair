@@ -100,10 +100,14 @@ fun SliderPreference(
                 ) {
                     val value = snapSliderValue(valueRange.start, sliderValue, step)
                     Text(
-                        text = if (showAsPercentage) stringResource(
-                            id = R.string.n_percent,
-                            (value * 100).roundToInt(),
-                        ) else value.roundToInt().toString(),
+                        text = if (showAsPercentage) {
+                            stringResource(
+                                id = R.string.n_percent,
+                                (value * 100).roundToInt(),
+                            )
+                        } else {
+                            value.roundToInt().toString()
+                        },
                     )
                 }
             }

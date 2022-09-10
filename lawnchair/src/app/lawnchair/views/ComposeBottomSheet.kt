@@ -168,14 +168,20 @@ class ComposeBottomSheet<T>(context: Context) :
             var flags = 0
             if (setStatusBar) {
                 flags = flags or (
-                    if (useDarkIcons) SystemUiController.FLAG_LIGHT_STATUS
-                    else SystemUiController.FLAG_DARK_STATUS
+                    if (useDarkIcons) {
+                        SystemUiController.FLAG_LIGHT_STATUS
+                    } else {
+                        SystemUiController.FLAG_DARK_STATUS
+                    }
                     )
             }
             if (setNavBar) {
                 flags = flags or (
-                    if (useDarkIcons) SystemUiController.FLAG_LIGHT_NAV
-                    else SystemUiController.FLAG_DARK_NAV
+                    if (useDarkIcons) {
+                        SystemUiController.FLAG_LIGHT_NAV
+                    } else {
+                        SystemUiController.FLAG_DARK_NAV
+                    }
                     )
             }
             setSystemUiFlags(flags)

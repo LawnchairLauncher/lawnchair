@@ -124,8 +124,11 @@ class FeedBridge(private val context: Context) {
                         packageName,
                         PackageManager.GET_SIGNATURES,
                     )
-                    return if (info.signatures.any { it.hashCode() != signatureHash }) false
-                    else info.signatures.isNotEmpty()
+                    return if (info.signatures.any { it.hashCode() != signatureHash }) {
+                        false
+                    } else {
+                        info.signatures.isNotEmpty()
+                    }
                 }
             }
         }

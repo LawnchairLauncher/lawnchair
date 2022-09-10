@@ -44,5 +44,5 @@ fun ImageView.setThemedIconResource(
 
 enum class ThemingMethod {
     TINT,
-    THEME_BY_LAYER_ID
+    THEME_BY_LAYER_ID,
 }

@@ -54,8 +54,11 @@ open class QsbSearchProvider(
     fun createSearchIntent() = Intent(action)
         .addFlags(INTENT_FLAGS)
         .apply {
-            if (className != null) setClassName(packageName, className)
-            else setPackage(packageName)
+            if (className != null) {
+                setClassName(packageName, className)
+            } else {
+                setPackage(packageName)
+            }
         }
 
     fun createVoiceIntent(): Intent = if (supportVoiceIntent) {
@@ -164,5 +167,5 @@ enum class QsbSearchProviderType(val downloadable: Boolean) {
     APP_AND_WEBSITE(downloadable = true),
     WEBSITE(downloadable = false),
     APP(downloadable = true),
-    LOCAL(downloadable = false)
+    LOCAL(downloadable = false),
 }

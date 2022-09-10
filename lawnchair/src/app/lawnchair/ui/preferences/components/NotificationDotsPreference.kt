@@ -79,7 +79,9 @@ fun NotificationDotsPreference(enabled: Boolean, serviceEnabled: Boolean) {
                     tint = MaterialTheme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium),
                 )
             }
-        } else null,
+        } else {
+            null
+        },
         modifier = Modifier
             .clickable {
                 if (showWarning) {

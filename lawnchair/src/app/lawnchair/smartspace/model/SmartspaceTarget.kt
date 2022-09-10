@@ -32,6 +32,6 @@ data class SmartspaceTarget(
         FEATURE_PACKAGE_TRACKING,
         FEATURE_TIMER,
         FEATURE_STOPWATCH,
-        FEATURE_UPCOMING_ALARM
+        FEATURE_UPCOMING_ALARM,
     }
 }

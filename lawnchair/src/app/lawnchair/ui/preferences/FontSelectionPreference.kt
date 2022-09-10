@@ -119,7 +119,9 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
         if (hasFilter) {
             val lowerCaseQuery = searchQuery.lowercase()
             allItems.filter { it.displayName.lowercase().contains(lowerCaseQuery) }
-        } else items
+        } else {
+            items
+        }
     }
 
     val request =

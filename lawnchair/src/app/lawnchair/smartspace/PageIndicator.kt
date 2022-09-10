@@ -67,7 +67,9 @@ class PageIndicator @JvmOverloads constructor(
         for (i in 0 until numPages) {
             val reuse = i < getChildCount()
             val imageView = if (reuse) getChildAt(i) as ImageView else ImageView(context)
-            val layoutParams = if (reuse) imageView.layoutParams as LayoutParams else {
+            val layoutParams = if (reuse) {
+                imageView.layoutParams as LayoutParams
+            } else {
                 LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             }
             if (i == 0) {

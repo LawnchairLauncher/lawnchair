@@ -86,7 +86,8 @@ enum class ThemedIconsState(
     HomeAndDrawer(
         labelResourceId = R.string.themed_icons_home_and_drawer_label,
         drawerThemedIcons = true,
-    );
+    ),
+    ;
 
     companion object {
         fun getForSettings(
@@ -164,7 +165,9 @@ fun IconPackPreferences() {
                     },
                     description = if (themedIconsAvailable.not()) {
                         stringResource(id = R.string.lawnicons_not_installed_description)
-                    } else null,
+                    } else {
+                        null
+                    },
                 )
             }
         }
@@ -230,7 +233,9 @@ private fun getIconPackItemWidth(
             (availableWidth - gutterCount * gutterWidth) / visibleItemCount
         if (possibleIconPackItemWidth >= minimumWidth) {
             iconPackItemWidth = possibleIconPackItemWidth
-        } else break
+        } else {
+            break
+        }
     }
     return iconPackItemWidth
 }

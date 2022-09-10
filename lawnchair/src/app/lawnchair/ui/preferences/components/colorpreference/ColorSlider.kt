@@ -142,10 +142,14 @@ fun HsbColorSlider(
                 ) {
                     val valueText = snapSliderValue(range.start, value, step)
                     Text(
-                        text = if (showAsPercentage) stringResource(
-                            id = R.string.n_percent,
-                            (valueText * 100).roundToInt(),
-                        ) else "${valueText.roundToInt()}°",
+                        text = if (showAsPercentage) {
+                            stringResource(
+                                id = R.string.n_percent,
+                                (valueText * 100).roundToInt(),
+                            )
+                        } else {
+                            "${valueText.roundToInt()}°"
+                        },
                     )
                 }
             }

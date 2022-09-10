@@ -79,7 +79,9 @@ fun GeneralPreferences() {
             currentIconPackName,
             stringResource(id = R.string.themed_icon_title),
         )
-    } else currentIconPackName
+    } else {
+        currentIconPackName
+    }
     val iconShapeSubtitle = iconShapeEntries(context)
         .firstOrNull { it.value == iconShapeAdapter.state.value }
         ?.label?.invoke()

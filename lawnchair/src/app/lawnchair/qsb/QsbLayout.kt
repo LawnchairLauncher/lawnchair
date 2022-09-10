@@ -178,10 +178,14 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
 
     private fun setUpBackground(themed: Boolean = false) {
         val cornerRadius = getCornerRadius(context, preferenceManager)
-        val color = if (themed) Themes.getColorBackgroundFloating(context) else Themes.getAttrColor(
-            context,
-            R.attr.qsbFillColor,
-        )
+        val color = if (themed) {
+            Themes.getColorBackgroundFloating(context)
+        } else {
+            Themes.getAttrColor(
+                context,
+                R.attr.qsbFillColor,
+            )
+        }
         with(inner) {
             clipToOutline = cornerRadius > 0
             background = PaintDrawable(color).apply {
@@ -204,7 +208,11 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
             return if (provider == AppSearch ||
                 resolveIntent(context, provider.createSearchIntent()) ||
                 resolveIntent(context, provider.createWebsiteIntent())
-            ) provider else AppSearch
+            ) {
+                provider
+            } else {
+                AppSearch
+            }
         }
 
         fun resolveIntent(context: Context, intent: Intent): Boolean =
