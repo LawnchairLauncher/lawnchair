@@ -31,6 +31,7 @@ import android.graphics.Point;
 import android.util.ArrayMap;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.InvariantDeviceProfile;
@@ -47,6 +48,7 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.WidgetManagerHelper;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -776,17 +778,6 @@ public class GridSizeMigrationTaskV2 {
             values.put(LauncherSettings.Favorites.SPANY, spanY);
         }
 
-        /**
-         * This method should return an id that should be the same for two folders containing the
-         * same elements.
-         */
-        private String getFolderMigrationId() {
-            return mFolderItems.keySet().stream()
-                    .map(intentString -> mFolderItems.get(intentString).size() + intentString)
-                    .sorted()
-                    .collect(Collectors.joining(","));
-        }
-
         /** This id is not used in the DB is only used while doing the migration and it identifies
          * an entry on each workspace. For example two calculator icons would have the same
          * migration id even thought they have different database ids.
@@ -797,9 +788,47 @@ public class GridSizeMigrationTaskV2 {
                     return getFolderMigrationId();
                 case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
                     return mProvider;
+                case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+                    final String intentStr = cleanIntentString(mIntent);
+                    try {
+                        Intent i = Intent.parseUri(intentStr, 0);
+                        return Objects.requireNonNull(i.getComponent()).toString();
+                    } catch (Exception e) {
+                        return intentStr;
+                    }
                 default:
-                    return mIntent;
+                    return cleanIntentString(mIntent);
             }
+        }
+
+        /**
+         * This method should return an id that should be the same for two folders containing the
+         * same elements.
+         */
+        @NonNull
+        private String getFolderMigrationId() {
+            return mFolderItems.keySet().stream()
+                    .map(intentString -> mFolderItems.get(intentString).size()
+                            + cleanIntentString(intentString))
+                    .sorted()
+                    .collect(Collectors.joining(","));
+        }
+
+        /**
+         * This is needed because sourceBounds can change and make the id of two equal items
+         * different.
+         */
+        @NonNull
+        private String cleanIntentString(@NonNull String intentStr) {
+            try {
+                Intent i = Intent.parseUri(intentStr, 0);
+                i.setSourceBounds(null);
+                return i.toURI();
+            } catch (URISyntaxException e) {
+                Log.e(TAG, "Unable to parse Intent string", e);
+                return intentStr;
+            }
+
         }
     }
 }
