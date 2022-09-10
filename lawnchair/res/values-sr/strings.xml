@@ -47,8 +47,8 @@
     <string name="font_picker_description">Неки текст остаје неизмењен.</string>
     <string name="smartspace_calendar_label">Прилагођавање календара у виџету „Кратак преглед”</string>
     <string name="smartspace_calendar_description">Омогућава приказ датума у календарским системима који нису грегоријански.</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <string name="workspace_increase_max_grid_size_label">Већа мрежа почетног екрана</string>
+    <string name="workspace_increase_max_grid_size_description">Повећава максималну величину мреже почетног екрана из 10 × 10 у 20 × 20.</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Ротација почетног екрана</string>
     <string name="home_screen_rotaton_description">Када се уређај ротира.</string>
@@ -91,13 +91,13 @@
     <string name="icon_shape_system">Системски</string>
     <string name="icon_shape_circle">Круг</string>
     <string name="icon_shape_cylinder">Ваљак</string>
-    <string name="icon_shape_diamond">Diamond</string>
-    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_diamond">Дијамант</string>
+    <string name="icon_shape_egg">Јаје</string>
     <string name="icon_shape_cupertino">iOS</string>
-    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_octagon">Осмоугао</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Заобљени квадрат</string>
-    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_sharp_square">Оштри квадрат</string>
     <string name="icon_shape_square">Квадрат</string>
     <string name="icon_shape_squircle">Заокругљени квадрат</string>
     <string name="icon_shape_teardrop">Суза</string>
@@ -131,10 +131,10 @@
     <string name="hex">Hex</string>
     <string name="color_sliders">Клизачи</string>
     <string name="action_copy">Копирај</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_paste">Налепи</string>
     <string name="copied_toast">Копирано у привремену меморију.</string>
     <string name="invalid_color">Неважећа боја</string>
-    <string name="launcher_default_color">Default</string>
+    <string name="launcher_default_color">Подразумевано</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Додај нове апликације на почетни екран</string>
@@ -149,11 +149,11 @@
     <string name="layout">Распоред</string>
     <string name="home_screen_grid">Мрежа почетног екрана</string>
     <string name="home_screen_lock">Закључај почетни екран</string>
-    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_lock_description">Спречава промену распореда почетног екрана.</string>
     <string name="home_screen_unlock">Откључај почетни екран</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">Прикажи дугме за закључавање у искачућем прозору</string>
-    <string name="home_screen_locked">Home Screen is locked.</string>
+    <string name="home_screen_locked">Почетни екран је закључан.</string>
     <string name="status_bar_label">Статусна трака</string>
     <string name="show_status_bar">Прикажи статусну траку</string>
     <string name="dark_status_bar_label">Тамна статусна трака</string>
@@ -186,9 +186,9 @@
     <string name="smartspace_date_and_time">Датум и време</string>
     <string name="smartspace_date">Датум</string>
     <string name="smartspace_time">Време</string>
-    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_format">Временски формат</string>
     <string name="smartspace_time_follow_system">Прати системска подешавања</string>
-    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
+    <string name="smartspace_time_12_hour_format">12-часовни формат</string>
     <string name="smartspace_time_24_hour_format">24-часовни формат</string>
     <string name="smartspace_weather">Временска прогноза</string>
     <string name="smartspace_battery_status">Статус батерије</string>
@@ -199,8 +199,8 @@
     <string name="smartspace_calendar_gregorian">Грегоријански</string>
     <string name="smartspace_calendar_persian">Персијски</string>
     <string name="smartspace_preferences">Подешавања</string>
-    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <string name="smartspace_widget_toggle_label">Прикажи на почетном екрану</string>
+    <string name="smartspace_widget_toggle_description">„Кратак преглед” можете да додате ручно постављањем виџета „Lawnchair”.</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">Оквир за претрагу</string>
@@ -246,7 +246,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Непрозирност позадине икона</string>
-    <string name="folder_preview_bg_color_label">Icon Background Color</string>
+    <string name="folder_preview_bg_color_label">Позадинска боја иконе</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Максималан број колона у фолдеру</string>
     <string name="max_folder_rows">Максималан број редова у фолдеру</string>

@@ -134,7 +134,7 @@
     <string name="action_paste">Incolla</string>
     <string name="copied_toast">Copiato negli appunti.</string>
     <string name="invalid_color">Colore non valido</string>
-    <string name="launcher_default_color">Default</string>
+    <string name="launcher_default_color">Predefinito</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Aggiungi le nuove applicazioni alla schermata home</string>
@@ -162,7 +162,7 @@
     <string name="show_home_labels">Mostra etichette</string>
     <string name="label_size">Dimensioni etichetta</string>
     <string name="reset_custom_icons">Resetta icone personalizzate</string>
-    <string name="reset_custom_icons_confirmation">Tutte le icone personalizzate saranno resettate? Vuoi continuare?</string>
+    <string name="reset_custom_icons_confirmation">Tutte le icone personalizzate saranno resettate. Vuoi continuare?</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
     <string name="force_rounded_widgets">Angoli arrotondati</string>
     <string name="allow_widget_overlap">Consenti sovrapposizione</string>
