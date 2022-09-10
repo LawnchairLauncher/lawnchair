@@ -22,6 +22,7 @@ import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
+
 import android.util.Log;
 import android.view.View;
 
@@ -137,7 +138,11 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
                 LauncherInstrumentation.WAIT_TIME_MS);
 
         //start work profile toggle OFF test
-        executeOnLauncher(l -> l.getAppsView().getWorkManager().getWorkModeSwitch().performClick());
+        executeOnLauncher(l -> {
+            // Ensure updates are not deferred so notification happens when apps pause.
+            l.getAppsView().getAppsStore().disableDeferUpdates(DEFER_UPDATES_TEST);
+            l.getAppsView().getWorkManager().getWorkModeSwitch().performClick();
+        });
 
         waitForLauncherCondition("Work profile toggle OFF failed", launcher -> {
             manager.reset(); // pulls current state from system
