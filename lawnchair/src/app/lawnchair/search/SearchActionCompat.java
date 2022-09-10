@@ -43,7 +43,7 @@ public final class SearchActionCompat implements Parcelable {
     private static final String TAG = "SearchActionCompat";
 
     @NonNull
-    private String mId;
+    private final String mId;
 
     @Nullable
     private final Icon mIcon;
@@ -67,7 +67,7 @@ public final class SearchActionCompat implements Parcelable {
     private final UserHandle mUserHandle;
 
     @Nullable
-    private Bundle mExtras;
+    private final Bundle mExtras;
 
     SearchActionCompat(Parcel in) {
         mId = in.readString();
@@ -82,15 +82,15 @@ public final class SearchActionCompat implements Parcelable {
     }
 
     private SearchActionCompat(
-        @NonNull String id,
-        @NonNull CharSequence title,
-        @Nullable Icon icon,
-        @Nullable CharSequence subtitle,
-        @Nullable CharSequence contentDescription,
-        @Nullable PendingIntent pendingIntent,
-        @Nullable Intent intent,
-        @Nullable UserHandle userHandle,
-        @Nullable Bundle extras) {
+            @NonNull String id,
+            @NonNull CharSequence title,
+            @Nullable Icon icon,
+            @Nullable CharSequence subtitle,
+            @Nullable CharSequence contentDescription,
+            @Nullable PendingIntent pendingIntent,
+            @Nullable Intent intent,
+            @Nullable UserHandle userHandle,
+            @Nullable Bundle extras) {
         mId = Objects.requireNonNull(id);
         mTitle = Objects.requireNonNull(title);
         mIcon = icon;
@@ -111,15 +111,15 @@ public final class SearchActionCompat implements Parcelable {
 
     private SearchActionCompat(SearchAction from) {
         this(
-            from.getId(),
-            from.getTitle(),
-            from.getIcon(),
-            from.getSubtitle(),
-            from.getContentDescription(),
-            from.getPendingIntent(),
-            from.getIntent(),
-            from.getUserHandle(),
-            from.getExtras()
+                from.getId(),
+                from.getTitle(),
+                from.getIcon(),
+                from.getSubtitle(),
+                from.getContentDescription(),
+                from.getPendingIntent(),
+                from.getIntent(),
+                from.getUserHandle(),
+                from.getExtras()
         );
     }
 
@@ -220,15 +220,14 @@ public final class SearchActionCompat implements Parcelable {
 
     @Override
     public String toString() {
-        String str = "id=" + mId
-            + " title=" + mTitle
-            + " contentDescription=" + mContentDescription
-            + " subtitle=" + mSubtitle
-            + " icon=" + mIcon
-            + " pendingIntent=" + (mPendingIntent == null ? "" : mPendingIntent)
-            + " intent=" + mIntent
-            + " userHandle=" + mUserHandle;
-        return str;
+        return "id=" + mId
+                + " title=" + mTitle
+                + " contentDescription=" + mContentDescription
+                + " subtitle=" + mSubtitle
+                + " icon=" + mIcon
+                + " pendingIntent=" + (mPendingIntent == null ? "" : mPendingIntent)
+                + " intent=" + mIntent
+                + " userHandle=" + mUserHandle;
     }
 
     public static SearchActionCompat wrap(SearchAction action) {
@@ -240,15 +239,14 @@ public final class SearchActionCompat implements Parcelable {
     }
 
     public static final @NonNull Parcelable.Creator<SearchActionCompat> CREATOR =
-        new Parcelable.Creator<SearchActionCompat>() {
-            public SearchActionCompat createFromParcel(Parcel in) {
-                return new SearchActionCompat(in);
-            }
-
-            public SearchActionCompat[] newArray(int size) {
-                return new SearchActionCompat[size];
-            }
-        };
+            new Parcelable.Creator<SearchActionCompat>() {
+                public SearchActionCompat createFromParcel(Parcel in) {
+                    return new SearchActionCompat(in);
+                }
+                public SearchActionCompat[] newArray(int size) {
+                    return new SearchActionCompat[size];
+                }
+            };
 
     /**
      * A builder for search action object.
@@ -257,10 +255,10 @@ public final class SearchActionCompat implements Parcelable {
      */
     public static final class Builder {
         @NonNull
-        private String mId;
+        private final String mId;
 
         @NonNull
-        private CharSequence mTitle;
+        private final CharSequence mTitle;
 
         @Nullable
         private Icon mIcon;
@@ -293,7 +291,7 @@ public final class SearchActionCompat implements Parcelable {
          */
         @NonNull
         public SearchActionCompat.Builder setIcon(
-            @Nullable Icon icon) {
+                @Nullable Icon icon) {
             mIcon = icon;
             return this;
         }
@@ -303,7 +301,7 @@ public final class SearchActionCompat implements Parcelable {
          */
         @NonNull
         public SearchActionCompat.Builder setSubtitle(
-            @Nullable CharSequence subtitle) {
+                @Nullable CharSequence subtitle) {
             mSubtitle = subtitle;
             return this;
         }
@@ -313,7 +311,7 @@ public final class SearchActionCompat implements Parcelable {
          */
         @NonNull
         public SearchActionCompat.Builder setContentDescription(
-            @Nullable CharSequence contentDescription) {
+                @Nullable CharSequence contentDescription) {
             mContentDescription = contentDescription;
             return this;
         }
@@ -350,7 +348,7 @@ public final class SearchActionCompat implements Parcelable {
          */
         @NonNull
         public SearchActionCompat.Builder setExtras(
-            @SuppressLint("NullableCollection") @Nullable Bundle extras) {
+                @SuppressLint("NullableCollection") @Nullable Bundle extras) {
             mExtras = extras;
             return this;
         }
@@ -363,7 +361,7 @@ public final class SearchActionCompat implements Parcelable {
         @NonNull
         public SearchActionCompat build() {
             return new SearchActionCompat(mId, mTitle, mIcon, mSubtitle, mContentDescription,
-                mPendingIntent, mIntent, mUserHandle, mExtras);
+                    mPendingIntent, mIntent, mUserHandle, mExtras);
         }
     }
 }

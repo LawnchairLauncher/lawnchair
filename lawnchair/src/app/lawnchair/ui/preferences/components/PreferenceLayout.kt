@@ -45,7 +45,6 @@ fun PreferenceLayout(
 ) {
     PreferenceScaffold(
         backArrowVisible = backArrowVisible,
-        floating = rememberFloatingState(scrollState),
         label = label,
         actions = actions,
         bottomBar = bottomBar,
@@ -71,7 +70,6 @@ fun PreferenceLayoutLazyColumn(
 ) {
     PreferenceScaffold(
         backArrowVisible = backArrowVisible,
-        floating = rememberFloatingState(state),
         label = label,
         actions = actions,
     ) {
@@ -83,15 +81,3 @@ fun PreferenceLayoutLazyColumn(
         )
     }
 }
-
-@Composable
-fun rememberFloatingState(state: ScrollState?) =
-    remember(state) {
-        if (state != null) derivedStateOf { state.value > 0 } else mutableStateOf(false)
-    }
-
-@Composable
-fun rememberFloatingState(state: LazyListState) =
-    remember(state) {
-        derivedStateOf { state.firstVisibleItemIndex > 0 || state.firstVisibleItemScrollOffset > 0 }
-    }

@@ -57,7 +57,6 @@ fun HiddenAppsPreferences() {
     val state = rememberLazyListState()
     PreferenceScaffold(
         label = pageTitle,
-        floating = rememberFloatingState(state),
     ) {
         Crossfade(targetState = optionalApps.isPresent) { present ->
             if (present) {

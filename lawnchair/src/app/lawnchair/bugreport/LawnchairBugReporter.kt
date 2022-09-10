@@ -5,8 +5,8 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import android.util.Log
-import androidx.core.content.getSystemService
 import app.lawnchair.LawnchairApp
+import app.lawnchair.util.requireSystemService
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 import com.android.launcher3.util.MainThreadInitializedObject
@@ -16,7 +16,7 @@ import java.util.*
 
 class LawnchairBugReporter(private val context: Context) {
 
-    private val notificationManager = context.getSystemService<NotificationManager>()!!
+    private val notificationManager: NotificationManager = context.requireSystemService()
     private val logsFolder by lazy { File(context.cacheDir, "logs").apply { mkdirs() } }
     private val appName by lazy { context.getString(R.string.derived_app_name) }
 

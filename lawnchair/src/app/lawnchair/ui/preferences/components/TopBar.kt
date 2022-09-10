@@ -16,89 +16,84 @@
 
 package app.lawnchair.ui.preferences.components
 
+import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowForward
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
     backArrowVisible: Boolean,
-    floating: Boolean,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
     label: String,
     actions: @Composable RowScope.() -> Unit = {},
 ) {
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-    val scrollFraction = if (floating) 1f else 0f
 
-    val colors = TopAppBarDefaults.smallTopAppBarColors()
-    val appBarContainerColor by colors.containerColor(scrollFraction)
-    val navigationIconContentColor = colors.navigationIconContentColor(scrollFraction)
-    val titleContentColor = colors.titleContentColor(scrollFraction)
-    val actionIconContentColor = colors.actionIconContentColor(scrollFraction)
+    val containerColor: Color = MaterialTheme.colorScheme.surface
+    val scrolledContainerColor: Color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.0.dp)
 
-    Surface(color = appBarContainerColor) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
+    fun containerColor(colorTransitionFraction: Float): Color {
+        return lerp(
+            containerColor,
+            scrolledContainerColor,
+            FastOutLinearInEasing.transform(colorTransitionFraction)
+        )
+    }
+
+    val backgroundColor = containerColor(scrollBehavior?.state?.overlappedFraction ?: 0f)
+
+    val foregroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+        containerColor = Color.Transparent,
+        scrolledContainerColor = Color.Transparent
+    )
+
+    Surface (
+        color = backgroundColor
+    ) {
+        LargeTopAppBar(
             modifier = Modifier
                 .statusBarsPadding()
                 .fillMaxWidth()
-                .height(topBarSize)
                 .padding(horizontal = 4.dp),
-        ) {
-            if (backArrowVisible) {
-                CompositionLocalProvider(
-                    LocalContentColor provides navigationIconContentColor.value,
-                ) {
-                    ClickableIcon(
-                        imageVector = backIcon(),
-                        onClick = { backDispatcher?.onBackPressed() },
-                    )
-                }
-            }
-            Text(
-                text = label,
-                style = MaterialTheme.typography.titleLarge,
-                color = titleContentColor.value,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .padding(horizontal = if (backArrowVisible) 4.dp else 12.dp)
-                    .weight(weight = 1f),
-            )
-            CompositionLocalProvider(LocalContentColor provides actionIconContentColor.value) {
-                Row(
-                    modifier = Modifier.fillMaxHeight(),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically,
-                    content = actions,
+            title = {
+                Text(
+                    text = label,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
-            }
-        }
-    }
+            },
+            actions = actions,
+            navigationIcon = {
+                if (backArrowVisible) {
+                        ClickableIcon(
+                            imageVector = backIcon(),
+                            onClick = { backDispatcher?.onBackPressed() },
+                        )
+                } else {
+                    null
+                }
+            },
+            scrollBehavior = scrollBehavior,
+            colors = foregroundColors
+        )
+   }
 }
 
 @Composable

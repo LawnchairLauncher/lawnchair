@@ -41,7 +41,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.getSystemService
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
@@ -59,6 +58,7 @@ import app.lawnchair.ui.preferences.components.SearchTextField
 import app.lawnchair.ui.preferences.components.verticalGridItems
 import app.lawnchair.ui.util.LazyGridLayout
 import app.lawnchair.ui.util.resultSender
+import app.lawnchair.util.requireSystemService
 import com.android.launcher3.R
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.google.accompanist.insets.ui.LocalScaffoldPadding
@@ -106,7 +106,7 @@ fun IconPickerPreference(packageName: String) {
     val onClickItem = resultSender<IconPickerItem>()
 
     val pickerComponent = remember {
-        val launcherApps = context.getSystemService<LauncherApps>()!!
+        val launcherApps: LauncherApps = context.requireSystemService()
         launcherApps
             .getActivityList(iconPack.packPackageName, Process.myUserHandle())
             .firstOrNull()?.componentName

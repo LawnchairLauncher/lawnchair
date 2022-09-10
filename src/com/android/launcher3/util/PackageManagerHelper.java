@@ -258,19 +258,25 @@ public class PackageManagerHelper {
 
     public static boolean isSystemApp(Context context, Intent intent) {
         PackageManager pm = context.getPackageManager();
-        ComponentName cn = intent.getComponent();
+        // Get the package name for intent
         String packageName = null;
-        if (cn == null) {
-            ResolveInfo info = pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
-            if ((info != null) && (info.activityInfo != null)) {
-                packageName = info.activityInfo.packageName;
+        if (intent != null) {
+            ComponentName cn = intent.getComponent();
+            if (cn == null) {
+                ResolveInfo info = pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+                if ((info != null) && (info.activityInfo != null)) {
+                    packageName = info.activityInfo.packageName;
+                }
+            } else {
+                packageName = cn.getPackageName();
             }
-        } else {
-            packageName = cn.getPackageName();
         }
-        if (packageName == null) {
-            packageName = intent.getPackage();
-        }
+        return isSystemApp(context, packageName);
+    }
+
+    public static boolean isSystemApp(Context context, String packageName) {
+        PackageManager pm = context.getPackageManager();
+        // Check if the provided package is a system app.
         if (packageName != null) {
             try {
                 PackageInfo info = pm.getPackageInfo(packageName, 0);

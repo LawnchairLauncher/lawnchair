@@ -20,12 +20,12 @@ fun OverflowMenu(block: @Composable OverflowMenuScope.() -> Unit) {
     Box {
         ClickableIcon(
             imageVector = Icons.Rounded.MoreVert,
-            onClick = { showMenu.value = true },
+            onClick = { showMenu.value = true }
         )
         DropdownMenu(
             expanded = showMenu.value,
             onDismissRequest = { showMenu.value = false },
-            offset = DpOffset(x = 8.dp, y = -32.dp),
+            offset = DpOffset(x = 8.dp, y = (-32).dp)
         ) {
             block(overflowMenuScope)
         }
@@ -36,8 +36,7 @@ interface OverflowMenuScope {
     fun hideMenu()
 }
 
-private class OverflowMenuScopeImpl(private val showState: MutableState<Boolean>) :
-    OverflowMenuScope {
+private class OverflowMenuScopeImpl(private val showState: MutableState<Boolean>) : OverflowMenuScope {
     override fun hideMenu() {
         showState.value = false
     }
