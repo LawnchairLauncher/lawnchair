@@ -134,7 +134,7 @@
     <string name="action_paste">Επικόλληση</string>
     <string name="copied_toast">Αντιγράφηκε στο πρόχειρο.</string>
     <string name="invalid_color">Μη Έγκυρο Χρώμα</string>
-    <string name="launcher_default_color">Default</string>
+    <string name="launcher_default_color">Προεπιλογή</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Προσθήκη Nέων Eφαρμογών Στην Αρχική Οθόνη</string>
@@ -245,7 +245,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Αδιαφάνεια Φόντου Εικονιδίου</string>
-    <string name="folder_preview_bg_color_label">Icon Background Color</string>
+    <string name="folder_preview_bg_color_label">Χρώμα Φόντου Εικονιδίου</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Μεγ. Στήλες Φακέλου</string>
     <string name="max_folder_rows">Μεγ. Σειρές Φακέλου</string>
