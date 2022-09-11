@@ -159,7 +159,6 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     val gestureController by lazy { GestureController(this) }
     private val defaultOverlay by lazy { OverlayCallbackImpl(this) }
     private val prefs by lazy { PreferenceManager.getInstance(this) }
-    private val preferenceManager by lazy { PreferenceManager.getInstance(this) }
     private val preferenceManager2 by lazy { PreferenceManager2.getInstance(this) }
     private val insetsController by lazy { WindowInsetsControllerCompat(launcher.window, rootView) }
 
@@ -407,9 +406,9 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
      * Reset the value of [PreferenceManager.iconPackPackage] to force reload icons in the launcher.
      */
     private fun forceReloadIcons() {
-        val iconPack = preferenceManager.iconPackPackage.get()
-        preferenceManager.iconPackPackage.set("")
-        preferenceManager.iconPackPackage.set(iconPack)
+        val iconPack = prefs.iconPackPackage.get()
+        prefs.iconPackPackage.set("")
+        prefs.iconPackPackage.set(iconPack)
     }
 
     private fun isNightConfigChanged(newConfig: Configuration): Boolean {
