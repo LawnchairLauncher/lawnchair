@@ -1,0 +1,42 @@
+name: Close low effort issues
+
+on:
+  issues:
+    types:
+      - opened
+
+jobs:
+  check_issue_quality:
+    runs-on: ubuntu-latest
+    outputs:
+      IS_LOW_EFFORT: ${{ steps.check_issue_quality.outputs.isLowEffort }}
+    steps:
+      - env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        name: Check issue quality
+        id: check_issue_quality
+        run: |
+          declare -a DEFAULT_TITLES=("[BUG]" "[FEATURE]" "[DISCUSSION]" "[QUESTION]")
+          for i in "${DEFAULT_TITLES[@]}"
+            do
+              echo "$i"
+              if [ $ISSUE_TITLE == "$i" ]; then
+                echo "low effort"
+                echo ::set-output name=isLowEffort::true
+                break
+              else
+                echo "NOT low effort"
+                echo ::set-output name=isLowEffort::false
+              fi
+            done
+  
+  close_issue:
+    runs-on: ubuntu-latest
+    needs: check_issue_quality
+    if: ${{ needs.check_issue_quality.outputs.IS_LOW_EFFORT == 'true' }}
+    steps:
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+        run: |
+          gh issue close $ISSUE_URL -c "Thanks for making this issue! Unfortunately, this issue doesn't have a proper title; therefore this issue has been closed. You can create a new issue again, but this time make sure you improve the title."
