@@ -407,8 +407,10 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
      */
     private fun forceReloadIcons() {
         val iconPack = prefs.iconPackPackage.get()
-        prefs.iconPackPackage.set("")
-        prefs.iconPackPackage.set(iconPack)
+        if (iconPack != "") {
+            prefs.iconPackPackage.set("")
+            prefs.iconPackPackage.set(iconPack)
+        }
     }
 
     private fun isNightConfigChanged(newConfig: Configuration): Boolean {
