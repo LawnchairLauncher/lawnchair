@@ -310,7 +310,7 @@
     <string name="dt2s_a11y_hint_title">启用无障碍服务</string>
     <string name="dt2s_a11y_hint">若要使用双击息屏，请先启用 Lawnchair 无障碍服务。点击\"打开设置\"，然后选择 \"Lawnchair \"并启用 Lawnchair 无障碍服务。</string>
     <string name="dt2s_warning_open_settings">打开设置</string>
-    <string name="loading">正在载入…</string>
+    <string name="loading">正在加载…</string>
     <string name="system">系统</string>
     <string name="customize_button_text">自定义</string>
     <string name="label">标签</string>
