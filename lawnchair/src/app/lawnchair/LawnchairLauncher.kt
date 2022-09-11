@@ -19,6 +19,8 @@ package app.lawnchair
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -157,11 +159,13 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     val gestureController by lazy { GestureController(this) }
     private val defaultOverlay by lazy { OverlayCallbackImpl(this) }
     private val prefs by lazy { PreferenceManager.getInstance(this) }
+    private val preferenceManager by lazy { PreferenceManager.getInstance(this) }
     private val preferenceManager2 by lazy { PreferenceManager2.getInstance(this) }
     private val insetsController by lazy { WindowInsetsControllerCompat(launcher.window, rootView) }
 
     private val themeProvider by lazy { ThemeProvider.INSTANCE.get(this) }
     private lateinit var colorScheme: ColorScheme
+    private var mOldConfig: Configuration? = null
 
     private val noStatusBarStateListener = object : StateManager.StateListener<LauncherState> {
         override fun onStateTransitionStart(toState: LauncherState) {
@@ -183,6 +187,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         savedStateRegistryController.performRestore(savedInstanceState)
         super.onCreate(savedInstanceState)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+        mOldConfig = Configuration(resources.configuration)
 
         prefs.launcherTheme.subscribeChanges(this, ::updateTheme)
 
@@ -359,6 +364,14 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         return defaultOverlay
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        if (isNightConfigChanged(newConfig)) {
+            forceReloadIcons()
+        }
+        mOldConfig = newConfig
+        super.onConfigurationChanged(newConfig)
+    }
+
     private fun restartIfPending() {
         when {
             sRestartFlags and FLAG_RESTART != 0 -> lawnchairApp.restart(false)
@@ -388,6 +401,27 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         if (sRestartFlags == 0) {
             recreate()
         }
+    }
+
+    /**
+     * Reset the value of [PreferenceManager.iconPackPackage] to force reload icons in the launcher.
+     */
+    private fun forceReloadIcons() {
+        val iconPack = preferenceManager.iconPackPackage.get()
+        preferenceManager.iconPackPackage.set("")
+        preferenceManager.iconPackPackage.set(iconPack)
+    }
+
+    private fun isNightConfigChanged(newConfig: Configuration): Boolean {
+        return newConfig.diff(mOldConfig) and ActivityInfo.CONFIG_UI_MODE != 0 && isOnDarkMode(
+            newConfig
+        ) != isOnDarkMode(
+            mOldConfig!!
+        )
+    }
+
+    private fun isOnDarkMode(configuration: Configuration): Boolean {
+        return configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
     }
 
     companion object {
