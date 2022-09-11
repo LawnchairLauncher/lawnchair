@@ -365,6 +365,8 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         if (isNightConfigChanged(newConfig)) {
+            // Reload icons when night mode changes
+            // Done to avoid incorrect icons being shown when the active icon pack is dynamic
             forceReloadIcons()
         }
         mOldConfig = newConfig
