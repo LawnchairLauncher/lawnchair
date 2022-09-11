@@ -413,15 +413,12 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     }
 
     private fun isNightConfigChanged(newConfig: Configuration): Boolean {
-        return newConfig.diff(mOldConfig) and ActivityInfo.CONFIG_UI_MODE != 0 && isOnDarkMode(
-            newConfig
-        ) != isOnDarkMode(
-            mOldConfig!!
-        )
+        return newConfig.diff(mOldConfig) and ActivityInfo.CONFIG_UI_MODE != 0 &&
+            newConfig.isOnDarkMode() != mOldConfig?.isOnDarkMode()
     }
 
-    private fun isOnDarkMode(configuration: Configuration): Boolean {
-        return configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+    private fun Configuration.isOnDarkMode(): Boolean {
+        return uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
     }
 
     companion object {
