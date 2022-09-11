@@ -192,6 +192,12 @@ public final class Workspace extends Home {
         }
     }
 
+    /** Returns the number of pages. */
+    public int getPageCount() {
+        final UiObject2 workspace = verifyActiveContainer();
+        return workspace.getChildCount();
+    }
+
     /**
      * Returns the number of pages that are visible on the screen simultaneously.
      */
