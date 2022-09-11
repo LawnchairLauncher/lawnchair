@@ -24,7 +24,7 @@
     <!--
     <string name="smartspace" />
     -->
-    <string name="what_to_show">What to Show</string>
+    <string name="what_to_show">สิ่งที่อยากให้แสดง</string>
     <string name="dock_label">แถบรายการโปรด</string>
     <string name="dock_description">แถบค้นหา, จำนวนไอคอน</string>
     <string name="app_drawer_label">รายการแอป</string>
@@ -33,7 +33,7 @@
     <string name="folders_description">จำนวนไอคอน</string>
     <string name="gestures_label">ท่าทาง</string>
     <string name="gestures_description">การกดและการปัด</string>
-    <string name="quickstep_label">Recents</string>
+    <string name="quickstep_label">แอพที่ใช้งานล่าสุด</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
     <string name="about_label">เกี่ยวกับ</string>
     <!-- <string name="version" /> (unknown source) -->
@@ -43,8 +43,8 @@
     <string name="experimental_features_label">ฟีเจอร์ทดลอง</string>
     <!-- ExperimentalFeaturesPreferences -->
     <!-- <string name="experimental_features_label" />-->
-    <string name="font_picker_label">Font Customization</string>
-    <string name="font_picker_description">Some text remains unchanged.</string>
+    <string name="font_picker_label">การปรับแต่งแบบอักษร</string>
+    <string name="font_picker_description">ข้อความบางส่วนยังไม่ถูกเปลี่ยนแปลง</string>
     <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
     <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
     <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
@@ -52,25 +52,25 @@
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">อนุญาตให้หมุนหน้าจอหลัก</string>
     <string name="home_screen_rotaton_description">เมื่อหมุนโทรศัพท์</string>
-    <string name="font_label">Font (Experimental)</string>
+    <string name="font_label">แบบอักษร (อยู่ในการทดลอง)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">รูปแบบไอคอน</string>
-    <string name="icon_shape_label">Icon Shape</string>
+    <string name="icon_shape_label">รูปร่างของไอคอน</string>
     <string name="auto_adaptive_icons_label">ใช้ไอคอนแบบปรับอัตโนมัติ</string>
     <string name="auto_adaptive_icons_description">สำหรับไอคอนธรรมดา</string>
     <string name="background_lightness_label">ความสว่างของพื้นหลัง</string>
     <string name="adaptive_icon_background_description">ใช้ความสว่าง 100% สำหรับสีขาว</string>
     <string name="notification_dots">เครื่องหมายจุดแสดงการแจ้งเตือน</string>
     <!-- <string name="notification_dots" />-->
-    <string name="show_notification_count">Show Notification Count</string>
+    <string name="show_notification_count">แสดงตัวเลขจากการนับแจ้งเตือน</string>
     <string name="notification_dots_color">สีจุดการแจ้งเตือน</string>
     <!-- Notification popup -->
-    <string name="missing_notification_access_label">Notification Access Needed</string>
-    <string name="missing_notification_access_description">Notification access needed.</string>
+    <string name="missing_notification_access_label">ต้องการการอนุญาติให้เข้าถึงการแจ้งเตือน</string>
+    <string name="missing_notification_access_description">ต้องการการอนุญาติให้เข้าถึงการแจ้งเตือน</string>
     <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
-    <string name="title_change_settings">Change Settings</string>
+    <string name="title_change_settings">เปลี่ยนการตั้งค่า</string>
     <string name="colors">สี</string>
-    <string name="theme_label">Theme</string>
+    <string name="theme_label">ธีม</string>
     <string name="theme_light">สว่าง</string>
     <string name="theme_dark">มืด</string>
     <string name="theme_system_default">ระบบ</string>
@@ -79,12 +79,12 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">ชุดไอคอน</string>
-    <string name="system_icons">System Icons</string>
-    <string name="themed_icon_title">Themed Icons</string>
-    <string name="themed_icons_off_label">Off</string>
+    <string name="system_icons">ไอคอนระบบ</string>
+    <string name="themed_icon_title">ไอคอนของธีม</string>
+    <string name="themed_icons_off_label">ปิด</string>
     <string name="themed_icons_home_label">หน้าแรก</string>
-    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
-    <string name="lawnicons_not_installed_description">Lawnicons not installed.</string>
+    <string name="themed_icons_home_and_drawer_label">หน้าจอหลัก &amp; รายการแอพ</string>
+    <string name="lawnicons_not_installed_description">ยังไม่ได้ติดตั้ง Lawnicons</string>
     <!-- <string name="cancel" /> (unknown source)-->
     <!-- IconPickerPreference -->
     <!-- <string name="icon_shape_label" /> -->
@@ -96,67 +96,67 @@
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Octagon</string>
     <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_rounded_square">Rounded Square</string>
+    <string name="icon_shape_rounded_square">สี่เหลี่ยมขอบมน</string>
     <string name="icon_shape_sharp_square">Sharp Square</string>
     <string name="icon_shape_square">Square</string>
     <string name="icon_shape_squircle">Squircle</string>
     <string name="icon_shape_teardrop">Teardrop</string>
     <!-- FontSelectionPreferences -->
-    <string name="pref_fonts_add_fonts">Add Fonts</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
-    <string name="pref_fonts_missing_font">Font not found.</string>
-    <string name="font_variant_italic">Italic</string>
-    <string name="font_weight_thin">Thin</string>
-    <string name="font_weight_extra_light">Extra Light</string>
+    <string name="pref_fonts_add_fonts">เพิ่มแบบอักษร</string>
+    <string name="pref_fonts_add_fonts_summary">รองรับไฟล์ฟอน์ตสกุล OTF &amp; TTF</string>
+    <string name="pref_fonts_missing_font">ไม่พบแบบอักษร</string>
+    <string name="font_variant_italic">ตัวเอียง</string>
+    <string name="font_weight_thin">ตัวบาง</string>
+    <string name="font_weight_extra_light">ตัวบางพิเศษ</string>
     <string name="font_weight_light">สว่าง</string>
     <string name="font_weight_regular">ปกติ</string>
     <string name="font_weight_medium">ปานกลาง</string>
     <string name="font_weight_semi_bold">หนาเล็กน้อย</string>
-    <string name="font_weight_bold">Bold</string>
-    <string name="font_weight_extra_bold">Extra Bold</string>
-    <string name="font_weight_extra_black">Black</string>
-    <string name="reset_font">Reset</string>
+    <string name="font_weight_bold">ตัวหนา</string>
+    <string name="font_weight_extra_bold">ตัวหนาพิเศษ</string>
+    <string name="font_weight_extra_black">ตัวหนามาก</string>
+    <string name="reset_font">รีเซ็ต</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Dynamic</string>
     <string name="presets">Presets</string>
-    <string name="custom">Custom</string>
+    <string name="custom">ปรับแต่ง</string>
     <string name="rgb">RGB</string>
-    <string name="rgb_red">Red</string>
-    <string name="rgb_green">Green</string>
-    <string name="rgb_blue">Blue</string>
+    <string name="rgb_red">แดง</string>
+    <string name="rgb_green">เขียว</string>
+    <string name="rgb_blue">น้ำเงิน</string>
     <string name="hsb">HSB</string>
-    <string name="hsb_hue">Hue</string>
-    <string name="hsb_saturation">Saturation</string>
-    <string name="hsb_brightness">Brightness</string>
+    <string name="hsb_hue">เฉดของสี</string>
+    <string name="hsb_saturation">ความอิ่มตัวของสี</string>
+    <string name="hsb_brightness">ความสว่างของแสง</string>
     <string name="hex">Hex</string>
     <string name="color_sliders">Sliders</string>
-    <string name="action_copy">Copy</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_copy">คัดลอก</string>
+    <string name="action_paste">วาง</string>
     <string name="copied_toast">Copied to clipboard.</string>
     <string name="invalid_color">Invalid Color</string>
-    <string name="launcher_default_color">Default</string>
+    <string name="launcher_default_color">ค่าเริ่มต้น</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">เพิ่มไอคอนแอปในหน้าจอหลัก</string>
     <!-- <string name="gesture_double_tap" /> -->
-    <string name="minus_one_enable">Feed</string>
-    <string name="minus_one_unavailable">No feed installed.</string>
-    <string name="wallpaper">Wallpaper</string>
+    <string name="minus_one_enable">ฟีดข่าวสาร</string>
+    <string name="minus_one_unavailable">ยังไม่ได้ติดตั้ง Feed</string>
+    <string name="wallpaper">ภาพพื้นหลัง</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
     <string name="wallpaper_depth_effect_label">Wallpaper Depth Effect</string>
     <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
     <string name="show_sys_ui_scrim">Top Shadow</string>
-    <string name="layout">Layout</string>
+    <string name="layout">การจัดหน้า</string>
     <string name="home_screen_grid">ขนาดกริด</string>
     <string name="home_screen_lock">ล็อกหน้าแรก</string>
     <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
     <string name="home_screen_unlock">ปลดล็อคหน้าแรก</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
-    <string name="home_screen_locked">Home Screen is locked.</string>
-    <string name="status_bar_label">Status Bar</string>
-    <string name="show_status_bar">Show Status Bar</string>
-    <string name="dark_status_bar_label">Dark Status Bar</string>
+    <string name="home_screen_locked">หน้าจอหลักถูกล็อคแล้ว</string>
+    <string name="status_bar_label">แถบสถานะ</string>
+    <string name="show_status_bar">แสดงแถบสถานะ</string>
+    <string name="dark_status_bar_label">แถบสถานะสีดำ</string>
     <string name="icons">ไอคอน</string>
     <string name="icon_size">ขนาดไอคอน</string>
     <string name="show_home_labels">แสดงชื่อแอป</string>
@@ -165,17 +165,17 @@
     <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
     <string name="force_rounded_widgets">Rounded Corners</string>
-    <string name="allow_widget_overlap">Allow Overlap</string>
+    <string name="allow_widget_overlap">อนุญาตให้ซ้อนทับกัน</string>
     <!-- HomeScreenGridPreferences -->
     <!-- <string name="home_screen_grid" /> -->
     <string name="columns">จำนวนคอลัมน์</string>
     <string name="rows">จำนวนแถว</string>
-    <string name="apply_grid">Apply</string>
+    <string name="apply_grid">ใช้งานทันที</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_battery_charging">Charging</string>
-    <string name="smartspace_battery_full">Charged</string>
-    <string name="smartspace_battery_low">Battery Low</string>
+    <string name="smartspace_battery_charging">กำลังชาร์จ</string>
+    <string name="smartspace_battery_full">ชาร์จแล้ว</string>
+    <string name="smartspace_battery_low">แบตเตอร์รี่ต่ำ</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
     <string name="accessibility_smartspace_page">Page %1$d of %2$d</string>
     <string name="smartspace_widget">At a Glance</string>

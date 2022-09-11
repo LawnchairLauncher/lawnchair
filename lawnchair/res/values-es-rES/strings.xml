@@ -47,8 +47,8 @@
     <string name="font_picker_description">Algunos textos permanecen sin cambios.</string>
     <string name="smartspace_calendar_label">Personalización del calendario de un vistazo</string>
     <string name="smartspace_calendar_description">Permitir mostrar fechas en sistemas de calendario no gregorianos.</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <string name="workspace_increase_max_grid_size_label">Aumento del tamaño máximo de la cuadrícula de la pantalla de inicio</string>
+    <string name="workspace_increase_max_grid_size_description">Aumente el tamaño máximo permitido de la cuadrícula de la pantalla de inicio de 10 x 10 a 20 x 20.</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotación de Pantalla de Inicio</string>
     <string name="home_screen_rotaton_description">Cuando se rota el dispositivo.</string>
@@ -91,13 +91,13 @@
     <string name="icon_shape_system">Sistema</string>
     <string name="icon_shape_circle">Circular</string>
     <string name="icon_shape_cylinder">Cilindro</string>
-    <string name="icon_shape_diamond">Diamond</string>
-    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_diamond">Diamante</string>
+    <string name="icon_shape_egg">Huevo</string>
     <string name="icon_shape_cupertino">iOS</string>
-    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_octagon">Octágono</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Cuadrado Redondeado</string>
-    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_sharp_square">Cuadrado afilado</string>
     <string name="icon_shape_square">Cuadrado</string>
     <string name="icon_shape_squircle">Círculo Cuadrado</string>
     <string name="icon_shape_teardrop">Lágrima</string>
@@ -131,10 +131,10 @@
     <string name="hex">HEX</string>
     <string name="color_sliders">Controles deslizantes</string>
     <string name="action_copy">Copiar</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_paste">Pegar</string>
     <string name="copied_toast">Copiado al portapapeles.</string>
     <string name="invalid_color">Color no válido</string>
-    <string name="launcher_default_color">Default</string>
+    <string name="launcher_default_color">Predeterminado</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Añadir Nuevas Aplicaciones a la Pantalla de Inicio</string>
@@ -149,11 +149,11 @@
     <string name="layout">Diseño</string>
     <string name="home_screen_grid">Cuadrícula de Pantalla de Inicio</string>
     <string name="home_screen_lock">Bloquear pantalla de inicio</string>
-    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_lock_description">Evita cambios en la disposición de la pantalla de inicio.</string>
     <string name="home_screen_unlock">Desbloquear pantalla de inicio</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">Mostrar botón de bloqueo en la ventana emergente</string>
-    <string name="home_screen_locked">Home Screen is locked.</string>
+    <string name="home_screen_locked">La pantalla de inicio está bloqueada.</string>
     <string name="status_bar_label">Barra de estado</string>
     <string name="show_status_bar">Mostrar Barra de estado</string>
     <string name="dark_status_bar_label">Barra de Estado Oscura</string>
@@ -186,9 +186,9 @@
     <string name="smartspace_date_and_time">Fecha &amp; hora</string>
     <string name="smartspace_date">Fecha</string>
     <string name="smartspace_time">Hora</string>
-    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_format">Formato de hora</string>
     <string name="smartspace_time_follow_system">Predeterminado del Sistema</string>
-    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
+    <string name="smartspace_time_12_hour_format">Formato de 12 horas</string>
     <string name="smartspace_time_24_hour_format">Formato de 24 horas</string>
     <string name="smartspace_weather">Clima</string>
     <string name="smartspace_battery_status">Estado de la batería</string>
@@ -199,8 +199,8 @@
     <string name="smartspace_calendar_gregorian">Gregoriano</string>
     <string name="smartspace_calendar_persian">Persa</string>
     <string name="smartspace_preferences">Preferencias</string>
-    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <string name="smartspace_widget_toggle_label">Mostrar en la pantalla de inicio</string>
+    <string name="smartspace_widget_toggle_description">De un vistazo se puede agregar manualmente colocando el widget \"Lawnchair\".</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">Barra de Búsqueda</string>
@@ -245,7 +245,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Opacidad del Fondo de Íconos</string>
-    <string name="folder_preview_bg_color_label">Icon Background Color</string>
+    <string name="folder_preview_bg_color_label">Color de fondo del icono</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Máx. Columnas de Carpetas</string>
     <string name="max_folder_rows">Máx. Filas de Carpetas</string>
