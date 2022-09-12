@@ -323,6 +323,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         if (FeatureFlags.ENABLE_CACHED_WIDGET.get()) {
             // First, we clear any previously cached content from existing widgets
             mCachedRemoteViews.clear();
+            mDeferredViews.clear();
             // Then we proceed to cache the content from the widgets
             for (int i = 0; i < mViews.size(); i++) {
                 final int appWidgetId = mViews.keyAt(i);
