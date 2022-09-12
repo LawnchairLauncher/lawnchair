@@ -1122,6 +1122,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                         .log(getAllAppsEntryEvent().get());
             }
         }
+        updateDisallowBack();
     }
 
     /**
@@ -3122,7 +3123,18 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     public void useFadeOutAnimationForLauncherStart(CancellationSignal signal) { }
 
-    public void onDragLayerHierarchyChanged() { }
+    public void onDragLayerHierarchyChanged() {
+        updateDisallowBack();
+    }
+
+    private void updateDisallowBack() {
+        LauncherRootView rv = getRootView();
+        if (rv != null) {
+            boolean disableBack = getStateManager().getState() == NORMAL
+                    && AbstractFloatingView.getTopOpenView(this) == null;
+            rv.setDisallowBackGesture(disableBack);
+        }
+    }
 
     @Override
     public void returnToHomescreen() {
