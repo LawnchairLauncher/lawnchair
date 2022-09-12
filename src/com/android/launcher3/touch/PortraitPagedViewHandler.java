@@ -316,6 +316,26 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+    public void setSecondaryTaskMenuPosition(SplitBounds splitBounds, View taskView,
+            DeviceProfile deviceProfile, View primarySnaphotView, View taskMenuView) {
+        float topLeftTaskPlusDividerPercent = splitBounds.appsStackedVertically
+                ? (splitBounds.topTaskPercent + splitBounds.dividerHeightPercent)
+                : (splitBounds.leftTaskPercent + splitBounds.dividerWidthPercent);
+        FrameLayout.LayoutParams snapshotParams =
+                (FrameLayout.LayoutParams) primarySnaphotView.getLayoutParams();
+        float additionalOffset;
+        if (deviceProfile.isLandscape) {
+            additionalOffset = (taskView.getWidth() - snapshotParams.leftMargin)
+                    * topLeftTaskPlusDividerPercent;
+            taskMenuView.setX(taskMenuView.getX() + additionalOffset);
+        } else {
+            additionalOffset = (taskView.getHeight() - snapshotParams.topMargin)
+                    * topLeftTaskPlusDividerPercent;
+            taskMenuView.setY(taskMenuView.getY() + additionalOffset);
+        }
+    }
+
+    @Override
     public Pair<Float, Float> getDwbLayoutTranslations(int taskViewWidth,
             int taskViewHeight, SplitBounds splitBounds, DeviceProfile deviceProfile,
             View[] thumbnailViews, int desiredTaskId, View banner) {
