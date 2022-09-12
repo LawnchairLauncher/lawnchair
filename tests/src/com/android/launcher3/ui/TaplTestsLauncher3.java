@@ -214,9 +214,9 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         // Test that ensureWorkspaceIsScrollable adds a page by dragging an icon there.
         executeOnLauncher(launcher -> assertFalse("Initial workspace state is scrollable",
                 isWorkspaceScrollable(launcher)));
-        workspace.verifyWorkspaceAppIconIsGone(
-                "Chrome app was found on empty workspace", "Chrome");
-
+        assertEquals("Initial workspace doesn't have the correct page", workspace.pagesPerScreen(),
+                workspace.getPageCount());
+        workspace.verifyWorkspaceAppIconIsGone("Chrome app was found on empty workspace", "Chrome");
         workspace.ensureWorkspaceIsScrollable();
 
         executeOnLauncher(
