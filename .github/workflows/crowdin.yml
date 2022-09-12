@@ -24,7 +24,6 @@ jobs:
       uses: crowdin/github-action@1.4.12
       with:
         upload_sources: true
-        upload_translations: true
         download_translations: true
         localization_branch_name: 12.1-dev-localization
         create_pull_request: true
