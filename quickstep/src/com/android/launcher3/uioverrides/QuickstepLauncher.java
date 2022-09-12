@@ -117,8 +117,6 @@ import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.TouchController;
-import com.android.launcher3.util.UiThreadHelper;
-import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
 import com.android.launcher3.util.ViewCapture;
 import com.android.launcher3.widget.LauncherAppWidgetHost;
 import com.android.quickstep.OverviewCommandHelper;
@@ -160,11 +158,6 @@ public class QuickstepLauncher extends Launcher {
             SystemProperties.getBoolean("persist.wm.debug.enable_pip_keep_clear_algorithm", false);
 
     public static final boolean GO_LOW_RAM_RECENTS_ENABLED = false;
-    /**
-     * Reusable command for applying the shelf height on the background thread.
-     */
-    public static final AsyncCommand SET_SHELF_HEIGHT = (context, arg1, arg2) ->
-            SystemUiProxy.INSTANCE.get(context).setShelfHeight(arg1 != 0, arg2);
 
     private FixedContainerItems mAllAppsPredictions;
     private HotseatPredictionController mHotseatPredictionController;
@@ -349,8 +342,7 @@ public class QuickstepLauncher extends Launcher {
                 boolean visible = (state == NORMAL || state == OVERVIEW)
                         && (willUserBeActive || isUserActive())
                         && !profile.isVerticalBarLayout();
-                UiThreadHelper.runAsyncCommand(this, SET_SHELF_HEIGHT, visible ? 1 : 0,
-                        profile.hotseatBarSizePx);
+                SystemUiProxy.INSTANCE.get(this).setShelfHeight(visible, profile.hotseatBarSizePx);
             }
         }
         if (state == NORMAL && !inTransition) {
