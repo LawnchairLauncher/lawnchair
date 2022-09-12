@@ -91,8 +91,8 @@
     <string name="icon_shape_system">Sistem</string>
     <string name="icon_shape_circle">Yuvarlak</string>
     <string name="icon_shape_cylinder">Silindir</string>
-    <string name="icon_shape_diamond">Diamond</string>
-    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_diamond">Elmas</string>
+    <string name="icon_shape_egg">Yumurta</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Octagon</string>
     <string name="icon_shape_sammy">One UI</string>
@@ -131,10 +131,10 @@
     <string name="hex">Hex</string>
     <string name="color_sliders">Sliders</string>
     <string name="action_copy">Kopyala</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_paste">Yapıştır</string>
     <string name="copied_toast">Panoya kopyalandı.</string>
     <string name="invalid_color">Geçersiz Renk</string>
-    <string name="launcher_default_color">Default</string>
+    <string name="launcher_default_color">Varsayılan</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Ana Ekrana Yeni Uygulamalar Ekleyin</string>
@@ -153,7 +153,7 @@
     <string name="home_screen_unlock">Ana Ekranın Kilidini Aç</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">Açılır Pencerede Kilit Düğmesini Göster</string>
-    <string name="home_screen_locked">Home Screen is locked.</string>
+    <string name="home_screen_locked">Ana Ekran kilitli.</string>
     <string name="status_bar_label">Durum Çubuğu</string>
     <string name="show_status_bar">Durum Çubuğunu Göster</string>
     <string name="dark_status_bar_label">Koyu Durum Çubuğu</string>
@@ -199,7 +199,7 @@
     <string name="smartspace_calendar_gregorian">Gregorian</string>
     <string name="smartspace_calendar_persian">Persian</string>
     <string name="smartspace_preferences">Tercihler</string>
-    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
+    <string name="smartspace_widget_toggle_label">Ana ekrannda göster</string>
     <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
@@ -245,7 +245,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Simge Arka Plan Saydamlığı</string>
-    <string name="folder_preview_bg_color_label">Icon Background Color</string>
+    <string name="folder_preview_bg_color_label">İkon ArkaPlan Rengi</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Maksimum Klasör Sütunları</string>
     <string name="max_folder_rows">Maksimum Klasör Sıraları</string>

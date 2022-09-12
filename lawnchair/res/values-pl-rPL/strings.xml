@@ -134,7 +134,7 @@
     <string name="action_paste">Wklej</string>
     <string name="copied_toast">Skopiowano do schowka.</string>
     <string name="invalid_color">Nieprawidłowy kolor</string>
-    <string name="launcher_default_color">Default</string>
+    <string name="launcher_default_color">Domyślnie</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Dodaj nowe aplikacje do ekranu głównego</string>
@@ -247,7 +247,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Przezroczystość tła ikon</string>
-    <string name="folder_preview_bg_color_label">Icon Background Color</string>
+    <string name="folder_preview_bg_color_label">Kolor tła ikony</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Maks. liczba kolumn folderu</string>
     <string name="max_folder_rows">Maks. liczba wierszy folderu</string>
