@@ -19,6 +19,8 @@ package app.lawnchair
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -162,6 +164,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
 
     private val themeProvider by lazy { ThemeProvider.INSTANCE.get(this) }
     private lateinit var colorScheme: ColorScheme
+    private var mOldConfig: Configuration? = null
 
     private val noStatusBarStateListener = object : StateManager.StateListener<LauncherState> {
         override fun onStateTransitionStart(toState: LauncherState) {
@@ -183,6 +186,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         savedStateRegistryController.performRestore(savedInstanceState)
         super.onCreate(savedInstanceState)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+        mOldConfig = Configuration(resources.configuration)
 
         prefs.launcherTheme.subscribeChanges(this, ::updateTheme)
 
@@ -359,6 +363,16 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         return defaultOverlay
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        if (isNightConfigChanged(newConfig)) {
+            // Reload icons when night mode changes
+            // Done to avoid incorrect icons being shown when the active icon pack is dynamic
+            forceReloadIcons()
+        }
+        mOldConfig = newConfig
+        super.onConfigurationChanged(newConfig)
+    }
+
     private fun restartIfPending() {
         when {
             sRestartFlags and FLAG_RESTART != 0 -> lawnchairApp.restart(false)
@@ -388,6 +402,26 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         if (sRestartFlags == 0) {
             recreate()
         }
+    }
+
+    /**
+     * Reset the value of [PreferenceManager.iconPackPackage] to force reload icons in the launcher.
+     */
+    private fun forceReloadIcons() {
+        val iconPack = prefs.iconPackPackage.get()
+        if (iconPack != "") {
+            prefs.iconPackPackage.set("")
+            prefs.iconPackPackage.set(iconPack)
+        }
+    }
+
+    private fun isNightConfigChanged(newConfig: Configuration): Boolean {
+        return newConfig.diff(mOldConfig) and ActivityInfo.CONFIG_UI_MODE != 0 &&
+            newConfig.isOnDarkMode() != mOldConfig?.isOnDarkMode()
+    }
+
+    private fun Configuration.isOnDarkMode(): Boolean {
+        return uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
     }
 
     companion object {
