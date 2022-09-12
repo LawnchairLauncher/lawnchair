@@ -689,12 +689,13 @@ public class TaskView extends FrameLayout implements Reusable {
     /**
      * Launch of the current task (both live and inactive tasks) with an animation.
      */
-    public void launchTasks() {
+    public RunnableList launchTasks() {
         RecentsView recentsView = getRecentsView();
         RemoteTargetHandle[] remoteTargetHandles = recentsView.mRemoteTargetHandles;
+        RunnableList runnableList = new RunnableList();
         if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask() && remoteTargetHandles != null) {
             if (!mIsClickableAsLiveTile) {
-                return;
+                return runnableList;
             }
 
             mIsClickableAsLiveTile = false;
@@ -721,7 +722,7 @@ public class TaskView extends FrameLayout implements Reusable {
                 // here, try to launch the task as a non live tile task.
                 launchTaskAnimated();
                 mIsClickableAsLiveTile = true;
-                return;
+                return runnableList;
             }
 
             AnimatorSet anim = new AnimatorSet();
@@ -746,13 +747,24 @@ public class TaskView extends FrameLayout implements Reusable {
                         launchTaskAnimated();
                     }
                     mIsClickableAsLiveTile = true;
+                    runEndCallback();
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    runEndCallback();
+                }
+
+                private void runEndCallback() {
+                    runnableList.executeAllAndDestroy();
                 }
             });
             anim.start();
             recentsView.onTaskLaunchedInLiveTileMode();
         } else {
-            launchTaskAnimated();
+            return launchTaskAnimated();
         }
+        return runnableList;
     }
 
     /**
