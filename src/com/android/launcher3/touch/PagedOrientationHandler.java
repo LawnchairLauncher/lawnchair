@@ -231,6 +231,14 @@ public interface PagedOrientationHandler {
     int getTaskDragDisplacementFactor(boolean isRtl);
 
     /**
+     * Calls the corresponding {@link View#setX(float)} or {@link View#setY(float)}
+     * on {@param taskMenuView} by taking the space needed by {@param primarySnapshotView} into
+     * account.
+     * This is expected to only be called for secondary (bottom/right) tasks.
+     */
+    void setSecondaryTaskMenuPosition(SplitBounds splitBounds, View taskView,
+            DeviceProfile deviceProfile, View primarySnaphotView, View taskMenuView);
+    /**
      * Maps the velocity from the coordinate plane of the foreground app to that
      * of Launcher's (which now will always be portrait)
      */
