@@ -39,11 +39,6 @@ public class UiThreadHelper {
                 .sendToTarget();
     }
 
-    public static void setBackButtonAlphaAsync(Context context, AsyncCommand command, float alpha,
-            boolean animate) {
-        runAsyncCommand(context, command, Float.floatToIntBits(alpha), animate ? 1 : 0);
-    }
-
     public static void runAsyncCommand(Context context, AsyncCommand command, int arg1, int arg2) {
         Message.obtain(HANDLER.get(context), MSG_RUN_COMMAND, arg1, arg2, command).sendToTarget();
     }
