@@ -9,7 +9,7 @@ WallpaperPicker/gen/
 WallpaperPicker/.project.properties
 bin/
 .idea/*
-!.idea/icon.png
+!.idea/icon.pngdfd
 .gradle/
 local.properties
 **/build/**
