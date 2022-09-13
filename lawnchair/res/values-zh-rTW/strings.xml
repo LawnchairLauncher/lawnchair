@@ -47,8 +47,8 @@
     <string name="font_picker_description">部分文字可能無法套用。</string>
     <string name="smartspace_calendar_label">自訂資訊一覽日曆</string>
     <string name="smartspace_calendar_description">允許顯示非公曆的日期</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <string name="workspace_increase_max_grid_size_label">解除主畫面網格限制</string>
+    <string name="workspace_increase_max_grid_size_description">將主畫面網格最多 10 x 10 的限制提升至 20 x 20。</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">旋轉主螢幕</string>
     <string name="home_screen_rotaton_description">當手機旋轉時</string>
@@ -91,13 +91,13 @@
     <string name="icon_shape_system">系統</string>
     <string name="icon_shape_circle">圓形</string>
     <string name="icon_shape_cylinder">圓柱形</string>
-    <string name="icon_shape_diamond">Diamond</string>
-    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_diamond">鑽石型</string>
+    <string name="icon_shape_egg">蛋形</string>
     <string name="icon_shape_cupertino">iOS</string>
-    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_octagon">八角形</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">圓角矩形</string>
-    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_sharp_square">尖銳方形</string>
     <string name="icon_shape_square">方形</string>
     <string name="icon_shape_squircle">方圓形</string>
     <string name="icon_shape_teardrop">水滴形</string>
@@ -131,10 +131,10 @@
     <string name="hex">Hex 色碼</string>
     <string name="color_sliders">滑桿</string>
     <string name="action_copy">複製</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_paste">貼上</string>
     <string name="copied_toast">已複製到剪貼簿</string>
     <string name="invalid_color">無效色彩</string>
-    <string name="launcher_default_color">Default</string>
+    <string name="launcher_default_color">預設</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">將應用程式圖示新增到主螢幕</string>
@@ -149,11 +149,11 @@
     <string name="layout">版面</string>
     <string name="home_screen_grid">主螢幕網格</string>
     <string name="home_screen_lock">鎖定主螢幕</string>
-    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_lock_description">防止主畫面版面更動。</string>
     <string name="home_screen_unlock">解鎖主螢幕</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">在彈出視窗中顯示鎖定按鈕</string>
-    <string name="home_screen_locked">Home Screen is locked.</string>
+    <string name="home_screen_locked">主畫面已鎖定。</string>
     <string name="status_bar_label">Status Bar</string>
     <string name="show_status_bar">顯示狀態列</string>
     <string name="dark_status_bar_label">深色狀態列</string>
@@ -186,9 +186,9 @@
     <string name="smartspace_date_and_time">日期與時間</string>
     <string name="smartspace_date">日期</string>
     <string name="smartspace_time">時間</string>
-    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_format">時間格式</string>
     <string name="smartspace_time_follow_system">系統設定</string>
-    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
+    <string name="smartspace_time_12_hour_format">十二小時制</string>
     <string name="smartspace_time_24_hour_format">24 小時制</string>
     <string name="smartspace_weather">天氣</string>
     <string name="smartspace_battery_status">電量狀態</string>
@@ -199,8 +199,8 @@
     <string name="smartspace_calendar_gregorian">公曆</string>
     <string name="smartspace_calendar_persian">伊朗曆</string>
     <string name="smartspace_preferences">偏好設定</string>
-    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <string name="smartspace_widget_toggle_label">在主畫面上顯示</string>
+    <string name="smartspace_widget_toggle_description">在主畫面上放置「Lawnchair」小工具即可手動新增「資訊一覽」。</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">搜尋列</string>
@@ -244,7 +244,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">圖示背景透明度</string>
-    <string name="folder_preview_bg_color_label">Icon Background Color</string>
+    <string name="folder_preview_bg_color_label">圖示背景色彩</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">最大資料夾行數</string>
     <string name="max_folder_rows">最大資料夾列數</string>

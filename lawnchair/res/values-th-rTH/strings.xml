@@ -34,7 +34,7 @@
     <string name="gestures_label">ท่าทาง</string>
     <string name="gestures_description">การกดและการปัด</string>
     <string name="quickstep_label">แอพที่ใช้งานล่าสุด</string>
-    <string name="quickstep_description">Clear All Button, Corner Radius</string>
+    <string name="quickstep_description">ล้างปุ่มทั้งหมด, รัศมีมุม</string>
     <string name="about_label">เกี่ยวกับ</string>
     <!-- <string name="version" /> (unknown source) -->
     <!-- PreferencesOverflowMenu() in PreferencesDashboard -->
@@ -46,9 +46,9 @@
     <string name="font_picker_label">การปรับแต่งแบบอักษร</string>
     <string name="font_picker_description">ข้อความบางส่วนยังไม่ถูกเปลี่ยนแปลง</string>
     <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <string name="smartspace_calendar_description">อนุญาตให้แสดงวันที่ในระบบปฏิทินที่ไม่ใช่แบบเกรกอเรียน</string>
+    <string name="workspace_increase_max_grid_size_label">เพิ่มขนาดกริดหน้าจอหลักสูงสุดแล้ว</string>
+    <string name="workspace_increase_max_grid_size_description">เพิ่มขนาดกริดหน้าจอหลักสูงสุดที่อนุญาตจาก 10 x 10 เป็น 20 x 20</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">อนุญาตให้หมุนหน้าจอหลัก</string>
     <string name="home_screen_rotaton_description">เมื่อหมุนโทรศัพท์</string>
@@ -67,15 +67,15 @@
     <!-- Notification popup -->
     <string name="missing_notification_access_label">ต้องการการอนุญาติให้เข้าถึงการแจ้งเตือน</string>
     <string name="missing_notification_access_description">ต้องการการอนุญาติให้เข้าถึงการแจ้งเตือน</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
+    <string name="msg_missing_notification_access">เพื่อใช้ Notification Dots, กรุณาอนุญาตให้ <xliff:g id="name" example="My App">%1$s</xliff:g>เข้าถึงการแจ้งเตือน</string>
     <string name="title_change_settings">เปลี่ยนการตั้งค่า</string>
     <string name="colors">สี</string>
     <string name="theme_label">ธีม</string>
     <string name="theme_light">สว่าง</string>
     <string name="theme_dark">มืด</string>
     <string name="theme_system_default">ระบบ</string>
-    <string name="theme_follow_wallpaper">Match Wallpaper</string>
-    <string name="accent_color">Accent Color</string>
+    <string name="theme_follow_wallpaper">เข้ากับภาพพื้นหลัง</string>
+    <string name="accent_color">สีที่ใช้เน้น</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">ชุดไอคอน</string>
@@ -90,17 +90,17 @@
     <!-- <string name="icon_shape_label" /> -->
     <string name="icon_shape_system">ระบบ</string>
     <string name="icon_shape_circle">วงกลม</string>
-    <string name="icon_shape_cylinder">Cylinder</string>
+    <string name="icon_shape_cylinder">ทรงกระบอก</string>
     <string name="icon_shape_diamond">เพชร</string>
-    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_egg">ทรงรูปไข่</string>
     <string name="icon_shape_cupertino">iOS</string>
-    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_octagon">ทรงแปดเหลี่ยม</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">สี่เหลี่ยมขอบมน</string>
-    <string name="icon_shape_sharp_square">Sharp Square</string>
-    <string name="icon_shape_square">Square</string>
-    <string name="icon_shape_squircle">Squircle</string>
-    <string name="icon_shape_teardrop">Teardrop</string>
+    <string name="icon_shape_sharp_square">ทรงจตุรัสมีขอบมนเล็กน้อย</string>
+    <string name="icon_shape_square">ทรงสี่เหลี่ยมจัตุรัส</string>
+    <string name="icon_shape_squircle">ทรงจตุรัสมีขอบมนมาก</string>
+    <string name="icon_shape_teardrop">ทรงหยดน้ำ</string>
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">เพิ่มแบบอักษร</string>
     <string name="pref_fonts_add_fonts_summary">รองรับไฟล์ฟอน์ตสกุล OTF &amp; TTF</string>
@@ -118,7 +118,7 @@
     <string name="reset_font">รีเซ็ต</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Dynamic</string>
-    <string name="presets">Presets</string>
+    <string name="presets">ค่าที่ตั้งไว้แล้ว</string>
     <string name="custom">ปรับแต่ง</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">แดง</string>
@@ -129,11 +129,11 @@
     <string name="hsb_saturation">ความอิ่มตัวของสี</string>
     <string name="hsb_brightness">ความสว่างของแสง</string>
     <string name="hex">Hex</string>
-    <string name="color_sliders">Sliders</string>
+    <string name="color_sliders">การเลื่อน</string>
     <string name="action_copy">คัดลอก</string>
     <string name="action_paste">วาง</string>
-    <string name="copied_toast">Copied to clipboard.</string>
-    <string name="invalid_color">Invalid Color</string>
+    <string name="copied_toast">คัดลอกไปยังคลิปบอร์ด</string>
+    <string name="invalid_color">สีไม่ถูกต้อง</string>
     <string name="launcher_default_color">ค่าเริ่มต้น</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
@@ -142,14 +142,14 @@
     <string name="minus_one_enable">ฟีดข่าวสาร</string>
     <string name="minus_one_unavailable">ยังไม่ได้ติดตั้ง Feed</string>
     <string name="wallpaper">ภาพพื้นหลัง</string>
-    <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="wallpaper_depth_effect_label">Wallpaper Depth Effect</string>
+    <string name="wallpaper_scrolling_label">เลื่อนพื้นหลัง</string>
+    <string name="wallpaper_depth_effect_label">เอฟเฟกต์ความลึกของพื้นหลัง</string>
     <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
-    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_sys_ui_scrim">เงาด้านบน</string>
     <string name="layout">การจัดหน้า</string>
     <string name="home_screen_grid">ขนาดกริด</string>
     <string name="home_screen_lock">ล็อกหน้าแรก</string>
-    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_lock_description">ป้องกันการเปลี่ยนแปลงของวัตถุบนหน้าจอหลัก</string>
     <string name="home_screen_unlock">ปลดล็อคหน้าแรก</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
@@ -161,10 +161,10 @@
     <string name="icon_size">ขนาดไอคอน</string>
     <string name="show_home_labels">แสดงชื่อแอป</string>
     <string name="label_size">ขนาดตัวอักษร</string>
-    <string name="reset_custom_icons">Reset Custom Icons</string>
-    <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
+    <string name="reset_custom_icons">คืนค่าไอคอนที่กำหนดเอง</string>
+    <string name="reset_custom_icons_confirmation">ไอคอนที่กำหนดเองทั้งหมดจะถูกคืนเป็นค่าเริ่มต้น, คุณต้องการดำเนินการต่อหรือไม่?</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
-    <string name="force_rounded_widgets">Rounded Corners</string>
+    <string name="force_rounded_widgets">มุมโค้งมน</string>
     <string name="allow_widget_overlap">อนุญาตให้ซ้อนทับกัน</string>
     <!-- HomeScreenGridPreferences -->
     <!-- <string name="home_screen_grid" /> -->
@@ -176,43 +176,43 @@
     <string name="smartspace_battery_charging">กำลังชาร์จ</string>
     <string name="smartspace_battery_full">ชาร์จแล้ว</string>
     <string name="smartspace_battery_low">แบตเตอร์รี่ต่ำ</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
-    <string name="accessibility_smartspace_page">Page %1$d of %2$d</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d% — จะเต็มในอีก %2$s"</string>
+    <string name="accessibility_smartspace_page">หน้าที่ %1$d จากทั้งหมด %2$d หน้า</string>
     <string name="smartspace_widget">At a Glance</string>
-    <string name="smartspace_widget_description">What to Show</string>
-    <string name="smartspace_widget_placeholder_date">Fri, Mar 3</string>
-    <string name="preview_label">Preview</string>
+    <string name="smartspace_widget_description">สิ่งที่อยากให้แสดง</string>
+    <string name="smartspace_widget_placeholder_date">วันศุกร์, 3 มีนาคม</string>
+    <string name="preview_label">แสดงตัวอย่าง</string>
     <string name="smartspace_calendar">ปฏิทิน</string>
-    <string name="smartspace_date_and_time">Date &amp; Time</string>
+    <string name="smartspace_date_and_time">วันที่ &amp; เวลา</string>
     <string name="smartspace_date">วันที่</string>
     <string name="smartspace_time">เวลา</string>
-    <string name="smartspace_time_format">Time Format</string>
-    <string name="smartspace_time_follow_system">Follow System</string>
-    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
-    <string name="smartspace_time_24_hour_format">24-Hour Format</string>
+    <string name="smartspace_time_format">รูปแบบเวลา</string>
+    <string name="smartspace_time_follow_system">ตามเวลาของระบบ</string>
+    <string name="smartspace_time_12_hour_format">รูปแบบ 12 ชั่วโมง</string>
+    <string name="smartspace_time_24_hour_format">รูปแบบ 24 ชั่วโมง</string>
     <string name="smartspace_weather">สภาพอากาศ</string>
-    <string name="smartspace_battery_status">Battery Status</string>
-    <string name="smartspace_now_playing">Now Playing</string>
+    <string name="smartspace_battery_status">สถานะแบตเตอรี่</string>
+    <string name="smartspace_now_playing">กำลังเล่น</string>
     <string name="smartspace_requires_setup">แตะเพื่อตั้งค่า</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
+    <string name="event_provider_missing_notification_dots">เพื่อใช้ <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, กรุณาเปิดการใช้งาน Notification Dots</string>
     <string name="smartspace_media_info_separator">" — "</string>
-    <string name="smartspace_calendar_gregorian">Gregorian</string>
+    <string name="smartspace_calendar_gregorian">เกรกอเรียน</string>
     <string name="smartspace_calendar_persian">Persian</string>
     <string name="smartspace_preferences">ปรับแต่ง</string>
-    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
+    <string name="smartspace_widget_toggle_label">แสดงบนหน้าจอหลัก</string>
     <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="search_bar_label">Search Bar</string>
+    <string name="search_bar_label">แถบการค้นหา</string>
     <string name="hotseat_qsb_label">แสดงแถบค้นหา</string>
-    <string name="corner_radius_label">Corner Radius</string>
-    <string name="apply_accent_color_label">Apply Accent Color</string>
-    <string name="search_provider">Search Provider</string>
+    <string name="corner_radius_label">รัศมีมุม</string>
+    <string name="apply_accent_color_label">ใช้งานสีที่เน้น</string>
+    <string name="search_provider">ผู้ให้บริการค้นหา</string>
     <string name="grid">กริด</string>
     <string name="dock_icons">จำนวนไอคอน</string>
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
-    <string name="search_provider_app_search">App Search</string>
+    <string name="search_provider_app_search">ค้นหาแอพ</string>
     <string name="app_label">แอป</string>
     <string name="website_label">เว็บไซต์</string>
     <string name="qsb_search_provider_app_required">จำเป็นต้องมีแอป</string>
@@ -228,7 +228,7 @@
     <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">จำนวนคอลัมน์</string>
-    <string name="row_height_label">Row Height</string>
+    <string name="row_height_label">ความสูงของแถว</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -243,8 +243,8 @@
     <!-- FolderPreferences -->
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
-    <string name="folder_preview_bg_opacity_label">Icon Background Opacity</string>
-    <string name="folder_preview_bg_color_label">Icon Background Color</string>
+    <string name="folder_preview_bg_opacity_label">ความทึบของพื้นหลังไอคอน</string>
+    <string name="folder_preview_bg_color_label">สีพื้นหลังของไอคอน</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">จำนวนคอลัมน์</string>
     <string name="max_folder_rows">จำนวนแถว</string>
@@ -253,28 +253,28 @@
     <string name="gesture_double_tap">แตะสองครั้ง</string>
     <string name="gesture_swipe_up">ปัดขึ้น</string>
     <string name="gesture_swipe_down">ปัดลง</string>
-    <string name="gesture_home_tap">Home Button Tap</string>
-    <string name="gesture_back_tap">Back Button Tap</string>
+    <string name="gesture_home_tap">แตะปุ่มโฮม</string>
+    <string name="gesture_back_tap">แตะปุ่มย้อนกลับ</string>
     <string name="gesture_handler_no_op">ไม่ทำอะไร</string>
     <string name="gesture_handler_sleep">นอน</string>
-    <string name="gesture_handler_open_notifications">Open Notification Panel</string>
+    <string name="gesture_handler_open_notifications">เปิดแผงการแจ้งเตือน</string>
     <string name="gesture_handler_open_app_option">เปิดแอป</string>
-    <string name="gesture_handler_open_app_config">Open %1$s</string>
-    <string name="gesture_handler_open_app_drawer">Open App Drawer</string>
-    <string name="gesture_handler_open_app_search">Open App Search</string>
-    <string name="gesture_handler_open_search">Open Search</string>
+    <string name="gesture_handler_open_app_config">เปิด %1$s</string>
+    <string name="gesture_handler_open_app_drawer">เปิดรายการแอพ</string>
+    <string name="gesture_handler_open_app_search">เปิดการค้นหาแอพ</string>
+    <string name="gesture_handler_open_search">เปิดการค้นหา</string>
     <string name="pick_app_for_gesture">เลือกแอป</string>
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="translucent_background">พื้นหลังโปร่งแสง</string>
-    <string name="recents_actions_label">Quick Actions</string>
+    <string name="recents_actions_label">การกระทำด่วน</string>
     <!-- <string name="screenshot" /> (unknown source) -->
-    <string name="action_share">Share</string>
-    <string name="action_lens">Lens</string>
-    <string name="recents_clear_all">Clear All</string>
-    <string name="window_corner_radius_label">Screen Corner Radius</string>
-    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
+    <string name="action_share">แชร์</string>
+    <string name="action_lens">เลนส์</string>
+    <string name="recents_clear_all">ล้างทั้งหมด</string>
+    <string name="window_corner_radius_label">หน้าจอขอบมน</string>
+    <string name="override_window_corner_radius_label">ปรับแต่งขอบมนของหน้าจอ</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="taskbar_label">Taskbar</string>
     <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
@@ -286,16 +286,16 @@
     <string name="development">การพัฒนา</string>
     <string name="quickswitch_maintenance">ผู้ดูแล QuickSwitch</string>
     <string name="devops">DevOps</string>
-    <string name="support_and_pr">ความข่วยเหลือ &amp; PR</string>
+    <string name="support_and_pr">ความช่วยเหลือ &amp; ประชาสัมพันธ์</string>
     <!--
       <string name="support" />
       <string name="support_and_pr" />
       -->
     <string name="acknowledgements">ใบอนุญาตโอเพนซอร์ส</string>
-    <string name="translate">แปลภาษาจร้า</string>
+    <string name="translate">ช่วยแปลภาษาหน่อยจร้า</string>
     <!-- IconPickerPreference -->
     <string name="icon_picker_default_category">ไอคอน</string>
-    <string name="icon_picker_reset_to_default">Reset to Default</string>
+    <string name="icon_picker_reset_to_default">กลับเป็นค่าเริ่มต้น</string>
     <string name="icon_pack_external_picker">Open External Picker</string>
     <string name="pick_icon_from_label">เลือกไอคอนจาก</string>
     <string name="icon_picker_load_failed">ไม่สามารถโหลดไอคอนเพิ่มเติมได้</string>
@@ -306,57 +306,57 @@
     <string name="all_apps_no_search_results">ไม่พบแอปที่ตรงกับ \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
     <string name="dt2s_admin_hint_title">จำเป็นต้องมีสิทธิ์ผู้จัดการระบบ</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
-    <string name="dt2s_admin_warning">Double-Tap to Sleep will be turned off.</string>
-    <string name="dt2s_a11y_hint_title">Turn on Accessibility Service</string>
+    <string name="dt2s_admin_warning">แตะสองครั้งเพื่อเข้าสู่โหมดสลีป หน้าจอจะถูกปิด</string>
+    <string name="dt2s_a11y_hint_title">เปิดบริการการช่วยการเข้าถึง</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
     <string name="dt2s_warning_open_settings">เปิดการตั้งค่า</string>
-    <string name="loading">Loading…</string>
+    <string name="loading">กำลังโหลด…</string>
     <string name="system">ระบบ</string>
-    <string name="customize_button_text">Customize</string>
+    <string name="customize_button_text">ปรับแต่ง</string>
     <string name="label">Label</string>
-    <string name="hide_from_drawer">Hide from App Drawer</string>
-    <string name="suggestion_pref_screen_title">Suggestions</string>
-    <string name="n_percent">%1$d%%</string>
+    <string name="hide_from_drawer">ซ่อนจากรายการแอพ</string>
+    <string name="suggestion_pref_screen_title">คำแนะนำ</string>
+    <string name="n_percent">%1$d %</string>
     <!-- Bug reporting -->
-    <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
-    <string name="crash_report_notif_title">%1$s Crashed</string>
-    <string name="action_upload_crash_report">Upload Crash Log</string>
-    <string name="action_copy_link">Copy Link</string>
-    <string name="action_upload_error">Upload failed</string>
-    <string name="dogbin_uploading">Uploading…</string>
-    <string name="bugreport_channel_name">Bug Reports</string>
-    <string name="status_channel_name">Upload Status</string>
-    <string name="bugreport_group_summary">%d new reports.</string>
-    <string name="bugreport_group_summary_multiple">Multiple new reports.</string>
+    <string name="lawnchair_bug_report">รายงานข้อผิดพลาดให้กับ Lawnchair</string>
+    <string name="crash_report_notif_title">%1$s ทำงานผิดพลาด</string>
+    <string name="action_upload_crash_report">อัปโหลด Log ข้อผิดพลาด</string>
+    <string name="action_copy_link">คัดลอกลิงก์</string>
+    <string name="action_upload_error">อัปโหลดไม่สำเร็จ</string>
+    <string name="dogbin_uploading">กำลังอัปโหลด…</string>
+    <string name="bugreport_channel_name">รายงานข้อผิดพลาด</string>
+    <string name="status_channel_name">สถานะการอัปโหลด</string>
+    <string name="bugreport_group_summary">%d รายงานใหม่</string>
+    <string name="bugreport_group_summary_multiple">รายงานใหม่หลายฉบับ</string>
     <!-- Search ig -->
-    <string name="show_search_result_types">Show in Search Results</string>
-    <string name="search_pref_result_people_title">People</string>
-    <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
+    <string name="show_search_result_types">แสดงในผลการค้นหา</string>
+    <string name="search_pref_result_people_title">ผู้คน</string>
+    <string name="search_pref_result_shortcuts_title">ทางลัดแอพ</string>
     <string name="search_pref_result_tips_title">Pixel Tips</string>
-    <string name="all_apps_device_search_hint">Search</string>
-    <string name="search_input_action_clear_results">Clear Search Box</string>
-    <string name="label_search">Search</string>
+    <string name="all_apps_device_search_hint">ค้นหา</string>
+    <string name="search_input_action_clear_results">ล้างช่องค้นหา</string>
+    <string name="label_search">ค้นหา</string>
     <string name="label_lens">Google Lens</string>
-    <string name="label_voice_search">Voice Search</string>
-    <string name="all_apps_search_market_message">Search for More Apps</string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
-    <string name="quickstep_incompatible">Incompatible System Integration</string>
+    <string name="label_voice_search">ค้นหาด้วยเสียง</string>
+    <string name="all_apps_search_market_message">ค้นหาแอพเพิ่มเติม</string>
+    <string name="error_no_market_or_browser_installed">ยังไม่ได้ติดตั้งแอพสโตร์หรือเบราว์เซอร์</string>
+    <string name="quickstep_incompatible">ระบบไม่สามารถเข้ากันได้</string>
     <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
-    <string name="delete">Delete</string>
+    <string name="delete">ลบ</string>
     <!-- Backup -->
-    <string name="create_backup">Create Backup</string>
-    <string name="create_backup_action">Create</string>
-    <string name="what_to_backup">What to Back Up</string>
-    <string name="backup_content_layout_and_settings">Layout and Settings</string>
-    <string name="backup_content_wallpaper">Wallpaper</string>
-    <string name="backup_create_success">Backup created.</string>
-    <string name="backup_create_error">Failed to create backup.</string>
-    <string name="restore_backup">Restore Backup</string>
-    <string name="restore_backup_action">Restore</string>
-    <string name="what_to_restore">What to Restore</string>
-    <string name="backup_restore_success">Backup restored.</string>
-    <string name="backup_restore_error">Failed to restore backup.</string>
-    <string name="invalid_backup_file">Invalid backup file.</string>
-    <string name="x_by_y">%1$d × %2$d</string>
+    <string name="create_backup">สร้างข้อมูลสำรอง</string>
+    <string name="create_backup_action">สร้างการสำรองข้อมูล</string>
+    <string name="what_to_backup">สิ่งที่ต้องสำรองข้อมูล</string>
+    <string name="backup_content_layout_and_settings">การจัดหน้าและการตั้งค่า</string>
+    <string name="backup_content_wallpaper">ภาพพื้นหลัง</string>
+    <string name="backup_create_success">การสำรองข้อมูลถูกสร้างแล้ว</string>
+    <string name="backup_create_error">สร้างข้อมูลสำรองไม่สำเร็จ</string>
+    <string name="restore_backup">คืนค่าการสำรองข้อมูล</string>
+    <string name="restore_backup_action">การคืนค่า</string>
+    <string name="what_to_restore">สิ่งที่ต้องการคืนค่า</string>
+    <string name="backup_restore_success">ข้อมูลสำรองถูกคืนค่าแล้ว</string>
+    <string name="backup_restore_error">ไม่สามารถกู้คืนข้อมูลสำรอง</string>
+    <string name="invalid_backup_file">ไฟล์สำรองข้อมูลไม่ถูกต้อง</string>
+    <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
 </resources>
