@@ -21,25 +21,25 @@ import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
 import static android.util.DisplayMetrics.DENSITY_DEVICE_STABLE;
 
 import static com.android.launcher3.Utilities.dpiFromPx;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.window.WindowManagerProxy.MIN_TABLET_WIDTH;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.os.Handler;
+import android.os.Message;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DisplayController;
-import com.android.launcher3.util.UiThreadHelper;
 
 /**
  * Utility class to manage launcher rotation
  */
 public class RotationHelper implements OnSharedPreferenceChangeListener,
         DisplayController.DisplayInfoChangeListener {
-
-    private static final String TAG = "RotationHelper";
 
     public static final String ALLOW_ROTATION_PREFERENCE_KEY = "pref_allowRotation";
 
@@ -60,6 +60,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
 
     private BaseActivity mActivity;
     private SharedPreferences mSharedPrefs = null;
+    private final Handler mRequestOrientationHandler;
 
     private boolean mIgnoreAutoRotateSettings;
     private boolean mForceAllowRotationForTesting;
@@ -89,6 +90,8 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
 
     public RotationHelper(BaseActivity activity) {
         mActivity = activity;
+        mRequestOrientationHandler =
+                new Handler(UI_HELPER_EXECUTOR.getLooper(), this::setOrientationAsync);
     }
 
     private void setIgnoreAutoRotateSettings(boolean ignoreAutoRotateSettings) {
@@ -202,8 +205,13 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
         }
         if (activityFlags != mLastActivityFlags) {
             mLastActivityFlags = activityFlags;
-            UiThreadHelper.setOrientationAsync(mActivity, activityFlags);
+            mRequestOrientationHandler.sendEmptyMessage(activityFlags);
         }
+    }
+
+    private boolean setOrientationAsync(Message msg) {
+        mActivity.setRequestedOrientation(msg.what);
+        return true;
     }
 
     /**
