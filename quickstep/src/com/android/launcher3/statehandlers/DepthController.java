@@ -165,7 +165,8 @@ public class DepthController extends BaseDepthController implements StateHandler
 
         float toDepth = toState.getDepth(mLauncher);
         if (Float.compare(mDepth, toDepth) != 0) {
-            animation.setFloat(this, DEPTH, toDepth, config.getInterpolator(ANIM_DEPTH, LINEAR));
+            animation.setFloat(this, STATE_DEPTH, toDepth,
+                    config.getInterpolator(ANIM_DEPTH, LINEAR));
         }
     }
 
@@ -179,7 +180,7 @@ public class DepthController extends BaseDepthController implements StateHandler
     public void onMultiWindowModeChanged(boolean isInMultiWindowMode) {
         mIgnoreStateChangesDuringMultiWindowAnimation = true;
 
-        ObjectAnimator mwAnimation = ObjectAnimator.ofFloat(this, DEPTH,
+        ObjectAnimator mwAnimation = ObjectAnimator.ofFloat(this, STATE_DEPTH,
                 mLauncher.getStateManager().getState().getDepth(mLauncher, isInMultiWindowMode))
                 .setDuration(300);
         mwAnimation.addListener(new AnimatorListenerAdapter() {
