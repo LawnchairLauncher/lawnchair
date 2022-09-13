@@ -167,7 +167,7 @@ public class GroupedTaskView extends TaskView {
     @Override
     protected boolean showTaskMenuWithContainer(IconView iconView) {
         boolean showedTaskMenu = super.showTaskMenuWithContainer(iconView);
-        if (iconView == mIconView2 && showedTaskMenu && !isGridTask()) {
+        if (iconView == mIconView2 && showedTaskMenu && !mActivity.getDeviceProfile().isTablet) {
             // Adjust the position of the secondary task's menu view (only on phones)
             TaskMenuView taskMenuView = getAnyView(mActivity, AbstractFloatingView.TYPE_TASK_MENU);
             DeviceProfile deviceProfile = mActivity.getDeviceProfile();
