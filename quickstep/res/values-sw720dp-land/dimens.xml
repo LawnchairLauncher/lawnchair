@@ -17,4 +17,7 @@
 <resources>
     <!--  Overview actions  -->
     <dimen name="overview_actions_top_margin">20dp</dimen>
+
+    <!-- All Set page-->
+    <dimen name="allset_page_margin_bottom">24dp</dimen>
 </resources>
