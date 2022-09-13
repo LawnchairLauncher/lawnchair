@@ -85,9 +85,10 @@ public abstract class Launchable {
     }
 
     Point startDrag(long downTime, Runnable expectLongClickEvents, boolean runToSpringLoadedState) {
-        final Point iconCenter = getObject().getVisibleCenter();
-        final Point dragStartCenter = new Point(iconCenter.x,
-                iconCenter.y - getStartDragThreshold());
+        Point iconCenter = getObject().getVisibleCenter();
+        final Point displaySize = mLauncher.getRealDisplaySize();
+        final Point dragStartCenter = new Point(displaySize.x / 2,
+                displaySize.y / 2 - getStartDragThreshold());
 
         if (runToSpringLoadedState) {
             mLauncher.runToState(() -> movePointerForStartDrag(
