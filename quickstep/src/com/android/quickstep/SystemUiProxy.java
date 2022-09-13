@@ -17,7 +17,6 @@ package com.android.quickstep;
 
 import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
 
-import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.app.ActivityManager;
@@ -43,8 +42,6 @@ import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 import android.window.IOnBackInvokedCallback;
 
-import com.android.launcher3.util.DisplayController;
-import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.systemui.shared.recents.ISystemUiProxy;
@@ -72,7 +69,7 @@ import java.util.Arrays;
 /**
  * Holds the reference to SystemUI.
  */
-public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayInfoChangeListener {
+public class SystemUiProxy implements ISystemUiProxy {
     private static final String TAG = SystemUiProxy.class.getSimpleName();
 
     public static final MainThreadInitializedObject<SystemUiProxy> INSTANCE =
@@ -107,26 +104,13 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
     // Used to dedupe calls to SystemUI
     private int mLastShelfHeight;
     private boolean mLastShelfVisible;
-    private float mLastNavButtonAlpha;
-    private boolean mLastNavButtonAnimate;
-    private boolean mHasNavButtonAlphaBeenSet = false;
-    private Runnable mPendingSetNavButtonAlpha = null;
     private Context mContext;
 
     // TODO(141886704): Find a way to remove this
     private int mLastSystemUiStateFlags;
 
     public SystemUiProxy(Context context) {
-        DisplayController.INSTANCE.get(context).addChangeListener(this);
         mContext = context;
-    }
-
-    @Override
-    public void onDisplayInfoChanged(Context context, Info info, int flags) {
-        if ((flags & CHANGE_NAVIGATION_MODE) != 0) {
-            // Whenever the nav mode changes, force reset the nav button alpha
-            setNavBarButtonAlpha(1f, false);
-        }
     }
 
     @Override
@@ -207,11 +191,6 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
         if (mBackAnimation != null && mBackToLauncherCallback != null) {
             setBackToLauncherCallback(mBackToLauncherCallback);
         }
-
-        if (mPendingSetNavButtonAlpha != null) {
-            mPendingSetNavButtonAlpha.run();
-            mPendingSetNavButtonAlpha = null;
-        }
     }
 
     public void clearProxy() {
@@ -270,31 +249,6 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
                 mSystemUiProxy.onOverviewShown(fromHome);
             } catch (RemoteException e) {
                 Log.w(tag, "Failed call onOverviewShown from: " + (fromHome ? "home" : "app"), e);
-            }
-        }
-    }
-
-    public float getLastNavButtonAlpha() {
-        return mLastNavButtonAlpha;
-    }
-
-    @Override
-    public void setNavBarButtonAlpha(float alpha, boolean animate) {
-        boolean changed = Float.compare(alpha, mLastNavButtonAlpha) != 0
-                || animate != mLastNavButtonAnimate
-                || !mHasNavButtonAlphaBeenSet;
-        if (changed) {
-            if (mSystemUiProxy == null) {
-                mPendingSetNavButtonAlpha = () -> setNavBarButtonAlpha(alpha, animate);
-            } else {
-                mLastNavButtonAlpha = alpha;
-                mLastNavButtonAnimate = animate;
-                mHasNavButtonAlphaBeenSet = true;
-                try {
-                    mSystemUiProxy.setNavBarButtonAlpha(alpha, animate);
-                } catch (RemoteException e) {
-                    Log.w(TAG, "Failed call setNavBarButtonAlpha", e);
-                }
             }
         }
     }
@@ -941,8 +895,7 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
         if (mRecentTasks != null
                 && mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_PC)) {
             try {
-                return new ArrayList<ActivityManager.RunningTaskInfo>(
-                        Arrays.asList(mRecentTasks.getRunningTasks(numTasks)));
+                return new ArrayList<>(Arrays.asList(mRecentTasks.getRunningTasks(numTasks)));
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call getRunningTasks", e);
             }

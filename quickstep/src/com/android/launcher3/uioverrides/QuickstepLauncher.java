@@ -17,14 +17,11 @@ package com.android.launcher3.uioverrides;
 
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
 
-import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
-import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
 import static com.android.launcher3.LauncherState.ALL_APPS;
-import static com.android.launcher3.LauncherState.FLAG_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.NO_OFFSET;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -47,7 +44,6 @@ import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
-import static com.android.launcher3.util.NavigationMode.TWO_BUTTONS;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 
 import android.animation.AnimatorSet;
@@ -72,7 +68,6 @@ import android.window.SplashScreen;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -96,7 +91,6 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.proxy.ProxyActivityStarter;
 import com.android.launcher3.proxy.StartActivityParams;
-import com.android.launcher3.statehandlers.BackButtonAlphaHandler;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
@@ -171,12 +165,6 @@ public class QuickstepLauncher extends Launcher {
      */
     public static final AsyncCommand SET_SHELF_HEIGHT = (context, arg1, arg2) ->
             SystemUiProxy.INSTANCE.get(context).setShelfHeight(arg1 != 0, arg2);
-    /**
-     * Reusable command for applying the back button alpha on the background thread.
-     */
-    public static final AsyncCommand SET_BACK_BUTTON_ALPHA =
-            (context, arg1, arg2) -> SystemUiProxy.INSTANCE.get(context).setNavBarButtonAlpha(
-                    Float.intBitsToFloat(arg1), arg2 != 0);
 
     private FixedContainerItems mAllAppsPredictions;
     private HotseatPredictionController mHotseatPredictionController;
@@ -299,11 +287,6 @@ public class QuickstepLauncher extends Launcher {
 
     @Override
     protected void onActivityFlagsChanged(int changeBits) {
-        if ((changeBits
-                & (ACTIVITY_STATE_WINDOW_FOCUSED | ACTIVITY_STATE_TRANSITION_ACTIVE)) != 0) {
-            onLauncherStateOrFocusChanged();
-        }
-
         if ((changeBits & ACTIVITY_STATE_STARTED) != 0) {
             mDepthController.setActivityStarted(isStarted());
         }
@@ -729,7 +712,6 @@ public class QuickstepLauncher extends Launcher {
         super.collectStateHandlers(out);
         out.add(getDepthController());
         out.add(new RecentsViewStateController(this));
-        out.add(new BackButtonAlphaHandler(this));
     }
 
     public DepthController getDepthController() {
@@ -785,39 +767,6 @@ public class QuickstepLauncher extends Launcher {
     public float[] getNormalOverviewScaleAndOffset() {
         return DisplayController.getNavigationMode(this).hasGestures
                 ? new float[] {1, 1} : new float[] {1.1f, NO_OFFSET};
-    }
-
-    @Override
-    public void onDragLayerHierarchyChanged() {
-        onLauncherStateOrFocusChanged();
-    }
-
-    public boolean shouldBackButtonBeHidden(LauncherState toState) {
-        NavigationMode mode = DisplayController.getNavigationMode(this);
-        boolean shouldBackButtonBeHidden = mode.hasGestures
-                && toState.hasFlag(FLAG_HIDE_BACK_BUTTON)
-                && hasWindowFocus()
-                && (getActivityFlags() & ACTIVITY_STATE_TRANSITION_ACTIVE) == 0;
-        if (shouldBackButtonBeHidden) {
-            // Show the back button if there is a floating view visible.
-            shouldBackButtonBeHidden = AbstractFloatingView.getTopOpenViewWithType(this,
-                    TYPE_ALL & ~TYPE_HIDE_BACK_BUTTON) == null;
-        }
-        return shouldBackButtonBeHidden;
-    }
-
-    /**
-     * Sets the back button visibility based on the current state/window focus.
-     */
-    private void onLauncherStateOrFocusChanged() {
-        boolean shouldBackButtonBeHidden = shouldBackButtonBeHidden(getStateManager().getState());
-        if (DisplayController.getNavigationMode(this) == TWO_BUTTONS) {
-            UiThreadHelper.setBackButtonAlphaAsync(this, SET_BACK_BUTTON_ALPHA,
-                    shouldBackButtonBeHidden ? 0f : 1f, true /* animate */);
-        }
-        if (getDragLayer() != null) {
-            getRootView().setDisallowBackGesture(shouldBackButtonBeHidden);
-        }
     }
 
     @Override
