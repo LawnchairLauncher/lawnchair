@@ -165,6 +165,8 @@ import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.TopTaskTracker;
 import com.android.quickstep.ViewUtils;
+import com.android.quickstep.util.ActiveGestureErrorDetector;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RecentsOrientedState;
@@ -1236,6 +1238,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Override
     protected void onPageEndTransition() {
         super.onPageEndTransition();
+        ActiveGestureLog.INSTANCE.addLog(
+                "onPageEndTransition: current page index updated", mCurrentPage);
         if (isClearAllHidden() && !mActivity.getDeviceProfile().isTablet) {
             mActionsView.updateDisabledFlags(OverviewActionsView.DISABLED_SCROLLING, false);
         }
@@ -1424,6 +1428,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         setCurrentPage(0);
 
         updateGridProperties();
+    }
+
+    @Override
+    protected void onScrollerAnimationAborted() {
+        ActiveGestureLog.INSTANCE.addLog("scroller animation aborted",
+                ActiveGestureErrorDetector.GestureEvent.SCROLLER_ANIMATION_ABORTED);
     }
 
     protected void applyLoadPlan(ArrayList<GroupTask> taskGroups) {
