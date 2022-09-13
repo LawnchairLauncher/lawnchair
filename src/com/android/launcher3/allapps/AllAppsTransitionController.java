@@ -42,7 +42,7 @@ import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
-import com.android.launcher3.util.MultiAdditivePropertyFactory;
+import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.views.ScrimView;
 
@@ -141,9 +141,9 @@ public class AllAppsTransitionController
 
     private ScrimView mScrimView;
 
-    private final MultiAdditivePropertyFactory<View>
-            mAppsViewTranslationYPropertyFactory = new MultiAdditivePropertyFactory<>(
-            "appsViewTranslationY", View.TRANSLATION_Y);
+    private final MultiPropertyFactory<View>
+            mAppsViewTranslationYPropertyFactory = new MultiPropertyFactory<>(
+            "appsViewTranslationY", View.TRANSLATION_Y, Float::sum);
     private MultiValueAlpha mAppsViewAlpha;
 
     private boolean mIsTablet;

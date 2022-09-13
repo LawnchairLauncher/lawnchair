@@ -22,6 +22,7 @@ import static com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_LANDS
 import static com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_PORTRAIT;
 import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.Utilities.pxFromSp;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ICON_OVERLAP_FACTOR;
 import static com.android.launcher3.icons.GraphicsUtils.getShapePath;
 import static com.android.launcher3.testing.shared.ResourceUtils.pxFromDp;
@@ -181,11 +182,19 @@ public class DeviceProfile {
     private final int hotseatQsbShadowHeight;
     public int hotseatBorderSpace;
 
+    // Bottom sheets
+    public int bottomSheetTopPadding;
+    public int bottomSheetOpenDuration;
+    public int bottomSheetCloseDuration;
+    public float bottomSheetWorkspaceScale;
+    public float bottomSheetDepth;
+
     // All apps
     public Point allAppsBorderSpacePx;
     public int allAppsShiftRange;
     public int allAppsTopPadding;
-    public int bottomSheetTopPadding;
+    public int allAppsOpenDuration;
+    public int allAppsCloseDuration;
     public int allAppsCellHeightPx;
     public int allAppsCellWidthPx;
     public int allAppsIconSizePx;
@@ -316,6 +325,21 @@ public class DeviceProfile {
         bottomSheetTopPadding = mInsets.top // statusbar height
                 + res.getDimensionPixelSize(R.dimen.bottom_sheet_extra_top_padding)
                 + (isTablet ? 0 : edgeMarginPx); // phones need edgeMarginPx additional padding
+        bottomSheetOpenDuration = res.getInteger(R.integer.config_bottomSheetOpenDuration);
+        bottomSheetCloseDuration = res.getInteger(R.integer.config_bottomSheetCloseDuration);
+        if (isTablet) {
+            bottomSheetWorkspaceScale = workspaceContentScale;
+            // The goal is to set wallpaper to zoom at workspaceContentScale when in AllApps.
+            // When depth is 0, wallpaper zoom is set to maxWallpaperScale.
+            // When depth is 1, wallpaper zoom is set to 1.
+            // For depth to achieve zoom set to maxWallpaperScale * workspaceContentScale:
+            float maxWallpaperScale = res.getFloat(R.dimen.config_wallpaperMaxScale);
+            bottomSheetDepth = Utilities.mapToRange(maxWallpaperScale * workspaceContentScale,
+                    maxWallpaperScale, 1f, 0f, 1f, LINEAR);
+        } else {
+            bottomSheetWorkspaceScale = 1f;
+            bottomSheetDepth = 0f;
+        }
 
         folderLabelTextScale = res.getFloat(R.dimen.folder_label_text_scale);
         folderContentPaddingLeftRight =
@@ -474,6 +498,8 @@ public class DeviceProfile {
             allAppsShiftRange =
                     res.getDimensionPixelSize(R.dimen.all_apps_starting_vertical_translate);
         }
+        allAppsOpenDuration = res.getInteger(R.integer.config_allAppsOpenDuration);
+        allAppsCloseDuration = res.getInteger(R.integer.config_allAppsCloseDuration);
 
         flingToDeleteThresholdVelocity = res.getDimensionPixelSize(
                 R.dimen.drag_flingToDeleteMinVelocity);
@@ -1434,9 +1460,15 @@ public class DeviceProfile {
         writer.println(prefix + pxToDpStr("folderTopPadding", folderContentPaddingTop));
 
         writer.println(prefix + pxToDpStr("bottomSheetTopPadding", bottomSheetTopPadding));
+        writer.println(prefix + "\tbottomSheetOpenDuration: " + bottomSheetOpenDuration);
+        writer.println(prefix + "\tbottomSheetCloseDuration: " + bottomSheetCloseDuration);
+        writer.println(prefix + "\tbottomSheetWorkspaceScale: " + bottomSheetWorkspaceScale);
+        writer.println(prefix + "\tbottomSheetDepth: " + bottomSheetDepth);
 
         writer.println(prefix + pxToDpStr("allAppsShiftRange", allAppsShiftRange));
         writer.println(prefix + pxToDpStr("allAppsTopPadding", allAppsTopPadding));
+        writer.println(prefix + "\tallAppsOpenDuration: " + allAppsOpenDuration);
+        writer.println(prefix + "\tallAppsCloseDuration: " + allAppsCloseDuration);
         writer.println(prefix + pxToDpStr("allAppsIconSizePx", allAppsIconSizePx));
         writer.println(prefix + pxToDpStr("allAppsIconTextSizePx", allAppsIconTextSizePx));
         writer.println(prefix + pxToDpStr("allAppsIconDrawablePaddingPx",
