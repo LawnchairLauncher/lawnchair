@@ -215,6 +215,11 @@ public class ActiveGestureLog {
         return mCurrentLogId++;
     }
 
+    /** Returns the current log ID. This should be used when a log trace is being reused. */
+    public int getLogId() {
+        return mCurrentLogId;
+    }
+
     private boolean isEntrySame(
             EventEntry entry,
             int type,
