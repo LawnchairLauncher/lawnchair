@@ -42,9 +42,9 @@ public class AllAppsState extends LauncherState {
     @Override
     public <DEVICE_PROFILE_CONTEXT extends Context & DeviceProfileListenable>
     int getTransitionDuration(DEVICE_PROFILE_CONTEXT context, boolean isToState) {
-        return !context.getDeviceProfile().isTablet && isToState
-                ? 600
-                : isToState ? 500 : 300;
+        return isToState
+                ? context.getDeviceProfile().allAppsOpenDuration
+                : context.getDeviceProfile().allAppsCloseDuration;
     }
 
     @Override

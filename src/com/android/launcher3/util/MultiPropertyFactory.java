@@ -20,7 +20,6 @@ import android.util.ArrayMap;
 import android.util.FloatProperty;
 import android.util.Log;
 import android.util.Property;
-import android.view.View;
 
 /**
  * Allows to combine multiple values set by several sources.
@@ -30,43 +29,55 @@ import android.view.View;
  * time.
  *
  * This class behaves similarly to [MultiValueAlpha], but is meant to be more abstract and reusable.
- * It sets the addition of all values.
+ * It aggregate all values using the provided [aggregator].
  *
  * @param <T> Type where to apply the property.
  */
-public class MultiAdditivePropertyFactory<T extends View> {
+public class MultiPropertyFactory<T> {
 
     private static final boolean DEBUG = false;
-    private static final String TAG = "MultiAdditivePropertyFactory";
+    private static final String TAG = "MultiPropertyFactory";
     private final String mName;
-    private final ArrayMap<Integer, MultiAdditiveProperty> mProperties =
-            new ArrayMap<>();
+    private final ArrayMap<Integer, MultiProperty> mProperties = new ArrayMap<>();
 
     // This is an optimization for cases when set is called repeatedly with the same setterIndex.
     private float mAggregationOfOthers = 0f;
     private Integer mLastIndexSet = -1;
-    private final Property<View, Float> mProperty;
+    private final Property<T, Float> mProperty;
+    private final FloatBiFunction mAggregator;
 
-    public MultiAdditivePropertyFactory(String name, Property<View, Float> property) {
+    /**
+     * Represents a function that accepts two float and produces a float.
+     */
+    public interface FloatBiFunction {
+        /**
+         * Applies this function to the given arguments.
+         */
+        float apply(float a, float b);
+    }
+
+    public MultiPropertyFactory(String name, Property<T, Float> property,
+            FloatBiFunction aggregator) {
         mName = name;
         mProperty = property;
+        mAggregator = aggregator;
     }
 
     /** Returns the [MultiFloatProperty] associated with [inx], creating it if not present. */
-    public MultiAdditiveProperty get(Integer index) {
+    public MultiProperty get(Integer index) {
         return mProperties.computeIfAbsent(index,
-                (k) -> new MultiAdditiveProperty(index, mName + "_" + index));
+                (k) -> new MultiProperty(index, mName + "_" + index));
     }
 
     /**
      * Each [setValue] will be aggregated with the other properties values created by the
      * corresponding factory.
      */
-    class MultiAdditiveProperty extends FloatProperty<T> {
+    class MultiProperty extends FloatProperty<T> {
         private final int mInx;
         private float mValue = 0f;
 
-        MultiAdditiveProperty(int inx, String name) {
+        MultiProperty(int inx, String name) {
             super(name);
             mInx = inx;
         }
@@ -77,12 +88,13 @@ public class MultiAdditivePropertyFactory<T extends View> {
                 mAggregationOfOthers = 0f;
                 mProperties.forEach((key, property) -> {
                     if (key != mInx) {
-                        mAggregationOfOthers += property.mValue;
+                        mAggregationOfOthers =
+                                mAggregator.apply(mAggregationOfOthers, property.mValue);
                     }
                 });
                 mLastIndexSet = mInx;
             }
-            float lastAggregatedValue = mAggregationOfOthers + newValue;
+            float lastAggregatedValue = mAggregator.apply(mAggregationOfOthers, newValue);
             mValue = newValue;
             apply(obj, lastAggregatedValue);
 
@@ -94,13 +106,13 @@ public class MultiAdditivePropertyFactory<T extends View> {
         }
 
         @Override
-        public Float get(T view) {
+        public Float get(T object) {
             // The scale of the view should match mLastAggregatedValue. Still, if it has been
             // changed without using this property, it can differ. As this get method is usually
             // used to set the starting point on an animation, this would result in some jumps
             // when the view scale is different than the last aggregated value. To stay on the
             // safe side, let's return the real view scale.
-            return mProperty.get(view);
+            return mProperty.get(object);
         }
 
         @Override
@@ -109,7 +121,7 @@ public class MultiAdditivePropertyFactory<T extends View> {
         }
     }
 
-    protected void apply(View view, float value) {
-        mProperty.set(view, value);
+    protected void apply(T object, float value) {
+        mProperty.set(object, value);
     }
 }
