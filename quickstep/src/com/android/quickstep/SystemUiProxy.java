@@ -18,6 +18,7 @@ package com.android.quickstep;
 import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.app.ActivityManager;
 import android.app.PendingIntent;
@@ -31,8 +32,10 @@ import android.content.pm.ShortcutInfo;
 import android.graphics.Insets;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.IBinder.DeathRecipient;
+import android.os.Message;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.util.Log;
@@ -41,6 +44,8 @@ import android.view.RemoteAnimationAdapter;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 import android.window.IOnBackInvokedCallback;
+
+import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SplitConfigurationOptions;
@@ -75,6 +80,8 @@ public class SystemUiProxy implements ISystemUiProxy {
     public static final MainThreadInitializedObject<SystemUiProxy> INSTANCE =
             new MainThreadInitializedObject<>(SystemUiProxy::new);
 
+    private static final int MSG_SET_SHELF_HEIGHT = 1;
+
     private ISystemUiProxy mSystemUiProxy;
     private IPip mPip;
     private ISysuiUnlockAnimationController mSysuiUnlockAnimationController;
@@ -104,13 +111,16 @@ public class SystemUiProxy implements ISystemUiProxy {
     // Used to dedupe calls to SystemUI
     private int mLastShelfHeight;
     private boolean mLastShelfVisible;
-    private Context mContext;
+
+    private final Context mContext;
+    private final Handler mAsyncHandler;
 
     // TODO(141886704): Find a way to remove this
     private int mLastSystemUiStateFlags;
 
     public SystemUiProxy(Context context) {
         mContext = context;
+        mAsyncHandler = new Handler(UI_HELPER_EXECUTOR.getLooper(), this::handleMessageAsync);
     }
 
     @Override
@@ -437,12 +447,20 @@ public class SystemUiProxy implements ISystemUiProxy {
      * Sets the shelf height.
      */
     public void setShelfHeight(boolean visible, int shelfHeight) {
+        Message.obtain(mAsyncHandler, MSG_SET_SHELF_HEIGHT,
+                visible ? 1 : 0 , shelfHeight).sendToTarget();
+    }
+
+    @WorkerThread
+    private void setShelfHeightAsync(int visibleInt, int shelfHeight) {
+        boolean visible = visibleInt != 0;
         boolean changed = visible != mLastShelfVisible || shelfHeight != mLastShelfHeight;
-        if (mPip != null && changed) {
+        IPip pip = mPip;
+        if (pip != null && changed) {
             mLastShelfVisible = visible;
             mLastShelfHeight = shelfHeight;
             try {
-                mPip.setShelfHeight(visible, shelfHeight);
+                pip.setShelfHeight(visible, shelfHeight);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call setShelfHeight visible: " + visible
                         + " height: " + shelfHeight, e);
@@ -901,5 +919,15 @@ public class SystemUiProxy implements ISystemUiProxy {
             }
         }
         return new ArrayList<>();
+    }
+
+    private boolean handleMessageAsync(Message msg) {
+        switch (msg.what) {
+            case MSG_SET_SHELF_HEIGHT:
+                setShelfHeightAsync(msg.arg1, msg.arg2);
+                return true;
+        }
+
+        return false;
     }
 }
