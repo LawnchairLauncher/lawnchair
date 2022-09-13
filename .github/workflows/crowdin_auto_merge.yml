@@ -4,7 +4,17 @@ on:
   pull_request:
       
 jobs:
-      
+
+  debug:
+    name: Debug
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo ${{ github.event.pull_request.user.login }}
+          echo ${{ github.event.pull_request.title }}
+          echo ${{ github.event.pull_request.user.login == 'github-actions' }}
+          echo ${{ github.event.pull_request.title == 'New Crowdin translations by Github Action' }}
+
   build-debug-apk:
     name: Build debug APK
     runs-on: ubuntu-latest
