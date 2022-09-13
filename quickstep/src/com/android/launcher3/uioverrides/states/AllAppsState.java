@@ -16,7 +16,6 @@
 package com.android.launcher3.uioverrides.states;
 
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_ALLAPPS;
 
 import android.content.Context;
@@ -26,7 +25,6 @@ import com.android.launcher3.DeviceProfile.DeviceProfileListenable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Themes;
 
 /**
@@ -44,9 +42,9 @@ public class AllAppsState extends LauncherState {
     @Override
     public <DEVICE_PROFILE_CONTEXT extends Context & DeviceProfileListenable>
     int getTransitionDuration(DEVICE_PROFILE_CONTEXT context, boolean isToState) {
-        return context.getDeviceProfile().isTablet
-                ? 500
-                :  isToState ? 600 : 300;
+        return isToState
+                ? context.getDeviceProfile().allAppsOpenDuration
+                : context.getDeviceProfile().allAppsCloseDuration;
     }
 
     @Override
@@ -83,15 +81,7 @@ public class AllAppsState extends LauncherState {
     protected <DEVICE_PROFILE_CONTEXT extends Context & DeviceProfile.DeviceProfileListenable>
             float getDepthUnchecked(DEVICE_PROFILE_CONTEXT context) {
         if (context.getDeviceProfile().isTablet) {
-            // The goal is to set wallpaper to zoom at workspaceContentScale when in AllApps.
-            // When depth is 0, wallpaper zoom is set to maxWallpaperScale.
-            // When depth is 1, wallpaper zoom is set to 1.
-            // For depth to achieve zoom set to maxWallpaperScale * workspaceContentScale:
-            float maxWallpaperScale = context.getResources().getFloat(
-                    com.android.internal.R.dimen.config_wallpaperMaxScale);
-            return Utilities.mapToRange(
-                    maxWallpaperScale * context.getDeviceProfile().workspaceContentScale,
-                    maxWallpaperScale, 1f, 0f, 1f, LINEAR);
+            return context.getDeviceProfile().bottomSheetDepth;
         } else {
             // The scrim fades in at approximately 50% of the swipe gesture.
             // This means that the depth should be greater than 1, in order to fully zoom out.
