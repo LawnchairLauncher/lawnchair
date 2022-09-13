@@ -47,6 +47,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 
 @SmallTest
@@ -58,7 +59,7 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
 
     private static final String TAG = ReorderWidgets.class.getSimpleName();
 
-    TestWorkspaceBuilder mBoardBuilder;
+    TestWorkspaceBuilder mWorkspaceBuilder;
 
     private View getViewAt(int cellX, int cellY) {
         return getFromLauncher(l -> l.getWorkspace().getScreenWithId(
@@ -76,7 +77,7 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
 
     @Before
     public void setup() throws Throwable {
-        mBoardBuilder = new TestWorkspaceBuilder(this);
+        mWorkspaceBuilder = new TestWorkspaceBuilder(this, mTargetContext);
         TaplTestsLauncher3.initialize(this);
         clearHomescreen();
     }
@@ -87,7 +88,7 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
     private boolean validateBoard(CellLayoutBoard board) {
         boolean match = true;
         Point cellDimensions = getCellDimensions();
-        for (CellLayoutBoard.WidgetRect widgetRect: board.getWidgets()) {
+        for (CellLayoutBoard.WidgetRect widgetRect : board.getWidgets()) {
             if (widgetRect.shouldIgnore()) {
                 continue;
             }
@@ -108,10 +109,13 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
         return match;
     }
 
-    private void runTestCase(ReorderTestCase testCase) {
+    private void runTestCase(ReorderTestCase testCase)
+            throws ExecutionException, InterruptedException {
         Point mainWidgetCellPos = testCase.mStart.getMain();
 
-        mBoardBuilder.buildBoard(testCase.mStart);
+        FavoriteItemsTransaction transaction =
+                new FavoriteItemsTransaction(mTargetContext, this);
+        mWorkspaceBuilder.buildFromBoard(testCase.mStart, transaction).commit();
 
         Widget widget = mLauncher.getWorkspace().getWidgetAtCell(mainWidgetCellPos.x,
                 mainWidgetCellPos.y);
@@ -132,7 +136,8 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
      *
      * @param testCaseMap map containing all the tests per grid size (Point)
      */
-    private void runTestCaseMap(Map<Point, ReorderTestCase> testCaseMap, String testName) {
+    private void runTestCaseMap(Map<Point, ReorderTestCase> testCaseMap, String testName)
+            throws ExecutionException, InterruptedException {
         Point iconGridDimensions = mLauncher.getWorkspace().getIconGridDimensions();
         Log.d(TAG, "Running test " + testName + " for grid " + iconGridDimensions);
         Assume.assumeTrue(
@@ -143,26 +148,26 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
 
     @ScreenRecord // b/242323136
     @Test
-    public void simpleReorder() {
+    public void simpleReorder()  throws ExecutionException, InterruptedException {
         runTestCaseMap(SimpleReorderCase.TEST_BY_GRID_SIZE,
                 SimpleReorderCase.class.getSimpleName());
     }
 
     @ScreenRecord // b/242323136
     @Test
-    public void pushTest() {
+    public void pushTest()  throws ExecutionException, InterruptedException {
         runTestCaseMap(PushReorderCase.TEST_BY_GRID_SIZE, PushReorderCase.class.getSimpleName());
     }
 
     @ScreenRecord // b/242323136
     @Test
-    public void fullReorder() {
+    public void fullReorder()  throws ExecutionException, InterruptedException {
         runTestCaseMap(FullReorderCase.TEST_BY_GRID_SIZE, FullReorderCase.class.getSimpleName());
     }
 
     @ScreenRecord // b/242323136
     @Test
-    public void moveOutReorder() {
+    public void moveOutReorder()  throws ExecutionException, InterruptedException {
         runTestCaseMap(MoveOutReorderCase.TEST_BY_GRID_SIZE,
                 MoveOutReorderCase.class.getSimpleName());
     }
