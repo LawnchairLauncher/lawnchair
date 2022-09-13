@@ -35,6 +35,7 @@ import android.view.animation.Interpolator;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.R;
 
 /** Coordinates the transition between Search and A-Z in All Apps. */
 public class SearchTransitionController {
@@ -144,8 +145,11 @@ public class SearchTransitionController {
             headerView.setAlpha(clampToProgress(searchToAzProgress, 0.8f, 1f));
 
             // Account for the additional padding added for the tabs.
-            appsTranslationY -=
-                    headerView.getPaddingTop() - headerView.getTabsAdditionalPaddingBottom();
+            appsTranslationY +=
+                    headerView.getTabsAdditionalPaddingBottom()
+                            + mAllAppsContainerView.getResources().getDimensionPixelOffset(
+                                    R.dimen.all_apps_tabs_margin_top)
+                            - headerView.getPaddingTop();
         }
 
         View appsContainer = mAllAppsContainerView.getAppsRecyclerViewContainer();
