@@ -33,8 +33,8 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.launcher3.util.MultiValueAlpha;
-import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.NavigationMode;
 import com.android.quickstep.TaskOverlayFactory.OverlayUICallbacks;
 import com.android.quickstep.util.LayoutUtils;
@@ -130,7 +130,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         mMultiValueAlpha.setUpdateVisibility(true);
 
         findViewById(R.id.action_screenshot).setOnClickListener(this);
-
         mSplitButton = findViewById(R.id.action_split);
         mSplitButton.setOnClickListener(this);
     }
@@ -177,7 +176,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             mHiddenFlags &= ~visibilityFlags;
         }
         boolean isHidden = mHiddenFlags != 0;
-        mMultiValueAlpha.getProperty(INDEX_HIDDEN_FLAGS_ALPHA).setValue(isHidden ? 0 : 1);
+        mMultiValueAlpha.get(INDEX_HIDDEN_FLAGS_ALPHA).setValue(isHidden ? 0 : 1);
     }
 
     /**
@@ -232,20 +231,20 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         updateSplitButtonEnabledState();
     }
 
-    public AlphaProperty getContentAlpha() {
-        return mMultiValueAlpha.getProperty(INDEX_CONTENT_ALPHA);
+    public MultiProperty getContentAlpha() {
+        return mMultiValueAlpha.get(INDEX_CONTENT_ALPHA);
     }
 
-    public AlphaProperty getVisibilityAlpha() {
-        return mMultiValueAlpha.getProperty(INDEX_VISIBILITY_ALPHA);
+    public MultiProperty getVisibilityAlpha() {
+        return mMultiValueAlpha.get(INDEX_VISIBILITY_ALPHA);
     }
 
-    public AlphaProperty getFullscreenAlpha() {
-        return mMultiValueAlpha.getProperty(INDEX_FULLSCREEN_ALPHA);
+    public MultiProperty getFullscreenAlpha() {
+        return mMultiValueAlpha.get(INDEX_FULLSCREEN_ALPHA);
     }
 
-    public AlphaProperty getShareTargetAlpha() {
-        return mMultiValueAlpha.getProperty(INDEX_SHARE_TARGET_ALPHA);
+    public MultiProperty getShareTargetAlpha() {
+        return mMultiValueAlpha.get(INDEX_SHARE_TARGET_ALPHA);
     }
 
     /**
