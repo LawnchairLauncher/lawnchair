@@ -1,6 +1,8 @@
-name: Crowdin Synchronization
+name: Crowdin Download
 
 on:
+  schedule:
+    - cron: '0 0 * * 0'
   workflow_dispatch:
 
 permissions:
@@ -10,7 +12,7 @@ permissions:
 jobs:
 
   synchronize-with-crowdin:
-    name: Synchronize with Crowdin
+    name: Download translations from Crowdin
     if: github.repository_owner == 'LawnchairLauncher'
     runs-on: ubuntu-latest
     steps:
@@ -18,11 +20,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Sync Translations
+    - name: Download translations
       uses: crowdin/github-action@1.4.13
       with:
         upload_translations: false
-        upload_sources: true
+        upload_sources: false
         download_translations: true
         localization_branch_name: 12.1-dev-localization
         create_pull_request: true
