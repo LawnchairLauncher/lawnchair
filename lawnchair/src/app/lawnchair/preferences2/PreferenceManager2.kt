@@ -87,6 +87,11 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         save = { it.toString() },
     )
 
+    val alwaysReloadIcons = preference(
+        key = booleanPreferencesKey(name = "always_reload_icons"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_always_reload_icons),
+    )
+
     val notificationDotColor = preference(
         key = stringPreferencesKey(name = "notification_dot_color"),
         parse = ColorOption::fromString,

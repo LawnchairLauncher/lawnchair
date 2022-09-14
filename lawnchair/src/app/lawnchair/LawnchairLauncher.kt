@@ -67,6 +67,7 @@ import com.android.launcher3.util.TouchController
 import com.android.launcher3.widget.RoundedCornerEnforcement
 import com.android.systemui.plugins.shared.LauncherOverlayManager
 import com.android.systemui.shared.system.QuickStepContract
+import com.patrykmichalik.opto.core.firstBlocking
 import com.patrykmichalik.opto.core.onEach
 import dev.kdrag0n.monet.theme.ColorScheme
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -394,12 +395,15 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
 
     /**
      * Reset the value of [PreferenceManager.iconPackPackage] to force reload icons in the launcher.
+     * Only reloads icons if there is an active icon pack & [PreferenceManager2.alwaysReloadIcons] is enabled.
      */
     private fun reloadIconsIfNeeded() {
-        val iconPack = prefs.iconPackPackage.get()
-        if (iconPack != "") {
-            prefs.iconPackPackage.set("")
-            prefs.iconPackPackage.set(iconPack)
+        if (preferenceManager2.alwaysReloadIcons.firstBlocking()) {
+            val iconPack = prefs.iconPackPackage.get()
+            if (iconPack != "") {
+                prefs.iconPackPackage.set("")
+                prefs.iconPackPackage.set(iconPack)
+            }
         }
     }
 
