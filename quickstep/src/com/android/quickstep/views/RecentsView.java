@@ -3391,10 +3391,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         boolean isCurrentSplit = getCurrentPageTaskView() instanceof GroupedTaskView;
         mActionsView.updateHiddenFlags(HIDDEN_SPLIT_SCREEN, isCurrentSplit);
         mActionsView.updateHiddenFlags(HIDDEN_SPLIT_SELECT_ACTIVE, isSplitSelectionActive());
-        mActionsView.updateSplitButtonFlags(FLAG_IS_NOT_TABLET,
+        mActionsView.updateSplitButtonHiddenFlags(FLAG_IS_NOT_TABLET,
                 !mActivity.getDeviceProfile().isTablet);
-        mActionsView.updateSplitButtonFlags(FLAG_SINGLE_TASK, getTaskViewCount() <= 1);
-        mActionsView.updateSplitButtonVisibility();
+        mActionsView.updateSplitButtonDisabledFlags(FLAG_SINGLE_TASK, getTaskViewCount() <= 1);
     }
 
     /**
