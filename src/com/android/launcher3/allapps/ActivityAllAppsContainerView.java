@@ -84,6 +84,7 @@ public class ActivityAllAppsContainerView<T extends Context & AppLauncher
 
     /** Invoke when the current search session is finished. */
     public void onClearSearchResult() {
+        getMainAdapterProvider().clearHighlightedItem();
         animateToSearchState(false);
         rebindAdapters();
     }
@@ -92,6 +93,7 @@ public class ActivityAllAppsContainerView<T extends Context & AppLauncher
      * Sets results list for search
      */
     public void setSearchResults(ArrayList<AdapterItem> results) {
+        getMainAdapterProvider().clearHighlightedItem();
         if (getSearchResultList().setSearchResults(results)) {
             getSearchRecyclerView().onSearchResultsChanged();
         }
