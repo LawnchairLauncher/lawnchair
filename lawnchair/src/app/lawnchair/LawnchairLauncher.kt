@@ -235,6 +235,8 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         colorScheme = themeProvider.colorScheme
 
         showQuickstepWarningIfNecessary()
+
+        reloadIconsIfNeeded()
     }
 
     override fun setupViews() {
@@ -387,6 +389,17 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     fun recreateIfNotScheduled() {
         if (sRestartFlags == 0) {
             recreate()
+        }
+    }
+
+    /**
+     * Reset the value of [PreferenceManager.iconPackPackage] to force reload icons in the launcher.
+     */
+    private fun reloadIconsIfNeeded() {
+        val iconPack = prefs.iconPackPackage.get()
+        if (iconPack != "") {
+            prefs.iconPackPackage.set("")
+            prefs.iconPackPackage.set(iconPack)
         }
     }
 
