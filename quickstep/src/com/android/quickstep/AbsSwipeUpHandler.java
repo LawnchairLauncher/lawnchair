@@ -87,6 +87,7 @@ import android.window.PictureInPictureSurfaceTransaction;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
+import com.android.internal.util.LatencyTracker;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
@@ -127,7 +128,6 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
-import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
@@ -622,8 +622,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
         Object traceToken = TraceHelper.INSTANCE.beginSection("logToggleRecents",
                 TraceHelper.FLAG_IGNORE_BINDERS);
-        LatencyTrackerCompat.logToggleRecents(
-                mContext, (int) (mLauncherFrameDrawnTime - mTouchTimeMs));
+        LatencyTracker.getInstance(mContext).logAction(LatencyTracker.ACTION_TOGGLE_RECENTS,
+                (int) (mLauncherFrameDrawnTime - mTouchTimeMs));
         TraceHelper.INSTANCE.endSection(traceToken);
 
         // This method is only called when STATE_GESTURE_STARTED is set, so we can enable the

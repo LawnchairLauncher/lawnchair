@@ -20,6 +20,7 @@ import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
+import android.app.KeyguardManager;
 import android.os.Build;
 import android.os.Process;
 import android.os.RemoteException;
@@ -31,7 +32,6 @@ import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.util.GroupTask;
 import com.android.systemui.shared.recents.model.Task;
-import com.android.systemui.shared.system.KeyguardManagerCompat;
 import com.android.wm.shell.recents.IRecentTasksListener;
 import com.android.wm.shell.util.GroupedRecentTaskInfo;
 import com.android.wm.shell.util.SplitBounds;
@@ -49,7 +49,7 @@ public class RecentTasksList {
 
     private static final TaskLoadResult INVALID_RESULT = new TaskLoadResult(-1, false, 0);
 
-    private final KeyguardManagerCompat mKeyguardManager;
+    private final KeyguardManager mKeyguardManager;
     private final LooperExecutor mMainThreadExecutor;
     private final SystemUiProxy mSysUiProxy;
 
@@ -66,8 +66,8 @@ public class RecentTasksList {
     // Tasks are stored in order of least recently launched to most recently launched.
     private ArrayList<ActivityManager.RunningTaskInfo> mRunningTasks;
 
-    public RecentTasksList(LooperExecutor mainThreadExecutor,
-            KeyguardManagerCompat keyguardManager, SystemUiProxy sysUiProxy) {
+    public RecentTasksList(LooperExecutor mainThreadExecutor, KeyguardManager keyguardManager,
+            SystemUiProxy sysUiProxy) {
         mMainThreadExecutor = mainThreadExecutor;
         mKeyguardManager = keyguardManager;
         mChangeId = 1;
