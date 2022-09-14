@@ -50,7 +50,6 @@ import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.CANCEL_RECENTS_ANIMATION;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.FINISH_RECENTS_ANIMATION;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.ON_SETTLED_ON_END_TARGET;
-import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.START_RECENTS_ANIMATION;
 import static com.android.quickstep.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
@@ -827,10 +826,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     public void onRecentsAnimationStart(RecentsAnimationController controller,
             RecentsAnimationTargets targets) {
         super.onRecentsAnimationStart(controller, targets);
-        ActiveGestureLog.INSTANCE.addLog(
-                /* event= */ "startRecentsAnimationCallback",
-                /* extras= */ targets.apps.length,
-                /* gestureEvent= */ START_RECENTS_ANIMATION);
         mRemoteTargetHandles = mTargetGluer.assignTargetsForSplitScreen(mContext, targets);
         mRecentsAnimationController = controller;
         mRecentsAnimationTargets = targets;
