@@ -1,5 +1,8 @@
 blank_issues_enabled: false
 contact_links:
+  - name: GitHub Discussions
+    url: https://github.com/LawnchairLauncher/lawnchair/discussions
+    about: Discuss anything related to Lawnchair, or ask and answer questions here.
   - name: Telegram support group
     url: https://t.me/lccommunity
     about: We recommend to go to this place if you wish to ask a question and want a quicker reply.
