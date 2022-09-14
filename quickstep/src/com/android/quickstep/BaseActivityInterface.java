@@ -50,6 +50,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statehandlers.DepthController;
+import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.TaskbarUIController;
@@ -138,6 +139,11 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
     @Nullable
     public DepthController getDepthController() {
+        return null;
+    }
+
+    @Nullable
+    public DesktopVisibilityController getDesktopVisibilityController() {
         return null;
     }
 
