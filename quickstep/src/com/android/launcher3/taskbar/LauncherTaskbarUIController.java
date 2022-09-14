@@ -15,9 +15,10 @@
  */
 package com.android.launcher3.taskbar;
 
+import static android.view.InsetsState.ITYPE_EXTRA_NAVIGATION_BAR;
+
 import static com.android.launcher3.taskbar.TaskbarLauncherStateController.FLAG_RESUMED;
 import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
-import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_EXTRA_NAVIGATION_BAR;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;

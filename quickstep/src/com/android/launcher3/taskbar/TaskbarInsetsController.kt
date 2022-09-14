@@ -20,6 +20,11 @@ import android.graphics.Region
 import android.view.InsetsFrameProvider
 import android.view.InsetsState.ITYPE_BOTTOM_MANDATORY_GESTURES
 import android.view.InsetsState
+import android.view.InsetsState.ITYPE_BOTTOM_TAPPABLE_ELEMENT
+import android.view.InsetsState.ITYPE_EXTRA_NAVIGATION_BAR
+import android.view.ViewTreeObserver
+import android.view.ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_FRAME
+import android.view.ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_REGION
 import android.view.WindowManager
 import android.view.WindowManager.LayoutParams.TYPE_INPUT_METHOD
 import android.view.WindowManager.LayoutParams.TYPE_VOICE_INTERACTION
@@ -29,9 +34,6 @@ import com.android.launcher3.DeviceProfile
 import com.android.launcher3.anim.AlphaUpdateListener
 import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarController
 import com.android.quickstep.KtR
-import com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo
-import com.android.systemui.shared.system.WindowManagerWrapper
-import com.android.systemui.shared.system.WindowManagerWrapper.*
 import java.io.PrintWriter
 
 /**
@@ -55,8 +57,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
         this.controllers = controllers
         windowLayoutParams = context.windowLayoutParams
 
-        val wmWrapper: WindowManagerWrapper = getInstance()
-        wmWrapper.setProvidesInsetsTypes(
+        setProvidesInsetsTypes(
             windowLayoutParams,
             intArrayOf(
                 ITYPE_EXTRA_NAVIGATION_BAR,
@@ -108,10 +109,22 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
     }
 
     /**
-     * Called to update the touchable insets.
-     * @see InsetsInfo.setTouchableInsets
+     * Sets {@param providesInsetsTypes} as the inset types provided by {@param params}.
+     * @param params The window layout params.
+     * @param providesInsetsTypes The inset types we would like this layout params to provide.
      */
-    fun updateInsetsTouchability(insetsInfo: InsetsInfo) {
+    fun setProvidesInsetsTypes(params: WindowManager.LayoutParams, providesInsetsTypes: IntArray) {
+        params.providedInsets = arrayOfNulls<InsetsFrameProvider>(providesInsetsTypes.size);
+        for (i in providesInsetsTypes.indices) {
+            params.providedInsets[i] = InsetsFrameProvider(providesInsetsTypes[i]);
+        }
+    }
+
+    /**
+     * Called to update the touchable insets.
+     * @see InternalInsetsInfo.setTouchableInsets
+     */
+    fun updateInsetsTouchability(insetsInfo: ViewTreeObserver.InternalInsetsInfo) {
         insetsInfo.touchableRegion.setEmpty()
         // Always have nav buttons be touchable
         controllers.navbarButtonsViewController.addVisibleButtonsRegion(
@@ -120,18 +133,18 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
         var insetsIsTouchableRegion = true
         if (context.dragLayer.alpha < AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD) {
             // Let touches pass through us.
-            insetsInfo.setTouchableInsets(InsetsInfo.TOUCHABLE_INSETS_REGION)
+            insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
         } else if (controllers.navbarButtonsViewController.isImeVisible) {
-            insetsInfo.setTouchableInsets(InsetsInfo.TOUCHABLE_INSETS_REGION)
+            insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
         } else if (!controllers.uiController.isTaskbarTouchable) {
             // Let touches pass through us.
-            insetsInfo.setTouchableInsets(InsetsInfo.TOUCHABLE_INSETS_REGION)
+            insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
         } else if (controllers.taskbarDragController.isSystemDragInProgress) {
             // Let touches pass through us.
-            insetsInfo.setTouchableInsets(InsetsInfo.TOUCHABLE_INSETS_REGION)
+            insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
         } else if (AbstractFloatingView.hasOpenView(context, TYPE_TASKBAR_ALL_APPS)) {
             // Let touches pass through us.
-            insetsInfo.setTouchableInsets(InsetsInfo.TOUCHABLE_INSETS_REGION)
+            insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
         } else if (controllers.taskbarViewController.areIconsVisible()
             || AbstractFloatingView.hasOpenView(context, AbstractFloatingView.TYPE_ALL)
             || context.isNavBarKidsModeActive
@@ -139,15 +152,15 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
             // Taskbar has some touchable elements, take over the full taskbar area
             insetsInfo.setTouchableInsets(
                 if (context.isTaskbarWindowFullscreen) {
-                    InsetsInfo.TOUCHABLE_INSETS_FRAME
+                    TOUCHABLE_INSETS_FRAME
                 } else {
                     insetsInfo.touchableRegion.set(contentRegion)
-                    InsetsInfo.TOUCHABLE_INSETS_REGION
+                    TOUCHABLE_INSETS_REGION
                 }
             )
             insetsIsTouchableRegion = false
         } else {
-            insetsInfo.setTouchableInsets(InsetsInfo.TOUCHABLE_INSETS_REGION)
+            insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
         }
         context.excludeFromMagnificationRegion(insetsIsTouchableRegion)
     }
