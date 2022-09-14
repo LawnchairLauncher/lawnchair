@@ -28,6 +28,7 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Preconditions;
+import com.android.quickstep.util.ActiveGestureErrorDetector;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
@@ -137,7 +138,8 @@ public class RecentsAnimationCallbacks implements
     @Override
     public void onTasksAppeared(RemoteAnimationTargetCompat[] apps) {
         Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
-            ActiveGestureLog.INSTANCE.addLog("onTasksAppeared");
+            ActiveGestureLog.INSTANCE.addLog("onTasksAppeared",
+                    ActiveGestureErrorDetector.GestureEvent.TASK_APPEARED);
             for (RecentsAnimationListener listener : getListeners()) {
                 listener.onTasksAppeared(apps);
             }

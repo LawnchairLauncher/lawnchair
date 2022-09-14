@@ -33,9 +33,10 @@ public class ActiveGestureErrorDetector {
      * Enums associated to gesture navigation events.
      */
     public enum GestureEvent {
-        MOTION_DOWN, MOTION_UP, SET_END_TARGET, ON_SETTLED_ON_END_TARGET, START_RECENTS_ANIMATION,
+        MOTION_DOWN, MOTION_UP, SET_END_TARGET, SET_END_TARGET_HOME, SET_END_TARGET_LAST_TASK,
+        SET_END_TARGET_NEW_TASK, ON_SETTLED_ON_END_TARGET, START_RECENTS_ANIMATION,
         FINISH_RECENTS_ANIMATION, CANCEL_RECENTS_ANIMATION, SET_ON_PAGE_TRANSITION_END_CALLBACK,
-        CANCEL_CURRENT_ANIMATION, CLEANUP_SCREENSHOT,
+        CANCEL_CURRENT_ANIMATION, CLEANUP_SCREENSHOT, SCROLLER_ANIMATION_ABORTED, TASK_APPEARED,
 
         /**
          * These GestureEvents are specifically associated to state flags that get set in
@@ -123,6 +124,25 @@ public class ActiveGestureErrorDetector {
                                         + "being set.",
                                 writer);
                         break;
+                    case SCROLLER_ANIMATION_ABORTED:
+                        errorDetected |= printErrorIfTrue(
+                                encounteredEvents.contains(GestureEvent.SET_END_TARGET_HOME)
+                                        && !encounteredEvents.contains(
+                                                GestureEvent.ON_SETTLED_ON_END_TARGET),
+                                /* errorMessage= */ prefix + "\t\trecents view scroller animation "
+                                        + "aborted after setting end target HOME, but before"
+                                        + " settling on end target.",
+                                writer);
+                        break;
+                    case TASK_APPEARED:
+                        errorDetected |= printErrorIfTrue(
+                                !encounteredEvents.contains(GestureEvent.SET_END_TARGET_LAST_TASK)
+                                        && !encounteredEvents.contains(
+                                        GestureEvent.SET_END_TARGET_NEW_TASK),
+                                /* errorMessage= */ prefix + "\t\tonTasksAppeared called "
+                                        + "before/without setting end target to last or new task",
+                                writer);
+                        break;
                     case STATE_GESTURE_COMPLETED:
                         errorDetected |= printErrorIfTrue(
                                 !encounteredEvents.contains(GestureEvent.MOTION_UP),
@@ -173,6 +193,7 @@ public class ActiveGestureErrorDetector {
                         break;
                     case MOTION_DOWN:
                     case SET_END_TARGET:
+                    case SET_END_TARGET_HOME:
                     case START_RECENTS_ANIMATION:
                     case SET_ON_PAGE_TRANSITION_END_CALLBACK:
                     case CANCEL_CURRENT_ANIMATION:
@@ -275,6 +296,21 @@ public class ActiveGestureErrorDetector {
                             && !encounteredEvents.contains(GestureEvent.CLEANUP_SCREENSHOT),
                     /* errorMessage= */ prefix + "\t\tSTATE_RECENTS_ANIMATION_CANCELED was set but "
                             + "the task screenshot wasn't cleaned up.",
+                    writer);
+
+            errorDetected |= printErrorIfTrue(
+                    /* condition= */ encounteredEvents.contains(
+                            GestureEvent.SET_END_TARGET_LAST_TASK)
+                            && !encounteredEvents.contains(GestureEvent.TASK_APPEARED),
+                    /* errorMessage= */ prefix + "\t\tend target set to last task, but "
+                            + "onTaskAppeared wasn't called.",
+                    writer);
+            errorDetected |= printErrorIfTrue(
+                    /* condition= */ encounteredEvents.contains(
+                            GestureEvent.SET_END_TARGET_NEW_TASK)
+                            && !encounteredEvents.contains(GestureEvent.TASK_APPEARED),
+                    /* errorMessage= */ prefix + "\t\tend target set to new task, but "
+                            + "onTaskAppeared wasn't called.",
                     writer);
 
             if (!errorDetected) {
