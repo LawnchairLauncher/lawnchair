@@ -42,6 +42,7 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_0_85;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OVERVIEW_ACTIONS_SPLIT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_CLEAR_ALL;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_DISMISS_SWIPE_UP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_SWIPE_DOWN;
@@ -134,6 +135,7 @@ import com.android.launcher3.anim.SpringProperty;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.cache.HandlerRunnable;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.popup.QuickstepSystemShortcut;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.BaseState;
@@ -4150,16 +4152,21 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
     }
 
+    /**
+     * Primarily used by overview actions to initiate split from focused task, logs the source
+     * of split invocation as such.
+     */
     public void initiateSplitSelect(TaskView taskView) {
         int defaultSplitPosition = mOrientationHandler
                 .getDefaultSplitPosition(mActivity.getDeviceProfile());
-        initiateSplitSelect(taskView, defaultSplitPosition);
+        initiateSplitSelect(taskView, defaultSplitPosition, LAUNCHER_OVERVIEW_ACTIONS_SPLIT);
     }
 
-    public void initiateSplitSelect(TaskView taskView, @StagePosition int stagePosition) {
+    public void initiateSplitSelect(TaskView taskView, @StagePosition int stagePosition,
+            StatsLogManager.EventEnum splitEvent) {
         mSplitHiddenTaskView = taskView;
         mSplitSelectStateController.setInitialTaskSelect(taskView.getTask().key.id,
-                stagePosition);
+                stagePosition, splitEvent, taskView.getItemInfo());
         mSplitHiddenTaskViewIndex = indexOfChild(taskView);
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
@@ -4170,7 +4177,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public void initiateSplitSelect(QuickstepSystemShortcut.SplitSelectSource splitSelectSource) {
         mSplitSelectSource = splitSelectSource;
         mSplitSelectStateController.setInitialTaskSelect(splitSelectSource.intent,
-                splitSelectSource.position.stagePosition, splitSelectSource.user);
+                splitSelectSource.position.stagePosition, splitSelectSource.mItemInfo,
+                splitSelectSource.splitEvent);
     }
 
     /**

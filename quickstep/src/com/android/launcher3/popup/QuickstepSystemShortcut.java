@@ -15,14 +15,16 @@
  */
 package com.android.launcher3.popup;
 
+import static com.android.launcher3.util.SplitConfigurationOptions.getLogEventForPosition;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.UserHandle;
 import android.util.Log;
 import android.view.View;
 
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
@@ -70,9 +72,10 @@ public interface QuickstepSystemShortcut {
             }
 
             RecentsView recentsView = mTarget.getOverviewPanel();
+            StatsLogManager.EventEnum splitEvent = getLogEventForPosition(mPosition.stagePosition);
             recentsView.initiateSplitSelect(
                     new SplitSelectSource(mOriginalView, new BitmapDrawable(bitmap), intent,
-                            mPosition, mItemInfo.user));
+                            mPosition, mItemInfo, splitEvent));
         }
     }
 
@@ -82,15 +85,18 @@ public interface QuickstepSystemShortcut {
         public final Drawable drawable;
         public final Intent intent;
         public final SplitPositionOption position;
-        public final UserHandle user;
+        public final ItemInfo mItemInfo;
+        public final StatsLogManager.EventEnum splitEvent;
 
         public SplitSelectSource(View view, Drawable drawable, Intent intent,
-                SplitPositionOption position, UserHandle user) {
+                SplitPositionOption position, ItemInfo itemInfo,
+                StatsLogManager.EventEnum splitEvent) {
             this.view = view;
             this.drawable = drawable;
             this.intent = intent;
             this.position = position;
-            this.user = user;
+            this.mItemInfo = itemInfo;
+            this.splitEvent = splitEvent;
         }
     }
 }
