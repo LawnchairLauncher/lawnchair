@@ -323,19 +323,6 @@ public class TaskView extends FrameLayout implements Reusable {
                 }
             };
 
-    public static final FloatProperty<TaskView> ICON_ALPHA =
-            new FloatProperty<TaskView>("iconAlpha") {
-                @Override
-                public void setValue(TaskView taskView, float v) {
-                    taskView.mIconView.setAlpha(v);
-                }
-
-                @Override
-                public Float get(TaskView taskView) {
-                    return taskView.mIconView.getAlpha();
-                }
-            };
-
     @Nullable
     protected Task mTask;
     protected TaskThumbnailView mSnapshotView;

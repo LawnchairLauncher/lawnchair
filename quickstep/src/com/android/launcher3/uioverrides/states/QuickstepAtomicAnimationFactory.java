@@ -79,6 +79,14 @@ public class QuickstepAtomicAnimationFactory extends
     private static final int PER_PAGE_SCROLL_DURATION = 150;
     private static final int MAX_PAGE_SCROLL_DURATION = 750;
 
+    private static final int OVERVIEW_TO_SPLIT_ACTIONS_FADE_START = 0;
+    private static final int OVERVIEW_TO_SPLIT_ACTIONS_FADE_END = 83;
+
+    private static final float OVERVIEW_TO_SPLIT_ACTIONS_FADE_START_OFFSET =
+            (float) OVERVIEW_TO_SPLIT_ACTIONS_FADE_START / SplitScreenSelectState.ENTER_DURATION;
+    private static final float OVERVIEW_TO_SPLIT_ACTIONS_FADE_END_OFFSET =
+            (float) OVERVIEW_TO_SPLIT_ACTIONS_FADE_END / SplitScreenSelectState.ENTER_DURATION;
+
     // Due to use of physics, duration may differ between devices so we need to calculate and
     // cache the value.
     private int mHintToNormalDuration = -1;
@@ -188,6 +196,10 @@ public class QuickstepAtomicAnimationFactory extends
             AllAppsSwipeController.applyAllAppsToNormalConfig(mActivity, config);
         } else if (fromState == NORMAL && toState == ALL_APPS) {
             AllAppsSwipeController.applyNormalToAllAppsAnimConfig(mActivity, config);
+        } else if (fromState == OVERVIEW && toState == OVERVIEW_SPLIT_SELECT) {
+            config.setInterpolator(ANIM_OVERVIEW_ACTIONS_FADE, clampToProgress(LINEAR,
+                    OVERVIEW_TO_SPLIT_ACTIONS_FADE_START_OFFSET,
+                    OVERVIEW_TO_SPLIT_ACTIONS_FADE_END_OFFSET));
         }
     }
 }

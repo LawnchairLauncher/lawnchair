@@ -54,6 +54,8 @@ import java.util.ArrayList;
 public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsState>
         implements StateListener<RecentsState> {
 
+    private static final int TASK_DISMISS_DURATION = 150;
+
     @Nullable
     private Task mHomeTask;
 
@@ -105,8 +107,9 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         if (mHomeTask != null && endTarget == RECENTS && animatorSet != null) {
             TaskView tv = getTaskViewByTaskId(mHomeTask.key.id);
             if (tv != null) {
-                PendingAnimation pa = createTaskDismissAnimation(tv, true, false, 150,
-                        false /* dismissingForSplitSelection*/);
+                PendingAnimation pa = new PendingAnimation(TASK_DISMISS_DURATION);
+                createTaskDismissAnimation(pa, tv, true, false,
+                        TASK_DISMISS_DURATION, false /* dismissingForSplitSelection*/);
                 pa.addEndListener(e -> setCurrentTask(-1));
                 AnimatorPlaybackController controller = pa.createPlaybackController();
                 controller.dispatchOnStart();
