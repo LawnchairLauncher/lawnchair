@@ -32,6 +32,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
+import android.util.Pair;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceControl;
@@ -42,7 +43,6 @@ import android.window.SurfaceSyncGroup;
 import androidx.annotation.Nullable;
 
 import com.android.internal.logging.InstanceId;
-import com.android.internal.logging.InstanceIdSequence;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DragSource;
@@ -69,6 +69,7 @@ import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.quickstep.util.LogUtils;
 import com.android.systemui.shared.recents.model.Task;
 
 import java.io.PrintWriter;
@@ -359,11 +360,11 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         }
 
         if (clipDescription != null && intent != null) {
+            Pair<InstanceId, com.android.launcher3.logging.InstanceId> instanceIds =
+                    LogUtils.getShellShareableInstanceId();
             // Need to share the same InstanceId between launcher3 and WM Shell (internal).
-            InstanceId internalInstanceId = new InstanceIdSequence(
-                    com.android.launcher3.logging.InstanceId.INSTANCE_ID_MAX).newInstanceId();
-            com.android.launcher3.logging.InstanceId launcherInstanceId =
-                    new com.android.launcher3.logging.InstanceId(internalInstanceId.getId());
+            InstanceId internalInstanceId = instanceIds.first;
+            com.android.launcher3.logging.InstanceId launcherInstanceId = instanceIds.second;
 
             intent.putExtra(ClipDescription.EXTRA_LOGGING_INSTANCE_ID, internalInstanceId);
 

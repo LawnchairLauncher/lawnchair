@@ -47,6 +47,7 @@ import android.window.IOnBackInvokedCallback;
 
 import androidx.annotation.WorkerThread;
 
+import com.android.internal.logging.InstanceId;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.systemui.shared.recents.ISystemUiProxy;
@@ -541,11 +542,11 @@ public class SystemUiProxy implements ISystemUiProxy {
     /** Start multiple tasks in split-screen simultaneously. */
     public void startTasks(int mainTaskId, Bundle mainOptions, int sideTaskId, Bundle sideOptions,
             @SplitConfigurationOptions.StagePosition int sidePosition, float splitRatio,
-            RemoteTransitionCompat remoteTransition) {
+            RemoteTransitionCompat remoteTransition, InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
                 mSplitScreen.startTasks(mainTaskId, mainOptions, sideTaskId, sideOptions,
-                        sidePosition, splitRatio, remoteTransition.getTransition());
+                        sidePosition, splitRatio, remoteTransition.getTransition(), instanceId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startTask");
             }
@@ -557,11 +558,11 @@ public class SystemUiProxy implements ISystemUiProxy {
      */
     public void startTasksWithLegacyTransition(int mainTaskId, Bundle mainOptions, int sideTaskId,
             Bundle sideOptions, @SplitConfigurationOptions.StagePosition int sidePosition,
-            float splitRatio, RemoteAnimationAdapter adapter) {
+            float splitRatio, RemoteAnimationAdapter adapter, InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
                 mSplitScreen.startTasksWithLegacyTransition(mainTaskId, mainOptions, sideTaskId,
-                        sideOptions, sidePosition, splitRatio, adapter);
+                        sideOptions, sidePosition, splitRatio, adapter, instanceId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startTasksWithLegacyTransition");
             }
@@ -571,11 +572,12 @@ public class SystemUiProxy implements ISystemUiProxy {
     public void startIntentAndTaskWithLegacyTransition(PendingIntent pendingIntent,
             Intent fillInIntent, int taskId, Bundle mainOptions, Bundle sideOptions,
             @SplitConfigurationOptions.StagePosition int sidePosition, float splitRatio,
-            RemoteAnimationAdapter adapter) {
+            RemoteAnimationAdapter adapter, InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
                 mSplitScreen.startIntentAndTaskWithLegacyTransition(pendingIntent, fillInIntent,
-                        taskId, mainOptions, sideOptions, sidePosition, splitRatio, adapter);
+                        taskId, mainOptions, sideOptions, sidePosition, splitRatio, adapter,
+                        instanceId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startIntentAndTaskWithLegacyTransition");
             }
@@ -585,11 +587,11 @@ public class SystemUiProxy implements ISystemUiProxy {
     public void startShortcutAndTaskWithLegacyTransition(ShortcutInfo shortcutInfo, int taskId,
             Bundle mainOptions, Bundle sideOptions,
             @SplitConfigurationOptions.StagePosition int sidePosition, float splitRatio,
-            RemoteAnimationAdapter adapter) {
+            RemoteAnimationAdapter adapter, InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
                 mSplitScreen.startShortcutAndTaskWithLegacyTransition(shortcutInfo, taskId,
-                        mainOptions, sideOptions, sidePosition, splitRatio, adapter);
+                        mainOptions, sideOptions, sidePosition, splitRatio, adapter, instanceId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startShortcutAndTaskWithLegacyTransition");
             }
@@ -597,11 +599,11 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     public void startShortcut(String packageName, String shortcutId, int position,
-            Bundle options, UserHandle user) {
+            Bundle options, UserHandle user, InstanceId instanceId) {
         if (mSplitScreen != null) {
             try {
                 mSplitScreen.startShortcut(packageName, shortcutId, position, options,
-                        user);
+                        user, instanceId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startShortcut");
             }
@@ -609,10 +611,10 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     public void startIntent(PendingIntent intent, Intent fillInIntent, int position,
-            Bundle options) {
+            Bundle options, InstanceId instanceId) {
         if (mSplitScreen != null) {
             try {
-                mSplitScreen.startIntent(intent, fillInIntent, position, options);
+                mSplitScreen.startIntent(intent, fillInIntent, position, options, instanceId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startIntent");
             }
