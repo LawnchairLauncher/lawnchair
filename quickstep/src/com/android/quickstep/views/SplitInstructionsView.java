@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
@@ -40,18 +41,18 @@ import com.android.launcher3.util.DisplayController;
  */
 public class SplitInstructionsView extends FrameLayout {
     private final StatefulActivity mLauncher;
+    private AppCompatTextView mTextView;
 
-    public static final FloatProperty<SplitInstructionsView> ALPHA_FLOAT =
-            new FloatProperty<SplitInstructionsView>("SplitInstructionsAlpha") {
+    public static final FloatProperty<SplitInstructionsView> UNFOLD =
+            new FloatProperty<SplitInstructionsView>("SplitInstructionsUnfold") {
                 @Override
                 public void setValue(SplitInstructionsView splitInstructionsView, float v) {
-                    splitInstructionsView.setVisibility(v != 0 ? VISIBLE : GONE);
-                    splitInstructionsView.setAlpha(v);
+                    splitInstructionsView.setScaleY(v);
                 }
 
                 @Override
                 public Float get(SplitInstructionsView splitInstructionsView) {
-                    return splitInstructionsView.getAlpha();
+                    return splitInstructionsView.getScaleY();
                 }
             };
 
@@ -76,6 +77,14 @@ public class SplitInstructionsView extends FrameLayout {
                         dragLayer,
                         false
                 );
+
+        splitInstructionsView.mTextView = splitInstructionsView.findViewById(
+                R.id.split_instructions_text);
+
+        // Since textview overlays base view, and we sometimes manipulate the alpha of each
+        // simultaneously, force overlapping rendering to false prevents redrawing of pixels,
+        // improving performance at the cost of some accuracy.
+        splitInstructionsView.forceHasOverlappingRendering(false);
 
         dragLayer.addView(splitInstructionsView);
         return splitInstructionsView;
@@ -119,5 +128,9 @@ public class SplitInstructionsView extends FrameLayout {
         } else {
             return 0;
         }
+    }
+
+    public AppCompatTextView getTextView() {
+        return mTextView;
     }
 }
