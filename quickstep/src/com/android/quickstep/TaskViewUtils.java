@@ -72,8 +72,6 @@ import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
 import com.android.quickstep.util.MultiValueUpdateListener;
-import com.android.quickstep.util.SurfaceTransaction;
-import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
@@ -84,6 +82,7 @@ import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -253,24 +252,21 @@ public final class TaskViewUtils {
 
                     @Override
                     public void onUpdate(float percent, boolean initOnly) {
-
+                        final SurfaceParams.Builder navBuilder =
+                                new SurfaceParams.Builder(navBarTarget.leash);
 
                         // TODO Do we need to operate over multiple TVSs for the navbar leash?
                         for (RemoteTargetHandle handle : remoteTargetHandles) {
-                            SurfaceTransaction transaction = new SurfaceTransaction();
-                            SurfaceProperties navBuilder =
-                                    transaction.forSurface(navBarTarget.leash);
-
                             if (mNavFadeIn.value > mNavFadeIn.getStartValue()) {
                                 TaskViewSimulator taskViewSimulator = handle.getTaskViewSimulator();
                                 taskViewSimulator.getCurrentCropRect().round(cropRect);
-                                navBuilder.setMatrix(taskViewSimulator.getCurrentMatrix())
-                                        .setWindowCrop(cropRect)
-                                        .setAlpha(mNavFadeIn.value);
+                                navBuilder.withMatrix(taskViewSimulator.getCurrentMatrix())
+                                        .withWindowCrop(cropRect)
+                                        .withAlpha(mNavFadeIn.value);
                             } else {
-                                navBuilder.setAlpha(mNavFadeOut.value);
+                                navBuilder.withAlpha(mNavFadeOut.value);
                             }
-                            handle.getTransformParams().applySurfaceParams(transaction);
+                            handle.getTransformParams().applySurfaceParams(navBuilder.build());
                         }
                     }
                 });
@@ -478,7 +474,7 @@ public final class TaskViewUtils {
      * If {@param launchingTaskView} is not null, then this will play the tasks launch animation
      * from the position of the GroupedTaskView (when user taps on the TaskView to start it).
      * Technically this case should be taken care of by
-     * {@link #composeRecentsSplitLaunchAnimatorLegacy} below, but the way we launch tasks whether
+     * {@link #composeRecentsSplitLaunchAnimatorLegacy()} below, but the way we launch tasks whether
      * it's a single task or multiple tasks results in different entry-points.
      *
      * If it is null, then it will simply fade in the starting apps and fade out launcher (for the
