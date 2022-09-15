@@ -22,6 +22,7 @@ import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
+import android.app.KeyguardManager;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.Intent;
@@ -40,7 +41,6 @@ import com.android.quickstep.util.TaskVisualsChangeListener;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.KeyguardManagerCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 
@@ -75,7 +75,8 @@ public class RecentsModel implements IconChangeListener, TaskStackChangeListener
     private RecentsModel(Context context) {
         mContext = context;
         mTaskList = new RecentTasksList(MAIN_EXECUTOR,
-                new KeyguardManagerCompat(context), SystemUiProxy.INSTANCE.get(context));
+                context.getSystemService(KeyguardManager.class),
+                SystemUiProxy.INSTANCE.get(context));
 
         IconProvider iconProvider = new IconProvider(context);
         mIconCache = new TaskIconCache(context, RECENTS_MODEL_EXECUTOR, iconProvider);

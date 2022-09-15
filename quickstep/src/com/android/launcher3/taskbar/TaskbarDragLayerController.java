@@ -17,12 +17,12 @@ package com.android.launcher3.taskbar;
 
 import android.content.res.Resources;
 import android.graphics.Rect;
+import android.view.ViewTreeObserver;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.AnimatedFloat;
-import com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo;
 
 import java.io.PrintWriter;
 
@@ -157,9 +157,9 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
 
         /**
          * Called to update the touchable insets.
-         * @see InsetsInfo#setTouchableInsets(int)
+         * @see ViewTreeObserver.InternalInsetsInfo#setTouchableInsets(int)
          */
-        public void updateInsetsTouchability(InsetsInfo insetsInfo) {
+        public void updateInsetsTouchability(ViewTreeObserver.InternalInsetsInfo insetsInfo) {
             mControllers.taskbarInsetsController.updateInsetsTouchability(insetsInfo);
         }
 

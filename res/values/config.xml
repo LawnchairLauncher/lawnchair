@@ -193,4 +193,15 @@
     <dimen name="swipe_back_window_scale_x_margin">10dp</dimen>
     <dimen name="swipe_back_window_max_delta_y">160dp</dimen>
     <dimen name="swipe_back_window_corner_radius">40dp</dimen>
+
+    <!-- The duration of the bottom sheet opening and closing animation -->
+    <integer name="config_bottomSheetOpenDuration">267</integer>
+    <integer name="config_bottomSheetCloseDuration">267</integer>
+
+    <!-- The duration of the AllApps opening and closing animation -->
+    <integer name="config_allAppsOpenDuration">600</integer>
+    <integer name="config_allAppsCloseDuration">300</integer>
+
+    <!-- The max scale for the wallpaper when it's zoomed in -->
+    <item name="config_wallpaperMaxScale" format="float" type="dimen">0</item>
 </resources>
