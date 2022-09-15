@@ -15,4 +15,7 @@
     <icon
         drawable="@array/grayscale_clock_icons"
         package="com.sec.android.app.clockpackage" />
+    <icon
+        drawable="@array/grayscale_clock_icons"
+        package="com.huawei.deskclock" />
 </icons>
