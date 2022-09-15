@@ -17,6 +17,7 @@ package com.android.quickstep;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.CANCEL_RECENTS_ANIMATION;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.START_RECENTS_ANIMATION;
 
 import android.graphics.Rect;
 import android.util.ArraySet;
@@ -114,6 +115,10 @@ public class RecentsAnimationCallbacks implements
                     homeContentInsets, minimizedHomeBounds);
 
             Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
+                ActiveGestureLog.INSTANCE.addLog(
+                        /* event= */ "RecentsAnimationCallbacks.onAnimationStart",
+                        /* extras= */ targets.apps.length,
+                        /* gestureEvent= */ START_RECENTS_ANIMATION);
                 for (RecentsAnimationListener listener : getListeners()) {
                     listener.onRecentsAnimationStart(mController, targets);
                 }
