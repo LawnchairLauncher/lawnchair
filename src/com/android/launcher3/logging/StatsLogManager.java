@@ -593,6 +593,12 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "User tapped on Share app system shortcut.")
         LAUNCHER_SYSTEM_SHORTCUT_APP_SHARE_TAP(1075),
+
+        @UiEvent(doc = "User has invoked split to right half from an app icon menu")
+        LAUNCHER_APP_ICON_MENU_SPLIT_RIGHT_BOTTOM(1199),
+
+        @UiEvent(doc = "User has invoked split to left half from an app icon menu")
+        LAUNCHER_APP_ICON_MENU_SPLIT_LEFT_TOP(1200)
         ;
 
         // ADD MORE

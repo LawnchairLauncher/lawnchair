@@ -16,11 +16,16 @@
 
 package com.android.launcher3.util;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_ICON_MENU_SPLIT_LEFT_TOP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_ICON_MENU_SPLIT_RIGHT_BOTTOM;
+
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 import android.graphics.Rect;
 
 import androidx.annotation.IntDef;
+
+import com.android.launcher3.logging.StatsLogManager;
 
 import java.lang.annotation.Retention;
 
@@ -169,5 +174,11 @@ public final class SplitConfigurationOptions {
         public int stagePosition = STAGE_POSITION_UNDEFINED;
         @StageType
         public int stageType = STAGE_TYPE_UNDEFINED;
+    }
+
+    public static StatsLogManager.EventEnum getLogEventForPosition(@StagePosition int position) {
+        return position == STAGE_POSITION_TOP_OR_LEFT
+                ? LAUNCHER_APP_ICON_MENU_SPLIT_LEFT_TOP
+                : LAUNCHER_APP_ICON_MENU_SPLIT_RIGHT_BOTTOM;
     }
 }
