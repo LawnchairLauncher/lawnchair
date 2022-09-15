@@ -881,11 +881,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         // properly cleaned up the screenshot without accidentally using it.
         mDeferredCleanupRecentsAnimationController = mRecentsAnimationController;
         mStateCallback.setStateOnUiThread(STATE_GESTURE_CANCELLED | STATE_HANDLER_INVALIDATED);
-
-        if (mRecentsAnimationTargets != null) {
-            setDividerShown(true /* shown */, false /* immediate */);
-        }
-
         // Defer clearing the controller and the targets until after we've updated the state
         mRecentsAnimationController = null;
         mRecentsAnimationTargets = null;
@@ -1782,10 +1777,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private void resetStateForAnimationCancel() {
         boolean wasVisible = mWasLauncherAlreadyVisible || mGestureStarted;
         mActivityInterface.onTransitionCancelled(wasVisible, mGestureState.getEndTarget());
-
-        if (mRecentsAnimationTargets != null && wasVisible) {
-            setDividerShown(true /* shown */, true /* immediate */);
-        }
 
         // Leave the pending invisible flag, as it may be used by wallpaper open animation.
         if (mActivity != null) {
