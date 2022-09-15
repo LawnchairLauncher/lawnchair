@@ -35,7 +35,6 @@ import com.android.launcher3.tapl.Widget;
 import com.android.launcher3.tapl.WidgetResizeFrame;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TaplTestsLauncher3;
-import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
@@ -146,26 +145,22 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
         runTestCase(testCaseMap.get(iconGridDimensions));
     }
 
-    @ScreenRecord // b/242323136
     @Test
     public void simpleReorder()  throws ExecutionException, InterruptedException {
         runTestCaseMap(SimpleReorderCase.TEST_BY_GRID_SIZE,
                 SimpleReorderCase.class.getSimpleName());
     }
 
-    @ScreenRecord // b/242323136
     @Test
     public void pushTest()  throws ExecutionException, InterruptedException {
         runTestCaseMap(PushReorderCase.TEST_BY_GRID_SIZE, PushReorderCase.class.getSimpleName());
     }
 
-    @ScreenRecord // b/242323136
     @Test
     public void fullReorder()  throws ExecutionException, InterruptedException {
         runTestCaseMap(FullReorderCase.TEST_BY_GRID_SIZE, FullReorderCase.class.getSimpleName());
     }
 
-    @ScreenRecord // b/242323136
     @Test
     public void moveOutReorder()  throws ExecutionException, InterruptedException {
         runTestCaseMap(MoveOutReorderCase.TEST_BY_GRID_SIZE,
