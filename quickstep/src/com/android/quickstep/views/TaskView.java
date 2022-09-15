@@ -32,6 +32,7 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
+import static com.android.launcher3.util.SplitConfigurationOptions.getLogEventForPosition;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
@@ -48,6 +49,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Log;
@@ -99,7 +101,6 @@ import com.android.quickstep.views.TaskThumbnailView.PreviewPositionHelper;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
@@ -320,19 +321,6 @@ public class TaskView extends FrameLayout implements Reusable {
                 @Override
                 public Float get(TaskView taskView) {
                     return taskView.mSnapshotView.getScaleX();
-                }
-            };
-
-    public static final FloatProperty<TaskView> ICON_ALPHA =
-            new FloatProperty<TaskView>("iconAlpha") {
-                @Override
-                public void setValue(TaskView taskView, float v) {
-                    taskView.mIconView.setAlpha(v);
-                }
-
-                @Override
-                public Float get(TaskView taskView) {
-                    return taskView.mIconView.getAlpha();
                 }
             };
 
@@ -659,12 +647,12 @@ public class TaskView extends FrameLayout implements Reusable {
                     TestProtocol.SEQUENCE_MAIN, "startActivityFromRecentsAsync", mTask);
 
             // Indicate success once the system has indicated that the transition has started
-            ActivityOptions opts = ActivityOptionsCompat.makeCustomAnimation(
-                    getContext(), 0, 0, () -> callback.accept(true), MAIN_EXECUTOR.getHandler());
+            ActivityOptions opts = makeCustomAnimation(getContext(), 0, 0,
+                    () -> callback.accept(true), MAIN_EXECUTOR.getHandler());
             opts.setLaunchDisplayId(
                     getDisplay() == null ? DEFAULT_DISPLAY : getDisplay().getDisplayId());
             if (freezeTaskList) {
-                ActivityOptionsCompat.setFreezeRecentTasksList(opts);
+                opts.setFreezeRecentTasksReordering();
             }
             // TODO(b/202826469): Replace setSplashScreenStyle with setDisableStartingWindow.
             opts.setSplashScreenStyle(mSnapshotView.shouldShowSplashView()
@@ -684,6 +672,20 @@ public class TaskView extends FrameLayout implements Reusable {
         } else {
             callback.accept(false);
         }
+    }
+
+    /**
+     * Returns ActivityOptions for overriding task transition animation.
+     */
+    private ActivityOptions makeCustomAnimation(Context context, int enterResId,
+            int exitResId, final Runnable callback, final Handler callbackHandler) {
+        return ActivityOptions.makeCustomTaskAnimation(context, enterResId, exitResId,
+                callbackHandler,
+                elapsedRealTime -> {
+                    if (callback != null) {
+                        callbackHandler.post(callback);
+                    }
+                }, null /* finishedListener */);
     }
 
     /**
@@ -1495,7 +1497,8 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     public void initiateSplitSelect(SplitPositionOption splitPositionOption) {
-        getRecentsView().initiateSplitSelect(this, splitPositionOption.stagePosition);
+        getRecentsView().initiateSplitSelect(this, splitPositionOption.stagePosition,
+                getLogEventForPosition(splitPositionOption.stagePosition));
     }
 
     /**

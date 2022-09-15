@@ -16,6 +16,8 @@
 
 package com.android.quickstep;
 
+import static android.app.WindowConfiguration.WINDOWING_MODE_FREEFORM;
+
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_SELECTIONS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP;
 
@@ -26,9 +28,12 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.RemoteException;
 import android.os.SystemProperties;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
+import android.view.WindowManagerGlobal;
 import android.window.SplashScreen;
 
 import androidx.annotation.Nullable;
@@ -52,8 +57,6 @@ import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecCompat
 import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecsFuture;
 import com.android.systemui.shared.recents.view.RecentsTransition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.ActivityOptionsCompat;
-import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.Collections;
 import java.util.List;
@@ -121,6 +124,7 @@ public interface TaskShortcutFactory {
     }
 
     class FreeformSystemShortcut extends SystemShortcut<BaseDraggingActivity> {
+        private static final String TAG = "FreeformSystemShortcut";
 
         private Handler mHandler;
 
@@ -193,7 +197,7 @@ public interface TaskShortcutFactory {
                                 taskId, thumbnail, taskBounds));
                     }
                 };
-                WindowManagerWrapper.getInstance().overridePendingAppTransitionMultiThumbFuture(
+                overridePendingAppTransitionMultiThumbFuture(
                         future, animStartedListener, mHandler, true /* scaleUp */,
                         taskKey.displayId);
                 mTarget.getStatsLogManager().logger().withItemInfo(mTaskView.getItemInfo())
@@ -201,8 +205,27 @@ public interface TaskShortcutFactory {
             }
         }
 
+        /**
+         * Overrides a pending app transition.
+         */
+        private void overridePendingAppTransitionMultiThumbFuture(
+                AppTransitionAnimationSpecsFuture animationSpecFuture, Runnable animStartedCallback,
+                Handler animStartedCallbackHandler, boolean scaleUp, int displayId) {
+            try {
+                WindowManagerGlobal.getWindowManagerService()
+                        .overridePendingAppTransitionMultiThumbFuture(
+                                animationSpecFuture.getFuture(),
+                                RecentsTransition.wrapStartedListener(animStartedCallbackHandler,
+                                        animStartedCallback), scaleUp, displayId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed to override pending app transition (multi-thumbnail future): ",
+                        e);
+            }
+        }
+
         private ActivityOptions makeLaunchOptions(Activity activity) {
-            ActivityOptions activityOptions = ActivityOptionsCompat.makeFreeformOptions();
+            ActivityOptions activityOptions = ActivityOptions.makeBasic();
+            activityOptions.setLaunchWindowingMode(WINDOWING_MODE_FREEFORM);
             // Arbitrary bounds only because freeform is in dev mode right now
             final View decorView = activity.getWindow().getDecorView();
             final WindowInsets insets = decorView.getRootWindowInsets();

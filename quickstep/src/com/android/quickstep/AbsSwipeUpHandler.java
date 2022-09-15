@@ -87,6 +87,7 @@ import android.window.PictureInPictureSurfaceTransaction;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
+import com.android.internal.util.LatencyTracker;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
@@ -127,7 +128,6 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
-import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
@@ -622,8 +622,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
         Object traceToken = TraceHelper.INSTANCE.beginSection("logToggleRecents",
                 TraceHelper.FLAG_IGNORE_BINDERS);
-        LatencyTrackerCompat.logToggleRecents(
-                mContext, (int) (mLauncherFrameDrawnTime - mTouchTimeMs));
+        LatencyTracker.getInstance(mContext).logAction(LatencyTracker.ACTION_TOGGLE_RECENTS,
+                (int) (mLauncherFrameDrawnTime - mTouchTimeMs));
         TraceHelper.INSTANCE.endSection(traceToken);
 
         // This method is only called when STATE_GESTURE_STARTED is set, so we can enable the
@@ -881,11 +881,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         // properly cleaned up the screenshot without accidentally using it.
         mDeferredCleanupRecentsAnimationController = mRecentsAnimationController;
         mStateCallback.setStateOnUiThread(STATE_GESTURE_CANCELLED | STATE_HANDLER_INVALIDATED);
-
-        if (mRecentsAnimationTargets != null) {
-            setDividerShown(true /* shown */, false /* immediate */);
-        }
-
         // Defer clearing the controller and the targets until after we've updated the state
         mRecentsAnimationController = null;
         mRecentsAnimationTargets = null;
@@ -1782,10 +1777,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private void resetStateForAnimationCancel() {
         boolean wasVisible = mWasLauncherAlreadyVisible || mGestureStarted;
         mActivityInterface.onTransitionCancelled(wasVisible, mGestureState.getEndTarget());
-
-        if (mRecentsAnimationTargets != null && wasVisible) {
-            setDividerShown(true /* shown */, true /* immediate */);
-        }
 
         // Leave the pending invisible flag, as it may be used by wallpaper open animation.
         if (mActivity != null) {

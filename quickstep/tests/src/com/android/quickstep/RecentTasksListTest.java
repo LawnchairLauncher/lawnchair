@@ -26,12 +26,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import android.app.ActivityManager;
+import android.app.KeyguardManager;
 
 import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.util.LooperExecutor;
 import com.android.quickstep.util.GroupTask;
-import com.android.systemui.shared.system.KeyguardManagerCompat;
 import com.android.wm.shell.util.GroupedRecentTaskInfo;
 
 import org.junit.Before;
@@ -56,8 +56,8 @@ public class RecentTasksListTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         LooperExecutor mockMainThreadExecutor = mock(LooperExecutor.class);
-        KeyguardManagerCompat mockKeyguardManagerCompat = mock(KeyguardManagerCompat.class);
-        mRecentTasksList = new RecentTasksList(mockMainThreadExecutor, mockKeyguardManagerCompat,
+        KeyguardManager mockKeyguardManager = mock(KeyguardManager.class);
+        mRecentTasksList = new RecentTasksList(mockMainThreadExecutor, mockKeyguardManager,
                 mockSystemUiProxy);
     }
 

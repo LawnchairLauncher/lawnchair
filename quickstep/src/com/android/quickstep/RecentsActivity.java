@@ -30,6 +30,7 @@ import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MOD
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -77,7 +78,6 @@ import com.android.quickstep.util.TISBindHelper;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
-import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
@@ -131,7 +131,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
         SplitSelectStateController controller =
                 new SplitSelectStateController(this, mHandler, getStateManager(),
-                        null /* depthController */);
+                        /* depthController */ null, getStatsLogManager());
         mDragLayer.recreateControllers();
         mFallbackRecentsView.init(mActionsView, controller);
 
@@ -263,8 +263,10 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
                 wrapper, RECENTS_LAUNCH_DURATION,
                 RECENTS_LAUNCH_DURATION - STATUS_BAR_TRANSITION_DURATION
                         - STATUS_BAR_TRANSITION_PRE_DELAY, getIApplicationThread());
-        final ActivityOptionsWrapper activityOptions = new ActivityOptionsWrapper(
-                ActivityOptionsCompat.makeRemoteAnimation(adapterCompat),
+        final ActivityOptions options = ActivityOptions.makeRemoteAnimation(
+                adapterCompat.getWrapped(),
+                adapterCompat.getRemoteTransition().getTransition());
+        final ActivityOptionsWrapper activityOptions = new ActivityOptionsWrapper(options,
                 onEndCallback);
         activityOptions.options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
         activityOptions.options.setLaunchDisplayId(
@@ -406,8 +408,10 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         RemoteAnimationAdapterCompat adapterCompat =
                 new RemoteAnimationAdapterCompat(runner, HOME_APPEAR_DURATION, 0,
                         getIApplicationThread());
-        startHomeIntentSafely(this,
-                ActivityOptionsCompat.makeRemoteAnimation(adapterCompat).toBundle());
+        ActivityOptions options = ActivityOptions.makeRemoteAnimation(
+                adapterCompat.getWrapped(),
+                adapterCompat.getRemoteTransition().getTransition());
+        startHomeIntentSafely(this, options.toBundle());
     }
 
     private final RemoteAnimationFactory mAnimationToHomeFactory =
