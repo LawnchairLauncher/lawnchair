@@ -22,7 +22,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.FloatProperty;
 import android.util.TypedValue;
 import android.widget.FrameLayout;
 
@@ -32,20 +31,6 @@ public class SplitPlaceholderView extends FrameLayout {
 
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Rect mTempRect = new Rect();
-
-    public static final FloatProperty<SplitPlaceholderView> ALPHA_FLOAT =
-            new FloatProperty<SplitPlaceholderView>("SplitViewAlpha") {
-                @Override
-                public void setValue(SplitPlaceholderView splitPlaceholderView, float v) {
-                    splitPlaceholderView.setVisibility(v != 0 ? VISIBLE : GONE);
-                    splitPlaceholderView.setAlpha(v);
-                }
-
-                @Override
-                public Float get(SplitPlaceholderView splitPlaceholderView) {
-                    return splitPlaceholderView.getAlpha();
-                }
-            };
 
     @Nullable
     private IconView mIconView;

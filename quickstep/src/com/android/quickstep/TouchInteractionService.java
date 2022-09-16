@@ -709,16 +709,19 @@ public class TouchInteractionService extends Service
     }
 
     public GestureState createGestureState(GestureState previousGestureState) {
-        GestureState gestureState = new GestureState(mOverviewComponentObserver,
-                ActiveGestureLog.INSTANCE.incrementLogId());
+        final GestureState gestureState;
         TopTaskTracker.CachedTaskInfo taskInfo;
         if (mTaskAnimationManager.isRecentsAnimationRunning()) {
+            gestureState = new GestureState(mOverviewComponentObserver,
+                    ActiveGestureLog.INSTANCE.getLogId());
             taskInfo = previousGestureState.getRunningTask();
             gestureState.updateRunningTask(taskInfo);
             gestureState.updateLastStartedTaskId(previousGestureState.getLastStartedTaskId());
             gestureState.updatePreviouslyAppearedTaskIds(
                     previousGestureState.getPreviouslyAppearedTaskIds());
         } else {
+            gestureState = new GestureState(mOverviewComponentObserver,
+                    ActiveGestureLog.INSTANCE.incrementLogId());
             taskInfo = TopTaskTracker.INSTANCE.get(this).getCachedTopTask(false);
             gestureState.updateRunningTask(taskInfo);
         }

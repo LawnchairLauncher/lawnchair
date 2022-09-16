@@ -161,16 +161,14 @@ public class ActiveGestureLog {
         ArrayList<EventLog> eventLogs = new ArrayList<>();
 
         for (int i = 0; i < logs.length; i++) {
-            EventLog eventLog = logs[(nextIndex + logs.length - i - 1) % logs.length];
+            EventLog eventLog = logs[(nextIndex + i) % logs.length];
             if (eventLog == null) {
                 continue;
             }
             eventLogs.add(eventLog);
             writer.println(prefix + "\tLogs for logId: " + eventLog.logId);
 
-            List<EventEntry> eventEntries = eventLog.eventEntries;
-            for (int j = eventEntries.size() - 1; j >= 0; j--) {
-                EventEntry eventEntry = eventEntries.get(j);
+            for (EventEntry eventEntry : eventLog.eventEntries) {
                 date.setTime(eventEntry.time);
 
                 StringBuilder msg = new StringBuilder(prefix + "\t\t").append(sdf.format(date))
@@ -213,6 +211,11 @@ public class ActiveGestureLog {
      */
     public int incrementLogId() {
         return mCurrentLogId++;
+    }
+
+    /** Returns the current log ID. This should be used when a log trace is being reused. */
+    public int getLogId() {
+        return mCurrentLogId;
     }
 
     private boolean isEntrySame(

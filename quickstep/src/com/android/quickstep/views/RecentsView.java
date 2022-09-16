@@ -35,11 +35,14 @@ import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_0_75;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
+import static com.android.launcher3.anim.Interpolators.EMPHASIZED_DECELERATE;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.anim.Interpolators.OVERSHOOT_0_85;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OVERVIEW_ACTIONS_SPLIT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_CLEAR_ALL;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_DISMISS_SWIPE_UP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_SWIPE_DOWN;
@@ -132,12 +135,14 @@ import com.android.launcher3.anim.SpringProperty;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.cache.HandlerRunnable;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.popup.QuickstepSystemShortcut;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.launcher3.uioverrides.states.SplitScreenSelectState;
 import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
@@ -172,6 +177,7 @@ import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.SplitScreenBounds;
 import com.android.quickstep.util.SplitSelectStateController;
+import com.android.quickstep.util.SurfaceTransaction;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TaskVisualsChangeListener;
@@ -184,7 +190,6 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 import com.android.wm.shell.pip.IPipAnimationListener;
@@ -413,6 +418,54 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private static final float ADDITIONAL_DISMISS_TRANSLATION_INTERPOLATION_OFFSET = 0.05f;
     private static final float ANIMATION_DISMISS_PROGRESS_MIDPOINT = 0.5f;
     private static final float END_DISMISS_TRANSLATION_INTERPOLATION_OFFSET = 0.75f;
+
+    private static final int OVERVIEW_TO_SPLIT_THUMBNAIL_SLIDE_START = 67;
+    private static final int OVERVIEW_TO_SPLIT_THUMBNAIL_SLIDE_OFFSET = 16;
+    private static final int SPRING_DISMISS_TRANSLATION_DURATION = 500;
+
+    private static final float INITIAL_SPRING_DISMISS_TRANSLATION_INTERPOLATION_OFFSET =
+            (float) OVERVIEW_TO_SPLIT_THUMBNAIL_SLIDE_START
+                    / SplitScreenSelectState.ENTER_DURATION;
+    private static final float ADDITIONAL_SPRING_DISMISS_TRANSLATION_INTERPOLATION_OFFSET =
+            (float) OVERVIEW_TO_SPLIT_THUMBNAIL_SLIDE_OFFSET
+                    / SplitScreenSelectState.ENTER_DURATION;
+    private static final float END_SPRING_DISMISS_TRANSLATION_INTERPOLATION_OFFSET =
+            (float) SPRING_DISMISS_TRANSLATION_DURATION
+                    / SplitScreenSelectState.ENTER_DURATION;
+
+    private static final int OVERVIEW_TO_SPLIT_ICON_FADE_START = 0;
+    private static final int OVERVIEW_TO_SPLIT_ICON_FADE_END = 83;
+    private static final int OVERVIEW_TO_SPLIT_INSTRUCTIONS_CONTAINER_FADE_IN_START = 167;
+    private static final int OVERVIEW_TO_SPLIT_INSTRUCTIONS_CONTAINER_FADE_IN_END = 250;
+    private static final int OVERVIEW_TO_SPLIT_INSTRUCTIONS_TEXT_FADE_IN_START = 217;
+    private static final int OVERVIEW_TO_SPLIT_INSTRUCTIONS_TEXT_FADE_IN_END = 300;
+    private static final int OVERVIEW_TO_SPLIT_INSTRUCTIONS_UNFOLD_START = 167;
+    private static final int OVERVIEW_TO_SPLIT_INSTRUCTIONS_UNFOLD_END = 500;
+
+    private static final float OVERVIEW_TO_SPLIT_ICON_FADE_START_OFFSET =
+            (float) OVERVIEW_TO_SPLIT_ICON_FADE_START
+                    / SplitScreenSelectState.ENTER_DURATION;
+    private static final float OVERVIEW_TO_SPLIT_ICON_FADE_END_OFFSET =
+            (float) OVERVIEW_TO_SPLIT_ICON_FADE_END
+                    / SplitScreenSelectState.ENTER_DURATION;
+    private static final float OVERVIEW_TO_SPLIT_INSTRUCTIONS_CONTAINER_FADE_IN_START_OFFSET =
+            (float) OVERVIEW_TO_SPLIT_INSTRUCTIONS_CONTAINER_FADE_IN_START
+                    / SplitScreenSelectState.ENTER_DURATION;
+    private static final float OVERVIEW_TO_SPLIT_INSTRUCTIONS_CONTAINER_FADE_IN_END_OFFSET =
+            (float) OVERVIEW_TO_SPLIT_INSTRUCTIONS_CONTAINER_FADE_IN_END
+                    / SplitScreenSelectState.ENTER_DURATION;
+    private static final float OVERVIEW_TO_SPLIT_INSTRUCTIONS_TEXT_FADE_IN_START_OFFSET =
+            (float) OVERVIEW_TO_SPLIT_INSTRUCTIONS_TEXT_FADE_IN_START
+                    / SplitScreenSelectState.ENTER_DURATION;
+    private static final float OVERVIEW_TO_SPLIT_INSTRUCTIONS_TEXT_FADE_IN_END_OFFSET =
+            (float) OVERVIEW_TO_SPLIT_INSTRUCTIONS_TEXT_FADE_IN_END
+                    / SplitScreenSelectState.ENTER_DURATION;
+    private static final float OVERVIEW_TO_SPLIT_INSTRUCTIONS_UNFOLD_START_OFFSET =
+            (float) OVERVIEW_TO_SPLIT_INSTRUCTIONS_UNFOLD_START
+                    / SplitScreenSelectState.ENTER_DURATION;
+    private static final float OVERVIEW_TO_SPLIT_INSTRUCTIONS_UNFOLD_END_OFFSET =
+            (float) OVERVIEW_TO_SPLIT_INSTRUCTIONS_UNFOLD_END
+                    / SplitScreenSelectState.ENTER_DURATION;
 
     private static final float SIGNIFICANT_MOVE_SCREEN_WIDTH_PERCENTAGE = 0.15f;
 
@@ -1064,14 +1117,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             appAnimator.setInterpolator(ACCEL_DEACCEL);
             appAnimator.addUpdateListener(valueAnimator -> {
                 float percent = valueAnimator.getAnimatedFraction();
-                SurfaceParams.Builder builder = new SurfaceParams.Builder(
-                        apps[apps.length - 1].leash);
+                SurfaceTransaction transaction = new SurfaceTransaction();
                 Matrix matrix = new Matrix();
                 matrix.postScale(percent, percent);
                 matrix.postTranslate(mActivity.getDeviceProfile().widthPx * (1 - percent) / 2,
                         mActivity.getDeviceProfile().heightPx * (1 - percent) / 2);
-                builder.withAlpha(percent).withMatrix(matrix);
-                surfaceApplier.scheduleApply(builder.build());
+                transaction.forSurface(apps[apps.length - 1].leash)
+                        .setAlpha(percent)
+                        .setMatrix(matrix);
+                surfaceApplier.scheduleApply(transaction);
             });
             anim.play(appAnimator);
             anim.addListener(new AnimatorListenerAdapter() {
@@ -2814,11 +2868,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         RectF startingTaskRect = new RectF();
         if (mSplitHiddenTaskView != null) {
-            // Split staging is initiated, hide the original TaskView thumbnail.
-            // Toggled back on in resetFromSplitSelectionState().
+            // Split staging is initiated
             mSplitHiddenTaskView.setThumbnailVisibility(INVISIBLE);
-            anim.addFloat(mSplitHiddenTaskView, TaskView.ICON_ALPHA, 1, 0,
-                    clampToProgress(LINEAR, 0, 0.167f));
+            anim.setViewAlpha(mSplitHiddenTaskView.getIconView(), 0, clampToProgress(LINEAR,
+                    OVERVIEW_TO_SPLIT_ICON_FADE_START_OFFSET,
+                    OVERVIEW_TO_SPLIT_ICON_FADE_END_OFFSET));
             mFirstFloatingTaskView = FloatingTaskView.getFloatingTaskView(mActivity,
                     mSplitHiddenTaskView.getThumbnail(),
                     mSplitHiddenTaskView.getThumbnail().getThumbnail(),
@@ -2835,9 +2889,19 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     false /* fadeWithThumbnail */, true /* isStagedTask */);
         }
 
+        // SplitInstructionsView: animate in
         mSplitInstructionsView = SplitInstructionsView.getSplitInstructionsView(mActivity);
         mSplitInstructionsView.setAlpha(0);
-        anim.addFloat(mSplitInstructionsView, SplitInstructionsView.ALPHA_FLOAT, 0, 1, ACCEL);
+        anim.setViewAlpha(mSplitInstructionsView, 1, clampToProgress(LINEAR,
+                OVERVIEW_TO_SPLIT_INSTRUCTIONS_CONTAINER_FADE_IN_START_OFFSET,
+                OVERVIEW_TO_SPLIT_INSTRUCTIONS_CONTAINER_FADE_IN_END_OFFSET));
+        anim.setViewAlpha(mSplitInstructionsView.getTextView(), 1, clampToProgress(LINEAR,
+                OVERVIEW_TO_SPLIT_INSTRUCTIONS_TEXT_FADE_IN_START_OFFSET,
+                OVERVIEW_TO_SPLIT_INSTRUCTIONS_TEXT_FADE_IN_END_OFFSET));
+        anim.addFloat(mSplitInstructionsView, mSplitInstructionsView.UNFOLD, 0.1f, 1,
+                clampToProgress(EMPHASIZED_DECELERATE,
+                        OVERVIEW_TO_SPLIT_INSTRUCTIONS_UNFOLD_START_OFFSET,
+                        OVERVIEW_TO_SPLIT_INSTRUCTIONS_UNFOLD_END_OFFSET));
 
         InteractionJankMonitorWrapper.begin(this,
                 InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER, "First tile selected");
@@ -2864,17 +2928,16 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * @param dismissingForSplitSelection task dismiss animation is used for entering split
      *                                    selection state from app icon
      */
-    public PendingAnimation createTaskDismissAnimation(TaskView dismissedTaskView,
+    public void createTaskDismissAnimation(PendingAnimation anim, TaskView dismissedTaskView,
             boolean animateTaskView, boolean shouldRemoveTask, long duration,
             boolean dismissingForSplitSelection) {
         if (mPendingAnimation != null) {
             mPendingAnimation.createPlaybackController().dispatchOnCancel().dispatchOnEnd();
         }
-        PendingAnimation anim = new PendingAnimation(duration);
 
         int count = getPageCount();
         if (count == 0) {
-            return anim;
+            return;
         }
 
         boolean showAsGrid = showAsGrid();
@@ -3119,11 +3182,33 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 // Animate task with index >= dismissed index and in the same row as the
                 // dismissed index or next focused index. Offset successive task dismissal
                 // durations for a staggered effect.
-                float animationStartProgress = Utilities.boundToRange(
-                        INITIAL_DISMISS_TRANSLATION_INTERPOLATION_OFFSET
-                                + ADDITIONAL_DISMISS_TRANSLATION_INTERPOLATION_OFFSET
-                                * ++distanceFromDismissedTask, 0f,
-                        dismissTranslationInterpolationEnd);
+                distanceFromDismissedTask++;
+                boolean isStagingFocusedTask =
+                        isFocusedTaskDismissed && nextFocusedTaskView == null;
+                int staggerColumn =  isStagingFocusedTask
+                        ? (int) Math.ceil(distanceFromDismissedTask / 2f)
+                        : distanceFromDismissedTask;
+                // Set timings based on if user is initiating splitscreen on the focused task,
+                // or splitting/dismissing some other task.
+                float animationStartProgress = isStagingFocusedTask
+                        ? Utilities.boundToRange(
+                                INITIAL_SPRING_DISMISS_TRANSLATION_INTERPOLATION_OFFSET
+                                        + ADDITIONAL_SPRING_DISMISS_TRANSLATION_INTERPOLATION_OFFSET
+                                        * staggerColumn, 0f, dismissTranslationInterpolationEnd)
+                        : Utilities.boundToRange(
+                                INITIAL_DISMISS_TRANSLATION_INTERPOLATION_OFFSET
+                                        + ADDITIONAL_DISMISS_TRANSLATION_INTERPOLATION_OFFSET
+                                        * staggerColumn, 0f, dismissTranslationInterpolationEnd);
+                float animationEndProgress = isStagingFocusedTask
+                        ? Utilities.boundToRange(
+                                INITIAL_SPRING_DISMISS_TRANSLATION_INTERPOLATION_OFFSET
+                                        + END_SPRING_DISMISS_TRANSLATION_INTERPOLATION_OFFSET
+                                        + ADDITIONAL_SPRING_DISMISS_TRANSLATION_INTERPOLATION_OFFSET
+                                        * staggerColumn,
+                        0f, dismissTranslationInterpolationEnd)
+                        : dismissTranslationInterpolationEnd;
+                Interpolator dismissInterpolator = isStagingFocusedTask ? OVERSHOOT_0_85 : LINEAR;
+
                 if (taskView == nextFocusedTaskView) {
                     // Enlarge the task to be focused next, and translate into focus position.
                     float scale = mTaskWidth / (float) mLastComputedGridTaskSize.width();
@@ -3146,7 +3231,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 } else {
                     float primaryTranslation =
                             nextFocusedTaskView != null ? nextFocusedTaskWidth : dismissedTaskWidth;
-                    if (isFocusedTaskDismissed && nextFocusedTaskView == null) {
+                    if (isStagingFocusedTask) {
                         // Moves less if focused task is not in scroll position.
                         int focusedTaskScroll = getScrollForPage(dismissedIndex);
                         int primaryScroll = mOrientationHandler.getPrimaryScroll(this);
@@ -3162,8 +3247,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
                     anim.setFloat(taskView, taskView.getPrimaryDismissTranslationProperty(),
                             mIsRtl ? primaryTranslation : -primaryTranslation,
-                            clampToProgress(LINEAR, animationStartProgress,
-                                    dismissTranslationInterpolationEnd));
+                            clampToProgress(dismissInterpolator, animationStartProgress,
+                                    animationEndProgress));
                 }
             }
         }
@@ -3395,7 +3480,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 mPendingAnimation = null;
             }
         });
-        return anim;
     }
 
     /**
@@ -3563,8 +3647,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     public void dismissTask(TaskView taskView, boolean animateTaskView, boolean removeTask) {
-        runDismissAnimation(createTaskDismissAnimation(taskView, animateTaskView, removeTask,
-                DISMISS_TASK_DURATION, false /* dismissingForSplitSelection*/));
+        PendingAnimation pa = new PendingAnimation(DISMISS_TASK_DURATION);
+        createTaskDismissAnimation(pa, taskView, animateTaskView, removeTask, DISMISS_TASK_DURATION,
+                false /* dismissingForSplitSelection*/);
+        runDismissAnimation(pa);
     }
 
     @SuppressWarnings("unused")
@@ -4073,16 +4159,21 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
     }
 
+    /**
+     * Primarily used by overview actions to initiate split from focused task, logs the source
+     * of split invocation as such.
+     */
     public void initiateSplitSelect(TaskView taskView) {
         int defaultSplitPosition = mOrientationHandler
                 .getDefaultSplitPosition(mActivity.getDeviceProfile());
-        initiateSplitSelect(taskView, defaultSplitPosition);
+        initiateSplitSelect(taskView, defaultSplitPosition, LAUNCHER_OVERVIEW_ACTIONS_SPLIT);
     }
 
-    public void initiateSplitSelect(TaskView taskView, @StagePosition int stagePosition) {
+    public void initiateSplitSelect(TaskView taskView, @StagePosition int stagePosition,
+            StatsLogManager.EventEnum splitEvent) {
         mSplitHiddenTaskView = taskView;
         mSplitSelectStateController.setInitialTaskSelect(taskView.getTask().key.id,
-                stagePosition);
+                stagePosition, splitEvent, taskView.getItemInfo());
         mSplitHiddenTaskViewIndex = indexOfChild(taskView);
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
@@ -4093,17 +4184,21 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public void initiateSplitSelect(QuickstepSystemShortcut.SplitSelectSource splitSelectSource) {
         mSplitSelectSource = splitSelectSource;
         mSplitSelectStateController.setInitialTaskSelect(splitSelectSource.intent,
-                splitSelectSource.position.stagePosition, splitSelectSource.user);
+                splitSelectSource.position.stagePosition, splitSelectSource.mItemInfo,
+                splitSelectSource.splitEvent);
     }
 
-    public PendingAnimation createSplitSelectInitAnimation(int duration) {
+    /**
+     * Modifies a PendingAnimation with the animations for entering split staging
+     */
+    public void createSplitSelectInitAnimation(PendingAnimation builder, int duration) {
         if (mSplitHiddenTaskView != null) {
-            return createTaskDismissAnimation(mSplitHiddenTaskView, true, false, duration,
+            // Splitting from Overview
+            createTaskDismissAnimation(builder, mSplitHiddenTaskView, true, false, duration,
                     true /* dismissingForSplitSelection*/);
         } else {
-            PendingAnimation anim = new PendingAnimation(duration);
-            createInitialSplitSelectAnimation(anim);
-            return anim;
+            // Splitting from Home
+            createInitialSplitSelectAnimation(builder);
         }
     }
 
@@ -4215,8 +4310,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         resetTaskVisuals();
         mSplitHiddenTaskViewIndex = -1;
         if (mSplitHiddenTaskView != null) {
-            // Toggle thumbnail visibility back on (turned off in
-            // createInitialSplitSelectAnimation()).
             mSplitHiddenTaskView.setThumbnailVisibility(VISIBLE);
             mSplitHiddenTaskView = null;
         }

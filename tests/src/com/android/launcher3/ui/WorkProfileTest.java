@@ -35,7 +35,6 @@ import com.android.launcher3.allapps.WorkEduCard;
 import com.android.launcher3.allapps.WorkPausedCard;
 import com.android.launcher3.allapps.WorkProfileManager;
 import com.android.launcher3.tapl.LauncherInstrumentation;
-import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 
 import org.junit.After;
 import org.junit.Before;
@@ -107,7 +106,6 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
     }
 
     @Test
-    @ScreenRecord // b/242163855
     public void workTabExists() {
         assumeTrue(mWorkProfileSetupSuccessful);
         waitForWorkTabSetup();

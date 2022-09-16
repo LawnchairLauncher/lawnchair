@@ -33,6 +33,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.popup.QuickstepSystemShortcut;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager.StateListener;
@@ -94,7 +95,7 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
             if (recoveryData.getStagedTaskId() == taskId) {
                 initiateSplitSelect(
                         getTaskViewByTaskId(recoveryData.getStagedTaskId()),
-                        recoveryData.getStagePosition()
+                        recoveryData.getStagePosition(), recoveryData.getSource()
                 );
                 mActivity.finishSplitSelectRecovery();
             }
@@ -104,7 +105,6 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
     @Override
     public void reset() {
         super.reset();
-
         setLayoutRotation(Surface.ROTATION_0, Surface.ROTATION_0);
     }
 
@@ -192,8 +192,9 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
 
     @Override
     public void initiateSplitSelect(TaskView taskView,
-            @SplitConfigurationOptions.StagePosition int stagePosition) {
-        super.initiateSplitSelect(taskView, stagePosition);
+            @SplitConfigurationOptions.StagePosition int stagePosition,
+            StatsLogManager.EventEnum splitEvent) {
+        super.initiateSplitSelect(taskView, stagePosition, splitEvent);
         mActivity.getStateManager().goToState(LauncherState.OVERVIEW_SPLIT_SELECT);
     }
 

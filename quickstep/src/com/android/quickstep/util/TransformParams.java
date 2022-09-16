@@ -21,10 +21,8 @@ import android.view.SurfaceControl;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
 import com.android.quickstep.RemoteAnimationTargets;
+import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
-import com.android.systemui.shared.system.TransactionCompat;
 
 public class TransformParams {
 
@@ -113,8 +111,7 @@ public class TransformParams {
      * Sets the SyncRtSurfaceTransactionApplierCompat that will apply the SurfaceParams that
      * are computed based on these TransformParams.
      */
-    public TransformParams setSyncTransactionApplier(
-            SurfaceTransactionApplier applier) {
+    public TransformParams setSyncTransactionApplier(SurfaceTransactionApplier applier) {
         mSyncTransactionApplier = applier;
         return this;
     }
@@ -137,16 +134,14 @@ public class TransformParams {
         return this;
     }
 
-    public SurfaceParams[] createSurfaceParams(BuilderProxy proxy) {
+    public SurfaceTransaction createSurfaceParams(BuilderProxy proxy) {
         RemoteAnimationTargets targets = mTargetSet;
-        final int appLength =  targets.unfilteredApps.length;
-        final int wallpaperLength = targets.wallpapers != null ? targets.wallpapers.length : 0;
-        SurfaceParams[] surfaceParams = new SurfaceParams[appLength + wallpaperLength];
+        SurfaceTransaction transaction = new SurfaceTransaction();
         mRecentsSurface = getRecentsSurface(targets);
 
-        for (int i = 0; i < appLength; i++) {
+        for (int i = 0; i < targets.unfilteredApps.length; i++) {
             RemoteAnimationTargetCompat app = targets.unfilteredApps[i];
-            SurfaceParams.Builder builder = new SurfaceParams.Builder(app.leash);
+            SurfaceProperties builder = transaction.forSurface(app.leash);
 
             if (app.mode == targets.targetMode) {
                 if (app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
@@ -156,9 +151,9 @@ public class TransformParams {
                     if (app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_ASSISTANT
                             && app.isNotInRecents) {
                         float progress = Utilities.boundToRange(getProgress(), 0, 1);
-                        builder.withAlpha(1 - Interpolators.DEACCEL_2_5.getInterpolation(progress));
+                        builder.setAlpha(1 - Interpolators.DEACCEL_2_5.getInterpolation(progress));
                     } else {
-                        builder.withAlpha(getTargetAlpha());
+                        builder.setAlpha(getTargetAlpha());
                     }
 
                     proxy.onBuildTargetParams(builder, app, this);
@@ -166,15 +161,15 @@ public class TransformParams {
             } else {
                 mBaseBuilderProxy.onBuildTargetParams(builder, app, this);
             }
-            surfaceParams[i] = builder.build();
         }
+
         // always put wallpaper layer to bottom.
+        final int wallpaperLength = targets.wallpapers != null ? targets.wallpapers.length : 0;
         for (int i = 0; i < wallpaperLength; i++) {
             RemoteAnimationTargetCompat wallpaper = targets.wallpapers[i];
-            surfaceParams[appLength + i] = new SurfaceParams.Builder(wallpaper.leash)
-                    .withLayer(Integer.MIN_VALUE).build();
+            transaction.forSurface(wallpaper.leash).setLayer(Integer.MIN_VALUE);
         }
-        return surfaceParams;
+        return transaction;
     }
 
     private static SurfaceControl getRecentsSurface(RemoteAnimationTargets targets) {
@@ -213,15 +208,11 @@ public class TransformParams {
         return mTargetSet;
     }
 
-    public void applySurfaceParams(SurfaceParams... params) {
+    public void applySurfaceParams(SurfaceTransaction builder) {
         if (mSyncTransactionApplier != null) {
-            mSyncTransactionApplier.scheduleApply(params);
+            mSyncTransactionApplier.scheduleApply(builder);
         } else {
-            TransactionCompat t = new TransactionCompat();
-            for (SurfaceParams param : params) {
-                SyncRtSurfaceTransactionApplierCompat.applyParams(t, param);
-            }
-            t.apply();
+            builder.getTransaction().apply();
         }
     }
 
@@ -229,9 +220,9 @@ public class TransformParams {
     public interface BuilderProxy {
 
         BuilderProxy NO_OP = (builder, app, params) -> { };
-        BuilderProxy ALWAYS_VISIBLE = (builder, app, params) ->builder.withAlpha(1);
+        BuilderProxy ALWAYS_VISIBLE = (builder, app, params) -> builder.setAlpha(1);
 
-        void onBuildTargetParams(SurfaceParams.Builder builder,
+        void onBuildTargetParams(SurfaceProperties builder,
                 RemoteAnimationTargetCompat app, TransformParams params);
     }
 }

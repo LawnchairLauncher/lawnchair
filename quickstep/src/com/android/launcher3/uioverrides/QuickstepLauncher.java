@@ -191,7 +191,7 @@ public class QuickstepLauncher extends Launcher {
         RecentsView overviewPanel = (RecentsView) getOverviewPanel();
         SplitSelectStateController controller =
                 new SplitSelectStateController(this, mHandler, getStateManager(),
-                        getDepthController());
+                        getDepthController(), getStatsLogManager());
         overviewPanel.init(mActionsView, controller);
         mActionsView.updateDimension(getDeviceProfile(), overviewPanel.getLastComputedTaskSize());
         mActionsView.updateVerticalMargin(DisplayController.getNavigationMode(this));
@@ -898,8 +898,8 @@ public class QuickstepLauncher extends Launcher {
             outState.putIBinder(PENDING_SPLIT_SELECT_INFO, ObjectWrapper.wrap(
                     new PendingSplitSelectInfo(
                             splitSelectStateController.getInitialTaskId(),
-                            splitSelectStateController.getActiveSplitStagePosition()
-                    )
+                            splitSelectStateController.getActiveSplitStagePosition(),
+                            splitSelectStateController.getSplitEvent())
             ));
             outState.putInt(RUNTIME_STATE, OVERVIEW.ordinal);
         }

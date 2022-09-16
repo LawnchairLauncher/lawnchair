@@ -36,7 +36,6 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.os.UserHandle;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
@@ -111,7 +110,6 @@ public final class WidgetsPredicationUpdateTaskTest {
         doReturn(allWidgets).when(manager).getInstalledProvidersForProfile(eq(myUserHandle()));
         doAnswer(i -> {
             String pkg = i.getArgument(0);
-            Log.e("Hello", "Getting v " + pkg);
             return TextUtils.isEmpty(pkg) ? allWidgets : allWidgets.stream()
                     .filter(a -> pkg.equals(a.provider.getPackageName()))
                     .collect(Collectors.toList());

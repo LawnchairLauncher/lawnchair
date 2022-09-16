@@ -34,7 +34,6 @@ import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
@@ -73,7 +72,10 @@ public final class RecentsViewStateController extends
         // DepthController to prevent optimizations which might occlude the layers behind
         mLauncher.getDepthController().setHasContentBehindLauncher(state.overviewUi);
 
-        handleSplitSelectionState(state, null);
+        PendingAnimation builder =
+                new PendingAnimation(state.getTransitionDuration(mLauncher, true));
+
+        handleSplitSelectionState(state, builder, /* animate */false);
     }
 
     @Override
@@ -101,7 +103,7 @@ public final class RecentsViewStateController extends
         builder.addListener(AnimatorListeners.forSuccessCallback(() ->
                 mLauncher.getDepthController().setHasContentBehindLauncher(toState.overviewUi)));
 
-        handleSplitSelectionState(toState, builder);
+        handleSplitSelectionState(toState, builder, /* animate */true);
 
         setAlphas(builder, config, toState);
         builder.setFloat(mRecentsView, FULLSCREEN_PROGRESS,
@@ -114,8 +116,7 @@ public final class RecentsViewStateController extends
      *                will add animations to builder.
      */
     private void handleSplitSelectionState(@NonNull LauncherState toState,
-            @Nullable PendingAnimation builder) {
-        boolean animate = builder != null;
+            @NonNull PendingAnimation builder, boolean animate) {
         PagedOrientationHandler orientationHandler =
                 ((RecentsView) mLauncher.getOverviewPanel()).getPagedOrientationHandler();
         Pair<FloatProperty, FloatProperty> taskViewsFloat =
@@ -124,18 +125,15 @@ public final class RecentsViewStateController extends
                         mLauncher.getDeviceProfile());
 
         if (toState == OVERVIEW_SPLIT_SELECT) {
-            // Animation to "dismiss" selected taskView
-            PendingAnimation splitSelectInitAnimation = mRecentsView.createSplitSelectInitAnimation(
+            mRecentsView.createSplitSelectInitAnimation(builder,
                     toState.getTransitionDuration(mLauncher, true /* isToState */));
             // Add properties to shift remaining taskViews to get out of placeholder view
-            splitSelectInitAnimation.setFloat(mRecentsView, taskViewsFloat.first,
+            builder.setFloat(mRecentsView, taskViewsFloat.first,
                     toState.getSplitSelectTranslation(mLauncher), LINEAR);
-            splitSelectInitAnimation.setFloat(mRecentsView, taskViewsFloat.second, 0, LINEAR);
+            builder.setFloat(mRecentsView, taskViewsFloat.second, 0, LINEAR);
 
             if (!animate) {
-                splitSelectInitAnimation.buildAnim().start();
-            } else {
-                builder.add(splitSelectInitAnimation.buildAnim());
+                builder.buildAnim().start();
             }
 
             mRecentsView.applySplitPrimaryScrollOffset();
