@@ -47,11 +47,11 @@ import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.TaskAnimationManager;
-import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
 import com.android.quickstep.views.TaskThumbnailView.PreviewPositionHelper;
 import com.android.quickstep.views.TaskView.FullscreenDrawParams;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams.Builder;
 
 /**
  * A utility class which emulates the layout behavior of TaskView and RecentsView
@@ -387,10 +387,10 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
     @Override
     public void onBuildTargetParams(
-            SurfaceProperties builder, RemoteAnimationTargetCompat app, TransformParams params) {
-        builder.setMatrix(mMatrix)
-                .setWindowCrop(mTmpCropRect)
-                .setCornerRadius(getCurrentCornerRadius());
+            Builder builder, RemoteAnimationTargetCompat app, TransformParams params) {
+        builder.withMatrix(mMatrix)
+                .withWindowCrop(mTmpCropRect)
+                .withCornerRadius(getCurrentCornerRadius());
 
         // If mDrawsBelowRecents is unset, no reordering will be enforced.
         if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mDrawsBelowRecents != null) {
@@ -399,7 +399,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             // conflict with layers that WM core positions (ie. the input consumers).  For shell
             // transitions, the animation leashes are reparented to an animation container so we
             // can bump layers as needed.
-            builder.setLayer(mDrawsBelowRecents
+            builder.withLayer(mDrawsBelowRecents
                     ? Integer.MIN_VALUE + 1
                     : ENABLE_SHELL_TRANSITIONS ? Integer.MAX_VALUE : 0);
         }
