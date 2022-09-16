@@ -37,11 +37,11 @@ import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.RectFSpringAnim;
-import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.TransformParams.BuilderProxy;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams.Builder;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
@@ -335,11 +335,11 @@ public abstract class SwipeUpAnimationLogic implements
         }
 
         @Override
-        public void onBuildTargetParams(SurfaceProperties builder, RemoteAnimationTargetCompat app,
-                TransformParams params) {
-            builder.setMatrix(mMatrix)
-                    .setWindowCrop(mCropRect)
-                    .setCornerRadius(params.getCornerRadius());
+        public void onBuildTargetParams(
+                Builder builder, RemoteAnimationTargetCompat app, TransformParams params) {
+            builder.withMatrix(mMatrix)
+                    .withWindowCrop(mCropRect)
+                    .withCornerRadius(params.getCornerRadius());
         }
 
         @Override
