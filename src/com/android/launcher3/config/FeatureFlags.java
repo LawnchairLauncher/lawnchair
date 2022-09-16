@@ -298,10 +298,8 @@ public final class FeatureFlags {
             "Enable option to log the keyboard latency for both atomic and controlled keyboard "
                     + "animations on an EditText");
 
-    // Change of wallpaper depth in widget picker is disabled for tests as it causes flakiness on
-    // very slow cuttlefish devices.
     public static final BooleanFlag ENABLE_WIDGET_PICKER_DEPTH = new DeviceFlag(
-            "ENABLE_WIDGET_PICKER_DEPTH", true, "Enable changing depth in widget picker.");
+            "ENABLE_WIDGET_PICKER_DEPTH", false, "Enable changing depth in widget picker.");
 
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
