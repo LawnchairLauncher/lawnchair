@@ -481,7 +481,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         mAppWidgetHost = createAppWidgetHost();
         mAppWidgetHost.startListening();
 
-        inflateRootView(R.layout.launcher);
         setupViews();
         crossFadeWithPreviousAppearance();
         mPopupDataProvider = new PopupDataProvider(this::updateNotificationDots);
@@ -1262,6 +1261,7 @@ public class Launcher extends StatefulActivity<LauncherState>
      * Finds all the views we need and configure them properly.
      */
     protected void setupViews() {
+        inflateRootView(R.layout.launcher);
         mDragLayer = findViewById(R.id.drag_layer);
         mFocusHandler = mDragLayer.getFocusIndicatorHelper();
         mWorkspace = mDragLayer.findViewById(R.id.workspace);
