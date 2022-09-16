@@ -45,6 +45,7 @@ import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 import android.window.IOnBackInvokedCallback;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.android.internal.logging.InstanceId;
@@ -483,6 +484,10 @@ public class SystemUiProxy implements ISystemUiProxy {
         mPipAnimationListener = listener;
     }
 
+    /**
+     * @return Destination bounds of auto-pip animation, {@code null} if the animation is not ready.
+     */
+    @Nullable
     public Rect startSwipePipToHome(ComponentName componentName, ActivityInfo activityInfo,
             PictureInPictureParams pictureInPictureParams, int launcherRotation,
             Rect hotseatKeepClearArea) {

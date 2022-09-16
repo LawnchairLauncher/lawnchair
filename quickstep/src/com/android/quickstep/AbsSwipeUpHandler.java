@@ -1444,6 +1444,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         }
     }
 
+    @Nullable
     private SwipePipToHomeAnimator createWindowAnimationToPip(HomeAnimationFactory homeAnimFactory,
             RemoteAnimationTargetCompat runningTaskTarget, float startProgress) {
         // Directly animate the app to PiP (picture-in-picture) mode
@@ -1469,6 +1470,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                         runningTaskTarget.taskInfo.pictureInPictureParams,
                         homeRotation,
                         hotseatKeepClearArea);
+        if (destinationBounds == null) {
+            // No destination bounds returned from SystemUI, bail early.
+            return null;
+        }
         final Rect appBounds = new Rect();
         final WindowConfiguration winConfig = taskInfo.configuration.windowConfiguration;
         // Adjust the appBounds for TaskBar by using the calculated window crop Rect
