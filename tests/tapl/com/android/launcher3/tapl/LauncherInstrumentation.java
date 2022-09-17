@@ -110,8 +110,11 @@ public final class LauncherInstrumentation {
     static final Pattern EVENT_TOUCH_UP_TIS = getTouchEventPatternTIS("ACTION_UP");
     static final Pattern EVENT_TOUCH_CANCEL_TIS = getTouchEventPatternTIS("ACTION_CANCEL");
 
-    static final Pattern EVENT_KEY_BACK_DOWN = getKeyEventPattern("ACTION_DOWN", "KEYCODE_BACK");
-    static final Pattern EVENT_KEY_BACK_UP = getKeyEventPattern("ACTION_UP", "KEYCODE_BACK");
+    private static final Pattern EVENT_KEY_BACK_DOWN =
+            getKeyEventPattern("ACTION_DOWN", "KEYCODE_BACK");
+    private static final Pattern EVENT_KEY_BACK_UP =
+            getKeyEventPattern("ACTION_UP", "KEYCODE_BACK");
+    private static final Pattern EVENT_ON_BACK_INVOKED = Pattern.compile("onBackInvoked");
 
     private final String mLauncherPackage;
     private Boolean mIsLauncher3;
@@ -990,8 +993,12 @@ public final class LauncherInstrumentation {
                 }
             }
             if (launcherVisible) {
-                expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KEY_BACK_DOWN);
-                expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KEY_BACK_UP);
+                if (getContext().getApplicationInfo().isOnBackInvokedCallbackEnabled()) {
+                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ON_BACK_INVOKED);
+                } else {
+                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KEY_BACK_DOWN);
+                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KEY_BACK_UP);
+                }
             }
         }
     }

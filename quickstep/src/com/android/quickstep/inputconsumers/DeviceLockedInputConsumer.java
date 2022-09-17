@@ -53,13 +53,13 @@ import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.TaskAnimationManager;
-import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.TransformParams.BuilderProxy;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams.Builder;
 
 import java.util.HashMap;
 
@@ -290,9 +290,9 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     @Override
     public void onBuildTargetParams(
-            SurfaceProperties builder, RemoteAnimationTargetCompat app, TransformParams params) {
+            Builder builder, RemoteAnimationTargetCompat app, TransformParams params) {
         mMatrix.setTranslate(0, mProgress.value * mMaxTranslationY);
-        builder.setMatrix(mMatrix);
+        builder.withMatrix(mMatrix);
     }
 
     @Override

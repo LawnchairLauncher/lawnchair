@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.util;
+package com.android.quickstep.util;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
@@ -44,6 +44,9 @@ import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.util.LooperExecutor;
+import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.view.ViewCaptureData.ExportedData;
 import com.android.launcher3.view.ViewCaptureData.FrameData;
 import com.android.launcher3.view.ViewCaptureData.ViewNode;
