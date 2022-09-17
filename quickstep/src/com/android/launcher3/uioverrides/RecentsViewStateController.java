@@ -27,6 +27,7 @@ import static com.android.quickstep.views.RecentsView.TASK_PRIMARY_SPLIT_TRANSLA
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_SPLIT_TRANSLATION;
 import static com.android.quickstep.views.TaskView.FLAG_UPDATE_ALL;
 
+import android.animation.AnimatorSet;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.util.FloatProperty;
@@ -117,6 +118,13 @@ public final class RecentsViewStateController extends
      */
     private void handleSplitSelectionState(@NonNull LauncherState toState,
             @NonNull PendingAnimation builder, boolean animate) {
+        if (toState != OVERVIEW_SPLIT_SELECT) {
+            // Not going to split, nothing to do but ensure taskviews are at correct offset
+            mRecentsView.resetSplitPrimaryScrollOffset();
+            return;
+        }
+
+        // Create transition animations to split select
         PagedOrientationHandler orientationHandler =
                 ((RecentsView) mLauncher.getOverviewPanel()).getPagedOrientationHandler();
         Pair<FloatProperty, FloatProperty> taskViewsFloat =
@@ -124,22 +132,20 @@ public final class RecentsViewStateController extends
                         TASK_PRIMARY_SPLIT_TRANSLATION, TASK_SECONDARY_SPLIT_TRANSLATION,
                         mLauncher.getDeviceProfile());
 
-        if (toState == OVERVIEW_SPLIT_SELECT) {
-            mRecentsView.createSplitSelectInitAnimation(builder,
-                    toState.getTransitionDuration(mLauncher, true /* isToState */));
-            // Add properties to shift remaining taskViews to get out of placeholder view
-            builder.setFloat(mRecentsView, taskViewsFloat.first,
-                    toState.getSplitSelectTranslation(mLauncher), LINEAR);
-            builder.setFloat(mRecentsView, taskViewsFloat.second, 0, LINEAR);
+        mRecentsView.createSplitSelectInitAnimation(builder,
+                toState.getTransitionDuration(mLauncher, true /* isToState */));
+        // Add properties to shift remaining taskViews to get out of placeholder view
+        builder.setFloat(mRecentsView, taskViewsFloat.first,
+                toState.getSplitSelectTranslation(mLauncher), LINEAR);
+        builder.setFloat(mRecentsView, taskViewsFloat.second, 0, LINEAR);
 
-            if (!animate) {
-                builder.buildAnim().start();
-            }
-
-            mRecentsView.applySplitPrimaryScrollOffset();
-        } else {
-            mRecentsView.resetSplitPrimaryScrollOffset();
+        if (!animate) {
+            AnimatorSet as = builder.buildAnim();
+            as.start();
+            as.end();
         }
+
+        mRecentsView.applySplitPrimaryScrollOffset();
     }
 
     private void setAlphas(PropertySetter propertySetter, StateAnimationConfig config,
