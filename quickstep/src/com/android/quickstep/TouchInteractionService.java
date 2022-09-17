@@ -82,7 +82,6 @@ import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.TraceHelper;
-import com.android.launcher3.util.ViewCapture;
 import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
 import com.android.quickstep.inputconsumers.AssistantInputConsumer;
@@ -101,6 +100,7 @@ import com.android.quickstep.util.ActiveGestureLog.CompoundString;
 import com.android.quickstep.util.ProtoTracer;
 import com.android.quickstep.util.ProxyScreenStatusProvider;
 import com.android.quickstep.util.SplitScreenBounds;
+import com.android.quickstep.util.ViewCapture;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -709,16 +709,19 @@ public class TouchInteractionService extends Service
     }
 
     public GestureState createGestureState(GestureState previousGestureState) {
-        GestureState gestureState = new GestureState(mOverviewComponentObserver,
-                ActiveGestureLog.INSTANCE.incrementLogId());
+        final GestureState gestureState;
         TopTaskTracker.CachedTaskInfo taskInfo;
         if (mTaskAnimationManager.isRecentsAnimationRunning()) {
+            gestureState = new GestureState(mOverviewComponentObserver,
+                    ActiveGestureLog.INSTANCE.getLogId());
             taskInfo = previousGestureState.getRunningTask();
             gestureState.updateRunningTask(taskInfo);
             gestureState.updateLastStartedTaskId(previousGestureState.getLastStartedTaskId());
             gestureState.updatePreviouslyAppearedTaskIds(
                     previousGestureState.getPreviouslyAppearedTaskIds());
         } else {
+            gestureState = new GestureState(mOverviewComponentObserver,
+                    ActiveGestureLog.INSTANCE.incrementLogId());
             taskInfo = TopTaskTracker.INSTANCE.get(this).getCachedTopTask(false);
             gestureState.updateRunningTask(taskInfo);
         }

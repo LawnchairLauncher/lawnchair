@@ -121,7 +121,6 @@ import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.TouchController;
-import com.android.launcher3.util.ViewCapture;
 import com.android.launcher3.widget.LauncherAppWidgetHost;
 import com.android.quickstep.OverviewCommandHelper;
 import com.android.quickstep.RecentsModel;
@@ -135,6 +134,7 @@ import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
 import com.android.quickstep.util.SplitSelectStateController;
 import com.android.quickstep.util.TISBindHelper;
+import com.android.quickstep.util.ViewCapture;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -586,6 +586,8 @@ public class QuickstepLauncher extends Launcher {
     public void onWidgetsTransition(float progress) {
         super.onWidgetsTransition(progress);
         onTaskbarInAppDisplayProgressUpdate(progress, WIDGETS_PAGE_PROGRESS_INDEX);
+        // Change of wallpaper depth in widget picker is disabled for tests as it causes flakiness
+        // on very slow cuttlefish devices.
         if (ENABLE_WIDGET_PICKER_DEPTH.get() && !Utilities.IS_RUNNING_IN_TEST_HARNESS) {
             WIDGET_DEPTH.set(getDepthController(),
                     Utilities.mapToRange(progress, 0f, 1f, 0f, getDeviceProfile().bottomSheetDepth,

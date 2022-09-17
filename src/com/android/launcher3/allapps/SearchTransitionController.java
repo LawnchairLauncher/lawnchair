@@ -233,6 +233,7 @@ public class SearchTransitionController {
     private void onSearchChildAttached(View child) {
         // Avoid allocating hardware layers for alpha changes.
         child.forceHasOverlappingRendering(false);
+        child.setPivotY(0);
         if (mSearchToAzProgress > 0) {
             // Before the child is rendered, apply the animation including it to avoid flicker.
             updateSearchRecyclerViewProgress();

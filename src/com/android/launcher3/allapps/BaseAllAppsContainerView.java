@@ -491,6 +491,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
 
         mAllAppsStore.unregisterIconContainer(mAH.get(AdapterHolder.MAIN).mRecyclerView);
         mAllAppsStore.unregisterIconContainer(mAH.get(AdapterHolder.WORK).mRecyclerView);
+        mAllAppsStore.unregisterIconContainer(mAH.get(AdapterHolder.SEARCH).mRecyclerView);
 
         if (mUsingTabs) {
             mAH.get(AdapterHolder.MAIN).setup(mViewPager.getChildAt(0), mPersonalMatcher);
@@ -523,6 +524,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
 
         mAllAppsStore.registerIconContainer(mAH.get(AdapterHolder.MAIN).mRecyclerView);
         mAllAppsStore.registerIconContainer(mAH.get(AdapterHolder.WORK).mRecyclerView);
+        mAllAppsStore.registerIconContainer(mAH.get(AdapterHolder.SEARCH).mRecyclerView);
     }
 
     protected void updateSearchResultsVisibility() {
