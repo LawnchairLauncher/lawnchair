@@ -703,7 +703,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Nullable
     private TaskView mSplitHiddenTaskView;
     @Nullable
-    private View mSecondSplitHiddenView;
+    private TaskView mSecondSplitHiddenView;
     @Nullable
     private SplitBounds mSplitBoundsConfig;
     private final Toast mSplitToast = Toast.makeText(getContext(),
@@ -4251,13 +4251,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     aBoolean1 -> RecentsView.this.resetFromSplitSelectionState());
             InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
         });
-        if (containerTaskView.containsMultipleTasks()) {
-            // If we are launching from a child task, then only hide the thumbnail itself
-            mSecondSplitHiddenView = thumbnailView;
-        } else {
-            mSecondSplitHiddenView = containerTaskView;
-        }
-        mSecondSplitHiddenView.setVisibility(INVISIBLE);
+
+        mSecondSplitHiddenView = containerTaskView;
+        mSecondSplitHiddenView.setThumbnailVisibility(INVISIBLE);
+
         InteractionJankMonitorWrapper.begin(this,
                 InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER, "Second tile selected");
 
@@ -4278,11 +4275,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             mFirstFloatingTaskView = null;
             mSecondFloatingTaskView = null;
             mSplitInstructionsView = null;
-            if (mSecondSplitHiddenView != null) {
-                mSecondSplitHiddenView.setVisibility(VISIBLE);
-                mSecondSplitHiddenView = null;
-            }
             mSplitSelectSource = null;
+        }
+
+        if (mSecondSplitHiddenView != null) {
+            mSecondSplitHiddenView.setThumbnailVisibility(VISIBLE);
+            mSecondSplitHiddenView = null;
         }
 
         if (mSplitHiddenTaskViewIndex == -1) {
@@ -4300,10 +4298,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         onLayout(false /*  changed */, getLeft(), getTop(), getRight(), getBottom());
         resetTaskVisuals();
         mSplitHiddenTaskViewIndex = -1;
-        if (mSplitHiddenTaskView != null) {
-            mSplitHiddenTaskView.setThumbnailVisibility(VISIBLE);
-            mSplitHiddenTaskView = null;
-        }
     }
 
     private void safeRemoveDragLayerView(@Nullable View viewToRemove) {
