@@ -52,6 +52,18 @@ allprojects {
         }
     }
 
+    tasks.matching {
+        it.name.contains("transformClassesWithHiddenApiRefine")
+    }.configureEach {
+        notCompatibleWithConfigurationCache("https://github.com/RikkaApps/HiddenApiRefinePlugin/issues/9")
+    }
+
+    tasks.matching {
+        it.name.contains("OssLicensesTask")
+    }.configureEach {
+        notCompatibleWithConfigurationCache("https://github.com/google/play-services-plugins/issues/206")
+    }
+
     ext.getFrameworkJar = { String name ->
         def frameworkJar = new File(rootProject.projectDir, 'prebuilts/libs/' + name)
         if (!frameworkJar.exists()) {
@@ -89,18 +101,6 @@ allprojects {
                 it.classpath.from(files(newFiles))
             }
         }
-    }
-
-    tasks.matching {
-        it.name.contains("transformClassesWithHiddenApiRefine")
-    }.configureEach {
-        notCompatibleWithConfigurationCache("https://github.com/RikkaApps/HiddenApiRefinePlugin/issues/9")
-    }
-
-    tasks.matching {
-        it.name.contains("OssLicensesTask")
-    }.configureEach {
-        notCompatibleWithConfigurationCache("https://github.com/google/play-services-plugins/issues/206")
     }
 }
 
