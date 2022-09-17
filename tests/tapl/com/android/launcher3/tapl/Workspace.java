@@ -475,7 +475,9 @@ public final class Workspace extends Home {
             // Since the destination can be on another page, we need to drag to the edge first
             // until we reach the target page
             while (targetDest.x > displayX || targetDest.x < 0) {
-                int edgeX = targetDest.x > 0 ? displayX : 0;
+                // Don't drag all the way to the edge to prevent touch events from getting out of
+                //screen bounds.
+                int edgeX = targetDest.x > 0 ? displayX - 1 : 1;
                 Point screenEdge = new Point(edgeX, targetDest.y);
                 Point finalDragStart = dragStart;
                 executeAndWaitForPageScroll(launcher,
