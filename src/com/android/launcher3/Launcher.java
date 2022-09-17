@@ -2794,7 +2794,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             View v = getFirstMatch(Collections.singletonList(activeRecyclerView),
                     preferredItem, packageAndUserAndApp);
 
-            if (v != null && activeRecyclerView.getCurrentScrollY() > 0) {
+            if (v != null && activeRecyclerView.computeVerticalScrollOffset() > 0) {
                 RectF locationBounds = new RectF();
                 FloatingIconView.getLocationBoundsForView(this, v, false, locationBounds,
                         new Rect());
