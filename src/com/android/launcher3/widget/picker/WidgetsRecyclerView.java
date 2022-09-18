@@ -19,7 +19,6 @@ package com.android.launcher3.widget.picker;
 import android.content.Context;
 import android.graphics.Point;
 import android.util.AttributeSet;
-import android.util.SparseIntArray;
 import android.view.MotionEvent;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener;
 
 import com.android.launcher3.FastScrollRecyclerView;
 import com.android.launcher3.R;
+import com.android.launcher3.util.ScrollableLayoutManager;
 
 /**
  * The widgets recycler view.
@@ -41,14 +41,6 @@ public class WidgetsRecyclerView extends FastScrollRecyclerView implements OnIte
     private final Point mFastScrollerOffset = new Point();
     private boolean mTouchDownOnScroller;
     private HeaderViewDimensionsProvider mHeaderViewDimensionsProvider;
-
-    /**
-     * There is always 1 or 0 item of VIEW_TYPE_WIDGETS_LIST. Other types have fixes sizes, so the
-     * the size can be used for all other items of same type. Caching the last know size for
-     * VIEW_TYPE_WIDGETS_LIST allows us to use it to estimate full size even when
-     * VIEW_TYPE_WIDGETS_LIST is not visible on the screen.
-     */
-    private final SparseIntArray mCachedSizes = new SparseIntArray();
 
     public WidgetsRecyclerView(Context context) {
         this(context, null);
@@ -68,9 +60,7 @@ public class WidgetsRecyclerView extends FastScrollRecyclerView implements OnIte
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        // create a layout manager with Launcher's context so that scroll position
-        // can be preserved during screen rotation.
-        setLayoutManager(new LinearLayoutManager(getContext()));
+        setLayoutManager(new ScrollableLayoutManager(getContext()));
     }
 
     @Override
@@ -114,7 +104,7 @@ public class WidgetsRecyclerView extends FastScrollRecyclerView implements OnIte
         }
 
         // Skip early if, there no child laid out in the container.
-        int scrollY = getCurrentScrollY();
+        int scrollY = computeVerticalScrollOffset();
         if (scrollY < 0) {
             mScrollbar.setThumbOffsetY(-1);
             return;
@@ -161,39 +151,6 @@ public class WidgetsRecyclerView extends FastScrollRecyclerView implements OnIte
     public void setHeaderViewDimensionsProvider(
             HeaderViewDimensionsProvider headerViewDimensionsProvider) {
         mHeaderViewDimensionsProvider = headerViewDimensionsProvider;
-    }
-
-    /**
-     * Returns the sum of the height, in pixels, of this list adapter's items from index 0 until
-     * {@code untilIndex}.
-     *
-     * <p>If the untilIndex is larger than the total number of items in this adapter, returns the
-     * sum of all items' height.
-     */
-    @Override
-    protected int getItemsHeight(int untilIndex) {
-        // Initialize cache
-        int childCount = getChildCount();
-        int startPosition;
-        if (childCount > 0
-                && ((startPosition = getChildAdapterPosition(getChildAt(0))) != NO_POSITION)) {
-            int loopCount = Math.min(getChildCount(), getAdapter().getItemCount() - startPosition);
-            for (int i = 0; i < loopCount; i++) {
-                mCachedSizes.put(
-                        mAdapter.getItemViewType(startPosition + i),
-                        getChildAt(i).getMeasuredHeight());
-            }
-        }
-
-        if (untilIndex > mAdapter.getItems().size()) {
-            untilIndex = mAdapter.getItems().size();
-        }
-        int totalItemsHeight = 0;
-        for (int i = 0; i < untilIndex; i++) {
-            int type = mAdapter.getItemViewType(i);
-            totalItemsHeight += mCachedSizes.get(type);
-        }
-        return totalItemsHeight;
     }
 
     /**

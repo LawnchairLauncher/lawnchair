@@ -525,7 +525,7 @@ public abstract class AbstractLauncherUiTest {
     }
 
     protected int getAllAppsScroll(Launcher launcher) {
-        return launcher.getAppsView().getActiveRecyclerView().getCurrentScrollY();
+        return launcher.getAppsView().getActiveRecyclerView().computeVerticalScrollOffset();
     }
 
     private void checkLauncherIntegrity(
