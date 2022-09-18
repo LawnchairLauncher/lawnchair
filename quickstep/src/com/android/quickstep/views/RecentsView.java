@@ -2866,6 +2866,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 mSplitSelectStateController.getActiveSplitStagePosition(), mTempRect);
 
         RectF startingTaskRect = new RectF();
+        safeRemoveDragLayerView(mFirstFloatingTaskView);
         if (mSplitHiddenTaskView != null) {
             // Split staging is initiated
             mSplitHiddenTaskView.setThumbnailVisibility(INVISIBLE);
@@ -2889,6 +2890,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
 
         // SplitInstructionsView: animate in
+        safeRemoveDragLayerView(mSplitInstructionsView);
         mSplitInstructionsView = SplitInstructionsView.getSplitInstructionsView(mActivity);
         mSplitInstructionsView.setAlpha(0);
         anim.setViewAlpha(mSplitInstructionsView, 1, clampToProgress(LINEAR,
@@ -4244,6 +4246,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 new RectF(firstTaskStartingBounds), firstTaskEndingBounds,
                 false /* fadeWithThumbnail */, true /* isStagedTask */);
 
+        safeRemoveDragLayerView(mSecondFloatingTaskView);
         mSecondFloatingTaskView = FloatingTaskView.getFloatingTaskView(mActivity,
                 thumbnailView, thumbnailView.getThumbnail(),
                 iconView.getDrawable(), secondTaskStartingBounds);
@@ -4276,17 +4279,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @SuppressLint("WrongCall")
     protected void resetFromSplitSelectionState() {
         if (mSplitSelectSource != null || mSplitHiddenTaskViewIndex != -1) {
-            if (mSplitInstructionsView != null) {
-                mActivity.getDragLayer().removeView(mSplitInstructionsView);
-                mSplitInstructionsView = null;
-            }
-            if (mFirstFloatingTaskView != null) {
-                mActivity.getDragLayer().removeView(mFirstFloatingTaskView);
-                mFirstFloatingTaskView = null;
-            }
-            if (mSecondFloatingTaskView != null) {
-                mActivity.getDragLayer().removeView(mSecondFloatingTaskView);
-                mSecondFloatingTaskView = null;
+            safeRemoveDragLayerView(mFirstFloatingTaskView);
+            safeRemoveDragLayerView(mSecondFloatingTaskView);
+            safeRemoveDragLayerView(mSplitInstructionsView);
+            mFirstFloatingTaskView = null;
+            mSecondFloatingTaskView = null;
+            mSplitInstructionsView = null;
+            if (mSecondSplitHiddenView != null) {
                 mSecondSplitHiddenView.setVisibility(VISIBLE);
                 mSecondSplitHiddenView = null;
             }
@@ -4311,6 +4310,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (mSplitHiddenTaskView != null) {
             mSplitHiddenTaskView.setThumbnailVisibility(VISIBLE);
             mSplitHiddenTaskView = null;
+        }
+    }
+
+    private void safeRemoveDragLayerView(@Nullable View viewToRemove) {
+        if (viewToRemove != null) {
+            mActivity.getDragLayer().removeView(viewToRemove);
         }
     }
 
