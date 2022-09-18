@@ -58,6 +58,7 @@ jobs:
         with:
           name: Debug APK
           path: build/outputs/apk/lawnWithQuickstep/debug/*.apk
+
   send-notifications:
     runs-on: ubuntu-latest
     if: github.repository == 'LawnchairLauncher/lawnchair'
@@ -69,7 +70,7 @@ jobs:
           submodules: true
           fetch-depth: 0
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: '3.x'
       - name: Install Python packages
