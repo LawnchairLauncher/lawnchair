@@ -45,6 +45,8 @@ def send_internal_notifications():
     commit_range = f"{github_event_before}...{github_sha}"
     commits = list(repository.iter_commits(commit_range))
 
+    if len(commits) == 0: return
+
     overview_link = f"https://github.com/{github_repository}/compare/{commit_range}"
     overview_link_tag = f"""<a href="{overview_link}">{len(commits)} new commit{"s" if len(commits) > 1 else ""}</a>"""
     message = f"""<b>🔨 {overview_link_tag} to <code>lawnchair:{github_ref}</code>:</b>\n"""
