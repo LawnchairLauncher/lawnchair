@@ -96,7 +96,7 @@ fun SelectIconPreference(componentKey: ComponentKey) {
                 label = iconPack.name,
                 icon = remember(iconPack) { iconPack.icon.toBitmap() },
                 onClick = {
-                    if (iconPack.packageName == "") {
+                    if (iconPack.packageName.isEmpty()) {
                         navController.navigate("/${Routes.ICON_PICKER}/")
                     } else {
                         navController.navigate("/${Routes.ICON_PICKER}/${iconPack.packageName}/")

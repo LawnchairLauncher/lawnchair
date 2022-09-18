@@ -399,7 +399,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     private fun reloadIconsIfNeeded() {
         if (
             preferenceManager2.alwaysReloadIcons.firstBlocking() &&
-            prefs.iconPackPackage.get() != ""
+            prefs.iconPackPackage.get().isNotEmpty()
         ) {
             LauncherAppState.getInstance(this).reloadIcons()
         }

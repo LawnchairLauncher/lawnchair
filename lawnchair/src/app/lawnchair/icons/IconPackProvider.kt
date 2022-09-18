@@ -15,12 +15,12 @@ class IconPackProvider(private val context: Context) {
     private val iconPacks = mutableMapOf<String, IconPack?>()
 
     fun getIconPackOrSystem(packageName: String): IconPack? {
-        if (packageName == "") return systemIconPack
+        if (packageName.isEmpty()) return systemIconPack
         return getIconPack(packageName)
     }
 
     fun getIconPack(packageName: String): IconPack? {
-        if (packageName == "") {
+        if (packageName.isEmpty()) {
             return null
         }
         return iconPacks.getOrPut(packageName) {

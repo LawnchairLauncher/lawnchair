@@ -118,7 +118,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(c
     }
 
     override fun setFocusedResultTitle(title: CharSequence?) {
-        focusedResultTitle = title?.toString() ?: ""
+        focusedResultTitle = title?.toString().orEmpty()
         updateHint()
     }
 

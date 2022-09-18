@@ -288,7 +288,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
                         if (type != XmlPullParser.START_TAG) continue
                         if (TAG_ICON == parser.name) {
                             val pkg = parser.getAttributeValue(null, ATTR_PACKAGE)
-                            val cmp = parser.getAttributeValue(null, ATTR_COMPONENT) ?: ""
+                            val cmp = parser.getAttributeValue(null, ATTR_COMPONENT).orEmpty()
                             val iconId = parser.getAttributeResourceValue(null, ATTR_DRAWABLE, 0)
                             if (iconId != 0 && pkg.isNotEmpty()) {
                                 map[ComponentName(pkg, cmp)] = ThemedIconDrawable.ThemeData(resources, packageName, iconId)

@@ -82,7 +82,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
             }
             else -> {
                 allowLongClick = true
-                val className = extras.getString("class") ?: ""
+                val className = extras.getString("class").orEmpty()
                 val componentName = ComponentName(target.packageName, className)
                 bindFromApp(componentName, target.userHandle)
             }
