@@ -3,6 +3,27 @@
     <icon
         drawable="@array/grayscale_calendar_icons"
         package="com.google.android.calendar" />
+    <icon 
+        drawable="@array/grayscale_calendar_icons" 
+        package="com.android.calendar" />
+    <icon 
+        drawable="@array/grayscale_calendar_icons" 
+        package="com.simplemobiletools.calendar.pro" />
+    <icon 
+        drawable="@array/grayscale_calendar_icons" 
+        package="com.simplemobiletools.calendar" />
+    <icon 
+        drawable="@array/grayscale_calendar_icons" 
+        package="ws.xsoh.etar" />
+    <icon 
+       drawable="@array/grayscale_calendar_icons" 
+       package="org.lineageos.etar" />
+    <icon 
+       drawable="@array/grayscale_calendar_icons" 
+       package="org.withouthat.acalendarplus" />
+    <icon 
+       drawable="@array/grayscale_calendar_icons" 
+       package="org.withouthat.acalendar" /> 
     <icon
         drawable="@array/grayscale_clock_icons"
         package="com.google.android.deskclock" />
