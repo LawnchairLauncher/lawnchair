@@ -394,16 +394,14 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     }
 
     /**
-     * Reset the value of [PreferenceManager.iconPackPackage] to force reload icons in the launcher.
-     * Only reloads icons if there is an active icon pack & [PreferenceManager2.alwaysReloadIcons] is enabled.
+     * Reloads app icons if there is an active icon pack & [PreferenceManager2.alwaysReloadIcons] is enabled.
      */
     private fun reloadIconsIfNeeded() {
-        if (preferenceManager2.alwaysReloadIcons.firstBlocking()) {
-            val iconPack = prefs.iconPackPackage.get()
-            if (iconPack != "") {
-                prefs.iconPackPackage.set("")
-                prefs.iconPackPackage.set(iconPack)
-            }
+        if (
+            preferenceManager2.alwaysReloadIcons.firstBlocking() &&
+            prefs.iconPackPackage.get() != ""
+        ) {
+            LauncherAppState.getInstance(this).reloadIcons()
         }
     }
 
