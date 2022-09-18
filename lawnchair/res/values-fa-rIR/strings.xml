@@ -49,6 +49,8 @@
     <string name="smartspace_calendar_description">اجازه نمایش تاریخ در سیستم‌های تقویم غیر گرگوری.</string>
     <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
     <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <string name="always_reload_icons_label">Always Reload Icons</string>
+    <string name="always_reload_icons_description">خودداری از استفاده از آیکون‌های ذخیره شده در آیکون پک‌ها</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">چرخش صفحه‌ اصلی</string>
     <string name="home_screen_rotaton_description">هنگام چرخش دستگاه.</string>
@@ -78,7 +80,7 @@
     <string name="accent_color">رنگ برنامه</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
-    <string name="icon_pack">آیکن‌پک</string>
+    <string name="icon_pack">آیکون پک</string>
     <string name="system_icons">آیکون‌های سیستمی</string>
     <string name="themed_icon_title">آیکون‌های خاص</string>
     <string name="themed_icons_off_label">خاموش</string>
@@ -134,7 +136,7 @@
     <string name="action_paste">چسباندن</string>
     <string name="copied_toast">در کلیپ‌بورد کپی شد.</string>
     <string name="invalid_color">رنگ نامعتبر</string>
-    <string name="launcher_default_color">Default</string>
+    <string name="launcher_default_color">پیش‌فرض</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">افزودن برنامه‌های جدید به صفحه‌اصلی</string>
@@ -245,7 +247,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">شفافیت بک‌گراند آیکون</string>
-    <string name="folder_preview_bg_color_label">Icon Background Color</string>
+    <string name="folder_preview_bg_color_label">رنگ پس زمینه ‌آیکون</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">حداکثر ستون‌های پوشه‌ها</string>
     <string name="max_folder_rows">حداکثر ردیف‌های پوشه‌ها</string>

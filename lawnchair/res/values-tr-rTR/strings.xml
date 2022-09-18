@@ -47,8 +47,10 @@
     <string name="font_picker_description">Bazı yazılar değişmeden kalabilir.</string>
     <string name="smartspace_calendar_label">Bir Bakışta Takvim Özelleştirme</string>
     <string name="smartspace_calendar_description">Gregoryen olmayan takvim sistemlerinde tarihin gösterilmesine izin verin.</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <string name="workspace_increase_max_grid_size_label">Maksimum Ana Ekran Izgara Boyutu</string>
+    <string name="workspace_increase_max_grid_size_description">Ana ekran Maksimum Izgara Boyutunu 10x10\' dan 20x20 \'ye çıkar.</string>
+    <string name="always_reload_icons_label">Always Reload Icons</string>
+    <string name="always_reload_icons_description">Önbelleklenmiş ikonları kullanmaktan kaçın</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Ana Ekran Rotasyonu</string>
     <string name="home_screen_rotaton_description">Cihaz döndürüldüğü zaman.</string>
@@ -149,7 +151,7 @@
     <string name="layout">Düzen</string>
     <string name="home_screen_grid">Ana Ekran Izgaraları</string>
     <string name="home_screen_lock">Ana Ekranı Kilitle</string>
-    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_lock_description">Ana Ekran düzeninde değişiklik yapılmasını önler.</string>
     <string name="home_screen_unlock">Ana Ekranın Kilidini Aç</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">Açılır Pencerede Kilit Düğmesini Göster</string>
@@ -186,9 +188,9 @@
     <string name="smartspace_date_and_time">Tarih &amp; Zaman</string>
     <string name="smartspace_date">Tarih</string>
     <string name="smartspace_time">Zaman</string>
-    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_format">Zaman Biçimi</string>
     <string name="smartspace_time_follow_system">Sistemi takip et</string>
-    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
+    <string name="smartspace_time_12_hour_format">12 Saat Zaman Biçimi</string>
     <string name="smartspace_time_24_hour_format">24 Saat Formatı</string>
     <string name="smartspace_weather">Hava durumu</string>
     <string name="smartspace_battery_status">Batarya durumu</string>

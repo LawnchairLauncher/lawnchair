@@ -49,6 +49,8 @@
     <string name="smartspace_calendar_description">Дозволити показувати дату у негригоріанських календарних системах.</string>
     <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
     <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <string name="always_reload_icons_label">Always Reload Icons</string>
+    <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Обертання Головного Екрану</string>
     <string name="home_screen_rotaton_description">При обертанні пристрою.</string>

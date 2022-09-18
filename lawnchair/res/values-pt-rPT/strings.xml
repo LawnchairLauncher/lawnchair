@@ -49,6 +49,8 @@
     <string name="smartspace_calendar_description">Permitir mostrar a data em sistemas de calendário não-Gregoriano.</string>
     <string name="workspace_increase_max_grid_size_label">Tamanho Máximo da Grelha do Ecrã Inicial Aumentado</string>
     <string name="workspace_increase_max_grid_size_description">Aumentar o tamanho máximo permitido da grelha do Ecrã Inicial de 10 x 10 para 20 x 20.</string>
+    <string name="always_reload_icons_label">Recarregar Ícones Sempre</string>
+    <string name="always_reload_icons_description">Evitar utilizar ícones em cache dos pacotes de ícones</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotação de Ecrã Inicial</string>
     <string name="home_screen_rotaton_description">Quando o dispositivo é rodado.</string>

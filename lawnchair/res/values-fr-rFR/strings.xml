@@ -47,8 +47,10 @@
     <string name="font_picker_description">Certains textes restent inchangés.</string>
     <string name="smartspace_calendar_label">Personnalisation du calendrier en un coup d’œil</string>
     <string name="smartspace_calendar_description">Autoriser l\'affichage de la date dans les systèmes de calendrier non grégoriens.</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <string name="workspace_increase_max_grid_size_label">Augmentation de la taille maximale de la grille d\'écran d\'accueil</string>
+    <string name="workspace_increase_max_grid_size_description">Augmenter la taille maximale autorisée de la grille de 10 x 10 à 20 x 20.</string>
+    <string name="always_reload_icons_label">Toujours actualiser les icônes</string>
+    <string name="always_reload_icons_description">Éviter d\'utiliser les icônes en cache des packs d\'icônes</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotation de l\'écran d\'accueil</string>
     <string name="home_screen_rotaton_description">Lorsque l\'appareil est tourné.</string>
@@ -91,13 +93,13 @@
     <string name="icon_shape_system">Système</string>
     <string name="icon_shape_circle">Cercle</string>
     <string name="icon_shape_cylinder">Cylindre</string>
-    <string name="icon_shape_diamond">Diamond</string>
-    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_diamond">Diamant</string>
+    <string name="icon_shape_egg">Œuf</string>
     <string name="icon_shape_cupertino">Système d\'exploitation Pomme</string>
-    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_octagon">Octogone</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Carré arrondi</string>
-    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_sharp_square">Carré net</string>
     <string name="icon_shape_square">Carré</string>
     <string name="icon_shape_squircle">Carré rond</string>
     <string name="icon_shape_teardrop">Gouttelette</string>
@@ -131,10 +133,10 @@
     <string name="hex">Hexadécimal</string>
     <string name="color_sliders">Curseurs</string>
     <string name="action_copy">Copier</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_paste">Coller</string>
     <string name="copied_toast">Copié dans le presse-papiers.</string>
     <string name="invalid_color">Couleur invalide</string>
-    <string name="launcher_default_color">Default</string>
+    <string name="launcher_default_color">Par défaut</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Ajouter les nouvelles applications à l\'écran d\'accueil</string>
@@ -149,11 +151,11 @@
     <string name="layout">Mise en page</string>
     <string name="home_screen_grid">Grille de l\'écran d\'accueil</string>
     <string name="home_screen_lock">Verrouillage de l\'écran d\'accueil</string>
-    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_lock_description">Empêche la modification de la disposition de l\'écran d\'accueil.</string>
     <string name="home_screen_unlock">Déverrouiller l\'écran d\'accueil</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">Afficher le bouton de verrouillage dans la fenêtre contextuelle</string>
-    <string name="home_screen_locked">Home Screen is locked.</string>
+    <string name="home_screen_locked">L\'écran d\'accueil est verrouillé.</string>
     <string name="status_bar_label">Barre d\'état</string>
     <string name="show_status_bar">Afficher la barre d\'état</string>
     <string name="dark_status_bar_label">Barre d\'état sombre</string>
@@ -186,9 +188,9 @@
     <string name="smartspace_date_and_time">Date &amp; Heure</string>
     <string name="smartspace_date">Date</string>
     <string name="smartspace_time">Heure</string>
-    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_format">Format d\'heure</string>
     <string name="smartspace_time_follow_system">Suivre le système</string>
-    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
+    <string name="smartspace_time_12_hour_format">Format 12 heures</string>
     <string name="smartspace_time_24_hour_format">Format 24 Heures</string>
     <string name="smartspace_weather">Météo</string>
     <string name="smartspace_battery_status">État de la batterie</string>
@@ -199,8 +201,8 @@
     <string name="smartspace_calendar_gregorian">Grégorien</string>
     <string name="smartspace_calendar_persian">Persan</string>
     <string name="smartspace_preferences">Préférences</string>
-    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <string name="smartspace_widget_toggle_label">Afficher sur l\'écran d\'accueil</string>
+    <string name="smartspace_widget_toggle_description">Widget Aperçu peut être ajouté manuellement en plaçant le widget \"Lawnchair\".</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">Barre de recherche</string>
@@ -245,7 +247,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Opacité de l\'arrière-plan de l\'icône</string>
-    <string name="folder_preview_bg_color_label">Icon Background Color</string>
+    <string name="folder_preview_bg_color_label">Couleur d\'arrière-plan de l\'icône</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Nombre maximum de colonnes des dossiers</string>
     <string name="max_folder_rows">Nombre maximum de lignes des dossiers</string>

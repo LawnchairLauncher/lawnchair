@@ -49,6 +49,8 @@
     <string name="smartspace_calendar_description">Permitir mostrar data em sistema de calendário não-Gregoriano.</string>
     <string name="workspace_increase_max_grid_size_label">Aumentar Tamanho Máximo da Grade da Tela Inicial</string>
     <string name="workspace_increase_max_grid_size_description">Aumenta o tamanho máximo permitido da grade da tela inicial de 10 x 10 para 20 x 20.</string>
+    <string name="always_reload_icons_label">Always Reload Icons</string>
+    <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotação da Tela Inicial</string>
     <string name="home_screen_rotaton_description">Quando o dispositivo for rotacionado.</string>

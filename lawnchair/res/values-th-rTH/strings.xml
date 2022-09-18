@@ -49,6 +49,8 @@
     <string name="smartspace_calendar_description">อนุญาตให้แสดงวันที่ในระบบปฏิทินที่ไม่ใช่แบบเกรกอเรียน</string>
     <string name="workspace_increase_max_grid_size_label">เพิ่มขนาดกริดหน้าจอหลักสูงสุดแล้ว</string>
     <string name="workspace_increase_max_grid_size_description">เพิ่มขนาดกริดหน้าจอหลักสูงสุดที่อนุญาตจาก 10 x 10 เป็น 20 x 20</string>
+    <string name="always_reload_icons_label">โหลดไอคอนใหม่เสมอ</string>
+    <string name="always_reload_icons_description">หลีกเลี่ยงการแคชจากชุดไอคอน</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">อนุญาตให้หมุนหน้าจอหลัก</string>
     <string name="home_screen_rotaton_description">เมื่อหมุนโทรศัพท์</string>

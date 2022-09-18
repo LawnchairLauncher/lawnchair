@@ -49,6 +49,8 @@
     <string name="smartspace_calendar_description">그레고리력이 아닌 달력 시스템에서 날짜 표시를 허용합니다.</string>
     <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
     <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <string name="always_reload_icons_label">Always Reload Icons</string>
+    <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">홈 화면 회전</string>
     <string name="home_screen_rotaton_description">기기가 회전되었을 때.</string>

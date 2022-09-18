@@ -49,6 +49,8 @@
     <string name="smartspace_calendar_description">Permitir mostrar fechas en sistemas de calendario no gregorianos.</string>
     <string name="workspace_increase_max_grid_size_label">Aumento del tamaño máximo de la cuadrícula de la pantalla de inicio</string>
     <string name="workspace_increase_max_grid_size_description">Aumente el tamaño máximo permitido de la cuadrícula de la pantalla de inicio de 10 x 10 a 20 x 20.</string>
+    <string name="always_reload_icons_label">Recargar iconos siempre</string>
+    <string name="always_reload_icons_description">Evitar usar iconos en caché de paquetes de iconos</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotación de Pantalla de Inicio</string>
     <string name="home_screen_rotaton_description">Cuando se rota el dispositivo.</string>
