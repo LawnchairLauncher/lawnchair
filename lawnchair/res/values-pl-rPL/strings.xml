@@ -49,6 +49,8 @@
     <string name="smartspace_calendar_description">Umożliwiaj wyświetlanie daty w systemach kalendarzowych innych niż gregoriański.</string>
     <string name="workspace_increase_max_grid_size_label">Zwiększony maksymalny rozmiar siatki ekranu głównego</string>
     <string name="workspace_increase_max_grid_size_description">Zwiększ maksymalny dozwolony rozmiar siatki ekranu głównego z 10 x 10 do 20 x 20.</string>
+    <string name="always_reload_icons_label">Zawsze odświeżaj ikony</string>
+    <string name="always_reload_icons_description">Unikaj używania buforowanych ikon z pakietów ikon</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Obrót Ekranu głównego</string>
     <string name="home_screen_rotaton_description">Po obróceniu urządzenia.</string>

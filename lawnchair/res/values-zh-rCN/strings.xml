@@ -49,6 +49,8 @@
     <string name="smartspace_calendar_description">允许显示非公历日期</string>
     <string name="workspace_increase_max_grid_size_label">提高主屏幕最大网格大小</string>
     <string name="workspace_increase_max_grid_size_description">将最大允许的主屏幕网格大小从10 x 10增加到20x 20。</string>
+    <string name="always_reload_icons_label">Always Reload Icons</string>
+    <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">主屏幕旋转</string>
     <string name="home_screen_rotaton_description">当设备旋转时</string>

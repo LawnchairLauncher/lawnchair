@@ -49,6 +49,8 @@
     <string name="smartspace_calendar_description">Ermögliche die Anzeige des Datums in Nicht-Gregorianischen Kalendersystemen.</string>
     <string name="workspace_increase_max_grid_size_label">Vergrößerte, maximale Startbildschirm-Rastergröße</string>
     <string name="workspace_increase_max_grid_size_description">Vergrößere die erlaubte Startbildschirm-Rastergröße von 10 x 10 auf 20 x 20.</string>
+    <string name="always_reload_icons_label">Symbole immer neu laden</string>
+    <string name="always_reload_icons_description">Die Verwendung zwischengespeicherter Symbole aus Symbol-Paketen vermeiden</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Startbildschirm-Drehung</string>
     <string name="home_screen_rotaton_description">Wenn Gerät gedreht wird.</string>

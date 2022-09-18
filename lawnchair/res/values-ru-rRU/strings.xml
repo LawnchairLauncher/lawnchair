@@ -49,6 +49,8 @@
     <string name="smartspace_calendar_description">Разрешить показывать дату в негригорианских календарных системах.</string>
     <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
     <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <string name="always_reload_icons_label">Всегда перезагружать иконки</string>
+    <string name="always_reload_icons_description">Избегать использования кэшированных иконок из наборов иконок</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Поворачивать домашний экран</string>
     <string name="home_screen_rotaton_description">При повороте устройства.</string>
@@ -131,10 +133,10 @@
     <string name="hex">Hex</string>
     <string name="color_sliders">Ползунки</string>
     <string name="action_copy">Скопировать</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_paste">Вставить</string>
     <string name="copied_toast">Скопировано в буфер обмена.</string>
     <string name="invalid_color">Недопустимый цвет</string>
-    <string name="launcher_default_color">Default</string>
+    <string name="launcher_default_color">По умолчанию</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Добавлять новые приложения на домашний экран</string>
@@ -149,11 +151,11 @@
     <string name="layout">Макет</string>
     <string name="home_screen_grid">Сетка главного экрана</string>
     <string name="home_screen_lock">Блокировка домашнего экрана</string>
-    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_lock_description">Предотвращает изменения макета главного экрана.</string>
     <string name="home_screen_unlock">Разблокировать домашний экран</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">Показывать кнопку блокировки во всплывающем окне</string>
-    <string name="home_screen_locked">Home Screen is locked.</string>
+    <string name="home_screen_locked">Главный экран заблокирован.</string>
     <string name="status_bar_label">Строка состояния</string>
     <string name="show_status_bar">Отображать строку состояния</string>
     <string name="dark_status_bar_label">Темная строка состояния</string>
@@ -186,9 +188,9 @@
     <string name="smartspace_date_and_time">Дата &amp; Время</string>
     <string name="smartspace_date">Дата</string>
     <string name="smartspace_time">Время</string>
-    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_format">Формат времени</string>
     <string name="smartspace_time_follow_system">На основе системной</string>
-    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
+    <string name="smartspace_time_12_hour_format">12-часовой формат</string>
     <string name="smartspace_time_24_hour_format">24-часовой формат</string>
     <string name="smartspace_weather">Погода</string>
     <string name="smartspace_battery_status">Состояние батареи</string>
@@ -199,7 +201,7 @@
     <string name="smartspace_calendar_gregorian">Григорианский</string>
     <string name="smartspace_calendar_persian">Персидский</string>
     <string name="smartspace_preferences">Настройки</string>
-    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
+    <string name="smartspace_widget_toggle_label">Показать на главном экране</string>
     <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
@@ -247,7 +249,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Прозрачность фона значка</string>
-    <string name="folder_preview_bg_color_label">Icon Background Color</string>
+    <string name="folder_preview_bg_color_label">Цвет фона иконки</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Макс. количество столбцов в папке</string>
     <string name="max_folder_rows">Макс. количество строк в папке</string>

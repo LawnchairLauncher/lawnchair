@@ -49,6 +49,8 @@
     <string name="smartspace_calendar_description">Омогућава приказ датума у календарским системима који нису грегоријански.</string>
     <string name="workspace_increase_max_grid_size_label">Већа мрежа почетног екрана</string>
     <string name="workspace_increase_max_grid_size_description">Повећава максималну величину мреже почетног екрана из 10 × 10 у 20 × 20.</string>
+    <string name="always_reload_icons_label">Always Reload Icons</string>
+    <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Ротација почетног екрана</string>
     <string name="home_screen_rotaton_description">Када се уређај ротира.</string>

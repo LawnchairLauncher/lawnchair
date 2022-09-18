@@ -47,8 +47,10 @@
     <string name="font_picker_description">Některý text zůstává beze změny.</string>
     <string name="smartspace_calendar_label">Přizpůsobení glanc kalendáře</string>
     <string name="smartspace_calendar_description">Povolit zobrazení data v kalendářích ne-Gregoriánských systémů.</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <string name="workspace_increase_max_grid_size_label">Zvýšená maximální velikost mřížky domovské obrazovky</string>
+    <string name="workspace_increase_max_grid_size_description">Zvýšit maximální povolenou velikost mřížky domovské obrazovky z 10 x 10 x 20 x 20.</string>
+    <string name="always_reload_icons_label">Vždy znovu načíst ikony</string>
+    <string name="always_reload_icons_description">Vyhnout se používání uložených ikon z balíčků ikon</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Otáčení domovské obrazovky</string>
     <string name="home_screen_rotaton_description">Při otočení zařízení.</string>
@@ -91,13 +93,13 @@
     <string name="icon_shape_system">Systém</string>
     <string name="icon_shape_circle">Kruh</string>
     <string name="icon_shape_cylinder">Válec</string>
-    <string name="icon_shape_diamond">Diamond</string>
-    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_diamond">Diamant</string>
+    <string name="icon_shape_egg">Vajíčko</string>
     <string name="icon_shape_cupertino">iOS</string>
-    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_octagon">Osmiúhelník</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Zaoblený čtverec</string>
-    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_sharp_square">Ostrý čtverec</string>
     <string name="icon_shape_square">Čtverec</string>
     <string name="icon_shape_squircle">Zaoblený čtverec</string>
     <string name="icon_shape_teardrop">Slza</string>
@@ -131,10 +133,10 @@
     <string name="hex">Hex</string>
     <string name="color_sliders">Posuvníky</string>
     <string name="action_copy">Kopírovat</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_paste">Vložit</string>
     <string name="copied_toast">Zkopírováno do schránky.</string>
     <string name="invalid_color">Neplatná barva</string>
-    <string name="launcher_default_color">Default</string>
+    <string name="launcher_default_color">Výchozí</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Přidat nové aplikace na plochu</string>
@@ -149,11 +151,11 @@
     <string name="layout">Rozložení</string>
     <string name="home_screen_grid">Mřížka domovské obrazovky</string>
     <string name="home_screen_lock">Uzamknout domovskou obrazovku</string>
-    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_lock_description">Zabraňuje změnám rozvržení domovské obrazovky.</string>
     <string name="home_screen_unlock">Odemknout domovskou obrazovku</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">Zobrazit tlačítko zámku v popapu</string>
-    <string name="home_screen_locked">Home Screen is locked.</string>
+    <string name="home_screen_locked">Domovská obrazovka je uzamčena.</string>
     <string name="status_bar_label">Stavový řádek</string>
     <string name="show_status_bar">Zobrazit stavový řádek</string>
     <string name="dark_status_bar_label">Tmavý stavový řádek</string>
@@ -186,9 +188,9 @@
     <string name="smartspace_date_and_time">Datum &amp; čas</string>
     <string name="smartspace_date">Datum</string>
     <string name="smartspace_time">Čas</string>
-    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_format">Formát času</string>
     <string name="smartspace_time_follow_system">Jako systémové</string>
-    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
+    <string name="smartspace_time_12_hour_format">12-hodinový formát</string>
     <string name="smartspace_time_24_hour_format">24-hodinová formát</string>
     <string name="smartspace_weather">Počasí</string>
     <string name="smartspace_battery_status">Stav baterie</string>
@@ -199,8 +201,8 @@
     <string name="smartspace_calendar_gregorian">Gregoriánský</string>
     <string name="smartspace_calendar_persian">Perský</string>
     <string name="smartspace_preferences">Předvolby</string>
-    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <string name="smartspace_widget_toggle_label">Zobrazit na domovské obrazovce</string>
+    <string name="smartspace_widget_toggle_description">Glanc je možné ručně přidat umístěním widgetu \"Lawnchair\".</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">Vyhledávací lišta</string>
@@ -225,7 +227,7 @@
     <string name="show_app_search_bar">Zobrazit vyhledávací lištu</string>
     <string name="pref_search_auto_show_keyboard">Automaticky zobrazit klávesnici</string>
     <string name="fuzzy_search_title">Fuzzy hledání</string>
-    <string name="fuzzy_search_desc">Přibližné vyhledávání aplikací.</string>
+    <string name="fuzzy_search_desc">Přibližná shoda při vyhledávání aplikací.</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Sloupce seznamu aplikací</string>
     <string name="row_height_label">Výška řádku</string>
@@ -241,13 +243,13 @@
         <item quantity="one">%1$d Aplikace</item>
         <item quantity="few">%1$d Aplikace</item>
         <item quantity="many">%1$d Aplikace</item>
-        <item quantity="other">%1$d Aplikace</item>
+        <item quantity="other">%1$d aplikace</item>
     </plurals>
     <!-- FolderPreferences -->
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Průhlednost pozadí ikon</string>
-    <string name="folder_preview_bg_color_label">Icon Background Color</string>
+    <string name="folder_preview_bg_color_label">Barva pozadí ikon</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Maximální počet sloupců složek</string>
     <string name="max_folder_rows">Maximální počet řádků složek</string>
@@ -278,14 +280,14 @@
     <string name="recents_clear_all">Vymazat vše</string>
     <string name="window_corner_radius_label">Poloměr rohů obrazovky</string>
     <string name="override_window_corner_radius_label">Vlastní poloměr rohů obrazovky</string>
-    <string name="window_corner_radius_description">Když přejetím prstem nahoru otevřete nedávné aplikace, aktuální aplikace následuje prst a mění se na kartu. Použijte tento posuvník pro nastavení poloměru rohů karty tak, aby při velikosti blízké plné obrazovce polomer rohů karty odpovídal co nejvíc poloměru zakřivení rohů obrazovky.</string>
+    <string name="window_corner_radius_description">Když přejetím prstem nahoru otevřete nedávné aplikace, aktuální aplikace následuje prst a mění se na kartu. Použijte tento posuvník pro nastavení poloměru rohů karty tak, aby při velikosti blízké plné obrazovce poloměr rohů karty co nejvíc odpovídal poloměru zakřivení rohů obrazovky.</string>
     <string name="taskbar_label">Hlavní panel</string>
     <string name="enable_taskbar_experimental">Povolit hlavní panel (experimentální)</string>
     <!-- about/About.kt -->
     <string name="news">Novinky</string>
     <string name="support">Podpora</string>
     <string name="product">Produkt</string>
-    <string name="design_and_development">Design &amp; Vývoj</string>
+    <string name="design_and_development">Dizajn &amp; vývoj</string>
     <string name="development">Vývoj</string>
     <string name="quickswitch_maintenance">Nastavení QuickSwitch</string>
     <string name="devops">DevOps</string>

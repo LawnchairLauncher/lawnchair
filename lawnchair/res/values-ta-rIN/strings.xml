@@ -49,6 +49,8 @@
     <string name="smartspace_calendar_description">கிரிகோரியன் முறை அல்லாத காலண்டர் வகையில் தேதியைக் காண்பிக்க சம்மதி.</string>
     <string name="workspace_increase_max_grid_size_label">முகப்பு திரையின் கிரிட் அளவு அதிகபட்சம் உயர்த்தப்பட்டது</string>
     <string name="workspace_increase_max_grid_size_description">முகப்பு திரையின் அனுமதிக்கப்பட்ட கிரிட் அளவான 10x10-இல் இருந்து 20x20-ஆக உயர்த்து.</string>
+    <string name="always_reload_icons_label">எப்போதும் ஐகான்களை மீண்டும் ஏற்றவும்</string>
+    <string name="always_reload_icons_description">ஐகான் பேக்குகளிலிருந்து தற்காலிகச் சேமிப்பு ஐகான்களைப் பயன்படுத்துவதைத் தவிர்க்கவும்</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">முகப்புத் திரைச் சுழற்சி</string>
     <string name="home_screen_rotaton_description">கருவி சுழற்றப்படும் போது.</string>

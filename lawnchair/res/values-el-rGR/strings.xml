@@ -49,6 +49,8 @@
     <string name="smartspace_calendar_description">Να επιτρέπεται η εμφάνιση ημερομηνίας σε μη Γρηγοριανά συστήματα ημερολογίου.</string>
     <string name="workspace_increase_max_grid_size_label">Αυξημένο Μέγιστο Μέγεθος Πλέγματος Αρχικής Οθόνης</string>
     <string name="workspace_increase_max_grid_size_description">Αυξήστε το μέγιστο επιτρεπόμενο μέγεθος πλέγματος Αρχικής Οθόνης από 10×10 έως 20×20.</string>
+    <string name="always_reload_icons_label">Να γίνεται πάντοτε Επαναφόρτωση Εικονιδίων</string>
+    <string name="always_reload_icons_description">Αποφυγή χρήσης αποθηκευμένων εικονιδίων από πακέτα εικονιδίων</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Περιστροφή Αρχικής Οθόνης</string>
     <string name="home_screen_rotaton_description">Όταν η συσκευή περιστρέφεται.</string>
@@ -313,7 +315,7 @@
     <string name="dt2s_warning_open_settings">Άνοιγμα Ρυθμίσεων</string>
     <string name="loading">Φόρτωση…</string>
     <string name="system">Σύστημα</string>
-    <string name="customize_button_text">Προσαρμόστε</string>
+    <string name="customize_button_text">Επεξεργασία</string>
     <string name="label">Ετικέτα</string>
     <string name="hide_from_drawer">Απόκρυψη από Συρτάρι Εφαρμογών</string>
     <string name="suggestion_pref_screen_title">Προτάσεις</string>
