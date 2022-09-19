@@ -24,11 +24,15 @@ import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.window.WindowManagerProxy.MIN_TABLET_WIDTH;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Handler;
 import android.os.Message;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
@@ -58,6 +62,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
     public static final int REQUEST_ROTATE = 1;
     public static final int REQUEST_LOCK = 2;
 
+    @Nullable
     private BaseActivity mActivity;
     private SharedPreferences mSharedPrefs = null;
     private final Handler mRequestOrientationHandler;
@@ -209,8 +214,12 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
         }
     }
 
+    @WorkerThread
     private boolean setOrientationAsync(Message msg) {
-        mActivity.setRequestedOrientation(msg.what);
+        Activity activity = mActivity;
+        if (activity != null) {
+            activity.setRequestedOrientation(msg.what);
+        }
         return true;
     }
 
