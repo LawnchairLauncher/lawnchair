@@ -66,7 +66,10 @@ public class AllAppsList {
     /** The list off all apps. */
     public final ArrayList<AppInfo> data = new ArrayList<>(DEFAULT_APPLICATIONS_NUMBER);
 
+    @NonNull
     private IconCache mIconCache;
+
+    @NonNull
     private AppFilter mAppFilter;
 
     private boolean mDataChanged = false;

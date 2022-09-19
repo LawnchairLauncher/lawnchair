@@ -24,7 +24,6 @@ import android.content.pm.ShortcutInfo;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -76,6 +75,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     /**
      * The intent used to start the application.
      */
+    @NonNull
     public Intent intent;
 
     /**
@@ -148,7 +148,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     }
 
     @Override
-    @Nullable
+    @NonNull
     public Intent getIntent() {
         return intent;
     }
@@ -166,7 +166,8 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         return isPromise() && !hasStatusFlag(FLAG_SUPPORTS_WEB_UI);
     }
 
-    public void updateFromDeepShortcutInfo(ShortcutInfo shortcutInfo, Context context) {
+    public void updateFromDeepShortcutInfo(@NonNull final ShortcutInfo shortcutInfo,
+            @NonNull final Context context) {
         // {@link ShortcutInfo#getActivity} can change during an update. Recreate the intent
         intent = ShortcutKey.makeIntent(shortcutInfo);
         title = shortcutInfo.getShortLabel();
