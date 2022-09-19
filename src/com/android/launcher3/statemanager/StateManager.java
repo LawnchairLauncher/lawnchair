@@ -343,11 +343,6 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
                 onStateTransitionEnd(state);
             }
 
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                super.onAnimationCancel(animation);
-                onStateTransitionFailed(state);
-            }
         };
     }
 
@@ -357,12 +352,6 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
 
         for (int i = mListeners.size() - 1; i >= 0; i--) {
             mListeners.get(i).onStateTransitionStart(state);
-        }
-    }
-
-    private void onStateTransitionFailed(STATE_TYPE state) {
-        for (int i = mListeners.size() - 1; i >= 0; i--) {
-            mListeners.get(i).onStateTransitionFailed(state);
         }
     }
 
@@ -599,11 +588,6 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
     public interface StateListener<STATE_TYPE> {
 
         default void onStateTransitionStart(STATE_TYPE toState) { }
-
-        /**
-         * If the state transition animation fails (e.g. is canceled by the user), this fires.
-         */
-        default void onStateTransitionFailed(STATE_TYPE toState) { }
 
         default void onStateTransitionComplete(STATE_TYPE finalState) { }
     }
