@@ -21,6 +21,8 @@ import android.content.Context;
 import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -40,16 +42,18 @@ import java.util.Iterator;
  */
 public class UserLockStateChangedTask extends BaseModelUpdateTask {
 
+    @NonNull
     private final UserHandle mUser;
     private boolean mIsUserUnlocked;
 
-    public UserLockStateChangedTask(UserHandle user, boolean isUserUnlocked) {
+    public UserLockStateChangedTask(@NonNull final UserHandle user, final boolean isUserUnlocked) {
         mUser = user;
         mIsUserUnlocked = isUserUnlocked;
     }
 
     @Override
-    public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+    public void execute(@NonNull final LauncherAppState app, @NonNull final BgDataModel dataModel,
+            @NonNull final AllAppsList apps) {
         Context context = app.getContext();
 
         HashMap<ShortcutKey, ShortcutInfo> pinnedShortcuts = new HashMap<>();
