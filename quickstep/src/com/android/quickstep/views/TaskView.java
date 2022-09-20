@@ -387,7 +387,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
     private final float[] mIconCenterCoords = new float[2];
 
-    private final PointF mLastTouchDownPosition = new PointF();
+    protected final PointF mLastTouchDownPosition = new PointF();
 
     private boolean mIsClickableAsLiveTile = true;
 
@@ -584,16 +584,16 @@ public class TaskView extends FrameLayout implements Reusable {
      *         second app. {@code false} otherwise
      */
     private boolean confirmSecondSplitSelectApp() {
-        int index = getChildTaskIndexAtPosition(mLastTouchDownPosition);
+        int index = getLastSelectedChildTaskIndex();
         TaskIdAttributeContainer container = mTaskIdAttributeContainer[index];
         return getRecentsView().confirmSplitSelect(this, container.getTask(),
                 container.getIconView(), container.getThumbnailView());
     }
 
     /**
-     * Returns the task under the given position in the local coordinates of this task view.
+     * Returns the task index of the last selected child task (0 or 1).
      */
-    protected int getChildTaskIndexAtPosition(PointF position) {
+    protected int getLastSelectedChildTaskIndex() {
         return 0;
     }
 
@@ -1516,8 +1516,17 @@ public class TaskView extends FrameLayout implements Reusable {
         return display != null ? display.getDisplayId() : DEFAULT_DISPLAY;
     }
 
+    /**
+     *     Sets visibility for the thumbnail and associated elements (DWB banners and action chips).
+     *     IconView is unaffected.
+     */
     void setThumbnailVisibility(int visibility) {
-        mSnapshotView.setVisibility(visibility);
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            if (child != mIconView) {
+                child.setVisibility(visibility);
+            }
+        }
     }
 
     /**
