@@ -83,7 +83,7 @@ public class Interpolators {
         EXAGGERATED_EASE = new PathInterpolator(exaggeratedEase);
     }
 
-    public static final Interpolator OVERSHOOT_0_85 = new OvershootInterpolator(0.85f);
+    public static final Interpolator OVERSHOOT_0_75 = new OvershootInterpolator(0.75f);
     public static final Interpolator OVERSHOOT_1_2 = new OvershootInterpolator(1.2f);
     public static final Interpolator OVERSHOOT_1_7 = new OvershootInterpolator(1.7f);
 
