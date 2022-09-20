@@ -27,28 +27,32 @@ public interface SplitAnimationTimings {
     int CONFIRM_DURATION = 383;
 
     SplitAnimationTimings OVERVIEW_TO_SPLIT = new OverviewToSplitTimings();
+    SplitAnimationTimings NORMAL_TO_SPLIT = new NormalToSplitTimings();
     SplitAnimationTimings SPLIT_TO_CONFIRM = new SplitToConfirmTimings();
 
     // Shared methods
     int getDuration();
-    int getThumbnailFadeToGrayStart();
-    int getThumbnailFadeToGrayEnd();
-    int getDockedIconFadeInStart();
-    int getDockedIconFadeInEnd();
+    int getPlaceholderFadeInStart();
+    int getPlaceholderFadeInEnd();
+    int getPlaceholderIconFadeInStart();
+    int getPlaceholderIconFadeInEnd();
     int getStagedRectSlideStart();
     int getStagedRectSlideEnd();
-    Interpolator getStagedRectSlideInterpolator();
-    default float getThumbnailFadeToGrayStartOffset() {
-        return (float) getThumbnailFadeToGrayStart() / getDuration();
+    Interpolator getStagedRectXInterpolator();
+    Interpolator getStagedRectYInterpolator();
+    Interpolator getStagedRectScaleXInterpolator();
+    Interpolator getStagedRectScaleYInterpolator();
+    default float getPlaceholderFadeInStartOffset() {
+        return (float) getPlaceholderFadeInStart() / getDuration();
     }
-    default float getThumbnailFadeToGrayEndOffset() {
-        return (float) getThumbnailFadeToGrayEnd() / getDuration();
+    default float getPlaceholderFadeInEndOffset() {
+        return (float) getPlaceholderFadeInEnd() / getDuration();
     }
-    default float getDockedIconFadeInStartOffset() {
-        return (float) getDockedIconFadeInStart() / getDuration();
+    default float getPlaceholderIconFadeInStartOffset() {
+        return (float) getPlaceholderIconFadeInStart() / getDuration();
     }
-    default float getDockedIconFadeInEndOffset() {
-        return (float) getDockedIconFadeInEnd() / getDuration();
+    default float getPlaceholderIconFadeInEndOffset() {
+        return (float) getPlaceholderIconFadeInEnd() / getDuration();
     }
     default float getStagedRectSlideStartOffset() {
         return (float) getStagedRectSlideStart() / getDuration();
@@ -71,6 +75,10 @@ public interface SplitAnimationTimings {
     default float getInstructionsTextFadeInEndOffset() { return 0; }
     default float getInstructionsUnfoldStartOffset() { return 0; }
     default float getInstructionsUnfoldEndOffset() { return 0; }
+
+    // Defaults for NormalToSplit
+    default float getScrimFadeInStartOffset() { return 0; }
+    default float getScrimFadeInEndOffset() { return 0; }
 
     // Defaults for SplitToConfirm
     default float getInstructionsFadeStartOffset() { return 0; }

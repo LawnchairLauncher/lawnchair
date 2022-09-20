@@ -21,28 +21,23 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import android.view.animation.Interpolator;
 
 /**
- * Timings for the OverviewSplitSelect > confirmed animation.
+ * Timings for the Normal > OverviewSplitSelect animation.
  */
-public class SplitToConfirmTimings implements SplitAnimationTimings {
-    public int getPlaceholderFadeInStart() { return 0; }
-    public int getPlaceholderFadeInEnd() { return 133; }
-    public int getPlaceholderIconFadeInStart() { return 167; }
-    public int getPlaceholderIconFadeInEnd() { return 250; }
-    public int getStagedRectSlideStart() { return 0; }
-    public int getStagedRectSlideEnd() { return 383; }
-    public int getInstructionsFadeStart() { return 0; }
-    public int getInstructionsFadeEnd() { return 67; }
-
-    public int getDuration() { return CONFIRM_DURATION; }
+public class NormalToSplitTimings extends OverviewToSplitTimings implements SplitAnimationTimings {
+    @Override
     public Interpolator getStagedRectXInterpolator() { return LINEAR; }
-    public Interpolator getStagedRectYInterpolator() { return LINEAR; }
+    @Override
     public Interpolator getStagedRectScaleXInterpolator() { return LINEAR; }
+    @Override
     public Interpolator getStagedRectScaleYInterpolator() { return LINEAR; }
 
-    public float getInstructionsFadeStartOffset() {
-        return (float) getInstructionsFadeStart() / getDuration();
+    public int getScrimFadeInStart() { return 0; }
+    public int getScrimFadeInEnd() { return 167; }
+
+    public float getScrimFadeInStartOffset() {
+        return (float) getScrimFadeInStart() / getDuration();
     }
-    public float getInstructionsFadeEndOffset() {
-        return (float) getInstructionsFadeEnd() / getDuration();
+    public float getScrimFadeInEndOffset() {
+        return (float) getScrimFadeInEnd() / getDuration();
     }
 }
