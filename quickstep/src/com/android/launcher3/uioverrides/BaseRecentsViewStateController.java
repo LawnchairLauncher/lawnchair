@@ -88,6 +88,11 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
             return;
         }
         setStateWithAnimationInternal(toState, config, builder);
+        builder.addEndListener(success -> {
+            if (!success) {
+                mRecentsView.reset();
+            }
+        });
     }
 
     /**

@@ -228,6 +228,11 @@ public class AllAppsTransitionController
     public void setStateWithAnimation(LauncherState toState,
             StateAnimationConfig config, PendingAnimation builder) {
         if (mLauncher.isInState(ALL_APPS) && !ALL_APPS.equals(toState)) {
+            // For atomic animations, we close the keyboard immediately.
+            if (!config.userControlled && !FeatureFlags.ENABLE_KEYBOARD_TRANSITION_SYNC.get()) {
+                mLauncher.getAppsView().getSearchUiManager().getEditText().hideKeyboard();
+            }
+
             builder.addEndListener(success -> {
                 // Reset pull back progress and alpha after switching states.
                 ALL_APPS_PULL_BACK_TRANSLATION.set(this, 0f);
@@ -238,7 +243,7 @@ public class AllAppsTransitionController
                 // the keyboard open and then changes their mind and swipes back up, we want the
                 // keyboard to remain open. However an onCancel signal is sent to the listeners
                 // (success = false), so we need to check for that.
-                if (success) {
+                if (config.userControlled && success) {
                     mLauncher.getAppsView().getSearchUiManager().getEditText().hideKeyboard();
                 }
             });
