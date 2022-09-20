@@ -219,6 +219,11 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 return response;
             }
 
+            case TestProtocol.REQUEST_ALL_APPS_TOP_PADDING: {
+                return getLauncherUIProperty(Bundle::putInt,
+                        l -> l.getAppsView().getActiveRecyclerView().getClipBounds().top);
+            }
+
             default:
                 return null;
         }
