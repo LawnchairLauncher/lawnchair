@@ -1244,7 +1244,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected void onPageEndTransition() {
         super.onPageEndTransition();
         ActiveGestureLog.INSTANCE.addLog(
-                "onPageEndTransition: current page index updated", mCurrentPage);
+                "onPageEndTransition: current page index updated", getNextPage());
         if (isClearAllHidden() && !mActivity.getDeviceProfile().isTablet) {
             mActionsView.updateDisabledFlags(OverviewActionsView.DISABLED_SCROLLING, false);
         }
