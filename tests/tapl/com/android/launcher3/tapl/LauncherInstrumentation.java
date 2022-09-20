@@ -900,7 +900,14 @@ public final class LauncherInstrumentation {
     }
 
     /**
-     * Presses nav bar home button.
+     * Goes to home by swiping up in zero-button mode or pressing Home button.
+     * Calling it after another TAPL call is safe because all TAPL methods wait for the animations
+     * to finish.
+     * When calling it after a non-TAPL method, make sure that all animations have already
+     * completed, otherwise it may detect the current state (for example "Application" or "Home")
+     * incorrectly.
+     * The method expects either app or Launcher to be active when it's called. Other states, such
+     * as visible notification shade are not supported.
      *
      * @return the Workspace object.
      */
@@ -1901,8 +1908,9 @@ public final class LauncherInstrumentation {
 
     /**
      * Taps outside container to dismiss.
+     *
      * @param container container to be dismissed
-     * @param tapRight tap on the right of the container if true, or left otherwise
+     * @param tapRight  tap on the right of the container if true, or left otherwise
      */
     void touchOutsideContainer(UiObject2 container, boolean tapRight) {
         try (LauncherInstrumentation.Closable c = addContextLayer(
