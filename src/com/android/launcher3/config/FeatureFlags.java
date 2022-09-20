@@ -294,6 +294,9 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_WIDGET_PICKER_DEPTH = new DeviceFlag(
             "ENABLE_WIDGET_PICKER_DEPTH", true, "Enable changing depth in widget picker.");
 
+    public static final BooleanFlag POPUP_MATERIAL_U = new DeviceFlag(
+            "POPUP_MATERIAL_U", false, "Switch popup UX to use material U");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
