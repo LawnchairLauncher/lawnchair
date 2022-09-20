@@ -2821,7 +2821,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         RectF startingTaskRect = new RectF();
         safeRemoveDragLayerView(mFirstFloatingTaskView);
         if (mSplitHiddenTaskView != null) {
-            // Split staging is initiated
+            // Create the split select animation from Overview
             mSplitHiddenTaskView.setThumbnailVisibility(INVISIBLE);
             anim.setViewAlpha(mSplitHiddenTaskView.getIconView(), 0, clampToProgress(LINEAR,
                     timings.getIconFadeStartOffset(),
@@ -2834,6 +2834,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             mFirstFloatingTaskView.addStagingAnimation(anim, startingTaskRect, mTempRect,
                     true /* fadeWithThumbnail */, true /* isStagedTask */);
         } else {
+            // Create the split select animation from Home
             mFirstFloatingTaskView = FloatingTaskView.getFloatingTaskView(mActivity,
                     mSplitSelectSource.view, null /* thumbnail */,
                     mSplitSelectSource.drawable, startingTaskRect);

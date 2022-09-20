@@ -24,10 +24,10 @@ import android.view.animation.Interpolator;
  * Timings for the Overview > OverviewSplitSelect animation.
  */
 public class OverviewToSplitTimings implements SplitAnimationTimings {
-    public int getThumbnailFadeToGrayStart() { return 0; }
-    public int getThumbnailFadeToGrayEnd() { return 133; }
-    public int getDockedIconFadeInStart() { return 167; }
-    public int getDockedIconFadeInEnd() { return 250; }
+    public int getPlaceholderFadeInStart() { return 0; }
+    public int getPlaceholderFadeInEnd() { return 133; }
+    public int getPlaceholderIconFadeInStart() { return 167; }
+    public int getPlaceholderIconFadeInEnd() { return 250; }
     public int getStagedRectSlideStart() { return 0; }
     public int getStagedRectSlideEnd() { return 417; }
     public int getGridSlideStart() { return 67; }
@@ -45,7 +45,10 @@ public class OverviewToSplitTimings implements SplitAnimationTimings {
     public int getInstructionsUnfoldEnd() { return 500; }
 
     public int getDuration() { return ENTER_DURATION; }
-    public Interpolator getStagedRectSlideInterpolator() { return DEACCEL_2; }
+    public Interpolator getStagedRectXInterpolator() { return DEACCEL_2; }
+    public Interpolator getStagedRectYInterpolator() { return DEACCEL_2; }
+    public Interpolator getStagedRectScaleXInterpolator() { return DEACCEL_2; }
+    public Interpolator getStagedRectScaleYInterpolator() { return DEACCEL_2; }
 
     public float getGridSlideStartOffset() {
         return (float) getGridSlideStart() / getDuration();
