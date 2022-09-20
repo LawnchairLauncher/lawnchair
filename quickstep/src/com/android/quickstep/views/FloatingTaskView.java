@@ -1,8 +1,6 @@
 package com.android.quickstep.views;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_TASK_MENU;
-import static com.android.launcher3.anim.Interpolators.ACCEL;
-import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 
@@ -217,8 +215,11 @@ public class FloatingTaskView extends FrameLayout {
      */
     public void addStagingAnimation(PendingAnimation animation, RectF startingBounds,
             Rect endBounds, boolean fadeWithThumbnail, boolean isStagedTask) {
+        SplitAnimationTimings timings = fadeWithThumbnail
+                ? SplitAnimationTimings.OVERVIEW_TO_SPLIT
+                : SplitAnimationTimings.NORMAL_TO_SPLIT;
         addAnimation(animation, startingBounds, endBounds, fadeWithThumbnail, isStagedTask,
-                SplitAnimationTimings.OVERVIEW_TO_SPLIT);
+                timings);
     }
 
     /**
@@ -257,47 +258,40 @@ public class FloatingTaskView extends FrameLayout {
 
             // FloatingTaskThumbnailView: thumbnail fades out to transparent
             animation.setViewAlpha(mThumbnailView, 0, clampToProgress(LINEAR,
-                    timings.getThumbnailFadeToGrayStartOffset(),
-                    timings.getThumbnailFadeToGrayEndOffset()));
+                    timings.getPlaceholderFadeInStartOffset(),
+                    timings.getPlaceholderFadeInEndOffset()));
 
             // SplitPlaceholderView: gray background fades in at same time, then new icon fades in
-            animation.setViewAlpha(mSplitPlaceholderView, 1, clampToProgress(LINEAR,
-                    timings.getThumbnailFadeToGrayStartOffset(),
-                    timings.getThumbnailFadeToGrayEndOffset()));
-            animation.setViewAlpha(mSplitPlaceholderView.getIconView(), 1, clampToProgress(
-                    LINEAR,
-                    timings.getDockedIconFadeInStartOffset(),
-                    timings.getDockedIconFadeInEndOffset()));
+            fadeInSplitPlaceholder(animation, timings);
         } else if (isStagedTask) {
             // This code block runs for the placeholder view during Normal > OverviewSplitSelect
             // and for the placeholder (primary) thumbnail during OverviewSplitSelect > Confirmed
 
             // Fade in the placeholder view during Normal > OverviewSplitSelect
             if (mSplitPlaceholderView.getAlpha() == 0) {
-                animation.setViewAlpha(mSplitPlaceholderView, 0.3f, INSTANT);
-                animation.setViewAlpha(mSplitPlaceholderView, 1, ACCEL);
+                mSplitPlaceholderView.getIconView().setAlpha(0);
+                fadeInSplitPlaceholder(animation, timings);
             }
 
             // No-op for placeholder during OverviewSplitSelect > Confirmed, alpha should be set
         }
 
-
         MultiValueUpdateListener listener = new MultiValueUpdateListener() {
             // SplitPlaceholderView: rectangle translates and stretches to new position
             final FloatProp mDx = new FloatProp(0, prop.dX, 0, animDuration,
-                    clampToProgress(timings.getStagedRectSlideInterpolator(),
+                    clampToProgress(timings.getStagedRectXInterpolator(),
                             timings.getStagedRectSlideStartOffset(),
                             timings.getStagedRectSlideEndOffset()));
             final FloatProp mDy = new FloatProp(0, prop.dY, 0, animDuration,
-                    clampToProgress(timings.getStagedRectSlideInterpolator(),
+                    clampToProgress(timings.getStagedRectYInterpolator(),
                             timings.getStagedRectSlideStartOffset(),
                             timings.getStagedRectSlideEndOffset()));
             final FloatProp mTaskViewScaleX = new FloatProp(1f, prop.finalTaskViewScaleX, 0,
-                    animDuration, clampToProgress(timings.getStagedRectSlideInterpolator(),
+                    animDuration, clampToProgress(timings.getStagedRectScaleXInterpolator(),
                     timings.getStagedRectSlideStartOffset(),
                     timings.getStagedRectSlideEndOffset()));
             final FloatProp mTaskViewScaleY = new FloatProp(1f, prop.finalTaskViewScaleY, 0,
-                    animDuration, clampToProgress(timings.getStagedRectSlideInterpolator(),
+                    animDuration, clampToProgress(timings.getStagedRectScaleYInterpolator(),
                     timings.getStagedRectSlideStartOffset(),
                     timings.getStagedRectSlideEndOffset()));
             @Override
@@ -313,6 +307,15 @@ public class FloatingTaskView extends FrameLayout {
         };
 
         transitionAnimator.addUpdateListener(listener);
+    }
+
+    void fadeInSplitPlaceholder(PendingAnimation animation, SplitAnimationTimings timings) {
+        animation.setViewAlpha(mSplitPlaceholderView, 1, clampToProgress(LINEAR,
+                timings.getPlaceholderFadeInStartOffset(),
+                timings.getPlaceholderFadeInEndOffset()));
+        animation.setViewAlpha(mSplitPlaceholderView.getIconView(), 1, clampToProgress(LINEAR,
+                timings.getPlaceholderIconFadeInStartOffset(),
+                timings.getPlaceholderIconFadeInEndOffset()));
     }
 
     void drawRoundedRect(Canvas canvas, Paint paint) {

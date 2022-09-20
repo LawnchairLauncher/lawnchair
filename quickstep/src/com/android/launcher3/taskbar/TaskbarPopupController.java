@@ -270,6 +270,7 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
 
         @Override
         public void onClick(View view) {
+            // Initiate splitscreen from the in-app Taskbar or Taskbar All Apps
             Pair<InstanceId, com.android.launcher3.logging.InstanceId> instanceIds =
                     LogUtils.getShellShareableInstanceId();
             mTarget.getStatsLogManager().logger()
