@@ -230,11 +230,12 @@ public class GroupedTaskView extends TaskView {
     }
 
     @Override
-    protected int getChildTaskIndexAtPosition(PointF position) {
-        if (isCoordInView(mIconView2, position) || isCoordInView(mSnapshotView2, position)) {
+    protected int getLastSelectedChildTaskIndex() {
+        if (isCoordInView(mIconView2, mLastTouchDownPosition)
+                || isCoordInView(mSnapshotView2, mLastTouchDownPosition)) {
             return 1;
         }
-        return super.getChildTaskIndexAtPosition(position);
+        return super.getLastSelectedChildTaskIndex();
     }
 
     private boolean isCoordInView(View v, PointF position) {
@@ -336,9 +337,26 @@ public class GroupedTaskView extends TaskView {
         mSnapshotView2.setSplashAlpha(mTaskThumbnailSplashAlpha);
     }
 
+    /**
+     *     Sets visibility for thumbnails and associated elements (DWB banners).
+     *     IconView is unaffected.
+     *
+     *     When setting INVISIBLE, sets the visibility for the last selected child task.
+     *     When setting VISIBLE (as a reset), sets the visibility for both tasks.
+     */
     @Override
     void setThumbnailVisibility(int visibility) {
-        super.setThumbnailVisibility(visibility);
-        mSnapshotView2.setVisibility(visibility);
+        if (visibility == VISIBLE) {
+            mSnapshotView.setVisibility(visibility);
+            mDigitalWellBeingToast.setBannerVisibility(visibility);
+            mSnapshotView2.setVisibility(visibility);
+            mDigitalWellBeingToast2.setBannerVisibility(visibility);
+        } else if (getLastSelectedChildTaskIndex() == 0) {
+            mSnapshotView.setVisibility(visibility);
+            mDigitalWellBeingToast.setBannerVisibility(visibility);
+        } else {
+            mSnapshotView2.setVisibility(visibility);
+            mDigitalWellBeingToast2.setBannerVisibility(visibility);
+        }
     }
 }
