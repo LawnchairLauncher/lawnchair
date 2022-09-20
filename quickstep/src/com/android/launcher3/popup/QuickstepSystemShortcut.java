@@ -55,6 +55,7 @@ public interface QuickstepSystemShortcut {
 
         @Override
         public void onClick(View view) {
+            // Initiate splitscreen from the Home screen or Home All Apps
             Bitmap bitmap;
             Intent intent;
             if (mItemInfo instanceof WorkspaceItemInfo) {
