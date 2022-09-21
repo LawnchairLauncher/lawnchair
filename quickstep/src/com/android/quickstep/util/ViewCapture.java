@@ -67,6 +67,10 @@ public class ViewCapture {
 
     private static final String TAG = "ViewCapture";
 
+    // These flags are copies of two private flags in the View class.
+    private static final int PFLAG_INVALIDATED = 0x80000000;
+    private static final int PFLAG_DIRTY_MASK = 0x00200000;
+
     // Number of frames to keep in memory
     private static final int MEMORY_SIZE = 2000;
     // Initial size of the reference pool. This is at least be 5 * total number of views in
@@ -187,6 +191,7 @@ public class ViewCapture {
         private final ViewRef mViewRef = new ViewRef();
 
         private int mFrameIndexBg = -1;
+        private boolean mIsFirstFrame = true;
         private final long[] mFrameTimesBg = new long[MEMORY_SIZE];
         private final ViewPropertyRef[] mNodesBg = new ViewPropertyRef[MEMORY_SIZE];
 
@@ -205,6 +210,7 @@ public class ViewCapture {
             Message m = Message.obtain(mHandler);
             m.obj = mViewRef.next;
             mHandler.sendMessage(m);
+            mIsFirstFrame = false;
             Trace.endSection();
         }
 
@@ -214,9 +220,9 @@ public class ViewCapture {
          */
         @WorkerThread
         private boolean captureViewPropertiesBg(Message msg) {
-            ViewRef start = (ViewRef) msg.obj;
+            ViewRef viewRefStart = (ViewRef) msg.obj;
             long time = msg.getWhen();
-            if (start == null) {
+            if (viewRefStart == null) {
                 return false;
             }
             mFrameIndexBg++;
@@ -227,12 +233,11 @@ public class ViewCapture {
 
             ViewPropertyRef recycle = mNodesBg[mFrameIndexBg];
 
-            ViewPropertyRef result = null;
+            ViewPropertyRef resultStart = null;
             ViewPropertyRef resultEnd = null;
 
-            ViewRef current = start;
-            ViewRef last = start;
-            while (current != null) {
+            ViewRef viewRefEnd = viewRefStart;
+            while (viewRefEnd != null) {
                 ViewPropertyRef propertyRef = recycle;
                 if (propertyRef == null) {
                     propertyRef = new ViewPropertyRef();
@@ -241,22 +246,62 @@ public class ViewCapture {
                     propertyRef.next = null;
                 }
 
-                propertyRef.transfer(current);
-                last = current;
-                current = current.next;
+                ViewPropertyRef copy = null;
+                if (viewRefEnd.childCount < 0) {
+                    copy = findInLastFrame(viewRefEnd.view.hashCode());
+                    viewRefEnd.childCount = (copy != null) ? copy.childCount : 0;
+                }
+                viewRefEnd.transferTo(propertyRef);
 
-                if (result == null) {
-                    result = propertyRef;
-                    resultEnd = result;
+                if (resultStart == null) {
+                    resultStart = propertyRef;
+                    resultEnd = resultStart;
                 } else {
                     resultEnd.next = propertyRef;
-                    resultEnd = propertyRef;
+                    resultEnd = resultEnd.next;
                 }
+
+                if (copy != null) {
+                    int pending = copy.childCount;
+                    while (pending > 0) {
+                        copy = copy.next;
+                        pending = pending - 1 + copy.childCount;
+
+                        propertyRef = recycle;
+                        if (propertyRef == null) {
+                            propertyRef = new ViewPropertyRef();
+                        } else {
+                            recycle = recycle.next;
+                            propertyRef.next = null;
+                        }
+
+                        copy.transferTo(propertyRef);
+
+                        resultEnd.next = propertyRef;
+                        resultEnd = resultEnd.next;
+                    }
+                }
+
+                if (viewRefEnd.next == null) {
+                    // The compiler will complain about using a non-final variable from
+                    // an outer class in a lambda if we pass in viewRefEnd directly.
+                    final ViewRef finalViewRefEnd = viewRefEnd;
+                    MAIN_EXECUTOR.execute(() -> addToPool(viewRefStart, finalViewRefEnd));
+                    break;
+                }
+                viewRefEnd = viewRefEnd.next;
             }
-            mNodesBg[mFrameIndexBg] = result;
-            ViewRef end = last;
-            MAIN_EXECUTOR.execute(() -> addToPool(start, end));
+            mNodesBg[mFrameIndexBg] = resultStart;
             return true;
+        }
+
+        private ViewPropertyRef findInLastFrame(int hashCode) {
+            int lastFrameIndex = (mFrameIndexBg == 0) ? MEMORY_SIZE - 1 : mFrameIndexBg - 1;
+            ViewPropertyRef viewPropertyRef = mNodesBg[lastFrameIndex];
+            while (viewPropertyRef != null && viewPropertyRef.hashCode != hashCode) {
+                viewPropertyRef = viewPropertyRef.next;
+            }
+            return viewPropertyRef;
         }
 
         void attachToRoot() {
@@ -314,8 +359,16 @@ public class ViewCapture {
             ref.view = view;
             start.next = ref;
             if (view instanceof ViewGroup) {
-                ViewRef result = ref;
                 ViewGroup parent = (ViewGroup) view;
+                // If a view has not changed since the last frame, we will copy
+                // its children from the last processed frame's data.
+                if ((view.mPrivateFlags & (PFLAG_INVALIDATED | PFLAG_DIRTY_MASK)) == 0
+                        && !mIsFirstFrame) {
+                    // A negative child count is the signal to copy this view from the last frame.
+                    ref.childCount = -parent.getChildCount();
+                    return ref;
+                }
+                ViewRef result = ref;
                 int childCount = ref.childCount = parent.getChildCount();
                 for (int i = 0; i < childCount; i++) {
                     result = captureViewTree(parent.getChildAt(i), result);
@@ -349,31 +402,27 @@ public class ViewCapture {
 
         public ViewPropertyRef next;
 
-        public void transfer(ViewRef viewRef) {
-            childCount = viewRef.childCount;
-
-            View view = viewRef.view;
-            viewRef.view = null;
-
-            clazz = view.getClass();
-            hashCode = view.hashCode();
-            id = view.getId();
-            left = view.getLeft();
-            top = view.getTop();
-            right = view.getRight();
-            bottom = view.getBottom();
-            scrollX = view.getScrollX();
-            scrollY = view.getScrollY();
-
-            translateX = view.getTranslationX();
-            translateY = view.getTranslationY();
-            scaleX = view.getScaleX();
-            scaleY = view.getScaleY();
-            alpha = view.getAlpha();
-
-            visibility = view.getVisibility();
-            willNotDraw = view.willNotDraw();
-            elevation = view.getElevation();
+        public void transferTo(ViewPropertyRef out) {
+            out.clazz = this.clazz;
+            out.hashCode = this.hashCode;
+            out.childCount = this.childCount;
+            out.id = this.id;
+            out.left = this.left;
+            out.top = this.top;
+            out.right = this.right;
+            out.bottom = this.bottom;
+            out.scrollX = this.scrollX;
+            out.scrollY = this.scrollY;
+            out.scaleX = this.scaleX;
+            out.scaleY = this.scaleY;
+            out.translateX = this.translateX;
+            out.translateY = this.translateY;
+            out.alpha = this.alpha;
+            out.visibility = this.visibility;
+            out.willNotDraw = this.willNotDraw;
+            out.clipChildren = this.clipChildren;
+            out.next = this.next;
+            out.elevation = this.elevation;
         }
 
         /**
@@ -420,6 +469,33 @@ public class ViewCapture {
         public View view;
         public int childCount = 0;
         public ViewRef next;
+
+        public void transferTo(ViewPropertyRef out) {
+            out.childCount = this.childCount;
+
+            View view = this.view;
+            this.view = null;
+
+            out.clazz = view.getClass();
+            out.hashCode = view.hashCode();
+            out.id = view.getId();
+            out.left = view.getLeft();
+            out.top = view.getTop();
+            out.right = view.getRight();
+            out.bottom = view.getBottom();
+            out.scrollX = view.getScrollX();
+            out.scrollY = view.getScrollY();
+
+            out.translateX = view.getTranslationX();
+            out.translateY = view.getTranslationY();
+            out.scaleX = view.getScaleX();
+            out.scaleY = view.getScaleY();
+            out.alpha = view.getAlpha();
+            out.elevation = view.getElevation();
+
+            out.visibility = view.getVisibility();
+            out.willNotDraw = view.willNotDraw();
+        }
     }
 
     private static final class ViewIdProvider {
