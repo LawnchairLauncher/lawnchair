@@ -319,7 +319,6 @@ public class AllAppsTransitionController
      * TODO: This logic should go in {@link LauncherState}
      */
     private void onProgressAnimationEnd() {
-        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) return;
         if (Float.compare(mProgress, 1f) == 0) {
             mAppsView.reset(false /* animate */);
             mLauncher.getAppsView().getSearchUiManager().getEditText().hideKeyboard();
