@@ -45,5 +45,6 @@ public class AllAppsButton extends BubbleTextView {
         Bitmap bitmap = LauncherAppState.getInstance(context).getIconCache().getIconFactory()
                 .createScaledBitmapWithShadow(theme.getDrawable(R.drawable.ic_all_apps_button));
         setIcon(new FastBitmapDrawable(bitmap));
+        setContentDescription(context.getString(R.string.all_apps_button_label));
     }
 }
