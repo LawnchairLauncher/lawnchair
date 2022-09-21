@@ -95,6 +95,7 @@ import com.android.quickstep.TaskUtils;
 import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.RecentsOrientedState;
+import com.android.quickstep.util.SplitSelectStateController;
 import com.android.quickstep.util.TaskCornerRadius;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.views.TaskThumbnailView.PreviewPositionHelper;
@@ -561,6 +562,18 @@ public class TaskView extends FrameLayout implements Reusable {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
+        RecentsView recentsView = getRecentsView();
+        if (recentsView == null || mTask == null) {
+            return false;
+        }
+        SplitSelectStateController splitSelectStateController =
+                recentsView.getSplitSelectController();
+        if (splitSelectStateController.isSplitSelectActive() &&
+                splitSelectStateController.getInitialTaskId() == mTask.key.id) {
+            // Prevent taps on the this taskview if it's being animated into split select state
+            return false;
+        }
+
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mLastTouchDownPosition.set(ev.getX(), ev.getY());
         }

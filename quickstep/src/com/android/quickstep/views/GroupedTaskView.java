@@ -191,7 +191,7 @@ public class GroupedTaskView extends TaskView {
         // Callbacks run from remote animation when recents animation not currently running
         InteractionJankMonitorWrapper.begin(this,
                 InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER, "Enter form GroupedTaskView");
-        recentsView.getSplitPlaceholder().launchTasks(this /*groupedTaskView*/,
+        recentsView.getSplitSelectController().launchTasks(this /*groupedTaskView*/,
                 success -> {
                     endCallback.executeAllAndDestroy();
                     InteractionJankMonitorWrapper.end(
@@ -206,7 +206,7 @@ public class GroupedTaskView extends TaskView {
 
     @Override
     public void launchTask(@NonNull Consumer<Boolean> callback, boolean freezeTaskList) {
-        getRecentsView().getSplitPlaceholder().launchTasks(mTask.key.id, mSecondaryTask.key.id,
+        getRecentsView().getSplitSelectController().launchTasks(mTask.key.id, mSecondaryTask.key.id,
                 STAGE_POSITION_TOP_OR_LEFT, callback, freezeTaskList, getSplitRatio());
     }
 
