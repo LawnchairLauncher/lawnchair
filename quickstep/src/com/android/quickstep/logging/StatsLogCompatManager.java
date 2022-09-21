@@ -217,6 +217,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         private Optional<String> mEditText = Optional.empty();
         private SliceItem mSliceItem;
         private LauncherAtom.Slice mSlice;
+        private Optional<Integer> mCardinality = Optional.empty();
 
         StatsCompatLogger(Context context, ActivityContext activityContext) {
             mContext = context;
@@ -300,6 +301,12 @@ public class StatsLogCompatManager extends StatsLogManager {
             checkNotNull(slice, "expected valid slice but received null");
             checkNotNull(slice.getUri(), "expected valid slice uri but received null");
             this.mSlice = slice;
+            return this;
+        }
+
+        @Override
+        public StatsLogger withCardinality(int cardinality) {
+            this.mCardinality = Optional.of(cardinality);
             return this;
         }
 
@@ -421,6 +428,7 @@ public class StatsLogCompatManager extends StatsLogManager {
             if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
                 return;
             }
+            int cardinality = mCardinality.orElseGet(() -> getCardinality(atomInfo));
             SysUiStatsLog.write(
                     SysUiStatsLog.LAUNCHER_EVENT,
                     SysUiStatsLog.LAUNCHER_UICHANGED__ACTION__DEFAULT_ACTION /* deprecated */,
@@ -446,7 +454,7 @@ public class StatsLogCompatManager extends StatsLogManager {
                     atomInfo.getFolderIcon().getFromLabelState().getNumber() /* fromState */,
                     atomInfo.getFolderIcon().getToLabelState().getNumber() /* toState */,
                     atomInfo.getFolderIcon().getLabelInfo() /* edittext */,
-                    getCardinality(atomInfo) /* cardinality */,
+                    cardinality /* cardinality */,
                     getFeatures(atomInfo) /* features */,
                     getSearchAttributes(atomInfo) /* searchAttributes */,
                     getAttributes(atomInfo) /* attributes */
