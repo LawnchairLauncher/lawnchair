@@ -19,6 +19,7 @@ package com.android.launcher3.uioverrides.states;
 import android.content.Context;
 
 import com.android.launcher3.Launcher;
+import com.android.quickstep.util.SplitAnimationTimings;
 import com.android.quickstep.views.RecentsView;
 
 /**
@@ -26,10 +27,6 @@ import com.android.quickstep.views.RecentsView;
  * pinned and user is selecting the second one
  */
 public class SplitScreenSelectState extends OverviewState {
-    public static final int ENTER_DURATION = 866;
-    public static final int EXIT_DURATION = 500;
-    // TODO: Add ability to differentiate between Split > Home and Split > Confirmed timings
-
     public SplitScreenSelectState(int id) {
         super(id);
     }
@@ -47,6 +44,8 @@ public class SplitScreenSelectState extends OverviewState {
 
     @Override
     public int getTransitionDuration(Context context, boolean isToState) {
-        return isToState ? ENTER_DURATION : EXIT_DURATION;
+        return isToState
+                ? SplitAnimationTimings.ENTER_DURATION
+                : SplitAnimationTimings.ABORT_DURATION;
     }
 }

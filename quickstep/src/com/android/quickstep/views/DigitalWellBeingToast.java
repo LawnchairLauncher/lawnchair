@@ -385,4 +385,12 @@ public final class DigitalWellBeingToast {
         mBanner.setLayerType(View.LAYER_TYPE_HARDWARE, layerPaint);
         mBanner.setLayerPaint(layerPaint);
     }
+
+    void setBannerVisibility(int visibility) {
+        if (mBanner == null) {
+            return;
+        }
+
+        mBanner.setVisibility(visibility);
+    }
 }
