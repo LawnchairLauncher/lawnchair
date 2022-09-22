@@ -17,6 +17,8 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.quickstep.views.DesktopTaskView.DESKTOP_MODE_SUPPORTED;
+import static com.android.wm.shell.util.GroupedRecentTaskInfo.TYPE_FREEFORM;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
@@ -30,6 +32,7 @@ import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.SplitConfigurationOptions;
+import com.android.quickstep.util.DesktopTask;
 import com.android.quickstep.util.GroupTask;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.wm.shell.recents.IRecentTasksListener;
@@ -253,8 +256,9 @@ public class RecentTasksList {
         };
 
         TaskLoadResult allTasks = new TaskLoadResult(requestId, loadKeysOnly, rawTasks.size());
+
         for (GroupedRecentTaskInfo rawTask : rawTasks) {
-            if (rawTask.getType() == GroupedRecentTaskInfo.TYPE_FREEFORM) {
+            if (DESKTOP_MODE_SUPPORTED && rawTask.getType() == TYPE_FREEFORM) {
                 GroupTask desktopTask = createDesktopTask(rawTask);
                 allTasks.add(desktopTask);
                 continue;
@@ -284,14 +288,18 @@ public class RecentTasksList {
         return allTasks;
     }
 
-    private GroupTask createDesktopTask(GroupedRecentTaskInfo taskInfo) {
-        // TODO(b/244348395): create a subclass of GroupTask for desktop tile
-        // We need a single task information as the primary task. Use the first task
-        Task.TaskKey key = new Task.TaskKey(taskInfo.getTaskInfo1());
-        Task task = new Task(key);
-        task.desktopTile = true;
-        task.topActivity = key.sourceComponent;
-        return new GroupTask(task, null, null);
+    private DesktopTask createDesktopTask(GroupedRecentTaskInfo recentTaskInfo) {
+        ArrayList<Task> tasks = new ArrayList<>(recentTaskInfo.getTaskInfoList().size());
+        for (ActivityManager.RecentTaskInfo taskInfo : recentTaskInfo.getTaskInfoList()) {
+            Task.TaskKey key = new Task.TaskKey(taskInfo);
+            Task task = Task.from(key, taskInfo, false);
+            task.setLastSnapshotData(taskInfo);
+            task.positionInParent = taskInfo.positionInParent;
+            task.appBounds = taskInfo.configuration.windowConfiguration.getAppBounds();
+            // TODO(b/244348395): tasks should be sorted from oldest to most recently used
+            tasks.add(task);
+        }
+        return new DesktopTask(tasks);
     }
 
     private SplitConfigurationOptions.SplitBounds convertSplitBounds(
@@ -306,7 +314,7 @@ public class RecentTasksList {
     private ArrayList<GroupTask> copyOf(ArrayList<GroupTask> tasks) {
         ArrayList<GroupTask> newTasks = new ArrayList<>();
         for (int i = 0; i < tasks.size(); i++) {
-            newTasks.add(new GroupTask(tasks.get(i)));
+            newTasks.add(tasks.get(i).copy());
         }
         return newTasks;
     }
