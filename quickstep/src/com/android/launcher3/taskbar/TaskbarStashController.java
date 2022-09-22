@@ -49,8 +49,6 @@ import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.SystemUiProxy;
 
 import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.function.IntPredicate;
 
@@ -546,13 +544,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     }
 
     private void addJankMonitorListener(AnimatorSet animator, boolean expanding) {
-        Optional<View> optionalView =
-                Arrays.stream(mControllers.taskbarViewController.getIconViews()).findFirst();
-        if (optionalView.isEmpty()) {
-            Log.wtf(TAG, "No views to start Interaction jank monitor with.", new Exception());
-            return;
-        }
-        View v = optionalView.get();
+        View v = mControllers.taskbarActivityContext.getDragLayer();
         int action = expanding ? InteractionJankMonitor.CUJ_TASKBAR_EXPAND :
                 InteractionJankMonitor.CUJ_TASKBAR_COLLAPSE;
         animator.addListener(new AnimatorListenerAdapter() {
