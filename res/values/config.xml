@@ -204,4 +204,7 @@
 
     <!-- The max scale for the wallpaper when it's zoomed in -->
     <item name="config_wallpaperMaxScale" format="float" type="dimen">0</item>
+
+    <string name="floating_task_package" translatable="false"></string>
+    <string name="floating_task_action" translatable="false"></string>
 </resources>

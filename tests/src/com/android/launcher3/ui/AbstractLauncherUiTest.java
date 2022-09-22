@@ -151,6 +151,8 @@ public abstract class AbstractLauncherUiTest {
                     device.executeShellCommand(
                             "am dumpheap " + device.getLauncherPackageName() + " " + fileName);
                 }
+                Log.d(TAG, "Saved leak dump, the leak is still present: "
+                        + !launcher.noLeakedActivities());
                 sDumpWasGenerated = true;
                 result = "saved memory dump as an artifact";
             } catch (Throwable e) {

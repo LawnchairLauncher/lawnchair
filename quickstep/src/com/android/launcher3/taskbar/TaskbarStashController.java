@@ -49,8 +49,6 @@ import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.SystemUiProxy;
 
 import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.function.IntPredicate;
 
@@ -162,7 +160,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     private boolean mIsImeShowing;
     private boolean mIsImeSwitcherShowing;
 
-    private boolean mEnableManualStashingForTests = false;
+    private boolean mEnableManualStashingDuringTests = false;
 
     // Evaluate whether the handle should be stashed
     private final StatePropertyHolder mStatePropertyHolder = new StatePropertyHolder(
@@ -242,15 +240,15 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      */
     protected boolean supportsManualStashing() {
         return supportsVisualStashing()
-                && (!Utilities.IS_RUNNING_IN_TEST_HARNESS || mEnableManualStashingForTests);
+                && (!Utilities.IS_RUNNING_IN_TEST_HARNESS || mEnableManualStashingDuringTests);
     }
 
     /**
      * Enables support for manual stashing. This should only be used to add this functionality
      * to Launcher specific tests.
      */
-    public void enableManualStashingForTests(boolean enableManualStashing) {
-        mEnableManualStashingForTests = enableManualStashing;
+    public void enableManualStashingDuringTests(boolean enableManualStashing) {
+        mEnableManualStashingDuringTests = enableManualStashing;
     }
 
     /**
@@ -546,13 +544,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     }
 
     private void addJankMonitorListener(AnimatorSet animator, boolean expanding) {
-        Optional<View> optionalView =
-                Arrays.stream(mControllers.taskbarViewController.getIconViews()).findFirst();
-        if (optionalView.isEmpty()) {
-            Log.wtf(TAG, "No views to start Interaction jank monitor with.", new Exception());
-            return;
-        }
-        View v = optionalView.get();
+        View v = mControllers.taskbarActivityContext.getDragLayer();
         int action = expanding ? InteractionJankMonitor.CUJ_TASKBAR_EXPAND :
                 InteractionJankMonitor.CUJ_TASKBAR_COLLAPSE;
         animator.addListener(new AnimatorListenerAdapter() {
