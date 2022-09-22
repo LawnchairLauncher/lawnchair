@@ -16,6 +16,8 @@
 
 package com.android.launcher3.pageindicators;
 
+import static com.android.launcher3.config.FeatureFlags.SHOW_DELIGHTFUL_PAGINATION_FOLDER;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -37,6 +39,7 @@ import android.view.animation.OvershootInterpolator;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.util.Themes;
 
 /**
@@ -55,6 +58,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
 
     private static final int DOT_ACTIVE_ALPHA = 255;
     private static final int DOT_INACTIVE_ALPHA = 128;
+    private static final int DOT_GAP_FACTOR = 3;
 
     // This value approximately overshoots to 1.5 times the original size.
     private static final float ENTER_ANIMATION_OVERSHOOT_TENSION = 4.9f;
@@ -76,21 +80,25 @@ public class PageIndicatorDots extends View implements PageIndicator {
         }
     };
 
-    private final Paint mCirclePaint;
+    private final Paint mPaginationPaint;
     private final float mDotRadius;
+    private final float mCircleGap;
+    private final float mPageIndicatorSize;
     private final boolean mIsRtl;
 
     private int mNumPages;
     private int mActivePage;
+    private int mCurrentScroll;
+    private int mTotalScroll;
 
     /**
      * The current position of the active dot including the animation progress.
      * For ex:
-     *   0.0  => Active dot is at position 0
-     *   0.33 => Active dot is at position 0 and is moving towards 1
-     *   0.50 => Active dot is at position [0, 1]
-     *   0.77 => Active dot has left position 0 and is collapsing towards position 1
-     *   1.0  => Active dot is at position 1
+     * 0.0  => Active dot is at position 0
+     * 0.33 => Active dot is at position 0 and is moving towards 1
+     * 0.50 => Active dot is at position [0, 1]
+     * 0.77 => Active dot has left position 0 and is collapsing towards position 1
+     * 1.0  => Active dot is at position 1
      */
     private float mCurrentPosition;
     private float mFinalPosition;
@@ -109,37 +117,51 @@ public class PageIndicatorDots extends View implements PageIndicator {
     public PageIndicatorDots(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mCirclePaint.setStyle(Style.FILL);
-        mCirclePaint.setColor(Themes.getAttrColor(context, R.attr.folderPaginationColor));
+        mPaginationPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaginationPaint.setStyle(Style.FILL);
+        mPaginationPaint.setColor(Themes.getAttrColor(context, R.attr.folderPaginationColor));
         mDotRadius = getResources().getDimension(R.dimen.page_indicator_dot_size) / 2;
-        setOutlineProvider(new MyOutlineProver());
-
+        mCircleGap = DOT_GAP_FACTOR * mDotRadius;
+        mPageIndicatorSize = getResources().getDimension(
+                R.dimen.page_indicator_current_page_indicator_size);
+        if (!SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
+            setOutlineProvider(new MyOutlineProver());
+        }
         mIsRtl = Utilities.isRtl(getResources());
     }
 
     @Override
     public void setScroll(int currentScroll, int totalScroll) {
-        if (mNumPages > 1) {
-            if (mIsRtl) {
-                currentScroll = totalScroll - currentScroll;
-            }
-            int scrollPerPage = totalScroll / (mNumPages - 1);
-            int pageToLeft = currentScroll / scrollPerPage;
-            int pageToLeftScroll = pageToLeft * scrollPerPage;
-            int pageToRightScroll = pageToLeftScroll + scrollPerPage;
+        if (mNumPages <= 1) {
+            return;
+        }
 
-            float scrollThreshold = SHIFT_THRESHOLD * scrollPerPage;
-            if (currentScroll < pageToLeftScroll + scrollThreshold) {
-                // scroll is within the left page's threshold
-                animateToPosition(pageToLeft);
-            } else if (currentScroll > pageToRightScroll - scrollThreshold) {
-                // scroll is far enough from left page to go to the right page
-                animateToPosition(pageToLeft + 1);
-            } else {
-                // scroll is between left and right page
-                animateToPosition(pageToLeft + SHIFT_PER_ANIMATION);
-            }
+        if (mIsRtl) {
+            currentScroll = totalScroll - currentScroll;
+        }
+
+        if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
+            mCurrentScroll = currentScroll;
+            mTotalScroll = totalScroll;
+            invalidate();
+            return;
+        }
+
+        int scrollPerPage = totalScroll / (mNumPages - 1);
+        int pageToLeft = currentScroll / scrollPerPage;
+        int pageToLeftScroll = pageToLeft * scrollPerPage;
+        int pageToRightScroll = pageToLeftScroll + scrollPerPage;
+
+        float scrollThreshold = SHIFT_THRESHOLD * scrollPerPage;
+        if (currentScroll < pageToLeftScroll + scrollThreshold) {
+            // scroll is within the left page's threshold
+            animateToPosition(pageToLeft);
+        } else if (currentScroll > pageToRightScroll - scrollThreshold) {
+            // scroll is far enough from left page to go to the right page
+            animateToPosition(pageToLeft + 1);
+        } else {
+            // scroll is between left and right page
+            animateToPosition(pageToLeft + SHIFT_PER_ANIMATION);
         }
     }
 
@@ -177,7 +199,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
     }
 
     public void playEntryAnimation() {
-        int count  = mEntryAnimationRadiusFactors.length;
+        int count = mEntryAnimationRadiusFactors.length;
         if (count == 0) {
             mEntryAnimationRadiusFactors = null;
             invalidate();
@@ -231,16 +253,16 @@ public class PageIndicatorDots extends View implements PageIndicator {
         // Add extra spacing of mDotRadius on all sides so than entry animation could be run.
         int width = MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.EXACTLY ?
                 MeasureSpec.getSize(widthMeasureSpec) : (int) ((mNumPages * 3 + 2) * mDotRadius);
-        int height= MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY ?
-                MeasureSpec.getSize(heightMeasureSpec) : (int) (4 * mDotRadius);
+        int height = MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY
+                ? MeasureSpec.getSize(heightMeasureSpec) : (int) (4 * mDotRadius);
         setMeasuredDimension(width, height);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         // Draw all page indicators;
-        float circleGap = 3 * mDotRadius;
-        float startX = (getWidth() - mNumPages * circleGap + mDotRadius) / 2;
+        float circleGap = mCircleGap;
+        float startX = (getWidth() - (mNumPages * circleGap) + mDotRadius) / 2;
 
         float x = startX + mDotRadius;
         float y = getHeight() / 2;
@@ -252,43 +274,88 @@ public class PageIndicatorDots extends View implements PageIndicator {
                 circleGap = -circleGap;
             }
             for (int i = 0; i < mEntryAnimationRadiusFactors.length; i++) {
-                mCirclePaint.setAlpha(i == mActivePage ? DOT_ACTIVE_ALPHA : DOT_INACTIVE_ALPHA);
-                canvas.drawCircle(x, y, mDotRadius * mEntryAnimationRadiusFactors[i], mCirclePaint);
+                mPaginationPaint.setAlpha(i == mActivePage ? DOT_ACTIVE_ALPHA : DOT_INACTIVE_ALPHA);
+                if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
+                    canvas.drawCircle(x, y, getRadius(x) * mEntryAnimationRadiusFactors[i],
+                            mPaginationPaint);
+                } else {
+                    canvas.drawCircle(x, y, mDotRadius * mEntryAnimationRadiusFactors[i],
+                            mPaginationPaint);
+                }
                 x += circleGap;
             }
         } else {
-            mCirclePaint.setAlpha(DOT_INACTIVE_ALPHA);
+            mPaginationPaint.setAlpha(DOT_INACTIVE_ALPHA);
             for (int i = 0; i < mNumPages; i++) {
-                canvas.drawCircle(x, y, mDotRadius, mCirclePaint);
+                if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
+                    canvas.drawCircle(x, y, getRadius(x), mPaginationPaint);
+                } else {
+                    canvas.drawCircle(x, y, mDotRadius, mPaginationPaint);
+                }
                 x += circleGap;
             }
 
-            mCirclePaint.setAlpha(DOT_ACTIVE_ALPHA);
-            canvas.drawRoundRect(getActiveRect(), mDotRadius, mDotRadius, mCirclePaint);
+            mPaginationPaint.setAlpha(DOT_ACTIVE_ALPHA);
+
+            if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
+                canvas.drawRect(getActiveRect(), mPaginationPaint);
+            } else {
+                canvas.drawRoundRect(getActiveRect(), mDotRadius, mDotRadius, mPaginationPaint);
+            }
         }
+    }
+
+    /**
+     * Returns the radius of the circle based on how close the page indicator is to it
+     *
+     * @param dotPositionX is the position the dot is located at in the x-axis
+     */
+    private float getRadius(float dotPositionX) {
+
+        float startXIndicator =
+                ((getWidth() - (mNumPages * mCircleGap) + mDotRadius) / 2) - getOffset();
+        float indicatorPosition = startXIndicator + getIndicatorScrollDistance()
+                + (mPageIndicatorSize / 2);
+
+        // If the indicator gets close enough to a dot then we change the radius
+        // of the dot based on how close the indicator is to it.
+        float dotDistance = Math.abs(indicatorPosition - dotPositionX);
+        if (dotDistance <= mCircleGap) {
+            return Utilities.mapToRange(dotDistance, 0, mCircleGap, 0f, mDotRadius,
+                    Interpolators.LINEAR);
+        }
+        return mDotRadius;
     }
 
     private RectF getActiveRect() {
         float startCircle = (int) mCurrentPosition;
         float delta = mCurrentPosition - startCircle;
         float diameter = 2 * mDotRadius;
-        float circleGap = 3 * mDotRadius;
-        float startX = (getWidth() - mNumPages * circleGap + mDotRadius) / 2;
+        float startX;
 
-        sTempRect.top = getHeight() * 0.5f - mDotRadius;
-        sTempRect.bottom = getHeight() * 0.5f + mDotRadius;
-        sTempRect.left = startX + startCircle * circleGap;
-        sTempRect.right = sTempRect.left + diameter;
-
-        if (delta < SHIFT_PER_ANIMATION) {
-            // dot is capturing the right circle.
-            sTempRect.right += delta * circleGap * 2;
+        if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
+            startX = ((getWidth() - (mNumPages * mCircleGap) + mDotRadius) / 2) - getOffset();
+            sTempRect.top = (getHeight() - mPageIndicatorSize) * 0.5f;
+            sTempRect.bottom = (getHeight() + mPageIndicatorSize) * 0.5f;
+            sTempRect.left = startX + getIndicatorScrollDistance();
+            sTempRect.right = sTempRect.left + mPageIndicatorSize;
         } else {
-            // Dot is leaving the left circle.
-            sTempRect.right += circleGap;
+            startX = ((getWidth() - (mNumPages * mCircleGap) + mDotRadius) / 2);
+            sTempRect.top = (getHeight() * 0.5f) - mDotRadius;
+            sTempRect.bottom = (getHeight() * 0.5f) + mDotRadius;
+            sTempRect.left = startX + (startCircle * mCircleGap);
+            sTempRect.right = sTempRect.left + diameter;
 
-            delta -= SHIFT_PER_ANIMATION;
-            sTempRect.left += delta * circleGap * 2;
+            if (delta < SHIFT_PER_ANIMATION) {
+                // dot is capturing the right circle.
+                sTempRect.right += delta * mCircleGap * 2;
+            } else {
+                // Dot is leaving the left circle.
+                sTempRect.right += mCircleGap;
+
+                delta -= SHIFT_PER_ANIMATION;
+                sTempRect.left += delta * mCircleGap * 2;
+            }
         }
 
         if (mIsRtl) {
@@ -296,7 +363,24 @@ public class PageIndicatorDots extends View implements PageIndicator {
             sTempRect.right = getWidth() - sTempRect.left;
             sTempRect.left = sTempRect.right - rectWidth;
         }
+
         return sTempRect;
+    }
+
+    /**
+     * The offset between the radius of the dot and the midpoint of the indicator so that
+     * the indicator is centered in with the indicator circles
+     */
+    private float getOffset() {
+        return (mPageIndicatorSize / 2) - mDotRadius;
+    }
+
+    /**
+     * The current scroll adjusted for the distance the indicator needs to travel on the screen
+     */
+    private float getIndicatorScrollDistance() {
+        float scrollPerPage = mNumPages > 1 ? mTotalScroll / (mNumPages - 1) : 0;
+        return scrollPerPage != 0 ? ((float) mCurrentScroll / scrollPerPage) * mCircleGap : 0;
     }
 
     private class MyOutlineProver extends ViewOutlineProvider {
