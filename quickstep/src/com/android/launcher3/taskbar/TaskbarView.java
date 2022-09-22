@@ -16,10 +16,13 @@
 package com.android.launcher3.taskbar;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.os.SystemProperties;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -53,6 +56,7 @@ import java.util.function.Predicate;
  * Hosts the Taskbar content such as Hotseat and Recent Apps. Drawn on top of other apps.
  */
 public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconParent, Insettable {
+    private static final String TAG = TaskbarView.class.getSimpleName();
 
     private static final float TASKBAR_BACKGROUND_LUMINANCE = 0.30f;
     public int mThemeIconsBackground;
@@ -80,6 +84,12 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     private @Nullable AllAppsButton mAllAppsButton;
 
     private View mQsb;
+
+    // Only non-null when device supports having a floating task.
+    private @Nullable BubbleTextView mFloatingTaskButton;
+    private @Nullable Intent mFloatingTaskIntent;
+    private static final boolean FLOATING_TASKS_ENABLED =
+            SystemProperties.getBoolean("persist.wm.debug.floating_tasks", false);
 
     public TaskbarView(@NonNull Context context) {
         this(context, null);
@@ -123,6 +133,19 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
         // TODO: Disable touch events on QSB otherwise it can crash.
         mQsb = LayoutInflater.from(context).inflate(R.layout.search_container_hotseat, this, false);
+
+        if (FLOATING_TASKS_ENABLED) {
+            mFloatingTaskIntent = FloatingTaskIntentResolver.getIntent(context);
+            if (mFloatingTaskIntent != null) {
+                mFloatingTaskButton = new LaunchFloatingTaskButton(context);
+                mFloatingTaskButton.setLayoutParams(
+                        new ViewGroup.LayoutParams(mIconTouchSize, mIconTouchSize));
+                mFloatingTaskButton.setPadding(mItemPadding, mItemPadding, mItemPadding,
+                        mItemPadding);
+            } else {
+                Log.d(TAG, "Floating tasks is enabled but no intent was found!");
+            }
+        }
     }
 
     private int getColorWithGivenLuminance(int color, float luminance) {
@@ -150,6 +173,10 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         if (mAllAppsButton != null) {
             mAllAppsButton.setOnClickListener(mControllerCallbacks.getAllAppsButtonClickListener());
         }
+        if (mFloatingTaskButton != null) {
+            mFloatingTaskButton.setOnClickListener(
+                    mControllerCallbacks.getFloatingTaskButtonListener(mFloatingTaskIntent));
+        }
     }
 
     private void removeAndRecycle(View view) {
@@ -173,6 +200,10 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             removeView(mAllAppsButton);
         }
         removeView(mQsb);
+
+        if (mFloatingTaskButton != null) {
+            removeView(mFloatingTaskButton);
+        }
 
         for (int i = 0; i < hotseatItemInfos.length; i++) {
             ItemInfo hotseatItemInfo = hotseatItemInfos[i];
@@ -253,6 +284,11 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             addView(mQsb, Utilities.isRtl(getResources()) ? getChildCount() : 0);
             // Always set QSB to invisible after re-adding.
             mQsb.setVisibility(View.INVISIBLE);
+        }
+
+        if (mFloatingTaskButton != null) {
+            int index = Utilities.isRtl(getResources()) ? 0 : getChildCount();
+            addView(mFloatingTaskButton, index);
         }
 
         mThemeIconsBackground = calculateThemeIconsBackground();
