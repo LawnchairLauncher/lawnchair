@@ -124,7 +124,7 @@ public class FloatingTaskView extends FrameLayout {
 
         RecentsView recentsView = launcher.getOverviewPanel();
         mOrientationHandler = recentsView.getPagedOrientationHandler();
-        mStagePosition = recentsView.getSplitPlaceholder().getActiveSplitStagePosition();
+        mStagePosition = recentsView.getSplitSelectController().getActiveSplitStagePosition();
         mSplitPlaceholderView.setIcon(icon,
                 mContext.getResources().getDimensionPixelSize(R.dimen.split_placeholder_icon_size));
         mSplitPlaceholderView.getIconView().setRotation(mOrientationHandler.getDegreesRotated());
