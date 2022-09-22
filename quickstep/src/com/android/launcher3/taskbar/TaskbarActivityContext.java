@@ -778,8 +778,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      * stash/unstash the taskbar.
      */
     @VisibleForTesting
-    public void enableManualStashingForTests(boolean enableManualStashing) {
-        mControllers.taskbarStashController.enableManualStashingForTests(enableManualStashing);
+    public void enableManualStashingDuringTests(boolean enableManualStashing) {
+        mControllers.taskbarStashController.enableManualStashingDuringTests(enableManualStashing);
     }
 
     /**
