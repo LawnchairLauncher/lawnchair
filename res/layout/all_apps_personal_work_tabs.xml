@@ -22,6 +22,7 @@
     android:layout_gravity="center_horizontal"
     android:paddingTop="@dimen/all_apps_tabs_vertical_padding"
     android:paddingBottom="@dimen/all_apps_tabs_vertical_padding"
+    android:layout_marginTop="@dimen/all_apps_tabs_margin_top"
     android:orientation="horizontal"
     style="@style/TextHeadline">
 
