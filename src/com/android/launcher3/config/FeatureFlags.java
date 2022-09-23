@@ -306,6 +306,9 @@ public final class FeatureFlags {
             "Enable showing the new 'delightful pagination'"
                     + " which is a brand new animation for folder pagination");
 
+    public static final BooleanFlag POPUP_MATERIAL_U = new DeviceFlag(
+            "POPUP_MATERIAL_U", false, "Switch popup UX to use material U");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
