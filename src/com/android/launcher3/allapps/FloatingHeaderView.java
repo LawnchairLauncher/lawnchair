@@ -272,7 +272,8 @@ public class FloatingHeaderView extends LinearLayout implements
         }
         mMaxTranslation += mFloatingRowsHeight;
         if (!mTabsHidden) {
-            mMaxTranslation += mTabsAdditionalPaddingBottom;
+            mMaxTranslation += mTabsAdditionalPaddingBottom
+                    + getResources().getDimensionPixelSize(R.dimen.all_apps_tabs_margin_top);
         }
     }
 

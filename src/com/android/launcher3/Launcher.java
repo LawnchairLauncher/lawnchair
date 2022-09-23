@@ -114,7 +114,6 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.Toast;
-import android.window.OnBackInvokedDispatcher;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
@@ -544,8 +543,6 @@ public class Launcher extends StatefulActivity<LauncherState>
             getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         }
         setTitle(R.string.home_screen);
-
-        registerOnBackInvokedCallback();
     }
 
     protected LauncherOverlayManager getDefaultOverlay() {
@@ -2063,17 +2060,6 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     protected void onStateBack() {
         mStateManager.getState().onBackPressed(this);
-    }
-
-    private void registerOnBackInvokedCallback() {
-        if (Utilities.ATLEAST_T) {
-            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
-                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
-                    () -> {
-                        onBackPressed();
-                        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onBackInvoked");
-                    });
-        }
     }
 
     protected void onScreenOff() {

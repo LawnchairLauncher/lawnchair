@@ -301,6 +301,11 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_WIDGET_PICKER_DEPTH = new DeviceFlag(
             "ENABLE_WIDGET_PICKER_DEPTH", false, "Enable changing depth in widget picker.");
 
+    public static final BooleanFlag SHOW_DELIGHTFUL_PAGINATION_FOLDER = new DeviceFlag(
+            "SHOW_DELIGHTFUL_PAGINATION_FOLDER", false,
+            "Enable showing the new 'delightful pagination'"
+                    + " which is a brand new animation for folder pagination");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
