@@ -28,6 +28,7 @@ import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_RECENT_TASKS;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_BACK_ANIMATION;
+import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_FLOATING_TASKS;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_ONE_HANDED;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_PIP;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_SHELL_TRANSITIONS;
@@ -110,6 +111,7 @@ import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.smartspace.ISysuiUnlockAnimationController;
 import com.android.systemui.shared.tracing.ProtoTraceable;
 import com.android.wm.shell.back.IBackAnimation;
+import com.android.wm.shell.floating.IFloatingTasks;
 import com.android.wm.shell.onehanded.IOneHanded;
 import com.android.wm.shell.pip.IPip;
 import com.android.wm.shell.recents.IRecentTasks;
@@ -167,6 +169,8 @@ public class TouchInteractionService extends Service
             IPip pip = IPip.Stub.asInterface(bundle.getBinder(KEY_EXTRA_SHELL_PIP));
             ISplitScreen splitscreen = ISplitScreen.Stub.asInterface(bundle.getBinder(
                     KEY_EXTRA_SHELL_SPLIT_SCREEN));
+            IFloatingTasks floatingTasks = IFloatingTasks.Stub.asInterface(bundle.getBinder(
+                    KEY_EXTRA_SHELL_FLOATING_TASKS));
             IOneHanded onehanded = IOneHanded.Stub.asInterface(
                     bundle.getBinder(KEY_EXTRA_SHELL_ONE_HANDED));
             IShellTransitions shellTransitions = IShellTransitions.Stub.asInterface(
@@ -182,8 +186,8 @@ public class TouchInteractionService extends Service
                     bundle.getBinder(KEY_EXTRA_SHELL_BACK_ANIMATION));
             MAIN_EXECUTOR.execute(() -> {
                 SystemUiProxy.INSTANCE.get(TouchInteractionService.this).setProxy(proxy, pip,
-                        splitscreen, onehanded, shellTransitions, startingWindow, recentTasks,
-                        launcherUnlockAnimationController, backAnimation);
+                        splitscreen, floatingTasks, onehanded, shellTransitions, startingWindow,
+                        recentTasks, launcherUnlockAnimationController, backAnimation);
                 TouchInteractionService.this.initInputMonitor("TISBinder#onInitialize()");
                 preloadOverview(true /* fromInit */);
             });
