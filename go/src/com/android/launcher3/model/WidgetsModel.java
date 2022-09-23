@@ -41,10 +41,8 @@ import java.util.Set;
  */
 public class WidgetsModel {
 
-    // True if the widget support is disabled.
+    // True is the widget support is disabled.
     public static final boolean GO_DISABLE_WIDGETS = true;
-    // True if the shortcut support is disabled.
-    public static final boolean GO_DISABLE_SHORTCUTS = true;
     public static final boolean GO_DISABLE_NOTIFICATION_DOTS = true;
 
     private static final ArrayList<WidgetsListBaseEntry> EMPTY_WIDGET_LIST = new ArrayList<>();
