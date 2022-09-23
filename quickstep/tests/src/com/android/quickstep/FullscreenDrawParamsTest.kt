@@ -20,26 +20,34 @@ import android.graphics.RectF
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.launcher3.DeviceProfileBaseTest
-import com.android.quickstep.views.TaskThumbnailView.PreviewPositionHelper
+import com.android.quickstep.views.TaskView.FullscreenDrawParams
 import com.android.systemui.shared.recents.model.ThumbnailData
+import com.android.systemui.shared.recents.utilities.PreviewPositionHelper
 import com.google.common.truth.Truth.assertThat
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
 
 /**
- * Test for TaskThumbnailView class.
+ * Test for FullscreenDrawParams class.
  */
 @SmallTest
 @RunWith(AndroidJUnit4::class)
-class TaskThumbnailViewTest : DeviceProfileBaseTest() {
+class FullscreenDrawParamsTest : DeviceProfileBaseTest() {
 
     private var mThumbnailData: ThumbnailData = mock(ThumbnailData::class.java)
 
     private val mPreviewPositionHelper = PreviewPositionHelper()
+    private lateinit var params: FullscreenDrawParams
+
+    @Before
+    fun setup() {
+        params = FullscreenDrawParams(context)
+    }
 
     @Test
-    fun getInsetsToDrawInFullscreen_clipTaskbarSizeFromBottomForTablets() {
+    fun setFullProgress_currentDrawnInsets_clipTaskbarSizeFromBottomForTablets() {
         initializeVarsForTablet()
         val dp = newDP()
         val previewRect = Rect(0, 0, 100, 100)
@@ -49,15 +57,18 @@ class TaskThumbnailViewTest : DeviceProfileBaseTest() {
         val isRtl = false
 
         mPreviewPositionHelper.updateThumbnailMatrix(previewRect, mThumbnailData, canvasWidth,
-                canvasHeight, dp, currentRotation, isRtl)
+                canvasHeight, dp.widthPx, dp.taskbarSize, dp.isTablet, currentRotation,
+                isRtl)
+        params.setProgress(/* fullscreenProgress= */ 1.0f, /* parentScale= */ 1.0f,
+                /* taskViewScale= */ 1.0f,  /* previewWidth= */ 0, dp, mPreviewPositionHelper)
 
         val expectedClippedInsets = RectF(0f, 0f, 0f, dp.taskbarSize / 2f)
-        assertThat(mPreviewPositionHelper.getInsetsToDrawInFullscreen(dp))
+        assertThat(params.mCurrentDrawnInsets)
                 .isEqualTo(expectedClippedInsets)
     }
 
     @Test
-    fun getInsetsToDrawInFullscreen_doNotClipTaskbarSizeFromBottomForPhones() {
+    fun setFullProgress_currentDrawnInsets_doNotClipTaskbarSizeFromBottomForPhones() {
         initializeVarsForPhone()
         val dp = newDP()
         val previewRect = Rect(0, 0, 100, 100)
@@ -67,10 +78,13 @@ class TaskThumbnailViewTest : DeviceProfileBaseTest() {
         val isRtl = false
 
         mPreviewPositionHelper.updateThumbnailMatrix(previewRect, mThumbnailData, canvasWidth,
-                canvasHeight, dp, currentRotation, isRtl)
+                canvasHeight, dp.widthPx, dp.taskbarSize, dp.isTablet, currentRotation,
+                isRtl)
+        params.setProgress(/* fullscreenProgress= */ 1.0f, /* parentScale= */ 1.0f,
+                /* taskViewScale= */ 1.0f,  /* previewWidth= */ 0, dp, mPreviewPositionHelper)
 
         val expectedClippedInsets = RectF(0f, 0f, 0f, 0f)
-        assertThat(mPreviewPositionHelper.getInsetsToDrawInFullscreen(dp))
+        assertThat(params.mCurrentDrawnInsets)
                 .isEqualTo(expectedClippedInsets)
     }
 }

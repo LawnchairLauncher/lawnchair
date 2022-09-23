@@ -819,16 +819,6 @@ public final class Utilities {
     }
 
     /**
-     * Compares the ratio of two quantities and returns whether that ratio is greater than the
-     * provided bound. Order of quantities does not matter. Bound should be a decimal representation
-     * of a percentage.
-     */
-    public static boolean isRelativePercentDifferenceGreaterThan(float first, float second,
-            float bound) {
-        return (Math.abs(first - second) / Math.abs((first + second) / 2.0f)) > bound;
-    }
-
-    /**
      * Rotates `inOutBounds` by `delta` 90-degree increments. Rotation is visually CCW. Parent
      * sizes represent the "space" that will rotate carrying inOutBounds along with it to determine
      * the final bounds.
