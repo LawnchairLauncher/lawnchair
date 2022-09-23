@@ -68,7 +68,7 @@ public class FloatingTaskIntentResolver {
             return null;
         }
         ComponentName component = new ComponentName(packageName, activityName);
-        Intent intent = new Intent(action).setComponent(component);
+        Intent intent = new Intent(action).setComponent(component).setPackage(packageName);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Log.d(TAG, "createIntent returning: " + intent);
         return intent;
