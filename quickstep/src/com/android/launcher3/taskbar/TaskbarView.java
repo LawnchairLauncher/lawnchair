@@ -26,7 +26,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.LayoutRes;
@@ -47,7 +46,6 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.views.ActivityContext;
-import com.android.launcher3.views.AllAppsButton;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
 
 import java.util.function.Predicate;
@@ -81,12 +79,12 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     private @Nullable FolderIcon mLeaveBehindFolderIcon;
 
     // Only non-null when device supports having an All Apps button.
-    private @Nullable AllAppsButton mAllAppsButton;
+    private @Nullable View mAllAppsButton;
 
     private View mQsb;
 
     // Only non-null when device supports having a floating task.
-    private @Nullable BubbleTextView mFloatingTaskButton;
+    private @Nullable View mFloatingTaskButton;
     private @Nullable Intent mFloatingTaskIntent;
     private static final boolean FLOATING_TASKS_ENABLED =
             SystemProperties.getBoolean("persist.wm.debug.floating_tasks", false);
@@ -125,9 +123,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         mThemeIconsBackground = calculateThemeIconsBackground();
 
         if (FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get()) {
-            mAllAppsButton = new AllAppsButton(context);
-            mAllAppsButton.setLayoutParams(
-                    new ViewGroup.LayoutParams(mIconTouchSize, mIconTouchSize));
+            mAllAppsButton = LayoutInflater.from(context)
+                    .inflate(R.layout.taskbar_all_apps_button, this, false);
             mAllAppsButton.setPadding(mItemPadding, mItemPadding, mItemPadding, mItemPadding);
         }
 
@@ -137,9 +134,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         if (FLOATING_TASKS_ENABLED) {
             mFloatingTaskIntent = FloatingTaskIntentResolver.getIntent(context);
             if (mFloatingTaskIntent != null) {
-                mFloatingTaskButton = new LaunchFloatingTaskButton(context);
-                mFloatingTaskButton.setLayoutParams(
-                        new ViewGroup.LayoutParams(mIconTouchSize, mIconTouchSize));
+                mFloatingTaskButton = LayoutInflater.from(context)
+                        .inflate(R.layout.taskbar_floating_task_button, this, false);
                 mFloatingTaskButton.setPadding(mItemPadding, mItemPadding, mItemPadding,
                         mItemPadding);
             } else {
