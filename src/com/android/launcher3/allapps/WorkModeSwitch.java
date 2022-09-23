@@ -97,12 +97,10 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
                 bottomMargin += dp.hotseatQsbHeight;
             }
 
-            if (!dp.isGestureMode) {
-                if (dp.isTaskbarPresent) {
-                    bottomMargin += dp.taskbarSize;
-                } else {
-                    bottomMargin += insets.bottom;
-                }
+            if (!dp.isGestureMode && dp.isTaskbarPresent) {
+                bottomMargin += dp.taskbarSize;
+            } else {
+                bottomMargin += insets.bottom;
             }
 
             lp.bottomMargin = bottomMargin;
