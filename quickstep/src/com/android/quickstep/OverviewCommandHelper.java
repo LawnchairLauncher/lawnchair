@@ -240,8 +240,11 @@ public class OverviewCommandHelper {
                 interactionHandler.onGestureCancelled();
                 cmd.removeListener(this);
 
-                RecentsView createdRecents =
-                        activityInterface.getCreatedActivity().getOverviewPanel();
+                T createdActivity = activityInterface.getCreatedActivity();
+                if (createdActivity == null) {
+                    return;
+                }
+                RecentsView createdRecents = createdActivity.getOverviewPanel();
                 if (createdRecents != null) {
                     createdRecents.onRecentsAnimationComplete();
                 }
