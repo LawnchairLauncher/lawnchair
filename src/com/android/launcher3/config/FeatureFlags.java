@@ -94,9 +94,6 @@ public final class FeatureFlags {
             getDebugFlag("ENABLE_FLOATING_SEARCH_BAR", false,
                     "Keep All Apps search bar at the bottom (but above keyboard if open)");
 
-    public static final BooleanFlag ENABLE_QUICK_SEARCH = new DeviceFlag("ENABLE_QUICK_SEARCH",
-            true, "Use quick search behavior.");
-
     public static final BooleanFlag ENABLE_HIDE_HEADER = new DeviceFlag("ENABLE_HIDE_HEADER",
             true, "Hide header on keyboard before typing in all apps");
 
@@ -289,14 +286,6 @@ public final class FeatureFlags {
     public static final BooleanFlag FOLDABLE_WORKSPACE_REORDER = getDebugFlag(
             "FOLDABLE_WORKSPACE_REORDER", false,
             "In foldables, when reordering the icons and widgets, is now going to use both sides");
-
-    public static final BooleanFlag SHOW_SEARCH_EDUCARD_QSB = new DeviceFlag(
-            "SHOW_SEARCH_EDUCARD_QSB", false, "Shows Search Educard for QSB entry in OneSearch.");
-
-    public static final BooleanFlag ENABLE_IME_LATENCY_LOGGER = getDebugFlag(
-            "ENABLE_IME_LATENCY_LOGGER", false,
-            "Enable option to log the keyboard latency for both atomic and controlled keyboard "
-                    + "animations on an EditText");
 
     public static final BooleanFlag ENABLE_WIDGET_PICKER_DEPTH = new DeviceFlag(
             "ENABLE_WIDGET_PICKER_DEPTH", false, "Enable changing depth in widget picker.");
