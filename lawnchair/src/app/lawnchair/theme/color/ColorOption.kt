@@ -1,7 +1,6 @@
 package app.lawnchair.theme.color
 
 import android.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreferenceEntry
 import app.lawnchair.ui.theme.getSystemAccent
