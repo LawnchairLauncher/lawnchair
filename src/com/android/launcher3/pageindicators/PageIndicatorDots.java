@@ -59,9 +59,12 @@ public class PageIndicatorDots extends View implements PageIndicator {
     private static final int DOT_ACTIVE_ALPHA = 255;
     private static final int DOT_INACTIVE_ALPHA = 128;
     private static final int DOT_GAP_FACTOR = 3;
+    private static final float DOT_GAP_FACTOR_FLOAT = 3.8f;
 
     // This value approximately overshoots to 1.5 times the original size.
     private static final float ENTER_ANIMATION_OVERSHOOT_TENSION = 4.9f;
+
+    private static final float INDICATOR_ROTATION = 180f;
 
     private static final RectF sTempRect = new RectF();
 
@@ -121,7 +124,12 @@ public class PageIndicatorDots extends View implements PageIndicator {
         mPaginationPaint.setStyle(Style.FILL);
         mPaginationPaint.setColor(Themes.getAttrColor(context, R.attr.folderPaginationColor));
         mDotRadius = getResources().getDimension(R.dimen.page_indicator_dot_size) / 2;
-        mCircleGap = DOT_GAP_FACTOR * mDotRadius;
+
+        if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
+            mCircleGap = DOT_GAP_FACTOR_FLOAT * mDotRadius;
+        } else {
+            mCircleGap = DOT_GAP_FACTOR * mDotRadius;
+        }
         mPageIndicatorSize = getResources().getDimension(
                 R.dimen.page_indicator_current_page_indicator_size);
         if (!SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
@@ -298,7 +306,17 @@ public class PageIndicatorDots extends View implements PageIndicator {
             mPaginationPaint.setAlpha(DOT_ACTIVE_ALPHA);
 
             if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
-                canvas.drawRect(getActiveRect(), mPaginationPaint);
+                RectF currRect = getActiveRect();
+                int scrollPerPage = getScrollPerPage();
+
+                // This IF is to avoid division by 0
+                if (scrollPerPage != 0) {
+                    int delta = mCurrentScroll % scrollPerPage;
+                    canvas.rotate((INDICATOR_ROTATION * delta) / scrollPerPage,
+                            currRect.centerX(), currRect.centerY());
+                }
+
+                canvas.drawRect(currRect, mPaginationPaint);
             } else {
                 canvas.drawRoundRect(getActiveRect(), mDotRadius, mDotRadius, mPaginationPaint);
             }
@@ -376,10 +394,17 @@ public class PageIndicatorDots extends View implements PageIndicator {
     }
 
     /**
+     * Returns an int that is the amount we need to scroll per page
+     */
+    private int getScrollPerPage() {
+        return mNumPages > 1 ? mTotalScroll / (mNumPages - 1) : 0;
+    }
+
+    /**
      * The current scroll adjusted for the distance the indicator needs to travel on the screen
      */
     private float getIndicatorScrollDistance() {
-        float scrollPerPage = mNumPages > 1 ? mTotalScroll / (mNumPages - 1) : 0;
+        int scrollPerPage = getScrollPerPage();
         return scrollPerPage != 0 ? ((float) mCurrentScroll / scrollPerPage) * mCircleGap : 0;
     }
 

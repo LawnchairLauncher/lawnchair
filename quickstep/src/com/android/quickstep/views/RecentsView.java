@@ -912,7 +912,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSplitSelectStateController = splitController;
     }
 
-    public SplitSelectStateController getSplitPlaceholder() {
+    public SplitSelectStateController getSplitSelectController() {
         return mSplitSelectStateController;
     }
 
@@ -4279,7 +4279,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Note that the translation can be its primary or secondary dimension.
      */
     public float getSplitSelectTranslation() {
-        int splitPosition = getSplitPlaceholder().getActiveSplitStagePosition();
+        int splitPosition = getSplitSelectController().getActiveSplitStagePosition();
         if (!shouldShiftThumbnailsForSplitSelect()) {
             return 0f;
         }

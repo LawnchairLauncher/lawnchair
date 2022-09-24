@@ -181,11 +181,6 @@ public class ActivityAllAppsContainerView<T extends Context & AppLauncher
     }
 
     @Override
-    protected boolean shouldShowTabs() {
-        return super.shouldShowTabs() && !isSearching();
-    }
-
-    @Override
     public boolean isSearching() {
         return mIsSearching;
     }

@@ -895,7 +895,7 @@ public class QuickstepLauncher extends Launcher {
         // load in, and then proceed to OverviewSplitSelect.
         if (isInState(OVERVIEW_SPLIT_SELECT)) {
             SplitSelectStateController splitSelectStateController =
-                    ((RecentsView) getOverviewPanel()).getSplitPlaceholder();
+                    ((RecentsView) getOverviewPanel()).getSplitSelectController();
             // Launcher will restart in Overview and then transition to OverviewSplitSelect.
             outState.putIBinder(PENDING_SPLIT_SELECT_INFO, ObjectWrapper.wrap(
                     new PendingSplitSelectInfo(
