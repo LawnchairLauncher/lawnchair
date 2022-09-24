@@ -88,6 +88,9 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
     public static final float PULL_MULTIPLIER = .02f;
     public static final float FLING_VELOCITY_MULTIPLIER = 1200f;
 
+    // Render the header protection at all times to debug clipping issues.
+    private static final boolean DEBUG_HEADER_PROTECTION = false;
+
     private final Paint mHeaderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Rect mInsets = new Rect();
 
@@ -129,7 +132,6 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
     private final int mScrimColor;
     private final int mHeaderProtectionColor;
     protected final float mHeaderThreshold;
-    private int mHeaderBottomAdjustment;
     private ScrimView mScrimView;
     private int mHeaderColor;
     private int mTabsProtectionAlpha;
@@ -142,8 +144,6 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         mScrimColor = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
         mHeaderThreshold = getResources().getDimensionPixelSize(
                 R.dimen.dynamic_grid_cell_border_spacing);
-        mHeaderBottomAdjustment = getResources().getDimensionPixelSize(
-                R.dimen.all_apps_header_bottom_adjustment);
         mHeaderProtectionColor = Themes.getAttrColor(context, R.attr.allappsHeaderProtectionColor);
 
         mWorkManager = new WorkProfileManager(
@@ -728,17 +728,29 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         if (!mHeader.isHeaderProtectionSupported()) {
             return;
         }
-        mHeaderPaint.setColor(mHeaderColor);
-        mHeaderPaint.setAlpha((int) (getAlpha() * Color.alpha(mHeaderColor)));
+        if (DEBUG_HEADER_PROTECTION) {
+            mHeaderPaint.setColor(Color.MAGENTA);
+            mHeaderPaint.setAlpha(255);
+        } else {
+            mHeaderPaint.setColor(mHeaderColor);
+            mHeaderPaint.setAlpha((int) (getAlpha() * Color.alpha(mHeaderColor)));
+        }
         if (mHeaderPaint.getColor() != mScrimColor && mHeaderPaint.getColor() != 0) {
             int bottom = getHeaderBottom();
+            FloatingHeaderView headerView = getFloatingHeaderView();
             if (!mUsingTabs) {
-                bottom += getFloatingHeaderView().getPaddingBottom() - mHeaderBottomAdjustment;
+                // Add protection which is otherwise added when tabs scroll up.
+                bottom += headerView.getTabsAdditionalPaddingTop();
             }
             canvas.drawRect(0, 0, canvas.getWidth(), bottom, mHeaderPaint);
-            int tabsHeight = getFloatingHeaderView().getPeripheralProtectionHeight();
+            int tabsHeight = headerView.getPeripheralProtectionHeight();
             if (mTabsProtectionAlpha > 0 && tabsHeight != 0) {
-                mHeaderPaint.setAlpha((int) (getAlpha() * mTabsProtectionAlpha));
+                if (DEBUG_HEADER_PROTECTION) {
+                    mHeaderPaint.setColor(Color.BLUE);
+                    mHeaderPaint.setAlpha(255);
+                } else {
+                    mHeaderPaint.setAlpha((int) (getAlpha() * mTabsProtectionAlpha));
+                }
                 canvas.drawRect(0, bottom, canvas.getWidth(), bottom + tabsHeight, mHeaderPaint);
             }
         }

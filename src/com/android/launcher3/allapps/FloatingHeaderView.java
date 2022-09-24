@@ -277,7 +277,7 @@ public class FloatingHeaderView extends LinearLayout implements
         }
     }
 
-    public int getMaxTranslation() {
+    int getMaxTranslation() {
         if (mMaxTranslation == 0 && (mTabsHidden || mFloatingRowsCollapsed)) {
             return getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_bottom_padding);
         } else if (mMaxTranslation > 0 && mTabsHidden) {
@@ -334,7 +334,8 @@ public class FloatingHeaderView extends LinearLayout implements
 
         int clipTop = getPaddingTop() - mTabsAdditionalPaddingTop;
         if (mTabsHidden) {
-            clipTop += getPaddingBottom() - mTabsAdditionalPaddingBottom;
+            // Add back spacing that is otherwise covered by the tabs.
+            clipTop += mTabsAdditionalPaddingTop;
         }
         mRVClip.top = mTabsHidden || mFloatingRowsCollapsed ? clipTop : 0;
         mHeaderClip.top = clipTop;
@@ -405,6 +406,10 @@ public class FloatingHeaderView extends LinearLayout implements
         return mFloatingRowsHeight;
     }
 
+    int getTabsAdditionalPaddingTop() {
+        return mTabsAdditionalPaddingTop;
+    }
+
     int getTabsAdditionalPaddingBottom() {
         return mTabsAdditionalPaddingBottom;
     }
@@ -473,7 +478,7 @@ public class FloatingHeaderView extends LinearLayout implements
     /**
      * Returns visible height of FloatingHeaderView contents requiring header protection
      */
-    public int getPeripheralProtectionHeight() {
+    int getPeripheralProtectionHeight() {
         if (!mHeaderProtectionSupported) {
             return 0;
         }
