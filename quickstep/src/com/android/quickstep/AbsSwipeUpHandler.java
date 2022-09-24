@@ -2063,7 +2063,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             if (handleTaskAppeared(appearedTaskTargets)) {
                 mRecentsAnimationController.finish(false /* toRecents */,
                         null /* onFinishComplete */);
-                mActivityInterface.onLaunchTaskSuccess();
                 ActiveGestureLog.INSTANCE.addLog(
                         /* event= */ "finishRecentsAnimation",
                         /* extras= */ false,
