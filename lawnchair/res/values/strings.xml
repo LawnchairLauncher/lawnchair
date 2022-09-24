@@ -157,7 +157,7 @@
     <string name="action_paste">Paste</string>
     <string name="copied_toast">Copied to clipboard.</string>
     <string name="invalid_color">Invalid Color</string>
-    <string name="launcher_default_color">Default</string>
+    <string name="launcher_default_color">Managed by Lawnchair</string>
 
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
