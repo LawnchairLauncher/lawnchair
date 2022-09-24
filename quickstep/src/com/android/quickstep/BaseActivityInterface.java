@@ -183,14 +183,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
     public abstract void onLaunchTaskFailed();
 
-    public void onLaunchTaskSuccess() {
-        ACTIVITY_TYPE activity = getCreatedActivity();
-        if (activity == null) {
-            return;
-        }
-        activity.getStateManager().moveToRestState();
-    }
-
     /**
      * Closes any overlays.
      */
