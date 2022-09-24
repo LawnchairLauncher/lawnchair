@@ -42,23 +42,27 @@ public class AllAppsGridAdapter<T extends Context & ActivityContext> extends
         BaseAllAppsAdapter<T> {
 
     public static final String TAG = "AppsGridAdapter";
-    private final GridLayoutManager mGridLayoutMgr;
-    private final GridSpanSizer mGridSizer;
+    private final AppsGridLayoutManager mGridLayoutMgr;
 
     public AllAppsGridAdapter(T activityContext, LayoutInflater inflater,
             AlphabeticalAppsList apps, BaseAdapterProvider[] adapterProviders) {
         super(activityContext, inflater, apps, adapterProviders);
-        mGridSizer = new GridSpanSizer();
         mGridLayoutMgr = new AppsGridLayoutManager(mActivityContext);
-        mGridLayoutMgr.setSpanSizeLookup(mGridSizer);
+        mGridLayoutMgr.setSpanSizeLookup(new GridSpanSizer());
         setAppsPerRow(activityContext.getDeviceProfile().numShownAllAppsColumns);
     }
 
     /**
      * Returns the grid layout manager.
      */
-    public RecyclerView.LayoutManager getLayoutManager() {
+    public AppsGridLayoutManager getLayoutManager() {
         return mGridLayoutMgr;
+    }
+
+    /** @return the column index that the given adapter index falls. */
+    public int getSpanIndex(int adapterIndex) {
+        AppsGridLayoutManager lm = getLayoutManager();
+        return lm.getSpanSizeLookup().getSpanIndex(adapterIndex, lm.getSpanCount());
     }
 
     /**
