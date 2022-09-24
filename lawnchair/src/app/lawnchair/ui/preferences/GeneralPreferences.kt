@@ -99,7 +99,7 @@ fun GeneralPreferences() {
                 )
             }
         }
-        
+
         val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.getAdapter()
         PreferenceGroup(
             heading = stringResource(id = R.string.icons),
@@ -148,14 +148,21 @@ fun GeneralPreferences() {
             val serviceEnabled = notificationServiceEnabled()
             NotificationDotsPreference(enabled = enabled, serviceEnabled = serviceEnabled)
             if (enabled && serviceEnabled) {
-                SwitchPreference(
-                    adapter = prefs2.showNotificationCount.getAdapter(),
-                    label = stringResource(id = R.string.show_notification_count),
-                )
+                val showNotificationCountAdapter = prefs2.showNotificationCount.getAdapter()
                 ColorPreference(
                     preference = prefs2.notificationDotColor,
                     label = stringResource(id = R.string.notification_dots_color),
                 )
+                SwitchPreference(
+                    adapter = showNotificationCountAdapter,
+                    label = stringResource(id = R.string.show_notification_count),
+                )
+                ExpandAndShrink(visible = showNotificationCountAdapter.state.value) {
+                    ColorPreference(
+                        preference = prefs2.notificationDotTextColor,
+                        label = stringResource(id = R.string.notification_dots_text_color),
+                    )
+                }
             }
         }
     }
