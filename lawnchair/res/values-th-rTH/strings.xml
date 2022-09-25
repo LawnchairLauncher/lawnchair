@@ -278,7 +278,7 @@
     <string name="window_corner_radius_label">หน้าจอขอบมน</string>
     <string name="override_window_corner_radius_label">ปรับแต่งขอบมนของหน้าจอ</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
-    <string name="taskbar_label">Taskbar</string>
+    <string name="taskbar_label">แถบงาน</string>
     <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
     <!-- about/About.kt -->
     <string name="news">ข่าวสาร</string>
