@@ -47,10 +47,10 @@
     <string name="font_picker_description">Một số văn bản vẫn không thay đổi.</string>
     <string name="smartspace_calendar_label">Tùy chỉnh lịch Xem nhanh</string>
     <string name="smartspace_calendar_description">Cho phép hiện ngày bằng hệ thống lịch khác Gregory.</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
-    <string name="always_reload_icons_label">Always Reload Icons</string>
-    <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
+    <string name="workspace_increase_max_grid_size_label">Tăng Kích Thước Lưới Màn Hình Chính Lên Tối Đa</string>
+    <string name="workspace_increase_max_grid_size_description">Tăng kích thước lưới ở màn hình chính cho phép tối đa từ 10 x 10 đến 20 x 20.</string>
+    <string name="always_reload_icons_label">Luôn Tải Lại Biểu Tượng</string>
+    <string name="always_reload_icons_description">Tránh sử dụng các biểu tượng được lưu trong bộ nhớ cache từ các gói biểu tượng</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Xoay màn hình chính</string>
     <string name="home_screen_rotaton_description">Khi thiết bị được xoay.</string>
@@ -93,13 +93,13 @@
     <string name="icon_shape_system">Hệ thống</string>
     <string name="icon_shape_circle">Tròn</string>
     <string name="icon_shape_cylinder">Trụ</string>
-    <string name="icon_shape_diamond">Diamond</string>
-    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_diamond">Kim Cương</string>
+    <string name="icon_shape_egg">Trứng</string>
     <string name="icon_shape_cupertino">iOS</string>
-    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_octagon">Hình bát giác</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Vuông bo góc</string>
-    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_sharp_square">Hình vuông sắc nét</string>
     <string name="icon_shape_square">Vuông</string>
     <string name="icon_shape_squircle">Vuông tròn</string>
     <string name="icon_shape_teardrop">Giọt nước</string>
@@ -133,10 +133,10 @@
     <string name="hex">Hex</string>
     <string name="color_sliders">Thanh trượt</string>
     <string name="action_copy">Sao chép</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_paste">Dán</string>
     <string name="copied_toast">Đã sao chép vào clipboard.</string>
     <string name="invalid_color">Màu không hợp lệ</string>
-    <string name="launcher_default_color">Default</string>
+    <string name="launcher_default_color">Mặc định</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Thêm ứng dụng mới vào màn hình chính</string>
@@ -151,11 +151,11 @@
     <string name="layout">Bố cục</string>
     <string name="home_screen_grid">Lưới màn hình chính</string>
     <string name="home_screen_lock">Khoá màn hình chính</string>
-    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_lock_description">Ngăn các thay đổi đối với bố cục màn hình chính.</string>
     <string name="home_screen_unlock">Mở khóa màn hình chính</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">Hiện nút khóa trên cửa sổ nổi</string>
-    <string name="home_screen_locked">Home Screen is locked.</string>
+    <string name="home_screen_locked">Đã khoá Màn Hình Chính.</string>
     <string name="status_bar_label">Thanh trạng thái</string>
     <string name="show_status_bar">Hiện thanh trạng thái</string>
     <string name="dark_status_bar_label">Thanh trạng thái tối màu</string>
@@ -188,9 +188,9 @@
     <string name="smartspace_date_and_time">Ngày &amp; giờ</string>
     <string name="smartspace_date">Ngày</string>
     <string name="smartspace_time">Giờ</string>
-    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_format">Định Dạng Thời Gian</string>
     <string name="smartspace_time_follow_system">Theo hệ thống</string>
-    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
+    <string name="smartspace_time_12_hour_format">Định dạng 12 giờ</string>
     <string name="smartspace_time_24_hour_format">Định dạng 24 giờ</string>
     <string name="smartspace_weather">Thời tiết</string>
     <string name="smartspace_battery_status">Trạng thái pin</string>
@@ -201,8 +201,8 @@
     <string name="smartspace_calendar_gregorian">Gregory</string>
     <string name="smartspace_calendar_persian">Ba Tư</string>
     <string name="smartspace_preferences">Tùy chỉnh</string>
-    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <string name="smartspace_widget_toggle_label">Hiện trên Màn Hình Chính</string>
+    <string name="smartspace_widget_toggle_description">Có thể thêm tính năng Xem nhanh bằng cách đặt tiện ích con “Lawnchair”.</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">Thanh tìm kiếm</string>
@@ -246,7 +246,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Độ trong suốt nền biểu tượng</string>
-    <string name="folder_preview_bg_color_label">Icon Background Color</string>
+    <string name="folder_preview_bg_color_label">Màu Nền Biểu Tượng</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Số cột tối đa của thư mục</string>
     <string name="max_folder_rows">Số hàng tối đa của thư mục</string>

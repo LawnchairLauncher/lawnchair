@@ -49,7 +49,7 @@
     <string name="smartspace_calendar_description">Gregoryen olmayan takvim sistemlerinde tarihin gösterilmesine izin verin.</string>
     <string name="workspace_increase_max_grid_size_label">Maksimum Ana Ekran Izgara Boyutu</string>
     <string name="workspace_increase_max_grid_size_description">Ana ekran Maksimum Izgara Boyutunu 10x10\' dan 20x20 \'ye çıkar.</string>
-    <string name="always_reload_icons_label">Always Reload Icons</string>
+    <string name="always_reload_icons_label">Simgeleri Her Zaman Yeniden Yükle</string>
     <string name="always_reload_icons_description">Önbelleklenmiş ikonları kullanmaktan kaçın</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Ana Ekran Rotasyonu</string>
@@ -96,10 +96,10 @@
     <string name="icon_shape_diamond">Elmas</string>
     <string name="icon_shape_egg">Yumurta</string>
     <string name="icon_shape_cupertino">iOS</string>
-    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_octagon">Sekizgen</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Yuvarlak Kare</string>
-    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_sharp_square">Keskin Kare</string>
     <string name="icon_shape_square">Kare</string>
     <string name="icon_shape_squircle">Yuvarlatılmış Kare</string>
     <string name="icon_shape_teardrop">Damla</string>
@@ -202,7 +202,7 @@
     <string name="smartspace_calendar_persian">Persian</string>
     <string name="smartspace_preferences">Tercihler</string>
     <string name="smartspace_widget_toggle_label">Ana ekrannda göster</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <string name="smartspace_widget_toggle_description">Bir Bakışta ya \"Lawnchair\" widget\'ı yerleştirilerek manuel olarak eklenebilir.</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">Arama Kutusu</string>
