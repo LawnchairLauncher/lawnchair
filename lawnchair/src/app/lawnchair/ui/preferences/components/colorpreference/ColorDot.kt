@@ -41,7 +41,7 @@ fun <T> ColorDot(
 }
 
 @Composable
-fun ColorDot(
+private fun ColorDot(
     color: Color,
     modifier: Modifier = Modifier
 ) {
