@@ -56,8 +56,8 @@ public class PageIndicatorDots extends View implements PageIndicator {
     private static final int ENTER_ANIMATION_STAGGERED_DELAY = 150;
     private static final int ENTER_ANIMATION_DURATION = 400;
 
-    private static final int DOT_ACTIVE_ALPHA = 255;
-    private static final int DOT_INACTIVE_ALPHA = 128;
+    private static final int PAGE_INDICATOR_ALPHA = 255;
+    private static final int DOT_ALPHA = 128;
     private static final int DOT_GAP_FACTOR = 3;
     private static final float DOT_GAP_FACTOR_FLOAT = 3.8f;
 
@@ -282,7 +282,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
                 circleGap = -circleGap;
             }
             for (int i = 0; i < mEntryAnimationRadiusFactors.length; i++) {
-                mPaginationPaint.setAlpha(i == mActivePage ? DOT_ACTIVE_ALPHA : DOT_INACTIVE_ALPHA);
+                mPaginationPaint.setAlpha(i == mActivePage ? PAGE_INDICATOR_ALPHA : DOT_ALPHA);
                 if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
                     canvas.drawCircle(x, y, getRadius(x) * mEntryAnimationRadiusFactors[i],
                             mPaginationPaint);
@@ -293,7 +293,8 @@ public class PageIndicatorDots extends View implements PageIndicator {
                 x += circleGap;
             }
         } else {
-            mPaginationPaint.setAlpha(DOT_INACTIVE_ALPHA);
+            // Here we draw the dots
+            mPaginationPaint.setAlpha(DOT_ALPHA);
             for (int i = 0; i < mNumPages; i++) {
                 if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
                     canvas.drawCircle(x, y, getRadius(x), mPaginationPaint);
@@ -303,8 +304,8 @@ public class PageIndicatorDots extends View implements PageIndicator {
                 x += circleGap;
             }
 
-            mPaginationPaint.setAlpha(DOT_ACTIVE_ALPHA);
-
+            // Here we draw the current page indicator
+            mPaginationPaint.setAlpha(PAGE_INDICATOR_ALPHA);
             if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
                 RectF currRect = getActiveRect();
                 int scrollPerPage = getScrollPerPage();
