@@ -144,9 +144,7 @@ public final class TaskbarAllAppsController {
         // to catch invalid states.
         mControllers.getSharedState().allAppsVisible = true;
 
-        mAllAppsContext = new TaskbarAllAppsContext(mTaskbarContext,
-                this,
-                mControllers.taskbarStashController);
+        mAllAppsContext = new TaskbarAllAppsContext(mTaskbarContext, this, mControllers);
         mAllAppsContext.getDragController().init(mControllers);
         TaskStackChangeListeners.getInstance().registerTaskStackListener(mTaskStackListener);
         Optional.ofNullable(mAllAppsContext.getSystemService(WindowManager.class))
