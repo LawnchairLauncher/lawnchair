@@ -21,23 +21,20 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import android.view.animation.Interpolator;
 
 /**
- * Timings for the Normal > OverviewSplitSelect animation.
+ * Timings for the OverviewSplitSelect > confirmed animation on tablets.
  */
-public class NormalToSplitTimings extends OverviewToSplitTimings implements SplitAnimationTimings {
-    @Override
+public class TabletSplitToConfirmTimings
+        extends SplitToConfirmTimings implements SplitAnimationTimings {
+    public int getPlaceholderFadeInStart() { return 0; }
+    public int getPlaceholderFadeInEnd() { return 133; }
+    public int getPlaceholderIconFadeInStart() { return 167; }
+    public int getPlaceholderIconFadeInEnd() { return 250; }
+    public int getStagedRectSlideStart() { return 0; }
+    public int getStagedRectSlideEnd() { return 383; }
+
+    public int getDuration() { return TABLET_CONFIRM_DURATION; }
     public Interpolator getStagedRectXInterpolator() { return LINEAR; }
-    @Override
+    public Interpolator getStagedRectYInterpolator() { return LINEAR; }
     public Interpolator getStagedRectScaleXInterpolator() { return LINEAR; }
-    @Override
     public Interpolator getStagedRectScaleYInterpolator() { return LINEAR; }
-
-    public int getScrimFadeInStart() { return 0; }
-    public int getScrimFadeInEnd() { return 167; }
-
-    public float getScrimFadeInStartOffset() {
-        return (float) getScrimFadeInStart() / getDuration();
-    }
-    public float getScrimFadeInEndOffset() {
-        return (float) getScrimFadeInEnd() / getDuration();
-    }
 }
