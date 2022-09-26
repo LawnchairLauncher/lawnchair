@@ -28,6 +28,7 @@ import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_RECENT_TASKS;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_BACK_ANIMATION;
+import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_DESKTOP_MODE;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_FLOATING_TASKS;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_ONE_HANDED;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_PIP;
@@ -111,6 +112,7 @@ import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.smartspace.ISysuiUnlockAnimationController;
 import com.android.systemui.shared.tracing.ProtoTraceable;
 import com.android.wm.shell.back.IBackAnimation;
+import com.android.wm.shell.desktopmode.IDesktopMode;
 import com.android.wm.shell.floating.IFloatingTasks;
 import com.android.wm.shell.onehanded.IOneHanded;
 import com.android.wm.shell.pip.IPip;
@@ -184,10 +186,12 @@ public class TouchInteractionService extends Service
                     bundle.getBinder(KEY_EXTRA_RECENT_TASKS));
             IBackAnimation backAnimation = IBackAnimation.Stub.asInterface(
                     bundle.getBinder(KEY_EXTRA_SHELL_BACK_ANIMATION));
+            IDesktopMode desktopMode = IDesktopMode.Stub.asInterface(
+                    bundle.getBinder(KEY_EXTRA_SHELL_DESKTOP_MODE));
             MAIN_EXECUTOR.execute(() -> {
                 SystemUiProxy.INSTANCE.get(TouchInteractionService.this).setProxy(proxy, pip,
                         splitscreen, floatingTasks, onehanded, shellTransitions, startingWindow,
-                        recentTasks, launcherUnlockAnimationController, backAnimation);
+                        recentTasks, launcherUnlockAnimationController, backAnimation, desktopMode);
                 TouchInteractionService.this.initInputMonitor("TISBinder#onInitialize()");
                 preloadOverview(true /* fromInit */);
             });
