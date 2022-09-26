@@ -1,7 +1,7 @@
 package app.lawnchair.ui.preferences.components
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Warning
+import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,7 +24,7 @@ fun WarningPreference(
         },
         startWidget = {
             Icon(
-                imageVector = Icons.Outlined.Warning,
+                imageVector = Icons.Rounded.Warning,
                 tint = MaterialTheme.colorScheme.error,
                 contentDescription = null,
             )
