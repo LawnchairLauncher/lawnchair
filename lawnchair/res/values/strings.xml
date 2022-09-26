@@ -76,6 +76,7 @@
       <string name="show_notification_count">Show Notification Count</string>
       <string name="notification_dots_color">Notification Dot Color</string>
       <string name="notification_dots_text_color">Notification Count Color</string>
+      <string name="notification_dots_color_contrast_warning">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
 
       <!-- Notification popup -->
       <string name="missing_notification_access_label">Notification Access Needed</string>

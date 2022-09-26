@@ -27,6 +27,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.ui.preferences.components.DividerColumn
 import app.lawnchair.ui.preferences.components.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.FontPreference
 import app.lawnchair.ui.preferences.components.IconShapePreview
@@ -37,6 +38,7 @@ import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
 import app.lawnchair.ui.preferences.components.SwitchPreference
 import app.lawnchair.ui.preferences.components.ThemePreference
+import app.lawnchair.ui.preferences.components.colorpreference.ColorContrastWarning
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import app.lawnchair.ui.preferences.components.iconShapeEntries
 import app.lawnchair.ui.preferences.components.iconShapeGraph
@@ -158,10 +160,20 @@ fun GeneralPreferences() {
                     label = stringResource(id = R.string.show_notification_count),
                 )
                 ExpandAndShrink(visible = showNotificationCountAdapter.state.value) {
-                    ColorPreference(
-                        preference = prefs2.notificationDotTextColor,
-                        label = stringResource(id = R.string.notification_dots_text_color),
-                    )
+                    DividerColumn {
+                        ColorPreference(
+                            preference = prefs2.notificationDotTextColor,
+                            label = stringResource(id = R.string.notification_dots_text_color),
+                        )
+
+                        val dotColor = prefs2.notificationDotColor.asState()
+                        val dotTextColor = prefs2.notificationDotTextColor.asState()
+                        ColorContrastWarning(
+                            foregroundColor = dotTextColor.value,
+                            backgroundColor = dotColor.value,
+                            text = stringResource(id = R.string.notification_dots_color_contrast_warning),
+                        )
+                    }
                 }
             }
         }
