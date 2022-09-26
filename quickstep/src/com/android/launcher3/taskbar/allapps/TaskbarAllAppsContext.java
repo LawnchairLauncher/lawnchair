@@ -41,6 +41,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.taskbar.BaseTaskbarContext;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
+import com.android.launcher3.taskbar.TaskbarControllers;
 import com.android.launcher3.taskbar.TaskbarDragController;
 import com.android.launcher3.taskbar.TaskbarStashController;
 import com.android.launcher3.testing.TestLogging;
@@ -72,7 +73,7 @@ class TaskbarAllAppsContext extends BaseTaskbarContext {
     TaskbarAllAppsContext(
             TaskbarActivityContext taskbarContext,
             TaskbarAllAppsController windowController,
-            TaskbarStashController taskbarStashController) {
+            TaskbarControllers taskbarControllers) {
         super(taskbarContext.createWindowContext(TYPE_APPLICATION_OVERLAY, null));
         mTaskbarContext = taskbarContext;
         mWindowController = windowController;
@@ -86,9 +87,10 @@ class TaskbarAllAppsContext extends BaseTaskbarContext {
                 this,
                 slideInView,
                 windowController,
-                taskbarStashController);
+                taskbarControllers);
         mAppsView = slideInView.getAppsView();
 
+        TaskbarStashController taskbarStashController = taskbarControllers.taskbarStashController;
         mWillTaskbarBeVisuallyStashed = taskbarStashController.supportsVisualStashing();
         mStashedTaskbarHeight = taskbarStashController.getStashedHeight();
     }
