@@ -248,7 +248,7 @@
 
     <!-- Folders -->
     <dimen name="page_indicator_dot_size">8dp</dimen>
-    <dimen name="page_indicator_current_page_indicator_size">10dp</dimen>
+    <dimen name="page_indicator_size">10dp</dimen>
 
 
     <dimen name="folder_cell_x_padding">9dp</dimen>
