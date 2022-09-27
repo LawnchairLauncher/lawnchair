@@ -30,13 +30,10 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.views.AbstractSlideInView;
 
-import java.util.Optional;
-
 /** Wrapper for taskbar all apps with slide-in behavior. */
 public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarAllAppsContext>
         implements Insettable, DeviceProfile.OnDeviceProfileChangeListener {
     private TaskbarAllAppsContainerView mAppsView;
-    private OnCloseListener mOnCloseBeginListener;
     private float mShiftRange;
 
     public TaskbarAllAppsSlideInView(Context context, AttributeSet attrs) {
@@ -72,14 +69,8 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarAllApp
         return mAppsView;
     }
 
-    /** Callback invoked when the view is beginning to close (e.g. close animation is started). */
-    void setOnCloseBeginListener(OnCloseListener onCloseBeginListener) {
-        mOnCloseBeginListener = onCloseBeginListener;
-    }
-
     @Override
     protected void handleClose(boolean animate) {
-        Optional.ofNullable(mOnCloseBeginListener).ifPresent(OnCloseListener::onSlideInViewClosed);
         handleClose(animate,
                 ALL_APPS.getTransitionDuration(mActivityContext, false /* isToState */));
     }

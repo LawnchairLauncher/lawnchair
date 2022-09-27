@@ -90,6 +90,9 @@ public class TaskbarEduController implements TaskbarControllers.LoggableTaskbarC
             mTaskbarEduView = (TaskbarEduView) mActivity.getLayoutInflater().inflate(
                     R.layout.taskbar_edu, mActivity.getDragLayer(), false);
             mTaskbarEduView.init(new TaskbarEduCallbacks());
+            mControllers.navbarButtonsViewController.setSlideInViewVisible(true);
+            mTaskbarEduView.setOnCloseBeginListener(
+                    () -> mControllers.navbarButtonsViewController.setSlideInViewVisible(false));
             mTaskbarEduView.addOnCloseListener(() -> mTaskbarEduView = null);
             mTaskbarEduView.show();
             startAnim(createWaveAnim());
