@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@id/qsbIconTintTertiary" android:drawable="@drawable/ic_lens_color_1" />
-    <item android:id="@id/qsbIconTintPrimary" android:drawable="@drawable/ic_lens_color_2" />
+    <item android:id="@id/qsbIconTintPrimary" android:drawable="@drawable/ic_lens_color_1" />
+    <item android:id="@id/qsbIconTintQuaternary" android:drawable="@drawable/ic_lens_color_2" />
     <item android:id="@id/qsbIconTintPrimary" android:drawable="@drawable/ic_lens_color_3" />
-    <item android:id="@id/qsbIconTintSecondary" android:drawable="@drawable/ic_lens_color_4" />
-    <item android:id="@id/qsbIconTintQuaternary" android:drawable="@drawable/ic_lens_color_5" />
+    <item android:id="@id/qsbIconTintTertiary" android:drawable="@drawable/ic_lens_color_4" />
+    <item android:id="@id/qsbIconTintSecondary" android:drawable="@drawable/ic_lens_color_5" />
 </layer-list>
+
