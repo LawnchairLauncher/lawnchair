@@ -160,7 +160,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         with(lensIcon) {
             isVisible = true
             setOnClickListener {
-                context.startActivity(lensIntent)
+                runCatching { context.startActivity(lensIntent) }
             }
         }
     }
