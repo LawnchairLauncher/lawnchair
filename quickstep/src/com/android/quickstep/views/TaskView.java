@@ -88,6 +88,7 @@ import com.android.launcher3.util.ViewPool.Reusable;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
+import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskIconCache;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
@@ -708,6 +709,11 @@ public class TaskView extends FrameLayout implements Reusable {
         RecentsView recentsView = getRecentsView();
         RemoteTargetHandle[] remoteTargetHandles = recentsView.mRemoteTargetHandles;
         RunnableList runnableList = new RunnableList();
+        if (mTask != null && mTask.desktopTile) {
+            // clicked on desktop
+            SystemUiProxy.INSTANCE.get(getContext()).showDesktopApps();
+            return runnableList;
+        }
         if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask() && remoteTargetHandles != null) {
             if (!mIsClickableAsLiveTile) {
                 return runnableList;

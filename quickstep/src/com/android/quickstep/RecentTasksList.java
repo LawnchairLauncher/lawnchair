@@ -255,7 +255,8 @@ public class RecentTasksList {
         TaskLoadResult allTasks = new TaskLoadResult(requestId, loadKeysOnly, rawTasks.size());
         for (GroupedRecentTaskInfo rawTask : rawTasks) {
             if (rawTask.getType() == GroupedRecentTaskInfo.TYPE_FREEFORM) {
-                // TODO: add entry for freeform tasks
+                GroupTask desktopTask = createDesktopTask(rawTask);
+                allTasks.add(desktopTask);
                 continue;
             }
             ActivityManager.RecentTaskInfo taskInfo1 = rawTask.getTaskInfo1();
@@ -281,6 +282,16 @@ public class RecentTasksList {
         }
 
         return allTasks;
+    }
+
+    private GroupTask createDesktopTask(GroupedRecentTaskInfo taskInfo) {
+        // TODO(b/244348395): create a subclass of GroupTask for desktop tile
+        // We need a single task information as the primary task. Use the first task
+        Task.TaskKey key = new Task.TaskKey(taskInfo.getTaskInfo1());
+        Task task = new Task(key);
+        task.desktopTile = true;
+        task.topActivity = key.sourceComponent;
+        return new GroupTask(task, null, null);
     }
 
     private SplitConfigurationOptions.SplitBounds convertSplitBounds(
