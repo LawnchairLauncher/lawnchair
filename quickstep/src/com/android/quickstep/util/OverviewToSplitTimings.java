@@ -16,27 +16,28 @@
 
 package com.android.quickstep.util;
 
-import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
-
 import android.view.animation.Interpolator;
 
 /**
  * Timings for the Overview > OverviewSplitSelect animation.
  */
-public class OverviewToSplitTimings implements SplitAnimationTimings {
-    public int getPlaceholderFadeInStart() { return 0; }
-    public int getPlaceholderFadeInEnd() { return 133; }
-    public int getPlaceholderIconFadeInStart() { return 167; }
-    public int getPlaceholderIconFadeInEnd() { return 250; }
-    public int getStagedRectSlideStart() { return 0; }
-    public int getStagedRectSlideEnd() { return 417; }
-    public int getGridSlideStart() { return 67; }
-    public int getGridSlideStagger() { return 16; }
-    public int getGridSlideDuration() { return 500; }
-    public int getActionsFadeStart() { return 0; }
-    public int getActionsFadeEnd() { return 83; }
+abstract class OverviewToSplitTimings implements SplitAnimationTimings {
+    // Overwritten by device-specific timings
+    abstract public int getPlaceholderFadeInStart();
+    abstract public int getPlaceholderFadeInEnd();
+    abstract public int getPlaceholderIconFadeInStart();
+    abstract public int getPlaceholderIconFadeInEnd();
+    abstract public int getStagedRectSlideStart();
+    abstract public int getStagedRectSlideEnd();
+    abstract public int getGridSlideStart();
+    abstract public int getGridSlideStagger();
+    abstract public int getGridSlideDuration();
+
+    // Common timings
     public int getIconFadeStart() { return 0; }
     public int getIconFadeEnd() { return 83; }
+    public int getActionsFadeStart() { return 0; }
+    public int getActionsFadeEnd() { return 83; }
     public int getInstructionsContainerFadeInStart() { return 167; }
     public int getInstructionsContainerFadeInEnd() { return 250; }
     public int getInstructionsTextFadeInStart() { return 217; }
@@ -44,11 +45,13 @@ public class OverviewToSplitTimings implements SplitAnimationTimings {
     public int getInstructionsUnfoldStart() { return 167; }
     public int getInstructionsUnfoldEnd() { return 500; }
 
-    public int getDuration() { return ENTER_DURATION; }
-    public Interpolator getStagedRectXInterpolator() { return DEACCEL_2; }
-    public Interpolator getStagedRectYInterpolator() { return DEACCEL_2; }
-    public Interpolator getStagedRectScaleXInterpolator() { return DEACCEL_2; }
-    public Interpolator getStagedRectScaleYInterpolator() { return DEACCEL_2; }
+    abstract public int getDuration();
+    abstract public Interpolator getStagedRectXInterpolator();
+    abstract public Interpolator getStagedRectYInterpolator();
+    abstract public Interpolator getStagedRectScaleXInterpolator();
+    abstract public Interpolator getStagedRectScaleYInterpolator();
+    abstract public Interpolator getGridSlidePrimaryInterpolator();
+    abstract public Interpolator getGridSlideSecondaryInterpolator();
 
     public float getGridSlideStartOffset() {
         return (float) getGridSlideStart() / getDuration();

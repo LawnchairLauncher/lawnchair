@@ -1261,7 +1261,7 @@ public class TaskView extends FrameLayout implements Reusable {
                 DISMISS_TRANSLATION_X, DISMISS_TRANSLATION_Y);
     }
 
-    public FloatProperty<TaskView> getSecondaryDissmissTranslationProperty() {
+    public FloatProperty<TaskView> getSecondaryDismissTranslationProperty() {
         return getPagedOrientationHandler().getSecondaryValue(
                 DISMISS_TRANSLATION_X, DISMISS_TRANSLATION_Y);
     }
