@@ -33,6 +33,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
@@ -41,6 +43,7 @@ import com.android.launcher3.touch.SingleAxisSwipeDetector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Extension of {@link AbstractFloatingView} with common methods for sliding in from bottom.
@@ -79,6 +82,7 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     protected float mTranslationShift = TRANSLATION_SHIFT_CLOSED;
 
     protected boolean mNoIntercept;
+    protected @Nullable OnCloseListener mOnCloseBeginListener;
     protected List<OnCloseListener> mOnCloseListeners = new ArrayList<>();
 
     public AbstractSlideInView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -204,6 +208,11 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
         }
     }
 
+    /** Callback invoked when the view is beginning to close (e.g. close animation is started). */
+    public void setOnCloseBeginListener(@Nullable OnCloseListener onCloseBeginListener) {
+        mOnCloseBeginListener = onCloseBeginListener;
+    }
+
     /** Registers an {@link OnCloseListener}. */
     public void addOnCloseListener(OnCloseListener listener) {
         mOnCloseListeners.add(listener);
@@ -213,6 +222,8 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
         if (!mIsOpen) {
             return;
         }
+        Optional.ofNullable(mOnCloseBeginListener).ifPresent(OnCloseListener::onSlideInViewClosed);
+
         if (!animate) {
             mOpenCloseAnimator.cancel();
             setTranslationShift(TRANSLATION_SHIFT_CLOSED);

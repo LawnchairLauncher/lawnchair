@@ -116,6 +116,11 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     private static final int FLAG_SCREEN_PINNING_ACTIVE = 1 << 11;
     private static final int FLAG_VOICE_INTERACTION_WINDOW_SHOWING = 1 << 12;
     private static final int FLAG_SMALL_SCREEN = 1 << 13;
+    private static final int FLAG_SLIDE_IN_VIEW_VISIBLE = 1 << 14;
+
+    /** Flags where a UI could be over a slide in view, so the color override should be disabled. */
+    private static final int FLAGS_SLIDE_IN_VIEW_ICON_COLOR_OVERRIDE_DISABLED =
+            FLAG_NOTIFICATION_SHADE_EXPANDED | FLAG_VOICE_INTERACTION_WINDOW_SHOWING;
 
     private static final String NAV_BUTTONS_SEPARATE_WINDOW_TITLE = "Taskbar Nav Buttons";
 
@@ -135,6 +140,8 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     private final ViewGroup mStartContextualContainer;
     private final int mLightIconColor;
     private final int mDarkIconColor;
+    /** Color to use for navigation bar buttons, if a slide in view is visible. */
+    private final int mSlideInViewIconColor;
 
     private final AnimatedFloat mTaskbarNavButtonTranslationY = new AnimatedFloat(
             this::updateNavButtonTranslationY);
@@ -148,6 +155,9 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     private final AnimatedFloat mTaskbarNavButtonDarkIntensity = new AnimatedFloat(
             this::updateNavButtonDarkIntensity);
     private final AnimatedFloat mNavButtonDarkIntensityMultiplier = new AnimatedFloat(
+            this::updateNavButtonDarkIntensity);
+    /** Overrides the navigation button color to {@code mSlideInViewIconColor} when {@code 1}. */
+    private final AnimatedFloat mSlideInViewNavButtonColorOverride = new AnimatedFloat(
             this::updateNavButtonDarkIntensity);
     private final RotationButtonListener mRotationButtonListener = new RotationButtonListener();
 
@@ -180,6 +190,8 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
 
         mLightIconColor = context.getColor(R.color.taskbar_nav_icon_light_color);
         mDarkIconColor = context.getColor(R.color.taskbar_nav_icon_dark_color);
+        // Can precompute color since dark theme change recreates taskbar.
+        mSlideInViewIconColor = Utilities.isDarkTheme(context) ? mLightIconColor : mDarkIconColor;
     }
 
     /**
@@ -242,6 +254,11 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         mPropertyHolders.add(new StatePropertyHolder(mTaskbarNavButtonTranslationYForIme,
                 flags -> (flags & FLAG_IME_VISIBLE) != 0 && !isInKidsMode, AnimatedFloat.VALUE,
                 transForIme, defaultButtonTransY));
+
+        mPropertyHolders.add(new StatePropertyHolder(
+                mSlideInViewNavButtonColorOverride,
+                flags -> ((flags & FLAG_SLIDE_IN_VIEW_VISIBLE) != 0)
+                        && ((flags & FLAGS_SLIDE_IN_VIEW_ICON_COLOR_OVERRIDE_DISABLED) == 0)));
 
         if (alwaysShowButtons) {
             initButtons(mNavButtonContainer, mEndContextualContainer,
@@ -530,6 +547,12 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         applyState();
     }
 
+    /** {@code true} if a slide in view is currently visible over taskbar. */
+    public void setSlideInViewVisible(boolean isSlideInViewVisible) {
+        updateStateForFlag(FLAG_SLIDE_IN_VIEW_VISIBLE, isSlideInViewVisible);
+        applyState();
+    }
+
     /**
      * Returns true if IME bar is visible
      */
@@ -675,8 +698,11 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     private void updateNavButtonDarkIntensity() {
         float darkIntensity = mTaskbarNavButtonDarkIntensity.value
                 * mNavButtonDarkIntensityMultiplier.value;
-        int iconColor = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity, mLightIconColor,
-                mDarkIconColor);
+        ArgbEvaluator argbEvaluator = ArgbEvaluator.getInstance();
+        int iconColor = (int) argbEvaluator.evaluate(
+                darkIntensity, mLightIconColor, mDarkIconColor);
+        iconColor = (int) argbEvaluator.evaluate(
+                mSlideInViewNavButtonColorOverride.value, iconColor, mSlideInViewIconColor);
         for (ImageView button : mAllButtons) {
             button.setImageTintList(ColorStateList.valueOf(iconColor));
         }
