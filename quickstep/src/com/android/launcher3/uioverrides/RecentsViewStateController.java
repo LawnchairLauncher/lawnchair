@@ -44,6 +44,8 @@ import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.MultiValueAlpha;
+import com.android.quickstep.util.AnimUtils;
+import com.android.quickstep.util.SplitAnimationTimings;
 import com.android.quickstep.views.ClearAllButton;
 import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
@@ -132,12 +134,18 @@ public final class RecentsViewStateController extends
                         TASK_PRIMARY_SPLIT_TRANSLATION, TASK_SECONDARY_SPLIT_TRANSLATION,
                         mLauncher.getDeviceProfile());
 
+        SplitAnimationTimings timings =
+                AnimUtils.getDeviceOverviewToSplitTimings(mLauncher.getDeviceProfile().isTablet);
+
         mRecentsView.createSplitSelectInitAnimation(builder,
                 toState.getTransitionDuration(mLauncher, true /* isToState */));
         // Add properties to shift remaining taskViews to get out of placeholder view
         builder.setFloat(mRecentsView, taskViewsFloat.first,
-                toState.getSplitSelectTranslation(mLauncher), LINEAR);
-        builder.setFloat(mRecentsView, taskViewsFloat.second, 0, LINEAR);
+                toState.getSplitSelectTranslation(mLauncher),
+                timings.getGridSlidePrimaryInterpolator());
+        builder.setFloat(mRecentsView, taskViewsFloat.second,
+                0,
+                timings.getGridSlideSecondaryInterpolator());
 
         if (!animate) {
             AnimatorSet as = builder.buildAnim();
