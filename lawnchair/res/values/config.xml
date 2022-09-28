@@ -48,11 +48,12 @@
     <string name="config_default_smart_space_calendar" translatable="false">gregorian</string>
 
     <!-- which accent color to use by default -->
-    <string name="config_default_accent_color" translatable="false">default</string>
+    <string name="config_default_accent_color" translatable="false">no_default</string>
 
     <!-- which notification dot color to use by default -->
-    <string name="config_default_notification_dot_color" translatable="false">app_icon</string>
-    <string name="config_default_folder_color" translatable="false">launcher_default</string>
+    <string name="config_default_notification_dot_color" translatable="false">default</string>
+    <string name="config_default_notification_dot_text_color" translatable="false">default</string>
+    <string name="config_default_folder_color" translatable="false">default</string>
 
     <!-- which time format to use by default on smartspace -->
     <string name="config_default_smartspace_time_format" translatable="false">system</string>

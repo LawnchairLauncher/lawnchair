@@ -44,7 +44,9 @@ fun ColorPreference(
     val navController = LocalNavController.current
     PreferenceTemplate(
         title = { Text(text = label) },
-        endWidget = { ColorDot(Color(adapter.state.value.colorPreferenceEntry.lightColor(LocalContext.current))) },
+        endWidget = {
+            ColorDot(adapter.state.value.colorPreferenceEntry)
+        },
         description = {
             Text(text = adapter.state.value.colorPreferenceEntry.label())
         },

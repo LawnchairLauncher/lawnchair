@@ -45,18 +45,21 @@ fun NavGraphBuilder.colorSelectionGraph(route: String) {
             val pref = when (prefKey) {
                 preferenceManager2.accentColor.key.name -> preferenceManager2.accentColor
                 preferenceManager2.notificationDotColor.key.name -> preferenceManager2.notificationDotColor
+                preferenceManager2.notificationDotTextColor.key.name -> preferenceManager2.notificationDotTextColor
                 preferenceManager2.folderColor.key.name -> preferenceManager2.folderColor
                 else -> return@composable
             }
             val label = when (prefKey) {
                 preferenceManager2.accentColor.key.name -> stringResource(id = R.string.accent_color)
                 preferenceManager2.notificationDotColor.key.name -> stringResource(id = R.string.notification_dots_color)
+                preferenceManager2.notificationDotTextColor.key.name -> stringResource(id = R.string.notification_dots_text_color)
                 preferenceManager2.folderColor.key.name -> stringResource(id = R.string.folder_preview_bg_color_label)
                 else -> return@composable
             }
             val dynamicEntries = when (prefKey) {
                 preferenceManager2.folderColor.key.name,
-                preferenceManager2.notificationDotColor.key.name -> dynamicColorsWithDefault
+                preferenceManager2.notificationDotColor.key.name,
+                preferenceManager2.notificationDotTextColor.key.name -> dynamicColorsWithDefault
                 else -> dynamicColors
             }
             ColorSelection(

@@ -27,6 +27,8 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.theme.color.ColorOption
+import app.lawnchair.ui.preferences.components.DividerColumn
 import app.lawnchair.ui.preferences.components.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.FontPreference
 import app.lawnchair.ui.preferences.components.IconShapePreview
@@ -37,6 +39,8 @@ import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
 import app.lawnchair.ui.preferences.components.SwitchPreference
 import app.lawnchair.ui.preferences.components.ThemePreference
+import app.lawnchair.ui.preferences.components.WarningPreference
+import app.lawnchair.ui.preferences.components.colorpreference.ColorContrastWarning
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import app.lawnchair.ui.preferences.components.iconShapeEntries
 import app.lawnchair.ui.preferences.components.iconShapeGraph
@@ -99,7 +103,7 @@ fun GeneralPreferences() {
                 )
             }
         }
-        
+
         val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.getAdapter()
         PreferenceGroup(
             heading = stringResource(id = R.string.icons),
@@ -148,15 +152,52 @@ fun GeneralPreferences() {
             val serviceEnabled = notificationServiceEnabled()
             NotificationDotsPreference(enabled = enabled, serviceEnabled = serviceEnabled)
             if (enabled && serviceEnabled) {
-                SwitchPreference(
-                    adapter = prefs2.showNotificationCount.getAdapter(),
-                    label = stringResource(id = R.string.show_notification_count),
-                )
+                val showNotificationCountAdapter = prefs2.showNotificationCount.getAdapter()
                 ColorPreference(
                     preference = prefs2.notificationDotColor,
                     label = stringResource(id = R.string.notification_dots_color),
                 )
+                SwitchPreference(
+                    adapter = showNotificationCountAdapter,
+                    label = stringResource(id = R.string.show_notification_count),
+                )
+                ExpandAndShrink(visible = showNotificationCountAdapter.state.value) {
+                    DividerColumn {
+                        ColorPreference(
+                            preference = prefs2.notificationDotTextColor,
+                            label = stringResource(id = R.string.notification_dots_text_color),
+                        )
+                        NotificationDotColorContrastWarnings(
+                            dotColor = prefs2.notificationDotColor.asState().value,
+                            dotTextColor = prefs2.notificationDotTextColor.asState().value,
+                        )
+                    }
+                }
             }
         }
+    }
+}
+
+@Composable
+private fun NotificationDotColorContrastWarnings(
+    dotColor: ColorOption,
+    dotTextColor: ColorOption,
+) {
+
+    val dotColorIsDynamic = when (dotColor) {
+        is ColorOption.SystemAccent,
+        is ColorOption.WallpaperPrimary,
+        is ColorOption.Default -> true
+        else -> false
+    }
+
+    if (dotColorIsDynamic && dotTextColor !is ColorOption.Default) {
+        WarningPreference(text = stringResource(id = R.string.notification_dots_color_contrast_warning_sometimes))
+    } else {
+        ColorContrastWarning(
+            foregroundColor = dotTextColor,
+            backgroundColor = dotColor,
+            text = stringResource(id = R.string.notification_dots_color_contrast_warning_always),
+        )
     }
 }

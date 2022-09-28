@@ -100,6 +100,14 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         defaultValue = ColorOption.fromString(context.getString(R.string.config_default_notification_dot_color)),
     )
 
+    val notificationDotTextColor = preference(
+        key = stringPreferencesKey(name = "notification_dot_text_color"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = { reloadHelper.reloadGrid() },
+        defaultValue = ColorOption.fromString(context.getString(R.string.config_default_notification_dot_text_color)),
+    )
+
     val folderColor = preference(
         key = stringPreferencesKey(name = "folder_color"),
         parse = ColorOption::fromString,

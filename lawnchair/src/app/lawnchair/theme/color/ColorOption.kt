@@ -1,7 +1,6 @@
 package app.lawnchair.theme.color
 
 import android.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreferenceEntry
 import app.lawnchair.ui.theme.getSystemAccent
@@ -61,7 +60,7 @@ sealed class ColorOption {
         override fun toString() = "custom|#${String.format("%08x", color)}"
     }
 
-    object LauncherDefault : ColorOption() {
+    object Default : ColorOption() {
         override val isSupported = false
 
         override val colorPreferenceEntry = ColorPreferenceEntry<ColorOption>(
@@ -70,7 +69,7 @@ sealed class ColorOption {
             { 0 }
         )
 
-        override fun toString() = "launcher_default"
+        override fun toString() = "default"
     }
 
     companion object {
@@ -79,7 +78,7 @@ sealed class ColorOption {
         fun fromString(stringValue: String) = when (stringValue) {
             "system_accent" -> SystemAccent
             "wallpaper_primary" -> WallpaperPrimary
-            "launcher_default" -> LauncherDefault
+            "default" -> Default
             else -> instantiateCustomColor(stringValue)
         }
 
