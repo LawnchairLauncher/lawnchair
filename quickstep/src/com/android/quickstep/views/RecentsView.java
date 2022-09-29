@@ -41,7 +41,6 @@ import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_0_75;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OVERVIEW_ACTIONS_SPLIT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_CLEAR_ALL;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_DISMISS_SWIPE_UP;
@@ -817,8 +816,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             }
             super.dispatchDraw(canvas);
         }
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mEnableDrawingLiveTile
-                && mRemoteTargetHandles != null) {
+        if (mEnableDrawingLiveTile && mRemoteTargetHandles != null) {
             redrawLiveTile();
         }
     }
@@ -1629,22 +1627,20 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 taskView.setTaskThumbnailSplashAlpha(mTaskThumbnailSplashAlpha);
             }
         }
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            // resetTaskVisuals is called at the end of dismiss animation which could update
-            // primary and secondary translation of the live tile cut out. We will need to do so
-            // here accordingly.
-            runActionOnRemoteHandles(remoteTargetHandle -> {
-                TaskViewSimulator simulator = remoteTargetHandle.getTaskViewSimulator();
-                simulator.taskPrimaryTranslation.value = 0;
-                simulator.taskSecondaryTranslation.value = 0;
-                simulator.fullScreenProgress.value = 0;
-                simulator.recentsViewScale.value = 1;
-            });
-            // Similar to setRunningTaskHidden below, reapply the state before runningTaskView is
-            // null.
-            if (!mRunningTaskShowScreenshot) {
-                setRunningTaskViewShowScreenshot(mRunningTaskShowScreenshot);
-            }
+        // resetTaskVisuals is called at the end of dismiss animation which could update
+        // primary and secondary translation of the live tile cut out. We will need to do so
+        // here accordingly.
+        runActionOnRemoteHandles(remoteTargetHandle -> {
+            TaskViewSimulator simulator = remoteTargetHandle.getTaskViewSimulator();
+            simulator.taskPrimaryTranslation.value = 0;
+            simulator.taskSecondaryTranslation.value = 0;
+            simulator.fullScreenProgress.value = 0;
+            simulator.recentsViewScale.value = 1;
+        });
+        // Similar to setRunningTaskHidden below, reapply the state before runningTaskView is
+        // null.
+        if (!mRunningTaskShowScreenshot) {
+            setRunningTaskViewShowScreenshot(mRunningTaskShowScreenshot);
         }
         if (mRunningTaskTileHidden) {
             setRunningTaskHidden(mRunningTaskTileHidden);
@@ -2036,7 +2032,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mFocusedTaskViewId = -1;
 
         if (mRecentsAnimationController != null) {
-            if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mEnableDrawingLiveTile) {
+            if (mEnableDrawingLiveTile) {
                 // We are still drawing the live tile, finish it now to clean up.
                 finishRecentsAnimation(true /* toRecents */, null);
             } else {
@@ -2275,9 +2271,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         setEnableFreeScroll(true);
         setEnableDrawingLiveTile(mCurrentGestureEndTarget == GestureState.GestureEndTarget.RECENTS);
-        if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            setRunningTaskViewShowScreenshot(true);
-        }
         setRunningTaskHidden(false);
         animateUpTaskIconScale();
         animateActionsViewIn();
@@ -2402,12 +2395,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     private void setRunningTaskViewShowScreenshot(boolean showScreenshot) {
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            mRunningTaskShowScreenshot = showScreenshot;
-            TaskView runningTaskView = getRunningTaskView();
-            if (runningTaskView != null) {
-                runningTaskView.setShowScreenshot(mRunningTaskShowScreenshot);
-            }
+        mRunningTaskShowScreenshot = showScreenshot;
+        TaskView runningTaskView = getRunningTaskView();
+        if (runningTaskView != null) {
+            runningTaskView.setShowScreenshot(mRunningTaskShowScreenshot);
         }
     }
 
@@ -2788,8 +2779,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         anim.add(ObjectAnimator.ofFloat(taskView, secondaryViewTranslate,
                 verticalFactor * secondaryTaskDimension * 2).setDuration(duration), LINEAR, sp);
 
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mEnableDrawingLiveTile
-                && taskView.isRunningTask()) {
+        if (mEnableDrawingLiveTile && taskView.isRunningTask()) {
             anim.addOnFrameCallback(() -> {
                 runActionOnRemoteHandles(
                         remoteTargetHandle -> remoteTargetHandle.getTaskViewSimulator()
@@ -3028,8 +3018,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                             dismissTranslationInterpolationEnd
                                     - halfAdditionalDismissTranslationOffset,
                             END_DISMISS_TRANSLATION_INTERPOLATION_OFFSET, 1);
-                    if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mEnableDrawingLiveTile
-                            && taskView.isRunningTask()) {
+                    if (mEnableDrawingLiveTile && taskView.isRunningTask()) {
                         anim.addOnFrameCallback(() -> {
                             runActionOnRemoteHandles(
                                     remoteTargetHandle ->
@@ -3123,8 +3112,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                             )
                     );
 
-                    if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mEnableDrawingLiveTile
-                            && child instanceof TaskView
+                    if (mEnableDrawingLiveTile && child instanceof TaskView
                             && ((TaskView) child).isRunningTask()) {
                         anim.addOnFrameCallback(() -> {
                             runActionOnRemoteHandles(
@@ -3247,8 +3235,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mPendingAnimation.addEndListener(new Consumer<Boolean>() {
             @Override
             public void accept(Boolean success) {
-                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mEnableDrawingLiveTile
-                        && dismissedTaskView.isRunningTask() && success) {
+                if (mEnableDrawingLiveTile && dismissedTaskView.isRunningTask() && success) {
                     finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
                             () -> onEnd(success));
                 } else {
@@ -3265,8 +3252,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 if (success) {
                     if (shouldRemoveTask) {
                         if (dismissedTaskView.getTask() != null) {
-                            if (ENABLE_QUICKSTEP_LIVE_TILE.get()
-                                    && dismissedTaskView.isRunningTask()) {
+                            if (dismissedTaskView.isRunningTask()) {
                                 finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
                                         () -> removeTaskInternal(dismissedTaskViewId));
                             } else {
@@ -3925,8 +3911,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     ? ((TaskView) child).getPrimaryTaskOffsetTranslationProperty()
                     : mOrientationHandler.getPrimaryViewTranslate();
             translationProperty.set(child, totalTranslation);
-            if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mEnableDrawingLiveTile
-                    && i == getRunningTaskIndex()) {
+            if (mEnableDrawingLiveTile && i == getRunningTaskIndex()) {
                 runActionOnRemoteHandles(
                         remoteTargetHandle -> remoteTargetHandle.getTaskViewSimulator()
                                 .taskPrimaryTranslation.value = totalTranslation);
@@ -4150,10 +4135,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSplitSelectStateController.setInitialTaskSelect(taskView.getTask().key.id,
                 stagePosition, splitEvent, taskView.getItemInfo());
         mSplitHiddenTaskViewIndex = indexOfChild(taskView);
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
-                    null /* onFinishComplete */);
-        }
+        finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
+                null /* onFinishComplete */);
     }
 
     public void initiateSplitSelect(QuickstepSystemShortcut.SplitSelectSource splitSelectSource) {
@@ -4427,9 +4410,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             anim.play(ObjectAnimator.ofFloat(getPageAt(centerTaskIndex),
                     mOrientationHandler.getPrimaryViewTranslate(), primaryTranslation));
             int runningTaskIndex = getRunningTaskIndex();
-            if (ENABLE_QUICKSTEP_LIVE_TILE.get()
-                    && runningTaskIndex != -1
-                    && runningTaskIndex != taskIndex
+            if (runningTaskIndex != -1 && runningTaskIndex != taskIndex
                     && getRemoteTargetHandles() != null) {
                 for (RemoteTargetHandle remoteHandle : getRemoteTargetHandles()) {
                     anim.play(ObjectAnimator.ofFloat(
@@ -4518,12 +4499,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         mPendingAnimation = new PendingAnimation(duration);
         mPendingAnimation.add(anim);
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            runActionOnRemoteHandles(
-                    remoteTargetHandle -> remoteTargetHandle.getTaskViewSimulator()
-                            .addOverviewToAppAnim(mPendingAnimation, interpolator));
-            mPendingAnimation.addOnFrameCallback(this::redrawLiveTile);
-        }
+        runActionOnRemoteHandles(
+                remoteTargetHandle -> remoteTargetHandle.getTaskViewSimulator()
+                        .addOverviewToAppAnim(mPendingAnimation, interpolator));
+        mPendingAnimation.addOnFrameCallback(this::redrawLiveTile);
         mPendingAnimation.addEndListener(isSuccess -> {
             if (isSuccess) {
                 if (tv.getTaskIds()[1] != -1 && mRemoteTargetHandles != null) {
@@ -4535,7 +4514,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                                 dividerAnimator.end();
                             });
                 }
-                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && tv.isRunningTask()) {
+                if (tv.isRunningTask()) {
                     finishRecentsAnimation(false /* toRecents */, null);
                     onTaskLaunchAnimationEnd(true /* success */);
                 } else {

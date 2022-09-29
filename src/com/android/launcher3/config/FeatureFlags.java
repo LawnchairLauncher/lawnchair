@@ -84,9 +84,6 @@ public final class FeatureFlags {
     public static final BooleanFlag KEYGUARD_ANIMATION = getDebugFlag(
             "KEYGUARD_ANIMATION", false, "Enable animation for keyguard going away on wallpaper");
 
-    public static final BooleanFlag ENABLE_QUICKSTEP_LIVE_TILE = getDebugFlag(
-            "ENABLE_QUICKSTEP_LIVE_TILE", true, "Enable live tile in Quickstep overview");
-
     public static final BooleanFlag ENABLE_DEVICE_SEARCH = new DeviceFlag(
             "ENABLE_DEVICE_SEARCH", true, "Allows on device search in all apps");
 
