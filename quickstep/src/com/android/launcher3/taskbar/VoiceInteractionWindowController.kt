@@ -77,7 +77,7 @@ class VoiceInteractionWindowController(val context: TaskbarActivityContext)
             fadeStashedHandle.end()
         }
 
-        moveTaskbarBackgroundToAppropriateLayer()
+        moveTaskbarBackgroundToAppropriateLayer(skipAnim)
     }
 
     /**
@@ -86,24 +86,28 @@ class VoiceInteractionWindowController(val context: TaskbarActivityContext)
      * OR
      * Removes the temporary window and show the TaskbarDragLayer background again.
      */
-    private fun moveTaskbarBackgroundToAppropriateLayer() {
+    private fun moveTaskbarBackgroundToAppropriateLayer(skipAnim: Boolean) {
         val taskbarBackgroundOverride = controllers.taskbarDragLayerController
             .overrideBackgroundAlpha
         val moveToLowerLayer = isVoiceInteractionWindowVisible
-        if (moveToLowerLayer) {
+        val onWindowsSynchronized = if (moveToLowerLayer) {
             // First add the temporary window, then hide the overlapping taskbar background.
-            context.addWindowView(separateWindowForTaskbarBackground, separateWindowLayoutParams)
-            ViewRootSync.synchronizeNextDraw(separateWindowForTaskbarBackground, context.dragLayer
-            ) {
-                taskbarBackgroundOverride.updateValue(0f)
-            }
+            context.addWindowView(separateWindowForTaskbarBackground, separateWindowLayoutParams);
+            { taskbarBackgroundOverride.updateValue(0f) }
         } else {
             // First reapply the original taskbar background, then remove the temporary window.
-            taskbarBackgroundOverride.updateValue(1f)
-            ViewRootSync.synchronizeNextDraw(separateWindowForTaskbarBackground, context.dragLayer
-            ) {
-                context.removeWindowView(separateWindowForTaskbarBackground)
-            }
+            taskbarBackgroundOverride.updateValue(1f);
+            { context.removeWindowView(separateWindowForTaskbarBackground) }
+        }
+
+        if (skipAnim) {
+            onWindowsSynchronized()
+        } else {
+            ViewRootSync.synchronizeNextDraw(
+                separateWindowForTaskbarBackground,
+                context.dragLayer,
+                onWindowsSynchronized
+            )
         }
     }
 
