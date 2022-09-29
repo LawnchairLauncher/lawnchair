@@ -30,6 +30,7 @@ import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.quickstep.util.AnimUtils;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.SplitAnimationTimings;
 import com.android.quickstep.util.TaskCornerRadius;
@@ -215,9 +216,19 @@ public class FloatingTaskView extends FrameLayout {
      */
     public void addStagingAnimation(PendingAnimation animation, RectF startingBounds,
             Rect endBounds, boolean fadeWithThumbnail, boolean isStagedTask) {
-        SplitAnimationTimings timings = fadeWithThumbnail
-                ? SplitAnimationTimings.OVERVIEW_TO_SPLIT
-                : SplitAnimationTimings.NORMAL_TO_SPLIT;
+        boolean isTablet = mActivity.getDeviceProfile().isTablet;
+        boolean splittingFromOverview = fadeWithThumbnail;
+        SplitAnimationTimings timings;
+
+        if (isTablet && splittingFromOverview) {
+            timings = SplitAnimationTimings.TABLET_OVERVIEW_TO_SPLIT;
+        } else if (!isTablet && splittingFromOverview) {
+            timings = SplitAnimationTimings.PHONE_OVERVIEW_TO_SPLIT;
+        } else {
+            // Splitting from Home is currently only available on tablets
+            timings = SplitAnimationTimings.TABLET_HOME_TO_SPLIT;
+        }
+
         addAnimation(animation, startingBounds, endBounds, fadeWithThumbnail, isStagedTask,
                 timings);
     }
@@ -228,8 +239,11 @@ public class FloatingTaskView extends FrameLayout {
      */
     public void addConfirmAnimation(PendingAnimation animation, RectF startingBounds,
             Rect endBounds, boolean fadeWithThumbnail, boolean isStagedTask) {
+        SplitAnimationTimings timings =
+                AnimUtils.getDeviceSplitToConfirmTimings(mActivity.getDeviceProfile().isTablet);
+
         addAnimation(animation, startingBounds, endBounds, fadeWithThumbnail, isStagedTask,
-                SplitAnimationTimings.SPLIT_TO_CONFIRM);
+                timings);
     }
 
     /**

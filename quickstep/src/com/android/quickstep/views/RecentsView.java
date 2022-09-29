@@ -171,6 +171,7 @@ import com.android.quickstep.TopTaskTracker;
 import com.android.quickstep.ViewUtils;
 import com.android.quickstep.util.ActiveGestureErrorDetector;
 import com.android.quickstep.util.ActiveGestureLog;
+import com.android.quickstep.util.AnimUtils;
 import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RecentsOrientedState;
@@ -2782,7 +2783,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         anim.setFloat(taskView, VIEW_ALPHA, 0,
                 clampToProgress(isOnGridBottomRow(taskView) ? ACCEL : FINAL_FRAME, 0, 0.5f));
         FloatProperty<TaskView> secondaryViewTranslate =
-                taskView.getSecondaryDissmissTranslationProperty();
+                taskView.getSecondaryDismissTranslationProperty();
         int secondaryTaskDimension = mOrientationHandler.getSecondaryDimension(taskView);
         int verticalFactor = mOrientationHandler.getSecondaryTranslationDirectionFactor();
 
@@ -2816,7 +2817,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mOrientationHandler.getInitialSplitPlaceholderBounds(mSplitPlaceholderSize,
                 mSplitPlaceholderInset, mActivity.getDeviceProfile(),
                 mSplitSelectStateController.getActiveSplitStagePosition(), mTempRect);
-        SplitAnimationTimings timings = SplitAnimationTimings.OVERVIEW_TO_SPLIT;
+        SplitAnimationTimings timings =
+                AnimUtils.getDeviceOverviewToSplitTimings(mActivity.getDeviceProfile().isTablet);
 
         RectF startingTaskRect = new RectF();
         safeRemoveDragLayerView(mFirstFloatingTaskView);
@@ -3060,6 +3062,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             }
         }
 
+        SplitAnimationTimings splitTimings =
+                AnimUtils.getDeviceOverviewToSplitTimings(mActivity.getDeviceProfile().isTablet);
+
         int distanceFromDismissedTask = 0;
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
@@ -3102,9 +3107,29 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     float additionalDismissDuration =
                             ADDITIONAL_DISMISS_TRANSLATION_INTERPOLATION_OFFSET * Math.abs(
                                     i - dismissedIndex);
-                    anim.setFloat(child, translationProperty, scrollDiff, clampToProgress(LINEAR,
-                            Utilities.boundToRange(INITIAL_DISMISS_TRANSLATION_INTERPOLATION_OFFSET
-                                    + additionalDismissDuration, 0f, 1f), 1));
+
+                    // We are in non-grid layout.
+                    // If dismissing for split select, use split timings.
+                    // If not, use dismiss timings.
+                    float animationStartProgress = isSplitSelectionActive()
+                            ? Utilities.boundToRange(splitTimings.getGridSlideStartOffset(), 0f, 1f)
+                            : Utilities.boundToRange(
+                                    INITIAL_DISMISS_TRANSLATION_INTERPOLATION_OFFSET
+                                            + additionalDismissDuration, 0f, 1f);
+
+                    float animationEndProgress = isSplitSelectionActive()
+                            ? Utilities.boundToRange(splitTimings.getGridSlideStartOffset()
+                                            + splitTimings.getGridSlideDurationOffset(), 0f, 1f)
+                            : 1f;
+
+                    anim.setFloat(child, translationProperty, scrollDiff,
+                            clampToProgress(
+                                    splitTimings.getGridSlidePrimaryInterpolator(),
+                                    animationStartProgress,
+                                    animationEndProgress
+                            )
+                    );
+
                     if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mEnableDrawingLiveTile
                             && child instanceof TaskView
                             && ((TaskView) child).isRunningTask()) {
@@ -3145,11 +3170,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         : distanceFromDismissedTask;
                 // Set timings based on if user is initiating splitscreen on the focused task,
                 // or splitting/dismissing some other task.
-                SplitAnimationTimings timings = SplitAnimationTimings.OVERVIEW_TO_SPLIT;
                 float animationStartProgress = isStagingFocusedTask
                         ? Utilities.boundToRange(
-                                timings.getGridSlideStartOffset()
-                                        + (timings.getGridSlideStaggerOffset() * staggerColumn),
+                                splitTimings.getGridSlideStartOffset()
+                                        + (splitTimings.getGridSlideStaggerOffset()
+                                        * staggerColumn),
                         0f,
                         dismissTranslationInterpolationEnd)
                         : Utilities.boundToRange(
@@ -3158,9 +3183,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                                         * staggerColumn, 0f, dismissTranslationInterpolationEnd);
                 float animationEndProgress = isStagingFocusedTask
                         ? Utilities.boundToRange(
-                                timings.getGridSlideStartOffset()
-                                        + (timings.getGridSlideStaggerOffset() * staggerColumn)
-                                        + timings.getGridSlideDurationOffset(),
+                                splitTimings.getGridSlideStartOffset()
+                                        + (splitTimings.getGridSlideStaggerOffset() * staggerColumn)
+                                        + splitTimings.getGridSlideDurationOffset(),
                         0f,
                         dismissTranslationInterpolationEnd)
                         : dismissTranslationInterpolationEnd;
@@ -3180,7 +3205,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     if (!nextFocusedTaskFromTop) {
                         secondaryTranslation -= mTopBottomRowHeightDiff;
                     }
-                    anim.setFloat(taskView, taskView.getSecondaryDissmissTranslationProperty(),
+                    anim.setFloat(taskView, taskView.getSecondaryDismissTranslationProperty(),
                             secondaryTranslation, clampToProgress(LINEAR, animationStartProgress,
                                     dismissTranslationInterpolationEnd));
                     anim.setFloat(taskView, TaskView.FOCUS_TRANSITION, 0f,
@@ -4186,9 +4211,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // TODO(194414938) starting bounds seem slightly off, investigate
         Rect firstTaskStartingBounds = new Rect();
         Rect firstTaskEndingBounds = mTempRect;
-        PendingAnimation pendingAnimation =
-                new PendingAnimation(SplitAnimationTimings.CONFIRM_DURATION);
-        SplitAnimationTimings timings = SplitAnimationTimings.SPLIT_TO_CONFIRM;
+
+        boolean isTablet = mActivity.getDeviceProfile().isTablet;
+        int duration = isTablet
+                ? SplitAnimationTimings.TABLET_CONFIRM_DURATION
+                : SplitAnimationTimings.PHONE_CONFIRM_DURATION;
+        PendingAnimation pendingAnimation = new PendingAnimation(duration);
+        SplitAnimationTimings timings = AnimUtils.getDeviceSplitToConfirmTimings(isTablet);
 
         int halfDividerSize = getResources()
                 .getDimensionPixelSize(R.dimen.multi_window_task_divider_size) / 2;
