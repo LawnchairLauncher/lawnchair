@@ -37,7 +37,8 @@ public final class FeatureFlags {
 
     public static final String FLAGS_PREF_NAME = "featureFlags";
 
-    private FeatureFlags() { }
+    private FeatureFlags() {
+    }
 
     public static boolean showFlagTogglerUi(Context context) {
         return Utilities.IS_DEBUG_DEVICE && Utilities.isDevelopersOptionsEnabled(context);
@@ -61,7 +62,7 @@ public final class FeatureFlags {
      * To add a new flag that can be toggled through the flags UI:
      *
      * Declare a new ToggleableFlag below. Give it a unique key (e.g. "QSB_ON_FIRST_SCREEN"),
-     *    and set a default value for the flag. This will be the default value on Debug builds.
+     * and set a default value for the flag. This will be the default value on Debug builds.
      */
     public static final BooleanFlag ENABLE_INPUT_CONSUMER_REASON_LOGGING = getDebugFlag(
             "ENABLE_INPUT_CONSUMER_REASON_LOGGING",
@@ -154,14 +155,14 @@ public final class FeatureFlags {
     /**
      * Enables region sampling for text color: Needs system health assessment before turning on
      */
-    public static final BooleanFlag ENABLE_REGION_SAMPLING =  getDebugFlag(
+    public static final BooleanFlag ENABLE_REGION_SAMPLING = getDebugFlag(
             "ENABLE_REGION_SAMPLING", false,
             "Enable region sampling to determine color of text on screen.");
 
     public static final BooleanFlag ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS =
             getDebugFlag(
-            "ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS", false,
-            "Always use hardware optimization for folder animations.");
+                    "ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS", false,
+                    "Always use hardware optimization for folder animations.");
 
     public static final BooleanFlag SEPARATE_RECENTS_ACTIVITY = getDebugFlag(
             "SEPARATE_RECENTS_ACTIVITY", false,
@@ -281,11 +282,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_WIDGET_PICKER_DEPTH = new DeviceFlag(
             "ENABLE_WIDGET_PICKER_DEPTH", false, "Enable changing depth in widget picker.");
 
-    public static final BooleanFlag SHOW_DELIGHTFUL_PAGINATION_FOLDER = new DeviceFlag(
-            "SHOW_DELIGHTFUL_PAGINATION_FOLDER", false,
-            "Enable showing the new 'delightful pagination'"
-                    + " which is a brand new animation for folder pagination");
-
+    public static final BooleanFlag SHOW_DELIGHTFUL_PAGINATION = new DeviceFlag(
+            "SHOW_DELIGHTFUL_PAGINATION", false,
+            "Enable showing the new 'delightful pagination' which is a brand"
+                    + " new animation for folder pagination and workspace pagination");
     public static final BooleanFlag POPUP_MATERIAL_U = new DeviceFlag(
             "POPUP_MATERIAL_U", false, "Switch popup UX to use material U");
 

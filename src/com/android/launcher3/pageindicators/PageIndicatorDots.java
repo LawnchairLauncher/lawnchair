@@ -16,7 +16,7 @@
 
 package com.android.launcher3.pageindicators;
 
-import static com.android.launcher3.config.FeatureFlags.SHOW_DELIGHTFUL_PAGINATION_FOLDER;
+import static com.android.launcher3.config.FeatureFlags.SHOW_DELIGHTFUL_PAGINATION;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -129,7 +129,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
         mDotRadius = getResources().getDimension(R.dimen.page_indicator_dot_size) / 2;
 
 
-        if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
+        if (SHOW_DELIGHTFUL_PAGINATION.get()) {
             mPageIndicatorSize = getResources().getDimension(
                     R.dimen.page_indicator_size);
             mPageIndicatorRadius = mPageIndicatorSize / 2;
@@ -144,7 +144,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
             mPageIndicatorDrawable = null;
             mCircleGap = DOT_GAP_FACTOR * mDotRadius;
         }
-        if (!SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
+        if (!SHOW_DELIGHTFUL_PAGINATION.get()) {
             setOutlineProvider(new MyOutlineProver());
         }
         mIsRtl = Utilities.isRtl(getResources());
@@ -161,7 +161,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
             currentScroll = totalScroll - currentScroll;
         }
 
-        if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
+        if (SHOW_DELIGHTFUL_PAGINATION.get()) {
             mCurrentScroll = currentScroll;
             mTotalScroll = totalScroll;
             invalidate();
@@ -296,7 +296,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
             }
             for (int i = 0; i < mEntryAnimationRadiusFactors.length; i++) {
                 mPaginationPaint.setAlpha(i == mActivePage ? PAGE_INDICATOR_ALPHA : DOT_ALPHA);
-                if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
+                if (SHOW_DELIGHTFUL_PAGINATION.get()) {
                     if (i != mActivePage) {
                         canvas.drawCircle(x, y, mDotRadius * mEntryAnimationRadiusFactors[i],
                                 mPaginationPaint);
@@ -313,7 +313,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
             // Here we draw the dots
             mPaginationPaint.setAlpha(DOT_ALPHA);
             for (int i = 0; i < mNumPages; i++) {
-                if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
+                if (SHOW_DELIGHTFUL_PAGINATION.get()) {
                     canvas.drawCircle(x, y, getRadius(x), mPaginationPaint);
                 } else {
                     canvas.drawCircle(x, y, mDotRadius, mPaginationPaint);
@@ -323,7 +323,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
 
             // Here we draw the current page indicator
             mPaginationPaint.setAlpha(PAGE_INDICATOR_ALPHA);
-            if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
+            if (SHOW_DELIGHTFUL_PAGINATION.get()) {
                 drawPageIndicator(canvas, 1);
             } else {
                 canvas.drawRoundRect(getActiveRect(), mDotRadius, mDotRadius, mPaginationPaint);
@@ -389,7 +389,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
         float diameter = 2 * mDotRadius;
         float startX;
 
-        if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
+        if (SHOW_DELIGHTFUL_PAGINATION.get()) {
             startX = ((getWidth() - (mNumPages * mCircleGap) + mDotRadius) / 2) - getOffset();
             sTempRect.top = (getHeight() - mPageIndicatorSize) * 0.5f;
             sTempRect.bottom = (getHeight() + mPageIndicatorSize) * 0.5f;

@@ -43,6 +43,7 @@ import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.getSupportedActions;
 import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
+import static com.android.launcher3.config.FeatureFlags.SHOW_DELIGHTFUL_PAGINATION;
 import static com.android.launcher3.logging.StatsLogManager.EventEnum;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
@@ -97,6 +98,7 @@ import android.os.Trace;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
+import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Log;
 import android.util.SparseArray;
@@ -163,6 +165,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.notification.NotificationListener;
+import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.pm.PinRequestHelper;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.popup.ArrowPopup;
@@ -1289,6 +1292,16 @@ public class Launcher extends StatefulActivity<LauncherState>
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         mDropTargetBar.setup(mDragController);
         mAllAppsController.setupViews(mScrimView, mAppsView);
+    }
+
+    @Override
+    public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
+        if (SHOW_DELIGHTFUL_PAGINATION.get()
+                && WorkspacePageIndicator.class.getName().equals(name)) {
+            return LayoutInflater.from(context).inflate(R.layout.page_indicator_dots,
+                    (ViewGroup) parent, false);
+        }
+        return super.onCreateView(parent, name, context, attrs);
     }
 
     /**
