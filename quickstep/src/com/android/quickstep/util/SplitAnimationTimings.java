@@ -16,19 +16,28 @@
 
 package com.android.quickstep.util;
 
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+
 import android.view.animation.Interpolator;
 
 /**
  * An interface that supports the centralization of timing information for splitscreen animations.
  */
 public interface SplitAnimationTimings {
-    int ENTER_DURATION = 866;
-    int ABORT_DURATION = 500;
-    int CONFIRM_DURATION = 383;
+    int TABLET_ENTER_DURATION = 866;
+    int TABLET_CONFIRM_DURATION = 383;
 
-    SplitAnimationTimings OVERVIEW_TO_SPLIT = new OverviewToSplitTimings();
-    SplitAnimationTimings NORMAL_TO_SPLIT = new NormalToSplitTimings();
-    SplitAnimationTimings SPLIT_TO_CONFIRM = new SplitToConfirmTimings();
+    int PHONE_ENTER_DURATION = 517;
+    int PHONE_CONFIRM_DURATION = 333;
+
+    int ABORT_DURATION = 500;
+
+    SplitAnimationTimings TABLET_OVERVIEW_TO_SPLIT = new TabletOverviewToSplitTimings();
+    SplitAnimationTimings TABLET_HOME_TO_SPLIT = new TabletHomeToSplitTimings();
+    SplitAnimationTimings TABLET_SPLIT_TO_CONFIRM = new TabletSplitToConfirmTimings();
+
+    SplitAnimationTimings PHONE_OVERVIEW_TO_SPLIT = new PhoneOverviewToSplitTimings();
+    SplitAnimationTimings PHONE_SPLIT_TO_CONFIRM = new PhoneSplitToConfirmTimings();
 
     // Shared methods
     int getDuration();
@@ -75,8 +84,10 @@ public interface SplitAnimationTimings {
     default float getInstructionsTextFadeInEndOffset() { return 0; }
     default float getInstructionsUnfoldStartOffset() { return 0; }
     default float getInstructionsUnfoldEndOffset() { return 0; }
+    default Interpolator getGridSlidePrimaryInterpolator() { return LINEAR; }
+    default Interpolator getGridSlideSecondaryInterpolator() { return LINEAR; }
 
-    // Defaults for NormalToSplit
+    // Defaults for HomeToSplit
     default float getScrimFadeInStartOffset() { return 0; }
     default float getScrimFadeInEndOffset() { return 0; }
 

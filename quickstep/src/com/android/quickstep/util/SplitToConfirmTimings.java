@@ -16,28 +16,29 @@
 
 package com.android.quickstep.util;
 
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-
 import android.view.animation.Interpolator;
 
 /**
  * Timings for the OverviewSplitSelect > confirmed animation.
  */
-public class SplitToConfirmTimings implements SplitAnimationTimings {
-    public int getPlaceholderFadeInStart() { return 0; }
-    public int getPlaceholderFadeInEnd() { return 133; }
-    public int getPlaceholderIconFadeInStart() { return 167; }
-    public int getPlaceholderIconFadeInEnd() { return 250; }
-    public int getStagedRectSlideStart() { return 0; }
-    public int getStagedRectSlideEnd() { return 383; }
+abstract class SplitToConfirmTimings implements SplitAnimationTimings {
+    // Overwritten by device-specific timings
+    abstract public int getPlaceholderFadeInStart();
+    abstract public int getPlaceholderFadeInEnd();
+    abstract public int getPlaceholderIconFadeInStart();
+    abstract public int getPlaceholderIconFadeInEnd();
+    abstract public int getStagedRectSlideStart();
+    abstract public int getStagedRectSlideEnd();
+
+    // Common timings
     public int getInstructionsFadeStart() { return 0; }
     public int getInstructionsFadeEnd() { return 67; }
 
-    public int getDuration() { return CONFIRM_DURATION; }
-    public Interpolator getStagedRectXInterpolator() { return LINEAR; }
-    public Interpolator getStagedRectYInterpolator() { return LINEAR; }
-    public Interpolator getStagedRectScaleXInterpolator() { return LINEAR; }
-    public Interpolator getStagedRectScaleYInterpolator() { return LINEAR; }
+    abstract public int getDuration();
+    abstract public Interpolator getStagedRectXInterpolator();
+    abstract public Interpolator getStagedRectYInterpolator();
+    abstract public Interpolator getStagedRectScaleXInterpolator();
+    abstract public Interpolator getStagedRectScaleYInterpolator();
 
     public float getInstructionsFadeStartOffset() {
         return (float) getInstructionsFadeStart() / getDuration();
