@@ -2,7 +2,7 @@ package app.lawnchair.ui.preferences.components.colorpreference.pickers
 
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.Context
+import android.graphics.Color as AndroidColor
 import android.graphics.Color.argb
 import android.widget.Toast
 import androidx.compose.animation.Crossfade
@@ -61,10 +61,10 @@ fun CustomColorPicker(
     selectedColorOption: ColorOption,
     onSelect: (ColorOption) -> Unit,
 ) {
-
     val focusManager = LocalFocusManager.current
 
-    val selectedColor = selectedColorOption.colorPreferenceEntry.lightColor(LocalContext.current)
+    val initialColor = selectedColorOption.colorPreferenceEntry.lightColor(LocalContext.current)
+    val selectedColor = if (initialColor == 0) AndroidColor.BLACK else initialColor
     val selectedColorCompose = Color(selectedColor)
 
     val textFieldValue = remember {
