@@ -278,10 +278,10 @@ private fun HsvColorPicker(
     onSelectedColorChange: () -> Unit,
     onSliderValuesChange: (ColorOption.CustomColor) -> Unit,
 ) {
-
-    var hue by remember { mutableStateOf(intColorToHsvColorArray(selectedColor)[0]) }
-    var saturation by remember { mutableStateOf(intColorToHsvColorArray(selectedColor)[1]) }
-    var brightness by remember { mutableStateOf(intColorToHsvColorArray(selectedColor)[2]) }
+    val hsv = remember { intColorToHsvColorArray(selectedColor) }
+    var hue by remember { mutableStateOf(hsv[0]) }
+    var saturation by remember { mutableStateOf(hsv[1]) }
+    var brightness by remember { mutableStateOf(hsv[2]) }
     val coroutineScope = rememberCoroutineScope()
 
     fun updateColor(
