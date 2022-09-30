@@ -16,6 +16,9 @@
 
 package com.android.quickstep.util;
 
+import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
+import static com.android.launcher3.anim.Interpolators.INSTANT;
+
 import android.view.animation.Interpolator;
 
 /**
@@ -44,14 +47,14 @@ abstract class OverviewToSplitTimings implements SplitAnimationTimings {
     public int getInstructionsTextFadeInEnd() { return 300; }
     public int getInstructionsUnfoldStart() { return 167; }
     public int getInstructionsUnfoldEnd() { return 500; }
+    public Interpolator getGridSlidePrimaryInterpolator() { return EMPHASIZED; }
+    public Interpolator getGridSlideSecondaryInterpolator() { return INSTANT; }
 
     abstract public int getDuration();
     abstract public Interpolator getStagedRectXInterpolator();
     abstract public Interpolator getStagedRectYInterpolator();
     abstract public Interpolator getStagedRectScaleXInterpolator();
     abstract public Interpolator getStagedRectScaleYInterpolator();
-    abstract public Interpolator getGridSlidePrimaryInterpolator();
-    abstract public Interpolator getGridSlideSecondaryInterpolator();
 
     public float getGridSlideStartOffset() {
         return (float) getGridSlideStart() / getDuration();

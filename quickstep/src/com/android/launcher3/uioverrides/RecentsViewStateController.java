@@ -130,10 +130,11 @@ public final class RecentsViewStateController extends
 
         mRecentsView.createSplitSelectInitAnimation(builder,
                 toState.getTransitionDuration(mLauncher, true /* isToState */));
-        // Add properties to shift remaining taskViews to get out of placeholder view
+        // Shift tasks vertically downward to get out of placeholder view
         builder.setFloat(mRecentsView, taskViewsFloat.first,
                 toState.getSplitSelectTranslation(mLauncher),
                 timings.getGridSlidePrimaryInterpolator());
+        // Zero out horizontal translation
         builder.setFloat(mRecentsView, taskViewsFloat.second,
                 0,
                 timings.getGridSlideSecondaryInterpolator());
