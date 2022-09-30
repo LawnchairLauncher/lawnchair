@@ -117,13 +117,12 @@ fun HsbColorSlider(
     }
 
     PreferenceTemplate(
-        modifier = Modifier.padding(horizontal = 8.dp),
         title = {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .padding(horizontal = 6.dp)
+                    .padding(horizontal = 16.dp)
                     .fillMaxWidth()
                     .padding(top = 16.dp),
             ) {
@@ -161,7 +160,7 @@ fun HsbColorSlider(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 8.dp)
-                            .padding(horizontal = 6.dp)
+                            .padding(horizontal = 16.dp)
                             .requiredHeight(24.dp)
                             .clip(RoundedCornerShape(6.dp))
                             .background(brush = Brush.horizontalGradient(brushColors)),
@@ -176,6 +175,7 @@ fun HsbColorSlider(
                     colors = SliderDefaults.colors(),
                     modifier = Modifier
                         .height(24.dp)
+                        .padding(horizontal = 8.dp)
                         .fillMaxWidth(),
                 )
             }

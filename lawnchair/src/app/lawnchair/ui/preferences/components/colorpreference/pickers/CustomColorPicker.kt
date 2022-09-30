@@ -128,7 +128,7 @@ fun CustomColorPicker(
                     horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
-                        .padding(top = 12.dp),
+                        .padding(top = 16.dp),
                 ) {
                     Chip(
                         label = stringResource(id = R.string.hsb),
