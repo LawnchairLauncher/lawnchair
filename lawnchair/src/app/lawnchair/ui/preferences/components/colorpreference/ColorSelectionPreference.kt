@@ -3,20 +3,25 @@ package app.lawnchair.ui.preferences.components.colorpreference
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
 import androidx.compose.material3.Button
-import androidx.compose.runtime.*
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import app.lawnchair.preferences.getAdapter
-import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.theme.color.ColorOption
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.BottomSpacer
+import app.lawnchair.ui.preferences.components.Chip
+import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.colorpreference.pickers.CustomColorPicker
 import app.lawnchair.ui.preferences.components.colorpreference.pickers.PresetsList
 import app.lawnchair.ui.preferences.components.colorpreference.pickers.SwatchGrid
@@ -41,31 +46,12 @@ fun NavGraphBuilder.colorSelectionGraph(route: String) {
 
             val args = backStackEntry.arguments!!
             val prefKey = args.getString("prefKey")!!
-            val preferenceManager2 = preferenceManager2()
-            val pref = when (prefKey) {
-                preferenceManager2.accentColor.key.name -> preferenceManager2.accentColor
-                preferenceManager2.notificationDotColor.key.name -> preferenceManager2.notificationDotColor
-                preferenceManager2.notificationDotTextColor.key.name -> preferenceManager2.notificationDotTextColor
-                preferenceManager2.folderColor.key.name -> preferenceManager2.folderColor
-                else -> return@composable
-            }
-            val label = when (prefKey) {
-                preferenceManager2.accentColor.key.name -> stringResource(id = R.string.accent_color)
-                preferenceManager2.notificationDotColor.key.name -> stringResource(id = R.string.notification_dots_color)
-                preferenceManager2.notificationDotTextColor.key.name -> stringResource(id = R.string.notification_dots_text_color)
-                preferenceManager2.folderColor.key.name -> stringResource(id = R.string.folder_preview_bg_color_label)
-                else -> return@composable
-            }
-            val dynamicEntries = when (prefKey) {
-                preferenceManager2.folderColor.key.name,
-                preferenceManager2.notificationDotColor.key.name,
-                preferenceManager2.notificationDotTextColor.key.name -> dynamicColorsWithDefault
-                else -> dynamicColors
-            }
+            val modelList = ColorPreferenceModelList.INSTANCE.get(LocalContext.current)
+            val model = modelList[prefKey]
             ColorSelection(
-                label = label,
-                preference = pref,
-                dynamicEntries = dynamicEntries,
+                label = stringResource(id = model.labelRes),
+                preference = model.prefObject,
+                dynamicEntries = model.dynamicEntries,
             )
         }
     }

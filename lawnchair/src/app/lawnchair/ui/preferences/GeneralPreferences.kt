@@ -141,10 +141,7 @@ fun GeneralPreferences() {
 
         PreferenceGroup(heading = stringResource(id = R.string.colors)) {
             ThemePreference()
-            ColorPreference(
-                preference = prefs2.accentColor,
-                label = stringResource(id = R.string.accent_color),
-            )
+            ColorPreference(preference = prefs2.accentColor)
         }
 
         PreferenceGroup(heading = stringResource(id = R.string.notification_dots)) {
@@ -153,20 +150,14 @@ fun GeneralPreferences() {
             NotificationDotsPreference(enabled = enabled, serviceEnabled = serviceEnabled)
             if (enabled && serviceEnabled) {
                 val showNotificationCountAdapter = prefs2.showNotificationCount.getAdapter()
-                ColorPreference(
-                    preference = prefs2.notificationDotColor,
-                    label = stringResource(id = R.string.notification_dots_color),
-                )
+                ColorPreference(preference = prefs2.notificationDotColor)
                 SwitchPreference(
                     adapter = showNotificationCountAdapter,
                     label = stringResource(id = R.string.show_notification_count),
                 )
                 ExpandAndShrink(visible = showNotificationCountAdapter.state.value) {
                     DividerColumn {
-                        ColorPreference(
-                            preference = prefs2.notificationDotTextColor,
-                            label = stringResource(id = R.string.notification_dots_text_color),
-                        )
+                        ColorPreference(preference = prefs2.notificationDotTextColor)
                         NotificationDotColorContrastWarnings(
                             dotColor = prefs2.notificationDotColor.asState().value,
                             dotTextColor = prefs2.notificationDotTextColor.asState().value,
