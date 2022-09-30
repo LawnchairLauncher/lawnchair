@@ -102,59 +102,52 @@ fun ColorSelection(
             { page: Int -> scope.launch { pagerState.animateScrollToPage(page) } }
 
         Column {
-
             Row(
                 horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
                 modifier = Modifier.padding(horizontal = 16.dp),
             ) {
                 Chip(
-                    label = stringResource(id = R.string.dynamic),
+                    label = stringResource(id = R.string.presets),
                     onClick = { scrollToPage(0) },
                     currentOffset = pagerState.currentPage + pagerState.currentPageOffset,
                     page = 0,
                 )
                 Chip(
-                    label = stringResource(id = R.string.presets),
+                    label = stringResource(id = R.string.custom),
                     onClick = { scrollToPage(1) },
                     currentOffset = pagerState.currentPage + pagerState.currentPageOffset,
                     page = 1,
                 )
-                Chip(
-                    label = stringResource(id = R.string.custom),
-                    onClick = { scrollToPage(2) },
-                    currentOffset = pagerState.currentPage + pagerState.currentPageOffset,
-                    page = 2,
-                )
             }
             HorizontalPager(
-                count = 3,
+                count = 2,
                 state = pagerState,
                 verticalAlignment = Alignment.Top,
                 modifier = Modifier.animateContentSize(),
             ) { page ->
                 when (page) {
                     0 -> {
-                        PresetsList(
-                            dynamicEntries = dynamicEntries,
-                            onPresetClick = { selectedColor.value = it },
-                            isPresetSelected = { it == selectedColor.value },
-                        )
+                        Column {
+                            PresetsList(
+                                dynamicEntries = dynamicEntries,
+                                onPresetClick = { selectedColor.value = it },
+                                isPresetSelected = { it == selectedColor.value },
+                            )
+                            SwatchGrid(
+                                modifier = Modifier.padding(top = 12.dp),
+                                contentModifier = Modifier.padding(
+                                    start = 16.dp,
+                                    top = 20.dp,
+                                    end = 16.dp,
+                                    bottom = 16.dp,
+                                ),
+                                entries = staticEntries,
+                                onSwatchClick = { selectedColor.value = it },
+                                isSwatchSelected = { it == selectedColor.value },
+                            )
+                        }
                     }
                     1 -> {
-                        SwatchGrid(
-                            modifier = Modifier.padding(top = 12.dp),
-                            contentModifier = Modifier.padding(
-                                start = 16.dp,
-                                top = 20.dp,
-                                end = 16.dp,
-                                bottom = 16.dp,
-                            ),
-                            entries = staticEntries,
-                            onSwatchClick = { selectedColor.value = it },
-                            isSwatchSelected = { it == selectedColor.value },
-                        )
-                    }
-                    2 -> {
                         CustomColorPicker(
                             selectedColorOption = selectedColor.value,
                             onSelect = { selectedColor.value = it },
