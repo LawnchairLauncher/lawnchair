@@ -345,6 +345,11 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             }
             return mStashedHeight;
         }
+
+        if (!mActivity.isUserSetupComplete()) {
+            // Special insets for SUW.
+            return mActivity.getResources().getDimensionPixelSize(R.dimen.taskbar_suw_insets);
+        }
         return mUnstashedHeight;
     }
 
