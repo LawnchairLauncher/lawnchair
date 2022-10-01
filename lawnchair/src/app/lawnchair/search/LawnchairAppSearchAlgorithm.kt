@@ -82,6 +82,9 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
             appResults.mapTo(results, ::createSearchTarget)
         }
         if (results.isEmpty()) {
+            if (marketSearchComponent == null) {
+                return arrayListOf(AllAppsGridAdapter.AdapterItem.asEmptySearch(0))
+            }
             results.add(getEmptySearchItem(query))
         }
         val adapterItems = transformSearchResults(results)
