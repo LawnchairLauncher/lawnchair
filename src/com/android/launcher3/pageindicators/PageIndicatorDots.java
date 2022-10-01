@@ -153,6 +153,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
     @Override
     public void setScroll(int currentScroll, int totalScroll) {
         if (mNumPages <= 1) {
+            mCurrentScroll = 0;
             return;
         }
 
@@ -296,8 +297,12 @@ public class PageIndicatorDots extends View implements PageIndicator {
             for (int i = 0; i < mEntryAnimationRadiusFactors.length; i++) {
                 mPaginationPaint.setAlpha(i == mActivePage ? PAGE_INDICATOR_ALPHA : DOT_ALPHA);
                 if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
-                    canvas.drawCircle(x, y, getRadius(x) * mEntryAnimationRadiusFactors[i],
-                            mPaginationPaint);
+                    if (i != mActivePage) {
+                        canvas.drawCircle(x, y, mDotRadius * mEntryAnimationRadiusFactors[i],
+                                mPaginationPaint);
+                    } else {
+                        drawPageIndicator(canvas, mEntryAnimationRadiusFactors[i]);
+                    }
                 } else {
                     canvas.drawCircle(x, y, mDotRadius * mEntryAnimationRadiusFactors[i],
                             mPaginationPaint);
@@ -319,24 +324,41 @@ public class PageIndicatorDots extends View implements PageIndicator {
             // Here we draw the current page indicator
             mPaginationPaint.setAlpha(PAGE_INDICATOR_ALPHA);
             if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
-                RectF currRect = getActiveRect();
-
-                // Moves the canvas to start at the top left corner of the page indicator
-                canvas.translate(currRect.left, currRect.top);
-
-                int scrollPerPage = getScrollPerPage();
-                // This IF is to avoid division by 0
-                if (scrollPerPage != 0) {
-                    int delta = mCurrentScroll % scrollPerPage;
-                    canvas.rotate((INDICATOR_ROTATION * delta) / scrollPerPage,
-                            mPageIndicatorRadius, mPageIndicatorRadius);
-                }
-
-                mPageIndicatorDrawable.draw(canvas);
+                drawPageIndicator(canvas, 1);
             } else {
                 canvas.drawRoundRect(getActiveRect(), mDotRadius, mDotRadius, mPaginationPaint);
             }
         }
+    }
+
+    /**
+     * Draws the page indicator, denoting the currently selected page
+     *
+     * @param canvas is used to draw the page indicator and to rotate it as we scroll
+     * @param scale  is used to set the scale of our canvas
+     */
+    private void drawPageIndicator(Canvas canvas, float scale) {
+        RectF currRect = getActiveRect();
+
+        // saves the canvas so we can later restore it to its original scale
+        canvas.save();
+
+        // Moves the canvas to start at the top left corner of the page indicator
+        canvas.translate(currRect.left, currRect.top);
+
+        // Scales the canvas in place to animate the indicator on entry
+        canvas.scale(scale, scale, mPageIndicatorRadius, mPageIndicatorRadius);
+
+        int scrollPerPage = getScrollPerPage();
+        // This IF is to avoid division by 0
+        if (scrollPerPage != 0) {
+            int delta = mCurrentScroll % scrollPerPage;
+            canvas.rotate((INDICATOR_ROTATION * delta) / scrollPerPage,
+                    mPageIndicatorRadius, mPageIndicatorRadius);
+        }
+
+        mPageIndicatorDrawable.draw(canvas);
+        canvas.restore();
     }
 
     /**
