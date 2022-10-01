@@ -3115,6 +3115,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                                             + splitTimings.getGridSlideDurationOffset(), 0f, 1f)
                             : 1f;
 
+                    // Slide tiles in horizontally to fill dismissed area
                     anim.setFloat(child, translationProperty, scrollDiff,
                             clampToProgress(
                                     splitTimings.getGridSlidePrimaryInterpolator(),
@@ -4286,6 +4287,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             snapToPageImmediately(pageToSnapTo);
         }
         onLayout(false /*  changed */, getLeft(), getTop(), getRight(), getBottom());
+
+        // We are leaving split selection state, so it is safe to reset thumbnail translations for
+        // the next time split is invoked.
+        setTaskViewsPrimarySplitTranslation(0);
+        setTaskViewsSecondarySplitTranslation(0);
+
         resetTaskVisuals();
         mSplitHiddenTaskViewIndex = -1;
     }
