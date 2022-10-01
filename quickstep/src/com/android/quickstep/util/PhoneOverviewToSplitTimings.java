@@ -17,7 +17,6 @@
 package com.android.quickstep.util;
 
 import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
-import static com.android.launcher3.anim.Interpolators.INSTANT;
 
 import android.view.animation.Interpolator;
 
@@ -41,6 +40,4 @@ public class PhoneOverviewToSplitTimings
     public Interpolator getStagedRectYInterpolator() { return EMPHASIZED; }
     public Interpolator getStagedRectScaleXInterpolator() { return EMPHASIZED; }
     public Interpolator getStagedRectScaleYInterpolator() { return EMPHASIZED; }
-    public Interpolator getGridSlidePrimaryInterpolator() { return EMPHASIZED; }
-    public Interpolator getGridSlideSecondaryInterpolator() { return INSTANT; }
 }
