@@ -48,8 +48,8 @@
     <string name="smartspace_calendar_label">Kustomisasi Kalender Sekilas</string>
     <string name="smartspace_calendar_description">Izinkan menampilkan tanggal dalam sistem kalender non-Gregorian.</string>
     <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
-    <string name="always_reload_icons_label">Always Reload Icons</string>
+    <string name="workspace_increase_max_grid_size_description">Tingkatkan ukuran kisi Layar Beranda maksimum yang diizinkan dari 10 x 10 menjadi 20 x 20.</string>
+    <string name="always_reload_icons_label">Selalu Muat ulang Ikon</string>
     <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotasi Layar Beranda</string>
@@ -66,6 +66,9 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Tampilkan Jumlah Notifikasi</string>
     <string name="notification_dots_color">Warna Titik Notifikasi</string>
+    <string name="notification_dots_text_color">Notification Count Color</string>
+    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Akses Notifikasi Diperlukan</string>
     <string name="missing_notification_access_description">Akses notifikasi diperlukan.</string>
@@ -133,10 +136,10 @@
     <string name="hex">Hex</string>
     <string name="color_sliders">Sliders</string>
     <string name="action_copy">Salin</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_paste">Tempel</string>
     <string name="copied_toast">Disalin ke papan klip.</string>
     <string name="invalid_color">Warna tidak valid</string>
-    <string name="launcher_default_color">Default</string>
+    <string name="launcher_default_color">Dikelola oleh Lawchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Tambahkan Aplikasi Baru ke Layar Beranda</string>
@@ -151,11 +154,11 @@
     <string name="layout">Tata Letak</string>
     <string name="home_screen_grid">Kisi Layar Utama</string>
     <string name="home_screen_lock">Kunci Layar Beranda</string>
-    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_lock_description">Mencegah perubahan pada tata letak layar beranda.</string>
     <string name="home_screen_unlock">Buka Kunci Layar Beranda</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">Tampilkan Tombol Kunci di Pop-Up</string>
-    <string name="home_screen_locked">Home Screen is locked.</string>
+    <string name="home_screen_locked">Susunan Layar utama dikunci.</string>
     <string name="status_bar_label">Bar Status</string>
     <string name="show_status_bar">Tampilkan bar status</string>
     <string name="dark_status_bar_label">Tingkat Kegelapan Bar Status</string>
@@ -188,9 +191,9 @@
     <string name="smartspace_date_and_time">Tanggal &amp; Waktu</string>
     <string name="smartspace_date">Tanggal</string>
     <string name="smartspace_time">Waktu</string>
-    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_format">Format Waktu</string>
     <string name="smartspace_time_follow_system">Ikuti sistem</string>
-    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
+    <string name="smartspace_time_12_hour_format">Format 12-jam 1: 00 PM</string>
     <string name="smartspace_time_24_hour_format">Format 24 Jam</string>
     <string name="smartspace_weather">Cuaca</string>
     <string name="smartspace_battery_status">Status Baterai</string>
@@ -201,8 +204,8 @@
     <string name="smartspace_calendar_gregorian">Gregorian</string>
     <string name="smartspace_calendar_persian">Persia</string>
     <string name="smartspace_preferences">Pengaturan</string>
-    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <string name="smartspace_widget_toggle_label">Tampilkan dilayar Utama</string>
+    <string name="smartspace_widget_toggle_description">At a Glance dapat ditambahkan secara manual dengan menempatkan widget \"Lawnchair\".</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">Bilah Pencarian</string>
@@ -246,7 +249,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Ketebalan Transparansi Latar Belakang Ikon</string>
-    <string name="folder_preview_bg_color_label">Icon Background Color</string>
+    <string name="folder_preview_bg_color_label">Warna Latar Ikon</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Maks. Kolom Folder</string>
     <string name="max_folder_rows">Maks. Baris Folder</string>

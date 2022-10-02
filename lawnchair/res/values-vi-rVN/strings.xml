@@ -66,6 +66,9 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Hiện số đếm thông báo</string>
     <string name="notification_dots_color">Màu của dấu chấm thông báo</string>
+    <string name="notification_dots_text_color">Màu dấu chấm thông báo</string>
+    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Cần quyền truy cập thông báo</string>
     <string name="missing_notification_access_description">Cần quyền truy cập thông báo.</string>
@@ -136,7 +139,7 @@
     <string name="action_paste">Dán</string>
     <string name="copied_toast">Đã sao chép vào clipboard.</string>
     <string name="invalid_color">Màu không hợp lệ</string>
-    <string name="launcher_default_color">Mặc định</string>
+    <string name="launcher_default_color">Managed by Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Thêm ứng dụng mới vào màn hình chính</string>

@@ -49,8 +49,8 @@
     <string name="smartspace_calendar_description">Омогућава приказ датума у календарским системима који нису грегоријански.</string>
     <string name="workspace_increase_max_grid_size_label">Већа мрежа почетног екрана</string>
     <string name="workspace_increase_max_grid_size_description">Повећава максималну величину мреже почетног екрана из 10 × 10 у 20 × 20.</string>
-    <string name="always_reload_icons_label">Always Reload Icons</string>
-    <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
+    <string name="always_reload_icons_label">Увек учитавај иконе изнова</string>
+    <string name="always_reload_icons_description">Избегавај коришћење кешираних икона из пакета икона</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Ротација почетног екрана</string>
     <string name="home_screen_rotaton_description">Када се уређај ротира.</string>
@@ -66,6 +66,9 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Приказуј број обавештења</string>
     <string name="notification_dots_color">Боја тачака за обавештења</string>
+    <string name="notification_dots_text_color">Боја броја обавештења</string>
+    <string name="notification_dots_color_contrast_warning_always">Упозорење: боје тачке и броја обавештења немају довољно међусобног контраста</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Упозорење: боје тачке и броја обавештења можда неће увек имати довољно међусобног контраста</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Приступ обавештењима</string>
     <string name="missing_notification_access_description">Потребан је приступ обавештењима.</string>
@@ -136,7 +139,7 @@
     <string name="action_paste">Налепи</string>
     <string name="copied_toast">Копирано у привремену меморију.</string>
     <string name="invalid_color">Неважећа боја</string>
-    <string name="launcher_default_color">Подразумевано</string>
+    <string name="launcher_default_color">Управља апликација Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Додај нове апликације на почетни екран</string>

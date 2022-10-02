@@ -66,6 +66,9 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">通知の数を表示</string>
     <string name="notification_dots_color">通知ドットの色</string>
+    <string name="notification_dots_text_color">通知ドットの色</string>
+    <string name="notification_dots_color_contrast_warning_always">警告：通知ドットとカウンターカラーのコントラストが互いに十分ではありません</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">警告：通知ドットとカウンターカラーのコントラストが互いに十分ではない場合があります</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">通知へのアクセスが必要です</string>
     <string name="missing_notification_access_description">通知へのアクセス権が必要です</string>
@@ -99,7 +102,7 @@
     <string name="icon_shape_octagon">オクタゴン</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">角丸四角形</string>
-    <string name="icon_shape_sharp_square">シャープスクエア</string>
+    <string name="icon_shape_sharp_square">正方形</string>
     <string name="icon_shape_square">四角形</string>
     <string name="icon_shape_squircle">丸みがかった正方形</string>
     <string name="icon_shape_teardrop">水滴型</string>
@@ -136,7 +139,7 @@
     <string name="action_paste">貼付け</string>
     <string name="copied_toast">クリップボードにコピーしました。</string>
     <string name="invalid_color">無効な色</string>
-    <string name="launcher_default_color">デフォルト</string>
+    <string name="launcher_default_color">Lawnchairに管理されています</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">ホーム画面に新しいアプリを追加</string>

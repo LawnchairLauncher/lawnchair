@@ -66,6 +66,9 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Показывать количество уведомлений</string>
     <string name="notification_dots_color">Цвет точек уведомления</string>
+    <string name="notification_dots_text_color">Notification Count Color</string>
+    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Доступ к уведомлениям</string>
     <string name="missing_notification_access_description">Необходимо разрешение доступа к уведомлениям.</string>
@@ -136,7 +139,7 @@
     <string name="action_paste">Вставить</string>
     <string name="copied_toast">Скопировано в буфер обмена.</string>
     <string name="invalid_color">Недопустимый цвет</string>
-    <string name="launcher_default_color">По умолчанию</string>
+    <string name="launcher_default_color">Managed by Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Добавлять новые приложения на домашний экран</string>

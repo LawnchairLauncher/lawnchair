@@ -66,6 +66,9 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">顯示通知數量</string>
     <string name="notification_dots_color">通知圓點色彩</string>
+    <string name="notification_dots_text_color">通知數量色彩</string>
+    <string name="notification_dots_color_contrast_warning_always">請注意：通知圓點與通知計數色彩對比度過低，數字將模糊不清</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">請注意：通知圓點與通知計數色彩對比度較低，可能導致數字模糊不清</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Notification Access Needed</string>
     <string name="missing_notification_access_description">Notification access needed.</string>
@@ -136,7 +139,7 @@
     <string name="action_paste">貼上</string>
     <string name="copied_toast">已複製到剪貼簿</string>
     <string name="invalid_color">無效色彩</string>
-    <string name="launcher_default_color">預設</string>
+    <string name="launcher_default_color">由 Lawnchair 管理</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">將應用程式圖示新增到主螢幕</string>

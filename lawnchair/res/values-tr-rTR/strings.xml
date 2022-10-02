@@ -66,6 +66,9 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Bildirim Sayısını Göster</string>
     <string name="notification_dots_color">Bildirim Vurgu Rengi</string>
+    <string name="notification_dots_text_color">Bildirim Noktası Rengi</string>
+    <string name="notification_dots_color_contrast_warning_always">Uyarı; Bildirim Noktası &amp; Bildirim Sayacı noktasının renkleri birbiriyle yeterli kontrasta sahip değil</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Uyarı: Bildirim Noktası &amp; Bildirim Sayacı noktasının renkleri her zaman birbiriyle yeterli kontrasta sahip olmayabilir</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Bildirim Erişimi Gerekli</string>
     <string name="missing_notification_access_description">Bildirim Erişimi Gerekli.</string>
@@ -136,7 +139,7 @@
     <string name="action_paste">Yapıştır</string>
     <string name="copied_toast">Panoya kopyalandı.</string>
     <string name="invalid_color">Geçersiz Renk</string>
-    <string name="launcher_default_color">Varsayılan</string>
+    <string name="launcher_default_color">Lawnchair tarafından yönetilmektedir</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Ana Ekrana Yeni Uygulamalar Ekleyin</string>

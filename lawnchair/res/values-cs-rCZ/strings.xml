@@ -66,6 +66,9 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Zobrazit počet oznámení</string>
     <string name="notification_dots_color">Barva notifikačních bodů</string>
+    <string name="notification_dots_text_color">Barva puntíku notifikačního počítadla</string>
+    <string name="notification_dots_color_contrast_warning_always">Upozornění: Barva notifikačního puntíku a textu notifikačního počítadla nejsou navzájem dostatečně kontrastní</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Upozornění: Barva notifikačního puntíku a textu notifikačního počítadla nemusí být vždy navzájem dostatečně kontrastní</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Je vyžadován přístup k oznámením</string>
     <string name="missing_notification_access_description">Je vyžadován přístup k oznámením.</string>
@@ -136,7 +139,7 @@
     <string name="action_paste">Vložit</string>
     <string name="copied_toast">Zkopírováno do schránky.</string>
     <string name="invalid_color">Neplatná barva</string>
-    <string name="launcher_default_color">Výchozí</string>
+    <string name="launcher_default_color">Spravováno aplikací Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Přidat nové aplikace na plochu</string>
