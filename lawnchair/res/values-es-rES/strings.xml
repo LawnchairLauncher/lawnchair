@@ -66,6 +66,9 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Mostrar contador de notificaciones</string>
     <string name="notification_dots_color">Color del punto de notificación</string>
+    <string name="notification_dots_text_color">Color del contador de notificaciones</string>
+    <string name="notification_dots_color_contrast_warning_always">Advertencia: Los colores de punto &amp; contador de notificaciones no tienen suficiente contraste entre sí</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Advertencia: Es posible que los colores de punto &amp; contador de notificaciones no siempre tengan suficiente contraste entre sí</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Acceso a las notificaciones requerido</string>
     <string name="missing_notification_access_description">Acceso a las notificaciones requerido.</string>
@@ -136,7 +139,7 @@
     <string name="action_paste">Pegar</string>
     <string name="copied_toast">Copiado al portapapeles.</string>
     <string name="invalid_color">Color no válido</string>
-    <string name="launcher_default_color">Predeterminado</string>
+    <string name="launcher_default_color">Gestionado por Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Añadir Nuevas Aplicaciones a la Pantalla de Inicio</string>

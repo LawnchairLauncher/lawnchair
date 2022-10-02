@@ -66,6 +66,9 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Mostrar Contador de Notificações</string>
     <string name="notification_dots_color">Cor do Ponto de Notificação</string>
+    <string name="notification_dots_text_color">Cor da Contagem de Notificações</string>
+    <string name="notification_dots_color_contrast_warning_always">Aviso: Ponto de Notificação &amp; Cores do contador não têm contraste suficiente entre elas</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Aviso: Ponto de Notificação &amp; Cores do contador poderão não ter contraste suficiente entre elas</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Acesso às notificações necessário</string>
     <string name="missing_notification_access_description">Acesso às notificações necessário.</string>
@@ -136,7 +139,7 @@
     <string name="action_paste">Colar</string>
     <string name="copied_toast">Copiado para a área de transferência.</string>
     <string name="invalid_color">Cor Inválida</string>
-    <string name="launcher_default_color">Predefinido</string>
+    <string name="launcher_default_color">Gerido por Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Adicionar Novas Aplicações ao Ecrã Inicial</string>
@@ -162,7 +165,7 @@
     <string name="icons">Ícones</string>
     <string name="icon_size">Tamanho do Ícone</string>
     <string name="show_home_labels">Mostrar Rótulos</string>
-    <string name="label_size">Tamanho da Etiqueta</string>
+    <string name="label_size">Tamanho do Rótulo</string>
     <string name="reset_custom_icons">Redefinir os Ícones Personalizados</string>
     <string name="reset_custom_icons_confirmation">Todos os ícones personalizados vão ser redefinidos. Quer continuar?</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
@@ -185,9 +188,9 @@
     <string name="smartspace_widget_placeholder_date">Sex, mar 3</string>
     <string name="preview_label">Pré-visualização</string>
     <string name="smartspace_calendar">Calendário</string>
-    <string name="smartspace_date_and_time">Data &amp; Tempo</string>
+    <string name="smartspace_date_and_time">Data e Hora</string>
     <string name="smartspace_date">Data</string>
-    <string name="smartspace_time">Tempo</string>
+    <string name="smartspace_time">Hora</string>
     <string name="smartspace_time_format">Formato da Hora</string>
     <string name="smartspace_time_follow_system">Seguir o Sistema</string>
     <string name="smartspace_time_12_hour_format">Formato de 12 Horas</string>
@@ -310,7 +313,7 @@
     <string name="dt2s_admin_hint_title">Permissões de Administrador Necessárias</string>
     <string name="dt2s_admin_hint">Para usar o Duplo Toque para Dormir, defina o Lawnchair como uma aplicação de administrador do dispositivo. Toque em \"Abrir Definições,\" e de seguida em \"Ativar a aplicação de administrador deste dispositivo.\"</string>
     <string name="dt2s_admin_warning">O Duplo Toque para Dormir será desativado.</string>
-    <string name="dt2s_a11y_hint_title">Active o Serviço se Acessibilidade</string>
+    <string name="dt2s_a11y_hint_title">Ative o Serviço se Acessibilidade</string>
     <string name="dt2s_a11y_hint">Para usar o Duplo Toque para Dormir, ative o serviço de acessibilidade do Lawnchair. Toque em Abrir Definições, e de seguida selecione Lawnchair e ative Usar Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Abrir Definições</string>
     <string name="loading">Carregando…</string>

@@ -66,6 +66,9 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">அறிவிப்புகளின் எண்ணிக்கையை காண்பி</string>
     <string name="notification_dots_color">அறிவிப்பு புள்ளிகளின் வண்ணம்</string>
+    <string name="notification_dots_text_color">அறிவிப்பு எண்ணிக்கை நிறம்</string>
+    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">அறிவிப்பணுகல் தேவை</string>
     <string name="missing_notification_access_description">அறிவிப்பணுகல் தேவை.</string>
@@ -136,7 +139,7 @@
     <string name="action_paste">ஒட்டவும்</string>
     <string name="copied_toast">நகலகத்திற்கு நகலெடுக்கப்பட்டது.</string>
     <string name="invalid_color">தவறான வண்ணம்</string>
-    <string name="launcher_default_color">இயல்புநிலை</string>
+    <string name="launcher_default_color">Managed by Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">முகப்புத் திரையில் புதிய செயலிகளை சேர்</string>

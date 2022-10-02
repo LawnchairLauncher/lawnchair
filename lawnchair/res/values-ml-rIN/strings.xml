@@ -66,6 +66,9 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">അറിയിപ്പുകളുടെ എണ്ണം കാണിക്കുക</string>
     <string name="notification_dots_color">അറിയിപ്പ് ഡോട്ടിന്റെ നിറം</string>
+    <string name="notification_dots_text_color">Notification Count Color</string>
+    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">നോട്ടിഫിക്കേഷൻ അക്സസ്സ് ആവശ്യമാണ്</string>
     <string name="missing_notification_access_description">നോട്ടിഫിക്കേഷൻ അക്സസ്സ് ആവശ്യമാണ്.</string>
@@ -136,7 +139,7 @@
     <string name="action_paste">Paste</string>
     <string name="copied_toast">ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി.</string>
     <string name="invalid_color">അസാധുവായ നിറം</string>
-    <string name="launcher_default_color">Default</string>
+    <string name="launcher_default_color">Managed by Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">പുതിയ ആപ്പുകൾ ഹോം സ്ക്രീനിൽ ചേർക്കുക</string>

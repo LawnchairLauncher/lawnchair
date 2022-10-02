@@ -66,6 +66,9 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Benachrichtigungszähler anzeigen</string>
     <string name="notification_dots_color">Farbe des Benachrichtigungspunktes</string>
+    <string name="notification_dots_text_color">Benachrichtigungszähler-Farbe</string>
+    <string name="notification_dots_color_contrast_warning_always">Warnung: Benachrichtigungspunkt- &amp; Zähler-Farbe haben nicht genug Kontrast zueinander</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Warnung: Benachrichtigungspunkt- &amp; Zähler-Farbe könnten manchmal nicht genug Kontrast zueinander haben</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Benachrichtigungszugriff erforderlich</string>
     <string name="missing_notification_access_description">Benachrichtigungszugriff erforderlich.</string>
@@ -136,7 +139,7 @@
     <string name="action_paste">Einfügen</string>
     <string name="copied_toast">In Zwischenablage kopiert.</string>
     <string name="invalid_color">Ungültige Farbe</string>
-    <string name="launcher_default_color">Standard</string>
+    <string name="launcher_default_color">Von Lawnchair verwaltet</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Neue Apps zum Startbildschirm hinzufügen</string>

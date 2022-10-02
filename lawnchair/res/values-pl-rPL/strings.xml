@@ -66,6 +66,9 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Pokaż liczbę powiadomień</string>
     <string name="notification_dots_color">Kolor plakietek powiadomień</string>
+    <string name="notification_dots_text_color">Kolor liczby powiadomień</string>
+    <string name="notification_dots_color_contrast_warning_always">Ostrzeżenie: Kolory plakietki oraz liczby powiadomień nie różnią się wystarczająco od siebie</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Ostrzeżenie: Kolory plakietki oraz liczby powiadomień nie zawsze mogą być wystarczająco różne od siebie</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Wymagany dostęp do powiadomień</string>
     <string name="missing_notification_access_description">Wymagany dostęp do powiadomień.</string>
@@ -136,7 +139,7 @@
     <string name="action_paste">Wklej</string>
     <string name="copied_toast">Skopiowano do schowka.</string>
     <string name="invalid_color">Nieprawidłowy kolor</string>
-    <string name="launcher_default_color">Domyślnie</string>
+    <string name="launcher_default_color">Zarządzane przez Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Dodaj nowe aplikacje do ekranu głównego</string>
