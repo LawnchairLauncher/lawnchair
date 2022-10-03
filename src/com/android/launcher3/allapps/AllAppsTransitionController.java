@@ -39,7 +39,6 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.MultiPropertyFactory;
@@ -229,7 +228,7 @@ public class AllAppsTransitionController
             StateAnimationConfig config, PendingAnimation builder) {
         if (mLauncher.isInState(ALL_APPS) && !ALL_APPS.equals(toState)) {
             // For atomic animations, we close the keyboard immediately.
-            if (!config.userControlled && !FeatureFlags.ENABLE_KEYBOARD_TRANSITION_SYNC.get()) {
+            if (!config.userControlled && !mLauncher.isKeyboardSyncEnabled()) {
                 mLauncher.getAppsView().getSearchUiManager().getEditText().hideKeyboard();
             }
 
