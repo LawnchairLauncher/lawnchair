@@ -109,7 +109,6 @@ import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.WallpaperOffsetInterpolator;
-import com.android.launcher3.widget.LauncherAppWidgetHost;
 import com.android.launcher3.widget.LauncherAppWidgetHost.ProviderChangedListener;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.NavigableAppWidgetHostView;
@@ -3391,7 +3390,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     public void widgetsRestored(final ArrayList<LauncherAppWidgetInfo> changedInfo) {
         if (!changedInfo.isEmpty()) {
             DeferredWidgetRefresh widgetRefresh = new DeferredWidgetRefresh(changedInfo,
-                    mLauncher.getAppWidgetHost());
+                    mLauncher.getAppWidgetHolder());
 
             LauncherAppWidgetInfo item = changedInfo.get(0);
             final AppWidgetProviderInfo widgetInfo;
@@ -3517,19 +3516,19 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      */
     private class DeferredWidgetRefresh implements Runnable, ProviderChangedListener {
         private final ArrayList<LauncherAppWidgetInfo> mInfos;
-        private final LauncherAppWidgetHost mHost;
+        private final LauncherWidgetHolder mWidgetHolder;
         private final Handler mHandler;
 
         private boolean mRefreshPending;
 
         DeferredWidgetRefresh(ArrayList<LauncherAppWidgetInfo> infos,
-            LauncherAppWidgetHost host) {
+                LauncherWidgetHolder holder) {
             mInfos = infos;
-            mHost = host;
+            mWidgetHolder = holder;
             mHandler = mLauncher.mHandler;
             mRefreshPending = true;
 
-            mHost.addProviderChangeListener(this);
+            mWidgetHolder.addProviderChangeListener(this);
             // Force refresh after 10 seconds, if we don't get the provider changed event.
             // This could happen when the provider is no longer available in the app.
             Message msg = Message.obtain(mHandler, this);
@@ -3539,7 +3538,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
         @Override
         public void run() {
-            mHost.removeProviderChangeListener(this);
+            mWidgetHolder.removeProviderChangeListener(this);
             mHandler.removeCallbacks(this);
 
             if (!mRefreshPending) {
