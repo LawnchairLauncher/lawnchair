@@ -16,6 +16,8 @@
 
 package com.android.quickstep;
 
+import static android.view.RemoteAnimationTarget.MODE_CLOSING;
+
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.BaseActivity.INVISIBLE_ALL;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_PENDING_FLAGS;
@@ -30,7 +32,11 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
+import android.os.RemoteException;
+import android.util.Log;
 import android.util.Pair;
+import android.view.IRemoteAnimationFinishedCallback;
+import android.view.IRemoteAnimationRunner;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 import android.view.animation.AnimationUtils;
@@ -91,6 +97,7 @@ public class LauncherBackAnimationController {
     private float mBackProgress = 0;
     private boolean mBackInProgress = false;
     private IOnBackInvokedCallback mBackCallback;
+    private IRemoteAnimationFinishedCallback mAnimationFinishedCallback;
 
     public LauncherBackAnimationController(
             QuickstepLauncher launcher,
@@ -136,15 +143,33 @@ public class LauncherBackAnimationController {
                                 - mBackProgress);
                 if (!mBackInProgress) {
                     startBack(backEvent);
-                } else {
-                    updateBackProgress(mBackProgress, backEvent);
                 }
+                updateBackProgress(mBackProgress, backEvent);
             }
 
             @Override
             public void onBackStarted() { }
         };
-        SystemUiProxy.INSTANCE.get(mLauncher).setBackToLauncherCallback(mBackCallback);
+
+        final IRemoteAnimationRunner runner = new IRemoteAnimationRunner.Stub() {
+            @Override
+            public void onAnimationStart(int transit, RemoteAnimationTarget[] apps,
+                    RemoteAnimationTarget[] wallpapers, RemoteAnimationTarget[] nonApps,
+                    IRemoteAnimationFinishedCallback finishedCallback) {
+                for (final RemoteAnimationTarget target : apps) {
+                    if (MODE_CLOSING == target.mode) {
+                        mBackTarget = new RemoteAnimationTargetCompat(target);
+                        break;
+                    }
+                }
+                mAnimationFinishedCallback = finishedCallback;
+            }
+
+            @Override
+            public void onAnimationCancelled(boolean isKeyguardOccluded) {}
+        };
+
+        SystemUiProxy.INSTANCE.get(mLauncher).setBackToLauncherCallback(mBackCallback, runner);
     }
 
     private void resetPositionAnimated() {
@@ -174,16 +199,13 @@ public class LauncherBackAnimationController {
     }
 
     private void startBack(BackEvent backEvent) {
-        mBackInProgress = true;
-        RemoteAnimationTarget appTarget = backEvent.getDepartingAnimationTarget();
-
-        if (appTarget == null) {
+        if (mBackTarget == null) {
             return;
         }
 
-        mTransaction.show(appTarget.leash).apply();
+        mBackInProgress = true;
+        mTransaction.show(mBackTarget.leash).apply();
         mTransaction.setAnimationTransaction();
-        mBackTarget = new RemoteAnimationTargetCompat(appTarget);
         mInitialTouchPos.set(backEvent.getTouchX(), backEvent.getTouchY());
 
         // TODO(b/218916755): Offset start rectangle in multiwindow mode.
@@ -304,7 +326,14 @@ public class LauncherBackAnimationController {
         mInitialTouchPos.set(0, 0);
         mAnimatorSetInProgress = false;
         mSpringAnimationInProgress = false;
-        SystemUiProxy.INSTANCE.get(mLauncher).onBackToLauncherAnimationFinished();
+        if (mAnimationFinishedCallback != null) {
+            try {
+                mAnimationFinishedCallback.onAnimationFinished();
+            } catch (RemoteException e) {
+                Log.w("ShellBackPreview", "Failed call onBackAnimationFinished", e);
+            }
+            mAnimationFinishedCallback = null;
+        }
     }
 
     private void startTransitionAnimations(RectFSpringAnim springAnim, AnimatorSet anim) {

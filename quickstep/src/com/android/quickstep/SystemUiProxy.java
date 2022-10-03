@@ -39,6 +39,7 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.util.Log;
+import android.view.IRemoteAnimationRunner;
 import android.view.MotionEvent;
 import android.view.RemoteAnimationAdapter;
 import android.view.RemoteAnimationTarget;
@@ -113,6 +114,7 @@ public class SystemUiProxy implements ISystemUiProxy {
     private final ArrayList<RemoteTransitionCompat> mRemoteTransitions = new ArrayList<>();
     private IBinder mOriginalTransactionToken = null;
     private IOnBackInvokedCallback mBackToLauncherCallback;
+    private IRemoteAnimationRunner mBackToLauncherRunner;
 
     // Used to dedupe calls to SystemUI
     private int mLastShelfHeight;
@@ -207,7 +209,7 @@ public class SystemUiProxy implements ISystemUiProxy {
             registerRecentTasksListener(mRecentTasksListener);
         }
         if (mBackAnimation != null && mBackToLauncherCallback != null) {
-            setBackToLauncherCallback(mBackToLauncherCallback);
+            setBackToLauncherCallback(mBackToLauncherCallback, mBackToLauncherRunner);
         }
     }
 
@@ -872,13 +874,15 @@ public class SystemUiProxy implements ISystemUiProxy {
     //
 
     /** Sets the launcher {@link android.window.IOnBackInvokedCallback} to shell */
-    public void setBackToLauncherCallback(IOnBackInvokedCallback callback) {
+    public void setBackToLauncherCallback(IOnBackInvokedCallback callback,
+            IRemoteAnimationRunner runner) {
         mBackToLauncherCallback = callback;
+        mBackToLauncherRunner = runner;
         if (mBackAnimation == null) {
             return;
         }
         try {
-            mBackAnimation.setBackToLauncherCallback(callback);
+            mBackAnimation.setBackToLauncherCallback(callback, runner);
         } catch (RemoteException e) {
             Log.e(TAG, "Failed call setBackToLauncherCallback", e);
         }
@@ -893,6 +897,7 @@ public class SystemUiProxy implements ISystemUiProxy {
             return;
         }
         mBackToLauncherCallback = null;
+        mBackToLauncherRunner = null;
         if (mBackAnimation == null) {
             return;
         }
@@ -900,20 +905,6 @@ public class SystemUiProxy implements ISystemUiProxy {
             mBackAnimation.clearBackToLauncherCallback();
         } catch (RemoteException e) {
             Log.e(TAG, "Failed call clearBackToLauncherCallback", e);
-        }
-    }
-
-    /**
-     * Notifies shell that all back to launcher animations have finished (including the transition
-     * that plays after the gesture is committed and before the app is closed.
-     */
-    public void onBackToLauncherAnimationFinished() {
-        if (mBackAnimation != null) {
-            try {
-                mBackAnimation.onBackToLauncherAnimationFinished();
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call onBackAnimationFinished", e);
-            }
         }
     }
 
