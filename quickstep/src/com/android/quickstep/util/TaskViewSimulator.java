@@ -15,6 +15,8 @@
  */
 package com.android.quickstep.util;
 
+import static android.app.WindowConfiguration.WINDOWING_MODE_FULLSCREEN;
+
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.states.RotationHelper.deltaRotation;
 import static com.android.launcher3.touch.PagedOrientationHandler.MATRIX_POST_TRANSLATE;
@@ -25,7 +27,6 @@ import static com.android.launcher3.util.SplitConfigurationOptions.StagePosition
 import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
 import static com.android.quickstep.util.RecentsOrientedState.postDisplayRotation;
 import static com.android.quickstep.util.RecentsOrientedState.preDisplayRotation;
-import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
 
 import android.animation.TimeInterpolator;
 import android.content.Context;
@@ -102,7 +103,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private boolean mLayoutValid = false;
     private int mOrientationStateId;
     private SplitBounds mSplitBounds;
-    private boolean mDrawsBelowRecents;
+    private Boolean mDrawsBelowRecents = null;
     private boolean mIsGridTask;
     private int mTaskRectTranslationX;
     private int mTaskRectTranslationY;
@@ -391,7 +392,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
                 .withWindowCrop(mTmpCropRect)
                 .withCornerRadius(getCurrentCornerRadius());
 
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+        // If mDrawsBelowRecents is unset, no reordering will be enforced.
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mDrawsBelowRecents != null) {
             // In legacy transitions, the animation leashes remain in same hierarchy in the
             // TaskDisplayArea, so we don't want to bump the layer too high otherwise it will
             // conflict with layers that WM core positions (ie. the input consumers).  For shell

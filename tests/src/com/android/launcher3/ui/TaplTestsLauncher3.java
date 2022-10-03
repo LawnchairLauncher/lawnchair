@@ -18,6 +18,8 @@ package com.android.launcher3.ui;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
+import android.platform.test.annotations.IwTest;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertEquals;
@@ -203,6 +205,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 false /* tapRight */);
     }
 
+    @IwTest(focusArea="launcher")
     @Test
     @ScreenRecord // b/202433017
     public void testWorkspace() throws Exception {
@@ -211,9 +214,9 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         // Test that ensureWorkspaceIsScrollable adds a page by dragging an icon there.
         executeOnLauncher(launcher -> assertFalse("Initial workspace state is scrollable",
                 isWorkspaceScrollable(launcher)));
-        workspace.verifyWorkspaceAppIconIsGone(
-                "Chrome app was found on empty workspace", "Chrome");
-
+        assertEquals("Initial workspace doesn't have the correct page", workspace.pagesPerScreen(),
+                workspace.getPageCount());
+        workspace.verifyWorkspaceAppIconIsGone("Chrome app was found on empty workspace", "Chrome");
         workspace.ensureWorkspaceIsScrollable();
 
         executeOnLauncher(
@@ -300,7 +303,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     private int getWidgetsScroll(Launcher launcher) {
-        return getWidgetsView(launcher).getCurrentScrollY();
+        return getWidgetsView(launcher).computeVerticalScrollOffset();
     }
 
     private boolean isOptionsPopupVisible(Launcher launcher) {
@@ -330,6 +333,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         }
     }
 
+    @IwTest(focusArea="launcher")
     @Test
     @PortraitLandscape
     public void testDragAppIcon() throws Throwable {
@@ -583,5 +587,17 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     public static String getAppPackageName() {
         return getInstrumentation().getContext().getPackageName();
+    }
+
+    @Test
+    public void testGetAppIconName() {
+        HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
+        allApps.freeze();
+        try {
+            HomeAppIcon icon = allApps.getAppIcon(APP_NAME);
+            assertEquals("Wrong app icon name.", icon.getIconName(), APP_NAME);
+        } finally {
+            allApps.unfreeze();
+        }
     }
 }

@@ -32,7 +32,6 @@ import com.android.launcher3.util.Themes;
 public class AllAppsState extends LauncherState {
 
     private static final float PARALLAX_COEFFICIENT = .125f;
-    private static final float WORKSPACE_SCALE_FACTOR = 0.97f;
 
     private static final int STATE_FLAGS = FLAG_WORKSPACE_INACCESSIBLE;
 
@@ -43,9 +42,9 @@ public class AllAppsState extends LauncherState {
     @Override
     public <DEVICE_PROFILE_CONTEXT extends Context & DeviceProfileListenable>
     int getTransitionDuration(DEVICE_PROFILE_CONTEXT context, boolean isToState) {
-        return !context.getDeviceProfile().isTablet && isToState
-                ? 600
-                : isToState ? 500 : 300;
+        return isToState
+                ? context.getDeviceProfile().allAppsOpenDuration
+                : context.getDeviceProfile().allAppsCloseDuration;
     }
 
     @Override
@@ -60,7 +59,8 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
-        return new ScaleAndTranslation(WORKSPACE_SCALE_FACTOR, NO_OFFSET, NO_OFFSET);
+        return new ScaleAndTranslation(launcher.getDeviceProfile().workspaceContentScale, NO_OFFSET,
+                NO_OFFSET);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class AllAppsState extends LauncherState {
             ScaleAndTranslation overviewScaleAndTranslation = LauncherState.OVERVIEW
                     .getWorkspaceScaleAndTranslation(launcher);
             return new ScaleAndTranslation(
-                    WORKSPACE_SCALE_FACTOR,
+                    launcher.getDeviceProfile().workspaceContentScale,
                     overviewScaleAndTranslation.translationX,
                     overviewScaleAndTranslation.translationY);
         }

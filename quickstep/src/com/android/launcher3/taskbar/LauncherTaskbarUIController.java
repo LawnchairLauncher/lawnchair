@@ -15,8 +15,10 @@
  */
 package com.android.launcher3.taskbar;
 
+import static android.view.InsetsState.ITYPE_EXTRA_NAVIGATION_BAR;
+
 import static com.android.launcher3.taskbar.TaskbarLauncherStateController.FLAG_RESUMED;
-import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_EXTRA_NAVIGATION_BAR;
+import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -30,9 +32,7 @@ import android.view.WindowManagerGlobal;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
 
-import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.QuickstepTransitionManager;
@@ -42,6 +42,7 @@ import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.RecentsAnimationCallbacks;
@@ -65,7 +66,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
     private final SparseArray<Float> mTaskbarInAppDisplayProgress = new SparseArray<>(4);
 
-    private final BaseQuickstepLauncher mLauncher;
+    private final QuickstepLauncher mLauncher;
 
     private final DeviceProfile.OnDeviceProfileChangeListener mOnDeviceProfileChangeListener =
             dp -> {
@@ -81,7 +82,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     private final TaskbarLauncherStateController
             mTaskbarLauncherStateController = new TaskbarLauncherStateController();
 
-    public LauncherTaskbarUIController(BaseQuickstepLauncher launcher) {
+    public LauncherTaskbarUIController(QuickstepLauncher launcher) {
         mLauncher = launcher;
     }
 
@@ -121,24 +122,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     public void setShouldDelayLauncherStateAnim(boolean shouldDelayLauncherStateAnim) {
         mTaskbarLauncherStateController.setShouldDelayLauncherStateAnim(
                 shouldDelayLauncherStateAnim);
-    }
-
-    /**
-     * Enables manual taskbar stashing. This method should only be used for tests that need to
-     * stash/unstash the taskbar.
-     */
-    @VisibleForTesting
-    public void enableManualStashingForTests(boolean enableManualStashing) {
-        mControllers.taskbarStashController.enableManualStashingForTests(enableManualStashing);
-    }
-
-    /**
-     * Unstashes the Taskbar if it is stashed. This method should only be used to unstash the
-     * taskbar at the end of a test.
-     */
-    @VisibleForTesting
-    public void unstashTaskbarIfStashed() {
-        mControllers.taskbarStashController.onLongPressToUnstashTaskbar();
     }
 
     /**
@@ -186,6 +169,13 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
                 // Resuming implicitly means device unlocked
                 mKeyguardController.setScreenOn();
             }
+        }
+
+        if (ENABLE_SHELL_TRANSITIONS
+                && !mLauncher.getStateManager().getState().isTaskbarAlignedWithHotseat(mLauncher)) {
+            // Launcher is resumed, but in a state where taskbar is still independent, so
+            // ignore the state change.
+            return null;
         }
 
         mTaskbarLauncherStateController.updateStateForFlag(FLAG_RESUMED, isResumed);

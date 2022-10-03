@@ -18,13 +18,17 @@ package com.android.launcher3.taskbar;
 
 import static android.view.accessibility.AccessibilityManager.FLAG_CONTENT_CONTROLS;
 import static android.view.accessibility.AccessibilityManager.FLAG_CONTENT_ICONS;
+import static android.view.accessibility.AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS;
+import static android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK;
 
 import static com.android.launcher3.taskbar.NavbarButtonsViewController.ALPHA_INDEX_IMMERSIVE_MODE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IMMERSIVE_MODE;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.MotionEvent;
+import android.view.View;
 
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.util.MultiValueAlpha;
@@ -52,6 +56,21 @@ public class TaskbarForceVisibleImmersiveController implements TouchController {
             this::updateIconDimmingAlpha);
     private final Consumer<MultiValueAlpha> mImmersiveModeAlphaUpdater = alpha -> alpha.getProperty(
             ALPHA_INDEX_IMMERSIVE_MODE).setValue(mIconAlphaForDimming.value);
+    private final View.AccessibilityDelegate mKidsModeAccessibilityDelegate =
+            new View.AccessibilityDelegate() {
+                @Override
+                public boolean performAccessibilityAction(View host, int action, Bundle args) {
+                    if (action == ACTION_ACCESSIBILITY_FOCUS || action == ACTION_CLICK) {
+                        // Animate undimming of icons on an a11y event, followed by starting the
+                        // dimming animation (after its timeout has expired). Both can be called in
+                        // succession, as the playing of the two animations in a row is managed by
+                        // mHandler's message queue.
+                        startIconUndimming();
+                        startIconDimming();
+                    }
+                    return super.performAccessibilityAction(host, action, args);
+                }
+            };
 
     // Initialized in init.
     private TaskbarControllers mControllers;
@@ -77,12 +96,21 @@ public class TaskbarForceVisibleImmersiveController implements TouchController {
             } else {
                 startIconUndimming();
             }
+            mControllers.navbarButtonsViewController.setHomeButtonAccessibilityDelegate(
+                    mKidsModeAccessibilityDelegate);
+            mControllers.navbarButtonsViewController.setBackButtonAccessibilityDelegate(
+                    mKidsModeAccessibilityDelegate);
+        } else {
+            mControllers.navbarButtonsViewController.setHomeButtonAccessibilityDelegate(null);
+            mControllers.navbarButtonsViewController.setBackButtonAccessibilityDelegate(null);
         }
     }
 
     /** Clean up animations. */
     public void onDestroy() {
         startIconUndimming();
+        mControllers.navbarButtonsViewController.setHomeButtonAccessibilityDelegate(null);
+        mControllers.navbarButtonsViewController.setBackButtonAccessibilityDelegate(null);
     }
 
     private void startIconUndimming() {

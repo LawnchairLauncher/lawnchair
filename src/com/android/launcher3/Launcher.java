@@ -18,8 +18,6 @@ package com.android.launcher3;
 
 import static android.app.PendingIntent.FLAG_IMMUTABLE;
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
-import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
-import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
 import static android.content.pm.ActivityInfo.CONFIG_UI_MODE;
 import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
@@ -44,6 +42,7 @@ import static com.android.launcher3.LauncherState.NO_SCALE;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.getSupportedActions;
+import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
 import static com.android.launcher3.logging.StatsLogManager.EventEnum;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
@@ -196,8 +195,6 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.TraceHelper;
-import com.android.launcher3.util.UiThreadHelper;
-import com.android.launcher3.util.ViewCapture;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.FloatingIconView;
@@ -310,8 +307,6 @@ public class Launcher extends StatefulActivity<LauncherState>
     private static final FloatProperty<Hotseat> HOTSEAT_WIDGET_SCALE =
             HOTSEAT_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_WIDGET_TRANSITION);
 
-    private Configuration mOldConfig;
-
     @Thunk
     Workspace<?> mWorkspace;
     @Thunk
@@ -397,7 +392,6 @@ public class Launcher extends StatefulActivity<LauncherState>
     private LauncherState mPrevLauncherState;
 
     private StringCache mStringCache;
-    private ViewCapture mViewCapture;
 
     @Override
     @TargetApi(Build.VERSION_CODES.S)
@@ -466,7 +460,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         super.onCreate(savedInstanceState);
 
         LauncherAppState app = LauncherAppState.getInstance(this);
-        mOldConfig = new Configuration(getResources().getConfiguration());
         mModel = app.getModel();
 
         mRotationHelper = new RotationHelper(this);
@@ -487,7 +480,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         mAppWidgetHost = createAppWidgetHost();
         mAppWidgetHost.startListening();
 
-        inflateRootView(R.layout.launcher);
         setupViews();
         crossFadeWithPreviousAppearance();
         mPopupDataProvider = new PopupDataProvider(this::updateNotificationDots);
@@ -614,17 +606,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         dispatchDeviceProfileChanged();
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        int diff = newConfig.diff(mOldConfig);
-        if ((diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0) {
-            onIdpChanged(false);
-        }
-
-        mOldConfig.setTo(newConfig);
-        super.onConfigurationChanged(newConfig);
-    }
-
     /**
      * Initializes the drag controller.
      */
@@ -634,6 +615,11 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     public void onIdpChanged(boolean modelPropertiesChanged) {
+        onHandleConfigurationChanged();
+    }
+
+    @Override
+    protected void onHandleConfigurationChanged() {
         if (!initDeviceProfile(mDeviceProfile.inv)) {
             return;
         }
@@ -1136,6 +1122,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                         .log(getAllAppsEntryEvent().get());
             }
         }
+        updateDisallowBack();
     }
 
     /**
@@ -1271,6 +1258,7 @@ public class Launcher extends StatefulActivity<LauncherState>
      * Finds all the views we need and configure them properly.
      */
     protected void setupViews() {
+        inflateRootView(R.layout.launcher);
         mDragLayer = findViewById(R.id.drag_layer);
         mFocusHandler = mDragLayer.getFocusIndicatorHelper();
         mWorkspace = mDragLayer.findViewById(R.id.workspace);
@@ -1499,14 +1487,6 @@ public class Launcher extends StatefulActivity<LauncherState>
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         mOverlayManager.onAttachedToWindow();
-        if (FeatureFlags.CONTINUOUS_VIEW_TREE_CAPTURE.get()) {
-            View root = getDragLayer().getRootView();
-            if (mViewCapture != null) {
-                root.getViewTreeObserver().removeOnDrawListener(mViewCapture);
-            }
-            mViewCapture = new ViewCapture(root);
-            root.getViewTreeObserver().addOnDrawListener(mViewCapture);
-        }
     }
 
     @Override
@@ -1671,16 +1651,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (gnc != null) {
             AbstractFloatingView.closeOpenViews(this, false, TYPE_ICON_SURFACE);
             FloatingSurfaceView.show(this, gnc);
-        }
-    }
-
-    /**
-     * Hides the keyboard if visible
-     */
-    public void hideKeyboard() {
-        final View v = getWindow().peekDecorView();
-        if (v != null && v.getWindowToken() != null) {
-            UiThreadHelper.hideKeyboardAsync(this, v.getWindowToken());
         }
     }
 
@@ -2810,7 +2780,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             View v = getFirstMatch(Collections.singletonList(activeRecyclerView),
                     preferredItem, packageAndUserAndApp);
 
-            if (v != null && activeRecyclerView.getCurrentScrollY() > 0) {
+            if (v != null && activeRecyclerView.computeVerticalScrollOffset() > 0) {
                 RectF locationBounds = new RectF();
                 FloatingIconView.getLocationBoundsForView(this, v, false, locationBounds,
                         new Rect());
@@ -3026,10 +2996,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         writer.println(prefix + "\tmRotationHelper: " + mRotationHelper);
         writer.println(prefix + "\tmAppWidgetHost.isListening: " + mAppWidgetHost.isListening());
 
-        if (mViewCapture != null) {
-            writer.println(prefix + "\tmViewCapture: " + mViewCapture.dumpToString());
-        }
-
         // Extra logging for general debugging
         mDragLayer.dump(prefix, writer);
         mStateManager.dump(prefix, writer);
@@ -3158,7 +3124,18 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     public void useFadeOutAnimationForLauncherStart(CancellationSignal signal) { }
 
-    public void onDragLayerHierarchyChanged() { }
+    public void onDragLayerHierarchyChanged() {
+        updateDisallowBack();
+    }
+
+    private void updateDisallowBack() {
+        LauncherRootView rv = getRootView();
+        if (rv != null) {
+            boolean disableBack = getStateManager().getState() == NORMAL
+                    && AbstractFloatingView.getTopOpenView(this) == null;
+            rv.setDisallowBackGesture(disableBack);
+        }
+    }
 
     @Override
     public void returnToHomescreen() {
@@ -3258,12 +3235,10 @@ public class Launcher extends StatefulActivity<LauncherState>
      * @param progress Transition progress from 0 to 1; where 0 => home and 1 => widgets.
      */
     public void onWidgetsTransition(float progress) {
-        if (mDeviceProfile.isTablet) {
-            float scale =
-                    Utilities.comp(Utilities.comp(mDeviceProfile.workspaceContentScale) * progress);
-            WORKSPACE_WIDGET_SCALE.set(getWorkspace(), scale);
-            HOTSEAT_WIDGET_SCALE.set(getHotseat(), scale);
-        }
+        float scale = Utilities.mapToRange(progress, 0f, 1f, 1f,
+                mDeviceProfile.bottomSheetWorkspaceScale, EMPHASIZED);
+        WORKSPACE_WIDGET_SCALE.set(getWorkspace(), scale);
+        HOTSEAT_WIDGET_SCALE.set(getHotseat(), scale);
     }
 
     private static class NonConfigInstance {

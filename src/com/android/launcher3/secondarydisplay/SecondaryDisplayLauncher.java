@@ -29,7 +29,9 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.StringCache;
@@ -39,6 +41,8 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.IntSet;
+import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
 
@@ -61,11 +65,16 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     private boolean mAppDrawerShown = false;
 
     private StringCache mStringCache;
+    private OnboardingPrefs<?> mOnboardingPrefs;
+    private boolean mBindingItems = false;
+    private SecondaryDisplayPredictions mSecondaryDisplayPredictions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mModel = LauncherAppState.getInstance(this).getModel();
+        mOnboardingPrefs = new OnboardingPrefs<>(this, Utilities.getPrefs(this));
+        mSecondaryDisplayPredictions = SecondaryDisplayPredictions.newInstance(this);
         if (getWindow().getDecorView().isAttachedToWindow()) {
             initUi();
         }
@@ -204,6 +213,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
             mAppDrawerShown = true;
             mAppsView.setVisibility(View.VISIBLE);
             mAppsButton.setVisibility(View.INVISIBLE);
+            mSecondaryDisplayPredictions.updateAppDivider();
         } else {
             mAppDrawerShown = false;
             animator.addListener(new AnimatorListenerAdapter() {
@@ -219,6 +229,26 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     }
 
     @Override
+    public OnboardingPrefs<?> getOnboardingPrefs() {
+        return mOnboardingPrefs;
+    }
+
+    @Override
+    public void startBinding() {
+        mBindingItems = true;
+    }
+
+    @Override
+    public boolean isBindingItems() {
+        return mBindingItems;
+    }
+
+    @Override
+    public void finishBindingItems(IntSet pagesBoundFirst) {
+        mBindingItems = false;
+    }
+
+    @Override
     public void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMap) {
         mPopupDataProvider.setDeepShortcutMap(deepShortcutMap);
     }
@@ -227,6 +257,13 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     public void bindAllApplications(AppInfo[] apps, int flags) {
         mAppsView.getAppsStore().setApps(apps, flags);
         PopupContainerWithArrow.dismissInvalidPopup(this);
+    }
+
+    @Override
+    public void bindExtraContainerItems(BgDataModel.FixedContainerItems item) {
+        if (item.containerId == LauncherSettings.Favorites.CONTAINER_PREDICTION) {
+            mSecondaryDisplayPredictions.setPredictedApps(item);
+        }
     }
 
     @Override
@@ -259,7 +296,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
             Intent intent;
             if (item instanceof ItemInfoWithIcon
                     && (((ItemInfoWithIcon) item).runtimeStatusFlags
-                        & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
+                    & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
                 ItemInfoWithIcon appInfo = (ItemInfoWithIcon) item;
                 intent = appInfo.getMarketIntent(this);
             } else {

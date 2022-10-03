@@ -247,8 +247,16 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         return mLauncher.hasLauncherObject(mLauncher.getOverviewObjectSelector("clear_all"));
     }
 
+    protected boolean isActionsViewVisible() {
+        OverviewTask task = mLauncher.isTablet() ? getFocusedTaskForTablet() : getCurrentTask();
+        if (task == null) {
+            return false;
+        }
+        return !task.isTaskSplit();
+    }
+
     private void verifyActionsViewVisibility() {
-        if (!hasTasks()) {
+        if (!hasTasks() || !isActionsViewVisible()) {
             return;
         }
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
@@ -265,13 +273,11 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      * Returns if focused task is currently snapped task in tablet grid overview.
      */
     private boolean isOverviewSnappedToFocusedTaskForTablet() {
-        UiObject2 focusedTask = getFocusedTaskForTablet();
+        OverviewTask focusedTask = getFocusedTaskForTablet();
         if (focusedTask == null) {
             return false;
         }
-        return Math.abs(
-                focusedTask.getVisibleBounds().exactCenterX() - mLauncher.getExactScreenCenterX())
-                < 1;
+        return Math.abs(focusedTask.getExactCenterX() - mLauncher.getExactScreenCenterX()) < 1;
     }
 
     /**
@@ -279,7 +285,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      *
      * @throws IllegalStateException if not run on a tablet device.
      */
-    UiObject2 getFocusedTaskForTablet() {
+    OverviewTask getFocusedTaskForTablet() {
         if (!mLauncher.isTablet()) {
             throw new IllegalStateException("Must be run on tablet device.");
         }
@@ -290,7 +296,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         int focusedTaskHeight = mLauncher.getFocusedTaskHeightForTablet();
         for (UiObject2 task : taskViews) {
             if (task.getVisibleBounds().height() == focusedTaskHeight) {
-                return task;
+                return new OverviewTask(mLauncher, task, this);
             }
         }
         return null;

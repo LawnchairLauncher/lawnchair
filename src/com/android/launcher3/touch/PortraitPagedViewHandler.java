@@ -27,7 +27,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.VERTICAL;
-import static com.android.launcher3.util.DisplayController.NavigationMode.THREE_BUTTONS;
+import static com.android.launcher3.util.NavigationMode.THREE_BUTTONS;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 
@@ -316,6 +316,26 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+    public void setSecondaryTaskMenuPosition(SplitBounds splitBounds, View taskView,
+            DeviceProfile deviceProfile, View primarySnaphotView, View taskMenuView) {
+        float topLeftTaskPlusDividerPercent = splitBounds.appsStackedVertically
+                ? (splitBounds.topTaskPercent + splitBounds.dividerHeightPercent)
+                : (splitBounds.leftTaskPercent + splitBounds.dividerWidthPercent);
+        FrameLayout.LayoutParams snapshotParams =
+                (FrameLayout.LayoutParams) primarySnaphotView.getLayoutParams();
+        float additionalOffset;
+        if (deviceProfile.isLandscape) {
+            additionalOffset = (taskView.getWidth() - snapshotParams.leftMargin)
+                    * topLeftTaskPlusDividerPercent;
+            taskMenuView.setX(taskMenuView.getX() + additionalOffset);
+        } else {
+            additionalOffset = (taskView.getHeight() - snapshotParams.topMargin)
+                    * topLeftTaskPlusDividerPercent;
+            taskMenuView.setY(taskMenuView.getY() + additionalOffset);
+        }
+    }
+
+    @Override
     public Pair<Float, Float> getDwbLayoutTranslations(int taskViewWidth,
             int taskViewHeight, SplitBounds splitBounds, DeviceProfile deviceProfile,
             View[] thumbnailViews, int desiredTaskId, View banner) {
@@ -500,7 +520,7 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     public void setSplitInstructionsParams(View out, DeviceProfile dp, int splitInstructionsHeight,
             int splitInstructionsWidth, int threeButtonNavShift) {
         out.setPivotX(0);
-        out.setPivotY(0);
+        out.setPivotY(splitInstructionsHeight);
         out.setRotation(getDegreesRotated());
         int distanceToEdge;
         if ((DisplayController.getNavigationMode(out.getContext()) == THREE_BUTTONS)

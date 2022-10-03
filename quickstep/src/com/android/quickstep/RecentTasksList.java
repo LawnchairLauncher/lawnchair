@@ -20,6 +20,7 @@ import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
+import android.app.KeyguardManager;
 import android.os.Build;
 import android.os.Process;
 import android.os.RemoteException;
@@ -27,11 +28,10 @@ import android.util.SparseBooleanArray;
 
 import androidx.annotation.VisibleForTesting;
 
-import com.android.quickstep.util.GroupTask;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.SplitConfigurationOptions;
+import com.android.quickstep.util.GroupTask;
 import com.android.systemui.shared.recents.model.Task;
-import com.android.systemui.shared.system.KeyguardManagerCompat;
 import com.android.wm.shell.recents.IRecentTasksListener;
 import com.android.wm.shell.util.GroupedRecentTaskInfo;
 import com.android.wm.shell.util.SplitBounds;
@@ -49,7 +49,7 @@ public class RecentTasksList {
 
     private static final TaskLoadResult INVALID_RESULT = new TaskLoadResult(-1, false, 0);
 
-    private final KeyguardManagerCompat mKeyguardManager;
+    private final KeyguardManager mKeyguardManager;
     private final LooperExecutor mMainThreadExecutor;
     private final SystemUiProxy mSysUiProxy;
 
@@ -66,8 +66,8 @@ public class RecentTasksList {
     // Tasks are stored in order of least recently launched to most recently launched.
     private ArrayList<ActivityManager.RunningTaskInfo> mRunningTasks;
 
-    public RecentTasksList(LooperExecutor mainThreadExecutor,
-            KeyguardManagerCompat keyguardManager, SystemUiProxy sysUiProxy) {
+    public RecentTasksList(LooperExecutor mainThreadExecutor, KeyguardManager keyguardManager,
+            SystemUiProxy sysUiProxy) {
         mMainThreadExecutor = mainThreadExecutor;
         mKeyguardManager = keyguardManager;
         mChangeId = 1;
@@ -254,8 +254,13 @@ public class RecentTasksList {
 
         TaskLoadResult allTasks = new TaskLoadResult(requestId, loadKeysOnly, rawTasks.size());
         for (GroupedRecentTaskInfo rawTask : rawTasks) {
-            ActivityManager.RecentTaskInfo taskInfo1 = rawTask.mTaskInfo1;
-            ActivityManager.RecentTaskInfo taskInfo2 = rawTask.mTaskInfo2;
+            if (rawTask.getType() == GroupedRecentTaskInfo.TYPE_FREEFORM) {
+                GroupTask desktopTask = createDesktopTask(rawTask);
+                allTasks.add(desktopTask);
+                continue;
+            }
+            ActivityManager.RecentTaskInfo taskInfo1 = rawTask.getTaskInfo1();
+            ActivityManager.RecentTaskInfo taskInfo2 = rawTask.getTaskInfo2();
             Task.TaskKey task1Key = new Task.TaskKey(taskInfo1);
             Task task1 = loadKeysOnly
                     ? new Task(task1Key)
@@ -272,11 +277,21 @@ public class RecentTasksList {
                 task2.setLastSnapshotData(taskInfo2);
             }
             final SplitConfigurationOptions.SplitBounds launcherSplitBounds =
-                    convertSplitBounds(rawTask.mSplitBounds);
+                    convertSplitBounds(rawTask.getSplitBounds());
             allTasks.add(new GroupTask(task1, task2, launcherSplitBounds));
         }
 
         return allTasks;
+    }
+
+    private GroupTask createDesktopTask(GroupedRecentTaskInfo taskInfo) {
+        // TODO(b/244348395): create a subclass of GroupTask for desktop tile
+        // We need a single task information as the primary task. Use the first task
+        Task.TaskKey key = new Task.TaskKey(taskInfo.getTaskInfo1());
+        Task task = new Task(key);
+        task.desktopTile = true;
+        task.topActivity = key.sourceComponent;
+        return new GroupTask(task, null, null);
     }
 
     private SplitConfigurationOptions.SplitBounds convertSplitBounds(
@@ -310,8 +325,8 @@ public class RecentTasksList {
                 mSysUiProxy.getRecentTasks(Integer.MAX_VALUE, currentUserId);
         writer.println(prefix + "  rawTasks=[");
         for (GroupedRecentTaskInfo task : rawTasks) {
-            writer.println(prefix + "    t1=" + task.mTaskInfo1.taskId
-                    + " t2=" + (task.mTaskInfo2 != null ? task.mTaskInfo2.taskId : "-1"));
+            writer.println(prefix + "    t1=" + task.getTaskInfo1().taskId
+                    + " t2=" + (task.getTaskInfo2() != null ? task.getTaskInfo2().taskId : "-1"));
         }
         writer.println(prefix + "  ]");
     }

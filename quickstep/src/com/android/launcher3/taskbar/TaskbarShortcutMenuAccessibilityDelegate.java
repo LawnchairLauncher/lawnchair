@@ -17,24 +17,29 @@ package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.DEEP_SHORTCUTS;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.SHORTCUTS_AND_NOTIFICATIONS;
-import static com.android.wm.shell.common.split.SplitScreenConstants.SPLIT_POSITION_BOTTOM_OR_RIGHT;
-import static com.android.wm.shell.common.split.SplitScreenConstants.SPLIT_POSITION_TOP_OR_LEFT;
+import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
+import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
+import static com.android.launcher3.util.SplitConfigurationOptions.getLogEventForPosition;
 
 import android.content.Intent;
 import android.content.pm.LauncherApps;
+import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.View;
 
+import com.android.internal.logging.InstanceId;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.accessibility.BaseAccessibilityDelegate;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.ShortcutUtil;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.util.LogUtils;
 
 import java.util.List;
 
@@ -49,10 +54,12 @@ public class TaskbarShortcutMenuAccessibilityDelegate
     public static final int MOVE_TO_BOTTOM_OR_RIGHT = R.id.action_move_to_bottom_or_right;
 
     private final LauncherApps mLauncherApps;
+    private final StatsLogManager mStatsLogManager;
 
     public TaskbarShortcutMenuAccessibilityDelegate(TaskbarActivityContext context) {
         super(context);
         mLauncherApps = context.getSystemService(LauncherApps.class);
+        mStatsLogManager = context.getStatsLogManager();
 
         mActions.put(DEEP_SHORTCUTS, new LauncherAction(DEEP_SHORTCUTS,
                 R.string.action_deep_shortcut, KeyEvent.KEYCODE_S));
@@ -82,7 +89,14 @@ public class TaskbarShortcutMenuAccessibilityDelegate
                 && (action == MOVE_TO_TOP_OR_LEFT || action == MOVE_TO_BOTTOM_OR_RIGHT)) {
             WorkspaceItemInfo info = (WorkspaceItemInfo) item;
             int side = action == MOVE_TO_TOP_OR_LEFT
-                    ? SPLIT_POSITION_TOP_OR_LEFT : SPLIT_POSITION_BOTTOM_OR_RIGHT;
+                    ? STAGE_POSITION_TOP_OR_LEFT : STAGE_POSITION_BOTTOM_OR_RIGHT;
+
+            Pair<InstanceId, com.android.launcher3.logging.InstanceId> instanceIds =
+                    LogUtils.getShellShareableInstanceId();
+            mStatsLogManager.logger()
+                    .withItemInfo(item)
+                    .withInstanceId(instanceIds.second)
+                    .log(getLogEventForPosition(side));
 
             if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                 SystemUiProxy.INSTANCE.get(mContext).startShortcut(
@@ -90,14 +104,15 @@ public class TaskbarShortcutMenuAccessibilityDelegate
                         info.getDeepShortcutId(),
                         side,
                         /* bundleOpts= */ null,
-                        info.user);
+                        info.user,
+                        instanceIds.first);
             } else {
                 SystemUiProxy.INSTANCE.get(mContext).startIntent(
                         mLauncherApps.getMainActivityLaunchIntent(
                                 item.getIntent().getComponent(),
                                 /* startActivityOptions= */null,
                                 item.user),
-                        new Intent(), side, null);
+                        new Intent(), side, null, instanceIds.first);
             }
             return true;
         } else if (action == DEEP_SHORTCUTS || action == SHORTCUTS_AND_NOTIFICATIONS) {

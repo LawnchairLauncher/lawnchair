@@ -358,7 +358,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
             };
             RectFSpringAnim windowAnim = createWindowAnimationToHome(startShift,
                     homeAnimFactory)[0];
-            windowAnim.start(mContext, velocityPxPerMs);
+            windowAnim.start(mContext, mDp, velocityPxPerMs);
             return windowAnim;
         }
     }

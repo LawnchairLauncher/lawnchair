@@ -181,6 +181,21 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     @PortraitLandscape
+    public void testSplitFromOverview() {
+        assumeTrue(!mLauncher.isTablet());
+
+        startTestActivity(2);
+        startTestActivity(3);
+
+        mLauncher.goHome().switchToOverview().getCurrentTask()
+                .tapMenu()
+                .tapSplitMenuItem()
+                .getTestActivityTask(2)
+                .open();
+    }
+
+    @Test
+    @PortraitLandscape
     public void testSplitFromOverviewForTablet() {
         assumeTrue(mLauncher.isTablet());
 
@@ -214,6 +229,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @PortraitLandscape
     @ScreenRecord // b/238461765
     public void testSwitchToOverview() throws Exception {
+        startTestAppsWithCheck();
         assertNotNull("Workspace.switchToOverview() returned null",
                 mLauncher.goHome().switchToOverview());
         assertTrue("Launcher internal state didn't switch to Overview",

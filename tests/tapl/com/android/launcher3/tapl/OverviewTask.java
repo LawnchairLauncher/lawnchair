@@ -20,6 +20,7 @@ import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CH
 
 import android.graphics.Rect;
 
+import androidx.annotation.NonNull;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiObject2;
@@ -65,6 +66,10 @@ public final class OverviewTask {
 
     int getTaskCenterX() {
         return mTask.getVisibleCenter().x;
+    }
+
+    float getExactCenterX() {
+        return mTask.getVisibleBounds().exactCenterX();
     }
 
     /**
@@ -158,5 +163,25 @@ public final class OverviewTask {
                 return new LaunchedAppState(mLauncher);
             }
         }
+    }
+
+    /** Taps the task menu. */
+    @NonNull
+    public OverviewTaskMenu tapMenu() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to tap the task menu")) {
+            mLauncher.clickLauncherObject(
+                    mLauncher.waitForObjectInContainer(mTask.getParent(), "icon"));
+
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                    "tapped the task menu")) {
+                return new OverviewTaskMenu(mLauncher);
+            }
+        }
+    }
+
+    boolean isTaskSplit() {
+        return mLauncher.findObjectInContainer(mTask.getParent(), "bottomright_snapshot") != null;
     }
 }

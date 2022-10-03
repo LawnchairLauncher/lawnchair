@@ -84,4 +84,9 @@ public class DefaultSearchAdapterProvider extends SearchAdapterProvider<AppLaunc
     public RecyclerView.ItemDecoration getDecorator() {
         return mDecoration;
     }
+
+    @Override
+    public void clearHighlightedItem() {
+        mHighlightedView = null;
+    }
 }

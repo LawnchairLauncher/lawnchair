@@ -97,12 +97,10 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
                 bottomMargin += dp.hotseatQsbHeight;
             }
 
-            if (!dp.isGestureMode) {
-                if (dp.isTaskbarPresent) {
-                    bottomMargin += dp.taskbarSize;
-                } else {
-                    bottomMargin += insets.bottom;
-                }
+            if (!dp.isGestureMode && dp.isTaskbarPresent) {
+                bottomMargin += dp.taskbarSize;
+            } else {
+                bottomMargin += insets.bottom;
             }
 
             lp.bottomMargin = bottomMargin;
@@ -170,12 +168,14 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
 
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        if (Utilities.ATLEAST_R && isEnabled()) {
+        if (!Utilities.ATLEAST_R) {
+            return insets;
+        }
+        if (insets.isVisible(WindowInsets.Type.ime())) {
+            Insets keyboardInsets = insets.getInsets(WindowInsets.Type.ime());
+            setTranslationY(mInsets.bottom - keyboardInsets.bottom);
+        } else {
             setTranslationY(0);
-            if (insets.isVisible(WindowInsets.Type.ime())) {
-                Insets keyboardInsets = insets.getInsets(WindowInsets.Type.ime());
-                setTranslationY(mInsets.bottom - keyboardInsets.bottom);
-            }
         }
         return insets;
     }

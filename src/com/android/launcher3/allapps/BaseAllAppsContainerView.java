@@ -17,7 +17,6 @@ package com.android.launcher3.allapps;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_PERSONAL_TAB;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_WORK_TAB;
-import static com.android.launcher3.util.UiThreadHelper.hideKeyboardAsync;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -89,6 +88,9 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
     public static final float PULL_MULTIPLIER = .02f;
     public static final float FLING_VELOCITY_MULTIPLIER = 1200f;
 
+    // Render the header protection at all times to debug clipping issues.
+    private static final boolean DEBUG_HEADER_PROTECTION = false;
+
     private final Paint mHeaderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Rect mInsets = new Rect();
 
@@ -104,15 +106,17 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
             new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                    updateHeaderScroll(((AllAppsRecyclerView) recyclerView).getCurrentScrollY());
+                    updateHeaderScroll(
+                            ((AllAppsRecyclerView) recyclerView).computeVerticalScrollOffset());
                 }
             };
-    private final WorkProfileManager mWorkManager;
+
+    protected final WorkProfileManager mWorkManager;
 
     private final Paint mNavBarScrimPaint;
     private int mNavBarScrimHeight = 0;
 
-    private AllAppsPagedView mViewPager;
+    protected AllAppsPagedView mViewPager;
     private SearchRecyclerView mSearchRecyclerView;
 
     protected FloatingHeaderView mHeader;
@@ -128,7 +132,6 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
     private final int mScrimColor;
     private final int mHeaderProtectionColor;
     protected final float mHeaderThreshold;
-    private int mHeaderBottomAdjustment;
     private ScrimView mScrimView;
     private int mHeaderColor;
     private int mTabsProtectionAlpha;
@@ -141,8 +144,6 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         mScrimColor = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
         mHeaderThreshold = getResources().getDimensionPixelSize(
                 R.dimen.dynamic_grid_cell_border_spacing);
-        mHeaderBottomAdjustment = getResources().getDimensionPixelSize(
-                R.dimen.all_apps_header_bottom_adjustment);
         mHeaderProtectionColor = Themes.getAttrColor(context, R.attr.allappsHeaderProtectionColor);
 
         mWorkManager = new WorkProfileManager(
@@ -349,7 +350,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
      * The container for A-Z apps (the ViewPager for main+work tabs, or main RV). This is currently
      * hidden while searching.
      **/
-    private View getAppsRecyclerViewContainer() {
+    protected View getAppsRecyclerViewContainer() {
         return mViewPager != null ? mViewPager : findViewById(R.id.apps_list_view);
     }
 
@@ -491,6 +492,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
 
         mAllAppsStore.unregisterIconContainer(mAH.get(AdapterHolder.MAIN).mRecyclerView);
         mAllAppsStore.unregisterIconContainer(mAH.get(AdapterHolder.WORK).mRecyclerView);
+        mAllAppsStore.unregisterIconContainer(mAH.get(AdapterHolder.SEARCH).mRecyclerView);
 
         if (mUsingTabs) {
             mAH.get(AdapterHolder.MAIN).setup(mViewPager.getChildAt(0), mPersonalMatcher);
@@ -503,8 +505,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
                             mActivityContext.getStatsLogManager().logger()
                                     .log(LAUNCHER_ALLAPPS_TAP_ON_PERSONAL_TAB);
                         }
-                        hideKeyboardAsync(ActivityContext.lookupContext(getContext()),
-                                getApplicationWindowToken());
+                        mActivityContext.hideKeyboard();
                     });
             findViewById(R.id.tab_work)
                     .setOnClickListener((View view) -> {
@@ -512,8 +513,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
                             mActivityContext.getStatsLogManager().logger()
                                     .log(LAUNCHER_ALLAPPS_TAP_ON_WORK_TAB);
                         }
-                        hideKeyboardAsync(ActivityContext.lookupContext(getContext()),
-                                getApplicationWindowToken());
+                        mActivityContext.hideKeyboard();
                     });
             setDeviceManagementResources();
             onActivePageChanged(mViewPager.getNextPage());
@@ -525,9 +525,10 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
 
         mAllAppsStore.registerIconContainer(mAH.get(AdapterHolder.MAIN).mRecyclerView);
         mAllAppsStore.registerIconContainer(mAH.get(AdapterHolder.WORK).mRecyclerView);
+        mAllAppsStore.registerIconContainer(mAH.get(AdapterHolder.SEARCH).mRecyclerView);
     }
 
-    private void updateSearchResultsVisibility() {
+    protected void updateSearchResultsVisibility() {
         if (isSearching()) {
             getSearchRecyclerView().setVisibility(VISIBLE);
             getAppsRecyclerViewContainer().setVisibility(GONE);
@@ -727,17 +728,29 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         if (!mHeader.isHeaderProtectionSupported()) {
             return;
         }
-        mHeaderPaint.setColor(mHeaderColor);
-        mHeaderPaint.setAlpha((int) (getAlpha() * Color.alpha(mHeaderColor)));
+        if (DEBUG_HEADER_PROTECTION) {
+            mHeaderPaint.setColor(Color.MAGENTA);
+            mHeaderPaint.setAlpha(255);
+        } else {
+            mHeaderPaint.setColor(mHeaderColor);
+            mHeaderPaint.setAlpha((int) (getAlpha() * Color.alpha(mHeaderColor)));
+        }
         if (mHeaderPaint.getColor() != mScrimColor && mHeaderPaint.getColor() != 0) {
             int bottom = getHeaderBottom();
+            FloatingHeaderView headerView = getFloatingHeaderView();
             if (!mUsingTabs) {
-                bottom += getFloatingHeaderView().getPaddingBottom() - mHeaderBottomAdjustment;
+                // Add protection which is otherwise added when tabs scroll up.
+                bottom += headerView.getTabsAdditionalPaddingTop();
             }
             canvas.drawRect(0, 0, canvas.getWidth(), bottom, mHeaderPaint);
-            int tabsHeight = getFloatingHeaderView().getPeripheralProtectionHeight();
+            int tabsHeight = headerView.getPeripheralProtectionHeight();
             if (mTabsProtectionAlpha > 0 && tabsHeight != 0) {
-                mHeaderPaint.setAlpha((int) (getAlpha() * mTabsProtectionAlpha));
+                if (DEBUG_HEADER_PROTECTION) {
+                    mHeaderPaint.setColor(Color.BLUE);
+                    mHeaderPaint.setAlpha(255);
+                } else {
+                    mHeaderPaint.setAlpha((int) (getAlpha() * mTabsProtectionAlpha));
+                }
                 canvas.drawRect(0, bottom, canvas.getWidth(), bottom + tabsHeight, mHeaderPaint);
             }
         }

@@ -15,7 +15,7 @@
  */
 package com.android.launcher3;
 
-import static com.android.launcher3.util.UiThreadHelper.hideKeyboardAsync;
+import static com.android.launcher3.logging.KeyboardStateManager.KeyboardState.SHOW;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -33,8 +33,6 @@ import com.android.launcher3.views.ActivityContext;
  * Note: AppCompatEditText doesn't fully support #displayCompletions and #onCommitCompletion
  */
 public class ExtendedEditText extends EditText {
-
-    private boolean mShowImeAfterFirstLayout;
     private boolean mForceDisableSuggestions = false;
 
     /**
@@ -85,26 +83,19 @@ public class ExtendedEditText extends EditText {
         return false;
     }
 
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        if (mShowImeAfterFirstLayout) {
-            // soft input only shows one frame after the layout of the EditText happens,
-            post(() -> {
-                showSoftInput();
-                mShowImeAfterFirstLayout = false;
-            });
-        }
-    }
-
-
     public void showKeyboard() {
-        mShowImeAfterFirstLayout = !showSoftInput();
+        onKeyboardShown();
+        showSoftInput();
     }
 
     public void hideKeyboard() {
-        hideKeyboardAsync(ActivityContext.lookupContext(getContext()), getWindowToken());
+        ActivityContext.lookupContext(getContext()).hideKeyboard();
         clearFocus();
+    }
+
+    protected void onKeyboardShown() {
+        ActivityContext.lookupContext(getContext()).getStatsLogManager()
+                .keyboardStateManager().setKeyboardState(SHOW);
     }
 
     private boolean showSoftInput() {

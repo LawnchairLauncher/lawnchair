@@ -59,7 +59,6 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Paieškos programos"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Įkeliamos programos…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Nerasta jokių užklausą „<xliff:g id="QUERY">%1$s</xliff:g>“ atitinkančių programų"</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"Ieškoti daugiau programų"</string>
     <string name="label_application" msgid="8531721983832654978">"Programa"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"Visos programos"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Pranešimai"</string>

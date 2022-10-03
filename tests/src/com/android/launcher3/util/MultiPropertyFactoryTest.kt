@@ -16,26 +16,32 @@
 
 package com.android.launcher3.util
 
-import android.view.View
+import android.util.FloatProperty
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 
-/** Unit tests for [MultiAdditivePropertyFactory] */
+/** Unit tests for [MultiPropertyFactory] */
 @SmallTest
 @RunWith(AndroidJUnit4::class)
-class MultiAdditivePropertyTest {
+class MultiPropertyFactoryTest {
 
     private val received = mutableListOf<Float>()
 
-    private val factory =
-        object : MultiAdditivePropertyFactory<View?>("Test", View.TRANSLATION_X) {
-            override fun apply(obj: View?, value: Float) {
-                received.add(value)
-            }
+    private val receiveProperty: FloatProperty<Any> = object : FloatProperty<Any>("receive") {
+        override fun setValue(obj: Any?, value: Float) {
+            received.add(value)
         }
+        override fun get(o: Any): Float {
+            return 0f
+        }
+    }
+
+    private val factory = MultiPropertyFactory("depth_property", receiveProperty) {
+        x: Float, y: Float -> x + y
+    }
 
     private val p1 = factory.get(1)
     private val p2 = factory.get(2)

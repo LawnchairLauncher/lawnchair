@@ -68,7 +68,6 @@
 
     <string name="hotseat_edu_message_migrate">Easily access your most-used apps right on the Home screen. Suggestions will change based on your routines. Apps on the bottom row will move up to your Home screen. </string>
     <string name="hotseat_edu_message_migrate_landscape">Easily access your most-used apps right on the Home screen. Suggestions will change based on your routines. Apps in favorites row will move to your Home screen. </string>
-    <string name="hotseat_edu_message_migrate_alt">Easily access your most-used apps, right on the Home screen. Suggestions will change based on your routines. Apps on the bottom row will move to a new folder.</string>
 
     <!-- Button text to opt in for fully predicted hotseat -->
     <string name="hotseat_edu_accept">Get app suggestions</string>

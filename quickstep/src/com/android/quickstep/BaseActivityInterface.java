@@ -55,7 +55,7 @@ import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.TaskbarUIController;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.DisplayController;
-import com.android.launcher3.util.DisplayController.NavigationMode;
+import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
@@ -182,14 +182,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public abstract boolean isInLiveTileMode();
 
     public abstract void onLaunchTaskFailed();
-
-    public void onLaunchTaskSuccess() {
-        ACTIVITY_TYPE activity = getCreatedActivity();
-        if (activity == null) {
-            return;
-        }
-        activity.getStateManager().moveToRestState();
-    }
 
     /**
      * Closes any overlays.

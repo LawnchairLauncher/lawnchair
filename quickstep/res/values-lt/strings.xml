@@ -35,7 +35,6 @@
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Gaukite programų pasiūlymų pagrindinio ekrano eilutėje „Mėgstamiausios“"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Lengvai pasiekite dažniausiai naudojamas programas iškart pagrindiniame ekrane. Pasiūlymai keisis atsižvelgiant į tai, kaip jas naudojate. Apatinėje eilutėje esančios programos bus perkeltos į pagrindinį ekraną."</string>
     <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Lengvai pasiekite dažniausiai naudojamas programas iškart pagrindiniame ekrane. Pasiūlymai keisis atsižvelgiant į tai, kaip jas naudojate. Eilutėje „Mėgstamiausios“ rodomos programos bus perkeltos į pagrindinį ekraną."</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Lengvai pasiekite dažniausiai naudojamas programas iškart pagrindiniame ekrane. Pasiūlymai keisis atsižvelgiant į tai, kaip jas naudojate. Apatinėje eilutėje esančios programos bus perkeltos į naują aplanką."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"Gauti programų pasiūlymų"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Ne, ačiū"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Nustatymai"</string>

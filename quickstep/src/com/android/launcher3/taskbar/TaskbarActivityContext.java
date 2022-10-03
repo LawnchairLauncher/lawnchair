@@ -80,7 +80,7 @@ import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.DisplayController;
-import com.android.launcher3.util.DisplayController.NavigationMode;
+import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.TraceHelper;
@@ -119,7 +119,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     // The size we should return to when we call setTaskbarWindowFullscreen(false)
     private int mLastRequestedNonFullscreenHeight;
 
-    private final NavigationMode mNavMode;
+    private NavigationMode mNavMode;
     private final boolean mImeDrawsImeNavBar;
     private final ViewCache mViewCache = new ViewCache();
 
@@ -235,7 +235,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     /** Updates {@link DeviceProfile} instances for any Taskbar windows. */
-    public void updateDeviceProfile(DeviceProfile dp) {
+    public void updateDeviceProfile(DeviceProfile dp, NavigationMode navMode) {
+        mNavMode = navMode;
         mControllers.taskbarAllAppsController.updateDeviceProfile(dp);
         mDeviceProfile = dp.copy(this);
         updateIconSize(getResources());
@@ -608,7 +609,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      */
     public int getDefaultTaskbarWindowHeight() {
         if (FLAG_HIDE_NAVBAR_WINDOW && mDeviceProfile.isPhone) {
-            return getResources().getDimensionPixelSize(R.dimen.taskbar_stashed_size);
+            Resources resources = getResources();
+            return isThreeButtonNav() ?
+                    resources.getDimensionPixelSize(R.dimen.taskbar_size) :
+                    resources.getDimensionPixelSize(R.dimen.taskbar_stashed_size);
         }
         return mDeviceProfile.taskbarSize + Math.max(getLeftCornerRadius(), getRightCornerRadius());
     }
@@ -769,6 +773,24 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mControllers.taskbarStashController.startUnstashHint(animateForward);
     }
 
+    /**
+     * Enables manual taskbar stashing. This method should only be used for tests that need to
+     * stash/unstash the taskbar.
+     */
+    @VisibleForTesting
+    public void enableManualStashingDuringTests(boolean enableManualStashing) {
+        mControllers.taskbarStashController.enableManualStashingDuringTests(enableManualStashing);
+    }
+
+    /**
+     * Unstashes the Taskbar if it is stashed. This method should only be used to unstash the
+     * taskbar at the end of a test.
+     */
+    @VisibleForTesting
+    public void unstashTaskbarIfStashed() {
+        mControllers.taskbarStashController.onLongPressToUnstashTaskbar();
+    }
+
     protected boolean isUserSetupComplete() {
         return mIsUserSetupComplete;
     }
@@ -844,6 +866,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     public void showPopupMenuForIcon(BubbleTextView btv) {
         setTaskbarWindowFullscreen(true);
         btv.post(() -> mControllers.taskbarPopupController.showForIcon(btv));
+    }
+
+    public boolean isInApp() {
+        return mControllers.taskbarStashController.isInApp();
     }
 
     protected void dumpLogs(String prefix, PrintWriter pw) {

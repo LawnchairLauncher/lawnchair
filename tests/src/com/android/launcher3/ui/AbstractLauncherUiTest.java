@@ -151,6 +151,8 @@ public abstract class AbstractLauncherUiTest {
                     device.executeShellCommand(
                             "am dumpheap " + device.getLauncherPackageName() + " " + fileName);
                 }
+                Log.d(TAG, "Saved leak dump, the leak is still present: "
+                        + !launcher.noLeakedActivities());
                 sDumpWasGenerated = true;
                 result = "saved memory dump as an artifact";
             } catch (Throwable e) {
@@ -319,7 +321,7 @@ public abstract class AbstractLauncherUiTest {
     /**
      * Adds {@param item} on the homescreen on the 0th screen
      */
-    protected void addItemToScreen(ItemInfo item) {
+    public void addItemToScreen(ItemInfo item) {
         WidgetUtils.addItemToScreen(item, mTargetContext);
         resetLoaderState();
 
@@ -525,7 +527,7 @@ public abstract class AbstractLauncherUiTest {
     }
 
     protected int getAllAppsScroll(Launcher launcher) {
-        return launcher.getAppsView().getActiveRecyclerView().getCurrentScrollY();
+        return launcher.getAppsView().getActiveRecyclerView().computeVerticalScrollOffset();
     }
 
     private void checkLauncherIntegrity(

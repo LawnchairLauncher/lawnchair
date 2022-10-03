@@ -21,6 +21,8 @@ import android.app.prediction.AppTarget;
 import android.content.ComponentName;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
@@ -52,7 +54,8 @@ public final class WidgetsPredictionUpdateTask extends BaseModelUpdateTask {
      * workspace.
      */
     @Override
-    public void execute(LauncherAppState appState, BgDataModel dataModel, AllAppsList apps) {
+    public void execute(@NonNull final LauncherAppState appState,
+            @NonNull final BgDataModel dataModel, @NonNull final AllAppsList apps) {
         Set<ComponentKey> widgetsInWorkspace = dataModel.appWidgets.stream().map(
                 widget -> new ComponentKey(widget.providerName, widget.user)).collect(
                 Collectors.toSet());

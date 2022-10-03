@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.popup;
 
+import static com.android.launcher3.util.SplitConfigurationOptions.getLogEventForPosition;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -22,9 +24,10 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
 
-import com.android.launcher3.BaseQuickstepLauncher;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.quickstep.views.RecentsView;
 
@@ -32,18 +35,18 @@ public interface QuickstepSystemShortcut {
 
     String TAG = QuickstepSystemShortcut.class.getSimpleName();
 
-    static SystemShortcut.Factory<BaseQuickstepLauncher> getSplitSelectShortcutByPosition(
+    static SystemShortcut.Factory<QuickstepLauncher> getSplitSelectShortcutByPosition(
             SplitPositionOption position) {
         return (activity, itemInfo, originalView) ->
                 new QuickstepSystemShortcut.SplitSelectSystemShortcut(activity, itemInfo,
                         originalView, position);
     }
 
-    class SplitSelectSystemShortcut extends SystemShortcut<BaseQuickstepLauncher> {
+    class SplitSelectSystemShortcut extends SystemShortcut<QuickstepLauncher> {
 
         private final SplitPositionOption mPosition;
 
-        public SplitSelectSystemShortcut(BaseQuickstepLauncher launcher, ItemInfo itemInfo,
+        public SplitSelectSystemShortcut(QuickstepLauncher launcher, ItemInfo itemInfo,
                 View originalView, SplitPositionOption position) {
             super(position.iconResId, position.textResId, launcher, itemInfo, originalView);
 
@@ -52,6 +55,7 @@ public interface QuickstepSystemShortcut {
 
         @Override
         public void onClick(View view) {
+            // Initiate splitscreen from the Home screen or Home All Apps
             Bitmap bitmap;
             Intent intent;
             if (mItemInfo instanceof WorkspaceItemInfo) {
@@ -69,9 +73,10 @@ public interface QuickstepSystemShortcut {
             }
 
             RecentsView recentsView = mTarget.getOverviewPanel();
+            StatsLogManager.EventEnum splitEvent = getLogEventForPosition(mPosition.stagePosition);
             recentsView.initiateSplitSelect(
                     new SplitSelectSource(mOriginalView, new BitmapDrawable(bitmap), intent,
-                            mPosition));
+                            mPosition, mItemInfo, splitEvent));
         }
     }
 
@@ -81,13 +86,18 @@ public interface QuickstepSystemShortcut {
         public final Drawable drawable;
         public final Intent intent;
         public final SplitPositionOption position;
+        public final ItemInfo mItemInfo;
+        public final StatsLogManager.EventEnum splitEvent;
 
         public SplitSelectSource(View view, Drawable drawable, Intent intent,
-                SplitPositionOption position) {
+                SplitPositionOption position, ItemInfo itemInfo,
+                StatsLogManager.EventEnum splitEvent) {
             this.view = view;
             this.drawable = drawable;
             this.intent = intent;
             this.position = position;
+            this.mItemInfo = itemInfo;
+            this.splitEvent = splitEvent;
         }
     }
 }

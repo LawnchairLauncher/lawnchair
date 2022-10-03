@@ -376,6 +376,19 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         return isRtl ? 1 : -1;
     }
 
+    @Override
+    public void setSecondaryTaskMenuPosition(SplitBounds splitBounds, View taskView,
+            DeviceProfile deviceProfile, View primarySnaphotView, View taskMenuView) {
+        float topLeftTaskPlusDividerPercent = splitBounds.appsStackedVertically
+                ? (splitBounds.topTaskPercent + splitBounds.dividerHeightPercent)
+                : (splitBounds.leftTaskPercent + splitBounds.dividerWidthPercent);
+        FrameLayout.LayoutParams snapshotParams =
+                (FrameLayout.LayoutParams) primarySnaphotView.getLayoutParams();
+        float additionalOffset = (taskView.getHeight() - snapshotParams.topMargin)
+                * topLeftTaskPlusDividerPercent;
+        taskMenuView.setY(taskMenuView.getY() + additionalOffset);
+    }
+
     /* -------------------- */
 
     @Override
@@ -440,7 +453,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     public void setSplitInstructionsParams(View out, DeviceProfile dp, int splitInstructionsHeight,
             int splitInstructionsWidth, int threeButtonNavShift) {
         out.setPivotX(0);
-        out.setPivotY(0);
+        out.setPivotY(splitInstructionsHeight);
         out.setRotation(getDegreesRotated());
         int distanceToEdge = out.getResources().getDimensionPixelSize(
                 R.dimen.split_instructions_bottom_margin_phone_landscape);
@@ -448,8 +461,8 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         int insetCorrectionX = dp.getInsets().left;
         // Center the view in case of unbalanced insets on top or bottom of screen
         int insetCorrectionY = (dp.getInsets().bottom - dp.getInsets().top) / 2;
-        out.setTranslationX(splitInstructionsHeight + distanceToEdge - insetCorrectionX);
-        out.setTranslationY(((splitInstructionsHeight - splitInstructionsWidth) / 2f)
+        out.setTranslationX(distanceToEdge - insetCorrectionX);
+        out.setTranslationY(((-splitInstructionsHeight - splitInstructionsWidth) / 2f)
                 + insetCorrectionY);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) out.getLayoutParams();
         // Setting gravity to LEFT instead of the lint-recommended START because we always want this
@@ -492,8 +505,8 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
         int totalThumbnailHeight = parentHeight - spaceAboveSnapshot;
         int dividerBar = splitBoundsConfig.appsStackedVertically
-                ? splitBoundsConfig.visualDividerBounds.height()
-                : splitBoundsConfig.visualDividerBounds.width();
+                ? (int) (splitBoundsConfig.dividerHeightPercent * parentHeight)
+                : (int) (splitBoundsConfig.dividerWidthPercent * parentWidth);
         int primarySnapshotHeight;
         int primarySnapshotWidth;
         int secondarySnapshotHeight;
