@@ -29,6 +29,7 @@ import android.graphics.Canvas;
 import android.graphics.Outline;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -38,6 +39,7 @@ import android.view.ViewOutlineProvider;
 import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
 
+import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
@@ -47,7 +49,7 @@ import com.android.launcher3.util.Themes;
  * {@link PageIndicator} which shows dots per page. The active page is shown with the current
  * accent color.
  */
-public class PageIndicatorDots extends View implements PageIndicator {
+public class PageIndicatorDots extends View implements Insettable, PageIndicator {
 
     private static final float SHIFT_PER_ANIMATION = 0.5f;
     private static final float SHIFT_THRESHOLD = 0.1f;
@@ -127,7 +129,6 @@ public class PageIndicatorDots extends View implements PageIndicator {
         mPaginationPaint.setStyle(Style.FILL);
         mPaginationPaint.setColor(Themes.getAttrColor(context, R.attr.folderPaginationColor));
         mDotRadius = getResources().getDimension(R.dimen.page_indicator_dot_size) / 2;
-
 
         if (SHOW_DELIGHTFUL_PAGINATION.get()) {
             mPageIndicatorSize = getResources().getDimension(
@@ -482,5 +483,13 @@ public class PageIndicatorDots extends View implements PageIndicator {
                 animateToPosition(mFinalPosition);
             }
         }
+    }
+
+    /**
+     * We need to override setInsets to prevent InsettableFrameLayout from applying different
+     * margins on the pagination.
+     */
+    @Override
+    public void setInsets(Rect insets) {
     }
 }
