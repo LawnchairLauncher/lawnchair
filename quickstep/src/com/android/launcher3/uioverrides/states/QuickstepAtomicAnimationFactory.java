@@ -197,7 +197,8 @@ public class QuickstepAtomicAnimationFactory extends
             config.setInterpolator(ANIM_OVERVIEW_ACTIONS_FADE, clampToProgress(LINEAR,
                     timings.getActionsFadeStartOffset(),
                     timings.getActionsFadeEndOffset()));
-        } else if (fromState == NORMAL && toState == OVERVIEW_SPLIT_SELECT) {
+        } else if ((fromState == NORMAL || fromState == ALL_APPS)
+                && toState == OVERVIEW_SPLIT_SELECT) {
             // Splitting from Home is currently only available on tablets
             SplitAnimationTimings timings = SplitAnimationTimings.TABLET_HOME_TO_SPLIT;
             config.setInterpolator(ANIM_SCRIM_FADE, clampToProgress(LINEAR,
