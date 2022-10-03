@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.getTabWidth;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
@@ -70,8 +72,6 @@ public class WorkEduCard extends FrameLayout implements
     protected void onFinishInflate() {
         super.onFinishInflate();
         findViewById(R.id.action_btn).setOnClickListener(this);
-        MarginLayoutParams lp = ((MarginLayoutParams) findViewById(R.id.wrapper).getLayoutParams());
-        lp.width = mActivityContext.getAppsView().getFloatingHeaderView().getTabWidth();
     }
 
     @Override
@@ -87,14 +87,10 @@ public class WorkEduCard extends FrameLayout implements
     }
 
     @Override
-    public void onAnimationRepeat(Animation animation) {
-
-    }
+    public void onAnimationRepeat(Animation animation) { }
 
     @Override
-    public void onAnimationStart(Animation animation) {
-
-    }
+    public void onAnimationStart(Animation animation) { }
 
     private void removeCard() {
         if (mPosition == -1) {
@@ -107,8 +103,14 @@ public class WorkEduCard extends FrameLayout implements
         }
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int size = MeasureSpec.getSize(widthMeasureSpec);
+        findViewById(R.id.wrapper).getLayoutParams().width = getTabWidth(getContext(), size);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
     public void setPosition(int position) {
         mPosition = position;
     }
-
 }

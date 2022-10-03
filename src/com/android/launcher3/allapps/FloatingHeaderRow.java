@@ -15,10 +15,7 @@
  */
 package com.android.launcher3.allapps;
 
-import android.graphics.Rect;
 import android.view.View;
-
-import com.android.launcher3.DeviceProfile;
 
 /**
  * A abstract representation of a row in all-apps view
@@ -28,8 +25,6 @@ public interface FloatingHeaderRow {
     FloatingHeaderRow[] NO_ROWS = new FloatingHeaderRow[0];
 
     void setup(FloatingHeaderView parent, FloatingHeaderRow[] allRows, boolean tabsHidden);
-
-    void setInsets(Rect insets, DeviceProfile grid);
 
     int getExpectedHeight();
 
