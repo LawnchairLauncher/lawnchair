@@ -4295,6 +4295,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         resetTaskVisuals();
         mSplitHiddenTaskViewIndex = -1;
+        if (mSplitHiddenTaskView != null) {
+            mSplitHiddenTaskView.setThumbnailVisibility(VISIBLE);
+            mSplitHiddenTaskView = null;
+        }
     }
 
     private void safeRemoveDragLayerView(@Nullable View viewToRemove) {
