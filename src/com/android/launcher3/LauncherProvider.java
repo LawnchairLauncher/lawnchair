@@ -85,6 +85,7 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "LauncherProvider";
@@ -944,15 +945,27 @@ public class LauncherProvider extends ContentProvider {
             final IntSet validWidgets = IntSet.wrap(LauncherDbUtils.queryIntArray(false, db,
                     Favorites.TABLE_NAME, Favorites.APPWIDGET_ID,
                     "itemType=" + Favorites.ITEM_TYPE_APPWIDGET, null, null));
+            boolean isAnyWidgetRemoved = false;
             for (int widgetId : allWidgets) {
                 if (!validWidgets.contains(widgetId)) {
                     try {
                         FileLog.d(TAG, "Deleting invalid widget " + widgetId);
                         host.deleteAppWidgetId(widgetId);
+                        isAnyWidgetRemoved = true;
                     } catch (RuntimeException e) {
                         // Ignore
                     }
                 }
+            }
+            if (isAnyWidgetRemoved) {
+                final String allWidgetsIds = Arrays.stream(allWidgets).mapToObj(String::valueOf)
+                        .collect(Collectors.joining(",", "[", "]"));
+                final String validWidgetsIds = Arrays.stream(
+                        validWidgets.getArray().toArray()).mapToObj(String::valueOf)
+                        .collect(Collectors.joining(",", "[", "]"));
+                FileLog.d(TAG, "One or more widgets was removed. db_path=" + db.getPath()
+                        + " allWidgetsIds=" + allWidgetsIds
+                        + ", validWidgetsIds=" + validWidgetsIds);
             }
         }
 
