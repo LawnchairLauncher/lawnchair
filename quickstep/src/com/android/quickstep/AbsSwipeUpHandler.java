@@ -1010,8 +1010,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         switch (endTarget) {
             case HOME:
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_HOME | STATE_CAPTURE_SCREENSHOT);
-                // Notify swipe-to-home (recents animation) is finished
-                SystemUiProxy.INSTANCE.get(mContext).notifySwipeToHomeFinished();
+                // Notify the SysUI to use fade-in animation when entering PiP
+                SystemUiProxy.INSTANCE.get(mContext).setPipAnimationTypeToAlpha();
                 break;
             case RECENTS:
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_RECENTS | STATE_CAPTURE_SCREENSHOT
