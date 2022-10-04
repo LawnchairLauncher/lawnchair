@@ -4157,6 +4157,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
     }
 
+    /**
+     * Called when staging a split from Home/AllApps, using the icon long-press menu.
+     */
     public void initiateSplitSelect(QuickstepSystemShortcut.SplitSelectSource splitSelectSource) {
         mSplitSelectSource = splitSelectSource;
         mSplitSelectStateController.setInitialTaskSelect(splitSelectSource.intent,
