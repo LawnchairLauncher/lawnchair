@@ -18,7 +18,6 @@ package com.android.quickstep;
 import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.QuickstepTransitionManager.STATUS_BAR_TRANSITION_DURATION;
 import static com.android.launcher3.QuickstepTransitionManager.STATUS_BAR_TRANSITION_PRE_DELAY;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.graphics.SysUiScrim.SYSUI_PROGRESS;
 import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.quickstep.OverviewComponentObserver.startHomeIntentSafely;
@@ -393,13 +392,9 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     }
 
     public void startHome() {
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            RecentsView recentsView = getOverviewPanel();
-            recentsView.switchToScreenshot(() -> recentsView.finishRecentsAnimation(true,
-                    this::startHomeInternal));
-        } else {
-            startHomeInternal();
-        }
+        RecentsView recentsView = getOverviewPanel();
+        recentsView.switchToScreenshot(() -> recentsView.finishRecentsAnimation(true,
+                this::startHomeInternal));
     }
 
     private void startHomeInternal() {

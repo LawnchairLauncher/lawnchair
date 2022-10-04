@@ -25,7 +25,6 @@ import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncest
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_TAP;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -626,7 +625,7 @@ public class TaskView extends FrameLayout implements Reusable {
             if (ActivityManagerWrapper.getInstance()
                     .startActivityFromRecents(mTask.key, opts.options)) {
                 RecentsView recentsView = getRecentsView();
-                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && recentsView.getRunningTaskViewId() != -1) {
+                if (recentsView.getRunningTaskViewId() != -1) {
                     recentsView.onTaskLaunchedInLiveTileMode();
 
                     // Return a fresh callback in the live tile case, so that it's not accidentally
@@ -714,7 +713,7 @@ public class TaskView extends FrameLayout implements Reusable {
             SystemUiProxy.INSTANCE.get(getContext()).showDesktopApps();
             return runnableList;
         }
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask() && remoteTargetHandles != null) {
+        if (isRunningTask() && remoteTargetHandles != null) {
             if (!mIsClickableAsLiveTile) {
                 return runnableList;
             }
