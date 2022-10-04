@@ -258,7 +258,7 @@
     <dimen name="taskbar_contextual_button_padding">16dp</dimen>
     <dimen name="taskbar_contextual_padding_top">8dp</dimen>
     <dimen name="taskbar_nav_buttons_size">44dp</dimen>
-    <dimen name="taskbar_contextual_button_margin">47dp</dimen>
+    <dimen name="taskbar_contextual_button_margin">48dp</dimen>
     <dimen name="taskbar_hotseat_nav_spacing">24dp</dimen>
     <dimen name="taskbar_contextual_buttons_size">35dp</dimen>
     <dimen name="taskbar_stashed_size">24dp</dimen>
