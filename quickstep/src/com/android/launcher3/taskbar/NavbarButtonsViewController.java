@@ -270,7 +270,8 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                 // end-aligned, so start-align instead.
                 FrameLayout.LayoutParams navButtonsLayoutParams = (FrameLayout.LayoutParams)
                         mNavButtonContainer.getLayoutParams();
-                navButtonsLayoutParams.setMarginStart(navButtonsLayoutParams.getMarginEnd());
+                navButtonsLayoutParams.setMarginStart(
+                        resources.getDimensionPixelSize(R.dimen.taskbar_contextual_button_margin));
                 navButtonsLayoutParams.setMarginEnd(0);
                 navButtonsLayoutParams.gravity = Gravity.START;
                 mNavButtonContainer.requestLayout();
