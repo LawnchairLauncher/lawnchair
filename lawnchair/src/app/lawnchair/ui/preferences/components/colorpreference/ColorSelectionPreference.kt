@@ -65,7 +65,6 @@ fun ColorSelection(
     dynamicEntries: List<ColorPreferenceEntry<ColorOption>> = dynamicColors,
     staticEntries: List<ColorPreferenceEntry<ColorOption>> = staticColors,
 ) {
-
     val adapter = preference.getAdapter()
     val appliedColor by adapter
     val selectedColor = remember { mutableStateOf(appliedColor) }
@@ -75,9 +74,19 @@ fun ColorSelection(
         else -> 2
     }
 
+    val onPresetClick = { option: ColorOption ->
+        selectedColor.value = option
+        adapter.onChange(newValue = option)
+    }
+
+    val pagerState = rememberPagerState(defaultTabIndex)
     PreferenceLayout(
         label = label,
         bottomBar = {
+            if (pagerState.currentPage == 0) {
+                BottomSpacer()
+                return@PreferenceLayout
+            }
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.End
@@ -95,8 +104,6 @@ fun ColorSelection(
             }
         },
     ) {
-
-        val pagerState = rememberPagerState(defaultTabIndex)
         val scope = rememberCoroutineScope()
         val scrollToPage =
             { page: Int -> scope.launch { pagerState.animateScrollToPage(page) } }
@@ -130,8 +137,8 @@ fun ColorSelection(
                         Column {
                             PresetsList(
                                 dynamicEntries = dynamicEntries,
-                                onPresetClick = { selectedColor.value = it },
-                                isPresetSelected = { it == selectedColor.value },
+                                onPresetClick = onPresetClick,
+                                isPresetSelected = { it == appliedColor },
                             )
                             SwatchGrid(
                                 modifier = Modifier.padding(top = 12.dp),
@@ -142,8 +149,8 @@ fun ColorSelection(
                                     bottom = 16.dp,
                                 ),
                                 entries = staticEntries,
-                                onSwatchClick = { selectedColor.value = it },
-                                isSwatchSelected = { it == selectedColor.value },
+                                onSwatchClick = onPresetClick,
+                                isSwatchSelected = { it == appliedColor },
                             )
                         }
                     }
@@ -155,7 +162,6 @@ fun ColorSelection(
                     }
                 }
             }
-
         }
     }
 }
