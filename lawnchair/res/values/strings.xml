@@ -46,7 +46,7 @@
     <string name="app_info_drop_target_label">App Info</string>
     <string name="debug_restart_launcher">Restart Lawnchair</string>
     <string name="experimental_features_label">Experimental Features</string>
-    
+
     <!-- ExperimentalFeaturesPreferences -->
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">Font Customization</string>
@@ -138,11 +138,12 @@
     <string name="font_weight_bold">Bold</string>
     <string name="font_weight_extra_bold">Extra Bold</string>
     <string name="font_weight_extra_black">Black</string>
-    
+
     <string name="reset_font">Reset</string>
 
     <!-- colorpreference/* -->
     <string name="dynamic">Dynamic</string>
+    <string name="swatches">Swatches</string>
     <string name="presets">Presets</string>
     <string name="custom">Custom</string>
     <string name="rgb">RGB</string>
@@ -193,7 +194,7 @@
 
       <string name="reset_custom_icons">Reset Custom Icons</string>
       <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
-    
+
     <!-- <string name="widget_button_text" /> (unknown source)-->
       <string name="force_rounded_widgets">Rounded Corners</string>
       <string name="allow_widget_overlap">Allow Overlap</string>
@@ -246,7 +247,7 @@
 
     <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
     <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the "Lawnchair" widget.</string>
-    
+
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">Search Bar</string>
@@ -271,11 +272,11 @@
     <string name="app_label">App</string>
     <string name="website_label">Website</string>
     <string name="qsb_search_provider_app_required">App required.</string>
-    
+
     <!-- AppDrawerPrefences -->
     <!-- app_drawer_label -->
     <!-- general_label -->
-      <string name="hidden_apps_label">Hidden Apps</string> 
+      <string name="hidden_apps_label">Hidden Apps</string>
       <string name="background_opacity">Background Opacity</string>
 
     <string name="pref_category_search">Search</string>
@@ -287,7 +288,7 @@
     <!-- <string name="grid" /> -->
       <string name="app_drawer_columns">App Drawer Columns</string>
       <string name="row_height_label">Row Height</string>
-    
+
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -311,7 +312,7 @@
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Max. Folder Columns</string>
     <string name="max_folder_rows">Max. Folder Rows</string>
-    
+
     <!-- GesturePreference -->
     <!-- <string name="gestures_label" /> -->
     <string name="gesture_double_tap">Double Tap</string>
@@ -341,7 +342,7 @@
       <string name="action_share">Share</string>
       <string name="action_lens">Lens</string>
       <string name="recents_clear_all">Clear All</string>
-      
+
     <string name="window_corner_radius_label">Screen Corner Radius</string>
       <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
       <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
@@ -355,7 +356,7 @@
     <string name="twitter" translatable="false">Twitter</string>
     <string name="github" translatable="false">GitHub</string>
     <string name="discord" translatable="false">Discord</string>
-    
+
     <string name="product">Product</string>
       <string name="design_and_development">Design &amp; Development</string>
       <string name="development">Development</string>
