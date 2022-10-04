@@ -187,7 +187,7 @@ public class SystemUiProxy implements ISystemUiProxy {
         linkToDeath();
         // re-attach the listeners once missing due to setProxy has not been initialized yet.
         if (mPipAnimationListener != null && mPip != null) {
-            setPinnedStackAnimationListener(mPipAnimationListener);
+            setPipAnimationListener(mPipAnimationListener);
         }
         if (mSplitScreenListener != null && mSplitScreen != null) {
             registerSplitScreenListener(mSplitScreenListener);
@@ -357,20 +357,6 @@ public class SystemUiProxy implements ISystemUiProxy {
         }
     }
 
-    /**
-     * Notifies that swipe-to-home action is finished.
-     */
-    @Override
-    public void notifySwipeToHomeFinished() {
-        if (mSystemUiProxy != null) {
-            try {
-                mSystemUiProxy.notifySwipeToHomeFinished();
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call notifySwipeToHomeFinished", e);
-            }
-        }
-    }
-
     @Override
     public void notifyPrioritizedRotation(int rotation) {
         if (mSystemUiProxy != null) {
@@ -475,12 +461,12 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     /**
-     * Sets listener to get pinned stack animation callbacks.
+     * Sets listener to get pip animation callbacks.
      */
-    public void setPinnedStackAnimationListener(IPipAnimationListener listener) {
+    public void setPipAnimationListener(IPipAnimationListener listener) {
         if (mPip != null) {
             try {
-                mPip.setPinnedStackAnimationListener(listener);
+                mPip.setPipAnimationListener(listener);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call setPinnedStackAnimationListener", e);
             }
@@ -518,6 +504,19 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mPip.stopSwipePipToHome(taskId, componentName, destinationBounds, overlay);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call stopSwipePipToHome");
+            }
+        }
+    }
+
+    /**
+     * Sets the next pip animation type to be the alpha animation.
+     */
+    public void setPipAnimationTypeToAlpha() {
+        if (mPip != null) {
+            try {
+                mPip.setPipAnimationTypeToAlpha();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call setPipAnimationTypeToAlpha", e);
             }
         }
     }
