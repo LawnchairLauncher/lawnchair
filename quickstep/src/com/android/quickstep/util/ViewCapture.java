@@ -421,7 +421,6 @@ public class ViewCapture {
             out.visibility = this.visibility;
             out.willNotDraw = this.willNotDraw;
             out.clipChildren = this.clipChildren;
-            out.next = this.next;
             out.elevation = this.elevation;
         }
 
