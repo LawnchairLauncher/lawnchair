@@ -102,6 +102,9 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
 
     private int mThemeIconsColor;
 
+    private final DeviceProfile.OnDeviceProfileChangeListener mDeviceProfileChangeListener =
+            dp -> commitRunningAppsToUI();
+
     public TaskbarViewController(TaskbarActivityContext activity, TaskbarView taskbarView) {
         mActivity = activity;
         mTaskbarView = taskbarView;
@@ -129,10 +132,13 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                 controllers.navbarButtonsViewController.getTaskbarNavButtonTranslationY();
         mTaskbarNavButtonTranslationYForInAppDisplay = controllers.navbarButtonsViewController
                 .getTaskbarNavButtonTranslationYForInAppDisplay();
+
+        mActivity.addOnDeviceProfileChangeListener(mDeviceProfileChangeListener);
     }
 
     public void onDestroy() {
         LauncherAppState.getInstance(mActivity).getModel().removeCallbacks(mModelCallbacks);
+        mActivity.removeOnDeviceProfileChangeListener(mDeviceProfileChangeListener);
         mModelCallbacks.unregisterListeners();
     }
 
