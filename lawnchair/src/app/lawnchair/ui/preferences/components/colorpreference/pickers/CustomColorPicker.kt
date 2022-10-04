@@ -58,13 +58,11 @@ import kotlinx.coroutines.launch
 @Composable
 fun CustomColorPicker(
     modifier: Modifier = Modifier,
-    selectedColorOption: ColorOption,
-    onSelect: (ColorOption) -> Unit,
+    selectedColor: Int,
+    onSelect: (Int) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
 
-    val initialColor = selectedColorOption.colorPreferenceEntry.lightColor(LocalContext.current)
-    val selectedColor = if (initialColor == 0) AndroidColor.BLACK else initialColor
     val selectedColorCompose = Color(selectedColor)
 
     val textFieldValue = remember {
@@ -76,7 +74,6 @@ fun CustomColorPicker(
     }
 
     Column(modifier = modifier) {
-
         PreferenceGroup(
             heading = stringResource(id = R.string.hex),
             modifier = Modifier.padding(top = 8.dp),
@@ -104,7 +101,7 @@ fun CustomColorPicker(
                         textFieldValue.value = newValue.copy(text = newText)
                         val newColor = colorStringToIntColor(colorString = newText)
                         if (newColor != null) {
-                            onSelect(ColorOption.CustomColor(newColor))
+                            onSelect(newColor)
                         }
                     },
                 )
@@ -276,7 +273,7 @@ private fun HexColorPicker(
 private fun HsvColorPicker(
     selectedColor: Int,
     onSelectedColorChange: () -> Unit,
-    onSliderValuesChange: (ColorOption.CustomColor) -> Unit,
+    onSliderValuesChange: (Int) -> Unit,
 ) {
     val hsv = remember { intColorToHsvColorArray(selectedColor) }
     var hue by remember { mutableStateOf(hsv[0]) }
@@ -296,12 +293,10 @@ private fun HsvColorPicker(
             if (newBrightness != null) brightness = newBrightness
 
             onSliderValuesChange(
-                ColorOption.CustomColor(
-                    hsvValuesToIntColor(
-                        hue = newHue ?: hue,
-                        saturation = newSaturation ?: saturation,
-                        brightness = newBrightness ?: brightness,
-                    ),
+                hsvValuesToIntColor(
+                    hue = newHue ?: hue,
+                    saturation = newSaturation ?: saturation,
+                    brightness = newBrightness ?: brightness,
                 ),
             )
         }
@@ -347,7 +342,7 @@ private fun RgbColorPicker(
     selectedColor: Int,
     selectedColorCompose: Color = Color(selectedColor),
     onSelectedColorChange: () -> Unit,
-    onSliderValuesChange: (ColorOption.CustomColor) -> Unit,
+    onSliderValuesChange: (Int) -> Unit,
 ) {
 
     var red by remember { mutableStateOf(selectedColor.red) }
@@ -367,13 +362,11 @@ private fun RgbColorPicker(
             if (newBlue != null) blue = newBlue
 
             onSliderValuesChange(
-                ColorOption.CustomColor(
-                    argb(
-                        255,
-                        newRed ?: red,
-                        newGreen ?: green,
-                        newBlue ?: blue,
-                    ),
+                argb(
+                    255,
+                    newRed ?: red,
+                    newGreen ?: green,
+                    newBlue ?: blue,
                 ),
             )
         }

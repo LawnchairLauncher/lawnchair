@@ -1,14 +1,13 @@
 package app.lawnchair.ui.preferences.components.colorpreference
 
+import android.content.Context
+import android.graphics.Color
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -66,8 +65,12 @@ fun ColorSelection(
     staticEntries: List<ColorPreferenceEntry<ColorOption>> = staticColors,
 ) {
     val adapter = preference.getAdapter()
-    val appliedColor by adapter
-    val selectedColor = remember { mutableStateOf(appliedColor) }
+    val appliedColor = adapter.state.value
+    val context = LocalContext.current
+    val selectedColor = remember { mutableStateOf(appliedColor.forCustomPicker(context)) }
+    val selectedColorApplied = derivedStateOf {
+        appliedColor is ColorOption.CustomColor && appliedColor.color == selectedColor.value
+    }
     val defaultTabIndex = when {
         dynamicEntries.any { it.value == appliedColor } -> 0
         staticEntries.any { it.value == appliedColor } -> 1
@@ -75,7 +78,7 @@ fun ColorSelection(
     }
 
     val onPresetClick = { option: ColorOption ->
-        selectedColor.value = option
+        selectedColor.value = option.forCustomPicker(context)
         adapter.onChange(newValue = option)
     }
 
@@ -92,8 +95,8 @@ fun ColorSelection(
                 horizontalAlignment = Alignment.End
             ) {
                 Button(
-                    enabled = selectedColor.value != appliedColor,
-                    onClick = { adapter.onChange(newValue = selectedColor.value) },
+                    enabled = !selectedColorApplied.value,
+                    onClick = { adapter.onChange(newValue = ColorOption.CustomColor(selectedColor.value)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(all = 16.dp),
@@ -156,7 +159,7 @@ fun ColorSelection(
                     }
                     1 -> {
                         CustomColorPicker(
-                            selectedColorOption = selectedColor.value,
+                            selectedColor = selectedColor.value,
                             onSelect = { selectedColor.value = it },
                         )
                     }
@@ -164,4 +167,12 @@ fun ColorSelection(
             }
         }
     }
+}
+
+private fun ColorOption.forCustomPicker(context: Context): Int {
+    val color = colorPreferenceEntry.lightColor(context)
+    if (color == 0) {
+        return Color.BLACK
+    }
+    return color
 }
