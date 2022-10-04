@@ -20,8 +20,6 @@ import static android.app.WindowConfiguration.WINDOWING_MODE_FULLSCREEN;
 import static android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
 import static android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
@@ -320,13 +318,11 @@ public class TaskThumbnailView extends View {
 
     public void drawOnCanvas(Canvas canvas, float x, float y, float width, float height,
             float cornerRadius) {
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            if (mTask != null && getTaskView().isRunningTask() && !getTaskView().showScreenshot()) {
-                canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mClearPaint);
-                canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius,
-                        mDimmingPaintAfterClearing);
-                return;
-            }
+        if (mTask != null && getTaskView().isRunningTask() && !getTaskView().showScreenshot()) {
+            canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mClearPaint);
+            canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius,
+                    mDimmingPaintAfterClearing);
+            return;
         }
 
         // Always draw the background since the snapshots might be translucent or partially empty

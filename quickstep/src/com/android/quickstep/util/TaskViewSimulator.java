@@ -17,7 +17,6 @@ package com.android.quickstep.util;
 
 import static android.app.WindowConfiguration.WINDOWING_MODE_FULLSCREEN;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.states.RotationHelper.deltaRotation;
 import static com.android.launcher3.touch.PagedOrientationHandler.MATRIX_POST_TRANSLATE;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
@@ -393,7 +392,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
                 .withCornerRadius(getCurrentCornerRadius());
 
         // If mDrawsBelowRecents is unset, no reordering will be enforced.
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mDrawsBelowRecents != null) {
+        if (mDrawsBelowRecents != null) {
             // In legacy transitions, the animation leashes remain in same hierarchy in the
             // TaskDisplayArea, so we don't want to bump the layer too high otherwise it will
             // conflict with layers that WM core positions (ie. the input consumers).  For shell

@@ -15,7 +15,6 @@
  */
 package com.android.quickstep.inputconsumers;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.media.AudioManager;
@@ -100,27 +99,23 @@ public class OverviewInputConsumer<S extends BaseState<S>, T extends StatefulAct
 
     @Override
     public void onHoverEvent(MotionEvent ev) {
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            mActivity.dispatchGenericMotionEvent(ev);
-        }
+        mActivity.dispatchGenericMotionEvent(ev);
     }
 
     @Override
     public void onKeyEvent(KeyEvent ev) {
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            switch (ev.getKeyCode()) {
-                case KeyEvent.KEYCODE_VOLUME_DOWN:
-                case KeyEvent.KEYCODE_VOLUME_UP:
-                case KeyEvent.KEYCODE_VOLUME_MUTE:
-                    MediaSessionManager mgr = mActivity.getSystemService(MediaSessionManager.class);
-                    mgr.dispatchVolumeKeyEventAsSystemService(ev,
-                            AudioManager.USE_DEFAULT_STREAM_TYPE);
-                    break;
-                default:
-                    break;
-            }
-            mActivity.dispatchKeyEvent(ev);
+        switch (ev.getKeyCode()) {
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+            case KeyEvent.KEYCODE_VOLUME_UP:
+            case KeyEvent.KEYCODE_VOLUME_MUTE:
+                MediaSessionManager mgr = mActivity.getSystemService(MediaSessionManager.class);
+                mgr.dispatchVolumeKeyEventAsSystemService(ev,
+                        AudioManager.USE_DEFAULT_STREAM_TYPE);
+                break;
+            default:
+                break;
         }
+        mActivity.dispatchKeyEvent(ev);
     }
 }
 
