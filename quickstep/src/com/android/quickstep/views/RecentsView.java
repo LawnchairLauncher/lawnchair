@@ -1731,6 +1731,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // Changed orientations, update controllers so they intercept accordingly.
             mActivity.getDragLayer().recreateControllers();
             onOrientationChanged();
+            resetTaskVisuals();
         }
 
         boolean isInLandscape = mOrientationState.getTouchRotation() != ROTATION_0
