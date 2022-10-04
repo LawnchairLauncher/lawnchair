@@ -126,7 +126,8 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
 
     public static final int ALPHA_INDEX_IMMERSIVE_MODE = 0;
     public static final int ALPHA_INDEX_KEYGUARD_OR_DISABLE = 1;
-    private static final int NUM_ALPHA_CHANNELS = 2;
+    public static final int ALPHA_INDEX_SUW = 2;
+    private static final int NUM_ALPHA_CHANNELS = 3;
 
     private final ArrayList<StatePropertyHolder> mPropertyHolders = new ArrayList<>();
     private final ArrayList<ImageView> mAllButtons = new ArrayList<>();
@@ -275,6 +276,11 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                 navButtonsLayoutParams.setMarginEnd(0);
                 navButtonsLayoutParams.gravity = Gravity.START;
                 mNavButtonContainer.requestLayout();
+
+                // Hide back button in SUW if keyboard is showing (IME draws its own back).
+                mPropertyHolders.add(new StatePropertyHolder(
+                        mBackButtonAlpha.getProperty(ALPHA_INDEX_SUW),
+                        flags -> (flags & FLAG_IME_VISIBLE) == 0));
 
                 // TODO(b/210906568) Dark intensity is currently not propagated during setup, so set
                 //  it based on dark theme for now.
