@@ -941,7 +941,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 .setSyncTransactionApplier(mSyncTransactionApplier));
         RecentsModel.INSTANCE.get(getContext()).addThumbnailChangeListener(this);
         mIPipAnimationListener.setActivityAndRecentsView(mActivity, this);
-        SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(
+        SystemUiProxy.INSTANCE.get(getContext()).setPipAnimationListener(
                 mIPipAnimationListener);
         mOrientationState.initListeners();
         SplitScreenBounds.INSTANCE.addOnChangeListener(this);
@@ -960,7 +960,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 .setSyncTransactionApplier(null));
         executeSideTaskLaunchCallback();
         RecentsModel.INSTANCE.get(getContext()).removeThumbnailChangeListener(this);
-        SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(null);
+        SystemUiProxy.INSTANCE.get(getContext()).setPipAnimationListener(null);
         SplitScreenBounds.INSTANCE.removeOnChangeListener(this);
         mIPipAnimationListener.setActivityAndRecentsView(null, null);
         mOrientationState.destroyListeners();
@@ -1724,6 +1724,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // Changed orientations, update controllers so they intercept accordingly.
             mActivity.getDragLayer().recreateControllers();
             onOrientationChanged();
+            resetTaskVisuals();
         }
 
         boolean isInLandscape = mOrientationState.getTouchRotation() != ROTATION_0
@@ -4157,6 +4158,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
     }
 
+    /**
+     * Called when staging a split from Home/AllApps, using the icon long-press menu.
+     */
     public void initiateSplitSelect(QuickstepSystemShortcut.SplitSelectSource splitSelectSource) {
         mSplitSelectSource = splitSelectSource;
         mSplitSelectStateController.setInitialTaskSelect(splitSelectSource.intent,
@@ -4295,6 +4299,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         resetTaskVisuals();
         mSplitHiddenTaskViewIndex = -1;
+        if (mSplitHiddenTaskView != null) {
+            mSplitHiddenTaskView.setThumbnailVisibility(VISIBLE);
+            mSplitHiddenTaskView = null;
+        }
     }
 
     private void safeRemoveDragLayerView(@Nullable View viewToRemove) {
@@ -4715,7 +4723,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (sendUserLeaveHint) {
             // Notify the SysUI to use fade-in animation when entering PiP from live tile.
             final SystemUiProxy systemUiProxy = SystemUiProxy.INSTANCE.get(getContext());
-            systemUiProxy.notifySwipeToHomeFinished();
+            systemUiProxy.setPipAnimationTypeToAlpha();
             systemUiProxy.setShelfHeight(true, mActivity.getDeviceProfile().hotseatBarSizePx);
             // Transaction to hide the task to avoid flicker for entering PiP from split-screen.
             // See also {@link AbsSwipeUpHandler#maybeFinishSwipeToHome}.
