@@ -43,6 +43,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.DevicePaddings.DevicePadding;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.IconNormalizer;
 import com.android.launcher3.model.data.ItemInfo;
@@ -1276,7 +1277,10 @@ public class DeviceProfile {
             return ((taskbarSize - overviewActionsHeight) / 2) + getTaskbarOffsetY();
         }
 
-        return isTaskbarPresent ? stashedTaskbarSize : mInsets.bottom;
+        if (isTaskbarPresent) {
+            return FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get() ? taskbarSize : stashedTaskbarSize;
+        }
+        return mInsets.bottom;
     }
 
     /** Gets the space that the overview actions will take, including bottom margin. */
