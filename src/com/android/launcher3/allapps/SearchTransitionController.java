@@ -20,6 +20,7 @@ import static android.view.View.VISIBLE;
 
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
@@ -38,6 +39,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.model.data.ItemInfo;
 
 /** Coordinates the transition between Search and A-Z in All Apps. */
 public class SearchTransitionController {
@@ -186,7 +188,9 @@ public class SearchTransitionController {
                 top = searchResultView.getTop();
             }
 
-            if (searchResultView instanceof BubbleTextView) {
+            if (searchResultView instanceof BubbleTextView
+                    && searchResultView.getTag() instanceof ItemInfo
+                    && ((ItemInfo) searchResultView.getTag()).itemType == ITEM_TYPE_APPLICATION) {
                 // The first app icon will set appRowHeight, which will also contribute to
                 // totalHeight. Additional app icons should remove the appRowHeight to remain in
                 // the same row as the first app.
@@ -196,6 +200,8 @@ public class SearchTransitionController {
                     totalHeight += appRowHeight;
                 }
                 // Don't scale/fade app row.
+                searchResultView.setScaleY(1);
+                searchResultView.setAlpha(1);
                 continue;
             }
 
