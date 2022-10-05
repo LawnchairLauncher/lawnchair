@@ -16,7 +16,7 @@
 package com.android.launcher3.taskbar.allapps;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
-import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_STASHED_IN_APP_ALL_APPS;
+import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_STASHED_IN_TASKBAR_ALL_APPS;
 import static com.android.launcher3.util.OnboardingPrefs.ALL_APPS_VISITED_COUNT;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -84,7 +84,7 @@ final class TaskbarAllAppsViewController {
     }
 
     private void setUpTaskbarStashing() {
-        mTaskbarStashController.updateStateForFlag(FLAG_STASHED_IN_APP_ALL_APPS, true);
+        mTaskbarStashController.updateStateForFlag(FLAG_STASHED_IN_TASKBAR_ALL_APPS, true);
         mTaskbarStashController.applyState(
                 ALL_APPS.getTransitionDuration(mContext, true /* isToState */));
         mNavbarButtonsViewController.setSlideInViewVisible(true);
