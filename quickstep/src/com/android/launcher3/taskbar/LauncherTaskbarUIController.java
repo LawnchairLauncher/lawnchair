@@ -38,6 +38,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.model.data.ItemInfo;
@@ -116,7 +117,8 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
     @Override
     protected boolean isTaskbarTouchable() {
-        return !mTaskbarLauncherStateController.isAnimatingToLauncher();
+        return !(mTaskbarLauncherStateController.isAnimatingToLauncher()
+                && mTaskbarLauncherStateController.goingToAlignedLauncherState());
     }
 
     public void setShouldDelayLauncherStateAnim(boolean shouldDelayLauncherStateAnim) {
@@ -291,9 +293,14 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     @Override
     public void setSystemGestureInProgress(boolean inProgress) {
         super.setSystemGestureInProgress(inProgress);
-        // Launcher's ScrimView will draw the background throughout the gesture. But once the
-        // gesture ends, start drawing taskbar's background again since launcher might stop drawing.
-        forceHideBackground(inProgress);
+        // TODO(b/250645563): Don't show round corners when leaving in-app state, and remove
+        // forceHideBackground call entirely.
+        if (!FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get()) {
+            // Launcher's ScrimView will draw the background throughout the gesture. But once the
+            // gesture ends, start drawing taskbar's background again since launcher might stop
+            // drawing.
+            forceHideBackground(inProgress);
+        }
     }
 
     /**
