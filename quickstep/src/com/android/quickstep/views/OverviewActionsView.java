@@ -82,10 +82,11 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     private static final int INDEX_HIDDEN_FLAGS_ALPHA = 3;
     private static final int INDEX_SHARE_TARGET_ALPHA = 4;
 
-    public @interface SplitButtonDisabledFlags { }
-
+    public @interface SplitButtonHiddenFlags { }
     public static final int FLAG_IS_NOT_TABLET = 1 << 0;
-    public static final int FLAG_SINGLE_TASK = 1 << 1;
+
+    public @interface SplitButtonDisabledFlags { }
+    public static final int FLAG_SINGLE_TASK = 1 << 0;
 
     private MultiValueAlpha mMultiValueAlpha;
     private Button mSplitButton;
@@ -95,6 +96,9 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     @ActionsDisabledFlags
     protected int mDisabledFlags;
+
+    @SplitButtonHiddenFlags
+    private int mSplitButtonHiddenFlags;
 
     @SplitButtonDisabledFlags
     private int mSplitButtonDisabledFlags;
@@ -191,20 +195,40 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         }
         boolean isEnabled = (mDisabledFlags & ~DISABLED_ROTATED) == 0;
         LayoutUtils.setViewEnabled(this, isEnabled);
+        updateSplitButtonEnabledState();
     }
 
     /**
-     * Updates the proper flags to indicate whether the "Split screen" button should be enabled.
+     * Updates the proper flags to indicate whether the "Split screen" button should be hidden.
      *
-     * @param flag          The flag to update.
-     * @param enable        Whether to enable the disable flag: True will cause view to be disabled.
+     * @param flag   The flag to update.
+     * @param enable Whether to enable the hidden flag: True will cause view to be hidden.
      */
-    public void updateSplitButtonFlags(@SplitButtonDisabledFlags int flag, boolean enable) {
+    public void updateSplitButtonHiddenFlags(@SplitButtonHiddenFlags int flag, boolean enable) {
+        if (enable) {
+            mSplitButtonHiddenFlags |= flag;
+        } else {
+            mSplitButtonHiddenFlags &= ~flag;
+        }
+        if (mSplitButton == null) return;
+        boolean shouldBeVisible = mSplitButtonHiddenFlags == 0;
+        mSplitButton.setVisibility(shouldBeVisible ? VISIBLE : GONE);
+        findViewById(R.id.action_split_space).setVisibility(shouldBeVisible ? VISIBLE : GONE);
+    }
+
+    /**
+     * Updates the proper flags to indicate whether the "Split screen" button should be disabled.
+     *
+     * @param flag   The flag to update.
+     * @param enable Whether to enable the disable flag: True will cause view to be disabled.
+     */
+    public void updateSplitButtonDisabledFlags(@SplitButtonDisabledFlags int flag, boolean enable) {
         if (enable) {
             mSplitButtonDisabledFlags |= flag;
         } else {
             mSplitButtonDisabledFlags &= ~flag;
         }
+        updateSplitButtonEnabledState();
     }
 
     public AlphaProperty getContentAlpha() {
@@ -289,16 +313,16 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     }
 
     /**
-     * Shows/hides the "Split" button based on the status of mHiddenFlags.
+     * Enables/disables the "Split" button based on the status of mSplitButtonDisabledFlags and
+     * mDisabledFlags.
      */
-    public void updateSplitButtonVisibility() {
+    private void updateSplitButtonEnabledState() {
         if (mSplitButton == null) {
             return;
         }
-        boolean shouldBeVisible = mSplitButtonDisabledFlags == 0
-                // and neither of these flags are active
-                && (mHiddenFlags & (HIDDEN_SPLIT_SCREEN | HIDDEN_SPLIT_SELECT_ACTIVE)) == 0;
-        mSplitButton.setVisibility(shouldBeVisible ? VISIBLE : GONE);
-        findViewById(R.id.action_split_space).setVisibility(shouldBeVisible ? VISIBLE : GONE);
+        boolean isParentEnabled = (mDisabledFlags & ~DISABLED_ROTATED) == 0;
+        boolean shouldBeEnabled = mSplitButtonDisabledFlags == 0 && isParentEnabled;
+        mSplitButton.setEnabled(shouldBeEnabled);
     }
+
 }
