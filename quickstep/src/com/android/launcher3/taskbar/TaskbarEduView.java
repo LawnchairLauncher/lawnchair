@@ -39,6 +39,9 @@ public class TaskbarEduView extends AbstractSlideInView<TaskbarActivityContext>
 
     private final Rect mInsets = new Rect();
 
+    // Initialized in init.
+    private TaskbarEduController.TaskbarEduCallbacks mTaskbarEduCallbacks;
+
     private Button mStartButton;
     private Button mEndButton;
     private TaskbarEduPagedView mPagedView;
@@ -56,6 +59,7 @@ public class TaskbarEduView extends AbstractSlideInView<TaskbarActivityContext>
         if (mPagedView != null) {
             mPagedView.setControllerCallbacks(callbacks);
         }
+        mTaskbarEduCallbacks = callbacks;
     }
 
     @Override
@@ -99,6 +103,22 @@ public class TaskbarEduView extends AbstractSlideInView<TaskbarActivityContext>
 
         Settings.Secure.putInt(mContext.getContentResolver(),
                 Settings.Secure.LAUNCHER_TASKBAR_EDUCATION_SHOWING, 0);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        int contentWidth = Math.min(getContentAreaWidth(), getMeasuredWidth());
+        contentWidth = Math.max(contentWidth, mTaskbarEduCallbacks.getIconLayoutBoundsWidth());
+        int contentAreaWidthSpec = MeasureSpec.makeMeasureSpec(contentWidth, MeasureSpec.EXACTLY);
+
+        mContent.measure(contentAreaWidthSpec, MeasureSpec.UNSPECIFIED);
+    }
+
+    private int getContentAreaWidth() {
+        return mTaskbarEduCallbacks.getIconLayoutBoundsWidth()
+                + getResources().getDimensionPixelSize(R.dimen.taskbar_edu_horizontal_margin) * 2;
     }
 
     /** Show the Education flow. */
