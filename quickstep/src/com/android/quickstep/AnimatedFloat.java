@@ -135,6 +135,13 @@ public class AnimatedFloat {
     }
 
     /**
+     * Returns whether we are currently not animating, and the animation's value matches the given.
+     */
+    public boolean isSettledOnValue(float endValue) {
+        return !isAnimating() && value == endValue;
+    }
+
+    /**
      * Returns the value we are animating to, or {@code null} if we are not currently animating.
      */
     public Float getEndValue() {

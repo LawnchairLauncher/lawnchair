@@ -21,7 +21,6 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.QUICK_SWITCH;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.animation.Animator;
@@ -203,8 +202,7 @@ public final class LauncherActivityInterface extends
     private Launcher getVisibleLauncher() {
         Launcher launcher = getCreatedActivity();
         return (launcher != null) && launcher.isStarted()
-                && ((ENABLE_QUICKSTEP_LIVE_TILE.get() && isInLiveTileMode())
-                || launcher.hasBeenResumed()) ? launcher : null;
+                && (isInLiveTileMode() || launcher.hasBeenResumed()) ? launcher : null;
     }
 
     @Override
@@ -213,7 +211,7 @@ public final class LauncherActivityInterface extends
         if (launcher == null) {
             return false;
         }
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isInLiveTileMode()) {
+        if (isInLiveTileMode()) {
             RecentsView recentsView = getVisibleRecentsView();
             if (recentsView == null) {
                 return false;

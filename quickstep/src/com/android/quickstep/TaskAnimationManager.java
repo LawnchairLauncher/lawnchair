@@ -15,7 +15,6 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_INITIALIZED;
@@ -72,7 +71,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                 return;
             }
             BaseActivityInterface activityInterface = mLastGestureState.getActivityInterface();
-            if (ENABLE_QUICKSTEP_LIVE_TILE.get() && activityInterface.isInLiveTileMode()
+            if (activityInterface.isInLiveTileMode()
                     && activityInterface.getCreatedActivity() != null) {
                 RecentsView recentsView = activityInterface.getCreatedActivity().getOverviewPanel();
                 if (recentsView != null) {
@@ -171,7 +170,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                                 .map(RemoteAnimationTargetCompat::unwrap)
                                 .toArray(RemoteAnimationTarget[]::new));
 
-                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && activityInterface.isInLiveTileMode()
+                if (activityInterface.isInLiveTileMode()
                         && activityInterface.getCreatedActivity() != null) {
                     RecentsView recentsView =
                             activityInterface.getCreatedActivity().getOverviewPanel();
@@ -204,7 +203,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
 
             @Override
             public boolean onSwitchToScreenshot(Runnable onFinished) {
-                if (!ENABLE_QUICKSTEP_LIVE_TILE.get() || !activityInterface.isInLiveTileMode()
+                if (!activityInterface.isInLiveTileMode()
                         || activityInterface.getCreatedActivity() == null) {
                     // No need to switch since tile is already a screenshot.
                     onFinished.run();
@@ -266,7 +265,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             return;
         }
         BaseActivityInterface activityInterface = mLastGestureState.getActivityInterface();
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && activityInterface.isInLiveTileMode()
+        if (activityInterface.isInLiveTileMode()
                 && activityInterface.getCreatedActivity() != null) {
             RecentsView recentsView = activityInterface.getCreatedActivity().getOverviewPanel();
             if (recentsView != null) {

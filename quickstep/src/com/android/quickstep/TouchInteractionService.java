@@ -20,7 +20,6 @@ import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.config.FeatureFlags.ASSISTANT_GIVES_LAUNCHER_FOCUS;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.GestureState.DEFAULT_STATE;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_DOWN;
@@ -955,8 +954,7 @@ public class TouchInteractionService extends Service
         boolean launcherResumedThroughShellTransition =
                 gestureState.getActivityInterface().isResumed()
                         && !previousGestureState.isRecentsAnimationRunning();
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()
-                && gestureState.getActivityInterface().isInLiveTileMode()) {
+        if (gestureState.getActivityInterface().isInLiveTileMode()) {
             return createOverviewInputConsumer(
                     previousGestureState,
                     gestureState,
@@ -1044,8 +1042,7 @@ public class TouchInteractionService extends Service
                 previousGestureState.isRunningAnimationToLauncher();
         boolean forcingOverviewInputConsumer =
                 ASSISTANT_GIVES_LAUNCHER_FOCUS.get() && forceOverviewInputConsumer;
-        boolean isInLiveTileMode = ENABLE_QUICKSTEP_LIVE_TILE.get()
-                && gestureState.getActivityInterface().isInLiveTileMode();
+        boolean isInLiveTileMode = gestureState.getActivityInterface().isInLiveTileMode();
         reasonString.append(SUBSTRING_PREFIX)
                 .append(hasWindowFocus
                         ? "activity has window focus"
