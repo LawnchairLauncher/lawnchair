@@ -43,7 +43,6 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.CellLayout;
 import com.android.launcher3.DropTargetBar;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -51,6 +50,7 @@ import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.SpringProperty;
+import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.graphics.Scrim;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
@@ -237,7 +237,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
             View anchorView) {
 
         ShortcutAndWidgetContainer parentChildren = (ShortcutAndWidgetContainer) child.getParent();
-        CellLayout.LayoutParams lp =  (CellLayout.LayoutParams) child.getLayoutParams();
+        CellLayoutLayoutParams lp =  (CellLayoutLayoutParams) child.getLayoutParams();
         parentChildren.measureChild(child);
         parentChildren.layoutChild(child);
 

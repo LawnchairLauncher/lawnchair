@@ -23,6 +23,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragOptions.PreDragCondition;
 import com.android.launcher3.dragndrop.DragView;
@@ -244,7 +245,7 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
     }
 
     private boolean performResizeAction(int action, View host, LauncherAppWidgetInfo info) {
-        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) host.getLayoutParams();
+        CellLayoutLayoutParams lp = (CellLayoutLayoutParams) host.getLayoutParams();
         CellLayout layout = (CellLayout) host.getParent().getParent();
         layout.markCellsAsUnoccupiedForView(host);
 
