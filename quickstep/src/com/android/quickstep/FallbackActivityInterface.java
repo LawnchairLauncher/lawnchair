@@ -15,7 +15,6 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.util.NavigationMode.NO_BUTTON;
 import static com.android.quickstep.fallback.RecentsState.BACKGROUND_APP;
 import static com.android.quickstep.fallback.RecentsState.DEFAULT;
@@ -120,8 +119,7 @@ public final class FallbackActivityInterface extends
     public RecentsView getVisibleRecentsView() {
         RecentsActivity activity = getCreatedActivity();
         if (activity != null) {
-            if (activity.hasBeenResumed()
-                    || (ENABLE_QUICKSTEP_LIVE_TILE.get() && isInLiveTileMode())) {
+            if (activity.hasBeenResumed() || isInLiveTileMode()) {
                 return activity.getOverviewPanel();
             }
         }

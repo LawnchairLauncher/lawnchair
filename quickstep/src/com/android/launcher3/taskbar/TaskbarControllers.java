@@ -165,6 +165,7 @@ public class TaskbarControllers {
      * Cleans up all controllers.
      */
     public void onDestroy() {
+        mAreAllControllersInitialized = false;
         mSharedState = null;
 
         navbarButtonsViewController.onDestroy();

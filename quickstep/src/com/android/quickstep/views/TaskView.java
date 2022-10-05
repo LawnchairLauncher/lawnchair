@@ -25,7 +25,6 @@ import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncest
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_TAP;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -99,9 +98,9 @@ import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.SplitSelectStateController;
 import com.android.quickstep.util.TaskCornerRadius;
 import com.android.quickstep.util.TransformParams;
-import com.android.quickstep.views.TaskThumbnailView.PreviewPositionHelper;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.recents.utilities.PreviewPositionHelper;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -121,6 +120,8 @@ public class TaskView extends FrameLayout implements Reusable {
 
     private static final String TAG = TaskView.class.getSimpleName();
     private static final boolean DEBUG = false;
+
+    private static final RectF EMPTY_RECT_F = new RectF();
 
     public static final int FLAG_UPDATE_ICON = 1;
     public static final int FLAG_UPDATE_THUMBNAIL = FLAG_UPDATE_ICON << 1;
@@ -626,7 +627,7 @@ public class TaskView extends FrameLayout implements Reusable {
             if (ActivityManagerWrapper.getInstance()
                     .startActivityFromRecents(mTask.key, opts.options)) {
                 RecentsView recentsView = getRecentsView();
-                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && recentsView.getRunningTaskViewId() != -1) {
+                if (recentsView.getRunningTaskViewId() != -1) {
                     recentsView.onTaskLaunchedInLiveTileMode();
 
                     // Return a fresh callback in the live tile case, so that it's not accidentally
@@ -714,7 +715,7 @@ public class TaskView extends FrameLayout implements Reusable {
             SystemUiProxy.INSTANCE.get(getContext()).showDesktopApps();
             return runnableList;
         }
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask() && remoteTargetHandles != null) {
+        if (isRunningTask() && remoteTargetHandles != null) {
             if (!mIsClickableAsLiveTile) {
                 return runnableList;
             }
@@ -1573,7 +1574,7 @@ public class TaskView extends FrameLayout implements Reusable {
          */
         public void setProgress(float fullscreenProgress, float parentScale, float taskViewScale,
                 int previewWidth, DeviceProfile dp, PreviewPositionHelper pph) {
-            RectF insets = pph.getInsetsToDrawInFullscreen(dp);
+            RectF insets = getInsetsToDrawInFullscreen(pph, dp);
 
             float currentInsetsLeft = insets.left * fullscreenProgress;
             float currentInsetsTop = insets.top * fullscreenProgress;
@@ -1591,6 +1592,14 @@ public class TaskView extends FrameLayout implements Reusable {
             if (previewWidth > 0) {
                 mScale = previewWidth / (previewWidth + currentInsetsLeft + currentInsetsRight);
             }
+        }
+
+        /**
+         * Insets to used for clipping the thumbnail (in case it is drawing outside its own space)
+         */
+        private static RectF getInsetsToDrawInFullscreen(PreviewPositionHelper pph, DeviceProfile dp) {
+            return dp.isTaskbarPresent && !dp.isTaskbarPresentInApps
+                    ? pph.getClippedInsets() : EMPTY_RECT_F;
         }
     }
 

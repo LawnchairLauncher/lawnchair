@@ -17,7 +17,6 @@ package com.android.quickstep.util;
 
 import static android.app.WindowConfiguration.WINDOWING_MODE_FULLSCREEN;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.states.RotationHelper.deltaRotation;
 import static com.android.launcher3.touch.PagedOrientationHandler.MATRIX_POST_TRANSLATE;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
@@ -47,9 +46,9 @@ import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.TaskAnimationManager;
-import com.android.quickstep.views.TaskThumbnailView.PreviewPositionHelper;
 import com.android.quickstep.views.TaskView.FullscreenDrawParams;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.recents.utilities.PreviewPositionHelper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams.Builder;
 
@@ -318,9 +317,9 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             // mIsRecentsRtl is the inverse of TaskView RTL.
             boolean isRtlEnabled = !mIsRecentsRtl;
             mPositionHelper.updateThumbnailMatrix(
-                    mThumbnailPosition, mThumbnailData,
-                    mTaskRect.width(), mTaskRect.height(),
-                    mDp, mOrientationState.getRecentsActivityRotation(), isRtlEnabled);
+                    mThumbnailPosition, mThumbnailData, mTaskRect.width(), mTaskRect.height(),
+                    mDp.widthPx, mDp.taskbarSize, mDp.isTablet,
+                    mOrientationState.getRecentsActivityRotation(), isRtlEnabled);
             mPositionHelper.getMatrix().invert(mInversePositionMatrix);
             if (DEBUG) {
                 Log.d(TAG, " taskRect: " + mTaskRect);
@@ -393,7 +392,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
                 .withCornerRadius(getCurrentCornerRadius());
 
         // If mDrawsBelowRecents is unset, no reordering will be enforced.
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mDrawsBelowRecents != null) {
+        if (mDrawsBelowRecents != null) {
             // In legacy transitions, the animation leashes remain in same hierarchy in the
             // TaskDisplayArea, so we don't want to bump the layer too high otherwise it will
             // conflict with layers that WM core positions (ie. the input consumers).  For shell
