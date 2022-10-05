@@ -220,5 +220,9 @@ public class TaskbarEduController implements TaskbarControllers.LoggableTaskbarC
                         v -> mTaskbarEduView.snapToPage(currentPage + 1));
             }
         }
+
+        int getIconLayoutBoundsWidth() {
+            return mControllers.taskbarViewController.getIconLayoutBounds().width();
+        }
     }
 }
