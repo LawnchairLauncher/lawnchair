@@ -311,6 +311,28 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         launchedAppState.switchToOverview();
     }
 
+    @Test
+    @ScreenRecord // b/242163205
+    public void testQuickSwitchToPreviousAppForTablet() throws Exception {
+        assumeTrue(mLauncher.isTablet());
+        startTestActivity(2);
+        startImeTestActivity();
+
+        // Set ignoreTaskbarVisibility to true to verify the task bar visibility explicitly.
+        mLauncher.setIgnoreTaskbarVisibility(true);
+
+        // Expect task bar invisible when the launched app was the IME activity.
+        LaunchedAppState launchedAppState = getAndAssertLaunchedApp();
+        launchedAppState.assertTaskbarHidden();
+
+        // Quick-switch to the test app with swiping to right.
+        launchedAppState.quickSwitchToPreviousApp();
+
+        // Expect task bar visible when the launched app was the test activity.
+        launchedAppState = getAndAssertLaunchedApp();
+        launchedAppState.assertTaskbarVisible();
+    }
+
     private boolean isTestActivityRunning(int activityNumber) {
         return mDevice.wait(Until.hasObject(By.pkg(getAppPackageName())
                         .text("TestActivity" + activityNumber)),

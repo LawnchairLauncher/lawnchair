@@ -186,13 +186,14 @@ public final class LauncherInstrumentation {
     private final Deque<String> mDiagnosticContext = new LinkedList<>();
     private Function<Long, String> mSystemHealthSupplier;
 
+    private boolean mIgnoreTaskbarVisibility = false;
+
     private Consumer<ContainerType> mOnSettledStateAction;
 
     private LogEventChecker mEventChecker;
 
     private boolean mCheckEventsForSuccessfulGestures = false;
     private Runnable mOnLauncherCrashed;
-
     private static Pattern getTouchEventPattern(String prefix, String action) {
         // The pattern includes checks that we don't get a multi-touch events or other surprises.
         return Pattern.compile(
@@ -681,6 +682,18 @@ public final class LauncherInstrumentation {
         }
     }
 
+    /**
+     * Whether to ignore verifying the task bar visibility during instrumenting.
+     *
+     * @param ignoreTaskbarVisibility {@code true} will ignore the instrumentation implicitly
+     *                                            verifying the task bar visibility with
+     *                                            {@link VisibleContainer#verifyActiveContainer}.
+     *                                            {@code false} otherwise.
+     */
+    public void setIgnoreTaskbarVisibility(boolean ignoreTaskbarVisibility) {
+        mIgnoreTaskbarVisibility = ignoreTaskbarVisibility;
+    }
+
     public void setExpectedRotation(int expectedRotation) {
         mExpectedRotation = expectedRotation;
     }
@@ -805,6 +818,9 @@ public final class LauncherInstrumentation {
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
                     waitUntilLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
 
+                    if (mIgnoreTaskbarVisibility) {
+                        return null;
+                    }
                     if (isTablet() && !isFallbackOverview()) {
                         waitForLauncherObject(TASKBAR_RES_ID);
                     } else {
