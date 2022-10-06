@@ -23,6 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import android.os.Handler;
+import android.view.View;
 
 import androidx.test.runner.AndroidJUnit4;
 
@@ -58,6 +59,8 @@ public class TaskbarNavButtonControllerTest {
     TaskbarControllers mockTaskbarControllers;
     @Mock
     TaskbarActivityContext mockTaskbarActivityContext;
+    @Mock
+    View mockView;
 
     private TaskbarNavButtonController mNavButtonController;
 
@@ -76,110 +79,110 @@ public class TaskbarNavButtonControllerTest {
 
     @Test
     public void testPressBack() {
-        mNavButtonController.onButtonClick(BUTTON_BACK);
+        mNavButtonController.onButtonClick(BUTTON_BACK, mockView);
         verify(mockSystemUiProxy, times(1)).onBackPressed();
     }
 
     @Test
     public void testPressImeSwitcher() {
-        mNavButtonController.onButtonClick(BUTTON_IME_SWITCH);
+        mNavButtonController.onButtonClick(BUTTON_IME_SWITCH, mockView);
         verify(mockSystemUiProxy, times(1)).onImeSwitcherPressed();
     }
 
     @Test
     public void testPressA11yShortClick() {
-        mNavButtonController.onButtonClick(BUTTON_A11Y);
+        mNavButtonController.onButtonClick(BUTTON_A11Y, mockView);
         verify(mockSystemUiProxy, times(1))
                 .notifyAccessibilityButtonClicked(DISPLAY_ID);
     }
 
     @Test
     public void testPressA11yLongClick() {
-        mNavButtonController.onButtonLongClick(BUTTON_A11Y);
+        mNavButtonController.onButtonLongClick(BUTTON_A11Y, mockView);
         verify(mockSystemUiProxy, times(1)).notifyAccessibilityButtonLongClicked();
     }
 
     @Test
     public void testLongPressHome() {
-        mNavButtonController.onButtonLongClick(BUTTON_HOME);
+        mNavButtonController.onButtonLongClick(BUTTON_HOME, mockView);
         verify(mockSystemUiProxy, times(1)).startAssistant(any());
     }
 
     @Test
     public void testPressHome() {
-        mNavButtonController.onButtonClick(BUTTON_HOME);
+        mNavButtonController.onButtonClick(BUTTON_HOME, mockView);
         verify(mockCommandHelper, times(1)).addCommand(TYPE_HOME);
     }
 
     @Test
     public void testPressRecents() {
-        mNavButtonController.onButtonClick(BUTTON_RECENTS);
+        mNavButtonController.onButtonClick(BUTTON_RECENTS, mockView);
         verify(mockCommandHelper, times(1)).addCommand(TYPE_TOGGLE);
     }
 
     @Test
     public void testPressRecentsWithScreenPinned() {
         mNavButtonController.updateSysuiFlags(SYSUI_STATE_SCREEN_PINNING);
-        mNavButtonController.onButtonClick(BUTTON_RECENTS);
+        mNavButtonController.onButtonClick(BUTTON_RECENTS, mockView);
         verify(mockCommandHelper, times(0)).addCommand(TYPE_TOGGLE);
     }
 
     @Test
     public void testLongPressBackRecentsNotPinned() {
-        mNavButtonController.onButtonLongClick(BUTTON_RECENTS);
-        mNavButtonController.onButtonLongClick(BUTTON_BACK);
+        mNavButtonController.onButtonLongClick(BUTTON_RECENTS, mockView);
+        mNavButtonController.onButtonLongClick(BUTTON_BACK, mockView);
         verify(mockSystemUiProxy, times(0)).stopScreenPinning();
     }
 
     @Test
     public void testLongPressBackRecentsPinned() {
         mNavButtonController.updateSysuiFlags(SYSUI_STATE_SCREEN_PINNING);
-        mNavButtonController.onButtonLongClick(BUTTON_RECENTS);
-        mNavButtonController.onButtonLongClick(BUTTON_BACK);
+        mNavButtonController.onButtonLongClick(BUTTON_RECENTS, mockView);
+        mNavButtonController.onButtonLongClick(BUTTON_BACK, mockView);
         verify(mockSystemUiProxy, times(1)).stopScreenPinning();
     }
 
     @Test
     public void testLongPressBackRecentsTooLongPinned() {
         mNavButtonController.updateSysuiFlags(SYSUI_STATE_SCREEN_PINNING);
-        mNavButtonController.onButtonLongClick(BUTTON_RECENTS);
+        mNavButtonController.onButtonLongClick(BUTTON_RECENTS, mockView);
         try {
             Thread.sleep(SCREEN_PIN_LONG_PRESS_THRESHOLD + 5);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        mNavButtonController.onButtonLongClick(BUTTON_BACK);
+        mNavButtonController.onButtonLongClick(BUTTON_BACK, mockView);
         verify(mockSystemUiProxy, times(0)).stopScreenPinning();
     }
 
     @Test
     public void testLongPressBackRecentsMultipleAttemptPinned() {
         mNavButtonController.updateSysuiFlags(SYSUI_STATE_SCREEN_PINNING);
-        mNavButtonController.onButtonLongClick(BUTTON_RECENTS);
+        mNavButtonController.onButtonLongClick(BUTTON_RECENTS, mockView);
         try {
             Thread.sleep(SCREEN_PIN_LONG_PRESS_THRESHOLD + 5);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        mNavButtonController.onButtonLongClick(BUTTON_BACK);
+        mNavButtonController.onButtonLongClick(BUTTON_BACK, mockView);
         verify(mockSystemUiProxy, times(0)).stopScreenPinning();
 
         // Try again w/in threshold
-        mNavButtonController.onButtonLongClick(BUTTON_RECENTS);
-        mNavButtonController.onButtonLongClick(BUTTON_BACK);
+        mNavButtonController.onButtonLongClick(BUTTON_RECENTS, mockView);
+        mNavButtonController.onButtonLongClick(BUTTON_BACK, mockView);
         verify(mockSystemUiProxy, times(1)).stopScreenPinning();
     }
 
     @Test
     public void testLongPressHomeScreenPinned() {
         mNavButtonController.updateSysuiFlags(SYSUI_STATE_SCREEN_PINNING);
-        mNavButtonController.onButtonLongClick(BUTTON_HOME);
+        mNavButtonController.onButtonLongClick(BUTTON_HOME, mockView);
         verify(mockSystemUiProxy, times(0)).startAssistant(any());
     }
 
     @Test
     public void testNoCallsToNullLogger() {
-        mNavButtonController.onButtonClick(BUTTON_HOME);
+        mNavButtonController.onButtonClick(BUTTON_HOME, mockView);
         verify(mockStatsLogManager, times(0)).logger();
         verify(mockStatsLogger, times(0)).log(any());
     }
@@ -187,9 +190,9 @@ public class TaskbarNavButtonControllerTest {
     @Test
     public void testNoCallsAfterNullingOut() {
         mNavButtonController.init(mockTaskbarControllers);
-        mNavButtonController.onButtonClick(BUTTON_HOME);
+        mNavButtonController.onButtonClick(BUTTON_HOME, mockView);
         mNavButtonController.onDestroy();
-        mNavButtonController.onButtonClick(BUTTON_HOME);
+        mNavButtonController.onButtonClick(BUTTON_HOME, mockView);
         verify(mockStatsLogger, times(1)).log(LAUNCHER_TASKBAR_HOME_BUTTON_TAP);
         verify(mockStatsLogger, times(0)).log(LAUNCHER_TASKBAR_HOME_BUTTON_LONGPRESS);
     }
@@ -197,7 +200,7 @@ public class TaskbarNavButtonControllerTest {
     @Test
     public void testLogOnTap() {
         mNavButtonController.init(mockTaskbarControllers);
-        mNavButtonController.onButtonClick(BUTTON_HOME);
+        mNavButtonController.onButtonClick(BUTTON_HOME, mockView);
         verify(mockStatsLogger, times(1)).log(LAUNCHER_TASKBAR_HOME_BUTTON_TAP);
         verify(mockStatsLogger, times(0)).log(LAUNCHER_TASKBAR_HOME_BUTTON_LONGPRESS);
     }
@@ -205,7 +208,7 @@ public class TaskbarNavButtonControllerTest {
     @Test
     public void testLogOnLongpress() {
         mNavButtonController.init(mockTaskbarControllers);
-        mNavButtonController.onButtonLongClick(BUTTON_HOME);
+        mNavButtonController.onButtonLongClick(BUTTON_HOME, mockView);
         verify(mockStatsLogger, times(1)).log(LAUNCHER_TASKBAR_HOME_BUTTON_LONGPRESS);
         verify(mockStatsLogger, times(0)).log(LAUNCHER_TASKBAR_HOME_BUTTON_TAP);
     }
@@ -213,11 +216,11 @@ public class TaskbarNavButtonControllerTest {
     @Test
     public void testBackOverviewLogOnLongpress() {
         mNavButtonController.init(mockTaskbarControllers);
-        mNavButtonController.onButtonLongClick(BUTTON_RECENTS);
+        mNavButtonController.onButtonLongClick(BUTTON_RECENTS, mockView);
         verify(mockStatsLogger, times(1)).log(LAUNCHER_TASKBAR_OVERVIEW_BUTTON_LONGPRESS);
         verify(mockStatsLogger, times(0)).log(LAUNCHER_TASKBAR_OVERVIEW_BUTTON_TAP);
 
-        mNavButtonController.onButtonLongClick(BUTTON_BACK);
+        mNavButtonController.onButtonLongClick(BUTTON_BACK, mockView);
         verify(mockStatsLogger, times(1)).log(LAUNCHER_TASKBAR_BACK_BUTTON_LONGPRESS);
         verify(mockStatsLogger, times(0)).log(LAUNCHER_TASKBAR_BACK_BUTTON_TAP);
     }

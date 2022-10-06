@@ -22,10 +22,8 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
@@ -33,11 +31,10 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
-import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.DisplayController;
-import com.android.launcher3.util.DisplayController.NavigationMode;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
+import com.android.launcher3.util.NavigationMode;
 import com.android.quickstep.TaskOverlayFactory.OverlayUICallbacks;
 import com.android.quickstep.util.LayoutUtils;
 
@@ -56,7 +53,9 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             HIDDEN_NON_ZERO_ROTATION,
             HIDDEN_NO_TASKS,
             HIDDEN_NO_RECENTS,
-            HIDDEN_SPLIT_SCREEN})
+            HIDDEN_SPLIT_SCREEN,
+            HIDDEN_SPLIT_SELECT_ACTIVE
+    })
     @Retention(RetentionPolicy.SOURCE)
     public @interface ActionsHiddenFlags { }
 
@@ -64,6 +63,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     public static final int HIDDEN_NO_TASKS = 1 << 1;
     public static final int HIDDEN_NO_RECENTS = 1 << 2;
     public static final int HIDDEN_SPLIT_SCREEN = 1 << 3;
+    public static final int HIDDEN_SPLIT_SELECT_ACTIVE = 1 << 4;
 
     @IntDef(flag = true, value = {
             DISABLED_SCROLLING,
@@ -80,8 +80,14 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     private static final int INDEX_VISIBILITY_ALPHA = 1;
     private static final int INDEX_FULLSCREEN_ALPHA = 2;
     private static final int INDEX_HIDDEN_FLAGS_ALPHA = 3;
+    private static final int INDEX_SHARE_TARGET_ALPHA = 4;
 
-    private final MultiValueAlpha mMultiValueAlpha;
+    public @interface SplitButtonDisabledFlags { }
+
+    public static final int FLAG_IS_NOT_TABLET = 1 << 0;
+    public static final int FLAG_SINGLE_TASK = 1 << 1;
+
+    private MultiValueAlpha mMultiValueAlpha;
     private Button mSplitButton;
 
     @ActionsHiddenFlags
@@ -89,6 +95,9 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     @ActionsDisabledFlags
     protected int mDisabledFlags;
+
+    @SplitButtonDisabledFlags
+    private int mSplitButtonDisabledFlags;
 
     @Nullable
     protected T mCallbacks;
@@ -107,13 +116,14 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     public OverviewActionsView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr, 0);
-        mMultiValueAlpha = new MultiValueAlpha(this, 5);
-        mMultiValueAlpha.setUpdateVisibility(true);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        mMultiValueAlpha = new MultiValueAlpha(findViewById(R.id.action_buttons), 5);
+        mMultiValueAlpha.setUpdateVisibility(true);
+
         findViewById(R.id.action_screenshot).setOnClickListener(this);
 
         mSplitButton = findViewById(R.id.action_split);
@@ -183,6 +193,20 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         LayoutUtils.setViewEnabled(this, isEnabled);
     }
 
+    /**
+     * Updates the proper flags to indicate whether the "Split screen" button should be enabled.
+     *
+     * @param flag          The flag to update.
+     * @param enable        Whether to enable the disable flag: True will cause view to be disabled.
+     */
+    public void updateSplitButtonFlags(@SplitButtonDisabledFlags int flag, boolean enable) {
+        if (enable) {
+            mSplitButtonDisabledFlags |= flag;
+        } else {
+            mSplitButtonDisabledFlags &= ~flag;
+        }
+    }
+
     public AlphaProperty getContentAlpha() {
         return mMultiValueAlpha.getProperty(INDEX_CONTENT_ALPHA);
     }
@@ -195,6 +219,10 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         return mMultiValueAlpha.getProperty(INDEX_FULLSCREEN_ALPHA);
     }
 
+    public AlphaProperty getShareTargetAlpha() {
+        return mMultiValueAlpha.getProperty(INDEX_SHARE_TARGET_ALPHA);
+    }
+
     /**
      * Offsets OverviewActionsView horizontal position based on 3 button nav container in taskbar.
      */
@@ -202,10 +230,13 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         if (mDp == null) {
             return;
         }
-        boolean alignFor3ButtonTaskbar = mDp.isTaskbarPresent && !mDp.isGestureMode;
-        if (alignFor3ButtonTaskbar) {
+        boolean largeScreenLandscape = mDp.isTablet && !mDp.isTwoPanels && mDp.isLandscape;
+        // If in 3-button mode, shift action buttons to accommodate 3-button layout.
+        // (Special exception for landscape tablets, where there is enough room and we don't need to
+        // shift the action buttons.)
+        if (mDp.areNavButtonsInline && !largeScreenLandscape) {
             // Add extra horizontal spacing
-            int additionalPadding = ApiWrapper.getHotseatEndOffset(getContext());
+            int additionalPadding = mDp.hotseatBarEndOffset;
             if (isLayoutRtl()) {
                 setPadding(mInsets.left + additionalPadding, 0, mInsets.right, 0);
             } else {
@@ -233,10 +264,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             return 0;
         }
 
-        if (mDp.isVerticalBarLayout()) {
-            return mDp.getInsets().bottom;
-        }
-
         if (!mDp.isGestureMode && mDp.isTaskbarPresent) {
             return mDp.getOverviewActionsClaimedSpaceBelow();
         }
@@ -254,12 +281,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         mTaskSize.set(taskSize);
         updateVerticalMargin(DisplayController.getNavigationMode(getContext()));
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                dp.isVerticalBarLayout() ? 0 : dp.overviewActionsButtonSpacing,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        params.weight = dp.isVerticalBarLayout() ? 1 : 0;
-        findViewById(R.id.action_split_space).setLayoutParams(params);
-
         requestLayout();
 
         mSplitButton.setCompoundDrawablesWithIntrinsicBounds(
@@ -267,12 +288,17 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
                 0, 0, 0);
     }
 
-    public void setSplitButtonVisible(boolean visible) {
+    /**
+     * Shows/hides the "Split" button based on the status of mHiddenFlags.
+     */
+    public void updateSplitButtonVisibility() {
         if (mSplitButton == null) {
             return;
         }
-
-        mSplitButton.setVisibility(visible ? VISIBLE : GONE);
-        findViewById(R.id.action_split_space).setVisibility(visible ? VISIBLE : GONE);
+        boolean shouldBeVisible = mSplitButtonDisabledFlags == 0
+                // and neither of these flags are active
+                && (mHiddenFlags & (HIDDEN_SPLIT_SCREEN | HIDDEN_SPLIT_SELECT_ACTIVE)) == 0;
+        mSplitButton.setVisibility(shouldBeVisible ? VISIBLE : GONE);
+        findViewById(R.id.action_split_space).setVisibility(shouldBeVisible ? VISIBLE : GONE);
     }
 }

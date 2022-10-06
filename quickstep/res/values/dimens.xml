@@ -31,13 +31,19 @@
 
     <dimen name="overview_minimum_next_prev_size">50dp</dimen>
 
-    <!--  Task View  -->
+    <!--  Overview Task Views  -->
+    <!--  The primary task thumbnail uses up to this much of the total screen height/width  -->
+    <item name="overview_max_scale" format="float" type="dimen">0.7</item>
+    <!--  A touch target for icons, sometimes slightly larger than the icons themselves  -->
     <dimen name="task_thumbnail_icon_size">48dp</dimen>
+    <!--  The icon size for the focused task, placed in center of touch target  -->
     <dimen name="task_thumbnail_icon_drawable_size">44dp</dimen>
+    <!--  The space under the focused task icon  -->
     <dimen name="overview_task_margin">16dp</dimen>
+    <!--  The horizontal space between tasks  -->
     <dimen name="overview_page_spacing">16dp</dimen>
 
-    <item name="overview_max_scale" format="float" type="dimen">0.7</item>
+    <dimen name="task_icon_cache_default_icon_size">72dp</dimen>
     <item name="overview_modal_max_scale" format="float" type="dimen">1.1</item>
 
     <!-- Overrideable in overlay that provides the Overview Actions. -->
@@ -66,7 +72,6 @@
     <dimen name="quickstep_fling_threshold_speed">0.5dp</dimen>
 
     <!-- Launcher app transition -->
-    <item name="content_scale" format="float" type="dimen">0.97</item>
     <dimen name="closing_window_trans_y">115dp</dimen>
 
     <dimen name="quick_switch_scaling_scroll_threshold">100dp</dimen>
@@ -239,7 +244,7 @@
     <dimen name="navigation_key_padding">0dp</dimen>
 
     <!-- Floating rotation button -->
-    <dimen name="floating_rotation_button_diameter">40dp</dimen>
+    <dimen name="floating_rotation_button_diameter">52dp</dimen>
     <dimen name="floating_rotation_button_min_margin">20dp</dimen>
     <dimen name="floating_rotation_button_taskbar_left_margin">20dp</dimen>
     <dimen name="floating_rotation_button_taskbar_bottom_margin">10dp</dimen>
@@ -250,14 +255,15 @@
     <dimen name="taskbar_icon_touch_size">48dp</dimen>
     <dimen name="taskbar_icon_drag_icon_size">54dp</dimen>
     <dimen name="taskbar_folder_margin">16dp</dimen>
-    <dimen name="taskbar_nav_buttons_spacing">16dp</dimen>
+    <dimen name="taskbar_contextual_button_padding">16dp</dimen>
     <dimen name="taskbar_contextual_padding_top">8dp</dimen>
     <dimen name="taskbar_nav_buttons_size">44dp</dimen>
-    <dimen name="taskbar_contextual_button_margin">40dp</dimen>
-    <dimen name="taskbar_hotseat_nav_spacing">42dp</dimen>
+    <dimen name="taskbar_contextual_button_margin">47dp</dimen>
+    <dimen name="taskbar_hotseat_nav_spacing">24dp</dimen>
     <dimen name="taskbar_contextual_buttons_size">35dp</dimen>
     <dimen name="taskbar_stashed_size">24dp</dimen>
     <dimen name="taskbar_stashed_handle_width">220dp</dimen>
+    <dimen name="taskbar_stashed_small_screen">108dp</dimen>
     <dimen name="taskbar_unstash_input_area">316dp</dimen>
     <dimen name="taskbar_stashed_handle_height">4dp</dimen>
     <dimen name="taskbar_edu_wave_anim_trans_y">25dp</dimen>
@@ -268,4 +274,13 @@
     <dimen name="taskbar_back_button_left_margin_kids">48dp</dimen>
     <dimen name="taskbar_home_button_left_margin_kids">48dp</dimen>
     <dimen name="taskbar_icon_size_kids">32dp</dimen>
+
+    <!--  Taskbar 3 button spacing  -->
+    <dimen name="taskbar_button_space_inbetween">24dp</dimen>
+    <dimen name="taskbar_button_space_inbetween_phone">40dp</dimen>
+    <dimen name="taskbar_button_margin_5_5">26dp</dimen>
+    <dimen name="taskbar_button_margin_6_5">75dp</dimen>
+    <dimen name="taskbar_button_margin_4_5">47dp</dimen>
+    <dimen name="taskbar_button_margin_4_4">47dp</dimen>
+    <dimen name="taskbar_button_margin_default">47dp</dimen>
 </resources>

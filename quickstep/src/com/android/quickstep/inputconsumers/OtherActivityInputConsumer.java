@@ -27,8 +27,10 @@ import static com.android.launcher3.PagedView.ACTION_MOVE_ALLOW_EASY_FLING;
 import static com.android.launcher3.PagedView.DEBUG_FAILED_QUICKSWITCH;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.squaredHypot;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.TraceHelper.FLAG_CHECK_FOR_RACE_CONDITIONS;
 import static com.android.launcher3.util.VelocityUtils.PX_PER_MS;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.START_RECENTS_ANIMATION;
 import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
 
 import android.annotation.TargetApi;
@@ -47,8 +49,9 @@ import android.view.ViewConfiguration;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.testing.TestLogging;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.tracing.InputConsumerProto;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.TraceHelper;
@@ -58,7 +61,9 @@ import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationCallbacks;
+import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationDeviceState;
+import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RotationTouchHelper;
 import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.util.ActiveGestureLog;
@@ -107,6 +112,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private VelocityTracker mVelocityTracker;
 
     private AbsSwipeUpHandler mInteractionHandler;
+    private final FinishImmediatelyHandler mCleanupHandler = new FinishImmediatelyHandler();
 
     private final boolean mIsDeferredDownTarget;
     private final PointF mDownPos = new PointF();
@@ -354,7 +360,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     private void notifyGestureStarted(boolean isLikelyToStartNewTask) {
-        ActiveGestureLog.INSTANCE.addLog("startQuickstep");
         if (mInteractionHandler == null) {
             return;
         }
@@ -368,7 +373,9 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     private void startTouchTrackingForWindowAnimation(long touchTimeMs) {
-        ActiveGestureLog.INSTANCE.addLog("startRecentsAnimation");
+        ActiveGestureLog.INSTANCE.addLog(
+                /* event= */ "startRecentsAnimation",
+                /* gestureEvent= */ START_RECENTS_ANIMATION);
 
         mInteractionHandler = mHandlerFactory.newHandler(mGestureState, touchTimeMs);
         mInteractionHandler.setGestureEndCallback(this::onInteractionGestureFinished);
@@ -377,6 +384,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
         if (mTaskAnimationManager.isRecentsAnimationRunning()) {
             mActiveCallbacks = mTaskAnimationManager.continueRecentsAnimation(mGestureState);
+            mActiveCallbacks.removeListener(mCleanupHandler);
             mActiveCallbacks.addListener(mInteractionHandler);
             mTaskAnimationManager.notifyRecentsAnimationState(mInteractionHandler);
             notifyGestureStarted(true /*isLikelyToStartNewTask*/);
@@ -414,7 +422,19 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             }
         } else {
             // Since we start touch tracking on DOWN, we may reach this state without actually
-            // starting the gesture. In that case, just cleanup immediately.
+            // starting the gesture. In that case, we need to clean-up an unfinished or un-started
+            // animation.
+            if (mActiveCallbacks != null && mInteractionHandler != null) {
+                if (mTaskAnimationManager.isRecentsAnimationRunning()) {
+                    // The animation started, but with no movement, in this case, there will be no
+                    // animateToProgress so we have to manually finish here.
+                    mTaskAnimationManager.finishRunningRecentsAnimation(false /* toHome */);
+                } else {
+                    // The animation hasn't started yet, so insert a replacement handler into the
+                    // callbacks which immediately finishes the animation after it starts.
+                    mActiveCallbacks.addListener(mCleanupHandler);
+                }
+            }
             onConsumerAboutToBeSwitched();
             onInteractionGestureFinished();
 
@@ -464,7 +484,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     private void removeListener() {
-        if (mActiveCallbacks != null) {
+        if (mActiveCallbacks != null && mInteractionHandler != null) {
             mActiveCallbacks.removeListener(mInteractionHandler);
         }
     }
@@ -488,6 +508,21 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     public void writeToProtoInternal(InputConsumerProto.Builder inputConsumerProto) {
         if (mInteractionHandler != null) {
             mInteractionHandler.writeToProto(inputConsumerProto);
+        }
+    }
+
+    /**
+     * A listener which just finishes the animation immediately after starting. Replaces
+     * AbsSwipeUpHandler if the gesture itself finishes before the animation even starts.
+     */
+    private static class FinishImmediatelyHandler
+            implements RecentsAnimationCallbacks.RecentsAnimationListener {
+
+        public void onRecentsAnimationStart(RecentsAnimationController controller,
+                RecentsAnimationTargets targets) {
+            Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
+                controller.finish(false /* toRecents */, null);
+            });
         }
     }
 }

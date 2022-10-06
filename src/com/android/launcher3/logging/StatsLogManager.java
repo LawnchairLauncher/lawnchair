@@ -56,6 +56,7 @@ public class StatsLogManager implements ResourceBasedOverride {
     private InstanceId mInstanceId;
 
     protected @Nullable ActivityContext mActivityContext = null;
+    private KeyboardStateManager mKeyboardStateManager;
 
     /**
      * Returns event enum based on the two state transition information when swipe
@@ -592,6 +593,12 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "User tapped on Share app system shortcut.")
         LAUNCHER_SYSTEM_SHORTCUT_APP_SHARE_TAP(1075),
+
+        @UiEvent(doc = "User has invoked split to right half from an app icon menu")
+        LAUNCHER_APP_ICON_MENU_SPLIT_RIGHT_BOTTOM(1199),
+
+        @UiEvent(doc = "User has invoked split to left half from an app icon menu")
+        LAUNCHER_APP_ICON_MENU_SPLIT_LEFT_TOP(1200)
         ;
 
         // ADD MORE
@@ -737,8 +744,9 @@ public class StatsLogManager implements ResourceBasedOverride {
             HOT(2),
             TIMEOUT(3),
             FAIL(4),
-            COLD_USERWAITING(5);
-
+            COLD_USERWAITING(5),
+            ATOMIC(6),
+            CONTROLLED(7);
             private final int mId;
 
             LatencyType(int id) {
@@ -814,6 +822,16 @@ public class StatsLogManager implements ResourceBasedOverride {
             logger.withInstanceId(mInstanceId);
         }
         return logger;
+    }
+
+    /**
+     * Returns a singleton KeyboardStateManager.
+     */
+    public KeyboardStateManager keyboardStateManager() {
+        if (mKeyboardStateManager == null) {
+            mKeyboardStateManager = new KeyboardStateManager();
+        }
+        return mKeyboardStateManager;
     }
 
     protected StatsLogger createLogger() {

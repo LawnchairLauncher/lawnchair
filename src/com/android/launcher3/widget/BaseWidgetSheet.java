@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.widget;
 
+import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -26,6 +28,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.WindowInsets;
+import android.view.animation.Interpolator;
 import android.widget.Toast;
 
 import androidx.annotation.GuardedBy;
@@ -42,7 +45,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.testing.TestLogging;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
@@ -244,6 +247,12 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
         }
         close(true);
         return true;
+    }
+
+    @Override
+    protected Interpolator getIdleInterpolator() {
+        return mActivityContext.getDeviceProfile().isTablet
+                ? EMPHASIZED : super.getIdleInterpolator();
     }
 
     //

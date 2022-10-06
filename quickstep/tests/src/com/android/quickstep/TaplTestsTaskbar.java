@@ -68,6 +68,13 @@ public class TaplTestsTaskbar extends AbstractQuickStepTest {
     }
 
     @Test
+    public void testHideTaskbarPersistsOnRecreate() {
+        getTaskbar().hide();
+        mLauncher.recreateTaskbar();
+        mLauncher.getLaunchedAppState().assertTaskbarHidden();
+    }
+
+    @Test
     public void testLaunchApp() throws Exception {
         getTaskbar().getAppIcon(TEST_APP_NAME).launch(TEST_APP_PACKAGE);
     }

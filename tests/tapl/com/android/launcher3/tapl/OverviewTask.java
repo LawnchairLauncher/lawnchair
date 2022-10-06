@@ -20,9 +20,12 @@ import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CH
 
 import android.graphics.Rect;
 
+import androidx.annotation.NonNull;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiObject2;
 
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -32,8 +35,12 @@ import java.util.stream.Collectors;
  * A recent task in the overview panel carousel.
  */
 public final class OverviewTask {
+    private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
+
     static final Pattern TASK_START_EVENT =
             Pattern.compile("startActivityFromRecentsAsync");
+    static final Pattern SPLIT_START_EVENT =
+            Pattern.compile("launchSplitTasks");
     private final LauncherInstrumentation mLauncher;
     private final UiObject2 mTask;
     private final BaseOverview mOverview;
@@ -59,6 +66,10 @@ public final class OverviewTask {
 
     int getTaskCenterX() {
         return mTask.getVisibleCenter().x;
+    }
+
+    float getExactCenterX() {
+        return mTask.getVisibleBounds().exactCenterX();
     }
 
     /**
@@ -125,7 +136,7 @@ public final class OverviewTask {
     }
 
     /**
-     * Clicks at the task.
+     * Clicks the task.
      */
     public LaunchedAppState open() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
@@ -136,8 +147,41 @@ public final class OverviewTask {
                     () -> "Launching task didn't open a new window: "
                             + mTask.getParent().getContentDescription(),
                     "clicking an overview task");
-            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, TASK_START_EVENT);
-            return new LaunchedAppState(mLauncher);
+            if (mOverview.getContainerType()
+                    == LauncherInstrumentation.ContainerType.SPLIT_SCREEN_SELECT) {
+                mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SPLIT_START_EVENT);
+
+                try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                        "launched splitscreen")) {
+
+                    BySelector divider = By.res(SYSTEMUI_PACKAGE, "docked_divider_handle");
+                    mLauncher.waitForSystemUiObject(divider);
+                    return new LaunchedAppState(mLauncher);
+                }
+            } else {
+                mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, TASK_START_EVENT);
+                return new LaunchedAppState(mLauncher);
+            }
         }
+    }
+
+    /** Taps the task menu. */
+    @NonNull
+    public OverviewTaskMenu tapMenu() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to tap the task menu")) {
+            mLauncher.clickLauncherObject(
+                    mLauncher.waitForObjectInContainer(mTask.getParent(), "icon"));
+
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                    "tapped the task menu")) {
+                return new OverviewTaskMenu(mLauncher);
+            }
+        }
+    }
+
+    boolean isTaskSplit() {
+        return mLauncher.findObjectInContainer(mTask.getParent(), "bottomright_snapshot") != null;
     }
 }

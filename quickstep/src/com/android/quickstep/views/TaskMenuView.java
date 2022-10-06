@@ -16,9 +16,6 @@
 
 package com.android.quickstep.views;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
-import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
 import static com.android.quickstep.views.TaskThumbnailView.DIM_ALPHA;
 
 import android.animation.Animator;
@@ -157,23 +154,6 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
                 mTaskContainer.getThumbnailView(), overscrollShift, deviceProfile));
         setY(pagedOrientationHandler.getTaskMenuY(
                 adjustedY, mTaskContainer.getThumbnailView(), overscrollShift));
-
-        // TODO(b/193432925) temporary menu placement for split screen task menus
-        TaskIdAttributeContainer[] taskIdAttributeContainers =
-                mTaskView.getTaskIdAttributeContainers();
-        if (taskIdAttributeContainers[0].getStagePosition() != STAGE_POSITION_UNDEFINED) {
-            if (mTaskContainer.getStagePosition() != STAGE_POSITION_BOTTOM_OR_RIGHT) {
-                return;
-            }
-            Rect r = new Rect();
-            mTaskContainer.getThumbnailView().getBoundsOnScreen(r);
-            if (deviceProfile.isLandscape) {
-                setX(r.left);
-            } else {
-                setY(r.top);
-
-            }
-        }
     }
 
     public void onRotationChanged() {
@@ -232,8 +212,7 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
     private void addMenuOptions(TaskIdAttributeContainer taskContainer) {
         mTaskName.setText(TaskUtils.getTitle(getContext(), taskContainer.getTask()));
         mTaskName.setOnClickListener(v -> close(true));
-        TaskOverlayFactory.getEnabledShortcuts(mTaskView, mActivity.getDeviceProfile(),
-                taskContainer)
+        TaskOverlayFactory.getEnabledShortcuts(mTaskView, taskContainer)
                 .forEach(this::addMenuOption);
     }
 
@@ -245,17 +224,9 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
         LayoutParams lp = (LayoutParams) menuOptionView.getLayoutParams();
         mTaskView.getPagedOrientationHandler().setLayoutParamsForTaskMenuOptionItem(lp,
                 menuOptionView, mActivity.getDeviceProfile());
-        menuOptionView.setOnClickListener(view -> {
-            if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-                RecentsView recentsView = mTaskView.getRecentsView();
-                recentsView.switchToScreenshot(null,
-                        () -> recentsView.finishRecentsAnimation(true /* toRecents */,
-                                false /* shouldPip */,
-                                () -> menuOption.onClick(view)));
-            } else {
-                menuOption.onClick(view);
-            }
-        });
+        // Set an onClick listener on each menu option. The onClick method is responsible for
+        // ending LiveTile mode on the thumbnail if needed.
+        menuOptionView.setOnClickListener(menuOption::onClick);
         mOptionLayout.addView(menuOptionView);
     }
 

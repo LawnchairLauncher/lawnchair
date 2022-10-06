@@ -26,6 +26,7 @@ import android.util.FloatProperty;
 import android.util.IntProperty;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.TextView;
 
 import com.android.launcher3.util.MultiScalePropertyFactory;
 
@@ -80,9 +81,9 @@ public class LauncherAnimUtils {
             new MultiScalePropertyFactory<Hotseat>("hotseat_scale_property");
 
     public static final int SCALE_INDEX_UNFOLD_ANIMATION = 1;
-    public static final int SCALE_INDEX_UNLOCK_ANIMATION = 2;
-    public static final int SCALE_INDEX_WORKSPACE_STATE = 3;
-    public static final int SCALE_INDEX_REVEAL_ANIM = 4;
+    public static final int SCALE_INDEX_WORKSPACE_STATE = 2;
+    public static final int SCALE_INDEX_REVEAL_ANIM = 3;
+    public static final int SCALE_INDEX_WIDGET_TRANSITION = 4;
 
     /** Increase the duration if we prevented the fling, as we are going against a high velocity. */
     public static int blockedFlingDurationFactor(float velocity) {
@@ -112,6 +113,32 @@ public class LauncherAnimUtils {
                 @Override
                 public void setValue(LayoutParams lp, int height) {
                     lp.height = height;
+                }
+            };
+
+    public static final IntProperty<TextView> TEXT_COLOR =
+            new IntProperty<TextView>("textColor") {
+                @Override
+                public Integer get(TextView view) {
+                    return view.getTextColors().getDefaultColor();
+                }
+
+                @Override
+                public void setValue(TextView view, int color) {
+                    view.setTextColor(color);
+                }
+            };
+
+    public static final IntProperty<TextView> HINT_TEXT_COLOR =
+            new IntProperty<TextView>("hintTextColor") {
+                @Override
+                public Integer get(TextView view) {
+                    return view.getHintTextColors().getDefaultColor();
+                }
+
+                @Override
+                public void setValue(TextView view, int color) {
+                    view.setHintTextColor(color);
                 }
             };
 

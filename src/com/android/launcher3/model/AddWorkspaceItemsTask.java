@@ -23,6 +23,9 @@ import android.os.UserHandle;
 import android.util.Log;
 import android.util.Pair;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherSettings;
@@ -36,12 +39,13 @@ import com.android.launcher3.model.data.WorkspaceItemFactory;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.PackageInstallInfo;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Task to add auto-created workspace items.
@@ -50,14 +54,16 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
 
     private static final String LOG = "AddWorkspaceItemsTask";
 
+    @NonNull
     private final List<Pair<ItemInfo, Object>> mItemList;
 
+    @NonNull
     private final WorkspaceItemSpaceFinder mItemSpaceFinder;
 
     /**
      * @param itemList items to add on the workspace
      */
-    public AddWorkspaceItemsTask(List<Pair<ItemInfo, Object>> itemList) {
+    public AddWorkspaceItemsTask(@NonNull final List<Pair<ItemInfo, Object>> itemList) {
         this(itemList, new WorkspaceItemSpaceFinder());
     }
 
@@ -65,14 +71,15 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
      * @param itemList items to add on the workspace
      * @param itemSpaceFinder inject WorkspaceItemSpaceFinder dependency for testing
      */
-    public AddWorkspaceItemsTask(List<Pair<ItemInfo, Object>> itemList,
-            WorkspaceItemSpaceFinder itemSpaceFinder) {
+    public AddWorkspaceItemsTask(@NonNull final List<Pair<ItemInfo, Object>> itemList,
+            @NonNull final WorkspaceItemSpaceFinder itemSpaceFinder) {
         mItemList = itemList;
         mItemSpaceFinder = itemSpaceFinder;
     }
 
     @Override
-    public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+    public void execute(@NonNull final LauncherAppState app, @NonNull final BgDataModel dataModel,
+            @NonNull final AllAppsList apps) {
         if (mItemList.isEmpty()) {
             return;
         }
@@ -98,7 +105,8 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                     }
 
                     // b/139663018 Short-circuit this logic if the icon is a system app
-                    if (PackageManagerHelper.isSystemApp(app.getContext(), item.getIntent())) {
+                    if (PackageManagerHelper.isSystemApp(app.getContext(),
+                            Objects.requireNonNull(item.getIntent()))) {
                         if (TestProtocol.sDebugTracing) {
                             Log.d(TestProtocol.MISSING_PROMISE_ICON,
                                     LOG + " Item is a system app.");
@@ -159,7 +167,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                         continue;
                     }
 
-                    List<LauncherActivityInfo> activities = launcherApps
+                    List<LauncherActivityInfo> activities = Objects.requireNonNull(launcherApps)
                             .getActivityList(packageName, item.user);
                     boolean hasActivity = activities != null && !activities.isEmpty();
 
@@ -218,7 +226,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
         if (!addedItemsFinal.isEmpty()) {
             scheduleCallbackTask(new CallbackTask() {
                 @Override
-                public void execute(Callbacks callbacks) {
+                public void execute(@NonNull Callbacks callbacks) {
                     final ArrayList<ItemInfo> addAnimated = new ArrayList<>();
                     final ArrayList<ItemInfo> addNotAnimated = new ArrayList<>();
                     if (!addedItemsFinal.isEmpty()) {
@@ -243,7 +251,8 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
      * Returns true if the shortcuts already exists on the workspace. This must be called after
      * the workspace has been loaded. We identify a shortcut by its intent.
      */
-    protected boolean shortcutExists(BgDataModel dataModel, Intent intent, UserHandle user) {
+    protected boolean shortcutExists(@NonNull final BgDataModel dataModel,
+            @Nullable final Intent intent, @NonNull final UserHandle user) {
         final String compPkgName, intentWithPkg, intentWithoutPkg;
         if (intent == null) {
             // Skip items with null intents

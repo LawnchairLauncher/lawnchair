@@ -31,6 +31,7 @@ import android.graphics.Point;
 import android.util.ArrayMap;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.InvariantDeviceProfile;
@@ -47,6 +48,7 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.WidgetManagerHelper;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -56,6 +58,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This class takes care of shrinking the workspace (by maximum of one row and one column), as a
@@ -109,9 +112,8 @@ public class GridSizeMigrationTaskV2 {
     private static boolean needsToMigrate(
             DeviceGridState srcDeviceState, DeviceGridState destDeviceState) {
         boolean needsToMigrate = !destDeviceState.isCompatible(srcDeviceState);
-        // TODO(b/198965093): Revert this change after bug is fixed
         if (needsToMigrate) {
-            Log.d("b/198965093", "Migration is needed. destDeviceState: " + destDeviceState
+            Log.i(TAG, "Migration is needed. destDeviceState: " + destDeviceState
                     + ", srcDeviceState: " + srcDeviceState);
         }
         return needsToMigrate;
@@ -267,36 +269,31 @@ public class GridSizeMigrationTaskV2 {
 
     /** Return what's in the src but not in the dest */
     private static List<DbEntry> calcDiff(List<DbEntry> src, List<DbEntry> dest) {
-        Set<String> destIntentSet = new HashSet<>();
-        Set<Map<String, Integer>> destFolderIntentSet = new HashSet<>();
+        Map<String, Integer> destIdSet = new HashMap<>();
         for (DbEntry entry : dest) {
-            if (entry.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
-                destFolderIntentSet.add(getFolderIntents(entry));
+            String entryID = entry.getEntryMigrationId();
+            if (destIdSet.containsKey(entryID)) {
+                destIdSet.put(entryID, destIdSet.get(entryID) + 1);
             } else {
-                destIntentSet.add(entry.mIntent);
+                destIdSet.put(entryID, 1);
             }
         }
         List<DbEntry> diff = new ArrayList<>();
         for (DbEntry entry : src) {
-            if (entry.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
-                if (!destFolderIntentSet.contains(getFolderIntents(entry))) {
+            String entryID = entry.getEntryMigrationId();
+            if (destIdSet.containsKey(entryID)) {
+                Integer count = destIdSet.get(entryID);
+                if (count <= 0) {
                     diff.add(entry);
+                    destIdSet.remove(entryID);
+                } else {
+                    destIdSet.put(entryID, count - 1);
                 }
             } else {
-                if (!destIntentSet.contains(entry.mIntent)) {
-                    diff.add(entry);
-                }
+                diff.add(entry);
             }
         }
         return diff;
-    }
-
-    private static Map<String, Integer> getFolderIntents(DbEntry entry) {
-        Map<String, Integer> folder = new HashMap<>();
-        for (String intent : entry.mFolderItems.keySet()) {
-            folder.put(intent, entry.mFolderItems.get(intent).size());
-        }
-        return folder;
     }
 
     private static void insertEntryInDb(SQLiteDatabase db, Context context, DbEntry entry,
@@ -779,6 +776,59 @@ public class GridSizeMigrationTaskV2 {
             values.put(LauncherSettings.Favorites.CELLY, cellY);
             values.put(LauncherSettings.Favorites.SPANX, spanX);
             values.put(LauncherSettings.Favorites.SPANY, spanY);
+        }
+
+        /** This id is not used in the DB is only used while doing the migration and it identifies
+         * an entry on each workspace. For example two calculator icons would have the same
+         * migration id even thought they have different database ids.
+         */
+        public String getEntryMigrationId() {
+            switch (itemType) {
+                case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
+                    return getFolderMigrationId();
+                case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+                    return mProvider;
+                case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+                    final String intentStr = cleanIntentString(mIntent);
+                    try {
+                        Intent i = Intent.parseUri(intentStr, 0);
+                        return Objects.requireNonNull(i.getComponent()).toString();
+                    } catch (Exception e) {
+                        return intentStr;
+                    }
+                default:
+                    return cleanIntentString(mIntent);
+            }
+        }
+
+        /**
+         * This method should return an id that should be the same for two folders containing the
+         * same elements.
+         */
+        @NonNull
+        private String getFolderMigrationId() {
+            return mFolderItems.keySet().stream()
+                    .map(intentString -> mFolderItems.get(intentString).size()
+                            + cleanIntentString(intentString))
+                    .sorted()
+                    .collect(Collectors.joining(","));
+        }
+
+        /**
+         * This is needed because sourceBounds can change and make the id of two equal items
+         * different.
+         */
+        @NonNull
+        private String cleanIntentString(@NonNull String intentStr) {
+            try {
+                Intent i = Intent.parseUri(intentStr, 0);
+                i.setSourceBounds(null);
+                return i.toURI();
+            } catch (URISyntaxException e) {
+                Log.e(TAG, "Unable to parse Intent string", e);
+                return intentStr;
+            }
+
         }
     }
 }

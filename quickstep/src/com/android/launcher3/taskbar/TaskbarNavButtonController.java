@@ -18,7 +18,6 @@ package com.android.launcher3.taskbar;
 
 import static com.android.internal.app.AssistUtils.INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS;
 import static com.android.internal.app.AssistUtils.INVOCATION_TYPE_KEY;
-import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_A11Y_BUTTON_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_A11Y_BUTTON_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_BACK_BUTTON_LONGPRESS;
@@ -28,11 +27,14 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_IME_SWITCHER_BUTTON_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_OVERVIEW_BUTTON_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_OVERVIEW_BUTTON_TAP;
+import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
+import android.view.View;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
@@ -41,7 +43,7 @@ import androidx.annotation.StringRes;
 import com.android.launcher3.R;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.testing.TestLogging;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.quickstep.OverviewCommandHelper;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
@@ -70,9 +72,8 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
     public void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "TaskbarNavButtonController:");
 
-        pw.println(String.format(
-                "%s\tmLastScreenPinLongPress=%dms", prefix, mLastScreenPinLongPress));
-        pw.println(String.format("%s\tmScreenPinned=%b", prefix, mScreenPinned));
+        pw.println(prefix + "\tmLastScreenPinLongPress=" + mLastScreenPinLongPress);
+        pw.println(prefix + "\tmScreenPinned=" + mScreenPinned);
     }
 
     @Retention(RetentionPolicy.SOURCE)
@@ -113,7 +114,9 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
         mHandler = handler;
     }
 
-    public void onButtonClick(@TaskbarButton int buttonType) {
+    public void onButtonClick(@TaskbarButton int buttonType, View view) {
+        // Provide the same haptic feedback that the system offers for virtual keys.
+        view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
         switch (buttonType) {
             case BUTTON_BACK:
                 logEvent(LAUNCHER_TASKBAR_BACK_BUTTON_TAP);
@@ -144,7 +147,9 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
         }
     }
 
-    public boolean onButtonLongClick(@TaskbarButton int buttonType) {
+    public boolean onButtonLongClick(@TaskbarButton int buttonType, View view) {
+        // Provide the same haptic feedback that the system offers for virtual keys.
+        view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
         switch (buttonType) {
             case BUTTON_HOME:
                 logEvent(LAUNCHER_TASKBAR_HOME_BUTTON_LONGPRESS);

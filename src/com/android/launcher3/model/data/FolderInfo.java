@@ -26,11 +26,11 @@ import static com.android.launcher3.logger.LauncherAtom.Attribute.SUGGESTED_LABE
 
 import android.os.Process;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderNameInfos;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logger.LauncherAtom.Attribute;
@@ -155,7 +155,7 @@ public class FolderInfo extends ItemInfo {
     }
 
     @Override
-    public void onAddToDatabase(ContentWriter writer) {
+    public void onAddToDatabase(@NonNull ContentWriter writer) {
         super.onAddToDatabase(writer);
         writer.put(LauncherSettings.Favorites.TITLE, title)
                 .put(LauncherSettings.Favorites.OPTIONS, options);
@@ -207,8 +207,9 @@ public class FolderInfo extends ItemInfo {
         return String.format("%s; labelState=%s", super.dumpProperties(), getLabelState());
     }
 
+    @NonNull
     @Override
-    public LauncherAtom.ItemInfo buildProto(FolderInfo fInfo) {
+    public LauncherAtom.ItemInfo buildProto(@Nullable FolderInfo fInfo) {
         FolderIcon.Builder folderIcon = FolderIcon.newBuilder()
                 .setCardinality(contents.size());
         if (LabelState.SUGGESTED.equals(getLabelState())) {
@@ -262,6 +263,7 @@ public class FolderInfo extends ItemInfo {
                                 : LabelState.SUGGESTED;
     }
 
+    @NonNull
     @Override
     public ItemInfo makeShallowCopy() {
         FolderInfo folderInfo = new FolderInfo();
@@ -273,6 +275,7 @@ public class FolderInfo extends ItemInfo {
     /**
      * Returns {@link LauncherAtom.FolderIcon} wrapped as {@link LauncherAtom.ItemInfo} for logging.
      */
+    @NonNull
     @Override
     public LauncherAtom.ItemInfo buildProto() {
         return buildProto(null);
@@ -319,12 +322,6 @@ public class FolderInfo extends ItemInfo {
     public LauncherAtom.ToState getToLabelState() {
         if (title == null) {
             return LauncherAtom.ToState.TO_STATE_UNSPECIFIED;
-        }
-
-        if (!FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
-            return title.length() > 0
-                    ? LauncherAtom.ToState.TO_CUSTOM_WITH_SUGGESTIONS_DISABLED
-                    : LauncherAtom.ToState.TO_EMPTY_WITH_SUGGESTIONS_DISABLED;
         }
 
         // TODO: if suggestedFolderNames is null then it infrastructure issue, not

@@ -19,12 +19,13 @@ import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
-import static com.android.launcher3.Utilities.createHomeIntent;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.launcher3.util.VelocityUtils.PX_PER_MS;
 import static com.android.quickstep.AbsSwipeUpHandler.MIN_PROGRESS_FOR_OVERVIEW;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
+import static com.android.quickstep.OverviewComponentObserver.startHomeIntentSafely;
+import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
 import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
 
 import android.animation.Animator;
@@ -41,7 +42,7 @@ import android.view.VelocityTracker;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.testing.TestLogging;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.GestureState;
@@ -101,6 +102,8 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     private boolean mThresholdCrossed = false;
     private boolean mHomeLaunched = false;
+    private boolean mCancelWhenRecentsStart = false;
+    private boolean mDismissTask = false;
 
     private RecentsAnimationController mRecentsAnimationController;
 
@@ -204,9 +207,20 @@ public class DeviceLockedInputConsumer implements InputConsumer,
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    if (dismissTask) {
-                        // For now, just start the home intent so user is prompted to unlock the device.
-                        mContext.startActivity(createHomeIntent());
+                    if (ENABLE_SHELL_TRANSITIONS) {
+                        if (mTaskAnimationManager.getCurrentCallbacks() != null) {
+                            if (mRecentsAnimationController != null) {
+                                finishRecentsAnimationForShell(dismissTask);
+                            } else {
+                                // the transition of recents animation hasn't started, wait for it
+                                mCancelWhenRecentsStart = true;
+                                mDismissTask = dismissTask;
+                            }
+                        }
+                    } else if (dismissTask) {
+                        // For now, just start the home intent so user is prompted to
+                        // unlock the device.
+                        startHomeIntentSafely(mContext, mGestureState.getHomeIntent(), null);
                         mHomeLaunched = true;
                     }
                     mStateCallback.setState(STATE_HANDLER_INVALIDATED);
@@ -238,12 +252,24 @@ public class DeviceLockedInputConsumer implements InputConsumer,
         mTransformParams.setTargetSet(targets);
         applyTransform();
         mStateCallback.setState(STATE_TARGET_RECEIVED);
+        if (mCancelWhenRecentsStart) {
+            finishRecentsAnimationForShell(mDismissTask);
+        }
     }
 
     @Override
     public void onRecentsAnimationCanceled(HashMap<Integer, ThumbnailData> thumbnailDatas) {
         mRecentsAnimationController = null;
         mTransformParams.setTargetSet(null);
+        mCancelWhenRecentsStart = false;
+    }
+
+    private void finishRecentsAnimationForShell(boolean dismissTask) {
+        mCancelWhenRecentsStart = false;
+        mTaskAnimationManager.finishRunningRecentsAnimation(dismissTask /* toHome */);
+        if (dismissTask) {
+            mHomeLaunched = true;
+        }
     }
 
     private void endRemoteAnimation() {

@@ -55,6 +55,7 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
      */
     public Intent intent;
 
+    @NonNull
     public ComponentName componentName;
 
     // Section name used for indexing.
@@ -65,6 +66,7 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
     }
 
     @Override
+    @Nullable
     public Intent getIntent() {
         return intent;
     }
@@ -151,7 +153,7 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
                         | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
     }
 
-    @Nullable
+    @NonNull
     @Override
     public ComponentName getTargetComponent() {
         return componentName;

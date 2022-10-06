@@ -103,40 +103,45 @@ public abstract class HomeAppIcon extends AppIcon implements FolderDragTarget, W
     }
 
     /**
-     * Drag an object to the given cell in workspace. The target cell must be empty.
+     * Drag an object to the given cell in hotseat. The target cell should be expected to be empty.
      *
-     * @param cellX zero based column number, starting from the left of the screen.
-     * @param cellY zero based row number, starting from the top of the screen.
+     * @param cellInd zero based index number of the hotseat cells.
+     * @return the workspace app icon.
      */
-    public HomeAppIcon dragToWorkspace(int cellX, int cellY) {
+    @NonNull
+    public WorkspaceAppIcon dragToHotseat(int cellInd) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                     String.format("want to drag the icon to cell(%d, %d)", cellX, cellY))
+                     String.format("want to drag the icon to hotseat cell %d", cellInd))
         ) {
-            final Supplier<Point> dest = () -> Workspace.getCellCenter(mLauncher, cellX, cellY);
-            Workspace.dragIconToWorkspace(
+            final Supplier<Point> dest = () -> Workspace.getHotseatCellCenter(mLauncher, cellInd);
+
+            Workspace.dragIconToHotseat(
                     mLauncher,
-                    /* launchable= */ this,
+                    this,
                     dest,
                     () -> addExpectedEventsForLongClick(),
                     /*expectDropEvents= */ null);
             try (LauncherInstrumentation.Closable ignore = mLauncher.addContextLayer("dragged")) {
                 WorkspaceAppIcon appIcon =
-                        (WorkspaceAppIcon) mLauncher.getWorkspace().getWorkspaceAppIcon(mAppName);
+                        (WorkspaceAppIcon) mLauncher.getWorkspace().getHotseatAppIcon(mAppName);
                 mLauncher.assertTrue(
-                        String.format(
-                                "The %s icon should be in the cell (%d, %d).", mAppName, cellX,
-                                cellY),
-                        appIcon.isInCell(cellX, cellY));
+                        String.format("The %s icon should be in the hotseat cell %d.", mAppName,
+                                cellInd),
+                        appIcon.isInHotseatCell(cellInd));
                 return appIcon;
             }
         }
     }
 
-
     /** This method requires public access, however should not be called in tests. */
     @Override
     public Launchable getLaunchable() {
         return this;
+    }
+
+    boolean isInHotseatCell(int cellInd) {
+        final Point center = Workspace.getHotseatCellCenter(mLauncher, cellInd);
+        return mObject.getVisibleBounds().contains(center.x, center.y);
     }
 }

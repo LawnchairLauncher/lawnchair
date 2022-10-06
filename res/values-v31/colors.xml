@@ -56,4 +56,9 @@
 
     <color name="workspace_accent_color_light">@android:color/system_accent1_100</color>
     <color name="workspace_accent_color_dark">@android:color/system_accent2_600</color>
+
+    <color name="preload_icon_accent_color_light">@android:color/system_accent1_600</color>
+    <color name="preload_icon_background_color_light">@android:color/system_accent2_200</color>
+    <color name="preload_icon_accent_color_dark">@android:color/system_accent1_300</color>
+    <color name="preload_icon_background_color_dark">@android:color/system_neutral2_700</color>
 </resources>

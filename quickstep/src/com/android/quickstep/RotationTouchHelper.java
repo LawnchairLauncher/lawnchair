@@ -23,20 +23,20 @@ import static com.android.launcher3.util.DisplayController.CHANGE_ALL;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
 import static com.android.launcher3.util.DisplayController.CHANGE_SUPPORTED_BOUNDS;
-import static com.android.launcher3.util.DisplayController.NavigationMode.THREE_BUTTONS;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.launcher3.util.NavigationMode.THREE_BUTTONS;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
-import com.android.launcher3.util.DisplayController.NavigationMode;
 import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.NavigationMode;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.TaskStackChangeListener;

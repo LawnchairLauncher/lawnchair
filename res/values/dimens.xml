@@ -22,8 +22,6 @@
     <dimen name="dynamic_grid_edge_margin">10.77dp</dimen>
     <dimen name="dynamic_grid_left_right_margin">8dp</dimen>
     <dimen name="dynamic_grid_icon_drawable_padding">7dp</dimen>
-    <!-- Minimum space between workspace and hotseat in spring loaded mode -->
-    <dimen name="dynamic_grid_min_spring_loaded_space">8dp</dimen>
     <!-- Minimum amount of next page visible in spring loaded mode -->
     <dimen name="dynamic_grid_spring_loaded_min_next_space_visible">24dp</dimen>
 
@@ -32,10 +30,7 @@
     <dimen name="dynamic_grid_cell_padding_x">8dp</dimen>
 
     <!-- Hotseat -->
-    <dimen name="dynamic_grid_hotseat_top_padding">8dp</dimen>
-    <dimen name="dynamic_grid_hotseat_bottom_padding">2dp</dimen>
     <dimen name="dynamic_grid_hotseat_bottom_tall_padding">0dp</dimen>
-    <dimen name="inline_qsb_bottom_margin">0dp</dimen>
     <dimen name="spring_loaded_hotseat_top_margin">76dp</dimen>
 
     <!-- Qsb -->
@@ -44,13 +39,10 @@
       it is close to the bottom of the screen -->
     <item name="qsb_center_factor" format="float" type="dimen">0.325</item>
 
-    <!-- Extra bottom padding for non-tall devices. -->
-    <dimen name="dynamic_grid_hotseat_bottom_non_tall_padding">0dp</dimen>
-    <dimen name="dynamic_grid_hotseat_extra_vertical_size">34dp</dimen>
     <dimen name="dynamic_grid_hotseat_side_padding">0dp</dimen>
 
     <!-- Scalable Grid -->
-    <dimen name="scalable_grid_qsb_bottom_margin">42dp</dimen>
+    <dimen name="min_qsb_margin">8dp</dimen>
 
     <!-- Workspace page indicator -->
     <dimen name="workspace_page_indicator_height">24dp</dimen>
@@ -116,9 +108,6 @@
     <dimen name="all_apps_search_bar_content_overlap">24dp</dimen>
     <dimen name="all_apps_search_bar_bottom_padding">30dp</dimen>
     <dimen name="all_apps_empty_search_message_top_offset">40dp</dimen>
-    <dimen name="all_apps_empty_search_bg_top_offset">144dp</dimen>
-    <dimen name="all_apps_background_canvas_width">700dp</dimen>
-    <dimen name="all_apps_background_canvas_height">475dp</dimen>
     <dimen name="all_apps_header_pill_height">48dp</dimen>
     <dimen name="all_apps_header_pill_corner_radius">12dp</dimen>
     <dimen name="all_apps_header_tab_height">48dp</dimen>
@@ -132,6 +121,7 @@
     <dimen name="all_apps_work_profile_tab_footer_bottom_padding">20dp</dimen>
     <dimen name="all_apps_tabs_button_horizontal_padding">4dp</dimen>
     <dimen name="all_apps_tabs_vertical_padding">6dp</dimen>
+    <dimen name="all_apps_tabs_margin_top">8dp</dimen>
     <dimen name="all_apps_divider_height">2dp</dimen>
     <dimen name="all_apps_divider_width">128dp</dimen>
     <dimen name="all_apps_content_fade_in_offset">150dp</dimen>
@@ -139,9 +129,9 @@
     <dimen name="all_apps_height_extra">6dp</dimen>
     <dimen name="all_apps_bottom_sheet_horizontal_padding">0dp</dimen>
     <dimen name="all_apps_paged_view_top_padding">40dp</dimen>
-    <dimen name="all_apps_personal_work_tabs_vertical_margin">16dp</dimen>
 
     <dimen name="all_apps_icon_drawable_padding">8dp</dimen>
+    <dimen name="all_apps_predicted_icon_vertical_padding">8dp</dimen>
     <!-- The size of corner radius of the arrow in the arrow toast. -->
     <dimen name="arrow_toast_corner_radius">2dp</dimen>
     <dimen name="arrow_toast_elevation">2dp</dimen>
@@ -237,6 +227,7 @@
     <dimen name="drop_target_text_size">16sp</dimen>
     <dimen name="drop_target_shadow_elevation">2dp</dimen>
     <dimen name="drop_target_bar_margin_horizontal">4dp</dimen>
+    <dimen name="drop_target_button_drawable_size">20dp</dimen>
     <dimen name="drop_target_button_drawable_padding">8dp</dimen>
     <dimen name="drop_target_button_drawable_horizontal_padding">16dp</dimen>
     <dimen name="drop_target_button_drawable_vertical_padding">8dp</dimen>
@@ -257,12 +248,14 @@
 
     <!-- Folders -->
     <dimen name="page_indicator_dot_size">8dp</dimen>
+    <dimen name="page_indicator_size">10dp</dimen>
+
 
     <dimen name="folder_cell_x_padding">9dp</dimen>
     <dimen name="folder_cell_y_padding">6dp</dimen>
     <!-- label text size = workspace text size multiplied by this scale -->
     <dimen name="folder_label_text_scale">1.14</dimen>
-    <dimen name="folder_label_height">48dp</dimen>
+    <dimen name="folder_label_height">56dp</dimen>
 
     <dimen name="folder_content_padding_left_right">8dp</dimen>
     <dimen name="folder_content_padding_top">16dp</dimen>
@@ -364,9 +357,21 @@
     <dimen name="taskbar_size">0dp</dimen>
     <dimen name="taskbar_stashed_size">0dp</dimen>
     <dimen name="qsb_widget_height">0dp</dimen>
+    <dimen name="qsb_shadow_height">0dp</dimen>
+    <dimen name="min_hotseat_icon_space">18dp</dimen>
+    <dimen name="min_hotseat_qsb_width">0dp</dimen>
     <dimen name="taskbar_icon_size">44dp</dimen>
     <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
     <dimen name="taskbar_icon_spacing">8dp</dimen>
+    <dimen name="taskbar_nav_buttons_size">0dp</dimen>
+    <dimen name="taskbar_contextual_button_margin">0dp</dimen>
+    <dimen name="taskbar_hotseat_nav_spacing">0dp</dimen>
+    <dimen name="taskbar_button_margin_default">0dp</dimen>
+    <dimen name="taskbar_button_space_inbetween">0dp</dimen>
+    <dimen name="taskbar_button_margin_5_5">0dp</dimen>
+    <dimen name="taskbar_button_margin_6_5">0dp</dimen>
+    <dimen name="taskbar_button_margin_4_5">0dp</dimen>
+    <dimen name="taskbar_button_margin_4_4">0dp</dimen>
 
     <!-- Size of the maximum radius for the enforced rounded rectangles. -->
     <dimen name="enforced_rounded_corner_max_radius">16dp</dimen>
@@ -379,7 +384,6 @@
     <dimen name="task_thumbnail_icon_drawable_size">0dp</dimen>
     <dimen name="task_thumbnail_icon_drawable_size_grid">0dp</dimen>
     <dimen name="overview_task_margin">0dp</dimen>
-    <dimen name="overview_task_margin_grid">0dp</dimen>
     <dimen name="overview_actions_height">0dp</dimen>
     <dimen name="overview_actions_button_spacing">0dp</dimen>
     <dimen name="overview_actions_margin_gesture">0dp</dimen>
@@ -391,8 +395,17 @@
     <dimen name="split_placeholder_inset">16dp</dimen>
     <dimen name="split_placeholder_icon_size">44dp</dimen>
     <dimen name="task_menu_width_grid">216dp</dimen>
-
-
+    <dimen name="split_instructions_radius">22dp</dimen>
+    <dimen name="split_instructions_elevation">1dp</dimen>
+    <dimen name="split_instructions_horizontal_padding">24dp</dimen>
+    <dimen name="split_instructions_vertical_padding">12dp</dimen>
+    <dimen name="split_instructions_bottom_margin_tablet_landscape">32dp</dimen>
+    <dimen name="split_instructions_bottom_margin_tablet_portrait">44dp</dimen>
+    <dimen name="split_instructions_bottom_margin_twopanels_landscape">33dp</dimen>
+    <dimen name="split_instructions_bottom_margin_twopanels_portrait">51dp</dimen>
+    <dimen name="split_instructions_bottom_margin_phone_landscape">24dp</dimen>
+    <dimen name="split_instructions_bottom_margin_phone_portrait">60dp</dimen>
+    
     <!-- Workspace grid visualization parameters -->
     <dimen name="grid_visualization_rounding_radius">28dp</dimen>
     <dimen name="grid_visualization_horizontal_cell_spacing">6dp</dimen>
@@ -405,8 +418,12 @@
 
     <!-- Bottom sheet related parameters -->
     <dimen name="bottom_sheet_extra_top_padding">0dp</dimen>
+    <dimen name="bottom_sheet_handle_area_height">36dp</dimen>
     <dimen name="bottom_sheet_handle_width">32dp</dimen>
     <dimen name="bottom_sheet_handle_height">4dp</dimen>
     <dimen name="bottom_sheet_handle_margin">16dp</dimen>
     <dimen name="bottom_sheet_handle_corner_radius">2dp</dimen>
+
+    <!-- State transition -->
+    <item name="workspace_content_scale" format="float" type="dimen">0.97</item>
 </resources>

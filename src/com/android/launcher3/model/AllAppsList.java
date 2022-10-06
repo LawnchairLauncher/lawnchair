@@ -18,6 +18,7 @@ package com.android.launcher3.model;
 
 import static com.android.launcher3.model.data.AppInfo.COMPONENT_KEY_COMPARATOR;
 import static com.android.launcher3.model.data.AppInfo.EMPTY_ARRAY;
+import static com.android.launcher3.testing.shared.TestProtocol.INCORRECT_INFO_UPDATED;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -38,6 +39,7 @@ import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.pm.PackageInstallInfo;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SafeCloseable;
@@ -64,7 +66,10 @@ public class AllAppsList {
     /** The list off all apps. */
     public final ArrayList<AppInfo> data = new ArrayList<>(DEFAULT_APPLICATIONS_NUMBER);
 
+    @NonNull
     private IconCache mIconCache;
+
+    @NonNull
     private AppFilter mAppFilter;
 
     private boolean mDataChanged = false;
@@ -270,8 +275,14 @@ public class AllAppsList {
     }
 
     public void updateIconsAndLabels(HashSet<String> packages, UserHandle user) {
+        if (TestProtocol.sDebugTracing) {
+            Log.i(INCORRECT_INFO_UPDATED, "updateIconsAndLabels: packages=" + packages);
+        }
         for (AppInfo info : data) {
             if (info.user.equals(user) && packages.contains(info.componentName.getPackageName())) {
+                if (TestProtocol.sDebugTracing) {
+                    Log.i(INCORRECT_INFO_UPDATED, "updateIconsAndLabels: updating info=" + info);
+                }
                 mIconCache.updateTitleAndIcon(info);
                 info.sectionName = mIndex.computeSectionName(info.title);
                 mDataChanged = true;

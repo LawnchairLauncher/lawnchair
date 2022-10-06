@@ -31,8 +31,7 @@ public class SpringLoadedState extends LauncherState {
 
     private static final int STATE_FLAGS = FLAG_MULTI_PAGE
             | FLAG_WORKSPACE_INACCESSIBLE | FLAG_DISABLE_RESTORE
-            | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_WORKSPACE_HAS_BACKGROUNDS
-            | FLAG_HIDE_BACK_BUTTON;
+            | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_WORKSPACE_HAS_BACKGROUNDS;
 
     public SpringLoadedState(int id) {
         super(id, LAUNCHER_STATE_HOME, STATE_FLAGS);
@@ -52,13 +51,13 @@ public class SpringLoadedState extends LauncherState {
         }
 
         float shrunkTop = grid.getCellLayoutSpringLoadShrunkTop();
-        float scale = grid.getWorkspaceSpringLoadScale();
+        float scale = grid.getWorkspaceSpringLoadScale(launcher);
 
         float halfHeight = ws.getHeight() / 2;
         float myCenter = ws.getTop() + halfHeight;
         float cellTopFromCenter = halfHeight - ws.getChildAt(0).getTop();
         float actualCellTop = myCenter - cellTopFromCenter * scale;
-        return new ScaleAndTranslation(scale, 0, (shrunkTop - actualCellTop) / scale);
+        return new ScaleAndTranslation(scale, 0, shrunkTop - actualCellTop);
     }
 
     @Override

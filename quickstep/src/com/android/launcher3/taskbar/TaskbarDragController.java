@@ -16,6 +16,7 @@
 package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
 
 import android.animation.Animator;
@@ -31,6 +32,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
+import android.util.Pair;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceControl;
@@ -41,7 +43,6 @@ import android.window.SurfaceSyncer;
 import androidx.annotation.Nullable;
 
 import com.android.internal.logging.InstanceId;
-import com.android.internal.logging.InstanceIdSequence;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DragSource;
@@ -65,9 +66,10 @@ import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
 import com.android.launcher3.testing.TestLogging;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.quickstep.util.LogUtils;
 import com.android.systemui.shared.recents.model.Task;
 
 import java.io.PrintWriter;
@@ -358,11 +360,11 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         }
 
         if (clipDescription != null && intent != null) {
+            Pair<InstanceId, com.android.launcher3.logging.InstanceId> instanceIds =
+                    LogUtils.getShellShareableInstanceId();
             // Need to share the same InstanceId between launcher3 and WM Shell (internal).
-            InstanceId internalInstanceId = new InstanceIdSequence(
-                    com.android.launcher3.logging.InstanceId.INSTANCE_ID_MAX).newInstanceId();
-            com.android.launcher3.logging.InstanceId launcherInstanceId =
-                    new com.android.launcher3.logging.InstanceId(internalInstanceId.getId());
+            InstanceId internalInstanceId = instanceIds.first;
+            com.android.launcher3.logging.InstanceId launcherInstanceId = instanceIds.second;
 
             intent.putExtra(ClipDescription.EXTRA_LOGGING_INSTANCE_ID, internalInstanceId);
 
@@ -435,7 +437,7 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         if (tag instanceof ItemInfo) {
             ItemInfo item = (ItemInfo) tag;
             TaskbarViewController taskbarViewController = mControllers.taskbarViewController;
-            if (item.container == CONTAINER_ALL_APPS) {
+            if (item.container == CONTAINER_ALL_APPS || item.container == CONTAINER_PREDICTION) {
                 // Since all apps closes when the drag starts, target the all apps button instead.
                 target = taskbarViewController.getAllAppsButtonView();
             } else if (item.container >= 0) {
@@ -558,13 +560,11 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
     public void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "TaskbarDragController:");
 
-        pw.println(String.format("%s\tmDragIconSize=%dpx", prefix, mDragIconSize));
-        pw.println(String.format("%s\tmTempXY=%s", prefix, Arrays.toString(mTempXY)));
-        pw.println(String.format("%s\tmRegistrationX=%d", prefix, mRegistrationX));
-        pw.println(String.format("%s\tmRegistrationY=%d", prefix, mRegistrationY));
-        pw.println(String.format(
-                "%s\tmIsSystemDragInProgress=%b", prefix, mIsSystemDragInProgress));
-        pw.println(String.format(
-                "%s\tisInternalDragInProgess=%b", prefix, super.isDragging()));
+        pw.println(prefix + "\tmDragIconSize=" + mDragIconSize);
+        pw.println(prefix + "\tmTempXY=" + Arrays.toString(mTempXY));
+        pw.println(prefix + "\tmRegistrationX=" + mRegistrationX);
+        pw.println(prefix + "\tmRegistrationY=" + mRegistrationY);
+        pw.println(prefix + "\tmIsSystemDragInProgress=" + mIsSystemDragInProgress);
+        pw.println(prefix + "\tisInternalDragInProgess=" + super.isDragging());
     }
 }

@@ -22,6 +22,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -33,11 +35,13 @@ public class InstantAppItemInfo extends AppInfo {
         this.componentName = new ComponentName(packageName, COMPONENT_CLASS_MARKER);
     }
 
+    @NonNull
     @Override
     public ComponentName getTargetComponent() {
         return componentName;
     }
 
+    @NonNull
     @Override
     public WorkspaceItemInfo makeWorkspaceItem(Context context) {
         WorkspaceItemInfo workspaceItemInfo = super.makeWorkspaceItem(context);

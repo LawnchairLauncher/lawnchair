@@ -36,15 +36,13 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.launcher3.statehandlers.DepthController.DEPTH;
-import static com.android.launcher3.testing.TestProtocol.BAD_STATE;
+import static com.android.launcher3.statehandlers.DepthController.STATE_DEPTH;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.PendingIntent;
@@ -55,7 +53,6 @@ import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
-import android.util.Log;
 import android.view.SurfaceControl;
 import android.view.View;
 import android.window.TransitionInfo;
@@ -197,10 +194,10 @@ public final class TaskViewUtils {
 
         int taskIndex = recentsView.indexOfChild(v);
         Context context = v.getContext();
-        DeviceProfile dp = BaseActivity.fromContext(context).getDeviceProfile();
+        BaseActivity baseActivity = BaseActivity.fromContext(context);
+        DeviceProfile dp = baseActivity.getDeviceProfile();
         boolean showAsGrid = dp.isTablet;
-        boolean parallaxCenterAndAdjacentTask =
-                taskIndex != recentsView.getCurrentPage() && !showAsGrid;
+        boolean parallaxCenterAndAdjacentTask = taskIndex != recentsView.getCurrentPage();
         int taskRectTranslationPrimary = recentsView.getScrollOffset(taskIndex);
         int taskRectTranslationSecondary = showAsGrid ? (int) v.getGridTranslationY() : 0;
 
@@ -370,7 +367,7 @@ public final class TaskViewUtils {
         });
 
         if (depthController != null) {
-            out.setFloat(depthController, DEPTH, BACKGROUND_APP.getDepth(context),
+            out.setFloat(depthController, STATE_DEPTH, BACKGROUND_APP.getDepth(baseActivity),
                     TOUCH_RESPONSE_INTERPOLATOR);
         }
     }
@@ -391,10 +388,39 @@ public final class TaskViewUtils {
      * device is considered in multiWindowMode and things like insets and stuff change
      * and calculations have to be adjusted in the animations for that
      */
-    public static void composeRecentsSplitLaunchAnimator(int initialTaskId,
-            @Nullable PendingIntent initialTaskPendingIntent, int secondTaskId,
+    public static void composeRecentsSplitLaunchAnimator(GroupedTaskView launchingTaskView,
+            @NonNull StateManager stateManager, @Nullable DepthController depthController,
+            int initialTaskId, @Nullable PendingIntent initialTaskPendingIntent, int secondTaskId,
             @NonNull TransitionInfo transitionInfo, SurfaceControl.Transaction t,
             @NonNull Runnable finishCallback) {
+        if (launchingTaskView != null) {
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    finishCallback.run();
+                }
+            });
+
+            final RemoteAnimationTargetCompat[] appTargets =
+                    RemoteAnimationTargetCompat.wrapApps(transitionInfo, t, null /* leashMap */);
+            final RemoteAnimationTargetCompat[] wallpaperTargets =
+                    RemoteAnimationTargetCompat.wrapNonApps(
+                            transitionInfo, true /* wallpapers */, t, null /* leashMap */);
+            final RemoteAnimationTargetCompat[] nonAppTargets =
+                    RemoteAnimationTargetCompat.wrapNonApps(
+                            transitionInfo, false /* wallpapers */, t, null /* leashMap */);
+            final RecentsView recentsView = launchingTaskView.getRecentsView();
+            composeRecentsLaunchAnimator(animatorSet, launchingTaskView,
+                    appTargets, wallpaperTargets, nonAppTargets,
+                    true, stateManager,
+                    recentsView, depthController);
+
+            t.apply();
+            animatorSet.start();
+            return;
+        }
+
         // TODO: consider initialTaskPendingIntent
         TransitionInfo.Change splitRoot1 = null;
         TransitionInfo.Change splitRoot2 = null;
@@ -468,7 +494,6 @@ public final class TaskViewUtils {
             animatorSet.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
                     finishCallback.run();
                 }
             });
@@ -530,7 +555,6 @@ public final class TaskViewUtils {
                 for (SurfaceControl leash: closingTargets) {
                     t.hide(leash);
                 }
-                super.onAnimationEnd(animation);
                 finishCallback.run();
             }
         });
@@ -568,39 +592,26 @@ public final class TaskViewUtils {
         Animator launcherAnim;
         final AnimatorListenerAdapter windowAnimEndListener;
         if (launcherClosing) {
-            Context context = v.getContext();
-            DeviceProfile dp = BaseActivity.fromContext(context).getDeviceProfile();
-            launcherAnim = dp.isTablet
-                    ? ObjectAnimator.ofFloat(recentsView, RecentsView.CONTENT_ALPHA, 0)
-                    : recentsView.createAdjacentPageAnimForTaskLaunch(taskView);
-            if (dp.isTablet) {
-                Log.d(BAD_STATE, "TVU composeRecentsLaunchAnimator alpha=" + 0);
-                launcherAnim.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        Log.d(BAD_STATE, "TVU composeRecentsLaunchAnimator onStart");
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-                        float alpha = recentsView == null
-                                ? -1
-                                : RecentsView.CONTENT_ALPHA.get(recentsView);
-                        Log.d(BAD_STATE, "TVU composeRecentsLaunchAnimator onCancel, alpha="
-                                + alpha);
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        Log.d(BAD_STATE, "TVU composeRecentsLaunchAnimator onEnd");
-                    }
-                });
+            // Since Overview is in launcher, just opening overview sets willFinishToHome to true.
+            // Now that we are closing the launcher, we need to (re)set willFinishToHome back to
+            // false. Otherwise, RecentsAnimationController can't differentiate between closing
+            // overview to 3p home vs closing overview to app.
+            final RecentsAnimationController raController =
+                    recentsView.getRecentsAnimationController();
+            if (raController != null) {
+                raController.setWillFinishToHome(false);
             }
+            launcherAnim = recentsView.createAdjacentPageAnimForTaskLaunch(taskView);
             launcherAnim.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);
             launcherAnim.setDuration(RECENTS_LAUNCH_DURATION);
 
-            // Make sure recents gets fixed up by resetting task alphas and scales, etc.
             windowAnimEndListener = new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    recentsView.onTaskLaunchedInLiveTileMode();
+                }
+
+                // Make sure recents gets fixed up by resetting task alphas and scales, etc.
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     recentsView.finishRecentsAnimation(false /* toRecents */, () -> {
@@ -657,7 +668,7 @@ public final class TaskViewUtils {
         for (int i = 0; i < nonApps.length; ++i) {
             final RemoteAnimationTargetCompat targ = nonApps[i];
             final SurfaceControl leash = targ.leash;
-            if (targ.windowType == TYPE_DOCK_DIVIDER && leash != null) {
+            if (targ.windowType == TYPE_DOCK_DIVIDER && leash != null && leash.isValid()) {
                 auxiliarySurfaces.add(leash);
                 hasSurfaceToAnimate = true;
             }
@@ -670,16 +681,18 @@ public final class TaskViewUtils {
         dockFadeAnimator.addUpdateListener(valueAnimator -> {
             float progress = valueAnimator.getAnimatedFraction();
             for (SurfaceControl leash : auxiliarySurfaces) {
-                t.setAlpha(leash, shown ? progress : 1 - progress);
+                if (leash != null && leash.isValid()) {
+                    t.setAlpha(leash, shown ? progress : 1 - progress);
+                }
             }
             t.apply();
         });
         dockFadeAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
                 if (shown) {
                     for (SurfaceControl leash : auxiliarySurfaces) {
+                        t.setLayer(leash, Integer.MAX_VALUE);
                         t.setAlpha(leash, 0);
                         t.show(leash);
                     }
@@ -689,10 +702,11 @@ public final class TaskViewUtils {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
                 if (!shown) {
                     for (SurfaceControl leash : auxiliarySurfaces) {
-                        t.hide(leash);
+                        if (leash != null && leash.isValid()) {
+                            t.hide(leash);
+                        }
                     }
                     t.apply();
                 }

@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.util;
 
+import android.util.FloatProperty;
+
 /**
  * Allows the implementing view to add insets to the left and right.
  */
@@ -32,4 +34,22 @@ public interface HorizontalInsettableView {
      */
     void setHorizontalInsets(float insetPercentage);
 
+    /**
+     * Returns the width percentage to inset the content from the left and from the right. See
+     * {@link #setHorizontalInsets};
+     */
+    float getHorizontalInsets();
+
+    FloatProperty<HorizontalInsettableView> HORIZONTAL_INSETS =
+            new FloatProperty<HorizontalInsettableView>("horizontalInsets") {
+                @Override
+                public Float get(HorizontalInsettableView view) {
+                    return view.getHorizontalInsets();
+                }
+
+                @Override
+                public void setValue(HorizontalInsettableView view, float insetPercentage) {
+                    view.setHorizontalInsets(insetPercentage);
+                }
+            };
 }

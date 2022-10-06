@@ -19,6 +19,7 @@ import static com.android.launcher3.Utilities.mapBoundToRange;
 import static com.android.launcher3.Utilities.mapRange;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.quickstep.OverviewComponentObserver.startHomeIntentSafely;
 
 import android.animation.Animator;
 import android.app.Activity;
@@ -82,6 +83,8 @@ public class AllSetActivity extends Activity {
 
     private static final int MAX_SWIPE_DURATION = 350;
 
+    private static final float ANIMATION_PAUSE_ALPHA_THRESHOLD = 0.1f;
+
     private TISBindHelper mTISBindHelper;
     private TISBinder mBinder;
 
@@ -144,54 +147,64 @@ public class AllSetActivity extends Activity {
     }
 
     private void runOnUiHelperThread(Runnable runnable) {
+        if (!isResumed()
+                || getContentViewAlphaForSwipeProgress() <= ANIMATION_PAUSE_ALPHA_THRESHOLD) {
+            return;
+        }
         Executors.UI_HELPER_EXECUTOR.execute(runnable);
     }
 
     private void startBackgroundAnimation() {
-        if (Utilities.ATLEAST_S && mVibrator != null && mVibrator.areAllPrimitivesSupported(
-                VibrationEffect.Composition.PRIMITIVE_THUD)) {
-            if (mBackgroundAnimatorListener == null) {
-                mBackgroundAnimatorListener =
-                        new Animator.AnimatorListener() {
-                            @Override
-                            public void onAnimationStart(Animator animation) {
-                                runOnUiHelperThread(() -> mVibrator.vibrate(getVibrationEffect()));
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animator animation) {
-                                runOnUiHelperThread(() -> mVibrator.vibrate(getVibrationEffect()));
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                runOnUiHelperThread(mVibrator::cancel);
-                            }
-
-                            @Override
-                            public void onAnimationCancel(Animator animation) {
-                                runOnUiHelperThread(mVibrator::cancel);
-                            }
-                        };
-            }
-            mAnimatedBackground.addAnimatorListener(mBackgroundAnimatorListener);
+        if (!Utilities.ATLEAST_S || mVibrator == null) {
+            return;
         }
-        mAnimatedBackground.playAnimation();
-    }
+        boolean supportsThud = mVibrator.areAllPrimitivesSupported(
+                VibrationEffect.Composition.PRIMITIVE_THUD);
 
-    /**
-     * Sets up the vibration effect for the next round of animation. The parameters vary between
-     * different illustrations.
-     */
-    private VibrationEffect getVibrationEffect() {
-        return VibrationEffect.startComposition()
-                .addPrimitive(VibrationEffect.Composition.PRIMITIVE_THUD, 1.0f, 50)
-                .compose();
+        if (!supportsThud && !mVibrator.areAllPrimitivesSupported(
+                VibrationEffect.Composition.PRIMITIVE_TICK)) {
+            return;
+        }
+        if (mBackgroundAnimatorListener == null) {
+            VibrationEffect vibrationEffect = VibrationEffect.startComposition()
+                    .addPrimitive(supportsThud
+                                    ? VibrationEffect.Composition.PRIMITIVE_THUD
+                                    : VibrationEffect.Composition.PRIMITIVE_TICK,
+                            /* scale= */ 1.0f,
+                            /* delay= */ 50)
+                    .compose();
+
+            mBackgroundAnimatorListener =
+                    new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            runOnUiHelperThread(() -> mVibrator.vibrate(vibrationEffect));
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+                            runOnUiHelperThread(() -> mVibrator.vibrate(vibrationEffect));
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            runOnUiHelperThread(mVibrator::cancel);
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+                            runOnUiHelperThread(mVibrator::cancel);
+                        }
+                    };
+        }
+        mAnimatedBackground.addAnimatorListener(mBackgroundAnimatorListener);
+        mAnimatedBackground.playAnimation();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        maybeResumeOrPauseBackgroundAnimation();
         if (mBinder != null) {
             mBinder.getTaskbarManager().setSetupUIVisible(true);
             mBinder.setSwipeUpProxy(this::createSwipeUpProxy);
@@ -210,6 +223,7 @@ public class AllSetActivity extends Activity {
     protected void onPause() {
         super.onPause();
         clearBinderOverride();
+        maybeResumeOrPauseBackgroundAnimation();
         if (mSwipeProgress.value >= 1) {
             finishAndRemoveTask();
         }
@@ -244,10 +258,25 @@ public class AllSetActivity extends Activity {
         return mSwipeProgress;
     }
 
+    private float getContentViewAlphaForSwipeProgress() {
+        return Utilities.mapBoundToRange(
+                mSwipeProgress.value, 0, HINT_BOTTOM_FACTOR, 1, 0, LINEAR);
+    }
+
+    private void maybeResumeOrPauseBackgroundAnimation() {
+        boolean shouldPlayAnimation =
+                getContentViewAlphaForSwipeProgress() > ANIMATION_PAUSE_ALPHA_THRESHOLD
+                        && isResumed();
+        if (mAnimatedBackground.isAnimating() && !shouldPlayAnimation) {
+            mAnimatedBackground.pauseAnimation();
+        } else if (!mAnimatedBackground.isAnimating() && shouldPlayAnimation) {
+            mAnimatedBackground.resumeAnimation();
+        }
+    }
+
     private void onSwipeProgressUpdate() {
         mBackground.setProgress(mSwipeProgress.value);
-        float alpha = Utilities.mapBoundToRange(
-                mSwipeProgress.value, 0, HINT_BOTTOM_FACTOR, 1, 0, LINEAR);
+        float alpha = getContentViewAlphaForSwipeProgress();
         mContentView.setAlpha(alpha);
         mContentView.setTranslationY((alpha - 1) * mSwipeUpShift);
 
@@ -259,12 +288,7 @@ public class AllSetActivity extends Activity {
             mLauncherStartAnim.setPlayFraction(Utilities.mapBoundToRange(
                     mSwipeProgress.value, 0, 1, 0, 1, FAST_OUT_SLOW_IN));
         }
-
-        if (alpha == 0f) {
-            mAnimatedBackground.pauseAnimation();
-        } else if (!mAnimatedBackground.isAnimating()) {
-            mAnimatedBackground.resumeAnimation();
-        }
+        maybeResumeOrPauseBackgroundAnimation();
     }
 
     /**
@@ -284,7 +308,7 @@ public class AllSetActivity extends Activity {
         @Override
         public boolean performAccessibilityAction(View host, int action, Bundle args) {
             if (action == AccessibilityAction.ACTION_CLICK.getId()) {
-                startActivity(Utilities.createHomeIntent());
+                startHomeIntentSafely(AllSetActivity.this, null);
                 finish();
                 return true;
             }

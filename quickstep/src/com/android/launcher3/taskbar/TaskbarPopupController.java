@@ -15,14 +15,20 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.util.SplitConfigurationOptions.getLogEventForPosition;
+
+import android.content.ClipDescription;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.graphics.Point;
+import android.os.Bundle;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.android.internal.logging.InstanceId;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.LauncherSettings;
@@ -47,6 +53,7 @@ import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.views.ActivityContext;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.util.LogUtils;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -263,8 +270,15 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
 
         @Override
         public void onClick(View view) {
-            AbstractFloatingView.closeAllOpenViews(mTarget);
+            // Initiate splitscreen from the in-app Taskbar or Taskbar All Apps
+            Pair<InstanceId, com.android.launcher3.logging.InstanceId> instanceIds =
+                    LogUtils.getShellShareableInstanceId();
+            mTarget.getStatsLogManager().logger()
+                    .withItemInfo(mItemInfo)
+                    .withInstanceId(instanceIds.second)
+                    .log(getLogEventForPosition(mPosition.stagePosition));
 
+            AbstractFloatingView.closeAllOpenViews(mTarget);
             if (mItemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                 WorkspaceItemInfo workspaceItemInfo = (WorkspaceItemInfo) mItemInfo;
                 SystemUiProxy.INSTANCE.get(mTarget).startShortcut(
@@ -272,7 +286,8 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
                         workspaceItemInfo.getDeepShortcutId(),
                         mPosition.stagePosition,
                         null,
-                        workspaceItemInfo.user);
+                        workspaceItemInfo.user,
+                        instanceIds.first);
             } else {
                 SystemUiProxy.INSTANCE.get(mTarget).startIntent(
                         mTarget.getSystemService(LauncherApps.class).getMainActivityLaunchIntent(
@@ -281,7 +296,8 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
                                 mItemInfo.user),
                         new Intent(),
                         mPosition.stagePosition,
-                        null);
+                        null,
+                        instanceIds.first);
             }
         }
     }

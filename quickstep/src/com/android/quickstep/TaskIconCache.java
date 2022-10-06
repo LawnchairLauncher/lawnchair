@@ -18,6 +18,7 @@ package com.android.quickstep;
 import static com.android.launcher3.uioverrides.QuickstepLauncher.GO_LOW_RAM_RECENTS_ENABLED;
 import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
 
+import android.annotation.Nullable;
 import android.app.ActivityManager;
 import android.app.ActivityManager.TaskDescription;
 import android.content.Context;
@@ -46,6 +47,7 @@ import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.Preconditions;
 import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.TaskKeyLruCache;
+import com.android.quickstep.util.TaskVisualsChangeListener;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.system.PackageManagerWrapper;
@@ -69,6 +71,9 @@ public class TaskIconCache implements DisplayInfoChangeListener {
     private final IconProvider mIconProvider;
 
     private BaseIconFactory mIconFactory;
+
+    @Nullable
+    public TaskVisualsChangeListener mTaskVisualsChangeListener = null;
 
     public TaskIconCache(Context context, Executor bgExecutor, IconProvider iconProvider) {
         mContext = context;
@@ -116,6 +121,7 @@ public class TaskIconCache implements DisplayInfoChangeListener {
                 task.icon = result.icon;
                 task.titleDescription = result.contentDescription;
                 callback.accept(task);
+                dispatchIconUpdate(task.key.id);
             }
         };
         mBgExecutor.execute(request);
@@ -257,7 +263,8 @@ public class TaskIconCache implements DisplayInfoChangeListener {
         if (mIconFactory == null) {
             mIconFactory = new BaseIconFactory(mContext,
                     DisplayController.INSTANCE.get(mContext).getInfo().getDensityDpi(),
-                    mContext.getResources().getDimensionPixelSize(R.dimen.taskbar_icon_size));
+                    mContext.getResources().getDimensionPixelSize(
+                            R.dimen.task_icon_cache_default_icon_size));
         }
         return mIconFactory;
     }
@@ -271,5 +278,19 @@ public class TaskIconCache implements DisplayInfoChangeListener {
     private static class TaskCacheEntry {
         public Drawable icon;
         public String contentDescription = "";
+    }
+
+    void registerTaskVisualsChangeListener(TaskVisualsChangeListener newListener) {
+        mTaskVisualsChangeListener = newListener;
+    }
+
+    void removeTaskVisualsChangeListener() {
+        mTaskVisualsChangeListener = null;
+    }
+
+    void dispatchIconUpdate(int taskId) {
+        if (mTaskVisualsChangeListener != null) {
+            mTaskVisualsChangeListener.onTaskIconChanged(taskId);
+        }
     }
 }

@@ -19,7 +19,6 @@
     android:id="@+id/widgets_list_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingVertical="@dimen/widget_list_header_view_vertical_padding"
     android:orientation="horizontal"
     android:importantForAccessibility="yes"
     android:focusable="true"

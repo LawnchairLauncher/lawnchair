@@ -17,8 +17,6 @@ package com.android.quickstep;
 
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR;
 
-import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
-
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.ArrayList;
@@ -114,10 +112,6 @@ public class RemoteAnimationTargets {
     }
 
     public void release() {
-        if (ENABLE_SHELL_TRANSITIONS) {
-            mReleaseChecks.clear();
-            return;
-        }
         if (mReleased) {
             return;
         }

@@ -61,7 +61,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.testing.TestLogging;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.views.FloatingIconView;
@@ -248,13 +248,19 @@ public class ItemClickHandler {
             final Launcher launcher = Launcher.getLauncher(context);
             if (shortcut.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
                     && shortcut.isDisabledVersionLower()) {
+                final Intent marketIntent = shortcut.getMarketIntent(context);
+                // No market intent means no target package for the shortcut, which should be an
+                // issue. Falling back to showing toast messages.
+                if (marketIntent == null) {
+                    return false;
+                }
 
                 new AlertDialog.Builder(context)
                         .setTitle(R.string.dialog_update_title)
                         .setMessage(R.string.dialog_update_message)
                         .setPositiveButton(R.string.dialog_update, (d, i) -> {
                             // Direct the user to the play store to update the app
-                            context.startActivity(shortcut.getMarketIntent(context));
+                            context.startActivity(marketIntent);
                         })
                         .setNeutralButton(R.string.dialog_remove, (d, i) -> {
                             // Remove the icon if launcher is successfully initialized

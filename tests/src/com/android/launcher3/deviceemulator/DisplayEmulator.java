@@ -47,8 +47,7 @@ public class DisplayEmulator {
      * By changing the WindowManagerProxy we can override the window insets information
      **/
     private IWindowManager changeWindowManagerInstance(DeviceEmulationData deviceData) {
-        WindowManagerProxy.INSTANCE.initializeForTesting(
-                new TestWindowManagerProxy(mContext, deviceData));
+        WindowManagerProxy.INSTANCE.initializeForTesting(new TestWindowManagerProxy(deviceData));
         return WindowManagerGlobal.getWindowManagerService();
     }
 
@@ -57,8 +56,7 @@ public class DisplayEmulator {
         WindowManagerProxy original = WindowManagerProxy.INSTANCE.get(mContext);
         // Set up emulation
         final int userId = UserHandle.myUserId();
-        WindowManagerProxy.INSTANCE.initializeForTesting(
-                new TestWindowManagerProxy(mContext, device));
+        WindowManagerProxy.INSTANCE.initializeForTesting(new TestWindowManagerProxy(device));
         IWindowManager wm = changeWindowManagerInstance(device);
         // Change density twice to force display controller to reset its state
         wm.setForcedDisplayDensityForUser(Display.DEFAULT_DISPLAY, device.density / 2, userId);

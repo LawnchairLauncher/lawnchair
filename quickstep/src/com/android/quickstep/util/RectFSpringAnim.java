@@ -214,7 +214,7 @@ public class RectFSpringAnim extends ReleaseCheck {
      * @param context The activity context.
      * @param velocityPxPerMs Velocity of swipe in px/ms.
      */
-    public void start(Context context, PointF velocityPxPerMs) {
+    public void start(Context context, @Nullable DeviceProfile profile, PointF velocityPxPerMs) {
         // Only tell caller that we ended if both x and y animations have ended.
         OnAnimationEndListener onXEndListener = ((animation, canceled, centerX, velocityX) -> {
             mRectXAnimEnded = true;
@@ -252,7 +252,13 @@ public class RectFSpringAnim extends ReleaseCheck {
         float minVisibleChange = Math.abs(1f / mStartRect.height());
         ResourceProvider rp = DynamicResource.provider(context);
         float damping = rp.getFloat(R.dimen.swipe_up_rect_scale_damping_ratio);
-        float stiffness = rp.getFloat(R.dimen.swipe_up_rect_scale_stiffness);
+
+        // Increase the stiffness for devices where we want the window size to transform quicker.
+        boolean shouldUseHigherStiffness = profile != null
+                && (profile.isLandscape || profile.isTablet);
+        float stiffness = shouldUseHigherStiffness
+                ? rp.getFloat(R.dimen.swipe_up_rect_scale_higher_stiffness)
+                : rp.getFloat(R.dimen.swipe_up_rect_scale_stiffness);
 
         mRectScaleAnim = new SpringAnimation(this, RECT_SCALE_PROGRESS)
                 .setSpring(new SpringForce(1f)

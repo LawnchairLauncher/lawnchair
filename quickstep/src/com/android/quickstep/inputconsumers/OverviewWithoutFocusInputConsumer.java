@@ -15,12 +15,11 @@
  */
 package com.android.quickstep.inputconsumers;
 
-import static com.android.launcher3.Utilities.createHomeIntent;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_GESTURE;
+import static com.android.quickstep.OverviewComponentObserver.startHomeIntentSafely;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.graphics.PointF;
 import android.view.MotionEvent;
@@ -29,11 +28,10 @@ import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.testing.TestLogging;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationDeviceState;
-import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.TriggerSwipeUpTouchTracker;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
@@ -79,12 +77,7 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer,
 
     @Override
     public void onSwipeUp(boolean wasFling, PointF finalVelocity) {
-        try {
-            mContext.startActivity(mGestureState.getHomeIntent());
-        } catch (NullPointerException | ActivityNotFoundException | SecurityException e) {
-            mContext.startActivity(createHomeIntent());
-        }
-        ActiveGestureLog.INSTANCE.addLog("startQuickstep");
+        startHomeIntentSafely(mContext, mGestureState.getHomeIntent(), null);
         BaseActivity activity = BaseDraggingActivity.fromContext(mContext);
         int state = (mGestureState != null && mGestureState.getEndTarget() != null)
                 ? mGestureState.getEndTarget().containerType

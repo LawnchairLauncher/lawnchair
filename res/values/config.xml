@@ -85,6 +85,7 @@
     <string name="launcher_activity_logic_class" translatable="false"></string>
     <string name="model_delegate_class" translatable="false"></string>
     <string name="window_manager_proxy_class" translatable="false"></string>
+    <string name="secondary_display_predictions_class" translatable="false"></string>
 
     <!-- View ID to use for QSB widget -->
     <item type="id" name="qsb_widget" />
@@ -130,6 +131,11 @@
     <item type="id" name="search_container_all_apps" />
     <item type="id" name="search_container_hotseat" />
 
+    <!-- Scalable Grid configuration -->
+    <!-- This is a float because it is converted to dp later in DeviceProfile -->
+    <dimen name="hotseat_bar_bottom_space_default">48</dimen>
+    <dimen name="hotseat_qsb_space_default">0</dimen>
+
     <!-- Recents -->
     <item type="id" name="overview_panel"/>
 
@@ -151,6 +157,7 @@
 
     <item name="swipe_up_rect_scale_damping_ratio" type="dimen" format="float">0.75</item>
     <item name="swipe_up_rect_scale_stiffness" type="dimen" format="float">200</item>
+    <item name="swipe_up_rect_scale_higher_stiffness" type="dimen" format="float">400</item>
 
     <item name="swipe_up_rect_xy_fling_friction" type="dimen" format="float">1.5</item>
 
@@ -186,4 +193,18 @@
     <dimen name="swipe_back_window_scale_x_margin">10dp</dimen>
     <dimen name="swipe_back_window_max_delta_y">160dp</dimen>
     <dimen name="swipe_back_window_corner_radius">40dp</dimen>
+
+    <!-- The duration of the bottom sheet opening and closing animation -->
+    <integer name="config_bottomSheetOpenDuration">267</integer>
+    <integer name="config_bottomSheetCloseDuration">267</integer>
+
+    <!-- The duration of the AllApps opening and closing animation -->
+    <integer name="config_allAppsOpenDuration">600</integer>
+    <integer name="config_allAppsCloseDuration">300</integer>
+
+    <!-- The max scale for the wallpaper when it's zoomed in -->
+    <item name="config_wallpaperMaxScale" format="float" type="dimen">0</item>
+
+    <string name="floating_task_package" translatable="false"></string>
+    <string name="floating_task_action" translatable="false"></string>
 </resources>

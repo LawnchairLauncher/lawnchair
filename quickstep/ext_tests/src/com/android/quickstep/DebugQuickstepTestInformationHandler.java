@@ -15,22 +15,13 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.BaseQuickstepLauncher;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
-import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.testing.DebugTestInformationHandler;
-import com.android.launcher3.testing.TestProtocol;
-
-import java.util.concurrent.ExecutionException;
+import com.android.launcher3.testing.shared.TestProtocol;
 
 /**
  * Class to handle requests from tests, including debug ones, to Quickstep Launcher builds.
@@ -47,74 +38,14 @@ public abstract class DebugQuickstepTestInformationHandler extends QuickstepTest
     @Override
     public Bundle call(String method, String arg, @Nullable Bundle extras) {
         Bundle response = new Bundle();
-        switch (method) {
-            case TestProtocol.REQUEST_ENABLE_MANUAL_TASKBAR_STASHING:
-                runOnUIThread(l -> {
-                    enableManualTaskbarStashing(l, true);
-                });
-                return response;
-
-            case TestProtocol.REQUEST_DISABLE_MANUAL_TASKBAR_STASHING:
-                runOnUIThread(l -> {
-                    enableManualTaskbarStashing(l, false);
-                });
-                return response;
-
-            case TestProtocol.REQUEST_UNSTASH_TASKBAR_IF_STASHED:
-                runOnUIThread(l -> {
-                    enableManualTaskbarStashing(l, true);
-
-                    BaseQuickstepLauncher quickstepLauncher = (BaseQuickstepLauncher) l;
-                    LauncherTaskbarUIController taskbarUIController =
-                            quickstepLauncher.getTaskbarUIController();
-
-                    // Allow null-pointer to catch illegal states.
-                    taskbarUIController.unstashTaskbarIfStashed();
-
-                    enableManualTaskbarStashing(l, false);
-                });
-                return response;
-
-            case TestProtocol.REQUEST_STASHED_TASKBAR_HEIGHT: {
-                final Resources resources = mContext.getResources();
-                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
-                        resources.getDimensionPixelSize(R.dimen.taskbar_stashed_size));
-                return response;
-            }
-
-            default:
-                response = super.call(method, arg, extras);
-                if (response != null) return response;
-                return mDebugTestInformationHandler.call(method, arg, extras);
+        if (TestProtocol.REQUEST_RECREATE_TASKBAR.equals(method)) {
+            // Allow null-pointer to catch illegal states.
+            runOnTISBinder(tisBinder -> tisBinder.getTaskbarManager().recreateTaskbar());
+            return response;
         }
-    }
-
-    private void enableManualTaskbarStashing(Launcher launcher, boolean enable) {
-        BaseQuickstepLauncher quickstepLauncher = (BaseQuickstepLauncher) launcher;
-        LauncherTaskbarUIController taskbarUIController =
-                quickstepLauncher.getTaskbarUIController();
-
-        // Allow null-pointer to catch illegal states.
-        taskbarUIController.enableManualStashingForTests(enable);
-    }
-
-    /**
-     * Runs the given command on the UI thread.
-     */
-    private static void runOnUIThread(UIThreadCommand command) {
-        try {
-            MAIN_EXECUTOR.submit(() -> {
-                command.execute(Launcher.ACTIVITY_TRACKER.getCreatedActivity());
-                return null;
-            }).get();
-        } catch (ExecutionException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private interface UIThreadCommand {
-
-        void execute(Launcher launcher);
+        response = super.call(method, arg, extras);
+        if (response != null) return response;
+        return mDebugTestInformationHandler.call(method, arg, extras);
     }
 }
 

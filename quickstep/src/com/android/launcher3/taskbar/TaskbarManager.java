@@ -30,19 +30,22 @@ import android.content.res.Configuration;
 import android.hardware.display.DisplayManager;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.SystemProperties;
 import android.provider.Settings;
 import android.view.Display;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
-import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.unfold.NonDestroyableScopedUnfoldTransitionProgressProvider;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.quickstep.RecentsActivity;
@@ -57,6 +60,9 @@ import java.io.PrintWriter;
  * Class to manage taskbar lifecycle
  */
 public class TaskbarManager {
+
+    public static final boolean FLAG_HIDE_NAVBAR_WINDOW =
+            SystemProperties.getBoolean("persist.wm.debug.hide_navbar_window", false);
 
     private static final Uri USER_SETUP_COMPLETE_URI = Settings.Secure.getUriFor(
             Settings.Secure.USER_SETUP_COMPLETE);
@@ -78,6 +84,7 @@ public class TaskbarManager {
     // It's destruction/creation will be managed by the activity.
     private final ScopedUnfoldTransitionProgressProvider mUnfoldProgressProvider =
             new NonDestroyableScopedUnfoldTransitionProgressProvider();
+    private NavigationMode mNavMode;
 
     private TaskbarActivityContext mTaskbarActivityContext;
     private StatefulActivity mActivity;
@@ -128,9 +135,11 @@ public class TaskbarManager {
                         | ActivityInfo.CONFIG_SCREEN_SIZE;
                 boolean requiresRecreate = (configDiff & configsRequiringRecreate) != 0;
                 if ((configDiff & ActivityInfo.CONFIG_SCREEN_SIZE) != 0
-                        && mTaskbarActivityContext != null && dp != null) {
+                        && mTaskbarActivityContext != null && dp != null
+                        && !isPhoneMode(dp)) {
                     // Additional check since this callback gets fired multiple times w/o
                     // screen size changing, or when simply rotating the device.
+                    // In the case of phone device rotation, we do want to call recreateTaskbar()
                     DeviceProfile oldDp = mTaskbarActivityContext.getDeviceProfile();
                     boolean isOrientationChange =
                             (configDiff & ActivityInfo.CONFIG_ORIENTATION) != 0;
@@ -147,8 +156,8 @@ public class TaskbarManager {
                 } else {
                     // Config change might be handled without re-creating the taskbar
                     if (mTaskbarActivityContext != null) {
-                        if (dp != null && dp.isTaskbarPresent) {
-                            mTaskbarActivityContext.updateDeviceProfile(dp);
+                        if (dp != null && isTaskbarPresent(dp)) {
+                            mTaskbarActivityContext.updateDeviceProfile(dp, mNavMode);
                         }
                         mTaskbarActivityContext.onConfigurationChanged(configDiff);
                     }
@@ -159,12 +168,15 @@ public class TaskbarManager {
             @Override
             public void onLowMemory() { }
         };
-        mShutdownReceiver = new SimpleBroadcastReceiver(i -> destroyExistingTaskbar());
+        mShutdownReceiver = new SimpleBroadcastReceiver(i ->
+                destroyExistingTaskbar());
         mDispInfoChangeListener = (context, info, flags) -> {
             if ((flags & CHANGE_FLAGS) != 0) {
+                mNavMode = info.navigationMode;
                 recreateTaskbar();
             }
         };
+        mNavMode = mDisplayController.getInfo().navigationMode;
         mDisplayController.addChangeListener(mDispInfoChangeListener);
         SettingsCache.INSTANCE.get(mContext).register(USER_SETUP_COMPLETE_URI,
                 mUserSetupCompleteListener);
@@ -179,7 +191,9 @@ public class TaskbarManager {
     private void destroyExistingTaskbar() {
         if (mTaskbarActivityContext != null) {
             mTaskbarActivityContext.onDestroy();
-            mTaskbarActivityContext = null;
+            if (!FLAG_HIDE_NAVBAR_WINDOW) {
+                mTaskbarActivityContext = null;
+            }
         }
     }
 
@@ -225,8 +239,8 @@ public class TaskbarManager {
      */
     private UnfoldTransitionProgressProvider getUnfoldTransitionProgressProviderForActivity(
             StatefulActivity activity) {
-        if (activity instanceof BaseQuickstepLauncher) {
-            return ((BaseQuickstepLauncher) activity).getUnfoldTransitionProgressProvider();
+        if (activity instanceof QuickstepLauncher) {
+            return ((QuickstepLauncher) activity).getUnfoldTransitionProgressProvider();
         }
         return null;
     }
@@ -235,11 +249,11 @@ public class TaskbarManager {
      * Creates a {@link TaskbarUIController} to use while the given StatefulActivity is active.
      */
     private TaskbarUIController createTaskbarUIControllerForActivity(StatefulActivity activity) {
-        if (activity instanceof BaseQuickstepLauncher) {
+        if (activity instanceof QuickstepLauncher) {
             if (mTaskbarActivityContext.getPackageManager().hasSystemFeature(FEATURE_PC)) {
-                return new DesktopTaskbarUIController((BaseQuickstepLauncher) activity);
+                return new DesktopTaskbarUIController((QuickstepLauncher) activity);
             }
-            return new LauncherTaskbarUIController((BaseQuickstepLauncher) activity);
+            return new LauncherTaskbarUIController((QuickstepLauncher) activity);
         }
         if (activity instanceof RecentsActivity) {
             return new FallbackTaskbarUIController((RecentsActivity) activity);
@@ -260,24 +274,33 @@ public class TaskbarManager {
         }
     }
 
-    private void recreateTaskbar() {
+    /**
+     * This method is called multiple times (ex. initial init, then when user unlocks) in which case
+     * we fully want to destroy an existing taskbar and create a new one.
+     * In other case (folding/unfolding) we don't need to remove and add window.
+     */
+    @VisibleForTesting
+    public void recreateTaskbar() {
+        DeviceProfile dp = mUserUnlocked ?
+                LauncherAppState.getIDP(mContext).getDeviceProfile(mContext) : null;
+
         destroyExistingTaskbar();
 
-        DeviceProfile dp =
-                mUserUnlocked ? LauncherAppState.getIDP(mContext).getDeviceProfile(mContext) : null;
-
-        boolean isTaskBarEnabled = dp != null && dp.isTaskbarPresent;
-
+        boolean isTaskBarEnabled = dp != null && isTaskbarPresent(dp);
         if (!isTaskBarEnabled) {
             SystemUiProxy.INSTANCE.get(mContext)
                     .notifyTaskbarStatus(/* visible */ false, /* stashed */ false);
             return;
         }
 
-        mTaskbarActivityContext = new TaskbarActivityContext(mContext, dp, mNavButtonController,
-                mUnfoldProgressProvider);
-
+        if (mTaskbarActivityContext == null) {
+            mTaskbarActivityContext = new TaskbarActivityContext(mContext, dp, mNavButtonController,
+                    mUnfoldProgressProvider);
+        } else {
+            mTaskbarActivityContext.updateDeviceProfile(dp, mNavMode);
+        }
         mTaskbarActivityContext.init(mSharedState);
+
         if (mActivity != null) {
             mTaskbarActivityContext.setUIController(
                     createTaskbarUIControllerForActivity(mActivity));
@@ -299,6 +322,26 @@ public class TaskbarManager {
         if (mTaskbarActivityContext != null) {
             mTaskbarActivityContext.setSetupUIVisible(isVisible);
         }
+    }
+
+    /**
+     * @return {@code true} if provided device profile isn't a large screen profile
+     *                      and we are using a single window for taskbar and navbar.
+     */
+    public static boolean isPhoneMode(DeviceProfile deviceProfile) {
+        return TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW && deviceProfile.isPhone;
+    }
+
+    /**
+     * @return {@code true} if {@link #isPhoneMode(DeviceProfile)} is true and we're using
+     *                      3 button-nav
+     */
+    public static boolean isPhoneButtonNavMode(TaskbarActivityContext context) {
+        return isPhoneMode(context.getDeviceProfile()) && context.isThreeButtonNav();
+    }
+
+    private boolean isTaskbarPresent(DeviceProfile deviceProfile) {
+        return FLAG_HIDE_NAVBAR_WINDOW || deviceProfile.isTaskbarPresent;
     }
 
     public void onRotationProposal(int rotation, boolean isValid) {

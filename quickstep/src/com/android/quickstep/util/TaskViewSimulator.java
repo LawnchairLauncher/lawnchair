@@ -15,6 +15,8 @@
  */
 package com.android.quickstep.util;
 
+import static android.app.WindowConfiguration.WINDOWING_MODE_FULLSCREEN;
+
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.states.RotationHelper.deltaRotation;
 import static com.android.launcher3.touch.PagedOrientationHandler.MATRIX_POST_TRANSLATE;
@@ -22,9 +24,9 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITIO
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
 import static com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
+import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
 import static com.android.quickstep.util.RecentsOrientedState.postDisplayRotation;
 import static com.android.quickstep.util.RecentsOrientedState.preDisplayRotation;
-import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
 
 import android.animation.TimeInterpolator;
 import android.content.Context;
@@ -40,7 +42,7 @@ import androidx.annotation.NonNull;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.BaseActivityInterface;
@@ -100,8 +102,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     // Cached calculations
     private boolean mLayoutValid = false;
     private int mOrientationStateId;
-    private StagedSplitBounds mStagedSplitBounds;
-    private boolean mDrawsBelowRecents;
+    private SplitBounds mSplitBounds;
+    private Boolean mDrawsBelowRecents = null;
     private boolean mIsGridTask;
     private int mTaskRectTranslationX;
     private int mTaskRectTranslationY;
@@ -152,13 +154,13 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         }
 
         Rect fullTaskSize;
-        if (mStagedSplitBounds != null) {
+        if (mSplitBounds != null) {
             // The task rect changes according to the staged split task sizes, but recents
             // fullscreen scale and pivot remains the same since the task fits into the existing
             // sized task space bounds
             fullTaskSize = new Rect(mTaskRect);
             mOrientationState.getOrientationHandler()
-                    .setSplitTaskSwipeRect(mDp, mTaskRect, mStagedSplitBounds, mStagePosition);
+                    .setSplitTaskSwipeRect(mDp, mTaskRect, mSplitBounds, mStagePosition);
             mTaskRect.offset(mTaskRectTranslationX, mTaskRectTranslationY);
         } else {
             fullTaskSize = mTaskRect;
@@ -180,10 +182,10 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
      *
      * @param splitInfo set to {@code null} when not in staged split mode
      */
-    public void setPreview(RemoteAnimationTargetCompat runningTarget, StagedSplitBounds splitInfo) {
+    public void setPreview(RemoteAnimationTargetCompat runningTarget, SplitBounds splitInfo) {
         setPreview(runningTarget);
-        mStagedSplitBounds = splitInfo;
-        if (mStagedSplitBounds == null) {
+        mSplitBounds = splitInfo;
+        if (mSplitBounds == null) {
             mStagePosition = STAGE_POSITION_UNDEFINED;
             return;
         }
@@ -390,10 +392,16 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
                 .withWindowCrop(mTmpCropRect)
                 .withCornerRadius(getCurrentCornerRadius());
 
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && params.getRecentsSurface() != null) {
-            // When relativeLayer = 0, it reverts the surfaces back to the original order.
-            builder.withRelativeLayerTo(params.getRecentsSurface(),
-                    mDrawsBelowRecents ? Integer.MIN_VALUE : 0);
+        // If mDrawsBelowRecents is unset, no reordering will be enforced.
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mDrawsBelowRecents != null) {
+            // In legacy transitions, the animation leashes remain in same hierarchy in the
+            // TaskDisplayArea, so we don't want to bump the layer too high otherwise it will
+            // conflict with layers that WM core positions (ie. the input consumers).  For shell
+            // transitions, the animation leashes are reparented to an animation container so we
+            // can bump layers as needed.
+            builder.withLayer(mDrawsBelowRecents
+                    ? Integer.MIN_VALUE + 1
+                    : ENABLE_SHELL_TRANSITIONS ? Integer.MAX_VALUE : 0);
         }
     }
 

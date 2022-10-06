@@ -114,7 +114,6 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचना बिंदू दाखवण्यासाठी, <xliff:g id="NAME">%1$s</xliff:g> साठी अ‍ॅप सूचना सुरू करा"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिंग्ज बदला"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"सूचना बिंदू दाखवा"</string>
-    <string name="developer_options_title" msgid="700788437593726194">"डेव्हलपर पर्याय"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"होम स्क्रीनवर ॲप आयकन जोडा"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नवीन अ‍ॅप्ससाठी"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
@@ -125,10 +124,14 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> इंस्टॉल करत आहे, <xliff:g id="PROGRESS">%2$s</xliff:g> पूर्ण झाले"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> डाउनलोड होत आहे , <xliff:g id="PROGRESS">%2$s</xliff:g> पूर्ण झाले"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> इंस्टॉल करण्याची प्रतिक्षा करत आहे"</string>
-    <string name="dialog_update_title" msgid="114234265740994042">"अ‍ॅप अपडेट करणे आवश्‍यक आहे"</string>
-    <string name="dialog_update_message" msgid="4176784553982226114">"या आयकनसाठी अ‍ॅप अपडेट केलेले नाही. हा शॉटकर्ट पुन्हा सुरू करण्यासाठी तुम्ही मॅन्युअली अपडेट करू शकता किंवा आयकन काढून टाका."</string>
-    <string name="dialog_update" msgid="2178028071796141234">"अपडेट करा"</string>
-    <string name="dialog_remove" msgid="6510806469849709407">"काढून टाका"</string>
+    <!-- no translation found for dialog_update_title (114234265740994042) -->
+    <skip />
+    <!-- no translation found for dialog_update_message (4176784553982226114) -->
+    <skip />
+    <!-- no translation found for dialog_update (2178028071796141234) -->
+    <skip />
+    <!-- no translation found for dialog_remove (6510806469849709407) -->
+    <skip />
     <string name="widgets_list" msgid="796804551140113767">"विजेट सूची"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"विजेट सूची बंद केली"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"होम स्क्रीनवर जोडा"</string>
@@ -161,17 +164,15 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"वैयक्तिक"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"कार्य"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"कार्य प्रोफाइल"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"कार्य ॲप्स ही बॅज केलेली असून तुमच्या आयटी ॲडमिनला दृश्यमान आहेत"</string>
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"कामाशी संबंधित ॲप्स ही बॅज केलेली असून तुमच्या आयटी ॲडमिनला दृश्यमान आहेत"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"समजले"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"कार्य ॲप्स थांबवली आहेत"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"तुमची कार्य ॲप्स तुम्हाला सूचना पाठवू शकत नाहीत, तुमची बॅटरी वापरू शकत नाहीत किंवा तुमचे स्थान अ‍ॅक्सेस करू शकत नाहीत"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"कामाशी संबंधित ॲप्स बंद आहेत. तुमचे कामाशी संबंधित ॲप्स तुम्हाला सूचना पाठवू शकत नाहीत, तुमची बॅटरी वापरू शकत नाहीत किंवा तुमचे स्थान अ‍ॅक्सेस करू शकत नाहीत"</string>
-    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"कार्य ॲप्स ही बॅज केलेली असून तुमच्या आयटी ॲडमिनला दृश्यमान आहेत"</string>
+    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Work apps ही बॅज केलेली असून तुमच्या IT ॲडमिनला दृश्यमान आहेत"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"समजले"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"कार्य ॲप्स थांबवा"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"कामाशी संबंधित ॲप्स बंद करा"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"कार्य ॲप्स सुरू करा"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"फिल्टर"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"तुमच्या फोनमध्ये शोधा"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"तुमच्या टॅबलेटमध्ये शोधा"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"हे करता आले नाही: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

@@ -35,9 +35,7 @@ android_library {
     ],
     srcs: [
         "tests/tapl/**/*.java",
-        "src/com/android/launcher3/ResourceUtils.java",
-        "src/com/android/launcher3/testing/TestProtocol.java",
-        "src/com/android/launcher3/testing/*Request.java",
+        "src/com/android/launcher3/testing/shared/**/*.java",
     ],
     resource_dirs: [ ],
     manifest: "tests/tapl/AndroidManifest.xml",
@@ -313,3 +311,138 @@ android_library {
         baseline_filename: "lint-baseline-launcher3.xml",
     },
 }
+
+// Build rule for Launcher3 Go app for Android Go devices.
+android_app {
+    name: "Launcher3Go",
+
+    static_libs: ["Launcher3CommonDepsLib"],
+
+    srcs: [
+        "src/**/*.java",
+        "src_ui_overrides/**/*.java",
+        "go/src/**/*.java",
+    ],
+
+    resource_dirs: ["go/res"],
+
+    optimize: {
+        proguard_flags_files: ["proguard.flags"],
+    },
+
+    sdk_version: "current",
+    min_sdk_version: "current",
+    target_sdk_version: "current",
+    privileged: true,
+    system_ext_specific: true,
+    overrides: [
+        "Home",
+        "Launcher2",
+        "Launcher3",
+        "Launcher3QuickStep",
+    ],
+    required: ["privapp_whitelist_com.android.launcher3"],
+
+    additional_manifests: [
+        "AndroidManifest.xml",
+        "AndroidManifest-common.xml",
+    ],
+
+    manifest: "go/AndroidManifest.xml",
+    jacoco: {
+        include_filter: ["com.android.launcher3.*"],
+    }
+
+}
+
+// Build rule for Quickstep app.
+android_app {
+    name: "Launcher3QuickStep",
+
+    static_libs: ["Launcher3QuickStepLib"],
+    optimize: {
+        enabled: false,
+    },
+
+    platform_apis: true,
+    min_sdk_version: "current",
+    target_sdk_version: "current",
+
+    privileged: true,
+    system_ext_specific: true,
+    overrides: [
+        "Home",
+        "Launcher2",
+        "Launcher3",
+    ],
+    required: ["privapp_whitelist_com.android.launcher3"],
+
+    resource_dirs: ["quickstep/res"],
+
+    additional_manifests: [
+        "quickstep/AndroidManifest-launcher.xml",
+        "AndroidManifest-common.xml",
+    ],
+
+    manifest: "quickstep/AndroidManifest.xml",
+    jacoco: {
+        include_filter: ["com.android.launcher3.*"],
+    }
+
+}
+
+// Build rule for Launcher3 Go app with quickstep for Android Go devices.
+android_app {
+    name: "Launcher3QuickStepGo",
+
+    static_libs: [
+        "SystemUI-statsd",
+        "SystemUISharedLib",
+        "LauncherGoResLib",
+    ],
+
+    platform_apis: true,
+    min_sdk_version: "current",
+    target_sdk_version: "current",
+
+    srcs: [
+        "src/**/*.java",
+        "quickstep/src/**/*.java",
+        "go/src/**/*.java",
+        "go/quickstep/src/**/*.java",
+    ],
+
+    resource_dirs: [
+        "go/quickstep/res",
+        "go/res",
+        "quickstep/res",
+    ],
+
+    optimize: {
+        proguard_flags_files: ["proguard.flags"],
+        enabled: true,
+    },
+
+    privileged: true,
+    system_ext_specific: true,
+    overrides: [
+        "Home",
+        "Launcher2",
+        "Launcher3",
+        "Launcher3QuickStep",
+    ],
+    required: ["privapp_whitelist_com.android.launcher3"],
+
+    additional_manifests: [
+        "go/AndroidManifest.xml",
+        "go/AndroidManifest-launcher.xml",
+        "AndroidManifest-common.xml",
+    ],
+
+    manifest: "quickstep/AndroidManifest.xml",
+    jacoco: {
+        include_filter: ["com.android.launcher3.*"],
+    }
+
+}
+
