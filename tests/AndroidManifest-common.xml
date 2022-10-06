@@ -277,6 +277,16 @@
             </intent-filter>
         </activity-alias>
 
+        <activity android:name="com.android.launcher3.testcomponent.ImeTestActivity"
+            android:label="ImeTestActivity"
+            android:icon="@drawable/test_theme_icon"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <!-- [b/197780098] Disable eager initialization of Jetpack libraries. -->
         <provider
             android:name="androidx.startup.InitializationProvider"

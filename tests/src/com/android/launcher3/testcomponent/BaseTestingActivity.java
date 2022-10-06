@@ -24,7 +24,9 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.WindowInsets;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 
@@ -79,6 +81,20 @@ public class BaseTestingActivity extends Activity implements View.OnClickListene
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         lp.bottomMargin = mMargin;
         mView.addView(button, lp);
+    }
+
+    protected void addEditor(String initText, String hint, boolean requestIme) {
+        EditText editText = new EditText(this);
+        editText.setHint(hint);
+        editText.setText(initText);
+
+        LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        lp.bottomMargin = mMargin;
+        mView.addView(editText, lp);
+        if (requestIme) {
+            editText.requestFocus();
+            mView.getWindowInsetsController().show(WindowInsets.Type.ime());
+        }
     }
 
     @Override

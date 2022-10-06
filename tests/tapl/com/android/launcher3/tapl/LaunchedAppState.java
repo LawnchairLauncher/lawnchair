@@ -72,6 +72,16 @@ public final class LaunchedAppState extends Background {
     }
 
     /**
+     * Waits for the taskbar to be visible, or fails.
+     */
+    public void assertTaskbarVisible() {
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "waiting for taskbar to be visible")) {
+            mLauncher.waitForLauncherObject(TASKBAR_RES_ID);
+        }
+    }
+
+    /**
      * Returns the Taskbar in a visible state.
      *
      * The taskbar must already be hidden when calling this method.
