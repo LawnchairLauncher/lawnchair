@@ -214,18 +214,36 @@ public class SplitSelectStateController {
             @Nullable InstanceId shellInstanceId) {
         TestLogging.recordEvent(
                 TestProtocol.SEQUENCE_MAIN, "launchSplitTasks");
+        final ActivityOptions options1 = ActivityOptions.makeBasic();
+        if (freezeTaskList) {
+            options1.setFreezeRecentTasksReordering();
+        }
         if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
-            RemoteSplitLaunchTransitionRunner animationRunner =
+            final RemoteSplitLaunchTransitionRunner animationRunner =
                     new RemoteSplitLaunchTransitionRunner(taskId1, taskPendingIntent, taskId2,
                             callback);
-            mSystemUiProxy.startTasks(taskId1, null /* options1 */, taskId2,
-                    null /* options2 */, stagePosition, splitRatio,
-                    new RemoteTransitionCompat(animationRunner, MAIN_EXECUTOR,
-                            ActivityThread.currentActivityThread().getApplicationThread()),
-                    shellInstanceId);
-            // TODO(b/237635859): handle intent/shortcut + task with shell transition
+            final RemoteTransitionCompat remoteTransition = new RemoteTransitionCompat(
+                    animationRunner, MAIN_EXECUTOR,
+                    ActivityThread.currentActivityThread().getApplicationThread());
+            if (taskPendingIntent == null) {
+                mSystemUiProxy.startTasks(taskId1, options1.toBundle(), taskId2,
+                        null /* options2 */, stagePosition, splitRatio, remoteTransition,
+                        shellInstanceId);
+            } else {
+                final ShortcutInfo shortcutInfo = getShortcutInfo(mInitialTaskIntent,
+                        taskPendingIntent.getCreatorUserHandle());
+                if (shortcutInfo != null) {
+                    mSystemUiProxy.startShortcutAndTask(shortcutInfo,
+                            options1.toBundle(), taskId2, null /* options2 */, stagePosition,
+                            splitRatio, remoteTransition, shellInstanceId);
+                } else {
+                    mSystemUiProxy.startIntentAndTask(taskPendingIntent,
+                            fillInIntent, options1.toBundle(), taskId2, null /* options2 */,
+                            stagePosition, splitRatio, remoteTransition, shellInstanceId);
+                }
+            }
         } else {
-            RemoteSplitLaunchAnimationRunner animationRunner =
+            final RemoteSplitLaunchAnimationRunner animationRunner =
                     new RemoteSplitLaunchAnimationRunner(taskId1, taskPendingIntent, taskId2,
                             callback);
             final RemoteAnimationAdapter adapter = new RemoteAnimationAdapter(
@@ -233,10 +251,6 @@ public class SplitSelectStateController {
                     300, 150,
                     ActivityThread.currentActivityThread().getApplicationThread());
 
-            ActivityOptions options1 = ActivityOptions.makeBasic();
-            if (freezeTaskList) {
-                options1.setFreezeRecentTasksReordering();
-            }
             if (taskPendingIntent == null) {
                 mSystemUiProxy.startTasksWithLegacyTransition(taskId1, options1.toBundle(),
                         taskId2, null /* options2 */, stagePosition, splitRatio, adapter,
