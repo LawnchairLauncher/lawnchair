@@ -91,6 +91,10 @@ public final class FeatureFlags {
             getDebugFlag("ENABLE_FLOATING_SEARCH_BAR", false,
                     "Keep All Apps search bar at the bottom (but above keyboard if open)");
 
+    public static final BooleanFlag ENABLE_QUICK_LAUNCH_V2 = new DeviceFlag(
+            "ENABLE_QUICK_LAUNCH_V2", false, "Use quick launch v2 "
+            + "behavior. Quick search and quick launch v1 would be unavailable if this is enabled");
+
     public static final BooleanFlag ENABLE_HIDE_HEADER = new DeviceFlag("ENABLE_HIDE_HEADER",
             true, "Hide header on keyboard before typing in all apps");
 

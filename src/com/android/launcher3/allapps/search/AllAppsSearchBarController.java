@@ -84,7 +84,10 @@ public class AllAppsSearchBarController
         mTextConversions = extractTextConversions(s);
     }
 
-    private static String[] extractTextConversions(CharSequence text) {
+    /**
+     * Extract text conversions from composing text and send them for search.
+     */
+    public static String[] extractTextConversions(CharSequence text) {
         if (text instanceof SpannableStringBuilder) {
             SpannableStringBuilder spanned = (SpannableStringBuilder) text;
             SuggestionSpan[] suggestionSpans =
