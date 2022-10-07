@@ -16,10 +16,6 @@
 
 package com.android.quickstep.util;
 
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-
-import android.view.animation.Interpolator;
-
 /**
  * Timings for the OverviewSplitSelect > confirmed animation on tablets.
  */
@@ -33,8 +29,4 @@ public class TabletSplitToConfirmTimings
     public int getStagedRectSlideEnd() { return 383; }
 
     public int getDuration() { return TABLET_CONFIRM_DURATION; }
-    public Interpolator getStagedRectXInterpolator() { return LINEAR; }
-    public Interpolator getStagedRectYInterpolator() { return LINEAR; }
-    public Interpolator getStagedRectScaleXInterpolator() { return LINEAR; }
-    public Interpolator getStagedRectScaleYInterpolator() { return LINEAR; }
 }
