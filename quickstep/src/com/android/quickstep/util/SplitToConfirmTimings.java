@@ -16,6 +16,8 @@
 
 package com.android.quickstep.util;
 
+import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
+
 import android.view.animation.Interpolator;
 
 /**
@@ -33,12 +35,12 @@ abstract class SplitToConfirmTimings implements SplitAnimationTimings {
     // Common timings
     public int getInstructionsFadeStart() { return 0; }
     public int getInstructionsFadeEnd() { return 67; }
+    public Interpolator getStagedRectXInterpolator() { return EMPHASIZED; }
+    public Interpolator getStagedRectYInterpolator() { return EMPHASIZED; }
+    public Interpolator getStagedRectScaleXInterpolator() { return EMPHASIZED; }
+    public Interpolator getStagedRectScaleYInterpolator() { return EMPHASIZED; }
 
     abstract public int getDuration();
-    abstract public Interpolator getStagedRectXInterpolator();
-    abstract public Interpolator getStagedRectYInterpolator();
-    abstract public Interpolator getStagedRectScaleXInterpolator();
-    abstract public Interpolator getStagedRectScaleYInterpolator();
 
     public float getInstructionsFadeStartOffset() {
         return (float) getInstructionsFadeStart() / getDuration();
