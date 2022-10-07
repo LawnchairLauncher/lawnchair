@@ -561,6 +561,34 @@ public class SystemUiProxy implements ISystemUiProxy {
         }
     }
 
+    public void startIntentAndTask(PendingIntent pendingIntent, Intent fillInIntent,
+            Bundle options1, int taskId, Bundle options2,
+            @SplitConfigurationOptions.StagePosition int splitPosition, float splitRatio,
+            RemoteTransitionCompat remoteTransition, InstanceId instanceId) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSplitScreen.startIntentAndTask(pendingIntent, fillInIntent, options1,
+                        taskId, options2, splitPosition, splitRatio,
+                        remoteTransition.getTransition(), instanceId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call startIntentAndTask");
+            }
+        }
+    }
+
+    public void startShortcutAndTask(ShortcutInfo shortcutInfo, Bundle options1, int taskId,
+            Bundle options2, @SplitConfigurationOptions.StagePosition int splitPosition,
+            float splitRatio, RemoteTransitionCompat remoteTransition, InstanceId instanceId) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSplitScreen.startShortcutAndTask(shortcutInfo, options1, taskId, options2,
+                        splitPosition, splitRatio, remoteTransition.getTransition(), instanceId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call startShortcutAndTask");
+            }
+        }
+    }
+
     /**
      * Start multiple tasks in split-screen simultaneously.
      */

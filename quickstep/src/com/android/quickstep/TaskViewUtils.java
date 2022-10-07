@@ -15,7 +15,6 @@
  */
 package com.android.quickstep;
 
-import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 import static android.view.WindowManager.LayoutParams.TYPE_DOCK_DIVIDER;
 import static android.view.WindowManager.TRANSIT_OPEN;
 import static android.view.WindowManager.TRANSIT_TO_FRONT;
@@ -425,8 +424,10 @@ public final class TaskViewUtils {
         TransitionInfo.Change splitRoot2 = null;
         for (int i = 0; i < transitionInfo.getChanges().size(); ++i) {
             final TransitionInfo.Change change = transitionInfo.getChanges().get(i);
-            final int taskId = change.getTaskInfo() != null ? change.getTaskInfo().taskId : -1;
+            if (change.getTaskInfo() == null) continue;
+            final int taskId = change.getTaskInfo().taskId;
             final int mode = change.getMode();
+
             // Find the target tasks' root tasks since those are the split stages that need to
             // be animated (the tasks themselves are children and thus inherit animation).
             if (taskId == initialTaskId || taskId == secondTaskId) {
@@ -439,7 +440,7 @@ public final class TaskViewUtils {
                             + "root of " + taskId + " is already visible or has broken hierarchy.");
                 }
             }
-            if (taskId == initialTaskId && initialTaskId != INVALID_TASK_ID) {
+            if (taskId == initialTaskId) {
                 splitRoot1 = transitionInfo.getChange(change.getParent());
             }
             if (taskId == secondTaskId) {
