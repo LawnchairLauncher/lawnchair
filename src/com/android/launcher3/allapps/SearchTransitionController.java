@@ -124,6 +124,7 @@ public class SearchTransitionController {
         mSearchToAzAnimator.addListener(forSuccessCallback(onEndRunnable));
 
         mAllAppsContainerView.getFloatingHeaderView().setFloatingRowsCollapsed(true);
+        mAllAppsContainerView.getFloatingHeaderView().setVisibility(VISIBLE);
         mAllAppsContainerView.getAppsRecyclerViewContainer().setVisibility(VISIBLE);
         getSearchRecyclerView().setVisibility(VISIBLE);
         getSearchRecyclerView().setChildAttachedConsumer(this::onSearchChildAttached);
