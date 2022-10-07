@@ -1878,6 +1878,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 mActionsView.getVisibilityAlpha(), MultiValueAlpha.VALUE, alphaValue);
         mActionsViewAlphaAnimatorFinalValue = alphaValue;
         mActionsViewAlphaAnimator.setDuration(duration);
+        // Set autocancel to prevent race-conditiony setting of alpha from other animations
+        mActionsViewAlphaAnimator.setAutoCancel(true);
         mActionsViewAlphaAnimator.start();
     }
 
