@@ -1505,6 +1505,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // Restore mCurrentPage but don't call setCurrentPage() as that clobbers the scroll.
             mCurrentPage = previousCurrentPage;
         } else {
+            // TODO(b/238461210): Remove logging once root cause of flake detected.
+            if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                Log.d("b/238461210", "RecentsView#applyLoadPlan() -> !settlingOnNewTask -> "
+                                + "previousCurrentPage: " + previousCurrentPage
+                                + ", getScrollForPage(previousCurrentPage): "
+                                + getScrollForPage(previousCurrentPage));
+            }
             setCurrentPage(previousCurrentPage);
         }
 
@@ -1878,6 +1885,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 mActionsView.getVisibilityAlpha(), MultiValueAlpha.VALUE, alphaValue);
         mActionsViewAlphaAnimatorFinalValue = alphaValue;
         mActionsViewAlphaAnimator.setDuration(duration);
+        // Set autocancel to prevent race-conditiony setting of alpha from other animations
+        mActionsViewAlphaAnimator.setAutoCancel(true);
         mActionsViewAlphaAnimator.start();
     }
 

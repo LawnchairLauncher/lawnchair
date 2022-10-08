@@ -532,9 +532,11 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         if (isSearching()) {
             getSearchRecyclerView().setVisibility(VISIBLE);
             getAppsRecyclerViewContainer().setVisibility(GONE);
+            mHeader.setVisibility(GONE);
         } else {
             getSearchRecyclerView().setVisibility(GONE);
             getAppsRecyclerViewContainer().setVisibility(VISIBLE);
+            mHeader.setVisibility(VISIBLE);
         }
         if (mHeader.isSetUp()) {
             mHeader.setActiveRV(getCurrentPage());
