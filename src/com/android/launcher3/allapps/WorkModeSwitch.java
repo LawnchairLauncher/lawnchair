@@ -52,6 +52,7 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
     private int mFlags;
     private boolean mWorkEnabled;
     private boolean mOnWorkTab;
+    private boolean mApplyWindowInset;
 
     public WorkModeSwitch(Context context) {
         this(context, null, 0);
@@ -168,7 +169,7 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
 
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        if (!Utilities.ATLEAST_R) {
+        if (!Utilities.ATLEAST_R || !mApplyWindowInset) {
             return insets;
         }
         if (insets.isVisible(WindowInsets.Type.ime())) {
@@ -196,5 +197,9 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
 
     private void removeFlag(int flag) {
         mFlags &= ~flag;
+    }
+
+    public void setApplyWindowInset(boolean applyWindowInset){
+        mApplyWindowInset = applyWindowInset;
     }
 }
