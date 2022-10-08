@@ -799,6 +799,17 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         return mActivityContext.getDeviceProfile().isTablet ? mBottomSheetBackground : this;
     }
 
+    /**
+     * Sets whether the view or its children should react to the window inset.
+     * Used for when exiting all apps -> workspace and determines if window inset
+     * should be applied.. ex) the work mode switch.
+     */
+    public void setApplyWindowInset(boolean shouldApplyWindowInset) {
+        if (mWorkManager.getWorkModeSwitch() != null) {
+            mWorkManager.getWorkModeSwitch().setApplyWindowInset(shouldApplyWindowInset);
+        }
+    }
+
     /** Holds a {@link BaseAllAppsAdapter} and related fields. */
     public class AdapterHolder {
         public static final int MAIN = 0;
