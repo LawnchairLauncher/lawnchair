@@ -64,25 +64,7 @@ public class PushReorderCase {
             MOVE_TO_6x5,
             END_BOARD_STR_6x5);
 
-    /** 4x4 Test
-     **/
-    private static final String START_BOARD_STR_4x4 = ""
-            + "xxxx\n"
-            + "222m\n"
-            + "-111\n"
-            + "----";
-    private static final Point MOVE_TO_4x4 = new Point(2, 1);
-    private static final String END_BOARD_STR_4x4 = ""
-            + "xxxx\n"
-            + "--m-\n"
-            + "222-\n"
-            + "-111";
-    private static final ReorderTestCase TEST_CASE_4x4 = new ReorderTestCase(START_BOARD_STR_4x4,
-            MOVE_TO_4x4,
-            END_BOARD_STR_4x4);
-
     public static final Map<Point, ReorderTestCase> TEST_BY_GRID_SIZE =
             Map.of(new Point(5, 5), TEST_CASE_5x5,
-                    new Point(6, 5), TEST_CASE_6x5,
-                    new Point(4, 4), TEST_CASE_4x4);
+                    new Point(6, 5), TEST_CASE_6x5);
 }

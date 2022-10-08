@@ -552,15 +552,43 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     /** Start multiple tasks in split-screen simultaneously. */
-    public void startTasks(int mainTaskId, Bundle mainOptions, int sideTaskId, Bundle sideOptions,
-            @SplitConfigurationOptions.StagePosition int sidePosition, float splitRatio,
+    public void startTasks(int taskId1, Bundle options1, int taskId2, Bundle options2,
+            @SplitConfigurationOptions.StagePosition int splitPosition, float splitRatio,
             RemoteTransitionCompat remoteTransition, InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
-                mSplitScreen.startTasks(mainTaskId, mainOptions, sideTaskId, sideOptions,
-                        sidePosition, splitRatio, remoteTransition.getTransition(), instanceId);
+                mSplitScreen.startTasks(taskId1, options1, taskId2, options2, splitPosition,
+                        splitRatio, remoteTransition.getTransition(), instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startTask");
+                Log.w(TAG, "Failed call startTasks");
+            }
+        }
+    }
+
+    public void startIntentAndTask(PendingIntent pendingIntent, Intent fillInIntent,
+            Bundle options1, int taskId, Bundle options2,
+            @SplitConfigurationOptions.StagePosition int splitPosition, float splitRatio,
+            RemoteTransitionCompat remoteTransition, InstanceId instanceId) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSplitScreen.startIntentAndTask(pendingIntent, fillInIntent, options1,
+                        taskId, options2, splitPosition, splitRatio,
+                        remoteTransition.getTransition(), instanceId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call startIntentAndTask");
+            }
+        }
+    }
+
+    public void startShortcutAndTask(ShortcutInfo shortcutInfo, Bundle options1, int taskId,
+            Bundle options2, @SplitConfigurationOptions.StagePosition int splitPosition,
+            float splitRatio, RemoteTransitionCompat remoteTransition, InstanceId instanceId) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSplitScreen.startShortcutAndTask(shortcutInfo, options1, taskId, options2,
+                        splitPosition, splitRatio, remoteTransition.getTransition(), instanceId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call startShortcutAndTask");
             }
         }
     }
@@ -568,13 +596,13 @@ public class SystemUiProxy implements ISystemUiProxy {
     /**
      * Start multiple tasks in split-screen simultaneously.
      */
-    public void startTasksWithLegacyTransition(int mainTaskId, Bundle mainOptions, int sideTaskId,
-            Bundle sideOptions, @SplitConfigurationOptions.StagePosition int sidePosition,
+    public void startTasksWithLegacyTransition(int taskId1, Bundle options1, int taskId2,
+            Bundle options2, @SplitConfigurationOptions.StagePosition int splitPosition,
             float splitRatio, RemoteAnimationAdapter adapter, InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
-                mSplitScreen.startTasksWithLegacyTransition(mainTaskId, mainOptions, sideTaskId,
-                        sideOptions, sidePosition, splitRatio, adapter, instanceId);
+                mSplitScreen.startTasksWithLegacyTransition(taskId1, options1, taskId2, options2,
+                        splitPosition, splitRatio, adapter, instanceId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startTasksWithLegacyTransition");
             }
@@ -582,28 +610,26 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     public void startIntentAndTaskWithLegacyTransition(PendingIntent pendingIntent,
-            Intent fillInIntent, int taskId, Bundle mainOptions, Bundle sideOptions,
-            @SplitConfigurationOptions.StagePosition int sidePosition, float splitRatio,
+            Intent fillInIntent, Bundle options1, int taskId, Bundle options2,
+            @SplitConfigurationOptions.StagePosition int splitPosition, float splitRatio,
             RemoteAnimationAdapter adapter, InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
                 mSplitScreen.startIntentAndTaskWithLegacyTransition(pendingIntent, fillInIntent,
-                        taskId, mainOptions, sideOptions, sidePosition, splitRatio, adapter,
-                        instanceId);
+                        options1, taskId, options2, splitPosition, splitRatio, adapter, instanceId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startIntentAndTaskWithLegacyTransition");
             }
         }
     }
 
-    public void startShortcutAndTaskWithLegacyTransition(ShortcutInfo shortcutInfo, int taskId,
-            Bundle mainOptions, Bundle sideOptions,
-            @SplitConfigurationOptions.StagePosition int sidePosition, float splitRatio,
-            RemoteAnimationAdapter adapter, InstanceId instanceId) {
+    public void startShortcutAndTaskWithLegacyTransition(ShortcutInfo shortcutInfo, Bundle options1,
+            int taskId, Bundle options2, @SplitConfigurationOptions.StagePosition int splitPosition,
+            float splitRatio, RemoteAnimationAdapter adapter, InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
-                mSplitScreen.startShortcutAndTaskWithLegacyTransition(shortcutInfo, taskId,
-                        mainOptions, sideOptions, sidePosition, splitRatio, adapter, instanceId);
+                mSplitScreen.startShortcutAndTaskWithLegacyTransition(shortcutInfo, options1,
+                        taskId, options2, splitPosition, splitRatio, adapter, instanceId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startShortcutAndTaskWithLegacyTransition");
             }
