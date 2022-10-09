@@ -123,6 +123,7 @@
     <string name="reset_font">പുനഃക്രമീകരിക്കുക</string>
     <!-- colorpreference/* -->
     <string name="dynamic">ഡൈനാമിക്</string>
+    <string name="swatches">Swatches</string>
     <string name="presets">പ്രീസെറ്റുകൾ</string>
     <string name="custom">ഇഷ്ടാനുസൃതം</string>
     <string name="rgb">ചുവപ്പ് പച്ച നീല</string>

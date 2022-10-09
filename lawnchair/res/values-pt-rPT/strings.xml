@@ -123,6 +123,7 @@
     <string name="reset_font">Redefinir</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Dinâmico</string>
+    <string name="swatches">Amostras</string>
     <string name="presets">Predefinições</string>
     <string name="custom">Personalizado</string>
     <string name="rgb">RGB</string>

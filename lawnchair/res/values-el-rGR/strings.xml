@@ -67,8 +67,8 @@
     <string name="show_notification_count">Εμφάνιση Πλήθους Ειδοποιήσεων</string>
     <string name="notification_dots_color">Χρώμα Κουκκίδας Ειδοποιήσεων</string>
     <string name="notification_dots_text_color">Χρώμα Κουκκίδας Ειδοποιήσεων</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_always">Προσοχή: Τα χρώματα των Κουκκίδων Ειδοποιήσεων &amp; του Πλήθους Ειδοποιήσεων δεν έχουν αρκετή αντίθεση μεταξύ τους</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Προσοχή: Τα χρώματα των Κουκκίδων Ειδοποιήσεων &amp; του Πλήθους Ειδοποιήσεων ίσως δεν έχουν πάντα αρκετή αντίθεση μεταξύ τους</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Απαιτείται Πρόσβαση Ειδοποιήσεων</string>
     <string name="missing_notification_access_description">Απαιτείται Πρόσβαση Ειδοποιήσεων.</string>
@@ -123,6 +123,7 @@
     <string name="reset_font">Επαναφορά</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Δυναμικό</string>
+    <string name="swatches">Swatches</string>
     <string name="presets">Προεπιλογές</string>
     <string name="custom">Προσαρμοσμένο</string>
     <string name="rgb">RGB</string>

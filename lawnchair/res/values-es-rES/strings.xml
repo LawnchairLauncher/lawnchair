@@ -48,9 +48,9 @@
     <string name="smartspace_calendar_label">Personalización del calendario de un vistazo</string>
     <string name="smartspace_calendar_description">Permitir mostrar fechas en sistemas de calendario no gregorianos.</string>
     <string name="workspace_increase_max_grid_size_label">Aumento del tamaño máximo de la cuadrícula de la pantalla de inicio</string>
-    <string name="workspace_increase_max_grid_size_description">Aumente el tamaño máximo permitido de la cuadrícula de la pantalla de inicio de 10 x 10 a 20 x 20.</string>
-    <string name="always_reload_icons_label">Recargar iconos siempre</string>
-    <string name="always_reload_icons_description">Evitar usar iconos en caché de paquetes de iconos</string>
+    <string name="workspace_increase_max_grid_size_description">Aumenta el tamaño máximo permitido de la cuadrícula de pantalla de inicio de 10 x 10 a 20 x 20.</string>
+    <string name="always_reload_icons_label">Siempre recargar los iconos</string>
+    <string name="always_reload_icons_description">Evitar el uso de iconos en caché de paquetes de iconos</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotación de Pantalla de Inicio</string>
     <string name="home_screen_rotaton_description">Cuando se rota el dispositivo.</string>
@@ -67,11 +67,11 @@
     <string name="show_notification_count">Mostrar contador de notificaciones</string>
     <string name="notification_dots_color">Color del punto de notificación</string>
     <string name="notification_dots_text_color">Color del contador de notificaciones</string>
-    <string name="notification_dots_color_contrast_warning_always">Advertencia: Los colores de punto &amp; contador de notificaciones no tienen suficiente contraste entre sí</string>
+    <string name="notification_dots_color_contrast_warning_always">Advertencia: Es posible que los colores de punto &amp; contador de notificaciones no siempre tengan suficiente contraste entre sí</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Advertencia: Es posible que los colores de punto &amp; contador de notificaciones no siempre tengan suficiente contraste entre sí</string>
     <!-- Notification popup -->
-    <string name="missing_notification_access_label">Acceso a las notificaciones requerido</string>
-    <string name="missing_notification_access_description">Acceso a las notificaciones requerido.</string>
+    <string name="missing_notification_access_label">Se necesita acceso a las notificaciones</string>
+    <string name="missing_notification_access_description">Se necesita acceso a las notificaciones.</string>
     <string name="msg_missing_notification_access">Para usar puntos de notificación, concede acceso a las notificaciones a <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
     <string name="title_change_settings">Cambiar ajustes</string>
     <string name="colors">Colores</string>
@@ -123,6 +123,7 @@
     <string name="reset_font">Restablecer</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Dinámico</string>
+    <string name="swatches">Muestras</string>
     <string name="presets">Configuraciones</string>
     <string name="custom">Personalizado</string>
     <string name="rgb">RGB</string>

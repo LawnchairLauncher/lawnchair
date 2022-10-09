@@ -67,8 +67,8 @@
     <string name="show_notification_count">显示通知计数</string>
     <string name="notification_dots_color">通知圆点颜色</string>
     <string name="notification_dots_text_color">通知计数颜色</string>
-    <string name="notification_dots_color_contrast_warning_always">注意：通知圆点和通知计数的颜色对比度过低</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">注意：通知圆点和通知计数的颜色对比度过低，可能会看不清</string>
+    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">需要通知权限</string>
     <string name="missing_notification_access_description">需要通知权限。</string>
@@ -123,6 +123,7 @@
     <string name="reset_font">重置</string>
     <!-- colorpreference/* -->
     <string name="dynamic">动态的</string>
+    <string name="swatches">Swatches</string>
     <string name="presets">预设</string>
     <string name="custom">自定义</string>
     <string name="rgb">RGB</string>
@@ -139,7 +140,7 @@
     <string name="action_paste">粘贴</string>
     <string name="copied_toast">已复制到剪切板。</string>
     <string name="invalid_color">无效颜色</string>
-    <string name="launcher_default_color">由 Lawnchair 管理</string>
+    <string name="launcher_default_color">Managed by Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">向主屏幕添加新应用</string>

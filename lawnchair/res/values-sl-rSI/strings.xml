@@ -123,6 +123,7 @@
     <string name="reset_font">Ponastavi</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Dinamično</string>
+    <string name="swatches">Swatches</string>
     <string name="presets">Prednastavitve</string>
     <string name="custom">Po meri</string>
     <string name="rgb">RGB</string>

@@ -123,6 +123,7 @@
     <string name="reset_font">Сброс</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Динамический</string>
+    <string name="swatches">Swatches</string>
     <string name="presets">Предустановки</string>
     <string name="custom">Настраиваемый</string>
     <string name="rgb">RGB</string>

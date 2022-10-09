@@ -123,6 +123,7 @@
     <string name="reset_font">Sıfırla</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Dinamik</string>
+    <string name="swatches">Paletler</string>
     <string name="presets">Ön Ayarlar</string>
     <string name="custom">Özel</string>
     <string name="rgb">RGB</string>

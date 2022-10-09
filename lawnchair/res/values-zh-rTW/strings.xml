@@ -123,6 +123,7 @@
     <string name="reset_font">重設</string>
     <!-- colorpreference/* -->
     <string name="dynamic">動態</string>
+    <string name="swatches">色票</string>
     <string name="presets">預設集</string>
     <string name="custom">自訂</string>
     <string name="rgb">RGB</string>

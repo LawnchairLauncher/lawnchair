@@ -68,7 +68,7 @@
     <string name="notification_dots_color">Cor do Ponto de Notificação</string>
     <string name="notification_dots_text_color">Cor do Contador de Notificação</string>
     <string name="notification_dots_color_contrast_warning_always">Aviso: Ponto de notificação e cores do contador não têm contraste suficiente entre si</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Aviso: Ponto de notificação e Cores do Contador não têm contraste suficiente entre si</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Necessário o Acesso às Notificações</string>
     <string name="missing_notification_access_description">Necessário o acesso às notificações.</string>
@@ -123,6 +123,7 @@
     <string name="reset_font">Redefinir</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Dinâmico</string>
+    <string name="swatches">Amostras</string>
     <string name="presets">Predefinições</string>
     <string name="custom">Personalizar</string>
     <string name="rgb">RGB</string>
@@ -139,7 +140,7 @@
     <string name="action_paste">Colar</string>
     <string name="copied_toast">Copiado para a área de transferência.</string>
     <string name="invalid_color">Cor Inválida</string>
-    <string name="launcher_default_color">Managed by Lawnchair</string>
+    <string name="launcher_default_color">Gerenciado por Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Adicionar novos aplicativos à tela inicial</string>

@@ -49,8 +49,8 @@
     <string name="smartspace_calendar_description">Permet mostrar la data en sistemes de calendari no Gregorià.</string>
     <string name="workspace_increase_max_grid_size_label">S\'ha incrementat la màxima mida de la graella de la pantalla principal</string>
     <string name="workspace_increase_max_grid_size_description">Incrementa la màxima mida permesa en la graella de la pantalla principal de 10 x 10 a 20 x 20.</string>
-    <string name="always_reload_icons_label">Always Reload Icons</string>
-    <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
+    <string name="always_reload_icons_label">Recarrega sempre les icones</string>
+    <string name="always_reload_icons_description">Evita utilitzar icones en memòria cau de paquets d\'icones</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotació de la Pantalla d\'inici</string>
     <string name="home_screen_rotaton_description">Quan es gira el dispositiu.</string>
@@ -66,9 +66,9 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Mostrar comptador de notificacions</string>
     <string name="notification_dots_color">Color del punt de notificació</string>
-    <string name="notification_dots_text_color">Notification Count Color</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_text_color">Color del punt de notificació</string>
+    <string name="notification_dots_color_contrast_warning_always">Avis: El color del punt de notificació &amp; no té suficient contrast amb els altres</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Avis: El color del punt de notificació &amp; potser no tindrà suficient contrast amb els altres</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Es necessita accés a les notificacions</string>
     <string name="missing_notification_access_description">És necessari l\'accés a les notificacions.</string>
@@ -123,6 +123,7 @@
     <string name="reset_font">Reiniciar</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Dinàmic</string>
+    <string name="swatches">Swatches</string>
     <string name="presets">Predefinits</string>
     <string name="custom">Personalitzat</string>
     <string name="rgb">RGB</string>
@@ -139,7 +140,7 @@
     <string name="action_paste">Enganxar</string>
     <string name="copied_toast">S\'ha copiat al porta-retalls.</string>
     <string name="invalid_color">Color invàlid</string>
-    <string name="launcher_default_color">Managed by Lawnchair</string>
+    <string name="launcher_default_color">Gestionat per Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Afegeix les apps noves a la Pantalla d\'inici</string>
@@ -250,7 +251,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Opacitat del fons de la icona</string>
-    <string name="folder_preview_bg_color_label">Icon Background Color</string>
+    <string name="folder_preview_bg_color_label">Color del fons d\'icona</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Màxim de Columnes de Carpeta</string>
     <string name="max_folder_rows">Màxim de Files de Carpeta</string>

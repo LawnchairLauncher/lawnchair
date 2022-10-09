@@ -123,6 +123,7 @@
     <string name="reset_font">איפוס</string>
     <!-- colorpreference/* -->
     <string name="dynamic">דינמי</string>
+    <string name="swatches">Swatches</string>
     <string name="presets">מוגדרים מראש</string>
     <string name="custom">התאמה אישית</string>
     <string name="rgb">RGB</string>

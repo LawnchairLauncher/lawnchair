@@ -123,6 +123,7 @@
     <string name="reset_font">إعادة ضبط</string>
     <!-- colorpreference/* -->
     <string name="dynamic">ديناميكية</string>
+    <string name="swatches">Swatches</string>
     <string name="presets">الإعدادات المسبقة</string>
     <string name="custom">تخصيص</string>
     <string name="rgb">RGB</string>

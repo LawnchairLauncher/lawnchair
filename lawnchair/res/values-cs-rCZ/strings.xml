@@ -123,6 +123,7 @@
     <string name="reset_font">Obnovit</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Dynamická</string>
+    <string name="swatches">Vzorníky</string>
     <string name="presets">Předvolby</string>
     <string name="custom">Vlastní</string>
     <string name="rgb">RGB</string>

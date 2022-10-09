@@ -123,6 +123,7 @@
     <string name="reset_font">รีเซ็ต</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Dynamic</string>
+    <string name="swatches">Swatches</string>
     <string name="presets">ค่าที่ตั้งไว้แล้ว</string>
     <string name="custom">ปรับแต่ง</string>
     <string name="rgb">RGB</string>
