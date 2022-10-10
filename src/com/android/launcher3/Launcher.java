@@ -2750,6 +2750,8 @@ public class Launcher extends StatefulActivity<LauncherState>
         getViewCache().setCacheSize(R.layout.folder_page, 2);
 
         TraceHelper.INSTANCE.endSection(traceToken);
+
+        mWorkspace.removeExtraEmptyScreen(true);
     }
 
     private boolean canAnimatePageChange() {
