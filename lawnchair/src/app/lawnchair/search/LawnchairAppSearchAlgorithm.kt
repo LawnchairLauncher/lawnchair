@@ -6,8 +6,11 @@ import android.graphics.drawable.Icon
 import android.os.Bundle
 import android.os.Handler
 import android.os.Process
+import android.util.Log
+import androidx.lifecycle.lifecycleScope
 import app.lawnchair.allapps.SearchResultView
 import app.lawnchair.launcher
+import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
@@ -29,18 +32,28 @@ import kotlinx.coroutines.Dispatchers
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio
 import java.util.*
+import java.util.stream.Collectors
 
 class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context) {
 
     private val appState = LauncherAppState.getInstance(context)
     private val resultHandler = Handler(Executors.MAIN_EXECUTOR.looper)
     private var enableFuzzySearch = false
+    private var hiddenApps: Set<String> = setOf()
+    private var showHiddenAppsInSearchBar = false
     private val marketSearchComponent = resolveMarketSearchActivity()
     private val coroutineScope = CoroutineScope(context = Dispatchers.IO)
+    private val pref2 = PreferenceManager2.getInstance(context)
 
     init {
-        PreferenceManager2.getInstance(context).enableFuzzySearch.onEach(launchIn = coroutineScope) {
+        pref2.enableFuzzySearch.onEach(launchIn = coroutineScope) {
             enableFuzzySearch = it
+        }
+        pref2.hiddenApps.onEach(launchIn = context.launcher.lifecycleScope) {
+            hiddenApps = it
+        }
+        pref2.showHiddenAppsInSearchBar.onEach(launchIn = coroutineScope) {
+            showHiddenAppsInSearchBar = it
         }
     }
 
@@ -107,13 +120,23 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
 
         return apps.asSequence()
             .filter { StringMatcherUtility.matches(queryTextLower, it.title.toString(), matcher) }
+            .filter {
+                showHiddenAppsInSearchBar || !hiddenApps.stream()
+                    .anyMatch() { s -> s.contains(it.componentName.flattenToString()) }
+            }
             .take(maxResultsCount)
             .toList()
     }
 
     private fun fuzzySearch(apps: List<AppInfo>, query: String): List<AppInfo> {
+
+        val filteredApps = apps.asSequence()
+            .filter { showHiddenAppsInSearchBar || !hiddenApps.stream()
+                .anyMatch() { s -> s.contains(it.componentName.flattenToString()) }}
+            .toList()
+
         val matches = FuzzySearch.extractSorted(
-            query.lowercase(Locale.getDefault()), apps,
+            query.lowercase(Locale.getDefault()), filteredApps,
             { it.title.toString() }, WeightedRatio(), 65
         )
 

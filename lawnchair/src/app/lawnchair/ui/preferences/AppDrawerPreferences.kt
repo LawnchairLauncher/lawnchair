@@ -63,10 +63,15 @@ fun AppDrawerPreferences() {
         }
         val deviceSearchEnabled = LawnchairSearchAlgorithm.isDeviceSearchEnabled(LocalContext.current)
         val showDrawerSearchBar = !prefs2.hideAppDrawerSearchBar.getAdapter()
+        val showHiddenAppsInSearchBar = prefs2.showHiddenAppsInSearchBar.getAdapter()
         PreferenceGroup(heading = stringResource(id = R.string.pref_category_search)) {
             SwitchPreference(
                 label = stringResource(id = R.string.show_app_search_bar),
                 adapter = showDrawerSearchBar,
+            )
+            SwitchPreference(
+                label = stringResource(id = R.string.show_hidden_apps_search_bar),
+                adapter = showHiddenAppsInSearchBar,
             )
             ExpandAndShrink(visible = showDrawerSearchBar.state.value) {
                 DividerColumn {
