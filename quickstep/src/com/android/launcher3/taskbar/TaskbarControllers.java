@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsController;
+import com.android.launcher3.taskbar.overlay.TaskbarOverlayController;
 import com.android.systemui.shared.rotation.RotationButtonController;
 
 import java.io.PrintWriter;
@@ -54,6 +55,7 @@ public class TaskbarControllers {
     public final TaskbarInsetsController taskbarInsetsController;
     public final VoiceInteractionWindowController voiceInteractionWindowController;
     public final TaskbarRecentAppsController taskbarRecentAppsController;
+    public final TaskbarOverlayController taskbarOverlayController;
 
     @Nullable private LoggableTaskbarController[] mControllersToLog = null;
 
@@ -81,6 +83,7 @@ public class TaskbarControllers {
             TaskbarAutohideSuspendController taskbarAutoHideSuspendController,
             TaskbarPopupController taskbarPopupController,
             TaskbarForceVisibleImmersiveController taskbarForceVisibleImmersiveController,
+            TaskbarOverlayController taskbarOverlayController,
             TaskbarAllAppsController taskbarAllAppsController,
             TaskbarInsetsController taskbarInsetsController,
             VoiceInteractionWindowController voiceInteractionWindowController,
@@ -101,6 +104,7 @@ public class TaskbarControllers {
         this.taskbarAutohideSuspendController = taskbarAutoHideSuspendController;
         this.taskbarPopupController = taskbarPopupController;
         this.taskbarForceVisibleImmersiveController = taskbarForceVisibleImmersiveController;
+        this.taskbarOverlayController = taskbarOverlayController;
         this.taskbarAllAppsController = taskbarAllAppsController;
         this.taskbarInsetsController = taskbarInsetsController;
         this.voiceInteractionWindowController = voiceInteractionWindowController;
@@ -129,6 +133,7 @@ public class TaskbarControllers {
         taskbarEduController.init(this);
         taskbarPopupController.init(this);
         taskbarForceVisibleImmersiveController.init(this);
+        taskbarOverlayController.init(this);
         taskbarAllAppsController.init(this, sharedState.allAppsVisible);
         navButtonController.init(this);
         taskbarInsetsController.init(this);
@@ -179,7 +184,7 @@ public class TaskbarControllers {
         taskbarAutohideSuspendController.onDestroy();
         taskbarPopupController.onDestroy();
         taskbarForceVisibleImmersiveController.onDestroy();
-        taskbarAllAppsController.onDestroy();
+        taskbarOverlayController.onDestroy();
         navButtonController.onDestroy();
         taskbarInsetsController.onDestroy();
         voiceInteractionWindowController.onDestroy();

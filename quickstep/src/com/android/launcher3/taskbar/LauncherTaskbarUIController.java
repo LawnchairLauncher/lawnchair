@@ -276,13 +276,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
                 && !mLauncher.getOnboardingPrefs().getBoolean(OnboardingPrefs.TASKBAR_EDU_SEEN);
     }
 
-    /**
-     * Manually ends the taskbar education flow.
-     */
-    public void hideEdu() {
-        mControllers.taskbarEduController.hideEdu();
-    }
-
     @Override
     public void onTaskbarIconLaunched(ItemInfo item) {
         InstanceId instanceId = new InstanceIdSequence().newInstanceId();
