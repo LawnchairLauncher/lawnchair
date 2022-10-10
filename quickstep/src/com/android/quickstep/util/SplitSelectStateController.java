@@ -37,6 +37,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.UserHandle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.view.RemoteAnimationAdapter;
@@ -207,8 +208,8 @@ public class SplitSelectStateController {
      * fill in intent with a taskId2 are set.
      * @param intent1 is null when split is initiated from Overview
      * @param stagePosition representing location of task1
-     * @param shellInstanceId loggingId to be used by shell, will be non-null for actions that create
-     *                   a split instance, null for cases that bring existing instaces to the
+     * @param shellInstanceId loggingId to be used by shell, will be non-null for actions that
+     *                   create a split instance, null for cases that bring existing instaces to the
      *                   foreground (quickswitch, launching previous pairs from overview)
      */
     public void launchTasks(int taskId1, @Nullable Intent intent1, int taskId2,
@@ -238,7 +239,9 @@ public class SplitSelectStateController {
                         getOppositeStagePosition(stagePosition), splitRatio, remoteTransition,
                         shellInstanceId);
             } else {
-                // TODO: the case when both split apps are started from an intent.
+                mSystemUiProxy.startIntents(getPendingIntent(intent1), options1.toBundle(),
+                        getPendingIntent(intent2), null /* options2 */, stagePosition,
+                        splitRatio, remoteTransition, shellInstanceId);
             }
         } else {
             final RemoteSplitLaunchAnimationRunner animationRunner =
@@ -259,7 +262,9 @@ public class SplitSelectStateController {
                         getOppositeStagePosition(stagePosition), splitRatio, adapter,
                         shellInstanceId);
             } else {
-                // TODO: the case when both split apps are started from an intent.
+                mSystemUiProxy.startIntentsWithLegacyTransition(getPendingIntent(intent1),
+                        options1.toBundle(), getPendingIntent(intent2), null /* options2 */,
+                        stagePosition, splitRatio, adapter, shellInstanceId);
             }
         }
     }
@@ -304,7 +309,6 @@ public class SplitSelectStateController {
                 FLAG_MUTABLE, null /* options */, mUser)
                 : PendingIntent.getActivity(mContext, 0, intent, FLAG_MUTABLE));
     }
-
 
     public @StagePosition int getActiveSplitStagePosition() {
         return mStagePosition;
