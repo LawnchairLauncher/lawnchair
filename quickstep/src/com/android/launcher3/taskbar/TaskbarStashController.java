@@ -67,7 +67,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     public static final int FLAG_STASHED_IN_APP_SETUP = 1 << 4; // setup wizard and AllSetActivity
     public static final int FLAG_STASHED_IN_APP_IME = 1 << 5; // IME is visible
     public static final int FLAG_IN_STASHED_LAUNCHER_STATE = 1 << 6;
-    public static final int FLAG_STASHED_IN_APP_ALL_APPS = 1 << 7; // All apps is visible.
+    public static final int FLAG_STASHED_IN_TASKBAR_ALL_APPS = 1 << 7; // All apps is visible.
     public static final int FLAG_IN_SETUP = 1 << 8; // In the Setup Wizard
     public static final int FLAG_STASHED_SMALL_SCREEN = 1 << 9; // phone screen gesture nav, stashed
 
@@ -77,8 +77,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     // If we're in an app and any of these flags are enabled, taskbar should be stashed.
     private static final int FLAGS_STASHED_IN_APP = FLAG_STASHED_IN_APP_MANUAL
             | FLAG_STASHED_IN_APP_PINNED | FLAG_STASHED_IN_APP_EMPTY | FLAG_STASHED_IN_APP_SETUP
-            | FLAG_STASHED_IN_APP_IME | FLAG_STASHED_IN_APP_ALL_APPS |
-            FLAG_STASHED_SMALL_SCREEN;
+            | FLAG_STASHED_IN_APP_IME | FLAG_STASHED_IN_TASKBAR_ALL_APPS
+            | FLAG_STASHED_SMALL_SCREEN;
 
     private static final int FLAGS_STASHED_IN_APP_IGNORING_IME =
             FLAGS_STASHED_IN_APP & ~FLAG_STASHED_IN_APP_IME;
@@ -88,7 +88,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     // Currently any flag that causes us to stash in an app is included, except for IME or All Apps
     // since those cover the underlying app anyway and thus the app shouldn't change insets.
     private static final int FLAGS_REPORT_STASHED_INSETS_TO_APP = FLAGS_STASHED_IN_APP
-            & ~FLAG_STASHED_IN_APP_IME & ~FLAG_STASHED_IN_APP_ALL_APPS;
+            & ~FLAG_STASHED_IN_APP_IME & ~FLAG_STASHED_IN_TASKBAR_ALL_APPS;
 
     /**
      * How long to stash/unstash when manually invoked via long press.
@@ -168,9 +168,11 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                 boolean inApp = hasAnyFlag(flags, FLAGS_IN_APP);
                 boolean stashedInApp = hasAnyFlag(flags, FLAGS_STASHED_IN_APP);
                 boolean stashedLauncherState = hasAnyFlag(flags, FLAG_IN_STASHED_LAUNCHER_STATE);
+                boolean stashedInTaskbarAllApps =
+                        hasAnyFlag(flags, FLAG_STASHED_IN_TASKBAR_ALL_APPS);
                 boolean stashedForSmallScreen = hasAnyFlag(flags, FLAG_STASHED_SMALL_SCREEN);
                 return (inApp && stashedInApp) || (!inApp && stashedLauncherState)
-                        || stashedForSmallScreen;
+                        || stashedInTaskbarAllApps || stashedForSmallScreen;
             });
 
     public TaskbarStashController(TaskbarActivityContext activity) {
@@ -314,6 +316,13 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
     public boolean isInApp() {
         return hasAnyFlag(FLAGS_IN_APP);
+    }
+
+    /**
+     * Returns the height that taskbar will be touchable.
+     */
+    public int getTouchableHeight() {
+        return mIsStashed ? mStashedHeight : mUnstashedHeight;
     }
 
     /**
@@ -659,7 +668,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             return;
         }
 
-        updateStateForFlag(FLAG_STASHED_IN_APP_ALL_APPS, false);
+        updateStateForFlag(FLAG_STASHED_IN_TASKBAR_ALL_APPS, false);
         if (applyState) {
             applyState(ALL_APPS.getTransitionDuration(
                     mControllers.taskbarActivityContext, false /* isToState */));
@@ -779,7 +788,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         appendFlag(str, flags, FLAG_STASHED_IN_APP_SETUP, "FLAG_STASHED_IN_APP_SETUP");
         appendFlag(str, flags, FLAG_STASHED_IN_APP_IME, "FLAG_STASHED_IN_APP_IME");
         appendFlag(str, flags, FLAG_IN_STASHED_LAUNCHER_STATE, "FLAG_IN_STASHED_LAUNCHER_STATE");
-        appendFlag(str, flags, FLAG_STASHED_IN_APP_ALL_APPS, "FLAG_STASHED_IN_APP_ALL_APPS");
+        appendFlag(str, flags, FLAG_STASHED_IN_TASKBAR_ALL_APPS, "FLAG_STASHED_IN_APP_ALL_APPS");
         appendFlag(str, flags, FLAG_IN_SETUP, "FLAG_IN_SETUP");
         return str.toString();
     }
