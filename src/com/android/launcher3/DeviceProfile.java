@@ -218,6 +218,9 @@ public class DeviceProfile {
     public int overviewRowSpacing;
     public int overviewGridSideMargin;
 
+    // Split staging
+    public int splitPlaceholderInset;
+
     // Widgets
     private final ViewScaleProvider mViewScaleProvider;
 
@@ -458,6 +461,8 @@ public class DeviceProfile {
         overviewActionsHeight = res.getDimensionPixelSize(R.dimen.overview_actions_height);
         overviewRowSpacing = res.getDimensionPixelSize(R.dimen.overview_grid_row_spacing);
         overviewGridSideMargin = res.getDimensionPixelSize(R.dimen.overview_grid_side_margin);
+
+        splitPlaceholderInset = res.getDimensionPixelSize(R.dimen.split_placeholder_inset);
 
         // Calculate all of the remaining variables.
         extraSpace = updateAvailableDimensions(res);

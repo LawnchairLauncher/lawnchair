@@ -424,8 +424,8 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         // In fake land/seascape, the placeholder always needs to go to the "top" of the device,
         // which is the same bounds as 0 rotation.
         int width = dp.widthPx;
-        int insetThickness = dp.getInsets().top;
-        out.set(0, 0, width, placeholderHeight + insetThickness);
+        int insetSizeAdjustment = getPlaceholderSizeAdjustment(dp);
+        out.set(0, 0, width, placeholderHeight + insetSizeAdjustment);
         out.inset(placeholderInset, 0);
 
         // Adjust the top to account for content off screen. This will help to animate the view in
@@ -442,11 +442,19 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
             float onScreenRectCenterY, float fullscreenScaleX, float fullscreenScaleY,
             int drawableWidth, int drawableHeight, DeviceProfile dp,
             @StagePosition int stagePosition) {
-        float inset = dp.getInsets().top;
+        float insetAdjustment = getPlaceholderSizeAdjustment(dp) / 2f;
         out.setX(Math.round(onScreenRectCenterX / fullscreenScaleX
                 - 1.0f * drawableWidth / 2));
-        out.setY(Math.round((onScreenRectCenterY + (inset / 2f)) / fullscreenScaleY
+        out.setY(Math.round((onScreenRectCenterY + insetAdjustment) / fullscreenScaleY
                 - 1.0f * drawableHeight / 2));
+    }
+
+    /**
+     * The split placeholder comes with a default inset to buffer the icon from the top of the
+     * screen. But if the device already has a large inset (from cutouts etc), use that instead.
+     */
+    private int getPlaceholderSizeAdjustment(DeviceProfile dp) {
+        return Math.max(dp.getInsets().top - dp.splitPlaceholderInset, 0);
     }
 
     @Override
