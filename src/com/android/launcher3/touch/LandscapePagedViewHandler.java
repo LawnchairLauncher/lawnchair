@@ -504,9 +504,9 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
             DeviceProfile dp, boolean isRtl) {
         int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
         int totalThumbnailHeight = parentHeight - spaceAboveSnapshot;
-        int dividerBar = splitBoundsConfig.appsStackedVertically
-                ? (int) (splitBoundsConfig.dividerHeightPercent * parentHeight)
-                : (int) (splitBoundsConfig.dividerWidthPercent * parentWidth);
+        int dividerBar = Math.round(totalThumbnailHeight * (splitBoundsConfig.appsStackedVertically
+                ? splitBoundsConfig.dividerHeightPercent
+                : splitBoundsConfig.dividerWidthPercent));
         int primarySnapshotHeight;
         int primarySnapshotWidth;
         int secondarySnapshotHeight;
