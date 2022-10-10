@@ -1579,6 +1579,14 @@ public class Launcher extends StatefulActivity<LauncherState>
         return mOldConfig.orientation;
     }
 
+    /**
+     * Whether keyboard sync is enabled for transitions between Home and All Apps.
+     * TODO(b/251387263): move this method inside an All Apps specific config class.
+     */
+    public boolean isKeyboardSyncEnabled() {
+        return false;
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
@@ -2742,6 +2750,8 @@ public class Launcher extends StatefulActivity<LauncherState>
         getViewCache().setCacheSize(R.layout.folder_page, 2);
 
         TraceHelper.INSTANCE.endSection(traceToken);
+
+        mWorkspace.removeExtraEmptyScreen(true);
     }
 
     private boolean canAnimatePageChange() {

@@ -20,12 +20,14 @@ import com.android.launcher3.Alarm;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.OnAlarmListener;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 
 public class SpringLoadedDragController implements OnAlarmListener {
     // how long the user must hover over a mini-screen before it unshrinks
-    final long ENTER_SPRING_LOAD_HOVER_TIME = 500;
-    final long ENTER_SPRING_LOAD_CANCEL_HOVER_TIME = 950;
+    private static final long ENTER_SPRING_LOAD_HOVER_TIME = 500;
+    private static final long ENTER_SPRING_LOAD_HOVER_TIME_IN_TEST = 1500;
+    private static final long ENTER_SPRING_LOAD_CANCEL_HOVER_TIME = 950;
 
     Alarm mAlarm;
 
@@ -39,6 +41,13 @@ public class SpringLoadedDragController implements OnAlarmListener {
         mAlarm.setOnAlarmListener(this);
     }
 
+    private long getEnterSpringLoadHoverTime() {
+        // Some TAPL tests are flaky on Cuttlefish with a low waiting time
+        return Utilities.IS_RUNNING_IN_TEST_HARNESS
+                ? ENTER_SPRING_LOAD_HOVER_TIME_IN_TEST
+                : ENTER_SPRING_LOAD_HOVER_TIME;
+    }
+
     public void cancel() {
         mAlarm.cancelAlarm();
     }
@@ -46,8 +55,8 @@ public class SpringLoadedDragController implements OnAlarmListener {
     // Set a new alarm to expire for the screen that we are hovering over now
     public void setAlarm(CellLayout cl) {
         mAlarm.cancelAlarm();
-        mAlarm.setAlarm((cl == null) ? ENTER_SPRING_LOAD_CANCEL_HOVER_TIME :
-            ENTER_SPRING_LOAD_HOVER_TIME);
+        mAlarm.setAlarm((cl == null) ? ENTER_SPRING_LOAD_CANCEL_HOVER_TIME
+                : getEnterSpringLoadHoverTime());
         mScreen = cl;
     }
 
