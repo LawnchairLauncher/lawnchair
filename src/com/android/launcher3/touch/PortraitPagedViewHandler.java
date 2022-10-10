@@ -662,6 +662,16 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
             secondarySnapshotHeight = totalThumbnailHeight - primarySnapshotHeight - dividerBar;
             int translationY = primarySnapshotHeight + spaceAboveSnapshot + dividerBar;
             secondarySnapshot.setTranslationY(translationY);
+
+            FrameLayout.LayoutParams primaryParams =
+                    (FrameLayout.LayoutParams) primarySnapshot.getLayoutParams();
+            FrameLayout.LayoutParams secondaryParams =
+                    (FrameLayout.LayoutParams) secondarySnapshot.getLayoutParams();
+            secondaryParams.topMargin = 0;
+            primaryParams.topMargin = spaceAboveSnapshot;
+
+            // Reset unused translations
+            primarySnapshot.setTranslationY(0);
             secondarySnapshot.setTranslationX(0);
             primarySnapshot.setTranslationX(0);
         }
