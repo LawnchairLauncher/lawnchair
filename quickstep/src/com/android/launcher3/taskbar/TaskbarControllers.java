@@ -51,9 +51,9 @@ public class TaskbarControllers {
     public final TaskbarPopupController taskbarPopupController;
     public final TaskbarForceVisibleImmersiveController taskbarForceVisibleImmersiveController;
     public final TaskbarAllAppsController taskbarAllAppsController;
-    public final TaskbarRecentAppsController taskbarRecentAppsController;
     public final TaskbarInsetsController taskbarInsetsController;
     public final VoiceInteractionWindowController voiceInteractionWindowController;
+    public final TaskbarRecentAppsController taskbarRecentAppsController;
 
     @Nullable private LoggableTaskbarController[] mControllersToLog = null;
 
@@ -82,9 +82,9 @@ public class TaskbarControllers {
             TaskbarPopupController taskbarPopupController,
             TaskbarForceVisibleImmersiveController taskbarForceVisibleImmersiveController,
             TaskbarAllAppsController taskbarAllAppsController,
-            TaskbarRecentAppsController taskbarRecentAppsController,
             TaskbarInsetsController taskbarInsetsController,
-            VoiceInteractionWindowController voiceInteractionWindowController) {
+            VoiceInteractionWindowController voiceInteractionWindowController,
+            TaskbarRecentAppsController taskbarRecentAppsController) {
         this.taskbarActivityContext = taskbarActivityContext;
         this.taskbarDragController = taskbarDragController;
         this.navButtonController = navButtonController;
@@ -102,9 +102,9 @@ public class TaskbarControllers {
         this.taskbarPopupController = taskbarPopupController;
         this.taskbarForceVisibleImmersiveController = taskbarForceVisibleImmersiveController;
         this.taskbarAllAppsController = taskbarAllAppsController;
-        this.taskbarRecentAppsController = taskbarRecentAppsController;
         this.taskbarInsetsController = taskbarInsetsController;
         this.voiceInteractionWindowController = voiceInteractionWindowController;
+        this.taskbarRecentAppsController = taskbarRecentAppsController;
     }
 
     /**
@@ -130,10 +130,10 @@ public class TaskbarControllers {
         taskbarPopupController.init(this);
         taskbarForceVisibleImmersiveController.init(this);
         taskbarAllAppsController.init(this, sharedState.allAppsVisible);
-        taskbarRecentAppsController.init(this);
         navButtonController.init(this);
         taskbarInsetsController.init(this);
         voiceInteractionWindowController.init(this);
+        taskbarRecentAppsController.init(this);
 
         mControllersToLog = new LoggableTaskbarController[] {
                 taskbarDragController, navButtonController, navbarButtonsViewController,
@@ -180,10 +180,10 @@ public class TaskbarControllers {
         taskbarPopupController.onDestroy();
         taskbarForceVisibleImmersiveController.onDestroy();
         taskbarAllAppsController.onDestroy();
-        taskbarRecentAppsController.onDestroy();
         navButtonController.onDestroy();
         taskbarInsetsController.onDestroy();
         voiceInteractionWindowController.onDestroy();
+        taskbarRecentAppsController.onDestroy();
 
         mControllersToLog = null;
     }
