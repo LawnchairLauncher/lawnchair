@@ -192,9 +192,9 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = { reloadHelper.recreate() }
     )
 
-    val showHiddenAppsInSearchBar = preference(
-        key = booleanPreferencesKey(name = "show_hidden_apps_in_search_bar"),
-        defaultValue = context.resources.getBoolean(R.bool.config_default_show_hidden_apps_in_search_bar),
+    val showHiddenAppsInSearch = preference(
+        key = booleanPreferencesKey(name = "show_hidden_apps_in_search"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_show_hidden_apps_in_search),
         onSet = { reloadHelper.recreate() }
     )
 

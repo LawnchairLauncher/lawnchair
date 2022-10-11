@@ -39,8 +39,8 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     private val appState = LauncherAppState.getInstance(context)
     private val resultHandler = Handler(Executors.MAIN_EXECUTOR.looper)
     private var enableFuzzySearch = false
-    private var hiddenApps: Set<String> = setOf()
-    private var showHiddenAppsInSearchBar = false
+    private lateinit var hiddenApps: Set<String>
+    private var showHiddenAppsInSearch = false
     private val marketSearchComponent = resolveMarketSearchActivity()
     private val coroutineScope = CoroutineScope(context = Dispatchers.IO)
     private val pref2 = PreferenceManager2.getInstance(context)
@@ -49,11 +49,11 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         pref2.enableFuzzySearch.onEach(launchIn = coroutineScope) {
             enableFuzzySearch = it
         }
-        pref2.hiddenApps.onEach(launchIn = context.launcher.lifecycleScope) {
+        pref2.hiddenApps.onEach(launchIn = coroutineScope) {
             hiddenApps = it
         }
-        pref2.showHiddenAppsInSearchBar.onEach(launchIn = coroutineScope) {
-            showHiddenAppsInSearchBar = it
+        pref2.showHiddenAppsInSearch.onEach(launchIn = coroutineScope) {
+            showHiddenAppsInSearch = it
         }
     }
 
@@ -117,13 +117,9 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         // apps that don't match all of the words in the query.
         val queryTextLower = query.lowercase(Locale.getDefault())
         val matcher = StringMatcherUtility.StringMatcher.getInstance()
-
         return apps.asSequence()
             .filter { StringMatcherUtility.matches(queryTextLower, it.title.toString(), matcher) }
-            .filter {
-                showHiddenAppsInSearchBar || !hiddenApps.stream()
-                    .anyMatch() { s -> s.contains(it.componentName.flattenToString()) }
-            }
+            .filter { showHiddenAppsInSearch || !hiddenApps.contains(it.toComponentKey().toString()) }
             .take(maxResultsCount)
             .toList()
     }
@@ -131,10 +127,8 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     private fun fuzzySearch(apps: List<AppInfo>, query: String): List<AppInfo> {
 
         val filteredApps = apps.asSequence()
-            .filter { showHiddenAppsInSearchBar || !hiddenApps.stream()
-                .anyMatch() { s -> s.contains(it.componentName.flattenToString()) }}
+            .filter { showHiddenAppsInSearch || !hiddenApps.contains(it.toComponentKey().toString()) }
             .toList()
-
         val matches = FuzzySearch.extractSorted(
             query.lowercase(Locale.getDefault()), filteredApps,
             { it.title.toString() }, WeightedRatio(), 65
