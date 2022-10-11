@@ -1272,7 +1272,9 @@ public class DeviceProfile {
      * Returns the number of pixels required below OverviewActions excluding insets.
      */
     public int getOverviewActionsClaimedSpaceBelow() {
-        if (isTaskbarPresent && !isGestureMode) {
+        if (isTaskbarPresent && !isGestureMode
+                // If taskbar is in overview, overview action has dedicated space above nav buttons
+                && !FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get()) {
             // Align vertically to where nav buttons are.
             return ((taskbarSize - overviewActionsHeight) / 2) + getTaskbarOffsetY();
         }

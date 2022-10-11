@@ -29,6 +29,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.util.DisplayController;
 
@@ -114,7 +115,9 @@ public class SplitInstructionsView extends FrameLayout {
     int getThreeButtonNavShift() {
         DeviceProfile dp = mLauncher.getDeviceProfile();
         if ((DisplayController.getNavigationMode(getContext()) == THREE_BUTTONS)
-                && ((dp.isTwoPanels) || (dp.isTablet && !dp.isLandscape))) {
+                && ((dp.isTwoPanels) || (dp.isTablet && !dp.isLandscape))
+                // If taskbar is in overview, overview action has dedicated space above nav buttons
+                && !FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get()) {
             int navButtonWidth = getResources().getDimensionPixelSize(
                     R.dimen.taskbar_nav_buttons_size);
             int extraMargin = getResources().getDimensionPixelSize(
