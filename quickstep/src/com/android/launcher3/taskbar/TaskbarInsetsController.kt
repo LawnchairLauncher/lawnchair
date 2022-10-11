@@ -31,9 +31,9 @@ import android.view.WindowManager.LayoutParams.TYPE_VOICE_INTERACTION
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.AbstractFloatingView.TYPE_TASKBAR_ALL_APPS
 import com.android.launcher3.DeviceProfile
+import com.android.launcher3.R
 import com.android.launcher3.anim.AlphaUpdateListener
 import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarController
-import com.android.quickstep.KtR
 import java.io.PrintWriter
 
 /**
@@ -42,9 +42,8 @@ import java.io.PrintWriter
 class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTaskbarController {
 
     /** The bottom insets taskbar provides to the IME when IME is visible. */
-    val taskbarHeightForIme: Int = context.resources.getDimensionPixelSize(
-        KtR.dimen.taskbar_ime_size)
-    private val contentRegion: Region = Region()
+    val taskbarHeightForIme: Int = context.resources.getDimensionPixelSize(R.dimen.taskbar_ime_size)
+    private val touchableRegion: Region = Region()
     private val deviceProfileChangeListener = { _: DeviceProfile ->
         onTaskbarWindowHeightOrInsetsChanged()
     }
@@ -77,10 +76,11 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
     }
 
     fun onTaskbarWindowHeightOrInsetsChanged() {
-        var contentHeight = controllers.taskbarStashController.contentHeightToReportToApps
-        contentRegion.set(0, windowLayoutParams.height - contentHeight,
+        val touchableHeight = controllers.taskbarStashController.touchableHeight
+        touchableRegion.set(0, windowLayoutParams.height - touchableHeight,
             context.deviceProfile.widthPx, windowLayoutParams.height)
-        var tappableHeight = controllers.taskbarStashController.tappableHeightToReportToApps
+        val contentHeight = controllers.taskbarStashController.contentHeightToReportToApps
+        val tappableHeight = controllers.taskbarStashController.tappableHeightToReportToApps
         for (provider in windowLayoutParams.providedInsets) {
             if (provider.type == ITYPE_EXTRA_NAVIGATION_BAR) {
                 provider.insetsSize = Insets.of(0, 0, 0, contentHeight)
@@ -154,7 +154,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
                 if (context.isTaskbarWindowFullscreen) {
                     TOUCHABLE_INSETS_FRAME
                 } else {
-                    insetsInfo.touchableRegion.set(contentRegion)
+                    insetsInfo.touchableRegion.set(touchableRegion)
                     TOUCHABLE_INSETS_REGION
                 }
             )

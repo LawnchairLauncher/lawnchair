@@ -37,7 +37,8 @@ public final class FeatureFlags {
 
     public static final String FLAGS_PREF_NAME = "featureFlags";
 
-    private FeatureFlags() { }
+    private FeatureFlags() {
+    }
 
     public static boolean showFlagTogglerUi(Context context) {
         return Utilities.IS_DEBUG_DEVICE && Utilities.isDevelopersOptionsEnabled(context);
@@ -61,7 +62,7 @@ public final class FeatureFlags {
      * To add a new flag that can be toggled through the flags UI:
      *
      * Declare a new ToggleableFlag below. Give it a unique key (e.g. "QSB_ON_FIRST_SCREEN"),
-     *    and set a default value for the flag. This will be the default value on Debug builds.
+     * and set a default value for the flag. This will be the default value on Debug builds.
      */
     public static final BooleanFlag ENABLE_INPUT_CONSUMER_REASON_LOGGING = getDebugFlag(
             "ENABLE_INPUT_CONSUMER_REASON_LOGGING",
@@ -158,14 +159,14 @@ public final class FeatureFlags {
     /**
      * Enables region sampling for text color: Needs system health assessment before turning on
      */
-    public static final BooleanFlag ENABLE_REGION_SAMPLING =  getDebugFlag(
+    public static final BooleanFlag ENABLE_REGION_SAMPLING = getDebugFlag(
             "ENABLE_REGION_SAMPLING", false,
             "Enable region sampling to determine color of text on screen.");
 
     public static final BooleanFlag ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS =
             getDebugFlag(
-            "ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS", false,
-            "Always use hardware optimization for folder animations.");
+                    "ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS", false,
+                    "Always use hardware optimization for folder animations.");
 
     public static final BooleanFlag SEPARATE_RECENTS_ACTIVITY = getDebugFlag(
             "SEPARATE_RECENTS_ACTIVITY", false,
@@ -254,11 +255,6 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_ONE_SEARCH_MOTION = new DeviceFlag(
             "ENABLE_ONE_SEARCH_MOTION", true, "Enables animations in OneSearch.");
 
-    public static final BooleanFlag ENABLE_KEYBOARD_TRANSITION_SYNC = new DeviceFlag(
-            "ENABLE_KEYBOARD_TRANSITION_SYNC", IS_STUDIO_BUILD,
-            "Enable option to synchronize the keyboard open and close animations when transitioning"
-                    + " between home and all apps");
-
     public static final BooleanFlag ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS = new DeviceFlag(
             "ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS", true,
             "Enable option to show keyboard when going to all-apps");
@@ -305,6 +301,10 @@ public final class FeatureFlags {
 
     public static final BooleanFlag POPUP_MATERIAL_U = new DeviceFlag(
             "POPUP_MATERIAL_U", false, "Switch popup UX to use material U");
+
+    public static final BooleanFlag SHOW_HOME_GARDENING = new DeviceFlag(
+            "SHOW_HOME_GARDENING", false,
+            "Show the new home gardening mode");
 
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {

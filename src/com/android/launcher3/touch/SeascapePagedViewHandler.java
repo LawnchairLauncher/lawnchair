@@ -121,9 +121,9 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
         // the screen. This is to preserve consistency when the user rotates: From the user's POV,
         // the primary should always be on the left.
         if (desiredStagePosition == SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT) {
-            outRect.top += (int) (outRect.height() * (topLeftTaskPercent + dividerBarPercent));
+            outRect.top += (int) (outRect.height() * ((1 - topLeftTaskPercent)));
         } else {
-            outRect.bottom = outRect.top + (int) (outRect.height() * topLeftTaskPercent);
+            outRect.bottom -= (int) (outRect.height() * (topLeftTaskPercent + dividerBarPercent));
         }
     }
 
@@ -264,6 +264,49 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
 
         primaryIconView.setLayoutParams(primaryIconParams);
         secondaryIconView.setLayoutParams(secondaryIconParams);
+    }
+
+    @Override
+    public void measureGroupedTaskViewThumbnailBounds(View primarySnapshot, View secondarySnapshot,
+            int parentWidth, int parentHeight, SplitBounds splitBoundsConfig, DeviceProfile dp,
+            boolean isRtl) {
+        FrameLayout.LayoutParams primaryParams =
+                (FrameLayout.LayoutParams) primarySnapshot.getLayoutParams();
+        FrameLayout.LayoutParams secondaryParams =
+                (FrameLayout.LayoutParams) secondarySnapshot.getLayoutParams();
+
+        // Swap the margins that are set in TaskView#setRecentsOrientedState()
+        secondaryParams.topMargin = dp.overviewTaskThumbnailTopMarginPx;
+        primaryParams.topMargin = 0;
+
+        // Measure and layout the thumbnails bottom up, since the primary is on the visual left
+        // (portrait bottom) and secondary is on the right (portrait top)
+        int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
+        int totalThumbnailHeight = parentHeight - spaceAboveSnapshot;
+        int dividerBar = Math.round(totalThumbnailHeight * (splitBoundsConfig.appsStackedVertically
+                ? splitBoundsConfig.dividerHeightPercent
+                : splitBoundsConfig.dividerWidthPercent));
+        int primarySnapshotHeight;
+        int primarySnapshotWidth;
+        int secondarySnapshotHeight;
+        int secondarySnapshotWidth;
+
+        float taskPercent = splitBoundsConfig.appsStackedVertically ?
+                splitBoundsConfig.topTaskPercent : splitBoundsConfig.leftTaskPercent;
+        primarySnapshotWidth = parentWidth;
+        primarySnapshotHeight = (int) (totalThumbnailHeight * (taskPercent));
+
+        secondarySnapshotWidth = parentWidth;
+        secondarySnapshotHeight = totalThumbnailHeight - primarySnapshotHeight - dividerBar;
+        secondarySnapshot.setTranslationY(0);
+        primarySnapshot.setTranslationY(secondarySnapshotHeight + spaceAboveSnapshot + dividerBar);
+        primarySnapshot.measure(
+                View.MeasureSpec.makeMeasureSpec(primarySnapshotWidth, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(primarySnapshotHeight, View.MeasureSpec.EXACTLY));
+        secondarySnapshot.measure(
+                View.MeasureSpec.makeMeasureSpec(secondarySnapshotWidth, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(secondarySnapshotHeight,
+                        View.MeasureSpec.EXACTLY));
     }
 
     /* ---------- The following are only used by TaskViewTouchHandler. ---------- */
