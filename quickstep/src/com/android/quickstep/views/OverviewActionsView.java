@@ -31,6 +31,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
@@ -258,7 +259,9 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         // If in 3-button mode, shift action buttons to accommodate 3-button layout.
         // (Special exception for landscape tablets, where there is enough room and we don't need to
         // shift the action buttons.)
-        if (mDp.areNavButtonsInline && !largeScreenLandscape) {
+        if (mDp.areNavButtonsInline && !largeScreenLandscape
+                // If taskbar is in overview, overview action has dedicated space above nav buttons
+                && !FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get()) {
             // Add extra horizontal spacing
             int additionalPadding = mDp.hotseatBarEndOffset;
             if (isLayoutRtl()) {
@@ -288,7 +291,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             return 0;
         }
 
-        if (!mDp.isGestureMode && mDp.isTaskbarPresent) {
+        if (!mDp.isGestureMode && mDp.isTaskbarPresent
+                && !FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get()) {
             return mDp.getOverviewActionsClaimedSpaceBelow();
         }
 
