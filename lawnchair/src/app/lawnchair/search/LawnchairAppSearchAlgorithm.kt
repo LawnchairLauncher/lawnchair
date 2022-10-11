@@ -6,11 +6,8 @@ import android.graphics.drawable.Icon
 import android.os.Bundle
 import android.os.Handler
 import android.os.Process
-import android.util.Log
-import androidx.lifecycle.lifecycleScope
 import app.lawnchair.allapps.SearchResultView
 import app.lawnchair.launcher
-import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
@@ -27,12 +24,11 @@ import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.Executors
 import com.android.launcher3.util.PackageManagerHelper
 import com.patrykmichalik.opto.core.onEach
+import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio
-import java.util.*
-import java.util.stream.Collectors
 
 class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context) {
 
@@ -119,7 +115,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         val matcher = StringMatcherUtility.StringMatcher.getInstance()
         return apps.asSequence()
             .filter { StringMatcherUtility.matches(queryTextLower, it.title.toString(), matcher) }
-            .filter { showHiddenAppsInSearch || !hiddenApps.contains(it.toComponentKey().toString()) }
+            .filter { showHiddenAppsInSearch || it.toComponentKey().toString() !in hiddenApps }
             .take(maxResultsCount)
             .toList()
     }
@@ -127,7 +123,9 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     private fun fuzzySearch(apps: List<AppInfo>, query: String): List<AppInfo> {
 
         val filteredApps = apps.asSequence()
-            .filter { showHiddenAppsInSearch || !hiddenApps.contains(it.toComponentKey().toString()) }
+            .filter {
+                showHiddenAppsInSearch || it.toComponentKey().toString() !in hiddenApps
+            }
             .toList()
         val matches = FuzzySearch.extractSorted(
             query.lowercase(Locale.getDefault()), filteredApps,
