@@ -206,11 +206,11 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new TaskbarPopupController(this),
                 new TaskbarForceVisibleImmersiveController(this),
                 new TaskbarAllAppsController(this, dp),
+                new TaskbarInsetsController(this),
+                new VoiceInteractionWindowController(this),
                 isDesktopMode
                         ? new DesktopTaskbarRecentAppsController(this)
-                        : TaskbarRecentAppsController.DEFAULT,
-                new TaskbarInsetsController(this),
-                new VoiceInteractionWindowController(this));
+                        : TaskbarRecentAppsController.DEFAULT);
     }
 
     public void init(@NonNull TaskbarSharedState sharedState) {
