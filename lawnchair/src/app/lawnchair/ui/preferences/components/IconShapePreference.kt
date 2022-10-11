@@ -19,12 +19,26 @@ package app.lawnchair.ui.preferences.components
 import android.content.Context
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.material.RadioButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -36,13 +50,24 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
+import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
+import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.ui.preferences.LocalNavController
+import app.lawnchair.ui.preferences.customIconShapeCreatorGraph
 import app.lawnchair.ui.preferences.preferenceGraph
+import app.lawnchair.ui.preferences.subRoute
 import com.android.launcher3.R
 
+object IconShapeRoutes {
+    const val CUSTOM_ICON_SHAPE_CREATOR = "customIconShapeCreator"
+}
+
 fun NavGraphBuilder.iconShapeGraph(route: String) {
-    preferenceGraph(route, { IconShapePreference() })
+    preferenceGraph(route, { IconShapePreference() }) { subRoute ->
+        customIconShapeCreatorGraph(subRoute(IconShapeRoutes.CUSTOM_ICON_SHAPE_CREATOR))
+    }
 }
 
 /**
@@ -72,8 +97,10 @@ fun iconShapeEntries(context: Context): List<ListPreferenceEntry<IconShape>> {
 fun IconShapePreference(
 ) {
     val context = LocalContext.current
+    val preferenceManager2 = preferenceManager2()
     val entries = remember { iconShapeEntries(context) }
-    val adapter = preferenceManager2().iconShape.getAdapter()
+    val iconShapeAdapter = preferenceManager2.iconShape.getAdapter()
+    val customIconShape = preferenceManager2.customIconShape.asState()
 
     PreferenceLayout(label = stringResource(id = R.string.icon_shape_label)) {
         PreferenceGroup {
@@ -82,20 +109,101 @@ fun IconShapePreference(
                     enabled = item.enabled,
                     title = { Text(item.label()) },
                     modifier = Modifier.clickable(item.enabled) {
-                        adapter.onChange(newValue = item.value)
+                        iconShapeAdapter.onChange(newValue = item.value)
                     },
                     startWidget = {
                         RadioButton(
-                            selected = item.value == adapter.state.value,
+                            selected = item.value == iconShapeAdapter.state.value,
                             onClick = null,
                             enabled = item.enabled,
                         )
                     },
                     endWidget = {
                         IconShapePreview(iconShape = item.value)
-                    }
+                    },
                 )
             }
+            CustomIconShapePreference(
+                iconShapeAdapter = iconShapeAdapter,
+            )
+            ModifyCustomIconShapePreference(
+                customIconShape = customIconShape.value,
+            )
+        }
+    }
+
+}
+
+@Composable
+private fun CustomIconShapePreference(
+    modifier: Modifier = Modifier,
+    iconShapeAdapter: PreferenceAdapter<IconShape>,
+) {
+    val preferenceManager2 = preferenceManager2()
+
+    val customIconShapeAdapter = preferenceManager2.customIconShape.getAdapter()
+    val customIconShape = customIconShapeAdapter.state.value
+
+    customIconShape?.let {
+        PreferenceTemplate(
+            title = { Text(stringResource(id = R.string.custom)) },
+            modifier = modifier.clickable {
+                iconShapeAdapter.onChange(newValue = it)
+            },
+            startWidget = {
+                RadioButton(
+                    selected = IconShape.isCustomShape(iconShapeAdapter.state.value),
+                    onClick = null,
+                )
+            },
+            endWidget = {
+                IconShapePreview(iconShape = it)
+            }
+        )
+    }
+}
+
+@Composable
+private fun ModifyCustomIconShapePreference(
+    modifier: Modifier = Modifier,
+    customIconShape: IconShape?,
+) {
+    val navController = LocalNavController.current
+    val route = subRoute(IconShapeRoutes.CUSTOM_ICON_SHAPE_CREATOR)
+
+    val created = customIconShape != null
+
+    val text = if (created) stringResource(id = R.string.custom_icon_shape_edit)
+    else stringResource(id = R.string.custom_icon_shape_create)
+
+    val icon = if (created) Icons.Rounded.Edit else Icons.Rounded.Add
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable {
+                navController.navigate(route = route)
+            },
+        contentAlignment = Alignment.Center,
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            CompositionLocalProvider(
+                LocalContentColor provides MaterialTheme.colorScheme.secondary,
+                LocalTextStyle provides MaterialTheme.typography.bodyMedium,
+            ) {
+                Text(
+                    text = text,
+                )
+            }
+            Spacer(modifier = Modifier.requiredWidth(12.dp))
+            Icon(
+                imageVector = icon,
+                tint = MaterialTheme.colorScheme.secondary,
+                contentDescription = null,
+            )
         }
     }
 

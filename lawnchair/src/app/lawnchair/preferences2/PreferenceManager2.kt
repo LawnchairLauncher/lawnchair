@@ -34,11 +34,11 @@ import app.lawnchair.theme.color.ColorOption
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
 import com.android.launcher3.util.DynamicResource
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.opto.core.PreferenceManager
 import com.patrykmichalik.opto.core.firstBlocking
+import com.patrykmichalik.opto.core.setBlocking
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
@@ -85,6 +85,14 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         defaultValue = IconShape.fromString(context.getString(R.string.config_default_icon_shape)) ?: IconShape.Circle,
         parse = { IconShape.fromString(it) ?: IconShapeManager.getSystemIconShape(context) },
         save = { it.toString() },
+    )
+
+    val customIconShape = preference(
+        key = stringPreferencesKey(name = "custom_icon_shape"),
+        defaultValue = null,
+        parse = { IconShape.fromString(it) ?: IconShapeManager.getSystemIconShape(context) },
+        save = { it.toString() },
+        onSet = { it?.let { iconShape.setBlocking(value = it) } },
     )
 
     val alwaysReloadIcons = preference(
