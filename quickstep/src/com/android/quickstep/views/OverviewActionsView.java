@@ -81,6 +81,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     private static final int INDEX_FULLSCREEN_ALPHA = 2;
     private static final int INDEX_HIDDEN_FLAGS_ALPHA = 3;
     private static final int INDEX_SHARE_TARGET_ALPHA = 4;
+    private static final int INDEX_SCROLL_ALPHA = 5;
+    private static final int NUM_ALPHAS = 6;
 
     public @interface SplitButtonHiddenFlags { }
     public static final int FLAG_IS_NOT_TABLET = 1 << 0;
@@ -125,7 +127,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mMultiValueAlpha = new MultiValueAlpha(findViewById(R.id.action_buttons), 5);
+        mMultiValueAlpha = new MultiValueAlpha(findViewById(R.id.action_buttons), NUM_ALPHAS);
         mMultiValueAlpha.setUpdateVisibility(true);
 
         findViewById(R.id.action_screenshot).setOnClickListener(this);
@@ -245,6 +247,10 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     public AlphaProperty getShareTargetAlpha() {
         return mMultiValueAlpha.getProperty(INDEX_SHARE_TARGET_ALPHA);
+    }
+
+    public AlphaProperty getIndexScrollAlpha() {
+        return mMultiValueAlpha.getProperty(INDEX_SCROLL_ALPHA);
     }
 
     /**
