@@ -30,6 +30,7 @@ import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
+import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MAIN;
 
 import android.content.res.Resources;
@@ -265,20 +266,32 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public float getTaskMenuX(float x, View thumbnailView, int overScroll,
-            DeviceProfile deviceProfile) {
-        return thumbnailView.getMeasuredWidth() + x;
+    public float getTaskMenuX(float x, View thumbnailView,
+            DeviceProfile deviceProfile, float taskInsetMargin) {
+        return thumbnailView.getMeasuredWidth() + x - taskInsetMargin;
     }
 
     @Override
-    public float getTaskMenuY(float y, View thumbnailView, int overScroll) {
-        return y + overScroll +
-                (thumbnailView.getMeasuredHeight() - thumbnailView.getMeasuredWidth()) / 2f;
+    public float getTaskMenuY(float y, View thumbnailView, int stagePosition,
+            View taskMenuView, float taskInsetMargin) {
+        BaseDragLayer.LayoutParams lp = (BaseDragLayer.LayoutParams) taskMenuView.getLayoutParams();
+        int taskMenuWidth = lp.width;
+        if (stagePosition == STAGE_POSITION_UNDEFINED) {
+            return y + taskInsetMargin
+                    + (thumbnailView.getMeasuredHeight() - taskMenuWidth) / 2f;
+        } else {
+            return y + taskInsetMargin;
+        }
     }
 
     @Override
-    public int getTaskMenuWidth(View view, DeviceProfile deviceProfile) {
-        return view.getMeasuredWidth();
+    public int getTaskMenuWidth(View thumbnailView, DeviceProfile deviceProfile,
+            @StagePosition int stagePosition) {
+        if (stagePosition == SplitConfigurationOptions.STAGE_POSITION_UNDEFINED) {
+            return thumbnailView.getMeasuredWidth();
+        } else {
+            return thumbnailView.getMeasuredHeight();
+        }
     }
 
     @Override
@@ -297,17 +310,6 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         viewGroup.setOrientation(LinearLayout.HORIZONTAL);
         lp.width = MATCH_PARENT;
         lp.height = WRAP_CONTENT;
-    }
-
-    @Override
-    public void setTaskMenuAroundTaskView(LinearLayout taskView, float margin) {
-        BaseDragLayer.LayoutParams lp = (BaseDragLayer.LayoutParams) taskView.getLayoutParams();
-        lp.topMargin += margin;
-    }
-
-    @Override
-    public PointF getAdditionalInsetForTaskMenu(float margin) {
-        return new PointF(margin, 0);
     }
 
     @Override
@@ -374,19 +376,6 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     @Override
     public int getTaskDragDisplacementFactor(boolean isRtl) {
         return isRtl ? 1 : -1;
-    }
-
-    @Override
-    public void setSecondaryTaskMenuPosition(SplitBounds splitBounds, View taskView,
-            DeviceProfile deviceProfile, View primarySnaphotView, View taskMenuView) {
-        float topLeftTaskPlusDividerPercent = splitBounds.appsStackedVertically
-                ? (splitBounds.topTaskPercent + splitBounds.dividerHeightPercent)
-                : (splitBounds.leftTaskPercent + splitBounds.dividerWidthPercent);
-        FrameLayout.LayoutParams snapshotParams =
-                (FrameLayout.LayoutParams) primarySnaphotView.getLayoutParams();
-        float additionalOffset = (taskView.getHeight() - snapshotParams.topMargin)
-                * topLeftTaskPlusDividerPercent;
-        taskMenuView.setY(taskMenuView.getY() + additionalOffset);
     }
 
     /* -------------------- */
