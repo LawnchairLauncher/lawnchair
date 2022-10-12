@@ -121,7 +121,7 @@ public class SplitInstructionsView extends FrameLayout {
             int navButtonWidth = getResources().getDimensionPixelSize(
                     R.dimen.taskbar_nav_buttons_size);
             int extraMargin = getResources().getDimensionPixelSize(
-                    R.dimen.taskbar_contextual_button_margin);
+                    R.dimen.taskbar_split_instructions_margin);
             // Explanation: The 3-button nav for non-phones sits on one side of the screen, taking
             // up 3 buttons + a side margin worth of space. Our splitInstructionsView starts in the
             // center of the screen and we want to center it in the remaining space, therefore we
