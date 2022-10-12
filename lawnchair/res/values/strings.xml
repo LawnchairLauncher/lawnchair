@@ -57,6 +57,8 @@
     <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
     <string name="always_reload_icons_label">Always Reload Icons</string>
     <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
+    <string name="transparent_background_icons">Transparent Background</string>
+    <string name="transparent_background_icons_description">Icon color might updated to match with background in Light Theme</string>
 
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Home Screen Rotation</string>
