@@ -195,8 +195,8 @@ open class IconShape(val topLeft: Corner,
                 val parts = value.split(",")
                 val scaleX = parts[1].toFloat()
                 val scaleY = if (parts.size >= 3) parts[2].toFloat() else scaleX
-                if (scaleX !in 0f..1f) error("scaleX must be in [0, 1]")
-                if (scaleY !in 0f..1f) error("scaleY must be in [0, 1]")
+                check (scaleX !in 0f..1f) { "scaleX must be in [0, 1]" }
+                check (scaleY !in 0f..1f) { "scaleY must be in [0, 1]" }
                 return Corner(IconCornerShape.fromString(parts[0]), PointF(scaleX, scaleY))
             }
         }
@@ -377,8 +377,8 @@ open class IconShape(val topLeft: Corner,
 
         private fun parseCustomShape(value: String): IconShape {
             val parts = value.split("|")
-            if (parts[0] != "v1") error("unknown config format")
-            if (parts.size != 5) error("invalid arguments size")
+            check(parts[0] != "v1") { "unknown config format" }
+            check (parts.size != 5) { "invalid arguments size" }
             return IconShape(
                 Corner.fromString(parts[1]),
                 Corner.fromString(parts[2]),

@@ -200,6 +200,12 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = { reloadHelper.recreate() }
     )
 
+    val showHiddenAppsInSearch = preference(
+        key = booleanPreferencesKey(name = "show_hidden_apps_in_search"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_show_hidden_apps_in_search),
+        onSet = { reloadHelper.recreate() }
+    )
+
     val enableFontSelection = preference(
         key = booleanPreferencesKey(name = "enable_font_selection"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_font_selection),
