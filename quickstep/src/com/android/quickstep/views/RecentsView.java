@@ -54,6 +54,7 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITIO
 import static com.android.launcher3.util.SystemUiController.UI_STATE_FULLSCREEN_TASK;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 import static com.android.quickstep.views.ClearAllButton.DISMISS_ALPHA;
+import static com.android.quickstep.views.DesktopTaskView.DESKTOP_MODE_SUPPORTED;
 import static com.android.quickstep.views.OverviewActionsView.FLAG_IS_NOT_TABLET;
 import static com.android.quickstep.views.OverviewActionsView.FLAG_SINGLE_TASK;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NON_ZERO_ROTATION;
@@ -72,6 +73,7 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.WindowConfiguration;
 import android.content.Context;
 import android.content.LocusId;
 import android.content.res.Configuration;
@@ -171,6 +173,7 @@ import com.android.quickstep.ViewUtils;
 import com.android.quickstep.util.ActiveGestureErrorDetector;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AnimUtils;
+import com.android.quickstep.util.DesktopTask;
 import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RecentsOrientedState;
@@ -195,6 +198,7 @@ import com.android.systemui.shared.system.TaskStackChangeListeners;
 import com.android.wm.shell.pip.IPipAnimationListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -477,10 +481,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private final InvariantDeviceProfile mIdp;
 
     /**
-     * Getting views should be done via {@link #getTaskViewFromPool(boolean)}
+     * Getting views should be done via {@link #getTaskViewFromPool(int)}
      */
     private final ViewPool<TaskView> mTaskViewPool;
     private final ViewPool<GroupedTaskView> mGroupedTaskViewPool;
+    private final ViewPool<DesktopTaskView> mDesktopTaskViewPool;
 
     private final TaskOverlayFactory mTaskOverlayFactory;
 
@@ -737,6 +742,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 10 /* initial size */);
         mGroupedTaskViewPool = new ViewPool<>(context, this,
                 R.layout.task_grouped, 20 /* max size */, 10 /* initial size */);
+        mDesktopTaskViewPool = new ViewPool<>(context, this, R.layout.task_desktop,
+                5 /* max size */, 1 /* initial size */);
 
         mIsRtl = mOrientationHandler.getRecentsRtlSetting(getResources());
         setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
@@ -981,6 +988,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             }
             if (child instanceof GroupedTaskView) {
                 mGroupedTaskViewPool.recycle((GroupedTaskView) taskView);
+            } else if (child instanceof DesktopTaskView) {
+                mDesktopTaskViewPool.recycle((DesktopTaskView) taskView);
             } else {
                 mTaskViewPool.recycle(taskView);
             }
@@ -1199,8 +1208,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         for (int i = 0; i < getTaskViewCount(); i++) {
             TaskView taskView = requireTaskViewAt(i);
-            int[] taskIds = taskView.getTaskIds();
-            if (taskIds[0] == taskId || taskIds[1] == taskId) {
+            if (taskView.containsTaskId(taskId)) {
                 return taskView;
             }
         }
@@ -1481,21 +1489,24 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // Add views as children based on whether it's grouped or single task
         for (int i = taskGroups.size() - 1; i >= 0; i--) {
             GroupTask groupTask = taskGroups.get(i);
-            boolean hasMultipleTasks = groupTask.hasMultipleTasks();
-            TaskView taskView = getTaskViewFromPool(hasMultipleTasks);
+            TaskView taskView = getTaskViewFromPool(groupTask.taskViewType);
             addView(taskView);
 
-            if (hasMultipleTasks) {
+            if (taskView instanceof GroupedTaskView) {
                 boolean firstTaskIsLeftTopTask =
                         groupTask.mSplitBounds.leftTopTaskId == groupTask.task1.key.id;
                 Task leftTopTask = firstTaskIsLeftTopTask ? groupTask.task1 : groupTask.task2;
                 Task rightBottomTask = firstTaskIsLeftTopTask ? groupTask.task2 : groupTask.task1;
                 ((GroupedTaskView) taskView).bind(leftTopTask, rightBottomTask, mOrientationState,
                         groupTask.mSplitBounds);
+            } else if (taskView instanceof DesktopTaskView) {
+                ((DesktopTaskView) taskView).bind(((DesktopTask) groupTask).tasks,
+                        mOrientationState);
             } else {
                 taskView.bind(groupTask.task1, mOrientationState);
             }
         }
+
         if (!taskGroups.isEmpty()) {
             addView(mClearAllButton);
         }
@@ -2123,10 +2134,19 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Handle the edge case where Recents could increment task count very high over long
      * period of device usage. Probably will never happen, but meh.
      */
-    private <T extends TaskView> T getTaskViewFromPool(boolean isGrouped) {
-        T taskView = isGrouped ?
-                (T) mGroupedTaskViewPool.getView() :
-                (T) mTaskViewPool.getView();
+    private TaskView getTaskViewFromPool(@TaskView.Type int type) {
+        TaskView taskView;
+        switch (type) {
+            case TaskView.Type.GROUPED:
+                taskView = mGroupedTaskViewPool.getView();
+                break;
+            case TaskView.Type.DESKTOP:
+                taskView = mDesktopTaskViewPool.getView();
+                break;
+            case TaskView.Type.SINGLE:
+            default:
+                taskView = mTaskViewPool.getView();
+        }
         taskView.setTaskViewId(mTaskViewIdCount);
         if (mTaskViewIdCount == Integer.MAX_VALUE) {
             mTaskViewIdCount = 0;
@@ -2318,12 +2338,19 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
         int runningTaskViewId = -1;
         boolean needGroupTaskView = runningTasks.length > 1;
+        boolean needDesktopTask = hasDesktopTask(runningTasks);
         if (shouldAddStubTaskView(runningTasks)) {
             boolean wasEmpty = getChildCount() == 0;
             // Add an empty view for now until the task plan is loaded and applied
             final TaskView taskView;
-            if (needGroupTaskView) {
-                taskView = getTaskViewFromPool(true);
+            if (needDesktopTask) {
+                taskView = getTaskViewFromPool(TaskView.Type.DESKTOP);
+                mTmpRunningTasks = Arrays.copyOf(runningTasks, runningTasks.length);
+                addView(taskView, 0);
+                ((DesktopTaskView) taskView).bind(Arrays.asList(mTmpRunningTasks),
+                        mOrientationState);
+            } else if (needGroupTaskView) {
+                taskView = getTaskViewFromPool(TaskView.Type.GROUPED);
                 mTmpRunningTasks = new Task[]{runningTasks[0], runningTasks[1]};
                 addView(taskView, 0);
                 // When we create a placeholder task view mSplitBoundsConfig will be null, but with
@@ -2332,7 +2359,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 ((GroupedTaskView)taskView).bind(mTmpRunningTasks[0], mTmpRunningTasks[1],
                         mOrientationState, mSplitBoundsConfig);
             } else {
-                taskView = getTaskViewFromPool(false);
+                taskView = getTaskViewFromPool(TaskView.Type.SINGLE);
                 addView(taskView, 0);
                 // The temporary running task is only used for the duration between the start of the
                 // gesture and the task list is loaded and applied
@@ -2365,6 +2392,18 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         // Reload the task list
         reloadIfNeeded();
+    }
+
+    private boolean hasDesktopTask(Task[] runningTasks) {
+        if (!DESKTOP_MODE_SUPPORTED) {
+            return false;
+        }
+        for (Task task : runningTasks) {
+            if (task.key.windowingMode == WindowConfiguration.WINDOWING_MODE_FREEFORM) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
