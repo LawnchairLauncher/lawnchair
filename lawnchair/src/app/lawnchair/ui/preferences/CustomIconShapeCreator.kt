@@ -58,8 +58,7 @@ fun NavGraphBuilder.customIconShapeCreatorGraph(route: String) {
 }
 
 @Composable
-private fun CustomIconShapeCreator(
-) {
+private fun CustomIconShapeCreator() {
 
     val preferenceManager2 = preferenceManager2()
 
@@ -317,9 +316,8 @@ private fun CornerSlider(
 }
 
 @Composable
-private fun IconCornerShape.getLabel() =
-    when (this) {
-        IconCornerShape.squircle -> stringResource(id = R.string.icon_shape_corner_squircle)
-        IconCornerShape.cut -> stringResource(id = R.string.icon_shape_corner_cut)
-        else -> stringResource(id = R.string.icon_shape_corner_round)
-    }
+private fun IconCornerShape.getLabel() = when (this) {
+    IconCornerShape.squircle -> stringResource(id = R.string.icon_shape_corner_squircle)
+    IconCornerShape.cut -> stringResource(id = R.string.icon_shape_corner_cut)
+    else -> stringResource(id = R.string.icon_shape_corner_round)
+}

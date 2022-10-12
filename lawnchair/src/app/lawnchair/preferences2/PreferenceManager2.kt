@@ -92,7 +92,7 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         defaultValue = null,
         parse = { IconShape.fromString(it) ?: IconShapeManager.getSystemIconShape(context) },
         save = { it.toString() },
-        onSet = { it?.let { iconShape.setBlocking(value = it) } },
+        onSet = { it?.let(iconShape::setBlocking) },
     )
 
     val alwaysReloadIcons = preference(
