@@ -115,7 +115,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         val matcher = StringMatcherUtility.StringMatcher.getInstance()
         return apps.asSequence()
             .filter { StringMatcherUtility.matches(queryTextLower, it.title.toString(), matcher) }
-            .showHiddenApps()
+            .filterHiddenApps()
             .take(maxResultsCount)
             .toList()
     }
@@ -123,7 +123,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     private fun fuzzySearch(apps: List<AppInfo>, query: String): List<AppInfo> {
 
         val filteredApps = apps.asSequence()
-            .showHiddenApps()
+            .filterHiddenApps()
             .toList()
         val matches = FuzzySearch.extractSorted(
             query.lowercase(Locale.getDefault()), filteredApps,
@@ -162,7 +162,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         return createSearchTarget(id, action, extras)
     }
 
-    private fun Sequence<AppInfo>.showHiddenApps(): Sequence<AppInfo> =
+    private fun Sequence<AppInfo>.filterHiddenApps(): Sequence<AppInfo> =
         filter { showHiddenAppsInSearch || it.toComponentKey().toString() !in hiddenApps }
 
     companion object {
