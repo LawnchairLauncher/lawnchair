@@ -370,7 +370,7 @@ public class TaskThumbnailView extends View {
      * <p>We want to show the splash if the aspect ratio or rotation of the thumbnail would be
      * different from the task.
      */
-    boolean shouldShowSplashView() {
+    public boolean shouldShowSplashView() {
         return isThumbnailAspectRatioDifferentFromThumbnailData()
                 || isThumbnailRotationDifferentFromTask();
     }

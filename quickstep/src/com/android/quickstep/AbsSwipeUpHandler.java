@@ -75,6 +75,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnApplyWindowInsetsListener;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnDrawListener;
 import android.view.ViewTreeObserver.OnScrollChangedListener;
 import android.view.WindowInsets;
@@ -127,12 +128,17 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
+import com.android.wm.shell.common.TransactionPool;
+import com.android.wm.shell.startingsurface.SplashScreenExitAnimationUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -248,6 +254,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     private static final float MAX_QUICK_SWITCH_RECENTS_SCALE_PROGRESS = 0.07f;
 
+    // Controls task thumbnail splash's reveal animation after landing on a task from quickswitch.
+    // These values match WindowManager/Shell starting_window_app_reveal_* config values.
+    private static final int SPLASH_FADE_OUT_DURATION = 133;
+    private static final int SPLASH_APP_REVEAL_DELAY = 83;
+    private static final int SPLASH_APP_REVEAL_DURATION = 266;
+    private static final int SPLASH_ANIMATION_DURATION = 349;
+
     /**
      * Used as the page index for logging when we return to the last task at the end of the gesture.
      */
@@ -285,6 +298,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private final long mTouchTimeMs;
     private long mLauncherFrameDrawnTime;
 
+    private final int mSplashMainWindowShiftLength;
+
     private final Runnable mOnDeferredActivityLaunch = this::onDeferredActivityLaunch;
 
     private SwipePipToHomeAnimator mSwipePipToHomeAnimator;
@@ -319,6 +334,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mContinuingLastGesture = continuingLastGesture;
         mQuickSwitchScaleScrollThreshold = context.getResources().getDimension(
                 R.dimen.quick_switch_scaling_scroll_threshold);
+
+        mSplashMainWindowShiftLength = -context.getResources().getDimensionPixelSize(
+                R.dimen.starting_surface_exit_animation_window_shift_length);
 
         initAfterSubclassConstructor();
         initStateCallbacks();
@@ -2069,14 +2087,57 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     public void onTasksAppeared(RemoteAnimationTargetCompat[] appearedTaskTargets) {
         if (mRecentsAnimationController != null) {
             if (handleTaskAppeared(appearedTaskTargets)) {
-                mRecentsAnimationController.finish(false /* toRecents */,
-                        null /* onFinishComplete */);
-                ActiveGestureLog.INSTANCE.addLog(
-                        /* event= */ "finishRecentsAnimation",
-                        /* extras= */ false,
-                        /* gestureEvent= */ FINISH_RECENTS_ANIMATION);
+                Optional<RemoteAnimationTargetCompat> taskTargetOptional =
+                        Arrays.stream(appearedTaskTargets)
+                                .filter(targetCompat ->
+                                        targetCompat.taskId == mGestureState.getLastStartedTaskId())
+                                .findFirst();
+                if (!taskTargetOptional.isPresent()) {
+                    finishRecentsAnimationOnTasksAppeared();
+                    return;
+                }
+                RemoteAnimationTargetCompat taskTarget = taskTargetOptional.get();
+                TaskView taskView = mRecentsView.getTaskViewByTaskId(taskTarget.taskId);
+                if (taskView == null || !taskView.getThumbnail().shouldShowSplashView()) {
+                    finishRecentsAnimationOnTasksAppeared();
+                    return;
+                }
+
+                ViewGroup splashView = mActivity.getDragLayer();
+
+                // When revealing the app with launcher splash screen, make the app visible
+                // and behind the splash view before the splash is animated away.
+                SyncRtSurfaceTransactionApplierCompat surfaceApplier =
+                        new SyncRtSurfaceTransactionApplierCompat(splashView);
+                ArrayList<SurfaceParams> params = new ArrayList<>();
+                for (RemoteAnimationTargetCompat target : appearedTaskTargets) {
+                    SurfaceParams.Builder builder = new SurfaceParams.Builder(target.leash);
+                    builder.withAlpha(1);
+                    builder.withLayer(-1);
+                    params.add(builder.build());
+                }
+                surfaceApplier.scheduleApply(params.toArray(new SurfaceParams[0]));
+
+                SplashScreenExitAnimationUtils.startAnimations(splashView, taskTarget.leash,
+                        mSplashMainWindowShiftLength, new TransactionPool(), new Rect(),
+                        SPLASH_ANIMATION_DURATION, SPLASH_FADE_OUT_DURATION,
+                        /* iconStartAlpha= */ 0, /* brandingStartAlpha= */ 0,
+                        SPLASH_APP_REVEAL_DELAY, SPLASH_APP_REVEAL_DURATION,
+                        new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                finishRecentsAnimationOnTasksAppeared();
+                            }
+                        });
             }
         }
+    }
+
+    private void finishRecentsAnimationOnTasksAppeared() {
+        if (mRecentsAnimationController != null) {
+            mRecentsAnimationController.finish(false /* toRecents */, null /* onFinishComplete */);
+        }
+        ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", false);
     }
 
     /**

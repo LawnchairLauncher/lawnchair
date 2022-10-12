@@ -18,7 +18,6 @@ package com.android.quickstep.views;
 
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.widget.Toast.LENGTH_SHORT;
-import static android.window.SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR;
 
 import static com.android.launcher3.Utilities.comp;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
@@ -669,9 +668,7 @@ public class TaskView extends FrameLayout implements Reusable {
             if (freezeTaskList) {
                 opts.setFreezeRecentTasksReordering();
             }
-            // TODO(b/202826469): Replace setSplashScreenStyle with setDisableStartingWindow.
-            opts.setSplashScreenStyle(mSnapshotView.shouldShowSplashView()
-                    ? SPLASH_SCREEN_STYLE_SOLID_COLOR : opts.getSplashScreenStyle());
+            opts.setDisableStartingWindow(mSnapshotView.shouldShowSplashView());
             Task.TaskKey key = mTask.key;
             UI_HELPER_EXECUTOR.execute(() -> {
                 if (!ActivityManagerWrapper.getInstance().startActivityFromRecents(key, opts)) {
