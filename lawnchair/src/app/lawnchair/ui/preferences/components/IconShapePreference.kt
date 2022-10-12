@@ -55,7 +55,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalNavController
-import app.lawnchair.ui.preferences.customIconShapeCreatorGraph
+import app.lawnchair.ui.preferences.customIconShapePreferenceGraph
 import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.ui.preferences.subRoute
 import com.android.launcher3.R
@@ -66,7 +66,7 @@ object IconShapeRoutes {
 
 fun NavGraphBuilder.iconShapeGraph(route: String) {
     preferenceGraph(route, { IconShapePreference() }) { subRoute ->
-        customIconShapeCreatorGraph(subRoute(IconShapeRoutes.CUSTOM_ICON_SHAPE_CREATOR))
+        customIconShapePreferenceGraph(subRoute(IconShapeRoutes.CUSTOM_ICON_SHAPE_CREATOR))
     }
 }
 
@@ -103,7 +103,9 @@ fun IconShapePreference(
     val customIconShape = preferenceManager2.customIconShape.asState()
 
     PreferenceLayout(label = stringResource(id = R.string.icon_shape_label)) {
-        PreferenceGroup {
+        PreferenceGroup(
+            heading = stringResource(id = R.string.presets),
+        ) {
             entries.forEach { item ->
                 PreferenceTemplate(
                     enabled = item.enabled,
@@ -123,6 +125,10 @@ fun IconShapePreference(
                     },
                 )
             }
+        }
+        PreferenceGroup(
+            heading = stringResource(id = R.string.custom),
+        ) {
             CustomIconShapePreference(
                 iconShapeAdapter = iconShapeAdapter,
             )
@@ -131,7 +137,6 @@ fun IconShapePreference(
             )
         }
     }
-
 }
 
 @Composable

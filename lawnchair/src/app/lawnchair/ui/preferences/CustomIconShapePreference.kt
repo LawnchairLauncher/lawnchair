@@ -1,10 +1,8 @@
 package app.lawnchair.ui.preferences
 
-import android.graphics.PointF
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -53,12 +51,12 @@ import app.lawnchair.ui.util.LocalBottomSheetHandler
 import com.android.launcher3.R
 import kotlin.math.roundToInt
 
-fun NavGraphBuilder.customIconShapeCreatorGraph(route: String) {
-    preferenceGraph(route, { CustomIconShapeCreator() })
+fun NavGraphBuilder.customIconShapePreferenceGraph(route: String) {
+    preferenceGraph(route, { CustomIconShapePreference() })
 }
 
 @Composable
-private fun CustomIconShapeCreator() {
+private fun CustomIconShapePreference() {
 
     val preferenceManager2 = preferenceManager2()
 
