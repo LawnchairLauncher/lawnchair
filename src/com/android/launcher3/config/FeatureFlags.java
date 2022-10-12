@@ -306,6 +306,9 @@ public final class FeatureFlags {
             "SHOW_HOME_GARDENING", false,
             "Show the new home gardening mode");
 
+    public static final BooleanFlag ENABLE_TRANSIENT_TASKBAR = getDebugFlag(
+            "ENABLE_TRANSIENT_TASKBAR", false, "Enables transient taskbar.");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
