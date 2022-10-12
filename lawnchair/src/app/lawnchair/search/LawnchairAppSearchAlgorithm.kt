@@ -162,8 +162,13 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         return createSearchTarget(id, action, extras)
     }
 
-    private fun Sequence<AppInfo>.filterHiddenApps(): Sequence<AppInfo> =
-        filter { showHiddenAppsInSearch || it.toComponentKey().toString() !in hiddenApps }
+    private fun Sequence<AppInfo>.filterHiddenApps(): Sequence<AppInfo> {
+        return if (showHiddenAppsInSearch) {
+            this
+        } else {
+            filter { it.toComponentKey().toString() !in hiddenApps }
+        }
+    }
 
     companion object {
         private const val maxResultsCount = 5
