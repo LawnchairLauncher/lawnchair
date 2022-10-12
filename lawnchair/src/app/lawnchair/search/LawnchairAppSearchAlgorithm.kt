@@ -24,23 +24,32 @@ import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.Executors
 import com.android.launcher3.util.PackageManagerHelper
 import com.patrykmichalik.opto.core.onEach
+import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio
-import java.util.*
 
 class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context) {
 
     private val appState = LauncherAppState.getInstance(context)
     private val resultHandler = Handler(Executors.MAIN_EXECUTOR.looper)
     private var enableFuzzySearch = false
+    private lateinit var hiddenApps: Set<String>
+    private var showHiddenAppsInSearch = false
     private val marketSearchComponent = resolveMarketSearchActivity()
     private val coroutineScope = CoroutineScope(context = Dispatchers.IO)
+    private val pref2 = PreferenceManager2.getInstance(context)
 
     init {
-        PreferenceManager2.getInstance(context).enableFuzzySearch.onEach(launchIn = coroutineScope) {
+        pref2.enableFuzzySearch.onEach(launchIn = coroutineScope) {
             enableFuzzySearch = it
+        }
+        pref2.hiddenApps.onEach(launchIn = coroutineScope) {
+            hiddenApps = it
+        }
+        pref2.showHiddenAppsInSearch.onEach(launchIn = coroutineScope) {
+            showHiddenAppsInSearch = it
         }
     }
 
@@ -104,16 +113,20 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         // apps that don't match all of the words in the query.
         val queryTextLower = query.lowercase(Locale.getDefault())
         val matcher = StringMatcherUtility.StringMatcher.getInstance()
-
         return apps.asSequence()
             .filter { StringMatcherUtility.matches(queryTextLower, it.title.toString(), matcher) }
+            .filterHiddenApps()
             .take(maxResultsCount)
             .toList()
     }
 
     private fun fuzzySearch(apps: List<AppInfo>, query: String): List<AppInfo> {
+
+        val filteredApps = apps.asSequence()
+            .filterHiddenApps()
+            .toList()
         val matches = FuzzySearch.extractSorted(
-            query.lowercase(Locale.getDefault()), apps,
+            query.lowercase(Locale.getDefault()), filteredApps,
             { it.title.toString() }, WeightedRatio(), 65
         )
 
@@ -147,6 +160,14 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
             putBoolean(SearchResultView.EXTRA_HIDE_SUBTITLE, true)
         }
         return createSearchTarget(id, action, extras)
+    }
+
+    private fun Sequence<AppInfo>.filterHiddenApps(): Sequence<AppInfo> {
+        return if (showHiddenAppsInSearch) {
+            this
+        } else {
+            filter { it.toComponentKey().toString() !in hiddenApps }
+        }
     }
 
     companion object {
