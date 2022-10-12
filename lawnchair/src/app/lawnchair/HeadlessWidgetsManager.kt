@@ -31,7 +31,7 @@ class HeadlessWidgetsManager(private val context: Context) {
 
     fun getWidget(info: AppWidgetProviderInfo, prefKey: String): Widget {
         val widget = widgetsMap.getOrPut(prefKey) { Widget(info, prefKey) }
-        check (info.provider != widget.info.provider) {
+        check (info.provider == widget.info.provider) {
             "widget $prefKey was created with a different provider"
         }
         return widget
