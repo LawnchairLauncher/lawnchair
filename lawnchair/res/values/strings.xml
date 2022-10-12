@@ -283,6 +283,7 @@
 
     <string name="pref_category_search">Search</string>
       <string name="show_app_search_bar">Show Search Bar</string>
+      <string name="show_hidden_apps_search">Show Hidden Apps In Search</string>
       <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
       <string name="fuzzy_search_title">Fuzzy Search</string>
       <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
