@@ -86,7 +86,6 @@ import com.android.launcher3.util.ViewPool.Reusable;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
-import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskIconCache;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
@@ -134,6 +133,17 @@ public class TaskView extends FrameLayout implements Reusable {
     @Retention(SOURCE)
     @IntDef({FLAG_UPDATE_ALL, FLAG_UPDATE_ICON, FLAG_UPDATE_THUMBNAIL})
     public @interface TaskDataChanges {}
+
+    /**
+     * Type of task view
+     */
+    @Retention(SOURCE)
+    @IntDef({Type.SINGLE, Type.GROUPED, Type.DESKTOP})
+    public @interface Type {
+        int SINGLE = 1;
+        int GROUPED = 2;
+        int DESKTOP = 3;
+    }
 
     /** The maximum amount that a task view can be scrimmed, dimmed or tinted. */
     public static final float MAX_PAGE_SCRIM_ALPHA = 0.4f;
@@ -331,7 +341,7 @@ public class TaskView extends FrameLayout implements Reusable {
     protected TaskThumbnailView mSnapshotView;
     protected IconView mIconView;
     protected final DigitalWellBeingToast mDigitalWellBeingToast;
-    private float mFullscreenProgress;
+    protected float mFullscreenProgress;
     private float mGridProgress;
     protected float mTaskThumbnailSplashAlpha;
     private float mNonGridScale = 1;
@@ -373,8 +383,8 @@ public class TaskView extends FrameLayout implements Reusable {
     /**
      * Index 0 will contain taskID of left/top task, index 1 will contain taskId of bottom/right
      */
-    protected final int[] mTaskIdContainer = new int[]{-1, -1};
-    protected final TaskIdAttributeContainer[] mTaskIdAttributeContainer =
+    protected int[] mTaskIdContainer = new int[]{-1, -1};
+    protected TaskIdAttributeContainer[] mTaskIdAttributeContainer =
             new TaskIdAttributeContainer[2];
 
     private boolean mShowScreenshot;
@@ -525,6 +535,13 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     /**
+     * Check if given {@code taskId} is tracked in this view
+     */
+    public boolean containsTaskId(int taskId) {
+        return mTask != null && mTask.key.id == taskId;
+    }
+
+    /**
      * @return integer array of two elements to be size consistent with max number of tasks possible
      *         index 0 will contain the taskId, index 1 will be -1 indicating a null taskID value
      */
@@ -564,13 +581,13 @@ public class TaskView extends FrameLayout implements Reusable {
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         RecentsView recentsView = getRecentsView();
-        if (recentsView == null || mTask == null) {
+        if (recentsView == null || getTask() == null) {
             return false;
         }
         SplitSelectStateController splitSelectStateController =
                 recentsView.getSplitSelectController();
         if (splitSelectStateController.isSplitSelectActive() &&
-                splitSelectStateController.getInitialTaskId() == mTask.key.id) {
+                splitSelectStateController.getInitialTaskId() == getTask().key.id) {
             // Prevent taps on the this taskview if it's being animated into split select state
             return false;
         }
@@ -597,11 +614,14 @@ public class TaskView extends FrameLayout implements Reusable {
      * @return {@code true} if user is already in split select mode and this tap was to choose the
      *         second app. {@code false} otherwise
      */
-    private boolean confirmSecondSplitSelectApp() {
+    protected boolean confirmSecondSplitSelectApp() {
         int index = getLastSelectedChildTaskIndex();
         TaskIdAttributeContainer container = mTaskIdAttributeContainer[index];
-        return getRecentsView().confirmSplitSelect(this, container.getTask(),
-                container.getIconView(), container.getThumbnailView());
+        if (container != null) {
+            return getRecentsView().confirmSplitSelect(this, container.getTask(),
+                    container.getIconView(), container.getThumbnailView());
+        }
+        return false;
     }
 
     /**
@@ -707,11 +727,6 @@ public class TaskView extends FrameLayout implements Reusable {
         RecentsView recentsView = getRecentsView();
         RemoteTargetHandle[] remoteTargetHandles = recentsView.mRemoteTargetHandles;
         RunnableList runnableList = new RunnableList();
-        if (mTask != null && mTask.desktopTile) {
-            // clicked on desktop
-            SystemUiProxy.INSTANCE.get(getContext()).showDesktopApps();
-            return runnableList;
-        }
         if (isRunningTask() && remoteTargetHandles != null) {
             if (!mIsClickableAsLiveTile) {
                 return runnableList;

@@ -225,6 +225,12 @@ public class GroupedTaskView extends TaskView {
     }
 
     @Override
+    public boolean containsTaskId(int taskId) {
+        return (mTask != null && mTask.key.id == taskId)
+                || (mSecondaryTask != null && mSecondaryTask.key.id == taskId);
+    }
+
+    @Override
     public TaskThumbnailView[] getThumbnails() {
         return new TaskThumbnailView[]{mSnapshotView, mSnapshotView2};
     }
