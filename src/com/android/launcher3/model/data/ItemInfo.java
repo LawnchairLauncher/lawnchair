@@ -350,9 +350,11 @@ public class ItemInfo {
                 break;
             case ITEM_TYPE_TASK:
                 itemBuilder
-                        .setTask(LauncherAtom.Task.newBuilder()
-                                .setComponentName(getTargetComponent().flattenToShortString())
-                                .setIndex(screenId));
+                        .setTask(nullableComponent
+                                .map(component -> LauncherAtom.Task.newBuilder()
+                                        .setComponentName(component.flattenToShortString())
+                                        .setIndex(screenId))
+                                .orElse(LauncherAtom.Task.newBuilder()));
                 break;
             default:
                 break;

@@ -215,6 +215,7 @@ public class FolderAnimationManager {
         final int footerStartDelay;
         if (isLargeFolder()) {
             if (mIsOpening) {
+                mFolder.mFooter.setAlpha(0);
                 footerAlphaDuration = LARGE_FOLDER_FOOTER_DURATION;
                 footerStartDelay = mDuration - footerAlphaDuration;
             } else {
