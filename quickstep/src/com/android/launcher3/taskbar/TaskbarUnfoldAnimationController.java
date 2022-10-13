@@ -15,13 +15,13 @@
  */
 package com.android.launcher3.taskbar;
 
-import android.view.IWindowManager;
 import android.view.View;
 import android.view.WindowManager;
 
 import com.android.quickstep.util.LauncherViewsMoveFromCenterTranslationApplier;
 import com.android.systemui.shared.animation.UnfoldMoveFromCenterAnimator;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider.TransitionProgressListener;
+import com.android.systemui.unfold.updates.RotationChangeProvider;
 import com.android.systemui.unfold.util.NaturalRotationUnfoldProgressProvider;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
@@ -41,16 +41,20 @@ public class TaskbarUnfoldAnimationController implements
 
     public TaskbarUnfoldAnimationController(BaseTaskbarContext context,
             ScopedUnfoldTransitionProgressProvider source,
-            WindowManager windowManager, IWindowManager iWindowManager) {
+            WindowManager windowManager,
+            RotationChangeProvider rotationChangeProvider) {
         mScopedUnfoldTransitionProgressProvider = source;
         mNaturalUnfoldTransitionProgressProvider =
-                new NaturalRotationUnfoldProgressProvider(context, iWindowManager, source);
+                new NaturalRotationUnfoldProgressProvider(context,
+                        rotationChangeProvider,
+                        source);
         mMoveFromCenterAnimator = new UnfoldMoveFromCenterAnimator(windowManager,
                 new LauncherViewsMoveFromCenterTranslationApplier());
     }
 
     /**
      * Initializes the controller
+     *
      * @param taskbarControllers references to all other taskbar controllers
      */
     public void init(TaskbarControllers taskbarControllers) {

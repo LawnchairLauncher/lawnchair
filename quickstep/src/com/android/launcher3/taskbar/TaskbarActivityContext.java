@@ -89,6 +89,7 @@ import com.android.launcher3.views.ActivityContext;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.rotation.RotationButtonController;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.unfold.updates.RotationChangeProvider;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
 import java.io.PrintWriter;
@@ -198,7 +199,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new TaskbarViewController(this, taskbarView),
                 new TaskbarScrimViewController(this, taskbarScrimView),
                 new TaskbarUnfoldAnimationController(this, unfoldTransitionProgressProvider,
-                        mWindowManager, WindowManagerGlobal.getWindowManagerService()),
+                    mWindowManager,
+                    new RotationChangeProvider(WindowManagerGlobal.getWindowManagerService(), this,
+                        getMainExecutor())),
                 new TaskbarKeyguardController(this),
                 new StashedHandleViewController(this, stashedHandleView),
                 new TaskbarStashController(this),

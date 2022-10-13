@@ -22,6 +22,7 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Workspace;
+import com.android.systemui.unfold.updates.RotationChangeProvider;
 
 /**
  * Animation that moves launcher icons and widgets from center to the sides (final position)
@@ -30,8 +31,9 @@ public class UnfoldMoveFromCenterWorkspaceAnimator extends BaseUnfoldMoveFromCen
 
     private final Launcher mLauncher;
 
-    public UnfoldMoveFromCenterWorkspaceAnimator(Launcher launcher, WindowManager windowManager) {
-        super(windowManager);
+    public UnfoldMoveFromCenterWorkspaceAnimator(Launcher launcher, WindowManager windowManager,
+            RotationChangeProvider rotationChangeProvider) {
+        super(windowManager, rotationChangeProvider);
         mLauncher = launcher;
     }
 
