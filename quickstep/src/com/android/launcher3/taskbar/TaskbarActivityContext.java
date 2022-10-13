@@ -148,11 +148,12 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mImeDrawsImeNavBar = getBoolByName(IME_DRAWS_IME_NAV_BAR_RES_NAME, resources, false);
         mIsSafeModeEnabled = TraceHelper.allowIpcs("isSafeMode",
                 () -> getPackageManager().isSafeMode());
-        mIsUserSetupComplete = SettingsCache.INSTANCE.get(this).getValue(
+        SettingsCache settingsCache = SettingsCache.INSTANCE.get(this);
+        mIsUserSetupComplete = settingsCache.getValue(
                 Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE), 0);
-        mIsNavBarForceVisible = SettingsCache.INSTANCE.get(this).getValue(
+        mIsNavBarForceVisible = settingsCache.getValue(
                 Settings.Secure.getUriFor(Settings.Secure.NAV_BAR_KIDS_MODE), 0);
-        mIsNavBarKidsMode = SettingsCache.INSTANCE.get(this).getValue(
+        mIsNavBarKidsMode = settingsCache.getValue(
                 Settings.Secure.getUriFor(Settings.Secure.NAV_BAR_KIDS_MODE), 0);
 
         updateIconSize(resources);
@@ -206,11 +207,11 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new TaskbarPopupController(this),
                 new TaskbarForceVisibleImmersiveController(this),
                 new TaskbarAllAppsController(this, dp),
+                new TaskbarInsetsController(this),
+                new VoiceInteractionWindowController(this),
                 isDesktopMode
                         ? new DesktopTaskbarRecentAppsController(this)
-                        : TaskbarRecentAppsController.DEFAULT,
-                new TaskbarInsetsController(this),
-                new VoiceInteractionWindowController(this));
+                        : TaskbarRecentAppsController.DEFAULT);
     }
 
     public void init(@NonNull TaskbarSharedState sharedState) {
@@ -613,6 +614,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             return isThreeButtonNav() ?
                     resources.getDimensionPixelSize(R.dimen.taskbar_size) :
                     resources.getDimensionPixelSize(R.dimen.taskbar_stashed_size);
+        }
+
+        if (!isUserSetupComplete()) {
+            return getResources().getDimensionPixelSize(R.dimen.taskbar_suw_frame);
         }
         return mDeviceProfile.taskbarSize + Math.max(getLeftCornerRadius(), getRightCornerRadius());
     }

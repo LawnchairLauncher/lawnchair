@@ -204,8 +204,10 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         DeviceProfile deviceProfile = mContext.getDeviceProfile();
         Resources resources = mContext.getResources();
         mNavButtonsView.getLayoutParams().height = !isPhoneMode(deviceProfile) ?
-                deviceProfile.taskbarSize :
-                resources.getDimensionPixelSize(R.dimen.taskbar_size);
+                mContext.isUserSetupComplete()
+                        ? deviceProfile.taskbarSize
+                        : resources.getDimensionPixelSize(R.dimen.taskbar_suw_frame)
+                : resources.getDimensionPixelSize(R.dimen.taskbar_size);
 
         mIsImeRenderingNavButtons =
                 InputMethodService.canImeRenderGesturalNavButtons() && mContext.imeDrawsImeNavBar();
@@ -267,15 +269,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
             updateButtonLayoutSpacing();
             updateStateForFlag(FLAG_SMALL_SCREEN, isPhoneButtonNavMode(mContext));
             if (isInSetup) {
-                // Since setup wizard only has back button enabled, it looks strange to be
-                // end-aligned, so start-align instead.
-                FrameLayout.LayoutParams navButtonsLayoutParams = (FrameLayout.LayoutParams)
-                        mNavButtonContainer.getLayoutParams();
-                navButtonsLayoutParams.setMarginStart(
-                        resources.getDimensionPixelSize(R.dimen.taskbar_contextual_button_margin));
-                navButtonsLayoutParams.setMarginEnd(0);
-                navButtonsLayoutParams.gravity = Gravity.START;
-                mNavButtonContainer.requestLayout();
+                handleSetupUi();
 
                 // Hide back button in SUW if keyboard is showing (IME draws its own back).
                 mPropertyHolders.add(new StatePropertyHolder(
@@ -751,14 +745,38 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         if (mFloatingRotationButton != null) {
             mFloatingRotationButton.onConfigurationChanged(configChanges);
         }
+        if (!mContext.isUserSetupComplete()) {
+            handleSetupUi();
+        }
         updateButtonLayoutSpacing();
     }
 
+    private void handleSetupUi() {
+        // Since setup wizard only has back button enabled, it looks strange to be
+        // end-aligned, so start-align instead.
+        FrameLayout.LayoutParams navButtonsLayoutParams = (FrameLayout.LayoutParams)
+                mNavButtonContainer.getLayoutParams();
+        Resources resources = mContext.getResources();
+        DeviceProfile deviceProfile = mContext.getDeviceProfile();
+        int setupMargin = resources.getDimensionPixelSize(R.dimen.taskbar_contextual_button_margin);
+        navButtonsLayoutParams.setMarginStart(setupMargin);
+        navButtonsLayoutParams.bottomMargin = !deviceProfile.isLandscape
+                ? 0
+                : setupMargin -
+                        (resources.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size) / 2);
+        navButtonsLayoutParams.setMarginEnd(0);
+        navButtonsLayoutParams.gravity = Gravity.START;
+        mNavButtonContainer.setLayoutParams(navButtonsLayoutParams);
+        mNavButtonContainer.requestLayout();
+    }
+
     /**
-     * Adds the correct spacing to 3 button nav container. No-op if using gesture nav or kids mode.
+     * Adds the correct spacing to 3 button nav container. No-op if using gesture nav, setup
+     * is incomplete, or in kids mode.
      */
     private void updateButtonLayoutSpacing() {
-        if (!mContext.isThreeButtonNav() || mContext.isNavBarKidsModeActive()) {
+        if (!mContext.isThreeButtonNav() || mContext.isNavBarKidsModeActive()
+                || !mContext.isUserSetupComplete()) {
             return;
         }
 

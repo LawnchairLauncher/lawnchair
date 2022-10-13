@@ -302,9 +302,15 @@ public final class TaskViewUtils {
             // to follow the TaskViewSimulator. So the final matrix applied on the thumbnailView is:
             //    Mt K(0)` K(t) Mt`
             TaskThumbnailView[] thumbnails = v.getThumbnails();
-            Matrix[] mt = new Matrix[simulatorCopies.length];
-            Matrix[] mti = new Matrix[simulatorCopies.length];
-            for (int i = 0; i < thumbnails.length; i++) {
+
+            // In case simulator copies and thumbnail size do no match, ensure we get the lesser.
+            // This ensures we do not create arrays with empty elements or attempt to references
+            // indexes out of array bounds.
+            final int matrixSize = Math.min(simulatorCopies.length, thumbnails.length);
+
+            Matrix[] mt = new Matrix[matrixSize];
+            Matrix[] mti = new Matrix[matrixSize];
+            for (int i = 0; i < matrixSize; i++) {
                 TaskThumbnailView ttv = thumbnails[i];
                 RectF localBounds = new RectF(0, 0,  ttv.getWidth(), ttv.getHeight());
                 float[] tvBoundsMapped = new float[]{0, 0,  ttv.getWidth(), ttv.getHeight()};
@@ -321,14 +327,14 @@ public final class TaskViewUtils {
                 mti[i] = localMti;
             }
 
-            Matrix[] k0i = new Matrix[simulatorCopies.length];
-            for (int i = 0; i < simulatorCopies.length; i++) {
+            Matrix[] k0i = new Matrix[matrixSize];
+            for (int i = 0; i < matrixSize; i++) {
                 k0i[i] = new Matrix();
                 simulatorCopies[i].getTaskViewSimulator().getCurrentMatrix().invert(k0i[i]);
             }
             Matrix animationMatrix = new Matrix();
             out.addOnFrameCallback(() -> {
-                for (int i = 0; i < simulatorCopies.length; i++) {
+                for (int i = 0; i < matrixSize; i++) {
                     animationMatrix.set(mt[i]);
                     animationMatrix.postConcat(k0i[i]);
                     animationMatrix.postConcat(simulatorCopies[i]

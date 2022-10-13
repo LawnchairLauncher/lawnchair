@@ -273,6 +273,12 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getActionIndex() > 0) {
+            // This means there is multiple touch inputs, ignore it, we could also cancel the
+            // previous touch but the user might cancel the drag by accident.
+            return true;
+        }
+
         switch (ev.getAction()) {
             case ACTION_DOWN: {
                 if ((mTouchDispatchState & TOUCH_DISPATCHING_TO_VIEW_IN_PROGRESS) != 0) {
