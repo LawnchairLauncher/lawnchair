@@ -618,15 +618,17 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
 
         if (desiredStagePosition == SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT) {
             if (isLandscape) {
-                outRect.right = outRect.left + (int) (outRect.width() * topLeftTaskPercent);
+                outRect.right = outRect.left + Math.round(outRect.width() * topLeftTaskPercent);
             } else {
-                outRect.bottom = outRect.top + (int) (outRect.height() * topLeftTaskPercent);
+                outRect.bottom = outRect.top + Math.round(outRect.height() * topLeftTaskPercent);
             }
         } else {
             if (isLandscape) {
-                outRect.left += (int) (outRect.width() * (topLeftTaskPercent + dividerBarPercent));
+                outRect.left += Math.round(outRect.width()
+                        * (topLeftTaskPercent + dividerBarPercent));
             } else {
-                outRect.top += (int) (outRect.height() * (topLeftTaskPercent + dividerBarPercent));
+                outRect.top += Math.round(outRect.height()
+                        * (topLeftTaskPercent + dividerBarPercent));
             }
         }
     }
@@ -639,7 +641,7 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
         int totalThumbnailHeight = parentHeight - spaceAboveSnapshot;
         int dividerBar = Math.round(splitBoundsConfig.appsStackedVertically
                 ? splitBoundsConfig.dividerHeightPercent * totalThumbnailHeight
-                : splitBoundsConfig.dividerWidthPercent * totalThumbnailHeight);
+                : splitBoundsConfig.dividerWidthPercent * parentWidth);
         int primarySnapshotHeight;
         int primarySnapshotWidth;
         int secondarySnapshotHeight;
@@ -648,7 +650,7 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
                 splitBoundsConfig.topTaskPercent : splitBoundsConfig.leftTaskPercent;
         if (dp.isLandscape) {
             primarySnapshotHeight = totalThumbnailHeight;
-            primarySnapshotWidth = (int) (parentWidth * taskPercent);
+            primarySnapshotWidth = Math.round(parentWidth * taskPercent);
 
             secondarySnapshotHeight = totalThumbnailHeight;
             secondarySnapshotWidth = parentWidth - primarySnapshotWidth - dividerBar;
@@ -663,7 +665,7 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
             secondarySnapshot.setTranslationY(spaceAboveSnapshot);
         } else {
             primarySnapshotWidth = parentWidth;
-            primarySnapshotHeight = (int) (totalThumbnailHeight * taskPercent);
+            primarySnapshotHeight = Math.round(totalThumbnailHeight * taskPercent);
 
             secondarySnapshotWidth = parentWidth;
             secondarySnapshotHeight = totalThumbnailHeight - primarySnapshotHeight - dividerBar;
