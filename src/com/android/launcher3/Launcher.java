@@ -1331,7 +1331,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         BubbleTextView favorite = (BubbleTextView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.app_icon, parent, false);
         favorite.applyFromWorkspaceItem(info);
-        favorite.setOnClickListener(ItemClickHandler.INSTANCE);
+        favorite.setOnClickListener(getItemOnClickListener());
         favorite.setOnFocusChangeListener(mFocusHandler);
         return favorite;
     }

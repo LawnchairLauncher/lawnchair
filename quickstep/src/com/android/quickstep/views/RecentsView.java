@@ -4184,7 +4184,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public void initiateSplitSelect(TaskView taskView, @StagePosition int stagePosition,
             StatsLogManager.EventEnum splitEvent) {
         mSplitHiddenTaskView = taskView;
-        mSplitSelectStateController.setInitialTaskSelect(taskView.getTask().key.id,
+        mSplitSelectStateController.setInitialTaskSelect(taskView.getTask(),
                 stagePosition, splitEvent, taskView.getItemInfo());
         mSplitHiddenTaskViewIndex = indexOfChild(taskView);
         finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
