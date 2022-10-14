@@ -64,7 +64,7 @@ fun AppDrawerPreferences() {
         val deviceSearchEnabled = LawnchairSearchAlgorithm.isDeviceSearchEnabled(LocalContext.current)
         val showDrawerSearchBar = !prefs2.hideAppDrawerSearchBar.getAdapter()
         val showHiddenAppsInSearch = prefs2.showHiddenAppsInSearch.getAdapter()
-        val enableSmartHide = prefs2.enableSmartHide.getAdapter()
+val enableSmartHide = prefs2.enableSmartHide.getAdapter()
         PreferenceGroup(heading = stringResource(id = R.string.pref_category_search)) {
             SwitchPreference(
                 label = stringResource(id = R.string.show_app_search_bar),
