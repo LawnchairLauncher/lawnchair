@@ -62,7 +62,11 @@ public class ProxyActivityStarter extends Activity {
             }
         } catch (NullPointerException | ActivityNotFoundException | SecurityException
                 | SendIntentException e) {
-            mParams.deliverResult(this, RESULT_CANCELED, null);
+            try {
+                // https://github.com/LawnchairLauncher/lawnchair/issues/3030
+                mParams.deliverResult(this, RESULT_CANCELED, null);
+            } catch (NullPointerException ignored) {
+            }
         }
         finishAndRemoveTask();
     }
@@ -70,7 +74,11 @@ public class ProxyActivityStarter extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == mParams.requestCode) {
-            mParams.deliverResult(this, resultCode, data);
+            try {
+                // https://github.com/LawnchairLauncher/lawnchair/issues/3030
+                mParams.deliverResult(this, resultCode, data);
+            } catch (NullPointerException ignored) {
+            }
         }
         finishAndRemoveTask();
     }
