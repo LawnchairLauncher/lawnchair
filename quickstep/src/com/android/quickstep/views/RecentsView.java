@@ -1511,21 +1511,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             addView(mClearAllButton);
         }
 
-        boolean settlingOnNewTask = mNextPage != INVALID_PAGE;
-        if (settlingOnNewTask) {
-            // Restore mCurrentPage but don't call setCurrentPage() as that clobbers the scroll.
-            mCurrentPage = previousCurrentPage;
-        } else {
-            // TODO(b/238461210): Remove logging once root cause of flake detected.
-            if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
-                Log.d("b/238461210", "RecentsView#applyLoadPlan() -> !settlingOnNewTask -> "
-                                + "previousCurrentPage: " + previousCurrentPage
-                                + ", getScrollForPage(previousCurrentPage): "
-                                + getScrollForPage(previousCurrentPage));
-            }
-            setCurrentPage(previousCurrentPage);
-        }
-
         // Keep same previous focused task
         TaskView newFocusedTaskView = getTaskViewByTaskId(focusedTaskId);
         // If the list changed, maybe the focused task doesn't exist anymore
@@ -1550,21 +1535,36 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
 
         int targetPage = -1;
-        if (!settlingOnNewTask) {
+        if (mNextPage != INVALID_PAGE) {
+            // Restore mCurrentPage but don't call setCurrentPage() as that clobbers the scroll.
+            mCurrentPage = previousCurrentPage;
+            if (currentTaskId != -1) {
+                currentTaskView = getTaskViewByTaskId(currentTaskId);
+                if (currentTaskView != null) {
+                    targetPage = indexOfChild(currentTaskView);
+                }
+            }
+        } else {
             // Set the current page to the running task, but not if settling on new task.
             if (runningTaskId != -1) {
                 targetPage = indexOfChild(newRunningTaskView);
             } else if (getTaskViewCount() > 0) {
                 targetPage = indexOfChild(requireTaskViewAt(0));
             }
-        } else if (currentTaskId != -1) {
-            currentTaskView = getTaskViewByTaskId(currentTaskId);
-            if (currentTaskView != null) {
-                targetPage = indexOfChild(currentTaskView);
-            }
         }
         if (targetPage != -1 && mCurrentPage != targetPage) {
-            setCurrentPage(targetPage);
+            int finalTargetPage = targetPage;
+            runOnPageScrollsInitialized(() -> {
+                // TODO(b/246283207): Remove logging once root cause of flake detected.
+                if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                    Log.d("b/246283207", "RecentsView#applyLoadPlan() -> "
+                            + "previousCurrentPage: " + previousCurrentPage
+                            + ", targetPage: " + finalTargetPage
+                            + ", getScrollForPage(targetPage): "
+                            + getScrollForPage(finalTargetPage));
+                }
+                setCurrentPage(finalTargetPage);
+            });
         }
 
         if (mIgnoreResetTaskId != -1 &&
