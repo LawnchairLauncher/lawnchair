@@ -278,14 +278,15 @@
     <!-- AppDrawerPrefences -->
     <!-- app_drawer_label -->
     <!-- general_label -->
-      <string name="hidden_apps_label">Hidden Apps</string>
       <string name="background_opacity">Background Opacity</string>
+    <!-- hiddenApps_label -->
+    <string name="hidden_apps_label">Hidden Apps</string>
+    <string name="show_enable_smart_hide">Enable Smart Hide</string>
+    <string name="show_enable_smart_hide_description">Show the hidden app in search results only when it\'s full name is typed.</string>
+    <string name="show_hidden_apps_search">Show Hidden Apps In Search</string>
 
     <string name="pref_category_search">Search</string>
       <string name="show_app_search_bar">Show Search Bar</string>
-      <string name="show_enable_smart_hide">Enable Smart Hide</string>
-      <string name="show_enable_smart_hide_description">Search with fullname to access hidden apps from search</string>
-      <string name="show_hidden_apps_search">Show Hidden Apps In Search</string>
       <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
       <string name="fuzzy_search_title">Fuzzy Search</string>
       <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
