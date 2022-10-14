@@ -37,6 +37,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     private var enableFuzzySearch = false
     private lateinit var hiddenApps: Set<String>
     private var showHiddenAppsInSearch = false
+    private var enableSmartHide = false
     private val marketSearchComponent = resolveMarketSearchActivity()
     private val coroutineScope = CoroutineScope(context = Dispatchers.IO)
     private val pref2 = PreferenceManager2.getInstance(context)
@@ -50,6 +51,9 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         }
         pref2.showHiddenAppsInSearch.onEach(launchIn = coroutineScope) {
             showHiddenAppsInSearch = it
+        }
+        pref2.enableSmartHide.onEach(launchIn = coroutineScope) {
+            enableSmartHide = it
         }
     }
 
@@ -115,19 +119,19 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         val matcher = StringMatcherUtility.StringMatcher.getInstance()
         return apps.asSequence()
             .filter { StringMatcherUtility.matches(queryTextLower, it.title.toString(), matcher) }
-            .filterHiddenApps()
+            .filterHiddenApps(queryTextLower)
             .take(maxResultsCount)
             .toList()
     }
 
     private fun fuzzySearch(apps: List<AppInfo>, query: String): List<AppInfo> {
 
+        val queryTextLower = query.lowercase(Locale.getDefault())
         val filteredApps = apps.asSequence()
-            .filterHiddenApps()
+            .filterHiddenApps(queryTextLower)
             .toList()
         val matches = FuzzySearch.extractSorted(
-            query.lowercase(Locale.getDefault()), filteredApps,
-            { it.title.toString() }, WeightedRatio(), 65
+            queryTextLower, filteredApps, { it.title.toString() }, WeightedRatio(), 65
         )
 
         return matches.take(maxResultsCount)
@@ -162,9 +166,15 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         return createSearchTarget(id, action, extras)
     }
 
-    private fun Sequence<AppInfo>.filterHiddenApps(): Sequence<AppInfo> {
+    private fun Sequence<AppInfo>.filterHiddenApps(query: String): Sequence<AppInfo> {
+
         return if (showHiddenAppsInSearch) {
             this
+        } else if (enableSmartHide) {
+            filter {
+                it.toComponentKey().toString() !in hiddenApps || it.title.toString()
+                    .lowercase(Locale.getDefault()).equals(query)
+            }
         } else {
             filter { it.toComponentKey().toString() !in hiddenApps }
         }
