@@ -90,9 +90,9 @@ public final class RecentsViewStateController extends
             // While animating into recents, update the visible task data as needed
             builder.addOnFrameCallback(() -> mRecentsView.loadVisibleTaskData(FLAG_UPDATE_ALL));
             mRecentsView.updateEmptyMessage();
-            // TODO(b/238461210): Remove logging once root cause of flake detected.
+            // TODO(b/246283207): Remove logging once root cause of flake detected.
             if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
-                Log.d("b/238461210", "RecentsView#setStateWithAnimationInternal getCurrentPage(): "
+                Log.d("b/246283207", "RecentsView#setStateWithAnimationInternal getCurrentPage(): "
                                 + mRecentsView.getCurrentPage()
                                 + ", getScrollForPage(getCurrentPage())): "
                                 + mRecentsView.getScrollForPage(mRecentsView.getCurrentPage()));
