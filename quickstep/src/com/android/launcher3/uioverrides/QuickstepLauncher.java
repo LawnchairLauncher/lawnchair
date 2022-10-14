@@ -66,6 +66,7 @@ import android.os.SystemProperties;
 import android.view.Display;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
+import android.view.WindowManagerGlobal;
 import android.window.SplashScreen;
 
 import androidx.annotation.Nullable;
@@ -139,12 +140,14 @@ import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.unfold.UnfoldSharedComponent;
 import com.android.systemui.unfold.UnfoldTransitionFactory;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.config.ResourceUnfoldTransitionConfig;
 import com.android.systemui.unfold.config.UnfoldTransitionConfig;
 import com.android.systemui.unfold.system.ActivityManagerActivityTypeProvider;
 import com.android.systemui.unfold.system.DeviceStateManagerFoldProvider;
+import com.android.systemui.unfold.updates.RotationChangeProvider;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -173,6 +176,7 @@ public class QuickstepLauncher extends Launcher {
     // Will be updated when dragging from taskbar.
     private @Nullable DragOptions mNextWorkspaceDragOptions = null;
     private @Nullable UnfoldTransitionProgressProvider mUnfoldTransitionProgressProvider;
+    private @Nullable RotationChangeProvider mRotationChangeProvider;
     private @Nullable LauncherUnfoldAnimationController mLauncherUnfoldAnimationController;
     /**
      * If Launcher restarted while in the middle of an Overview split select, it needs this data to
@@ -664,8 +668,8 @@ public class QuickstepLauncher extends Launcher {
     private void initUnfoldTransitionProgressProvider() {
         final UnfoldTransitionConfig config = new ResourceUnfoldTransitionConfig();
         if (config.isEnabled()) {
-            mUnfoldTransitionProgressProvider =
-                    UnfoldTransitionFactory.createUnfoldTransitionProgressProvider(
+            UnfoldSharedComponent unfoldComponent =
+                    UnfoldTransitionFactory.createUnfoldSharedComponent(
                             /* context= */ this,
                             config,
                             ProxyScreenStatusProvider.INSTANCE,
@@ -677,13 +681,21 @@ public class QuickstepLauncher extends Launcher {
                             getMainThreadHandler(),
                             getMainExecutor(),
                             /* backgroundExecutor= */ THREAD_POOL_EXECUTOR,
-                            /* tracingTagPrefix= */ "launcher"
+                            /* tracingTagPrefix= */ "launcher",
+                            WindowManagerGlobal.getWindowManagerService()
                     );
 
+            mUnfoldTransitionProgressProvider = unfoldComponent.getUnfoldTransitionProvider()
+                    .orElseThrow(() -> new IllegalStateException(
+                            "Trying to create UnfoldTransitionProgressProvider when the "
+                                    + "transition is disabled"));
+
+            mRotationChangeProvider = unfoldComponent.getRotationChangeProvider();
             mLauncherUnfoldAnimationController = new LauncherUnfoldAnimationController(
-                    this,
+                    /* launcher= */ this,
                     getWindowManager(),
-                    mUnfoldTransitionProgressProvider
+                    mUnfoldTransitionProgressProvider,
+                    mRotationChangeProvider
             );
         }
     }
