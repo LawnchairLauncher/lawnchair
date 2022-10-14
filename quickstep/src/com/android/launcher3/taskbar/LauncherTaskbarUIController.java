@@ -173,7 +173,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
             }
         }
 
-        if (ENABLE_SHELL_TRANSITIONS
+        if (ENABLE_SHELL_TRANSITIONS && isResumed
                 && !mLauncher.getStateManager().getState().isTaskbarAlignedWithHotseat(mLauncher)) {
             // Launcher is resumed, but in a state where taskbar is still independent, so
             // ignore the state change.
