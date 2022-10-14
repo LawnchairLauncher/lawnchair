@@ -172,8 +172,8 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
             this
         } else if (enableSmartHide) {
             filter {
-                it.toComponentKey().toString() !in hiddenApps || it.title.toString()
-                    .lowercase(Locale.getDefault()).equals(query)
+                it.toComponentKey().toString() !in hiddenApps ||
+                    it.title.toString().lowercase(Locale.getDefault()) == query
             }
         } else {
             filter { it.toComponentKey().toString() !in hiddenApps }
