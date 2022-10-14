@@ -57,6 +57,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.dragndrop.BaseItemDragListener;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -277,7 +278,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
     public void onDragEnter(ItemInfo dragInfo) {
         if (mFolder.isDestroyed() || !willAcceptItem(dragInfo)) return;
-        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
+        CellLayoutLayoutParams lp = (CellLayoutLayoutParams) getLayoutParams();
         CellLayout cl = (CellLayout) getParent().getParent();
 
         mBackground.animateToAccept(cl, lp.cellX, lp.cellY);
