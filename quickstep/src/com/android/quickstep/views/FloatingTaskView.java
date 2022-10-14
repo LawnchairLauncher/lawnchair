@@ -11,6 +11,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
@@ -74,6 +75,7 @@ public class FloatingTaskView extends FrameLayout {
         }
     };
 
+    private int mSplitHolderSize;
     private FloatingTaskThumbnailView mThumbnailView;
     private SplitPlaceholderView mSplitPlaceholderView;
     private RectF mStartingPosition;
@@ -97,6 +99,9 @@ public class FloatingTaskView extends FrameLayout {
         mActivity = BaseActivity.fromContext(context);
         mIsRtl = Utilities.isRtl(getResources());
         mFullscreenParams = new FullscreenDrawParams(context);
+
+        mSplitHolderSize = context.getResources().getDimensionPixelSize(
+                R.dimen.split_placeholder_icon_size);
     }
 
     @Override
@@ -126,8 +131,7 @@ public class FloatingTaskView extends FrameLayout {
         RecentsView recentsView = launcher.getOverviewPanel();
         mOrientationHandler = recentsView.getPagedOrientationHandler();
         mStagePosition = recentsView.getSplitSelectController().getActiveSplitStagePosition();
-        mSplitPlaceholderView.setIcon(icon,
-                mContext.getResources().getDimensionPixelSize(R.dimen.split_placeholder_icon_size));
+        mSplitPlaceholderView.setIcon(icon, mSplitHolderSize);
         mSplitPlaceholderView.getIconView().setRotation(mOrientationHandler.getDegreesRotated());
     }
 
@@ -191,6 +195,10 @@ public class FloatingTaskView extends FrameLayout {
     public void updateOrientationHandler(PagedOrientationHandler orientationHandler) {
         mOrientationHandler = orientationHandler;
         mSplitPlaceholderView.getIconView().setRotation(mOrientationHandler.getDegreesRotated());
+    }
+
+    public void setIcon(Bitmap icon) {
+        mSplitPlaceholderView.setIcon(new BitmapDrawable(icon), mSplitHolderSize);
     }
 
     protected void initPosition(RectF pos, InsettableFrameLayout.LayoutParams lp) {
