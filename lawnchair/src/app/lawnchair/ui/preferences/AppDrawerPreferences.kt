@@ -72,7 +72,6 @@ fun AppDrawerPreferences() {
             SwitchPreference(
                 label = stringResource(id = R.string.show_enable_smart_hide),
                 adapter = enableSmartHide,
-                description = stringResource(id = R.string.show_enable_smart_hide_description),
                 enabled = !showHiddenAppsInSearch.state.value
             )
         }

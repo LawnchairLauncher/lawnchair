@@ -281,8 +281,7 @@
       <string name="background_opacity">Background Opacity</string>
     <!-- hiddenApps_label -->
     <string name="hidden_apps_label">Hidden Apps</string>
-    <string name="show_enable_smart_hide">Enable Smart Hide</string>
-    <string name="show_enable_smart_hide_description">Show the hidden app in search results only when it\'s full name is typed.</string>
+    <string name="show_enable_smart_hide">Show Hidden App when Full Name is Typed</string>
     <string name="show_hidden_apps_search">Show Hidden Apps In Search</string>
 
     <string name="pref_category_search">Search</string>
