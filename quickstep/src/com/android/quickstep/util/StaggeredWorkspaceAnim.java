@@ -46,6 +46,7 @@ import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.SpringAnimationBuilder;
+import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
@@ -122,8 +123,7 @@ public class StaggeredWorkspaceAnim {
             if (grid.isVerticalBarLayout()) {
                 for (int i = hotseatIcons.getChildCount() - 1; i >= 0; i--) {
                     View child = hotseatIcons.getChildAt(i);
-                    CellLayout.LayoutParams lp =
-                            ((CellLayout.LayoutParams) child.getLayoutParams());
+                    CellLayoutLayoutParams lp = ((CellLayoutLayoutParams) child.getLayoutParams());
                     addStaggeredAnimationForView(child, lp.cellY + 1, totalRows, duration);
                 }
             } else {
@@ -193,7 +193,7 @@ public class StaggeredWorkspaceAnim {
         // Set up springs on workspace items.
         for (int i = itemsContainer.getChildCount() - 1; i >= 0; i--) {
             View child = itemsContainer.getChildAt(i);
-            CellLayout.LayoutParams lp = ((CellLayout.LayoutParams) child.getLayoutParams());
+            CellLayoutLayoutParams lp = ((CellLayoutLayoutParams) child.getLayoutParams());
             addStaggeredAnimationForView(child, lp.cellY + lp.cellVSpan, totalRows, duration);
         }
 
