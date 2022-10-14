@@ -138,6 +138,15 @@ public final class LauncherInstrumentation {
         OUTSIDE_WITH_KEYCODE,
     }
 
+    /**
+     * Represents a point in the code at which a callback can run.
+     */
+    public enum CALLBACK_RUN_POINT {
+        CALLBACK_HOLD_BEFORE_DROP
+    }
+
+    private Consumer<CALLBACK_RUN_POINT> mCallbackAtRunPoint = null;
+
     // Base class for launcher containers.
     abstract static class VisibleContainer {
         protected final LauncherInstrumentation mLauncher;
@@ -1961,6 +1970,22 @@ public final class LauncherInstrumentation {
                     LauncherInstrumentation.GestureScope.INSIDE);
             sendPointer(downTime, downTime, MotionEvent.ACTION_UP, tapTarget,
                     LauncherInstrumentation.GestureScope.INSIDE);
+        }
+    }
+
+    /**
+     * Sets the consumer to run callbacks at all run-points.
+     */
+    public void setRunPointCallback(Consumer<CALLBACK_RUN_POINT> callback) {
+        mCallbackAtRunPoint = callback;
+    }
+
+    /**
+     * Runs the callback at the specified point if it exists.
+     */
+    void runCallbackIfActive(CALLBACK_RUN_POINT runPoint) {
+        if (mCallbackAtRunPoint != null) {
+            mCallbackAtRunPoint.accept(runPoint);
         }
     }
 }
