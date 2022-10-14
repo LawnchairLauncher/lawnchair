@@ -77,7 +77,8 @@ val enableSmartHide = prefs2.enableSmartHide.getAdapter()
             SwitchPreference(
                 label = stringResource(id = R.string.show_enable_smart_hide),
                 adapter = enableSmartHide,
-                description = stringResource(id = R.string.show_enable_smart_hide_description)
+                description = stringResource(id = R.string.show_enable_smart_hide_description),
+                enabled = !showHiddenAppsInSearch.state.value
             )
             ExpandAndShrink(visible = showDrawerSearchBar.state.value) {
                 DividerColumn {
