@@ -49,6 +49,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatorListeners;
+import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.IconNormalizer;
@@ -271,7 +272,7 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
         mIsPinned = true;
         applyFromWorkspaceItem(info);
         setOnLongClickListener(ItemLongClickListener.INSTANCE_WORKSPACE);
-        ((CellLayout.LayoutParams) getLayoutParams()).canReorder = true;
+        ((CellLayoutLayoutParams) getLayoutParams()).canReorder = true;
         invalidate();
     }
 
@@ -280,7 +281,7 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
      */
     public void finishBinding(OnLongClickListener longClickListener) {
         setOnLongClickListener(longClickListener);
-        ((CellLayout.LayoutParams) getLayoutParams()).canReorder = false;
+        ((CellLayoutLayoutParams) getLayoutParams()).canReorder = false;
         setTextVisibility(false);
         verifyHighRes();
     }
