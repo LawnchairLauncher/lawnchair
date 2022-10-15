@@ -24,7 +24,6 @@ import android.annotation.Nullable;
 import android.util.FloatProperty;
 import android.util.MathUtils;
 import android.view.WindowManager;
-import android.view.WindowManagerGlobal;
 
 import androidx.core.view.OneShotPreDrawListener;
 
@@ -34,6 +33,7 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.util.HorizontalInsettableView;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider.TransitionProgressListener;
+import com.android.systemui.unfold.updates.RotationChangeProvider;
 import com.android.systemui.unfold.util.NaturalRotationUnfoldProgressProvider;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
@@ -62,16 +62,17 @@ public class LauncherUnfoldAnimationController {
     public LauncherUnfoldAnimationController(
             Launcher launcher,
             WindowManager windowManager,
-            UnfoldTransitionProgressProvider unfoldTransitionProgressProvider) {
+            UnfoldTransitionProgressProvider unfoldTransitionProgressProvider,
+            RotationChangeProvider rotationChangeProvider) {
         mLauncher = launcher;
         mProgressProvider = new ScopedUnfoldTransitionProgressProvider(
                 unfoldTransitionProgressProvider);
         mUnfoldMoveFromCenterHotseatAnimator = new UnfoldMoveFromCenterHotseatAnimator(launcher,
-                windowManager);
+                windowManager, rotationChangeProvider);
         mUnfoldMoveFromCenterWorkspaceAnimator = new UnfoldMoveFromCenterWorkspaceAnimator(launcher,
-                windowManager);
+                windowManager, rotationChangeProvider);
         mNaturalOrientationProgressProvider = new NaturalRotationUnfoldProgressProvider(launcher,
-                WindowManagerGlobal.getWindowManagerService(), mProgressProvider);
+                rotationChangeProvider, mProgressProvider);
         mNaturalOrientationProgressProvider.init();
 
         // Animated in all orientations

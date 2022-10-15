@@ -61,6 +61,7 @@ import androidx.core.view.ViewCompat;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.PreviewBackground;
@@ -130,7 +131,7 @@ public class CellLayout extends ViewGroup {
 
     // These arrays are used to implement the drag visualization on x-large screens.
     // They are used as circular arrays, indexed by mDragOutlineCurrent.
-    @Thunk final CellLayout.LayoutParams[] mDragOutlines = new CellLayout.LayoutParams[4];
+    @Thunk final CellLayoutLayoutParams[] mDragOutlines = new CellLayoutLayoutParams[4];
     @Thunk final float[] mDragOutlineAlphas = new float[mDragOutlines.length];
     private final InterruptibleInOutAnimator[] mDragOutlineAnims =
             new InterruptibleInOutAnimator[mDragOutlines.length];
@@ -139,7 +140,7 @@ public class CellLayout extends ViewGroup {
     private int mDragOutlineCurrent = 0;
     private final Paint mDragOutlinePaint = new Paint();
 
-    @Thunk final ArrayMap<LayoutParams, Animator> mReorderAnimators = new ArrayMap<>();
+    @Thunk final ArrayMap<CellLayoutLayoutParams, Animator> mReorderAnimators = new ArrayMap<>();
     @Thunk final ArrayMap<Reorderable, ReorderPreviewAnimation> mShakeAnimators = new ArrayMap<>();
 
     private boolean mItemPlacementDirty = false;
@@ -269,7 +270,7 @@ public class CellLayout extends ViewGroup {
         mDragCell[0] = mDragCell[1] = -1;
         mDragCellSpan[0] = mDragCellSpan[1] = -1;
         for (int i = 0; i < mDragOutlines.length; i++) {
-            mDragOutlines[i] = new CellLayout.LayoutParams(0, 0, 0, 0);
+            mDragOutlines[i] = new CellLayoutLayoutParams(0, 0, 0, 0);
         }
         mDragOutlinePaint.setColor(Themes.getAttrColor(context, R.attr.workspaceTextColor));
 
@@ -737,9 +738,19 @@ public class CellLayout extends ViewGroup {
         return mContainerType == WORKSPACE;
     }
 
-    public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params,
-            boolean markCells) {
-        final LayoutParams lp = params;
+    /**
+     * Adds the given view to the CellLayout
+     *
+     * @param child view to add.
+     * @param index index of the CellLayout children where to add the view.
+     * @param childId id of the view.
+     * @param params represent the logic of the view on the CellLayout.
+     * @param markCells if the occupied cells should be marked or not
+     * @return if adding the view was successful
+     */
+    public boolean addViewToCellLayout(View child, int index, int childId,
+            CellLayoutLayoutParams params, boolean markCells) {
+        final CellLayoutLayoutParams lp = params;
 
         // Hotseat icons - remove text
         if (child instanceof BubbleTextView) {
@@ -1046,7 +1057,7 @@ public class CellLayout extends ViewGroup {
         ShortcutAndWidgetContainer clc = getShortcutsAndWidgets();
 
         if (clc.indexOfChild(child) != -1 && (child instanceof Reorderable)) {
-            final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+            final CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
             final ItemInfo info = (ItemInfo) child.getTag();
             final Reorderable item = (Reorderable) child;
 
@@ -1153,7 +1164,7 @@ public class CellLayout extends ViewGroup {
             mDragOutlineAnims[oldIndex].animateOut();
             mDragOutlineCurrent = (oldIndex + 1) % mDragOutlines.length;
 
-            LayoutParams cell = mDragOutlines[mDragOutlineCurrent];
+            CellLayoutLayoutParams cell = mDragOutlines[mDragOutlineCurrent];
             cell.cellX = cellX;
             cell.cellY = cellY;
             cell.cellHSpan = spanX;
@@ -1708,7 +1719,7 @@ public class CellLayout extends ViewGroup {
                 // cluster.
                 if (!cluster.views.contains(v) && v != dragView) {
                     if (cluster.isViewTouchingEdge(v, whichEdge)) {
-                        LayoutParams lp = (LayoutParams) v.getLayoutParams();
+                        CellLayoutLayoutParams lp = (CellLayoutLayoutParams) v.getLayoutParams();
                         if (!lp.canReorder) {
                             // The push solution includes the all apps button, this is not viable.
                             fail = true;
@@ -1919,7 +1930,7 @@ public class CellLayout extends ViewGroup {
         for (View child: solution.map.keySet()) {
             if (child == ignoreView) continue;
             CellAndSpan c = solution.map.get(child);
-            LayoutParams lp = (LayoutParams) child.getLayoutParams();
+            CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
             r1.set(c.cellX, c.cellY, c.cellX + c.spanX, c.cellY + c.spanY);
             if (Rect.intersects(r0, r1)) {
                 if (!lp.canReorder) {
@@ -2016,7 +2027,7 @@ public class CellLayout extends ViewGroup {
         int childCount = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = mShortcutsAndWidgets.getChildAt(i);
-            LayoutParams lp = (LayoutParams) child.getLayoutParams();
+            CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
             CellAndSpan c;
             if (temp) {
                 c = new CellAndSpan(lp.tmpCellX, lp.tmpCellY, lp.cellHSpan, lp.cellVSpan);
@@ -2034,7 +2045,7 @@ public class CellLayout extends ViewGroup {
         for (int i = 0; i < childCount; i++) {
             View child = mShortcutsAndWidgets.getChildAt(i);
             if (child == dragView) continue;
-            LayoutParams lp = (LayoutParams) child.getLayoutParams();
+            CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
             CellAndSpan c = solution.map.get(child);
             if (c != null) {
                 lp.tmpCellX = c.cellX;
@@ -2082,7 +2093,7 @@ public class CellLayout extends ViewGroup {
                     != null && !solution.intersectingViews.contains(child);
 
 
-            LayoutParams lp = (LayoutParams) child.getLayoutParams();
+            CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
             if (c != null && !skip && (child instanceof Reorderable)) {
                 ReorderPreviewAnimation rha = new ReorderPreviewAnimation((Reorderable) child,
                         mode, lp.cellX, lp.cellY, c.cellX, c.cellY, c.spanX, c.spanY);
@@ -2273,7 +2284,7 @@ public class CellLayout extends ViewGroup {
         int childCount = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = mShortcutsAndWidgets.getChildAt(i);
-            LayoutParams lp = (LayoutParams) child.getLayoutParams();
+            CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
             ItemInfo info = (ItemInfo) child.getTag();
             // We do a null check here because the item info can be null in the case of the
             // AllApps button in the hotseat.
@@ -2298,7 +2309,8 @@ public class CellLayout extends ViewGroup {
     private void setUseTempCoords(boolean useTempCoords) {
         int childCount = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            LayoutParams lp = (LayoutParams) mShortcutsAndWidgets.getChildAt(i).getLayoutParams();
+            CellLayoutLayoutParams lp = (CellLayoutLayoutParams) mShortcutsAndWidgets.getChildAt(
+                    i).getLayoutParams();
             lp.useTmpCoords = useTempCoords;
         }
     }
@@ -2383,7 +2395,8 @@ public class CellLayout extends ViewGroup {
         for (int i = 0; i < count; i++) {
             View child = mShortcutsAndWidgets.getChildAt(i);
             if (child == dragView) continue;
-            LayoutParams lp = (LayoutParams) child.getLayoutParams();
+            CellLayoutLayoutParams
+                    lp = (CellLayoutLayoutParams) child.getLayoutParams();
             r1.set(lp.cellX, lp.cellY, lp.cellX + lp.cellHSpan, lp.cellY + lp.cellVSpan);
             if (Rect.intersects(r0, r1)) {
                 mIntersectingViews.add(child);
@@ -2408,7 +2421,8 @@ public class CellLayout extends ViewGroup {
             final int count = mShortcutsAndWidgets.getChildCount();
             for (int i = 0; i < count; i++) {
                 View child = mShortcutsAndWidgets.getChildAt(i);
-                LayoutParams lp = (LayoutParams) child.getLayoutParams();
+                CellLayoutLayoutParams
+                        lp = (CellLayoutLayoutParams) child.getLayoutParams();
                 if (lp.tmpCellX != lp.cellX || lp.tmpCellY != lp.cellY) {
                     lp.tmpCellX = lp.cellX;
                     lp.tmpCellY = lp.cellY;
@@ -2685,7 +2699,8 @@ public class CellLayout extends ViewGroup {
      */
     void onDropChild(View child) {
         if (child != null) {
-            LayoutParams lp = (LayoutParams) child.getLayoutParams();
+            CellLayoutLayoutParams
+                    lp = (CellLayoutLayoutParams) child.getLayoutParams();
             lp.dropped = true;
             child.requestLayout();
             markCellsAsOccupiedForView(child);
@@ -2727,7 +2742,8 @@ public class CellLayout extends ViewGroup {
             return;
         }
         if (view == null || view.getParent() != mShortcutsAndWidgets) return;
-        LayoutParams lp = (LayoutParams) view.getLayoutParams();
+        CellLayoutLayoutParams
+                lp = (CellLayoutLayoutParams) view.getLayoutParams();
         mOccupied.markCells(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan, true);
     }
 
@@ -2739,7 +2755,8 @@ public class CellLayout extends ViewGroup {
             return;
         }
         if (view == null || view.getParent() != mShortcutsAndWidgets) return;
-        LayoutParams lp = (LayoutParams) view.getLayoutParams();
+        CellLayoutLayoutParams
+                lp = (CellLayoutLayoutParams) view.getLayoutParams();
         mOccupied.markCells(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan, false);
     }
 
@@ -2763,165 +2780,17 @@ public class CellLayout extends ViewGroup {
 
     @Override
     public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs) {
-        return new CellLayout.LayoutParams(getContext(), attrs);
+        return new CellLayoutLayoutParams(getContext(), attrs);
     }
 
     @Override
     protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
-        return p instanceof CellLayout.LayoutParams;
+        return p instanceof CellLayoutLayoutParams;
     }
 
     @Override
     protected ViewGroup.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
-        return new CellLayout.LayoutParams(p);
-    }
-
-    public static class LayoutParams extends ViewGroup.MarginLayoutParams {
-        /**
-         * Horizontal location of the item in the grid.
-         */
-        @ViewDebug.ExportedProperty
-        public int cellX;
-
-        /**
-         * Vertical location of the item in the grid.
-         */
-        @ViewDebug.ExportedProperty
-        public int cellY;
-
-        /**
-         * Temporary horizontal location of the item in the grid during reorder
-         */
-        public int tmpCellX;
-
-        /**
-         * Temporary vertical location of the item in the grid during reorder
-         */
-        public int tmpCellY;
-
-        /**
-         * Indicates that the temporary coordinates should be used to layout the items
-         */
-        public boolean useTmpCoords;
-
-        /**
-         * Number of cells spanned horizontally by the item.
-         */
-        @ViewDebug.ExportedProperty
-        public int cellHSpan;
-
-        /**
-         * Number of cells spanned vertically by the item.
-         */
-        @ViewDebug.ExportedProperty
-        public int cellVSpan;
-
-        /**
-         * Indicates whether the item will set its x, y, width and height parameters freely,
-         * or whether these will be computed based on cellX, cellY, cellHSpan and cellVSpan.
-         */
-        public boolean isLockedToGrid = true;
-
-        /**
-         * Indicates whether this item can be reordered. Always true except in the case of the
-         * the AllApps button and QSB place holder.
-         */
-        public boolean canReorder = true;
-
-        // X coordinate of the view in the layout.
-        @ViewDebug.ExportedProperty
-        public int x;
-        // Y coordinate of the view in the layout.
-        @ViewDebug.ExportedProperty
-        public int y;
-
-        boolean dropped;
-
-        public LayoutParams(Context c, AttributeSet attrs) {
-            super(c, attrs);
-            cellHSpan = 1;
-            cellVSpan = 1;
-        }
-
-        public LayoutParams(ViewGroup.LayoutParams source) {
-            super(source);
-            cellHSpan = 1;
-            cellVSpan = 1;
-        }
-
-        public LayoutParams(LayoutParams source) {
-            super(source);
-            this.cellX = source.cellX;
-            this.cellY = source.cellY;
-            this.cellHSpan = source.cellHSpan;
-            this.cellVSpan = source.cellVSpan;
-        }
-
-        public LayoutParams(int cellX, int cellY, int cellHSpan, int cellVSpan) {
-            super(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-            this.cellX = cellX;
-            this.cellY = cellY;
-            this.cellHSpan = cellHSpan;
-            this.cellVSpan = cellVSpan;
-        }
-
-        public void setup(int cellWidth, int cellHeight, boolean invertHorizontally, int colCount,
-                int rowCount, Point borderSpace, @Nullable Rect inset) {
-            setup(cellWidth, cellHeight, invertHorizontally, colCount, rowCount, 1.0f, 1.0f,
-                    borderSpace, inset);
-        }
-
-        /**
-         * Use this method, as opposed to {@link #setup(int, int, boolean, int, int, Point, Rect)},
-         * if the view needs to be scaled.
-         *
-         * ie. In multi-window mode, we setup widgets so that they are measured and laid out
-         * using their full/invariant device profile sizes.
-         */
-        public void setup(int cellWidth, int cellHeight, boolean invertHorizontally, int colCount,
-                int rowCount, float cellScaleX, float cellScaleY, Point borderSpace,
-                @Nullable Rect inset) {
-            if (isLockedToGrid) {
-                final int myCellHSpan = cellHSpan;
-                final int myCellVSpan = cellVSpan;
-                int myCellX = useTmpCoords ? tmpCellX : cellX;
-                int myCellY = useTmpCoords ? tmpCellY : cellY;
-
-                if (invertHorizontally) {
-                    myCellX = colCount - myCellX - cellHSpan;
-                }
-
-                int hBorderSpacing = (myCellHSpan - 1) * borderSpace.x;
-                int vBorderSpacing = (myCellVSpan - 1) * borderSpace.y;
-
-                float myCellWidth = ((myCellHSpan * cellWidth) + hBorderSpacing) / cellScaleX;
-                float myCellHeight = ((myCellVSpan * cellHeight) + vBorderSpacing) / cellScaleY;
-
-                width = Math.round(myCellWidth) - leftMargin - rightMargin;
-                height = Math.round(myCellHeight) - topMargin - bottomMargin;
-                x = leftMargin + (myCellX * cellWidth) + (myCellX * borderSpace.x);
-                y = topMargin + (myCellY * cellHeight) + (myCellY * borderSpace.y);
-
-                if (inset != null) {
-                    x -= inset.left;
-                    y -= inset.top;
-                    width += inset.left + inset.right;
-                    height += inset.top + inset.bottom;
-                }
-            }
-        }
-
-        /**
-         * Sets the position to the provided point
-         */
-        public void setCellXY(Point point) {
-            cellX = point.x;
-            cellY = point.y;
-        }
-
-        public String toString() {
-            return "(" + this.cellX + ", " + this.cellY + ")";
-        }
+        return new CellLayoutLayoutParams(p);
     }
 
     // This class stores info for two purposes:
