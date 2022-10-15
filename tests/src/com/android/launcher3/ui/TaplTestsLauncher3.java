@@ -18,8 +18,6 @@ package com.android.launcher3.ui;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
-import android.platform.test.annotations.IwTest;
-
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertEquals;
@@ -31,6 +29,7 @@ import static org.junit.Assume.assumeTrue;
 
 import android.content.Intent;
 import android.graphics.Point;
+import android.platform.test.annotations.IwTest;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -433,6 +432,23 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         mLauncher.pressBack();
         mLauncher.getWorkspace();
         waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
+    }
+
+    @Test
+    @PortraitLandscape
+    public void testDragAndCancelAppIcon() {
+        final HomeAppIcon homeAppIcon = createShortcutInCenterIfNotExist(GMAIL_APP_NAME);
+        Point positionBeforeDrag =
+                mLauncher.getWorkspace().getWorkspaceIconsPositions().get(GMAIL_APP_NAME);
+        assertNotNull("App not found in Workspace before dragging.", positionBeforeDrag);
+
+        mLauncher.getWorkspace().dragAndCancelAppIcon(homeAppIcon);
+
+        Point positionAfterDrag =
+                mLauncher.getWorkspace().getWorkspaceIconsPositions().get(GMAIL_APP_NAME);
+        assertNotNull("App not found in Workspace after dragging.", positionAfterDrag);
+        assertEquals("App not returned to same position in Workspace after drag & cancel",
+                positionBeforeDrag, positionAfterDrag);
     }
 
     @Test
