@@ -51,6 +51,8 @@
     <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
     <string name="always_reload_icons_label">नेहमी चिन्हांना पुन्हा लोड करा</string>
     <string name="always_reload_icons_description">साठवून ठेवलेल्या चिन्ह पॅक मधून चिन्ह वापरणे टाळा</string>
+    <string name="transparent_background_icons">Transparent Themed Icons</string>
+    <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">मुखपृष्ठाचे चक्रगति</string>
     <string name="home_screen_rotaton_description">When device is rotated.</string>
@@ -123,6 +125,7 @@
     <string name="reset_font">Reset</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Dynamic</string>
+    <string name="swatches">Swatches</string>
     <string name="presets">Presets</string>
     <string name="custom">Custom</string>
     <string name="rgb">RGB</string>
@@ -228,6 +231,7 @@
     <string name="background_opacity">पार्श्वभूमी निरुता(अस्पष्टता)</string>
     <string name="pref_category_search">Search</string>
     <string name="show_app_search_bar">शोध गज दाखवा</string>
+    <string name="show_hidden_apps_search">Show Hidden Apps In Search</string>
     <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
     <string name="fuzzy_search_title">Fuzzy Search</string>
     <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
