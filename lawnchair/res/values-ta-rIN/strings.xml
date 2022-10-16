@@ -51,6 +51,8 @@
     <string name="workspace_increase_max_grid_size_description">முகப்பு திரையின் அனுமதிக்கப்பட்ட கிரிட் அளவான 10x10-இல் இருந்து 20x20-ஆக உயர்த்து.</string>
     <string name="always_reload_icons_label">எப்போதும் ஐகான்களை மீண்டும் ஏற்றவும்</string>
     <string name="always_reload_icons_description">ஐகான் பேக்குகளிலிருந்து தற்காலிகச் சேமிப்பு ஐகான்களைப் பயன்படுத்துவதைத் தவிர்க்கவும்</string>
+    <string name="transparent_background_icons">Transparent Themed Icons</string>
+    <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">முகப்புத் திரைச் சுழற்சி</string>
     <string name="home_screen_rotaton_description">கருவி சுழற்றப்படும் போது.</string>
@@ -123,6 +125,7 @@
     <string name="reset_font">அகரமாக்கு</string>
     <!-- colorpreference/* -->
     <string name="dynamic">இயங்குநிலை</string>
+    <string name="swatches">Swatches</string>
     <string name="presets">முன்னிருப்புகள்</string>
     <string name="custom">தனிப்பயன்</string>
     <string name="rgb">ஆர்ஜிபி</string>
@@ -228,6 +231,7 @@
     <string name="background_opacity">பின்னணி ஒளிபுகாமை</string>
     <string name="pref_category_search">தேடல்</string>
     <string name="show_app_search_bar">தேடல் பட்டை காட்டு</string>
+    <string name="show_hidden_apps_search">Show Hidden Apps In Search</string>
     <string name="pref_search_auto_show_keyboard">தானாக விசைப்பலகையைக் காட்டு</string>
     <string name="fuzzy_search_title">தெளிவறு தேடல்</string>
     <string name="fuzzy_search_desc">செயலி தேடல்களுக்குத் தோராய பொருத்தம்.</string>

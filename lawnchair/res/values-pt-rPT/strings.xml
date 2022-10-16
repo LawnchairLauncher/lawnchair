@@ -51,6 +51,8 @@
     <string name="workspace_increase_max_grid_size_description">Aumentar o tamanho máximo permitido da grelha do Ecrã Inicial de 10 x 10 para 20 x 20.</string>
     <string name="always_reload_icons_label">Recarregar Ícones Sempre</string>
     <string name="always_reload_icons_description">Evitar utilizar ícones em cache dos pacotes de ícones</string>
+    <string name="transparent_background_icons">Ícones Temáticos Transparentes</string>
+    <string name="transparent_background_icons_description">Usar fundo transparente nos ícones temáticos</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotação de Ecrã Inicial</string>
     <string name="home_screen_rotaton_description">Quando o dispositivo é rodado.</string>
@@ -123,6 +125,7 @@
     <string name="reset_font">Redefinir</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Dinâmico</string>
+    <string name="swatches">Amostras</string>
     <string name="presets">Predefinições</string>
     <string name="custom">Personalizado</string>
     <string name="rgb">RGB</string>
@@ -228,6 +231,7 @@
     <string name="background_opacity">Opacidade de Fundo</string>
     <string name="pref_category_search">Pesquisar</string>
     <string name="show_app_search_bar">Mostrar Barra de Pesquisa</string>
+    <string name="show_hidden_apps_search">Mostrar Aplicações Escondidas na Pesquisa</string>
     <string name="pref_search_auto_show_keyboard">Mostrar Teclado Automaticamente</string>
     <string name="fuzzy_search_title">Pesquisa Aproximada</string>
     <string name="fuzzy_search_desc">Correspondência aproximada para pesquisa de aplicações.</string>
