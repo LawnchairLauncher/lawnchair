@@ -30,11 +30,13 @@ public class DesktopTaskbarUIController extends TaskbarUIController {
         mLauncher = launcher;
     }
 
+    @SuppressWarnings("MissingSuperCall") // TODO: Fix me
     @Override
     protected void init(TaskbarControllers taskbarControllers) {
         mLauncher.getHotseat().setIconsAlpha(0f);
     }
 
+    @SuppressWarnings("MissingSuperCall") // TODO: Fix me
     @Override
     protected void onDestroy() {
         mLauncher.getHotseat().setIconsAlpha(1f);
