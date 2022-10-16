@@ -27,6 +27,7 @@ import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.SafeCloseable
 import org.xmlpull.v1.XmlPullParser
 import java.util.function.Supplier
+import app.lawnchair.icons.CommonUtil
 
 class LawnchairIconProvider @JvmOverloads constructor(
     private val context: Context,
@@ -135,6 +136,10 @@ class LawnchairIconProvider @JvmOverloads constructor(
     }
 
     override fun getThemeData(componentName: ComponentName): ThemedIconDrawable.ThemeData? {
+        val td = getDynamicIconsFromMap(context, themeMap, componentName)
+        if(td != null){
+            return td;
+        }
         return themeMap[componentName] ?: themeMap[ComponentName(componentName.packageName, "")]
     }
 
@@ -311,6 +316,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
                 resources = context.packageManager.getResourcesForApplication(LAWNICONS_PACKAGE_NAME),
                 packageName = LAWNICONS_PACKAGE_NAME
             )
+            updateMapWithDynamicIcons(context, map)
         }
 
         return map
