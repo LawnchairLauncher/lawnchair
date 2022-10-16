@@ -58,7 +58,7 @@ fun AppDrawerPreferences() {
 
         PreferenceGroup(heading = stringResource(id = R.string.hidden_apps_label)) {
             val hiddenApps = prefs2.hiddenApps.getAdapter().state.value
-            val showHiddenAppsInSearch = prefs2.showHiddenAppsInSearch.getAdapter()
+            val hideHiddenAppsInSearch = !prefs2.showHiddenAppsInSearch.getAdapter()
             val enableSmartHide = prefs2.enableSmartHide.getAdapter()
             NavigationActionPreference(
                 label = stringResource(id = R.string.hidden_apps_label),
@@ -66,14 +66,15 @@ fun AppDrawerPreferences() {
                 destination = subRoute(name = AppDrawerRoutes.HIDDEN_APPS),
             )
             SwitchPreference(
-                label = stringResource(id = R.string.show_hidden_apps_search),
-                adapter = showHiddenAppsInSearch,
+                label = stringResource(id = R.string.hide_hidden_apps_search),
+                adapter = hideHiddenAppsInSearch,
             )
-            SwitchPreference(
-                label = stringResource(id = R.string.show_enable_smart_hide),
-                adapter = enableSmartHide,
-                enabled = !showHiddenAppsInSearch.state.value
-            )
+            ExpandAndShrink(hideHiddenAppsInSearch.state.value) {
+                SwitchPreference(
+                    label = stringResource(id = R.string.show_enable_smart_hide),
+                    adapter = enableSmartHide,
+                )
+            }
         }
 
         val deviceSearchEnabled = LawnchairSearchAlgorithm.isDeviceSearchEnabled(LocalContext.current)
