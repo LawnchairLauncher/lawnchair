@@ -51,6 +51,8 @@
     <string name="workspace_increase_max_grid_size_description">Aumenta o tamanho máximo permitido da grade da tela inicial de 10 x 10 para 20 x 20.</string>
     <string name="always_reload_icons_label">Sempre Recarregar Ícones</string>
     <string name="always_reload_icons_description">Evite usar ícones em cache de pacotes de ícones</string>
+    <string name="transparent_background_icons">Ícones Temáticos Transparentes</string>
+    <string name="transparent_background_icons_description">Usa fundo transparente em ícones temáticos</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotação da Tela Inicial</string>
     <string name="home_screen_rotaton_description">Quando o dispositivo for rotacionado.</string>
@@ -68,7 +70,7 @@
     <string name="notification_dots_color">Cor do Ponto de Notificação</string>
     <string name="notification_dots_text_color">Cor do Contador de Notificação</string>
     <string name="notification_dots_color_contrast_warning_always">Aviso: Ponto de notificação e cores do contador não têm contraste suficiente entre si</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Aviso: Ponto de notificação e Cores do Contador não têm contraste suficiente entre si</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Necessário o Acesso às Notificações</string>
     <string name="missing_notification_access_description">Necessário o acesso às notificações.</string>
@@ -123,6 +125,7 @@
     <string name="reset_font">Redefinir</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Dinâmico</string>
+    <string name="swatches">Amostras</string>
     <string name="presets">Predefinições</string>
     <string name="custom">Personalizar</string>
     <string name="rgb">RGB</string>
@@ -139,7 +142,7 @@
     <string name="action_paste">Colar</string>
     <string name="copied_toast">Copiado para a área de transferência.</string>
     <string name="invalid_color">Cor Inválida</string>
-    <string name="launcher_default_color">Managed by Lawnchair</string>
+    <string name="launcher_default_color">Gerenciado por Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Adicionar novos aplicativos à tela inicial</string>
@@ -228,6 +231,7 @@
     <string name="background_opacity">Opacidade do fundo</string>
     <string name="pref_category_search">Pesquisar</string>
     <string name="show_app_search_bar">Exibir Barra de Pesquisa</string>
+    <string name="show_hidden_apps_search">Mostrar Aplicativos Ocultos na Pesquisa</string>
     <string name="pref_search_auto_show_keyboard">Mostrar Teclado Automaticamente</string>
     <string name="fuzzy_search_title">Pesquisa Aproximada</string>
     <string name="fuzzy_search_desc">Correspondência aproximada para pesquisas de apps.</string>

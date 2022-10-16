@@ -47,10 +47,12 @@
     <string name="font_picker_description">Beberapa teks tetap tidak berubah.</string>
     <string name="smartspace_calendar_label">Kustomisasi Kalender Sekilas</string>
     <string name="smartspace_calendar_description">Izinkan menampilkan tanggal dalam sistem kalender non-Gregorian.</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
+    <string name="workspace_increase_max_grid_size_label">Peningkatan Ukuran Kotak Layar Utama Maks</string>
     <string name="workspace_increase_max_grid_size_description">Tingkatkan ukuran kisi Layar Beranda maksimum yang diizinkan dari 10 x 10 menjadi 20 x 20.</string>
     <string name="always_reload_icons_label">Selalu Muat ulang Ikon</string>
-    <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
+    <string name="always_reload_icons_description">Hindari menggunakan ikon cache dari paket ikon</string>
+    <string name="transparent_background_icons">Transparan Ikon Bertema</string>
+    <string name="transparent_background_icons_description">Gunakan latar belakang transparan pada ikon bertema</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotasi Layar Beranda</string>
     <string name="home_screen_rotaton_description">Ketika perangkat diputar.</string>
@@ -66,9 +68,9 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Tampilkan Jumlah Notifikasi</string>
     <string name="notification_dots_color">Warna Titik Notifikasi</string>
-    <string name="notification_dots_text_color">Notification Count Color</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_text_color">Warna Hitungan Notifikasi</string>
+    <string name="notification_dots_color_contrast_warning_always">Peringatan: Warna Dot &amp; Hitungan Notifikasi tidak memiliki kontras yang cukup satu sama lain</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Peringatan: Warna Dot &amp; Hitungan Notifikasi mungkin tidak selalu memiliki kontras yang cukup satu sama lain</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Akses Notifikasi Diperlukan</string>
     <string name="missing_notification_access_description">Akses notifikasi diperlukan.</string>
@@ -96,13 +98,13 @@
     <string name="icon_shape_system">Sistem</string>
     <string name="icon_shape_circle">Lingkaran</string>
     <string name="icon_shape_cylinder">Silinder</string>
-    <string name="icon_shape_diamond">Diamond</string>
-    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_diamond">Berlian</string>
+    <string name="icon_shape_egg">Telur</string>
     <string name="icon_shape_cupertino">iOS</string>
-    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_octagon">Segi delapan</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Persegi Membulat</string>
-    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_sharp_square">Kotak Tajam</string>
     <string name="icon_shape_square">Persegi</string>
     <string name="icon_shape_squircle">Squircle</string>
     <string name="icon_shape_teardrop">Tetesan air</string>
@@ -123,6 +125,7 @@
     <string name="reset_font">Atur ulang</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Dinamis</string>
+    <string name="swatches">Swatch</string>
     <string name="presets">Preset</string>
     <string name="custom">Kustom</string>
     <string name="rgb">RGB</string>
@@ -228,6 +231,7 @@
     <string name="background_opacity">Kegelapan Latar Belakang</string>
     <string name="pref_category_search">Cari</string>
     <string name="show_app_search_bar">Tampilkan Bilah Pencarian</string>
+    <string name="show_hidden_apps_search">Tampilkan Aplikasi Tersembunyi Dalam Pencarian</string>
     <string name="pref_search_auto_show_keyboard">Tampilkan keyboard secara otomatis</string>
     <string name="fuzzy_search_title">Pencarian Fuzzy</string>
     <string name="fuzzy_search_desc">Perkiraan pencocokan untuk pencarian aplikasi.</string>

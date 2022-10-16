@@ -49,8 +49,10 @@
     <string name="smartspace_calendar_description">允许显示非公历日期</string>
     <string name="workspace_increase_max_grid_size_label">提高主屏幕最大网格大小</string>
     <string name="workspace_increase_max_grid_size_description">将最大允许的主屏幕网格大小从10 x 10增加到20x 20。</string>
-    <string name="always_reload_icons_label">Always Reload Icons</string>
-    <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
+    <string name="always_reload_icons_label">总是重新加载图标</string>
+    <string name="always_reload_icons_description">避免在图标包中使用缓存图标</string>
+    <string name="transparent_background_icons">透明的主题图标</string>
+    <string name="transparent_background_icons_description">在主题图标上使用透明背景</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">主屏幕旋转</string>
     <string name="home_screen_rotaton_description">当设备旋转时</string>
@@ -67,8 +69,8 @@
     <string name="show_notification_count">显示通知计数</string>
     <string name="notification_dots_color">通知圆点颜色</string>
     <string name="notification_dots_text_color">通知计数颜色</string>
-    <string name="notification_dots_color_contrast_warning_always">注意：通知圆点和通知计数的颜色对比度过低</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">注意：通知圆点和通知计数的颜色对比度过低，可能会看不清</string>
+    <string name="notification_dots_color_contrast_warning_always">警告: 通知点 &amp; 计数器颜色之间没有足够的对比度</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">警告: 通知点 &amp; 计数器颜色可能不总是有足够的对比度</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">需要通知权限</string>
     <string name="missing_notification_access_description">需要通知权限。</string>
@@ -96,10 +98,10 @@
     <string name="icon_shape_system">系统</string>
     <string name="icon_shape_circle">圆形</string>
     <string name="icon_shape_cylinder">圆柱形</string>
-    <string name="icon_shape_diamond">Diamond</string>
-    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_diamond">菱形</string>
+    <string name="icon_shape_egg">鹅卵石形</string>
     <string name="icon_shape_cupertino">iOS</string>
-    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_octagon">八边形</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">圆角方形</string>
     <string name="icon_shape_sharp_square">尖锐方形</string>
@@ -123,6 +125,7 @@
     <string name="reset_font">重置</string>
     <!-- colorpreference/* -->
     <string name="dynamic">动态的</string>
+    <string name="swatches">色调</string>
     <string name="presets">预设</string>
     <string name="custom">自定义</string>
     <string name="rgb">RGB</string>
@@ -228,6 +231,7 @@
     <string name="background_opacity">背景不透明度</string>
     <string name="pref_category_search">搜索</string>
     <string name="show_app_search_bar">显示搜索栏</string>
+    <string name="show_hidden_apps_search">在搜索中显示隐藏的应用</string>
     <string name="pref_search_auto_show_keyboard">自动显示键盘</string>
     <string name="fuzzy_search_title">模糊搜索</string>
     <string name="fuzzy_search_desc">搜索应用时显示近似结果</string>

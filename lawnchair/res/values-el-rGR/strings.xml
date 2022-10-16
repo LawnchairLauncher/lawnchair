@@ -51,6 +51,8 @@
     <string name="workspace_increase_max_grid_size_description">Αυξήστε το μέγιστο επιτρεπόμενο μέγεθος πλέγματος Αρχικής Οθόνης από 10×10 έως 20×20.</string>
     <string name="always_reload_icons_label">Να γίνεται πάντοτε Επαναφόρτωση Εικονιδίων</string>
     <string name="always_reload_icons_description">Αποφυγή χρήσης αποθηκευμένων εικονιδίων από πακέτα εικονιδίων</string>
+    <string name="transparent_background_icons">Διαφανή Θεματοποιημένα Εικονίδια</string>
+    <string name="transparent_background_icons_description">Χρήση διαφανούς φόντου στα θεματοποιημένα εικονίδια</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Περιστροφή Αρχικής Οθόνης</string>
     <string name="home_screen_rotaton_description">Όταν η συσκευή περιστρέφεται.</string>
@@ -67,8 +69,8 @@
     <string name="show_notification_count">Εμφάνιση Πλήθους Ειδοποιήσεων</string>
     <string name="notification_dots_color">Χρώμα Κουκκίδας Ειδοποιήσεων</string>
     <string name="notification_dots_text_color">Χρώμα Κουκκίδας Ειδοποιήσεων</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_always">Προσοχή: Τα χρώματα των Κουκκίδων Ειδοποιήσεων &amp; του Πλήθους Ειδοποιήσεων δεν έχουν αρκετή αντίθεση μεταξύ τους</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Προσοχή: Τα χρώματα των Κουκκίδων Ειδοποιήσεων &amp; του Πλήθους Ειδοποιήσεων ίσως δεν έχουν πάντα αρκετή αντίθεση μεταξύ τους</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Απαιτείται Πρόσβαση Ειδοποιήσεων</string>
     <string name="missing_notification_access_description">Απαιτείται Πρόσβαση Ειδοποιήσεων.</string>
@@ -123,6 +125,7 @@
     <string name="reset_font">Επαναφορά</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Δυναμικό</string>
+    <string name="swatches">Δείγματα</string>
     <string name="presets">Προεπιλογές</string>
     <string name="custom">Προσαρμοσμένο</string>
     <string name="rgb">RGB</string>
@@ -228,6 +231,7 @@
     <string name="background_opacity">Αδιαφάνεια Φόντου</string>
     <string name="pref_category_search">Αναζήτηση</string>
     <string name="show_app_search_bar">Εμφάνιση Γραμμής Αναζήτησης</string>
+    <string name="show_hidden_apps_search">Εμφάνιση Κρυφών Εφαρμογών στην Αναζήτηση</string>
     <string name="pref_search_auto_show_keyboard">Αυτόματη Εμφάνιση Πληκτρολογίου</string>
     <string name="fuzzy_search_title">Ασαφής Αναζήτηση</string>
     <string name="fuzzy_search_desc">Κατά προσέγγιση αντιστοίχιση για αναζητήσεις εφαρμογών.</string>

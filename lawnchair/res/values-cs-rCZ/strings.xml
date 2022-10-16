@@ -51,6 +51,8 @@
     <string name="workspace_increase_max_grid_size_description">Zvýšit maximální povolenou velikost mřížky domovské obrazovky z 10 x 10 x 20 x 20.</string>
     <string name="always_reload_icons_label">Vždy znovu načíst ikony</string>
     <string name="always_reload_icons_description">Vyhnout se používání uložených ikon z balíčků ikon</string>
+    <string name="transparent_background_icons">Ikony s průhledným tématem</string>
+    <string name="transparent_background_icons_description">Použít průhledné pozadí u ikon s tématem</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Otáčení domovské obrazovky</string>
     <string name="home_screen_rotaton_description">Při otočení zařízení.</string>
@@ -123,6 +125,7 @@
     <string name="reset_font">Obnovit</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Dynamická</string>
+    <string name="swatches">Vzorníky</string>
     <string name="presets">Předvolby</string>
     <string name="custom">Vlastní</string>
     <string name="rgb">RGB</string>
@@ -228,6 +231,7 @@
     <string name="background_opacity">Průhlednost pozadí</string>
     <string name="pref_category_search">Vyhledávání</string>
     <string name="show_app_search_bar">Zobrazit vyhledávací lištu</string>
+    <string name="show_hidden_apps_search">Zobrazit skryté aplikace ve vyhledávání</string>
     <string name="pref_search_auto_show_keyboard">Automaticky zobrazit klávesnici</string>
     <string name="fuzzy_search_title">Fuzzy hledání</string>
     <string name="fuzzy_search_desc">Přibližná shoda při vyhledávání aplikací.</string>

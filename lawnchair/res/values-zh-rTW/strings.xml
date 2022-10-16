@@ -51,6 +51,8 @@
     <string name="workspace_increase_max_grid_size_description">將主畫面網格最多 10 x 10 的限制提升至 20 x 20。</string>
     <string name="always_reload_icons_label">一律重新載入圖示</string>
     <string name="always_reload_icons_description">避免使用圖示套件中已快取的圖示</string>
+    <string name="transparent_background_icons">圖示套用主題色與透明背景</string>
+    <string name="transparent_background_icons_description">在套用主題色的圖示上使用透明背景</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">旋轉主螢幕</string>
     <string name="home_screen_rotaton_description">當手機旋轉時</string>
@@ -123,6 +125,7 @@
     <string name="reset_font">重設</string>
     <!-- colorpreference/* -->
     <string name="dynamic">動態</string>
+    <string name="swatches">色票</string>
     <string name="presets">預設集</string>
     <string name="custom">自訂</string>
     <string name="rgb">RGB</string>
@@ -228,6 +231,7 @@
     <string name="background_opacity">背景透明度</string>
     <string name="pref_category_search">搜尋</string>
     <string name="show_app_search_bar">顯示搜尋列</string>
+    <string name="show_hidden_apps_search">在搜尋結果中檢視已隱藏的應用程式</string>
     <string name="pref_search_auto_show_keyboard">自動顯示鍵盤</string>
     <string name="fuzzy_search_title">模糊搜尋</string>
     <string name="fuzzy_search_desc">找尋名稱相似的應用程式</string>

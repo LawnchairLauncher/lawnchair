@@ -51,6 +51,8 @@
     <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
     <string name="always_reload_icons_label">Always Reload Icons</string>
     <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
+    <string name="transparent_background_icons">Transparent Themed Icons</string>
+    <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">تدوير الشاشة الرئيسة</string>
     <string name="home_screen_rotaton_description">عندما يُدَوَّر الجهاز.</string>
@@ -123,6 +125,7 @@
     <string name="reset_font">إعادة ضبط</string>
     <!-- colorpreference/* -->
     <string name="dynamic">ديناميكية</string>
+    <string name="swatches">Swatches</string>
     <string name="presets">الإعدادات المسبقة</string>
     <string name="custom">تخصيص</string>
     <string name="rgb">RGB</string>
@@ -228,6 +231,7 @@
     <string name="background_opacity">شفافية الخلفية</string>
     <string name="pref_category_search">البحث</string>
     <string name="show_app_search_bar">إظهار شريط البحث</string>
+    <string name="show_hidden_apps_search">Show Hidden Apps In Search</string>
     <string name="pref_search_auto_show_keyboard">إظهار لوحة المفاتيح تلقائياً</string>
     <string name="fuzzy_search_title">بحث غامض</string>
     <string name="fuzzy_search_desc">قارب التطابقات لعمليات البحث عن التطبيقات.</string>

@@ -47,10 +47,12 @@
     <string name="font_picker_description">Некоторый текст останется без изменений.</string>
     <string name="smartspace_calendar_label">Настройки календаря на виджете \"Самое главное\"</string>
     <string name="smartspace_calendar_description">Разрешить показывать дату в негригорианских календарных системах.</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <string name="workspace_increase_max_grid_size_label">Увеличенный размер сетки домашнего экрана</string>
+    <string name="workspace_increase_max_grid_size_description">Увеличить максимально допустимый размер сетки домашнего экрана с 10 x 10 до 20 x 20.</string>
     <string name="always_reload_icons_label">Всегда перезагружать иконки</string>
     <string name="always_reload_icons_description">Избегать использования кэшированных иконок из наборов иконок</string>
+    <string name="transparent_background_icons">Прозрачные тематические иконки</string>
+    <string name="transparent_background_icons_description">Использовать прозрачный фон на тематических значках</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Поворачивать домашний экран</string>
     <string name="home_screen_rotaton_description">При повороте устройства.</string>
@@ -66,9 +68,9 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Показывать количество уведомлений</string>
     <string name="notification_dots_color">Цвет точек уведомления</string>
-    <string name="notification_dots_text_color">Notification Count Color</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_text_color">Цвет точек уведомления</string>
+    <string name="notification_dots_color_contrast_warning_always">Предупреждение: Отчёт уведомлений &amp; Цвет счетчика недостаточно контрастирует друг с другом</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Предупреждение: Отчёт уведомлений &amp; Цвет счетчика недостаточно контрастирует друг с другом</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Доступ к уведомлениям</string>
     <string name="missing_notification_access_description">Необходимо разрешение доступа к уведомлениям.</string>
@@ -96,13 +98,13 @@
     <string name="icon_shape_system">Система</string>
     <string name="icon_shape_circle">Круг</string>
     <string name="icon_shape_cylinder">Цилиндр</string>
-    <string name="icon_shape_diamond">Diamond</string>
-    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_diamond">Алмаз</string>
+    <string name="icon_shape_egg">Яйцо</string>
     <string name="icon_shape_cupertino">iOS</string>
-    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_octagon">Октагон</string>
     <string name="icon_shape_sammy">Из OneUI</string>
     <string name="icon_shape_rounded_square">Скруглённый квадрат</string>
-    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_sharp_square">Острый квадрат</string>
     <string name="icon_shape_square">Квадратный</string>
     <string name="icon_shape_squircle">Квадрокруг</string>
     <string name="icon_shape_teardrop">Капля</string>
@@ -123,6 +125,7 @@
     <string name="reset_font">Сброс</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Динамический</string>
+    <string name="swatches">Образцы</string>
     <string name="presets">Предустановки</string>
     <string name="custom">Настраиваемый</string>
     <string name="rgb">RGB</string>
@@ -139,7 +142,7 @@
     <string name="action_paste">Вставить</string>
     <string name="copied_toast">Скопировано в буфер обмена.</string>
     <string name="invalid_color">Недопустимый цвет</string>
-    <string name="launcher_default_color">Managed by Lawnchair</string>
+    <string name="launcher_default_color">Управляется Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Добавлять новые приложения на домашний экран</string>
@@ -205,7 +208,7 @@
     <string name="smartspace_calendar_persian">Персидский</string>
     <string name="smartspace_preferences">Настройки</string>
     <string name="smartspace_widget_toggle_label">Показать на главном экране</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <string name="smartspace_widget_toggle_description">At a Glance можно добавить вручную, поместив \"Lawnchair\" виджет.</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">Панель поиска</string>
@@ -228,6 +231,7 @@
     <string name="background_opacity">Прозрачность фона</string>
     <string name="pref_category_search">Поиск</string>
     <string name="show_app_search_bar">Показать строку поиска</string>
+    <string name="show_hidden_apps_search">Показывать скрытые приложения во время поиска</string>
     <string name="pref_search_auto_show_keyboard">Автоматически Показывать Клавиатуру</string>
     <string name="fuzzy_search_title">Поиск по сходству</string>
     <string name="fuzzy_search_desc">Поиск приложений по похожему запросу.</string>

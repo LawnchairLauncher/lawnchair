@@ -51,6 +51,8 @@
     <string name="workspace_increase_max_grid_size_description">Vergrößere die erlaubte Startbildschirm-Rastergröße von 10 x 10 auf 20 x 20.</string>
     <string name="always_reload_icons_label">Symbole immer neu laden</string>
     <string name="always_reload_icons_description">Die Verwendung zwischengespeicherter Symbole aus Symbol-Paketen vermeiden</string>
+    <string name="transparent_background_icons">Transparente Symboldesigns</string>
+    <string name="transparent_background_icons_description">Transparenten Hintergrund für Symboldesigns verwenden</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Startbildschirm-Drehung</string>
     <string name="home_screen_rotaton_description">Wenn Gerät gedreht wird.</string>
@@ -123,6 +125,7 @@
     <string name="reset_font">Zurücksetzen</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Dynamisch</string>
+    <string name="swatches">Farbfelder</string>
     <string name="presets">Voreinstellungen</string>
     <string name="custom">Benutzerdefiniert</string>
     <string name="rgb">RGB</string>
@@ -228,6 +231,7 @@
     <string name="background_opacity">Hintergrundtransparenz</string>
     <string name="pref_category_search">Suchen</string>
     <string name="show_app_search_bar">Suchleiste anzeigen</string>
+    <string name="show_hidden_apps_search">Versteckte Apps in Suchergebnissen anzeigen</string>
     <string name="pref_search_auto_show_keyboard">Tastatur automatisch anzeigen</string>
     <string name="fuzzy_search_title">Unscharfe Suche</string>
     <string name="fuzzy_search_desc">Ungefähre Übereinstimmung für Appsuche.</string>
