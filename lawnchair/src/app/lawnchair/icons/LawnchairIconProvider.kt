@@ -27,6 +27,7 @@ import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.SafeCloseable
 import org.xmlpull.v1.XmlPullParser
 import java.util.function.Supplier
+import com.android.launcher3.util.CommonUtil
 
 class LawnchairIconProvider @JvmOverloads constructor(
     private val context: Context,
@@ -104,11 +105,13 @@ class LawnchairIconProvider @JvmOverloads constructor(
                 }
                 clock != null -> {
                     // the icon supports dynamic clock, use dynamic themed clock
+                    Log.d("LawnICP", "the icon supports dynamic clock, use dynamic themed clock")
                     themeData = getThemeData(mClock.packageName, "")
                     iconType = ICON_TYPE_CLOCK
                 }
                 packageName == mClock.packageName -> {
                     // is clock app but icon might not be adaptive, fallback to static themed clock
+                    Log.d("LawnICP", "is clock app but icon might not be adaptive, fallback to static themed clock")
                     themeData = ThemedIconDrawable.ThemeData(context.resources, BuildConfig.APPLICATION_ID, R.drawable.themed_icon_static_clock)
                 }
                 packageName == mCalendar.packageName -> {
@@ -135,7 +138,8 @@ class LawnchairIconProvider @JvmOverloads constructor(
     }
 
     override fun getThemeData(componentName: ComponentName): ThemedIconDrawable.ThemeData? {
-        return themeMap[componentName] ?: themeMap[ComponentName(componentName.packageName, "")]
+        return CommonUtil.getThemeMap(context , componentName,themeMap)
+//        return themeMap[componentName] ?: themeMap[ComponentName(componentName.packageName, "")]
     }
 
     override fun getIcon(info: ActivityInfo?): Drawable {
@@ -224,6 +228,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
         }
 
         override fun onReceive(context: Context, intent: Intent) {
+
             when (intent.action) {
                 ACTION_TIMEZONE_CHANGED -> {
                     iconPack.getClocks().forEach { componentName ->
@@ -235,6 +240,10 @@ class LawnchairIconProvider @JvmOverloads constructor(
                         iconPack.getCalendars().forEach { componentName ->
                             callback.onAppIconChanged(componentName.packageName, user)
                         }
+                    }
+                    for (user in context.getSystemService<UserManager>(UserManager::class.java)
+                        .getUserProfiles()) {
+                        CommonUtil.updateIconState(context, callback, user)
                     }
                 }
             }
@@ -252,6 +261,9 @@ class LawnchairIconProvider @JvmOverloads constructor(
 
         init {
             val filter = IntentFilter(ACTION_PACKAGE_ADDED)
+            filter.addAction(Intent.ACTION_TIME_CHANGED)
+            filter.addAction(Intent.ACTION_DATE_CHANGED)
+            filter.addAction(Intent.ACTION_TIMEZONE_CHANGED)
             filter.addAction(ACTION_PACKAGE_CHANGED)
             filter.addAction(ACTION_PACKAGE_REMOVED)
             filter.addDataScheme("package")
@@ -296,6 +308,18 @@ class LawnchairIconProvider @JvmOverloads constructor(
                         }
                     }
                 }
+                Log.d(TAG, "Befroe" + map.size)
+                //        val iconId = parser.getAttributeResourceValue(null, ATTR_DRAWABLE, 0)
+                CommonUtil.updateMap(context ,map )
+//                map.put(
+//                    ComponentName("com.xten.starfall", ""),
+//                    ThemedIconDrawable.ThemeData(
+//                        context.getResources(),
+//                        "com.xten.starfall",
+//                        CommonUtil.getDynamicIconId(context)
+//                    )
+//                )
+                Log.d(TAG, "After" + map.size)
             } catch (e: Exception) {
                 Log.e(TAG, "Unable to parse icon map.", e)
             }
@@ -312,6 +336,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
                 packageName = LAWNICONS_PACKAGE_NAME
             )
         }
+
 
         return map
     }

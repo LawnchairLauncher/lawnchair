@@ -17,8 +17,18 @@
 
 <resources>
     <string name="app_filter_class" translatable="false">app.lawnchair.DefaultAppFilter</string>
-    <string name="calendar_component_name" translatable="false">com.google.android.calendar/com.android.calendar.AllInOneActivity</string>
+    <!--<string name="calendar_component_name" translatable="false">com.google.android.calendar/com.android.calendar.AllInOneActivity</string>-->
+    <string name="calendar_component_name" translatable="false"></string>
+    <string-array name="calendar_components_name">
+        <item>com.google.android.calendar</item>
+        <item>com.samsung.android.calendar</item>
+        <item>com.xiaomi.calendar</item>
+    </string-array>
     <string name="clock_component_name" translatable="false">com.google.android.deskclock/com.android.deskclock.DeskClock</string>
+    <string-array name="clock_components_name">
+        <item>com.google.android.deskclock</item>
+        <item>com.sec.android.app.clockpackage</item>
+    </string-array>
     <string name="launcher_activity_logic_class" translatable="false">app.lawnchair.LauncherActivityCachingLogic</string>
     <string name="main_process_initializer_class" translatable="false">app.lawnchair.LawnchairProcessInitializer</string>
     <string name="task_overlay_factory_class" translatable="false">app.lawnchair.overview.TaskOverlayFactoryImpl</string>
