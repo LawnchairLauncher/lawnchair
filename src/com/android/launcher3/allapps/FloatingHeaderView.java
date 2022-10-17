@@ -68,7 +68,7 @@ public class FloatingHeaderView extends LinearLayout implements
                         mAnimator.cancel();
                     }
 
-                    int current = -mCurrentRV.computeVerticalScrollOffset();
+                    int current = -mCurrentRV.getCurrentScrollY();
                     boolean headerCollapsed = mHeaderCollapsed;
                     moved(current);
                     applyVerticalMove();
