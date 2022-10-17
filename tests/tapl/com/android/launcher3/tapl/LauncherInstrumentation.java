@@ -797,7 +797,7 @@ public final class LauncherInstrumentation {
                     waitUntilLauncherObjectGone(APPS_RES_ID);
                     waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
-                    checkTaskbarVisibility();
+                    waitUntilLauncherObjectGone(TASKBAR_RES_ID);
                     waitUntilLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
 
                     return waitForLauncherObject(OVERVIEW_RES_ID);
@@ -806,7 +806,7 @@ public final class LauncherInstrumentation {
                     waitUntilLauncherObjectGone(APPS_RES_ID);
                     waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
-                    checkTaskbarVisibility();
+                    waitUntilLauncherObjectGone(TASKBAR_RES_ID);
 
                     waitForLauncherObject(SPLIT_PLACEHOLDER_RES_ID);
                     return waitForLauncherObject(OVERVIEW_RES_ID);
@@ -815,7 +815,7 @@ public final class LauncherInstrumentation {
                     waitUntilLauncherObjectGone(APPS_RES_ID);
                     waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
-                    checkTaskbarVisibility();
+                    waitUntilLauncherObjectGone(TASKBAR_RES_ID);
                     waitUntilLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
 
                     return waitForFallbackLauncherObject(OVERVIEW_RES_ID);
@@ -827,25 +827,20 @@ public final class LauncherInstrumentation {
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
                     waitUntilLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
 
-                    checkTaskbarVisibility();
+                    if (mIgnoreTaskbarVisibility) {
+                        return null;
+                    }
+                    if (isTablet() && !isFallbackOverview()) {
+                        waitForLauncherObject(TASKBAR_RES_ID);
+                    } else {
+                        waitUntilLauncherObjectGone(TASKBAR_RES_ID);
+                    }
                     return null;
                 }
                 default:
                     fail("Invalid state: " + containerType);
                     return null;
             }
-        }
-    }
-
-    private void checkTaskbarVisibility() {
-        if (mIgnoreTaskbarVisibility) {
-            return;
-        }
-
-        if (isTablet() && !isFallbackOverview()) {
-            waitForLauncherObject(TASKBAR_RES_ID);
-        } else {
-            waitUntilLauncherObjectGone(TASKBAR_RES_ID);
         }
     }
 
