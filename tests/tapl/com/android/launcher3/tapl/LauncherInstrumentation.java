@@ -48,7 +48,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.MotionEvent;
-import android.view.Surface;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
@@ -189,7 +188,7 @@ public final class LauncherInstrumentation {
 
     private final UiDevice mDevice;
     private final Instrumentation mInstrumentation;
-    private int mExpectedRotation = Surface.ROTATION_0;
+    private Integer mExpectedRotation = null;
     private final Uri mTestProviderUri;
     private final Deque<String> mDiagnosticContext = new LinkedList<>();
     private Function<Long, String> mSystemHealthSupplier;
@@ -202,6 +201,7 @@ public final class LauncherInstrumentation {
 
     private boolean mCheckEventsForSuccessfulGestures = false;
     private Runnable mOnLauncherCrashed;
+
     private static Pattern getTouchEventPattern(String prefix, String action) {
         // The pattern includes checks that we don't get a multi-touch events or other surprises.
         return Pattern.compile(
@@ -306,8 +306,8 @@ public final class LauncherInstrumentation {
         final String testSuffix = ".test";
 
         return testPackage.endsWith(testSuffix) && testPackage.length() > testSuffix.length()
-            && testPackage.substring(0, testPackage.length() - testSuffix.length())
-            .equals(targetPackage);
+                && testPackage.substring(0, testPackage.length() - testSuffix.length())
+                .equals(targetPackage);
     }
 
     public void enableCheckEventsForSuccessfulGestures() {
@@ -694,15 +694,20 @@ public final class LauncherInstrumentation {
      * Whether to ignore verifying the task bar visibility during instrumenting.
      *
      * @param ignoreTaskbarVisibility {@code true} will ignore the instrumentation implicitly
-     *                                            verifying the task bar visibility with
-     *                                            {@link VisibleContainer#verifyActiveContainer}.
-     *                                            {@code false} otherwise.
+     *                                verifying the task bar visibility with
+     *                                {@link VisibleContainer#verifyActiveContainer}.
+     *                                {@code false} otherwise.
      */
     public void setIgnoreTaskbarVisibility(boolean ignoreTaskbarVisibility) {
         mIgnoreTaskbarVisibility = ignoreTaskbarVisibility;
     }
 
-    public void setExpectedRotation(int expectedRotation) {
+    /**
+     * Sets expected rotation.
+     * TAPL periodically checks that Launcher didn't suddenly change the rotation to unexpected one.
+     * Null parameter disables checks. The initial state is "no checks".
+     */
+    public void setExpectedRotation(Integer expectedRotation) {
         mExpectedRotation = expectedRotation;
     }
 
@@ -739,8 +744,10 @@ public final class LauncherInstrumentation {
     private UiObject2 verifyContainerType(ContainerType containerType) {
         waitForLauncherInitialized();
 
-        assertEquals("Unexpected display rotation",
-                mExpectedRotation, mDevice.getDisplayRotation());
+        if (mExpectedRotation != null) {
+            assertEquals("Unexpected display rotation",
+                    mExpectedRotation, mDevice.getDisplayRotation());
+        }
 
         final String error = getNavigationModeMismatchError(true);
         assertTrue(error, error == null);
