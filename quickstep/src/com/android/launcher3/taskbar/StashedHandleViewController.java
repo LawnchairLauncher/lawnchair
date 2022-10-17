@@ -101,8 +101,8 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
                     resources.getDimensionPixelSize(R.dimen.taskbar_stashed_small_screen);
         } else {
             mStashedHandleView.getLayoutParams().height = deviceProfile.taskbarSize;
-            mStashedHandleWidth =
-                    resources.getDimensionPixelSize(R.dimen.taskbar_stashed_handle_width);
+            mStashedHandleWidth = resources
+                    .getDimensionPixelSize(R.dimen.taskbar_stashed_handle_width);
         }
 
         mTaskbarStashedHandleAlpha.getProperty(ALPHA_INDEX_STASHED).setValue(

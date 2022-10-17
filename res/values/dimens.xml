@@ -368,6 +368,7 @@
     <dimen name="taskbar_hotseat_nav_spacing">0dp</dimen>
     <dimen name="taskbar_button_margin_default">0dp</dimen>
     <dimen name="taskbar_button_space_inbetween">0dp</dimen>
+    <dimen name="taskbar_button_space_inbetween_phone">0dp</dimen>
     <dimen name="taskbar_button_margin_5_5">0dp</dimen>
     <dimen name="taskbar_button_margin_6_5">0dp</dimen>
     <dimen name="taskbar_button_margin_4_5">0dp</dimen>
