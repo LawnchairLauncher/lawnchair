@@ -106,8 +106,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
             new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                    updateHeaderScroll(
-                            ((AllAppsRecyclerView) recyclerView).computeVerticalScrollOffset());
+                    updateHeaderScroll(((AllAppsRecyclerView) recyclerView).getCurrentScrollY());
                 }
             };
 
