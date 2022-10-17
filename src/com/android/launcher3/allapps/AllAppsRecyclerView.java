@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.allapps;
 
+import static android.view.View.MeasureSpec.UNSPECIFIED;
+
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_SCROLLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_VERTICAL_SWIPE_BEGIN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_VERTICAL_SWIPE_END;
@@ -24,6 +26,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.SparseIntArray;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -46,10 +49,40 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
     private static final boolean DEBUG = false;
     private static final boolean DEBUG_LATENCY = Utilities.isPropertyEnabled(SEARCH_LOGGING);
 
+    protected AlphabeticalAppsList<?> mApps;
     protected final int mNumAppsPerRow;
+
+    // The specific view heights that we use to calculate scroll
+    private final SparseIntArray mViewHeights = new SparseIntArray();
+    private final SparseIntArray mCachedScrollPositions = new SparseIntArray();
     private final AllAppsFastScrollHelper mFastScrollHelper;
 
-    protected AlphabeticalAppsList<?> mApps;
+
+    private final AdapterDataObserver mObserver = new RecyclerView.AdapterDataObserver() {
+        public void onChanged() {
+            mCachedScrollPositions.clear();
+        }
+
+        @Override
+        public void onItemRangeChanged(int positionStart, int itemCount) {
+            onChanged();
+        }
+
+        @Override
+        public void onItemRangeInserted(int positionStart, int itemCount) {
+            onChanged();
+        }
+
+        @Override
+        public void onItemRangeRemoved(int positionStart, int itemCount) {
+            onChanged();
+        }
+
+        @Override
+        public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+            onChanged();
+        }
+    };
 
     public AllAppsRecyclerView(Context context) {
         this(context, null);
@@ -89,7 +122,11 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ALL_APPS_DIVIDER, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ICON, approxRows
                 * (mNumAppsPerRow + 1));
+
+        mViewHeights.clear();
+        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_ICON, grid.allAppsCellHeightPx);
     }
+
 
     @Override
     public void onDraw(Canvas c) {
@@ -163,6 +200,17 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
     }
 
     @Override
+    public void setAdapter(Adapter adapter) {
+        if (getAdapter() != null) {
+            getAdapter().unregisterAdapterDataObserver(mObserver);
+        }
+        super.setAdapter(adapter);
+        if (adapter != null) {
+            adapter.registerAdapterDataObserver(mObserver);
+        }
+    }
+
+    @Override
     protected boolean isPaddingOffsetRequired() {
         return true;
     }
@@ -183,13 +231,13 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
         List<AllAppsGridAdapter.AdapterItem> items = mApps.getAdapterItems();
 
         // Skip early if there are no items or we haven't been measured
-        if (items.isEmpty() || mNumAppsPerRow == 0 || getChildCount() == 0) {
+        if (items.isEmpty() || mNumAppsPerRow == 0) {
             mScrollbar.setThumbOffsetY(-1);
             return;
         }
 
         // Skip early if, there no child laid out in the container.
-        int scrollY = computeVerticalScrollOffset();
+        int scrollY = getCurrentScrollY();
         if (scrollY < 0) {
             mScrollbar.setThumbOffsetY(-1);
             return;
@@ -242,6 +290,51 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
         } else {
             synchronizeScrollBarThumbOffsetToViewScroll(scrollY, availableScrollHeight);
         }
+    }
+
+    @Override
+    protected int getItemsHeight(int position) {
+        List<AllAppsGridAdapter.AdapterItem> items = mApps.getAdapterItems();
+        AllAppsGridAdapter.AdapterItem posItem = position < items.size()
+                ? items.get(position) : null;
+        int y = mCachedScrollPositions.get(position, -1);
+        if (y < 0) {
+            y = 0;
+            for (int i = 0; i < position; i++) {
+                AllAppsGridAdapter.AdapterItem item = items.get(i);
+                if (AllAppsGridAdapter.isIconViewType(item.viewType)) {
+                    // Break once we reach the desired row
+                    if (posItem != null && posItem.viewType == item.viewType &&
+                            posItem.rowIndex == item.rowIndex) {
+                        break;
+                    }
+                    // Otherwise, only account for the first icon in the row since they are the same
+                    // size within a row
+                    if (item.rowAppIndex == 0) {
+                        y += mViewHeights.get(item.viewType, 0);
+                    }
+                } else {
+                    // Rest of the views span the full width
+                    int elHeight = mViewHeights.get(item.viewType);
+                    if (elHeight == 0) {
+                        ViewHolder holder = findViewHolderForAdapterPosition(i);
+                        if (holder == null) {
+                            holder = getAdapter().createViewHolder(this, item.viewType);
+                            getAdapter().onBindViewHolder(holder, i);
+                            holder.itemView.measure(UNSPECIFIED, UNSPECIFIED);
+                            elHeight = holder.itemView.getMeasuredHeight();
+
+                            getRecycledViewPool().putRecycledView(holder);
+                        } else {
+                            elHeight = holder.itemView.getMeasuredHeight();
+                        }
+                    }
+                    y += elHeight;
+                }
+            }
+            mCachedScrollPositions.put(position, y);
+        }
+        return y;
     }
 
     public int getScrollBarTop() {
