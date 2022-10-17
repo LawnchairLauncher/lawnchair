@@ -123,7 +123,8 @@ open class QsbSearchProvider(
             Presearch,
             Wikipedia,
             Bing,
-            Sesame
+            Sesame,
+            Brave
         )
 
         /**
