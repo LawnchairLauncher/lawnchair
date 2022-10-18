@@ -2,7 +2,8 @@ name: Auto-merge Crowdin Pull Requests
 
 on:
   pull_request:
-      
+    types: [opened]
+
 jobs:
 
   build-debug-apk:
