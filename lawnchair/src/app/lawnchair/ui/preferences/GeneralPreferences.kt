@@ -87,6 +87,7 @@ fun GeneralPreferences() {
     val iconShapeSubtitle = iconShapeEntries(context)
         .firstOrNull { it.value == iconShapeAdapter.state.value }
         ?.label?.invoke()
+        ?: stringResource(id = R.string.custom)
 
     PreferenceLayout(label = stringResource(id = R.string.general_label)) {
         PreferenceGroup {
