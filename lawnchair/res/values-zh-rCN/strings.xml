@@ -83,6 +83,19 @@
     <string name="theme_system_default">系统</string>
     <string name="theme_follow_wallpaper">匹配壁纸</string>
     <string name="accent_color">强调颜色</string>
+    <!-- CustomIconShapePreference -->
+    <string name="custom_icon_shape">自定义图标形状</string>
+    <string name="custom_icon_shape_create">创建自定义图标形状</string>
+    <string name="custom_icon_shape_edit">编辑自定义图标形状</string>
+    <string name="icon_shape_corner">边角形状</string>
+    <string name="icon_shape_corner_round">圆形</string>
+    <string name="icon_shape_corner_squircle">平滑的</string>
+    <string name="icon_shape_corner_cut">剪切</string>
+    <string name="icon_shape_top_left">左上角</string>
+    <string name="icon_shape_top_right">右上角</string>
+    <string name="icon_shape_bottom_left">左下角</string>
+    <string name="icon_shape_bottom_right">右下角</string>
+    <string name="create">创建</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">图标包</string>
