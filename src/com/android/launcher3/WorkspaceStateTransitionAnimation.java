@@ -71,7 +71,7 @@ import com.android.systemui.plugins.ResourceProvider;
  */
 public class WorkspaceStateTransitionAnimation {
 
-    private static final float QSB_DISABLED_ALPHA = 0.3f;
+    private static final float FIRST_PAGE_PINNED_WIDGET_DISABLED_ALPHA = 0.3f;
 
     private static final FloatProperty<Workspace<?>> WORKSPACE_SCALE_PROPERTY =
             WORKSPACE_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_WORKSPACE_STATE);
@@ -161,12 +161,12 @@ public class WorkspaceStateTransitionAnimation {
 
         if (SHOW_HOME_GARDENING.get()) {
             propertySetter.setViewAlpha(
-                    mWorkspace.getQsb(),
-                    state == SPRING_LOADED ? QSB_DISABLED_ALPHA : 1,
+                    mWorkspace.getFirstPagePinnedItem(),
+                    state == SPRING_LOADED ? FIRST_PAGE_PINNED_WIDGET_DISABLED_ALPHA : 1,
                     workspaceFadeInterpolator);
             propertySetter.addEndListener(success -> {
                 if (success) {
-                    mWorkspace.getQsb().setClickable(state != SPRING_LOADED);
+                    mWorkspace.getFirstPagePinnedItem().setClickable(state != SPRING_LOADED);
                 }
             });
         }
