@@ -222,7 +222,7 @@ public class TaskbarEduController implements TaskbarControllers.LoggableTaskbarC
         }
 
         int getIconLayoutBoundsWidth() {
-            return mControllers.taskbarViewController.getIconLayoutBounds().width();
+            return mControllers.taskbarViewController.getIconLayoutWidth();
         }
     }
 }
