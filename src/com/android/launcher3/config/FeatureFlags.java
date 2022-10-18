@@ -241,7 +241,7 @@ public final class FeatureFlags {
             "Enables One Search box in Taskbar All Apps.");
 
     public static final BooleanFlag ENABLE_TASKBAR_IN_OVERVIEW = getDebugFlag(
-            "ENABLE_TASKBAR_IN_OVERVIEW", true,
+            "ENABLE_TASKBAR_IN_OVERVIEW", false,
             "Enables accessing the system Taskbar in overview.");
 
     public static final BooleanFlag ENABLE_SPLIT_FROM_WORKSPACE = getDebugFlag(

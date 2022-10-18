@@ -154,6 +154,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE), 0);
         mIsNavBarForceVisible = settingsCache.getValue(
                 Settings.Secure.getUriFor(Settings.Secure.NAV_BAR_KIDS_MODE), 0);
+
+        // TODO(b/244231596) For shared Taskbar window, update this value in init() instead so
+        //  to get correct value when recreating the taskbar
         mIsNavBarKidsMode = settingsCache.getValue(
                 Settings.Secure.getUriFor(Settings.Secure.NAV_BAR_KIDS_MODE), 0);
 
@@ -276,9 +279,13 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      * @param type The window type to pass to the created WindowManager.LayoutParams.
      */
     public WindowManager.LayoutParams createDefaultWindowLayoutParams(int type) {
+        DeviceProfile deviceProfile = getDeviceProfile();
+        // Taskbar is on the logical bottom of the screen
+        boolean isVerticalBarLayout = TaskbarManager.isPhoneMode(deviceProfile) &&
+                deviceProfile.isLandscape;
         WindowManager.LayoutParams windowLayoutParams = new WindowManager.LayoutParams(
-                MATCH_PARENT,
-                mLastRequestedNonFullscreenHeight,
+                isVerticalBarLayout ? mLastRequestedNonFullscreenHeight : MATCH_PARENT,
+                isVerticalBarLayout ? MATCH_PARENT : mLastRequestedNonFullscreenHeight,
                 type,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                         | WindowManager.LayoutParams.FLAG_SLIPPERY
@@ -286,7 +293,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 PixelFormat.TRANSLUCENT);
         windowLayoutParams.setTitle(WINDOW_TITLE);
         windowLayoutParams.packageName = getPackageName();
-        windowLayoutParams.gravity = Gravity.BOTTOM;
+        windowLayoutParams.gravity = !isVerticalBarLayout ?
+                Gravity.BOTTOM :
+                Gravity.END; // TODO(b/230394142): seascape
+
         windowLayoutParams.setFitInsetsTypes(0);
         windowLayoutParams.receiveInsetsIgnoringZOrder = true;
         windowLayoutParams.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
@@ -803,7 +813,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         return mIsUserSetupComplete;
     }
 
-    protected boolean isNavBarKidsModeActive() {
+    public boolean isNavBarKidsModeActive() {
         return mIsNavBarKidsMode && isThreeButtonNav();
     }
 
