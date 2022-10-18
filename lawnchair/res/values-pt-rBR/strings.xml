@@ -83,6 +83,19 @@
     <string name="theme_system_default">Sistema</string>
     <string name="theme_follow_wallpaper">Corresponder ao Papel de Parede</string>
     <string name="accent_color">Cor de Destaque</string>
+    <!-- CustomIconShapePreference -->
+    <string name="custom_icon_shape">Custom Icon Shape</string>
+    <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
+    <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
+    <string name="icon_shape_corner">Corner Shape</string>
+    <string name="icon_shape_corner_round">Round</string>
+    <string name="icon_shape_corner_squircle">Smooth</string>
+    <string name="icon_shape_corner_cut">Cut</string>
+    <string name="icon_shape_top_left">Top Left</string>
+    <string name="icon_shape_top_right">Top Right</string>
+    <string name="icon_shape_bottom_left">Bottom Left</string>
+    <string name="icon_shape_bottom_right">Bottom Right</string>
+    <string name="create">Criar</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Pacote de ícones</string>
