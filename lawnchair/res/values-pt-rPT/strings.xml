@@ -83,6 +83,19 @@
     <string name="theme_system_default">Sistema</string>
     <string name="theme_follow_wallpaper">Corresponder o Wallpaper</string>
     <string name="accent_color">Cor de Destaque</string>
+    <!-- CustomIconShapePreference -->
+    <string name="custom_icon_shape">Formato de Ícones Personalizado</string>
+    <string name="custom_icon_shape_create">Criar Formato de Ícones Personalizado</string>
+    <string name="custom_icon_shape_edit">Editar Formato de Ícones Personalizado</string>
+    <string name="icon_shape_corner">Formato dos Cantos</string>
+    <string name="icon_shape_corner_round">Redondo</string>
+    <string name="icon_shape_corner_squircle">Arredondado</string>
+    <string name="icon_shape_corner_cut">Cortado</string>
+    <string name="icon_shape_top_left">Superior Esquerdo</string>
+    <string name="icon_shape_top_right">Superior Direito</string>
+    <string name="icon_shape_bottom_left">Inferior Esquerdo</string>
+    <string name="icon_shape_bottom_right">Inferior Direito</string>
+    <string name="create">Criar</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Pacote de Ícones</string>
@@ -155,7 +168,7 @@
     <string name="wallpaper_depth_effect_description">Aproximar e afastar do papel de parede quando transitar entre estados.</string>
     <string name="show_sys_ui_scrim">Sombreado superior</string>
     <string name="layout">Esquema</string>
-    <string name="home_screen_grid">Grelha da Tela Inicial</string>
+    <string name="home_screen_grid">Grelha do Ecrã Inicial</string>
     <string name="home_screen_lock">Bloquear Ecrã Inicial</string>
     <string name="home_screen_lock_description">Impede modificações ao layout do ecrã inicial.</string>
     <string name="home_screen_unlock">Desbloquear Ecrã Inicial</string>
