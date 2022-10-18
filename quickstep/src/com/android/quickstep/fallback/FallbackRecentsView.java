@@ -243,6 +243,9 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         if (finalState != MODAL_TASK) {
             setOverviewSelectEnabled(false);
         }
+        if (finalState != OVERVIEW_SPLIT_SELECT) {
+            resetFromSplitSelectionState();
+        }
 
         if (isOverlayEnabled) {
             runActionOnRemoteHandles(remoteTargetHandle ->
