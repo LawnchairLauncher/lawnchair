@@ -159,6 +159,26 @@ open class IconShape(val topLeft: Corner,
 
     open fun getHashString() = toString()
 
+    fun copy(
+        topLeftShape: IconCornerShape = topLeft.shape,
+        topRightShape: IconCornerShape = topRight.shape,
+        bottomLeftShape: IconCornerShape = bottomLeft.shape,
+        bottomRightShape: IconCornerShape = bottomRight.shape,
+        topLeftScale: Float = topLeft.scale.x,
+        topRightScale: Float = topRight.scale.x,
+        bottomLeftScale: Float = bottomLeft.scale.x,
+        bottomRightScale: Float = bottomRight.scale.x,
+    ): IconShape = IconShape(
+        topLeftShape = topLeftShape,
+        topRightShape = topRightShape,
+        bottomLeftShape = bottomLeftShape,
+        bottomRightShape = bottomRightShape,
+        topLeftScale = topLeftScale,
+        topRightScale = topRightScale,
+        bottomLeftScale = bottomLeftScale,
+        bottomRightScale = bottomRightScale
+    )
+
     data class Corner(val shape: IconCornerShape, val scale: PointF) {
 
         constructor(shape: IconCornerShape, scale: Float) : this(shape, PointF(scale, scale))
@@ -365,6 +385,16 @@ open class IconShape(val topLeft: Corner,
                 Corner.fromString(parts[3]),
                 Corner.fromString(parts[4])
             )
+        }
+
+        fun isCustomShape(iconShape: IconShape): Boolean {
+            return try {
+                parseCustomShape(iconShape.toString())
+                true
+            } catch (ex: Exception) {
+                Log.e("IconShape", "Error creating shape $iconShape", ex)
+                false
+            }
         }
     }
 }
