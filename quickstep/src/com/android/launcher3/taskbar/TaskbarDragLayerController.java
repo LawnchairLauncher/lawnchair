@@ -16,11 +16,13 @@
 package com.android.launcher3.taskbar;
 
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.ViewTreeObserver;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.util.DimensionUtils;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.AnimatedFloat;
 
@@ -177,9 +179,12 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
             DeviceProfile deviceProfile = mActivity.getDeviceProfile();
             if (TaskbarManager.isPhoneMode(deviceProfile)) {
                 Resources resources = mActivity.getResources();
-                return mActivity.isThreeButtonNav() ?
-                        resources.getDimensionPixelSize(R.dimen.taskbar_size) :
-                        resources.getDimensionPixelSize(R.dimen.taskbar_stashed_size);
+                Point taskbarDimensions =
+                        DimensionUtils.getTaskbarPhoneDimensions(deviceProfile, resources,
+                                TaskbarManager.isPhoneMode(deviceProfile));
+                return taskbarDimensions.y == -1 ?
+                        deviceProfile.getDisplayInfo().currentSize.y :
+                        taskbarDimensions.y;
             } else {
                 return deviceProfile.taskbarSize;
             }
