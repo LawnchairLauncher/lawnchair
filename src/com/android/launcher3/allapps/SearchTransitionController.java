@@ -170,12 +170,13 @@ public class SearchTransitionController {
     /**
      * Updates the children views of SearchRecyclerView based on the current animation progress.
      *
-     * @return the total height of animating views (excluding any app icons).
+     * @return the total height of animating views (excluding at most one row of app icons).
      */
     private int updateSearchRecyclerViewProgress() {
         int numSearchResultsAnimated = 0;
         int totalHeight = 0;
         int appRowHeight = 0;
+        boolean appRowComplete = false;
         Integer top = null;
         SearchRecyclerView searchRecyclerView = getSearchRecyclerView();
 
@@ -189,67 +190,72 @@ public class SearchTransitionController {
                 top = searchResultView.getTop();
             }
 
-            if (searchResultView instanceof BubbleTextView
-                    && searchResultView.getTag() instanceof ItemInfo
-                    && ((ItemInfo) searchResultView.getTag()).itemType == ITEM_TYPE_APPLICATION) {
-                // The first app icon will set appRowHeight, which will also contribute to
-                // totalHeight. Additional app icons should remove the appRowHeight to remain in
-                // the same row as the first app.
-                searchResultView.setY(top + totalHeight - appRowHeight);
-                if (appRowHeight == 0) {
-                    appRowHeight = searchResultView.getHeight();
-                    totalHeight += appRowHeight;
-                }
-                // Don't scale/fade app row.
-                searchResultView.setScaleY(1);
-                searchResultView.setAlpha(1);
-                continue;
-            }
-
-            // Adjust content alpha based on start progress and stagger.
-            float startContentFadeProgress = Math.max(0,
-                    TOP_CONTENT_FADE_PROGRESS_START - CONTENT_STAGGER * numSearchResultsAnimated);
-            float endContentFadeProgress = Math.min(1,
-                    startContentFadeProgress + CONTENT_FADE_PROGRESS_DURATION);
-            searchResultView.setAlpha(1 - clampToProgress(mSearchToAzProgress,
-                    startContentFadeProgress, endContentFadeProgress));
-
-            // Adjust background (or decorator) alpha based on start progress and stagger.
-            float startBackgroundFadeProgress = Math.max(0,
-                    TOP_BACKGROUND_FADE_PROGRESS_START
-                            - CONTENT_STAGGER * numSearchResultsAnimated);
-            float endBackgroundFadeProgress = Math.min(1,
-                    startBackgroundFadeProgress + BACKGROUND_FADE_PROGRESS_DURATION);
-            float backgroundAlpha = 1 - clampToProgress(mSearchToAzProgress,
-                    startBackgroundFadeProgress, endBackgroundFadeProgress);
             int adapterPosition = searchRecyclerView.getChildAdapterPosition(searchResultView);
-            boolean decoratorFilled =
-                    adapterPosition != NO_POSITION
-                            && searchRecyclerView.getApps().getAdapterItems().get(adapterPosition)
-                            .setDecorationFillAlpha((int) (255 * backgroundAlpha));
-            if (!decoratorFilled) {
-                // Try to adjust background alpha instead (e.g. for Search Edu card).
-                Drawable background = searchResultView.getBackground();
-                if (background != null) {
-                    background.setAlpha((int) (255 * backgroundAlpha));
+            int spanIndex = getSpanIndex(searchRecyclerView, adapterPosition);
+            appRowComplete |= appRowHeight > 0 && spanIndex == 0;
+            // We don't animate the first (currently only) app row we see, as that is assumed to be
+            // predicted/prefix-matched apps.
+            boolean shouldAnimate = !isAppIcon(searchResultView) || appRowComplete;
+
+            float contentAlpha = 1f;
+            float backgroundAlpha = 1f;
+            if (shouldAnimate) {
+                if (spanIndex > 0) {
+                    // Animate this item with the previous item on the same row.
+                    numSearchResultsAnimated--;
                 }
+
+                // Adjust content alpha based on start progress and stagger.
+                float startContentFadeProgress = Math.max(0,
+                        TOP_CONTENT_FADE_PROGRESS_START
+                                - CONTENT_STAGGER * numSearchResultsAnimated);
+                float endContentFadeProgress = Math.min(1,
+                        startContentFadeProgress + CONTENT_FADE_PROGRESS_DURATION);
+                contentAlpha = 1 - clampToProgress(mSearchToAzProgress,
+                        startContentFadeProgress, endContentFadeProgress);
+
+                // Adjust background (or decorator) alpha based on start progress and stagger.
+                float startBackgroundFadeProgress = Math.max(0,
+                        TOP_BACKGROUND_FADE_PROGRESS_START
+                                - CONTENT_STAGGER * numSearchResultsAnimated);
+                float endBackgroundFadeProgress = Math.min(1,
+                        startBackgroundFadeProgress + BACKGROUND_FADE_PROGRESS_DURATION);
+                backgroundAlpha = 1 - clampToProgress(mSearchToAzProgress,
+                        startBackgroundFadeProgress, endBackgroundFadeProgress);
+
+                numSearchResultsAnimated++;
+            }
+            searchResultView.setAlpha(contentAlpha);
+            // Apply background alpha to decorator if possible.
+            if (adapterPosition != NO_POSITION) {
+                searchRecyclerView.getApps().getAdapterItems()
+                        .get(adapterPosition).setDecorationFillAlpha((int) (255 * backgroundAlpha));
+            }
+            // Apply background alpha to view's background (e.g. for Search Edu card).
+            Drawable background = searchResultView.getBackground();
+            if (background != null) {
+                background.setAlpha((int) (255 * backgroundAlpha));
             }
 
-            float scaleY = 1 - mSearchToAzProgress;
+            float scaleY = 1;
+            if (shouldAnimate) {
+                scaleY = 1 - mSearchToAzProgress;
+            }
             int scaledHeight = (int) (searchResultView.getHeight() * scaleY);
             searchResultView.setScaleY(scaleY);
 
             // For rows with multiple elements, only count the height once and translate elements to
             // the same y position.
             int y = top + totalHeight;
-            int spanIndex = getSpanIndex(searchRecyclerView, adapterPosition);
             if (spanIndex > 0) {
                 // Continuation of an existing row; move this item into the row.
                 y -= scaledHeight;
             } else {
-                // Start of a new row contributes to total height and animation stagger.
-                numSearchResultsAnimated++;
+                // Start of a new row contributes to total height.
                 totalHeight += scaledHeight;
+                if (!shouldAnimate) {
+                    appRowHeight = scaledHeight;
+                }
             }
             searchResultView.setY(y);
         }
@@ -273,6 +279,11 @@ public class SearchTransitionController {
         }
         AllAppsGridAdapter<?> adapter = (AllAppsGridAdapter<?>) searchRecyclerView.getAdapter();
         return adapter.getSpanIndex(adapterPosition);
+    }
+
+    private boolean isAppIcon(View item) {
+        return item instanceof BubbleTextView && item.getTag() instanceof ItemInfo
+                && ((ItemInfo) item.getTag()).itemType == ITEM_TYPE_APPLICATION;
     }
 
     /** Called just before a child is attached to the SearchRecyclerView. */
