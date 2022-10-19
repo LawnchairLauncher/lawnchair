@@ -29,7 +29,7 @@ import android.view.WindowManager
 import android.view.WindowManager.LayoutParams.TYPE_INPUT_METHOD
 import android.view.WindowManager.LayoutParams.TYPE_VOICE_INTERACTION
 import com.android.launcher3.AbstractFloatingView
-import com.android.launcher3.AbstractFloatingView.TYPE_TASKBAR_ALL_APPS
+import com.android.launcher3.AbstractFloatingView.TYPE_TASKBAR_OVERLAY_PROXY
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.anim.AlphaUpdateListener
@@ -157,8 +157,11 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
         } else if (controllers.taskbarDragController.isSystemDragInProgress) {
             // Let touches pass through us.
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
-        } else if (AbstractFloatingView.hasOpenView(context, TYPE_TASKBAR_ALL_APPS)) {
-            // Let touches pass through us.
+        } else if (AbstractFloatingView.hasOpenView(context, TYPE_TASKBAR_OVERLAY_PROXY)) {
+            // Let touches pass through us if icons are hidden.
+            if (controllers.taskbarViewController.areIconsVisible()) {
+                insetsInfo.touchableRegion.set(touchableRegion)
+            }
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
         } else if (controllers.taskbarViewController.areIconsVisible()
             || AbstractFloatingView.hasOpenView(context, AbstractFloatingView.TYPE_ALL)

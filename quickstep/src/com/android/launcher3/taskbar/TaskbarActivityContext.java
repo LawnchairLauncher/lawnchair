@@ -76,6 +76,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsController;
+import com.android.launcher3.taskbar.overlay.TaskbarOverlayController;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
@@ -212,7 +213,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new TaskbarAutohideSuspendController(this),
                 new TaskbarPopupController(this),
                 new TaskbarForceVisibleImmersiveController(this),
-                new TaskbarAllAppsController(this, dp),
+                new TaskbarOverlayController(this, dp),
+                new TaskbarAllAppsController(),
                 new TaskbarInsetsController(this),
                 new VoiceInteractionWindowController(this),
                 isDesktopMode
@@ -244,7 +246,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     /** Updates {@link DeviceProfile} instances for any Taskbar windows. */
     public void updateDeviceProfile(DeviceProfile dp, NavigationMode navMode) {
         mNavMode = navMode;
-        mControllers.taskbarAllAppsController.updateDeviceProfile(dp);
+        mControllers.taskbarOverlayController.updateDeviceProfile(dp);
         mDeviceProfile = dp.copy(this);
         updateIconSize(getResources());
 

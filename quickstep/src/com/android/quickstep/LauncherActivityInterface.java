@@ -290,10 +290,6 @@ public final class LauncherActivityInterface extends
         } else {
             om.hideOverlay(150);
         }
-        LauncherTaskbarUIController taskbarController = getTaskbarController();
-        if (taskbarController != null) {
-            taskbarController.hideEdu();
-        }
     }
 
     @Override
