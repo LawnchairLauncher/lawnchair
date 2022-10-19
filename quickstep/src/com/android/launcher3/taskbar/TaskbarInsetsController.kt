@@ -31,9 +31,9 @@ import android.view.WindowManager.LayoutParams.TYPE_VOICE_INTERACTION
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.AbstractFloatingView.TYPE_TASKBAR_OVERLAY_PROXY
 import com.android.launcher3.DeviceProfile
+import com.android.launcher3.R
 import com.android.launcher3.anim.AlphaUpdateListener
 import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarController
-import com.android.quickstep.KtR
 import java.io.PrintWriter
 
 /**
@@ -42,8 +42,7 @@ import java.io.PrintWriter
 class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTaskbarController {
 
     /** The bottom insets taskbar provides to the IME when IME is visible. */
-    val taskbarHeightForIme: Int = context.resources.getDimensionPixelSize(
-        KtR.dimen.taskbar_ime_size)
+    val taskbarHeightForIme: Int = context.resources.getDimensionPixelSize(R.dimen.taskbar_ime_size)
     private val touchableRegion: Region = Region()
     private val deviceProfileChangeListener = { _: DeviceProfile ->
         onTaskbarWindowHeightOrInsetsChanged()
