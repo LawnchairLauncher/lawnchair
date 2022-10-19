@@ -24,6 +24,7 @@ import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.view.RemoteAnimationTarget;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
@@ -41,7 +42,6 @@ import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.TransformParams.BuilderProxy;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
@@ -335,7 +335,7 @@ public abstract class SwipeUpAnimationLogic implements
         }
 
         @Override
-        public void onBuildTargetParams(SurfaceProperties builder, RemoteAnimationTargetCompat app,
+        public void onBuildTargetParams(SurfaceProperties builder, RemoteAnimationTarget app,
                 TransformParams params) {
             builder.setMatrix(mMatrix)
                     .setWindowCrop(mCropRect)

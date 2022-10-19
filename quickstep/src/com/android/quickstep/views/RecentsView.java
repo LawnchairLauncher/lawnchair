@@ -104,6 +104,7 @@ import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.RemoteAnimationTarget;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
@@ -192,7 +193,6 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.PackageManagerWrapper;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 import com.android.wm.shell.pip.IPipAnimationListener;
@@ -1064,8 +1064,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
     }
 
-    public void launchSideTaskInLiveTileMode(int taskId, RemoteAnimationTargetCompat[] apps,
-            RemoteAnimationTargetCompat[] wallpaper, RemoteAnimationTargetCompat[] nonApps) {
+    public void launchSideTaskInLiveTileMode(int taskId, RemoteAnimationTarget[] apps,
+            RemoteAnimationTarget[] wallpaper, RemoteAnimationTarget[] nonApps) {
         AnimatorSet anim = new AnimatorSet();
         TaskView taskView = getTaskViewByTaskId(taskId);
         if (taskView == null || !isTaskViewVisible(taskView)) {
