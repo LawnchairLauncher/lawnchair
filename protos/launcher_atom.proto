@@ -45,6 +45,9 @@ message ItemInfo {
 
   // Stores the origin of the Item
   repeated Attribute item_attributes = 12;
+
+  // Stores whether the navigation bar is in kids mode.
+  optional bool is_kids_mode = 13;
 }
 
 message LauncherAttributes{
