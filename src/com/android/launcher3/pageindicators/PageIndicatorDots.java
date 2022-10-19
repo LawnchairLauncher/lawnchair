@@ -16,7 +16,7 @@
 
 package com.android.launcher3.pageindicators;
 
-import static com.android.launcher3.config.FeatureFlags.SHOW_DELIGHTFUL_PAGINATION_FOLDER;
+import static com.android.launcher3.config.FeatureFlags.SHOW_DELIGHTFUL_PAGINATION;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -29,6 +29,7 @@ import android.graphics.Canvas;
 import android.graphics.Outline;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -38,6 +39,7 @@ import android.view.ViewOutlineProvider;
 import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
 
+import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
@@ -47,7 +49,7 @@ import com.android.launcher3.util.Themes;
  * {@link PageIndicator} which shows dots per page. The active page is shown with the current
  * accent color.
  */
-public class PageIndicatorDots extends View implements PageIndicator {
+public class PageIndicatorDots extends View implements Insettable, PageIndicator {
 
     private static final float SHIFT_PER_ANIMATION = 0.5f;
     private static final float SHIFT_THRESHOLD = 0.1f;
@@ -128,8 +130,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
         mPaginationPaint.setColor(Themes.getAttrColor(context, R.attr.folderPaginationColor));
         mDotRadius = getResources().getDimension(R.dimen.page_indicator_dot_size) / 2;
 
-
-        if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
+        if (SHOW_DELIGHTFUL_PAGINATION.get()) {
             mPageIndicatorSize = getResources().getDimension(
                     R.dimen.page_indicator_size);
             mPageIndicatorRadius = mPageIndicatorSize / 2;
@@ -144,7 +145,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
             mPageIndicatorDrawable = null;
             mCircleGap = DOT_GAP_FACTOR * mDotRadius;
         }
-        if (!SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
+        if (!SHOW_DELIGHTFUL_PAGINATION.get()) {
             setOutlineProvider(new MyOutlineProver());
         }
         mIsRtl = Utilities.isRtl(getResources());
@@ -161,7 +162,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
             currentScroll = totalScroll - currentScroll;
         }
 
-        if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
+        if (SHOW_DELIGHTFUL_PAGINATION.get()) {
             mCurrentScroll = currentScroll;
             mTotalScroll = totalScroll;
             invalidate();
@@ -296,7 +297,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
             }
             for (int i = 0; i < mEntryAnimationRadiusFactors.length; i++) {
                 mPaginationPaint.setAlpha(i == mActivePage ? PAGE_INDICATOR_ALPHA : DOT_ALPHA);
-                if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
+                if (SHOW_DELIGHTFUL_PAGINATION.get()) {
                     if (i != mActivePage) {
                         canvas.drawCircle(x, y, mDotRadius * mEntryAnimationRadiusFactors[i],
                                 mPaginationPaint);
@@ -313,7 +314,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
             // Here we draw the dots
             mPaginationPaint.setAlpha(DOT_ALPHA);
             for (int i = 0; i < mNumPages; i++) {
-                if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
+                if (SHOW_DELIGHTFUL_PAGINATION.get()) {
                     canvas.drawCircle(x, y, getRadius(x), mPaginationPaint);
                 } else {
                     canvas.drawCircle(x, y, mDotRadius, mPaginationPaint);
@@ -323,7 +324,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
 
             // Here we draw the current page indicator
             mPaginationPaint.setAlpha(PAGE_INDICATOR_ALPHA);
-            if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
+            if (SHOW_DELIGHTFUL_PAGINATION.get()) {
                 drawPageIndicator(canvas, 1);
             } else {
                 canvas.drawRoundRect(getActiveRect(), mDotRadius, mDotRadius, mPaginationPaint);
@@ -389,7 +390,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
         float diameter = 2 * mDotRadius;
         float startX;
 
-        if (SHOW_DELIGHTFUL_PAGINATION_FOLDER.get()) {
+        if (SHOW_DELIGHTFUL_PAGINATION.get()) {
             startX = ((getWidth() - (mNumPages * mCircleGap) + mDotRadius) / 2) - getOffset();
             sTempRect.top = (getHeight() - mPageIndicatorSize) * 0.5f;
             sTempRect.bottom = (getHeight() + mPageIndicatorSize) * 0.5f;
@@ -482,5 +483,13 @@ public class PageIndicatorDots extends View implements PageIndicator {
                 animateToPosition(mFinalPosition);
             }
         }
+    }
+
+    /**
+     * We need to override setInsets to prevent InsettableFrameLayout from applying different
+     * margins on the pagination.
+     */
+    @Override
+    public void setInsets(Rect insets) {
     }
 }
