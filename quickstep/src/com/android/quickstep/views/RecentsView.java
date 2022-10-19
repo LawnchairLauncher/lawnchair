@@ -1760,7 +1760,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private void onOrientationChanged() {
         // If overview is in modal state when rotate, reset it to overview state without running
         // animation.
-        setModalStateEnabled(false);
+        setModalStateEnabled(/* isModalState= */ false, /* animate= */ false);
         if (isSplitSelectionActive()) {
             onRotateInSplitSelectionState();
         }
@@ -5198,11 +5198,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         setInsets(mInsets);
     }
 
-    /**
-     * Enables or disables modal state for RecentsView
-     * @param isModalState
-     */
-    public void setModalStateEnabled(boolean isModalState) { }
+    /** Enables or disables modal state for RecentsView */
+    public abstract void setModalStateEnabled(boolean isModalState, boolean animate);
 
     public TaskOverlayFactory getTaskOverlayFactory() {
         return mTaskOverlayFactory;
