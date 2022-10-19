@@ -107,12 +107,9 @@ public class MultiPropertyFactory<T> {
 
         @Override
         public Float get(T object) {
-            // The scale of the view should match mLastAggregatedValue. Still, if it has been
-            // changed without using this property, it can differ. As this get method is usually
-            // used to set the starting point on an animation, this would result in some jumps
-            // when the view scale is different than the last aggregated value. To stay on the
-            // safe side, let's return the real view scale.
-            return mProperty.get(object);
+            // Callers of MultiProperty should only care about the sub-property that it sets. If
+            // the overall value is needed, mProperty.get should be called directly.
+            return mValue;
         }
 
         @Override

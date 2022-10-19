@@ -71,7 +71,7 @@ public class BaseDepthController {
      * Ratio from 0 to 1, where 0 is fully zoomed out, and 1 is zoomed in.
      * @see android.service.wallpaper.WallpaperService.Engine#onZoomChanged(float)
      */
-    protected float mDepth;
+    private float mDepth;
 
     protected SurfaceControl mSurface;
 
@@ -143,7 +143,7 @@ public class BaseDepthController {
         }
     }
 
-    protected void setDepth(float depth) {
+    private void setDepth(float depth) {
         depth = Utilities.boundToRange(depth, 0, 1);
         // Round out the depth to dedupe frequent, non-perceptable updates
         int depthI = (int) (depth * 256);
