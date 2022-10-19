@@ -283,7 +283,7 @@ public final class FeatureFlags {
             "In foldables, when reordering the icons and widgets, is now going to use both sides");
 
     public static final BooleanFlag ENABLE_WIDGET_PICKER_DEPTH = new DeviceFlag(
-            "ENABLE_WIDGET_PICKER_DEPTH", false, "Enable changing depth in widget picker.");
+            "ENABLE_WIDGET_PICKER_DEPTH", true, "Enable changing depth in widget picker.");
 
     public static final BooleanFlag SHOW_DELIGHTFUL_PAGINATION_FOLDER = new DeviceFlag(
             "SHOW_DELIGHTFUL_PAGINATION_FOLDER", false,
