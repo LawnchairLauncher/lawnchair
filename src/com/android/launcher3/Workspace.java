@@ -53,12 +53,14 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -325,6 +327,26 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
         updateCellLayoutPadding();
         updateWorkspaceWidgetsSizes();
+        setPageIndicatorInset();
+    }
+
+    private void setPageIndicatorInset() {
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mPageIndicator.getLayoutParams();
+
+        // Set insets for page indicator
+        Rect padding = grid.workspacePadding;
+        if (grid.isVerticalBarLayout()) {
+            lp.leftMargin = padding.left + grid.workspaceCellPaddingXPx;
+            lp.rightMargin = padding.right + grid.workspaceCellPaddingXPx;
+            lp.bottomMargin = padding.bottom;
+        } else {
+            lp.leftMargin = lp.rightMargin = 0;
+            lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+            lp.bottomMargin = grid.hotseatBarSizePx;
+        }
+        mPageIndicator.setLayoutParams(lp);
     }
 
     private void updateCellLayoutPadding() {
