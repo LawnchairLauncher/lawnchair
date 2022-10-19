@@ -3,4 +3,5 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="@dimen/swipe_edu_width"
-    android:layout_height="@dimen/swipe_edu_max_height"/>
+    android:layout_height="@dimen/swipe_edu_max_height"
+    android:accessibilityPaneTitle="@string/taskbar_edu_a11y_title"/>
