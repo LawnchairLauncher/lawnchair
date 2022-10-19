@@ -99,6 +99,7 @@ import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.LauncherAnimationRunner.RemoteAnimationFactory;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorListeners;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.shortcuts.DeepShortcutView;
@@ -552,7 +553,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
             final boolean scrimEnabled = ENABLE_SCRIM_FOR_APP_LAUNCH.get();
             if (scrimEnabled) {
-                boolean useTaskbarColor = mDeviceProfile.isTaskbarPresentInApps;
+                boolean useTaskbarColor = mDeviceProfile.isTaskbarPresentInApps
+                        && !FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get();
                 int scrimColor = useTaskbarColor
                         ? mLauncher.getResources().getColor(R.color.taskbar_background)
                         : Themes.getAttrColor(mLauncher, R.attr.overviewScrimColor);
