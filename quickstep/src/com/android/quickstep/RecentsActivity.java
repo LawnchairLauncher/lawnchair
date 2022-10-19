@@ -15,6 +15,9 @@
  */
 package com.android.quickstep;
 
+import static android.view.RemoteAnimationTarget.MODE_CLOSING;
+import static android.view.RemoteAnimationTarget.MODE_OPENING;
+
 import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.QuickstepTransitionManager.STATUS_BAR_TRANSITION_DURATION;
 import static com.android.launcher3.QuickstepTransitionManager.STATUS_BAR_TRANSITION_PRE_DELAY;
@@ -23,8 +26,6 @@ import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_STATE_O
 import static com.android.quickstep.OverviewComponentObserver.startHomeIntentSafely;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.quickstep.TaskViewUtils.createRecentsWindowAnimator;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -36,6 +37,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.Display;
+import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl.Transaction;
 import android.view.View;
 import android.window.SplashScreen;
@@ -78,7 +80,6 @@ import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -238,9 +239,9 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
         mActivityLaunchAnimationRunner = new RemoteAnimationFactory() {
             @Override
-            public void onCreateAnimation(int transit, RemoteAnimationTargetCompat[] appTargets,
-                    RemoteAnimationTargetCompat[] wallpaperTargets,
-                    RemoteAnimationTargetCompat[] nonAppTargets, AnimationResult result) {
+            public void onCreateAnimation(int transit, RemoteAnimationTarget[] appTargets,
+                    RemoteAnimationTarget[] wallpaperTargets,
+                    RemoteAnimationTarget[] nonAppTargets, AnimationResult result) {
                 mHandler.removeCallbacks(mAnimationStartTimeoutRunnable);
                 AnimatorSet anim = composeRecentsLaunchAnimator(taskView, appTargets,
                         wallpaperTargets, nonAppTargets);
@@ -279,9 +280,9 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
      * Composes the animations for a launch from the recents list if possible.
      */
     private AnimatorSet  composeRecentsLaunchAnimator(TaskView taskView,
-            RemoteAnimationTargetCompat[] appTargets,
-            RemoteAnimationTargetCompat[] wallpaperTargets,
-            RemoteAnimationTargetCompat[] nonAppTargets) {
+            RemoteAnimationTarget[] appTargets,
+            RemoteAnimationTarget[] wallpaperTargets,
+            RemoteAnimationTarget[] nonAppTargets) {
         AnimatorSet target = new AnimatorSet();
         boolean activityClosing = taskIsATargetWithMode(appTargets, getTaskId(), MODE_CLOSING);
         PendingAnimation pa = new PendingAnimation(RECENTS_LAUNCH_DURATION);
@@ -412,16 +413,16 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     private final RemoteAnimationFactory mAnimationToHomeFactory =
             new RemoteAnimationFactory() {
         @Override
-        public void onCreateAnimation(int transit, RemoteAnimationTargetCompat[] appTargets,
-                RemoteAnimationTargetCompat[] wallpaperTargets,
-                RemoteAnimationTargetCompat[] nonAppTargets, AnimationResult result) {
+        public void onCreateAnimation(int transit, RemoteAnimationTarget[] appTargets,
+                RemoteAnimationTarget[] wallpaperTargets,
+                RemoteAnimationTarget[] nonAppTargets, AnimationResult result) {
             AnimatorPlaybackController controller = getStateManager()
                     .createAnimationToNewWorkspace(RecentsState.BG_LAUNCHER, HOME_APPEAR_DURATION);
             controller.dispatchOnStart();
 
             RemoteAnimationTargets targets = new RemoteAnimationTargets(
                     appTargets, wallpaperTargets, nonAppTargets, MODE_OPENING);
-            for (RemoteAnimationTargetCompat app : targets.apps) {
+            for (RemoteAnimationTarget app : targets.apps) {
                 new Transaction().setAlpha(app.leash, 1).apply();
             }
             AnimatorSet anim = new AnimatorSet();

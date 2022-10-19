@@ -45,7 +45,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.systemui.shared.system.QuickStepContract;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 /**
  * Controls the animation of swiping back and returning to launcher.
@@ -83,7 +82,7 @@ public class LauncherBackAnimationController {
     private final Interpolator mCancelInterpolator;
     private final PointF mInitialTouchPos = new PointF();
 
-    private RemoteAnimationTargetCompat mBackTarget;
+    private RemoteAnimationTarget mBackTarget;
     private SurfaceControl.Transaction mTransaction = new SurfaceControl.Transaction();
     private boolean mSpringAnimationInProgress = false;
     private boolean mAnimatorSetInProgress = false;
@@ -182,7 +181,7 @@ public class LauncherBackAnimationController {
 
         mTransaction.show(appTarget.leash).apply();
         mTransaction.setAnimationTransaction();
-        mBackTarget = new RemoteAnimationTargetCompat(appTarget);
+        mBackTarget = appTarget;
         mInitialTouchPos.set(backEvent.getTouchX(), backEvent.getTouchY());
 
         // TODO(b/218916755): Offset start rectangle in multiwindow mode.
@@ -280,8 +279,8 @@ public class LauncherBackAnimationController {
                 mBackProgress, mWindowScaleStartCornerRadius, mWindowScaleEndCornerRadius);
         Pair<RectFSpringAnim, AnimatorSet> pair =
                 mQuickstepTransitionManager.createWallpaperOpenAnimations(
-                    new RemoteAnimationTargetCompat[]{mBackTarget},
-                    new RemoteAnimationTargetCompat[]{},
+                    new RemoteAnimationTarget[]{mBackTarget},
+                    new RemoteAnimationTarget[0],
                     false /* fromUnlock */,
                     mCurrentRect,
                     cornerRadius);
