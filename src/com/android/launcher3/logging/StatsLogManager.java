@@ -555,6 +555,20 @@ public class StatsLogManager implements ResourceBasedOverride {
                 + "result page etc.")
         LAUNCHER_ALLAPPS_SCROLLED(985),
 
+        @UiEvent(doc = "User scrolled up on one of the all apps surfaces such as A-Z list, search "
+                + "result page etc.")
+        LAUNCHER_ALLAPPS_SCROLLED_UP(1229),
+
+        @UiEvent(doc =
+                "User scrolled down on one of the all apps surfaces such as A-Z list, search "
+                        + "result page etc.")
+        LAUNCHER_ALLAPPS_SCROLLED_DOWN(1230),
+
+        @UiEvent(doc = "User scrolled on one of the all apps surfaces such as A-Z list, search "
+                + "result page etc and we don't know the direction since user came back to "
+                + "original position from which they scrolled.")
+        LAUNCHER_ALLAPPS_SCROLLED_UNKNOWN_DIRECTION(1231),
+
         @UiEvent(doc = "User tapped taskbar home button")
         LAUNCHER_TASKBAR_HOME_BUTTON_TAP(1003),
 
