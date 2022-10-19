@@ -28,10 +28,11 @@ import android.view.animation.Interpolator;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
+import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 import com.android.launcher3.views.AbstractSlideInView;
 
 /** Wrapper for taskbar all apps with slide-in behavior. */
-public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarAllAppsContext>
+public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverlayContext>
         implements Insettable, DeviceProfile.OnDeviceProfileChangeListener {
     private TaskbarAllAppsContainerView mAppsView;
     private float mShiftRange;

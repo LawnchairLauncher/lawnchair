@@ -25,6 +25,7 @@ import com.android.launcher3.appprediction.PredictionRowView;
 import com.android.launcher3.taskbar.NavbarButtonsViewController;
 import com.android.launcher3.taskbar.TaskbarControllers;
 import com.android.launcher3.taskbar.TaskbarStashController;
+import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 
 /**
  * Handles the {@link TaskbarAllAppsContainerView} behavior and synchronizes its transitions with
@@ -32,16 +33,15 @@ import com.android.launcher3.taskbar.TaskbarStashController;
  */
 final class TaskbarAllAppsViewController {
 
-    private final TaskbarAllAppsContext mContext;
+    private final TaskbarOverlayContext mContext;
     private final TaskbarAllAppsSlideInView mSlideInView;
     private final TaskbarAllAppsContainerView mAppsView;
     private final TaskbarStashController mTaskbarStashController;
     private final NavbarButtonsViewController mNavbarButtonsViewController;
 
     TaskbarAllAppsViewController(
-            TaskbarAllAppsContext context,
+            TaskbarOverlayContext context,
             TaskbarAllAppsSlideInView slideInView,
-            TaskbarAllAppsController windowController,
             TaskbarControllers taskbarControllers) {
 
         mContext = context;
@@ -53,7 +53,6 @@ final class TaskbarAllAppsViewController {
         setUpIconLongClick();
         setUpAppDivider();
         setUpTaskbarStashing();
-        mSlideInView.addOnCloseListener(windowController::maybeCloseWindow);
     }
 
     /** Starts the {@link TaskbarAllAppsSlideInView} enter transition. */
