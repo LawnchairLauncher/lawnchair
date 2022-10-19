@@ -80,10 +80,10 @@ public class TaskbarUIController {
     }
 
     /**
-     * Manually closes the all apps window.
+     * Manually closes the overlay window.
      */
-    public void hideAllApps() {
-        mControllers.taskbarAllAppsController.hide();
+    public void hideOverlayWindow() {
+        mControllers.taskbarOverlayController.hideWindow();
     }
 
     /**
