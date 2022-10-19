@@ -186,6 +186,8 @@ public class QuickstepLauncher extends Launcher {
 
     private SafeCloseable mViewCapture;
 
+    private boolean mEnableWidgetDepth;
+
     @Override
     protected void setupViews() {
         super.setupViews();
@@ -206,6 +208,9 @@ public class QuickstepLauncher extends Launcher {
         mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
         mDepthController = new DepthController(this);
         mHotseatPredictionController = new HotseatPredictionController(this);
+
+        mEnableWidgetDepth = ENABLE_WIDGET_PICKER_DEPTH.get()
+                && SystemProperties.getBoolean("ro.launcher.depth.widget", true);
     }
 
     @Override
@@ -587,9 +592,7 @@ public class QuickstepLauncher extends Launcher {
     public void onWidgetsTransition(float progress) {
         super.onWidgetsTransition(progress);
         onTaskbarInAppDisplayProgressUpdate(progress, WIDGETS_PAGE_PROGRESS_INDEX);
-        // Change of wallpaper depth in widget picker is disabled for tests as it causes flakiness
-        // on very slow cuttlefish devices.
-        if (ENABLE_WIDGET_PICKER_DEPTH.get() && !Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+        if (mEnableWidgetDepth) {
             WIDGET_DEPTH.set(getDepthController(),
                     Utilities.mapToRange(progress, 0f, 1f, 0f, getDeviceProfile().bottomSheetDepth,
                             EMPHASIZED));
