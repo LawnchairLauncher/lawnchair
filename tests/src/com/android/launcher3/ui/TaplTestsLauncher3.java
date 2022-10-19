@@ -302,7 +302,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     private int getWidgetsScroll(Launcher launcher) {
-        return getWidgetsView(launcher).computeVerticalScrollOffset();
+        return getWidgetsView(launcher).getCurrentScrollY();
     }
 
     private boolean isOptionsPopupVisible(Launcher launcher) {
