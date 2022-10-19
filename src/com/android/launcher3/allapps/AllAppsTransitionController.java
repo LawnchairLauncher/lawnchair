@@ -228,7 +228,7 @@ public class AllAppsTransitionController
             StateAnimationConfig config, PendingAnimation builder) {
         if (mLauncher.isInState(ALL_APPS) && !ALL_APPS.equals(toState)) {
             // For atomic animations, we close the keyboard immediately.
-            if (!config.userControlled && !mLauncher.isKeyboardSyncEnabled()) {
+            if (!config.userControlled && !mLauncher.getSearchConfig().isKeyboardSyncEnabled()) {
                 mLauncher.getAppsView().getSearchUiManager().getEditText().hideKeyboard();
             }
 

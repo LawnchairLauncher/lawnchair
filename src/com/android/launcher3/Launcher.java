@@ -131,6 +131,7 @@ import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.BaseAllAppsContainerView;
+import com.android.launcher3.allapps.BaseSearchConfig;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
@@ -395,6 +396,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     private LauncherState mPrevLauncherState;
 
     private StringCache mStringCache;
+    private BaseSearchConfig mBaseSearchConfig;
 
     @Override
     @TargetApi(Build.VERSION_CODES.S)
@@ -545,6 +547,9 @@ public class Launcher extends StatefulActivity<LauncherState>
             getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         }
         setTitle(R.string.home_screen);
+
+        // TODO: move the SearchConfig to SearchState when new LauncherState is created.
+        mBaseSearchConfig = new BaseSearchConfig();
     }
 
     protected LauncherOverlayManager getDefaultOverlay() {
@@ -1592,12 +1597,8 @@ public class Launcher extends StatefulActivity<LauncherState>
         return mOldConfig.orientation;
     }
 
-    /**
-     * Whether keyboard sync is enabled for transitions between Home and All Apps.
-     * TODO(b/251387263): move this method inside an All Apps specific config class.
-     */
-    public boolean isKeyboardSyncEnabled() {
-        return false;
+    public BaseSearchConfig getSearchConfig() {
+        return mBaseSearchConfig;
     }
 
     @Override
