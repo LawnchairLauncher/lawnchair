@@ -67,15 +67,17 @@ fun AppDrawerPreferences() {
                 destination = subRoute(name = AppDrawerRoutes.HIDDEN_APPS),
             )
             ExpandAndShrink(visible = showDrawerSearchBar.state.value) {
-                SwitchPreference(
-                    label = stringResource(id = R.string.hide_hidden_apps_search),
-                    adapter = hideHiddenAppsInSearch,
-                )
-                ExpandAndShrink(hideHiddenAppsInSearch.state.value) {
+                DividerColumn {
                     SwitchPreference(
-                        label = stringResource(id = R.string.show_enable_smart_hide),
-                        adapter = enableSmartHide,
+                        label = stringResource(id = R.string.hide_hidden_apps_search),
+                        adapter = hideHiddenAppsInSearch,
                     )
+                    ExpandAndShrink(visible = hideHiddenAppsInSearch.state.value) {
+                        SwitchPreference(
+                            label = stringResource(id = R.string.show_enable_smart_hide),
+                            adapter = enableSmartHide,
+                        )
+                    }
                 }
             }
         }
