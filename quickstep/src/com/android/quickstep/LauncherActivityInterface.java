@@ -34,11 +34,11 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statehandlers.DepthController;
-import com.android.launcher3.statehandlers.DepthController.ClampedDepthProperty;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.touch.PagedOrientationHandler;
@@ -129,7 +129,8 @@ public final class LauncherActivityInterface extends
                 float fromDepthRatio = BACKGROUND_APP.getDepth(activity);
                 float toDepthRatio = OVERVIEW.getDepth(activity);
                 pa.addFloat(getDepthController(),
-                        new ClampedDepthProperty(fromDepthRatio, toDepthRatio),
+                        new LauncherAnimUtils.ClampedProperty<>(
+                                DepthController.STATE_DEPTH, fromDepthRatio, toDepthRatio),
                         fromDepthRatio, toDepthRatio, LINEAR);
             }
         };
@@ -288,10 +289,6 @@ public final class LauncherActivityInterface extends
             om.hideOverlay(false /* animate */);
         } else {
             om.hideOverlay(150);
-        }
-        LauncherTaskbarUIController taskbarController = getTaskbarController();
-        if (taskbarController != null) {
-            taskbarController.hideEdu();
         }
     }
 

@@ -94,6 +94,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_TASKBAR_EDUCATION_DIALOG = 1 << 16;
     public static final int TYPE_TASKBAR_ALL_APPS = 1 << 17;
     public static final int TYPE_ADD_TO_HOME_CONFIRMATION = 1 << 18;
+    public static final int TYPE_TASKBAR_OVERLAY_PROXY = 1 << 19;
 
     public static final int TYPE_ALL = TYPE_FOLDER | TYPE_ACTION_POPUP
             | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_WIDGETS_FULL_SHEET
