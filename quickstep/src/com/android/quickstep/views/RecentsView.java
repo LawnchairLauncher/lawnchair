@@ -1245,6 +1245,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (!mActivity.getDeviceProfile().isTablet) {
             mActionsView.updateDisabledFlags(OverviewActionsView.DISABLED_SCROLLING, true);
         }
+        InteractionJankMonitorWrapper.begin(/* view= */ this,
+                InteractionJankMonitorWrapper.CUJ_RECENTS_SCROLLING);
     }
 
     @Override
@@ -1258,6 +1260,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (getNextPage() > 0) {
             setSwipeDownShouldLaunchApp(true);
         }
+        InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_RECENTS_SCROLLING);
     }
 
     @Override
