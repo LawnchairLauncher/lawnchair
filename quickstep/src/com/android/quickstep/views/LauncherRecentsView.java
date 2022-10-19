@@ -162,13 +162,12 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
     }
 
     @Override
-    public void setModalStateEnabled(boolean isModalState) {
-        super.setModalStateEnabled(isModalState);
+    public void setModalStateEnabled(boolean isModalState, boolean animate) {
         if (isModalState) {
-            mActivity.getStateManager().goToState(LauncherState.OVERVIEW_MODAL_TASK);
+            mActivity.getStateManager().goToState(LauncherState.OVERVIEW_MODAL_TASK, animate);
         } else {
             if (mActivity.isInState(LauncherState.OVERVIEW_MODAL_TASK)) {
-                mActivity.getStateManager().goToState(LauncherState.OVERVIEW);
+                mActivity.getStateManager().goToState(LauncherState.OVERVIEW, animate);
                 resetModalVisuals();
             }
         }
