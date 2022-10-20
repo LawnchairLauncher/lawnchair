@@ -124,6 +124,8 @@ import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
+import com.android.quickstep.util.SurfaceTransaction;
+import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.WorkspaceRevealAnim;
 import com.android.quickstep.views.FloatingWidgetView;
@@ -136,7 +138,6 @@ import com.android.systemui.shared.system.RemoteAnimationDefinitionCompat;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.RemoteTransitionCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 import com.android.wm.shell.startingsurface.IStartingWindowListener;
 
 import java.util.ArrayList;
@@ -816,10 +817,11 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     return;
                 }
 
-                ArrayList<SurfaceParams> params = new ArrayList<>();
+                SurfaceTransaction transaction = new SurfaceTransaction();
+
                 for (int i = appTargets.length - 1; i >= 0; i--) {
                     RemoteAnimationTargetCompat target = appTargets[i];
-                    SurfaceParams.Builder builder = new SurfaceParams.Builder(target.leash);
+                    SurfaceProperties builder = transaction.forSurface(target.leash);
 
                     if (target.mode == MODE_OPENING) {
                         matrix.setScale(scale, scale);
@@ -840,11 +842,11 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
                         floatingView.update(mIconAlpha.value, 255, floatingIconBounds, percent, 0f,
                                 mWindowRadius.value * scale, true /* isOpening */);
-                        builder.withMatrix(matrix)
-                                .withWindowCrop(crop)
-                                .withAlpha(1f - mIconAlpha.value)
-                                .withCornerRadius(mWindowRadius.value)
-                                .withShadowRadius(mShadowRadius.value);
+                        builder.setMatrix(matrix)
+                                .setWindowCrop(crop)
+                                .setAlpha(1f - mIconAlpha.value)
+                                .setCornerRadius(mWindowRadius.value)
+                                .setShadowRadius(mShadowRadius.value);
                     } else if (target.mode == MODE_CLOSING) {
                         if (target.localBounds != null) {
                             final Rect localBounds = target.localBounds;
@@ -864,29 +866,26 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                             tmpPos.y = tmp;
                         }
                         matrix.setTranslate(tmpPos.x, tmpPos.y);
-                        builder.withMatrix(matrix)
-                                .withWindowCrop(crop)
-                                .withAlpha(1f);
+                        builder.setMatrix(matrix)
+                                .setWindowCrop(crop)
+                                .setAlpha(1f);
                     }
-                    params.add(builder.build());
                 }
 
                 if (navBarTarget != null) {
-                    final SurfaceParams.Builder navBuilder =
-                            new SurfaceParams.Builder(navBarTarget.leash);
+                    SurfaceProperties navBuilder =
+                            transaction.forSurface(navBarTarget.leash);
                     if (mNavFadeIn.value > mNavFadeIn.getStartValue()) {
                         matrix.setScale(scale, scale);
                         matrix.postTranslate(windowTransX0, windowTransY0);
-                        navBuilder.withMatrix(matrix)
-                                .withWindowCrop(crop)
-                                .withAlpha(mNavFadeIn.value);
+                        navBuilder.setMatrix(matrix)
+                                .setWindowCrop(crop)
+                                .setAlpha(mNavFadeIn.value);
                     } else {
-                        navBuilder.withAlpha(mNavFadeOut.value);
+                        navBuilder.setAlpha(mNavFadeOut.value);
                     }
-                    params.add(navBuilder.build());
                 }
-
-                surfaceApplier.scheduleApply(params.toArray(new SurfaceParams[params.size()]));
+                surfaceApplier.scheduleApply(transaction);
             }
         };
         appAnimator.addUpdateListener(listener);
@@ -1002,37 +1001,33 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 matrix.postScale(mAppWindowScale, mAppWindowScale, widgetBackgroundBounds.left,
                         widgetBackgroundBounds.top);
 
-                ArrayList<SurfaceParams> params = new ArrayList<>();
+                SurfaceTransaction transaction = new SurfaceTransaction();
                 float floatingViewAlpha = appTargetsAreTranslucent ? 1 - mPreviewAlpha.value : 1;
                 for (int i = appTargets.length - 1; i >= 0; i--) {
                     RemoteAnimationTargetCompat target = appTargets[i];
-                    SurfaceParams.Builder builder = new SurfaceParams.Builder(target.leash);
+                    SurfaceProperties builder = transaction.forSurface(target.leash);
                     if (target.mode == MODE_OPENING) {
                         floatingView.update(widgetBackgroundBounds, floatingViewAlpha,
                                 mWidgetForegroundAlpha.value, mWidgetFallbackBackgroundAlpha.value,
                                 mCornerRadiusProgress.value);
-                        builder.withMatrix(matrix)
-                                .withWindowCrop(appWindowCrop)
-                                .withAlpha(mPreviewAlpha.value)
-                                .withCornerRadius(mWindowRadius.value / mAppWindowScale);
+                        builder.setMatrix(matrix)
+                                .setWindowCrop(appWindowCrop)
+                                .setAlpha(mPreviewAlpha.value)
+                                .setCornerRadius(mWindowRadius.value / mAppWindowScale);
                     }
-                    params.add(builder.build());
                 }
 
                 if (navBarTarget != null) {
-                    final SurfaceParams.Builder navBuilder =
-                            new SurfaceParams.Builder(navBarTarget.leash);
+                    SurfaceProperties navBuilder = transaction.forSurface(navBarTarget.leash);
                     if (mNavFadeIn.value > mNavFadeIn.getStartValue()) {
-                        navBuilder.withMatrix(matrix)
-                                .withWindowCrop(appWindowCrop)
-                                .withAlpha(mNavFadeIn.value);
+                        navBuilder.setMatrix(matrix)
+                                .setWindowCrop(appWindowCrop)
+                                .setAlpha(mNavFadeIn.value);
                     } else {
-                        navBuilder.withAlpha(mNavFadeOut.value);
+                        navBuilder.setAlpha(mNavFadeOut.value);
                     }
-                    params.add(navBuilder.build());
                 }
-
-                surfaceApplier.scheduleApply(params.toArray(new SurfaceParams[params.size()]));
+                surfaceApplier.scheduleApply(transaction);
             }
         });
 
@@ -1233,16 +1228,15 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         unlockAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                SurfaceParams[] params = new SurfaceParams[appTargets.length];
+                SurfaceTransaction transaction = new SurfaceTransaction();
                 for (int i = appTargets.length - 1; i >= 0; i--) {
                     RemoteAnimationTargetCompat target = appTargets[i];
-                    params[i] = new SurfaceParams.Builder(target.leash)
-                            .withAlpha(1f)
-                            .withWindowCrop(target.screenSpaceBounds)
-                            .withCornerRadius(cornerRadius)
-                            .build();
+                    transaction.forSurface(target.leash)
+                            .setAlpha(1f)
+                            .setWindowCrop(target.screenSpaceBounds)
+                            .setCornerRadius(cornerRadius);
                 }
-                surfaceApplier.scheduleApply(params);
+                surfaceApplier.scheduleApply(transaction);
             }
         });
         return unlockAnimator;
@@ -1460,10 +1454,10 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
             @Override
             public void onUpdate(float percent, boolean initOnly) {
-                SurfaceParams[] params = new SurfaceParams[appTargets.length];
+                SurfaceTransaction transaction = new SurfaceTransaction();
                 for (int i = appTargets.length - 1; i >= 0; i--) {
                     RemoteAnimationTargetCompat target = appTargets[i];
-                    SurfaceParams.Builder builder = new SurfaceParams.Builder(target.leash);
+                    SurfaceProperties builder = transaction.forSurface(target.leash);
 
                     if (target.localBounds != null) {
                         tmpPos.set(target.localBounds.left, target.localBounds.top);
@@ -1485,20 +1479,19 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                                 tmpRect.centerY());
                         matrix.postTranslate(0, mDy.value);
                         matrix.postTranslate(tmpPos.x, tmpPos.y);
-                        builder.withMatrix(matrix)
-                                .withWindowCrop(crop)
-                                .withAlpha(mAlpha.value)
-                                .withCornerRadius(windowCornerRadius)
-                                .withShadowRadius(mShadowRadius.value);
+                        builder.setMatrix(matrix)
+                                .setWindowCrop(crop)
+                                .setAlpha(mAlpha.value)
+                                .setCornerRadius(windowCornerRadius)
+                                .setShadowRadius(mShadowRadius.value);
                     } else if (target.mode == MODE_OPENING) {
                         matrix.setTranslate(tmpPos.x, tmpPos.y);
-                        builder.withMatrix(matrix)
-                                .withWindowCrop(crop)
-                                .withAlpha(1f);
+                        builder.setMatrix(matrix)
+                                .setWindowCrop(crop)
+                                .setAlpha(1f);
                     }
-                    params[i] = builder.build();
                 }
-                surfaceApplier.scheduleApply(params);
+                surfaceApplier.scheduleApply(transaction);
             }
         });
 
@@ -1868,10 +1861,10 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         @Override
         public void onUpdate(RectF currentRectF, float progress) {
-            SurfaceParams[] params = new SurfaceParams[mAppTargets.length];
+            SurfaceTransaction transaction = new SurfaceTransaction();
             for (int i = mAppTargets.length - 1; i >= 0; i--) {
                 RemoteAnimationTargetCompat target = mAppTargets[i];
-                SurfaceParams.Builder builder = new SurfaceParams.Builder(target.leash);
+                SurfaceProperties builder = transaction.forSurface(target.leash);
 
                 if (target.localBounds != null) {
                     mTmpPos.set(target.localBounds.left, target.localBounds.top);
@@ -1906,18 +1899,17 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     mMatrix.setScale(scale, scale);
                     mMatrix.postTranslate(mCurrentRect.left, mCurrentRect.top);
 
-                    builder.withMatrix(mMatrix)
-                            .withWindowCrop(mTmpRect)
-                            .withAlpha(getWindowAlpha(progress))
-                            .withCornerRadius(getCornerRadius(progress) / scale);
+                    builder.setMatrix(mMatrix)
+                            .setWindowCrop(mTmpRect)
+                            .setAlpha(getWindowAlpha(progress))
+                            .setCornerRadius(getCornerRadius(progress) / scale);
                 } else if (target.mode == MODE_OPENING) {
                     mMatrix.setTranslate(mTmpPos.x, mTmpPos.y);
-                    builder.withMatrix(mMatrix)
-                            .withAlpha(1f);
+                    builder.setMatrix(mMatrix)
+                            .setAlpha(1f);
                 }
-                params[i] = builder.build();
             }
-            mSurfaceApplier.scheduleApply(params);
+            mSurfaceApplier.scheduleApply(transaction);
         }
 
         protected float getWindowAlpha(float progress) {
