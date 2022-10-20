@@ -16,8 +16,10 @@
 package com.android.quickstep;
 
 import static android.view.Display.DEFAULT_DISPLAY;
+import static android.view.InputDevice.SOURCE_TOUCHSCREEN;
 import static android.view.Surface.ROTATION_0;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_TRACKPAD_GESTURE;
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_ALL;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
@@ -232,6 +234,9 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
      * @return whether the coordinates of the {@param event} is in the swipe up gesture region.
      */
     public boolean isInSwipeUpTouchRegion(MotionEvent event) {
+        if (isTrackpadMotionEvent(event)) {
+            return true;
+        }
         return mOrientationTouchTransformer.touchInValidSwipeRegions(event.getX(), event.getY());
     }
 
@@ -240,8 +245,18 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
      *         is in the swipe up gesture region.
      */
     public boolean isInSwipeUpTouchRegion(MotionEvent event, int pointerIndex) {
+        if (isTrackpadMotionEvent(event)) {
+            return true;
+        }
         return mOrientationTouchTransformer.touchInValidSwipeRegions(event.getX(pointerIndex),
                 event.getY(pointerIndex));
+    }
+
+    private boolean isTrackpadMotionEvent(MotionEvent event) {
+        // TODO: ideally should use event.getClassification(), but currently only the move
+        // events get assigned the correct classification.
+        return ENABLE_TRACKPAD_GESTURE.get()
+                && (event.getSource() & SOURCE_TOUCHSCREEN) != SOURCE_TOUCHSCREEN;
     }
 
     @Override

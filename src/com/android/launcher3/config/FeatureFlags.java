@@ -308,6 +308,9 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_TRANSIENT_TASKBAR = getDebugFlag(
             "ENABLE_TRANSIENT_TASKBAR", false, "Enables transient taskbar.");
 
+    public static final BooleanFlag ENABLE_TRACKPAD_GESTURE = getDebugFlag(
+            "ENABLE_TRACKPAD_GESTURE", false, "Enables trackpad gesture.");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
