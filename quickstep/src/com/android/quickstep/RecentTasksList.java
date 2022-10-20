@@ -45,6 +45,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Manages the recent task list from the system, caching it as necessary.
@@ -129,14 +131,18 @@ public class RecentTasksList {
      * @return The change id of the current task list
      */
     public synchronized int getTasks(boolean loadKeysOnly,
-            Consumer<ArrayList<GroupTask>> callback) {
+            Consumer<ArrayList<GroupTask>> callback, Predicate<GroupTask> filter) {
         final int requestLoadId = mChangeId;
         if (mResultsUi.isValidForRequest(requestLoadId, loadKeysOnly)) {
             // The list is up to date, send the callback on the next frame,
             // so that requestID can be returned first.
             if (callback != null) {
                 // Copy synchronously as the changeId might change by next frame
-                ArrayList<GroupTask> result = copyOf(mResultsUi);
+                // and filter GroupTasks
+                ArrayList<GroupTask> result = mResultsUi.stream().filter(filter)
+                        .map(GroupTask::copy)
+                        .collect(Collectors.toCollection(ArrayList<GroupTask>::new));
+
                 mMainThreadExecutor.post(() -> {
                     callback.accept(result);
                 });
@@ -156,7 +162,11 @@ public class RecentTasksList {
                 mLoadingTasksInBackground = false;
                 mResultsUi = loadResult;
                 if (callback != null) {
-                    ArrayList<GroupTask> result = copyOf(mResultsUi);
+                    // filter the tasks if needed before passing them into the callback
+                    ArrayList<GroupTask> result = mResultsUi.stream().filter(filter)
+                            .map(GroupTask::copy)
+                            .collect(Collectors.toCollection(ArrayList<GroupTask>::new));
+
                     callback.accept(result);
                 }
             });

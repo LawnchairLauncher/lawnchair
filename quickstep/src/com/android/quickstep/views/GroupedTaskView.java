@@ -2,7 +2,6 @@ package com.android.quickstep.views;
 
 import static com.android.launcher3.util.SplitConfigurationOptions.DEFAULT_SPLIT_RATIO;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
-import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 
 import android.content.Context;
 import android.graphics.PointF;
@@ -100,6 +99,22 @@ public class GroupedTaskView extends TaskView {
         mSnapshotView2.getPreviewPositionHelper().setSplitBounds(TaskViewSimulator
                         .convertSplitBounds(splitBoundsConfig),
                 PreviewPositionHelper.STAGE_POSITION_BOTTOM_OR_RIGHT);
+    }
+
+    /**
+     * Sets up an on-click listener and the visibility for show_windows icon on top of each task.
+     */
+    @Override
+    public void setUpShowAllInstancesListener() {
+        // sets up the listener for the left/top task
+        super.setUpShowAllInstancesListener();
+
+        // right/bottom task's base package name
+        String taskPackageName = mTaskIdAttributeContainer[1].getTask().key.getPackageName();
+
+        // icon of the right/bottom task
+        View showWindowsView = findViewById(R.id.show_windows_right);
+        updateFilterCallback(showWindowsView, getFilterUpdateCallback(taskPackageName));
     }
 
     @Override

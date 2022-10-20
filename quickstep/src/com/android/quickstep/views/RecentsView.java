@@ -164,6 +164,7 @@ import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationTargets;
+import com.android.quickstep.RecentsFilterState;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.RemoteTargetGluer;
@@ -580,7 +581,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                                 if (taskRemoved) {
                                     dismissTask(taskId);
                                 }
-                            });
+                            }, RecentsFilterState.getFilter(mFilterState.getPackageNameToFilter()));
                         }
                     }));
         }
@@ -721,6 +722,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Nullable
     private TaskLaunchListener mTaskLaunchListener;
 
+    // keeps track of the state of the filter for tasks in recents view
+    private final RecentsFilterState mFilterState = new RecentsFilterState();
+
     public RecentsView(Context context, @Nullable AttributeSet attrs, int defStyleAttr,
             BaseActivityInterface sizeStrategy) {
         super(context, attrs, defStyleAttr);
@@ -784,6 +788,55 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mActivity.getViewCache().setCacheSize(R.layout.digital_wellbeing_toast, 5);
 
         mTintingColor = getForegroundScrimDimColor(context);
+
+        // if multi-instance feature is enabled
+        if (FeatureFlags.ENABLE_MULTI_INSTANCE.get()) {
+            // invalidate the current list of tasks if filter changes
+            mFilterState.setOnFilterUpdatedListener(this::invalidateTaskList);
+        }
+        // make sure filter is turned off by default
+        mFilterState.setFilterBy(null);
+    }
+
+    /** Get the state of the filter */
+    public RecentsFilterState getFilterState() {
+        return mFilterState;
+    }
+
+    /**
+     * Toggles the filter and reloads the recents view if needed.
+     *
+     * @param packageName package name to filter by if the filter is being turned on;
+     *                    should be null if filter is being turned off
+     */
+    public void setAndApplyFilter(@Nullable String packageName) {
+        mFilterState.setFilterBy(packageName);
+        updateClearAllFunction();
+        reloadIfNeeded();
+    }
+
+    /**
+     * Updates the "Clear All" button and its function depending on the recents view state.
+     *
+     * TODO: add a different button for going back to overview. Present solution is for demo only.
+     */
+    public void updateClearAllFunction() {
+        if (mFilterState.isFiltered()) {
+            mClearAllButton.setText(R.string.recents_back);
+            mClearAllButton.setOnClickListener((view) -> {
+                this.setAndApplyFilter(null);
+            });
+        } else {
+            mClearAllButton.setText(R.string.recents_clear_all);
+            mClearAllButton.setOnClickListener(this::dismissAllTasks);
+        }
+    }
+
+    /**
+     * Invalidates the list of tasks so that an update occurs to the list of tasks if requested.
+     */
+    private void invalidateTaskList() {
+        mTaskListChangeId = -1;
     }
 
     public OverScroller getScroller() {
@@ -1546,6 +1599,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         Task stagedTaskToBeRemovedFromGrid =
                 mSplitSelectSource != null ? mSplitSelectSource.alreadyRunningTask : null;
 
+        // update the map of instance counts
+        mFilterState.updateInstanceCountMap(taskGroups);
+
         // Add views as children based on whether it's grouped or single task. Looping through
         // taskGroups backwards populates the thumbnail grid from least recent to most recent.
         for (int i = taskGroups.size() - 1; i >= 0; i--) {
@@ -1580,6 +1636,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         groupTask.mSplitBounds.leftTopTaskId == groupTask.task1.key.id;
                 Task leftTopTask = firstTaskIsLeftTopTask ? groupTask.task1 : groupTask.task2;
                 Task rightBottomTask = firstTaskIsLeftTopTask ? groupTask.task2 : groupTask.task1;
+
                 ((GroupedTaskView) taskView).bind(leftTopTask, rightBottomTask, mOrientationState,
                         groupTask.mSplitBounds);
             } else if (taskView instanceof DesktopTaskView) {
@@ -1587,6 +1644,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         mOrientationState);
             } else {
                 taskView.bind(groupTask.task1, mOrientationState);
+            }
+
+            // enables instance filtering if the feature flag for it is on
+            if (FeatureFlags.ENABLE_MULTI_INSTANCE.get()) {
+                taskView.setUpShowAllInstancesListener();
             }
         }
 
@@ -2257,7 +2319,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      */
     public void reloadIfNeeded() {
         if (!mModel.isTaskListValid(mTaskListChangeId)) {
-            mTaskListChangeId = mModel.getTasks(this::applyLoadPlan);
+            mTaskListChangeId = mModel.getTasks(this::applyLoadPlan, RecentsFilterState
+                    .getFilter(mFilterState.getPackageNameToFilter()));
         }
     }
 
