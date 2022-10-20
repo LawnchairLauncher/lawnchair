@@ -299,6 +299,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_TRANSIENT_TASKBAR = getDebugFlag(
             "ENABLE_TRANSIENT_TASKBAR", false, "Enables transient taskbar.");
 
+    public static final BooleanFlag SECONDARY_DRAG_N_DROP_TO_PIN = getDebugFlag(
+            "SECONDARY_DRAG_N_DROP_TO_PIN", false,
+            "Enable dragging and dropping to pin apps within secondary display");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
