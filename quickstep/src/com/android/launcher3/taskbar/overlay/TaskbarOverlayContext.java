@@ -84,7 +84,7 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
 
     @Override
     public DeviceProfile getDeviceProfile() {
-        return mOverlayController.getDeviceProfile();
+        return mOverlayController.getLauncherDeviceProfile();
     }
 
     @Override

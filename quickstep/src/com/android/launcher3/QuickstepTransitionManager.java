@@ -108,6 +108,7 @@ import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.ActivityOptionsWrapper;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.ObjectWrapper;
 import com.android.launcher3.util.RunnableList;
@@ -449,7 +450,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                         4 - rotationChange);
             }
         }
-        if (mDeviceProfile.isTaskbarPresentInApps && !target.willShowImeOnTarget) {
+        if (mDeviceProfile.isTaskbarPresentInApps
+                && !target.willShowImeOnTarget
+                && !DisplayController.isTransientTaskbar(mLauncher)) {
             // Animate to above the taskbar.
             bounds.bottom -= target.contentInsets.bottom;
         }

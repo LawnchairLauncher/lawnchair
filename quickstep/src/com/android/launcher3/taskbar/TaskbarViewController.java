@@ -17,6 +17,7 @@ package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP;
@@ -47,6 +48,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.icons.ThemedIconDrawable;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.HorizontalInsettableView;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
@@ -87,6 +89,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     private AnimatedFloat mTaskbarNavButtonTranslationY;
     private AnimatedFloat mTaskbarNavButtonTranslationYForInAppDisplay;
 
+    private final int mTaskbarBottomMargin;
+
     private final AnimatedFloat mThemeIconsBackground = new AnimatedFloat(
             this::updateIconsBackground);
 
@@ -111,6 +115,9 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         mTaskbarIconAlpha = new MultiValueAlpha(mTaskbarView, NUM_ALPHA_CHANNELS);
         mTaskbarIconAlpha.setUpdateVisibility(true);
         mModelCallbacks = new TaskbarModelCallbacks(activity, mTaskbarView);
+        mTaskbarBottomMargin = DisplayController.isTransientTaskbar(activity)
+                ? activity.getResources().getDimensionPixelSize(R.dimen.transient_taskbar_margin)
+                : 0;
     }
 
     public void init(TaskbarControllers controllers) {
@@ -316,6 +323,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                 float scale = ((float) taskbarDp.iconSizePx) / launcherDp.hotseatQsbVisualHeight;
                 setter.addFloat(child, SCALE_PROPERTY, scale, 1f, LINEAR);
 
+                setter.setFloat(child, VIEW_TRANSLATE_Y, mTaskbarBottomMargin, LINEAR);
+
                 setter.addFloat(child, VIEW_ALPHA, 0f, 1f,
                         isToHome
                                 ? Interpolators.clampToProgress(LINEAR, 0f, 0.35f)
@@ -340,6 +349,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
 
             float childCenter = (child.getLeft() + child.getRight()) / 2f;
             setter.setFloat(child, ICON_TRANSLATE_X, hotseatIconCenter - childCenter, LINEAR);
+
+            setter.setFloat(child, VIEW_TRANSLATE_Y, mTaskbarBottomMargin, LINEAR);
 
             setter.setFloat(child, SCALE_PROPERTY, scaleUp, LINEAR);
         }
