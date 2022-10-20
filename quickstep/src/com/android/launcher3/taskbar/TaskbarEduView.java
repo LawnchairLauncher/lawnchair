@@ -28,10 +28,11 @@ import android.widget.Button;
 
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
+import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 import com.android.launcher3.views.AbstractSlideInView;
 
 /** Education view about the Taskbar. */
-public class TaskbarEduView extends AbstractSlideInView<TaskbarActivityContext>
+public class TaskbarEduView extends AbstractSlideInView<TaskbarOverlayContext>
         implements Insettable {
 
     private static final int DEFAULT_OPEN_DURATION = 500;

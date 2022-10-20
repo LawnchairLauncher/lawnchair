@@ -276,13 +276,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
                 && !mLauncher.getOnboardingPrefs().getBoolean(OnboardingPrefs.TASKBAR_EDU_SEEN);
     }
 
-    /**
-     * Manually ends the taskbar education flow.
-     */
-    public void hideEdu() {
-        mControllers.taskbarEduController.hideEdu();
-    }
-
     @Override
     public void onTaskbarIconLaunched(ItemInfo item) {
         InstanceId instanceId = new InstanceIdSequence().newInstanceId();
@@ -293,8 +286,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     @Override
     public void setSystemGestureInProgress(boolean inProgress) {
         super.setSystemGestureInProgress(inProgress);
-        // TODO(b/250645563): Don't show round corners when leaving in-app state, and remove
-        // forceHideBackground call entirely.
         if (!FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get()) {
             // Launcher's ScrimView will draw the background throughout the gesture. But once the
             // gesture ends, start drawing taskbar's background again since launcher might stop

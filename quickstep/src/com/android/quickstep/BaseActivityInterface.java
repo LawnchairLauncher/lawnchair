@@ -188,7 +188,8 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
      * Closes any overlays.
      */
     public void closeOverlay() {
-        Optional.ofNullable(getTaskbarController()).ifPresent(TaskbarUIController::hideAllApps);
+        Optional.ofNullable(getTaskbarController()).ifPresent(
+                TaskbarUIController::hideOverlayWindow);
     }
 
     public void switchRunningTaskViewToScreenshot(HashMap<Integer, ThumbnailData> thumbnailDatas,

@@ -191,7 +191,7 @@ public class StatsLogCompatManager extends StatsLogManager {
                 info.getWidget().getSpanX(), // span_x = 17 [default = 1];
                 info.getWidget().getSpanY(), // span_y = 18 [default = 1];
                 getAttributes(info) /* attributes = 19 [(log_mode) = MODE_BYTES] */,
-                false /* is_kids_mode = 20 */
+                info.getIsKidsMode() /* is_kids_mode = 20 */
         );
     }
 
