@@ -1607,7 +1607,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     private int getDisplacementFromScreenCenter(int childIndex, int screenCenter) {
-        int childSize = Math.round(getChildVisibleSize(childIndex));
+        int childSize = getChildVisibleSize(childIndex);
         int halfChildSize = (childSize / 2);
         int childCenter = getChildOffset(childIndex) + halfChildSize;
         return childCenter - screenCenter;

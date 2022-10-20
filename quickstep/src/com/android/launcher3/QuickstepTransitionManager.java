@@ -993,7 +993,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 mAppWindowScale = widgetBackgroundBounds.width() / windowTargetBounds.width();
                 // Crop scaled app window to match widget
                 appWindowCrop.set(0 /* left */, 0 /* top */,
-                        Math.round(windowTargetBounds.width()) /* right */,
+                        windowTargetBounds.width() /* right */,
                         Math.round(widgetBackgroundBounds.height() / mAppWindowScale) /* bottom */);
                 matrix.setTranslate(widgetBackgroundBounds.left, widgetBackgroundBounds.top);
                 matrix.postScale(mAppWindowScale, mAppWindowScale, widgetBackgroundBounds.left,
