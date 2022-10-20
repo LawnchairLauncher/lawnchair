@@ -100,6 +100,7 @@ public final class SplitConfigurationOptions {
      * with the same name/functionality in wm.shell.util (which launcher3 cannot be built against)
      *
      * If you make changes here, consider making the same changes there
+     * TODO(b/254378592): We really need to consolidate this
      */
     public static class SplitBounds {
         public final Rect leftTopBounds;
