@@ -46,7 +46,6 @@ import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 
 /**
  * Controls the animation of swiping back and returning to launcher.
@@ -242,20 +241,17 @@ public class LauncherBackAnimationController {
 
     /** Transform the target window to match the target rect. */
     private void applyTransform(RectF targetRect, float cornerRadius) {
-        SyncRtSurfaceTransactionApplierCompat.SurfaceParams.Builder builder =
-                new SyncRtSurfaceTransactionApplierCompat.SurfaceParams.Builder(mBackTarget.leash);
         final float scale = targetRect.width() / mStartRect.width();
         mTransformMatrix.reset();
         mTransformMatrix.setScale(scale, scale);
         mTransformMatrix.postTranslate(targetRect.left, targetRect.top);
-        builder.withMatrix(mTransformMatrix)
-                .withWindowCrop(mStartRect)
-                .withCornerRadius(cornerRadius);
-        SyncRtSurfaceTransactionApplierCompat.SurfaceParams surfaceParams = builder.build();
 
-        if (surfaceParams.surface.isValid()) {
-            surfaceParams.applyTo(mTransaction);
+        if (mBackTarget.leash.isValid()) {
+            mTransaction.setMatrix(mBackTarget.leash, mTransformMatrix, new float[9]);
+            mTransaction.setWindowCrop(mBackTarget.leash, mStartRect);
+            mTransaction.setCornerRadius(mBackTarget.leash, cornerRadius);
         }
+
         mTransaction.apply();
     }
 
