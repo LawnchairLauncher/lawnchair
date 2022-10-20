@@ -17,7 +17,11 @@ package com.android.launcher3.allapps;
 
 import static android.view.View.MeasureSpec.UNSPECIFIED;
 
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_SCROLLED;
+import static com.android.launcher3.logger.LauncherAtom.ContainerInfo;
+import static com.android.launcher3.logger.LauncherAtom.SearchResultContainer;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_SCROLLED_DOWN;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_SCROLLED_UNKNOWN_DIRECTION;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_SCROLLED_UP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_VERTICAL_SWIPE_BEGIN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_VERTICAL_SWIPE_END;
 import static com.android.launcher3.util.LogConfig.SEARCH_LOGGING;
@@ -31,6 +35,7 @@ import android.util.SparseIntArray;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.FastScrollRecyclerView;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
@@ -56,6 +61,7 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
     private final SparseIntArray mViewHeights = new SparseIntArray();
     private final SparseIntArray mCachedScrollPositions = new SparseIntArray();
     private final AllAppsFastScrollHelper mFastScrollHelper;
+    private int mCumulativeVerticalScroll;
 
 
     private final AdapterDataObserver mObserver = new RecyclerView.AdapterDataObserver() {
@@ -157,7 +163,7 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
         StatsLogManager mgr = ActivityContext.lookupContext(getContext()).getStatsLogManager();
         switch (state) {
             case SCROLL_STATE_DRAGGING:
-                mgr.logger().log(LAUNCHER_ALLAPPS_SCROLLED);
+                mCumulativeVerticalScroll = 0;
                 requestFocus();
                 mgr.logger().sendToInteractionJankMonitor(
                         LAUNCHER_ALLAPPS_VERTICAL_SWIPE_BEGIN, this);
@@ -166,8 +172,15 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
             case SCROLL_STATE_IDLE:
                 mgr.logger().sendToInteractionJankMonitor(
                         LAUNCHER_ALLAPPS_VERTICAL_SWIPE_END, this);
+                logCumulativeVerticalScroll();
                 break;
         }
+    }
+
+    @Override
+    public void onScrolled(int dx, int dy) {
+        super.onScrolled(dx, dy);
+        mCumulativeVerticalScroll += dy;
     }
 
     /**
@@ -348,5 +361,22 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
     @Override
     public boolean hasOverlappingRendering() {
         return false;
+    }
+
+    private void logCumulativeVerticalScroll() {
+        ActivityContext context = ActivityContext.lookupContext(getContext());
+        StatsLogManager mgr = context.getStatsLogManager();
+        ExtendedEditText editText = context.getAppsView().getSearchUiManager().getEditText();
+        ContainerInfo containerInfo = ContainerInfo.newBuilder().setSearchResultContainer(
+                SearchResultContainer
+                        .newBuilder()
+                        .setQueryLength((editText == null) ? -1 : editText.length())).build();
+
+        // mCumulativeVerticalScroll == 0 when user comes back to original position, we don't
+        // know the direction of scrolling.
+        mgr.logger().withContainerInfo(containerInfo).log(
+                mCumulativeVerticalScroll == 0 ? LAUNCHER_ALLAPPS_SCROLLED_UNKNOWN_DIRECTION
+                        : (mCumulativeVerticalScroll > 0) ? LAUNCHER_ALLAPPS_SCROLLED_DOWN
+                                : LAUNCHER_ALLAPPS_SCROLLED_UP);
     }
 }

@@ -116,6 +116,7 @@ import com.android.quickstep.util.ProtoTracer;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
+import com.android.quickstep.util.SurfaceTransaction;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.SwipePipToHomeAnimator;
 import com.android.quickstep.util.TaskViewSimulator;
@@ -128,8 +129,6 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 import com.android.wm.shell.common.TransactionPool;
@@ -2108,16 +2107,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
                 // When revealing the app with launcher splash screen, make the app visible
                 // and behind the splash view before the splash is animated away.
-                SyncRtSurfaceTransactionApplierCompat surfaceApplier =
-                        new SyncRtSurfaceTransactionApplierCompat(splashView);
-                ArrayList<SurfaceParams> params = new ArrayList<>();
+                SurfaceTransactionApplier surfaceApplier =
+                        new SurfaceTransactionApplier(splashView);
+                SurfaceTransaction transaction = new SurfaceTransaction();
                 for (RemoteAnimationTargetCompat target : appearedTaskTargets) {
-                    SurfaceParams.Builder builder = new SurfaceParams.Builder(target.leash);
-                    builder.withAlpha(1);
-                    builder.withLayer(-1);
-                    params.add(builder.build());
+                    transaction.forSurface(target.leash).setAlpha(1).setLayer(-1);
                 }
-                surfaceApplier.scheduleApply(params.toArray(new SurfaceParams[0]));
+                surfaceApplier.scheduleApply(transaction);
 
                 SplashScreenExitAnimationUtils.startAnimations(splashView, taskTarget.leash,
                         mSplashMainWindowShiftLength, new TransactionPool(), new Rect(),

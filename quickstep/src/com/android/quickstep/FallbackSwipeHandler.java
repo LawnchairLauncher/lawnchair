@@ -65,12 +65,12 @@ import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsState;
 import com.android.quickstep.util.RectFSpringAnim;
+import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.TransformParams.BuilderProxy;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -125,18 +125,18 @@ public class FallbackSwipeHandler extends
         }
     }
 
-    private void updateHomeActivityTransformDuringSwipeUp(SurfaceParams.Builder builder,
+    private void updateHomeActivityTransformDuringSwipeUp(SurfaceProperties builder,
             RemoteAnimationTargetCompat app, TransformParams params) {
         setHomeScaleAndAlpha(builder, app, mCurrentShift.value,
                 Utilities.boundToRange(1 - mCurrentShift.value, 0, 1));
     }
 
-    private void setHomeScaleAndAlpha(SurfaceParams.Builder builder,
+    private void setHomeScaleAndAlpha(SurfaceProperties builder,
             RemoteAnimationTargetCompat app, float verticalShift, float alpha) {
         float scale = Utilities.mapRange(verticalShift, 1, mMaxLauncherScale);
         mTmpMatrix.setScale(scale, scale,
                 app.localBounds.exactCenterX(), app.localBounds.exactCenterY());
-        builder.withMatrix(mTmpMatrix).withAlpha(alpha);
+        builder.setMatrix(mTmpMatrix).setAlpha(alpha);
     }
 
     @Override
@@ -279,12 +279,12 @@ public class FallbackSwipeHandler extends
             return mTargetRect;
         }
 
-        private void updateRecentsActivityTransformDuringHomeAnim(SurfaceParams.Builder builder,
+        private void updateRecentsActivityTransformDuringHomeAnim(SurfaceProperties builder,
                 RemoteAnimationTargetCompat app, TransformParams params) {
-            builder.withAlpha(mRecentsAlpha.value);
+            builder.setAlpha(mRecentsAlpha.value);
         }
 
-        private void updateHomeActivityTransformDuringHomeAnim(SurfaceParams.Builder builder,
+        private void updateHomeActivityTransformDuringHomeAnim(SurfaceProperties builder,
                 RemoteAnimationTargetCompat app, TransformParams params) {
             setHomeScaleAndAlpha(builder, app, mVerticalShiftForScale.value, mHomeAlpha.value);
         }
