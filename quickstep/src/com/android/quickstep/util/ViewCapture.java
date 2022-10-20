@@ -23,10 +23,9 @@ import static java.util.stream.Collectors.toList;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.os.Process;
+import android.os.SystemClock;
 import android.os.Trace;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -57,7 +56,9 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Future;
+import java.util.concurrent.Executor;
+import java.util.concurrent.FutureTask;
+import java.util.function.Consumer;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -83,7 +84,7 @@ public class ViewCapture {
     private final List<WindowListener> mListeners = new ArrayList<>();
 
     private final Context mContext;
-    private final LooperExecutor mExecutor;
+    private final Executor mExecutor;
 
     // Pool used for capturing view tree on the UI thread.
     private ViewRef mPool = new ViewRef();
@@ -156,8 +157,13 @@ public class ViewCapture {
         ViewIdProvider idProvider = new ViewIdProvider(mContext.getResources());
 
         // Collect all the tasks first so that all the tasks are posted on the executor
-        List<Pair<String, Future<ExportedData>>> tasks = mListeners.stream()
-                .map(l -> Pair.create(l.name, mExecutor.submit(() -> l.dumpToProto(idProvider))))
+        List<Pair<String, FutureTask<ExportedData>>> tasks = mListeners.stream()
+                .map(l -> {
+                    FutureTask<ExportedData> task =
+                            new FutureTask<ExportedData>(() -> l.dumpToProto(idProvider));
+                    mExecutor.execute(task);
+                    return Pair.create(l.name, task);
+                })
                 .collect(toList());
 
         tasks.forEach(pair -> {
@@ -187,7 +193,6 @@ public class ViewCapture {
         private final View mRoot;
         public final String name;
 
-        private final Handler mHandler;
         private final ViewRef mViewRef = new ViewRef();
 
         private int mFrameIndexBg = -1;
@@ -196,20 +201,23 @@ public class ViewCapture {
         private final ViewPropertyRef[] mNodesBg = new ViewPropertyRef[MEMORY_SIZE];
 
         private boolean mDestroyed = false;
+        private final Consumer<ViewRef> mCaptureCallback = this::captureViewPropertiesBg;
 
         WindowListener(View view, String name) {
             mRoot = view;
             this.name = name;
-            mHandler = new Handler(mExecutor.getLooper(), this::captureViewPropertiesBg);
         }
 
         @Override
         public void onDraw() {
             Trace.beginSection("view_capture");
             captureViewTree(mRoot, mViewRef);
-            Message m = Message.obtain(mHandler);
-            m.obj = mViewRef.next;
-            mHandler.sendMessage(m);
+            ViewRef captured = mViewRef.next;
+            if (captured != null) {
+                captured.callback = mCaptureCallback;
+                captured.creationTime = SystemClock.uptimeMillis();
+                mExecutor.execute(captured);
+            }
             mIsFirstFrame = false;
             Trace.endSection();
         }
@@ -219,12 +227,8 @@ public class ViewCapture {
          * back to the pool
          */
         @WorkerThread
-        private boolean captureViewPropertiesBg(Message msg) {
-            ViewRef viewRefStart = (ViewRef) msg.obj;
-            long time = msg.getWhen();
-            if (viewRefStart == null) {
-                return false;
-            }
+        private void captureViewPropertiesBg(ViewRef viewRefStart) {
+            long time = viewRefStart.creationTime;
             mFrameIndexBg++;
             if (mFrameIndexBg >= MEMORY_SIZE) {
                 mFrameIndexBg = 0;
@@ -292,7 +296,6 @@ public class ViewCapture {
                 viewRefEnd = viewRefEnd.next;
             }
             mNodesBg[mFrameIndexBg] = resultStart;
-            return true;
         }
 
         private ViewPropertyRef findInLastFrame(int hashCode) {
@@ -464,10 +467,13 @@ public class ViewCapture {
         }
     }
 
-    private static class ViewRef {
+    private static class ViewRef implements Runnable {
         public View view;
         public int childCount = 0;
         public ViewRef next;
+
+        public Consumer<ViewRef> callback = null;
+        public long creationTime = 0;
 
         public void transferTo(ViewPropertyRef out) {
             out.childCount = this.childCount;
@@ -494,6 +500,15 @@ public class ViewCapture {
 
             out.visibility = view.getVisibility();
             out.willNotDraw = view.willNotDraw();
+        }
+
+        @Override
+        public void run() {
+            Consumer<ViewRef> oldCallback = callback;
+            callback = null;
+            if (oldCallback != null) {
+                oldCallback.accept(this);
+            }
         }
     }
 
