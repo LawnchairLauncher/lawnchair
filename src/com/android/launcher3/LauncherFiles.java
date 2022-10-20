@@ -47,9 +47,12 @@ public class LauncherFiles {
             DEVICE_PREFERENCES_KEY + XML,
             APP_ICONS_DB));
 
-    public static final List<String> ALL_FILES = Collections.unmodifiableList(
-            new ArrayList<String>() {{
-                addAll(GRID_DB_FILES);
-                addAll(OTHER_FILES);
-            }});
+    private static List<String> createAllFiles() {
+        ArrayList<String> result = new ArrayList<>();
+        result.addAll(GRID_DB_FILES);
+        result.addAll(OTHER_FILES);
+        return Collections.unmodifiableList(result);
+    }
+
+    public static final List<String> ALL_FILES = createAllFiles();
 }
