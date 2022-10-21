@@ -284,11 +284,18 @@ public class DesktopTaskView extends TaskView {
         return false;
     }
 
+    @Override
+    public RunnableList launchTasks() {
+        showDesktopApps();
+        getRecentsView().onTaskLaunchedInLiveTileMode();
+        return new RunnableList();
+    }
+
     @Nullable
     @Override
     public RunnableList launchTaskAnimated() {
         RunnableList endCallback = new RunnableList();
-        SystemUiProxy.INSTANCE.get(getContext()).showDesktopApps();
+        showDesktopApps();
         RecentsView<?, ?> recentsView = getRecentsView();
         recentsView.addSideTaskLaunchCallback(endCallback);
         return endCallback;
@@ -296,8 +303,12 @@ public class DesktopTaskView extends TaskView {
 
     @Override
     public void launchTask(@NonNull Consumer<Boolean> callback, boolean freezeTaskList) {
-        SystemUiProxy.INSTANCE.get(getContext()).showDesktopApps();
+        showDesktopApps();
         callback.accept(true);
+    }
+
+    private void showDesktopApps() {
+        SystemUiProxy.INSTANCE.get(getContext()).showDesktopApps();
     }
 
     @Override
