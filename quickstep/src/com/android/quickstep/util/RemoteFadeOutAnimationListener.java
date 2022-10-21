@@ -19,10 +19,10 @@ import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MOD
 
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.view.SurfaceControl.Transaction;
 
 import com.android.quickstep.RemoteAnimationTargets;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.TransactionCompat;
 
 /**
  * Animation listener which fades out the closing targets
@@ -40,7 +40,7 @@ public class RemoteFadeOutAnimationListener implements AnimatorUpdateListener {
 
     @Override
     public void onAnimationUpdate(ValueAnimator valueAnimator) {
-        TransactionCompat t = new TransactionCompat();
+        Transaction t = new Transaction();
         if (mFirstFrame) {
             for (RemoteAnimationTargetCompat target : mTarget.unfilteredApps) {
                 t.show(target.leash);

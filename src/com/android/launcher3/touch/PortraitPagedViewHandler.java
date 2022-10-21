@@ -445,13 +445,9 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
         int screenWidth = dp.widthPx;
         int screenHeight = dp.heightPx;
         boolean pinToRight = stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT;
-        int insetThickness;
-        if (!dp.isLandscape) {
-            insetThickness = dp.getInsets().top;
-        } else {
-            insetThickness = pinToRight ? dp.getInsets().right : dp.getInsets().left;
-        }
-        out.set(0, 0, screenWidth, placeholderHeight + insetThickness);
+        int insetSizeAdjustment = getPlaceholderSizeAdjustment(dp, pinToRight);
+
+        out.set(0, 0, screenWidth, placeholderHeight + insetSizeAdjustment);
         if (!dp.isLandscape) {
             // portrait, phone or tablet - spans width of screen, nothing else to do
             out.inset(placeholderInset, 0);
@@ -496,25 +492,37 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
             int drawableWidth, int drawableHeight, DeviceProfile dp,
             @StagePosition int stagePosition) {
         boolean pinToRight = stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT;
+        float insetAdjustment = getPlaceholderSizeAdjustment(dp, pinToRight) / 2f;
         if (!dp.isLandscape) {
-            float inset = dp.getInsets().top;
             out.setX(Math.round(onScreenRectCenterX / fullscreenScaleX
                     - 1.0f * drawableWidth / 2));
-            out.setY(Math.round((onScreenRectCenterY + (inset / 2f)) / fullscreenScaleY
+            out.setY(Math.round((onScreenRectCenterY + insetAdjustment) / fullscreenScaleY
                     - 1.0f * drawableHeight / 2));
         } else {
             if (pinToRight) {
-                float inset = dp.getInsets().right;
-                out.setX(Math.round((onScreenRectCenterX - (inset / 2f)) / fullscreenScaleX
+                out.setX(Math.round((onScreenRectCenterX - insetAdjustment) / fullscreenScaleX
                         - 1.0f * drawableWidth / 2));
             } else {
-                float inset = dp.getInsets().left;
-                out.setX(Math.round((onScreenRectCenterX + (inset / 2f)) / fullscreenScaleX
+                out.setX(Math.round((onScreenRectCenterX + insetAdjustment) / fullscreenScaleX
                         - 1.0f * drawableWidth / 2));
             }
             out.setY(Math.round(onScreenRectCenterY / fullscreenScaleY
                     - 1.0f * drawableHeight / 2));
         }
+    }
+
+    /**
+     * The split placeholder comes with a default inset to buffer the icon from the top of the
+     * screen. But if the device already has a large inset (from cutouts etc), use that instead.
+     */
+    private int getPlaceholderSizeAdjustment(DeviceProfile dp, boolean pinToRight) {
+        int insetThickness;
+        if (!dp.isLandscape) {
+            insetThickness = dp.getInsets().top;
+        } else {
+            insetThickness = pinToRight ? dp.getInsets().right : dp.getInsets().left;
+        }
+        return Math.max(insetThickness - dp.splitPlaceholderInset, 0);
     }
 
     @Override
