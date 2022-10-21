@@ -694,14 +694,10 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     }
 
     /**
-     * Adds the correct spacing to 3 button nav container. No-op if using gesture nav, setup
-     * is incomplete, or in kids mode.
+     * Adds the correct spacing to 3 button nav container depending on if device is in kids mode,
+     * setup wizard, or normal 3 button nav.
      */
     private void updateButtonLayoutSpacing() {
-        if (!mContext.isThreeButtonNav() || mContext.isNavBarKidsModeActive()
-                || !mContext.isUserSetupComplete()) {
-            return;
-        }
         DeviceProfile dp = mContext.getDeviceProfile();
         Resources res = mContext.getResources();
         boolean isInSetup = !mContext.isUserSetupComplete();
@@ -717,41 +713,6 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                             TaskbarManager.isPhoneMode(dp));
             navButtonLayoutter.layoutButtons(dp, isContextualButtonShowing());
             return;
-        }
-
-        // Add spacing after the end of the last nav button
-        FrameLayout.LayoutParams navButtonParams =
-                (FrameLayout.LayoutParams) mNavButtonContainer.getLayoutParams();
-        navButtonParams.gravity = Gravity.END;
-        navButtonParams.width = FrameLayout.LayoutParams.WRAP_CONTENT;
-        navButtonParams.height = MATCH_PARENT;
-
-        int navMarginEnd = (int) res.getDimension(dp.inv.inlineNavButtonsEndSpacing);
-        int contextualWidth = mEndContextualContainer.getWidth();
-        // If contextual buttons are showing, we check if the end margin is enough for the
-        // contextual button to be showing - if not, move the nav buttons over a smidge
-        if (isContextualButtonShowing() && navMarginEnd < contextualWidth) {
-            // Additional spacing, eat up half of space between last icon and nav button
-            navMarginEnd += res.getDimensionPixelSize(R.dimen.taskbar_hotseat_nav_spacing) / 2;
-        }
-        navButtonParams.setMarginEnd(navMarginEnd);
-        mNavButtonContainer.setLayoutParams(navButtonParams);
-
-        // Add the spaces in between the nav buttons
-        int spaceInBetween = res.getDimensionPixelSize(R.dimen.taskbar_button_space_inbetween);
-        for (int i = 0; i < mNavButtonContainer.getChildCount(); i++) {
-            View navButton = mNavButtonContainer.getChildAt(i);
-            LinearLayout.LayoutParams buttonLayoutParams =
-                    (LinearLayout.LayoutParams) navButton.getLayoutParams();
-            buttonLayoutParams.weight = 0;
-            if (i == 0) {
-                buttonLayoutParams.setMarginEnd(spaceInBetween / 2);
-            } else if (i == mNavButtonContainer.getChildCount() - 1) {
-                buttonLayoutParams.setMarginStart(spaceInBetween / 2);
-            } else {
-                buttonLayoutParams.setMarginStart(spaceInBetween / 2);
-                buttonLayoutParams.setMarginEnd(spaceInBetween / 2);
-            }
         }
 
         if (isInSetup) {
@@ -829,6 +790,42 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
             mNavButtonContainer.requestLayout();
 
             mHomeButton.setOnLongClickListener(null);
+        } else if (mContext.isThreeButtonNav()) {
+            // Setup normal 3 button
+            // Add spacing after the end of the last nav button
+            FrameLayout.LayoutParams navButtonParams =
+                    (FrameLayout.LayoutParams) mNavButtonContainer.getLayoutParams();
+            navButtonParams.gravity = Gravity.END;
+            navButtonParams.width = FrameLayout.LayoutParams.WRAP_CONTENT;
+            navButtonParams.height = MATCH_PARENT;
+
+            int navMarginEnd = (int) res.getDimension(dp.inv.inlineNavButtonsEndSpacing);
+            int contextualWidth = mEndContextualContainer.getWidth();
+            // If contextual buttons are showing, we check if the end margin is enough for the
+            // contextual button to be showing - if not, move the nav buttons over a smidge
+            if (isContextualButtonShowing() && navMarginEnd < contextualWidth) {
+                // Additional spacing, eat up half of space between last icon and nav button
+                navMarginEnd += res.getDimensionPixelSize(R.dimen.taskbar_hotseat_nav_spacing) / 2;
+            }
+            navButtonParams.setMarginEnd(navMarginEnd);
+            mNavButtonContainer.setLayoutParams(navButtonParams);
+
+            // Add the spaces in between the nav buttons
+            int spaceInBetween = res.getDimensionPixelSize(R.dimen.taskbar_button_space_inbetween);
+            for (int i = 0; i < mNavButtonContainer.getChildCount(); i++) {
+                View navButton = mNavButtonContainer.getChildAt(i);
+                LinearLayout.LayoutParams buttonLayoutParams =
+                        (LinearLayout.LayoutParams) navButton.getLayoutParams();
+                buttonLayoutParams.weight = 0;
+                if (i == 0) {
+                    buttonLayoutParams.setMarginEnd(spaceInBetween / 2);
+                } else if (i == mNavButtonContainer.getChildCount() - 1) {
+                    buttonLayoutParams.setMarginStart(spaceInBetween / 2);
+                } else {
+                    buttonLayoutParams.setMarginStart(spaceInBetween / 2);
+                    buttonLayoutParams.setMarginEnd(spaceInBetween / 2);
+                }
+            }
         }
 
     }
