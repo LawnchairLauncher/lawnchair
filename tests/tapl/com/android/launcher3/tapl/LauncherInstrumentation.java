@@ -392,6 +392,10 @@ public final class LauncherInstrumentation {
         getTestInfo(TestProtocol.REQUEST_ENABLE_ROTATION, Boolean.toString(on));
     }
 
+    public void setEnableSuggestion(boolean enableSuggestion) {
+        getTestInfo(TestProtocol.REQUEST_ENABLE_SUGGESTION, Boolean.toString(enableSuggestion));
+    }
+
     public boolean hadNontestEvents() {
         return getTestInfo(TestProtocol.REQUEST_GET_HAD_NONTEST_EVENTS)
                 .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);

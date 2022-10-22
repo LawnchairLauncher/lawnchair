@@ -30,6 +30,7 @@ public class DesktopTaskbarUIController extends TaskbarUIController {
         mLauncher = launcher;
     }
 
+    @SuppressWarnings("MissingSuperCall") // TODO: Fix me
     @Override
     protected void init(TaskbarControllers taskbarControllers) {
         super.init(taskbarControllers);
@@ -37,6 +38,7 @@ public class DesktopTaskbarUIController extends TaskbarUIController {
         mControllers.taskbarViewController.updateRunningApps();
     }
 
+    @SuppressWarnings("MissingSuperCall") // TODO: Fix me
     @Override
     protected void onDestroy() {
         super.onDestroy();
