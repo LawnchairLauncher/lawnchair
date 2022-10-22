@@ -42,6 +42,7 @@ import android.view.SurfaceControl;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.window.BackEvent;
+import android.window.BackProgressAnimator;
 import android.window.IOnBackInvokedCallback;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -97,6 +98,7 @@ public class LauncherBackAnimationController {
     private boolean mBackInProgress = false;
     private IOnBackInvokedCallback mBackCallback;
     private IRemoteAnimationFinishedCallback mAnimationFinishedCallback;
+    private BackProgressAnimator mProgressAnimator = new BackProgressAnimator();
 
     public LauncherBackAnimationController(
             QuickstepLauncher launcher,
@@ -125,29 +127,41 @@ public class LauncherBackAnimationController {
         mBackCallback = new IOnBackInvokedCallback.Stub() {
             @Override
             public void onBackCancelled() {
-                handler.post(() -> resetPositionAnimated());
+                handler.post(() -> {
+                    resetPositionAnimated();
+                    mProgressAnimator.reset();
+                });
             }
 
             @Override
             public void onBackInvoked() {
-                handler.post(() -> startTransition());
+                handler.post(() -> {
+                    startTransition();
+                    mProgressAnimator.reset();
+                });
             }
 
             @Override
             public void onBackProgressed(BackEvent backEvent) {
-                mBackProgress = backEvent.getProgress();
-                // TODO: Update once the interpolation curve spec is finalized.
-                mBackProgress =
-                        1 - (1 - mBackProgress) * (1 - mBackProgress) * (1
-                                - mBackProgress);
-                if (!mBackInProgress) {
-                    startBack(backEvent);
-                }
-                updateBackProgress(mBackProgress, backEvent);
+                handler.post(() -> {
+                    mProgressAnimator.onBackProgressed(backEvent);
+                });
             }
 
             @Override
-            public void onBackStarted() { }
+            public void onBackStarted(BackEvent backEvent) {
+                handler.post(() -> {
+                    startBack(backEvent);
+                    mProgressAnimator.onBackStarted(backEvent, event -> {
+                        mBackProgress = event.getProgress();
+                        // TODO: Update once the interpolation curve spec is finalized.
+                        mBackProgress =
+                                1 - (1 - mBackProgress) * (1 - mBackProgress) * (1
+                                        - mBackProgress);
+                        updateBackProgress(mBackProgress, event);
+                    });
+                });
+            }
         };
 
         final IRemoteAnimationRunner runner = new IRemoteAnimationRunner.Stub() {
@@ -194,43 +208,38 @@ public class LauncherBackAnimationController {
         if (mBackCallback != null) {
             SystemUiProxy.INSTANCE.get(mLauncher).clearBackToLauncherCallback(mBackCallback);
         }
+        mProgressAnimator.reset();
         mBackCallback = null;
     }
 
     private void startBack(BackEvent backEvent) {
-        if (mBackTarget == null) {
+        mBackInProgress = true;
+        RemoteAnimationTarget appTarget = backEvent.getDepartingAnimationTarget();
+
+        if (appTarget == null) {
             return;
         }
 
-        mBackInProgress = true;
         mTransaction.show(mBackTarget.leash).apply();
         mTransaction.setAnimationTransaction();
         mInitialTouchPos.set(backEvent.getTouchX(), backEvent.getTouchY());
 
         // TODO(b/218916755): Offset start rectangle in multiwindow mode.
         mStartRect.set(mBackTarget.windowConfiguration.getMaxBounds());
+        mCurrentRect.set(mStartRect);
     }
 
     private void updateBackProgress(float progress, BackEvent event) {
-        if (mBackTarget == null) {
+        if (!mBackInProgress || mBackTarget == null) {
             return;
         }
         float screenWidth = mStartRect.width();
         float screenHeight = mStartRect.height();
-        float dX = Math.abs(event.getTouchX() - mInitialTouchPos.x);
-        // The 'follow width' is the width of the window if it completely matches
-        // the gesture displacement.
-        float followWidth = screenWidth - dX;
-        // The 'progress width' is the width of the window if it strictly linearly interpolates
-        // to minimum scale base on progress.
-        float progressWidth = Utilities.mapRange(progress, 1, MIN_WINDOW_SCALE) * screenWidth;
-        // The final width is derived from interpolating between the follow with and progress width
-        // using gesture progress.
-        float width = Utilities.mapRange(progress, followWidth, progressWidth);
+        float width = Utilities.mapRange(progress, 1, MIN_WINDOW_SCALE) * screenWidth;
         float height = screenHeight / screenWidth * width;
         float deltaYRatio = (event.getTouchY() - mInitialTouchPos.y) / screenHeight;
         // Base the window movement in the Y axis on the touch movement in the Y axis.
-        float deltaY = (float) Math.sin(deltaYRatio * Math.PI * 0.5f) * mWindowMaxDeltaY;
+        float deltaY = (float) Math.sin(deltaYRatio * Math.PI * 0.5f) * mWindowMaxDeltaY * progress;
         // Move the window along the Y axis.
         float top = (screenHeight - height) * 0.5f + deltaY;
         // Move the window along the X axis.
