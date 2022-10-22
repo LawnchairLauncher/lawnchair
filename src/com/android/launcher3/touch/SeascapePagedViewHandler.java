@@ -24,6 +24,7 @@ import static android.view.Gravity.START;
 
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
+import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MAIN;
 
 import android.content.res.Resources;
@@ -33,7 +34,6 @@ import android.util.Pair;
 import android.view.Surface;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
@@ -85,26 +85,22 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     }
 
     @Override
-    public float getTaskMenuX(float x, View thumbnailView, int overScroll,
-            DeviceProfile deviceProfile) {
-        return x;
+    public float getTaskMenuX(float x, View thumbnailView,
+            DeviceProfile deviceProfile, float taskInsetMargin) {
+        return x + taskInsetMargin;
     }
 
     @Override
-    public float getTaskMenuY(float y, View thumbnailView, int overScroll) {
-        return y + overScroll +
-                (thumbnailView.getMeasuredHeight() + thumbnailView.getMeasuredWidth()) / 2f;
-    }
-
-    @Override
-    public void setTaskMenuAroundTaskView(LinearLayout taskView, float margin) {
-        BaseDragLayer.LayoutParams lp = (BaseDragLayer.LayoutParams) taskView.getLayoutParams();
-        lp.bottomMargin += margin;
-    }
-
-    @Override
-    public PointF getAdditionalInsetForTaskMenu(float margin) {
-        return new PointF(-margin, margin);
+    public float getTaskMenuY(float y, View thumbnailView, int stagePosition,
+            View taskMenuView, float taskInsetMargin) {
+        BaseDragLayer.LayoutParams lp = (BaseDragLayer.LayoutParams) taskMenuView.getLayoutParams();
+        int taskMenuWidth = lp.width;
+        if (stagePosition == STAGE_POSITION_UNDEFINED) {
+            return y + taskInsetMargin
+                    + (thumbnailView.getMeasuredHeight() + taskMenuWidth) / 2f;
+        } else {
+            return y + taskMenuWidth + taskInsetMargin;
+        }
     }
 
     @Override

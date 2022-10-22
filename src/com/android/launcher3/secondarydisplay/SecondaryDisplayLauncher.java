@@ -303,6 +303,10 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         }
     }
 
+    public SecondaryDisplayPredictions getSecondaryDisplayPredictions() {
+        return mSecondaryDisplayPredictions;
+    }
+
     @Override
     public StringCache getStringCache() {
         return mStringCache;

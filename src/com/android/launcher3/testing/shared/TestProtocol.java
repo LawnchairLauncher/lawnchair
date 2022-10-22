@@ -124,6 +124,7 @@ public final class TestProtocol {
             "get-grid-task-size-rect-for-tablet";
     public static final String REQUEST_GET_OVERVIEW_PAGE_SPACING = "get-overview-page-spacing";
     public static final String REQUEST_ENABLE_ROTATION = "enable_rotation";
+    public static final String REQUEST_ENABLE_SUGGESTION = "enable-suggestion";
 
     public static boolean sDebugTracing = false;
     public static final String REQUEST_ENABLE_DEBUG_TRACING = "enable-debug-tracing";

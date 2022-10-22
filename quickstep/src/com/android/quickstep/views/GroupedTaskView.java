@@ -1,6 +1,5 @@
 package com.android.quickstep.views;
 
-import static com.android.launcher3.AbstractFloatingView.getAnyView;
 import static com.android.launcher3.util.SplitConfigurationOptions.DEFAULT_SPLIT_RATIO;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
@@ -14,11 +13,11 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.RunnableList;
+import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.quickstep.RecentsModel;
@@ -26,8 +25,10 @@ import com.android.quickstep.TaskIconCache;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.RecentsOrientedState;
+import com.android.quickstep.util.TaskViewSimulator;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.recents.utilities.PreviewPositionHelper;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
 import java.util.HashMap;
@@ -86,9 +87,19 @@ public class GroupedTaskView extends TaskView {
         mTaskIdContainer[1] = secondary.key.id;
         mTaskIdAttributeContainer[1] = new TaskIdAttributeContainer(secondary, mSnapshotView2,
                 mIconView2, STAGE_POSITION_BOTTOM_OR_RIGHT);
-        mTaskIdAttributeContainer[0].setStagePosition(STAGE_POSITION_TOP_OR_LEFT);
+        mTaskIdAttributeContainer[0].setStagePosition(
+                SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT);
         mSnapshotView2.bind(secondary);
         mSplitBoundsConfig = splitBoundsConfig;
+        if (mSplitBoundsConfig == null) {
+            return;
+        }
+        mSnapshotView.getPreviewPositionHelper().setSplitBounds(TaskViewSimulator
+                        .convertSplitBounds(splitBoundsConfig),
+                PreviewPositionHelper.STAGE_POSITION_TOP_OR_LEFT);
+        mSnapshotView2.getPreviewPositionHelper().setSplitBounds(TaskViewSimulator
+                        .convertSplitBounds(splitBoundsConfig),
+                PreviewPositionHelper.STAGE_POSITION_BOTTOM_OR_RIGHT);
     }
 
     @Override
@@ -164,21 +175,6 @@ public class GroupedTaskView extends TaskView {
         }
     }
 
-    @Override
-    protected boolean showTaskMenuWithContainer(IconView iconView) {
-        boolean showedTaskMenu = super.showTaskMenuWithContainer(iconView);
-        if (iconView == mIconView2 && showedTaskMenu && !mActivity.getDeviceProfile().isTablet) {
-            // Adjust the position of the secondary task's menu view (only on phones)
-            TaskMenuView taskMenuView = getAnyView(mActivity, AbstractFloatingView.TYPE_TASK_MENU);
-            DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-            getRecentsView().getPagedOrientationHandler()
-                    .setSecondaryTaskMenuPosition(mSplitBoundsConfig, this,
-                            deviceProfile, mTaskIdAttributeContainer[0].getThumbnailView(),
-                            taskMenuView);
-        }
-        return showedTaskMenu;
-    }
-
     @Nullable
     @Override
     public RunnableList launchTaskAnimated() {
@@ -207,7 +203,8 @@ public class GroupedTaskView extends TaskView {
     @Override
     public void launchTask(@NonNull Consumer<Boolean> callback, boolean freezeTaskList) {
         getRecentsView().getSplitSelectController().launchTasks(mTask.key.id, mSecondaryTask.key.id,
-                STAGE_POSITION_TOP_OR_LEFT, callback, freezeTaskList, getSplitRatio());
+                SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT, callback, freezeTaskList,
+                getSplitRatio());
     }
 
     @Override

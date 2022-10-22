@@ -191,6 +191,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mStagePosition = mThumbnailPosition.equals(splitInfo.leftTopBounds) ?
                 STAGE_POSITION_TOP_OR_LEFT :
                 STAGE_POSITION_BOTTOM_OR_RIGHT;
+        mPositionHelper.setSplitBounds(convertSplitBounds(mSplitBounds), mStagePosition);
     }
 
     /**
@@ -418,4 +419,15 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         return Math.max(Math.abs(mTempPoint[0]), Math.abs(mTempPoint[1]));
     }
 
+    /**
+     * TODO(b/254378592): Remove this after consolidation of classes
+     */
+    public static com.android.wm.shell.util.SplitBounds convertSplitBounds(SplitBounds bounds) {
+        return new com.android.wm.shell.util.SplitBounds(
+                bounds.leftTopBounds,
+                bounds.rightBottomBounds,
+                bounds.leftTopTaskId,
+                bounds.rightBottomTaskId
+        );
+    }
 }
