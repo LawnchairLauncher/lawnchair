@@ -89,7 +89,7 @@
     <string name="custom_icon_shape_edit">Editar Formato de Ícones Personalizado</string>
     <string name="icon_shape_corner">Formato dos Cantos</string>
     <string name="icon_shape_corner_round">Redondo</string>
-    <string name="icon_shape_corner_squircle">Arredondado</string>
+    <string name="icon_shape_corner_squircle">Suave</string>
     <string name="icon_shape_corner_cut">Cortado</string>
     <string name="icon_shape_top_left">Superior Esquerdo</string>
     <string name="icon_shape_top_right">Superior Direito</string>
