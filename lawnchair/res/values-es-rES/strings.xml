@@ -84,17 +84,17 @@
     <string name="theme_follow_wallpaper">Coincidir con fondo</string>
     <string name="accent_color">Color de acento</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Custom Icon Shape</string>
-    <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
-    <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
-    <string name="icon_shape_corner">Corner Shape</string>
-    <string name="icon_shape_corner_round">Round</string>
-    <string name="icon_shape_corner_squircle">Smooth</string>
-    <string name="icon_shape_corner_cut">Cut</string>
-    <string name="icon_shape_top_left">Top Left</string>
-    <string name="icon_shape_top_right">Top Right</string>
-    <string name="icon_shape_bottom_left">Bottom Left</string>
-    <string name="icon_shape_bottom_right">Bottom Right</string>
+    <string name="custom_icon_shape">Forma de icono personalizada</string>
+    <string name="custom_icon_shape_create">Crear forma de icono personalizada</string>
+    <string name="custom_icon_shape_edit">Editar forma de icono personalizada</string>
+    <string name="icon_shape_corner">Forma de esquina</string>
+    <string name="icon_shape_corner_round">Redondo</string>
+    <string name="icon_shape_corner_squircle">Suavizado</string>
+    <string name="icon_shape_corner_cut">Cortar</string>
+    <string name="icon_shape_top_left">Superior izquierda</string>
+    <string name="icon_shape_top_right">Superior Derecha</string>
+    <string name="icon_shape_bottom_left">Inferior izquierda</string>
+    <string name="icon_shape_bottom_right">Inferior derecha</string>
     <string name="create">Crear</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->

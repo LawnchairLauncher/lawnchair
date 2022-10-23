@@ -47,12 +47,12 @@
     <string name="font_picker_description">Niektoré texty ostávajú nezmenené.</string>
     <string name="smartspace_calendar_label">Prispôsobenie kalendára Prehľadu udalostí</string>
     <string name="smartspace_calendar_description">Povoliť zobrazovanie dátumu v iných než gregoriánskych kalendárových systémoch.</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
-    <string name="always_reload_icons_label">Always Reload Icons</string>
-    <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
-    <string name="transparent_background_icons">Transparent Themed Icons</string>
-    <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
+    <string name="workspace_increase_max_grid_size_label">Zvýšiť maximálnu veľkosť mriežky domovskej obrazovky</string>
+    <string name="workspace_increase_max_grid_size_description">Zvýši maximálnu povolenú veľkosť mriežky domovskej obrazovky z 10 x 10 na 20 x 20.</string>
+    <string name="always_reload_icons_label">Vždy načítať ikony</string>
+    <string name="always_reload_icons_description">Zamedzí používaniu ikon, ktoré boli uložené vo vyrovnávacej pamäti</string>
+    <string name="transparent_background_icons">Priehľadné tematické ikony</string>
+    <string name="transparent_background_icons_description">Použiť priehľadné pozadie na tematických ikonách</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotácia domovskej obrazovky</string>
     <string name="home_screen_rotaton_description">Keď je zariadenie otočené.</string>
@@ -68,9 +68,9 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Zobraziť počet oznámení</string>
     <string name="notification_dots_color">Bodky upozornení</string>
-    <string name="notification_dots_text_color">Notification Count Color</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_text_color">Farba počítadla upozornení</string>
+    <string name="notification_dots_color_contrast_warning_always">Upozornenie: Farby Bodky a Počítadla upozornení nemajú dostatok vzájomného kontrastu</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Upozornenie: Farby Bodky a Počítadla upozornení nemusia mať dostatok vzájomného kontrastu</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Potrebný prístup k upozorneniam</string>
     <string name="missing_notification_access_description">Potrebný prístup k upozorneniam.</string>
@@ -84,17 +84,17 @@
     <string name="theme_follow_wallpaper">Prispôsobiť sa pozadiu</string>
     <string name="accent_color">Farebný akcent</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Custom Icon Shape</string>
-    <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
-    <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
-    <string name="icon_shape_corner">Corner Shape</string>
-    <string name="icon_shape_corner_round">Round</string>
-    <string name="icon_shape_corner_squircle">Smooth</string>
-    <string name="icon_shape_corner_cut">Cut</string>
-    <string name="icon_shape_top_left">Top Left</string>
-    <string name="icon_shape_top_right">Top Right</string>
-    <string name="icon_shape_bottom_left">Bottom Left</string>
-    <string name="icon_shape_bottom_right">Bottom Right</string>
+    <string name="custom_icon_shape">Vlastný tvar ikon</string>
+    <string name="custom_icon_shape_create">Vytvoriť vlastný tvar ikon</string>
+    <string name="custom_icon_shape_edit">Upraviť vlastný tvar ikon</string>
+    <string name="icon_shape_corner">Tvar rohov</string>
+    <string name="icon_shape_corner_round">Okrúhly</string>
+    <string name="icon_shape_corner_squircle">Hladký</string>
+    <string name="icon_shape_corner_cut">Zrezaný</string>
+    <string name="icon_shape_top_left">Vľavo hore</string>
+    <string name="icon_shape_top_right">Vpravo hore</string>
+    <string name="icon_shape_bottom_left">Vľavo dole</string>
+    <string name="icon_shape_bottom_right">Vpravo dole</string>
     <string name="create">Vytvoriť</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
@@ -111,34 +111,34 @@
     <string name="icon_shape_system">Systém</string>
     <string name="icon_shape_circle">Kruh</string>
     <string name="icon_shape_cylinder">Valec</string>
-    <string name="icon_shape_diamond">Diamond</string>
-    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_diamond">Diamant</string>
+    <string name="icon_shape_egg">Vajce</string>
     <string name="icon_shape_cupertino">iOS</string>
-    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_octagon">Osemuholník</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Zaoblený štvorec</string>
-    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_sharp_square">Ostrý štvorec</string>
     <string name="icon_shape_square">Štvorec</string>
     <string name="icon_shape_squircle">Zaoblený štvorec</string>
     <string name="icon_shape_teardrop">Slza</string>
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">Pridať písma</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF sú podporované.</string>
+    <string name="pref_fonts_add_fonts_summary">OTF a TTF sú podporované.</string>
     <string name="pref_fonts_missing_font">Font nenájdený.</string>
     <string name="font_variant_italic">Kurzíva</string>
     <string name="font_weight_thin">Tenké</string>
     <string name="font_weight_extra_light">Extra tenké</string>
-    <string name="font_weight_light">Svetlý</string>
-    <string name="font_weight_regular">Bežný</string>
-    <string name="font_weight_medium">Stredný</string>
-    <string name="font_weight_semi_bold">Polohrubý</string>
-    <string name="font_weight_bold">Hrubý</string>
-    <string name="font_weight_extra_bold">Extra hrubý</string>
-    <string name="font_weight_extra_black">Čierny</string>
+    <string name="font_weight_light">Tenké</string>
+    <string name="font_weight_regular">Bežné</string>
+    <string name="font_weight_medium">Stredné</string>
+    <string name="font_weight_semi_bold">Polohrubé</string>
+    <string name="font_weight_bold">Hrubé</string>
+    <string name="font_weight_extra_bold">Extra hrubé</string>
+    <string name="font_weight_extra_black">Čierne</string>
     <string name="reset_font">Reset</string>
     <!-- colorpreference/* -->
-    <string name="dynamic">Predvoľby</string>
-    <string name="swatches">Swatches</string>
+    <string name="dynamic">Dynamické</string>
+    <string name="swatches">Odtiene</string>
     <string name="presets">Predvoľby</string>
     <string name="custom">Vlastné</string>
     <string name="rgb">RGB</string>
@@ -152,10 +152,10 @@
     <string name="hex">Hex</string>
     <string name="color_sliders">Posuvníky</string>
     <string name="action_copy">Kopírovať</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_paste">Prilepiť</string>
     <string name="copied_toast">Skopírované do schránky.</string>
     <string name="invalid_color">Neplatná farba</string>
-    <string name="launcher_default_color">Managed by Lawnchair</string>
+    <string name="launcher_default_color">Spravované Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Pridať nové aplikácie na domovskú obrazovku</string>
@@ -170,11 +170,11 @@
     <string name="layout">Rozloženie</string>
     <string name="home_screen_grid">Mriežka na Domovskej obrazovke</string>
     <string name="home_screen_lock">Uzamknúť domovskú obrazovku</string>
-    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_lock_description">Zabráni zmenám v rozložení domovskej obrazovky.</string>
     <string name="home_screen_unlock">Odomknúť domovskú obrazovku</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">Ukázať tlačidlo zamknutia vo vyskakovacej ponuke</string>
-    <string name="home_screen_locked">Home Screen is locked.</string>
+    <string name="home_screen_locked">Domovská obrazovka je uzamknutá.</string>
     <string name="status_bar_label">Stavový riadok</string>
     <string name="show_status_bar">Zobraziť stavový riadok</string>
     <string name="dark_status_bar_label">Tmavý stavový riadok</string>
@@ -207,9 +207,9 @@
     <string name="smartspace_date_and_time">Dátum &amp; Čas</string>
     <string name="smartspace_date">Dátum</string>
     <string name="smartspace_time">Čas</string>
-    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_format">Formát hodín</string>
     <string name="smartspace_time_follow_system">Predvolený systémom</string>
-    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
+    <string name="smartspace_time_12_hour_format">12-hodinový formát</string>
     <string name="smartspace_time_24_hour_format">24-hodinový formát</string>
     <string name="smartspace_weather">Počasie</string>
     <string name="smartspace_battery_status">Stav batérie</string>
@@ -220,8 +220,8 @@
     <string name="smartspace_calendar_gregorian">Gregoriánsky</string>
     <string name="smartspace_calendar_persian">Perzský</string>
     <string name="smartspace_preferences">Predvoľby</string>
-    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <string name="smartspace_widget_toggle_label">Ukázať na domovskej obrazovke</string>
+    <string name="smartspace_widget_toggle_description">Prehľad udalostí môže byť pridaný ručne prostredníctvom widgetu „Lawnchair“.</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">Vyhľadávací panel</string>
@@ -244,7 +244,7 @@
     <string name="background_opacity">Sýtosť pozadia</string>
     <string name="pref_category_search">Vyhľadávanie</string>
     <string name="show_app_search_bar">Ukázať vyhľadávacie okno</string>
-    <string name="show_hidden_apps_search">Show Hidden Apps In Search</string>
+    <string name="show_hidden_apps_search">Ukázať skryté aplikácie vo vyhľadávaní</string>
     <string name="pref_search_auto_show_keyboard">Automaticky ukázať klávesnicu</string>
     <string name="fuzzy_search_title">Fuzzy Search</string>
     <string name="fuzzy_search_desc">Približná zhoda pre vyhľadávanie aplikácií.</string>
@@ -269,7 +269,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Nepriehľadnosť pozadia ikon</string>
-    <string name="folder_preview_bg_color_label">Icon Background Color</string>
+    <string name="folder_preview_bg_color_label">Farba pozadia ikon</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Max. počet stĺpcov v priečinku</string>
     <string name="max_folder_rows">Max. počet riadkov v priečinku</string>
