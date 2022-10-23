@@ -206,6 +206,12 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = { reloadHelper.recreate() }
     )
 
+    val enableSmartHide = preference(
+        key = booleanPreferencesKey(name = "enable_smart_hide"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_enable_smart_hide),
+        onSet = { reloadHelper.recreate() }
+    )
+
     val enableFontSelection = preference(
         key = booleanPreferencesKey(name = "enable_font_selection"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_font_selection),
