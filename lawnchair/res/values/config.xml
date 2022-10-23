@@ -55,6 +55,9 @@
     <string name="config_default_notification_dot_text_color" translatable="false">default</string>
     <string name="config_default_folder_color" translatable="false">default</string>
 
+    <!-- which smartspace mode to use by default -->
+    <string name="config_default_smartspace_mode" translatable="false">lawnchair</string>
+
     <!-- which time format to use by default on smartspace -->
     <string name="config_default_smartspace_time_format" translatable="false">system</string>
 

@@ -135,6 +135,8 @@ import java.util.stream.Collectors;
 
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.smartspace.SmartspaceAppWidgetProvider;
+import app.lawnchair.smartspace.model.LawnchairSmartspace;
+import app.lawnchair.smartspace.model.SmartspaceMode;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -588,10 +590,17 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, getChildCount());
         // Always add a QSB on the first screen.
         if (mQsb == null) {
+            SmartspaceMode smartspaceMode = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getSmartspaceMode());
+            if (!smartspaceMode.isAvailable(this.mLauncher)) {
+                // The current smartspace mode is not available,
+                // setting the smartspace mode to one that is always available
+                smartspaceMode = LawnchairSmartspace.INSTANCE;
+                PreferenceExtensionsKt.setBlocking(mPreferenceManager2.getSmartspaceMode(), smartspaceMode);
+            }
             // In transposed layout, we add the QSB in the Grid. As workspace does not touch the
             // edges, we do not need a full width QSB.
             mQsb = LayoutInflater.from(getContext())
-                    .inflate(R.layout.search_container_workspace, firstPage, false);
+                .inflate(smartspaceMode.getLayoutResourceId(), firstPage, false);
         }
 
         int cellVSpan = FeatureFlags.EXPANDED_SMARTSPACE.get()
