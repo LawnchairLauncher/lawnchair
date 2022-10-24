@@ -15,11 +15,10 @@
  */
 package com.android.quickstep;
 
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
+import static android.view.RemoteAnimationTarget.MODE_CLOSING;
 
 import android.graphics.Rect;
-
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import android.view.RemoteAnimationTarget;
 
 /**
  * Extension of {@link RemoteAnimationTargets} with additional information about swipe
@@ -30,8 +29,8 @@ public class RecentsAnimationTargets extends RemoteAnimationTargets {
     public final Rect homeContentInsets;
     public final Rect minimizedHomeBounds;
 
-    public RecentsAnimationTargets(RemoteAnimationTargetCompat[] apps,
-            RemoteAnimationTargetCompat[] wallpapers, RemoteAnimationTargetCompat[] nonApps,
+    public RecentsAnimationTargets(RemoteAnimationTarget[] apps,
+            RemoteAnimationTarget[] wallpapers, RemoteAnimationTarget[] nonApps,
             Rect homeContentInsets, Rect minimizedHomeBounds) {
         super(apps, wallpapers, nonApps, MODE_CLOSING);
         this.homeContentInsets = homeContentInsets;

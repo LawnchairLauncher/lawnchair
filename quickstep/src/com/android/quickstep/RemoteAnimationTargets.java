@@ -15,9 +15,11 @@
  */
 package com.android.quickstep;
 
+import static android.app.WindowConfiguration.ACTIVITY_TYPE_HOME;
+import static android.app.WindowConfiguration.ACTIVITY_TYPE_RECENTS;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR;
 
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import android.view.RemoteAnimationTarget;
 
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -29,41 +31,40 @@ public class RemoteAnimationTargets {
 
     private final CopyOnWriteArrayList<ReleaseCheck> mReleaseChecks = new CopyOnWriteArrayList<>();
 
-    public final RemoteAnimationTargetCompat[] unfilteredApps;
-    public final RemoteAnimationTargetCompat[] apps;
-    public final RemoteAnimationTargetCompat[] wallpapers;
-    public final RemoteAnimationTargetCompat[] nonApps;
+    public final RemoteAnimationTarget[] unfilteredApps;
+    public final RemoteAnimationTarget[] apps;
+    public final RemoteAnimationTarget[] wallpapers;
+    public final RemoteAnimationTarget[] nonApps;
     public final int targetMode;
     public final boolean hasRecents;
 
     private boolean mReleased = false;
 
-    public RemoteAnimationTargets(RemoteAnimationTargetCompat[] apps,
-            RemoteAnimationTargetCompat[] wallpapers, RemoteAnimationTargetCompat[] nonApps,
+    public RemoteAnimationTargets(RemoteAnimationTarget[] apps,
+            RemoteAnimationTarget[] wallpapers, RemoteAnimationTarget[] nonApps,
             int targetMode) {
-        ArrayList<RemoteAnimationTargetCompat> filteredApps = new ArrayList<>();
+        ArrayList<RemoteAnimationTarget> filteredApps = new ArrayList<>();
         boolean hasRecents = false;
         if (apps != null) {
-            for (RemoteAnimationTargetCompat target : apps) {
+            for (RemoteAnimationTarget target : apps) {
                 if (target.mode == targetMode) {
                     filteredApps.add(target);
                 }
 
-                hasRecents |= target.activityType ==
-                        RemoteAnimationTargetCompat.ACTIVITY_TYPE_RECENTS;
+                hasRecents |= target.windowConfiguration.getActivityType() == ACTIVITY_TYPE_RECENTS;
             }
         }
 
         this.unfilteredApps = apps;
-        this.apps = filteredApps.toArray(new RemoteAnimationTargetCompat[filteredApps.size()]);
+        this.apps = filteredApps.toArray(new RemoteAnimationTarget[filteredApps.size()]);
         this.wallpapers = wallpapers;
         this.targetMode = targetMode;
         this.hasRecents = hasRecents;
         this.nonApps = nonApps;
     }
 
-    public RemoteAnimationTargetCompat findTask(int taskId) {
-        for (RemoteAnimationTargetCompat target : apps) {
+    public RemoteAnimationTarget findTask(int taskId) {
+        for (RemoteAnimationTarget target : apps) {
             if (target.taskId == taskId) {
                 return target;
             }
@@ -74,12 +75,12 @@ public class RemoteAnimationTargets {
     /**
      * Gets the navigation bar remote animation target if exists.
      */
-    public RemoteAnimationTargetCompat getNavBarRemoteAnimationTarget() {
+    public RemoteAnimationTarget getNavBarRemoteAnimationTarget() {
         return getNonAppTargetOfType(TYPE_NAVIGATION_BAR);
     }
 
-    public RemoteAnimationTargetCompat getNonAppTargetOfType(int type) {
-        for (RemoteAnimationTargetCompat target : nonApps) {
+    public RemoteAnimationTarget getNonAppTargetOfType(int type) {
+        for (RemoteAnimationTarget target : nonApps) {
             if (target.windowType == type) {
                 return target;
             }
@@ -88,19 +89,19 @@ public class RemoteAnimationTargets {
     }
 
     /** Returns the first opening app target. */
-    public RemoteAnimationTargetCompat getFirstAppTarget() {
+    public RemoteAnimationTarget getFirstAppTarget() {
         return apps.length > 0 ? apps[0] : null;
     }
 
     /** Returns the task id of the first opening app target, or -1 if none is found. */
     public int getFirstAppTargetTaskId() {
-        RemoteAnimationTargetCompat target = getFirstAppTarget();
+        RemoteAnimationTarget target = getFirstAppTarget();
         return target == null ? -1 : target.taskId;
     }
 
     public boolean isAnimatingHome() {
-        for (RemoteAnimationTargetCompat target : unfilteredApps) {
-            if (target.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
+        for (RemoteAnimationTarget target : unfilteredApps) {
+            if (target.windowConfiguration.getActivityType() == ACTIVITY_TYPE_HOME) {
                 return true;
             }
         }
@@ -123,15 +124,19 @@ public class RemoteAnimationTargets {
         }
         mReleaseChecks.clear();
         mReleased = true;
+        release(unfilteredApps);
+        release(wallpapers);
+        release(nonApps);
+    }
 
-        for (RemoteAnimationTargetCompat target : unfilteredApps) {
-            target.release();
-        }
-        for (RemoteAnimationTargetCompat target : wallpapers) {
-            target.release();
-        }
-        for (RemoteAnimationTargetCompat target : nonApps) {
-            target.release();
+    private static void release(RemoteAnimationTarget[] targets) {
+        for (RemoteAnimationTarget target : targets) {
+            if (target.leash != null) {
+                target.leash.release();
+            }
+            if (target.startLeash != null) {
+                target.startLeash.release();
+            }
         }
     }
 
