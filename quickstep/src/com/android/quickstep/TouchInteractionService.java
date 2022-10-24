@@ -60,6 +60,7 @@ import android.util.Log;
 import android.view.Choreographer;
 import android.view.InputEvent;
 import android.view.MotionEvent;
+import android.view.SurfaceControl;
 import android.view.accessibility.AccessibilityManager;
 
 import androidx.annotation.BinderThread;
@@ -232,12 +233,6 @@ public class TouchInteractionService extends Service
 
         @BinderThread
         @Override
-        public void onTip(int actionType, int viewType) {
-            // Please delete this method from the interface
-        }
-
-        @BinderThread
-        @Override
         public void onAssistantAvailable(boolean available) {
             MAIN_EXECUTOR.execute(() -> {
                 mDeviceState.setAssistantAvailable(available);
@@ -254,10 +249,9 @@ public class TouchInteractionService extends Service
             });
         }
 
-        @BinderThread
-        public void onBackAction(boolean completed, int downX, int downY, boolean isButton,
-                boolean gestureSwipeLeft) {
-            // Remove this method from the interface
+        @Override
+        public void onNavigationBarSurface(SurfaceControl surface) {
+            // TODO: implement
         }
 
         @BinderThread
