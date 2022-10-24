@@ -54,6 +54,8 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
         clearHomescreen();
         mDevice.pressHome();
 
+        waitForLauncherCondition("Workspace didn't finish loading", l -> !l.isWorkspaceLoading());
+
         final LauncherAppWidgetProviderInfo widgetInfo =
                 TestViewHelpers.findWidgetProvider(this, false /* hasConfigureScreen */);
 
