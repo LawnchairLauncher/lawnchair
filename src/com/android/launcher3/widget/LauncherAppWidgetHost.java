@@ -18,6 +18,7 @@ package com.android.launcher3.widget;
 
 import static android.app.Activity.RESULT_CANCELED;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
@@ -28,6 +29,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.SparseArray;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -79,6 +81,24 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     private int mFlags = FLAG_STATE_IS_NORMAL;
 
     private IntConsumer mAppWidgetRemovedCallback = null;
+
+    /**
+     * This serves for the purpose of getting rid of the hidden API calling of InteractionHandler
+     */
+    public interface LauncherWidgetInteractionHandler {
+        /**
+         * Invoked when the user performs an interaction on the View.
+         *
+         * @param view the View with which the user interacted
+         * @param pendingIntent the base PendingIntent associated with the view
+         * @param response the response to the interaction, which knows how to fill in the
+         *                 attached PendingIntent
+         */
+        boolean onInteraction(
+                View view,
+                PendingIntent pendingIntent,
+                RemoteViews.RemoteResponse response);
+    }
 
     public LauncherAppWidgetHost(Context context) {
         this(context, null);
