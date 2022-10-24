@@ -37,9 +37,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.Display;
+import android.view.RemoteAnimationAdapter;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl.Transaction;
 import android.view.View;
+import android.window.RemoteTransition;
 import android.window.SplashScreen;
 
 import androidx.annotation.Nullable;
@@ -79,7 +81,6 @@ import com.android.quickstep.util.TISBindHelper;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
-import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -259,13 +260,11 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
         final LauncherAnimationRunner wrapper = new LauncherAnimationRunner(
                 mUiHandler, mActivityLaunchAnimationRunner, true /* startAtFrontOfQueue */);
-        RemoteAnimationAdapterCompat adapterCompat = new RemoteAnimationAdapterCompat(
-                wrapper, RECENTS_LAUNCH_DURATION,
-                RECENTS_LAUNCH_DURATION - STATUS_BAR_TRANSITION_DURATION
-                        - STATUS_BAR_TRANSITION_PRE_DELAY, getIApplicationThread());
         final ActivityOptions options = ActivityOptions.makeRemoteAnimation(
-                adapterCompat.getWrapped(),
-                adapterCompat.getRemoteTransition().getTransition());
+                new RemoteAnimationAdapter(wrapper, RECENTS_LAUNCH_DURATION,
+                        RECENTS_LAUNCH_DURATION - STATUS_BAR_TRANSITION_DURATION
+                                - STATUS_BAR_TRANSITION_PRE_DELAY),
+                new RemoteTransition(wrapper.toRemoteTransition(), getIApplicationThread()));
         final ActivityOptionsWrapper activityOptions = new ActivityOptionsWrapper(options,
                 onEndCallback);
         activityOptions.options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
@@ -401,12 +400,9 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     private void startHomeInternal() {
         LauncherAnimationRunner runner = new LauncherAnimationRunner(
                 getMainThreadHandler(), mAnimationToHomeFactory, true);
-        RemoteAnimationAdapterCompat adapterCompat =
-                new RemoteAnimationAdapterCompat(runner, HOME_APPEAR_DURATION, 0,
-                        getIApplicationThread());
         ActivityOptions options = ActivityOptions.makeRemoteAnimation(
-                adapterCompat.getWrapped(),
-                adapterCompat.getRemoteTransition().getTransition());
+                new RemoteAnimationAdapter(runner, HOME_APPEAR_DURATION, 0),
+                new RemoteTransition(runner.toRemoteTransition(), getIApplicationThread()));
         startHomeIntentSafely(this, options.toBundle());
     }
 
