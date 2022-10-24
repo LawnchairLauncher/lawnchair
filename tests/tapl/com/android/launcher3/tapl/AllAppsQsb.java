@@ -18,20 +18,20 @@ package com.android.launcher3.tapl;
 import androidx.test.uiautomator.UiObject2;
 
 /**
- * Operations on Home screen qsb.
+ * Operations on AllApp screen qsb.
  */
-class HomeQsb extends Qsb {
+class AllAppsQsb extends Qsb {
 
-    private final UiObject2 mHotSeat;
+    private final UiObject2 mAllAppsContainer;
 
-    HomeQsb(LauncherInstrumentation launcher, UiObject2 hotseat) {
+    AllAppsQsb(LauncherInstrumentation launcher, UiObject2 allAppsContainer) {
         super(launcher);
-        mHotSeat = hotseat;
+        mAllAppsContainer = allAppsContainer;
         waitForQsbObject();
     }
 
     @Override
     protected UiObject2 waitForQsbObject() {
-        return mLauncher.waitForObjectInContainer(mHotSeat, "search_container_hotseat");
+        return mLauncher.waitForObjectInContainer(mAllAppsContainer, "search_container_all_apps");
     }
 }
