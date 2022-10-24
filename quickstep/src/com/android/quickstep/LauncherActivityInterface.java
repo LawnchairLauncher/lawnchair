@@ -28,6 +28,7 @@ import android.animation.AnimatorSet;
 import android.content.Context;
 import android.graphics.Rect;
 import android.view.MotionEvent;
+import android.view.RemoteAnimationTarget;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
@@ -52,7 +53,6 @@ import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.plugins.shared.LauncherOverlayManager;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -263,7 +263,7 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
-    public Rect getOverviewWindowBounds(Rect homeBounds, RemoteAnimationTargetCompat target) {
+    public Rect getOverviewWindowBounds(Rect homeBounds, RemoteAnimationTarget target) {
         return homeBounds;
     }
 

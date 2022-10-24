@@ -35,6 +35,7 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
+import android.view.RemoteAnimationTarget;
 
 import androidx.annotation.NonNull;
 
@@ -50,7 +51,6 @@ import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
 import com.android.quickstep.views.TaskView.FullscreenDrawParams;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.recents.utilities.PreviewPositionHelper;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 /**
  * A utility class which emulates the layout behavior of TaskView and RecentsView
@@ -171,8 +171,11 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     /**
      * Sets the targets which the simulator will control
      */
-    public void setPreview(RemoteAnimationTargetCompat runningTarget) {
-        setPreviewBounds(runningTarget.startScreenSpaceBounds, runningTarget.contentInsets);
+    public void setPreview(RemoteAnimationTarget runningTarget) {
+        setPreviewBounds(
+                runningTarget.startBounds == null
+                        ? runningTarget.screenSpaceBounds : runningTarget.startBounds,
+                runningTarget.contentInsets);
     }
 
     /**
@@ -181,7 +184,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
      *
      * @param splitInfo set to {@code null} when not in staged split mode
      */
-    public void setPreview(RemoteAnimationTargetCompat runningTarget, SplitBounds splitInfo) {
+    public void setPreview(RemoteAnimationTarget runningTarget, SplitBounds splitInfo) {
         setPreview(runningTarget);
         mSplitBounds = splitInfo;
         if (mSplitBounds == null) {
@@ -387,7 +390,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
     @Override
     public void onBuildTargetParams(
-            SurfaceProperties builder, RemoteAnimationTargetCompat app, TransformParams params) {
+            SurfaceProperties builder, RemoteAnimationTarget app, TransformParams params) {
         builder.setMatrix(mMatrix)
                 .setWindowCrop(mTmpCropRect)
                 .setCornerRadius(getCurrentCornerRadius());

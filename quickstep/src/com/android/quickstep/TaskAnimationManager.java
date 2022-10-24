@@ -15,11 +15,12 @@
  */
 package com.android.quickstep;
 
+import static android.app.WindowConfiguration.ACTIVITY_TYPE_HOME;
+
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_INITIALIZED;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_STARTED;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
 
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
@@ -38,12 +39,10 @@ import com.android.quickstep.TopTaskTracker.CachedTaskInfo;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.RemoteTransitionCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAnimationListener {
@@ -57,7 +56,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
     private RecentsAnimationTargets mTargets;
     // Temporary until we can hook into gesture state events
     private GestureState mLastGestureState;
-    private RemoteAnimationTargetCompat mLastAppearedTaskTarget;
+    private RemoteAnimationTarget mLastAppearedTaskTarget;
     private Runnable mLiveTileCleanUpHandler;
     private Context mCtx;
 
@@ -151,12 +150,12 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             }
 
             @Override
-            public void onTasksAppeared(RemoteAnimationTargetCompat[] appearedTaskTargets) {
-                RemoteAnimationTargetCompat appearedTaskTarget = appearedTaskTargets[0];
+            public void onTasksAppeared(RemoteAnimationTarget[] appearedTaskTargets) {
+                RemoteAnimationTarget appearedTaskTarget = appearedTaskTargets[0];
                 BaseActivityInterface activityInterface = mLastGestureState.getActivityInterface();
 
-                for (RemoteAnimationTargetCompat compat : appearedTaskTargets) {
-                    if (compat.activityType == ACTIVITY_TYPE_HOME
+                for (RemoteAnimationTarget compat : appearedTaskTargets) {
+                    if (compat.windowConfiguration.getActivityType() == ACTIVITY_TYPE_HOME
                             && activityInterface.getCreatedActivity() instanceof RecentsActivity) {
                         // When receive opening home activity while recents is running, enter home
                         // and dismiss recents.
@@ -165,11 +164,11 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                     }
                 }
 
-                RemoteAnimationTarget[] nonAppTargets = SystemUiProxy.INSTANCE.getNoCreate()
-                        .onStartingSplitLegacy(Arrays.stream(appearedTaskTargets)
-                                .map(RemoteAnimationTargetCompat::unwrap)
-                                .toArray(RemoteAnimationTarget[]::new));
-
+                RemoteAnimationTarget[] nonAppTargets = SystemUiProxy.INSTANCE.get(mCtx)
+                        .onStartingSplitLegacy(appearedTaskTargets);
+                if (nonAppTargets == null) {
+                    nonAppTargets = new RemoteAnimationTarget[0];
+                }
                 if (activityInterface.isInLiveTileMode()
                         && activityInterface.getCreatedActivity() != null) {
                     RecentsView recentsView =
@@ -177,13 +176,13 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                     if (recentsView != null) {
                         recentsView.launchSideTaskInLiveTileMode(appearedTaskTarget.taskId,
                                 appearedTaskTargets,
-                                new RemoteAnimationTargetCompat[0] /* wallpaper */,
-                                RemoteAnimationTargetCompat.wrap(nonAppTargets) /* nonApps */);
+                                new RemoteAnimationTarget[0] /* wallpaper */,
+                                nonAppTargets /* nonApps */);
                         return;
                     }
-                } else if (nonAppTargets != null && nonAppTargets.length > 0) {
+                } else if (nonAppTargets.length > 0) {
                     TaskViewUtils.createSplitAuxiliarySurfacesAnimator(
-                            RemoteAnimationTargetCompat.wrap(nonAppTargets) /* nonApps */,
+                            nonAppTargets /* nonApps */,
                             true /*shown*/, dividerAnimator -> {
                                 dividerAnimator.start();
                                 dividerAnimator.end();

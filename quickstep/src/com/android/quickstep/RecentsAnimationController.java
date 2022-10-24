@@ -23,6 +23,7 @@ import android.content.Context;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.IRecentsAnimationController;
+import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 import android.view.WindowManagerGlobal;
 import android.window.PictureInPictureSurfaceTransaction;
@@ -37,7 +38,6 @@ import com.android.quickstep.util.ActiveGestureLog;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.Consumer;
 
@@ -114,7 +114,7 @@ public class RecentsAnimationController {
      * {@link RecentsAnimationCallbacks#onTasksAppeared}}.
      */
     @UiThread
-    public void removeTaskTarget(@NonNull RemoteAnimationTargetCompat target) {
+    public void removeTaskTarget(@NonNull RemoteAnimationTarget target) {
         UI_HELPER_EXECUTOR.execute(() -> mController.removeTask(target.taskId));
     }
 
