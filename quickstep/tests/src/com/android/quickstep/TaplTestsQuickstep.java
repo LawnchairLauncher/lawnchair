@@ -33,13 +33,13 @@ import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.tapl.AllApps;
 import com.android.launcher3.tapl.LaunchedAppState;
 import com.android.launcher3.tapl.LauncherInstrumentation.NavigationModel;
 import com.android.launcher3.tapl.Overview;
 import com.android.launcher3.tapl.OverviewActions;
 import com.android.launcher3.tapl.OverviewTask;
 import com.android.launcher3.ui.TaplTestsLauncher3;
+import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 import com.android.quickstep.views.RecentsView;
@@ -437,14 +437,10 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         try {
             mLauncher.setExpectedRotationCheckEnabled(false);
             mLauncher.setEnableRotation(false);
-            final AllApps allApps = mLauncher.getWorkspace().switchToAllApps();
-            allApps.freeze();
-            try {
-                allApps.getAppIcon("TestActivity7").launch(getAppPackageName());
-            } finally {
-                allApps.unfreeze();
-            }
             mLauncher.getDevice().setOrientationLeft();
+            startTestActivity(7);
+            Wait.atMost("Device should not be in natural orientation",
+                    () -> !mDevice.isNaturalOrientation(), DEFAULT_UI_TIMEOUT, mLauncher);
             mLauncher.goHome();
         } finally {
             mLauncher.setExpectedRotationCheckEnabled(true);
