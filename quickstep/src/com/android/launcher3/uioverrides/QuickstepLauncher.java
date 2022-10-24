@@ -96,6 +96,7 @@ import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.proxy.ProxyActivityStarter;
 import com.android.launcher3.proxy.StartActivityParams;
 import com.android.launcher3.statehandlers.DepthController;
+import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.taskbar.LauncherTaskbarUIController;
@@ -167,6 +168,7 @@ public class QuickstepLauncher extends Launcher {
     private FixedContainerItems mAllAppsPredictions;
     private HotseatPredictionController mHotseatPredictionController;
     private DepthController mDepthController;
+    private DesktopVisibilityController mDesktopVisibilityController;
     private QuickstepTransitionManager mAppTransitionManager;
     private OverviewActionsView mActionsView;
     private TISBindHelper mTISBindHelper;
@@ -207,6 +209,7 @@ public class QuickstepLauncher extends Launcher {
 
         mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
         mDepthController = new DepthController(this);
+        mDesktopVisibilityController = new DesktopVisibilityController(this);
         mHotseatPredictionController = new HotseatPredictionController(this);
 
         mEnableWidgetDepth = ENABLE_WIDGET_PICKER_DEPTH.get()
@@ -730,6 +733,10 @@ public class QuickstepLauncher extends Launcher {
 
     public DepthController getDepthController() {
         return mDepthController;
+    }
+
+    public DesktopVisibilityController getDesktopVisibilityController() {
+        return mDesktopVisibilityController;
     }
 
     @Nullable
