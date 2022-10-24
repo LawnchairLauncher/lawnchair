@@ -25,6 +25,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Size;
 import android.view.GhostView;
+import android.view.RemoteAnimationTarget;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
@@ -41,7 +42,6 @@ import com.android.launcher3.views.FloatingView;
 import com.android.launcher3.views.ListenerView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.RoundedCornerEnforcement;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 /** A view that mimics an App Widget through a launch animation. */
 @TargetApi(Build.VERSION_CODES.S)
@@ -304,7 +304,7 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
      * context's theme background color.
      */
     public static int getDefaultBackgroundColor(
-            Context context, RemoteAnimationTargetCompat target) {
+            Context context, RemoteAnimationTarget target) {
         return (target != null && target.taskInfo.taskDescription != null)
                 ? target.taskInfo.taskDescription.getBackgroundColor()
                 : Themes.getColorBackground(context);

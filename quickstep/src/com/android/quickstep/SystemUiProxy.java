@@ -675,6 +675,7 @@ public class SystemUiProxy implements ISystemUiProxy {
      *
      * @return RemoteAnimationTargets of windows that need to animate but only exist in shell.
      */
+    @Nullable
     public RemoteAnimationTarget[] onGoingToRecentsLegacy(RemoteAnimationTarget[] apps) {
         if (mSplitScreen != null) {
             try {
@@ -686,6 +687,7 @@ public class SystemUiProxy implements ISystemUiProxy {
         return null;
     }
 
+    @Nullable
     public RemoteAnimationTarget[] onStartingSplitLegacy(RemoteAnimationTarget[] apps) {
         if (mSplitScreen != null) {
             try {

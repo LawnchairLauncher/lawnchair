@@ -65,6 +65,7 @@ import android.os.IBinder;
 import android.os.SystemProperties;
 import android.view.Display;
 import android.view.HapticFeedbackConstants;
+import android.view.RemoteAnimationTarget;
 import android.view.View;
 import android.view.WindowManagerGlobal;
 import android.window.SplashScreen;
@@ -139,7 +140,6 @@ import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.unfold.UnfoldSharedComponent;
 import com.android.systemui.unfold.UnfoldTransitionFactory;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
@@ -761,8 +761,8 @@ public class QuickstepLauncher extends Launcher {
         QuickstepTransitionManager appTransitionManager = getAppTransitionManager();
         appTransitionManager.setRemoteAnimationProvider(new RemoteAnimationProvider() {
             @Override
-            public AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] appTargets,
-                    RemoteAnimationTargetCompat[] wallpaperTargets) {
+            public AnimatorSet createWindowAnimation(RemoteAnimationTarget[] appTargets,
+                    RemoteAnimationTarget[] wallpaperTargets) {
 
                 // On the first call clear the reference.
                 signal.cancel();

@@ -15,14 +15,18 @@
  */
 package com.android.quickstep.util;
 
+import static android.app.WindowConfiguration.ACTIVITY_TYPE_ASSISTANT;
+import static android.app.WindowConfiguration.ACTIVITY_TYPE_HOME;
+import static android.app.WindowConfiguration.ACTIVITY_TYPE_RECENTS;
+
 import android.util.FloatProperty;
+import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
 import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 public class TransformParams {
 
@@ -140,16 +144,16 @@ public class TransformParams {
         mRecentsSurface = getRecentsSurface(targets);
 
         for (int i = 0; i < targets.unfilteredApps.length; i++) {
-            RemoteAnimationTargetCompat app = targets.unfilteredApps[i];
+            RemoteAnimationTarget app = targets.unfilteredApps[i];
             SurfaceProperties builder = transaction.forSurface(app.leash);
 
             if (app.mode == targets.targetMode) {
-                if (app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
+                int activityType = app.windowConfiguration.getActivityType();
+                if (activityType == ACTIVITY_TYPE_HOME) {
                     mHomeBuilderProxy.onBuildTargetParams(builder, app, this);
                 } else {
                     // Fade out Assistant overlay.
-                    if (app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_ASSISTANT
-                            && app.isNotInRecents) {
+                    if (activityType == ACTIVITY_TYPE_ASSISTANT && app.isNotInRecents) {
                         float progress = Utilities.boundToRange(getProgress(), 0, 1);
                         builder.setAlpha(1 - Interpolators.DEACCEL_2_5.getInterpolation(progress));
                     } else {
@@ -166,7 +170,7 @@ public class TransformParams {
         // always put wallpaper layer to bottom.
         final int wallpaperLength = targets.wallpapers != null ? targets.wallpapers.length : 0;
         for (int i = 0; i < wallpaperLength; i++) {
-            RemoteAnimationTargetCompat wallpaper = targets.wallpapers[i];
+            RemoteAnimationTarget wallpaper = targets.wallpapers[i];
             transaction.forSurface(wallpaper.leash).setLayer(Integer.MIN_VALUE);
         }
         return transaction;
@@ -174,9 +178,9 @@ public class TransformParams {
 
     private static SurfaceControl getRecentsSurface(RemoteAnimationTargets targets) {
         for (int i = 0; i < targets.unfilteredApps.length; i++) {
-            RemoteAnimationTargetCompat app = targets.unfilteredApps[i];
+            RemoteAnimationTarget app = targets.unfilteredApps[i];
             if (app.mode == targets.targetMode) {
-                if (app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_RECENTS) {
+                if (app.windowConfiguration.getActivityType() == ACTIVITY_TYPE_RECENTS) {
                     return app.leash;
                 }
             } else {
@@ -223,6 +227,6 @@ public class TransformParams {
         BuilderProxy ALWAYS_VISIBLE = (builder, app, params) -> builder.setAlpha(1);
 
         void onBuildTargetParams(SurfaceProperties builder,
-                RemoteAnimationTargetCompat app, TransformParams params);
+                RemoteAnimationTarget app, TransformParams params);
     }
 }
