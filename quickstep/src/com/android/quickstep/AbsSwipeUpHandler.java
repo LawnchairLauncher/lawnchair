@@ -1881,10 +1881,16 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     private void finishCurrentTransitionToRecents() {
-        // TODO(b/245569277#comment2): enable once isFreeformActive is implemented
-        mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
-        if (mRecentsAnimationController != null) {
-            mRecentsAnimationController.detachNavigationBarFromApp(true);
+        if (mRecentsAnimationController != null
+                && mActivityInterface.getDesktopVisibilityController() != null
+                && mActivityInterface.getDesktopVisibilityController().areFreeformTasksVisible()) {
+            mRecentsAnimationController.finish(true /* toRecents */,
+                    () -> mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
+        } else {
+            mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
+            if (mRecentsAnimationController != null) {
+                mRecentsAnimationController.detachNavigationBarFromApp(true);
+            }
         }
         ActiveGestureLog.INSTANCE.addLog(
                 /* event= */ "finishRecentsAnimation",

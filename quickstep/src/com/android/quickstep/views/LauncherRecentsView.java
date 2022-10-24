@@ -147,6 +147,9 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
                     & CLEAR_ALL_BUTTON) != 0;
             setDisallowScrollToClearAll(!hasClearAllButton);
         }
+        if (mActivity.getDesktopVisibilityController() != null) {
+            mActivity.getDesktopVisibilityController().setOverviewStateEnabled(enabled);
+        }
     }
 
     @Override
