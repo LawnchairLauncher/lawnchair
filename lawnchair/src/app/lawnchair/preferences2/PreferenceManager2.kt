@@ -339,6 +339,11 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = { reloadHelper.recreate() },
     )
 
+    val smartspaceModeSelection = preference(
+        key = booleanPreferencesKey("smartspace_mode_selection"),
+        defaultValue = false,
+    )
+
     val smartspaceAagWidget = preference(
         key = booleanPreferencesKey("enable_smartspace_aag_widget"),
         defaultValue = true
