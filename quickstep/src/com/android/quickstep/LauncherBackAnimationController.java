@@ -219,12 +219,12 @@ public class LauncherBackAnimationController {
             return;
         }
 
-        mTransaction.show(mBackTarget.leash).apply();
+        mTransaction.show(appTarget.leash).apply();
         mTransaction.setAnimationTransaction();
         mInitialTouchPos.set(backEvent.getTouchX(), backEvent.getTouchY());
 
         // TODO(b/218916755): Offset start rectangle in multiwindow mode.
-        mStartRect.set(mBackTarget.windowConfiguration.getMaxBounds());
+        mStartRect.set(appTarget.windowConfiguration.getMaxBounds());
         mCurrentRect.set(mStartRect);
     }
 
