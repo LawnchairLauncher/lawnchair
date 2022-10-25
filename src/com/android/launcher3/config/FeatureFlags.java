@@ -285,7 +285,7 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_WIDGET_PICKER_DEPTH = new DeviceFlag(
             "ENABLE_WIDGET_PICKER_DEPTH", true, "Enable changing depth in widget picker.");
 
-    public static final BooleanFlag SHOW_DELIGHTFUL_PAGINATION = new DeviceFlag(
+    public static final BooleanFlag SHOW_DELIGHTFUL_PAGINATION = getDebugFlag(
             "SHOW_DELIGHTFUL_PAGINATION", false,
             "Enable showing the new 'delightful pagination' which is a brand"
                     + " new animation for folder pagination and workspace pagination");
@@ -306,6 +306,9 @@ public final class FeatureFlags {
     public static final BooleanFlag SECONDARY_DRAG_N_DROP_TO_PIN = getDebugFlag(
             "SECONDARY_DRAG_N_DROP_TO_PIN", false,
             "Enable dragging and dropping to pin apps within secondary display");
+
+    public static final BooleanFlag SHOW_DOT_PAGINATION = getDebugFlag(
+            "SHOW_DOT_PAGINATION", false, "Enable showing dot pagination in workspace");
 
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
