@@ -292,9 +292,13 @@ public final class FeatureFlags {
     public static final BooleanFlag POPUP_MATERIAL_U = new DeviceFlag(
             "POPUP_MATERIAL_U", false, "Switch popup UX to use material U");
 
-    public static final BooleanFlag SHOW_HOME_GARDENING = new DeviceFlag(
+    public static final BooleanFlag SHOW_HOME_GARDENING = getDebugFlag(
             "SHOW_HOME_GARDENING", false,
             "Show the new home gardening mode");
+
+    public static final BooleanFlag HOME_GARDENING_WORKSPACE_BUTTONS = getDebugFlag(
+            "HOME_GARDENING_WORKSPACE_BUTTONS", false,
+            "Change workspace edit buttons to reflect home gardening");
 
     public static final BooleanFlag ENABLE_TRANSIENT_TASKBAR = getDebugFlag(
             "ENABLE_TRANSIENT_TASKBAR", false, "Enables transient taskbar.");
