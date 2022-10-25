@@ -23,8 +23,8 @@ import android.content.pm.ShortcutInfo;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.LauncherWidgetHolder;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.widget.LauncherAppWidgetHost;
 
 /**
  * A wrapper for the hidden API calls
@@ -44,7 +44,7 @@ public class ApiWrapper {
      * @param handler InteractionHandler for the views in the host
      */
     public static void setHostInteractionHandler(@NonNull AppWidgetHost host,
-            @Nullable LauncherAppWidgetHost.LauncherWidgetInteractionHandler handler) {
+            @Nullable LauncherWidgetHolder.LauncherWidgetInteractionHandler handler) {
         host.setInteractionHandler(handler::onInteraction);
     }
 }

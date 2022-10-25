@@ -38,6 +38,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherProvider.DatabaseHelper;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.LauncherWidgetHolder;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.DeviceGridState;
@@ -353,9 +354,12 @@ public class RestoreDbTask {
     private void restoreAppWidgetIdsIfExists(Context context) {
         SharedPreferences prefs = Utilities.getPrefs(context);
         if (prefs.contains(APPWIDGET_OLD_IDS) && prefs.contains(APPWIDGET_IDS)) {
+            LauncherWidgetHolder holder = new LauncherWidgetHolder(context);
             AppWidgetsRestoredReceiver.restoreAppWidgetIds(context,
                     IntArray.fromConcatString(prefs.getString(APPWIDGET_OLD_IDS, "")).toArray(),
-                    IntArray.fromConcatString(prefs.getString(APPWIDGET_IDS, "")).toArray());
+                    IntArray.fromConcatString(prefs.getString(APPWIDGET_IDS, "")).toArray(),
+                    holder);
+            holder.destroy();
         } else {
             FileLog.d(TAG, "No app widget ids to restore.");
         }

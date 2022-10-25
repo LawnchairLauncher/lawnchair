@@ -1720,6 +1720,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         } catch (NullPointerException ex) {
             Log.w(TAG, "problem while stopping AppWidgetHost during Launcher destruction", ex);
         }
+        mAppWidgetHolder.destroy();
 
         TextKeyListener.getInstance().release();
         clearPendingBinds();

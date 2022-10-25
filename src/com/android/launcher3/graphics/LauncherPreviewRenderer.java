@@ -68,6 +68,7 @@ import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.LauncherWidgetHolder;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
@@ -99,7 +100,6 @@ import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.BaseLauncherAppWidgetHostView;
-import com.android.launcher3.widget.LauncherAppWidgetHost;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.LocalColorExtractor;
 import com.android.launcher3.widget.NavigableAppWidgetHostView;
@@ -554,7 +554,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
     private class LauncherPreviewAppWidgetHost extends AppWidgetHost {
 
         private LauncherPreviewAppWidgetHost(Context context) {
-            super(context, LauncherAppWidgetHost.APPWIDGET_HOST_ID);
+            super(context, LauncherWidgetHolder.APPWIDGET_HOST_ID);
         }
 
         @Override

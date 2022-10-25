@@ -37,6 +37,7 @@ import android.widget.AdapterView;
 import android.widget.Advanceable;
 import android.widget.RemoteViews;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.CheckLongPressHelper;
@@ -170,6 +171,16 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         // (framework issue). On resuming, we ensure that any widgets are inflated for the current
         // orientation.
         mReinflateOnConfigChange = !isSameOrientation();
+    }
+
+    @NonNull
+    public Launcher getLauncher() {
+        return mLauncher;
+    }
+
+    @Nullable
+    public RemoteViews getLastRemoteViews() {
+        return mLastRemoteViews;
     }
 
     private boolean isSameOrientation() {
