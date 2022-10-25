@@ -50,6 +50,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.HorizontalInsettableView;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
+import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.SystemUiProxy;
@@ -146,7 +147,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         return mTaskbarView.areIconsVisible();
     }
 
-    public MultiValueAlpha getTaskbarIconAlpha() {
+    public MultiPropertyFactory<View> getTaskbarIconAlpha() {
         return mTaskbarIconAlpha;
     }
 
@@ -161,7 +162,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
      * Should be called when the IME switcher visibility changes.
      */
     public void setIsImeSwitcherVisible(boolean isImeSwitcherVisible) {
-        mTaskbarIconAlpha.getProperty(ALPHA_INDEX_IME_BUTTON_NAV).setValue(
+        mTaskbarIconAlpha.get(ALPHA_INDEX_IME_BUTTON_NAV).setValue(
                 isImeSwitcherVisible ? 0 : 1);
     }
 
@@ -170,7 +171,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
      */
     public void setRecentsButtonDisabled(boolean isDisabled) {
         // TODO: check TaskbarStashController#supportsStashing(), to stash instead of setting alpha.
-        mTaskbarIconAlpha.getProperty(ALPHA_INDEX_RECENTS_DISABLED).setValue(isDisabled ? 0 : 1);
+        mTaskbarIconAlpha.get(ALPHA_INDEX_RECENTS_DISABLED).setValue(isDisabled ? 0 : 1);
     }
 
     /**
