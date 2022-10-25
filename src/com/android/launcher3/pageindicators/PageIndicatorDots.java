@@ -32,12 +32,17 @@ import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
-import android.util.Property;
+import android.util.FloatProperty;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewOutlineProvider;
 import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
@@ -54,6 +59,8 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     private static final float SHIFT_PER_ANIMATION = 0.5f;
     private static final float SHIFT_THRESHOLD = 0.1f;
     private static final long ANIMATION_DURATION = 150;
+    private static final int PAGINATION_FADE_DELAY = ViewConfiguration.getScrollDefaultDelay();
+    private static final int ALPHA_ANIMATE_DURATION = ViewConfiguration.getScrollBarFadeDuration();
 
     private static final int ENTER_ANIMATION_START_DELAY = 300;
     private static final int ENTER_ANIMATION_STAGGERED_DELAY = 150;
@@ -63,6 +70,9 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     private static final int DOT_ALPHA = 128;
     private static final int DOT_GAP_FACTOR = 3;
     private static final float DOT_GAP_FACTOR_FLOAT = 3.8f;
+    private static final int VISIBLE_ALPHA = 1;
+    private static final int INVISIBLE_ALPHA = 0;
+    private Paint mPaginationPaint;
 
     // This value approximately overshoots to 1.5 times the original size.
     private static final float ENTER_ANIMATION_OVERSHOOT_TENSION = 4.9f;
@@ -71,22 +81,36 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
 
     private static final RectF sTempRect = new RectF();
 
-    private static final Property<PageIndicatorDots, Float> CURRENT_POSITION
-            = new Property<PageIndicatorDots, Float>(float.class, "current_position") {
-        @Override
-        public Float get(PageIndicatorDots obj) {
-            return obj.mCurrentPosition;
-        }
+    private static final FloatProperty<PageIndicatorDots> CURRENT_POSITION =
+            new FloatProperty<PageIndicatorDots>("current_position") {
+                @Override
+                public Float get(PageIndicatorDots obj) {
+                    return obj.mCurrentPosition;
+                }
 
-        @Override
-        public void set(PageIndicatorDots obj, Float pos) {
-            obj.mCurrentPosition = pos;
-            obj.invalidate();
-            obj.invalidateOutline();
-        }
-    };
+                @Override
+                public void setValue(PageIndicatorDots obj, float pos) {
+                    obj.mCurrentPosition = pos;
+                    obj.invalidate();
+                    obj.invalidateOutline();
+                }
+            };
 
-    private final Paint mPaginationPaint;
+    private static final FloatProperty<PageIndicatorDots> PAGINATION_ALPHA =
+            new FloatProperty<PageIndicatorDots>("pagination_alpha") {
+                @Override
+                public Float get(PageIndicatorDots obj) {
+                    return obj.getAlpha();
+                }
+
+                @Override
+                public void setValue(PageIndicatorDots obj, float alpha) {
+                    obj.setAlpha(alpha);
+                    obj.invalidate();
+                }
+            };
+
+    private final Handler mDelayedPaginationFadeHandler = new Handler(Looper.getMainLooper());
     private final Drawable mPageIndicatorDrawable;
     private final float mDotRadius;
     private final float mCircleGap;
@@ -98,6 +122,8 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     private int mActivePage;
     private int mCurrentScroll;
     private int mTotalScroll;
+    private boolean mShouldAutoHide = true;
+    private int mToAlpha;
 
     /**
      * The current position of the active dot including the animation progress.
@@ -111,8 +137,11 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     private float mCurrentPosition;
     private float mFinalPosition;
     private ObjectAnimator mAnimator;
+    private @Nullable ObjectAnimator mAlphaAnimator;
 
     private float[] mEntryAnimationRadiusFactors;
+
+    private Runnable mHidePaginationRunnable = () -> animatePaginationToAlpha(INVISIBLE_ALPHA);
 
     public PageIndicatorDots(Context context) {
         this(context, null);
@@ -153,6 +182,8 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
 
     @Override
     public void setScroll(int currentScroll, int totalScroll) {
+        animatePaginationToAlpha(VISIBLE_ALPHA);
+
         if (mNumPages <= 1) {
             mCurrentScroll = 0;
             return;
@@ -166,6 +197,11 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
             mCurrentScroll = currentScroll;
             mTotalScroll = totalScroll;
             invalidate();
+
+            if (mShouldAutoHide
+                    && (getScrollPerPage() == 0 || mCurrentScroll % getScrollPerPage() == 0)) {
+                hideAfterDelay();
+            }
             return;
         }
 
@@ -184,6 +220,64 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
         } else {
             // scroll is between left and right page
             animateToPosition(pageToLeft + SHIFT_PER_ANIMATION);
+        }
+    }
+
+    @Override
+    public void setShouldAutoHide(boolean shouldAutoHide) {
+        mShouldAutoHide = shouldAutoHide;
+        if (shouldAutoHide && this.getAlpha() > INVISIBLE_ALPHA) {
+            hideAfterDelay();
+        } else if (!shouldAutoHide) {
+            mDelayedPaginationFadeHandler.removeCallbacksAndMessages(null);
+        }
+    }
+
+    private void hideAfterDelay() {
+        mDelayedPaginationFadeHandler.removeCallbacksAndMessages(null);
+        mDelayedPaginationFadeHandler.postDelayed(mHidePaginationRunnable, PAGINATION_FADE_DELAY);
+    }
+
+    private void animatePaginationToAlpha(int alpha) {
+        if (alpha == mToAlpha) {
+            // Ignore the new animation if it is going to the same alpha as the current animation.
+            return;
+        }
+        mToAlpha = alpha;
+
+        if (mAlphaAnimator != null) {
+            mAlphaAnimator.cancel();
+        }
+        mAlphaAnimator = ObjectAnimator.ofFloat(this, PAGINATION_ALPHA,
+                alpha);
+        mAlphaAnimator.setDuration(ALPHA_ANIMATE_DURATION);
+        mAlphaAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mAlphaAnimator = null;
+            }
+        });
+        mAlphaAnimator.start();
+
+    }
+
+    /**
+     * Pauses all currently running animations.
+     */
+    @Override
+    public void pauseAnimations() {
+        if (mAlphaAnimator != null) {
+            mAlphaAnimator.pause();
+        }
+    }
+
+    /**
+     * Force-ends all currently running or paused animations.
+     */
+    @Override
+    public void skipAnimationsToEnd() {
+        if (mAlphaAnimator != null) {
+            mAlphaAnimator.end();
         }
     }
 
@@ -282,6 +376,10 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
 
     @Override
     protected void onDraw(Canvas canvas) {
+        if ((mShouldAutoHide && mTotalScroll == 0) || mNumPages < 2) {
+            return;
+        }
+
         // Draw all page indicators;
         float circleGap = mCircleGap;
         float startX = (getWidth() - (mNumPages * circleGap) + mDotRadius) / 2;
