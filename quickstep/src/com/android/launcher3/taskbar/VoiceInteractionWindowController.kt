@@ -63,11 +63,11 @@ class VoiceInteractionWindowController(val context: TaskbarActivityContext)
         // Fade out taskbar icons and stashed handle.
         val taskbarIconAlpha = if (isVoiceInteractionWindowVisible) 0f else 1f
         val fadeTaskbarIcons = controllers.taskbarViewController.taskbarIconAlpha
-            .getProperty(TaskbarViewController.ALPHA_INDEX_ASSISTANT_INVOKED)
+            .get(TaskbarViewController.ALPHA_INDEX_ASSISTANT_INVOKED)
             .animateToValue(taskbarIconAlpha)
             .setDuration(TASKBAR_ICONS_FADE_DURATION)
         val fadeStashedHandle = controllers.stashedHandleViewController.stashedHandleAlpha
-            .getProperty(StashedHandleViewController.ALPHA_INDEX_ASSISTANT_INVOKED)
+            .get(StashedHandleViewController.ALPHA_INDEX_ASSISTANT_INVOKED)
             .animateToValue(taskbarIconAlpha)
             .setDuration(STASHED_HANDLE_FADE_DURATION)
         fadeTaskbarIcons.start()

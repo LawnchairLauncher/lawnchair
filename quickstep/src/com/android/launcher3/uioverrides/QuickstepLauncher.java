@@ -45,7 +45,6 @@ import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
-import static com.android.quickstep.util.BaseDepthController.WIDGET_DEPTH;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 
 import android.animation.AnimatorSet;
@@ -597,9 +596,8 @@ public class QuickstepLauncher extends Launcher {
         super.onWidgetsTransition(progress);
         onTaskbarInAppDisplayProgressUpdate(progress, WIDGETS_PAGE_PROGRESS_INDEX);
         if (mEnableWidgetDepth) {
-            WIDGET_DEPTH.set(getDepthController(),
-                    Utilities.mapToRange(progress, 0f, 1f, 0f, getDeviceProfile().bottomSheetDepth,
-                            EMPHASIZED));
+            getDepthController().widgetDepth.setValue(Utilities.mapToRange(
+                    progress, 0f, 1f, 0f, getDeviceProfile().bottomSheetDepth, EMPHASIZED));
         }
     }
 

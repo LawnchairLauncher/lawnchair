@@ -22,6 +22,7 @@ import static com.android.launcher3.LauncherState.QUICK_SWITCH;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -129,9 +130,9 @@ public final class LauncherActivityInterface extends
                 // Animate the blur and wallpaper zoom
                 float fromDepthRatio = BACKGROUND_APP.getDepth(activity);
                 float toDepthRatio = OVERVIEW.getDepth(activity);
-                pa.addFloat(getDepthController(),
+                pa.addFloat(getDepthController().stateDepth,
                         new LauncherAnimUtils.ClampedProperty<>(
-                                DepthController.STATE_DEPTH, fromDepthRatio, toDepthRatio),
+                                MULTI_PROPERTY_VALUE, fromDepthRatio, toDepthRatio),
                         fromDepthRatio, toDepthRatio, LINEAR);
             }
         };
