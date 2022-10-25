@@ -38,7 +38,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
-import com.android.launcher3.util.MultiValueAlpha;
+import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationController;
@@ -49,7 +49,6 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.StringJoiner;
-import java.util.function.Consumer;
 
 /**
  * Track LauncherState, RecentsAnimation, resumed state for task bar in one place here and animate
@@ -73,7 +72,7 @@ import java.util.function.Consumer;
 
     private TaskbarControllers mControllers;
     private AnimatedFloat mTaskbarBackgroundAlpha;
-    private MultiValueAlpha.AlphaProperty mIconAlphaForHome;
+    private MultiProperty mIconAlphaForHome;
     private QuickstepLauncher mLauncher;
 
     private Integer mPrevState;
@@ -89,18 +88,8 @@ import java.util.function.Consumer;
     // We skip any view synchronizations during init/destroy.
     private boolean mCanSyncViews;
 
-    private final Consumer<Float> mIconAlphaForHomeConsumer = alpha -> {
-        /*
-         * Hide Launcher Hotseat icons when Taskbar icons have opacity. Both icon sets
-         * should not be visible at the same time.
-         */
-        mLauncher.getHotseat().setIconsAlpha(alpha > 0 ? 0 : 1);
-        mLauncher.getHotseat().setQsbAlpha(
-                mLauncher.getDeviceProfile().isQsbInline && alpha > 0 ? 0 : 1);
-    };
-
     private final DeviceProfile.OnDeviceProfileChangeListener mOnDeviceProfileChangeListener =
-            dp -> mIconAlphaForHomeConsumer.accept(mIconAlphaForHome.getValue());
+            dp -> updateIconAlphaForHome(mIconAlphaForHome.getValue());
 
     private final StateManager.StateListener<LauncherState> mStateListener =
             new StateManager.StateListener<LauncherState>() {
@@ -139,9 +128,8 @@ import java.util.function.Consumer;
 
         mTaskbarBackgroundAlpha = mControllers.taskbarDragLayerController
                 .getTaskbarBackgroundAlpha();
-        MultiValueAlpha taskbarIconAlpha = mControllers.taskbarViewController.getTaskbarIconAlpha();
-        mIconAlphaForHome = taskbarIconAlpha.getProperty(ALPHA_INDEX_HOME);
-        mIconAlphaForHome.setConsumer(mIconAlphaForHomeConsumer);
+        mIconAlphaForHome = mControllers.taskbarViewController
+                .getTaskbarIconAlpha().get(ALPHA_INDEX_HOME);
 
         mIconAlignment.finishAnimation();
         onIconAlignmentRatioChanged();
@@ -162,7 +150,6 @@ import java.util.function.Consumer;
 
         mIconAlignment.finishAnimation();
 
-        mIconAlphaForHome.setConsumer(null);
         mLauncher.getHotseat().setIconsAlpha(1f);
         mLauncher.getStateManager().removeStateListener(mStateListener);
 
@@ -383,7 +370,7 @@ import java.util.function.Consumer;
                 @Override
                 public void onAnimationStart(Animator animation) {
                     if (mLauncher.getHotseat().getIconsAlpha() > 0) {
-                        mIconAlphaForHome.setValue(mLauncher.getHotseat().getIconsAlpha());
+                        updateIconAlphaForHome(mLauncher.getHotseat().getIconsAlpha());
                     }
                 }
             });
@@ -405,7 +392,7 @@ import java.util.function.Consumer;
                 mIconAlignment.value, mIconAlignment.getEndValue(), mLauncher.getDeviceProfile());
         mControllers.navbarButtonsViewController.updateTaskbarAlignment(mIconAlignment.value);
         // Switch taskbar and hotseat in last frame
-        mIconAlphaForHome.setValue(taskbarWillBeVisible ? 1 : 0);
+        updateIconAlphaForHome(taskbarWillBeVisible ? 1 : 0);
 
         // Sync the first frame where we swap taskbar and hotseat.
         if (firstFrameVisChanged && mCanSyncViews && !Utilities.IS_RUNNING_IN_TEST_HARNESS) {
@@ -413,6 +400,18 @@ import java.util.function.Consumer;
                     mControllers.taskbarActivityContext.getDragLayer(),
                     () -> {});
         }
+    }
+
+    private void updateIconAlphaForHome(float alpha) {
+        mIconAlphaForHome.setValue(alpha);
+
+        /*
+         * Hide Launcher Hotseat icons when Taskbar icons have opacity. Both icon sets
+         * should not be visible at the same time.
+         */
+        mLauncher.getHotseat().setIconsAlpha(alpha > 0 ? 0 : 1);
+        mLauncher.getHotseat().setQsbAlpha(
+                mLauncher.getDeviceProfile().isQsbInline && alpha > 0 ? 0 : 1);
     }
 
     private final class TaskBarRecentsAnimationListener implements
