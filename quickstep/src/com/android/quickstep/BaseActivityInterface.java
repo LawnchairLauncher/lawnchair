@@ -40,6 +40,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.RemoteAnimationTarget;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -50,6 +51,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statehandlers.DepthController;
+import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.TaskbarUIController;
@@ -62,7 +64,6 @@ import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.HashMap;
 import java.util.Optional;
@@ -142,6 +143,11 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     }
 
     @Nullable
+    public DesktopVisibilityController getDesktopVisibilityController() {
+        return null;
+    }
+
+    @Nullable
     public abstract TaskbarUIController getTaskbarController();
 
     public final boolean isResumed() {
@@ -162,7 +168,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public abstract boolean switchToRecentsIfVisible(Runnable onCompleteCallback);
 
     public abstract Rect getOverviewWindowBounds(
-            Rect homeBounds, RemoteAnimationTargetCompat target);
+            Rect homeBounds, RemoteAnimationTarget target);
 
     public abstract boolean allowMinimizeSplitScreen();
 

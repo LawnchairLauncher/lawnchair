@@ -28,6 +28,7 @@ import android.animation.AnimatorSet;
 import android.content.Context;
 import android.graphics.Rect;
 import android.view.MotionEvent;
+import android.view.RemoteAnimationTarget;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
@@ -39,6 +40,7 @@ import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statehandlers.DepthController;
+import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.touch.PagedOrientationHandler;
@@ -51,7 +53,6 @@ import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.plugins.shared.LauncherOverlayManager;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -175,6 +176,16 @@ public final class LauncherActivityInterface extends
 
     @Nullable
     @Override
+    public DesktopVisibilityController getDesktopVisibilityController() {
+        QuickstepLauncher launcher = getCreatedActivity();
+        if (launcher == null) {
+            return null;
+        }
+        return launcher.getDesktopVisibilityController();
+    }
+
+    @Nullable
+    @Override
     public LauncherTaskbarUIController getTaskbarController() {
         QuickstepLauncher launcher = getCreatedActivity();
         if (launcher == null) {
@@ -252,7 +263,7 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
-    public Rect getOverviewWindowBounds(Rect homeBounds, RemoteAnimationTargetCompat target) {
+    public Rect getOverviewWindowBounds(Rect homeBounds, RemoteAnimationTarget target) {
         return homeBounds;
     }
 

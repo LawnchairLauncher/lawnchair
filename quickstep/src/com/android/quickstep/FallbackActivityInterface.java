@@ -25,6 +25,7 @@ import android.animation.AnimatorSet;
 import android.content.Context;
 import android.graphics.Rect;
 import android.view.MotionEvent;
+import android.view.RemoteAnimationTarget;
 
 import androidx.annotation.Nullable;
 
@@ -38,7 +39,6 @@ import com.android.quickstep.fallback.RecentsState;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.views.RecentsView;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -132,7 +132,7 @@ public final class FallbackActivityInterface extends
     }
 
     @Override
-    public Rect getOverviewWindowBounds(Rect homeBounds, RemoteAnimationTargetCompat target) {
+    public Rect getOverviewWindowBounds(Rect homeBounds, RemoteAnimationTarget target) {
         // TODO: Remove this once b/77875376 is fixed
         return target.screenSpaceBounds;
     }

@@ -28,6 +28,7 @@ import android.annotation.Nullable;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
+import android.view.RemoteAnimationTarget;
 
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
@@ -37,7 +38,6 @@ import com.android.quickstep.TopTaskTracker.CachedTaskInfo;
 import com.android.quickstep.util.ActiveGestureErrorDetector;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.systemui.shared.recents.model.ThumbnailData;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -143,7 +143,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
 
     private CachedTaskInfo mRunningTask;
     private GestureEndTarget mEndTarget;
-    private RemoteAnimationTargetCompat mLastAppearedTaskTarget;
+    private RemoteAnimationTarget mLastAppearedTaskTarget;
     private Set<Integer> mPreviouslyAppearedTaskIds = new HashSet<>();
     private int mLastStartedTaskId = -1;
     private RecentsAnimationController mRecentsAnimationController;
@@ -272,7 +272,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     /**
      * Updates the last task that appeared during this gesture.
      */
-    public void updateLastAppearedTaskTarget(RemoteAnimationTargetCompat lastAppearedTaskTarget) {
+    public void updateLastAppearedTaskTarget(RemoteAnimationTarget lastAppearedTaskTarget) {
         mLastAppearedTaskTarget = lastAppearedTaskTarget;
         if (lastAppearedTaskTarget != null) {
             mPreviouslyAppearedTaskIds.add(lastAppearedTaskTarget.taskId);

@@ -65,6 +65,7 @@ import android.os.IBinder;
 import android.os.SystemProperties;
 import android.view.Display;
 import android.view.HapticFeedbackConstants;
+import android.view.RemoteAnimationTarget;
 import android.view.View;
 import android.view.WindowManagerGlobal;
 import android.window.SplashScreen;
@@ -96,6 +97,7 @@ import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.proxy.ProxyActivityStarter;
 import com.android.launcher3.proxy.StartActivityParams;
 import com.android.launcher3.statehandlers.DepthController;
+import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.taskbar.LauncherTaskbarUIController;
@@ -139,7 +141,6 @@ import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.unfold.UnfoldSharedComponent;
 import com.android.systemui.unfold.UnfoldTransitionFactory;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
@@ -167,6 +168,7 @@ public class QuickstepLauncher extends Launcher {
     private FixedContainerItems mAllAppsPredictions;
     private HotseatPredictionController mHotseatPredictionController;
     private DepthController mDepthController;
+    private DesktopVisibilityController mDesktopVisibilityController;
     private QuickstepTransitionManager mAppTransitionManager;
     private OverviewActionsView mActionsView;
     private TISBindHelper mTISBindHelper;
@@ -207,6 +209,7 @@ public class QuickstepLauncher extends Launcher {
 
         mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
         mDepthController = new DepthController(this);
+        mDesktopVisibilityController = new DesktopVisibilityController(this);
         mHotseatPredictionController = new HotseatPredictionController(this);
 
         mEnableWidgetDepth = ENABLE_WIDGET_PICKER_DEPTH.get()
@@ -732,6 +735,10 @@ public class QuickstepLauncher extends Launcher {
         return mDepthController;
     }
 
+    public DesktopVisibilityController getDesktopVisibilityController() {
+        return mDesktopVisibilityController;
+    }
+
     @Nullable
     public UnfoldTransitionProgressProvider getUnfoldTransitionProgressProvider() {
         return mUnfoldTransitionProgressProvider;
@@ -761,8 +768,8 @@ public class QuickstepLauncher extends Launcher {
         QuickstepTransitionManager appTransitionManager = getAppTransitionManager();
         appTransitionManager.setRemoteAnimationProvider(new RemoteAnimationProvider() {
             @Override
-            public AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] appTargets,
-                    RemoteAnimationTargetCompat[] wallpaperTargets) {
+            public AnimatorSet createWindowAnimation(RemoteAnimationTarget[] appTargets,
+                    RemoteAnimationTarget[] wallpaperTargets) {
 
                 // On the first call clear the reference.
                 signal.cancel();

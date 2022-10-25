@@ -23,6 +23,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.ArrayMap;
+import android.view.RemoteAnimationTarget;
 import android.view.Surface;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -42,7 +43,6 @@ import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.quickstep.FallbackActivityInterface;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.SurfaceTransaction.MockProperties;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
@@ -209,7 +209,7 @@ public class TaskViewSimulatorTest {
         public SurfaceTransaction createSurfaceParams(BuilderProxy proxy) {
             RecordingSurfaceTransaction transaction = new RecordingSurfaceTransaction();
             proxy.onBuildTargetParams(
-                    transaction.mockProperties, mock(RemoteAnimationTargetCompat.class), this);
+                    transaction.mockProperties, mock(RemoteAnimationTarget.class), this);
             return transaction;
         }
 
