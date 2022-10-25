@@ -1881,11 +1881,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     private void finishCurrentTransitionToRecents() {
-        if (mRecentsAnimationController != null
+        if (mRecentsView != null
                 && mActivityInterface.getDesktopVisibilityController() != null
                 && mActivityInterface.getDesktopVisibilityController().areFreeformTasksVisible()) {
-            mRecentsAnimationController.finish(true /* toRecents */,
-                    () -> mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
+            mRecentsView.switchToScreenshot(() -> {
+                mRecentsView.finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
+                        () -> mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
+            });
         } else {
             mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
             if (mRecentsAnimationController != null) {
