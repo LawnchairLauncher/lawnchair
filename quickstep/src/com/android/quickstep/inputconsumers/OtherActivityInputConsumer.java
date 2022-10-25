@@ -39,8 +39,6 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -57,7 +55,6 @@ import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.AbsSwipeUpHandler;
 import com.android.quickstep.AbsSwipeUpHandler.Factory;
-import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationCallbacks;
@@ -70,7 +67,6 @@ import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.NavBarPosition;
-import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputChannelCompat.InputEventReceiver;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
@@ -101,7 +97,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private final CachedEventDispatcher mRecentsViewDispatcher = new CachedEventDispatcher();
     private final InputMonitorCompat mInputMonitorCompat;
     private final InputEventReceiver mInputEventReceiver;
-    private final BaseActivityInterface mActivityInterface;
 
     private final AbsSwipeUpHandler.Factory mHandlerFactory;
 
@@ -136,12 +131,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     // Might be displacement in X or Y, depending on the direction we are swiping from the nav bar.
     private float mStartDisplacement;
 
-    private Handler mMainThreadHandler;
-    private Runnable mCancelRecentsAnimationRunnable = () -> {
-        ActivityManagerWrapper.getInstance().cancelRecentsAnimation(
-                true /* restoreHomeStackPosition */);
-    };
-
     public OtherActivityInputConsumer(Context base, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
             boolean isDeferredDownTarget, Consumer<OtherActivityInputConsumer> onCompleteCallback,
@@ -152,9 +141,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mNavBarPosition = mDeviceState.getNavBarPosition();
         mTaskAnimationManager = taskAnimationManager;
         mGestureState = gestureState;
-        mMainThreadHandler = new Handler(Looper.getMainLooper());
         mHandlerFactory = handlerFactory;
-        mActivityInterface = mGestureState.getActivityInterface();
 
         mMotionPauseDetector = new MotionPauseDetector(base, false,
                 mNavBarPosition.isLeftEdge() || mNavBarPosition.isRightEdge()
@@ -437,13 +424,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             }
             onConsumerAboutToBeSwitched();
             onInteractionGestureFinished();
-
-            // Cancel the recents animation if SysUI happens to handle UP before we have a chance
-            // to start the recents animation. In addition, workaround for b/126336729 by delaying
-            // the cancel of the animation for a period, in case SysUI is slow to handle UP and we
-            // handle DOWN & UP and move the home stack before SysUI can start the activity
-            mMainThreadHandler.removeCallbacks(mCancelRecentsAnimationRunnable);
-            mMainThreadHandler.postDelayed(mCancelRecentsAnimationRunnable, 100);
         }
         cleanupAfterGesture();
         TraceHelper.INSTANCE.endSection(traceToken);
@@ -465,7 +445,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     @Override
     public void onConsumerAboutToBeSwitched() {
         Preconditions.assertUIThread();
-        mMainThreadHandler.removeCallbacks(mCancelRecentsAnimationRunnable);
         if (mInteractionHandler != null) {
             // The consumer is being switched while we are active. Set up the shared state to be
             // used by the next animation
