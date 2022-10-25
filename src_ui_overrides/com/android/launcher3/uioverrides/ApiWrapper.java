@@ -17,15 +17,33 @@
 package com.android.launcher3.uioverrides;
 
 import android.app.Person;
+import android.appwidget.AppWidgetHost;
 import android.content.pm.ShortcutInfo;
 
-import com.android.launcher3.Utilities;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.android.launcher3.Utilities;
+import com.android.launcher3.widget.LauncherAppWidgetHost;
+
+/**
+ * A wrapper for the hidden API calls
+ */
 public class ApiWrapper {
 
     public static final boolean TASKBAR_DRAWN_IN_PROCESS = false;
 
     public static Person[] getPersons(ShortcutInfo si) {
         return Utilities.EMPTY_PERSON_ARRAY;
+    }
+
+    /**
+     * Set the interaction handler for the host
+     * @param host AppWidgetHost that needs the interaction handler
+     * @param handler InteractionHandler for the views in the host
+     */
+    public static void setHostInteractionHandler(@NonNull AppWidgetHost host,
+            @Nullable LauncherAppWidgetHost.LauncherWidgetInteractionHandler handler) {
+        // No-op
     }
 }

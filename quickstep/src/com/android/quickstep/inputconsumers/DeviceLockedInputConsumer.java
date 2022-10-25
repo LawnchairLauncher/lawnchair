@@ -37,6 +37,7 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.view.MotionEvent;
+import android.view.RemoteAnimationTarget;
 import android.view.VelocityTracker;
 
 import com.android.launcher3.R;
@@ -59,7 +60,6 @@ import com.android.quickstep.util.TransformParams.BuilderProxy;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.HashMap;
 
@@ -290,7 +290,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     @Override
     public void onBuildTargetParams(
-            SurfaceProperties builder, RemoteAnimationTargetCompat app, TransformParams params) {
+            SurfaceProperties builder, RemoteAnimationTarget app, TransformParams params) {
         mMatrix.setTranslate(0, mProgress.value * mMaxTranslationY);
         builder.setMatrix(mMatrix);
     }

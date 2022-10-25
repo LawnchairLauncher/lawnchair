@@ -53,6 +53,7 @@ import android.util.FloatProperty;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
+import android.view.RemoteAnimationTarget;
 import android.view.TouchDelegate;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,7 +102,6 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.recents.utilities.PreviewPositionHelper;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.lang.annotation.Retention;
 import java.util.Arrays;
@@ -739,14 +739,14 @@ public class TaskView extends FrameLayout implements Reusable {
             } else {
                 TransformParams topLeftParams = remoteTargetHandles[0].getTransformParams();
                 TransformParams rightBottomParams = remoteTargetHandles[1].getTransformParams();
-                RemoteAnimationTargetCompat[] apps = Stream.concat(
+                RemoteAnimationTarget[] apps = Stream.concat(
                         Arrays.stream(topLeftParams.getTargetSet().apps),
                         Arrays.stream(rightBottomParams.getTargetSet().apps))
-                        .toArray(RemoteAnimationTargetCompat[]::new);
-                RemoteAnimationTargetCompat[] wallpapers = Stream.concat(
+                        .toArray(RemoteAnimationTarget[]::new);
+                RemoteAnimationTarget[] wallpapers = Stream.concat(
                         Arrays.stream(topLeftParams.getTargetSet().wallpapers),
                         Arrays.stream(rightBottomParams.getTargetSet().wallpapers))
-                        .toArray(RemoteAnimationTargetCompat[]::new);
+                        .toArray(RemoteAnimationTarget[]::new);
                 targets = new RemoteAnimationTargets(apps, wallpapers,
                         topLeftParams.getTargetSet().nonApps,
                         topLeftParams.getTargetSet().targetMode);

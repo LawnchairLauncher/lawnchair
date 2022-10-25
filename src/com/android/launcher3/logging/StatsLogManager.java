@@ -612,7 +612,11 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_APP_ICON_MENU_SPLIT_RIGHT_BOTTOM(1199),
 
         @UiEvent(doc = "User has invoked split to left half from an app icon menu")
-        LAUNCHER_APP_ICON_MENU_SPLIT_LEFT_TOP(1200)
+        LAUNCHER_APP_ICON_MENU_SPLIT_LEFT_TOP(1200),
+
+        @UiEvent(doc = "Number of apps in A-Z list (personal and work profile)")
+        LAUNCHER_ALLAPPS_COUNT(1225),
+
         ;
 
         // ADD MORE
@@ -730,6 +734,13 @@ public class StatsLogManager implements ResourceBasedOverride {
          * Sets logging fields from provided {@link LauncherAtom.Slice}.
          */
         default StatsLogger withSlice(LauncherAtom.Slice slice) {
+            return this;
+        }
+
+        /**
+         * Sets cardinality of log message.
+         */
+        default StatsLogger withCardinality(int cardinality) {
             return this;
         }
 
