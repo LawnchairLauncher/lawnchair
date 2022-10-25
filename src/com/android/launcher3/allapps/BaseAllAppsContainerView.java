@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_COUNT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_PERSONAL_TAB;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_WORK_TAB;
 
@@ -245,6 +246,10 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
                 mWorkManager.reset();
             }
         }
+
+        mActivityContext.getStatsLogManager().logger()
+                .withCardinality(mAllAppsStore.getApps().length)
+                .log(LAUNCHER_ALLAPPS_COUNT);
     }
 
     /**
