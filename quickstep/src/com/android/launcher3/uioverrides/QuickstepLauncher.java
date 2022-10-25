@@ -490,7 +490,8 @@ public class QuickstepLauncher extends Launcher {
 
     protected LauncherAppWidgetHost createAppWidgetHost() {
         LauncherAppWidgetHost appWidgetHost = super.createAppWidgetHost();
-        appWidgetHost.setInteractionHandler(new QuickstepInteractionHandler(this));
+        ApiWrapper.setHostInteractionHandler(appWidgetHost,
+                new QuickstepInteractionHandler(this));
         return appWidgetHost;
     }
 
