@@ -35,6 +35,7 @@ import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.ZOOM_OUT;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
+import static com.android.launcher3.config.FeatureFlags.HOME_GARDENING_WORKSPACE_BUTTONS;
 import static com.android.launcher3.config.FeatureFlags.SHOW_HOME_GARDENING;
 import static com.android.launcher3.graphics.Scrim.SCRIM_PROGRESS;
 import static com.android.launcher3.graphics.SysUiScrim.SYSUI_PROGRESS;
@@ -167,6 +168,18 @@ public class WorkspaceStateTransitionAnimation {
             propertySetter.addEndListener(success -> {
                 if (success) {
                     mWorkspace.getFirstPagePinnedItem().setClickable(state != SPRING_LOADED);
+                }
+            });
+        }
+
+        if (HOME_GARDENING_WORKSPACE_BUTTONS.get()) {
+            propertySetter.setViewAlpha(
+                    mLauncher.getHotseat().getQsb(),
+                    state == SPRING_LOADED ? 0 : 1,
+                    workspaceFadeInterpolator);
+            propertySetter.addEndListener(success -> {
+                if (success) {
+                    mLauncher.getHotseat().getQsb().setClickable(state != SPRING_LOADED);
                 }
             });
         }
