@@ -99,10 +99,6 @@ public class ClearAllButton extends Button {
         return false;
     }
 
-    public float getScrollAlpha() {
-        return mScrollAlpha;
-    }
-
     public void setContentAlpha(float alpha) {
         if (mContentAlpha != alpha) {
             mContentAlpha = alpha;
