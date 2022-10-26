@@ -135,14 +135,16 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     private boolean mBindingItems = false;
     private boolean mAddedWindow = false;
 
+    // The bounds of the taskbar items relative to TaskbarDragLayer
+    private final Rect mTransientTaskbarBounds = new Rect();
 
     private final TaskbarShortcutMenuAccessibilityDelegate mAccessibilityDelegate;
 
-    public TaskbarActivityContext(Context windowContext, DeviceProfile dp,
+    public TaskbarActivityContext(Context windowContext, DeviceProfile launcherDp,
             TaskbarNavButtonController buttonController, ScopedUnfoldTransitionProgressProvider
             unfoldTransitionProgressProvider) {
         super(windowContext);
-        mDeviceProfile = dp.copy(this);
+        mDeviceProfile = launcherDp.copy(this);
 
         final Resources resources = getResources();
 
@@ -172,8 +174,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mRightCorner = display.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_RIGHT);
 
         // Inflate views.
-        mDragLayer = (TaskbarDragLayer) mLayoutInflater.inflate(
-                R.layout.taskbar, null, false);
+        int taskbarLayout = DisplayController.isTransientTaskbar(this)
+                ? R.layout.transient_taskbar
+                : R.layout.taskbar;
+        mDragLayer = (TaskbarDragLayer) mLayoutInflater.inflate(taskbarLayout, null, false);
         TaskbarView taskbarView = mDragLayer.findViewById(R.id.taskbar_view);
         TaskbarScrimView taskbarScrimView = mDragLayer.findViewById(R.id.taskbar_scrim);
         FrameLayout navButtonsView = mDragLayer.findViewById(R.id.navbuttons_view);
@@ -212,7 +216,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new TaskbarAutohideSuspendController(this),
                 new TaskbarPopupController(this),
                 new TaskbarForceVisibleImmersiveController(this),
-                new TaskbarOverlayController(this, dp),
+                new TaskbarOverlayController(this, launcherDp),
                 new TaskbarAllAppsController(),
                 new TaskbarInsetsController(this),
                 new VoiceInteractionWindowController(this),
@@ -243,10 +247,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     /** Updates {@link DeviceProfile} instances for any Taskbar windows. */
-    public void updateDeviceProfile(DeviceProfile dp, NavigationMode navMode) {
+    public void updateDeviceProfile(DeviceProfile launcherDp, NavigationMode navMode) {
         mNavMode = navMode;
-        mControllers.taskbarOverlayController.updateDeviceProfile(dp);
-        mDeviceProfile = dp.copy(this);
+        mControllers.taskbarOverlayController.updateLauncherDeviceProfile(launcherDp);
+        mDeviceProfile = launcherDp.copy(this);
         updateIconSize(getResources());
 
         AbstractFloatingView.closeAllOpenViewsExcept(this, false, TYPE_REBIND_SAFE);
@@ -257,10 +261,19 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     private void updateIconSize(Resources resources) {
-        float taskbarIconSize = resources.getDimension(R.dimen.taskbar_icon_size);
+        float taskbarIconSize = DisplayController.isTransientTaskbar(this)
+                ? resources.getDimension(R.dimen.transient_taskbar_icon_size)
+                : resources.getDimension(R.dimen.taskbar_icon_size);
         mDeviceProfile.updateIconSize(1, resources);
         float iconScale = taskbarIconSize / mDeviceProfile.iconSizePx;
         mDeviceProfile.updateIconSize(iconScale, resources);
+    }
+
+    /**
+     * Returns the View bounds of transient taskbar.
+     */
+    public Rect getTransientTaskbarBounds() {
+        return mTransientTaskbarBounds;
     }
 
     @VisibleForTesting
@@ -523,7 +536,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     private void onNotificationShadeExpandChanged(boolean isExpanded, boolean skipAnim) {
         float alpha = isExpanded ? 0 : 1;
         AnimatorSet anim = new AnimatorSet();
-        anim.play(mControllers.taskbarViewController.getTaskbarIconAlpha().getProperty(
+        anim.play(mControllers.taskbarViewController.getTaskbarIconAlpha().get(
                 TaskbarViewController.ALPHA_INDEX_NOTIFICATION_EXPANDED).animateToValue(alpha));
         if (!isThreeButtonNav()) {
             anim.play(mControllers.taskbarDragLayerController.getNotificationShadeBgTaskbar()
@@ -623,16 +636,24 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      * Returns the default height of the window, including the static corner radii above taskbar.
      */
     public int getDefaultTaskbarWindowHeight() {
+        Resources resources = getResources();
+
         if (FLAG_HIDE_NAVBAR_WINDOW && mDeviceProfile.isPhone) {
-            Resources resources = getResources();
             return isThreeButtonNav() ?
                     resources.getDimensionPixelSize(R.dimen.taskbar_size) :
                     resources.getDimensionPixelSize(R.dimen.taskbar_stashed_size);
         }
 
         if (!isUserSetupComplete()) {
-            return getResources().getDimensionPixelSize(R.dimen.taskbar_suw_frame);
+            return resources.getDimensionPixelSize(R.dimen.taskbar_suw_frame);
         }
+
+        if (DisplayController.isTransientTaskbar(this)) {
+            return resources.getDimensionPixelSize(R.dimen.transient_taskbar_size)
+                    + (2 * resources.getDimensionPixelSize(R.dimen.transient_taskbar_margin))
+                    + resources.getDimensionPixelSize(R.dimen.transient_taskbar_shadow_blur);
+        }
+
         return mDeviceProfile.taskbarSize + Math.max(getLeftCornerRadius(), getRightCornerRadius());
     }
 

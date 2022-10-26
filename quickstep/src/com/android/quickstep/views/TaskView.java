@@ -79,6 +79,7 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
@@ -1574,9 +1575,12 @@ public class TaskView extends FrameLayout implements Reusable {
         /** The current scale we apply to the thumbnail to adjust for new left/right insets. */
         public float mScale = 1;
 
+        private boolean mIsTaskbarTransient;
+
         public FullscreenDrawParams(Context context) {
             mCornerRadius = TaskCornerRadius.get(context);
             mWindowCornerRadius = QuickStepContract.getWindowCornerRadius(context);
+            mIsTaskbarTransient = DisplayController.isTransientTaskbar(context);
 
             mCurrentDrawnCornerRadius = mCornerRadius;
         }
@@ -1586,7 +1590,7 @@ public class TaskView extends FrameLayout implements Reusable {
          */
         public void setProgress(float fullscreenProgress, float parentScale, float taskViewScale,
                 int previewWidth, DeviceProfile dp, PreviewPositionHelper pph) {
-            RectF insets = getInsetsToDrawInFullscreen(pph, dp);
+            RectF insets = getInsetsToDrawInFullscreen(pph, dp, mIsTaskbarTransient);
 
             float currentInsetsLeft = insets.left * fullscreenProgress;
             float currentInsetsTop = insets.top * fullscreenProgress;
@@ -1609,7 +1613,11 @@ public class TaskView extends FrameLayout implements Reusable {
         /**
          * Insets to used for clipping the thumbnail (in case it is drawing outside its own space)
          */
-        private static RectF getInsetsToDrawInFullscreen(PreviewPositionHelper pph, DeviceProfile dp) {
+        private static RectF getInsetsToDrawInFullscreen(PreviewPositionHelper pph,
+                DeviceProfile dp, boolean isTaskbarTransient) {
+            if (isTaskbarTransient) {
+                return pph.getClippedInsets();
+            }
             return dp.isTaskbarPresent && !dp.isTaskbarPresentInApps
                     ? pph.getClippedInsets() : EMPTY_RECT_F;
         }

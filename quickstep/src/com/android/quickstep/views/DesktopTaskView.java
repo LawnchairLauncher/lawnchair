@@ -286,29 +286,21 @@ public class DesktopTaskView extends TaskView {
 
     @Override
     public RunnableList launchTasks() {
-        showDesktopApps();
-        getRecentsView().onTaskLaunchedInLiveTileMode();
+        SystemUiProxy.INSTANCE.get(getContext()).showDesktopApps();
+        getRecentsView().startHome();
         return new RunnableList();
     }
 
     @Nullable
     @Override
     public RunnableList launchTaskAnimated() {
-        RunnableList endCallback = new RunnableList();
-        showDesktopApps();
-        RecentsView<?, ?> recentsView = getRecentsView();
-        recentsView.addSideTaskLaunchCallback(endCallback);
-        return endCallback;
+        return launchTasks();
     }
 
     @Override
     public void launchTask(@NonNull Consumer<Boolean> callback, boolean freezeTaskList) {
-        showDesktopApps();
+        launchTasks();
         callback.accept(true);
-    }
-
-    private void showDesktopApps() {
-        SystemUiProxy.INSTANCE.get(getContext()).showDesktopApps();
     }
 
     @Override

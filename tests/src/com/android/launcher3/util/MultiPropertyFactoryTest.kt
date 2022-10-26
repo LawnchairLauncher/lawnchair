@@ -39,21 +39,21 @@ class MultiPropertyFactoryTest {
         }
     }
 
-    private val factory = MultiPropertyFactory("depth_property", receiveProperty) {
+    private val factory = MultiPropertyFactory(null, receiveProperty, 3) {
         x: Float, y: Float -> x + y
     }
 
-    private val p1 = factory.get(1)
-    private val p2 = factory.get(2)
-    private val p3 = factory.get(3)
+    private val p1 = factory.get(0)
+    private val p2 = factory.get(1)
+    private val p3 = factory.get(2)
 
     @Test
     fun set_sameIndexes_allApplied() {
         val v1 = 50f
         val v2 = 100f
-        p1.set(null, v1)
-        p1.set(null, v1)
-        p1.set(null, v2)
+        p1.value = v1
+        p1.value = v1
+        p1.value = v2
 
         assertThat(received).containsExactly(v1, v1, v2)
     }
@@ -63,9 +63,9 @@ class MultiPropertyFactoryTest {
         val v1 = 50f
         val v2 = 100f
         val v3 = 150f
-        p1.set(null, v1)
-        p2.set(null, v2)
-        p3.set(null, v3)
+        p1.value = v1
+        p2.value = v2
+        p3.value = v3
 
         assertThat(received).containsExactly(v1, v1 + v2, v1 + v2 + v3)
     }

@@ -31,6 +31,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.RevealOutlineAnimation;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.util.Executors;
+import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.AnimatedFloat;
 import com.android.systemui.shared.navigationbar.RegionSamplingHelper;
@@ -105,7 +106,7 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
                     .getDimensionPixelSize(R.dimen.taskbar_stashed_handle_width);
         }
 
-        mTaskbarStashedHandleAlpha.getProperty(ALPHA_INDEX_STASHED).setValue(
+        mTaskbarStashedHandleAlpha.get(ALPHA_INDEX_STASHED).setValue(
                 isPhoneGestureNavMode(deviceProfile) ? 1 : 0);
         mTaskbarStashedHandleHintScale.updateValue(1f);
 
@@ -166,7 +167,7 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
         return TaskbarManager.isPhoneMode(deviceProfile) && !mActivity.isThreeButtonNav();
     }
 
-    public MultiValueAlpha getStashedHandleAlpha() {
+    public MultiPropertyFactory<View> getStashedHandleAlpha() {
         return mTaskbarStashedHandleAlpha;
     }
 
@@ -222,7 +223,7 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
      * Should be called when the home button is disabled, so we can hide this handle as well.
      */
     public void setIsHomeButtonDisabled(boolean homeDisabled) {
-        mTaskbarStashedHandleAlpha.getProperty(ALPHA_INDEX_HOME_DISABLED).setValue(
+        mTaskbarStashedHandleAlpha.get(ALPHA_INDEX_HOME_DISABLED).setValue(
                 homeDisabled ? 0 : 1);
     }
 

@@ -31,6 +31,7 @@ import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_RE
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_KEYGUARD;
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_SMALL_SCREEN;
 import static com.android.launcher3.taskbar.Utilities.appendFlag;
+import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BACK_DISABLED;
@@ -84,6 +85,7 @@ import com.android.launcher3.taskbar.TaskbarNavButtonController.TaskbarButton;
 import com.android.launcher3.taskbar.navbutton.NavButtonLayoutFactory;
 import com.android.launcher3.taskbar.navbutton.NavButtonLayoutFactory.NavButtonLayoutter;
 import com.android.launcher3.util.DimensionUtils;
+import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
@@ -227,13 +229,13 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
 
         mPropertyHolders.add(new StatePropertyHolder(
                 mControllers.taskbarViewController.getTaskbarIconAlpha()
-                        .getProperty(ALPHA_INDEX_KEYGUARD),
+                        .get(ALPHA_INDEX_KEYGUARD),
                 flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0
                         && (flags & FLAG_SCREEN_PINNING_ACTIVE) == 0));
 
         mPropertyHolders.add(new StatePropertyHolder(
                 mControllers.taskbarViewController.getTaskbarIconAlpha()
-                        .getProperty(ALPHA_INDEX_SMALL_SCREEN),
+                        .get(ALPHA_INDEX_SMALL_SCREEN),
                 flags -> (flags & FLAG_SMALL_SCREEN) == 0));
 
         mPropertyHolders.add(new StatePropertyHolder(mControllers.taskbarDragLayerController
@@ -340,7 +342,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         mBackButtonAlpha = new MultiValueAlpha(mBackButton, NUM_ALPHA_CHANNELS);
         mBackButtonAlpha.setUpdateVisibility(true);
         mPropertyHolders.add(new StatePropertyHolder(
-                mBackButtonAlpha.getProperty(ALPHA_INDEX_KEYGUARD_OR_DISABLE),
+                mBackButtonAlpha.get(ALPHA_INDEX_KEYGUARD_OR_DISABLE),
                 flags -> {
                     // Show only if not disabled, and if not on the keyguard or otherwise only when
                     // the bouncer or a lockscreen app is showing above the keyguard
@@ -368,7 +370,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         mHomeButtonAlpha = new MultiValueAlpha(mHomeButton, NUM_ALPHA_CHANNELS);
         mHomeButtonAlpha.setUpdateVisibility(true);
         mPropertyHolders.add(
-                new StatePropertyHolder(mHomeButtonAlpha.getProperty(
+                new StatePropertyHolder(mHomeButtonAlpha.get(
                         ALPHA_INDEX_KEYGUARD_OR_DISABLE),
                 flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0 &&
                         (flags & FLAG_DISABLE_HOME) == 0));
@@ -720,7 +722,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
 
             // Hide back button in SUW if keyboard is showing (IME draws its own back).
             mPropertyHolders.add(new StatePropertyHolder(
-                    mBackButtonAlpha.getProperty(ALPHA_INDEX_SUW),
+                    mBackButtonAlpha.get(ALPHA_INDEX_SUW),
                     flags -> (flags & FLAG_IME_VISIBLE) == 0));
 
             // TODO(b/210906568) Dark intensity is currently not propagated during setup, so set
@@ -1046,9 +1048,9 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
             mAnimator.addListener(new AlphaUpdateListener(view));
         }
 
-        StatePropertyHolder(MultiValueAlpha.AlphaProperty alphaProperty,
+        StatePropertyHolder(MultiProperty alphaProperty,
                 IntPredicate enableCondition) {
-            this(alphaProperty, enableCondition, MultiValueAlpha.VALUE, 1, 0);
+            this(alphaProperty, enableCondition, MULTI_PROPERTY_VALUE, 1, 0);
         }
 
         StatePropertyHolder(AnimatedFloat animatedFloat, IntPredicate enableCondition) {

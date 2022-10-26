@@ -19,6 +19,7 @@ package com.android.launcher3.statehandlers;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_DEPTH;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_DEPTH_CONTROLLER;
+import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -112,7 +113,7 @@ public class DepthController extends BaseDepthController implements StateHandler
             return;
         }
 
-        STATE_DEPTH.set(this, toState.getDepth(mLauncher));
+        stateDepth.setValue(toState.getDepth(mLauncher));
         if (toState == LauncherState.BACKGROUND_APP) {
             mLauncher.getDragLayer().getViewTreeObserver().addOnDrawListener(mOnDrawListener);
         }
@@ -127,7 +128,8 @@ public class DepthController extends BaseDepthController implements StateHandler
         }
 
         float toDepth = toState.getDepth(mLauncher);
-        animation.setFloat(this, STATE_DEPTH, toDepth, config.getInterpolator(ANIM_DEPTH, LINEAR));
+        animation.setFloat(stateDepth, MULTI_PROPERTY_VALUE, toDepth,
+                config.getInterpolator(ANIM_DEPTH, LINEAR));
     }
 
     @Override
@@ -140,7 +142,7 @@ public class DepthController extends BaseDepthController implements StateHandler
     public void onMultiWindowModeChanged(boolean isInMultiWindowMode) {
         mIgnoreStateChangesDuringMultiWindowAnimation = true;
 
-        ObjectAnimator mwAnimation = ObjectAnimator.ofFloat(this, STATE_DEPTH,
+        ObjectAnimator mwAnimation = ObjectAnimator.ofFloat(stateDepth, MULTI_PROPERTY_VALUE,
                 mLauncher.getStateManager().getState().getDepth(mLauncher, isInMultiWindowMode))
                 .setDuration(300);
         mwAnimation.addListener(new AnimatorListenerAdapter() {
@@ -158,8 +160,8 @@ public class DepthController extends BaseDepthController implements StateHandler
         writer.println(prefix + "\tmMaxBlurRadius=" + mMaxBlurRadius);
         writer.println(prefix + "\tmCrossWindowBlursEnabled=" + mCrossWindowBlursEnabled);
         writer.println(prefix + "\tmSurface=" + mSurface);
-        writer.println(prefix + "\tmStateDepth=" + STATE_DEPTH.get(this));
-        writer.println(prefix + "\tmWidgetDepth=" + WIDGET_DEPTH.get(this));
+        writer.println(prefix + "\tmStateDepth=" + stateDepth.getValue());
+        writer.println(prefix + "\tmWidgetDepth=" + widgetDepth.getValue());
         writer.println(prefix + "\tmCurrentBlur=" + mCurrentBlur);
         writer.println(prefix + "\tmInEarlyWakeUp=" + mInEarlyWakeUp);
         writer.println(prefix + "\tmIgnoreStateChangesDuringMultiWindowAnimation="

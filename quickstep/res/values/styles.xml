@@ -51,6 +51,7 @@
         parent="TextAppearance.GestureTutorial.Feedback.Title">
         <item name="android:letterSpacing">0.03</item>
         <item name="android:lineHeight">44sp</item>
+        <item name="android:textSize">@dimen/allset_page_allset_text_size</item>
     </style>
 
     <style name="TextAppearance.GestureTutorial.Dialog.Title"
