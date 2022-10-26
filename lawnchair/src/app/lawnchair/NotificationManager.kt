@@ -32,8 +32,9 @@ class NotificationManager(@Suppress("UNUSED_PARAMETER") context: Context) {
 
     fun onNotificationFullRefresh() {
         scope.launch(Dispatchers.IO) {
-            val tmpMap = NotificationListener.getInstanceIfConnected()
-                ?.activeNotifications?.associateBy { it.key }
+            val tmpMap = runCatching {
+                NotificationListener.getInstanceIfConnected()?.activeNotifications?.associateBy { it.key }
+            }.getOrNull()
             withContext(Dispatchers.Main) {
                 notificationsMap.clear()
                 if (tmpMap != null) {
