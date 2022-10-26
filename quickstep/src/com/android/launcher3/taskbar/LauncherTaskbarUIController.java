@@ -44,6 +44,7 @@ import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.RecentsAnimationCallbacks;
@@ -227,7 +228,9 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
             } else {
                 // Adjust task transition spec to account for taskbar being visible
                 @ColorInt int taskAnimationBackgroundColor =
-                        mLauncher.getColor(R.color.taskbar_background);
+                        DisplayController.isTransientTaskbar(mLauncher)
+                                ? mLauncher.getColor(R.color.transient_taskbar_background)
+                                : mLauncher.getColor(R.color.taskbar_background);
 
                 TaskTransitionSpec customTaskAnimationSpec = new TaskTransitionSpec(
                         taskAnimationBackgroundColor,
@@ -286,6 +289,10 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     @Override
     public void setSystemGestureInProgress(boolean inProgress) {
         super.setSystemGestureInProgress(inProgress);
+        if (DisplayController.isTransientTaskbar(mLauncher)) {
+            forceHideBackground(false);
+            return;
+        }
         if (!FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get()) {
             // Launcher's ScrimView will draw the background throughout the gesture. But once the
             // gesture ends, start drawing taskbar's background again since launcher might stop
