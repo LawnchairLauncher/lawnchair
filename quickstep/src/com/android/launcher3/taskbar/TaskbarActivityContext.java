@@ -524,7 +524,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     private void onNotificationShadeExpandChanged(boolean isExpanded, boolean skipAnim) {
         float alpha = isExpanded ? 0 : 1;
         AnimatorSet anim = new AnimatorSet();
-        anim.play(mControllers.taskbarViewController.getTaskbarIconAlpha().getProperty(
+        anim.play(mControllers.taskbarViewController.getTaskbarIconAlpha().get(
                 TaskbarViewController.ALPHA_INDEX_NOTIFICATION_EXPANDED).animateToValue(alpha));
         if (!isThreeButtonNav()) {
             anim.play(mControllers.taskbarDragLayerController.getNotificationShadeBgTaskbar()

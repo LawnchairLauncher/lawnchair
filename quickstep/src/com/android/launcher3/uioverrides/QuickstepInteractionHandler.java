@@ -33,10 +33,12 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ActivityOptionsWrapper;
+import com.android.launcher3.widget.LauncherAppWidgetHost;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 /** Provides a Quickstep specific animation when launching an activity from an app widget. */
-class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
+class QuickstepInteractionHandler implements
+        LauncherAppWidgetHost.LauncherWidgetInteractionHandler {
 
     private static final String TAG = "QuickstepInteractionHandler";
 

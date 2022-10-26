@@ -44,7 +44,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.testing.shared.TestProtocol;
-import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
+import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.SystemUiProxy;
 
@@ -144,11 +144,11 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     private AnimatedFloat mTaskbarBackgroundOffset;
     private AnimatedFloat mTaskbarImeBgAlpha;
     // TaskbarView icon properties.
-    private AlphaProperty mIconAlphaForStash;
+    private MultiProperty mIconAlphaForStash;
     private AnimatedFloat mIconScaleForStash;
     private AnimatedFloat mIconTranslationYForStash;
     // Stashed handle properties.
-    private AlphaProperty mTaskbarStashedHandleAlpha;
+    private MultiProperty mTaskbarStashedHandleAlpha;
     private AnimatedFloat mTaskbarStashedHandleHintScale;
 
     /** Whether we are currently visually stashed (might change based on launcher state). */
@@ -199,14 +199,14 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         mTaskbarImeBgAlpha = dragLayerController.getImeBgTaskbar();
 
         TaskbarViewController taskbarViewController = controllers.taskbarViewController;
-        mIconAlphaForStash = taskbarViewController.getTaskbarIconAlpha().getProperty(
+        mIconAlphaForStash = taskbarViewController.getTaskbarIconAlpha().get(
                 TaskbarViewController.ALPHA_INDEX_STASH);
         mIconScaleForStash = taskbarViewController.getTaskbarIconScaleForStash();
         mIconTranslationYForStash = taskbarViewController.getTaskbarIconTranslationYForStash();
 
         StashedHandleViewController stashedHandleController =
                 controllers.stashedHandleViewController;
-        mTaskbarStashedHandleAlpha = stashedHandleController.getStashedHandleAlpha().getProperty(
+        mTaskbarStashedHandleAlpha = stashedHandleController.getStashedHandleAlpha().get(
                 StashedHandleViewController.ALPHA_INDEX_STASHED);
         mTaskbarStashedHandleHintScale = stashedHandleController.getStashedHandleHintScale();
 

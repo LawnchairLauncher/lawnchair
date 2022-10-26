@@ -1834,6 +1834,17 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                         if (mRecentsAnimationController == null) return;
                         final ThumbnailData taskSnapshot =
                                 mRecentsAnimationController.screenshotTask(runningTaskId);
+                        // If split case, we should update all split tasks snapshot
+                        if (mIsSwipeForSplit) {
+                            int[] splitTaskIds = TopTaskTracker.INSTANCE.get(
+                                    mContext).getRunningSplitTaskIds();
+                            for (int i = 0; i < splitTaskIds.length; i++) {
+                                // Skip running one because done above.
+                                if (splitTaskIds[i] == runningTaskId) continue;
+
+                                mRecentsAnimationController.screenshotTask(splitTaskIds[i]);
+                            }
+                        }
                         MAIN_EXECUTOR.execute(() -> {
                             mTaskSnapshot = taskSnapshot;
                             if (!updateThumbnail(runningTaskId, false /* refreshView */)) {

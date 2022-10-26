@@ -35,6 +35,7 @@ import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.ZOOM_OUT;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
+import static com.android.launcher3.config.FeatureFlags.HOME_GARDENING_WORKSPACE_BUTTONS;
 import static com.android.launcher3.config.FeatureFlags.SHOW_HOME_GARDENING;
 import static com.android.launcher3.graphics.Scrim.SCRIM_PROGRESS;
 import static com.android.launcher3.graphics.SysUiScrim.SYSUI_PROGRESS;
@@ -71,7 +72,7 @@ import com.android.systemui.plugins.ResourceProvider;
  */
 public class WorkspaceStateTransitionAnimation {
 
-    private static final float QSB_DISABLED_ALPHA = 0.3f;
+    private static final float FIRST_PAGE_PINNED_WIDGET_DISABLED_ALPHA = 0.3f;
 
     private static final FloatProperty<Workspace<?>> WORKSPACE_SCALE_PROPERTY =
             WORKSPACE_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_WORKSPACE_STATE);
@@ -161,12 +162,24 @@ public class WorkspaceStateTransitionAnimation {
 
         if (SHOW_HOME_GARDENING.get()) {
             propertySetter.setViewAlpha(
-                    mWorkspace.getQsb(),
-                    state == SPRING_LOADED ? QSB_DISABLED_ALPHA : 1,
+                    mWorkspace.getFirstPagePinnedItem(),
+                    state == SPRING_LOADED ? FIRST_PAGE_PINNED_WIDGET_DISABLED_ALPHA : 1,
                     workspaceFadeInterpolator);
             propertySetter.addEndListener(success -> {
                 if (success) {
-                    mWorkspace.getQsb().setClickable(state != SPRING_LOADED);
+                    mWorkspace.getFirstPagePinnedItem().setClickable(state != SPRING_LOADED);
+                }
+            });
+        }
+
+        if (HOME_GARDENING_WORKSPACE_BUTTONS.get()) {
+            propertySetter.setViewAlpha(
+                    mLauncher.getHotseat().getQsb(),
+                    state == SPRING_LOADED ? 0 : 1,
+                    workspaceFadeInterpolator);
+            propertySetter.addEndListener(success -> {
+                if (success) {
+                    mLauncher.getHotseat().getQsb().setClickable(state != SPRING_LOADED);
                 }
             });
         }

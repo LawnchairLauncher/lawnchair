@@ -44,7 +44,7 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_SCRIM_FOR_APP_LAU
 import static com.android.launcher3.config.FeatureFlags.KEYGUARD_ANIMATION;
 import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVITY;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
-import static com.android.launcher3.statehandlers.DepthController.STATE_DEPTH;
+import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
 import static com.android.launcher3.util.window.RefreshRateTracker.getSingleFrameMs;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 import static com.android.launcher3.views.FloatingIconView.getFloatingIconView;
@@ -389,7 +389,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 @Override
                 public void onAnimationStart(Animator animation) {
                     mLauncher.addOnResumeCallback(() ->
-                            ObjectAnimator.ofFloat(mLauncher.getDepthController(), STATE_DEPTH,
+                            ObjectAnimator.ofFloat(mLauncher.getDepthController().stateDepth,
+                                    MULTI_PROPERTY_VALUE,
                                     mLauncher.getStateManager().getState().getDepth(
                                             mLauncher)).start());
                 }
@@ -413,7 +414,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             @Override
             public void onAnimationStart(Animator animation) {
                 mLauncher.addOnResumeCallback(() ->
-                        ObjectAnimator.ofFloat(mLauncher.getDepthController(), STATE_DEPTH,
+                        ObjectAnimator.ofFloat(mLauncher.getDepthController().stateDepth,
+                                MULTI_PROPERTY_VALUE,
                                 mLauncher.getStateManager().getState().getDepth(
                                         mLauncher)).start());
             }
@@ -1051,8 +1053,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 && BlurUtils.supportsBlursOnWindows();
 
         MyDepthController depthController = new MyDepthController(mLauncher);
-        ObjectAnimator backgroundRadiusAnim = ObjectAnimator.ofFloat(depthController, STATE_DEPTH,
-                        BACKGROUND_APP.getDepth(mLauncher))
+        ObjectAnimator backgroundRadiusAnim = ObjectAnimator.ofFloat(depthController.stateDepth,
+                        MULTI_PROPERTY_VALUE, BACKGROUND_APP.getDepth(mLauncher))
                 .setDuration(APP_LAUNCH_DURATION);
 
         if (allowBlurringLauncher) {
@@ -1598,8 +1600,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                             true /* animateOverviewScrim */, launcherView).getAnimators());
 
                     if (!areAllTargetsTranslucent(appTargets)) {
-                        anim.play(ObjectAnimator.ofFloat(mLauncher.getDepthController(),
-                                STATE_DEPTH,
+                        anim.play(ObjectAnimator.ofFloat(mLauncher.getDepthController().stateDepth,
+                                MULTI_PROPERTY_VALUE,
                                 BACKGROUND_APP.getDepth(mLauncher), NORMAL.getDepth(mLauncher)));
                     }
 
