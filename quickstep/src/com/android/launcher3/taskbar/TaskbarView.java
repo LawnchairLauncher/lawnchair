@@ -17,6 +17,7 @@ package com.android.launcher3.taskbar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -126,6 +127,9 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             mAllAppsButton = LayoutInflater.from(context)
                     .inflate(R.layout.taskbar_all_apps_button, this, false);
             mAllAppsButton.setPadding(mItemPadding, mItemPadding, mItemPadding, mItemPadding);
+            if (mActivityContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_PC)) {
+                mAllAppsButton.setVisibility(GONE);
+            }
         }
 
         // TODO: Disable touch events on QSB otherwise it can crash.
