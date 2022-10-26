@@ -143,6 +143,11 @@ public class AllSetActivity extends Activity {
 
         mVibrator = getSystemService(Vibrator.class);
         mAnimatedBackground = findViewById(R.id.animated_background);
+        // There's a bug in the currently used external Lottie library (v5.2.0), and it doesn't load
+        // the correct animation from the raw resources when configuration changes, so we need to
+        // manually load the resource and pass it to Lottie.
+        mAnimatedBackground.setAnimation(getResources().openRawResource(R.raw.all_set_page_bg),
+                null);
         startBackgroundAnimation();
     }
 
