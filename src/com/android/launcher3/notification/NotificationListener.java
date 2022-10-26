@@ -141,7 +141,7 @@ public class NotificationListener extends NotificationListenerService {
                 if (notificationGroup != null) {
                     notificationGroup.removeChildKey(key);
                     if (notificationGroup.isEmpty()) {
-                        if (key.equals(mLastKeyDismissedByLauncher) && sIsConnected) {
+                        if (key.equals(mLastKeyDismissedByLauncher)) {
                             // Only cancel the group notification if launcher dismissed the
                             // last child.
                             cancelNotification(notificationGroup.getGroupSummaryKey());
@@ -149,7 +149,7 @@ public class NotificationListener extends NotificationListenerService {
                         mNotificationGroupMap.remove(sbn.getGroupKey());
                     }
                 }
-                if (key.equals(mLastKeyDismissedByLauncher) && sIsConnected) {
+                if (key.equals(mLastKeyDismissedByLauncher)) {
                     mLastKeyDismissedByLauncher = null;
                 }
                 return true;
@@ -172,10 +172,8 @@ public class NotificationListener extends NotificationListenerService {
                 mUiHandler.obtainMessage(message.what, activeNotifications).sendToTarget();
                 return true;
             case MSG_CANCEL_NOTIFICATION: {
-                if (sIsConnected) {
-                    mLastKeyDismissedByLauncher = (String) message.obj;
-                    cancelNotification(mLastKeyDismissedByLauncher);
-                }
+                mLastKeyDismissedByLauncher = (String) message.obj;
+                cancelNotification(mLastKeyDismissedByLauncher);
                 return true;
             }
             case MSG_RANKING_UPDATE: {
