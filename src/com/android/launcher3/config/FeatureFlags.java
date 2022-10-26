@@ -156,6 +156,11 @@ public final class FeatureFlags {
             "ENABLE_SMARTSPACE_DISMISS", true,
             "Adds a menu option to dismiss the current Enhanced Smartspace card.");
 
+    public static final BooleanFlag ENABLE_OVERLAY_CONNECTION_OPTIM = getDebugFlag(
+            "ENABLE_OVERLAY_CONNECTION_OPTIM",
+            false,
+            "Enable optimizing overlay service connection");
+
     /**
      * Enables region sampling for text color: Needs system health assessment before turning on
      */
