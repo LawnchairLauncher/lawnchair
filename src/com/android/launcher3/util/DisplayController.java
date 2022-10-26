@@ -20,6 +20,7 @@ import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION;
 
 import static com.android.launcher3.Utilities.dpiFromPx;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_TRANSIENT_TASKBAR;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
 import static com.android.launcher3.util.window.WindowManagerProxy.MIN_TABLET_WIDTH;
@@ -121,6 +122,14 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
      */
     public static NavigationMode getNavigationMode(Context context) {
         return INSTANCE.get(context).getInfo().navigationMode;
+    }
+
+    /**
+     * Returns whether taskbar is transient.
+     */
+    public static boolean isTransientTaskbar(Context context) {
+        return ENABLE_TRANSIENT_TASKBAR.get()
+                && getNavigationMode(context) == NavigationMode.NO_BUTTON;
     }
 
     @Override
