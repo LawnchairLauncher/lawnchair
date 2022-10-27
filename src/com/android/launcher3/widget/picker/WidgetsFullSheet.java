@@ -321,7 +321,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mActivityContext.getAppWidgetHost().addProviderChangeListener(this);
+        mActivityContext.getAppWidgetHolder().addProviderChangeListener(this);
         notifyWidgetProvidersChanged();
         onRecommendedWidgetsBound();
     }
@@ -329,7 +329,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mActivityContext.getAppWidgetHost().removeProviderChangeListener(this);
+        mActivityContext.getAppWidgetHolder().removeProviderChangeListener(this);
         mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView
                 .removeOnAttachStateChangeListener(mBindScrollbarInSearchMode);
         if (mHasWorkProfile) {
