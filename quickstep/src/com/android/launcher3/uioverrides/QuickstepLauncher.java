@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 The Android Open Source Project
+ * Copyright (C) 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,6 +58,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.hardware.SensorManager;
 import android.hardware.devicestate.DeviceStateManager;
+import android.media.permission.SafeCloseable;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.os.IBinder;
@@ -71,6 +72,7 @@ import android.window.SplashScreen;
 
 import androidx.annotation.Nullable;
 
+import com.android.app.viewcapture.ViewCapture;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -119,7 +121,6 @@ import com.android.launcher3.util.ObjectWrapper;
 import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.util.PendingSplitSelectInfo;
 import com.android.launcher3.util.RunnableList;
-import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.widget.LauncherAppWidgetHost;
@@ -135,7 +136,6 @@ import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
 import com.android.quickstep.util.SplitSelectStateController;
 import com.android.quickstep.util.TISBindHelper;
-import com.android.quickstep.util.ViewCapture;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -402,7 +402,7 @@ public class QuickstepLauncher extends Launcher {
 
         super.onDestroy();
         mHotseatPredictionController.destroy();
-        mViewCapture.close();
+        if (mViewCapture != null) mViewCapture.close();
     }
 
     @Override
@@ -503,7 +503,9 @@ public class QuickstepLauncher extends Launcher {
         }
         addMultiWindowModeChangedListener(mDepthController);
         initUnfoldTransitionProgressProvider();
-        mViewCapture = ViewCapture.INSTANCE.get(this).startCapture(getWindow());
+        if (FeatureFlags.CONTINUOUS_VIEW_TREE_CAPTURE.get()) {
+            mViewCapture = ViewCapture.getInstance().startCapture(getWindow());
+        }
     }
 
     @Override

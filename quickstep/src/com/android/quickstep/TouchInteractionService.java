@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 The Android Open Source Project
+ * Copyright (C) 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,6 +67,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
+import com.android.app.viewcapture.ViewCapture;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -103,7 +104,6 @@ import com.android.quickstep.util.ActiveGestureLog.CompoundString;
 import com.android.quickstep.util.ProtoTracer;
 import com.android.quickstep.util.ProxyScreenStatusProvider;
 import com.android.quickstep.util.SplitScreenBounds;
-import com.android.quickstep.util.ViewCapture;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -1238,7 +1238,9 @@ public class TouchInteractionService extends Service
             }
             mTaskbarManager.dumpLogs("", pw);
 
-            ViewCapture.INSTANCE.get(this).dump(pw, fd);
+            if (FeatureFlags.CONTINUOUS_VIEW_TREE_CAPTURE.get()) {
+                ViewCapture.getInstance().dump(pw, fd, this);
+            }
         }
     }
 
