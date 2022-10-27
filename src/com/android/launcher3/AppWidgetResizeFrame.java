@@ -249,11 +249,11 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                                 /* widgetHandler= */ null,
                                 (ItemInfo) mWidgetView.getTag()));
                 mLauncher
-                    .getAppWidgetHost()
-                    .startConfigActivity(
-                            mLauncher,
-                            mWidgetView.getAppWidgetId(),
-                            Launcher.REQUEST_RECONFIGURE_APPWIDGET);
+                        .getAppWidgetHolder()
+                        .startConfigActivity(
+                                mLauncher,
+                                mWidgetView.getAppWidgetId(),
+                                Launcher.REQUEST_RECONFIGURE_APPWIDGET);
             });
             if (!hasSeenReconfigurableWidgetEducationTip()) {
                 post(() -> {
