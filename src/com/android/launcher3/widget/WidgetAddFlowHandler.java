@@ -55,7 +55,7 @@ public class WidgetAddFlowHandler implements Parcelable {
 
     public void startBindFlow(Launcher launcher, int appWidgetId, ItemInfo info, int requestCode) {
         launcher.setWaitingForResult(PendingRequestArgs.forWidgetInfo(appWidgetId, this, info));
-        launcher.getAppWidgetHost()
+        launcher.getAppWidgetHolder()
                 .startBindFlow(launcher, appWidgetId, mProviderInfo, requestCode);
     }
 
@@ -77,7 +77,7 @@ public class WidgetAddFlowHandler implements Parcelable {
             return false;
         }
         launcher.setWaitingForResult(PendingRequestArgs.forWidgetInfo(appWidgetId, this, info));
-        launcher.getAppWidgetHost().startConfigActivity(launcher, appWidgetId, requestCode);
+        launcher.getAppWidgetHolder().startConfigActivity(launcher, appWidgetId, requestCode);
         return true;
     }
 
