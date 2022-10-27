@@ -202,6 +202,10 @@
 
     <!-- All Set page -->
     <dimen name="allset_page_margin_horizontal">40dp</dimen>
+    <dimen name="allset_page_margin_bottom">0dp</dimen>
+    <dimen name="allset_page_allset_text_size">36sp</dimen>
+    <dimen name="allset_page_swipe_up_text_size">14sp</dimen>
+
     <dimen name="allset_title_margin_top">24dp</dimen>
     <dimen name="allset_title_icon_margin_top">32dp</dimen>
     <dimen name="allset_subtitle_margin_top">24dp</dimen>
@@ -278,6 +282,12 @@
     <dimen name="taskbar_back_button_left_margin_kids">48dp</dimen>
     <dimen name="taskbar_home_button_left_margin_kids">48dp</dimen>
     <dimen name="taskbar_icon_size_kids">32dp</dimen>
+
+    <!-- Transient taskbar -->
+    <dimen name="transient_taskbar_size">76dp</dimen>
+    <dimen name="transient_taskbar_margin">24dp</dimen>
+    <dimen name="transient_taskbar_shadow_blur">40dp</dimen>
+    <dimen name="transient_taskbar_key_shadow_distance">10dp</dimen>
 
     <!--  Taskbar 3 button spacing  -->
     <dimen name="taskbar_button_space_inbetween">24dp</dimen>

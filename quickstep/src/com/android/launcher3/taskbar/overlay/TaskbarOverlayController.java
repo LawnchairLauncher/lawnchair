@@ -63,17 +63,17 @@ public final class TaskbarOverlayController {
         }
     };
 
-    private DeviceProfile mDeviceProfile;
+    private DeviceProfile mLauncherDeviceProfile;
     private @Nullable TaskbarOverlayContext mOverlayContext;
     private TaskbarControllers mControllers; // Initialized in init.
 
     public TaskbarOverlayController(
-            TaskbarActivityContext taskbarContext, DeviceProfile deviceProfile) {
+            TaskbarActivityContext taskbarContext, DeviceProfile launcherDeviceProfile) {
         mTaskbarContext = taskbarContext;
         mWindowContext = mTaskbarContext.createWindowContext(TYPE_APPLICATION_OVERLAY, null);
         mProxyView = new TaskbarOverlayProxyView();
         mLayoutParams = createLayoutParams();
-        mDeviceProfile = deviceProfile;
+        mLauncherDeviceProfile = launcherDeviceProfile;
     }
 
     /** Initialize the controller. */
@@ -132,13 +132,13 @@ public final class TaskbarOverlayController {
     }
 
     /** The current device profile for the overlay window. */
-    public DeviceProfile getDeviceProfile() {
-        return mDeviceProfile;
+    public DeviceProfile getLauncherDeviceProfile() {
+        return mLauncherDeviceProfile;
     }
 
     /** Updates {@link DeviceProfile} instance for Taskbar's overlay window. */
-    public void updateDeviceProfile(DeviceProfile dp) {
-        mDeviceProfile = dp;
+    public void updateLauncherDeviceProfile(DeviceProfile dp) {
+        mLauncherDeviceProfile = dp;
         Optional.ofNullable(mOverlayContext).ifPresent(c -> {
             AbstractFloatingView.closeAllOpenViewsExcept(c, false, TYPE_REBIND_SAFE);
             c.dispatchDeviceProfileChanged();
