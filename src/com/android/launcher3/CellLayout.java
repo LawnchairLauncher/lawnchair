@@ -402,7 +402,6 @@ public class CellLayout extends ViewGroup {
         mCountY = y;
         mOccupied = new GridOccupancy(mCountX, mCountY);
         mTmpOccupied = new GridOccupancy(mCountX, mCountY);
-        mTempRectStack.clear();
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mCountX, mCountY,
                 mBorderSpace);
         requestLayout();
@@ -1247,21 +1246,6 @@ public class CellLayout extends ViewGroup {
                 result, resultSpan);
     }
 
-    private final Stack<Rect> mTempRectStack = new Stack<>();
-    private void lazyInitTempRectStack() {
-        if (mTempRectStack.isEmpty()) {
-            for (int i = 0; i < mCountX * mCountY; i++) {
-                mTempRectStack.push(new Rect());
-            }
-        }
-    }
-
-    private void recycleTempRects(Stack<Rect> used) {
-        while (!used.isEmpty()) {
-            mTempRectStack.push(used.pop());
-        }
-    }
-
     /**
      * Find a vacant area that will fit the given bounds nearest the requested
      * cell location. Uses Euclidean distance to score multiple vacant areas.
@@ -1281,8 +1265,6 @@ public class CellLayout extends ViewGroup {
      */
     private int[] findNearestArea(int relativeXPos, int relativeYPos, int minSpanX, int minSpanY,
             int spanX, int spanY, boolean ignoreOccupied, int[] result, int[] resultSpan) {
-        lazyInitTempRectStack();
-
         // For items with a spanX / spanY > 1, the passed in point (relativeXPos, relativeYPos)
         // corresponds to the center of the item, but we are searching based on the top-left cell,
         // so we translate the point over to correspond to the top-left.
@@ -1352,9 +1334,6 @@ public class CellLayout extends ViewGroup {
                         hitMaxY |= ySize >= spanY;
                         incX = !incX;
                     }
-                    incX = true;
-                    hitMaxX = xSize >= spanX;
-                    hitMaxY = ySize >= spanY;
                 }
                 final int[] cellXY = mTmpPoint;
                 cellToCenterPoint(x, y, cellXY);
@@ -1362,8 +1341,7 @@ public class CellLayout extends ViewGroup {
                 // We verify that the current rect is not a sub-rect of any of our previous
                 // candidates. In this case, the current rect is disqualified in favour of the
                 // containing rect.
-                Rect currentRect = mTempRectStack.pop();
-                currentRect.set(x, y, x + xSize, y + ySize);
+                Rect currentRect = new Rect(x, y, x + xSize, y + ySize);
                 boolean contained = false;
                 for (Rect r : validRegions) {
                     if (r.contains(currentRect)) {
@@ -1393,7 +1371,6 @@ public class CellLayout extends ViewGroup {
             bestXY[0] = -1;
             bestXY[1] = -1;
         }
-        recycleTempRects(validRegions);
         return bestXY;
     }
 
