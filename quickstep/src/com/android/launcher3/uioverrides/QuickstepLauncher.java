@@ -77,6 +77,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherWidgetHolder;
 import com.android.launcher3.QuickstepAccessibilityDelegate;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
@@ -123,7 +124,6 @@ import com.android.launcher3.util.PendingSplitSelectInfo;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.TouchController;
-import com.android.launcher3.widget.LauncherAppWidgetHost;
 import com.android.quickstep.OverviewCommandHelper;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SystemUiProxy;
@@ -487,11 +487,11 @@ public class QuickstepLauncher extends Launcher {
         return new QuickstepAtomicAnimationFactory(this);
     }
 
-    protected LauncherAppWidgetHost createAppWidgetHost() {
-        LauncherAppWidgetHost appWidgetHost = super.createAppWidgetHost();
-        ApiWrapper.setHostInteractionHandler(appWidgetHost,
-                new QuickstepInteractionHandler(this));
-        return appWidgetHost;
+    @Override
+    protected LauncherWidgetHolder createAppWidgetHolder() {
+        LauncherWidgetHolder appWidgetHolder = super.createAppWidgetHolder();
+        appWidgetHolder.setInteractionHandler(new QuickstepInteractionHandler(this));
+        return appWidgetHolder;
     }
 
     @Override

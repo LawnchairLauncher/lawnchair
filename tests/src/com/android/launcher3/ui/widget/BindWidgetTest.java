@@ -190,7 +190,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         waitForLauncherCondition("App widget options did not update",
                 l -> appWidgetManager.getAppWidgetOptions(appWidgetId).getBoolean(
                         WidgetManagerHelper.WIDGET_OPTION_RESTORE_COMPLETED));
-        executeOnLauncher(l -> l.getAppWidgetHost().startListening());
+        executeOnLauncher(l -> l.getAppWidgetHolder().startListening());
         verifyWidgetPresent(info);
         assertNull(mLauncher.getWorkspace().tryGetPendingWidget(100));
     }
