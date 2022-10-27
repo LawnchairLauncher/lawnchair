@@ -38,6 +38,7 @@ public abstract class PropertySetter {
         public void add(Animator animatorSet) {
             animatorSet.setDuration(0);
             animatorSet.start();
+            animatorSet.end();
         }
     };
 
