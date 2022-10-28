@@ -76,6 +76,8 @@ public class AllAppsTransitionController
                 }
             };
 
+    private static final float ALL_APPS_PULL_BACK_TRANSLATION_DEFAULT = 0f;
+
     public static final FloatProperty<AllAppsTransitionController> ALL_APPS_PULL_BACK_TRANSLATION =
             new FloatProperty<AllAppsTransitionController>("allAppsPullBackTranslation") {
 
@@ -92,11 +94,17 @@ public class AllAppsTransitionController
                 public void setValue(AllAppsTransitionController controller, float translation) {
                     if (controller.mIsTablet) {
                         controller.mAppsView.getActiveRecyclerView().setTranslationY(translation);
+                        controller.getAppsViewPullbackTranslationY().setValue(
+                                ALL_APPS_PULL_BACK_TRANSLATION_DEFAULT);
                     } else {
                         controller.getAppsViewPullbackTranslationY().setValue(translation);
+                        controller.mAppsView.getActiveRecyclerView().setTranslationY(
+                                ALL_APPS_PULL_BACK_TRANSLATION_DEFAULT);
                     }
                 }
             };
+
+    private static final float ALL_APPS_PULL_BACK_ALPHA_DEFAULT = 1f;
 
     public static final FloatProperty<AllAppsTransitionController> ALL_APPS_PULL_BACK_ALPHA =
             new FloatProperty<AllAppsTransitionController>("allAppsPullBackAlpha") {
@@ -114,8 +122,12 @@ public class AllAppsTransitionController
                 public void setValue(AllAppsTransitionController controller, float alpha) {
                     if (controller.mIsTablet) {
                         controller.mAppsView.getActiveRecyclerView().setAlpha(alpha);
+                        controller.getAppsViewPullbackAlpha().setValue(
+                                ALL_APPS_PULL_BACK_ALPHA_DEFAULT);
                     } else {
                         controller.getAppsViewPullbackAlpha().setValue(alpha);
+                        controller.mAppsView.getActiveRecyclerView().setAlpha(
+                                ALL_APPS_PULL_BACK_ALPHA_DEFAULT);
                     }
                 }
             };
@@ -226,14 +238,14 @@ public class AllAppsTransitionController
             StateAnimationConfig config, PendingAnimation builder) {
         if (mLauncher.isInState(ALL_APPS) && !ALL_APPS.equals(toState)) {
             // For atomic animations, we close the keyboard immediately.
-            if (!config.userControlled && !mLauncher.isKeyboardSyncEnabled()) {
+            if (!config.userControlled && !mLauncher.getSearchConfig().isKeyboardSyncEnabled()) {
                 mLauncher.getAppsView().getSearchUiManager().getEditText().hideKeyboard();
             }
 
             builder.addEndListener(success -> {
                 // Reset pull back progress and alpha after switching states.
-                ALL_APPS_PULL_BACK_TRANSLATION.set(this, 0f);
-                ALL_APPS_PULL_BACK_ALPHA.set(this, 1f);
+                ALL_APPS_PULL_BACK_TRANSLATION.set(this, ALL_APPS_PULL_BACK_TRANSLATION_DEFAULT);
+                ALL_APPS_PULL_BACK_ALPHA.set(this, ALL_APPS_PULL_BACK_ALPHA_DEFAULT);
 
                 // We only want to close the keyboard if the animation has completed successfully.
                 // The reason is that with keyboard sync, if the user swipes down from All Apps with

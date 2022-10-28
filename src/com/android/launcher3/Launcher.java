@@ -131,6 +131,7 @@ import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.BaseAllAppsContainerView;
+import com.android.launcher3.allapps.BaseSearchConfig;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
@@ -204,7 +205,6 @@ import com.android.launcher3.views.FloatingIconView;
 import com.android.launcher3.views.FloatingSurfaceView;
 import com.android.launcher3.views.OptionsPopupView;
 import com.android.launcher3.views.ScrimView;
-import com.android.launcher3.widget.LauncherAppWidgetHost;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
@@ -316,7 +316,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     DragLayer mDragLayer;
 
     private WidgetManagerHelper mAppWidgetManager;
-    private LauncherAppWidgetHost mAppWidgetHost;
+    private LauncherWidgetHolder mAppWidgetHolder;
 
     private final int[] mTmpAddItemCellCoordinates = new int[2];
 
@@ -395,6 +395,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     private LauncherState mPrevLauncherState;
 
     private StringCache mStringCache;
+    private BaseSearchConfig mBaseSearchConfig;
 
     @Override
     @TargetApi(Build.VERSION_CODES.S)
@@ -480,8 +481,8 @@ public class Launcher extends StatefulActivity<LauncherState>
         mOnboardingPrefs = createOnboardingPrefs(mSharedPrefs);
 
         mAppWidgetManager = new WidgetManagerHelper(this);
-        mAppWidgetHost = createAppWidgetHost();
-        mAppWidgetHost.startListening();
+        mAppWidgetHolder = createAppWidgetHolder();
+        mAppWidgetHolder.startListening();
 
         setupViews();
         crossFadeWithPreviousAppearance();
@@ -545,6 +546,9 @@ public class Launcher extends StatefulActivity<LauncherState>
             getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         }
         setTitle(R.string.home_screen);
+
+        // TODO: move the SearchConfig to SearchState when new LauncherState is created.
+        mBaseSearchConfig = new BaseSearchConfig();
     }
 
     protected LauncherOverlayManager getDefaultOverlay() {
@@ -958,7 +962,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         AppWidgetHostView boundWidget = null;
         if (resultCode == RESULT_OK) {
             animationType = Workspace.COMPLETE_TWO_STAGE_WIDGET_DROP_ANIMATION;
-            final AppWidgetHostView layout = mAppWidgetHost.createView(this, appWidgetId,
+            final AppWidgetHostView layout = mAppWidgetHolder.createView(this, appWidgetId,
                     requestArgs.getWidgetHandler().getProviderInfo(this));
             boundWidget = layout;
             onCompleteRunnable = new Runnable() {
@@ -969,7 +973,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                 }
             };
         } else if (resultCode == RESULT_CANCELED) {
-            mAppWidgetHost.deleteAppWidgetId(appWidgetId);
+            mAppWidgetHolder.deleteAppWidgetId(appWidgetId);
             animationType = Workspace.CANCEL_TWO_STAGE_WIDGET_DROP_ANIMATION;
         }
         if (mDragLayer.getAnimatedView() != null) {
@@ -992,7 +996,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
         hideKeyboard();
         logStopAndResume(false /* isResume */);
-        mAppWidgetHost.setActivityStarted(false);
+        mAppWidgetHolder.setActivityStarted(false);
         NotificationListener.removeNotificationsChangedListener(getPopupDataProvider());
     }
 
@@ -1005,7 +1009,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             mOverlayManager.onActivityStarted(this);
         }
 
-        mAppWidgetHost.setActivityStarted(true);
+        mAppWidgetHolder.setActivityStarted(true);
         TraceHelper.INSTANCE.endSection(traceToken);
     }
 
@@ -1025,7 +1029,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         NotificationListener.addNotificationsChangedListener(mPopupDataProvider);
 
         DiscoveryBounce.showForHomeIfNeeded(this);
-        mAppWidgetHost.setActivityResumed(true);
+        mAppWidgetHolder.setActivityResumed(true);
     }
 
     private void logStopAndResume(boolean isResume) {
@@ -1140,7 +1144,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     @Override
     public void onStateSetEnd(LauncherState state) {
         super.onStateSetEnd(state);
-        getAppWidgetHost().setStateIsNormal(state == LauncherState.NORMAL);
+        getAppWidgetHolder().setStateIsNormal(state == LauncherState.NORMAL);
         getWorkspace().setClipChildren(!state.hasFlag(FLAG_MULTI_PAGE));
 
         finishAutoCancelActionMode();
@@ -1205,7 +1209,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (!mDeferOverlayCallbacks) {
             mOverlayManager.onActivityPaused(this);
         }
-        mAppWidgetHost.setActivityResumed(false);
+        mAppWidgetHolder.setActivityResumed(false);
     }
 
     /**
@@ -1430,7 +1434,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         if (hostView == null) {
             // Perform actual inflation because we're live
-            hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
+            hostView = mAppWidgetHolder.createView(this, appWidgetId, appWidgetInfo);
         }
 
         LauncherAppWidgetInfo launcherInfo;
@@ -1561,12 +1565,12 @@ public class Launcher extends StatefulActivity<LauncherState>
         return mScrimView;
     }
 
-    public LauncherAppWidgetHost getAppWidgetHost() {
-        return mAppWidgetHost;
+    public LauncherWidgetHolder getAppWidgetHolder() {
+        return mAppWidgetHolder;
     }
 
-    protected LauncherAppWidgetHost createAppWidgetHost() {
-        return new LauncherAppWidgetHost(this,
+    protected LauncherWidgetHolder createAppWidgetHolder() {
+        return new LauncherWidgetHolder(this,
                 appWidgetId -> getWorkspace().removeWidget(appWidgetId));
     }
 
@@ -1592,12 +1596,8 @@ public class Launcher extends StatefulActivity<LauncherState>
         return mOldConfig.orientation;
     }
 
-    /**
-     * Whether keyboard sync is enabled for transitions between Home and All Apps.
-     * TODO(b/251387263): move this method inside an All Apps specific config class.
-     */
-    public boolean isKeyboardSyncEnabled() {
-        return false;
+    public BaseSearchConfig getSearchConfig() {
+        return mBaseSearchConfig;
     }
 
     @Override
@@ -1732,7 +1732,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         mRotationHelper.destroy();
 
         try {
-            mAppWidgetHost.stopListening();
+            mAppWidgetHolder.stopListening();
         } catch (NullPointerException ex) {
             Log.w(TAG, "problem while stopping AppWidgetHost during Launcher destruction", ex);
         }
@@ -1907,7 +1907,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                 appWidgetId = CustomWidgetManager.INSTANCE.get(this).getWidgetIdForCustomProvider(
                         info.componentName);
             } else {
-                appWidgetId = getAppWidgetHost().allocateAppWidgetId();
+                appWidgetId = getAppWidgetHolder().allocateAppWidgetId();
             }
             Bundle options = info.bindOptions;
 
@@ -2021,7 +2021,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             final LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) itemInfo;
             mWorkspace.removeWorkspaceItem(v);
             if (deleteFromDb) {
-                getModelWriter().deleteWidgetInfo(widgetInfo, getAppWidgetHost(), reason);
+                getModelWriter().deleteWidgetInfo(widgetInfo, getAppWidgetHolder(), reason);
             }
         } else {
             return false;
@@ -2279,7 +2279,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         mWorkspace.clearDropTargets();
         mWorkspace.removeAllWorkspaceScreens();
-        mAppWidgetHost.clearViews();
+        mAppWidgetHolder.clearViews();
 
         if (mHotseat != null) {
             mHotseat.resetLayout(getDeviceProfile().isVerticalBarLayout());
@@ -2586,7 +2586,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                 if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)) {
                     if (!item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_ALLOCATED)) {
                         // Id has not been allocated yet. Allocate a new id.
-                        item.appWidgetId = mAppWidgetHost.allocateAppWidgetId();
+                        item.appWidgetId = mAppWidgetHolder.allocateAppWidgetId();
                         item.restoreStatus |= LauncherAppWidgetInfo.FLAG_ID_ALLOCATED;
 
                         // Also try to bind the widget. If the bind fails, the user will be shown
@@ -2648,18 +2648,18 @@ public class Launcher extends StatefulActivity<LauncherState>
                 // Verify that we own the widget
                 if (appWidgetInfo == null) {
                     FileLog.e(TAG, "Removing invalid widget: id=" + item.appWidgetId);
-                    getModelWriter().deleteWidgetInfo(item, getAppWidgetHost(), removalReason);
+                    getModelWriter().deleteWidgetInfo(item, getAppWidgetHolder(), removalReason);
                     return null;
                 }
 
                 item.minSpanX = appWidgetInfo.minSpanX;
                 item.minSpanY = appWidgetInfo.minSpanY;
-                view = mAppWidgetHost.createView(this, item.appWidgetId, appWidgetInfo);
+                view = mAppWidgetHolder.createView(this, item.appWidgetId, appWidgetInfo);
             } else if (!item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)
                     && appWidgetInfo != null) {
-                mAppWidgetHost.addPendingView(item.appWidgetId,
+                mAppWidgetHolder.addPendingView(item.appWidgetId,
                         new PendingAppWidgetHostView(this, item, mIconCache, false));
-                view = mAppWidgetHost.createView(this, item.appWidgetId, appWidgetInfo);
+                view = mAppWidgetHolder.createView(this, item.appWidgetId, appWidgetInfo);
             } else {
                 view = new PendingAppWidgetHostView(this, item, mIconCache, false);
             }
@@ -3017,7 +3017,8 @@ public class Launcher extends StatefulActivity<LauncherState>
         writer.println(prefix + "\tmPendingRequestArgs=" + mPendingRequestArgs
                 + " mPendingActivityResult=" + mPendingActivityResult);
         writer.println(prefix + "\tmRotationHelper: " + mRotationHelper);
-        writer.println(prefix + "\tmAppWidgetHost.isListening: " + mAppWidgetHost.isListening());
+        writer.println(prefix + "\tmAppWidgetHolder.isListening: "
+                + mAppWidgetHolder.isListening());
 
         // Extra logging for general debugging
         mDragLayer.dump(prefix, writer);
