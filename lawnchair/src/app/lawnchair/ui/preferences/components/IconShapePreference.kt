@@ -104,6 +104,16 @@ fun IconShapePreference(
 
     PreferenceLayout(label = stringResource(id = R.string.icon_shape_label)) {
         PreferenceGroup(
+            heading = stringResource(id = R.string.custom),
+        ) {
+            CustomIconShapePreference(
+                iconShapeAdapter = iconShapeAdapter,
+            )
+            ModifyCustomIconShapePreference(
+                customIconShape = customIconShape.value,
+            )
+        }
+        PreferenceGroup(
             heading = stringResource(id = R.string.presets),
         ) {
             entries.forEach { item ->
@@ -125,16 +135,6 @@ fun IconShapePreference(
                     },
                 )
             }
-        }
-        PreferenceGroup(
-            heading = stringResource(id = R.string.custom),
-        ) {
-            CustomIconShapePreference(
-                iconShapeAdapter = iconShapeAdapter,
-            )
-            ModifyCustomIconShapePreference(
-                customIconShape = customIconShape.value,
-            )
         }
     }
 }
