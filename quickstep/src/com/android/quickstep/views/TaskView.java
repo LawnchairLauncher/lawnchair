@@ -19,6 +19,7 @@ package com.android.quickstep.views;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.widget.Toast.LENGTH_SHORT;
 
+import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.Utilities.comp;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
@@ -172,7 +173,7 @@ public class TaskView extends FrameLayout implements Reusable {
             new FloatProperty<TaskView>("focusTransition") {
                 @Override
                 public void setValue(TaskView taskView, float v) {
-                    taskView.setIconAndDimTransitionProgress(v, false /* invert */);
+                    taskView.setIconsAndBannersTransitionProgress(v, false /* invert */);
                 }
 
                 @Override
@@ -954,7 +955,11 @@ public class TaskView extends FrameLayout implements Reusable {
         return deviceProfile.isTablet && !isFocusedTask();
     }
 
-    protected void setIconAndDimTransitionProgress(float progress, boolean invert) {
+    /**
+     * Called to animate a smooth transition when going directly from an app into Overview (and
+     * vice versa). Icons fade in, and DWB banners slide in with a "shift up" animation.
+     */
+    protected void setIconsAndBannersTransitionProgress(float progress, boolean invert) {
         if (invert) {
             progress = 1 - progress;
         }
@@ -998,7 +1003,7 @@ public class TaskView extends FrameLayout implements Reusable {
         if (mIconAndDimAnimator != null) {
             mIconAndDimAnimator.cancel();
         }
-        setIconAndDimTransitionProgress(iconScale, invert);
+        setIconsAndBannersTransitionProgress(iconScale, invert);
     }
 
     protected void resetPersistentViewTransforms() {
@@ -1417,6 +1422,12 @@ public class TaskView extends FrameLayout implements Reusable {
         mFullscreenProgress = progress;
         mIconView.setVisibility(progress < 1 ? VISIBLE : INVISIBLE);
         mSnapshotView.getTaskOverlay().setFullscreenProgress(progress);
+
+        // Animate icons and DWB banners in/out, except in QuickSwitch state, when tiles are
+        // oversized and banner would look disproportionately large.
+        if (mActivity.getStateManager().getState() != BACKGROUND_APP) {
+            setIconsAndBannersTransitionProgress(progress, true);
+        }
 
         updateSnapshotRadius();
     }
