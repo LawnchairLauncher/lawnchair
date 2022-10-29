@@ -437,7 +437,7 @@ public class DesktopTaskView extends TaskView {
     }
 
     @Override
-    protected void setIconAndDimTransitionProgress(float progress, boolean invert) {
+    protected void setIconsAndBannersTransitionProgress(float progress, boolean invert) {
         // no-op
     }
 

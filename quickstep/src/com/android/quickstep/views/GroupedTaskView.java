@@ -316,8 +316,8 @@ public class GroupedTaskView extends TaskView {
     }
 
     @Override
-    protected void setIconAndDimTransitionProgress(float progress, boolean invert) {
-        super.setIconAndDimTransitionProgress(progress, invert);
+    protected void setIconsAndBannersTransitionProgress(float progress, boolean invert) {
+        super.setIconsAndBannersTransitionProgress(progress, invert);
         // Value set by super call
         float scale = mIconView.getAlpha();
         mIconView2.setAlpha(scale);
