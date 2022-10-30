@@ -84,17 +84,17 @@
     <string name="theme_follow_wallpaper">Corresponder ao Papel de Parede</string>
     <string name="accent_color">Cor de Destaque</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Custom Icon Shape</string>
-    <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
-    <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
-    <string name="icon_shape_corner">Corner Shape</string>
-    <string name="icon_shape_corner_round">Round</string>
-    <string name="icon_shape_corner_squircle">Smooth</string>
-    <string name="icon_shape_corner_cut">Cut</string>
-    <string name="icon_shape_top_left">Top Left</string>
-    <string name="icon_shape_top_right">Top Right</string>
-    <string name="icon_shape_bottom_left">Bottom Left</string>
-    <string name="icon_shape_bottom_right">Bottom Right</string>
+    <string name="custom_icon_shape">Formato personalizado dos ícones</string>
+    <string name="custom_icon_shape_create">Criar formato de ícones personalizados</string>
+    <string name="custom_icon_shape_edit">Editar Formato de Ícone Personalizado</string>
+    <string name="icon_shape_corner">Formato do Canto</string>
+    <string name="icon_shape_corner_round">Arredondado</string>
+    <string name="icon_shape_corner_squircle">Suave</string>
+    <string name="icon_shape_corner_cut">Recorte</string>
+    <string name="icon_shape_top_left">Superior Esquerdo</string>
+    <string name="icon_shape_top_right">Superior Direito</string>
+    <string name="icon_shape_bottom_left">Canto Inferior Esquerdo</string>
+    <string name="icon_shape_bottom_right">Canto Inferior Direito</string>
     <string name="create">Criar</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
@@ -240,11 +240,13 @@
     <!-- AppDrawerPrefences -->
     <!-- app_drawer_label -->
     <!-- general_label -->
-    <string name="hidden_apps_label">Aplicativos ocultos</string>
     <string name="background_opacity">Opacidade do fundo</string>
+    <!-- hiddenApps_label -->
+    <string name="hidden_apps_label">Aplicativos ocultos</string>
+    <string name="show_enable_smart_hide">Mostrar Quando o Nome Completo for Digitado</string>
+    <string name="hide_hidden_apps_search">Ocultar nos Resultados da Pesquisa</string>
     <string name="pref_category_search">Pesquisar</string>
     <string name="show_app_search_bar">Exibir Barra de Pesquisa</string>
-    <string name="show_hidden_apps_search">Mostrar Aplicativos Ocultos na Pesquisa</string>
     <string name="pref_search_auto_show_keyboard">Mostrar Teclado Automaticamente</string>
     <string name="fuzzy_search_title">Pesquisa Aproximada</string>
     <string name="fuzzy_search_desc">Correspondência aproximada para pesquisas de apps.</string>

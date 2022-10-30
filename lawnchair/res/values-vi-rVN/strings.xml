@@ -47,12 +47,12 @@
     <string name="font_picker_description">Một số văn bản vẫn không thay đổi.</string>
     <string name="smartspace_calendar_label">Tùy chỉnh lịch Xem nhanh</string>
     <string name="smartspace_calendar_description">Cho phép hiện ngày bằng hệ thống lịch khác Gregory.</string>
-    <string name="workspace_increase_max_grid_size_label">Tăng Kích Thước Lưới Màn Hình Chính Lên Tối Đa</string>
+    <string name="workspace_increase_max_grid_size_label">Tăng kích thước lưới màn hình chính lên tối đa</string>
     <string name="workspace_increase_max_grid_size_description">Tăng kích thước lưới ở màn hình chính cho phép tối đa từ 10 x 10 đến 20 x 20.</string>
-    <string name="always_reload_icons_label">Luôn Tải Lại Biểu Tượng</string>
+    <string name="always_reload_icons_label">Luôn tải lại biểu tượng</string>
     <string name="always_reload_icons_description">Tránh sử dụng các biểu tượng được lưu trong bộ nhớ cache từ các gói biểu tượng</string>
-    <string name="transparent_background_icons">Transparent Themed Icons</string>
-    <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
+    <string name="transparent_background_icons">Biểu tượng theo chủ đề trong suốt</string>
+    <string name="transparent_background_icons_description">Dùng nền trong suốt cho biểu tượng theo chủ đề</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Xoay màn hình chính</string>
     <string name="home_screen_rotaton_description">Khi thiết bị được xoay.</string>
@@ -69,8 +69,8 @@
     <string name="show_notification_count">Hiện số đếm thông báo</string>
     <string name="notification_dots_color">Màu của dấu chấm thông báo</string>
     <string name="notification_dots_text_color">Màu dấu chấm thông báo</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_always">Cảnh báo: Màu dấu chấm thông báo &amp; số đếm không đủ tương phản với nhau</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Cảnh báo: Màu dấu chấm thông báo &amp; số đếm không phải lúc nào cũng đủ tương phản với nhau</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Cần quyền truy cập thông báo</string>
     <string name="missing_notification_access_description">Cần quyền truy cập thông báo.</string>
@@ -84,17 +84,17 @@
     <string name="theme_follow_wallpaper">Theo hình nền</string>
     <string name="accent_color">Màu chủ đạo</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Custom Icon Shape</string>
-    <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
-    <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
-    <string name="icon_shape_corner">Corner Shape</string>
-    <string name="icon_shape_corner_round">Round</string>
-    <string name="icon_shape_corner_squircle">Smooth</string>
-    <string name="icon_shape_corner_cut">Cut</string>
-    <string name="icon_shape_top_left">Top Left</string>
-    <string name="icon_shape_top_right">Top Right</string>
-    <string name="icon_shape_bottom_left">Bottom Left</string>
-    <string name="icon_shape_bottom_right">Bottom Right</string>
+    <string name="custom_icon_shape">Hình dạng biểu tượng tùy chỉnh</string>
+    <string name="custom_icon_shape_create">Tạo hình dạng biểu tượng tùy chỉnh</string>
+    <string name="custom_icon_shape_edit">Sửa hình dạng biểu tượng tùy chỉnh</string>
+    <string name="icon_shape_corner">Hình dạng góc</string>
+    <string name="icon_shape_corner_round">Tròn</string>
+    <string name="icon_shape_corner_squircle">Trơn</string>
+    <string name="icon_shape_corner_cut">Gọt</string>
+    <string name="icon_shape_top_left">Góc trên bên trái</string>
+    <string name="icon_shape_top_right">Góc trên bên phải</string>
+    <string name="icon_shape_bottom_left">Góc dưới bên trái</string>
+    <string name="icon_shape_bottom_right">Góc dưới bên phải</string>
     <string name="create">Tạo</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
@@ -138,7 +138,7 @@
     <string name="reset_font">Reset</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Linh hoạt</string>
-    <string name="swatches">Swatches</string>
+    <string name="swatches">Mẫu màu</string>
     <string name="presets">Thiết lập sẵn</string>
     <string name="custom">Tùy chỉnh</string>
     <string name="rgb">RGB</string>
@@ -155,7 +155,7 @@
     <string name="action_paste">Dán</string>
     <string name="copied_toast">Đã sao chép vào clipboard.</string>
     <string name="invalid_color">Màu không hợp lệ</string>
-    <string name="launcher_default_color">Managed by Lawnchair</string>
+    <string name="launcher_default_color">Quản lí bởi Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Thêm ứng dụng mới vào màn hình chính</string>
@@ -174,7 +174,7 @@
     <string name="home_screen_unlock">Mở khóa màn hình chính</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">Hiện nút khóa trên cửa sổ nổi</string>
-    <string name="home_screen_locked">Đã khoá Màn Hình Chính.</string>
+    <string name="home_screen_locked">Đã khoá màn hình chính.</string>
     <string name="status_bar_label">Thanh trạng thái</string>
     <string name="show_status_bar">Hiện thanh trạng thái</string>
     <string name="dark_status_bar_label">Thanh trạng thái tối màu</string>
@@ -207,7 +207,7 @@
     <string name="smartspace_date_and_time">Ngày &amp; giờ</string>
     <string name="smartspace_date">Ngày</string>
     <string name="smartspace_time">Giờ</string>
-    <string name="smartspace_time_format">Định Dạng Thời Gian</string>
+    <string name="smartspace_time_format">Định dạng thời gian</string>
     <string name="smartspace_time_follow_system">Theo hệ thống</string>
     <string name="smartspace_time_12_hour_format">Định dạng 12 giờ</string>
     <string name="smartspace_time_24_hour_format">Định dạng 24 giờ</string>
@@ -240,11 +240,13 @@
     <!-- AppDrawerPrefences -->
     <!-- app_drawer_label -->
     <!-- general_label -->
-    <string name="hidden_apps_label">Ứng dụng đã ẩn</string>
     <string name="background_opacity">Độ trong suốt Nền</string>
+    <!-- hiddenApps_label -->
+    <string name="hidden_apps_label">Ứng dụng đã ẩn</string>
+    <string name="show_enable_smart_hide">Hiện khi nhập đầy đủ tên</string>
+    <string name="hide_hidden_apps_search">Ẩn khỏi kết quả tìm kiếm</string>
     <string name="pref_category_search">Tìm kiếm</string>
     <string name="show_app_search_bar">Hiện thanh tìm kiếm</string>
-    <string name="show_hidden_apps_search">Show Hidden Apps In Search</string>
     <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
     <string name="fuzzy_search_title">Tìm kiếm Fuzzy</string>
     <string name="fuzzy_search_desc">Cho kết quả tìm kiếm ứng dụng gần đúng.</string>

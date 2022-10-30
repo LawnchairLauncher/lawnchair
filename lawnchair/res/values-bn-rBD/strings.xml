@@ -240,11 +240,13 @@
     <!-- AppDrawerPrefences -->
     <!-- app_drawer_label -->
     <!-- general_label -->
-    <string name="hidden_apps_label">লুকানো অ্যাপস</string>
     <string name="background_opacity">ব্যাকগ্রাউন্ডের অস্বচ্ছতা</string>
+    <!-- hiddenApps_label -->
+    <string name="hidden_apps_label">লুকানো অ্যাপস</string>
+    <string name="show_enable_smart_hide">Show when Full Name is Typed</string>
+    <string name="hide_hidden_apps_search">Hide in Search Results</string>
     <string name="pref_category_search">অনুসন্ধান করুন</string>
     <string name="show_app_search_bar">সার্চ বার দেখান</string>
-    <string name="show_hidden_apps_search">Show Hidden Apps In Search</string>
     <string name="pref_search_auto_show_keyboard">স্বয়ংক্রিয়ভাবে কীবোর্ড দেখান</string>
     <string name="fuzzy_search_title">ফাজি সার্চ</string>
     <string name="fuzzy_search_desc">অ্যাপ্লিকেশন সার্চের জন্য আনুমানিক মিল.</string>

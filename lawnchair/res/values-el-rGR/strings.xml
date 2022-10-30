@@ -240,11 +240,13 @@
     <!-- AppDrawerPrefences -->
     <!-- app_drawer_label -->
     <!-- general_label -->
-    <string name="hidden_apps_label">Κρυμμένες Εφαρμογές</string>
     <string name="background_opacity">Αδιαφάνεια Φόντου</string>
+    <!-- hiddenApps_label -->
+    <string name="hidden_apps_label">Κρυμμένες Εφαρμογές</string>
+    <string name="show_enable_smart_hide">Show when Full Name is Typed</string>
+    <string name="hide_hidden_apps_search">Hide in Search Results</string>
     <string name="pref_category_search">Αναζήτηση</string>
     <string name="show_app_search_bar">Εμφάνιση Γραμμής Αναζήτησης</string>
-    <string name="show_hidden_apps_search">Εμφάνιση Κρυφών Εφαρμογών στην Αναζήτηση</string>
     <string name="pref_search_auto_show_keyboard">Αυτόματη Εμφάνιση Πληκτρολογίου</string>
     <string name="fuzzy_search_title">Ασαφής Αναζήτηση</string>
     <string name="fuzzy_search_desc">Κατά προσέγγιση αντιστοίχιση για αναζητήσεις εφαρμογών.</string>

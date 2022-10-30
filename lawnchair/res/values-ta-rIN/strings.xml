@@ -240,11 +240,13 @@
     <!-- AppDrawerPrefences -->
     <!-- app_drawer_label -->
     <!-- general_label -->
-    <string name="hidden_apps_label">மறைக்கப்பட்ட செயலிகள்</string>
     <string name="background_opacity">பின்னணி ஒளிபுகாமை</string>
+    <!-- hiddenApps_label -->
+    <string name="hidden_apps_label">மறைக்கப்பட்ட செயலிகள்</string>
+    <string name="show_enable_smart_hide">Show when Full Name is Typed</string>
+    <string name="hide_hidden_apps_search">Hide in Search Results</string>
     <string name="pref_category_search">தேடல்</string>
     <string name="show_app_search_bar">தேடல் பட்டை காட்டு</string>
-    <string name="show_hidden_apps_search">Show Hidden Apps In Search</string>
     <string name="pref_search_auto_show_keyboard">தானாக விசைப்பலகையைக் காட்டு</string>
     <string name="fuzzy_search_title">தெளிவறு தேடல்</string>
     <string name="fuzzy_search_desc">செயலி தேடல்களுக்குத் தோராய பொருத்தம்.</string>

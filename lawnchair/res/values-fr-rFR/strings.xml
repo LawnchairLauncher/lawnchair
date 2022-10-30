@@ -240,11 +240,13 @@
     <!-- AppDrawerPrefences -->
     <!-- app_drawer_label -->
     <!-- general_label -->
-    <string name="hidden_apps_label">Applications Masquées</string>
     <string name="background_opacity">Opacité de l\'arrière-plan</string>
+    <!-- hiddenApps_label -->
+    <string name="hidden_apps_label">Applications Masquées</string>
+    <string name="show_enable_smart_hide">Show when Full Name is Typed</string>
+    <string name="hide_hidden_apps_search">Hide in Search Results</string>
     <string name="pref_category_search">Rechercher</string>
     <string name="show_app_search_bar">Afficher la barre de recherche</string>
-    <string name="show_hidden_apps_search">Show Hidden Apps In Search</string>
     <string name="pref_search_auto_show_keyboard">Afficher automatiquement le clavier</string>
     <string name="fuzzy_search_title">Recherche approximative</string>
     <string name="fuzzy_search_desc">Correspondance approximative pour les recherches d\'applications.</string>
