@@ -216,8 +216,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
                     val bitmap = li.createIconBitmap(activityIcon, 1f, iconSize)
                     val bitmapInfo = BitmapInfo.of(bitmap, packageIcon.color)
                     info.bitmap = li.badgeBitmap(info.bitmap.icon, bitmapInfo)
-                } catch (ignore: PackageManager.NameNotFoundException) {
-
+                } catch (_: PackageManager.NameNotFoundException) {
                 }
             } else if (info.hasFlags(FLAG_BADGE_WITH_PACKAGE) && info.bitmap != packageIcon) {
                 info.bitmap = li.badgeBitmap(info.bitmap.icon, packageIcon)

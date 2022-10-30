@@ -24,11 +24,7 @@ class IconPackProvider(private val context: Context) {
             return null
         }
         return iconPacks.getOrPut(packageName) {
-            try {
-                CustomIconPack(context, packageName)
-            } catch (e: PackageManager.NameNotFoundException) {
-                null
-            }
+            runCatching { CustomIconPack(context, packageName) }.getOrDefault(null)
         }
     }
 

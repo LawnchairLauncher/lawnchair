@@ -366,12 +366,7 @@ open class IconShape(val topLeft: Corner,
                 "diamond" -> Diamond
                 "egg" -> Egg
                 "" -> null
-                else -> try {
-                    parseCustomShape(value)
-                } catch (ex: Exception) {
-                    Log.e("IconShape", "Error creating shape $value", ex)
-                    null
-                }
+                else -> runCatching { parseCustomShape(value) }.getOrNull()
             }
         }
 

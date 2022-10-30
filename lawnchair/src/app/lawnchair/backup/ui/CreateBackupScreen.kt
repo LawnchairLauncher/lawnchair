@@ -83,9 +83,7 @@ fun CreateBackupScreen(viewModel: CreateBackupViewModel) {
             } catch (t: Throwable) {
                 Log.e("CreateBackupScreen", "failed to create backup", t)
                 Toast.makeText(context, R.string.backup_create_error, Toast.LENGTH_SHORT).show()
-                try {
-                    DocumentsContract.deleteDocument(context.contentResolver, uri)
-                } catch (ignore: Throwable) {}
+                runCatching { DocumentsContract.deleteDocument(context.contentResolver, uri) }
             }
             creatingBackup = false
         }

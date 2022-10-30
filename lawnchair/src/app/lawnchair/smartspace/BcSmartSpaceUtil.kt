@@ -33,7 +33,7 @@ object BcSmartSpaceUtil {
             return
         }
         view.setOnClickListener {
-            try {
+            runCatching {
                 if (action.intent != null) {
                     view.context.startActivity(action.intent)
                 } else if (action.pendingIntent != null) {
@@ -42,8 +42,6 @@ object BcSmartSpaceUtil {
                     action.onClick.run()
                 }
                 onClickListener?.onClick(view)
-            } catch (t: Throwable) {
-                Log.d("BcSmartspaceUtil", "onClick error", t)
             }
         }
     }

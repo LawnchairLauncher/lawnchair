@@ -28,11 +28,7 @@ class LawnchairLayoutFactory(context: Context) : LayoutInflater.Factory2 {
     ): View? {
         val view = constructorMap[name]?.let { it(context, attrs) }
         if (view is TextView) {
-            try {
-                fontManager.overrideFont(view, attrs)
-            } catch (_: Exception) {
-
-            }
+            runCatching { fontManager.overrideFont(view, attrs) }
         }
         return view
     }

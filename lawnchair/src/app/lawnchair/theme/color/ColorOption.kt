@@ -88,8 +88,7 @@ sealed class ColorOption {
                     val color = Color.parseColor(stringValue.substring(7))
                     return CustomColor(color)
                 }
-            } catch (e: IllegalArgumentException) {
-                // ignore
+            } catch (_: IllegalArgumentException) {
             }
             return when {
                 Utilities.ATLEAST_S -> SystemAccent

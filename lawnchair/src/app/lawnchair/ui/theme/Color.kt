@@ -49,11 +49,7 @@ fun Context.getSystemAccent(darkTheme: Boolean): Int {
             if (!propertyValue.startsWith('#')) {
                 propertyValue = "#$propertyValue"
             }
-            try {
-                return Color.parseColor(propertyValue)
-            } catch (e: IllegalArgumentException) {
-                // do nothing
-            }
+            runCatching { Color.parseColor(propertyValue) }
         }
 
         val typedValue = TypedValue()

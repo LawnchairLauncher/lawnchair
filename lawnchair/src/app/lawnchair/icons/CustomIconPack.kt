@@ -4,7 +4,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.Resources
 import android.content.res.XmlResourceParser
 import android.graphics.drawable.Drawable
 import android.util.Xml
@@ -47,15 +46,13 @@ class CustomIconPack(context: Context, packPackageName: String) :
     override fun getIcon(iconEntry: IconEntry, iconDpi: Int): Drawable? {
         val id = getDrawableId(iconEntry.name)
         if (id == 0) return null
-        return try {
+        return runCatching {
             ExtendedBitmapDrawable.wrap(
                 packResources,
                 packResources.getDrawableForDensity(id, iconDpi, null),
                 true
             )
-        } catch (e: Resources.NotFoundException) {
-            null
-        }
+        }.getOrNull()
     }
 
     fun createFromExternalPicker(icon: Intent.ShortcutIconResource): IconPickerItem? {
@@ -170,25 +167,18 @@ class CustomIconPack(context: Context, packPackageName: String) :
         packResources.getIdentifier(name, "drawable", packPackageName)
     }
 
-    private fun getXml(name: String): XmlPullParser? {
-        val res: Resources
-        try {
-            res = context.packageManager.getResourcesForApplication(packPackageName)
-            val resourceId = res.getIdentifier(name, "xml", packPackageName)
-            return if (0 != resourceId) {
-                context.packageManager.getXml(packPackageName, resourceId, null)
-            } else {
-                val factory = XmlPullParserFactory.newInstance()
-                val parser = factory.newPullParser()
-                parser.setInput(res.assets.open("$name.xml"), Xml.Encoding.UTF_8.toString())
-                parser
-            }
-        } catch (_: PackageManager.NameNotFoundException) {
-        } catch (_: IOException) {
-        } catch (_: XmlPullParserException) {
+    private fun getXml(name: String): XmlPullParser? = runCatching {
+        val res = context.packageManager.getResourcesForApplication(packPackageName)
+        val resourceId = res.getIdentifier(name, "xml", packPackageName)
+        return if (0 != resourceId) {
+            context.packageManager.getXml(packPackageName, resourceId, null)
+        } else {
+            val factory = XmlPullParserFactory.newInstance()
+            val parser = factory.newPullParser()
+            parser.setInput(res.assets.open("$name.xml"), Xml.Encoding.UTF_8.toString())
+            parser
         }
-        return null
-    }
+    }.getOrNull()
 }
 
 private operator fun XmlPullParser.get(key: String): String? = this.getAttributeValue(null, key)
