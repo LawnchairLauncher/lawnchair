@@ -240,11 +240,13 @@
     <!-- AppDrawerPrefences -->
     <!-- app_drawer_label -->
     <!-- general_label -->
-    <string name="hidden_apps_label">隱藏的應用程式</string>
     <string name="background_opacity">背景透明度</string>
+    <!-- hiddenApps_label -->
+    <string name="hidden_apps_label">隱藏的應用程式</string>
+    <string name="show_enable_smart_hide">輸入全名時顯示</string>
+    <string name="hide_hidden_apps_search">於搜尋結果中隱藏</string>
     <string name="pref_category_search">搜尋</string>
     <string name="show_app_search_bar">顯示搜尋列</string>
-    <string name="show_hidden_apps_search">在搜尋結果中檢視已隱藏的應用程式</string>
     <string name="pref_search_auto_show_keyboard">自動顯示鍵盤</string>
     <string name="fuzzy_search_title">模糊搜尋</string>
     <string name="fuzzy_search_desc">找尋名稱相似的應用程式</string>
@@ -351,7 +353,7 @@
     <string name="bugreport_group_summary">%d 則新回報</string>
     <string name="bugreport_group_summary_multiple">多則新回報。</string>
     <!-- Search ig -->
-    <string name="show_search_result_types">顯示於搜尋結果</string>
+    <string name="show_search_result_types">於搜尋結果中顯示</string>
     <string name="search_pref_result_people_title">聯絡人</string>
     <string name="search_pref_result_shortcuts_title">應用程式捷徑</string>
     <string name="search_pref_result_tips_title">Pixel 使用提示</string>

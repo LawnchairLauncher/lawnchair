@@ -49,8 +49,8 @@
     <string name="smartspace_calendar_description">A dátum nem gregorián naptárban történő megjelenítésének engedélyezése.</string>
     <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
     <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
-    <string name="always_reload_icons_label">Always Reload Icons</string>
-    <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
+    <string name="always_reload_icons_label">Mindig töltse újra az ikonokat</string>
+    <string name="always_reload_icons_description">Kerülje a gyorsítótárazott ikonok használatát</string>
     <string name="transparent_background_icons">Áttetsző témájú ikonok</string>
     <string name="transparent_background_icons_description">Áttetsző háttér használata téma ikonok esetén</string>
     <!-- GeneralPreferences -->
@@ -68,7 +68,7 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Értesítések számának megjelenítése</string>
     <string name="notification_dots_color">Értesítési pöttyök színe</string>
-    <string name="notification_dots_text_color">Notification Count Color</string>
+    <string name="notification_dots_text_color">Értesítési pöttyök színe</string>
     <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
     <!-- Notification popup -->
@@ -240,11 +240,13 @@
     <!-- AppDrawerPrefences -->
     <!-- app_drawer_label -->
     <!-- general_label -->
-    <string name="hidden_apps_label">Elrejtett alkalmazások</string>
     <string name="background_opacity">Háttér átlátszósága</string>
+    <!-- hiddenApps_label -->
+    <string name="hidden_apps_label">Elrejtett alkalmazások</string>
+    <string name="show_enable_smart_hide">Show when Full Name is Typed</string>
+    <string name="hide_hidden_apps_search">Hide in Search Results</string>
     <string name="pref_category_search">Keresés</string>
     <string name="show_app_search_bar">Keresősáv megjelenítése</string>
-    <string name="show_hidden_apps_search">Rejtett App-ok mutatása a keresőben</string>
     <string name="pref_search_auto_show_keyboard">Billentyűzet automatikus mutatása</string>
     <string name="fuzzy_search_title">Közelítő keresés</string>
     <string name="fuzzy_search_desc">Hozzávetőleges egyezés az alkalmazások kereséséhez.</string>

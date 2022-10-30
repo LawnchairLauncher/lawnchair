@@ -49,7 +49,7 @@
     <string name="smartspace_calendar_description">Leisti rodyti datą ne Grigaliaus kalendoriaus sistemose.</string>
     <string name="workspace_increase_max_grid_size_label">Padidintas Maksimalus Pagrindinio Ekrano Tinklelio Dydis</string>
     <string name="workspace_increase_max_grid_size_description">Padidinti maksimalų leidžiama Pagrindinio Ekrano dydi nuo 10 x 10 iki 20 x 20.</string>
-    <string name="always_reload_icons_label">Visada Perkrauti Piktorgramas</string>
+    <string name="always_reload_icons_label">Visada Perkrauti Piktogramas</string>
     <string name="always_reload_icons_description">Vengti talpyklose esančias piktogramas iš piktogramų paketų</string>
     <string name="transparent_background_icons">Permatomos Teminės Piktogramos</string>
     <string name="transparent_background_icons_description">Naudoti permatoma foną temintoms piktogramoms</string>
@@ -60,10 +60,10 @@
     <!-- <string name="icons" /> -->
     <string name="icon_style">Piktogramų Stilius</string>
     <string name="icon_shape_label">Piktogramų Forma</string>
-    <string name="auto_adaptive_icons_label">Automatiškai Prisitaikančios Piktogramos</string>
+    <string name="auto_adaptive_icons_label">Adaptyvios Piktogramos</string>
     <string name="auto_adaptive_icons_description">Visoms neadaptyvioms piktogramoms.</string>
     <string name="background_lightness_label">Fono Šviesumas</string>
-    <string name="adaptive_icon_background_description">Baltai spalvai naudoti 100% fono šviesumą.</string>
+    <string name="adaptive_icon_background_description">Baltai spalvai naudokite 100% fono šviesumą.</string>
     <string name="notification_dots">Pranešimų Taškai</string>
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Rodyti Pranešimų Skaičių</string>
@@ -84,17 +84,17 @@
     <string name="theme_follow_wallpaper">Sekti ekrano užsklandą</string>
     <string name="accent_color">Akcento Spalva</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Custom Icon Shape</string>
-    <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
-    <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
-    <string name="icon_shape_corner">Corner Shape</string>
-    <string name="icon_shape_corner_round">Round</string>
-    <string name="icon_shape_corner_squircle">Smooth</string>
-    <string name="icon_shape_corner_cut">Cut</string>
-    <string name="icon_shape_top_left">Top Left</string>
-    <string name="icon_shape_top_right">Top Right</string>
-    <string name="icon_shape_bottom_left">Bottom Left</string>
-    <string name="icon_shape_bottom_right">Bottom Right</string>
+    <string name="custom_icon_shape">Tinkinta Piktogramos Figūra</string>
+    <string name="custom_icon_shape_create">Sukurti Tinkinta Piktogramos Figūrą</string>
+    <string name="custom_icon_shape_edit">Redaguoti Tinkinta Piktogramos Figūrą</string>
+    <string name="icon_shape_corner">Kampo Figūra</string>
+    <string name="icon_shape_corner_round">Apskritas</string>
+    <string name="icon_shape_corner_squircle">Lygus</string>
+    <string name="icon_shape_corner_cut">Nukirptas</string>
+    <string name="icon_shape_top_left">Viršuje Kairėje</string>
+    <string name="icon_shape_top_right">Viršuje Dešinėje</string>
+    <string name="icon_shape_bottom_left">Apačioje Kairėje</string>
+    <string name="icon_shape_bottom_right">Apačioje Dešinėje</string>
     <string name="create">Sukurti</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
@@ -240,11 +240,13 @@
     <!-- AppDrawerPrefences -->
     <!-- app_drawer_label -->
     <!-- general_label -->
-    <string name="hidden_apps_label">Paslėptos Programėlės</string>
     <string name="background_opacity">Fono Skaidrumas</string>
+    <!-- hiddenApps_label -->
+    <string name="hidden_apps_label">Paslėptos Programėlės</string>
+    <string name="show_enable_smart_hide">Rodyti, kai Įrašytas Pilnas Vardas</string>
+    <string name="hide_hidden_apps_search">Paslėpti Paieškos Rezultatuose</string>
     <string name="pref_category_search">Ieškokite</string>
     <string name="show_app_search_bar">Rodyti Ieškojimo Juostą</string>
-    <string name="show_hidden_apps_search">Rodyti Paslėptas Programas Paieškoje</string>
     <string name="pref_search_auto_show_keyboard">Automatiškai Rodyti Klaviatūrą</string>
     <string name="fuzzy_search_title">Apytikslė Paieška</string>
     <string name="fuzzy_search_desc">Apytikslis atitikimas programėlių paieškoms.</string>

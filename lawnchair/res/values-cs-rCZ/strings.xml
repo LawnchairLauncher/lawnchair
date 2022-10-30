@@ -240,11 +240,13 @@
     <!-- AppDrawerPrefences -->
     <!-- app_drawer_label -->
     <!-- general_label -->
-    <string name="hidden_apps_label">Skryté aplikace</string>
     <string name="background_opacity">Průhlednost pozadí</string>
+    <!-- hiddenApps_label -->
+    <string name="hidden_apps_label">Skryté aplikace</string>
+    <string name="show_enable_smart_hide">Zobrazit při napsání celého jména</string>
+    <string name="hide_hidden_apps_search">Skrýt ve výsledcích vyhledávání</string>
     <string name="pref_category_search">Vyhledávání</string>
     <string name="show_app_search_bar">Zobrazit vyhledávací lištu</string>
-    <string name="show_hidden_apps_search">Zobrazit skryté aplikace ve vyhledávání</string>
     <string name="pref_search_auto_show_keyboard">Automaticky zobrazit klávesnici</string>
     <string name="fuzzy_search_title">Fuzzy hledání</string>
     <string name="fuzzy_search_desc">Přibližná shoda při vyhledávání aplikací.</string>

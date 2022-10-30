@@ -52,7 +52,7 @@
     <string name="always_reload_icons_label">हमेशा आइकन को पुनः लोड करे</string>
     <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
     <string name="transparent_background_icons">पारदर्शी थीम पर आधारित आइकन</string>
-    <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
+    <string name="transparent_background_icons_description">थीम्ड आइकन की पार्श्वभूमि पारदर्शी रखे</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">होम स्क्रीन रोटेशन</string>
     <string name="home_screen_rotaton_description">जब फोन घुमाया जाता है।</string>
@@ -88,13 +88,13 @@
     <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
     <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
     <string name="icon_shape_corner">Corner Shape</string>
-    <string name="icon_shape_corner_round">Round</string>
+    <string name="icon_shape_corner_round">गोलाकार</string>
     <string name="icon_shape_corner_squircle">Smooth</string>
-    <string name="icon_shape_corner_cut">Cut</string>
-    <string name="icon_shape_top_left">Top Left</string>
-    <string name="icon_shape_top_right">Top Right</string>
-    <string name="icon_shape_bottom_left">Bottom Left</string>
-    <string name="icon_shape_bottom_right">Bottom Right</string>
+    <string name="icon_shape_corner_cut">काटे</string>
+    <string name="icon_shape_top_left">ऊपरी बाएं</string>
+    <string name="icon_shape_top_right">ऊपरी दाए</string>
+    <string name="icon_shape_bottom_left">निजी बाए</string>
+    <string name="icon_shape_bottom_right">निजी दाए</string>
     <string name="create">सृजन करे</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
@@ -240,11 +240,13 @@
     <!-- AppDrawerPrefences -->
     <!-- app_drawer_label -->
     <!-- general_label -->
-    <string name="hidden_apps_label">छिपे हुए ऐप्स</string>
     <string name="background_opacity">चित्रभूमि अपारदर्शिता</string>
+    <!-- hiddenApps_label -->
+    <string name="hidden_apps_label">छिपे हुए ऐप्स</string>
+    <string name="show_enable_smart_hide">पूरा नाम टाईप होने पर दिखाए</string>
+    <string name="hide_hidden_apps_search">खोज में दिखाए</string>
     <string name="pref_category_search">खोजें</string>
     <string name="show_app_search_bar">खोज बार दिखाएँ</string>
-    <string name="show_hidden_apps_search">Show Hidden Apps In Search</string>
     <string name="pref_search_auto_show_keyboard">स्वत: कीबोर्ड खोलें</string>
     <string name="fuzzy_search_title">अस्पष्ट खोज</string>
     <string name="fuzzy_search_desc">ऐप खोजों के लिए अनुमानित मिलान।</string>

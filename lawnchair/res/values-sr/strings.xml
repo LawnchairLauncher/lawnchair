@@ -240,11 +240,13 @@
     <!-- AppDrawerPrefences -->
     <!-- app_drawer_label -->
     <!-- general_label -->
-    <string name="hidden_apps_label">Скривене апликације</string>
     <string name="background_opacity">Прозирност позадине</string>
+    <!-- hiddenApps_label -->
+    <string name="hidden_apps_label">Скривене апликације</string>
+    <string name="show_enable_smart_hide">Show when Full Name is Typed</string>
+    <string name="hide_hidden_apps_search">Hide in Search Results</string>
     <string name="pref_category_search">Претрага</string>
     <string name="show_app_search_bar">Прикажи оквир за претрагу</string>
-    <string name="show_hidden_apps_search">Show Hidden Apps In Search</string>
     <string name="pref_search_auto_show_keyboard">Аутоматски приказуј тастатуру</string>
     <string name="fuzzy_search_title">Приближна претрага</string>
     <string name="fuzzy_search_desc">Приближни резултати претраге на основу упита.</string>

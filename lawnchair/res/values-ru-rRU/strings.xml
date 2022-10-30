@@ -84,8 +84,8 @@
     <string name="theme_follow_wallpaper">На основе обоев</string>
     <string name="accent_color">Цветовой акцент</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Custom Icon Shape</string>
-    <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
+    <string name="custom_icon_shape">Форма иконок</string>
+    <string name="custom_icon_shape_create">Пользовательская форма иконок</string>
     <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
     <string name="icon_shape_corner">Corner Shape</string>
     <string name="icon_shape_corner_round">Round</string>
@@ -240,11 +240,13 @@
     <!-- AppDrawerPrefences -->
     <!-- app_drawer_label -->
     <!-- general_label -->
-    <string name="hidden_apps_label">Скрытые приложения</string>
     <string name="background_opacity">Прозрачность фона</string>
+    <!-- hiddenApps_label -->
+    <string name="hidden_apps_label">Скрытые приложения</string>
+    <string name="show_enable_smart_hide">Показать, когда полное имя введено</string>
+    <string name="hide_hidden_apps_search">Скрывать в результатах поиска</string>
     <string name="pref_category_search">Поиск</string>
     <string name="show_app_search_bar">Показать строку поиска</string>
-    <string name="show_hidden_apps_search">Показывать скрытые приложения во время поиска</string>
     <string name="pref_search_auto_show_keyboard">Автоматически Показывать Клавиатуру</string>
     <string name="fuzzy_search_title">Поиск по сходству</string>
     <string name="fuzzy_search_desc">Поиск приложений по похожему запросу.</string>

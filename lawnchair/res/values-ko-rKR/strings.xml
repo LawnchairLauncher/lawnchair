@@ -240,11 +240,13 @@
     <!-- AppDrawerPrefences -->
     <!-- app_drawer_label -->
     <!-- general_label -->
-    <string name="hidden_apps_label">숨겨진 앱</string>
     <string name="background_opacity">백그라운드 투명도</string>
+    <!-- hiddenApps_label -->
+    <string name="hidden_apps_label">숨겨진 앱</string>
+    <string name="show_enable_smart_hide">전체 이름을 입력할 때 표시</string>
+    <string name="hide_hidden_apps_search">검색 결과에서 숨기기</string>
     <string name="pref_category_search">검색</string>
     <string name="show_app_search_bar">검색 창 활성화</string>
-    <string name="show_hidden_apps_search">검색에 숨겨진 앱 표시</string>
     <string name="pref_search_auto_show_keyboard">자동으로 키보드 표시</string>
     <string name="fuzzy_search_title">유사 검색어 검색</string>
     <string name="fuzzy_search_desc">앱을 검색할 때 검색어와 유사한 앱을 찾아줍니다.</string>

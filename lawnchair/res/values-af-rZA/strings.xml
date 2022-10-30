@@ -240,11 +240,13 @@
     <!-- AppDrawerPrefences -->
     <!-- app_drawer_label -->
     <!-- general_label -->
-    <string name="hidden_apps_label">Versteekte toepassings</string>
     <string name="background_opacity">Agtergrond ondeursigtigheid</string>
+    <!-- hiddenApps_label -->
+    <string name="hidden_apps_label">Versteekte toepassings</string>
+    <string name="show_enable_smart_hide">Show when Full Name is Typed</string>
+    <string name="hide_hidden_apps_search">Hide in Search Results</string>
     <string name="pref_category_search">Soek</string>
     <string name="show_app_search_bar">Wys soekbalk</string>
-    <string name="show_hidden_apps_search">Show Hidden Apps In Search</string>
     <string name="pref_search_auto_show_keyboard">Wys sleutelbord outomaties</string>
     <string name="fuzzy_search_title">Fuzzy soektog</string>
     <string name="fuzzy_search_desc">Geskatte passing vir toepassingsoektogte.</string>
