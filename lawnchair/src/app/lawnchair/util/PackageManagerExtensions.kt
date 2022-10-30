@@ -21,3 +21,10 @@ fun PackageManager.getPackageVersionCode(packageName: String) =
     } catch (e: PackageManager.NameNotFoundException) {
         -1L
     }
+
+fun PackageManager.isPackageInstalledAndEnabled(packageName: String) =
+    try {
+        getApplicationInfo(packageName, 0).enabled
+    } catch (e: PackageManager.NameNotFoundException) {
+        false
+    }

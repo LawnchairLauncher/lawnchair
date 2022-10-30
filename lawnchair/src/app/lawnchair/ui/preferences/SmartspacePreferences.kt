@@ -18,10 +18,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavGraphBuilder
+import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.smartspace.SmartspaceViewContainer
+import app.lawnchair.smartspace.model.LawnchairSmartspace
 import app.lawnchair.smartspace.model.SmartspaceCalendar
+import app.lawnchair.smartspace.model.SmartspaceMode
 import app.lawnchair.smartspace.model.SmartspaceTimeFormat
 import app.lawnchair.smartspace.provider.SmartspaceProvider
 import app.lawnchair.ui.preferences.components.DividerColumn
@@ -47,17 +50,25 @@ fun SmartspacePreferences(fromWidget: Boolean) {
     val preferenceManager2 = preferenceManager2()
     val smartspaceProvider = SmartspaceProvider.INSTANCE.get(LocalContext.current)
     val smartspaceAdapter = preferenceManager2.enableSmartspace.getAdapter()
+    val smartspaceModeAdapter = preferenceManager2.smartspaceMode.getAdapter()
+    val smartspaceModeSelectionAdapter = preferenceManager2.smartspaceModeSelection.getAdapter()
+    val modeIsLawnchair = smartspaceModeAdapter.state.value == LawnchairSmartspace
 
     PreferenceLayout(label = stringResource(id = R.string.smartspace_widget)) {
         if (!fromWidget) {
-            PreferenceGroup(description = stringResource(id = R.string.smartspace_widget_toggle_description)) {
+            PreferenceGroup(description = stringResource(id = R.string.smartspace_widget_toggle_description).takeIf { modeIsLawnchair }) {
                 SwitchPreference(
                     adapter = smartspaceAdapter,
                     label = stringResource(id = R.string.smartspace_widget_toggle_label)
                 )
+                ExpandAndShrink(visible = smartspaceAdapter.state.value && smartspaceModeSelectionAdapter.state.value) {
+                    SmartspaceProviderPreference(
+                        adapter = smartspaceModeAdapter,
+                    )
+                }
             }
         }
-        Crossfade(targetState = smartspaceAdapter.state.value || fromWidget) { targetState ->
+        Crossfade(targetState = (smartspaceAdapter.state.value || fromWidget) && modeIsLawnchair) { targetState ->
             if (targetState) {
                 Column {
                     SmartspacePreview()
@@ -81,6 +92,30 @@ fun SmartspacePreferences(fromWidget: Boolean) {
             }
         }
     }
+}
+
+@Composable
+fun SmartspaceProviderPreference(
+    adapter: PreferenceAdapter<SmartspaceMode>,
+) {
+
+    val context = LocalContext.current
+
+    val entries = remember {
+        SmartspaceMode.values().map { mode ->
+            ListPreferenceEntry(
+                value = mode,
+                label = { stringResource(id = mode.nameResourceId) },
+                enabled = mode.isAvailable(context = context),
+            )
+        }
+    }
+
+    ListPreference(
+        adapter = adapter,
+        entries = entries,
+        label = stringResource(id = R.string.smartspace_mode_label),
+    )
 }
 
 @Composable

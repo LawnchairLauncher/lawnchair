@@ -29,6 +29,7 @@ import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.smartspace.model.SmartspaceCalendar
+import app.lawnchair.smartspace.model.SmartspaceMode
 import app.lawnchair.smartspace.model.SmartspaceTimeFormat
 import app.lawnchair.theme.color.ColorOption
 import com.android.launcher3.InvariantDeviceProfile
@@ -328,6 +329,19 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
             reloadHelper.reloadTaskbar()
             reloadHelper.recreate()
         }
+    )
+
+    val smartspaceMode = preference(
+        key = stringPreferencesKey("smartspace_mode"),
+        defaultValue = SmartspaceMode.fromString(context.getString(R.string.config_default_smartspace_mode)),
+        parse = { SmartspaceMode.fromString(it) },
+        save = { it.toString() },
+        onSet = { reloadHelper.recreate() },
+    )
+
+    val smartspaceModeSelection = preference(
+        key = booleanPreferencesKey("smartspace_mode_selection"),
+        defaultValue = false,
     )
 
     val smartspaceAagWidget = preference(
