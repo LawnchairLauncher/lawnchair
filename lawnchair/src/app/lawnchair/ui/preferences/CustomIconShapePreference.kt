@@ -96,7 +96,7 @@ private fun CustomIconShapePreference() {
     ) {
 
         IconShapePreview(
-            modifier = Modifier,
+            modifier = Modifier.padding(top = 12.dp),
             iconShape = selectedIconShape.value,
         )
 
@@ -115,7 +115,9 @@ private fun IconShapeCornerPreferenceGroup(
     selectedIconShape: IconShape,
     onSelectedIconShapeChange: (IconShape) -> Unit,
 ) {
-    PreferenceGroup {
+    PreferenceGroup(
+        heading = stringResource(id = R.string.color_sliders),
+    ) {
         IconShapeCornerPreference(
             title = stringResource(id = R.string.icon_shape_top_left),
             scale = selectedIconShape.topLeft.scale.x,
