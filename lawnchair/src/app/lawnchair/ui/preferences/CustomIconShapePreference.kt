@@ -204,7 +204,7 @@ private fun IconShapeClipboardPreferenceGroup(
             imageVector = Icons.Rounded.ContentPaste,
             label = stringResource(id = R.string.import_from_clipboard),
         ) {
-            context.getClipboardContent()?.let {
+            getClipboardContent(context)?.let {
                 IconShape.fromString(value = it)
             }?.let {
                 onSelectedIconShapeChange(it)

@@ -20,19 +20,6 @@ fun copyToClipboard(
     }
 }
 
-fun String.copyToClipboard(
-    context: Context,
-    label: String = this,
-    toastMessage: String? = context.getString(R.string.copied_toast),
-) {
-    copyToClipboard(
-        context = context,
-        text = this,
-        label = label,
-        toastMessage = toastMessage,
-    )
-}
-
 fun getClipboardContent(
     context: Context,
 ): String? {
