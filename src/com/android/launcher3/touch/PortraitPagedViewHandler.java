@@ -585,7 +585,6 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     @Override
     public void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect,
             SplitBounds splitInfo, int desiredStagePosition) {
-        boolean isLandscape = dp.isLandscape;
         float topLeftTaskPercent = splitInfo.appsStackedVertically
                 ? splitInfo.topTaskPercent
                 : splitInfo.leftTaskPercent;
@@ -593,18 +592,24 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
                 ? splitInfo.dividerHeightPercent
                 : splitInfo.dividerWidthPercent;
 
+        int deviceHeightWithoutTaskbar = dp.availableHeightPx - dp.taskbarSize;
+        float scale = (float) outRect.height() / deviceHeightWithoutTaskbar;
+        float topTaskHeight = dp.availableHeightPx * topLeftTaskPercent;
+        float scaledTopTaskHeight = topTaskHeight * scale;
+        float dividerHeight = dp.availableHeightPx * dividerBarPercent;
+        float scaledDividerHeight = dividerHeight * scale;
+
         if (desiredStagePosition == SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT) {
-            if (isLandscape) {
-                outRect.right = outRect.left + Math.round(outRect.width() * topLeftTaskPercent);
+            if (splitInfo.appsStackedVertically) {
+                outRect.bottom = Math.round(outRect.top + scaledTopTaskHeight);
             } else {
-                outRect.bottom = outRect.top + Math.round(outRect.height() * topLeftTaskPercent);
+                outRect.right = outRect.left + Math.round(outRect.width() * topLeftTaskPercent);
             }
         } else {
-            if (isLandscape) {
-                outRect.left += Math.round(outRect.width()
-                        * (topLeftTaskPercent + dividerBarPercent));
+            if (splitInfo.appsStackedVertically) {
+                outRect.top += Math.round(scaledTopTaskHeight + scaledDividerHeight);
             } else {
-                outRect.top += Math.round(outRect.height()
+                outRect.left += Math.round(outRect.width()
                         * (topLeftTaskPercent + dividerBarPercent));
             }
         }
@@ -617,7 +622,7 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
         int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
         int totalThumbnailHeight = parentHeight - spaceAboveSnapshot;
         int dividerBar = Math.round(splitBoundsConfig.appsStackedVertically
-                ? splitBoundsConfig.dividerHeightPercent * totalThumbnailHeight
+                ? splitBoundsConfig.dividerHeightPercent * dp.availableHeightPx
                 : splitBoundsConfig.dividerWidthPercent * parentWidth);
         int primarySnapshotHeight;
         int primarySnapshotWidth;
@@ -641,12 +646,18 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
             }
             secondarySnapshot.setTranslationY(spaceAboveSnapshot);
         } else {
+            int deviceHeightWithoutTaskbar = dp.availableHeightPx - dp.taskbarSize;
+            float scale = (float) totalThumbnailHeight / deviceHeightWithoutTaskbar;
+            float topTaskHeight = dp.availableHeightPx * taskPercent;
+            float finalDividerHeight = dividerBar * scale;
+            float scaledTopTaskHeight = topTaskHeight * scale;
             primarySnapshotWidth = parentWidth;
-            primarySnapshotHeight = Math.round(totalThumbnailHeight * taskPercent);
+            primarySnapshotHeight = Math.round(scaledTopTaskHeight);
 
             secondarySnapshotWidth = parentWidth;
-            secondarySnapshotHeight = totalThumbnailHeight - primarySnapshotHeight - dividerBar;
-            int translationY = primarySnapshotHeight + spaceAboveSnapshot + dividerBar;
+            secondarySnapshotHeight = Math.round(totalThumbnailHeight - primarySnapshotHeight
+                    - finalDividerHeight);
+            float translationY = primarySnapshotHeight + spaceAboveSnapshot + finalDividerHeight;
             secondarySnapshot.setTranslationY(translationY);
 
             FrameLayout.LayoutParams primaryParams =
