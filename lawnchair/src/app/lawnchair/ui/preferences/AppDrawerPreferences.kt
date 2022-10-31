@@ -66,7 +66,7 @@ fun AppDrawerPreferences() {
                 subtitle = resources.getQuantityString(R.plurals.apps_count, hiddenApps.size, hiddenApps.size),
                 destination = subRoute(name = AppDrawerRoutes.HIDDEN_APPS),
             )
-            ExpandAndShrink(visible = hiddenApps.size > 0 && showDrawerSearchBar.state.value) {
+            ExpandAndShrink(visible = hiddenApps.isNotEmpty() && showDrawerSearchBar.state.value) {
                 DividerColumn {
                     SwitchPreference(
                         label = stringResource(id = R.string.hide_hidden_apps_search),

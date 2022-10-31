@@ -126,7 +126,6 @@ class CustomIconPack(context: Context, packPackageName: String) :
         }
     }
 
-    @Suppress("BlockingMethodInNonBlockingContext")
     override fun getAllIcons(): Flow<List<IconPickerCategory>> = flow {
         load()
 
