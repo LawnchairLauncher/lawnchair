@@ -73,6 +73,7 @@ import java.util.StringJoiner;
 
     private TaskbarControllers mControllers;
     private AnimatedFloat mTaskbarBackgroundAlpha;
+    private AnimatedFloat mTaskbarCornerRoundness;
     private MultiProperty mIconAlphaForHome;
     private QuickstepLauncher mLauncher;
 
@@ -133,6 +134,7 @@ import java.util.StringJoiner;
 
         mTaskbarBackgroundAlpha = mControllers.taskbarDragLayerController
                 .getTaskbarBackgroundAlpha();
+        mTaskbarCornerRoundness = mControllers.getTaskbarCornerRoundness();
         mIconAlphaForHome = mControllers.taskbarViewController
                 .getTaskbarIconAlpha().get(ALPHA_INDEX_HOME);
 
@@ -316,6 +318,19 @@ import java.util.StringJoiner;
                     .setDuration(duration));
         }
 
+        float cornerRoundness = goingToLauncher ? 0 : 1;
+        // Don't animate if corner roundness has reached desired value.
+        if (mTaskbarCornerRoundness.isAnimating()
+                || mTaskbarCornerRoundness.value != cornerRoundness) {
+            mTaskbarCornerRoundness.cancelAnimation();
+            if (DEBUG) {
+                Log.d(TAG, "onStateChangeApplied - taskbarCornerRoundness - "
+                        + mTaskbarCornerRoundness.value
+                        + " -> " + cornerRoundness + ": " + duration);
+            }
+            animatorSet.play(mTaskbarCornerRoundness.animateToValue(cornerRoundness));
+        }
+
         if (mIconAlignment.isAnimatingToValue(toAlignment)
                 || mIconAlignment.isSettledOnValue(toAlignment)) {
             // Already at desired value, but make sure we run the callback at the end.
@@ -333,6 +348,7 @@ import java.util.StringJoiner;
             }
             animatorSet.play(iconAlignAnim);
         }
+
         animatorSet.setInterpolator(EMPHASIZED);
 
         if (start) {

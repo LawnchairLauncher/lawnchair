@@ -158,6 +158,15 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
         invalidate();
     }
 
+    /**
+     * Sets the roundness of the round corner above Taskbar.
+     * @param cornerRoundness 0 has no round corner, 1 has complete round corner.
+     */
+    protected void setCornerRoundness(float cornerRoundness) {
+        mBackgroundRenderer.setCornerRoundness(cornerRoundness);
+        invalidate();
+    }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         TestLogging.recordMotionEvent(TestProtocol.SEQUENCE_MAIN, "Touch event", ev);
