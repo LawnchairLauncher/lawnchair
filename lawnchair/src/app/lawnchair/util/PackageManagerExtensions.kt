@@ -22,5 +22,8 @@ fun PackageManager.getPackageVersionCode(packageName: String): Long =
         -1L
     }
 
-fun PackageManager.isPackageInstalledAndEnabled(packageName: String): Boolean =
-    runCatching { getApplicationInfo(packageName, 0).enabled }.getOrDefault(false)
+fun PackageManager.isPackageInstalledAndEnabled(packageName: String) = try {
+    getApplicationInfo(packageName, 0).enabled
+} catch (_: PackageManager.NameNotFoundException) {
+    false
+}
