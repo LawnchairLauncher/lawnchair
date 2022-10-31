@@ -781,7 +781,6 @@ public class StatsLogManager implements ResourceBasedOverride {
             public int getId() {
                 return mId;
             }
-
         }
 
         /**
@@ -810,6 +809,13 @@ public class StatsLogManager implements ResourceBasedOverride {
          * Sets query length of the event.
          */
         default StatsLatencyLogger withQueryLength(int queryLength) {
+            return this;
+        }
+
+        /**
+         * Sets sub event type.
+         */
+        default StatsLatencyLogger withSubEventType(int type) {
             return this;
         }
 
