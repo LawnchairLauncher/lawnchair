@@ -44,8 +44,6 @@ public class ScrollableLayoutManager extends GridLayoutManager {
      * whereas widgets will have strictly increasing values
      *     sample values: 0, 10, 50, 60, 110
      */
-
-    //
     private int[] mTotalHeightCache = new int[1];
     private int mLastValidHeightIndex = 0;
 
@@ -62,16 +60,23 @@ public class ScrollableLayoutManager extends GridLayoutManager {
     @Override
     public void layoutDecorated(@NonNull View child, int left, int top, int right, int bottom) {
         super.layoutDecorated(child, left, top, right, bottom);
-        mCachedSizes.put(
-                mRv.getChildViewHolder(child).getItemViewType(), child.getMeasuredHeight());
+        updateCachedSize(child);
     }
 
     @Override
     public void layoutDecoratedWithMargins(@NonNull View child, int left, int top, int right,
             int bottom) {
         super.layoutDecoratedWithMargins(child, left, top, right, bottom);
-        mCachedSizes.put(
-                mRv.getChildViewHolder(child).getItemViewType(), child.getMeasuredHeight());
+        updateCachedSize(child);
+    }
+
+    private void updateCachedSize(@NonNull View child) {
+        int viewType = mRv.getChildViewHolder(child).getItemViewType();
+        int size = child.getMeasuredHeight();
+        if (mCachedSizes.get(viewType, -1) != size) {
+            invalidateScrollCache();
+        }
+        mCachedSizes.put(viewType, size);
     }
 
     @Override
