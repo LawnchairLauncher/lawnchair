@@ -204,7 +204,9 @@ private fun IconShapeClipboardPreferenceGroup(
             imageVector = Icons.Rounded.ContentPaste,
             label = stringResource(id = R.string.import_from_clipboard),
         ) {
-            getClipboardContent(context = context)?.let { IconShape.fromString(value = it) }?.let {
+            context.getClipboardContent()?.let {
+                IconShape.fromString(value = it)
+            }?.let {
                 onSelectedIconShapeChange(it)
             } ?: run {
                 Toast.makeText(context, importErrorMessage, Toast.LENGTH_SHORT).show()
