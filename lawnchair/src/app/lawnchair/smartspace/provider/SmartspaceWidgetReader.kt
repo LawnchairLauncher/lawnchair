@@ -20,7 +20,6 @@ import app.lawnchair.smartspace.model.SmartspaceScores
 import app.lawnchair.smartspace.model.SmartspaceTarget
 import app.lawnchair.util.Temperature
 import app.lawnchair.util.getAllChildren
-import app.lawnchair.util.isNotNullOrEmpty
 import app.lawnchair.util.pendingIntent
 import com.android.launcher3.R
 import kotlinx.coroutines.flow.Flow
@@ -57,7 +56,7 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
 
     private fun extractWidgetLayout(appWidgetHostView: ViewGroup): List<SmartspaceTarget> {
         val children = appWidgetHostView.getAllChildren().filter { it.isVisible }
-        val texts = children.filterIsInstance<TextView>().filter { it.text.isNotNullOrEmpty() }
+        val texts = children.filterIsInstance<TextView>().filter { !it.text.isNullOrEmpty() }
         val images = children.filterIsInstance<ImageView>()
         var weatherIconView: ImageView? = null
         var cardIconView: ImageView? = null

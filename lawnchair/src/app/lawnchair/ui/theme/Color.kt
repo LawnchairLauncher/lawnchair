@@ -12,7 +12,6 @@ import androidx.core.graphics.ColorUtils
 import app.lawnchair.theme.UiColorMode
 import app.lawnchair.theme.color.ColorTokens
 import app.lawnchair.theme.surfaceColorAtElevation
-import app.lawnchair.util.isNotNullOrEmpty
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.Themes
@@ -45,7 +44,7 @@ fun Context.getSystemAccent(darkTheme: Boolean): Int {
         res.getColor(colorId)
     } else {
         var propertyValue = Utilities.getSystemProperty("persist.sys.theme.accentcolor", "")
-        if (propertyValue.isNotNullOrEmpty()) {
+        if (!propertyValue.isNullOrEmpty()) {
             if (!propertyValue.startsWith('#')) {
                 propertyValue = "#$propertyValue"
             }

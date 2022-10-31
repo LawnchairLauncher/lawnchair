@@ -25,7 +25,6 @@ import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.LawnchairSearchAlgorithm
 import app.lawnchair.theme.drawable.DrawableTokens
-import app.lawnchair.util.isNotNullOrEmpty
 import com.android.launcher3.Insettable
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
@@ -127,7 +126,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(c
         val inputLowerCase = inputString.lowercase(Locale.getDefault())
         val focusedLowerCase = focusedResultTitle.lowercase(Locale.getDefault())
         if (canShowHint
-            && inputLowerCase.isNotNullOrEmpty() && focusedLowerCase.isNotNullOrEmpty()
+            && inputLowerCase.isNotEmpty() && focusedLowerCase.isNotEmpty()
             && focusedLowerCase.matches(Regex("^[\\x00-\\x7F]*$"))
             && focusedLowerCase.startsWith(inputLowerCase)
         ) {

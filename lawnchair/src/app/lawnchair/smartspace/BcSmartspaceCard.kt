@@ -14,7 +14,6 @@ import androidx.core.view.isVisible
 import app.lawnchair.smartspace.model.SmartspaceAction
 import app.lawnchair.smartspace.model.SmartspaceTarget
 import app.lawnchair.smartspace.model.hasIntent
-import app.lawnchair.util.isNotNullOrEmpty
 import com.android.launcher3.R
 import java.util.*
 
@@ -64,8 +63,8 @@ class BcSmartspaceCard @JvmOverloads constructor(
             var title: CharSequence? = headerAction.title
             var subtitle = headerAction.subtitle
             val hasTitle = target.featureType == SmartspaceTarget.FeatureType.FEATURE_WEATHER ||
-                title.isNotNullOrEmpty()
-            val hasSubtitle = subtitle.isNotNullOrEmpty()
+                !title.isNullOrEmpty()
+            val hasSubtitle = !subtitle.isNullOrEmpty()
             if (!hasTitle) {
                 title = subtitle
             }
@@ -167,7 +166,7 @@ class BcSmartspaceCard @JvmOverloads constructor(
         var description: CharSequence? = title
         if (description.isNullOrEmpty()) {
             description = contentDescription
-        } else if (contentDescription.isNotNullOrEmpty()) {
+        } else if (!contentDescription.isNullOrEmpty()) {
             description = context.getString(
                 R.string.generic_smartspace_concatenated_desc,
                 contentDescription,
