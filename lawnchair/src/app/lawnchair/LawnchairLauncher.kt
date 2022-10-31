@@ -191,8 +191,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
             lifecycleScope.launch {
                 try {
                     RootHelperManager.INSTANCE.get(this@LawnchairLauncher).getService()
-                } catch (e: RootNotAvailableException) {
-                    // do nothing
+                } catch (_: RootNotAvailableException) {
                 }
             }
         }
@@ -418,10 +417,8 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
 val Context.launcher: LawnchairLauncher
     get() = BaseActivity.fromContext(this)
 
-val Context.launcherNullable: LawnchairLauncher? get() {
-    return try {
-        launcher
-    } catch (e: IllegalArgumentException) {
-        null
-    }
+val Context.launcherNullable: LawnchairLauncher? get() = try {
+    launcher
+} catch (_: IllegalArgumentException) {
+    null
 }

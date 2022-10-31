@@ -53,7 +53,7 @@ class CustomIconPack(context: Context, packPackageName: String) :
                 packResources.getDrawableForDensity(id, iconDpi, null),
                 true
             )
-        } catch (e: Resources.NotFoundException) {
+        } catch (_: Resources.NotFoundException) {
             null
         }
     }

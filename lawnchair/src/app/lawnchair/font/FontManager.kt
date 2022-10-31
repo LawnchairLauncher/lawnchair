@@ -58,8 +58,7 @@ class FontManager private constructor(private val context: Context) {
             if (fontType != -1) {
                 setCustomFont(textView, fontType, fontWeight)
             }
-        } catch (e: Exception) {
-            // ignore
+        } catch (_: Exception) {
         }
     }
 

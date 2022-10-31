@@ -92,7 +92,7 @@ open class QsbSearchProvider(
                     Uri.parse("market://details?id=$packageName")
                 )
             )
-        } catch (e: ActivityNotFoundException) {
+        } catch (_: ActivityNotFoundException) {
             try {
                 context.startActivity(
                     Intent(
@@ -100,7 +100,7 @@ open class QsbSearchProvider(
                         Uri.parse("https://play.google.com/store/apps/details?id=$packageName")
                     )
                 )
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 Toast.makeText(
                     context,
                     context.getString(R.string.error_no_market_or_browser_installed),
