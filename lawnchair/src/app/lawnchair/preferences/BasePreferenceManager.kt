@@ -202,7 +202,7 @@ abstract class BasePreferenceManager(private val context: Context) : SharedPrefe
             if (!loaded) {
                 currentValue = try {
                     sp.getInt(key, defaultValueInternal)
-                } catch (e: ClassCastException) {
+                } catch (_: ClassCastException) {
                     sp.getFloat(key, defaultValueInternal.toFloat()).toInt()
                 }
                 loaded = true
@@ -310,14 +310,9 @@ abstract class BasePreferenceManager(private val context: Context) : SharedPrefe
         primaryListener: ChangeListener? = null
     ) : StringBasedPref<FontCache.Font>(key, defaultValue, primaryListener) {
 
-        override fun parse(stringValue: String): FontCache.Font {
-            try {
-                return FontCache.Font.fromJsonString(context, stringValue)
-            } catch (e: Exception) {
-                Log.e("FontPref", "Failed to load font $stringValue", e)
-            }
-            return defaultValue
-        }
+        override fun parse(stringValue: String): FontCache.Font = runCatching {
+            FontCache.Font.fromJsonString(context, stringValue)
+        }.getOrDefault(defaultValue)
 
         override fun stringify(value: FontCache.Font) = value.toJsonString()
     }

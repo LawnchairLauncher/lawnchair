@@ -421,12 +421,7 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         key = key,
         defaultValue = defaultValue,
         parse = { value ->
-            try {
-                return@preference Json.decodeFromString(value)
-            } catch (e: Throwable) {
-                Log.d("PreferenceManager2", "failed to parse preference $key=$value")
-                return@preference defaultValue
-            }
+            runCatching { Json.decodeFromString<T>(value) }.getOrDefault(defaultValue)
         },
         save = Json::encodeToString,
     )

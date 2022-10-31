@@ -31,7 +31,7 @@ fun getSystemProperty(property: String, defaultValue: String): String {
         if (!TextUtils.isEmpty(value)) {
             return value
         }
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         Log.d(TAG, "Unable to read system properties")
     }
     return defaultValue

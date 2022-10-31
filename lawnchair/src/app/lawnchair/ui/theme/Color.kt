@@ -51,8 +51,7 @@ fun Context.getSystemAccent(darkTheme: Boolean): Int {
             }
             try {
                 return Color.parseColor(propertyValue)
-            } catch (e: IllegalArgumentException) {
-                // do nothing
+            } catch (_: IllegalArgumentException) {
             }
         }
 

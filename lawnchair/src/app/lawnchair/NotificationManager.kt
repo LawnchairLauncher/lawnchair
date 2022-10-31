@@ -71,8 +71,7 @@ fun Context.getAppName(name: String): CharSequence {
     try {
         return packageManager.getApplicationLabel(
             packageManager.getApplicationInfo(name, PackageManager.GET_META_DATA))
-    } catch (ignored: PackageManager.NameNotFoundException) {
+    } catch (_: PackageManager.NameNotFoundException) {
     }
-
     return name
 }

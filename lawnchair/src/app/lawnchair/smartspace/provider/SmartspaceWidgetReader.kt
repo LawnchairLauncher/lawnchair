@@ -165,9 +165,9 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
                         temperature.contains("K") -> Temperature.Unit.Kelvin
                         else -> throw IllegalArgumentException("only supports C, F and K")
                     }), pendingIntent = intent)
-                } catch (e: NumberFormatException) {
+                } catch (_: NumberFormatException) {
                     null
-                } catch (e: IllegalArgumentException) {
+                } catch (_: IllegalArgumentException) {
                     null
                 }
             } else {

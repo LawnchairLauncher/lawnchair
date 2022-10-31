@@ -238,13 +238,8 @@ class FontCache private constructor(private val context: Context) {
 
         companion object {
 
-            fun createTypeface(file: File): Typeface? {
-                return try {
-                    Typeface.createFromFile(file)
-                } catch (e: Exception) {
-                    null
-                }
-            }
+            fun createTypeface(file: File): Typeface? =
+                runCatching { Typeface.createFromFile(file) }.getOrNull()
 
             fun getFontsDir(context: Context): File {
                 return File(context.filesDir, "customFonts").apply { mkdirs() }
