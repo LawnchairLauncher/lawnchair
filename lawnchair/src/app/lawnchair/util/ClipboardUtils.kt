@@ -16,11 +16,7 @@ fun copyToClipboard(
     val clip = ClipData.newPlainText(label, text)
     clipboardManager.setPrimaryClip(clip)
     toastMessage?.let {
-        Toast.makeText(
-            context,
-            it,
-            Toast.LENGTH_SHORT,
-        ).show()
+        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
     }
 }
 
