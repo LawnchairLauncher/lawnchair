@@ -386,8 +386,8 @@ open class IconShape(val topLeft: Corner,
             return try {
                 parseCustomShape(iconShape.toString())
                 true
-            } catch (ex: Exception) {
-                Log.e("IconShape", "Error creating shape $iconShape", ex)
+            } catch (e: Exception) {
+                Log.e("IconShape", "Error creating shape $iconShape", e)
                 false
             }
         }

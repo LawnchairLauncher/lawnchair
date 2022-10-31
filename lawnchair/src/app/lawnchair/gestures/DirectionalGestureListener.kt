@@ -45,8 +45,8 @@ open class DirectionalGestureListener(ctx: Context?) : OnTouchListener {
                     }
                     else -> false
                 }
-            } catch (exception: Exception) {
-                exception.printStackTrace()
+            } catch (e: Exception) {
+                e.printStackTrace()
                 false
             }
         }
