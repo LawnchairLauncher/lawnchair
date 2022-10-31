@@ -8,11 +8,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.text.layoutDirection
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import app.lawnchair.smartspace.model.SmartspaceAction
 import app.lawnchair.smartspace.model.SmartspaceTarget
 import app.lawnchair.smartspace.model.hasIntent
+import app.lawnchair.util.isNotNullOrEmpty
 import com.android.launcher3.R
 import java.util.*
 
@@ -61,11 +63,9 @@ class BcSmartspaceCard @JvmOverloads constructor(
 
             var title: CharSequence? = headerAction.title
             var subtitle = headerAction.subtitle
-            val hasTitle =
-                target.featureType == SmartspaceTarget.FeatureType.FEATURE_WEATHER || !TextUtils.isEmpty(
-                    title
-                )
-            val hasSubtitle = !TextUtils.isEmpty(subtitle)
+            val hasTitle = target.featureType == SmartspaceTarget.FeatureType.FEATURE_WEATHER ||
+                title.isNotNullOrEmpty()
+            val hasSubtitle = subtitle.isNotNullOrEmpty()
             if (!hasTitle) {
                 title = subtitle
             }
@@ -129,19 +129,19 @@ class BcSmartspaceCard @JvmOverloads constructor(
 
     fun setTitle(title: CharSequence?, contentDescription: CharSequence?, hasIcon: Boolean) {
         val titleView = titleTextView ?: return
-        val isRTL = TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == View.LAYOUT_DIRECTION_RTL
+        val isRTL = Locale.getDefault().layoutDirection == View.LAYOUT_DIRECTION_RTL
         titleView.textAlignment = if (isRTL) TEXT_ALIGNMENT_TEXT_END else TEXT_ALIGNMENT_TEXT_START
         titleView.text = title
         titleView.setCompoundDrawablesRelative(
             if (hasIcon) iconDrawable else null, null,
             null, null
         )
-        if (target.featureType == SmartspaceTarget.FeatureType.FEATURE_CALENDAR
+        titleView.ellipsize = if (target.featureType == SmartspaceTarget.FeatureType.FEATURE_CALENDAR
             && Locale.ENGLISH.language == context.resources.configuration.locale.language
         ) {
-            titleView.ellipsize = TextUtils.TruncateAt.MIDDLE
+            TextUtils.TruncateAt.MIDDLE
         } else {
-            titleView.ellipsize = TextUtils.TruncateAt.END
+            TextUtils.TruncateAt.END
         }
         if (hasIcon) {
             setFormattedContentDescription(titleView, title, contentDescription)
@@ -152,7 +152,7 @@ class BcSmartspaceCard @JvmOverloads constructor(
         val subtitleView = subtitleTextView ?: return
         subtitleView.text = subtitle
         subtitleTextView!!.setCompoundDrawablesRelative(
-            if (TextUtils.isEmpty(subtitle)) null else iconDrawable, null,
+            if (subtitle.isNullOrEmpty()) null else iconDrawable, null,
             null, null
         )
         subtitleTextView!!.maxLines = if (target.featureType == SmartspaceTarget.FeatureType.FEATURE_TIPS && !usePageIndicatorUi) 2 else 1
@@ -165,9 +165,9 @@ class BcSmartspaceCard @JvmOverloads constructor(
         contentDescription: CharSequence?
     ) {
         var description: CharSequence? = title
-        if (TextUtils.isEmpty(description)) {
+        if (description.isNullOrEmpty()) {
             description = contentDescription
-        } else if (!TextUtils.isEmpty(contentDescription)) {
+        } else if (contentDescription.isNotNullOrEmpty()) {
             description = context.getString(
                 R.string.generic_smartspace_concatenated_desc,
                 contentDescription,

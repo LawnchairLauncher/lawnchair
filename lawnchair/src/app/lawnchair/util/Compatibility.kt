@@ -1,7 +1,6 @@
 package app.lawnchair.util
 
 import android.annotation.SuppressLint
-import android.text.TextUtils
 import android.util.Log
 
 private const val TAG = "Compatibility"

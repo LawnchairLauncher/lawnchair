@@ -8,7 +8,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Icon
-import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -21,10 +20,10 @@ import app.lawnchair.smartspace.model.SmartspaceScores
 import app.lawnchair.smartspace.model.SmartspaceTarget
 import app.lawnchair.util.Temperature
 import app.lawnchair.util.getAllChildren
+import app.lawnchair.util.isNotNullOrEmpty
 import app.lawnchair.util.pendingIntent
 import com.android.launcher3.R
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
@@ -58,7 +57,7 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
 
     private fun extractWidgetLayout(appWidgetHostView: ViewGroup): List<SmartspaceTarget> {
         val children = appWidgetHostView.getAllChildren().filter { it.isVisible }
-        val texts = children.filterIsInstance<TextView>().filter { !TextUtils.isEmpty(it.text) }
+        val texts = children.filterIsInstance<TextView>().filter { it.text.isNotNullOrEmpty() }
         val images = children.filterIsInstance<ImageView>()
         var weatherIconView: ImageView? = null
         var cardIconView: ImageView? = null
