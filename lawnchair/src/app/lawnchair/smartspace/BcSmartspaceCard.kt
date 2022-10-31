@@ -163,17 +163,15 @@ class BcSmartspaceCard @JvmOverloads constructor(
         title: CharSequence?,
         contentDescription: CharSequence?
     ) {
-        var description: CharSequence? = title
-        if (description.isNullOrEmpty()) {
-            description = contentDescription
-        } else if (!contentDescription.isNullOrEmpty()) {
-            description = context.getString(
+        textView.contentDescription = when {
+            title.isNullOrEmpty() -> contentDescription
+            !contentDescription.isNullOrEmpty() -> context.getString(
                 R.string.generic_smartspace_concatenated_desc,
                 contentDescription,
-                description
+                title
             )
+            else -> title
         }
-        textView.contentDescription = description
     }
 
     private fun updateIconTint() {
