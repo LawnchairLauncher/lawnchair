@@ -32,6 +32,7 @@ import static com.android.launcher3.util.SystemUiController.UI_STATE_ALL_APPS;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.util.FloatProperty;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
@@ -47,17 +48,21 @@ import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.touch.AllAppsSwipeController;
 import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.views.ScrimView;
 
 /**
@@ -78,6 +83,8 @@ public class AllAppsTransitionController
     private static final int REVERT_SWIPE_ALL_APPS_TO_HOME_ANIMATION_DURATION_MS = 200;
 
     private static final float NAV_BAR_COLOR_FORCE_UPDATE_THRESHOLD = 0.1f;
+    private static final float SWIPE_DRAG_COMMIT_THRESHOLD =
+            1 - AllAppsSwipeController.ALL_APPS_STATE_TRANSITION_MANUAL;
 
     public static final FloatProperty<AllAppsTransitionController> ALL_APPS_PROGRESS =
             new FloatProperty<AllAppsTransitionController>("allAppsProgress") {
@@ -181,6 +188,7 @@ public class AllAppsTransitionController
     private boolean mIsTablet;
 
     private boolean mHasScaleEffect;
+    private final VibratorWrapper mVibratorWrapper;
 
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
@@ -193,6 +201,7 @@ public class AllAppsTransitionController
 
         setShiftRange(dp.allAppsShiftRange);
         mLauncher.addOnDeviceProfileChangeListener(this);
+        mVibratorWrapper = VibratorWrapper.INSTANCE.get(mLauncher.getApplicationContext());
     }
 
     public float getShiftRange() {
@@ -304,6 +313,11 @@ public class AllAppsTransitionController
     /**
      * Creates an animation which updates the vertical transition progress and updates all the
      * dependent UI using various animation events
+     *
+     * This method also dictates where along the progress the haptics should be played. As the user
+     * scrolls up from workspace or down from AllApps, a drag haptic is being played until the
+     * commit point where it plays a commit haptic. Where we play the haptics differs when going
+     * from workspace -> allApps and vice versa.
      */
     @Override
     public void setStateWithAnimation(LauncherState toState,
@@ -332,6 +346,20 @@ public class AllAppsTransitionController
             });
         }
 
+        if(FeatureFlags.ENABLE_HAPTICS_ALL_APPS.get() && config.userControlled
+                && Utilities.ATLEAST_S) {
+            if (toState == ALL_APPS) {
+                builder.addOnFrameListener(
+                        new VibrationAnimatorUpdateListener(this, mVibratorWrapper,
+                                SWIPE_DRAG_COMMIT_THRESHOLD, 1));
+            } else {
+                builder.addOnFrameListener(
+                        new VibrationAnimatorUpdateListener(this, mVibratorWrapper,
+                                0, SWIPE_DRAG_COMMIT_THRESHOLD));
+            }
+            builder.addEndListener(mVibratorWrapper::cancelVibrate);
+        }
+
         float targetProgress = toState.getVerticalProgress(mLauncher);
         if (Float.compare(mProgress, targetProgress) == 0) {
             setAlphas(toState, config, builder);
@@ -349,7 +377,7 @@ public class AllAppsTransitionController
 
         setAlphas(toState, config, builder);
 
-        if (ALL_APPS.equals(toState) && mLauncher.isInState(NORMAL)) {
+        if (ALL_APPS.equals(toState) && mLauncher.isInState(NORMAL) && !(Utilities.ATLEAST_S)) {
             mLauncher.getAppsView().performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
                     HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
         }
@@ -484,6 +512,47 @@ public class AllAppsTransitionController
             mAppsView.reset(false /* animate */);
             if (mShouldControlKeyboard) {
                 mLauncher.getAppsView().getSearchUiManager().getEditText().hideKeyboard();
+            }
+        }
+    }
+
+    /**
+     * This VibrationAnimatorUpdateListener class takes in four parameters, a controller, start
+     * threshold, end threshold, and a Vibrator wrapper. We use the progress given by the controller
+     * as it gives an accurate progress that dictates where the vibrator should vibrate.
+     * Note: once the user begins a gesture and does the commit haptic, there should not be anymore
+     * haptics played for that gesture.
+     */
+    private static class VibrationAnimatorUpdateListener implements
+            ValueAnimator.AnimatorUpdateListener {
+        private final VibratorWrapper mVibratorWrapper;
+        private final AllAppsTransitionController mController;
+        private final float mStartThreshold;
+        private final float mEndThreshold;
+        private boolean mHasCommitted;
+
+        VibrationAnimatorUpdateListener(AllAppsTransitionController controller,
+                                        VibratorWrapper vibratorWrapper, float startThreshold,
+                                        float endThreshold) {
+            mController = controller;
+            mVibratorWrapper = vibratorWrapper;
+            mStartThreshold = startThreshold;
+            mEndThreshold = endThreshold;
+        }
+
+        @Override
+        public void onAnimationUpdate(ValueAnimator animation) {
+            if (mHasCommitted) {
+                return;
+            }
+            float currentProgress =
+                    AllAppsTransitionController.ALL_APPS_PROGRESS.get(mController);
+            if (currentProgress > mStartThreshold && currentProgress < mEndThreshold) {
+                mVibratorWrapper.vibrateForDragTexture();
+            } else if (!(currentProgress == 0 || currentProgress == 1)) {
+                // This check guards against committing at the location of the start of the gesture
+                mVibratorWrapper.vibrateForDragCommit();
+                mHasCommitted = true;
             }
         }
     }
