@@ -26,4 +26,5 @@
     android:importantForAccessibility="noHideDescendants"
     android:textColor="?priv-android:attr/textColorOnAccent"
     android:textSize="14sp"
-    android:autoSizeTextType="uniform"/>
+    android:autoSizeTextType="uniform"
+    android:autoSizeMaxTextSize="14sp"/>
