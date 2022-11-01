@@ -30,6 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/collapse_handle"
         android:paddingBottom="16dp"
+        android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
         android:orientation="vertical">
 
         <TextView
@@ -40,7 +41,6 @@
             android:textSize="24sp"
             android:layout_marginTop="24dp"
             android:textColor="?android:attr/textColorSecondary"
-            android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
             android:text="@string/widget_button_text"/>
 
         <FrameLayout
@@ -49,7 +49,6 @@
             android:layout_height="wrap_content"
             android:elevation="0.1dp"
             android:background="?android:attr/colorBackground"
-            android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
             android:paddingBottom="8dp"
             android:clipToPadding="false"
             launcher:layout_sticky="true" >
@@ -63,7 +62,6 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/widgets_recommendation_background"
             android:paddingVertical="@dimen/recommended_widgets_table_vertical_padding"
-            android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
             android:visibility="gone" />
     </com.android.launcher3.views.StickyHeaderLayout>
 
