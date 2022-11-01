@@ -64,6 +64,7 @@ import android.app.ActivityManager;
 import android.app.WindowConfiguration;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -101,6 +102,7 @@ import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.tracing.InputConsumerProto;
 import com.android.launcher3.tracing.SwipeHandlerProto;
 import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.BaseActivityInterface.AnimationFactory;
@@ -311,6 +313,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     // Interpolate RecentsView scale from start of quick switch scroll until this scroll threshold
     private final float mQuickSwitchScaleScrollThreshold;
 
+    private final int mTaskbarAppWindowThreshold;
+    private final int mTaskbarCatchUpThreshold;
+    private boolean mTaskbarAlreadyOpen;
+
     public AbsSwipeUpHandler(Context context, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
             long touchTimeMs, boolean continuingLastGesture,
@@ -331,11 +337,17 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mTaskAnimationManager = taskAnimationManager;
         mTouchTimeMs = touchTimeMs;
         mContinuingLastGesture = continuingLastGesture;
-        mQuickSwitchScaleScrollThreshold = context.getResources().getDimension(
-                R.dimen.quick_switch_scaling_scroll_threshold);
 
-        mSplashMainWindowShiftLength = -context.getResources().getDimensionPixelSize(
-                R.dimen.starting_surface_exit_animation_window_shift_length);
+        Resources res = context.getResources();
+        mTaskbarAppWindowThreshold = res
+                .getDimensionPixelSize(R.dimen.taskbar_app_window_threshold);
+        mTaskbarCatchUpThreshold = res.getDimensionPixelSize(R.dimen.taskbar_catch_up_threshold);
+
+        mQuickSwitchScaleScrollThreshold = res
+                .getDimension(R.dimen.quick_switch_scaling_scroll_threshold);
+
+        mSplashMainWindowShiftLength = -res
+                .getDimensionPixelSize(R.dimen.starting_surface_exit_animation_window_shift_length);
 
         initAfterSubclassConstructor();
         initStateCallbacks();
@@ -824,7 +836,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             return;
         }
         mLauncherTransitionController.setProgress(
-                Math.max(mCurrentShift.value, getScaleProgressDueToScroll()), mDragLengthFactor);
+                Math.max(getTaskbarProgress(), getScaleProgressDueToScroll()), mDragLengthFactor);
     }
 
     /**
@@ -1170,7 +1182,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     private boolean hasReachedOverviewThreshold() {
-        return mCurrentShift.value > MIN_PROGRESS_FOR_OVERVIEW;
+        return getTaskbarProgress() > MIN_PROGRESS_FOR_OVERVIEW;
     }
 
     @UiThread
@@ -2198,7 +2210,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             AnimatorControllerWithResistance playbackController =
                     remoteHandle.getPlaybackController();
             if (playbackController != null) {
-                playbackController.setProgress(Math.max(mCurrentShift.value,
+                playbackController.setProgress(Math.max(getTaskbarProgress(),
                         getScaleProgressDueToScroll()), mDragLengthFactor);
             }
 
@@ -2240,6 +2252,41 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         }
 
         return scaleProgress;
+    }
+
+    /**
+     * Updates the current status of taskbar during this swipe.
+     */
+    public void setTaskbarAlreadyOpen(boolean taskbarAlreadyOpen) {
+        mTaskbarAlreadyOpen = taskbarAlreadyOpen;
+    }
+
+    /**
+     * Overrides the current shift progress to keep the app window at the bottom of the screen
+     * while the transient taskbar is being swiped in.
+     *
+     * There is also a catch up period so that the window can start moving 1:1 with the swipe.
+     */
+    private float getTaskbarProgress() {
+        if (!DisplayController.isTransientTaskbar(mContext)) {
+            return mCurrentShift.value;
+        }
+
+        if (mTaskbarAlreadyOpen) {
+            return mCurrentShift.value;
+        }
+
+        if (mCurrentDisplacement < mTaskbarAppWindowThreshold) {
+            return 0;
+        }
+
+        // "Catch up" with `mCurrentShift.value`.
+        if (mCurrentDisplacement < mTaskbarCatchUpThreshold) {
+            return Utilities.mapToRange(mCurrentDisplacement, mTaskbarAppWindowThreshold,
+                    mTaskbarCatchUpThreshold, 0, mCurrentShift.value, ACCEL_DEACCEL);
+        }
+
+        return mCurrentShift.value;
     }
 
     private void setDividerShown(boolean shown, boolean immediate) {
