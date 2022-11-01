@@ -473,6 +473,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         private int mPackageId = 0;
         private long mLatencyInMillis;
         private int mQueryLength = -1;
+        private int mSubEventType = 0;
 
         StatsCompatLatencyLogger(Context context, ActivityContext activityContext) {
             mContext = context;
@@ -510,6 +511,12 @@ public class StatsLogCompatManager extends StatsLogManager {
         }
 
         @Override
+        public StatsLatencyLogger withSubEventType(int type) {
+            this.mSubEventType = type;
+            return this;
+        }
+
+        @Override
         public void log(EventEnum event) {
             if (IS_VERBOSE) {
                 String name = (event instanceof Enum) ? ((Enum) event).name() :
@@ -526,7 +533,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                     mPackageId, // package_id
                     mLatencyInMillis, // latency_in_millis
                     mType.getId(), //type
-                    mQueryLength // query_length
+                    mQueryLength, // query_length
+                    mSubEventType // sub_event_type
             );
         }
     }
