@@ -17,6 +17,7 @@
 package com.android.launcher3.pageindicators;
 
 import static com.android.launcher3.config.FeatureFlags.SHOW_DELIGHTFUL_PAGINATION;
+import static com.android.launcher3.config.FeatureFlags.SHOW_DOT_PAGINATION;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -182,7 +183,9 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
 
     @Override
     public void setScroll(int currentScroll, int totalScroll) {
-        animatePaginationToAlpha(VISIBLE_ALPHA);
+        if (SHOW_DELIGHTFUL_PAGINATION.get() || SHOW_DOT_PAGINATION.get()) {
+            animatePaginationToAlpha(VISIBLE_ALPHA);
+        }
 
         if (mNumPages <= 1) {
             mCurrentScroll = 0;
@@ -193,9 +196,9 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
             currentScroll = totalScroll - currentScroll;
         }
 
+        mTotalScroll = totalScroll;
         if (SHOW_DELIGHTFUL_PAGINATION.get()) {
             mCurrentScroll = currentScroll;
-            mTotalScroll = totalScroll;
             invalidate();
 
             if (mShouldAutoHide
@@ -214,9 +217,15 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
         if (currentScroll < pageToLeftScroll + scrollThreshold) {
             // scroll is within the left page's threshold
             animateToPosition(pageToLeft);
+            if (SHOW_DOT_PAGINATION.get()) {
+                hideAfterDelay();
+            }
         } else if (currentScroll > pageToRightScroll - scrollThreshold) {
             // scroll is far enough from left page to go to the right page
             animateToPosition(pageToLeft + 1);
+            if (SHOW_DOT_PAGINATION.get()) {
+                hideAfterDelay();
+            }
         } else {
             // scroll is between left and right page
             animateToPosition(pageToLeft + SHIFT_PER_ANIMATION);
