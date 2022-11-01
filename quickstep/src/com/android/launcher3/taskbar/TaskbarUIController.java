@@ -97,6 +97,13 @@ public class TaskbarUIController {
         }
     }
 
+    /**
+     * Returns true iff taskbar is stashed.
+     */
+    public boolean isTaskbarStashed() {
+        return mControllers.taskbarStashController.isStashed();
+    }
+
     @CallSuper
     protected void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(String.format(

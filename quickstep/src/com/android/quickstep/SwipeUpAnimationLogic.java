@@ -65,6 +65,7 @@ public abstract class SwipeUpAnimationLogic implements
     // 1 => preview snapShot is completely aligned with the recents view and hotseat is completely
     // visible.
     protected final AnimatedFloat mCurrentShift = new AnimatedFloat(this::updateFinalShift);
+    protected float mCurrentDisplacement;
 
     // The distance needed to drag to reach the task size in recents.
     protected int mTransitionDragLength;
@@ -116,6 +117,8 @@ public abstract class SwipeUpAnimationLogic implements
     public void updateDisplacement(float displacement) {
         // We are moving in the negative x/y direction
         displacement = -displacement;
+        mCurrentDisplacement = displacement;
+
         float shift;
         if (displacement > mTransitionDragLength * mDragLengthFactor && mTransitionDragLength > 0) {
             shift = mDragLengthFactor;

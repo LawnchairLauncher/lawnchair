@@ -37,6 +37,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.PointF;
 import android.os.Build;
 import android.util.Log;
@@ -48,13 +49,16 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.taskbar.TaskbarUIController;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.tracing.InputConsumerProto;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.AbsSwipeUpHandler;
 import com.android.quickstep.AbsSwipeUpHandler.Factory;
+import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationCallbacks;
@@ -97,6 +101,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private final CachedEventDispatcher mRecentsViewDispatcher = new CachedEventDispatcher();
     private final InputMonitorCompat mInputMonitorCompat;
     private final InputEventReceiver mInputEventReceiver;
+    private final BaseActivityInterface mActivityInterface;
 
     private final AbsSwipeUpHandler.Factory mHandlerFactory;
 
@@ -131,6 +136,10 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     // Might be displacement in X or Y, depending on the direction we are swiping from the nav bar.
     private float mStartDisplacement;
 
+    private final boolean mIsTransientTaskbar;
+    private final boolean mTaskbarAlreadyOpen;
+    private final int mTaskbarHomeOverviewThreshold;
+
     public OtherActivityInputConsumer(Context base, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
             boolean isDeferredDownTarget, Consumer<OtherActivityInputConsumer> onCompleteCallback,
@@ -142,6 +151,11 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mTaskAnimationManager = taskAnimationManager;
         mGestureState = gestureState;
         mHandlerFactory = handlerFactory;
+        mActivityInterface = mGestureState.getActivityInterface();
+
+        Resources res = base.getResources();
+        mTaskbarHomeOverviewThreshold = res
+                .getDimensionPixelSize(R.dimen.taskbar_home_overview_threshold);
 
         mMotionPauseDetector = new MotionPauseDetector(base, false,
                 mNavBarPosition.isLeftEdge() || mNavBarPosition.isRightEdge()
@@ -152,6 +166,10 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mVelocityTracker = VelocityTracker.obtain();
         mInputMonitorCompat = inputMonitorCompat;
         mInputEventReceiver = inputEventReceiver;
+
+        TaskbarUIController controller = mActivityInterface.getTaskbarController();
+        mTaskbarAlreadyOpen = controller != null && !controller.isTaskbarStashed();
+        mIsTransientTaskbar = DisplayController.isTransientTaskbar(base);
 
         boolean continuingPreviousGesture = mTaskAnimationManager.isRecentsAnimationRunning();
         mIsDeferredDownTarget = !continuingPreviousGesture && isDeferredDownTarget;
@@ -279,6 +297,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 float upDist = -displacement;
                 boolean passedSlop = squaredHypot(displacementX, displacementY)
                         >= mSquaredTouchSlop;
+
                 if (!mPassedSlopOnThisGesture && passedSlop) {
                     mPassedSlopOnThisGesture = true;
                 }
@@ -323,7 +342,13 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                     }
 
                     if (mDeviceState.isFullyGesturalNavMode()) {
-                        mMotionPauseDetector.setDisallowPause(upDist < mMotionPauseMinDisplacement
+                        float minDisplacement = mMotionPauseMinDisplacement;
+
+                        if (mIsTransientTaskbar && !mTaskbarAlreadyOpen) {
+                            minDisplacement += mTaskbarHomeOverviewThreshold;
+                        }
+
+                        mMotionPauseDetector.setDisallowPause(upDist < minDisplacement
                                 || isLikelyToStartNewTask);
                         mMotionPauseDetector.addPosition(ev);
                         mInteractionHandler.setIsLikelyToStartNewTask(isLikelyToStartNewTask);
@@ -357,6 +382,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
         // Notify the handler that the gesture has actually started
         mInteractionHandler.onGestureStarted(isLikelyToStartNewTask);
+
+        mInteractionHandler.setTaskbarAlreadyOpen(mTaskbarAlreadyOpen);
     }
 
     private void startTouchTrackingForWindowAnimation(long touchTimeMs) {
