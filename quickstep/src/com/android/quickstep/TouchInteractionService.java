@@ -294,6 +294,16 @@ public class TouchInteractionService extends Service
             MAIN_EXECUTOR.execute(ProxyScreenStatusProvider.INSTANCE::onScreenTurningOff);
         }
 
+        @BinderThread
+        @Override
+        public void enterStageSplitFromRunningApp(boolean leftOrTop) {
+            StatefulActivity activity =
+                    mOverviewComponentObserver.getActivityInterface().getCreatedActivity();
+            if (activity != null) {
+                activity.enterStageSplitFromRunningApp(leftOrTop);
+            }
+        }
+
         /**
          * Preloads the Overview activity.
          *
