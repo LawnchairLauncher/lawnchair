@@ -489,6 +489,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     @Test
     @PortraitLandscape
+    @ScreenRecord // (b/256659409)
     public void testUninstallFromAllApps() throws Exception {
         TestUtil.installDummyApp();
         try {
