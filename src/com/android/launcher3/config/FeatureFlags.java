@@ -253,6 +253,10 @@ public final class FeatureFlags {
             "ENABLE_SPLIT_FROM_WORKSPACE", true,
             "Enable initiating split screen from workspace.");
 
+    public static final BooleanFlag ENABLE_SPLIT_FROM_FULLSCREEN_WITH_KEYBOARD_SHORTCUTS =
+            getDebugFlag("ENABLE_SPLIT_FROM_FULLSCREEN_SHORTCUT", false,
+                    "Enable splitting from fullscreen app with keyboard shortcuts");
+
     public static final BooleanFlag ENABLE_NEW_MIGRATION_LOGIC = getDebugFlag(
             "ENABLE_NEW_MIGRATION_LOGIC", true,
             "Enable the new grid migration logic, keeping pages when src < dest");
