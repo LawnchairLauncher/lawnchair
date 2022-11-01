@@ -2467,23 +2467,20 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         final View child = (mDragInfo == null) ? null : mDragInfo.cell;
         int reorderX = mTargetCell[0];
         int reorderY = mTargetCell[1];
-        if (!nearestDropOccupied) {
-            mDragTargetLayout.performReorder((int) mDragViewVisualCenter[0],
-                    (int) mDragViewVisualCenter[1], minSpanX, minSpanY, item.spanX, item.spanY,
-                    child, mTargetCell, new int[2], CellLayout.MODE_SHOW_REORDER_HINT);
-            mDragTargetLayout.visualizeDropLocation(mTargetCell[0], mTargetCell[1],
-                    item.spanX, item.spanY, d);
-        } else if ((mDragMode == DRAG_MODE_NONE || mDragMode == DRAG_MODE_REORDER)
-                && !mReorderAlarm.alarmPending()
+        if ((mDragMode == DRAG_MODE_NONE || mDragMode == DRAG_MODE_REORDER)
                 && (mLastReorderX != reorderX || mLastReorderY != reorderY)
                 && targetCellDistance < mDragTargetLayout.getReorderRadius(mTargetCell, item.spanX,
                 item.spanY)) {
-
-            int[] resultSpan = new int[2];
             mDragTargetLayout.performReorder((int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1], minSpanX, minSpanY, item.spanX, item.spanY,
-                    child, mTargetCell, resultSpan, CellLayout.MODE_SHOW_REORDER_HINT);
+                    child, mTargetCell, new int[2], CellLayout.MODE_SHOW_REORDER_HINT);
+        }
 
+        if (!nearestDropOccupied) {
+            mDragTargetLayout.visualizeDropLocation(mTargetCell[0], mTargetCell[1],
+                    item.spanX, item.spanY, d);
+        } else if ((mDragMode == DRAG_MODE_NONE || mDragMode == DRAG_MODE_REORDER)
+                && !mReorderAlarm.alarmPending()) {
             // Otherwise, if we aren't adding to or creating a folder and there's no pending
             // reorder, then we schedule a reorder
             ReorderAlarmListener listener = new ReorderAlarmListener(mDragViewVisualCenter,
