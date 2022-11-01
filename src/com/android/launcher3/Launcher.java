@@ -44,6 +44,7 @@ import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.getSupportedActions;
 import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
 import static com.android.launcher3.config.FeatureFlags.SHOW_DELIGHTFUL_PAGINATION;
+import static com.android.launcher3.config.FeatureFlags.SHOW_DOT_PAGINATION;
 import static com.android.launcher3.logging.StatsLogManager.EventEnum;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
@@ -1300,7 +1301,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
-        if (SHOW_DELIGHTFUL_PAGINATION.get()
+        if ((SHOW_DOT_PAGINATION.get() || SHOW_DELIGHTFUL_PAGINATION.get())
                 && WorkspacePageIndicator.class.getName().equals(name)) {
             return LayoutInflater.from(context).inflate(R.layout.page_indicator_dots,
                     (ViewGroup) parent, false);
@@ -1331,7 +1332,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         BubbleTextView favorite = (BubbleTextView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.app_icon, parent, false);
         favorite.applyFromWorkspaceItem(info);
-        favorite.setOnClickListener(ItemClickHandler.INSTANCE);
+        favorite.setOnClickListener(getItemOnClickListener());
         favorite.setOnFocusChangeListener(mFocusHandler);
         return favorite;
     }
