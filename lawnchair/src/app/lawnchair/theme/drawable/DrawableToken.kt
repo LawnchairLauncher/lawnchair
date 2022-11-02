@@ -25,8 +25,8 @@ data class ResourceDrawableToken<T : Drawable>(@DrawableRes private val resId: I
 
 data class AttributeDrawableToken<T : Drawable>(@AttrRes private val attr: Int) : DrawableToken<T> {
 
-    @Suppress("UNCHECKED_CAST")
     override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): T {
+        @Suppress("UNCHECKED_CAST")
         return Themes.getAttrDrawable(context, attr) as T
     }
 }

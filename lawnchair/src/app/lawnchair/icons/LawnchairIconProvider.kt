@@ -137,7 +137,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
     override fun getThemeData(componentName: ComponentName): ThemedIconDrawable.ThemeData? {
         val td = getDynamicIconsFromMap(context, themeMap, componentName)
         if(td != null){
-            return td;
+            return td
         }
         return themeMap[componentName] ?: themeMap[ComponentName(componentName.packageName, "")]
     }
