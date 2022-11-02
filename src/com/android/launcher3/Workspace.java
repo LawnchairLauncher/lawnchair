@@ -2468,6 +2468,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         int reorderX = mTargetCell[0];
         int reorderY = mTargetCell[1];
         if (!nearestDropOccupied) {
+            mDragTargetLayout.performReorder((int) mDragViewVisualCenter[0],
+                    (int) mDragViewVisualCenter[1], minSpanX, minSpanY, item.spanX, item.spanY,
+                    child, mTargetCell, new int[2], CellLayout.MODE_SHOW_REORDER_HINT);
             mDragTargetLayout.visualizeDropLocation(mTargetCell[0], mTargetCell[1],
                     item.spanX, item.spanY, d);
         } else if ((mDragMode == DRAG_MODE_NONE || mDragMode == DRAG_MODE_REORDER)

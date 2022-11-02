@@ -70,6 +70,7 @@ import android.view.View;
 import android.view.WindowManagerGlobal;
 import android.window.SplashScreen;
 
+import androidx.annotation.BinderThread;
 import androidx.annotation.Nullable;
 
 import com.android.app.viewcapture.ViewCapture;
@@ -135,6 +136,7 @@ import com.android.quickstep.util.QuickstepOnboardingPrefs;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
 import com.android.quickstep.util.SplitSelectStateController;
+import com.android.quickstep.util.SplitWithKeyboardShortcutController;
 import com.android.quickstep.util.TISBindHelper;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
@@ -179,6 +181,8 @@ public class QuickstepLauncher extends Launcher {
     private @Nullable UnfoldTransitionProgressProvider mUnfoldTransitionProgressProvider;
     private @Nullable RotationChangeProvider mRotationChangeProvider;
     private @Nullable LauncherUnfoldAnimationController mLauncherUnfoldAnimationController;
+
+    private SplitWithKeyboardShortcutController mSplitWithKeyboardShortcutController;
     /**
      * If Launcher restarted while in the middle of an Overview split select, it needs this data to
      * recover. In all other cases this will remain null.
@@ -194,11 +198,13 @@ public class QuickstepLauncher extends Launcher {
         super.setupViews();
 
         mActionsView = findViewById(R.id.overview_actions_view);
-        RecentsView overviewPanel = (RecentsView) getOverviewPanel();
+        RecentsView overviewPanel = getOverviewPanel();
         SplitSelectStateController controller =
                 new SplitSelectStateController(this, mHandler, getStateManager(),
                         getDepthController(), getStatsLogManager());
         overviewPanel.init(mActionsView, controller);
+        mSplitWithKeyboardShortcutController = new SplitWithKeyboardShortcutController(this,
+                controller);
         mActionsView.updateDimension(getDeviceProfile(), overviewPanel.getLastComputedTaskSize());
         mActionsView.updateVerticalMargin(DisplayController.getNavigationMode(this));
 
@@ -321,6 +327,17 @@ public class QuickstepLauncher extends Launcher {
         super.showAllAppsFromIntent(alreadyOnHome);
     }
 
+    protected void onItemClicked(View view) {
+        if (!mSplitWithKeyboardShortcutController.handleSecondAppSelectionForSplit(view)) {
+            QuickstepLauncher.super.getItemOnClickListener().onClick(view);
+        }
+    }
+
+    @Override
+    public View.OnClickListener getItemOnClickListener() {
+        return this::onItemClicked;
+    }
+
     @Override
     public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
         Stream<SystemShortcut.Factory> base = Stream.of(WellbeingModel.SHORTCUT_FACTORY);
@@ -402,6 +419,7 @@ public class QuickstepLauncher extends Launcher {
 
         super.onDestroy();
         mHotseatPredictionController.destroy();
+        mSplitWithKeyboardShortcutController.onDestroy();
         if (mViewCapture != null) mViewCapture.close();
     }
 
@@ -830,6 +848,12 @@ public class QuickstepLauncher extends Launcher {
                         : Display.DEFAULT_DISPLAY);
         addLaunchCookie(item, activityOptions.options);
         return activityOptions;
+    }
+
+    @Override
+    @BinderThread
+    public void enterStageSplitFromRunningApp(boolean leftOrTop) {
+        mSplitWithKeyboardShortcutController.enterStageSplit(leftOrTop);
     }
 
     /**

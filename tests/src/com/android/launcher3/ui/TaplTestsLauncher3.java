@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.platform.test.annotations.IwTest;
 
+import androidx.test.filters.FlakyTest;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
@@ -420,6 +421,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 MAPS_APP_NAME);
     }
 
+    @FlakyTest(bugId = 256615483)
     @Test
     @PortraitLandscape
     public void testPressBack() throws Exception {
@@ -475,6 +477,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         }
     }
 
+    @Ignore("b/256615483")
     @Test
     @PortraitLandscape
     public void testUninstallFromWorkspace() throws Exception {
@@ -489,6 +492,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     @Test
     @PortraitLandscape
+    @ScreenRecord // (b/256659409)
     public void testUninstallFromAllApps() throws Exception {
         TestUtil.installDummyApp();
         try {

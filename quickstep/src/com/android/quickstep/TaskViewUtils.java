@@ -43,7 +43,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Matrix;
@@ -399,9 +398,8 @@ public final class TaskViewUtils {
      */
     public static void composeRecentsSplitLaunchAnimator(GroupedTaskView launchingTaskView,
             @NonNull StateManager stateManager, @Nullable DepthController depthController,
-            int initialTaskId, @Nullable PendingIntent initialTaskPendingIntent, int secondTaskId,
-            @NonNull TransitionInfo transitionInfo, SurfaceControl.Transaction t,
-            @NonNull Runnable finishCallback) {
+            int initialTaskId, int secondTaskId, @NonNull TransitionInfo transitionInfo,
+            SurfaceControl.Transaction t, @NonNull Runnable finishCallback) {
         if (launchingTaskView != null) {
             AnimatorSet animatorSet = new AnimatorSet();
             animatorSet.addListener(new AnimatorListenerAdapter() {
@@ -491,8 +489,7 @@ public final class TaskViewUtils {
      * If it is null, then it will simply fade in the starting apps and fade out launcher (for the
      * case where launcher handles animating starting split tasks from app icon) */
     public static void composeRecentsSplitLaunchAnimatorLegacy(
-            @Nullable GroupedTaskView launchingTaskView, int initialTaskId,
-            @Nullable PendingIntent initialTaskPendingIntent, int secondTaskId,
+            @Nullable GroupedTaskView launchingTaskView, int initialTaskId, int secondTaskId,
             @NonNull RemoteAnimationTarget[] appTargets,
             @NonNull RemoteAnimationTarget[] wallpaperTargets,
             @NonNull RemoteAnimationTarget[] nonAppTargets,
