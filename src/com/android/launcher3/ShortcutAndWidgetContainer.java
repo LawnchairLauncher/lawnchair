@@ -107,6 +107,18 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
         }
     }
 
+    /**
+     * Adds view to Layout a new position and it does not trigger a layout request.
+     * For more information check documentation for
+     * {@code ViewGroup#addViewInLayout(View, int, LayoutParams, boolean)}
+     *
+     * @param child view to be added
+     * @return true if the child was added, false otherwise
+     */
+    public boolean addViewInLayout(View child, LayoutParams layoutParams) {
+        return super.addViewInLayout(child, -1, layoutParams, true);
+    }
+
     public void setupLp(View child) {
         CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
         if (child instanceof NavigableAppWidgetHostView) {
