@@ -116,6 +116,14 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     }
 
     @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (mControllerCallbacks != null && ev.getAction() == MotionEvent.ACTION_OUTSIDE) {
+            mControllerCallbacks.onActionOutsideEvent();
+        }
+        return super.onTouchEvent(ev);
+    }
+
+    @Override
     public void onViewRemoved(View child) {
         super.onViewRemoved(child);
         if (mControllerCallbacks != null) {
