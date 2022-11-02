@@ -35,6 +35,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -42,6 +43,9 @@ import android.util.Pair;
 import android.view.RemoteAnimationAdapter;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
+import android.window.IRemoteTransition;
+import android.window.IRemoteTransitionFinishedCallback;
+import android.window.RemoteTransition;
 import android.window.TransitionInfo;
 
 import androidx.annotation.Nullable;
@@ -63,10 +67,7 @@ import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.GroupedTaskView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
-import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
-import com.android.systemui.shared.system.RemoteTransitionCompat;
-import com.android.systemui.shared.system.RemoteTransitionRunner;
 
 import java.util.function.Consumer;
 
@@ -232,8 +233,7 @@ public class SplitSelectStateController {
         if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
             final RemoteSplitLaunchTransitionRunner animationRunner =
                     new RemoteSplitLaunchTransitionRunner(taskId1, taskId2, callback);
-            final RemoteTransitionCompat remoteTransition = new RemoteTransitionCompat(
-                    animationRunner, MAIN_EXECUTOR,
+            final RemoteTransition remoteTransition = new RemoteTransition(animationRunner,
                     ActivityThread.currentActivityThread().getApplicationThread());
             if (intent1 == null && intent2 == null) {
                 mSystemUiProxy.startTasks(taskId1, options1.toBundle(), taskId2,
@@ -253,8 +253,7 @@ public class SplitSelectStateController {
             final RemoteSplitLaunchAnimationRunner animationRunner =
                     new RemoteSplitLaunchAnimationRunner(taskId1, taskId2, callback);
             final RemoteAnimationAdapter adapter = new RemoteAnimationAdapter(
-                    RemoteAnimationAdapterCompat.wrapRemoteAnimationRunner(animationRunner),
-                    300, 150,
+                    animationRunner, 300, 150,
                     ActivityThread.currentActivityThread().getApplicationThread());
 
             if (intent1 == null && intent2 == null) {
@@ -276,7 +275,7 @@ public class SplitSelectStateController {
 
     private void launchIntentOrShortcut(Intent intent, String otherTaskPackageName,
             ActivityOptions options1, int taskId, @StagePosition int stagePosition,
-            float splitRatio, RemoteTransitionCompat remoteTransition,
+            float splitRatio, RemoteTransition remoteTransition,
             @Nullable InstanceId shellInstanceId) {
         PendingIntent pendingIntent = getPendingIntent(intent);
         final ShortcutInfo shortcutInfo = getShortcutInfo(intent,
@@ -369,7 +368,7 @@ public class SplitSelectStateController {
     /**
      * Requires Shell Transitions
      */
-    private class RemoteSplitLaunchTransitionRunner implements RemoteTransitionRunner {
+    private class RemoteSplitLaunchTransitionRunner extends IRemoteTransition.Stub {
 
         private final int mInitialTaskId;
         private final int mSecondTaskId;
@@ -383,25 +382,41 @@ public class SplitSelectStateController {
         }
 
         @Override
-        public void startAnimation(@NonNull IBinder transition, @NonNull TransitionInfo info,
-                @NonNull SurfaceControl.Transaction t, @NonNull Runnable finishCallback) {
-            TaskViewUtils.composeRecentsSplitLaunchAnimator(mLaunchingTaskView, mStateManager,
-                    mDepthController, mInitialTaskId, mSecondTaskId, info, t, () -> {
-                        finishCallback.run();
-                        if (mSuccessCallback != null) {
-                            mSuccessCallback.accept(true);
-                        }
-                });
-            // After successful launch, call resetState
-            resetState();
+        public void startAnimation(IBinder transition, TransitionInfo info,
+                SurfaceControl.Transaction t,
+                IRemoteTransitionFinishedCallback finishedCallback) {
+            final Runnable finishAdapter = () ->  {
+                try {
+                    finishedCallback.onTransitionFinished(null /* wct */, null /* sct */);
+                } catch (RemoteException e) {
+                    Log.e(TAG, "Failed to call transition finished callback", e);
+                }
+            };
+
+            MAIN_EXECUTOR.execute(() -> {
+                TaskViewUtils.composeRecentsSplitLaunchAnimator(mLaunchingTaskView, mStateManager,
+                        mDepthController, mInitialTaskId, mSecondTaskId, info, t, () -> {
+                            finishAdapter.run();
+                            if (mSuccessCallback != null) {
+                                mSuccessCallback.accept(true);
+                            }
+                        });
+                // After successful launch, call resetState
+                resetState();
+            });
         }
+
+        @Override
+        public void mergeAnimation(IBinder transition, TransitionInfo info,
+                SurfaceControl.Transaction t, IBinder mergeTarget,
+                IRemoteTransitionFinishedCallback finishedCallback) { }
     }
 
     /**
      * LEGACY
      * Remote animation runner for animation to launch an app.
      */
-    private class RemoteSplitLaunchAnimationRunner implements RemoteAnimationRunnerCompat {
+    private class RemoteSplitLaunchAnimationRunner extends RemoteAnimationRunnerCompat {
 
         private final int mInitialTaskId;
         private final int mSecondTaskId;
@@ -431,7 +446,7 @@ public class SplitSelectStateController {
         }
 
         @Override
-        public void onAnimationCancelled() {
+        public void onAnimationCancelled(boolean isKeyguardOccluded) {
             postAsyncCallback(mHandler, () -> {
                 if (mSuccessCallback != null) {
                     // Launching legacy tasks while recents animation is running will always cause

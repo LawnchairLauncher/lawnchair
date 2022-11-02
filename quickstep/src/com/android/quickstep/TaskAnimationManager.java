@@ -21,6 +21,7 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_INITIALIZED;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_STARTED;
+import static com.android.systemui.shared.system.RemoteTransitionCompat.newRemoteTransition;
 
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
@@ -29,6 +30,7 @@ import android.content.Intent;
 import android.os.SystemProperties;
 import android.util.Log;
 import android.view.RemoteAnimationTarget;
+import android.window.RemoteTransition;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
@@ -39,7 +41,6 @@ import com.android.quickstep.TopTaskTracker.CachedTaskInfo;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.RemoteTransitionCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 
@@ -223,11 +224,10 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
         mCallbacks.addListener(listener);
 
         if (ENABLE_SHELL_TRANSITIONS) {
-            RemoteTransitionCompat transition = new RemoteTransitionCompat(mCallbacks,
+            RemoteTransition transition = newRemoteTransition(mCallbacks,
                     mController != null ? mController.getController() : null,
                     mCtx.getIApplicationThread());
-            final ActivityOptions options = ActivityOptions.makeRemoteTransition(
-                    transition.getTransition());
+            final ActivityOptions options = ActivityOptions.makeRemoteTransition(transition);
             // Allowing to pause Home if Home is top activity and Recents is not Home. So when user
             // start home when recents animation is playing, the home activity can be resumed again
             // to let the transition controller collect Home activity.
