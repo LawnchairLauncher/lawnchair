@@ -237,7 +237,7 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
 
     val workspaceTextColor = preference(
         key = stringPreferencesKey(name = "workspace_text_color"),
-        defaultValue = ColorMode.LIGHT,
+        defaultValue = ColorMode.AUTO,
         parse = { ColorMode.fromString(it) ?: ColorMode.AUTO },
         save = { it.toString() },
         onSet = { reloadHelper.recreate() },
