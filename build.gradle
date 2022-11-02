@@ -387,7 +387,7 @@ dependencies {
     implementation "com.google.accompanist:accompanist-placeholder-material:$accompanist_version"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
     implementation "com.google.android.material:material:1.7.0"
-    implementation "io.github.fornewid:material-motion-compose-core:0.9.1"
+    implementation "io.github.fornewid:material-motion-compose-core:0.10.3"
     implementation 'dev.kdrag0n:colorkt:1.0.5'
     implementation 'io.coil-kt:coil-compose:2.2.2'
     implementation 'me.xdrop:fuzzywuzzy:1.4.0'

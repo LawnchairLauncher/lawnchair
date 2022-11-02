@@ -21,7 +21,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -35,7 +34,9 @@ import app.lawnchair.ui.util.ProvideBottomSheetHandler
 import app.lawnchair.util.ProvideLifecycleState
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import soup.compose.material.motion.materialSharedAxisX
+import soup.compose.material.motion.animation.materialSharedAxisXIn
+import soup.compose.material.motion.animation.materialSharedAxisXOut
+import soup.compose.material.motion.animation.rememberSlideDistance
 
 object Routes {
     const val GENERAL = "general"
@@ -72,8 +73,7 @@ val LocalPreferenceInteractor = staticCompositionLocalOf<PreferenceInteractor> {
 fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel>()) {
     val navController = rememberAnimatedNavController()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
-    val motionSpec = materialSharedAxisX()
-    val density = LocalDensity.current
+    val slideDistance = rememberSlideDistance()
 
     SystemUi()
     Providers {
@@ -85,10 +85,10 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
                 AnimatedNavHost(
                     navController = navController,
                     startDestination = "/",
-                    enterTransition = { motionSpec.enter.transition(!isRtl, density) },
-                    exitTransition = { motionSpec.exit.transition(!isRtl, density) },
-                    popEnterTransition = { motionSpec.enter.transition(isRtl, density) },
-                    popExitTransition = { motionSpec.exit.transition(isRtl, density) },
+                    enterTransition = { materialSharedAxisXIn(!isRtl, slideDistance) },
+                    exitTransition = { materialSharedAxisXOut(!isRtl, slideDistance) },
+                    popEnterTransition = { materialSharedAxisXIn(isRtl, slideDistance) },
+                    popExitTransition = { materialSharedAxisXOut(isRtl, slideDistance) },
                 ) {
                     preferenceGraph(route = "/", { PreferencesDashboard() }) { subRoute ->
                         generalGraph(route = subRoute(Routes.GENERAL))
