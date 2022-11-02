@@ -1913,6 +1913,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
         int scroll = mOrientationHandler.getPrimaryScroll(this);
         mClearAllButton.onRecentsViewScroll(scroll, mOverviewGridEnabled);
+
+        // Clear all button alpha was set by the previous line.
+        mActionsView.getIndexScrollAlpha().setValue(1 - mClearAllButton.getScrollAlpha());
     }
 
     @Override
