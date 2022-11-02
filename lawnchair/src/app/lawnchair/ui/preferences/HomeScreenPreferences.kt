@@ -28,6 +28,7 @@ import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.theme.color.ColorMode
 import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.util.collectAsStateBlocking
 import com.android.launcher3.R
@@ -71,6 +72,7 @@ fun HomeScreenPreferences() {
                 description = if (feedAvailable) null else stringResource(id = R.string.minus_one_unavailable),
                 enabled = feedAvailable,
             )
+            HomeScreenTextColorPreference()
         }
         PreferenceGroup(heading = stringResource(id = R.string.wallpaper)) {
             SwitchPreference(
@@ -165,4 +167,13 @@ fun HomeScreenPreferences() {
             )
         }
     }
+}
+
+@Composable
+fun HomeScreenTextColorPreference() {
+    ListPreference(
+        adapter = preferenceManager2().workspaceTextColor.getAdapter(),
+        entries = ColorMode.entries(),
+        label = stringResource(id = R.string.home_screen_text_color),
+    )
 }
