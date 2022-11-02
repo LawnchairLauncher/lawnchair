@@ -16,6 +16,7 @@
 package com.android.launcher3.taskbar.allapps;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.R;
 import com.android.launcher3.appprediction.PredictionRowView;
@@ -122,5 +123,12 @@ public final class TaskbarAllAppsController {
         mAppsView.getFloatingHeaderView()
                 .findFixedRowByType(PredictionRowView.class)
                 .setPredictedApps(mPredictedApps);
+    }
+
+
+    @VisibleForTesting
+    public int getTaskbarAllAppsTopPadding() {
+        // Allow null-pointer since this should only be null if the apps view is not showing.
+        return mAppsView.getActiveRecyclerView().getClipBounds().top;
     }
 }

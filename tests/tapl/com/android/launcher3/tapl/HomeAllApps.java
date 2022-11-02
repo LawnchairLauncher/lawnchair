@@ -18,6 +18,8 @@ package com.android.launcher3.tapl;
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
 
+import com.android.launcher3.testing.shared.TestProtocol;
+
 public class HomeAllApps extends AllApps {
     private static final String BOTTOM_SHEET_RES_ID = "bottom_sheet_background";
 
@@ -45,6 +47,12 @@ public class HomeAllApps extends AllApps {
     @Override
     protected boolean hasSearchBox() {
         return true;
+    }
+
+    @Override
+    protected int getAppsListRecyclerTopPadding() {
+        return mLauncher.getTestInfo(TestProtocol.REQUEST_ALL_APPS_TOP_PADDING)
+                .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
     /**
