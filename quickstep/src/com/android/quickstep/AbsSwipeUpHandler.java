@@ -963,7 +963,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 new ActiveGestureLog.CompoundString("on gesture started (animate=false)"));
         mStateCallback.setStateOnUiThread(STATE_GESTURE_STARTED);
         mGestureStarted = true;
-        SystemUiProxy.INSTANCE.get(mContext).notifySwipeUpGestureStarted();
     }
 
     /**
