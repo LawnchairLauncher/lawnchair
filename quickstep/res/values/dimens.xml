@@ -292,6 +292,7 @@
     <dimen name="taskbar_app_window_threshold">150dp</dimen>
     <dimen name="taskbar_home_overview_threshold">225dp</dimen>
     <dimen name="taskbar_catch_up_threshold">300dp</dimen>
+    <dimen name="taskbar_nav_threshold">40dp</dimen>
 
     <!--  Taskbar 3 button spacing  -->
     <dimen name="taskbar_button_space_inbetween">24dp</dimen>
