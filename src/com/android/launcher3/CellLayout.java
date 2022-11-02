@@ -938,7 +938,7 @@ public class CellLayout extends ViewGroup {
         cellToRect(targetCell[0], targetCell[1], spanX, spanY, cellBoundsWithSpacing);
         cellBoundsWithSpacing.inset(-mBorderSpace.x / 2, -mBorderSpace.y / 2);
 
-        if (canCreateFolder(getChildAt(targetCell[0], targetCell[1]))) {
+        if (canCreateFolder(getChildAt(targetCell[0], targetCell[1])) && spanX == 1 && spanY == 1) {
             // Take only the circle in the smaller dimension, to ensure we don't start reordering
             // too soon before accepting a folder drop.
             int minRadius = centerPoint[0] - cellBoundsWithSpacing.left;
@@ -948,8 +948,9 @@ public class CellLayout extends ViewGroup {
             return minRadius;
         }
         // Take up the entire cell, including space between this cell and the adjacent ones.
-        return (float) Math.hypot(cellBoundsWithSpacing.width() / 2f,
-                cellBoundsWithSpacing.height() / 2f);
+        // Multiply by span to scale radius
+        return (float) Math.hypot(spanX * cellBoundsWithSpacing.width() / 2f,
+                spanY * cellBoundsWithSpacing.height() / 2f);
     }
 
     public int getCellWidth() {
