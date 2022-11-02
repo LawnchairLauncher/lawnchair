@@ -293,12 +293,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         int count = getChildCount();
-        int countExcludingQsb = count;
         DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
-        if (deviceProfile.isQsbInline) {
-            countExcludingQsb--;
-        }
-        int spaceNeeded = countExcludingQsb * (mItemMarginLeftRight * 2 + mIconTouchSize);
+        int spaceNeeded = getIconLayoutWidth();
         int navSpaceNeeded = deviceProfile.hotseatBarEndOffset;
         boolean layoutRtl = isLayoutRtl();
         int iconEnd = right - (right - left - spaceNeeded) / 2;
@@ -386,6 +382,18 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
     public Rect getIconLayoutBounds() {
         return mIconLayoutBounds;
+    }
+
+    /**
+     * Returns the space used by the icons
+     */
+    public int getIconLayoutWidth() {
+        int countExcludingQsb = getChildCount();
+        DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
+        if (deviceProfile.isQsbInline) {
+            countExcludingQsb--;
+        }
+        return countExcludingQsb * (mItemMarginLeftRight * 2 + mIconTouchSize);
     }
 
     /**

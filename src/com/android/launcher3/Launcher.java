@@ -143,6 +143,7 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.LauncherDragController;
+import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderGridOrganizer;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.icons.BitmapRenderer;
@@ -1192,7 +1193,6 @@ public class Launcher extends StatefulActivity<LauncherState>
             mOverlayManager.onActivityResumed(this);
         }
 
-        AbstractFloatingView.closeAllOpenViewsExcept(this, false, TYPE_REBIND_SAFE);
         DragView.removeAllViews(this);
         TraceHelper.INSTANCE.endSection(traceToken);
     }
@@ -1705,6 +1705,10 @@ public class Launcher extends StatefulActivity<LauncherState>
             outState.remove(RUNTIME_STATE_WIDGET_PANEL);
         }
 
+        // We close any open folders and shortcut containers that are not safe for rebind,
+        // and we need to make sure this state is reflected.
+        AbstractFloatingView.closeAllOpenViewsExcept(
+                this, isStarted() && !isForceInvisible(), TYPE_REBIND_SAFE);
         finishAutoCancelActionMode();
 
         if (mPendingRequestArgs != null) {
@@ -2815,16 +2819,30 @@ public class Launcher extends StatefulActivity<LauncherState>
             }
 
             return v;
-        } else {
-            List<ViewGroup> containers = new ArrayList<>(mWorkspace.getPanelCount() + 1);
-            containers.add(mWorkspace.getHotseat().getShortcutsAndWidgets());
-            mWorkspace.forEachVisiblePage(page
-                    -> containers.add(((CellLayout) page).getShortcutsAndWidgets()));
-
-            // Order: Preferred item by itself or in folder, then by matching package/user
-            return getFirstMatch(containers, preferredItem, forFolderMatch(preferredItem),
-                    packageAndUserAndApp, forFolderMatch(packageAndUserAndApp));
         }
+
+        // Look for the item inside the folder at the current page
+        Folder folder = Folder.getOpen(this);
+        if (folder != null) {
+            View v = getFirstMatch(Collections.singletonList(
+                    folder.getContent().getCurrentCellLayout().getShortcutsAndWidgets()),
+                    preferredItem,
+                    packageAndUserAndApp);
+            if (v == null) {
+                folder.close(isStarted() && !isForceInvisible());
+            } else {
+                return v;
+            }
+        }
+
+        List<ViewGroup> containers = new ArrayList<>(mWorkspace.getPanelCount() + 1);
+        containers.add(mWorkspace.getHotseat().getShortcutsAndWidgets());
+        mWorkspace.forEachVisiblePage(page
+                -> containers.add(((CellLayout) page).getShortcutsAndWidgets()));
+
+        // Order: Preferred item by itself or in folder, then by matching package/user
+        return getFirstMatch(containers, preferredItem, forFolderMatch(preferredItem),
+                packageAndUserAndApp, forFolderMatch(packageAndUserAndApp));
     }
 
     /**
