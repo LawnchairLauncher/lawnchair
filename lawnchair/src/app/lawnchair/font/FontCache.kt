@@ -164,10 +164,10 @@ class FontCache private constructor(private val context: Context) {
             fun fromJsonString(context: Context, jsonString: String): Font {
                 val obj = JSONObject(jsonString)
                 val className = obj.getString(KEY_CLASS_NAME)
-                val constructor = Class.forName(className)
+                return Class.forName(className)
                     .getMethod("fromJson", Context::class.java, JSONObject::class.java)
                     .apply { isAccessible = true }
-                return constructor(null, context, obj) as Font
+                    .invoke(null, context, obj) as Font
             }
         }
     }
