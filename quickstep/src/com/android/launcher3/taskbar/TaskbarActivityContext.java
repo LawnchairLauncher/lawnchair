@@ -24,8 +24,6 @@ import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
-import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_DRAGGING;
-import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_FULLSCREEN;
 import static com.android.launcher3.taskbar.TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW;
 import static com.android.launcher3.testing.shared.ResourceUtils.getBoolByName;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
@@ -77,7 +75,6 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupDataProvider;
-import com.android.launcher3.taskbar.TaskbarAutohideSuspendController.AutohideSuspendFlag;
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsController;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayController;
 import com.android.launcher3.testing.TestLogging;
@@ -307,9 +304,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 type,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                         | WindowManager.LayoutParams.FLAG_SLIPPERY
-                        | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
-                        | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-                        | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
+                        | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
                 PixelFormat.TRANSLUCENT);
         windowLayoutParams.setTitle(WINDOW_TITLE);
         windowLayoutParams.packageName = getPackageName();
@@ -473,7 +468,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
     @Override
     public void onDragEnd() {
-        onDragEndOrViewRemoved();
+        maybeSetTaskbarWindowNotFullscreen();
     }
 
     @Override
@@ -578,33 +573,24 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     /**
-     * Called to update a {@link AutohideSuspendFlag} with a new value.
-     */
-    public void setAutohideSuspendFlag(@AutohideSuspendFlag int flag, boolean newValue) {
-        mControllers.taskbarAutohideSuspendController.updateFlag(flag, newValue);
-    }
-
-    /**
      * Updates the TaskbarContainer to MATCH_PARENT vs original Taskbar size.
      */
     public void setTaskbarWindowFullscreen(boolean fullscreen) {
-        setAutohideSuspendFlag(FLAG_AUTOHIDE_SUSPEND_FULLSCREEN, fullscreen);
+        mControllers.taskbarAutohideSuspendController.updateFlag(
+                TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_FULLSCREEN, fullscreen);
         mIsFullscreen = fullscreen;
         setTaskbarWindowHeight(fullscreen ? MATCH_PARENT : mLastRequestedNonFullscreenHeight);
     }
 
     /**
-     * Called when drag ends or when a view is removed from the DragLayer.
+     * Reverts Taskbar window to its original size, if all floating views are closed and there is
+     * no system drag operation in progress.
      */
-    void onDragEndOrViewRemoved() {
-        boolean isDragInProgress = mControllers.taskbarDragController.isSystemDragInProgress();
-
-        if (!isDragInProgress && !AbstractFloatingView.hasOpenView(this, TYPE_ALL)) {
-            // Reverts Taskbar window to its original size
+    void maybeSetTaskbarWindowNotFullscreen() {
+        if (AbstractFloatingView.getAnyView(this, TYPE_ALL) == null
+                && !mControllers.taskbarDragController.isSystemDragInProgress()) {
             setTaskbarWindowFullscreen(false);
         }
-
-        setAutohideSuspendFlag(FLAG_AUTOHIDE_SUSPEND_DRAGGING, isDragInProgress);
     }
 
     public boolean isTaskbarWindowFullscreen() {
@@ -718,7 +704,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             Task task = (Task) tag;
             ActivityManagerWrapper.getInstance().startActivityFromRecents(task.key,
                     ActivityOptions.makeBasic());
-            mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
         } else if (tag instanceof FolderInfo) {
             FolderIcon folderIcon = (FolderIcon) view;
             Folder folder = folderIcon.getFolder();
@@ -778,7 +763,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                     }
 
                     mControllers.uiController.onTaskbarIconLaunched(info);
-                    mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
                 } catch (NullPointerException | ActivityNotFoundException | SecurityException e) {
                     Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT)
                             .show();
@@ -788,7 +772,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         } else if (tag instanceof AppInfo) {
             startItemInfoActivity((AppInfo) tag);
             mControllers.uiController.onTaskbarIconLaunched((AppInfo) tag);
-            mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
         } else {
             Log.e(TAG, "Unknown type clicked: " + tag);
         }
@@ -821,20 +804,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      */
     public boolean onLongPressToUnstashTaskbar() {
         return mControllers.taskbarStashController.onLongPressToUnstashTaskbar();
-    }
-
-    /**
-     * Called when we want to unstash taskbar when user performs swipes up gesture.
-     */
-    public void onSwipeToUnstashTaskbar() {
-        mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(false);
-    }
-
-    /**
-     * Called when a transient Autohide flag suspend status changes.
-     */
-    public void onTransientAutohideSuspendFlagChanged(boolean isSuspended) {
-        mControllers.taskbarStashController.updateTaskbarTimeout(isSuspended);
     }
 
     /**
