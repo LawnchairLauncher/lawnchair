@@ -928,4 +928,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mControllers.dumpLogs(prefix + "\t", pw);
         mDeviceProfile.dump(this, prefix, pw);
     }
+
+    @VisibleForTesting
+    public int getTaskbarAllAppsTopPadding() {
+        return mControllers.taskbarAllAppsController.getTaskbarAllAppsTopPadding();
+    }
 }
