@@ -1,5 +1,7 @@
 package app.lawnchair.ui.preferences
 
+import android.widget.Toast
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +18,8 @@ import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.RadioButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDropDown
+import androidx.compose.material.icons.rounded.ContentCopy
+import androidx.compose.material.icons.rounded.ContentPaste
 import androidx.compose.material3.Button
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -25,11 +29,14 @@ import androidx.compose.material3.Slider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,6 +55,8 @@ import app.lawnchair.ui.preferences.components.PreferenceTemplate
 import app.lawnchair.ui.preferences.components.getSteps
 import app.lawnchair.ui.preferences.components.snapSliderValue
 import app.lawnchair.ui.util.LocalBottomSheetHandler
+import app.lawnchair.util.copyToClipboard
+import app.lawnchair.util.getClipboardContent
 import com.android.launcher3.R
 import kotlin.math.roundToInt
 
@@ -96,7 +105,7 @@ private fun CustomIconShapePreference() {
     ) {
 
         IconShapePreview(
-            modifier = Modifier,
+            modifier = Modifier.padding(top = 12.dp),
             iconShape = selectedIconShape.value,
         )
 
@@ -105,6 +114,13 @@ private fun CustomIconShapePreference() {
             onSelectedIconShapeChange = { newIconShape ->
                 selectedIconShape.value = newIconShape
             }
+        )
+
+        IconShapeClipboardPreferenceGroup(
+            selectedIconShape = selectedIconShape.value,
+            onSelectedIconShapeChange = { newIconShape ->
+                selectedIconShape.value = newIconShape
+            },
         )
     }
 
@@ -115,7 +131,9 @@ private fun IconShapeCornerPreferenceGroup(
     selectedIconShape: IconShape,
     onSelectedIconShapeChange: (IconShape) -> Unit,
 ) {
-    PreferenceGroup {
+    PreferenceGroup(
+        heading = stringResource(id = R.string.color_sliders),
+    ) {
         IconShapeCornerPreference(
             title = stringResource(id = R.string.icon_shape_top_left),
             scale = selectedIconShape.topLeft.scale.x,
@@ -161,6 +179,68 @@ private fun IconShapeCornerPreferenceGroup(
             },
         )
     }
+}
+
+@Composable
+private fun IconShapeClipboardPreferenceGroup(
+    selectedIconShape: IconShape,
+    onSelectedIconShapeChange: (IconShape) -> Unit,
+) {
+    val context = LocalContext.current
+    val importErrorMessage = stringResource(id = R.string.icon_shape_clipboard_import_error)
+    PreferenceGroup(
+        heading = stringResource(id = R.string.clipboard),
+    ) {
+        ClipboardButton(
+            imageVector = Icons.Rounded.ContentCopy,
+            label = stringResource(id = R.string.export_to_clipboard),
+        ) {
+            copyToClipboard(
+                context = context,
+                text = selectedIconShape.toString(),
+            )
+        }
+        ClipboardButton(
+            imageVector = Icons.Rounded.ContentPaste,
+            label = stringResource(id = R.string.import_from_clipboard),
+        ) {
+            getClipboardContent(context)?.let {
+                IconShape.fromString(value = it)
+            }?.let {
+                onSelectedIconShapeChange(it)
+            } ?: run {
+                Toast.makeText(context, importErrorMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+}
+
+@Composable
+private fun ClipboardButton(
+    modifier: Modifier = Modifier,
+    label: String,
+    description: String? = null,
+    enabled: Boolean = true,
+    imageVector: ImageVector,
+    onClick: () -> Unit,
+) {
+    PreferenceTemplate(
+        modifier = modifier.clickable(enabled = enabled, onClick = onClick),
+        contentModifier = Modifier,
+        title = { Text(text = label) },
+        description = { description?.let { Text(text = it) } },
+        startWidget = {
+            val tint = LocalContentColor.current
+            val contentAlpha = if (enabled) tint.alpha else ContentAlpha.disabled
+            val alpha by animateFloatAsState(targetValue = contentAlpha)
+            Icon(
+                imageVector = imageVector,
+                contentDescription = null,
+                tint = tint.copy(alpha = alpha)
+            )
+        },
+        enabled = enabled,
+    )
 }
 
 @Composable
