@@ -206,10 +206,6 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_ENFORCED_ROUNDED_CORNERS = new DeviceFlag(
             "ENABLE_ENFORCED_ROUNDED_CORNERS", true, "Enforce rounded corners on all App Widgets");
 
-    public static final BooleanFlag ENABLE_LOCAL_RECOMMENDED_WIDGETS_FILTER = new DeviceFlag(
-            "ENABLE_LOCAL_RECOMMENDED_WIDGETS_FILTER", true,
-            "Enables a local filter for recommended widgets.");
-
     public static final BooleanFlag NOTIFY_CRASHES = getDebugFlag("NOTIFY_CRASHES", false,
             "Sends a notification whenever launcher encounters an uncaught exception.");
 
