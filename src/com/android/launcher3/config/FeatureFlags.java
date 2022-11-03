@@ -290,6 +290,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_WIDGET_PICKER_DEPTH = new DeviceFlag(
             "ENABLE_WIDGET_PICKER_DEPTH", true, "Enable changing depth in widget picker.");
 
+    public static final BooleanFlag SCROLL_TOP_TO_RESET = new DeviceFlag(
+            "SCROLL_TOP_TO_RESET", false, "Bring up IME and focus on "
+            + "input when scroll to top if 'Always show keyboard' is enabled or in prefix state");
+
     public static final BooleanFlag SHOW_DELIGHTFUL_PAGINATION = getDebugFlag(
             "SHOW_DELIGHTFUL_PAGINATION", false,
             "Enable showing the new 'delightful pagination' which is a brand"
