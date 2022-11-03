@@ -372,13 +372,10 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         // before our internal listeners.
         mLauncher.getStateManager().setCurrentAnimation(anim);
 
-        final int rotationChange = getRotationChange(appTargets);
         // Note: the targetBounds are relative to the launcher
         int startDelay = getSingleFrameMs(mLauncher);
-        Rect windowTargetBounds = getWindowTargetBounds(appTargets, rotationChange);
-        Animator windowAnimator = getOpeningWindowAnimators(v, appTargets, wallpaperTargets,
-                nonAppTargets, windowTargetBounds, areAllTargetsTranslucent(appTargets),
-                rotationChange);
+        Animator windowAnimator = getOpeningWindowAnimators(
+                v, appTargets, wallpaperTargets, nonAppTargets, launcherClosing);
         windowAnimator.setStartDelay(startDelay);
         anim.play(windowAnimator);
         if (launcherClosing) {
@@ -392,17 +389,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     launcherContentAnimator.second.run();
                 }
             });
-        } else {
-            anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    mLauncher.addOnResumeCallback(() ->
-                            ObjectAnimator.ofFloat(mLauncher.getDepthController().stateDepth,
-                                    MULTI_PROPERTY_VALUE,
-                                    mLauncher.getStateManager().getState().getDepth(
-                                            mLauncher)).start());
-                }
-            });
         }
     }
 
@@ -411,23 +397,11 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             @NonNull LauncherAppWidgetHostView v,
             @NonNull RemoteAnimationTarget[] appTargets,
             @NonNull RemoteAnimationTarget[] wallpaperTargets,
-            @NonNull RemoteAnimationTarget[] nonAppTargets) {
+            @NonNull RemoteAnimationTarget[] nonAppTargets,
+            boolean launcherClosing) {
         mLauncher.getStateManager().setCurrentAnimation(anim);
-
-        Rect windowTargetBounds = getWindowTargetBounds(appTargets, getRotationChange(appTargets));
-        anim.play(getOpeningWindowAnimatorsForWidget(v, appTargets, wallpaperTargets, nonAppTargets,
-                windowTargetBounds, areAllTargetsTranslucent(appTargets)));
-
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                mLauncher.addOnResumeCallback(() ->
-                        ObjectAnimator.ofFloat(mLauncher.getDepthController().stateDepth,
-                                MULTI_PROPERTY_VALUE,
-                                mLauncher.getStateManager().getState().getDepth(
-                                        mLauncher)).start());
-            }
-        });
+        anim.play(getOpeningWindowAnimatorsForWidget(
+                v, appTargets, wallpaperTargets, nonAppTargets, launcherClosing));
     }
 
     /**
@@ -665,7 +639,11 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             RemoteAnimationTarget[] appTargets,
             RemoteAnimationTarget[] wallpaperTargets,
             RemoteAnimationTarget[] nonAppTargets,
-            Rect windowTargetBounds, boolean appTargetsAreTranslucent, int rotationChange) {
+            boolean launcherClosing) {
+        int rotationChange = getRotationChange(appTargets);
+        Rect windowTargetBounds = getWindowTargetBounds(appTargets, rotationChange);
+        boolean appTargetsAreTranslucent = areAllTargetsTranslucent(appTargets);
+
         RectF launcherIconBounds = new RectF();
         FloatingIconView floatingView = FloatingIconView.getFloatingIconView(mLauncher, v,
                 !appTargetsAreTranslucent, launcherIconBounds, true /* isOpening */);
@@ -861,7 +839,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                                 .setShadowRadius(mShadowRadius.value);
                     } else if (target.mode == MODE_CLOSING) {
                         if (target.localBounds != null) {
-                            final Rect localBounds = target.localBounds;
                             tmpPos.set(target.localBounds.left, target.localBounds.top);
                         } else {
                             tmpPos.set(target.position.x, target.position.y);
@@ -906,7 +883,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         // If app targets are translucent, do not animate the background as it causes a visible
         // flicker when it resets itself at the end of its animation.
-        if (appTargetsAreTranslucent) {
+        if (appTargetsAreTranslucent || !launcherClosing) {
             animatorSet.play(appAnimator);
         } else {
             animatorSet.playTogether(appAnimator, getBackgroundAnimator());
@@ -917,8 +894,10 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     private Animator getOpeningWindowAnimatorsForWidget(LauncherAppWidgetHostView v,
             RemoteAnimationTarget[] appTargets,
             RemoteAnimationTarget[] wallpaperTargets,
-            RemoteAnimationTarget[] nonAppTargets, Rect windowTargetBounds,
-            boolean appTargetsAreTranslucent) {
+            RemoteAnimationTarget[] nonAppTargets, boolean launcherClosing) {
+        Rect windowTargetBounds = getWindowTargetBounds(appTargets, getRotationChange(appTargets));
+        boolean appTargetsAreTranslucent = areAllTargetsTranslucent(appTargets);
+
         final RectF widgetBackgroundBounds = new RectF();
         final Rect appWindowCrop = new Rect();
         final Matrix matrix = new Matrix();
@@ -1045,7 +1024,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         // If app targets are translucent, do not animate the background as it causes a visible
         // flicker when it resets itself at the end of its animation.
-        if (appTargetsAreTranslucent) {
+        if (appTargetsAreTranslucent || !launcherClosing) {
             animatorSet.play(appAnimator);
         } else {
             animatorSet.playTogether(appAnimator, getBackgroundAnimator());
@@ -1743,7 +1722,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             final boolean skipFirstFrame;
             if (launchingFromWidget) {
                 composeWidgetLaunchAnimator(anim, (LauncherAppWidgetHostView) mV, appTargets,
-                        wallpaperTargets, nonAppTargets);
+                        wallpaperTargets, nonAppTargets, launcherClosing);
                 addCujInstrumentation(
                         anim, InteractionJankMonitorWrapper.CUJ_APP_LAUNCH_FROM_WIDGET);
                 skipFirstFrame = true;
