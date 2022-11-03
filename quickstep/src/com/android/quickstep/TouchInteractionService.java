@@ -55,7 +55,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.os.SystemProperties;
 import android.util.Log;
 import android.view.Choreographer;
 import android.view.InputEvent;
@@ -137,9 +136,6 @@ public class TouchInteractionService extends Service
     private static final String NEWLINE_PREFIX = "\n\t\t\t-> ";
 
     private static final String TAG = "TouchInteractionService";
-
-    private static final boolean BUBBLES_HOME_GESTURE_ENABLED =
-            SystemProperties.getBoolean("persist.wm.debug.bubbles_home_gesture", true);
 
     private static final String HAS_ENABLED_QUICKSTEP_ONCE = "launcher.has_enabled_quickstep_once";
 
@@ -809,27 +805,9 @@ public class TouchInteractionService extends Service
             if (mDeviceState.isBubblesExpanded()) {
                 reasonString = newCompoundString(reasonPrefix)
                         .append(SUBSTRING_PREFIX)
-                        .append("bubbles expanded");
-                if (BUBBLES_HOME_GESTURE_ENABLED) {
-                    reasonString.append(SUBSTRING_PREFIX)
-                            .append("bubbles can handle the home gesture")
-                            .append(", trying to use default input consumer");
-                    // Bubbles can handle home gesture itself.
-                    base = getDefaultInputConsumer(reasonString);
-                } else {
-                    // If Bubbles is expanded, use the overlay input consumer, which will close
-                    // Bubbles instead of going all the way home when a swipe up is detected.
-                    // Notification panel can be expanded on top of expanded bubbles. Bubbles remain
-                    // expanded in the back. Make sure swipe up is not passed to bubbles in this
-                    // case.
-                    if (!mDeviceState.isNotificationPanelExpanded()) {
-                        reasonString = newCompoundString(reasonPrefix)
-                                .append(SUBSTRING_PREFIX)
-                                .append("using SysUiOverlayInputConsumer");
-                        base = new SysUiOverlayInputConsumer(
-                                getBaseContext(), mDeviceState, mInputMonitorCompat);
-                    }
-                }
+                        .append("bubbles expanded, trying to use default input consumer");
+                // Bubbles can handle home gesture itself.
+                base = getDefaultInputConsumer(reasonString);
             }
 
             if (mDeviceState.isSystemUiDialogShowing()) {
