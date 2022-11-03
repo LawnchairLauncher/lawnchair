@@ -116,7 +116,7 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
         FavoriteItemsTransaction transaction =
                 new FavoriteItemsTransaction(mTargetContext, this);
         mWorkspaceBuilder.buildFromBoard(testCase.mStart, transaction).commit();
-
+        waitForLauncherCondition("Workspace didn't finish loading", l -> !l.isWorkspaceLoading());
         Widget widget = mLauncher.getWorkspace().getWidgetAtCell(mainWidgetCellPos.x,
                 mainWidgetCellPos.y);
         assertNotNull(widget);

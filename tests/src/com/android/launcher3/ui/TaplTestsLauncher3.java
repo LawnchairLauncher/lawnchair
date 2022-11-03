@@ -29,6 +29,7 @@ import static org.junit.Assume.assumeTrue;
 
 import android.content.Intent;
 import android.graphics.Point;
+import android.os.SystemClock;
 import android.platform.test.annotations.IwTest;
 
 import androidx.test.filters.LargeTest;
@@ -493,6 +494,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     public void testUninstallFromAllApps() throws Exception {
         TestUtil.installDummyApp();
         try {
+            // b/256659409
+            SystemClock.sleep(5000);
             Workspace workspace = mLauncher.getWorkspace();
             final HomeAllApps allApps = workspace.switchToAllApps();
             allApps.freeze();
