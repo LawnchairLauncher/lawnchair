@@ -20,6 +20,8 @@ import static android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
 import static android.content.pm.PackageManager.DONT_KILL_APP;
 import static android.content.pm.PackageManager.MATCH_ALL;
 import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
+import static android.platform.test.util.HealthTestingUtils.waitForCondition;
+import static android.platform.test.util.HealthTestingUtils.waitForValuePresent;
 
 import static com.android.launcher3.tapl.Folder.FOLDER_CONTENT_RES_ID;
 import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
@@ -33,7 +35,10 @@ import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.ComponentInfoFlags;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ProviderInfo;
+import android.content.pm.UserInfo;
 import android.content.res.Resources;
 import android.graphics.Insets;
 import android.graphics.Point;
@@ -186,6 +191,7 @@ public final class LauncherInstrumentation {
 
     private static WeakReference<VisibleContainer> sActiveContainer = new WeakReference<>(null);
 
+    private final Context mUserContext;
     private final UiDevice mDevice;
     private final Instrumentation mInstrumentation;
     private Integer mExpectedRotation = null;
@@ -230,11 +236,29 @@ public final class LauncherInstrumentation {
     }
 
     /**
+     * Constructs a LauncherInstrumentation as user.
+     *
+     * This constructor is useful when testing multi users scenarios.
+     * The default instrumentation will use the same user as the test runner.
+     * Therefore, it won't work after the test case switches to other users.
+     *
+     * @see LauncherInstrumentation
+     * @param user active user to operate with the Launcher.
+     */
+    public LauncherInstrumentation(UserInfo user) {
+        this(InstrumentationRegistry.getInstrumentation(), user);
+    }
+
+    /**
      * Constructs the root of TAPL hierarchy. You get all other objects from it.
      * Deprecated: use the constructor without parameters instead.
      */
     @Deprecated
     public LauncherInstrumentation(Instrumentation instrumentation) {
+        this(instrumentation, /* user= */ null);
+    }
+
+    private LauncherInstrumentation(Instrumentation instrumentation, @Nullable UserInfo user) {
         mInstrumentation = instrumentation;
         mDevice = UiDevice.getInstance(instrumentation);
 
@@ -254,6 +278,14 @@ public final class LauncherInstrumentation {
                 ? getLauncherPackageName()
                 : targetPackage;
 
+        try {
+            mUserContext = user == null ? getContext() : getContext().createPackageContextAsUser(
+                    mLauncherPackage, 0, user.getUserHandle());
+        } catch (NameNotFoundException e) {
+            throw new RuntimeException(String.format("Unable to initialize %s as user %s",
+                    LauncherInstrumentation.class.getSimpleName(), user.name), e);
+        }
+
         String testProviderAuthority = mLauncherPackage + ".TestInfo";
         mTestProviderUri = new Uri.Builder()
                 .scheme(ContentResolver.SCHEME_CONTENT)
@@ -263,38 +295,80 @@ public final class LauncherInstrumentation {
         mInstrumentation.getUiAutomation().grantRuntimePermission(
                 testPackage, "android.permission.WRITE_SECURE_SETTINGS");
 
-        PackageManager pm = getContext().getPackageManager();
-        ProviderInfo pi = pm.resolveContentProvider(
-                testProviderAuthority, MATCH_ALL | MATCH_DISABLED_COMPONENTS);
+        ProviderInfo pi = getProviderInfo(testProviderAuthority);
         assertNotNull("Cannot find content provider for " + testProviderAuthority, pi);
-        ComponentName cn = new ComponentName(pi.packageName, pi.name);
+        enableContentProvider(pi);
+        waitForTestProvider();
+    }
 
-        if (pm.getComponentEnabledSetting(cn) != COMPONENT_ENABLED_STATE_ENABLED) {
+    private ProviderInfo getProviderInfo(String authority) {
+        // use test's context to get the content provider's info
+        // because it usually has more information than secondary user.
+        PackageManager pm = getContext().getPackageManager();
+        ComponentInfoFlags flags = ComponentInfoFlags.of(MATCH_ALL | MATCH_DISABLED_COMPONENTS);
+        return pm.resolveContentProvider(authority, flags);
+    }
+
+    /**
+     * Use #getLauncherPid instead.
+     */
+    private Optional<Integer> getLauncherPidImpl() {
+        List<ActivityManager.RunningAppProcessInfo> processList = getUserContext()
+                .getSystemService(ActivityManager.class)
+                .getRunningAppProcesses();
+        for (ActivityManager.RunningAppProcessInfo info : processList) {
+            if (info.processName.equals(mLauncherPackage)) {
+                return Optional.of(info.pid);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Get Launcher's pid through {@link ActivityManager}
+     * Don't use shell command to get the pid because instrumented test
+     * will use the user who spawn the process to run the command.
+     * Therefore, the command won't work after switching to a secondary (or guest) user.
+     *
+     * @return int pid of Launcher, raise {@link RuntimeException} if Launcher isn't running.
+     */
+    private int getLauncherPid() {
+        return waitForValuePresent(() -> "Launcher isn't running.", this::getLauncherPidImpl);
+    }
+
+    private void enableContentProvider(ProviderInfo pi) {
+        try {
+            PackageManager pm = getUserContext().getPackageManager();
+            ComponentName cn = new ComponentName(pi.packageName, pi.name);
+            if (pm.getComponentEnabledSetting(cn) == COMPONENT_ENABLED_STATE_ENABLED) {
+                return;
+            }
             if (TestHelpers.isInLauncherProcess()) {
                 pm.setComponentEnabledSetting(cn, COMPONENT_ENABLED_STATE_ENABLED, DONT_KILL_APP);
                 // b/195031154
                 SystemClock.sleep(5000);
-            } else {
-                try {
-                    final int userId = getContext().getUserId();
-                    final String launcherPidCommand = "pidof " + pi.packageName;
-                    final String initialPid = mDevice.executeShellCommand(launcherPidCommand)
-                            .replaceAll("\\s", "");
-                    mDevice.executeShellCommand(
-                            "pm enable --user " + userId + " " + cn.flattenToString());
-                    // Wait for Launcher restart after enabling test provider.
-                    for (int i = 0; i < 100; ++i) {
-                        final String currentPid = mDevice.executeShellCommand(launcherPidCommand)
-                                .replaceAll("\\s", "");
-                        if (!currentPid.isEmpty() && !currentPid.equals(initialPid)) break;
-                        if (i == 99) fail("Launcher didn't restart after enabling test provider");
-                        SystemClock.sleep(100);
-                    }
-                } catch (IOException e) {
-                    fail(e.toString());
-                }
+                return;
             }
+            final int userId = getUserContext().getUserId();
+            final int initialPid = getLauncherPid();
+            mDevice.executeShellCommand(
+                    "pm enable --user " + userId + " " + cn.flattenToString());
+            waitForCondition(
+                    () -> "Launcher didn't restart after enabling test provider",
+                    () -> initialPid != getLauncherPid());
+        } catch (IOException e) {
+            fail(e.toString());
         }
+    }
+
+    private void waitForTestProvider() {
+        ContentResolver resolver = getUserContext().getContentResolver();
+        waitForCondition(() -> "Test provider isn't available.", () -> {
+            try (ContentProviderClient client = resolver
+                    .acquireContentProviderClient(mTestProviderUri)) {
+                return client != null;
+            }
+        });
     }
 
     /**
@@ -323,6 +397,17 @@ public final class LauncherInstrumentation {
         return mInstrumentation.getContext();
     }
 
+    /**
+     * Get a context as user.
+     * Tests running with multi users need  to use this context to
+     * get system services or send {@link TestInformationRequest}.
+     *
+     * @return Context
+     */
+    private Context getUserContext() {
+        return mUserContext;
+    }
+
     Bundle getTestInfo(String request) {
         return getTestInfo(request, /*arg=*/ null);
     }
@@ -332,7 +417,7 @@ public final class LauncherInstrumentation {
     }
 
     Bundle getTestInfo(String request, String arg, Bundle extra) {
-        try (ContentProviderClient client = getContext().getContentResolver()
+        try (ContentProviderClient client = getUserContext().getContentResolver()
                 .acquireContentProviderClient(mTestProviderUri)) {
             return client.call(request, arg, extra);
         } catch (DeadObjectException e) {
