@@ -15,6 +15,7 @@
  */
 package com.android.quickstep;
 
+import static android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS;
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
@@ -46,7 +47,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.drawable.Icon;
 import android.os.Build;
@@ -86,7 +86,6 @@ import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.TraceHelper;
-import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
 import com.android.quickstep.inputconsumers.AssistantInputConsumer;
 import com.android.quickstep.inputconsumers.DeviceLockedInputConsumer;
@@ -103,7 +102,6 @@ import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActiveGestureLog.CompoundString;
 import com.android.quickstep.util.ProtoTracer;
 import com.android.quickstep.util.ProxyScreenStatusProvider;
-import com.android.quickstep.util.SplitScreenBounds;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -142,18 +140,7 @@ public class TouchInteractionService extends Service
     private static final boolean BUBBLES_HOME_GESTURE_ENABLED =
             SystemProperties.getBoolean("persist.wm.debug.bubbles_home_gesture", true);
 
-    private static final String KEY_BACK_NOTIFICATION_COUNT = "backNotificationCount";
-    private static final String NOTIFY_ACTION_BACK = "com.android.quickstep.action.BACK_GESTURE";
     private static final String HAS_ENABLED_QUICKSTEP_ONCE = "launcher.has_enabled_quickstep_once";
-    private static final int MAX_BACK_NOTIFICATION_COUNT = 3;
-
-    /**
-     * System Action ID to show all apps.
-     * TODO: Use AccessibilityService's corresponding global action constant in S
-     */
-    private static final int SYSTEM_ACTION_ID_ALL_APPS = 14;
-
-    private int mBackGestureNotificationCounter = -1;
 
     private final TISBinder mTISBinder = new TISBinder();
 
@@ -262,12 +249,6 @@ public class TouchInteractionService extends Service
         @BinderThread
         public void onActiveNavBarRegionChanges(Region region) {
             MAIN_EXECUTOR.execute(() -> mDeviceState.setDeferredGestureRegion(region));
-        }
-
-        @Override
-        public void onSplitScreenSecondaryBoundsChanged(Rect bounds, Rect insets) {
-            WindowBounds wb = new WindowBounds(bounds, insets);
-            MAIN_EXECUTOR.execute(() -> SplitScreenBounds.INSTANCE.setSecondaryWindowBounds(wb));
         }
 
         @BinderThread
@@ -483,8 +464,6 @@ public class TouchInteractionService extends Service
 
         // Temporarily disable model preload
         // new ModelPreload().start(this);
-        mBackGestureNotificationCounter = Math.max(0, Utilities.getDevicePrefs(this)
-                .getInt(KEY_BACK_NOTIFICATION_COUNT, MAX_BACK_NOTIFICATION_COUNT));
         resetHomeBounceSeenOnQuickstepEnabledFirstTime();
 
         mOverviewComponentObserver.setOverviewChangeListener(this::onOverviewTargetChange);
@@ -522,11 +501,11 @@ public class TouchInteractionService extends Service
                     Icon.createWithResource(this, R.drawable.ic_apps),
                     getString(R.string.all_apps_label),
                     getString(R.string.all_apps_label),
-                    PendingIntent.getActivity(this, SYSTEM_ACTION_ID_ALL_APPS, intent,
+                    PendingIntent.getActivity(this, GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS, intent,
                             PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
-            am.registerSystemAction(allAppsAction, SYSTEM_ACTION_ID_ALL_APPS);
+            am.registerSystemAction(allAppsAction, GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
         } else {
-            am.unregisterSystemAction(SYSTEM_ACTION_ID_ALL_APPS);
+            am.unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
         }
 
         StatefulActivity newOverviewActivity = mOverviewComponentObserver.getActivityInterface()
@@ -604,7 +583,7 @@ public class TouchInteractionService extends Service
         ProtoTracer.INSTANCE.get(this).remove(this);
 
         getSystemService(AccessibilityManager.class)
-                .unregisterSystemAction(SYSTEM_ACTION_ID_ALL_APPS);
+                .unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
 
         mTaskbarManager.destroy();
         sConnected = false;
