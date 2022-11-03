@@ -44,6 +44,8 @@ import android.view.RemoteAnimationAdapter;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 import android.window.IOnBackInvokedCallback;
+import android.window.RemoteTransition;
+import android.window.TransitionFilter;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
@@ -53,7 +55,6 @@ import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
-import com.android.systemui.shared.system.RemoteTransitionCompat;
 import com.android.systemui.shared.system.smartspace.ILauncherUnlockAnimationController;
 import com.android.systemui.shared.system.smartspace.ISysuiUnlockAnimationController;
 import com.android.systemui.shared.system.smartspace.SmartspaceState;
@@ -73,6 +74,7 @@ import com.android.wm.shell.util.GroupedRecentTaskInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 
 /**
  * Holds the reference to SystemUI.
@@ -108,7 +110,8 @@ public class SystemUiProxy implements ISystemUiProxy {
     private IStartingWindowListener mStartingWindowListener;
     private ILauncherUnlockAnimationController mLauncherUnlockAnimationController;
     private IRecentTasksListener mRecentTasksListener;
-    private final ArrayList<RemoteTransitionCompat> mRemoteTransitions = new ArrayList<>();
+    private final LinkedHashMap<RemoteTransition, TransitionFilter> mRemoteTransitions =
+            new LinkedHashMap<>();
     private IOnBackInvokedCallback mBackToLauncherCallback;
 
     // Used to dedupe calls to SystemUI
@@ -195,9 +198,7 @@ public class SystemUiProxy implements ISystemUiProxy {
         if (mSysuiUnlockAnimationController != null && mLauncherUnlockAnimationController != null) {
             setLauncherUnlockAnimationController(mLauncherUnlockAnimationController);
         }
-        for (int i = mRemoteTransitions.size() - 1; i >= 0; --i) {
-            registerRemoteTransition(mRemoteTransitions.get(i));
-        }
+        new LinkedHashMap<>(mRemoteTransitions).forEach(this::registerRemoteTransition);
         if (mRecentTasksListener != null && mRecentTasks != null) {
             registerRecentTasksListener(mRecentTasksListener);
         }
@@ -536,11 +537,11 @@ public class SystemUiProxy implements ISystemUiProxy {
     /** Start multiple tasks in split-screen simultaneously. */
     public void startTasks(int taskId1, Bundle options1, int taskId2, Bundle options2,
             @SplitConfigurationOptions.StagePosition int splitPosition, float splitRatio,
-            RemoteTransitionCompat remoteTransition, InstanceId instanceId) {
+            RemoteTransition remoteTransition, InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
                 mSplitScreen.startTasks(taskId1, options1, taskId2, options2, splitPosition,
-                        splitRatio, remoteTransition.getTransition(), instanceId);
+                        splitRatio, remoteTransition, instanceId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startTasks");
             }
@@ -550,12 +551,12 @@ public class SystemUiProxy implements ISystemUiProxy {
     public void startIntentAndTask(PendingIntent pendingIntent, Intent fillInIntent,
             Bundle options1, int taskId, Bundle options2,
             @SplitConfigurationOptions.StagePosition int splitPosition, float splitRatio,
-            RemoteTransitionCompat remoteTransition, InstanceId instanceId) {
+            RemoteTransition remoteTransition, InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
                 mSplitScreen.startIntentAndTask(pendingIntent, fillInIntent, options1,
                         taskId, options2, splitPosition, splitRatio,
-                        remoteTransition.getTransition(), instanceId);
+                        remoteTransition, instanceId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startIntentAndTask");
             }
@@ -564,11 +565,11 @@ public class SystemUiProxy implements ISystemUiProxy {
 
     public void startShortcutAndTask(ShortcutInfo shortcutInfo, Bundle options1, int taskId,
             Bundle options2, @SplitConfigurationOptions.StagePosition int splitPosition,
-            float splitRatio, RemoteTransitionCompat remoteTransition, InstanceId instanceId) {
+            float splitRatio, RemoteTransition remoteTransition, InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
                 mSplitScreen.startShortcutAndTask(shortcutInfo, options1, taskId, options2,
-                        splitPosition, splitRatio, remoteTransition.getTransition(), instanceId);
+                        splitPosition, splitRatio, remoteTransition, instanceId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startShortcutAndTask");
             }
@@ -709,24 +710,24 @@ public class SystemUiProxy implements ISystemUiProxy {
     // Remote transitions
     //
 
-    public void registerRemoteTransition(RemoteTransitionCompat remoteTransition) {
+    public void registerRemoteTransition(
+            RemoteTransition remoteTransition, TransitionFilter filter) {
         if (mShellTransitions != null) {
             try {
-                mShellTransitions.registerRemote(remoteTransition.getFilter(),
-                        remoteTransition.getTransition());
+                mShellTransitions.registerRemote(filter, remoteTransition);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call registerRemoteTransition");
             }
         }
-        if (!mRemoteTransitions.contains(remoteTransition)) {
-            mRemoteTransitions.add(remoteTransition);
+        if (!mRemoteTransitions.containsKey(remoteTransition)) {
+            mRemoteTransitions.put(remoteTransition, filter);
         }
     }
 
-    public void unregisterRemoteTransition(RemoteTransitionCompat remoteTransition) {
+    public void unregisterRemoteTransition(RemoteTransition remoteTransition) {
         if (mShellTransitions != null) {
             try {
-                mShellTransitions.unregisterRemote(remoteTransition.getTransition());
+                mShellTransitions.unregisterRemote(remoteTransition);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call registerRemoteTransition");
             }
