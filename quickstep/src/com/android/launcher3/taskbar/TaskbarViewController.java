@@ -199,6 +199,10 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         return mTaskbarView.getIconLayoutBounds();
     }
 
+    public int getIconLayoutWidth() {
+        return mTaskbarView.getIconLayoutWidth();
+    }
+
     public View[] getIconViews() {
         return mTaskbarView.getIconViews();
     }

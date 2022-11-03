@@ -20,6 +20,7 @@ import com.android.quickstep.util.TISBindHelper;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class QuickstepTestInformationHandler extends TestInformationHandler {
 
@@ -112,6 +113,13 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                         resources.getDimensionPixelSize(R.dimen.taskbar_stashed_size));
                 return response;
             }
+
+            case TestProtocol.REQUEST_TASKBAR_ALL_APPS_TOP_PADDING: {
+                return getTISBinderUIProperty(Bundle::putInt, tisBinder ->
+                        tisBinder.getTaskbarManager()
+                                .getCurrentActivityContext()
+                                .getTaskbarAllAppsTopPadding());
+            }
         }
 
         return super.call(method, arg, extras);
@@ -158,5 +166,17 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private <T> Bundle getTISBinderUIProperty(
+            BundleSetter<T> bundleSetter, Function<TouchInteractionService.TISBinder, T> provider) {
+        Bundle response = new Bundle();
+
+        runOnTISBinder(tisBinder -> bundleSetter.set(
+                response,
+                TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                provider.apply(tisBinder)));
+
+        return response;
     }
 }

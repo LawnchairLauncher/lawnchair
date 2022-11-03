@@ -39,6 +39,8 @@ import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
+import com.android.launcher3.uioverrides.states.OverviewState;
+import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationController;
@@ -117,6 +119,10 @@ import java.util.StringJoiner;
                     mLauncherState = finalState;
                     updateStateForFlag(FLAG_TRANSITION_STATE_RUNNING, false);
                     applyState();
+                    mControllers.taskbarDragController.setDisallowGlobalDrag(
+                            (finalState instanceof OverviewState));
+                    mControllers.taskbarDragController.setDisallowLongClick(
+                            finalState == LauncherState.OVERVIEW_SPLIT_SELECT);
                 }
             };
 
