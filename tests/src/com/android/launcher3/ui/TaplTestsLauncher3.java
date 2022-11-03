@@ -29,7 +29,6 @@ import static org.junit.Assume.assumeTrue;
 
 import android.content.Intent;
 import android.graphics.Point;
-import android.os.SystemClock;
 import android.platform.test.annotations.IwTest;
 
 import androidx.test.filters.LargeTest;
@@ -479,7 +478,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @Test
     @PortraitLandscape
     public void testUninstallFromWorkspace() throws Exception {
-        TestUtil.installDummyApp();
+        installDummyAppAndWaitForUIUpdate();
         try {
             verifyAppUninstalledFromAllApps(
                     createShortcutInCenterIfNotExist(DUMMY_APP_NAME).uninstall(), DUMMY_APP_NAME);
@@ -492,10 +491,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @PortraitLandscape
     @ScreenRecord // (b/256659409)
     public void testUninstallFromAllApps() throws Exception {
-        TestUtil.installDummyApp();
+        installDummyAppAndWaitForUIUpdate();
         try {
-            // b/256659409
-            SystemClock.sleep(5000);
             Workspace workspace = mLauncher.getWorkspace();
             final HomeAllApps allApps = workspace.switchToAllApps();
             allApps.freeze();
@@ -539,7 +536,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         Point[] gridPositions = getCornersAndCenterPositions();
         createShortcutIfNotExist(STORE_APP_NAME, gridPositions[0]);
         createShortcutIfNotExist(MAPS_APP_NAME, gridPositions[1]);
-        TestUtil.installDummyApp();
+        installDummyAppAndWaitForUIUpdate();
         try {
             createShortcutIfNotExist(DUMMY_APP_NAME, gridPositions[2]);
             Map<String, Point> initialPositions =
@@ -588,6 +585,17 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 .dragToHotseat(0);
         mLauncher.getWorkspace().deleteAppIcon(
                 mLauncher.getWorkspace().getHotseatAppIcon(APP_NAME));
+    }
+
+    private void installDummyAppAndWaitForUIUpdate() throws IOException {
+        TestUtil.installDummyApp();
+        // Wait for model thread completion as it may be processing
+        // the install event from the SystemService
+        mLauncher.waitForModelQueueCleared();
+        // Wait for Launcher UI thread completion, as it may be processing updating the UI in
+        // response to the model update. Not that `waitForLauncherInitialized` is just a proxy
+        // method, we can use any method which touches Launcher UI thread,
+        mLauncher.waitForLauncherInitialized();
     }
 
     /**
