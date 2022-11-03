@@ -23,6 +23,7 @@ import android.view.ViewTreeObserver;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.util.DimensionUtils;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.AnimatedFloat;
 
@@ -166,10 +167,24 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         }
 
         /**
+         * Called whenever TaskbarDragLayer receives an ACTION_OUTSIDE event.
+         */
+        public void onActionOutsideEvent() {
+            if (!DisplayController.isTransientTaskbar(mActivity)) {
+                return;
+            }
+            if (mControllers.taskbarStashController.isStashed()) {
+                return;
+            }
+
+            mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
+        }
+
+        /**
          * Called when a child is removed from TaskbarDragLayer.
          */
         public void onDragLayerViewRemoved() {
-            mActivity.maybeSetTaskbarWindowNotFullscreen();
+            mActivity.onDragEndOrViewRemoved();
         }
 
         /**
