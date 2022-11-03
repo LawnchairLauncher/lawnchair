@@ -18,6 +18,7 @@ package com.android.quickstep;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.FINISH_RECENTS_ANIMATION;
 
 import android.content.Context;
 import android.os.RemoteException;
@@ -155,6 +156,10 @@ public class RecentsAnimationController {
             mPendingFinishCallbacks.add(callback);
             return;
         }
+        ActiveGestureLog.INSTANCE.addLog(
+                /* event= */ "finishRecentsAnimation",
+                /* extras= */ toRecents,
+                /* gestureEvent= */ FINISH_RECENTS_ANIMATION);
 
         // Finish not yet requested
         mFinishRequested = true;

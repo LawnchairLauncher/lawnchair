@@ -22,6 +22,7 @@ import static android.view.MotionEvent.ACTION_UP;
 import static com.android.launcher3.config.FeatureFlags.ASSISTANT_GIVES_LAUNCHER_FOCUS;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.GestureState.DEFAULT_STATE;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.FLAG_USING_OTHER_ACTIVITY_INPUT_CONSUMER;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_DOWN;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_UP;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
@@ -927,6 +928,9 @@ public class TouchInteractionService extends Service
                 .append(consumer.getName())
                 .append(". reason(s):")
                 .append(reasonString));
+        if ((consumer.getType() & InputConsumer.TYPE_OTHER_ACTIVITY) != 0) {
+            ActiveGestureLog.INSTANCE.trackEvent(FLAG_USING_OTHER_ACTIVITY_INPUT_CONSUMER);
+        }
     }
 
     private void handleOrientationSetup(InputConsumer baseInputConsumer) {
@@ -1251,12 +1255,22 @@ public class TouchInteractionService extends Service
     }
 
     private void onCommand(PrintWriter pw, LinkedList<String> args) {
-        switch (args.pollFirst()) {
+        String cmd = args.pollFirst();
+        if (cmd == null) {
+            pw.println("Command missing");
+            printAvailableCommands(pw);
+            return;
+        }
+        switch (cmd) {
             case "clear-touch-log":
                 ActiveGestureLog.INSTANCE.clear();
                 break;
             case "print-gesture-log":
                 ActiveGestureLog.INSTANCE.dump("", pw);
+                break;
+            default:
+                pw.println("Command does not exist: " + cmd);
+                printAvailableCommands(pw);
         }
     }
 
