@@ -80,7 +80,6 @@ android_library {
         "androidx.preference_preference",
         "SystemUISharedLib",
         "SystemUIAnimationLib",
-        "health-testing-utils",
     ],
     srcs: [
         "tests/tapl/**/*.java",
