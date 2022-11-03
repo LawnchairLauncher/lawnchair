@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.taskbar;
 
+import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.CallSuper;
@@ -102,6 +103,15 @@ public class TaskbarUIController {
      */
     public boolean isTaskbarStashed() {
         return mControllers.taskbarStashController.isStashed();
+    }
+
+    /*
+     * @param ev MotionEvent in screen coordinates.
+     * @return Whether any Taskbar item could handle the given MotionEvent if given the chance.
+     */
+    public boolean isEventOverAnyTaskbarItem(MotionEvent ev) {
+        return mControllers.taskbarViewController.isEventOverAnyItem(ev)
+                || mControllers.navbarButtonsViewController.isEventOverAnyItem(ev);
     }
 
     @CallSuper

@@ -345,12 +345,22 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     }
 
     @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        mControllerCallbacks.onInterceptTouchEvent(ev);
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (!mTouchEnabled) {
             return true;
         }
-        if (mIconLayoutBounds.left <= event.getX() && event.getX() <= mIconLayoutBounds.right) {
-            // Don't allow long pressing between icons, or above/below them.
+        if (mIconLayoutBounds.left <= event.getX()
+                && event.getX() <= mIconLayoutBounds.right
+                && !DisplayController.isTransientTaskbar(mActivityContext)) {
+            // Don't allow long pressing between icons, or above/below them
+            // unless its transient taskbar.
+            mControllerCallbacks.clearTouchInProgress();
             return true;
         }
         if (mControllerCallbacks.onTouchEvent(event)) {
@@ -367,6 +377,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
     public void setTouchesEnabled(boolean touchEnabled) {
         this.mTouchEnabled = touchEnabled;
+        mControllerCallbacks.clearTouchInProgress();
     }
 
     /**
