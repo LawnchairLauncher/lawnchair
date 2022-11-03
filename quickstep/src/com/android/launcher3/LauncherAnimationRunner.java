@@ -55,7 +55,7 @@ import java.lang.ref.WeakReference;
  * reference to the runner, leaving only the weak ref from the runner.
  */
 @TargetApi(Build.VERSION_CODES.P)
-public class LauncherAnimationRunner implements RemoteAnimationRunnerCompat {
+public class LauncherAnimationRunner extends RemoteAnimationRunnerCompat {
 
     private static final RemoteAnimationFactory DEFAULT_FACTORY =
             (transit, appTargets, wallpaperTargets, nonAppTargets, result) ->
@@ -99,22 +99,6 @@ public class LauncherAnimationRunner implements RemoteAnimationRunnerCompat {
         }
     }
 
-    // Called only in R platform
-    @BinderThread
-    public void onAnimationStart(RemoteAnimationTarget[] appTargets,
-            RemoteAnimationTarget[] wallpaperTargets, Runnable runnable) {
-        onAnimationStart(0 /* transit */, appTargets, wallpaperTargets,
-                new RemoteAnimationTarget[0], runnable);
-    }
-
-    // Called only in Q platform
-    @BinderThread
-    @Deprecated
-    public void onAnimationStart(RemoteAnimationTarget[] appTargets, Runnable runnable) {
-        onAnimationStart(appTargets, new RemoteAnimationTarget[0], runnable);
-    }
-
-
     private RemoteAnimationFactory getFactory() {
         RemoteAnimationFactory factory = mFactory.get();
         return factory != null ? factory : DEFAULT_FACTORY;
@@ -133,7 +117,7 @@ public class LauncherAnimationRunner implements RemoteAnimationRunnerCompat {
      */
     @BinderThread
     @Override
-    public void onAnimationCancelled() {
+    public void onAnimationCancelled(boolean isKeyguardOccluded) {
         postAsyncCallback(mHandler, () -> {
             finishExistingAnimation();
             getFactory().onAnimationCancelled();
