@@ -404,12 +404,16 @@ public class LauncherBackAnimationController {
         AbstractFloatingView.closeAllOpenViewsExcept(mLauncher, false, TYPE_REBIND_SAFE);
         float cornerRadius = Utilities.mapRange(
                 mBackProgress, mWindowScaleStartCornerRadius, mWindowScaleEndCornerRadius);
+        final RectF resolveRectF = new RectF();
+        mQuickstepTransitionManager.transferRectToTargetCoordinate(
+                mBackTarget, mCurrentRect, true, resolveRectF);
+
         Pair<RectFSpringAnim, AnimatorSet> pair =
                 mQuickstepTransitionManager.createWallpaperOpenAnimations(
                     new RemoteAnimationTarget[]{mBackTarget},
                     new RemoteAnimationTarget[0],
                     false /* fromUnlock */,
-                    mCurrentRect,
+                    resolveRectF,
                     cornerRadius,
                     mBackInProgress /* fromPredictiveBack */);
         startTransitionAnimations(pair.first, pair.second);
