@@ -621,7 +621,8 @@ public class TaskView extends FrameLayout implements Reusable {
         TaskIdAttributeContainer container = mTaskIdAttributeContainer[index];
         if (container != null) {
             return getRecentsView().confirmSplitSelect(this, container.getTask(),
-                    container.getIconView(), container.getThumbnailView());
+                    container.getIconView().getDrawable(), container.getThumbnailView(),
+                    container.getThumbnailView().getThumbnail(), /* intent */ null);
         }
         return false;
     }
