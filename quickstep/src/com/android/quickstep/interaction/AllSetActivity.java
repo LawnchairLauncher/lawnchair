@@ -135,7 +135,6 @@ public class AllSetActivity extends Activity {
             } catch (URISyntaxException e) {
                 Log.e(LOG_TAG, "Failed to parse system nav settings intent", e);
             }
-            finish();
         });
 
         findViewById(R.id.hint).setAccessibilityDelegate(new SkipButtonAccessibilityDelegate());
