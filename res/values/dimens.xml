@@ -367,7 +367,9 @@
     <dimen name="transient_taskbar_margin">0dp</dimen>
     <dimen name="transient_taskbar_shadow_blur">0dp</dimen>
     <dimen name="transient_taskbar_key_shadow_distance">0dp</dimen>
-    <dimen name="transient_taskbar_icon_spacing">10dp</dimen>
+    <dimen name="transient_taskbar_stashed_size">0dp</dimen>
+    <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
+    <dimen name="transient_taskbar_icon_spacing">0dp</dimen>
     <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
     <dimen name="taskbar_icon_spacing">8dp</dimen>
     <dimen name="taskbar_nav_buttons_size">0dp</dimen>
