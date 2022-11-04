@@ -114,6 +114,13 @@ public class TaskbarUIController {
                 || mControllers.navbarButtonsViewController.isEventOverAnyItem(ev);
     }
 
+    /**
+     * Returns true if icons should be aligned to hotseat in the current transition.
+     */
+    public boolean isIconAlignedWithHotseat() {
+        return false;
+    }
+
     @CallSuper
     protected void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(String.format(

@@ -98,15 +98,6 @@ public class AnimatedFloat {
         }
     }
 
-    /**
-     * Starts the animation.
-     */
-    public void startAnimation() {
-        if (mValueAnimator != null) {
-            mValueAnimator.start();
-        }
-    }
-
     public void cancelAnimation() {
         if (mValueAnimator != null) {
             mValueAnimator.cancel();
@@ -117,10 +108,6 @@ public class AnimatedFloat {
         if (mValueAnimator != null && mValueAnimator.isRunning()) {
             mValueAnimator.end();
         }
-    }
-
-    public ObjectAnimator getCurrentAnimation() {
-        return mValueAnimator;
     }
 
     public boolean isAnimating() {
@@ -139,12 +126,5 @@ public class AnimatedFloat {
      */
     public boolean isSettledOnValue(float endValue) {
         return !isAnimating() && value == endValue;
-    }
-
-    /**
-     * Returns the value we are animating to, or {@code null} if we are not currently animating.
-     */
-    public Float getEndValue() {
-        return mEndValue;
     }
 }
