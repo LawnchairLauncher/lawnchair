@@ -2544,21 +2544,21 @@ public class CellLayout extends ViewGroup {
         if (result == null) {
             result = new int[]{-1, -1};
         }
-        ItemConfiguration finalSolution;
-        // When we are checking drop validity or actually dropping, we don't recompute the
-        // direction vector, since we want the solution to match the preview, and it's possible
-        // that the exact position of the item has changed to result in a new reordering outcome.
-        if ((mode == MODE_ON_DROP || mode == MODE_ON_DROP_EXTERNAL || mode == MODE_ACCEPT_DROP)
-                && mPreviousSolution != null) {
+
+        ItemConfiguration finalSolution = null;
+        // We want the solution to match the animation of the preview and to match the drop so we
+        // only recalculate in mode MODE_SHOW_REORDER_HINT because that the first one to run in the
+        // reorder cycle.
+        if (mode == MODE_SHOW_REORDER_HINT || mPreviousSolution == null) {
+            finalSolution = calculateReorder(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY,
+                    dragView);
+            mPreviousSolution = finalSolution;
+        } else {
             finalSolution = mPreviousSolution;
             // We reset this vector after drop
             if (mode == MODE_ON_DROP || mode == MODE_ON_DROP_EXTERNAL) {
                 mPreviousSolution = null;
             }
-        } else {
-            finalSolution = calculateReorder(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY,
-                    dragView);
-            mPreviousSolution = finalSolution;
         }
 
         if (finalSolution == null || !finalSolution.isSolution) {
