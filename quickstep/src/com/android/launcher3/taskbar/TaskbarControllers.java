@@ -164,6 +164,7 @@ public class TaskbarControllers {
 
     public void onConfigurationChanged(@Config int configChanges) {
         navbarButtonsViewController.onConfigurationChanged(configChanges);
+        taskbarDragLayerController.onConfigurationChanged();
     }
 
     /**
