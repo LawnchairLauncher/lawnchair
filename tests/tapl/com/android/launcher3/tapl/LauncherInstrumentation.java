@@ -848,6 +848,10 @@ public final class LauncherInstrumentation {
         }
     }
 
+    public void waitForModelQueueCleared() {
+        getTestInfo(TestProtocol.REQUEST_MODEL_QUEUE_CLEARED);
+    }
+
     public void waitForLauncherInitialized() {
         for (int i = 0; i < 100; ++i) {
             if (getTestInfo(
