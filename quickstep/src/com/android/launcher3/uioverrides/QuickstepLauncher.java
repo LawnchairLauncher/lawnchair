@@ -219,6 +219,8 @@ public class QuickstepLauncher extends Launcher {
 
         mEnableWidgetDepth = ENABLE_WIDGET_PICKER_DEPTH.get()
                 && SystemProperties.getBoolean("ro.launcher.depth.widget", true);
+        getWorkspace().addOverlayCallback(progress ->
+                onTaskbarInAppDisplayProgressUpdate(progress, MINUS_ONE_PAGE_PROGRESS_INDEX));
     }
 
     @Override
@@ -592,17 +594,6 @@ public class QuickstepLauncher extends Launcher {
         super.onScreenOff();
         RecentsView recentsView = getOverviewPanel();
         recentsView.finishRecentsAnimation(true /* toRecents */, null);
-    }
-
-    /**
-     * {@code LauncherOverlayCallbacks} scroll amount.
-     * Indicates transition progress to -1 screen.
-     * @param progress From 0 to 1.
-     */
-    @Override
-    public void onScrollChanged(float progress) {
-        super.onScrollChanged(progress);
-        onTaskbarInAppDisplayProgressUpdate(progress, MINUS_ONE_PAGE_PROGRESS_INDEX);
     }
 
     @Override
