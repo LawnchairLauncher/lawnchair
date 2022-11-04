@@ -20,7 +20,6 @@ import static android.view.Display.DEFAULT_DISPLAY;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
-import static com.android.launcher3.Utilities.comp;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
@@ -501,7 +500,7 @@ public class TaskView extends FrameLayout implements Reusable {
             return;
         }
         mModalness = modalness;
-        mIconView.setAlpha(comp(modalness));
+        mIconView.setAlpha(1 - modalness);
         mDigitalWellBeingToast.updateBannerOffset(modalness,
                 mCurrentFullscreenParams.mCurrentDrawnInsets.top
                         + mCurrentFullscreenParams.mCurrentDrawnInsets.bottom);

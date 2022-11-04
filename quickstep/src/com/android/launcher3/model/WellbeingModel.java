@@ -18,8 +18,6 @@ package com.android.launcher3.model;
 
 import static android.content.ContentResolver.SCHEME_CONTENT;
 
-import static com.android.launcher3.Utilities.newContentObserver;
-
 import android.annotation.TargetApi;
 import android.app.RemoteAction;
 import android.content.ContentProviderClient;

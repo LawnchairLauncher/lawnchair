@@ -616,11 +616,14 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     public void drawDot(Canvas canvas) {
         if (!mForceHideDot && ((mDotInfo != null && mDotInfo.hasDot()) || mDotScale > 0)) {
             Rect iconBounds = mDotParams.iconBounds;
+            // FolderIcon draws the icon to be top-aligned (with padding) & horizontally-centered
+            int iconSize = mActivity.getDeviceProfile().iconSizePx;
+            iconBounds.left = (getWidth() - iconSize) / 2;
+            iconBounds.right = iconBounds.left + iconSize;
+            iconBounds.top = getPaddingTop();
+            iconBounds.bottom = iconBounds.top + iconSize;
 
-            Utilities.setRectToViewCenter(this, mActivity.getDeviceProfile().iconSizePx,
-                    iconBounds);
-            iconBounds.offsetTo(iconBounds.left, getPaddingTop());
-            float iconScale = (float) mBackground.previewSize / iconBounds.width();
+            float iconScale = (float) mBackground.previewSize / iconSize;
             Utilities.scaleRectAboutCenter(iconBounds, iconScale);
 
             // If we are animating to the accepting state, animate the dot out.
