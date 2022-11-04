@@ -335,6 +335,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @IwTest(focusArea="launcher")
     @Test
     @PortraitLandscape
+    @ScreenRecord // b/256898879
     public void testDragAppIcon() throws Throwable {
         // 1. Open all apps and wait for load complete.
         // 2. Drag icon to homescreen.

@@ -83,6 +83,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -181,6 +182,7 @@ public final class LauncherInstrumentation {
     static final String TASKBAR_RES_ID = "taskbar_view";
     private static final String SPLIT_PLACEHOLDER_RES_ID = "split_placeholder";
     public static final int WAIT_TIME_MS = 30000;
+    static final long DEFAULT_POLL_INTERVAL = 1000;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
     private static final String ANDROID_PACKAGE = "android";
 
@@ -1990,5 +1992,22 @@ public final class LauncherInstrumentation {
         if (mCallbackAtRunPoint != null) {
             mCallbackAtRunPoint.accept(runPoint);
         }
+    }
+
+    /**
+     * Waits until a particular condition is true. Based on WaitMixin.
+     */
+    boolean waitAndGet(BooleanSupplier condition, long timeout, long interval) {
+        long startTime = SystemClock.uptimeMillis();
+
+        boolean result = condition.getAsBoolean();
+        for (long elapsedTime = 0; !result; elapsedTime = SystemClock.uptimeMillis() - startTime) {
+            if (elapsedTime >= timeout) {
+                break;
+            }
+            SystemClock.sleep(interval);
+            result = condition.getAsBoolean();
+        }
+        return result;
     }
 }
