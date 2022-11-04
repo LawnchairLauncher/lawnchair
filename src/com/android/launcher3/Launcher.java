@@ -53,6 +53,8 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_EXIT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ONRESUME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ONSTOP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPELEFT;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPERIGHT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_RECONFIGURED;
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_ACTIVITY_PAUSED;
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_DRAG_AND_DROP;
@@ -183,7 +185,6 @@ import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.AllAppsSwipeController;
-import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ActivityTracker;
@@ -222,7 +223,6 @@ import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.plugins.shared.LauncherExterns;
 import com.android.systemui.plugins.shared.LauncherOverlayManager;
 import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlay;
-import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlayCallbacks;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -242,7 +242,7 @@ import java.util.stream.Stream;
  */
 public class Launcher extends StatefulActivity<LauncherState>
         implements LauncherExterns, Callbacks, InvariantDeviceProfile.OnIDPChangeListener,
-        PluginListener<LauncherOverlayPlugin>, LauncherOverlayCallbacks {
+        PluginListener<LauncherOverlayPlugin> {
     public static final String TAG = "Launcher";
 
     public static final ActivityTracker<Launcher> ACTIVITY_TRACKER = new ActivityTracker<>();
@@ -696,15 +696,7 @@ public class Launcher extends StatefulActivity<LauncherState>
      */
     @Override
     public void setLauncherOverlay(LauncherOverlay overlay) {
-        if (overlay != null) {
-            overlay.setOverlayCallbacks(this);
-        }
         mWorkspace.setLauncherOverlay(overlay);
-    }
-
-    @Override
-    public void runOnOverlayHidden(Runnable runnable) {
-        getWorkspace().runOnOverlayHidden(runnable);
     }
 
     public boolean setLauncherCallbacks(LauncherCallbacks callbacks) {
@@ -1211,18 +1203,6 @@ public class Launcher extends StatefulActivity<LauncherState>
             mOverlayManager.onActivityPaused(this);
         }
         mAppWidgetHolder.setActivityResumed(false);
-    }
-
-    /**
-     * {@code LauncherOverlayCallbacks} scroll amount.
-     * Indicates transition progress to -1 screen.
-     * @param progress From 0 to 1.
-     */
-    @Override
-    public void onScrollChanged(float progress) {
-        if (mWorkspace != null) {
-            mWorkspace.onOverlayScrollChanged(progress);
-        }
     }
 
     /**
@@ -2895,7 +2875,16 @@ public class Launcher extends StatefulActivity<LauncherState>
     /**
      * Informs us that the overlay (-1 screen, typically), has either become visible or invisible.
      */
-    public void onOverlayVisibilityChanged(boolean visible) {}
+    public void onOverlayVisibilityChanged(boolean visible) {
+        getStatsLogManager().logger()
+                .withSrcState(LAUNCHER_STATE_HOME)
+                .withDstState(LAUNCHER_STATE_HOME)
+                .withContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
+                        .setWorkspace(WorkspaceContainer.newBuilder()
+                                .setPageIndex(visible ? 0 : -1))
+                        .build())
+                .log(visible ? LAUNCHER_SWIPELEFT : LAUNCHER_SWIPERIGHT);
+    }
 
     /**
      * Informs us that the page transition has ended, so that we can react to the newly selected
