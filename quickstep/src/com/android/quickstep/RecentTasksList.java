@@ -23,6 +23,8 @@ import static com.android.wm.shell.util.GroupedRecentTaskInfo.TYPE_FREEFORM;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.KeyguardManager;
+import android.app.TaskInfo;
+import android.content.ComponentName;
 import android.os.Build;
 import android.os.Process;
 import android.os.RemoteException;
@@ -324,8 +326,14 @@ public class RecentTasksList {
         writer.println(prefix + "  mChangeId=" + mChangeId);
         writer.println(prefix + "  mResultsUi=[id=" + mResultsUi.mRequestId + ", tasks=");
         for (GroupTask task : mResultsUi) {
-            writer.println(prefix + "    t1=" + task.task1.key.id
-                    + " t2=" + (task.hasMultipleTasks() ? task.task2.key.id : "-1"));
+            Task task1 = task.task1;
+            Task task2 = task.task2;
+            ComponentName cn1 = task1.getTopComponent();
+            ComponentName cn2 = task2 != null ? task2.getTopComponent() : null;
+            writer.println(prefix + "    t1: (id=" + task1.key.id
+                    + "; package=" + (cn1 != null ? cn1.getPackageName() + ")" : "no package)")
+                    + " t2: (id=" + (task2 != null ? task2.key.id : "-1")
+                    + "; package=" + (cn2 != null ? cn2.getPackageName() + ")" : "no package)"));
         }
         writer.println(prefix + "  ]");
         int currentUserId = Process.myUserHandle().getIdentifier();
@@ -333,8 +341,14 @@ public class RecentTasksList {
                 mSysUiProxy.getRecentTasks(Integer.MAX_VALUE, currentUserId);
         writer.println(prefix + "  rawTasks=[");
         for (GroupedRecentTaskInfo task : rawTasks) {
-            writer.println(prefix + "    t1=" + task.getTaskInfo1().taskId
-                    + " t2=" + (task.getTaskInfo2() != null ? task.getTaskInfo2().taskId : "-1"));
+            TaskInfo taskInfo1 = task.getTaskInfo1();
+            TaskInfo taskInfo2 = task.getTaskInfo2();
+            ComponentName cn1 = taskInfo1.topActivity;
+            ComponentName cn2 = taskInfo2 != null ? taskInfo2.topActivity : null;
+            writer.println(prefix + "    t1: (id=" + taskInfo1.taskId
+                    + "; package=" + (cn1 != null ? cn1.getPackageName() + ")" : "no package)")
+                    + " t2: (id=" + (taskInfo2 != null ? taskInfo2.taskId : "-1")
+                    + "; package=" + (cn2 != null ? cn2.getPackageName() + ")" : "no package)"));
         }
         writer.println(prefix + "  ]");
     }
