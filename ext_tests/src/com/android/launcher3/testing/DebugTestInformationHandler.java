@@ -17,6 +17,7 @@
 package com.android.launcher3.testing;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.app.Activity;
 import android.app.Application;
@@ -247,6 +248,9 @@ public class DebugTestInformationHandler extends TestInformationHandler {
                                 .toArray(String[]::new));
                 return response;
             }
+
+            case TestProtocol.REQUEST_MODEL_QUEUE_CLEARED:
+                return getFromExecutorSync(MODEL_EXECUTOR, Bundle::new);
 
             default:
                 return super.call(method, arg, extras);

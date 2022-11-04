@@ -24,6 +24,7 @@
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"/>
     <uses-permission android:name="android.permission.READ_LOGS"/>
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
 
     <application android:debuggable="true" android:extractNativeLibs="true">
         <uses-library android:name="android.test.runner"/>
