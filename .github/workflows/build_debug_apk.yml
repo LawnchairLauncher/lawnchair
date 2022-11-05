@@ -41,6 +41,8 @@ jobs:
           distribution: 'zulu'
           java-version: 17
       - uses: gradle/gradle-build-action@v2
+        with:
+          gradle-home-cache-cleanup: true
       - name: Write sign info
         if: github.repository == 'LawnchairLauncher/lawnchair'
         run: |
