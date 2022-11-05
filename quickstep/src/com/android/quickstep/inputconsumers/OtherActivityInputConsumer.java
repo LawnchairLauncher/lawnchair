@@ -30,7 +30,6 @@ import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.TraceHelper.FLAG_CHECK_FOR_RACE_CONDITIONS;
 import static com.android.launcher3.util.VelocityUtils.PX_PER_MS;
-import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.START_RECENTS_ANIMATION;
 import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
 
 import android.annotation.TargetApi;
@@ -67,7 +66,6 @@ import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RotationTouchHelper;
 import com.android.quickstep.TaskAnimationManager;
-import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.NavBarPosition;
@@ -387,10 +385,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     private void startTouchTrackingForWindowAnimation(long touchTimeMs) {
-        ActiveGestureLog.INSTANCE.addLog(
-                /* event= */ "startRecentsAnimation",
-                /* gestureEvent= */ START_RECENTS_ANIMATION);
-
         mInteractionHandler = mHandlerFactory.newHandler(mGestureState, touchTimeMs);
         mInteractionHandler.setGestureEndCallback(this::onInteractionGestureFinished);
         mMotionPauseDetector.setOnMotionPauseListener(mInteractionHandler.getMotionPauseListener());

@@ -21,6 +21,7 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_INITIALIZED;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_STARTED;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.START_RECENTS_ANIMATION;
 import static com.android.systemui.shared.system.RemoteTransitionCompat.newRemoteTransition;
 
 import android.app.ActivityManager;
@@ -38,6 +39,7 @@ import androidx.annotation.UiThread;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.quickstep.TopTaskTracker.CachedTaskInfo;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -101,6 +103,9 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
     @UiThread
     public RecentsAnimationCallbacks startRecentsAnimation(GestureState gestureState,
             Intent intent, RecentsAnimationCallbacks.RecentsAnimationListener listener) {
+        ActiveGestureLog.INSTANCE.addLog(
+                /* event= */ "startRecentsAnimation",
+                /* gestureEvent= */ START_RECENTS_ANIMATION);
         // Notify if recents animation is still running
         if (mController != null) {
             String msg = "New recents animation started before old animation completed";
@@ -250,6 +255,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
      * Continues the existing running recents animation for a new gesture.
      */
     public RecentsAnimationCallbacks continueRecentsAnimation(GestureState gestureState) {
+        ActiveGestureLog.INSTANCE.addLog(/* event= */ "continueRecentsAnimation");
         mCallbacks.removeListener(mLastGestureState);
         mLastGestureState = gestureState;
         mCallbacks.addListener(gestureState);
@@ -288,6 +294,8 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
      */
     public void finishRunningRecentsAnimation(boolean toHome) {
         if (mController != null) {
+            ActiveGestureLog.INSTANCE.addLog(
+                    /* event= */ "finishRunningRecentsAnimation", toHome);
             mCallbacks.notifyAnimationCanceled();
             Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), toHome
                     ? mController::finishAnimationToHome
@@ -320,6 +328,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
      * Cleans up the recents animation entirely.
      */
     private void cleanUpRecentsAnimation() {
+        ActiveGestureLog.INSTANCE.addLog(/* event= */ "cleanUpRecentsAnimation");
         if (mLiveTileCleanUpHandler != null) {
             mLiveTileCleanUpHandler.run();
             mLiveTileCleanUpHandler = null;

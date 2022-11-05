@@ -356,6 +356,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     @Override
+    public boolean isIconAlignedWithHotseat() {
+        return mTaskbarLauncherStateController.isIconAlignedWithHotseat();
+    }
+
+    @Override
     public void dumpLogs(String prefix, PrintWriter pw) {
         super.dumpLogs(prefix, pw);
 
