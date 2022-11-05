@@ -312,10 +312,14 @@ public class DeviceProfile {
         }
 
         if (isTaskbarPresent) {
-            taskbarSize = DisplayController.isTransientTaskbar(context)
-                    ? res.getDimensionPixelSize(R.dimen.transient_taskbar_size)
-                    : res.getDimensionPixelSize(R.dimen.taskbar_size);
-            stashedTaskbarSize = res.getDimensionPixelSize(R.dimen.taskbar_stashed_size);
+            if (DisplayController.isTransientTaskbar(context)) {
+                taskbarSize = res.getDimensionPixelSize(R.dimen.transient_taskbar_size);
+                stashedTaskbarSize =
+                        res.getDimensionPixelSize(R.dimen.transient_taskbar_stashed_size);
+            } else {
+                taskbarSize = res.getDimensionPixelSize(R.dimen.taskbar_size);
+                stashedTaskbarSize = res.getDimensionPixelSize(R.dimen.taskbar_stashed_size);
+            }
         }
 
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);

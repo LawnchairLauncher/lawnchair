@@ -402,7 +402,6 @@ public class CellLayout extends ViewGroup {
         mCountY = y;
         mOccupied = new GridOccupancy(mCountX, mCountY);
         mTmpOccupied = new GridOccupancy(mCountX, mCountY);
-        mTempRectStack.clear();
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mCountX, mCountY,
                 mBorderSpace);
         requestLayout();
@@ -1247,21 +1246,6 @@ public class CellLayout extends ViewGroup {
                 result, resultSpan);
     }
 
-    private final Stack<Rect> mTempRectStack = new Stack<>();
-    private void lazyInitTempRectStack() {
-        if (mTempRectStack.isEmpty()) {
-            for (int i = 0; i < mCountX * mCountY; i++) {
-                mTempRectStack.push(new Rect());
-            }
-        }
-    }
-
-    private void recycleTempRects(Stack<Rect> used) {
-        while (!used.isEmpty()) {
-            mTempRectStack.push(used.pop());
-        }
-    }
-
     /**
      * Find a vacant area that will fit the given bounds nearest the requested
      * cell location. Uses Euclidean distance to score multiple vacant areas.
@@ -1281,8 +1265,6 @@ public class CellLayout extends ViewGroup {
      */
     private int[] findNearestArea(int relativeXPos, int relativeYPos, int minSpanX, int minSpanY,
             int spanX, int spanY, boolean ignoreOccupied, int[] result, int[] resultSpan) {
-        lazyInitTempRectStack();
-
         // For items with a spanX / spanY > 1, the passed in point (relativeXPos, relativeYPos)
         // corresponds to the center of the item, but we are searching based on the top-left cell,
         // so we translate the point over to correspond to the top-left.
@@ -1352,9 +1334,6 @@ public class CellLayout extends ViewGroup {
                         hitMaxY |= ySize >= spanY;
                         incX = !incX;
                     }
-                    incX = true;
-                    hitMaxX = xSize >= spanX;
-                    hitMaxY = ySize >= spanY;
                 }
                 final int[] cellXY = mTmpPoint;
                 cellToCenterPoint(x, y, cellXY);
@@ -1362,8 +1341,7 @@ public class CellLayout extends ViewGroup {
                 // We verify that the current rect is not a sub-rect of any of our previous
                 // candidates. In this case, the current rect is disqualified in favour of the
                 // containing rect.
-                Rect currentRect = mTempRectStack.pop();
-                currentRect.set(x, y, x + xSize, y + ySize);
+                Rect currentRect = new Rect(x, y, x + xSize, y + ySize);
                 boolean contained = false;
                 for (Rect r : validRegions) {
                     if (r.contains(currentRect)) {
@@ -1393,7 +1371,6 @@ public class CellLayout extends ViewGroup {
             bestXY[0] = -1;
             bestXY[1] = -1;
         }
-        recycleTempRects(validRegions);
         return bestXY;
     }
 
@@ -2544,21 +2521,21 @@ public class CellLayout extends ViewGroup {
         if (result == null) {
             result = new int[]{-1, -1};
         }
-        ItemConfiguration finalSolution;
-        // When we are checking drop validity or actually dropping, we don't recompute the
-        // direction vector, since we want the solution to match the preview, and it's possible
-        // that the exact position of the item has changed to result in a new reordering outcome.
-        if ((mode == MODE_ON_DROP || mode == MODE_ON_DROP_EXTERNAL || mode == MODE_ACCEPT_DROP)
-                && mPreviousSolution != null) {
+
+        ItemConfiguration finalSolution = null;
+        // We want the solution to match the animation of the preview and to match the drop so we
+        // only recalculate in mode MODE_SHOW_REORDER_HINT because that the first one to run in the
+        // reorder cycle.
+        if (mode == MODE_SHOW_REORDER_HINT || mPreviousSolution == null) {
+            finalSolution = calculateReorder(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY,
+                    dragView);
+            mPreviousSolution = finalSolution;
+        } else {
             finalSolution = mPreviousSolution;
             // We reset this vector after drop
             if (mode == MODE_ON_DROP || mode == MODE_ON_DROP_EXTERNAL) {
                 mPreviousSolution = null;
             }
-        } else {
-            finalSolution = calculateReorder(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY,
-                    dragView);
-            mPreviousSolution = finalSolution;
         }
 
         if (finalSolution == null || !finalSolution.isSolution) {

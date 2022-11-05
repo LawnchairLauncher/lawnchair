@@ -26,7 +26,6 @@ import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
-import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_OVERLAY;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPELEFT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPERIGHT;
@@ -58,7 +57,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -119,6 +117,7 @@ import com.android.launcher3.widget.WidgetManagerHelper;
 import com.android.launcher3.widget.dragndrop.AppWidgetHostViewDragListener;
 import com.android.launcher3.widget.util.WidgetSizes;
 import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlay;
+import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlayCallbacks;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -136,7 +135,7 @@ import java.util.stream.Collectors;
 public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         implements DropTarget, DragSource, View.OnTouchListener,
         DragController.DragListener, Insettable, StateHandler<LauncherState>,
-        WorkspaceLayoutManager, LauncherBindableItemsContainer {
+        WorkspaceLayoutManager, LauncherBindableItemsContainer, LauncherOverlayCallbacks {
 
     /** The value that {@link #mTransitionProgress} must be greater than for
      * {@link #transitionStateShouldAllowDrop()} to return true. */
@@ -254,13 +253,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     // State related to Launcher Overlay
     private OverlayEdgeEffect mOverlayEdgeEffect;
-    boolean mOverlayShown = false;
-    private Runnable mOnOverlayHiddenCallback;
+    private boolean mOverlayShown = false;
+    private float mOverlayProgress; // 1 -> overlay completely visible, 0 -> home visible
+    private final List<LauncherOverlayCallbacks> mOverlayCallbacks = new ArrayList<>();
 
     private boolean mForceDrawAdjacentPages = false;
-
-    // Total over scrollX in the overlay direction.
-    private float mOverlayTranslation;
 
     // Handles workspace state transitions
     private final WorkspaceStateTransitionAnimation mStateTransitionAnimation;
@@ -1151,9 +1148,15 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     }
 
     public void setLauncherOverlay(LauncherOverlay overlay) {
-        mOverlayEdgeEffect = overlay == null ? null : new OverlayEdgeEffect(getContext(), overlay);
-        EdgeEffectCompat newEffect = overlay == null
-                ? new EdgeEffectCompat(getContext()) : mOverlayEdgeEffect;
+        final EdgeEffectCompat newEffect;
+        if (overlay == null) {
+            newEffect = new EdgeEffectCompat(getContext());
+            mOverlayEdgeEffect = null;
+        } else {
+            newEffect = mOverlayEdgeEffect = new OverlayEdgeEffect(getContext(), overlay);
+            overlay.setOverlayCallbacks(this);
+        }
+
         if (mIsRtl) {
             mEdgeGlowRight = newEffect;
         } else {
@@ -1203,132 +1206,46 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     @Override
     protected boolean shouldFlingForVelocity(int velocityX) {
         // When the overlay is moving, the fling or settle transition is controlled by the overlay.
-        return Float.compare(Math.abs(mOverlayTranslation), 0) == 0 &&
-                super.shouldFlingForVelocity(velocityX);
+        return Float.compare(Math.abs(mOverlayProgress), 0) == 0
+                && super.shouldFlingForVelocity(velocityX);
     }
 
     /**
      * The overlay scroll is being controlled locally, just update our overlay effect
      */
+    @Override
     public void onOverlayScrollChanged(float scroll) {
-        if (Float.compare(scroll, 1f) == 0) {
+        mOverlayProgress = Utilities.boundToRange(scroll, 0, 1);
+        if (Float.compare(mOverlayProgress, 1f) == 0) {
             if (!mOverlayShown) {
-                mLauncher.getStatsLogManager().logger()
-                        .withSrcState(LAUNCHER_STATE_HOME)
-                        .withDstState(LAUNCHER_STATE_HOME)
-                        .withContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
-                                .setWorkspace(
-                                        LauncherAtom.WorkspaceContainer.newBuilder()
-                                                .setPageIndex(0))
-                                .build())
-                        .log(LAUNCHER_SWIPELEFT);
+                mOverlayShown = true;
+                mLauncher.onOverlayVisibilityChanged(true);
             }
-            mOverlayShown = true;
-
-            // Let the Launcher activity know that the overlay is now visible.
-            mLauncher.onOverlayVisibilityChanged(mOverlayShown);
-
-            // Not announcing the overlay page for accessibility since it announces itself.
-        } else if (Float.compare(scroll, 0f) == 0) {
+        } else if (Float.compare(mOverlayProgress, 0f) == 0) {
             if (mOverlayShown) {
-                // TODO: this is logged unnecessarily on home gesture.
-                mLauncher.getStatsLogManager().logger()
-                        .withSrcState(LAUNCHER_STATE_HOME)
-                        .withDstState(LAUNCHER_STATE_HOME)
-                        .withContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
-                                .setWorkspace(
-                                        LauncherAtom.WorkspaceContainer.newBuilder()
-                                                .setPageIndex(-1))
-                                .build())
-                        .log(LAUNCHER_SWIPERIGHT);
-            } else if (Float.compare(mOverlayTranslation, 0f) != 0) {
-                // When arriving to 0 overscroll from non-zero overscroll, announce page for
-                // accessibility since default announcements were disabled while in overscroll
-                // state.
-                // Not doing this if mOverlayShown because in that case the accessibility service
-                // will announce the launcher window description upon regaining focus after
-                // switching from the overlay screen.
-                announcePageForAccessibility();
+                mOverlayShown = false;
+                mLauncher.onOverlayVisibilityChanged(false);
             }
-            mOverlayShown = false;
-
-            // Let the Launcher activity know that the overlay is no longer visible.
-            mLauncher.onOverlayVisibilityChanged(mOverlayShown);
-
-            tryRunOverlayCallback();
         }
-
-        float offset = 0f;
-
-        scroll = Math.max(scroll - offset, 0);
-        scroll = Math.min(1, scroll / (1 - offset));
-
-        float alpha = 1 - Interpolators.DEACCEL_3.getInterpolation(scroll);
-        float transX = mLauncher.getDragLayer().getMeasuredWidth() * scroll;
-
-        if (mIsRtl) {
-            transX = -transX;
+        int count = mOverlayCallbacks.size();
+        for (int i = 0; i < count; i++) {
+            mOverlayCallbacks.get(i).onOverlayScrollChanged(mOverlayProgress);
         }
-        mOverlayTranslation = transX;
-
-        // TODO(adamcohen): figure out a final effect here. We may need to recommend
-        // different effects based on device performance. On at least one relatively high-end
-        // device I've tried, translating the launcher causes things to get quite laggy.
-        mLauncher.getDragLayer().setTranslationX(transX);
-        mLauncher.getDragLayer().getAlphaProperty(ALPHA_INDEX_OVERLAY).setValue(alpha);
     }
 
     /**
-     * @return false if the callback is still pending
+     * Adds a callback for receiving overlay progress
      */
-    private boolean tryRunOverlayCallback() {
-        if (mOnOverlayHiddenCallback == null) {
-            // Return true as no callback is pending. This is used by OnWindowFocusChangeListener
-            // to remove itself if multiple focus handles were added.
-            return true;
-        }
-        if (mOverlayShown || !hasWindowFocus()) {
-            return false;
-        }
-
-        mOnOverlayHiddenCallback.run();
-        mOnOverlayHiddenCallback = null;
-        return true;
+    public void addOverlayCallback(LauncherOverlayCallbacks callback) {
+        mOverlayCallbacks.add(callback);
+        callback.onOverlayScrollChanged(mOverlayProgress);
     }
 
     /**
-     * Runs the given callback when the minus one overlay is hidden. Specifically, it is run
-     * when launcher's window has focus and the overlay is no longer being shown. If a callback
-     * is already present, the new callback will chain off it so both are run.
-     *
-     * @return Whether the callback was deferred.
+     * Removes a previously added overlay progress callback
      */
-    public boolean runOnOverlayHidden(Runnable callback) {
-        if (mOnOverlayHiddenCallback == null) {
-            mOnOverlayHiddenCallback = callback;
-        } else {
-            // Chain the new callback onto the previous callback(s).
-            Runnable oldCallback = mOnOverlayHiddenCallback;
-            mOnOverlayHiddenCallback = () -> {
-                oldCallback.run();
-                callback.run();
-            };
-        }
-        if (!tryRunOverlayCallback()) {
-            ViewTreeObserver observer = getViewTreeObserver();
-            if (observer != null && observer.isAlive()) {
-                observer.addOnWindowFocusChangeListener(
-                        new ViewTreeObserver.OnWindowFocusChangeListener() {
-                            @Override
-                            public void onWindowFocusChanged(boolean hasFocus) {
-                                if (tryRunOverlayCallback() && observer.isAlive()) {
-                                    observer.removeOnWindowFocusChangeListener(this);
-                                }
-                            }});
-            }
-            return true;
-        }
-        return false;
+    public void removeOverlayCallback(LauncherOverlayCallbacks callback) {
+        mOverlayCallbacks.remove(callback);
     }
 
     @Override
@@ -2467,23 +2384,20 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         final View child = (mDragInfo == null) ? null : mDragInfo.cell;
         int reorderX = mTargetCell[0];
         int reorderY = mTargetCell[1];
-        if (!nearestDropOccupied) {
-            mDragTargetLayout.performReorder((int) mDragViewVisualCenter[0],
-                    (int) mDragViewVisualCenter[1], minSpanX, minSpanY, item.spanX, item.spanY,
-                    child, mTargetCell, new int[2], CellLayout.MODE_SHOW_REORDER_HINT);
-            mDragTargetLayout.visualizeDropLocation(mTargetCell[0], mTargetCell[1],
-                    item.spanX, item.spanY, d);
-        } else if ((mDragMode == DRAG_MODE_NONE || mDragMode == DRAG_MODE_REORDER)
-                && !mReorderAlarm.alarmPending()
+        if ((mDragMode == DRAG_MODE_NONE || mDragMode == DRAG_MODE_REORDER)
                 && (mLastReorderX != reorderX || mLastReorderY != reorderY)
                 && targetCellDistance < mDragTargetLayout.getReorderRadius(mTargetCell, item.spanX,
                 item.spanY)) {
-
-            int[] resultSpan = new int[2];
             mDragTargetLayout.performReorder((int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1], minSpanX, minSpanY, item.spanX, item.spanY,
-                    child, mTargetCell, resultSpan, CellLayout.MODE_SHOW_REORDER_HINT);
+                    child, mTargetCell, new int[2], CellLayout.MODE_SHOW_REORDER_HINT);
+        }
 
+        if (!nearestDropOccupied) {
+            mDragTargetLayout.visualizeDropLocation(mTargetCell[0], mTargetCell[1],
+                    item.spanX, item.spanY, d);
+        } else if ((mDragMode == DRAG_MODE_NONE || mDragMode == DRAG_MODE_REORDER)
+                && !mReorderAlarm.alarmPending()) {
             // Otherwise, if we aren't adding to or creating a folder and there's no pending
             // reorder, then we schedule a reorder
             ReorderAlarmListener listener = new ReorderAlarmListener(mDragViewVisualCenter,
@@ -3470,7 +3384,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     protected boolean canAnnouncePageDescription() {
         // Disable announcements while overscrolling potentially to overlay screen because if we end
         // up on the overlay screen, it will take care of announcing itself.
-        return Float.compare(mOverlayTranslation, 0f) == 0;
+        return Float.compare(mOverlayProgress, 0f) == 0;
     }
 
     @Override

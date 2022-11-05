@@ -178,7 +178,6 @@ import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.SplitAnimationTimings;
-import com.android.quickstep.util.SplitScreenBounds;
 import com.android.quickstep.util.SplitSelectStateController;
 import com.android.quickstep.util.SurfaceTransaction;
 import com.android.quickstep.util.SurfaceTransactionApplier;
@@ -210,7 +209,7 @@ import java.util.function.Consumer;
 public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_TYPE>,
         STATE_TYPE extends BaseState<STATE_TYPE>> extends PagedView implements Insettable,
         TaskThumbnailCache.HighResLoadingState.HighResLoadingStateChangedCallback,
-        TaskVisualsChangeListener, SplitScreenBounds.OnChangeListener {
+        TaskVisualsChangeListener {
 
     private static final String TAG = "RecentsView";
     private static final boolean DEBUG = false;
@@ -948,7 +947,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         SystemUiProxy.INSTANCE.get(getContext()).setPipAnimationListener(
                 mIPipAnimationListener);
         mOrientationState.initListeners();
-        SplitScreenBounds.INSTANCE.addOnChangeListener(this);
         mTaskOverlayFactory.initListeners();
     }
 
@@ -965,7 +963,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         executeSideTaskLaunchCallback();
         RecentsModel.INSTANCE.get(getContext()).removeThumbnailChangeListener(this);
         SystemUiProxy.INSTANCE.get(getContext()).setPipAnimationListener(null);
-        SplitScreenBounds.INSTANCE.removeOnChangeListener(this);
         mIPipAnimationListener.setActivityAndRecentsView(null, null);
         mOrientationState.destroyListeners();
         mTaskOverlayFactory.removeListeners();
@@ -2900,6 +2897,19 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         InteractionJankMonitorWrapper.begin(this,
                 InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER, "First tile selected");
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                if (mSplitHiddenTaskView == getRunningTaskView()) {
+                    finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
+                            null /* onFinishComplete */);
+                } else {
+                    switchToScreenshot(
+                            () -> finishRecentsAnimation(true /* toRecents */,
+                                    false /* shouldPip */, null /* onFinishComplete */));
+                }
+            }
+        });
         anim.addEndListener(success -> {
             if (success) {
                 InteractionJankMonitorWrapper.end(
@@ -4190,8 +4200,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSplitSelectStateController.setInitialTaskSelect(taskView.getTask(),
                 stagePosition, splitEvent, taskView.getItemInfo());
         mSplitHiddenTaskViewIndex = indexOfChild(taskView);
-        finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
-                null /* onFinishComplete */);
     }
 
     /**
@@ -5196,12 +5204,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Nullable
     protected DepthController getDepthController() {
         return null;
-    }
-
-    @Override
-    public void onSecondaryWindowBoundsChanged() {
-        // Invalidate the task view size
-        setInsets(mInsets);
     }
 
     /** Enables or disables modal state for RecentsView */

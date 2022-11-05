@@ -21,7 +21,6 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERV
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.SET_END_TARGET;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.SET_END_TARGET_HOME;
-import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.SET_END_TARGET_LAST_TASK;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.SET_END_TARGET_NEW_TASK;
 
 import android.annotation.Nullable;
@@ -341,8 +340,6 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
                 ActiveGestureLog.INSTANCE.trackEvent(SET_END_TARGET_NEW_TASK);
                 break;
             case LAST_TASK:
-                ActiveGestureLog.INSTANCE.trackEvent(SET_END_TARGET_LAST_TASK);
-                break;
             case RECENTS:
             default:
                 // No-Op

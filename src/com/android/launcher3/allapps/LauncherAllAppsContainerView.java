@@ -16,18 +16,49 @@
 package com.android.launcher3.allapps;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.WindowInsets;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 
 /**
  * AllAppsContainerView with launcher specific callbacks
  */
 public class LauncherAllAppsContainerView extends ActivityAllAppsContainerView<Launcher> {
+
+    private final RecyclerView.OnScrollListener mActivityScrollListener =
+            new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    int scrolledOffset = recyclerView.computeVerticalScrollOffset();
+                    ExtendedEditText input = mSearchUiManager.getEditText();
+                    // Scroll up and scroll to top
+                    if (dy < 0 && scrolledOffset == 0 && input != null) {
+                        boolean isImeEnabledOnSwipeUp = Launcher.getLauncher(mActivityContext)
+                                .getSearchConfig().isImeEnabledOnSwipeUp();
+                        if (isImeEnabledOnSwipeUp || !TextUtils.isEmpty(input.getText())) {
+                            input.showKeyboard();
+                        }
+                    }
+                }
+            };
+
+    @Override
+    protected void onInitializeRecyclerView(RecyclerView rv) {
+        super.onInitializeRecyclerView(rv);
+        if (FeatureFlags.SCROLL_TOP_TO_RESET.get()) {
+            rv.addOnScrollListener(mActivityScrollListener);
+        }
+    }
 
     public LauncherAllAppsContainerView(Context context) {
         this(context, null);
