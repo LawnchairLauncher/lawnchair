@@ -16,7 +16,6 @@
 
 package app.lawnchair.ui.preferences.components
 
-import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -29,7 +28,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextOverflow
@@ -46,19 +44,7 @@ fun TopBar(
 ) {
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
-    val containerColor: Color = MaterialTheme.colorScheme.surface
-    val scrolledContainerColor: Color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.0.dp)
-
-    fun containerColor(colorTransitionFraction: Float): Color {
-        return lerp(
-            containerColor,
-            scrolledContainerColor,
-            FastOutLinearInEasing.transform(colorTransitionFraction)
-        )
-    }
-
-    val backgroundColor = containerColor(scrollBehavior?.state?.overlappedFraction ?: 0f)
-
+    val backgroundColor = MaterialTheme.colorScheme.surface
     val foregroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors(
         containerColor = Color.Transparent,
         scrolledContainerColor = Color.Transparent
