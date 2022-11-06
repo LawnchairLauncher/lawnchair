@@ -53,6 +53,7 @@
     <string name="always_reload_icons_description">Evite usar ícones em cache de pacotes de ícones</string>
     <string name="transparent_background_icons">Ícones Temáticos Transparentes</string>
     <string name="transparent_background_icons_description">Usa fundo transparente em ícones temáticos</string>
+    <string name="smartspace_mode_selection">Seleção do Provedor de Resumo</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotação da Tela Inicial</string>
     <string name="home_screen_rotaton_description">Quando o dispositivo for rotacionado.</string>
@@ -84,7 +85,7 @@
     <string name="theme_follow_wallpaper">Corresponder ao Papel de Parede</string>
     <string name="accent_color">Cor de Destaque</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Formato personalizado dos ícones</string>
+    <string name="custom_icon_shape">Formato de Icone Personalizado</string>
     <string name="custom_icon_shape_create">Criar formato de ícones personalizados</string>
     <string name="custom_icon_shape_edit">Editar Formato de Ícone Personalizado</string>
     <string name="icon_shape_corner">Formato do Canto</string>
@@ -93,9 +94,13 @@
     <string name="icon_shape_corner_cut">Recorte</string>
     <string name="icon_shape_top_left">Superior Esquerdo</string>
     <string name="icon_shape_top_right">Superior Direito</string>
-    <string name="icon_shape_bottom_left">Canto Inferior Esquerdo</string>
-    <string name="icon_shape_bottom_right">Canto Inferior Direito</string>
+    <string name="icon_shape_bottom_left">Inferior Esquerdo</string>
+    <string name="icon_shape_bottom_right">Inferior Direito</string>
     <string name="create">Criar</string>
+    <string name="clipboard">Área de transferência</string>
+    <string name="export_to_clipboard">Copiar para Área de transferência</string>
+    <string name="import_from_clipboard">Importar da área de transferência</string>
+    <string name="icon_shape_clipboard_import_error">Área de transferência não contém uma válida ícone forma</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Pacote de ícones</string>
@@ -184,6 +189,9 @@
     <string name="label_size">Tamanho do Rótulo</string>
     <string name="reset_custom_icons">Redefinir Ícones Personalizados</string>
     <string name="reset_custom_icons_confirmation">Todos os ícones personalizados serão redefinidos. Você quer continuar?</string>
+    <string name="home_screen_text_color">Cor de texto</string>
+    <string name="color_light">Claro</string>
+    <string name="color_dark">Escuro</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
     <string name="force_rounded_widgets">Cantos Arredondados</string>
     <string name="allow_widget_overlap">Permitir Sobreposição</string>
@@ -222,11 +230,15 @@
     <string name="smartspace_preferences">Preferências</string>
     <string name="smartspace_widget_toggle_label">Mostrar na Tela Inicial</string>
     <string name="smartspace_widget_toggle_description">Um resumo pode ser adicionado manualmente colocando o widget \"Lawnchair\".</string>
+    <string name="smartspace_mode_label">Provedor de Resumo</string>
+    <string name="smartspace_mode_lawnchair">Lawnchair</string>
+    <string name="smartspace_mode_google">Google</string>
+    <string name="smartspace_mode_google_search">Pesquisa do Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">Barra de Pesquisa</string>
     <string name="hotseat_qsb_label">Exibir Barra de Pesquisa</string>
-    <string name="corner_radius_label">Raio do canto</string>
+    <string name="corner_radius_label">Raio do Canto</string>
     <string name="apply_accent_color_label">Aplicar Cor de Destaque</string>
     <string name="search_provider">Provedor de Pesquisa</string>
     <string name="grid">Grade</string>
@@ -240,9 +252,9 @@
     <!-- AppDrawerPrefences -->
     <!-- app_drawer_label -->
     <!-- general_label -->
-    <string name="background_opacity">Opacidade do fundo</string>
+    <string name="background_opacity">Opacidade do Fundo</string>
     <!-- hiddenApps_label -->
-    <string name="hidden_apps_label">Aplicativos ocultos</string>
+    <string name="hidden_apps_label">Aplicativos Ocultos</string>
     <string name="show_enable_smart_hide">Mostrar Quando o Nome Completo for Digitado</string>
     <string name="hide_hidden_apps_search">Ocultar nos Resultados da Pesquisa</string>
     <string name="pref_category_search">Pesquisar</string>
@@ -260,7 +272,7 @@
       <string name="label_size" />
     -->
     <!-- HiddenAppsPreferences -->
-    <string name="hidden_apps_label_with_count">Aplicativos ocultos (%1$d)</string>
+    <string name="hidden_apps_label_with_count">Aplicativos Ocultos (%1$d)</string>
     <plurals name="apps_count">
         <item quantity="one">%1$d aplicativo</item>
         <item quantity="other">%1$d aplicativos</item>
@@ -298,8 +310,8 @@
     <string name="action_share">Compartilhar</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Limpar tudo</string>
-    <string name="window_corner_radius_label">Raio dos cantos da tela</string>
-    <string name="override_window_corner_radius_label">Raio dos cantos da tela personalizada</string>
+    <string name="window_corner_radius_label">Raio dos Cantos da Tela</string>
+    <string name="override_window_corner_radius_label">Raio Personalizado dos Cantos da Tela</string>
     <string name="window_corner_radius_description">Ao deslizar para cima para abrir as mudanças recentes, o aplicativo atual segue o seu dedo, diminuindo em um cartão. Utilize este controle deslizante para ajustar o raio de curvatura do cartão quando este estiver quase em tela cheia, de modo a que corresponda aos cantos da sua tela.</string>
     <string name="taskbar_label">Barra de Tarefas</string>
     <string name="enable_taskbar_experimental">Habilitar Barra de Tarefas (Experimental)</string>
@@ -337,7 +349,7 @@
     <string name="dt2s_warning_open_settings">Abrir Configurações</string>
     <string name="loading">Carregando…</string>
     <string name="system">Sistema</string>
-    <string name="customize_button_text">Personalizar</string>
+    <string name="customize_button_text">Personalizado</string>
     <string name="label">Título</string>
     <string name="hide_from_drawer">Esconder da Gaveta de Aplicativos</string>
     <string name="suggestion_pref_screen_title">Sugestões</string>

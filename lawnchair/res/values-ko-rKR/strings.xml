@@ -53,6 +53,7 @@
     <string name="always_reload_icons_description">아이콘 팩에서 캐시된 아이콘 사용 안 함</string>
     <string name="transparent_background_icons">투명 테마 아이콘</string>
     <string name="transparent_background_icons_description">테마 아이콘에 투명한 배경 사용하기</string>
+    <string name="smartspace_mode_selection">한 눈에 보기 제공자 선택</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">홈 화면 회전</string>
     <string name="home_screen_rotaton_description">기기가 회전되었을 때.</string>
@@ -96,6 +97,10 @@
     <string name="icon_shape_bottom_left">왼쪽 하단</string>
     <string name="icon_shape_bottom_right">오른쪽 하단</string>
     <string name="create">생성</string>
+    <string name="clipboard">Clipboard</string>
+    <string name="export_to_clipboard">Export to Clipboard</string>
+    <string name="import_from_clipboard">Import from Clipboard</string>
+    <string name="icon_shape_clipboard_import_error">Clipboard does not contain a valid icon shape</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">아이콘 팩</string>
@@ -184,6 +189,9 @@
     <string name="label_size">라벨 사이즈</string>
     <string name="reset_custom_icons">사용자 정의 아이콘 재설정</string>
     <string name="reset_custom_icons_confirmation">모든 사용자 정의 아이콘이 재설정됩니다. 계속하시겠습니까?</string>
+    <string name="home_screen_text_color">Text Color</string>
+    <string name="color_light">라이트</string>
+    <string name="color_dark">다크</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
     <string name="force_rounded_widgets">둥근 모서리</string>
     <string name="allow_widget_overlap">겹침 허용</string>
@@ -222,6 +230,10 @@
     <string name="smartspace_preferences">설정</string>
     <string name="smartspace_widget_toggle_label">홈 화면에 표시</string>
     <string name="smartspace_widget_toggle_description">한눈에 보기는 \"Lawnchair\" 위젯을 수동으로 추가할 수 있습니다.</string>
+    <string name="smartspace_mode_label">한 눈에 보기 제공자</string>
+    <string name="smartspace_mode_lawnchair">Lawnchair</string>
+    <string name="smartspace_mode_google">구글</string>
+    <string name="smartspace_mode_google_search">구글 검색</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">검색 상자</string>

@@ -53,6 +53,7 @@
     <string name="always_reload_icons_description">خودداری از استفاده از آیکون‌های ذخیره شده در آیکون پک‌ها</string>
     <string name="transparent_background_icons">Transparent Themed Icons</string>
     <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
+    <string name="smartspace_mode_selection">انتخاب ارائه دهنده در یک نگاه</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">چرخش صفحه‌ اصلی</string>
     <string name="home_screen_rotaton_description">هنگام چرخش دستگاه.</string>
@@ -87,15 +88,19 @@
     <string name="custom_icon_shape">Custom Icon Shape</string>
     <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
     <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
-    <string name="icon_shape_corner">Corner Shape</string>
-    <string name="icon_shape_corner_round">Round</string>
-    <string name="icon_shape_corner_squircle">Smooth</string>
-    <string name="icon_shape_corner_cut">Cut</string>
-    <string name="icon_shape_top_left">Top Left</string>
-    <string name="icon_shape_top_right">Top Right</string>
-    <string name="icon_shape_bottom_left">Bottom Left</string>
-    <string name="icon_shape_bottom_right">Bottom Right</string>
+    <string name="icon_shape_corner">شکل گوشه</string>
+    <string name="icon_shape_corner_round">گرد</string>
+    <string name="icon_shape_corner_squircle">صاف</string>
+    <string name="icon_shape_corner_cut">مقطع</string>
+    <string name="icon_shape_top_left">بالا سمت چپ</string>
+    <string name="icon_shape_top_right">بالا سمت راست</string>
+    <string name="icon_shape_bottom_left">پایین سمت چپ</string>
+    <string name="icon_shape_bottom_right">سمت راست پایین</string>
     <string name="create">ساخت</string>
+    <string name="clipboard">کلیپ بورد</string>
+    <string name="export_to_clipboard">Export to Clipboard</string>
+    <string name="import_from_clipboard">وارد کردن از کلیپ بورد</string>
+    <string name="icon_shape_clipboard_import_error">Clipboard does not contain a valid icon shape</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">آیکون پک</string>
@@ -184,6 +189,9 @@
     <string name="label_size">اندازه نام‌</string>
     <string name="reset_custom_icons">تنظیم مجدد آیکون‌های شخصی‌سازی شده</string>
     <string name="reset_custom_icons_confirmation">تمام آیکون‌های شخصی‌سازی شده مجددا تنظیم خواهند شد. آیا میخواهید ادامه دهید؟</string>
+    <string name="home_screen_text_color">رنگ متن</string>
+    <string name="color_light">روشن</string>
+    <string name="color_dark">تاریک</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
     <string name="force_rounded_widgets">گوشه‌های گرد</string>
     <string name="allow_widget_overlap">اجازه همپوشانی داده شود</string>
@@ -222,6 +230,10 @@
     <string name="smartspace_preferences">تنظیمات</string>
     <string name="smartspace_widget_toggle_label">نشان دادن در صفحه ‌اصلی</string>
     <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <string name="smartspace_mode_label">ارائه دهنده در یک نگاه</string>
+    <string name="smartspace_mode_lawnchair">Lawnchair</string>
+    <string name="smartspace_mode_google">گوگل</string>
+    <string name="smartspace_mode_google_search">جستجوی گوگل</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">نوار جست‌و‌جو</string>
@@ -243,8 +255,8 @@
     <string name="background_opacity">شفافیت بک‌گراند</string>
     <!-- hiddenApps_label -->
     <string name="hidden_apps_label">برنامه‌های مخفی‌شده</string>
-    <string name="show_enable_smart_hide">Show when Full Name is Typed</string>
-    <string name="hide_hidden_apps_search">Hide in Search Results</string>
+    <string name="show_enable_smart_hide">نمایش زمانی که نام کامل تایپ شده است</string>
+    <string name="hide_hidden_apps_search">پنهان شدن در نتایج جستجو</string>
     <string name="pref_category_search">جست‌و‌جو</string>
     <string name="show_app_search_bar">نشان‌دادن نوار جستجو</string>
     <string name="pref_search_auto_show_keyboard">نمایش خودکار صفحه کلید</string>

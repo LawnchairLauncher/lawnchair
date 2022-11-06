@@ -53,6 +53,7 @@
     <string name="always_reload_icons_description">アイコンパックからキャッシュされたアイコンを使用しないようにする</string>
     <string name="transparent_background_icons">透明なテーマアイコン</string>
     <string name="transparent_background_icons_description">テーマごとにアイコンの背景を透明にします</string>
+    <string name="smartspace_mode_selection">At a Glance のプロバイダー選択</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">ホーム画面の回転</string>
     <string name="home_screen_rotaton_description">デバイスを回転させた時</string>
@@ -96,6 +97,10 @@
     <string name="icon_shape_bottom_left">左下</string>
     <string name="icon_shape_bottom_right">右下</string>
     <string name="create">作成</string>
+    <string name="clipboard">クリップボード</string>
+    <string name="export_to_clipboard">クリップボードにエクスポート</string>
+    <string name="import_from_clipboard">クリップボードからインポート</string>
+    <string name="icon_shape_clipboard_import_error">Clipboard does not contain a valid icon shape</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">アイコンパック</string>
@@ -184,6 +189,9 @@
     <string name="label_size">ラベルのサイズ</string>
     <string name="reset_custom_icons">カスタムアイコンをリセット</string>
     <string name="reset_custom_icons_confirmation">すべてのカスタムアイコンがリセットされます。続行しますか？</string>
+    <string name="home_screen_text_color">Text Color</string>
+    <string name="color_light">ライト</string>
+    <string name="color_dark">ダーク</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
     <string name="force_rounded_widgets">角丸</string>
     <string name="allow_widget_overlap">重なりを許可</string>
@@ -222,6 +230,10 @@
     <string name="smartspace_preferences">設定</string>
     <string name="smartspace_widget_toggle_label">ホーム画面に表示する</string>
     <string name="smartspace_widget_toggle_description">At a Glanceは、「Lawnchair」のウィジェットを配置することで、手動で追加することができます。</string>
+    <string name="smartspace_mode_label">At a Glance のプロバイダー</string>
+    <string name="smartspace_mode_lawnchair">Lawnchair</string>
+    <string name="smartspace_mode_google">Google</string>
+    <string name="smartspace_mode_google_search">Google 検索</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">検索バー</string>

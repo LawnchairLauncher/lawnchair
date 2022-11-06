@@ -53,6 +53,7 @@
     <string name="always_reload_icons_description">Избегать использования кэшированных иконок из наборов иконок</string>
     <string name="transparent_background_icons">Прозрачные тематические иконки</string>
     <string name="transparent_background_icons_description">Использовать прозрачный фон на тематических значках</string>
+    <string name="smartspace_mode_selection">На выборке поставщика Glance</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Поворачивать домашний экран</string>
     <string name="home_screen_rotaton_description">При повороте устройства.</string>
@@ -86,16 +87,20 @@
     <!-- CustomIconShapePreference -->
     <string name="custom_icon_shape">Форма иконок</string>
     <string name="custom_icon_shape_create">Пользовательская форма иконок</string>
-    <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
-    <string name="icon_shape_corner">Corner Shape</string>
-    <string name="icon_shape_corner_round">Round</string>
-    <string name="icon_shape_corner_squircle">Smooth</string>
-    <string name="icon_shape_corner_cut">Cut</string>
-    <string name="icon_shape_top_left">Top Left</string>
-    <string name="icon_shape_top_right">Top Right</string>
-    <string name="icon_shape_bottom_left">Bottom Left</string>
-    <string name="icon_shape_bottom_right">Bottom Right</string>
+    <string name="custom_icon_shape_edit">Редактировать свою форму иконок</string>
+    <string name="icon_shape_corner">Угловая форма</string>
+    <string name="icon_shape_corner_round">Круглая</string>
+    <string name="icon_shape_corner_squircle">Сглаженная</string>
+    <string name="icon_shape_corner_cut">Обрезанная</string>
+    <string name="icon_shape_top_left">Сверху слева</string>
+    <string name="icon_shape_top_right">Сверху справа</string>
+    <string name="icon_shape_bottom_left">Снизу слева</string>
+    <string name="icon_shape_bottom_right">Снизу справа</string>
     <string name="create">Создать</string>
+    <string name="clipboard">Буфер обмена</string>
+    <string name="export_to_clipboard">Экспорт в буфер обмена</string>
+    <string name="import_from_clipboard">Импорт из буфера обмена</string>
+    <string name="icon_shape_clipboard_import_error">Буфер обмена не содержит допустимую форму значка</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Набор иконок</string>
@@ -184,6 +189,9 @@
     <string name="label_size">Размер подписи</string>
     <string name="reset_custom_icons">Сброс пользовательских значков</string>
     <string name="reset_custom_icons_confirmation">Все пользовательские иконки будут сброшены. Вы хотите продолжить?</string>
+    <string name="home_screen_text_color">Цвет текста</string>
+    <string name="color_light">Светлая</string>
+    <string name="color_dark">Тёмная</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
     <string name="force_rounded_widgets">Скруглённые углы</string>
     <string name="allow_widget_overlap">Разрешить наложения</string>
@@ -222,6 +230,10 @@
     <string name="smartspace_preferences">Настройки</string>
     <string name="smartspace_widget_toggle_label">Показать на главном экране</string>
     <string name="smartspace_widget_toggle_description">At a Glance можно добавить вручную, поместив \"Lawnchair\" виджет.</string>
+    <string name="smartspace_mode_label">Виджет \"At a Glance\"</string>
+    <string name="smartspace_mode_lawnchair">Lawnchair</string>
+    <string name="smartspace_mode_google">Google</string>
+    <string name="smartspace_mode_google_search">Поиск Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">Панель поиска</string>

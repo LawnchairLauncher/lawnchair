@@ -51,8 +51,9 @@
     <string name="workspace_increase_max_grid_size_description">Augmenter la taille maximale autorisée de la grille de 10 x 10 à 20 x 20.</string>
     <string name="always_reload_icons_label">Toujours actualiser les icônes</string>
     <string name="always_reload_icons_description">Éviter d\'utiliser les icônes en cache des packs d\'icônes</string>
-    <string name="transparent_background_icons">Transparent Themed Icons</string>
-    <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
+    <string name="transparent_background_icons">Icônes thématiques transparentes</string>
+    <string name="transparent_background_icons_description">Utiliser un fond transparent sur les icônes thématiques</string>
+    <string name="smartspace_mode_selection">At a Glance Provider selection</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotation de l\'écran d\'accueil</string>
     <string name="home_screen_rotaton_description">Lorsque l\'appareil est tourné.</string>
@@ -96,6 +97,10 @@
     <string name="icon_shape_bottom_left">Bottom Left</string>
     <string name="icon_shape_bottom_right">Bottom Right</string>
     <string name="create">Créer</string>
+    <string name="clipboard">Presse-papier</string>
+    <string name="export_to_clipboard">Exporter vers le presse-papier</string>
+    <string name="import_from_clipboard">Importer depuis le presse-papier</string>
+    <string name="icon_shape_clipboard_import_error">Le presse-papier ne contient pas une forme d\'icône valide</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Pack d\'icônes</string>
@@ -184,6 +189,9 @@
     <string name="label_size">Taille du libellé</string>
     <string name="reset_custom_icons">Réinitialiser les icônes personnalisées</string>
     <string name="reset_custom_icons_confirmation">Toutes les icônes personnalisées seront réinitialisées. Voulez-vous continuer ?</string>
+    <string name="home_screen_text_color">Text Color</string>
+    <string name="color_light">Clair</string>
+    <string name="color_dark">Sombre</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
     <string name="force_rounded_widgets">Coins arrondis</string>
     <string name="allow_widget_overlap">Autoriser les superpositions</string>
@@ -222,6 +230,10 @@
     <string name="smartspace_preferences">Préférences</string>
     <string name="smartspace_widget_toggle_label">Afficher sur l\'écran d\'accueil</string>
     <string name="smartspace_widget_toggle_description">Widget Aperçu peut être ajouté manuellement en plaçant le widget \"Lawnchair\".</string>
+    <string name="smartspace_mode_label">At a Glance Provider</string>
+    <string name="smartspace_mode_lawnchair">Lawnchair</string>
+    <string name="smartspace_mode_google">Google</string>
+    <string name="smartspace_mode_google_search">Google Search</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">Barre de recherche</string>
