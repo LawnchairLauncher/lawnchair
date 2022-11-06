@@ -53,6 +53,7 @@
     <string name="always_reload_icons_description">หลีกเลี่ยงการแคชจากชุดไอคอน</string>
     <string name="transparent_background_icons">Transparent Themed Icons</string>
     <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
+    <string name="smartspace_mode_selection">At a Glance Provider selection</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">อนุญาตให้หมุนหน้าจอหลัก</string>
     <string name="home_screen_rotaton_description">เมื่อหมุนโทรศัพท์</string>
@@ -96,6 +97,10 @@
     <string name="icon_shape_bottom_left">Bottom Left</string>
     <string name="icon_shape_bottom_right">Bottom Right</string>
     <string name="create">สร้างการสำรองข้อมูล</string>
+    <string name="clipboard">Clipboard</string>
+    <string name="export_to_clipboard">Export to Clipboard</string>
+    <string name="import_from_clipboard">Import from Clipboard</string>
+    <string name="icon_shape_clipboard_import_error">Clipboard does not contain a valid icon shape</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">ชุดไอคอน</string>
@@ -184,6 +189,9 @@
     <string name="label_size">ขนาดตัวอักษร</string>
     <string name="reset_custom_icons">คืนค่าไอคอนที่กำหนดเอง</string>
     <string name="reset_custom_icons_confirmation">ไอคอนที่กำหนดเองทั้งหมดจะถูกคืนเป็นค่าเริ่มต้น, คุณต้องการดำเนินการต่อหรือไม่?</string>
+    <string name="home_screen_text_color">Text Color</string>
+    <string name="color_light">สว่าง</string>
+    <string name="color_dark">มืด</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
     <string name="force_rounded_widgets">มุมโค้งมน</string>
     <string name="allow_widget_overlap">อนุญาตให้ซ้อนทับกัน</string>
@@ -222,6 +230,10 @@
     <string name="smartspace_preferences">ปรับแต่ง</string>
     <string name="smartspace_widget_toggle_label">แสดงบนหน้าจอหลัก</string>
     <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <string name="smartspace_mode_label">At a Glance Provider</string>
+    <string name="smartspace_mode_lawnchair">Lawnchair</string>
+    <string name="smartspace_mode_google">Google</string>
+    <string name="smartspace_mode_google_search">Google Search</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">แถบการค้นหา</string>

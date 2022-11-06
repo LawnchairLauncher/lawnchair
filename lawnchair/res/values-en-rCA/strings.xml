@@ -18,7 +18,7 @@
     <!-- PreferenceDashboard -->
     <string name="settings">Settings</string>
     <string name="general_label">General</string>
-    <string name="general_description">Colors, Icon Pack, Notification Dots</string>
+    <string name="general_description">Colours, Icon Pack, Notification Dots</string>
     <string name="home_screen_label">Home Screen</string>
     <string name="home_screen_description">Feed, Grid, Icons</string>
     <!--
@@ -53,6 +53,7 @@
     <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
     <string name="transparent_background_icons">Transparent Themed Icons</string>
     <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
+    <string name="smartspace_mode_selection">At a Glance Provider selection</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Home Screen Rotation</string>
     <string name="home_screen_rotaton_description">When device is rotated.</string>
@@ -67,22 +68,22 @@
     <string name="notification_dots">Notification Dots</string>
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Show Notification Count</string>
-    <string name="notification_dots_color">Notification Dot Color</string>
-    <string name="notification_dots_text_color">Notification Count Color</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_color">Notification Dot Colour</string>
+    <string name="notification_dots_text_color">Notification Count Colour</string>
+    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colours do not have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colours might not always have enough contrast with each other</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Notification Access Needed</string>
     <string name="missing_notification_access_description">Notification access needed.</string>
     <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">Change Settings</string>
-    <string name="colors">Colors</string>
+    <string name="colors">Colours</string>
     <string name="theme_label">Theme</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
     <string name="theme_system_default">System</string>
     <string name="theme_follow_wallpaper">Match Wallpaper</string>
-    <string name="accent_color">Accent Color</string>
+    <string name="accent_color">Accent Colour</string>
     <!-- CustomIconShapePreference -->
     <string name="custom_icon_shape">Custom Icon Shape</string>
     <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
@@ -96,6 +97,10 @@
     <string name="icon_shape_bottom_left">Bottom Left</string>
     <string name="icon_shape_bottom_right">Bottom Right</string>
     <string name="create">Create</string>
+    <string name="clipboard">Clipboard</string>
+    <string name="export_to_clipboard">Export to Clipboard</string>
+    <string name="import_from_clipboard">Import from Clipboard</string>
+    <string name="icon_shape_clipboard_import_error">Clipboard does not contain a valid icon shape</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Icon Pack</string>
@@ -154,7 +159,7 @@
     <string name="action_copy">Copy</string>
     <string name="action_paste">Paste</string>
     <string name="copied_toast">Copied to clipboard.</string>
-    <string name="invalid_color">Invalid Color</string>
+    <string name="invalid_color">Invalid Colour</string>
     <string name="launcher_default_color">Managed by Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
@@ -184,6 +189,9 @@
     <string name="label_size">Label Size</string>
     <string name="reset_custom_icons">Reset Custom Icons</string>
     <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
+    <string name="home_screen_text_color">Text Colour</string>
+    <string name="color_light">Light</string>
+    <string name="color_dark">Dark</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
     <string name="force_rounded_widgets">Rounded Corners</string>
     <string name="allow_widget_overlap">Allow Overlap</string>
@@ -222,12 +230,16 @@
     <string name="smartspace_preferences">Preferences</string>
     <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
     <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <string name="smartspace_mode_label">At a Glance Provider</string>
+    <string name="smartspace_mode_lawnchair">Lawnchair</string>
+    <string name="smartspace_mode_google">Google</string>
+    <string name="smartspace_mode_google_search">Google Search</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">Search Bar</string>
     <string name="hotseat_qsb_label">Show Search Bar</string>
     <string name="corner_radius_label">Corner Radius</string>
-    <string name="apply_accent_color_label">Apply Accent Color</string>
+    <string name="apply_accent_color_label">Apply Accent Colour</string>
     <string name="search_provider">Search Provider</string>
     <string name="grid">Grid</string>
     <string name="dock_icons">Dock Icons</string>
@@ -269,7 +281,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Icon Background Opacity</string>
-    <string name="folder_preview_bg_color_label">Icon Background Color</string>
+    <string name="folder_preview_bg_color_label">Icon Background Colour</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Max. Folder Columns</string>
     <string name="max_folder_rows">Max. Folder Rows</string>
