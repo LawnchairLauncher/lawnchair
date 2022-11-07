@@ -14,7 +14,8 @@ private const val STASHED_HANDLE_FADE_DURATION = 180L
  * Controls Taskbar behavior while Voice Interaction Window (assistant) is showing.
  */
 class VoiceInteractionWindowController(val context: TaskbarActivityContext)
-    : TaskbarControllers.LoggableTaskbarController {
+    : TaskbarControllers.LoggableTaskbarController,
+        TaskbarControllers.BackgroundRendererController {
 
     private val taskbarBackgroundRenderer = TaskbarBackgroundRenderer(context)
 
@@ -109,6 +110,11 @@ class VoiceInteractionWindowController(val context: TaskbarActivityContext)
                 onWindowsSynchronized
             )
         }
+    }
+
+    override fun setCornerRoundness(cornerRoundness: Float) {
+        taskbarBackgroundRenderer.setCornerRoundness(cornerRoundness)
+        separateWindowForTaskbarBackground.invalidate()
     }
 
     override fun dumpLogs(prefix: String, pw: PrintWriter) {

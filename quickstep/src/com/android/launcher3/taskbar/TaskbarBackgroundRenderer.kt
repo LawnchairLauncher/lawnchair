@@ -44,8 +44,12 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
     private var keyShadowDistance = 0f
     private var bottomMargin = 0
 
-    private val leftCornerRadius = context.leftCornerRadius.toFloat()
-    private val rightCornerRadius = context.rightCornerRadius.toFloat()
+    private val fullLeftCornerRadius = context.leftCornerRadius.toFloat()
+    private val fullRightCornerRadius = context.rightCornerRadius.toFloat()
+    private var leftCornerRadius = fullLeftCornerRadius
+    private var rightCornerRadius = fullRightCornerRadius
+    private val square: Path = Path()
+    private val circle: Path = Path()
     private val invertedLeftCornerPath: Path = Path()
     private val invertedRightCornerPath: Path = Path()
 
@@ -63,13 +67,29 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
             keyShadowDistance = res.getDimension(R.dimen.transient_taskbar_key_shadow_distance)
         }
 
+        setCornerRoundness(DEFAULT_ROUNDNESS)
+    }
+
+    /**
+     * Sets the roundness of the round corner above Taskbar. No effect on transient Taskkbar.
+     * @param cornerRoundness 0 has no round corner, 1 has complete round corner.
+     */
+    fun setCornerRoundness(cornerRoundness: Float) {
+        if (isTransientTaskbar && !transientBackgroundBounds.isEmpty) {
+            return
+        }
+
+        leftCornerRadius = fullLeftCornerRadius * cornerRoundness
+        rightCornerRadius = fullRightCornerRadius * cornerRoundness
+
         // Create the paths for the inverted rounded corners above the taskbar. Start with a filled
         // square, and then subtract out a circle from the appropriate corner.
-        val square = Path()
+        square.reset()
         square.addRect(0f, 0f, leftCornerRadius, leftCornerRadius, Path.Direction.CW)
-        val circle = Path()
+        circle.reset()
         circle.addCircle(leftCornerRadius, 0f, leftCornerRadius, Path.Direction.CW)
         invertedLeftCornerPath.op(square, circle, Path.Op.DIFFERENCE)
+
         square.reset()
         square.addRect(0f, 0f, rightCornerRadius, rightCornerRadius, Path.Direction.CW)
         circle.reset()
@@ -120,5 +140,9 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
         }
 
         canvas.restore()
+    }
+
+    companion object {
+        const val DEFAULT_ROUNDNESS = 1f
     }
 }

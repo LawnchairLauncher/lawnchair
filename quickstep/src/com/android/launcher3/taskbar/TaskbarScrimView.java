@@ -69,4 +69,13 @@ public class TaskbarScrimView extends View {
         mRenderer.getPaint().setAlpha((int) (alpha * 255));
         invalidate();
     }
+
+    /**
+     * Sets the roundness of the round corner above Taskbar.
+     * @param cornerRoundness 0 has no round corner, 1 has complete round corner.
+     */
+    protected void setCornerRoundness(float cornerRoundness) {
+        mRenderer.setCornerRoundness(cornerRoundness);
+        invalidate();
+    }
 }
