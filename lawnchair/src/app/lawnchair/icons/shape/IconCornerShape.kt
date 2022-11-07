@@ -24,7 +24,7 @@ import android.graphics.PointF
 import com.android.launcher3.Utilities
 import com.android.launcher3.anim.Interpolators.LINEAR
 
-abstract class IconCornerShape {
+sealed class IconCornerShape {
 
     abstract fun addCorner(path: Path, position: Position, size: PointF, progress: Float, offsetX: Float, offsetY: Float)
 
