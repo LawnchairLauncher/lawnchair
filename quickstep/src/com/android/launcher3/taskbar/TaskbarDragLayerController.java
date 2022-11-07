@@ -32,7 +32,8 @@ import java.io.PrintWriter;
 /**
  * Handles properties/data collection, then passes the results to TaskbarDragLayer to render.
  */
-public class TaskbarDragLayerController implements TaskbarControllers.LoggableTaskbarController {
+public class TaskbarDragLayerController implements TaskbarControllers.LoggableTaskbarController,
+        TaskbarControllers.BackgroundRendererController {
 
     private final TaskbarActivityContext mActivity;
     private final TaskbarDragLayer mTaskbarDragLayer;
@@ -136,6 +137,11 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         mTaskbarDragLayer.setTaskbarBackgroundOffset(mBgOffset.value);
 
         updateNavBarDarkIntensityMultiplier();
+    }
+
+    @Override
+    public void setCornerRoundness(float cornerRoundness) {
+        mTaskbarDragLayer.setCornerRoundness(cornerRoundness);
     }
 
     private void updateNavBarDarkIntensityMultiplier() {
