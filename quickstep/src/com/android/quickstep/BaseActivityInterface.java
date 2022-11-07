@@ -30,6 +30,7 @@ import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -501,45 +502,43 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
                         "setRecentsAttachedToAppWindow: exiting early"));
                 return;
             }
-            mIsAttachedToWindow = attached;
-            RecentsView recentsView = mActivity.getOverviewPanel();
-            if (attached) {
-                mHasEverAttachedToWindow = true;
-            }
-            Animator fadeAnim = mActivity.getStateManager()
-                    .createStateElementAnimation(INDEX_RECENTS_FADE_ANIM, attached ? 1 : 0);
-
-            float fromTranslation = attached ? 1 : 0;
-            float toTranslation = attached ? 0 : 1;
+            mActivity.getStateManager()
+                    .cancelStateElementAnimation(INDEX_RECENTS_FADE_ANIM);
             mActivity.getStateManager()
                     .cancelStateElementAnimation(INDEX_RECENTS_TRANSLATE_X_ANIM);
-            if (!recentsView.isShown() && animate) {
-                ADJACENT_PAGE_HORIZONTAL_OFFSET.set(recentsView, fromTranslation);
-                ActiveGestureLog.INSTANCE.addLog(new ActiveGestureLog.CompoundString(
-                        "setRecentsAttachedToAppWindow: recents view not shown, setting ")
-                        .append("ADJACENT_PAGE_HORIZONTAL_OFFSET to ")
-                        .append(Float.toString(fromTranslation)));
-            } else {
-                fromTranslation = ADJACENT_PAGE_HORIZONTAL_OFFSET.get(recentsView);
-                ActiveGestureLog.INSTANCE.addLog(new ActiveGestureLog.CompoundString(
-                        "setRecentsAttachedToAppWindow: updating fromTranslation to ")
-                        .append(Float.toString(fromTranslation)));
-            }
+
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                    mIsAttachedToWindow = attached;
+                    if (attached) {
+                        mHasEverAttachedToWindow = true;
+                    }
+                }});
+
+            long animationDuration = animate ? RECENTS_ATTACH_DURATION : 0;
+            Animator fadeAnim = mActivity.getStateManager()
+                    .createStateElementAnimation(INDEX_RECENTS_FADE_ANIM, attached ? 1 : 0);
+            fadeAnim.setInterpolator(attached ? INSTANT : ACCEL_2);
+            fadeAnim.setDuration(animationDuration);
+            animatorSet.play(fadeAnim);
+
+            float fromTranslation = ADJACENT_PAGE_HORIZONTAL_OFFSET.get(
+                    mActivity.getOverviewPanel());
+            float toTranslation = attached ? 0 : 1;
             ActiveGestureLog.INSTANCE.addLog(new ActiveGestureLog.CompoundString(
                     "setRecentsAttachedToAppWindow: fromTranslation=")
                     .append(Float.toString(fromTranslation))
                     .append(", toTranslation=")
                     .append(Float.toString(toTranslation)));
-            if (!animate) {
-                ADJACENT_PAGE_HORIZONTAL_OFFSET.set(recentsView, toTranslation);
-            } else {
-                mActivity.getStateManager().createStateElementAnimation(
-                        INDEX_RECENTS_TRANSLATE_X_ANIM,
-                        fromTranslation, toTranslation).start();
-            }
 
-            fadeAnim.setInterpolator(attached ? INSTANT : ACCEL_2);
-            fadeAnim.setDuration(animate ? RECENTS_ATTACH_DURATION : 0).start();
+            Animator translationAnimator = mActivity.getStateManager().createStateElementAnimation(
+                    INDEX_RECENTS_TRANSLATE_X_ANIM, fromTranslation, toTranslation);
+            translationAnimator.setDuration(animationDuration);
+            animatorSet.play(translationAnimator);
+            animatorSet.start();
         }
 
         @Override
