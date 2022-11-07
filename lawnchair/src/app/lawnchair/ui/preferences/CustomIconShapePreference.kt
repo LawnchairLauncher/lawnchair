@@ -276,8 +276,8 @@ private fun CornerSlider(
     val bottomSheetHandler = LocalBottomSheetHandler.current
     val options = listOf<IconCornerShape>(
         IconCornerShape.arc,
-        IconCornerShape.squircle,
-        IconCornerShape.cut,
+        IconCornerShape.Squircle,
+        IconCornerShape.Cut,
     )
 
     val step = 0.1f
@@ -395,7 +395,7 @@ private fun CornerSlider(
 
 @Composable
 private fun IconCornerShape.getLabel() = when (this) {
-    IconCornerShape.squircle -> stringResource(id = R.string.icon_shape_corner_squircle)
-    IconCornerShape.cut -> stringResource(id = R.string.icon_shape_corner_cut)
+    IconCornerShape.Squircle -> stringResource(id = R.string.icon_shape_corner_squircle)
+    IconCornerShape.Cut -> stringResource(id = R.string.icon_shape_corner_cut)
     else -> stringResource(id = R.string.icon_shape_corner_round)
 }
