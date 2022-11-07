@@ -216,6 +216,10 @@
       <string name="reset_custom_icons">Reset Custom Icons</string>
       <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
 
+    <string name="home_screen_text_color">Text Color</string>
+    <string name="color_light">Light</string>
+    <string name="color_dark">Dark</string>
+
     <!-- <string name="widget_button_text" /> (unknown source)-->
       <string name="force_rounded_widgets">Rounded Corners</string>
       <string name="allow_widget_overlap">Allow Overlap</string>

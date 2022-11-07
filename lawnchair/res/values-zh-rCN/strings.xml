@@ -53,6 +53,7 @@
     <string name="always_reload_icons_description">避免在图标包中使用缓存图标</string>
     <string name="transparent_background_icons">透明的主题图标</string>
     <string name="transparent_background_icons_description">在主题图标上使用透明背景</string>
+    <string name="smartspace_mode_selection">资讯一览提供者选择</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">主屏幕旋转</string>
     <string name="home_screen_rotaton_description">当设备旋转时</string>
@@ -96,6 +97,10 @@
     <string name="icon_shape_bottom_left">左下角</string>
     <string name="icon_shape_bottom_right">右下角</string>
     <string name="create">创建</string>
+    <string name="clipboard">剪贴板</string>
+    <string name="export_to_clipboard">导出到剪贴板</string>
+    <string name="import_from_clipboard">从剪贴板导入</string>
+    <string name="icon_shape_clipboard_import_error">剪贴板没有包含有效的图标形状</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">图标包</string>
@@ -184,6 +189,9 @@
     <string name="label_size">标签大小</string>
     <string name="reset_custom_icons">重置自定义图标</string>
     <string name="reset_custom_icons_confirmation">所有自定义图标将被重置。您想要继续吗？</string>
+    <string name="home_screen_text_color">文本颜色</string>
+    <string name="color_light">浅色</string>
+    <string name="color_dark">深色</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
     <string name="force_rounded_widgets">圆角</string>
     <string name="allow_widget_overlap">允许重叠</string>
@@ -222,6 +230,10 @@
     <string name="smartspace_preferences">首选项</string>
     <string name="smartspace_widget_toggle_label">在主屏幕上显示</string>
     <string name="smartspace_widget_toggle_description">资讯一览可以通过放置“Lawnchair”小部件手动添加。</string>
+    <string name="smartspace_mode_label">资讯一览提供商</string>
+    <string name="smartspace_mode_lawnchair">Lawnchair</string>
+    <string name="smartspace_mode_google">Google</string>
+    <string name="smartspace_mode_google_search">Google 搜索</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">搜索栏</string>

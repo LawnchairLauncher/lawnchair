@@ -53,6 +53,7 @@
     <string name="always_reload_icons_description">Αποφυγή χρήσης αποθηκευμένων εικονιδίων από πακέτα εικονιδίων</string>
     <string name="transparent_background_icons">Διαφανή Θεματοποιημένα Εικονίδια</string>
     <string name="transparent_background_icons_description">Χρήση διαφανούς φόντου στα θεματοποιημένα εικονίδια</string>
+    <string name="smartspace_mode_selection">At a Glance Provider selection</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Περιστροφή Αρχικής Οθόνης</string>
     <string name="home_screen_rotaton_description">Όταν η συσκευή περιστρέφεται.</string>
@@ -96,6 +97,10 @@
     <string name="icon_shape_bottom_left">Κάτω Αριστερά</string>
     <string name="icon_shape_bottom_right">Κάτω Δεξιά</string>
     <string name="create">Δημιουργία</string>
+    <string name="clipboard">Clipboard</string>
+    <string name="export_to_clipboard">Export to Clipboard</string>
+    <string name="import_from_clipboard">Import from Clipboard</string>
+    <string name="icon_shape_clipboard_import_error">Clipboard does not contain a valid icon shape</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Πακέτο Εικονιδίων</string>
@@ -184,6 +189,9 @@
     <string name="label_size">Μέγεθος Ετικέτας</string>
     <string name="reset_custom_icons">Επαναφορά Προσαρμοσμένων Εικονιδίων</string>
     <string name="reset_custom_icons_confirmation">Θα γίνει επαναφορά όλων των προσαρμοσμένων εικονιδίων. Θέλετε να συνεχίσετε;</string>
+    <string name="home_screen_text_color">Text Color</string>
+    <string name="color_light">Ελαφριά γραμματοσειρά</string>
+    <string name="color_dark">Σκοτεινό</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
     <string name="force_rounded_widgets">Στρογγυλές Γωνίες</string>
     <string name="allow_widget_overlap">Να επιτρέπεται η Επικάλυψη</string>
@@ -222,6 +230,10 @@
     <string name="smartspace_preferences">Προτιμήσεις</string>
     <string name="smartspace_widget_toggle_label">Εμφάνιση στην Αρχική Οθόνη</string>
     <string name="smartspace_widget_toggle_description">Το γραφικό στοιχείο \"Με μια Ματιά\" μπορεί να προστεθεί χειροκίνητα τοποθετώντας το γραφικό με ονομασία \"Lawnchair\".</string>
+    <string name="smartspace_mode_label">At a Glance Provider</string>
+    <string name="smartspace_mode_lawnchair">Lawnchair</string>
+    <string name="smartspace_mode_google">Google</string>
+    <string name="smartspace_mode_google_search">Google Search</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">Μπάρα Αναζήτησης</string>

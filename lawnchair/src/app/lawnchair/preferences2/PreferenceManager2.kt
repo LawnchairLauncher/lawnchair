@@ -31,6 +31,7 @@ import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.smartspace.model.SmartspaceCalendar
 import app.lawnchair.smartspace.model.SmartspaceMode
 import app.lawnchair.smartspace.model.SmartspaceTimeFormat
+import app.lawnchair.theme.color.ColorMode
 import app.lawnchair.theme.color.ColorOption
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
@@ -232,6 +233,14 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
     val autoShowKeyboardInDrawer = preference(
         key = booleanPreferencesKey(name = "auto_show_keyboard_in_drawer"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_auto_show_keyboard_in_drawer),
+    )
+
+    val workspaceTextColor = preference(
+        key = stringPreferencesKey(name = "workspace_text_color"),
+        defaultValue = ColorMode.AUTO,
+        parse = { ColorMode.fromString(it) ?: ColorMode.AUTO },
+        save = { it.toString() },
+        onSet = { reloadHelper.recreate() },
     )
 
     val homeIconSizeFactor = preference(

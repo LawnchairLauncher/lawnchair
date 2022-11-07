@@ -53,6 +53,7 @@
     <string name="always_reload_icons_description">避免使用圖示套件中已快取的圖示</string>
     <string name="transparent_background_icons">圖示套用主題色與透明背景</string>
     <string name="transparent_background_icons_description">在套用主題色的圖示上使用透明背景</string>
+    <string name="smartspace_mode_selection">資訊一覽服務來源選擇</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">旋轉主螢幕</string>
     <string name="home_screen_rotaton_description">當手機旋轉時</string>
@@ -96,6 +97,10 @@
     <string name="icon_shape_bottom_left">左下</string>
     <string name="icon_shape_bottom_right">右下</string>
     <string name="create">建立</string>
+    <string name="clipboard">剪貼簿</string>
+    <string name="export_to_clipboard">匯出至剪貼簿</string>
+    <string name="import_from_clipboard">從剪貼簿匯入</string>
+    <string name="icon_shape_clipboard_import_error">未從剪貼簿偵測到可用圖示形狀</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">圖示套件</string>
@@ -184,6 +189,9 @@
     <string name="label_size">標籤尺寸</string>
     <string name="reset_custom_icons">重設自訂圖示</string>
     <string name="reset_custom_icons_confirmation">即將重設所有自訂圖示。是否繼續？</string>
+    <string name="home_screen_text_color">文字色彩</string>
+    <string name="color_light">淺色</string>
+    <string name="color_dark">深色</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
     <string name="force_rounded_widgets">圓角</string>
     <string name="allow_widget_overlap">允許重疊</string>
@@ -222,6 +230,10 @@
     <string name="smartspace_preferences">偏好設定</string>
     <string name="smartspace_widget_toggle_label">在主畫面上顯示</string>
     <string name="smartspace_widget_toggle_description">在主畫面上放置「Lawnchair」小工具即可手動新增「資訊一覽」。</string>
+    <string name="smartspace_mode_label">資訊一覽服務來源</string>
+    <string name="smartspace_mode_lawnchair">Lawnchair</string>
+    <string name="smartspace_mode_google">Google</string>
+    <string name="smartspace_mode_google_search">Google 搜尋</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="search_bar_label">搜尋列</string>
