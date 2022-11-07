@@ -56,7 +56,7 @@ class SleepGestureHandler(context: Context) : GestureHandler(context) {
         SleepMethodDeviceAdmin(context)
     )
 
-    abstract class SleepMethod(protected val context: Context) {
+    sealed class SleepMethod(protected val context: Context) {
         abstract suspend fun isSupported(): Boolean
         abstract suspend fun sleep(launcher: LawnchairLauncher)
     }
