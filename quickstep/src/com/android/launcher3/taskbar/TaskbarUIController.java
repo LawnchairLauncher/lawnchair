@@ -105,6 +105,13 @@ public class TaskbarUIController {
         return mControllers.taskbarStashController.isStashed();
     }
 
+    /**
+     * Called at the end of the swipe gesture on Transient taskbar.
+     */
+    public void startTranslationSpring() {
+        mControllers.taskbarActivityContext.startTranslationSpring();
+    }
+
     /*
      * @param ev MotionEvent in screen coordinates.
      * @return Whether any Taskbar item could handle the given MotionEvent if given the chance.

@@ -79,6 +79,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.taskbar.TaskbarAutohideSuspendController.AutohideSuspendFlag;
+import com.android.launcher3.taskbar.TaskbarTranslationController.TransitionCallback;
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsController;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayController;
 import com.android.launcher3.testing.TestLogging;
@@ -224,6 +225,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new TaskbarAllAppsController(),
                 new TaskbarInsetsController(this),
                 new VoiceInteractionWindowController(this),
+                new TaskbarTranslationController(this),
                 isDesktopMode
                         ? new DesktopTaskbarRecentAppsController(this)
                         : TaskbarRecentAppsController.DEFAULT);
@@ -833,6 +835,20 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      */
     public void onSwipeToUnstashTaskbar() {
         mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(false);
+    }
+
+    /**
+     * Called to start the taskbar translation spring to its settled translation (0).
+     */
+    public void startTranslationSpring() {
+        mControllers.taskbarTranslationController.startSpring();
+    }
+
+    /**
+     * Returns a callback to help monitor the swipe gesture.
+     */
+    public TransitionCallback getTranslationCallbacks() {
+        return mControllers.taskbarTranslationController.getTransitionCallback();
     }
 
     /**
