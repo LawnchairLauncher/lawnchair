@@ -134,8 +134,15 @@ fun IconPackPreferences() {
                 modifier = Modifier.padding(bottom = 8.dp),
             )
             PreferenceGroup {
-                val themedIconsAvailable = LocalContext.current.packageManager
+                var themedIconsAvailable = LocalContext.current.packageManager
                     .isPackageInstalled(Constants.LAWNICONS_PACKAGE_NAME)
+                val themedIconPacks = LocalContext.current.resources.getStringArray(R.array.themed_icon_packs)
+                for (themedIconPack in themedIconPacks) {
+                    if(LocalContext.current.packageManager.isPackageInstalled(themedIconPack)) {
+                        themedIconsAvailable = true
+                        break
+                    }
+                }
                 ListPreference(
                     enabled = themedIconsAvailable,
                     label = stringResource(id = R.string.themed_icon_title),

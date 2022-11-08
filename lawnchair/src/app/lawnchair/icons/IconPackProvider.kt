@@ -1,5 +1,6 @@
 package app.lawnchair.icons
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
