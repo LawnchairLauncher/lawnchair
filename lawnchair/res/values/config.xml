@@ -18,7 +18,7 @@
 <resources>
     <string name="app_filter_class" translatable="false">app.lawnchair.DefaultAppFilter</string>
     <string name="calendar_component_name" translatable="false">com.google.android.calendar/com.android.calendar.AllInOneActivity</string>
-    <string-array name="dynamic_calendar_components_name" translatable="false">
+    <string-array name="dynamic_calendar_components_name">
         <item>com.android.calendar</item>
         <item>com.blackberry.calendar</item>
         <item>com.huawei.calendar</item>
