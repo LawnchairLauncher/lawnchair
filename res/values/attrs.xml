@@ -141,9 +141,12 @@
         <attr name="numColumns" format="integer" />
         <!--  numSearchContainerColumns defaults to numColumns, if not specified -->
         <attr name="numSearchContainerColumns" format="integer" />
+
         <!-- numFolderRows & numFolderColumns defaults to numRows & numColumns, if not specified -->
         <attr name="numFolderRows" format="integer" />
         <attr name="numFolderColumns" format="integer" />
+        <attr name="folderStyle" format="reference" />
+
         <!-- numAllAppsColumns defaults to numColumns, if not specified -->
         <attr name="numAllAppsColumns" format="integer" />
         <!-- Number of columns to use when extending the all-apps size,
@@ -333,19 +336,6 @@
         if not specified -->
         <attr name="allAppsBorderSpaceTwoPanelLandscapeVertical" format="float" />
 
-        <!-- defaults to minCellHeight if not specified
-        when GridDisplayOption#isScalable is true. -->
-        <attr name="folderCellHeight" format="float" />
-        <!-- defaults to minCellWidth, if not specified -->
-        <attr name="folderCellWidth" format="float" />
-
-        <!-- defaults to borderSpace, if not specified -->
-        <!-- space to be used horizontally and vertically -->
-        <attr name="folderBorderSpace" format="float" />
-
-        <!-- defaults to folderBorderSpace vertical, if not specified -->
-        <attr name="folderTopPadding" format="float" />
-
         <!-- defaults to res.hotseat_bar_bottom_space_default, if not specified -->
         <attr name="hotseatBarBottomSpace" format="float" />
         <!-- defaults to hotseatBarBottomSpace, if not specified -->
@@ -393,6 +383,22 @@
         <attr name="horizontalMarginTwoPanelPortrait" format="float"/>
 
     </declare-styleable>
+
+    <declare-styleable name="FolderDisplayStyle">
+        <!-- defaults to minCellHeight if not specified
+        when GridDisplayOption#isScalable is true. -->
+        <attr name="folderCellHeight" format="dimension" />
+        <!-- defaults to minCellWidth, if not specified -->
+        <attr name="folderCellWidth" format="dimension" />
+        <!-- space to be used horizontally and vertically between icons,
+        and to the left and right of folder -->
+        <attr name="folderBorderSpace" format="dimension" />
+        <!-- height of the footer of the folder -->
+        <attr name="folderFooterHeight" format="dimension" />
+        <!-- padding on top of the folder -->
+        <attr name="folderTopPadding" format="dimension" />
+    </declare-styleable>
+
 
     <declare-styleable name="CellLayout">
         <attr name="containerType" format="integer">
