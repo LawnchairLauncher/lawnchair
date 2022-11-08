@@ -16,11 +16,12 @@
 package com.android.launcher3
 
 import android.content.Context
+import android.graphics.Point
 import android.graphics.PointF
 import android.graphics.Rect
 import android.util.SparseArray
 import androidx.test.core.app.ApplicationProvider
-import com.android.launcher3.DeviceProfile.DEFAULT_PROVIDER;
+import com.android.launcher3.DeviceProfile.DEFAULT_PROVIDER
 import com.android.launcher3.util.DisplayController.Info
 import com.android.launcher3.util.WindowBounds
 import org.junit.Before
@@ -116,10 +117,7 @@ abstract class DeviceProfileBaseTest {
 
             numFolderRows = 3
             numFolderColumns = 3
-            folderBorderSpaces = PointF(16f, 16f)
-            folderTopPadding = 24f
-            folderCellSize = PointF(80f, 94f)
-
+            folderStyle = R.style.FolderDefaultStyle
 
             inlineNavButtonsEndSpacing = R.dimen.taskbar_button_margin_4_5
 
@@ -207,9 +205,7 @@ abstract class DeviceProfileBaseTest {
 
             numFolderRows = 3
             numFolderColumns = 3
-            folderBorderSpaces = PointF(16f, 16f)
-            folderTopPadding = 24f
-            folderCellSize = PointF(120f, 104f)
+            folderStyle = R.style.FolderDefaultStyle
 
             inlineNavButtonsEndSpacing = R.dimen.taskbar_button_margin_6_5
 
@@ -241,7 +237,7 @@ abstract class DeviceProfileBaseTest {
             numAllAppsColumns = 6
 
             isScalable = true
-            devicePaddingId = 2132148242 // "@xml/paddings_6x5"
+            devicePaddingId = R.xml.paddings_6x5
 
             inlineQsb = booleanArrayOf(
                     false,
@@ -305,9 +301,7 @@ abstract class DeviceProfileBaseTest {
 
             numFolderRows = 3
             numFolderColumns = 3
-            folderBorderSpaces = PointF(16f, 16f)
-            folderTopPadding = 24f
-            folderCellSize = PointF(80f, 94f)
+            folderStyle = R.style.FolderDefaultStyle
 
             inlineNavButtonsEndSpacing = R.dimen.taskbar_button_margin_4_4
 
