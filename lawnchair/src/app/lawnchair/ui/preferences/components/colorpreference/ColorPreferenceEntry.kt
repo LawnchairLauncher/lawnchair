@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import app.lawnchair.ui.theme.lightenColor
 
-open class ColorPreferenceEntry<T>(
+class ColorPreferenceEntry<T>(
     val value: T,
     val label: @Composable () -> String,
     val lightColor: (Context) -> Int,
