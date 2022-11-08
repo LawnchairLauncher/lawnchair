@@ -3,7 +3,7 @@ package app.lawnchair.allapps
 import android.os.Bundle
 import app.lawnchair.search.SearchTargetCompat
 
-interface SearchResultView {
+sealed interface SearchResultView {
 
     val isQuickLaunch: Boolean
     val titleText: CharSequence? get() = null

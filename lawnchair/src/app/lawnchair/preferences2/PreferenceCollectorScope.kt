@@ -19,7 +19,7 @@ package app.lawnchair.preferences2
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-interface PreferenceCollectorScope {
+sealed interface PreferenceCollectorScope {
     val coroutineScope: CoroutineScope
     val preferenceManager: PreferenceManager2
     fun edit(block: suspend PreferenceManager2.() -> Unit) {

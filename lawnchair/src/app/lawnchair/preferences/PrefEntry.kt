@@ -8,7 +8,7 @@ import kotlin.reflect.KProperty
 
 typealias ChangeListener = () -> Unit
 
-interface PrefEntry<T> {
+sealed interface PrefEntry<T> {
     val key: String
     val defaultValue: T
 

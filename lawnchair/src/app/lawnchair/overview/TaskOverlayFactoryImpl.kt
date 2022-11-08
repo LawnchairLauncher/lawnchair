@@ -62,7 +62,7 @@ class TaskOverlayFactoryImpl(@Suppress("UNUSED_PARAMETER") context: Context) : T
         }
     }
 
-    interface OverlayUICallbacks : TaskOverlayFactory.OverlayUICallbacks {
+    sealed interface OverlayUICallbacks : TaskOverlayFactory.OverlayUICallbacks {
         fun onShare()
         fun onLens()
     }
