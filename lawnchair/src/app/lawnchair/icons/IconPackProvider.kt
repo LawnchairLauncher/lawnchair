@@ -52,23 +52,24 @@ class IconPackProvider(private val context: Context) {
         val iconPack = getIconPackOrSystem(iconEntry.packPackageName) ?: return null
         iconPack.loadBlocking()
         val drawable = iconPack.getIcon(iconEntry, iconDpi) ?: return null
-        if(context.isThemedIconsEnabled() && !iconEntry.packPackageName.isEmpty()
-            && (iconEntry.packPackageName.startsWith(LAWNICONS_PACKAGE_NAME)
-                || themedIconPacks.contains(iconEntry.packPackageName))) {
-        val themedColors: IntArray = ThemedIconDrawable.getThemedColors(context)
-        val res = context.packageManager.getResourcesForApplication(iconEntry.packPackageName)
-        val resId = res.getIdentifier(iconEntry.name, "drawable", iconEntry.packPackageName)
-        val bg: Drawable = ColorDrawable(themedColors[0])
-        val td = ThemedIconDrawable.ThemeData(res, iconEntry.packPackageName, resId)
-        val fg = td.wrapDrawable(drawable,0)
-            if (fg is AdaptiveIconDrawable) {
+        if (
+            context.isThemedIconsEnabled() && iconEntry.packPackageName in themedIconPacks
+        ) {
+            val themedColors: IntArray = ThemedIconDrawable.getThemedColors(context)
+            val res = context.packageManager.getResourcesForApplication(iconEntry.packPackageName)
+            @SuppressLint("DiscouragedApi")
+            val resId = res.getIdentifier(iconEntry.name, "drawable", iconEntry.packPackageName)
+            val bg: Drawable = ColorDrawable(themedColors[0])
+            val td = ThemedIconDrawable.ThemeData(res, iconEntry.packPackageName, resId)
+            val fg = td.wrapDrawable(drawable, 0)
+            return if (fg is AdaptiveIconDrawable) {
                 val foregroundDr: Drawable = fg.getForeground()
                 foregroundDr.setTint(themedColors[1])
-                return CustomAdaptiveIconDrawable(bg,foregroundDr)
-            }else{
+                CustomAdaptiveIconDrawable(bg, foregroundDr)
+            } else {
                 val iconFromPack = InsetDrawable(drawable, .3f)
                 iconFromPack.setTint(themedColors[1])
-                return td.wrapDrawable(CustomAdaptiveIconDrawable(bg,iconFromPack), 0)
+                td.wrapDrawable(CustomAdaptiveIconDrawable(bg, iconFromPack), 0)
             }
         }
         val clockMetadata = if (user == Process.myUserHandle()) iconPack.getClock(iconEntry) else null
