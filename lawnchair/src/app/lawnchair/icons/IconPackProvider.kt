@@ -64,12 +64,10 @@ class IconPackProvider(private val context: Context) {
             val td = ThemedIconDrawable.ThemeData(res, iconEntry.packPackageName, resId)
             val fg = td.wrapDrawable(drawable, 0)
             return if (fg is AdaptiveIconDrawable) {
-                val foregroundDr: Drawable = fg.getForeground()
-                foregroundDr.setTint(themedColors[1])
+                val foregroundDr = fg.foreground.apply { setTint(themedColors[1]) }
                 CustomAdaptiveIconDrawable(bg, foregroundDr)
             } else {
-                val iconFromPack = InsetDrawable(drawable, .3f)
-                iconFromPack.setTint(themedColors[1])
+                val iconFromPack = InsetDrawable(drawable, .3f).apply { setTint(themedColors[1]) }
                 td.wrapDrawable(CustomAdaptiveIconDrawable(bg, iconFromPack), 0)
             }
         }
