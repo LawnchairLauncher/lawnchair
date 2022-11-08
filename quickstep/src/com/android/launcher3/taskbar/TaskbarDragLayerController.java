@@ -150,6 +150,13 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         updateNavBarDarkIntensityMultiplier();
     }
 
+    /**
+     * Sets the translation of the background during the swipe up gesture.
+     */
+    public void setTranslationYForSwipe(float transY) {
+        mTaskbarDragLayer.setBackgroundTranslationYForSwipe(transY);
+    }
+
     private void updateBackgroundOffset() {
         mTaskbarDragLayer.setTaskbarBackgroundOffset(mBgOffset.value);
 

@@ -175,6 +175,14 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
         invalidate();
     }
 
+    /*
+     * Sets the translation of the background during the swipe up gesture.
+     */
+    protected void setBackgroundTranslationYForSwipe(float translationY) {
+        mBackgroundRenderer.setTranslationYForSwipe(translationY);
+        invalidate();
+    }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         TestLogging.recordMotionEvent(TestProtocol.SEQUENCE_MAIN, "Touch event", ev);

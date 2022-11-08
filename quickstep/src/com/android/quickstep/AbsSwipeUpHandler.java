@@ -99,6 +99,7 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.taskbar.TaskbarUIController;
 import com.android.launcher3.tracing.InputConsumerProto;
 import com.android.launcher3.tracing.SwipeHandlerProto;
 import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter;
@@ -662,6 +663,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                         true/* moveFocusedTask */,
                         new ActiveGestureLog.CompoundString(
                                 "motion pause detected (animate=true)"));
+                Optional.ofNullable(mActivityInterface.getTaskbarController())
+                        .ifPresent(TaskbarUIController::startTranslationSpring);
                 performHapticFeedback();
             }
 

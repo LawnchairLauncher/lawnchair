@@ -27,9 +27,13 @@ import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
+import com.android.launcher3.taskbar.TaskbarTranslationController.TransitionCallback;
+import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.InputConsumer;
 import com.android.systemui.shared.system.InputMonitorCompat;
@@ -48,7 +52,7 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
     private final float mUnstashArea;
     private final float mScreenWidth;
 
-    private final int mTaskbarThreshold;
+    private final int mTaskbarThresholdY;
     private boolean mHasPassedTaskbarThreshold;
 
     private final PointF mDownPos = new PointF();
@@ -56,6 +60,8 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
     private int mActivePointerId = INVALID_POINTER_ID;
 
     private final boolean mIsTransientTaskbar;
+
+    private final @Nullable TransitionCallback mTransitionCallback;
 
     public TaskbarStashInputConsumer(Context context, InputConsumer delegate,
             InputMonitorCompat inputMonitor, TaskbarActivityContext taskbarActivityContext) {
@@ -66,7 +72,9 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
 
         Resources res = context.getResources();
         mUnstashArea = res.getDimensionPixelSize(R.dimen.taskbar_unstash_input_area);
-        mTaskbarThreshold = res.getDimensionPixelSize(R.dimen.taskbar_nav_threshold);
+        int taskbarThreshold = res.getDimensionPixelSize(R.dimen.taskbar_nav_threshold);
+        int screenHeight = taskbarActivityContext.getDeviceProfile().heightPx;
+        mTaskbarThresholdY = screenHeight - taskbarThreshold;
 
         mIsTransientTaskbar = DisplayController.isTransientTaskbar(context);
 
@@ -76,6 +84,10 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
                 onLongPressDetected(motionEvent);
             }
         });
+
+        mTransitionCallback = mIsTransientTaskbar
+                ? taskbarActivityContext.getTranslationCallbacks()
+                : null;
     }
 
     @Override
@@ -138,16 +150,25 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
                             break;
                         }
                         mLastPos.set(ev.getX(pointerIndex), ev.getY(pointerIndex));
-                        float displacementY = mLastPos.y - mDownPos.y;
-                        float verticalDist = Math.abs(displacementY);
-                        boolean passedTaskbarThreshold = verticalDist >= mTaskbarThreshold;
 
-                        if (!mHasPassedTaskbarThreshold
-                                && passedTaskbarThreshold
-                                && mIsTransientTaskbar) {
-                            mHasPassedTaskbarThreshold = true;
+                        if (mIsTransientTaskbar) {
+                            float dY = mLastPos.y - mDownPos.y;
+                            boolean passedTaskbarThreshold = dY < 0
+                                    && mLastPos.y < mTaskbarThresholdY;
 
-                            mTaskbarActivityContext.onSwipeToUnstashTaskbar();
+                            if (!mHasPassedTaskbarThreshold
+                                    && passedTaskbarThreshold) {
+                                mHasPassedTaskbarThreshold = true;
+
+                                mTaskbarActivityContext.onSwipeToUnstashTaskbar();
+                            }
+
+                            if (dY < 0) {
+                                dY = -OverScroll.dampedScroll(-dY, mTaskbarThresholdY);
+                                if (mTransitionCallback != null) {
+                                    mTransitionCallback.onActionMove(dY);
+                                }
+                            }
                         }
                         break;
                     case MotionEvent.ACTION_UP:
@@ -158,6 +179,9 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
                         }
                         mTaskbarActivityContext.setAutohideSuspendFlag(
                                 FLAG_AUTOHIDE_SUSPEND_TOUCHING, false);
+                        if (mTransitionCallback != null) {
+                            mTransitionCallback.onActionEnd();
+                        }
                         mHasPassedTaskbarThreshold = false;
                         break;
                 }
