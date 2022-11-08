@@ -58,7 +58,7 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
                      "want to switch from background to overview")) {
             verifyActiveContainer();
             goToOverviewUnchecked();
-            return mLauncher.isFallbackOverview()
+            return mLauncher.is3PLauncher()
                     ? new BaseOverview(mLauncher) : new Overview(mLauncher);
         }
     }
