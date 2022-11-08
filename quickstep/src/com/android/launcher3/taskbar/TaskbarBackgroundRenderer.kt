@@ -34,6 +34,7 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
 
     val paint: Paint = Paint()
     var backgroundHeight = context.deviceProfile.taskbarSize.toFloat()
+    var translationYForSwipe = 0f
 
     private var maxBackgroundHeight = context.deviceProfile.taskbarSize.toFloat()
     private val transientBackgroundBounds = context.transientTaskbarBounds
@@ -114,11 +115,13 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
             canvas.translate(canvas.width - rightCornerRadius, -rightCornerRadius)
             canvas.drawPath(invertedRightCornerPath, paint)
         } else {
+            // Approximates the stash/unstash animation to transform the background.
             val scaleFactor = backgroundHeight / maxBackgroundHeight
             val width = transientBackgroundBounds.width()
             val widthScale = mapToRange(scaleFactor, 0f, 1f, 0.4f, 1f, Interpolators.LINEAR)
             val newWidth = widthScale * width
             val delta = width - newWidth
+            canvas.translate(0f, bottomMargin * ((1f - scaleFactor) / 2f))
 
             // Draw shadow.
             val shadowAlpha = mapToRange(paint.alpha.toFloat(), 0f, 255f, 0f, 25f,
@@ -132,9 +135,9 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
 
             canvas.drawRoundRect(
                 transientBackgroundBounds.left + (delta / 2f),
-                0f,
+                translationYForSwipe,
                 transientBackgroundBounds.right - (delta / 2f),
-                backgroundHeight,
+                backgroundHeight + translationYForSwipe,
                 radius, radius, paint
             )
         }
