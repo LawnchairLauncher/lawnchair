@@ -30,7 +30,8 @@ import java.io.PrintWriter;
 /**
  * Handles properties/data collection, and passes the results to {@link TaskbarScrimView} to render.
  */
-public class TaskbarScrimViewController implements TaskbarControllers.LoggableTaskbarController {
+public class TaskbarScrimViewController implements TaskbarControllers.LoggableTaskbarController,
+        TaskbarControllers.BackgroundRendererController {
 
     private static final float SCRIM_ALPHA = 0.6f;
 
@@ -92,6 +93,11 @@ public class TaskbarScrimViewController implements TaskbarControllers.LoggableTa
 
     private void onClick() {
         SystemUiProxy.INSTANCE.get(mActivity).onBackPressed();
+    }
+
+    @Override
+    public void setCornerRoundness(float cornerRoundness) {
+        mScrimView.setCornerRoundness(cornerRoundness);
     }
 
     @Override

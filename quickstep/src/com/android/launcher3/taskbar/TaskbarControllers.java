@@ -23,6 +23,7 @@ import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsController;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayController;
+import com.android.quickstep.AnimatedFloat;
 import com.android.systemui.shared.rotation.RotationButtonController;
 
 import java.io.PrintWriter;
@@ -58,6 +59,7 @@ public class TaskbarControllers {
     public final TaskbarOverlayController taskbarOverlayController;
 
     @Nullable private LoggableTaskbarController[] mControllersToLog = null;
+    @Nullable private BackgroundRendererController[] mBackgroundRendererControllers = null;
 
     /** Do not store this controller, as it may change at runtime. */
     @NonNull public TaskbarUIController uiController = TaskbarUIController.DEFAULT;
@@ -66,6 +68,9 @@ public class TaskbarControllers {
     private final List<Runnable> mPostInitCallbacks = new ArrayList<>();
 
     @Nullable private TaskbarSharedState mSharedState = null;
+
+    // Roundness property for round corner above taskbar .
+    private final AnimatedFloat mCornerRoundness = new AnimatedFloat(this::updateCornerRoundness);
 
     public TaskbarControllers(TaskbarActivityContext taskbarActivityContext,
             TaskbarDragController taskbarDragController,
@@ -148,6 +153,11 @@ public class TaskbarControllers {
                 taskbarAutohideSuspendController, taskbarPopupController, taskbarInsetsController,
                 voiceInteractionWindowController
         };
+        mBackgroundRendererControllers = new BackgroundRendererController[] {
+                taskbarDragLayerController, taskbarScrimViewController,
+                voiceInteractionWindowController
+        };
+        mCornerRoundness.updateValue(TaskbarBackgroundRenderer.DEFAULT_ROUNDNESS);
 
         mAreAllControllersInitialized = true;
         for (Runnable postInitCallback : mPostInitCallbacks) {
@@ -191,6 +201,7 @@ public class TaskbarControllers {
         taskbarRecentAppsController.onDestroy();
 
         mControllersToLog = null;
+        mBackgroundRendererControllers = null;
     }
 
     /**
@@ -224,6 +235,23 @@ public class TaskbarControllers {
         rotationButtonController.dumpLogs(prefix + "\t", pw);
     }
 
+    /**
+     * Returns a float property that animates roundness of the round corner above Taskbar.
+     */
+    public AnimatedFloat getTaskbarCornerRoundness() {
+        return mCornerRoundness;
+    }
+
+    private void updateCornerRoundness() {
+        if (mBackgroundRendererControllers == null) {
+            return;
+        }
+
+        for (BackgroundRendererController controller : mBackgroundRendererControllers) {
+            controller.setCornerRoundness(mCornerRoundness.value);
+        }
+    }
+
     @VisibleForTesting
     TaskbarActivityContext getTaskbarActivityContext() {
         // Used to mock
@@ -232,5 +260,13 @@ public class TaskbarControllers {
 
     protected interface LoggableTaskbarController {
         void dumpLogs(String prefix, PrintWriter pw);
+    }
+
+    protected interface BackgroundRendererController {
+        /**
+         * Sets the roundness of the round corner above Taskbar.
+         * @param cornerRoundness 0 has no round corner, 1 has complete round corner.
+         */
+        void setCornerRoundness(float cornerRoundness);
     }
 }
