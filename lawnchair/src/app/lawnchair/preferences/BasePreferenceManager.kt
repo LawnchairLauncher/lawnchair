@@ -26,7 +26,7 @@ import com.android.launcher3.Utilities
 import org.json.JSONObject
 import java.util.concurrent.CopyOnWriteArraySet
 
-abstract class BasePreferenceManager(private val context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
+sealed class BasePreferenceManager(private val context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
     val sp: SharedPreferences = Utilities.getPrefs(context)
     val prefsMap = mutableMapOf<String, BasePref<*>>()
 
