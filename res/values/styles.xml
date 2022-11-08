@@ -309,4 +309,13 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowTranslucentStatus">true</item>
     </style>
+
+    <style name="FolderDefaultStyle">
+        <item name="folderTopPadding">24dp</item>
+        <item name="folderCellHeight">94dp</item>
+        <item name="folderCellWidth">80dp</item>
+        <item name="folderBorderSpace">16dp</item>
+        <item name="folderFooterHeight">56dp</item>
+    </style>
+
 </resources>
