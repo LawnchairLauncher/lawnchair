@@ -255,7 +255,7 @@
     <dimen name="folder_cell_y_padding">6dp</dimen>
     <!-- label text size = workspace text size multiplied by this scale -->
     <dimen name="folder_label_text_scale">1.14</dimen>
-    <dimen name="folder_label_height">56dp</dimen>
+    <dimen name="folder_footer_height_default">56dp</dimen>
 
     <dimen name="folder_content_padding_left_right">8dp</dimen>
     <dimen name="folder_content_padding_top">16dp</dimen>
@@ -441,4 +441,8 @@
 
     <!-- State transition -->
     <item name="workspace_content_scale" format="float" type="dimen">0.97</item>
+
+    <!--  Folder spaces  -->
+    <dimen name="folder_top_padding_default">24dp</dimen>
+    <dimen name="folder_footer_horiz_padding">20dp</dimen>
 </resources>
