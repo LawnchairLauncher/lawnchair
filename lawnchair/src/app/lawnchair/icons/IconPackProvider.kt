@@ -23,7 +23,7 @@ class IconPackProvider(private val context: Context) {
 
     private val systemIconPack = SystemIconPack(context)
     private val iconPacks = mutableMapOf<String, IconPack?>()
-    private val themedIconPacks = context.getResources().getStringArray( R.array.themed_icon_packs)
+    private val themedIconPacks = context.resources.getStringArray(R.array.themed_icon_packs)
 
     fun getIconPackOrSystem(packageName: String): IconPack? {
         if (packageName.isEmpty()) return systemIconPack
