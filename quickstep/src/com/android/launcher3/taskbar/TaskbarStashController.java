@@ -745,6 +745,11 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         mIsImeShowing = hasAnyFlag(systemUiStateFlags, SYSUI_STATE_IME_SHOWING);
         mIsImeSwitcherShowing = hasAnyFlag(systemUiStateFlags, SYSUI_STATE_IME_SWITCHER_SHOWING);
         if (!mIsSystemGestureInProgress) {
+            if (mIsImeShowing || mIsImeSwitcherShowing) {
+                // Hide taskbar when IME is shown.
+                updateStateForFlag(FLAG_STASHED_IN_APP_AUTO, true);
+            }
+
             updateStateForFlag(FLAG_STASHED_IN_APP_IME, shouldStashForIme());
             animDuration = TASKBAR_STASH_DURATION_FOR_IME;
             startDelay = getTaskbarStashStartDelayForIme();
@@ -758,8 +763,12 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      *  * in small screen AND
      *  * 3 button nav AND
      *  * landscape (or seascape)
+     * We do not stash if taskbar is transient
      */
     private boolean shouldStashForIme() {
+        if (DisplayController.isTransientTaskbar(mActivity)) {
+            return false;
+        }
         return (mIsImeShowing || mIsImeSwitcherShowing) &&
                 !(isPhoneMode() && mActivity.isThreeButtonNav()
                         && mActivity.getDeviceProfile().isLandscape);
