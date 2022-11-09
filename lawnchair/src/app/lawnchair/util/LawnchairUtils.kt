@@ -141,9 +141,7 @@ fun <T> JSONArray.toArrayList(): ArrayList<T> {
 }
 
 val ViewGroup.recursiveChildren: Sequence<View> get() = children.flatMap {
-    if (it is ViewGroup) {
-        it.recursiveChildren + sequenceOf(it)
-    } else sequenceOf(it)
+    if (it is ViewGroup) { it.recursiveChildren + sequenceOf(it) } else sequenceOf(it)
 }
 
 private val pendingIntentTagId = Resources.getSystem().getIdentifier("pending_intent_tag", "id", "android")
