@@ -9,7 +9,7 @@ import com.android.launcher3.R
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
-abstract class GestureHandlerOption(
+sealed class GestureHandlerOption(
     val labelRes: Int,
     val configClass: Class<*>
 ) {

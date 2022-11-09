@@ -36,7 +36,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairLauncher
-import app.lawnchair.gestures.GestureHandler
 import app.lawnchair.lawnchairApp
 import app.lawnchair.root.RootHelperManager
 import app.lawnchair.ui.AlertBottomSheetContent
@@ -57,7 +56,7 @@ class SleepGestureHandler(context: Context) : GestureHandler(context) {
         SleepMethodDeviceAdmin(context)
     )
 
-    abstract class SleepMethod(protected val context: Context) {
+    sealed class SleepMethod(protected val context: Context) {
         abstract suspend fun isSupported(): Boolean
         abstract suspend fun sleep(launcher: LawnchairLauncher)
     }

@@ -1,8 +1,8 @@
 package app.lawnchair.gestures.config
 
 import android.content.Context
-import app.lawnchair.gestures.GestureHandler
-import app.lawnchair.gestures.NoOpGestureHandler
+import app.lawnchair.gestures.handlers.GestureHandler
+import app.lawnchair.gestures.handlers.NoOpGestureHandler
 import app.lawnchair.gestures.handlers.*
 import com.android.launcher3.R
 import kotlinx.serialization.SerialName

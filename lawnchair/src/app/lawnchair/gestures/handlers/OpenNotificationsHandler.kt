@@ -3,7 +3,6 @@ package app.lawnchair.gestures.handlers
 import android.annotation.SuppressLint
 import android.content.Context
 import app.lawnchair.LawnchairLauncher
-import app.lawnchair.gestures.GestureHandler
 import java.lang.reflect.InvocationTargetException
 
 class OpenNotificationsHandler(context: Context) : GestureHandler(context) {

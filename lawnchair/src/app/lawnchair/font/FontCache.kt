@@ -129,7 +129,7 @@ class FontCache private constructor(private val context: Context) {
         val default = variants.getOrElse("regular") { variants.values.firstOrNull() }
     }
 
-    abstract class Font {
+    sealed class Font {
 
         abstract val fullDisplayName: String
         abstract val displayName: String
@@ -154,11 +154,6 @@ class FontCache private constructor(private val context: Context) {
             return obj.toString()
         }
 
-        interface LoadCallback {
-
-            fun onFontLoaded(typeface: Typeface?)
-        }
-
         companion object {
 
             fun fromJsonString(context: Context, jsonString: String): Font {
@@ -171,7 +166,7 @@ class FontCache private constructor(private val context: Context) {
         }
     }
 
-    abstract class TypefaceFont(protected val typeface: Typeface?) : Font() {
+    sealed class TypefaceFont(protected val typeface: Typeface?) : Font() {
 
         override val fullDisplayName = typeface.toString()
         override val displayName get() = fullDisplayName

@@ -1,5 +1,5 @@
 package app.lawnchair.preferences
 
-interface PreferenceChangeListener {
+sealed interface PreferenceChangeListener {
     fun onPreferenceChange()
 }

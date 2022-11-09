@@ -9,7 +9,7 @@ import com.patrykmichalik.opto.domain.Preference
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
-abstract class SmartspaceDataSource(
+sealed class SmartspaceDataSource(
     val context: Context,
     val providerName: Int,
     getEnabledPref: PreferenceManager2.() -> Preference<Boolean, Boolean, *>
