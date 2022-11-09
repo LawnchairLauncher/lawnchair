@@ -954,6 +954,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                             InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH, 2000 /* ms timeout */);
                     InteractionJankMonitorWrapper.begin(mRecentsView,
                             InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
+                    InteractionJankMonitorWrapper.begin(mRecentsView,
+                            InteractionJankMonitorWrapper.CUJ_APP_SWIPE_TO_RECENTS);
 
                     rv.post(() -> rv.getViewTreeObserver().removeOnDrawListener(this));
                 }
@@ -1057,6 +1059,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         if (endTarget != HOME) {
             InteractionJankMonitorWrapper.cancel(
                     InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
+        }
+        if (endTarget != RECENTS) {
+            InteractionJankMonitorWrapper.cancel(
+                    InteractionJankMonitorWrapper.CUJ_APP_SWIPE_TO_RECENTS);
         }
 
         switch (endTarget) {
