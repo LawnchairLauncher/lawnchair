@@ -52,7 +52,7 @@ public final class Taskbar {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to get a taskbar icon")) {
             return new TaskbarAppIcon(mLauncher, mLauncher.waitForObjectInContainer(
-                    mLauncher.waitForLauncherObject(TASKBAR_RES_ID),
+                    mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID),
                     AppIcon.getAppIconSelector(appName, mLauncher)));
         }
     }
@@ -68,7 +68,7 @@ public final class Taskbar {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to hide the taskbar");
              LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            mLauncher.waitForLauncherObject(TASKBAR_RES_ID);
+            mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID);
 
             final long downTime = SystemClock.uptimeMillis();
             Point stashTarget = new Point(
@@ -79,7 +79,7 @@ public final class Taskbar {
             LauncherInstrumentation.log("hideTaskbar: sent down");
 
             try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("pressed down")) {
-                mLauncher.waitUntilLauncherObjectGone("taskbar_view");
+                mLauncher.waitUntilSystemLauncherObjectGone(TASKBAR_RES_ID);
                 mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_UP, stashTarget,
                         LauncherInstrumentation.GestureScope.INSIDE);
             }
@@ -97,7 +97,8 @@ public final class Taskbar {
              LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
 
             mLauncher.clickLauncherObject(mLauncher.waitForObjectInContainer(
-                    mLauncher.waitForLauncherObject(TASKBAR_RES_ID), getAllAppsButtonSelector()));
+                    mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID),
+                    getAllAppsButtonSelector()));
 
             return new AllAppsFromTaskbar(mLauncher);
         }
@@ -108,7 +109,7 @@ public final class Taskbar {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to get all taskbar icons")) {
             return mLauncher.waitForObjectsInContainer(
-                    mLauncher.waitForLauncherObject(TASKBAR_RES_ID),
+                    mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID),
                     AppIcon.getAnyAppIconSelector())
                     .stream()
                     .map(UiObject2::getText)

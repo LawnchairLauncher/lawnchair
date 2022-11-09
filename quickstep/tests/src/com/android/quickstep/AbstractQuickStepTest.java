@@ -34,11 +34,12 @@ import org.junit.rules.TestRule;
  */
 public abstract class AbstractQuickStepTest extends AbstractLauncherUiTest {
     public static final boolean ENABLE_SHELL_TRANSITIONS =
-            SystemProperties.getBoolean("persist.wm.debug.shell_transit", true);
+            SystemProperties.getBoolean("persist.wm.debug.shell_transit", false);
     @Override
     protected TestRule getRulesInsideActivityMonitor() {
         return RuleChain.
                 outerRule(new NavigationModeSwitchRule(mLauncher)).
+                around(new TaskbarModeSwitchRule(mLauncher)).
                 around(super.getRulesInsideActivityMonitor());
     }
 

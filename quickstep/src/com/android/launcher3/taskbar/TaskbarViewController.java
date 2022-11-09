@@ -91,6 +91,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             this::updateTranslationY);
     private AnimatedFloat mTaskbarNavButtonTranslationY;
     private AnimatedFloat mTaskbarNavButtonTranslationYForInAppDisplay;
+    private float mTaskbarIconTranslationYForSwipe;
 
     private final int mTaskbarBottomMargin;
 
@@ -260,9 +261,18 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         mTaskbarView.setScaleY(scale);
     }
 
+    /**
+     * Sets the translation of the TaskbarView during the swipe up gesture.
+     */
+    public void setTranslationYForSwipe(float transY) {
+        mTaskbarIconTranslationYForSwipe = transY;
+        updateTranslationY();
+    }
+
     private void updateTranslationY() {
         mTaskbarView.setTranslationY(mTaskbarIconTranslationYForHome.value
-                + mTaskbarIconTranslationYForStash.value);
+                + mTaskbarIconTranslationYForStash.value
+                + mTaskbarIconTranslationYForSwipe);
     }
 
     private void updateIconsBackground() {

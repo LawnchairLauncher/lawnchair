@@ -562,7 +562,7 @@ public final class LauncherInstrumentation {
     private String getVisibleStateMessage() {
         if (hasLauncherObject(CONTEXT_MENU_RES_ID)) return "Context Menu";
         if (hasLauncherObject(WIDGETS_RES_ID)) return "Widgets";
-        if (hasLauncherObject(OVERVIEW_RES_ID)) return "Overview";
+        if (hasSystemLauncherObject(OVERVIEW_RES_ID)) return "Overview";
         if (hasLauncherObject(WORKSPACE_RES_ID)) return "Workspace";
         if (hasLauncherObject(APPS_RES_ID)) return "AllApps";
         return "LaunchedApp (" + getVisiblePackages() + ")";
@@ -778,73 +778,89 @@ public final class LauncherInstrumentation {
             switch (containerType) {
                 case WORKSPACE: {
                     waitUntilLauncherObjectGone(APPS_RES_ID);
-                    waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
-                    waitUntilLauncherObjectGone(TASKBAR_RES_ID);
-                    waitUntilLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
+                    waitUntilSystemLauncherObjectGone(OVERVIEW_RES_ID);
+                    waitUntilSystemLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
+
+                    if (is3PLauncher() && isTablet()) {
+                        waitForSystemLauncherObject(TASKBAR_RES_ID);
+                    } else {
+                        waitUntilSystemLauncherObjectGone(TASKBAR_RES_ID);
+                    }
 
                     return waitForLauncherObject(WORKSPACE_RES_ID);
                 }
                 case WIDGETS: {
                     waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
                     waitUntilLauncherObjectGone(APPS_RES_ID);
-                    waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
-                    waitUntilLauncherObjectGone(TASKBAR_RES_ID);
-                    waitUntilLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
+                    waitUntilSystemLauncherObjectGone(OVERVIEW_RES_ID);
+                    waitUntilSystemLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
+
+                    if (is3PLauncher() && isTablet()) {
+                        waitForSystemLauncherObject(TASKBAR_RES_ID);
+                    } else {
+                        waitUntilSystemLauncherObjectGone(TASKBAR_RES_ID);
+                    }
 
                     return waitForLauncherObject(WIDGETS_RES_ID);
                 }
-                case TASKBAR_ALL_APPS:
-                case HOME_ALL_APPS: {
+                case TASKBAR_ALL_APPS: {
                     waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
-                    waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
-                    waitUntilLauncherObjectGone(TASKBAR_RES_ID);
-                    waitUntilLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
+                    waitUntilSystemLauncherObjectGone(OVERVIEW_RES_ID);
+                    waitUntilSystemLauncherObjectGone(TASKBAR_RES_ID);
+                    waitUntilSystemLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
 
                     return waitForLauncherObject(APPS_RES_ID);
                 }
-                case OVERVIEW: {
+                case HOME_ALL_APPS: {
+                    waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
+                    waitUntilLauncherObjectGone(WIDGETS_RES_ID);
+                    waitUntilSystemLauncherObjectGone(OVERVIEW_RES_ID);
+                    waitUntilSystemLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
+
+                    if (is3PLauncher() && isTablet()) {
+                        waitForSystemLauncherObject(TASKBAR_RES_ID);
+                    } else {
+                        waitUntilSystemLauncherObjectGone(TASKBAR_RES_ID);
+                    }
+
+                    return waitForLauncherObject(APPS_RES_ID);
+                }
+                case OVERVIEW:
+                case FALLBACK_OVERVIEW: {
                     waitUntilLauncherObjectGone(APPS_RES_ID);
                     waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
-                    waitUntilLauncherObjectGone(TASKBAR_RES_ID);
-                    waitUntilLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
+                    waitUntilSystemLauncherObjectGone(TASKBAR_RES_ID);
+                    waitUntilSystemLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
 
-                    return waitForLauncherObject(OVERVIEW_RES_ID);
+                    return waitForSystemLauncherObject(OVERVIEW_RES_ID);
                 }
                 case SPLIT_SCREEN_SELECT: {
                     waitUntilLauncherObjectGone(APPS_RES_ID);
                     waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
-                    waitUntilLauncherObjectGone(TASKBAR_RES_ID);
+                    waitUntilSystemLauncherObjectGone(TASKBAR_RES_ID);
 
-                    waitForLauncherObject(SPLIT_PLACEHOLDER_RES_ID);
-                    return waitForLauncherObject(OVERVIEW_RES_ID);
-                }
-                case FALLBACK_OVERVIEW: {
-                    waitUntilLauncherObjectGone(APPS_RES_ID);
-                    waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
-                    waitUntilLauncherObjectGone(WIDGETS_RES_ID);
-                    waitUntilLauncherObjectGone(TASKBAR_RES_ID);
-                    waitUntilLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
-
-                    return waitForFallbackLauncherObject(OVERVIEW_RES_ID);
+                    waitForSystemLauncherObject(SPLIT_PLACEHOLDER_RES_ID);
+                    return waitForSystemLauncherObject(OVERVIEW_RES_ID);
                 }
                 case LAUNCHED_APP: {
                     waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
                     waitUntilLauncherObjectGone(APPS_RES_ID);
-                    waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
-                    waitUntilLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
+                    waitUntilSystemLauncherObjectGone(OVERVIEW_RES_ID);
+                    waitUntilSystemLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
 
                     if (mIgnoreTaskbarVisibility) {
                         return null;
                     }
-                    if (isTablet() && !isFallbackOverview()) {
-                        waitForLauncherObject(TASKBAR_RES_ID);
+
+                    if (isTablet()) {
+                        waitForSystemLauncherObject(TASKBAR_RES_ID);
                     } else {
-                        waitUntilLauncherObjectGone(TASKBAR_RES_ID);
+                        waitUntilSystemLauncherObjectGone(TASKBAR_RES_ID);
                     }
                     return null;
                 }
@@ -979,14 +995,9 @@ public final class LauncherInstrumentation {
                 checkForAnomaly(false, true);
 
                 final Point displaySize = getRealDisplaySize();
-                // The swipe up to home gesture starts from inside the launcher when the user is
-                // already home. Otherwise, the gesture can start inside the launcher process if the
-                // taskbar is visible.
-                boolean gestureStartFromLauncher = isTablet()
-                        ? !isLauncher3()
-                        || hasLauncherObject(WORKSPACE_RES_ID)
-                        || hasLauncherObject(TASKBAR_RES_ID)
-                        : isLauncherVisible();
+
+                boolean gestureStartFromLauncher =
+                        isTablet() ? !isLauncher3() : isLauncherVisible();
 
                 // CLose floating views before going back to home.
                 swipeUpToCloseFloatingView(gestureStartFromLauncher);
@@ -1019,7 +1030,7 @@ public final class LauncherInstrumentation {
                         NORMAL_STATE_ORDINAL,
                         !hasLauncherObject(WORKSPACE_RES_ID)
                                 && (hasLauncherObject(APPS_RES_ID)
-                                || hasLauncherObject(OVERVIEW_RES_ID)),
+                                || hasSystemLauncherObject(OVERVIEW_RES_ID)),
                         action);
             }
             try (LauncherInstrumentation.Closable c1 = addContextLayer(
@@ -1075,7 +1086,8 @@ public final class LauncherInstrumentation {
 
     boolean isLauncherContainerVisible() {
         final String[] containerResources = {WORKSPACE_RES_ID, OVERVIEW_RES_ID, APPS_RES_ID};
-        return Arrays.stream(containerResources).anyMatch(r -> hasLauncherObject(r));
+        return Arrays.stream(containerResources).anyMatch(
+                r -> r.equals(OVERVIEW_RES_ID) ? hasSystemLauncherObject(r) : hasLauncherObject(r));
     }
 
     /**
@@ -1156,6 +1168,14 @@ public final class LauncherInstrumentation {
 
     void waitUntilOverviewObjectGone(String resId) {
         waitUntilGoneBySelector(getOverviewObjectSelector(resId));
+    }
+
+    void waitUntilSystemLauncherObjectGone(String resId) {
+        if (is3PLauncher()) {
+            waitUntilOverviewObjectGone(resId);
+        } else {
+            waitUntilLauncherObjectGone(resId);
+        }
     }
 
     void waitUntilLauncherObjectGone(BySelector selector) {
@@ -1288,6 +1308,11 @@ public final class LauncherInstrumentation {
         return mDevice.hasObject(getLauncherObjectSelector(resId));
     }
 
+    private boolean hasSystemLauncherObject(String resId) {
+        return mDevice.hasObject(is3PLauncher() ? getOverviewObjectSelector(resId)
+                : getLauncherObjectSelector(resId));
+    }
+
     boolean hasLauncherObject(BySelector selector) {
         return mDevice.hasObject(makeLauncherSelector(selector));
     }
@@ -1307,6 +1332,12 @@ public final class LauncherInstrumentation {
     }
 
     @NonNull
+    UiObject2 waitForSystemLauncherObject(String resName) {
+        return is3PLauncher() ? waitForOverviewObject(resName)
+                : waitForLauncherObject(resName);
+    }
+
+    @NonNull
     UiObject2 waitForLauncherObject(BySelector selector) {
         return waitForObjectBySelector(makeLauncherSelector(selector));
     }
@@ -1314,11 +1345,6 @@ public final class LauncherInstrumentation {
     @NonNull
     UiObject2 tryWaitForLauncherObject(BySelector selector, long timeout) {
         return tryWaitForObjectBySelector(makeLauncherSelector(selector), timeout);
-    }
-
-    @NonNull
-    UiObject2 waitForFallbackLauncherObject(String resName) {
-        return waitForObjectBySelector(getOverviewObjectSelector(resName));
     }
 
     @NonNull
@@ -1358,7 +1384,7 @@ public final class LauncherInstrumentation {
         return mDevice.getLauncherPackageName();
     }
 
-    boolean isFallbackOverview() {
+    boolean is3PLauncher() {
         return !getOverviewPackageName().equals(getLauncherPackageName());
     }
 
@@ -1827,6 +1853,13 @@ public final class LauncherInstrumentation {
     /** Shows the taskbar if it is hidden, otherwise does nothing. */
     public void showTaskbarIfHidden() {
         getTestInfo(TestProtocol.REQUEST_UNSTASH_TASKBAR_IF_STASHED);
+    }
+
+    /** Blocks the taskbar from automatically stashing based on time. */
+    public void enableBlockTimeout(boolean enable) {
+        getTestInfo(enable
+                ? TestProtocol.REQUEST_ENABLE_BLOCK_TIMEOUT
+                : TestProtocol.REQUEST_DISABLE_BLOCK_TIMEOUT);
     }
 
     /**
