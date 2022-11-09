@@ -29,12 +29,12 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.window.SplashScreen;
 
-import com.android.launcher3.LauncherWidgetHolder;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
+import com.android.launcher3.widget.LauncherWidgetHolder;
 
 /** Provides a Quickstep specific animation when launching an activity from an app widget. */
 class QuickstepInteractionHandler

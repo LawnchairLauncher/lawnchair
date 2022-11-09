@@ -23,8 +23,8 @@ import android.content.pm.ShortcutInfo;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.LauncherWidgetHolder;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.widget.LauncherWidgetHolder;
 
 /**
  * A wrapper for the hidden API calls

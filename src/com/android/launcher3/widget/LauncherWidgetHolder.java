@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3;
+package com.android.launcher3.widget;
 
 import static android.app.Activity.RESULT_CANCELED;
 
@@ -36,17 +36,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.BaseActivity;
+import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.uioverrides.ApiWrapper;
-import com.android.launcher3.widget.DeferredAppWidgetHostView;
-import com.android.launcher3.widget.LauncherAppWidgetHost;
-import com.android.launcher3.widget.LauncherAppWidgetHostView;
-import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
-import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 import java.util.function.IntConsumer;
@@ -134,7 +133,7 @@ public class LauncherWidgetHolder {
                     // If the widget view was deferred, we'll need to call super.createView here
                     // to make the binder call to system process to fetch cumulative updates to this
                     // widget, as well as setting up this view for future updates.
-                    mWidgetHost.createView(view.getLauncher(), appWidgetId,
+                    mWidgetHost.createView(view.mLauncher, appWidgetId,
                             view.getAppWidgetInfo());
                     // At this point #onCreateView should have been called, which in turn returned
                     // the deferred view. There's no reason to keep the reference anymore, so we
@@ -455,7 +454,7 @@ public class LauncherWidgetHolder {
             for (int i = 0; i < mViews.size(); i++) {
                 final int appWidgetId = mViews.keyAt(i);
                 final LauncherAppWidgetHostView view = mViews.get(appWidgetId);
-                mCachedRemoteViews.put(appWidgetId, view.getLastRemoteViews());
+                mCachedRemoteViews.put(appWidgetId, view.mLastRemoteViews);
             }
         }
         mViews.clear();

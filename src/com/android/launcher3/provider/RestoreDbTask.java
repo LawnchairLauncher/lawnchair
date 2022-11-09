@@ -38,7 +38,6 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherProvider.DatabaseHelper;
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.LauncherWidgetHolder;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.DeviceGridState;
@@ -48,6 +47,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.LogConfig;
+import com.android.launcher3.widget.LauncherWidgetHolder;
 
 import java.io.InvalidObjectException;
 import java.util.Arrays;

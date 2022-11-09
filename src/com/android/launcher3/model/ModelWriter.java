@@ -36,7 +36,6 @@ import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
-import com.android.launcher3.LauncherWidgetHolder;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.FileLog;
@@ -49,6 +48,7 @@ import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LooperExecutor;
+import com.android.launcher3.widget.LauncherWidgetHolder;
 
 import java.util.ArrayList;
 import java.util.Arrays;

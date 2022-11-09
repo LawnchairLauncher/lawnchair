@@ -47,6 +47,7 @@ import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.widget.LauncherWidgetHolder;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

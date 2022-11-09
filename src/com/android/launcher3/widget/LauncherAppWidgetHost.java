@@ -16,7 +16,7 @@
 
 package com.android.launcher3.widget;
 
-import static com.android.launcher3.LauncherWidgetHolder.APPWIDGET_HOST_ID;
+import static com.android.launcher3.widget.LauncherWidgetHolder.APPWIDGET_HOST_ID;
 
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetProviderInfo;
@@ -26,7 +26,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherWidgetHolder;
 
 import java.util.ArrayList;
 import java.util.function.IntConsumer;
@@ -36,7 +35,7 @@ import java.util.function.IntConsumer;
  * which correctly captures all long-press events. This ensures that users can
  * always pick up and move widgets.
  */
-public class LauncherAppWidgetHost extends AppWidgetHost {
+class LauncherAppWidgetHost extends AppWidgetHost {
     @NonNull
     private final ArrayList<LauncherWidgetHolder.ProviderChangedListener>
             mProviderChangeListeners = new ArrayList<>();

@@ -29,10 +29,10 @@ import android.os.Bundle;
 import android.os.Process;
 
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.LauncherWidgetHolder;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.widget.LauncherWidgetHolder;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetManagerHelper;
 
