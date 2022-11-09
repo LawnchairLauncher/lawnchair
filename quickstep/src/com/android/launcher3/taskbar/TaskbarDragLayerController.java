@@ -18,10 +18,12 @@ package com.android.launcher3.taskbar;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.view.MotionEvent;
 import android.view.ViewTreeObserver;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.util.DimensionUtils;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.TouchController;
@@ -38,6 +40,7 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
     private final TaskbarActivityContext mActivity;
     private final TaskbarDragLayer mTaskbarDragLayer;
     private final int mFolderMargin;
+    private float mGestureHeightYThreshold;
 
     // Alpha properties for taskbar background.
     private final AnimatedFloat mBgTaskbar = new AnimatedFloat(this::updateBackgroundAlpha);
@@ -64,6 +67,7 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         mTaskbarDragLayer = taskbarDragLayer;
         final Resources resources = mTaskbarDragLayer.getResources();
         mFolderMargin = resources.getDimensionPixelSize(R.dimen.taskbar_folder_margin);
+        updateGestureHeight();
     }
 
     public void init(TaskbarControllers controllers) {
@@ -123,6 +127,19 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         return mBgOffset;
     }
 
+    private void updateGestureHeight() {
+        int gestureHeight = ResourceUtils.getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE,
+                mActivity.getResources());
+        mGestureHeightYThreshold = mActivity.getDeviceProfile().heightPx - gestureHeight;
+    }
+
+    /**
+     * Make updates when configuration changes.
+     */
+    public void onConfigurationChanged() {
+        updateGestureHeight();
+    }
+
     private void updateBackgroundAlpha() {
         final float bgNavbar = mBgNavbar.value;
         final float bgTaskbar = mBgTaskbar.value * mKeyguardBgTaskbar.value
@@ -131,6 +148,13 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         mTaskbarDragLayer.setTaskbarBackgroundAlpha(mLastSetBackgroundAlpha);
 
         updateNavBarDarkIntensityMultiplier();
+    }
+
+    /**
+     * Sets the translation of the background during the swipe up gesture.
+     */
+    public void setTranslationYForSwipe(float transY) {
+        mTaskbarDragLayer.setBackgroundTranslationYForSwipe(transY);
     }
 
     private void updateBackgroundOffset() {
@@ -164,6 +188,8 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
      */
     public class TaskbarDragLayerCallbacks {
 
+        private final int[] mTempOutLocation = new int[2];
+
         /**
          * Called to update the touchable insets.
          * @see ViewTreeObserver.InternalInsetsInfo#setTouchableInsets(int)
@@ -173,9 +199,9 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         }
 
         /**
-         * Called whenever TaskbarDragLayer receives an ACTION_OUTSIDE event.
+         * Listens to TaskbarDragLayer touch events and responds accordingly.
          */
-        public void onActionOutsideEvent() {
+        public void tryStashBasedOnMotionEvent(MotionEvent ev) {
             if (!DisplayController.isTransientTaskbar(mActivity)) {
                 return;
             }
@@ -183,7 +209,24 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
                 return;
             }
 
-            mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
+            boolean stashTaskbar = false;
+
+            MotionEvent screenCoordinates = MotionEvent.obtain(ev);
+            if (ev.getAction() == MotionEvent.ACTION_OUTSIDE) {
+                stashTaskbar = true;
+            } else if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+                mTaskbarDragLayer.getLocationOnScreen(mTempOutLocation);
+                screenCoordinates.offsetLocation(mTempOutLocation[0], mTempOutLocation[1]);
+
+                if (!mControllers.taskbarViewController.isEventOverAnyItem(screenCoordinates)
+                        && screenCoordinates.getY() < mGestureHeightYThreshold) {
+                    stashTaskbar = true;
+                }
+            }
+
+            if (stashTaskbar) {
+                mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
+            }
         }
 
         /**

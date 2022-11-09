@@ -292,7 +292,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mFolderName.forceDisableSuggestions(true);
 
         mFooter = findViewById(R.id.folder_footer);
-        mFooterHeight = getResources().getDimensionPixelSize(R.dimen.folder_label_height);
+        mFooterHeight = dp.folderFooterHeightPx;
 
         if (Utilities.ATLEAST_R) {
             mKeyboardInsetAnimationCallback = new KeyboardInsetAnimationCallback(this);
@@ -1167,14 +1167,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mContent.setFixedSize(contentWidth, contentHeight);
         mContent.measure(contentAreaWidthSpec, contentAreaHeightSpec);
 
-        if (mContent.getChildCount() > 0) {
-            int cellIconGap = (mContent.getPageAt(0).getCellWidth()
-                    - mActivityContext.getDeviceProfile().iconSizePx) / 2;
-            mFooter.setPadding(mContent.getPaddingLeft() + cellIconGap,
-                    mFooter.getPaddingTop(),
-                    mContent.getPaddingRight() + cellIconGap,
-                    mFooter.getPaddingBottom());
-        }
         mFooter.measure(contentAreaWidthSpec,
                 MeasureSpec.makeMeasureSpec(mFooterHeight, MeasureSpec.EXACTLY));
 
