@@ -482,6 +482,9 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         mOnboardingPrefs = createOnboardingPrefs(mSharedPrefs);
 
+        // TODO: move the SearchConfig to SearchState when new LauncherState is created.
+        mBaseSearchConfig = new BaseSearchConfig();
+
         mAppWidgetManager = new WidgetManagerHelper(this);
         mAppWidgetHolder = createAppWidgetHolder();
         mAppWidgetHolder.startListening();
@@ -548,9 +551,6 @@ public class Launcher extends StatefulActivity<LauncherState>
             getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         }
         setTitle(R.string.home_screen);
-
-        // TODO: move the SearchConfig to SearchState when new LauncherState is created.
-        mBaseSearchConfig = new BaseSearchConfig();
     }
 
     protected LauncherOverlayManager getDefaultOverlay() {
@@ -1598,7 +1598,6 @@ public class Launcher extends StatefulActivity<LauncherState>
                 && AbstractFloatingView.getTopOpenView(this) == null;
         boolean isActionMain = Intent.ACTION_MAIN.equals(intent.getAction());
         boolean internalStateHandled = ACTIVITY_TRACKER.handleNewIntent(this);
-        hideKeyboard();
 
         if (isActionMain) {
             if (!internalStateHandled) {

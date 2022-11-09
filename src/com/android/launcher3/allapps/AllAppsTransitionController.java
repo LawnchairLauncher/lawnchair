@@ -141,6 +141,9 @@ public class AllAppsTransitionController
     private final Launcher mLauncher;
     private boolean mIsVerticalLayout;
 
+    // Whether this class should take care of closing the keyboard.
+    private boolean mShouldControlKeyboard;
+
     // Animation in this class is controlled by a single variable {@link mProgress}.
     // Visually, it represents top y coordinate of the all apps container if multiplied with
     // {@link mShiftRange}.
@@ -238,7 +241,7 @@ public class AllAppsTransitionController
             StateAnimationConfig config, PendingAnimation builder) {
         if (mLauncher.isInState(ALL_APPS) && !ALL_APPS.equals(toState)) {
             // For atomic animations, we close the keyboard immediately.
-            if (!config.userControlled && !mLauncher.getSearchConfig().isKeyboardSyncEnabled()) {
+            if (!config.userControlled && mShouldControlKeyboard) {
                 mLauncher.getAppsView().getSearchUiManager().getEditText().hideKeyboard();
             }
 
@@ -252,7 +255,7 @@ public class AllAppsTransitionController
                 // the keyboard open and then changes their mind and swipes back up, we want the
                 // keyboard to remain open. However an onCancel signal is sent to the listeners
                 // (success = false), so we need to check for that.
-                if (config.userControlled && success) {
+                if (config.userControlled && success && mShouldControlKeyboard) {
                     mLauncher.getAppsView().getSearchUiManager().getEditText().hideKeyboard();
                 }
             });
@@ -317,6 +320,8 @@ public class AllAppsTransitionController
         mAppsViewAlpha.setUpdateVisibility(true);
         mAppsViewTranslationY = new MultiPropertyFactory<>(
                 mAppsView, VIEW_TRANSLATE_Y, APPS_VIEW_INDEX_COUNT, Float::sum);
+
+        mShouldControlKeyboard = !mLauncher.getSearchConfig().isKeyboardSyncEnabled();
     }
 
     /**
@@ -333,7 +338,9 @@ public class AllAppsTransitionController
     private void onProgressAnimationEnd() {
         if (Float.compare(mProgress, 1f) == 0) {
             mAppsView.reset(false /* animate */);
-            mLauncher.getAppsView().getSearchUiManager().getEditText().hideKeyboard();
+            if (mShouldControlKeyboard) {
+                mLauncher.getAppsView().getSearchUiManager().getEditText().hideKeyboard();
+            }
         }
     }
 }
