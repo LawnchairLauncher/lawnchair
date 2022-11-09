@@ -59,7 +59,7 @@ fun HiddenAppsPreferences() {
                     val apps = optionalApps.get()
                     val toggleHiddenApp = { app: App ->
                         val key = app.key.toString()
-                        val newSet = apps
+                        val newSet = apps.asSequence()
                             .filter { hiddenApps.contains(it.key.toString()) }
                             .map { it.key.toString() }
                             .toMutableSet()

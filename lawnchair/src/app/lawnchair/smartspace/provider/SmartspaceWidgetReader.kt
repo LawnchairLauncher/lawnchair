@@ -55,9 +55,9 @@ class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
     }
 
     private fun extractWidgetLayout(appWidgetHostView: ViewGroup): List<SmartspaceTarget> {
-        val children = appWidgetHostView.getAllChildren().filter { it.isVisible }
-        val texts = children.filterIsInstance<TextView>().filter { !it.text.isNullOrEmpty() }
-        val images = children.filterIsInstance<ImageView>()
+        val children = appWidgetHostView.getAllChildren().asSequence().filter { it.isVisible }
+        val texts = children.filterIsInstance<TextView>().filter { !it.text.isNullOrEmpty() }.toList()
+        val images = children.filterIsInstance<ImageView>().toList()
         var weatherIconView: ImageView? = null
         var cardIconView: ImageView? = null
         var title: TextView? = null

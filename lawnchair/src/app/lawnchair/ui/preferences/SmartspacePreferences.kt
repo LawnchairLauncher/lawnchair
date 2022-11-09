@@ -77,6 +77,7 @@ fun SmartspacePreferences(fromWidget: Boolean) {
                         modifier = Modifier.padding(top = 8.dp),
                     ) {
                         smartspaceProvider.dataSources
+                            .asSequence()
                             .filter { it.isAvailable }
                             .forEach {
                                 key(it.providerName) {

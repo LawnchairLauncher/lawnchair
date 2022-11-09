@@ -42,15 +42,15 @@ fun appsList(
     val appsState = remember { mutableStateOf(Optional.empty<List<App>>()) }
     DisposableEffect(Unit) {
         Utilities.postAsyncCallback(Handler(MODEL_EXECUTOR.looper)) {
-            val appInfos = ArrayList<LauncherActivityInfo>()
             val profiles = UserCache.INSTANCE.get(context).userProfiles
             val launcherApps = context.getSystemService(LauncherApps::class.java)
-            profiles.forEach { appInfos += launcherApps.getActivityList(null, it) }
 
-            val apps = appInfos
+            val apps = profiles.asSequence()
+                .flatMap { launcherApps.getActivityList(null, it) }
                 .filter { filter.shouldShowApp(it.componentName) }
                 .map { App(context, it) }
                 .sortedWith(comparator)
+                .toList()
             appsState.value = Optional.of(apps)
         }
         onDispose { }

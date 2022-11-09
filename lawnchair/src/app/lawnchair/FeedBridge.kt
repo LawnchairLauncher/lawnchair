@@ -159,6 +159,7 @@ class FeedBridge(private val context: Context) {
                 Intent(overlayAction).setData(Uri.parse("app://${context.packageName}")),
                 PackageManager.GET_META_DATA
             )
+            .asSequence()
             .map { it.serviceInfo.applicationInfo }
             .distinct()
             .filter { getInstance(context).CustomBridgeInfo(it.packageName).isSigned() }

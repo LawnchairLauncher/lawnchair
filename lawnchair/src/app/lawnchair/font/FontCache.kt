@@ -55,11 +55,12 @@ class FontCache private constructor(private val context: Context) {
     private val customFontsDir = TTFFont.getFontsDir(context)
     val customFonts = customFontsDir.subscribeFiles()
         .map { files ->
-            files
+            files.asSequence()
                 .sortedByDescending { it.lastModified() }
                 .map { TTFFont(context, it) }
                 .filter { it.isAvailable }
                 .map { Family(it) }
+                .toList()
         }
 
     val uiRegular = ResourceFont(context, R.font.inter_regular, "Inter")

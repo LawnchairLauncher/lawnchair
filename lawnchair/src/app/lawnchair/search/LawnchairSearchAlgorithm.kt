@@ -40,9 +40,11 @@ abstract class LawnchairSearchAlgorithm(
 
     protected fun transformSearchResults(results: List<SearchTargetCompat>): List<SearchAdapterItem> {
         val filtered = results
+            .asSequence()
             .filter { it.packageName != BuildConfig.APPLICATION_ID }
             .filter { LawnchairSearchAdapterProvider.viewTypeMap[it.layoutType] != null }
             .removeDuplicateDividers()
+            .toList()
         return filtered
             .mapIndexedNotNull { index, target ->
                 val isFirst = index == 0 || filtered[index - 1].isDivider
@@ -82,7 +84,7 @@ abstract class LawnchairSearchAlgorithm(
     }
 }
 
-private fun Iterable<SearchTargetCompat>.removeDuplicateDividers(): List<SearchTargetCompat> {
+private fun Sequence<SearchTargetCompat>.removeDuplicateDividers(): Sequence<SearchTargetCompat> {
     var previousWasDivider = true
     return filter { item ->
         val isDivider = item.layoutType == EMPTY_DIVIDER
