@@ -19,7 +19,6 @@ import static android.app.Activity.RESULT_CANCELED;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
@@ -29,7 +28,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.SparseArray;
-import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -45,7 +43,7 @@ import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
-import com.android.launcher3.uioverrides.ApiWrapper;
+import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 import java.util.function.IntConsumer;
@@ -86,11 +84,7 @@ public class LauncherWidgetHolder {
     // TODO(b/191735836): Replace with SplashScreen.SPLASH_SCREEN_STYLE_EMPTY when un-hidden
     private static final int SPLASH_SCREEN_STYLE_EMPTY = 0;
 
-    public LauncherWidgetHolder(@NonNull Context context) {
-        this(context, null);
-    }
-
-    public LauncherWidgetHolder(@NonNull Context context,
+    protected LauncherWidgetHolder(@NonNull Context context,
             @Nullable IntConsumer appWidgetRemovedCallback) {
         mContext = context;
         mWidgetHost = createHost(context, appWidgetRemovedCallback);
@@ -321,15 +315,6 @@ public class LauncherWidgetHolder {
     }
 
     /**
-     * Set the interaction handler for the widget host
-     * @param handler The interaction handler
-     */
-    public void setInteractionHandler(
-            @Nullable LauncherWidgetInteractionHandler handler) {
-        ApiWrapper.setHostInteractionHandler(mWidgetHost, handler);
-    }
-
-    /**
      * Delete the host
      */
     public void deleteHost() {
@@ -489,20 +474,35 @@ public class LauncherWidgetHolder {
     }
 
     /**
-     * Set as a substitution for the hidden interaction handler in RemoteViews
+     * Returns the new LauncherWidgetHolder instance
      */
-    public interface LauncherWidgetInteractionHandler {
+    public static LauncherWidgetHolder newInstance(Context context) {
+        return HolderFactory.newFactory(context).newInstance(context, null);
+    }
+
+    /**
+     * A factory class that generates new instances of {@code LauncherWidgetHolder}
+     */
+    public static class HolderFactory implements ResourceBasedOverride {
+
         /**
-         * Invoked when the user performs an interaction on the View.
-         *
-         * @param view the View with which the user interacted
-         * @param pendingIntent the base PendingIntent associated with the view
-         * @param response the response to the interaction, which knows how to fill in the
-         *                 attached PendingIntent
+         * @param context The context of the caller
+         * @param appWidgetRemovedCallback The callback that is called when widgets are removed
+         * @return A new instance of {@code LauncherWidgetHolder}
          */
-        boolean onInteraction(
-                View view,
-                PendingIntent pendingIntent,
-                RemoteViews.RemoteResponse response);
+        public LauncherWidgetHolder newInstance(@NonNull Context context,
+                @Nullable IntConsumer appWidgetRemovedCallback) {
+            return new LauncherWidgetHolder(context, appWidgetRemovedCallback);
+        }
+
+        /**
+         * @param context The context of the caller
+         * @return A new instance of factory class for widget holders. If not specified, returning
+         * {@code HolderFactory} by default.
+         */
+        public static HolderFactory newFactory(Context context) {
+            return Overrides.getObject(
+                    HolderFactory.class, context, R.string.widget_holder_factory_class);
+        }
     }
 }

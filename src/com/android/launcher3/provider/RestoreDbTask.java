@@ -355,7 +355,7 @@ public class RestoreDbTask {
     private void restoreAppWidgetIdsIfExists(Context context) {
         SharedPreferences prefs = LauncherPrefs.getPrefs(context);
         if (prefs.contains(APPWIDGET_OLD_IDS) && prefs.contains(APPWIDGET_IDS)) {
-            LauncherWidgetHolder holder = new LauncherWidgetHolder(context);
+            LauncherWidgetHolder holder = LauncherWidgetHolder.newInstance(context);
             AppWidgetsRestoredReceiver.restoreAppWidgetIds(context,
                     IntArray.fromConcatString(prefs.getString(APPWIDGET_OLD_IDS, "")).toArray(),
                     IntArray.fromConcatString(prefs.getString(APPWIDGET_IDS, "")).toArray(),
