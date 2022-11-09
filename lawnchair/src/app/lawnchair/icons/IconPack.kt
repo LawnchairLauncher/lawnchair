@@ -8,7 +8,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import java.util.concurrent.Semaphore
 
-abstract class IconPack(
+sealed class IconPack(
     protected val context: Context,
     val packPackageName: String,
 ) {

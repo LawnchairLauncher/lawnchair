@@ -154,11 +154,6 @@ class FontCache private constructor(private val context: Context) {
             return obj.toString()
         }
 
-        interface LoadCallback {
-
-            fun onFontLoaded(typeface: Typeface?)
-        }
-
         companion object {
 
             fun fromJsonString(context: Context, jsonString: String): Font {

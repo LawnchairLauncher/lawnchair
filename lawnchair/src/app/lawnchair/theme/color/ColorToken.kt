@@ -13,7 +13,7 @@ import com.androidinternal.graphics.cam.Cam
 import dev.kdrag0n.colorkt.Color
 import dev.kdrag0n.monet.theme.ColorScheme
 
-interface ColorToken : ResourceToken<Color> {
+sealed interface ColorToken : ResourceToken<Color> {
     fun resolveColor(context: Context) = resolveColor(context, UiColorMode(Themes.getAttrInteger(context, R.attr.uiColorMode)))
     fun resolveColor(context: Context, uiColorMode: UiColorMode): Int {
         val themeProvider = ThemeProvider.INSTANCE.get(context)

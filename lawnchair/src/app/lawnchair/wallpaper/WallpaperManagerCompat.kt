@@ -7,15 +7,15 @@ import app.lawnchair.wallpaper.WallpaperColorsCompat.Companion.HINT_SUPPORTS_DAR
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.MainThreadInitializedObject
 
-abstract class WallpaperManagerCompat(val context: Context) {
+sealed class WallpaperManagerCompat(val context: Context) {
 
     private val listeners = mutableListOf<OnColorsChangedListener>()
     protected val wallpaperManager: WallpaperManager = context.requireSystemService()
 
     abstract val wallpaperColors: WallpaperColorsCompat?
 
-    val colorHints get() = wallpaperColors?.colorHints ?: 0
-    val supportsDarkTheme get() = (colorHints and HINT_SUPPORTS_DARK_THEME) != 0
+    val colorHints: Int get() = wallpaperColors?.colorHints ?: 0
+    val supportsDarkTheme: Boolean get() = (colorHints and HINT_SUPPORTS_DARK_THEME) != 0
 
     fun addOnChangeListener(listener: OnColorsChangedListener) {
         listeners.add(listener)

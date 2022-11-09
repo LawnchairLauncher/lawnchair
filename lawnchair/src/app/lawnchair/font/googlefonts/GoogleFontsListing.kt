@@ -67,7 +67,7 @@ class GoogleFontsListing private constructor(private val context: Context) {
         return fonts.await()
     }
 
-    interface DataProvider {
+    sealed interface DataProvider {
 
         fun getFontListing(): JSONObject
     }
