@@ -124,7 +124,7 @@ fun GeneralPreferences() {
                     description = stringResource(id = R.string.transparent_background_icons_description),
                 )
             }
-            ExpandAndShrink(visible = !transparentIconBackground.state.value) {
+            ExpandAndShrink(visible = !transparentIconBackground.state.value || !themedIconsEnabled) {
                 DividerColumn {
                     NavigationActionPreference(
                         label = stringResource(id = R.string.icon_shape_label),
