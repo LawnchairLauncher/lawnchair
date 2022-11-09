@@ -2,7 +2,6 @@ package app.lawnchair.gestures.handlers
 
 import android.content.Context
 import app.lawnchair.LawnchairLauncher
-import app.lawnchair.gestures.GestureHandler
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.qsb.QsbLayout
 

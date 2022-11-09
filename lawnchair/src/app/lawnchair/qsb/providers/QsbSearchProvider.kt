@@ -16,7 +16,7 @@ import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.patrykmichalik.opto.core.first
 
-open class QsbSearchProvider(
+sealed class QsbSearchProvider(
     val id: String,
     @StringRes val name: Int,
     @DrawableRes val icon: Int = R.drawable.ic_qsb_search,

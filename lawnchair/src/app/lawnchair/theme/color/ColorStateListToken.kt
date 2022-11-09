@@ -6,7 +6,7 @@ import app.lawnchair.theme.ResourceToken
 import app.lawnchair.theme.UiColorMode
 import dev.kdrag0n.monet.theme.ColorScheme
 
-interface ColorStateListToken : ResourceToken<ColorStateList>
+sealed interface ColorStateListToken : ResourceToken<ColorStateList>
 
 data class NewColorStateList(
     private val factory: (context: Context, scheme: ColorScheme, uiColorMode: UiColorMode) -> ColorStateList

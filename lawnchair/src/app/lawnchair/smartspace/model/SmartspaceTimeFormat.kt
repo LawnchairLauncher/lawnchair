@@ -3,7 +3,7 @@ package app.lawnchair.smartspace.model
 import androidx.annotation.StringRes
 import com.android.launcher3.R
 
-open class SmartspaceTimeFormat(@StringRes val nameResourceId: Int) {
+sealed class SmartspaceTimeFormat(@StringRes val nameResourceId: Int) {
 
     companion object {
 

@@ -32,7 +32,7 @@ fun OverflowMenu(block: @Composable OverflowMenuScope.() -> Unit) {
     }
 }
 
-interface OverflowMenuScope {
+sealed interface OverflowMenuScope {
     fun hideMenu()
 }
 
