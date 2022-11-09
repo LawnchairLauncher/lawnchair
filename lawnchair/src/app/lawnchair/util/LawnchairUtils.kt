@@ -16,6 +16,7 @@
 
 package app.lawnchair.util
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_CANCEL_CURRENT
@@ -144,6 +145,7 @@ val ViewGroup.recursiveChildren: Sequence<View> get() = children.flatMap {
     if (it is ViewGroup) { it.recursiveChildren + sequenceOf(it) } else sequenceOf(it)
 }
 
+@SuppressLint("DiscouragedApi")
 private val pendingIntentTagId = Resources.getSystem().getIdentifier("pending_intent_tag", "id", "android")
 
 val View?.pendingIntent get() = this?.getTag(pendingIntentTagId) as? PendingIntent
