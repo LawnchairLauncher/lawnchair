@@ -324,6 +324,11 @@ public class InvariantDeviceProfile {
         return displayOption.grid.name;
     }
 
+    @VisibleForTesting
+    public static String getDefaultGridName(Context context) {
+        return new InvariantDeviceProfile().initGrid(context, null);
+    }
+
     private void initGrid(Context context, Info displayInfo, DisplayOption displayOption,
             @DeviceType int deviceType) {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
