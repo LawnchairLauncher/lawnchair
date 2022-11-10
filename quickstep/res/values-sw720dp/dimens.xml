@@ -35,7 +35,6 @@
     <dimen name="overview_grid_side_margin">64dp</dimen>
 
     <!-- All Set page-->
-    <dimen name="allset_page_margin_bottom">0dp</dimen>
     <dimen name="allset_page_allset_text_size">42sp</dimen>
     <dimen name="allset_page_swipe_up_text_size">16sp</dimen>
 </resources>

@@ -21,12 +21,11 @@
         style="@style/TextAppearance.GestureTutorial.LinkText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="96dp"
+        android:layout_marginTop="24dp"
         android:background="?android:attr/selectableItemBackground"
         android:minHeight="48dp"
         android:text="@string/allset_navigation_settings"
-        app:layout_constraintBottom_toTopOf="@id/hint"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/subtitle"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -34,7 +33,7 @@
         style="@style/TextAppearance.GestureTutorial.Feedback.Subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/allset_page_margin_bottom"
+        android:layout_marginBottom="24dp"
         android:text="@string/allset_hint"
         android:textSize="@dimen/allset_page_swipe_up_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
