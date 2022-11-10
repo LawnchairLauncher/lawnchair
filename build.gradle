@@ -7,7 +7,7 @@ plugins {
     id 'org.jetbrains.kotlin.android' version "1.7.20"
     id 'org.jetbrains.kotlin.plugin.parcelize' version "1.7.20"
     id 'org.jetbrains.kotlin.plugin.serialization' version "1.7.20"
-    id "com.google.devtools.ksp" version "1.7.20-1.0.8"
+    id "com.google.devtools.ksp" version "1.7.21-1.0.8"
     id 'com.google.protobuf' version "0.9.1"
     id 'com.google.android.gms.oss-licenses-plugin' version "0.10.5"
     id 'dev.rikka.tools.refine' version "3.1.1"
