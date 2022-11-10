@@ -57,7 +57,7 @@ class FullscreenDrawParamsTest : DeviceProfileBaseTest() {
         val isRtl = false
 
         mPreviewPositionHelper.updateThumbnailMatrix(previewRect, mThumbnailData, canvasWidth,
-                canvasHeight, dp.widthPx, dp.taskbarSize, dp.isTablet, currentRotation,
+                canvasHeight, dp.widthPx, dp.heightPx, dp.taskbarSize, dp.isTablet, currentRotation,
                 isRtl)
         params.setProgress(/* fullscreenProgress= */ 1.0f, /* parentScale= */ 1.0f,
                 /* taskViewScale= */ 1.0f,  /* previewWidth= */ 0, dp, mPreviewPositionHelper)
@@ -78,7 +78,7 @@ class FullscreenDrawParamsTest : DeviceProfileBaseTest() {
         val isRtl = false
 
         mPreviewPositionHelper.updateThumbnailMatrix(previewRect, mThumbnailData, canvasWidth,
-                canvasHeight, dp.widthPx, dp.taskbarSize, dp.isTablet, currentRotation,
+                canvasHeight, dp.widthPx, dp.heightPx, dp.taskbarSize, dp.isTablet, currentRotation,
                 isRtl)
         params.setProgress(/* fullscreenProgress= */ 1.0f, /* parentScale= */ 1.0f,
                 /* taskViewScale= */ 1.0f,  /* previewWidth= */ 0, dp, mPreviewPositionHelper)
