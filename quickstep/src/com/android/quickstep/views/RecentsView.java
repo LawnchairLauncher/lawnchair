@@ -74,9 +74,12 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.WindowConfiguration;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.LocusId;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.BlendMode;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -662,8 +665,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private TaskView mSecondSplitHiddenView;
     @Nullable
     private SplitBounds mSplitBoundsConfig;
-    private final Toast mSplitToast = Toast.makeText(getContext(),
-            R.string.toast_split_select_app, Toast.LENGTH_SHORT);
     private final Toast mSplitUnsupportedToast = Toast.makeText(getContext(),
             R.string.toast_split_app_unsupported, Toast.LENGTH_SHORT);
 
@@ -1207,6 +1208,21 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         for (int i = 0; i < getTaskViewCount(); i++) {
             TaskView taskView = requireTaskViewAt(i);
             if (taskView.containsTaskId(taskId)) {
+                return taskView;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns a {@link TaskView} that has ComponentName matching {@code componentName} or null if
+     * no match.
+     */
+    @Nullable
+    public TaskView getTaskViewByComponentName(ComponentName componentName) {
+        for (int i = 0; i < getTaskViewCount(); i++) {
+            TaskView taskView = requireTaskViewAt(i);
+            if (taskView.getTask().key.sourceComponent.equals(componentName)) {
                 return taskView;
             }
         }
@@ -4237,24 +4253,39 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Confirms the selection of the next split task. The extra data is passed through because the
      * user may be selecting a subtask in a group.
      *
+     * @param containerTaskView If our second selected app is currently running in Recents, this is
+     *                          the "container" TaskView from Recents. If we are starting a fresh
+     *                          instance of the app from an Intent, this will be null.
+     * @param task The Task corresponding to our second selected app. If we are starting a fresh
+     *             instance of the app from an Intent, this will be null.
+     * @param drawable The Drawable corresponding to our second selected app's icon.
+     * @param secondView The View representing the current space on the screen where the second app
+     *                   is (either the ThumbnailView or the tapped icon).
+     * @param intent If we are launching a fresh instance of the app, this is the Intent for it. If
+     *               the second app is already running in Recents, this will be null.
      * @return true if waiting for confirmation of second app or if split animations are running,
      *          false otherwise
      */
-    public boolean confirmSplitSelect(TaskView containerTaskView, Task task, IconView iconView,
-            TaskThumbnailView thumbnailView) {
+    public boolean confirmSplitSelect(TaskView containerTaskView, Task task, Drawable drawable,
+            View secondView, @Nullable Bitmap thumbnail, Intent intent) {
         if (canLaunchFullscreenTask()) {
             return false;
         }
         if (mSplitSelectStateController.isBothSplitAppsConfirmed()) {
             return true;
         }
-        mSplitToast.cancel();
-        if (!task.isDockable) {
-            // Task not split screen supported
-            mSplitUnsupportedToast.show();
-            return true;
+        // Second task is selected either as an already-running Task or an Intent
+        if (task != null) {
+            if (!task.isDockable) {
+                // Task does not support split screen
+                mSplitUnsupportedToast.show();
+                return true;
+            }
+            mSplitSelectStateController.setSecondTask(task);
+        } else {
+            mSplitSelectStateController.setSecondTask(intent);
         }
-        mSplitSelectStateController.setSecondTask(task);
+
         RectF secondTaskStartingBounds = new RectF();
         Rect secondTaskEndingBounds = new Rect();
         // TODO(194414938) starting bounds seem slightly off, investigate
@@ -4281,9 +4312,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 false /* fadeWithThumbnail */, true /* isStagedTask */);
 
         safeRemoveDragLayerView(mSecondFloatingTaskView);
-        mSecondFloatingTaskView = FloatingTaskView.getFloatingTaskView(mActivity,
-                thumbnailView, thumbnailView.getThumbnail(),
-                iconView.getDrawable(), secondTaskStartingBounds);
+
+        mSecondFloatingTaskView = FloatingTaskView.getFloatingTaskView(mActivity, secondView,
+                thumbnail, drawable, secondTaskStartingBounds);
         mSecondFloatingTaskView.setAlpha(1);
         mSecondFloatingTaskView.addConfirmAnimation(pendingAnimation, secondTaskStartingBounds,
                 secondTaskEndingBounds, true /* fadeWithThumbnail */, false /* isStagedTask */);
@@ -4299,7 +4330,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         });
 
         mSecondSplitHiddenView = containerTaskView;
-        mSecondSplitHiddenView.setThumbnailVisibility(INVISIBLE);
+        if (mSecondSplitHiddenView != null) {
+            mSecondSplitHiddenView.setThumbnailVisibility(INVISIBLE);
+        }
 
         InteractionJankMonitorWrapper.begin(this,
                 InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER, "Second tile selected");

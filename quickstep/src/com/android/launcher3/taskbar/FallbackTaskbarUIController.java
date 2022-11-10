@@ -41,8 +41,7 @@ public class FallbackTaskbarUIController extends TaskbarUIController {
                     animateToRecentsState(toState);
 
                     // Handle tapping on live tile.
-                    RecentsView recentsView = mRecentsActivity.getOverviewPanel();
-                    recentsView.setTaskLaunchListener(toState == RecentsState.DEFAULT
+                    getRecentsView().setTaskLaunchListener(toState == RecentsState.DEFAULT
                             ? (() -> animateToRecentsState(RecentsState.BACKGROUND_APP)) : null);
                 }
             };
@@ -87,5 +86,10 @@ public class FallbackTaskbarUIController extends TaskbarUIController {
         if (anim != null) {
             anim.start();
         }
+    }
+
+    @Override
+    public RecentsView getRecentsView() {
+        return mRecentsActivity.getOverviewPanel();
     }
 }
