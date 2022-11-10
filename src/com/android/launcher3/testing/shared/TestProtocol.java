@@ -84,8 +84,6 @@ public final class TestProtocol {
     public static final String REQUEST_UNFREEZE_APP_LIST = "unfreeze-app-list";
     public static final String REQUEST_ENABLE_MANUAL_TASKBAR_STASHING = "enable-taskbar-stashing";
     public static final String REQUEST_DISABLE_MANUAL_TASKBAR_STASHING = "disable-taskbar-stashing";
-    public static final String REQUEST_ENABLE_BLOCK_TIMEOUT = "enable-block-timeout";
-    public static final String REQUEST_DISABLE_BLOCK_TIMEOUT = "disable-block-timeout";
     public static final String REQUEST_UNSTASH_TASKBAR_IF_STASHED = "unstash-taskbar-if-stashed";
     public static final String REQUEST_STASHED_TASKBAR_HEIGHT = "stashed-taskbar-height";
     public static final String REQUEST_RECREATE_TASKBAR = "recreate-taskbar";
