@@ -112,7 +112,7 @@ ext {
     libsu_version = '5.0.3'
     protocVersion = '3.21.9'
     room_version = '2.4.3'
-    optoVersion = "1.0.17"
+    optoVersion = "1.0.18"
 }
 
 final def commitHash = { ->
