@@ -2350,7 +2350,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             }
 
             mTargetCell = findNearestArea((int) mDragViewVisualCenter[0],
-                    (int) mDragViewVisualCenter[1], minSpanX, minSpanY,
+                    (int) mDragViewVisualCenter[1], item.spanX, item.spanY,
                     mDragTargetLayout, mTargetCell);
             int reorderX = mTargetCell[0];
             int reorderY = mTargetCell[1];
@@ -2366,7 +2366,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1], item.spanX,
                     item.spanY, child, mTargetCell);
 
-            manageReorderOnDragOver(d, targetCellDistance, nearestDropOccupied, minSpanX, minSpanY);
+            manageReorderOnDragOver(d, targetCellDistance, nearestDropOccupied, minSpanX, minSpanY,
+                    reorderX, reorderY);
 
             if (mDragMode == DRAG_MODE_CREATE_FOLDER || mDragMode == DRAG_MODE_ADD_TO_FOLDER ||
                     !nearestDropOccupied) {
@@ -2378,26 +2379,23 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     }
 
     protected void manageReorderOnDragOver(DragObject d, float targetCellDistance,
-            boolean nearestDropOccupied, int minSpanX, int minSpanY) {
+            boolean nearestDropOccupied, int minSpanX, int minSpanY, int reorderX, int reorderY) {
 
         ItemInfo item = d.dragInfo;
         final View child = (mDragInfo == null) ? null : mDragInfo.cell;
-        int reorderX = mTargetCell[0];
-        int reorderY = mTargetCell[1];
-        if ((mDragMode == DRAG_MODE_NONE || mDragMode == DRAG_MODE_REORDER)
-                && (mLastReorderX != reorderX || mLastReorderY != reorderY)
-                && targetCellDistance < mDragTargetLayout.getReorderRadius(mTargetCell, item.spanX,
-                item.spanY)) {
-            mDragTargetLayout.performReorder((int) mDragViewVisualCenter[0],
-                    (int) mDragViewVisualCenter[1], minSpanX, minSpanY, item.spanX, item.spanY,
-                    child, mTargetCell, new int[2], CellLayout.MODE_SHOW_REORDER_HINT);
-        }
-
         if (!nearestDropOccupied) {
             mDragTargetLayout.visualizeDropLocation(mTargetCell[0], mTargetCell[1],
                     item.spanX, item.spanY, d);
         } else if ((mDragMode == DRAG_MODE_NONE || mDragMode == DRAG_MODE_REORDER)
-                && !mReorderAlarm.alarmPending()) {
+                && !mReorderAlarm.alarmPending()
+                && (mLastReorderX != reorderX || mLastReorderY != reorderY)
+                && targetCellDistance < mDragTargetLayout.getReorderRadius(mTargetCell, item.spanX,
+                item.spanY)) {
+            mLastReorderX = reorderX;
+            mLastReorderY = reorderY;
+            mDragTargetLayout.performReorder((int) mDragViewVisualCenter[0],
+                    (int) mDragViewVisualCenter[1], minSpanX, minSpanY, item.spanX, item.spanY,
+                    child, mTargetCell, new int[2], CellLayout.MODE_SHOW_REORDER_HINT);
             // Otherwise, if we aren't adding to or creating a folder and there's no pending
             // reorder, then we schedule a reorder
             ReorderAlarmListener listener = new ReorderAlarmListener(mDragViewVisualCenter,
@@ -2602,8 +2600,6 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             mTargetCell = findNearestArea((int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1], minSpanX, minSpanY, mDragTargetLayout,
                     mTargetCell);
-            mLastReorderX = mTargetCell[0];
-            mLastReorderY = mTargetCell[1];
 
             mTargetCell = mDragTargetLayout.performReorder((int) mDragViewVisualCenter[0],
                 (int) mDragViewVisualCenter[1], minSpanX, minSpanY, spanX, spanY,
