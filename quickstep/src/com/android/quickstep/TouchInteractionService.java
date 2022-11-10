@@ -69,6 +69,7 @@ import androidx.annotation.UiThread;
 
 import com.android.app.viewcapture.ViewCapture;
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
@@ -479,7 +480,7 @@ public class TouchInteractionService extends Service
         }
 
         // Reset home bounce seen on quick step enabled for first time
-        SharedPreferences sharedPrefs = Utilities.getPrefs(this);
+        SharedPreferences sharedPrefs = LauncherPrefs.getPrefs(this);
         if (!sharedPrefs.getBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)) {
             sharedPrefs.edit()
                     .putBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)

@@ -19,8 +19,8 @@ import android.content.Context;
 import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.allapps.search.DefaultSearchAdapterProvider;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
@@ -62,7 +62,7 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
         mOverlayController = controllers.taskbarOverlayController;
         mDragController = new TaskbarDragController(this);
         mDragController.init(controllers);
-        mOnboardingPrefs = new OnboardingPrefs<>(this, Utilities.getPrefs(this));
+        mOnboardingPrefs = new OnboardingPrefs<>(this, LauncherPrefs.getPrefs(this));
         mDragLayer = new TaskbarOverlayDragLayer(this);
 
         TaskbarStashController taskbarStashController = controllers.taskbarStashController;
