@@ -120,18 +120,6 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                                 .getCurrentActivityContext()
                                 .getTaskbarAllAppsTopPadding());
             }
-
-            case TestProtocol.REQUEST_ENABLE_BLOCK_TIMEOUT:
-                runOnTISBinder(tisBinder -> {
-                    enableBlockingTimeout(tisBinder, true);
-                });
-                return response;
-
-            case TestProtocol.REQUEST_DISABLE_BLOCK_TIMEOUT:
-                runOnTISBinder(tisBinder -> {
-                    enableBlockingTimeout(tisBinder, false);
-                });
-                return response;
         }
 
         return super.call(method, arg, extras);
@@ -158,13 +146,6 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
             TouchInteractionService.TISBinder tisBinder, boolean enable) {
         // Allow null-pointer to catch illegal states.
         tisBinder.getTaskbarManager().getCurrentActivityContext().enableManualStashingDuringTests(
-                enable);
-    }
-
-    private void enableBlockingTimeout(
-            TouchInteractionService.TISBinder tisBinder, boolean enable) {
-        // Allow null-pointer to catch illegal states.
-        tisBinder.getTaskbarManager().getCurrentActivityContext().enableBlockingTimeoutDuringTests(
                 enable);
     }
 

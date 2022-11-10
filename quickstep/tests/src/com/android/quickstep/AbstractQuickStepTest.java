@@ -39,7 +39,6 @@ public abstract class AbstractQuickStepTest extends AbstractLauncherUiTest {
     protected TestRule getRulesInsideActivityMonitor() {
         return RuleChain.
                 outerRule(new NavigationModeSwitchRule(mLauncher)).
-                around(new TaskbarModeSwitchRule(mLauncher)).
                 around(super.getRulesInsideActivityMonitor());
     }
 

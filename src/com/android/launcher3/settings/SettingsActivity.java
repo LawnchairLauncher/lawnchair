@@ -18,6 +18,7 @@ package com.android.launcher3.settings;
 
 import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS;
 
+import static com.android.launcher3.config.FeatureFlags.IS_STUDIO_BUILD;
 import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
 
 import android.content.Intent;
@@ -207,7 +208,11 @@ public class SettingsActivity extends FragmentActivity
             PreferenceScreen screen = getPreferenceScreen();
             for (int i = screen.getPreferenceCount() - 1; i >= 0; i--) {
                 Preference preference = screen.getPreference(i);
-                if (!initPreference(preference)) {
+                if (initPreference(preference)) {
+                    if (IS_STUDIO_BUILD && preference == mDeveloperOptionPref) {
+                        preference.setOrder(0);
+                    }
+                } else {
                     screen.removePreference(preference);
                 }
             }
