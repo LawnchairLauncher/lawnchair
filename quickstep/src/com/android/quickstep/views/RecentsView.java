@@ -3544,7 +3544,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mActionsView.updateHiddenFlags(HIDDEN_SPLIT_SELECT_ACTIVE, isSplitSelectionActive());
         mActionsView.updateSplitButtonHiddenFlags(FLAG_IS_NOT_TABLET,
                 !mActivity.getDeviceProfile().isTablet);
-        mActionsView.updateSplitButtonDisabledFlags(FLAG_SINGLE_TASK, getTaskViewCount() <= 1);
+        mActionsView.updateSplitButtonDisabledFlags(FLAG_SINGLE_TASK,
+                !FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get() && getTaskViewCount() <= 1);
     }
 
     /**
