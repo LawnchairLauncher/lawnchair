@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import com.android.launcher3.util.ScrollableLayoutManager;
 import com.android.launcher3.views.ActivityContext;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,6 +44,31 @@ public class AllAppsGridAdapter<T extends Context & ActivityContext> extends
 
     public static final String TAG = "AppsGridAdapter";
     private final AppsGridLayoutManager mGridLayoutMgr;
+    private final List<OnLayoutCompletedListener> mOnLayoutCompletedListeners = new ArrayList<>();
+
+    /**
+     * Listener for {@link RecyclerView.LayoutManager#onLayoutCompleted(RecyclerView.State)}
+     */
+    public interface OnLayoutCompletedListener {
+        void onLayoutCompleted();
+    }
+
+    /**
+     * Adds a {@link OnLayoutCompletedListener} to receive a callback when {@link
+     * RecyclerView.LayoutManager#onLayoutCompleted(RecyclerView.State)} is called
+     */
+    public void addOnLayoutCompletedListener(OnLayoutCompletedListener listener) {
+        mOnLayoutCompletedListeners.add(listener);
+    }
+
+    /**
+     * Removes a {@link OnLayoutCompletedListener} to not receive a callback when {@link
+     * RecyclerView.LayoutManager#onLayoutCompleted(RecyclerView.State)} is called
+     */
+    public void removeOnLayoutCompletedListener(OnLayoutCompletedListener listener) {
+        mOnLayoutCompletedListeners.remove(listener);
+    }
+
 
     public AllAppsGridAdapter(T activityContext, LayoutInflater inflater,
             AlphabeticalAppsList apps, BaseAdapterProvider[] adapterProviders) {
@@ -130,6 +156,14 @@ public class AllAppsGridAdapter<T extends Context & ActivityContext> extends
                 }
             }
             return extraRows;
+        }
+
+        @Override
+        public void onLayoutCompleted(RecyclerView.State state) {
+            super.onLayoutCompleted(state);
+            for (OnLayoutCompletedListener listener : mOnLayoutCompletedListeners) {
+                listener.onLayoutCompleted();
+            }
         }
 
         @Override
