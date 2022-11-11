@@ -47,6 +47,7 @@ import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.RecentsAnimationCallbacks;
+import com.android.quickstep.views.RecentsView;
 
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -390,5 +391,10 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         }
 
         mTaskbarLauncherStateController.dumpLogs(prefix + "\t", pw);
+    }
+
+    @Override
+    public RecentsView getRecentsView() {
+        return mLauncher.getOverviewPanel();
     }
 }
