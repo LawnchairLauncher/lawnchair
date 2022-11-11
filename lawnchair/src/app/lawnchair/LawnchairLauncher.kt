@@ -224,8 +224,10 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         }
 
         // Handle update from version 12 Alpha 4 to version 12 Alpha 5.
-        if (prefs.themedIcons.get() && !getResources().getStringArray(R.array.themed_icon_packs)
-                .any { packageManager.isPackageInstalled(it) }) {
+        if (
+            prefs.themedIcons.get() &&
+            !resources.getStringArray(R.array.themed_icon_packs).any { packageManager.isPackageInstalled(it) }
+        ) {
             prefs.themedIcons.set(newValue = false)
         }
 
