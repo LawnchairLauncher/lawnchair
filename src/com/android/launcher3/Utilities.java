@@ -524,6 +524,11 @@ public final class Utilities {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
+    /** Converts a dp value to pixels for a certain density. */
+    public static int dpToPx(float dp, int densityDpi) {
+        float densityRatio = (float) densityDpi / DisplayMetrics.DENSITY_DEFAULT;
+        return (int) (dp * densityRatio);
+    }
 
     public static int pxFromSp(float size, DisplayMetrics metrics) {
         return pxFromSp(size, metrics, 1f);
