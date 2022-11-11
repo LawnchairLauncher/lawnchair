@@ -13,7 +13,7 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.allapps.AllAppsGridAdapter
 import com.android.launcher3.search.SearchAlgorithm
 
-abstract class LawnchairSearchAlgorithm(
+sealed class LawnchairSearchAlgorithm(
     val context: Context
 ) : SearchAlgorithm<AllAppsGridAdapter.AdapterItem> {
 
