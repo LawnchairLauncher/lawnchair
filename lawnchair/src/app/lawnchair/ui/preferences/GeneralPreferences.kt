@@ -106,6 +106,7 @@ fun GeneralPreferences() {
         }
 
         val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.getAdapter()
+        val transparentIconBackground = prefs.transparentIconBackground.getAdapter()
         PreferenceGroup(
             heading = stringResource(id = R.string.icons),
             description = stringResource(id = (R.string.adaptive_icon_background_description)),
@@ -116,6 +117,13 @@ fun GeneralPreferences() {
                 destination = subRoute(name = GeneralRoutes.ICON_PACK),
                 subtitle = iconStyleSubtitle,
             )
+            ExpandAndShrink(visible = themedIconsEnabled) {
+                SwitchPreference(
+                    adapter = prefs.transparentIconBackground.getAdapter(),
+                    label = stringResource(id = R.string.transparent_background_icons),
+                    description = stringResource(id = R.string.transparent_background_icons_description),
+                )
+            }
             NavigationActionPreference(
                 label = stringResource(id = R.string.icon_shape_label),
                 destination = subRoute(name = GeneralRoutes.ICON_SHAPE),
@@ -129,6 +137,7 @@ fun GeneralPreferences() {
                 label = stringResource(id = R.string.auto_adaptive_icons_label),
                 description = stringResource(id = R.string.auto_adaptive_icons_description),
             )
+
             ExpandAndShrink(visible = wrapAdaptiveIcons.state.value) {
                 SliderPreference(
                     label = stringResource(id = R.string.background_lightness_label),
