@@ -179,9 +179,6 @@ data class SearchActionCompat(
     }
 
     companion object {
-        @JvmStatic
-        fun wrap(action: SearchAction?): SearchActionCompat? {
-            return if (action != null) SearchActionCompat(action) else null
-        }
+        fun wrap(action: SearchAction): SearchActionCompat = SearchActionCompat(action)
     }
 }

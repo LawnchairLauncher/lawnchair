@@ -96,7 +96,7 @@ class LawnchairDeviceSearchAlgorithm(context: Context) : LawnchairSearchAlgorith
     private inner class PendingQuery(
         private val mQuery: String,
         callback: SearchCallback<AllAppsGridAdapter.AdapterItem>
-    ) : Consumer<List<SearchTarget?>> {
+    ) : Consumer<List<SearchTarget>> {
         private val mCallback: SearchCallback<AllAppsGridAdapter.AdapterItem>
         private var mCanceled = false
 
@@ -104,7 +104,7 @@ class LawnchairDeviceSearchAlgorithm(context: Context) : LawnchairSearchAlgorith
             mCallback = callback
         }
 
-        override fun accept(platformTargets: List<SearchTarget?>) {
+        override fun accept(platformTargets: List<SearchTarget>) {
             if (!mCanceled) {
                 val targets: MutableList<SearchTargetCompat> = ArrayList()
                 for (target in platformTargets) {
