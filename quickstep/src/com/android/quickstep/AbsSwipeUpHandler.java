@@ -294,7 +294,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private boolean mPassedOverviewThreshold;
     private boolean mGestureStarted;
     private boolean mLogDirectionUpOrLeft = true;
-    private PointF mDownPos;
     private boolean mIsLikelyToStartNewTask;
 
     private final long mTouchTimeMs;
@@ -996,10 +995,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     /**
      * @param endVelocity The velocity in the direction of the nav bar to the middle of the screen.
      * @param velocity The x and y components of the velocity when the gesture ends.
-     * @param downPos The x and y value of where the gesture started.
      */
     @UiThread
-    public void onGestureEnded(float endVelocity, PointF velocity, PointF downPos) {
+    public void onGestureEnded(float endVelocity, PointF velocity) {
         float flingThreshold = mContext.getResources()
                 .getDimension(R.dimen.quickstep_fling_threshold_speed);
         boolean isFling = mGestureStarted && !mIsMotionPaused
@@ -1011,7 +1009,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         } else {
             mLogDirectionUpOrLeft = velocity.x < 0;
         }
-        mDownPos = downPos;
         Runnable handleNormalGestureEndCallback = () ->
                 handleNormalGestureEnd(endVelocity, isFling, velocity, /* isCancel= */ false);
         if (mRecentsView != null) {
@@ -1290,7 +1287,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     private void doLogGesture(GestureEndTarget endTarget, @Nullable TaskView targetTask) {
-        if (mDp == null || !mDp.isGestureMode || mDownPos == null) {
+        if (mDp == null || !mDp.isGestureMode) {
             // We probably never received an animation controller, skip logging.
             return;
         }
