@@ -13,7 +13,7 @@ import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.handlers.OpenAppTarget
 import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.util.App
-import app.lawnchair.util.appsList
+import app.lawnchair.util.appsState
 import com.android.launcher3.R
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -24,7 +24,7 @@ fun NavGraphBuilder.pickAppForGestureGraph(route: String) {
 
 @Composable
 fun PickAppForGesture() {
-    val optionalApps by appsList()
+    val apps by appsState()
     val state = rememberLazyListState()
 
     val activity = LocalContext.current as Activity
@@ -41,10 +41,9 @@ fun PickAppForGesture() {
     PreferenceScaffold(
         label = stringResource(id = R.string.pick_app_for_gesture),
     ) {
-        Crossfade(targetState = optionalApps.isPresent) { present ->
+        Crossfade(targetState = apps.isNotEmpty()) { present ->
             if (present) {
                 PreferenceLazyColumn(state = state) {
-                    val apps = optionalApps.get()
                     preferenceGroupItems(
                         items = apps,
                         isFirstChild = true,

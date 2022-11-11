@@ -33,7 +33,7 @@ import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.util.App
 import app.lawnchair.util.appComparator
-import app.lawnchair.util.appsList
+import app.lawnchair.util.appsState
 import com.android.launcher3.R
 import java.util.Comparator.comparing
 
@@ -48,15 +48,14 @@ fun HiddenAppsPreferences() {
     val pageTitle =
         if (hiddenApps.isEmpty()) stringResource(id = R.string.hidden_apps_label)
         else stringResource(id = R.string.hidden_apps_label_with_count, hiddenApps.size)
-    val optionalApps by appsList(comparator = hiddenAppsComparator(hiddenApps))
+    val apps by appsState(comparator = hiddenAppsComparator(hiddenApps))
     val state = rememberLazyListState()
     PreferenceScaffold(
         label = pageTitle,
     ) {
-        Crossfade(targetState = optionalApps.isPresent) { present ->
+        Crossfade(targetState = apps.isNotEmpty()) { present ->
             if (present) {
                 PreferenceLazyColumn(state = state) {
-                    val apps = optionalApps.get()
                     val toggleHiddenApp = { app: App ->
                         val key = app.key.toString()
                         val newSet = apps.asSequence()
