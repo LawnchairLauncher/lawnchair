@@ -34,7 +34,7 @@
     </string-array>
     <string-array name="themed_icon_packs" translatable="false">
         <!-- The package will working when lawnicons fully converted as iconpack-->
-        <item>com.lawnchair.lawnicons</item>
+        <item>app.lawnchair.lawnicons</item>
         <item>com.donnnno.arcticons</item>
         <item>com.whicons.iconpack</item>
     </string-array>
