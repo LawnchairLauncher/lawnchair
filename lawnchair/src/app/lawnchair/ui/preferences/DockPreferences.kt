@@ -17,14 +17,21 @@
 package app.lawnchair.ui.preferences
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
+import app.lawnchair.hotseat.HotseatMode
+import app.lawnchair.hotseat.LawnchairHotseat
+import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.ui.preferences.components.DividerColumn
 import app.lawnchair.ui.preferences.components.ExpandAndShrink
+import app.lawnchair.ui.preferences.components.ListPreference
+import app.lawnchair.ui.preferences.components.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
@@ -47,13 +54,14 @@ fun DockPreferences() {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
     PreferenceLayout(label = stringResource(id = R.string.dock_label)) {
-        PreferenceGroup(heading = stringResource(id = R.string.search_bar_label)) {
-            val hotseatQsbAdapter = prefs2.hotseatQsb.getAdapter()
-            SwitchPreference(
-                adapter = hotseatQsbAdapter,
-                label = stringResource(id = R.string.hotseat_qsb_label),
+        val hotseatModeAdapter = prefs2.hotseatMode.getAdapter()
+        PreferenceGroup(heading = stringResource(id = R.string.what_to_show)) {
+            HotseatModePreference(
+                adapter = hotseatModeAdapter,
             )
-            ExpandAndShrink(visible = hotseatQsbAdapter.state.value) {
+        }
+        ExpandAndShrink(visible = hotseatModeAdapter.state.value == LawnchairHotseat) {
+            PreferenceGroup(heading = stringResource(id = R.string.search_bar_label)) {
                 DividerColumn {
                     SwitchPreference(
                         adapter = prefs2.themedHotseatQsb.getAdapter(),
@@ -88,4 +96,28 @@ fun DockPreferences() {
             )
         }
     }
+}
+
+@Composable
+private fun HotseatModePreference(
+    adapter: PreferenceAdapter<HotseatMode>,
+) {
+
+    val context = LocalContext.current
+
+    val entries = remember {
+        HotseatMode.values().map { mode ->
+            ListPreferenceEntry(
+                value = mode,
+                label = { stringResource(id = mode.nameResourceId) },
+                enabled = mode.isAvailable(context = context),
+            )
+        }
+    }
+
+    ListPreference(
+        adapter = adapter,
+        entries = entries,
+        label = stringResource(id = R.string.hotseat_mode_label),
+    )
 }
