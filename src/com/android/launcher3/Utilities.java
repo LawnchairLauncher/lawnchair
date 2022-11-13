@@ -71,6 +71,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
@@ -180,6 +181,8 @@ public final class Utilities {
 
     public static boolean IS_RUNNING_IN_TEST_HARNESS =
                     ActivityManager.isRunningInTestHarness();
+
+    private static final int TRACKPAD_GESTURE_SCALE = 60;
 
     public static void enableRunningInTestHarnessForTests() {
         IS_RUNNING_IN_TEST_HARNESS = true;
@@ -930,6 +933,38 @@ public final class Utilities {
         // events get assigned the correct classification.
         return ENABLE_TRACKPAD_GESTURE.get()
                 && (event.getSource() & SOURCE_TOUCHSCREEN) != SOURCE_TOUCHSCREEN;
+    }
+
+    public static int getTrackpadMotionEventScale(Context context) {
+        return ViewConfiguration.get(context).getScaledTouchSlop() * TRACKPAD_GESTURE_SCALE;
+    }
+
+    public static float getXVelocity(VelocityTracker velocityTracker, MotionEvent event,
+            int pointerId) {
+        // Will be enabled after ag/20353570 is submitted
+//        if (isTrackpadMotionEvent(event)) {
+//            return velocityTracker.getAxisVelocity(AXIS_GESTURE_X_OFFSET, pointerId);
+//        } else {
+            return velocityTracker.getXVelocity(pointerId);
+//        }
+    }
+
+    public static float getXVelocity(VelocityTracker velocityTracker, MotionEvent event) {
+        return getXVelocity(velocityTracker, event, -1 /* ACTIVE_POINTER_ID */);
+    }
+
+    public static float getYVelocity(VelocityTracker velocityTracker, MotionEvent event,
+            int pointerId) {
+        // Will be enabled after ag/20353570 is submitted
+//        if (isTrackpadMotionEvent(event)) {
+//            return velocityTracker.getAxisVelocity(AXIS_GESTURE_Y_OFFSET, pointerId);
+//        } else {
+            return velocityTracker.getYVelocity(pointerId);
+//        }
+    }
+
+    public static float getYVelocity(VelocityTracker velocityTracker, MotionEvent event) {
+        return getYVelocity(velocityTracker, event, -1 /* ACTIVE_POINTER_ID */);
     }
 
     public static boolean bothNull(@Nullable Object a, @Nullable Object b) {

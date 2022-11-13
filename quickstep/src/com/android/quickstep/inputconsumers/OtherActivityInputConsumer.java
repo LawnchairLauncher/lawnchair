@@ -26,6 +26,8 @@ import static android.view.MotionEvent.INVALID_POINTER_ID;
 import static com.android.launcher3.PagedView.ACTION_MOVE_ALLOW_EASY_FLING;
 import static com.android.launcher3.PagedView.DEBUG_FAILED_QUICKSWITCH;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
+import static com.android.launcher3.Utilities.getXVelocity;
+import static com.android.launcher3.Utilities.getYVelocity;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.TraceHelper.FLAG_CHECK_FOR_RACE_CONDITIONS;
@@ -113,9 +115,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private final FinishImmediatelyHandler mCleanupHandler = new FinishImmediatelyHandler();
 
     private final boolean mIsDeferredDownTarget;
-    private final PointF mDownPos = new PointF();
-    private final PointF mLastPos = new PointF();
-    private int mActivePointerId = INVALID_POINTER_ID;
+
+    private final MotionEventsHandler mMotionEventsHandler;
 
     // Distance after which we start dragging the window.
     private final float mTouchSlop;
@@ -164,6 +165,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mVelocityTracker = VelocityTracker.obtain();
         mInputMonitorCompat = inputMonitorCompat;
         mInputEventReceiver = inputEventReceiver;
+        mMotionEventsHandler = new MotionEventsHandler(base);
 
         TaskbarUIController controller = mActivityInterface.getTaskbarController();
         mTaskbarAlreadyOpen = controller != null && !controller.isTaskbarStashed();
@@ -234,9 +236,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
                 Object traceToken = TraceHelper.INSTANCE.beginSection(DOWN_EVT,
                         FLAG_CHECK_FOR_RACE_CONDITIONS);
-                mActivePointerId = ev.getPointerId(0);
-                mDownPos.set(ev.getX(), ev.getY());
-                mLastPos.set(mDownPos);
+                mMotionEventsHandler.onActionDown(ev);
 
                 // Start the window animation on down to give more time for launcher to draw if the
                 // user didn't start the gesture over the back button
@@ -258,27 +258,20 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 break;
             }
             case ACTION_POINTER_UP: {
-                int ptrIdx = ev.getActionIndex();
-                int ptrId = ev.getPointerId(ptrIdx);
-                if (ptrId == mActivePointerId) {
-                    final int newPointerIdx = ptrIdx == 0 ? 1 : 0;
-                    mDownPos.set(
-                            ev.getX(newPointerIdx) - (mLastPos.x - mDownPos.x),
-                            ev.getY(newPointerIdx) - (mLastPos.y - mDownPos.y));
-                    mLastPos.set(ev.getX(newPointerIdx), ev.getY(newPointerIdx));
-                    mActivePointerId = ev.getPointerId(newPointerIdx);
-                }
+                mMotionEventsHandler.onActionPointerUp(ev);
                 break;
             }
             case ACTION_MOVE: {
-                int pointerIndex = ev.findPointerIndex(mActivePointerId);
+                int pointerIndex = ev.findPointerIndex(mMotionEventsHandler.getActivePointerId());
                 if (pointerIndex == INVALID_POINTER_ID) {
                     break;
                 }
-                mLastPos.set(ev.getX(pointerIndex), ev.getY(pointerIndex));
-                float displacement = getDisplacement(ev);
-                float displacementX = mLastPos.x - mDownPos.x;
-                float displacementY = mLastPos.y - mDownPos.y;
+
+                mMotionEventsHandler.onActionMove(ev);
+                final float displacement = mMotionEventsHandler.getDisplacement(ev,
+                        mNavBarPosition);
+                final float displacementX = mMotionEventsHandler.getDisplacementX(ev);
+                final float displacementY= mMotionEventsHandler.getDisplacementY(ev);
 
                 if (!mPassedWindowMoveSlop) {
                     if (!mIsDeferredDownTarget) {
@@ -357,8 +350,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             case ACTION_CANCEL:
             case ACTION_UP: {
                 if (DEBUG_FAILED_QUICKSWITCH && !mPassedWindowMoveSlop) {
-                    float displacementX = mLastPos.x - mDownPos.x;
-                    float displacementY = mLastPos.y - mDownPos.y;
+                    final float displacementX = mMotionEventsHandler.getDisplacementX(ev);
+                    final float displacementY = mMotionEventsHandler.getDisplacementY(ev);
                     Log.d("Quickswitch", "mPassedWindowMoveSlop=false"
                             + " disp=" + squaredHypot(displacementX, displacementY)
                             + " slop=" + mSquaredTouchSlop);
@@ -417,16 +410,18 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 mInteractionHandler.onGestureCancelled();
             } else {
                 mVelocityTracker.computeCurrentVelocity(PX_PER_MS);
-                float velocityX = mVelocityTracker.getXVelocity(mActivePointerId);
-                float velocityY = mVelocityTracker.getYVelocity(mActivePointerId);
+                int activePointerId = mMotionEventsHandler.getActivePointerId();
+                float velocityX = getXVelocity(mVelocityTracker, ev, activePointerId);
+                float velocityY = getYVelocity(mVelocityTracker, ev, activePointerId);
                 float velocity = mNavBarPosition.isRightEdge()
                         ? velocityX
                         : mNavBarPosition.isLeftEdge()
                                 ? -velocityX
                                 : velocityY;
-                mInteractionHandler.updateDisplacement(getDisplacement(ev) - mStartDisplacement);
-                mInteractionHandler.onGestureEnded(velocity, new PointF(velocityX, velocityY),
-                        mDownPos);
+                mInteractionHandler.updateDisplacement(
+                        mMotionEventsHandler.getDisplacement(ev, mNavBarPosition)
+                                - mStartDisplacement);
+                mInteractionHandler.onGestureEnded(velocity, new PointF(velocityX, velocityY));
             }
         } else {
             // Since we start touch tracking on DOWN, we may reach this state without actually
@@ -486,16 +481,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private void removeListener() {
         if (mActiveCallbacks != null && mInteractionHandler != null) {
             mActiveCallbacks.removeListener(mInteractionHandler);
-        }
-    }
-
-    private float getDisplacement(MotionEvent ev) {
-        if (mNavBarPosition.isRightEdge()) {
-            return ev.getX() - mDownPos.x;
-        } else if (mNavBarPosition.isLeftEdge()) {
-            return mDownPos.x - ev.getX();
-        } else {
-            return ev.getY() - mDownPos.y;
         }
     }
 
