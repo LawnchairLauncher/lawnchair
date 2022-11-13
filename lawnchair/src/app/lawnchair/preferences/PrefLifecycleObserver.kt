@@ -1,22 +1,29 @@
 package app.lawnchair.preferences
 
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 
 class PrefLifecycleObserver<T>(
     private val prefEntry: PrefEntry<T>,
     private val onChange: Runnable
-) : LifecycleObserver, PreferenceChangeListener {
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+) : DefaultLifecycleObserver, PreferenceChangeListener {
+    
     fun connectListener() {
         prefEntry.addListener(this)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun disconnectListener() {
         prefEntry.removeListener(this)
+    }
+
+    override fun onCreate(owner: LifecycleOwner) {
+        super.onCreate(owner)
+        connectListener()
+    }
+
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onDestroy(owner)
+        disconnectListener()
     }
 
     override fun onPreferenceChange() {

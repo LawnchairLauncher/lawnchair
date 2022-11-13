@@ -1,6 +1,5 @@
 package app.lawnchair.qsb.providers
 
-import app.lawnchair.qsb.ThemingMethod
 import com.android.launcher3.R
 
 object Wikipedia : QsbSearchProvider(

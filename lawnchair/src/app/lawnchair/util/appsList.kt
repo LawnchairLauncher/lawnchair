@@ -34,24 +34,22 @@ import java.util.*
 import java.util.Comparator.comparing
 
 @Composable
-fun appsList(
+fun appsState(
     filter: AppFilter = AppFilter(LocalContext.current),
     comparator: Comparator<App> = appComparator
-): State<Optional<List<App>>> {
+): State<List<App>> {
     val context = LocalContext.current
-    val appsState = remember { mutableStateOf(Optional.empty<List<App>>()) }
+    val appsState = remember { mutableStateOf(emptyList<App>()) }
     DisposableEffect(Unit) {
         Utilities.postAsyncCallback(Handler(MODEL_EXECUTOR.looper)) {
-            val appInfos = ArrayList<LauncherActivityInfo>()
-            val profiles = UserCache.INSTANCE.get(context).userProfiles
             val launcherApps = context.getSystemService(LauncherApps::class.java)
-            profiles.forEach { appInfos += launcherApps.getActivityList(null, it) }
 
-            val apps = appInfos
+            appsState.value = UserCache.INSTANCE.get(context).userProfiles.asSequence()
+                .flatMap { launcherApps.getActivityList(null, it) }
                 .filter { filter.shouldShowApp(it.componentName) }
                 .map { App(context, it) }
                 .sortedWith(comparator)
-            appsState.value = Optional.of(apps)
+                .toList()
         }
         onDispose { }
     }

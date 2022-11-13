@@ -12,6 +12,7 @@ class OpenNotificationsHandler(context: Context) : GestureHandler(context) {
         try {
             Class.forName("android.app.StatusBarManager")
                 .getMethod("expandNotificationsPanel")
+                .apply { isAccessible = true }
                 .invoke(context.getSystemService("statusbar"))
         } catch (e: IllegalAccessException) {
             e.printStackTrace()

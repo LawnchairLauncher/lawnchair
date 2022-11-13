@@ -49,7 +49,6 @@ sealed class IconPack(
 
     abstract fun getAllIcons(): Flow<List<IconPickerCategory>>
 
-    @Suppress("BlockingMethodInNonBlockingContext")
     protected abstract fun loadInternal()
 
     protected fun removeDuplicates(items: List<IconPickerItem>): List<IconPickerItem> {

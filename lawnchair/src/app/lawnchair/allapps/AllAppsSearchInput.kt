@@ -7,7 +7,6 @@ import android.graphics.Rect
 import android.text.Selection
 import android.text.SpannableStringBuilder
 import android.text.Spanned.SPAN_POINT_MARK
-import android.text.TextUtils
 import android.text.method.TextKeyListener
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
@@ -127,7 +126,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(c
         val inputLowerCase = inputString.lowercase(Locale.getDefault())
         val focusedLowerCase = focusedResultTitle.lowercase(Locale.getDefault())
         if (canShowHint
-            && !TextUtils.isEmpty(inputLowerCase) && !TextUtils.isEmpty(focusedLowerCase)
+            && inputLowerCase.isNotEmpty() && focusedLowerCase.isNotEmpty()
             && focusedLowerCase.matches(Regex("^[\\x00-\\x7F]*$"))
             && focusedLowerCase.startsWith(inputLowerCase)
         ) {

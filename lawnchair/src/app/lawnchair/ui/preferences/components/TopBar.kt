@@ -86,8 +86,6 @@ fun TopBar(
                             imageVector = backIcon(),
                             onClick = { backDispatcher?.onBackPressed() },
                         )
-                } else {
-                    null
                 }
             },
             scrollBehavior = scrollBehavior,

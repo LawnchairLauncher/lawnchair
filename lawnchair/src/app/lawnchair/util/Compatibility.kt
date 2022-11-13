@@ -1,34 +1,28 @@
 package app.lawnchair.util
 
 import android.annotation.SuppressLint
-import android.text.TextUtils
 import android.util.Log
 
 private const val TAG = "Compatibility"
 
 val isOnePlusStock = checkOnePlusStock()
 
-private fun checkOnePlusStock(): Boolean {
-    val roRomVersion = getSystemProperty("ro.rom.version", "")
-    if (roRomVersion.contains(Regex("Oxygen OS|Hydrogen OS|O2_BETA|H2_BETA"))) {
-        return true
-    }
-    if (getSystemProperty("ro.oxygen.version", "").isNotEmpty()) {
-        return true
-    }
-    if (getSystemProperty("ro.hydrogen.version", "").isNotEmpty()) {
-        return true
-    }
-    return false
+private fun checkOnePlusStock(): Boolean = when {
+    getSystemProperty("ro.rom.version", "")
+        .contains(Regex("Oxygen OS|Hydrogen OS|O2_BETA|H2_BETA")) -> true
+    getSystemProperty("ro.oxygen.version", "").isNotEmpty() -> true
+    getSystemProperty("ro.hydrogen.version", "").isNotEmpty() -> true
+    else -> false
 }
 
-@SuppressLint("PrivateApi")
 fun getSystemProperty(property: String, defaultValue: String): String {
     try {
-        val clazz = Class.forName("android.os.SystemProperties")
-        val getter = clazz.getDeclaredMethod("get", String::class.java)
-        val value = getter.invoke(null, property) as String
-        if (!TextUtils.isEmpty(value)) {
+        @SuppressLint("PrivateApi")
+        val value = Class.forName("android.os.SystemProperties")
+            .getDeclaredMethod("get", String::class.java)
+            .apply { isAccessible }
+            .invoke(null, property) as String
+        if (value.isNotEmpty()) {
             return value
         }
     } catch (_: Exception) {

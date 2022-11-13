@@ -8,14 +8,14 @@ import kotlinx.coroutines.sync.withLock
 fun View.repeatOnAttached(block: suspend CoroutineScope.() -> Unit) {
     var launchedJob: Job? = null
 
-    val mutext = Mutex()
+    val mutex = Mutex()
     observeAttachedState { isAttached ->
         if (isAttached) {
             launchedJob = MainScope().launch(
                 context = Dispatchers.Main.immediate,
                 start = CoroutineStart.UNDISPATCHED
             ) {
-                mutext.withLock {
+                mutex.withLock {
                     coroutineScope {
                         block()
                     }

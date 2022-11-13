@@ -163,9 +163,10 @@ fun IconPickerGrid(
     }
     val categories by categoriesFlow.collectAsState(emptyList())
     val filteredCategories by derivedStateOf {
-        categories
+        categories.asSequence()
             .map { it.filter(searchQuery) }
             .filter { it.items.isNotEmpty() }
+            .toList()
     }
 
     val density = LocalDensity.current
