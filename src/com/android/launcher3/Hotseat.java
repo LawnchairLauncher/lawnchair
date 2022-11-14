@@ -35,7 +35,10 @@ import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.util.function.Consumer;
 
+import app.lawnchair.hotseat.HotseatMode;
+import app.lawnchair.hotseat.LawnchairHotseat;
 import app.lawnchair.preferences2.PreferenceManager2;
+import app.lawnchair.smartspace.model.LawnchairSmartspace;
 
 /**
  * View class that represents the bottom row of the home screen.
@@ -67,8 +70,15 @@ public class Hotseat extends CellLayout implements Insettable {
         super(context, attrs, defStyle);
 
         PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
-        boolean hotseatQsb = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getHotseatQsb());
-        int layoutId = hotseatQsb ? R.layout.search_container_hotseat : R.layout.empty_view;
+        HotseatMode hotseatMode = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getHotseatMode());
+        if (!hotseatMode.isAvailable(context)) {
+            // The current hotseat mode is not available,
+            // setting the hotseat mode to one that is always available
+            hotseatMode = LawnchairHotseat.INSTANCE;
+            PreferenceExtensionsKt.setBlocking(mPreferenceManager2.getHotseatMode(), hotseatMode);
+        }
+        int layoutId = hotseatMode.getLayoutResourceId();
+
         mQsb = LayoutInflater.from(context).inflate(layoutId, this, false);
         mQsbHeight = mQsb.getLayoutParams().height;
         addView(mQsb);

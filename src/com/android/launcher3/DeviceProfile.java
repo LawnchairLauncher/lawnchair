@@ -51,6 +51,7 @@ import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 import java.io.PrintWriter;
 
 import app.lawnchair.DeviceProfileOverrides;
+import app.lawnchair.hotseat.DisabledHotseat;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.color.ColorOption;
 
@@ -351,7 +352,7 @@ public class DeviceProfile {
         int hotseatBottomPaddingRes;
         int hotseatBottomNonTallPaddingRes;
         int hotseatExtraVerticalSizeRes;
-        boolean hotseatQsb = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getHotseatQsb());
+        boolean hotseatQsb = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getHotseatMode()) != DisabledHotseat.INSTANCE;
         if (hotseatQsb) {
             hotseatTopPaddingRes = R.dimen.dynamic_grid_hotseat_top_padding;
             hotseatBottomPaddingRes = R.dimen.dynamic_grid_hotseat_bottom_padding;
