@@ -333,7 +333,7 @@
 
     <!-- Snackbar -->
     <dimen name="snackbar_height">48dp</dimen>
-    <dimen name="snackbar_content_height">32dp</dimen>
+    <dimen name="snackbar_content_height">48dp</dimen>
     <dimen name="snackbar_padding">8dp</dimen>
     <dimen name="snackbar_min_margin_left_right">6dp</dimen>
     <dimen name="snackbar_max_margin_left_right">72dp</dimen>
