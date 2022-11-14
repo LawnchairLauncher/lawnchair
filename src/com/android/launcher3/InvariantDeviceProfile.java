@@ -60,6 +60,7 @@ import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.Partner;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.WindowBounds;
 import com.android.launcher3.util.window.WindowManagerProxy;
@@ -111,6 +112,11 @@ public class InvariantDeviceProfile {
     static final int INDEX_LANDSCAPE = 1;
     static final int INDEX_TWO_PANEL_PORTRAIT = 2;
     static final int INDEX_TWO_PANEL_LANDSCAPE = 3;
+
+    /** These resources are used to override the device profile  */
+    private static final String RES_GRID_NUM_ROWS = "grid_num_rows";
+    private static final String RES_GRID_NUM_COLUMNS = "grid_num_columns";
+    private static final String RES_GRID_ICON_SIZE_DP = "grid_icon_size_dp";
 
     /**
      * Number of icons per row and column in the workspace.
@@ -567,8 +573,24 @@ public class InvariantDeviceProfile {
      */
     private void applyPartnerDeviceProfileOverrides(Context context, DisplayMetrics dm) {
         Partner p = Partner.get(context.getPackageManager());
-        if (p != null) {
-            p.applyInvariantDeviceProfileOverrides(this, dm);
+        if (p == null) {
+            return;
+        }
+        try {
+            int numRows = p.getIntValue(RES_GRID_NUM_ROWS, -1);
+            int numColumns = p.getIntValue(RES_GRID_NUM_COLUMNS, -1);
+            float iconSizePx = p.getDimenValue(RES_GRID_ICON_SIZE_DP, -1);
+
+            if (numRows > 0 && numColumns > 0) {
+                this.numRows = numRows;
+                this.numColumns = numColumns;
+            }
+            if (iconSizePx > 0) {
+                this.iconSize[InvariantDeviceProfile.INDEX_DEFAULT] =
+                        Utilities.dpiFromPx(iconSizePx, dm.densityDpi);
+            }
+        } catch (Resources.NotFoundException ex) {
+            Log.e(TAG, "Invalid Partner grid resource!", ex);
         }
     }
 
