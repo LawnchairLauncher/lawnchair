@@ -288,7 +288,7 @@ public class DesktopTaskView extends TaskView {
     public RunnableList launchTasks() {
         SystemUiProxy.INSTANCE.get(getContext()).showDesktopApps();
         getRecentsView().startHome();
-        return new RunnableList();
+        return null;
     }
 
     @Nullable
