@@ -331,6 +331,10 @@ public final class FeatureFlags {
     public static final BooleanFlag SHOW_DOT_PAGINATION = getDebugFlag(
             "SHOW_DOT_PAGINATION", false, "Enable showing dot pagination in workspace");
 
+    public static final BooleanFlag LARGE_SCREEN_WIDGET_PICKER = getDebugFlag(
+            "LARGE_SCREEN_WIDGET_PICKER", false, "Enable new widget picker that takes "
+                    + "advantage of large screen format");
+
     public static final BooleanFlag ENABLE_TOAST_IMPRESSION_LOGGING = getDebugFlag(
             "ENABLE_TOAST_IMPRESSION_LOGGING", false, "Enable toast impression logging");
 
