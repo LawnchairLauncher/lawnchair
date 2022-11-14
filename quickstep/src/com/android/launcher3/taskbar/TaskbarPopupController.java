@@ -75,6 +75,7 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
 
     // Initialized in init.
     private TaskbarControllers mControllers;
+    private boolean mHideSplitOptions;
 
     public TaskbarPopupController(TaskbarActivityContext context) {
         mContext = context;
@@ -98,6 +99,10 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
 
     public void setDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMapCopy) {
         mPopupDataProvider.setDeepShortcutMap(deepShortcutMapCopy);
+    }
+
+    public void setHideSplitOptions(boolean hideSplitOptions) {
+        mHideSplitOptions = hideSplitOptions;
     }
 
     private void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
@@ -186,11 +191,16 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
     // TODO(b/227800345): Add "Split bottom" option when tablet is in portrait mode.
     private Stream<SystemShortcut.Factory> getSystemShortcuts() {
         // concat a Stream of split options with a Stream of APP_INFO
+        Stream<SystemShortcut.Factory> appInfo = Stream.of(APP_INFO);
+        if (mHideSplitOptions) {
+            return appInfo;
+        }
+
         return Stream.concat(
                 Utilities.getSplitPositionOptions(mContext.getDeviceProfile())
                         .stream()
                         .map(this::createSplitShortcutFactory),
-                Stream.of(APP_INFO)
+                appInfo
         );
     }
 
