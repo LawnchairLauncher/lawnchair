@@ -37,7 +37,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.UserHandle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.view.RemoteAnimationAdapter;
@@ -88,10 +87,8 @@ public class SplitSelectStateController {
     private ItemInfo mItemInfo;
     private Intent mInitialTaskIntent;
     private int mInitialTaskId = INVALID_TASK_ID;
-    private String mInitialTaskPackageName;
     private Intent mSecondTaskIntent;
     private int mSecondTaskId = INVALID_TASK_ID;
-    private String mSecondTaskPackageName;
     private boolean mRecentsAnimationRunning;
     @Nullable
     private UserHandle mUser;
@@ -119,7 +116,6 @@ public class SplitSelectStateController {
     public void setInitialTaskSelect(Task task, @StagePosition int stagePosition,
             StatsLogManager.EventEnum splitEvent, ItemInfo itemInfo) {
         mInitialTaskId = task.key.id;
-        mInitialTaskPackageName = task.getTopComponent().getPackageName();
         setInitialData(stagePosition, splitEvent, itemInfo);
     }
 
@@ -131,7 +127,6 @@ public class SplitSelectStateController {
         mInitialTaskIntent = intent;
         mUser = itemInfo.user;
         mItemInfo = itemInfo;
-        mInitialTaskPackageName = intent.getComponent().getPackageName();
         setInitialData(stagePosition, splitEvent, itemInfo);
     }
 
@@ -143,7 +138,6 @@ public class SplitSelectStateController {
             @StagePosition int stagePosition, @NonNull ItemInfo itemInfo,
             StatsLogManager.EventEnum splitEvent) {
         mInitialTaskId = info.taskId;
-        mInitialTaskPackageName = info.topActivity.getPackageName();
         setInitialData(stagePosition, splitEvent, itemInfo);
     }
 
@@ -161,9 +155,9 @@ public class SplitSelectStateController {
     public void launchSplitTasks(Consumer<Boolean> callback) {
         Pair<InstanceId, com.android.launcher3.logging.InstanceId> instanceIds =
                 LogUtils.getShellShareableInstanceId();
-        launchTasks(mInitialTaskId, mInitialTaskIntent, mInitialTaskPackageName, mSecondTaskId,
-                mSecondTaskIntent, mSecondTaskPackageName, mStagePosition, callback,
-                false /* freezeTaskList */, DEFAULT_SPLIT_RATIO, instanceIds.first);
+        launchTasks(mInitialTaskId, mInitialTaskIntent, mSecondTaskId, mSecondTaskIntent,
+                mStagePosition, callback, false /* freezeTaskList */, DEFAULT_SPLIT_RATIO,
+                instanceIds.first);
 
         mStatsLogManager.logger()
                 .withItemInfo(mItemInfo)
@@ -177,12 +171,10 @@ public class SplitSelectStateController {
      */
     public void setSecondTask(Task task) {
         mSecondTaskId = task.key.id;
-        mSecondTaskPackageName = task.getTopComponent().getPackageName();
     }
 
     public void setSecondTask(Intent intent) {
         mSecondTaskIntent = intent;
-        mSecondTaskPackageName = intent.getComponent().getPackageName();
     }
 
     /**
@@ -205,9 +197,8 @@ public class SplitSelectStateController {
      */
     public void launchTasks(int taskId1, int taskId2, @StagePosition int stagePosition,
             Consumer<Boolean> callback, boolean freezeTaskList, float splitRatio) {
-        launchTasks(taskId1, null /* intent1 */, null /* packageName1 */, taskId2,
-                null /* intent2 */, null /* packageName2 */, stagePosition, callback,
-                freezeTaskList, splitRatio, null);
+        launchTasks(taskId1, null /* intent1 */, taskId2, null /* intent2 */, stagePosition,
+                callback, freezeTaskList, splitRatio, null);
     }
 
     /**
@@ -220,8 +211,8 @@ public class SplitSelectStateController {
      *                   a split instance, null for cases that bring existing instaces to the
      *                   foreground (quickswitch, launching previous pairs from overview)
      */
-    public void launchTasks(int taskId1, @Nullable Intent intent1, String packageName1, int taskId2,
-            @Nullable Intent intent2, String packageName2, @StagePosition int stagePosition,
+    public void launchTasks(int taskId1, @Nullable Intent intent1, int taskId2,
+            @Nullable Intent intent2, @StagePosition int stagePosition,
             Consumer<Boolean> callback, boolean freezeTaskList, float splitRatio,
             @Nullable InstanceId shellInstanceId) {
         TestLogging.recordEvent(
@@ -240,10 +231,10 @@ public class SplitSelectStateController {
                         null /* options2 */, stagePosition, splitRatio, remoteTransition,
                         shellInstanceId);
             } else if (intent2 == null) {
-                launchIntentOrShortcut(intent1, packageName2, options1, taskId2, stagePosition,
-                        splitRatio, remoteTransition, shellInstanceId);
+                launchIntentOrShortcut(intent1, options1, taskId2, stagePosition, splitRatio,
+                        remoteTransition, shellInstanceId);
             } else if (intent1 == null) {
-                launchIntentOrShortcut(intent2, packageName1, options1, taskId1,
+                launchIntentOrShortcut(intent2, options1, taskId1,
                         getOppositeStagePosition(stagePosition), splitRatio, remoteTransition,
                         shellInstanceId);
             } else {
@@ -261,10 +252,10 @@ public class SplitSelectStateController {
                         taskId2, null /* options2 */, stagePosition, splitRatio, adapter,
                         shellInstanceId);
             } else if (intent2 == null) {
-                launchIntentOrShortcutLegacy(intent1, packageName2, options1, taskId2,
-                        stagePosition, splitRatio, adapter, shellInstanceId);
+                launchIntentOrShortcutLegacy(intent1, options1, taskId2, stagePosition, splitRatio,
+                        adapter, shellInstanceId);
             } else if (intent1 == null) {
-                launchIntentOrShortcutLegacy(intent2, packageName1, options1, taskId1,
+                launchIntentOrShortcutLegacy(intent2, options1, taskId1,
                         getOppositeStagePosition(stagePosition), splitRatio, adapter,
                         shellInstanceId);
             } else {
@@ -273,9 +264,8 @@ public class SplitSelectStateController {
         }
     }
 
-    private void launchIntentOrShortcut(Intent intent, String otherTaskPackageName,
-            ActivityOptions options1, int taskId, @StagePosition int stagePosition,
-            float splitRatio, RemoteTransition remoteTransition,
+    private void launchIntentOrShortcut(Intent intent, ActivityOptions options1, int taskId,
+            @StagePosition int stagePosition, float splitRatio, RemoteTransition remoteTransition,
             @Nullable InstanceId shellInstanceId) {
         PendingIntent pendingIntent = getPendingIntent(intent);
         final ShortcutInfo shortcutInfo = getShortcutInfo(intent,
@@ -285,16 +275,14 @@ public class SplitSelectStateController {
                     options1.toBundle(), taskId, null /* options2 */, stagePosition,
                     splitRatio, remoteTransition, shellInstanceId);
         } else {
-            mSystemUiProxy.startIntentAndTask(pendingIntent,
-                    getFillInIntent(intent, otherTaskPackageName), options1.toBundle(), taskId,
+            mSystemUiProxy.startIntentAndTask(pendingIntent, options1.toBundle(), taskId,
                     null /* options2 */, stagePosition, splitRatio, remoteTransition,
                     shellInstanceId);
         }
     }
 
-    private void launchIntentOrShortcutLegacy(Intent intent, String otherTaskPackageName,
-            ActivityOptions options1, int taskId, @StagePosition int stagePosition,
-            float splitRatio, RemoteAnimationAdapter adapter,
+    private void launchIntentOrShortcutLegacy(Intent intent, ActivityOptions options1, int taskId,
+            @StagePosition int stagePosition, float splitRatio, RemoteAnimationAdapter adapter,
             @Nullable InstanceId shellInstanceId) {
         PendingIntent pendingIntent = getPendingIntent(intent);
         final ShortcutInfo shortcutInfo = getShortcutInfo(intent,
@@ -305,9 +293,8 @@ public class SplitSelectStateController {
                     splitRatio, adapter, shellInstanceId);
         } else {
             mSystemUiProxy.startIntentAndTaskWithLegacyTransition(pendingIntent,
-                    getFillInIntent(intent, otherTaskPackageName), options1.toBundle(), taskId,
-                    null /* options2 */, stagePosition, splitRatio, adapter,
-                    shellInstanceId);
+                    options1.toBundle(), taskId, null /* options2 */, stagePosition, splitRatio,
+                    adapter, shellInstanceId);
         }
     }
 
@@ -316,18 +303,6 @@ public class SplitSelectStateController {
                 ? PendingIntent.getActivityAsUser(mContext, 0, intent,
                 FLAG_MUTABLE, null /* options */, mUser)
                 : PendingIntent.getActivity(mContext, 0, intent, FLAG_MUTABLE));
-    }
-
-    private Intent getFillInIntent(Intent intent, String otherTaskPackageName) {
-        if (intent == null) {
-            return null;
-        }
-
-        Intent fillInIntent = new Intent();
-        if (TextUtils.equals(intent.getComponent().getPackageName(), otherTaskPackageName)) {
-            fillInIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-        }
-        return fillInIntent;
     }
 
 
@@ -464,10 +439,8 @@ public class SplitSelectStateController {
     public void resetState() {
         mInitialTaskId = INVALID_TASK_ID;
         mInitialTaskIntent = null;
-        mInitialTaskPackageName = null;
         mSecondTaskId = INVALID_TASK_ID;
         mSecondTaskIntent = null;
-        mSecondTaskPackageName = null;
         mStagePosition = SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
         mRecentsAnimationRunning = false;
         mLaunchingTaskView = null;
