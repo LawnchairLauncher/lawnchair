@@ -54,36 +54,36 @@ fun DockPreferences() {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
     PreferenceLayout(label = stringResource(id = R.string.dock_label)) {
-        val hotseatModeAdapter = prefs2.hotseatMode.getAdapter()
-        PreferenceGroup(heading = stringResource(id = R.string.what_to_show)) {
-            HotseatModePreference(
-                adapter = hotseatModeAdapter,
-            )
-        }
-        ExpandAndShrink(visible = hotseatModeAdapter.state.value == LawnchairHotseat) {
-            PreferenceGroup(heading = stringResource(id = R.string.search_bar_label)) {
-                DividerColumn {
-                    SwitchPreference(
-                        adapter = prefs2.themedHotseatQsb.getAdapter(),
-                        label = stringResource(id = R.string.apply_accent_color_label),
-                    )
-                    SliderPreference(
-                        label = stringResource(id = R.string.corner_radius_label),
-                        adapter = prefs.hotseatQsbCornerRadius.getAdapter(),
-                        step = 0.05F,
-                        valueRange = 0F..1F,
-                        showAsPercentage = true,
-                    )
-                    val hotseatQsbProviderAdapter by preferenceManager2().hotseatQsbProvider.getAdapter()
-                    NavigationActionPreference(
-                        label = stringResource(R.string.search_provider),
-                        destination = subRoute(DockRoutes.SEARCH_PROVIDER),
-                        subtitle = stringResource(
-                            id = QsbSearchProvider.values()
-                                .first { it == hotseatQsbProviderAdapter }
-                                .name,
-                        ),
-                    )
+        PreferenceGroup(heading = stringResource(id = R.string.search_bar_label)) {
+            DividerColumn {
+                val hotseatModeAdapter = prefs2.hotseatMode.getAdapter()
+                HotseatModePreference(
+                    adapter = hotseatModeAdapter,
+                )
+                ExpandAndShrink(visible = hotseatModeAdapter.state.value == LawnchairHotseat) {
+                    DividerColumn {
+                        SwitchPreference(
+                            adapter = prefs2.themedHotseatQsb.getAdapter(),
+                            label = stringResource(id = R.string.apply_accent_color_label),
+                        )
+                        SliderPreference(
+                            label = stringResource(id = R.string.corner_radius_label),
+                            adapter = prefs.hotseatQsbCornerRadius.getAdapter(),
+                            step = 0.05F,
+                            valueRange = 0F..1F,
+                            showAsPercentage = true,
+                        )
+                        val hotseatQsbProviderAdapter by preferenceManager2().hotseatQsbProvider.getAdapter()
+                        NavigationActionPreference(
+                            label = stringResource(R.string.search_provider),
+                            destination = subRoute(DockRoutes.SEARCH_PROVIDER),
+                            subtitle = stringResource(
+                                id = QsbSearchProvider.values()
+                                    .first { it == hotseatQsbProviderAdapter }
+                                    .name,
+                            ),
+                        )
+                    }
                 }
             }
         }
