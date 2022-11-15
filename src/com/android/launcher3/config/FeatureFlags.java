@@ -264,6 +264,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_ONE_SEARCH_MOTION = new DeviceFlag(
             "ENABLE_ONE_SEARCH_MOTION", true, "Enables animations in OneSearch.");
 
+    public static final BooleanFlag ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES = new DeviceFlag(
+            "ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES", false,
+            "Enable option to replace decorator-based search result backgrounds with drawables");
+
     public static final BooleanFlag ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS = new DeviceFlag(
             "ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS", true,
             "Enable option to show keyboard when going to all-apps");
