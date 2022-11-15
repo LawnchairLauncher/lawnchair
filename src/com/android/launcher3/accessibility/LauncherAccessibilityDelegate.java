@@ -1,5 +1,7 @@
 package com.android.launcher3.accessibility;
 
+import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
+import static android.view.accessibility.AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS;
 import static android.view.accessibility.AccessibilityNodeInfo.ACTION_LONG_CLICK;
 
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -172,7 +174,11 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
             mContext.getDragLayer().getDescendantRectRelativeToSelf(host, pos);
             ArrowPopup popup = OptionsPopupView.show(mContext, new RectF(pos), actions, false);
             popup.requestFocus();
-            popup.setOnCloseCallback(host::requestFocus);
+            popup.setOnCloseCallback(() -> {
+                host.requestFocus();
+                host.sendAccessibilityEvent(TYPE_VIEW_FOCUSED);
+                host.performAccessibilityAction(ACTION_ACCESSIBILITY_FOCUS, null);
+            });
             return true;
         } else if (action == DEEP_SHORTCUTS || action == SHORTCUTS_AND_NOTIFICATIONS) {
             BubbleTextView btv = host instanceof BubbleTextView ? (BubbleTextView) host
