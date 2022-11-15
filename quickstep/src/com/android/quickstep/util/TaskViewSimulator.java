@@ -320,6 +320,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
             // mIsRecentsRtl is the inverse of TaskView RTL.
             boolean isRtlEnabled = !mIsRecentsRtl;
+            mPositionHelper.setTaskbarInApp(mDp.isTaskbarPresentInApps);
             mPositionHelper.updateThumbnailMatrix(
                     mThumbnailPosition, mThumbnailData, mTaskRect.width(), mTaskRect.height(),
                     mDp.widthPx, mDp.heightPx, mDp.taskbarSize, mDp.isTablet,
