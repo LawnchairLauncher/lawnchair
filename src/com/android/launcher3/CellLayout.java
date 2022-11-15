@@ -1651,19 +1651,8 @@ public class CellLayout extends ViewGroup {
         }
     }
 
-    /**
-     * Returns a "reorder" where we simply drop the item in the closest empty space, without moving
-     * any other item in the way.
-     *
-     * @param pixelX X coordinate in pixels in the screen
-     * @param pixelY Y coordinate in pixels in the screen
-     * @param spanX horizontal cell span
-     * @param spanY vertical cell span
-     * @return the configuration that represents the found reorder
-     */
-    private ItemConfiguration closestEmptySpaceReorder(int pixelX, int pixelY, int minSpanX,
-            int minSpanY, int spanX, int spanY) {
-        ItemConfiguration solution = new ItemConfiguration();
+    private ItemConfiguration findConfigurationNoShuffle(int pixelX, int pixelY, int minSpanX, int minSpanY,
+            int spanX, int spanY, View dragView, ItemConfiguration solution) {
         int[] result = new int[2];
         int[] resultSpan = new int[2];
         findNearestVacantArea(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY, result,
@@ -1708,7 +1697,7 @@ public class CellLayout extends ViewGroup {
 
     boolean isNearestDropLocationOccupied(int pixelX, int pixelY, int spanX, int spanY,
             View dragView, int[] result) {
-        result = findNearestAreaIgnoreOccupied(pixelX, pixelY, spanX, spanY, result);
+        result = findNearestArea(pixelX, pixelY, spanX, spanY, result);
         getViewsIntersectingRegion(result[0], result[1], spanX, spanY, dragView, null,
                 mIntersectingViews);
         return !mIntersectingViews.isEmpty();
@@ -2258,8 +2247,7 @@ public class CellLayout extends ViewGroup {
         //TODO(adamcohen) b/151776141 use the items visual center for the direction vector
         int[] targetDestination = new int[2];
 
-        findNearestAreaIgnoreOccupied(dragViewCenterX, dragViewCenterY, spanX, spanY,
-                targetDestination);
+        findNearestArea(dragViewCenterX, dragViewCenterY, spanX, spanY, targetDestination);
         Rect dragRect = new Rect();
         cellToRect(targetDestination[0], targetDestination[1], spanX, spanY, dragRect);
         dragRect.offset(dragViewCenterX - dragRect.centerX(), dragViewCenterY - dragRect.centerY());
@@ -2412,7 +2400,7 @@ public class CellLayout extends ViewGroup {
         // We find the nearest cell into which we would place the dragged item, assuming there's
         // nothing in its way.
         int result[] = new int[2];
-        result = findNearestAreaIgnoreOccupied(pixelX, pixelY, spanX, spanY, result);
+        result = findNearestArea(pixelX, pixelY, spanX, spanY, result);
 
         boolean success;
         // First we try the exact nearest position of the item being dragged,
@@ -2457,21 +2445,19 @@ public class CellLayout extends ViewGroup {
     }
 
     /**
-     * Returns a "reorder" if there is empty space without rearranging anything.
+     * Returns a "reorder" where we simply drop the item in the closest empty space, without moving
+     * any other item in the way.
      *
      * @param pixelX X coordinate in pixels in the screen
      * @param pixelY Y coordinate in pixels in the screen
      * @param spanX horizontal cell span
      * @param spanY vertical cell span
-     * @param dragView view being dragged in reorder
      * @return the configuration that represents the found reorder
      */
-    public ItemConfiguration dropInPlaceSolution(int pixelX, int pixelY, int spanX,
-            int spanY, View dragView) {
+    public ItemConfiguration closestEmptySpaceReorder(int pixelX, int pixelY, int spanX,
+            int spanY) {
         int[] result = new int[2];
-        if (isNearestDropLocationOccupied(pixelX, pixelY, spanX, spanY, dragView, result)) {
-            result[0] = result[1] = -1;
-        }
+        result = findNearestArea(pixelX, pixelY, spanX, spanY, result);
         ItemConfiguration solution = new ItemConfiguration();
         copyCurrentStateToSolution(solution, false);
         solution.isSolution = result[0] != -1;
@@ -2504,25 +2490,25 @@ public class CellLayout extends ViewGroup {
             int spanX, int spanY, View dragView) {
         getDirectionVectorForDrop(pixelX, pixelY, spanX, spanY, dragView, mDirectionVector);
 
-        ItemConfiguration dropInPlaceSolution = dropInPlaceSolution(pixelX, pixelY, spanX, spanY,
-                dragView);
+        ItemConfiguration closestSpaceSolution = closestEmptySpaceReorder(pixelX, pixelY, spanX,
+                spanY);
 
         // Find a solution involving pushing / displacing any items in the way
         ItemConfiguration swapSolution = findReorderSolution(pixelX, pixelY, minSpanX, minSpanY,
                 spanX,  spanY, mDirectionVector, dragView,  true,  new ItemConfiguration());
 
         // We attempt the approach which doesn't shuffle views at all
-        ItemConfiguration closestSpaceSolution = closestEmptySpaceReorder(pixelX, pixelY, minSpanX,
-                minSpanY, spanX, spanY);
+        ItemConfiguration noShuffleSolution = findConfigurationNoShuffle(pixelX, pixelY, minSpanX,
+                minSpanY, spanX, spanY, dragView, new ItemConfiguration());
 
         // If the reorder solution requires resizing (shrinking) the item being dropped, we instead
         // favor a solution in which the item is not resized, but
-        if (swapSolution.isSolution && swapSolution.area() >= closestSpaceSolution.area()) {
+        if (swapSolution.isSolution && swapSolution.area() >= noShuffleSolution.area()) {
             return swapSolution;
+        } else if (noShuffleSolution.isSolution) {
+            return noShuffleSolution;
         } else if (closestSpaceSolution.isSolution) {
             return closestSpaceSolution;
-        } else if (dropInPlaceSolution.isSolution) {
-            return dropInPlaceSolution;
         }
         return null;
     }
@@ -2679,8 +2665,7 @@ public class CellLayout extends ViewGroup {
      * @return The X, Y cell of a vacant area that can contain this object,
      *         nearest the requested location.
      */
-    public int[] findNearestAreaIgnoreOccupied(int pixelX, int pixelY, int spanX, int spanY,
-            int[] result) {
+    public int[] findNearestArea(int pixelX, int pixelY, int spanX, int spanY, int[] result) {
         return findNearestArea(pixelX, pixelY, spanX, spanY, spanX, spanY, true, result, null);
     }
 
