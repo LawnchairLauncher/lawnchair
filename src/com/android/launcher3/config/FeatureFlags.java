@@ -327,6 +327,10 @@ public final class FeatureFlags {
             "LARGE_SCREEN_WIDGET_PICKER", false, "Enable new widget picker that takes "
                     + "advantage of large screen format");
 
+    public static final BooleanFlag ENABLE_NEW_GESTURE_NAV_TUTORIAL = getDebugFlag(
+            "ENABLE_NEW_GESTURE_NAV_TUTORIAL", false,
+            "Enable the redesigned gesture navigation tutorial");
+
     public static final BooleanFlag ENABLE_TOAST_IMPRESSION_LOGGING = getDebugFlag(
             "ENABLE_TOAST_IMPRESSION_LOGGING", false, "Enable toast impression logging");
 
