@@ -37,6 +37,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.internal.jank.InteractionJankMonitor;
 import com.android.launcher3.Alarm;
@@ -169,6 +170,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     private boolean mEnableManualStashingDuringTests = false;
 
     private final Alarm mTimeoutAlarm = new Alarm();
+    private boolean mEnableBlockingTimeoutDuringTests = false;
 
     // Evaluate whether the handle should be stashed
     private final StatePropertyHolder mStatePropertyHolder = new StatePropertyHolder(
@@ -267,8 +269,18 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * Enables support for manual stashing. This should only be used to add this functionality
      * to Launcher specific tests.
      */
+    @VisibleForTesting
     public void enableManualStashingDuringTests(boolean enableManualStashing) {
         mEnableManualStashingDuringTests = enableManualStashing;
+    }
+
+    /**
+     * Enables the auto timeout for taskbar stashing. This method should only be used for taskbar
+     * testing.
+     */
+    @VisibleForTesting
+    public void enableBlockingTimeoutDuringTests(boolean enableBlockingTimeout) {
+        mEnableBlockingTimeoutDuringTests = enableBlockingTimeout;
     }
 
     /**
@@ -846,12 +858,12 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * Attempts to start timer to auto hide the taskbar based on time.
      */
     public void tryStartTaskbarTimeout() {
-        if (!DisplayController.isTransientTaskbar(mActivity)) {
+        if (!DisplayController.isTransientTaskbar(mActivity)
+                || mIsStashed
+                || mEnableBlockingTimeoutDuringTests) {
             return;
         }
-        if (mIsStashed) {
-            return;
-        }
+
         cancelTimeoutIfExists();
 
         mTimeoutAlarm.setOnAlarmListener(this::onTaskbarTimeout);
