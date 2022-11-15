@@ -32,8 +32,11 @@ import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.launcher3.views.ActivityContext;
+
+import java.util.List;
 
 /**
  * Handles the user event logging in R+.
@@ -839,6 +842,77 @@ public class StatsLogManager implements ResourceBasedOverride {
     }
 
     /**
+     * Helps to construct and log impression event.
+     */
+    public interface StatsImpressionLogger {
+
+        enum State {
+            UNKNOWN(0),
+            ALLAPPS(1),
+            SEARCHBOX_WIDGET(2);
+            private final int mLauncherState;
+
+            State(int id) {
+                this.mLauncherState = id;
+            }
+
+            public int getLauncherState() {
+                return mLauncherState;
+            }
+        }
+
+        /**
+         * Sets {@link InstanceId} of log message.
+         */
+        default StatsImpressionLogger withInstanceId(InstanceId instanceId) {
+            return this;
+        }
+
+        /**
+         * Sets {@link State} of impression event.
+         */
+        default StatsImpressionLogger withState(State state) {
+            return this;
+        }
+
+        /**
+         * Sets query length of the event.
+         */
+        default StatsImpressionLogger withQueryLength(int queryLength) {
+            return this;
+        }
+
+        /**
+         * Sets list of {@link com.android.app.search.ResultType} for the impression event.
+         */
+        default StatsImpressionLogger withResultType(IntArray resultType) {
+            return this;
+        }
+
+        /**
+         * Sets list of count for each of {@link com.android.app.search.ResultType} for the
+         * impression event.
+         */
+        default StatsImpressionLogger withResultCount(IntArray resultCount) {
+            return this;
+        }
+
+        /**
+         * Sets list of boolean for each of {@link com.android.app.search.ResultType} that indicates
+         * if this result is above keyboard or not for the impression event.
+         */
+        default StatsImpressionLogger withAboveKeyboard(List<Boolean> aboveKeyboard) {
+            return this;
+        }
+
+        /**
+         * Builds the final message and logs it as {@link EventEnum}.
+         */
+        default void log(EventEnum event) {
+        }
+    }
+
+    /**
      * Returns new logger object.
      */
     public StatsLogger logger() {
@@ -854,6 +928,17 @@ public class StatsLogManager implements ResourceBasedOverride {
      */
     public StatsLatencyLogger latencyLogger() {
         StatsLatencyLogger logger = createLatencyLogger();
+        if (mInstanceId != null) {
+            logger.withInstanceId(mInstanceId);
+        }
+        return logger;
+    }
+
+    /**
+     * Returns new impression logger object.
+     */
+    public StatsImpressionLogger impressionLogger() {
+        StatsImpressionLogger logger = createImpressionLogger();
         if (mInstanceId != null) {
             logger.withInstanceId(mInstanceId);
         }
@@ -877,6 +962,11 @@ public class StatsLogManager implements ResourceBasedOverride {
 
     protected StatsLatencyLogger createLatencyLogger() {
         return new StatsLatencyLogger() {
+        };
+    }
+
+    protected StatsImpressionLogger createImpressionLogger() {
+        return new StatsImpressionLogger() {
         };
     }
 
