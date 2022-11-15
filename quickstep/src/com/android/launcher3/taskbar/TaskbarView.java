@@ -422,6 +422,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     /**
      * Returns the all apps button in the taskbar.
      */
+    @Nullable
     public View getAllAppsButtonView() {
         return mAllAppsButton;
     }
