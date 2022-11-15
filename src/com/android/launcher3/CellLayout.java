@@ -2559,8 +2559,8 @@ public class CellLayout extends ViewGroup {
             result[1] = finalSolution.cellY;
             resultSpan[0] = finalSolution.spanX;
             resultSpan[1] = finalSolution.spanY;
+            performReorder(finalSolution, dragView, mode);
         }
-        performReorder(finalSolution, dragView, mode);
         return result;
     }
 
