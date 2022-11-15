@@ -61,6 +61,11 @@ public final class TaskbarOverlayController {
         public void onTaskStackChanged() {
             mProxyView.close(false);
         }
+
+        @Override
+        public void onTaskMovedToFront(int taskId) {
+            mProxyView.close(false);
+        }
     };
 
     private DeviceProfile mLauncherDeviceProfile;
