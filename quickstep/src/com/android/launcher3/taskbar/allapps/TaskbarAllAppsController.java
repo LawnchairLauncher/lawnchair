@@ -48,6 +48,8 @@ public final class TaskbarAllAppsController {
     private AppInfo[] mApps;
     private int mAppsModelFlags;
     private List<ItemInfo> mPredictedApps;
+    private boolean mDisallowGlobalDrag;
+    private boolean mDisallowLongClick;
 
     /** Initialize the controller. */
     public void init(TaskbarControllers controllers, boolean allAppsVisible) {
@@ -76,6 +78,14 @@ public final class TaskbarAllAppsController {
         if (mAppsView != null) {
             mAppsView.getAppsStore().setApps(mApps, mAppsModelFlags);
         }
+    }
+
+    public void setDisallowGlobalDrag(boolean disableDragForOverviewState) {
+        mDisallowGlobalDrag = disableDragForOverviewState;
+    }
+
+    public void setDisallowLongClick(boolean disallowLongClick) {
+        mDisallowLongClick = disallowLongClick;
     }
 
     /** Updates the current predictions. */
@@ -123,6 +133,12 @@ public final class TaskbarAllAppsController {
         mAppsView.getFloatingHeaderView()
                 .findFixedRowByType(PredictionRowView.class)
                 .setPredictedApps(mPredictedApps);
+        // 1 alternative that would be more work:
+        // Create a shared drag layer between taskbar and taskbarAllApps so that when dragging
+        // starts and taskbarAllApps can close, but the drag layer that the view is being dragged in
+        // doesn't also close
+        overlayContext.getDragController().setDisallowGlobalDrag(mDisallowGlobalDrag);
+        overlayContext.getDragController().setDisallowLongClick(mDisallowLongClick);
     }
 
 

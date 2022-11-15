@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_TASKBAR_ALL_APPS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
@@ -301,7 +302,12 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
     protected void callOnDragStart() {
         super.callOnDragStart();
         // Pre-drag has ended, start the global system drag.
-        AbstractFloatingView.closeAllOpenViews(mActivity);
+        if (mDisallowGlobalDrag) {
+            AbstractFloatingView.closeAllOpenViewsExcept(mActivity, TYPE_TASKBAR_ALL_APPS);
+        } else {
+            AbstractFloatingView.closeAllOpenViews(mActivity);
+        }
+
         startSystemDrag((BubbleTextView) mDragObject.originalView);
     }
 
@@ -536,10 +542,15 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
 
     private View findTaskbarTargetForIconView(@NonNull View iconView) {
         Object tag = iconView.getTag();
+        TaskbarViewController taskbarViewController = mControllers.taskbarViewController;
+
         if (tag instanceof ItemInfo) {
             ItemInfo item = (ItemInfo) tag;
-            TaskbarViewController taskbarViewController = mControllers.taskbarViewController;
             if (item.container == CONTAINER_ALL_APPS || item.container == CONTAINER_PREDICTION) {
+                if (mDisallowGlobalDrag) {
+                    // We're dragging in taskbarAllApps, we don't have folders or shortcuts
+                    return iconView;
+                }
                 // Since all apps closes when the drag starts, target the all apps button instead.
                 return taskbarViewController.getAllAppsButtonView();
             } else if (item.container >= 0) {

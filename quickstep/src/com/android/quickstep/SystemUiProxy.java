@@ -552,15 +552,13 @@ public class SystemUiProxy implements ISystemUiProxy {
         }
     }
 
-    public void startIntentAndTask(PendingIntent pendingIntent, Intent fillInIntent,
-            Bundle options1, int taskId, Bundle options2,
-            @SplitConfigurationOptions.StagePosition int splitPosition, float splitRatio,
-            RemoteTransition remoteTransition, InstanceId instanceId) {
+    public void startIntentAndTask(PendingIntent pendingIntent, Bundle options1, int taskId,
+            Bundle options2, @SplitConfigurationOptions.StagePosition int splitPosition,
+            float splitRatio, RemoteTransition remoteTransition, InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
-                mSplitScreen.startIntentAndTask(pendingIntent, fillInIntent, options1,
-                        taskId, options2, splitPosition, splitRatio,
-                        remoteTransition, instanceId);
+                mSplitScreen.startIntentAndTask(pendingIntent, options1, taskId, options2,
+                        splitPosition, splitRatio, remoteTransition, instanceId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startIntentAndTask");
             }
@@ -597,13 +595,13 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     public void startIntentAndTaskWithLegacyTransition(PendingIntent pendingIntent,
-            Intent fillInIntent, Bundle options1, int taskId, Bundle options2,
+            Bundle options1, int taskId, Bundle options2,
             @SplitConfigurationOptions.StagePosition int splitPosition, float splitRatio,
             RemoteAnimationAdapter adapter, InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
-                mSplitScreen.startIntentAndTaskWithLegacyTransition(pendingIntent, fillInIntent,
-                        options1, taskId, options2, splitPosition, splitRatio, adapter, instanceId);
+                mSplitScreen.startIntentAndTaskWithLegacyTransition(pendingIntent, options1, taskId,
+                        options2, splitPosition, splitRatio, adapter, instanceId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startIntentAndTaskWithLegacyTransition");
             }
