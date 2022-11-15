@@ -53,6 +53,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.core.graphics.ColorUtils;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -120,10 +121,9 @@ public class AllSetActivity extends Activity {
         mContentView = findViewById(R.id.content_view);
         mSwipeUpShift = getResources().getDimension(R.dimen.allset_swipe_up_shift);
 
-        boolean isTablet = InvariantDeviceProfile.INSTANCE.get(getApplicationContext())
-                .getDeviceProfile(this).isTablet;
+        DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(this).getDeviceProfile(this);
         TextView subtitle = findViewById(R.id.subtitle);
-        subtitle.setText(isTablet
+        subtitle.setText(dp.isTablet
                 ? R.string.allset_description_tablet : R.string.allset_description);
 
         TextView tv = findViewById(R.id.navigation_settings);
@@ -137,7 +137,11 @@ public class AllSetActivity extends Activity {
             }
         });
 
-        findViewById(R.id.hint).setAccessibilityDelegate(new SkipButtonAccessibilityDelegate());
+        TextView hintTextView = findViewById(R.id.hint);
+        if (!dp.isGestureMode) {
+            hintTextView.setText(R.string.allset_button_hint);
+        }
+        hintTextView.setAccessibilityDelegate(new SkipButtonAccessibilityDelegate());
         mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
 
         mVibrator = getSystemService(Vibrator.class);
