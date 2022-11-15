@@ -102,6 +102,16 @@ public class ActivityAllAppsContainerView<T extends Context & AppLauncher
         }
     }
 
+    /**
+     * Sets results list for search.
+     *
+     * @param searchResultCode indicates if the result is final or intermediate for a given query
+     *                         since we can get search results from multiple sources.
+     */
+    public void setSearchResults(ArrayList<AdapterItem> results, int searchResultCode) {
+        setSearchResults(results);
+    }
+
     private void animateToSearchState(boolean goingToSearch) {
         animateToSearchState(goingToSearch, DEFAULT_SEARCH_TRANSITION_DURATION_MS);
     }
@@ -311,7 +321,7 @@ public class ActivityAllAppsContainerView<T extends Context & AppLauncher
         layoutParams.topMargin =
                 includeTabsMargin
                         ? getContext().getResources().getDimensionPixelSize(
-                                R.dimen.all_apps_header_pill_height)
+                        R.dimen.all_apps_header_pill_height)
                         : 0;
     }
 
