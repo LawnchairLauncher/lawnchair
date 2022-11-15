@@ -32,6 +32,7 @@ import android.graphics.drawable.Drawable;
 import android.util.FloatProperty;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.BubbleTextView;
@@ -39,6 +40,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.ItemInfo;
 
 /** Coordinates the transition between Search and A-Z in All Apps. */
@@ -225,16 +227,35 @@ public class SearchTransitionController {
 
                 numSearchResultsAnimated++;
             }
-            searchResultView.setAlpha(contentAlpha);
-            // Apply background alpha to decorator if possible.
-            if (adapterPosition != NO_POSITION) {
-                searchRecyclerView.getApps().getAdapterItems()
-                        .get(adapterPosition).setDecorationFillAlpha((int) (255 * backgroundAlpha));
-            }
-            // Apply background alpha to view's background (e.g. for Search Edu card).
+
             Drawable background = searchResultView.getBackground();
-            if (background != null) {
+            if (background != null
+                    && searchResultView instanceof ViewGroup
+                    && FeatureFlags.ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES.get()) {
+                searchResultView.setAlpha(1f);
+
+                // Apply content alpha to each child, since the view needs to be fully opaque for
+                // the background to show properly.
+                ViewGroup searchResultViewGroup = (ViewGroup) searchResultView;
+                for (int j = 0; j < searchResultViewGroup.getChildCount(); j++) {
+                    searchResultViewGroup.getChildAt(j).setAlpha(contentAlpha);
+                }
+
+                // Apply background alpha to the background drawable directly.
                 background.setAlpha((int) (255 * backgroundAlpha));
+            } else {
+                searchResultView.setAlpha(contentAlpha);
+
+                // Apply background alpha to decorator if possible.
+                if (adapterPosition != NO_POSITION) {
+                    searchRecyclerView.getApps().getAdapterItems().get(adapterPosition)
+                            .setDecorationFillAlpha((int) (255 * backgroundAlpha));
+                }
+
+                // Apply background alpha to view's background (e.g. for Search Edu card).
+                if (background != null) {
+                    background.setAlpha((int) (255 * backgroundAlpha));
+                }
             }
 
             float scaleY = 1;
@@ -303,6 +324,13 @@ public class SearchTransitionController {
             if (adapterPosition != NO_POSITION) {
                 getSearchRecyclerView().getApps().getAdapterItems().get(adapterPosition)
                         .setDecorationFillAlpha(255);
+            }
+            if (child instanceof ViewGroup
+                    && FeatureFlags.ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES.get()) {
+                ViewGroup childGroup = (ViewGroup) child;
+                for (int i = 0; i < childGroup.getChildCount(); i++) {
+                    childGroup.getChildAt(i).setAlpha(1f);
+                }
             }
             if (child.getBackground() != null) {
                 child.getBackground().setAlpha(255);
