@@ -2615,7 +2615,6 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                 setDragMode(DRAG_MODE_REORDER);
             }
 
-            boolean resize = resultSpan[0] != spanX || resultSpan[1] != spanY;
             mDragTargetLayout.visualizeDropLocation(mTargetCell[0], mTargetCell[1],
                     resultSpan[0], resultSpan[1], dragObject);
         }
@@ -2972,7 +2971,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      */
     @Thunk int[] findNearestArea(int pixelX, int pixelY,
             int spanX, int spanY, CellLayout layout, int[] recycle) {
-        return layout.findNearestArea(
+        return layout.findNearestAreaIgnoreOccupied(
                 pixelX, pixelY, spanX, spanY, recycle);
     }
 
