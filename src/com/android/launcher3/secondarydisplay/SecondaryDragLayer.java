@@ -38,12 +38,14 @@ import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
+import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * DragLayer for Secondary launcher
@@ -194,15 +196,21 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
             return false;
         }
 
+        List<SystemShortcut> systemShortcuts = new ArrayList<>();
+
+        // Hide redundant pin shortcut for app drawer icons if drag-n-drop is enabled.
+        if (!FeatureFlags.SECONDARY_DRAG_N_DROP_TO_PIN.get() || !mActivity.isAppDrawerShown()) {
+            systemShortcuts.add(mPinnedAppsAdapter.getSystemShortcut(item, v));
+        }
+        systemShortcuts.add(APP_INFO.getShortcut(mActivity, item, v));
+
         final PopupContainerWithArrow container =
                 (PopupContainerWithArrow) mActivity.getLayoutInflater().inflate(
                         R.layout.popup_container, mActivity.getDragLayer(), false);
 
         container.populateAndShow((BubbleTextView) v,
                 popupDataProvider.getShortcutCountForItem(item),
-                Collections.emptyList(),
-                Arrays.asList(mPinnedAppsAdapter.getSystemShortcut(item, v),
-                        APP_INFO.getShortcut(mActivity, item, v)));
+                Collections.emptyList(), systemShortcuts);
         container.requestFocus();
 
         if (!FeatureFlags.SECONDARY_DRAG_N_DROP_TO_PIN.get() || !mActivity.isAppDrawerShown()) {
