@@ -17,6 +17,7 @@
 package com.android.launcher3.config;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Utilities;
@@ -343,7 +344,15 @@ public final class FeatureFlags {
             for (DebugFlag flag : sDebugFlags) {
                 flag.initialize(context);
             }
-            sDebugFlags.sort((f1, f2) -> f1.key.compareToIgnoreCase(f2.key));
+
+            sDebugFlags.sort((f1, f2) -> {
+                // Sort first by any prefs that the user has changed, then alphabetically.
+                int changeComparison = Boolean.compare(f2.mHasBeenChangedAtLeastOnce,
+                        f1.mHasBeenChangedAtLeastOnce);
+                return changeComparison != 0
+                        ? changeComparison
+                        : f1.key.compareToIgnoreCase(f2.key);
+            });
         }
     }
 
@@ -399,6 +408,7 @@ public final class FeatureFlags {
     public static class DebugFlag extends BooleanFlag {
 
         public final String description;
+        protected boolean mHasBeenChangedAtLeastOnce;
         protected boolean mCurrentValue;
 
         public DebugFlag(String key, boolean defaultValue, String description) {
@@ -416,8 +426,10 @@ public final class FeatureFlags {
         }
 
         public void initialize(Context context) {
-            mCurrentValue = context.getSharedPreferences(FLAGS_PREF_NAME, Context.MODE_PRIVATE)
-                    .getBoolean(key, defaultValue);
+            SharedPreferences prefs =
+                    context.getSharedPreferences(FLAGS_PREF_NAME, Context.MODE_PRIVATE);
+            mHasBeenChangedAtLeastOnce = prefs.contains(key);
+            mCurrentValue = prefs.getBoolean(key, defaultValue);
         }
 
         @Override

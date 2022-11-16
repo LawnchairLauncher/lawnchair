@@ -52,12 +52,17 @@ public final class FlagTogglerPrefUi {
         public void putBoolean(String key, boolean value) {
             for (DebugFlag flag : FeatureFlags.getDebugFlags()) {
                 if (flag.key.equals(key)) {
-                    SharedPreferences.Editor editor = mContext.getSharedPreferences(
-                            FLAGS_PREF_NAME, Context.MODE_PRIVATE).edit();
-                    if (value == flag.defaultValue) {
+                    SharedPreferences prefs = mContext.getSharedPreferences(
+                            FLAGS_PREF_NAME, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    // We keep the key in the prefs even if it has the default value, because it's a
+                    // signal that it has been changed at one point.
+                    if (!prefs.contains(key) && value == flag.defaultValue) {
                         editor.remove(key).apply();
+                        flag.mHasBeenChangedAtLeastOnce = false;
                     } else {
                         editor.putBoolean(key, value).apply();
+                        flag.mHasBeenChangedAtLeastOnce = true;
                     }
                     updateMenu();
                 }
