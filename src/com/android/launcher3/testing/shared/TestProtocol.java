@@ -148,6 +148,7 @@ public final class TestProtocol {
     public static final String MISSING_PROMISE_ICON = "b/202985412";
     public static final String TASKBAR_IN_APP_STATE = "b/227657604";
     public static final String INCORRECT_INFO_UPDATED = "b/239465630";
+    public static final String NPE_TRANSIENT_TASKBAR = "b/257549303";
 
     public static final String REQUEST_EMULATE_DISPLAY = "emulate-display";
     public static final String REQUEST_STOP_EMULATE_DISPLAY = "stop-emulate-display";
