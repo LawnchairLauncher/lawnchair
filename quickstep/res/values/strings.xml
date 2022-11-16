@@ -187,6 +187,8 @@
     <string name="allset_title">All set!</string>
     <!-- Hint string at the bottom of "All Set" page [CHAR LIMIT=NONE] -->
     <string name="allset_hint">Swipe up to go Home</string>
+    <!-- Hint string at the bottom of "All Set" page for button navigation [CHAR LIMIT=NONE] -->
+    <string name="allset_button_hint">Tap the home button to go to your home screen</string>
     <!-- Description of "All Set" page on phones [CHAR LIMIT=NONE] -->
     <string name="allset_description">You\u2019re ready to start using your phone</string>
     <!-- Description of "All Set" page on tablets [CHAR LIMIT=NONE] -->
@@ -204,7 +206,7 @@
     <!-- Label for toast with instructions for split screen selection mode. [CHAR_LIMIT=50] -->
     <string name="toast_split_select_app">Tap another app to use splitscreen</string>
     <!-- Label for toast when app selected for split isn't supported. [CHAR_LIMIT=50] -->
-    <string name="toast_split_app_unsupported">App does not support split-screen.</string>
+    <string name="toast_split_app_unsupported">Choose another app to use split screen</string>
     <!-- Message shown when an action is blocked by a policy enforced by the app or the organization managing the device. [CHAR_LIMIT=NONE] -->
     <string name="blocked_by_policy">This action isn\'t allowed by the app or your organization</string>
 

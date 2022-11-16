@@ -264,6 +264,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_ONE_SEARCH_MOTION = new DeviceFlag(
             "ENABLE_ONE_SEARCH_MOTION", true, "Enables animations in OneSearch.");
 
+    public static final BooleanFlag ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES = new DeviceFlag(
+            "ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES", false,
+            "Enable option to replace decorator-based search result backgrounds with drawables");
+
     public static final BooleanFlag ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS = new DeviceFlag(
             "ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS", true,
             "Enable option to show keyboard when going to all-apps");
@@ -334,6 +338,10 @@ public final class FeatureFlags {
     public static final BooleanFlag LARGE_SCREEN_WIDGET_PICKER = getDebugFlag(
             "LARGE_SCREEN_WIDGET_PICKER", false, "Enable new widget picker that takes "
                     + "advantage of large screen format");
+
+    public static final BooleanFlag ENABLE_NEW_GESTURE_NAV_TUTORIAL = getDebugFlag(
+            "ENABLE_NEW_GESTURE_NAV_TUTORIAL", false,
+            "Enable the redesigned gesture navigation tutorial");
 
     public static final BooleanFlag ENABLE_TOAST_IMPRESSION_LOGGING = getDebugFlag(
             "ENABLE_TOAST_IMPRESSION_LOGGING", false, "Enable toast impression logging");
