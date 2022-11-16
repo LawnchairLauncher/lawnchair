@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Share app"</string>
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Share App"</string>
     <string name="action_listen" msgid="2370304050784689486">"Listen"</string>
     <string name="action_translate" msgid="8028378961867277746">"Translate"</string>
     <string name="action_search" msgid="6269564710943755464">"Lens"</string>
-    <string name="dialog_acknowledge" msgid="2804025517675853172">"OK"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"GOT IT"</string>
     <string name="dialog_cancel" msgid="6464336969134856366">"CANCEL"</string>
     <string name="dialog_settings" msgid="6564397136021186148">"SETTINGS"</string>
     <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Translate or listen to text on screen"</string>
-    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Information such as text on your screen, web addresses and screenshots may be shared with Google.\n\nTo change what information you share, go to "<b>"Settings &gt; Apps &gt; Default apps &gt; Digital assistant app"</b>"."</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Information such as text on your screen, web addresses, and screenshots may be shared with Google.\n\nTo change what information you share, go to "<b>"Settings &gt; Apps &gt; Default apps &gt; Digital assistant app"</b>"."</string>
     <string name="assistant_not_selected_title" msgid="5017072974603345228">"Choose an assistant to use this feature"</string>
-    <string name="assistant_not_selected_text" msgid="3244613673884359276">"To listen to or translate text on your screen, choose a digital assistant app in settings"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"To listen to or translate text on your screen, choose a digital assistant app in Settings"</string>
     <string name="assistant_not_supported_title" msgid="1675788067597484142">"Change your assistant to use this feature"</string>
-    <string name="assistant_not_supported_text" msgid="1708031078549268884">"To listen to or translate text on your screen, change your digital assistant app in settings"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"To listen to or translate text on your screen, change your digital assistant app in Settings"</string>
     <string name="tooltip_listen" msgid="7634466447860989102">"Tap here to listen to text on this screen"</string>
     <string name="tooltip_translate" msgid="4184845868901542567">"Tap here to translate text on this screen"</string>
     <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"This app can’t be shared"</string>
