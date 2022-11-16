@@ -168,9 +168,11 @@ public class FolderAnimationManager {
         final int paddingOffsetY = (int) (mContent.getPaddingTop() * initialScale);
 
         int initialX = folderIconPos.left + mFolder.getPaddingLeft()
-                + mPreviewBackground.getOffsetX() - paddingOffsetX - previewItemOffsetX;
+                + Math.round(mPreviewBackground.getOffsetX() * scaleRelativeToDragLayer)
+                - paddingOffsetX - previewItemOffsetX;
         int initialY = folderIconPos.top + mFolder.getPaddingTop()
-                + mPreviewBackground.getOffsetY() - paddingOffsetY;
+                + Math.round(mPreviewBackground.getOffsetY() * scaleRelativeToDragLayer)
+                - paddingOffsetY;
         final float xDistance = initialX - lp.x;
         final float yDistance = initialY - lp.y;
 
@@ -313,7 +315,7 @@ public class FolderAnimationManager {
         addPreviewItemAnimators(a, initialScale / scaleRelativeToDragLayer,
                 // Background can have a scaled radius in drag and drop mode, so we need to add the
                 // difference to keep the preview items centered.
-                previewItemOffsetX + radiusDiff, radiusDiff);
+                (int) (previewItemOffsetX / scaleRelativeToDragLayer) + radiusDiff, radiusDiff);
         return a;
     }
 
