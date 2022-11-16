@@ -347,6 +347,9 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_TOAST_IMPRESSION_LOGGING = getDebugFlag(
             "ENABLE_TOAST_IMPRESSION_LOGGING", false, "Enable toast impression logging");
 
+    public static final BooleanFlag ENABLE_DEVICE_PROFILE_LOGGING = new DeviceFlag(
+            "ENABLE_DEVICE_PROFILE_LOGGING", false, "Allows DeviceProfile logging");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
