@@ -770,8 +770,12 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      *  * in small screen AND
      *  * 3 button nav AND
      *  * landscape (or seascape)
+     * We do not stash if taskbar is transient
      */
     private boolean shouldStashForIme() {
+        if (DisplayController.isTransientTaskbar(mActivity)) {
+            return false;
+        }
         return (mIsImeShowing || mIsImeSwitcherShowing) &&
                 !(isPhoneMode() && mActivity.isThreeButtonNav()
                         && mActivity.getDeviceProfile().isLandscape);
