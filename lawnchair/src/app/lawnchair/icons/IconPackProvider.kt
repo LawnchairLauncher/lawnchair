@@ -16,7 +16,7 @@ import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import com.android.launcher3.icons.ThemedIconDrawable
 import android.graphics.drawable.ColorDrawable
 import app.lawnchair.icons.*
-import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
+import app.lawnchair.util.getThemedIconPackInstalled
 
 
 
@@ -24,7 +24,6 @@ class IconPackProvider(private val context: Context) {
 
     private val systemIconPack = SystemIconPack(context)
     private val iconPacks = mutableMapOf<String, IconPack?>()
-    private val themedIconPacks = context.resources.getStringArray(R.array.themed_icon_packs)
 
     fun getIconPackOrSystem(packageName: String): IconPack? {
         if (packageName.isEmpty()) return systemIconPack
@@ -52,12 +51,14 @@ class IconPackProvider(private val context: Context) {
     fun getDrawable(iconEntry: IconEntry, iconDpi: Int, user: UserHandle): Drawable? {
         val iconPack = getIconPackOrSystem(iconEntry.packPackageName) ?: return null
         iconPack.loadBlocking()
+        val packageManager =  context.packageManager
         val drawable = iconPack.getIcon(iconEntry, iconDpi) ?: return null
+        val themedIconPacks = packageManager.getThemedIconPackInstalled(context.applicationInfo)
         if (
-            context.isThemedIconsEnabled() && iconEntry.packPackageName in themedIconPacks
+            context.isThemedIconsEnabled() &&  iconEntry.packPackageName in themedIconPacks
         ) {
             val themedColors: IntArray = ThemedIconDrawable.getThemedColors(context)
-            val res = context.packageManager.getResourcesForApplication(iconEntry.packPackageName)
+            val res = packageManager.getResourcesForApplication(iconEntry.packPackageName)
             @SuppressLint("DiscouragedApi")
             val resId = res.getIdentifier(iconEntry.name, "drawable", iconEntry.packPackageName)
             val bg: Drawable = ColorDrawable(themedColors[0])
