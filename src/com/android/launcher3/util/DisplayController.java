@@ -42,6 +42,7 @@ import android.view.Display;
 
 import androidx.annotation.AnyThread;
 import androidx.annotation.UiThread;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.window.CachedDisplayInfo;
@@ -63,6 +64,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
 
     private static final String TAG = "DisplayController";
     private static final boolean DEBUG = false;
+    private static boolean sTransientTaskbarStatusForTests;
 
     public static final MainThreadInitializedObject<DisplayController> INSTANCE =
             new MainThreadInitializedObject<>(DisplayController::new);
@@ -128,8 +130,18 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
      * Returns whether taskbar is transient.
      */
     public static boolean isTransientTaskbar(Context context) {
-        return ENABLE_TRANSIENT_TASKBAR.get()
-                && getNavigationMode(context) == NavigationMode.NO_BUTTON;
+        return getNavigationMode(context) == NavigationMode.NO_BUTTON
+                && (Utilities.IS_RUNNING_IN_TEST_HARNESS
+                    ? sTransientTaskbarStatusForTests
+                    : ENABLE_TRANSIENT_TASKBAR.get());
+    }
+
+    /**
+     * Enables transient taskbar status for tests.
+     */
+    @VisibleForTesting
+    public static void enableTransientTaskbarForTests(boolean enable) {
+        sTransientTaskbarStatusForTests = enable;
     }
 
     @Override

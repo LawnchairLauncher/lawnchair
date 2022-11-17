@@ -32,12 +32,12 @@
     <string name="split_screen_position_left" msgid="7537793098851830883">"Split left"</string>
     <string name="split_screen_position_right" msgid="1569377524925193369">"Split right"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"App info for %1$s"</string>
-    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Touch and hold to move a widget."</string>
+    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Touch &amp; hold to move a widget."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Double-tap &amp; hold to move a widget or use custom actions."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d wide by %2$d high"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> widget"</string>
-    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Touch and hold the widget to move it around the home screen"</string>
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Touch &amp; hold the widget to move it around the home screen"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"Add to home screen"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> widget added to home screen"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# widget}other{# widgets}}"</string>
@@ -54,18 +54,18 @@
     <string name="widget_education_header" msgid="4874760613775913787">"Useful info at your fingertips"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"To get info without opening apps, you can add widgets to your home screen"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Tap to change widget settings"</string>
-    <string name="widget_education_close_button" msgid="8676165703104836580">"OK"</string>
+    <string name="widget_education_close_button" msgid="8676165703104836580">"Got it"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Change widget settings"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Search apps"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Loading apps…"</string>
-    <string name="all_apps_no_search_results" msgid="3200346862396363786">"No apps found matching \'<xliff:g id="QUERY">%1$s</xliff:g>\'"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"No apps found matching \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="label_application" msgid="8531721983832654978">"App"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"All apps"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Notifications"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Touch &amp; hold to move a shortcut."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Double-tap &amp; hold to move a shortcut or use custom actions."</string>
     <string name="out_of_space" msgid="6455557115204099579">"No room on this home screen"</string>
-    <string name="hotseat_out_of_space" msgid="7448809638125333693">"No more room in the Favourites tray"</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"No more room in the Favorites tray"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Apps list"</string>
     <string name="all_apps_search_results" msgid="5889367432531296759">"Search results"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Personal apps list"</string>
@@ -75,13 +75,13 @@
     <string name="app_info_drop_target_label" msgid="692894985365717661">"App info"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Install"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Don\'t suggest app"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"Pin prediction"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"Pin Prediction"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"install shortcuts"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Allows an app to add shortcuts without user intervention."</string>
-    <string name="permlab_read_settings" msgid="5136500343007704955">"read Home settings and shortcuts"</string>
-    <string name="permdesc_read_settings" msgid="4208061150510996676">"Allows the app to read the settings and shortcuts in Home."</string>
-    <string name="permlab_write_settings" msgid="4820028712156303762">"write Home settings and shortcuts"</string>
-    <string name="permdesc_write_settings" msgid="726859348127868466">"Allows the app to change the settings and shortcuts in Home."</string>
+    <string name="permlab_read_settings" msgid="5136500343007704955">"read home settings and shortcuts"</string>
+    <string name="permdesc_read_settings" msgid="4208061150510996676">"Allows the app to read the settings and shortcuts in home."</string>
+    <string name="permlab_write_settings" msgid="4820028712156303762">"write home settings and shortcuts"</string>
+    <string name="permdesc_write_settings" msgid="726859348127868466">"Allows the app to change the settings and shortcuts in home."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> is not allowed to make phone calls"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Can\'t load widget"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Widget settings"</string>
@@ -101,7 +101,7 @@
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Folder: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> items"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Folder: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> or more items"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Wallpapers"</string>
-    <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Wallpaper and style"</string>
+    <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Wallpaper &amp; style"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Home settings"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Disabled by your admin"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Allow home screen rotation"</string>
@@ -113,7 +113,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"To show Notification Dots, turn on app notifications for <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Change settings"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Show notification dots"</string>
-    <string name="developer_options_title" msgid="700788437593726194">"Developer options"</string>
+    <string name="developer_options_title" msgid="700788437593726194">"Developer Options"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Add app icons to home screen"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"For new apps"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Unknown"</string>
@@ -125,7 +125,7 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> downloading, <xliff:g id="PROGRESS">%2$s</xliff:g> complete"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> waiting to install"</string>
     <string name="dialog_update_title" msgid="114234265740994042">"App update required"</string>
-    <string name="dialog_update_message" msgid="4176784553982226114">"The app for this icon isn\'t updated. You can update manually to re-enable this shortcut or remove the icon."</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"The app for this icon isn\'t updated. You can update manually to re-enable this shortcut, or remove the icon."</string>
     <string name="dialog_update" msgid="2178028071796141234">"Update"</string>
     <string name="dialog_remove" msgid="6510806469849709407">"Remove"</string>
     <string name="widgets_list" msgid="796804551140113767">"Widgets list"</string>
@@ -138,7 +138,7 @@
     <string name="action_move" msgid="4339390619886385032">"Move item"</string>
     <string name="move_to_empty_cell_description" msgid="5254852678218206889">"Move to row <xliff:g id="NUMBER_0">%1$s</xliff:g> column <xliff:g id="NUMBER_1">%2$s</xliff:g> in <xliff:g id="STRING">%3$s</xliff:g>"</string>
     <string name="move_to_position" msgid="6750008980455459790">"Move to position <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
-    <string name="move_to_hotseat_position" msgid="6295412897075147808">"Move to favourites position <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"Move to favorites position <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="item_moved" msgid="4606538322571412879">"Item moved"</string>
     <string name="add_to_folder" msgid="9040534766770853243">"Add to folder: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="add_to_folder_with_app" msgid="4534929978967147231">"Add to folder with <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -146,13 +146,13 @@
     <string name="create_folder_with" msgid="4050141361160214248">"Create folder with: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"Folder created"</string>
     <string name="action_move_to_workspace" msgid="39528912300293768">"Move to home screen"</string>
-    <string name="action_resize" msgid="1802976324781771067">"Re-size"</string>
+    <string name="action_resize" msgid="1802976324781771067">"Resize"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"Increase width"</string>
     <string name="action_increase_height" msgid="459390020612501122">"Increase height"</string>
     <string name="action_decrease_width" msgid="1374549771083094654">"Decrease width"</string>
     <string name="action_decrease_height" msgid="282377193880900022">"Decrease height"</string>
-    <string name="widget_resized" msgid="9130327887929620">"Widget re-sized to width <xliff:g id="NUMBER_0">%1$s</xliff:g> height <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
-    <string name="action_deep_shortcut" msgid="2864038805849372848">"Short cuts"</string>
+    <string name="widget_resized" msgid="9130327887929620">"Widget resized to width <xliff:g id="NUMBER_0">%1$s</xliff:g> height <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="action_deep_shortcut" msgid="2864038805849372848">"Shortcuts"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Shortcuts and notifications"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Dismiss"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"Close"</string>
@@ -161,12 +161,12 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Work"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Work profile"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Work apps are badged and visible to your IT admin"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
+    <string name="work_profile_edu_accept" msgid="6069788082535149071">"Got it"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Work apps are paused"</string>
-    <string name="work_apps_paused_body" msgid="261634750995824906">"Your work apps can’t send you notifications, use your battery or access your location"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Work apps are off. Your work apps can’t send you notifications, use your battery or access your location"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"Your work apps can’t send you notifications, use your battery, or access your location"</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Work apps are off. Your work apps can’t send you notifications, use your battery, or access your location"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Work apps are badged and visible to your IT admin"</string>
-    <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
+    <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Got it"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Pause work apps"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Turn on work apps"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filter"</string>
