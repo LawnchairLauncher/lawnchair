@@ -56,8 +56,8 @@ import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.util.getThemedIconPacksInstalled
 import app.lawnchair.util.isPackageInstalled
-import app.lawnchair.util.getThemedIconPackInstalled
 import com.android.launcher3.R
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 
@@ -135,7 +135,7 @@ fun IconPackPreferences() {
             )
             PreferenceGroup {
                 val themedIconsAvailable = LocalContext.current.packageManager
-                    .getThemedIconPackInstalled(LocalContext.current.applicationInfo)
+                    .getThemedIconPacksInstalled(LocalContext.current.applicationInfo)
                     .any { LocalContext.current.packageManager.isPackageInstalled(it) }
                 ListPreference(
                     enabled = themedIconsAvailable,

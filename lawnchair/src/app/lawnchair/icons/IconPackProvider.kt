@@ -9,14 +9,12 @@ import android.os.Process
 import android.os.UserHandle
 import com.android.launcher3.icons.ClockDrawableWrapper
 import com.android.launcher3.util.MainThreadInitializedObject
-import com.android.launcher3.icons.R
 import android.graphics.drawable.InsetDrawable
 import android.graphics.drawable.AdaptiveIconDrawable
-import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import com.android.launcher3.icons.ThemedIconDrawable
 import android.graphics.drawable.ColorDrawable
 import app.lawnchair.icons.*
-import app.lawnchair.util.getThemedIconPackInstalled
+import app.lawnchair.util.getThemedIconPacksInstalled
 
 
 
@@ -53,7 +51,7 @@ class IconPackProvider(private val context: Context) {
         iconPack.loadBlocking()
         val packageManager =  context.packageManager
         val drawable = iconPack.getIcon(iconEntry, iconDpi) ?: return null
-        val themedIconPacks = packageManager.getThemedIconPackInstalled(context.applicationInfo)
+        val themedIconPacks = packageManager.getThemedIconPacksInstalled(context.applicationInfo)
         if (
             context.isThemedIconsEnabled() &&  iconEntry.packPackageName in themedIconPacks
         ) {
