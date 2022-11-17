@@ -56,6 +56,7 @@ public final class WidgetsListSearchHeaderViewHolderBinder implements
             WidgetsListSearchHeaderEntry data, @ListPosition int position, List<Object> payloads) {
         WidgetsListHeader widgetsListHeader = viewHolder.mWidgetsListHeader;
         widgetsListHeader.applyFromItemInfoWithIcon(data);
+        widgetsListHeader.setSelected(data.isWidgetListShown());
         widgetsListHeader.setExpanded(data.isWidgetListShown());
         widgetsListHeader.setListDrawableState(
                 WidgetsListDrawableState.obtain(

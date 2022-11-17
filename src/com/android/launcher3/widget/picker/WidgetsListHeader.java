@@ -15,13 +15,17 @@
  */
 package com.android.launcher3.widget.picker;
 
+import static com.android.launcher3.config.FeatureFlags.LARGE_SCREEN_WIDGET_PICKER;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.CheckBox;
@@ -35,12 +39,14 @@ import androidx.annotation.UiThread;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.icons.PlaceHolderIconDrawable;
 import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.util.PluralMessageFormat;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
@@ -55,19 +61,19 @@ import java.util.stream.Collectors;
  */
 public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpdateReceiver {
 
-    private boolean mEnableIconUpdateAnimation = false;
+    private final int mIconSize;
+    private final boolean mIsTwoPane;
 
     @Nullable private HandlerRunnable mIconLoadRequest;
     @Nullable private Drawable mIconDrawable;
-    private final int mIconSize;
-
+    @Nullable private WidgetsListDrawableState mListDrawableState;
     private ImageView mAppIcon;
     private TextView mTitle;
     private TextView mSubtitle;
-
+    private GradientDrawable mBackground;
     private CheckBox mExpandToggle;
+    private boolean mEnableIconUpdateAnimation = false;
     private boolean mIsExpanded = false;
-    @Nullable private WidgetsListDrawableState mListDrawableState;
 
     public WidgetsListHeader(Context context) {
         this(context, /* attrs= */ null);
@@ -86,6 +92,11 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
                 R.styleable.WidgetsListRowHeader, defStyleAttr, /* defStyleRes= */ 0);
         mIconSize = a.getDimensionPixelSize(R.styleable.WidgetsListRowHeader_appIconSize,
                 grid.iconSizePx);
+
+        mIsTwoPane = grid.isLandscape && grid.isTablet && LARGE_SCREEN_WIDGET_PICKER.get();
+        if (mIsTwoPane) {
+            setLargeScreenTheme();
+        }
     }
 
     @Override
@@ -95,6 +106,9 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
         mTitle = findViewById(R.id.app_title);
         mSubtitle = findViewById(R.id.app_subtitle);
         mExpandToggle = findViewById(R.id.toggle);
+        if (mIsTwoPane) {
+            mExpandToggle.setVisibility(GONE);
+        }
         setAccessibilityDelegate(new AccessibilityDelegate() {
 
             @Override
@@ -132,7 +146,7 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
             @Nullable OnExpansionChangeListener onExpandChangeListener) {
         // Use the entire touch area of this view to expand / collapse an app widgets section.
         setOnClickListener(view -> {
-            setExpanded(!mIsExpanded);
+            setExpanded(mIsTwoPane || !mIsExpanded);
             if (onExpandChangeListener != null) {
                 onExpandChangeListener.onExpansionChange(mIsExpanded);
             }
@@ -144,7 +158,37 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
     public void setExpanded(boolean isExpanded) {
         this.mIsExpanded = isExpanded;
         mExpandToggle.setChecked(isExpanded);
+        if (mIsTwoPane) {
+            if (Utilities.isDarkTheme(getContext())) {
+                if (mIsExpanded) {
+                    mTitle.setTextColor(Color.BLACK);
+                    mSubtitle.setTextColor(Color.BLACK);
+                } else {
+                    mTitle.setTextColor(Color.WHITE);
+                    mSubtitle.setTextColor(Themes.getAttrColor(getContext(),
+                            android.R.attr.textColorSecondary));
+                }
+            }
+            setLargeScreenTheme();
+        }
     }
+
+    /**
+     * Sets the style for the header when we are using large screens in landscape.
+     */
+    private void setLargeScreenTheme() {
+        if (mBackground == null) {
+            mBackground = new GradientDrawable();
+            mBackground.setCornerRadius((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                    28,
+                    getContext().getResources().getDisplayMetrics()));
+        }
+        mBackground.setColor(mIsExpanded
+                ? getResources().getColor(R.color.widget_picker_background_selected)
+                : Color.TRANSPARENT);
+        this.setBackground(mBackground);
+    }
+
 
     /** Sets the {@link WidgetsListDrawableState} and refreshes the background drawable. */
     @UiThread
@@ -163,7 +207,7 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
     @UiThread
     private void applyIconAndLabel(WidgetsListHeaderEntry entry) {
         PackageItemInfo info = entry.mPkgItem;
-        setIcon(info);
+        setIcon(info.newIcon(getContext()));
         setTitles(entry);
         setExpanded(entry.isWidgetListShown());
 
@@ -172,9 +216,7 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
         verifyHighRes();
     }
 
-    private void setIcon(PackageItemInfo info) {
-        Drawable icon;
-        icon = info.newIcon(getContext());
+    void setIcon(Drawable icon) {
         applyDrawables(icon);
         mIconDrawable = icon;
         if (mIconDrawable != null) {
@@ -239,7 +281,7 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
     @UiThread
     private void applyIconAndLabel(WidgetsListSearchHeaderEntry entry) {
         PackageItemInfo info = entry.mPkgItem;
-        setIcon(info);
+        setIcon(info.newIcon(getContext()));
         setTitles(entry);
         setExpanded(entry.isWidgetListShown());
 
@@ -265,7 +307,7 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
             // Optimization: Starting in N, pre-uploads the bitmap to RenderThread.
             info.bitmap.icon.prepareToDraw();
 
-            setIcon((PackageItemInfo) info);
+            setIcon(info.newIcon(getContext()));
 
             mEnableIconUpdateAnimation = false;
         }

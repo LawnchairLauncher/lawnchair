@@ -64,4 +64,6 @@
 
     <color name="all_apps_button_color_light">@android:color/system_neutral2_700</color>
     <color name="all_apps_button_color_dark">@android:color/system_neutral2_200</color>
+
+    <color name="widget_picker_background_selected">@android:color/system_accent2_100</color>
 </resources>
