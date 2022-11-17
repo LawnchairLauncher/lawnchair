@@ -30,7 +30,7 @@ import android.os.UserHandle;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.QuickstepModelDelegate.PredictorState;
 import com.android.launcher3.model.data.AppInfo;
@@ -59,7 +59,7 @@ public class PredictionUpdateTask extends BaseModelUpdateTask {
         Context context = app.getContext();
 
         // TODO: remove this
-        Utilities.getDevicePrefs(context).edit()
+        LauncherPrefs.getDevicePrefs(context).edit()
                 .putBoolean(LAST_PREDICTION_ENABLED_STATE, !mTargets.isEmpty()).apply();
 
         Set<UserHandle> usersForChangedShortcuts =

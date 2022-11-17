@@ -35,9 +35,9 @@ import com.android.launcher3.DropTarget;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -87,7 +87,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         super.onCreate(savedInstanceState);
         mModel = LauncherAppState.getInstance(this).getModel();
         mDragController = new SecondaryDragController(this);
-        mOnboardingPrefs = new OnboardingPrefs<>(this, Utilities.getPrefs(this));
+        mOnboardingPrefs = new OnboardingPrefs<>(this, LauncherPrefs.getPrefs(this));
         mSecondaryDisplayPredictions = SecondaryDisplayPredictions.newInstance(this);
         if (getWindow().getDecorView().isAttachedToWindow()) {
             initUi();
