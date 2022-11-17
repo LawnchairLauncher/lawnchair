@@ -240,6 +240,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         return mTaskbarView.getIconViews();
     }
 
+    @Nullable
     public View getAllAppsButtonView() {
         return mTaskbarView.getAllAppsButtonView();
     }
