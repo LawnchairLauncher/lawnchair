@@ -179,9 +179,15 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
 
     private void enableBlockingTimeout(
             TouchInteractionService.TISBinder tisBinder, boolean enable) {
-        // Allow null-pointer to catch illegal states.
-        tisBinder.getTaskbarManager().getCurrentActivityContext().enableBlockingTimeoutDuringTests(
-                enable);
+        TaskbarActivityContext context = tisBinder.getTaskbarManager().getCurrentActivityContext();
+        if (context == null) {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(NPE_TRANSIENT_TASKBAR, "enableBlockingTimeout: enable=" + enable,
+                        new Exception());
+            }
+        } else {
+            context.enableBlockingTimeoutDuringTests(enable);
+        }
     }
 
     private void enableTransientTaskbar(
