@@ -189,10 +189,10 @@
     <string name="allset_hint">Swipe up to go Home</string>
     <!-- Hint string at the bottom of "All Set" page for button navigation [CHAR LIMIT=NONE] -->
     <string name="allset_button_hint">Tap the home button to go to your home screen</string>
-    <!-- Description of "All Set" page on phones [CHAR LIMIT=NONE] -->
-    <string name="allset_description">You\u2019re ready to start using your phone</string>
-    <!-- Description of "All Set" page on tablets [CHAR LIMIT=NONE] -->
-    <string name="allset_description_tablet">You\u2019re ready to start using your tablet</string>
+    <!-- Description of "All Set" page on the user's device [CHAR LIMIT=NONE] -->
+    <string name="allset_description_generic">You\u2019re ready to start using your <xliff:g id="device" example="Pixel 6">%1$s</xliff:g></string>
+    <!-- A default device name to use in the description of the "All Set" page [CHAR LIMIT=NONE] -->
+    <string name="default_device_name">device</string>
     <!-- String linking to navigation settings on "All Set" page [CHAR LIMIT=NONE] -->
     <string name="allset_navigation_settings"><annotation id="link">System navigation settings</annotation></string>
 
