@@ -17,6 +17,7 @@ package com.android.launcher3.taskbar;
 
 import static android.view.InsetsState.ITYPE_EXTRA_NAVIGATION_BAR;
 
+import static com.android.launcher3.QuickstepTransitionManager.TRANSIENT_TASKBAR_TRANSITION_DURATION;
 import static com.android.launcher3.taskbar.TaskbarLauncherStateController.FLAG_RESUMED;
 import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
 
@@ -157,9 +158,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
                 isResumed,
                 fromInit,
                 /* startAnimation= */ true,
-                !isResumed
-                        ? QuickstepTransitionManager.TASKBAR_TO_APP_DURATION
-                        : QuickstepTransitionManager.TASKBAR_TO_HOME_DURATION);
+                DisplayController.isTransientTaskbar(mLauncher)
+                        ? TRANSIENT_TASKBAR_TRANSITION_DURATION
+                        : (!isResumed
+                                ? QuickstepTransitionManager.TASKBAR_TO_APP_DURATION
+                                : QuickstepTransitionManager.TASKBAR_TO_HOME_DURATION));
     }
 
     @Nullable
