@@ -648,14 +648,6 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     /**
-     * Called when one handed mode activated and deactivated.
-     * @param activated true if one handed mode activated, false otherwise.
-     */
-    public void onOneHandedStateChanged(boolean activated) {
-        mDragLayer.onOneHandedModeStateChanged(activated);
-    }
-
-    /**
      * Returns {@code true} if a new DeviceProfile is initialized, and {@code false} otherwise.
      */
     protected boolean initDeviceProfile(InvariantDeviceProfile idp) {
