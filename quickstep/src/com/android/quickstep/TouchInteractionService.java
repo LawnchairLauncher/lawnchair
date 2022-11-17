@@ -31,6 +31,7 @@ import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYS
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_UNLOCK_ANIMATION_CONTROLLER;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_FREEFORM_ACTIVE_IN_DESKTOP_MODE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_TRACING_ENABLED;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_BACK_ANIMATION;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_DESKTOP_MODE;
@@ -533,9 +534,10 @@ public class TouchInteractionService extends Service
                 }
             }
 
-            boolean wasExpanded = (lastSysUIFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) != 0;
-            boolean isExpanded =
-                    (systemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) != 0;
+            int isShadeExpandedFlag =
+                    SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED | SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
+            boolean wasExpanded = (lastSysUIFlags & isShadeExpandedFlag) != 0;
+            boolean isExpanded = (systemUiStateFlags & isShadeExpandedFlag) != 0;
             if (wasExpanded != isExpanded && isExpanded) {
                 // End live tile when expanding the notification panel for the first time from
                 // overview.
