@@ -42,6 +42,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.AccessibilityDelegate;
@@ -79,6 +80,7 @@ public class AllSetActivity extends Activity {
             "#Intent;action=com.android.settings.SEARCH_RESULT_TRAMPOLINE;S.:settings:fragment_args_key=gesture_system_navigation_input_summary;S.:settings:show_fragment=com.android.settings.gestures.SystemNavigationGestureSettings;end";
     private static final String EXTRA_ACCENT_COLOR_DARK_MODE = "suwColorAccentDark";
     private static final String EXTRA_ACCENT_COLOR_LIGHT_MODE = "suwColorAccentLight";
+    private static final String EXTRA_DEVICE_NAME = "suwDeviceName";
 
     private static final float HINT_BOTTOM_FACTOR = 1 - .94f;
 
@@ -110,7 +112,8 @@ public class AllSetActivity extends Activity {
 
         int mode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         boolean isDarkTheme = mode == Configuration.UI_MODE_NIGHT_YES;
-        int accentColor = getIntent().getIntExtra(
+        Intent intent = getIntent();
+        int accentColor = intent.getIntExtra(
                 isDarkTheme ? EXTRA_ACCENT_COLOR_DARK_MODE : EXTRA_ACCENT_COLOR_LIGHT_MODE,
                 isDarkTheme ? Color.WHITE : Color.BLACK);
 
@@ -121,10 +124,12 @@ public class AllSetActivity extends Activity {
         mContentView = findViewById(R.id.content_view);
         mSwipeUpShift = getResources().getDimension(R.dimen.allset_swipe_up_shift);
 
-        DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(this).getDeviceProfile(this);
         TextView subtitle = findViewById(R.id.subtitle);
-        subtitle.setText(dp.isTablet
-                ? R.string.allset_description_tablet : R.string.allset_description);
+        String suwDeviceName = intent.getStringExtra(EXTRA_DEVICE_NAME);
+        subtitle.setText(getString(
+                R.string.allset_description_generic,
+                !TextUtils.isEmpty(suwDeviceName)
+                        ? suwDeviceName : getString(R.string.default_device_name)));
 
         TextView tv = findViewById(R.id.navigation_settings);
         tv.setTextColor(accentColor);
@@ -138,6 +143,7 @@ public class AllSetActivity extends Activity {
         });
 
         TextView hintTextView = findViewById(R.id.hint);
+        DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(this).getDeviceProfile(this);
         if (!dp.isGestureMode) {
             hintTextView.setText(R.string.allset_button_hint);
         }
