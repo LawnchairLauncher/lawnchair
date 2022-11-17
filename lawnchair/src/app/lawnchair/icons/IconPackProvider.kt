@@ -53,7 +53,7 @@ class IconPackProvider(private val context: Context) {
         val drawable = iconPack.getIcon(iconEntry, iconDpi) ?: return null
         val themedIconPacks = packageManager.getThemedIconPacksInstalled(context.applicationInfo)
         if (
-            context.isThemedIconsEnabled() &&  iconEntry.packPackageName in themedIconPacks
+            context.isThemedIconsEnabled() && iconEntry.packPackageName in themedIconPacks
         ) {
             val themedColors: IntArray = ThemedIconDrawable.getThemedColors(context)
             val res = packageManager.getResourcesForApplication(iconEntry.packPackageName)
