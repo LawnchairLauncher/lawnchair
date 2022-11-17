@@ -101,33 +101,6 @@ public class SplitWithKeyboardShortcutController {
         });
     }
 
-    /**
-     * Handles second app selection from stage split. If the item can't be opened in split or
-     * it's not in stage split state, we pass it onto Launcher's default item click handler.
-     */
-    public boolean handleSecondAppSelectionForSplit(View view) {
-        if (!ENABLE_SPLIT_FROM_FULLSCREEN_WITH_KEYBOARD_SHORTCUTS.get()
-                || !mController.isSplitSelectActive()) {
-            return false;
-        }
-        Object tag = view.getTag();
-        Intent intent;
-        if (tag instanceof WorkspaceItemInfo) {
-            final WorkspaceItemInfo workspaceItemInfo = (WorkspaceItemInfo) tag;
-            intent = workspaceItemInfo.intent;
-        } else if (tag instanceof com.android.launcher3.model.data.AppInfo) {
-            final com.android.launcher3.model.data.AppInfo appInfo =
-                    (com.android.launcher3.model.data.AppInfo) tag;
-            intent = appInfo.intent;
-        } else {
-            return false;
-        }
-        mController.setSecondTask(intent);
-        mController.launchSplitTasks(aBoolean -> mLauncher.getDragLayer().removeView(
-                mController.getFirstFloatingTaskView()));
-        return true;
-    }
-
     public void onDestroy() {
         mOverviewComponentObserver.onDestroy();
     }
