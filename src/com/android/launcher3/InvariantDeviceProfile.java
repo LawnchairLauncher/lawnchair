@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.Utilities.dpiFromPx;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_DEVICE_PROFILE_LOGGING;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TWO_PANEL_HOME;
 import static com.android.launcher3.testing.shared.ResourceUtils.INVALID_RESOURCE_HANDLE;
 import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
@@ -648,7 +649,7 @@ public class InvariantDeviceProfile {
         float screenHeight = config.screenHeightDp * res.getDisplayMetrics().density;
         int rotation = WindowManagerProxy.INSTANCE.get(context).getRotation(context);
 
-        if (Utilities.IS_DEBUG_DEVICE) {
+        if (Utilities.IS_DEBUG_DEVICE && ENABLE_DEVICE_PROFILE_LOGGING.get()) {
             StringWriter stringWriter = new StringWriter();
             PrintWriter printWriter = new PrintWriter(stringWriter);
             DisplayController.INSTANCE.get(context).dump(printWriter);

@@ -1855,6 +1855,20 @@ public final class LauncherInstrumentation {
         getTestInfo(TestProtocol.REQUEST_UNSTASH_TASKBAR_IF_STASHED);
     }
 
+    /** Blocks the taskbar from automatically stashing based on time. */
+    public void enableBlockTimeout(boolean enable) {
+        getTestInfo(enable
+                ? TestProtocol.REQUEST_ENABLE_BLOCK_TIMEOUT
+                : TestProtocol.REQUEST_DISABLE_BLOCK_TIMEOUT);
+    }
+
+    /** Enables transient taskbar for testing purposes only. */
+    public void enableTransientTaskbar(boolean enable) {
+        getTestInfo(enable
+                ? TestProtocol.REQUEST_ENABLE_TRANSIENT_TASKBAR
+                : TestProtocol.REQUEST_DISABLE_TRANSIENT_TASKBAR);
+    }
+
     /**
      * Recreates the taskbar (outside of tests this is done for certain configuration changes).
      * The expected behavior is that the taskbar retains its current state after being recreated.

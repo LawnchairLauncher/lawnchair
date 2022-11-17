@@ -23,6 +23,7 @@ import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
+import static com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_DRAGGING;
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_FULLSCREEN;
@@ -309,7 +310,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         int windowFlags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                 | WindowManager.LayoutParams.FLAG_SLIPPERY
                 | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH;
-        if (DisplayController.isTransientTaskbar(this)) {
+        if (DisplayController.isTransientTaskbar(this)
+                && !IS_RUNNING_IN_TEST_HARNESS) {
             windowFlags |= WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                     | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
         }
@@ -898,12 +900,25 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     /**
+     * Enables the auto timeout for taskbar stashing. This method should only be used for taskbar
+     * testing.
+     */
+    @VisibleForTesting
+    public void enableBlockingTimeoutDuringTests(boolean enableBlockingTimeout) {
+        mControllers.taskbarStashController.enableBlockingTimeoutDuringTests(enableBlockingTimeout);
+    }
+
+    /**
      * Unstashes the Taskbar if it is stashed. This method should only be used to unstash the
      * taskbar at the end of a test.
      */
     @VisibleForTesting
     public void unstashTaskbarIfStashed() {
-        mControllers.taskbarStashController.onLongPressToUnstashTaskbar();
+        if (DisplayController.isTransientTaskbar(this)) {
+            mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(false);
+        } else {
+            mControllers.taskbarStashController.onLongPressToUnstashTaskbar();
+        }
     }
 
     protected boolean isUserSetupComplete() {

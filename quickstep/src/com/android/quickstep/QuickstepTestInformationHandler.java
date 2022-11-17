@@ -1,5 +1,6 @@
 package com.android.quickstep;
 
+import static com.android.launcher3.testing.shared.TestProtocol.NPE_TRANSIENT_TASKBAR;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.app.Activity;
@@ -7,13 +8,16 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
+import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.testing.TestInformationHandler;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.TISBindHelper;
 
@@ -120,6 +124,30 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                                 .getCurrentActivityContext()
                                 .getTaskbarAllAppsTopPadding());
             }
+
+            case TestProtocol.REQUEST_ENABLE_BLOCK_TIMEOUT:
+                runOnTISBinder(tisBinder -> {
+                    enableBlockingTimeout(tisBinder, true);
+                });
+                return response;
+
+            case TestProtocol.REQUEST_DISABLE_BLOCK_TIMEOUT:
+                runOnTISBinder(tisBinder -> {
+                    enableBlockingTimeout(tisBinder, false);
+                });
+                return response;
+
+            case TestProtocol.REQUEST_ENABLE_TRANSIENT_TASKBAR:
+                runOnTISBinder(tisBinder -> {
+                    enableTransientTaskbar(tisBinder, true);
+                });
+                return response;
+
+            case TestProtocol.REQUEST_DISABLE_TRANSIENT_TASKBAR:
+                runOnTISBinder(tisBinder -> {
+                    enableTransientTaskbar(tisBinder, false);
+                });
+                return response;
         }
 
         return super.call(method, arg, extras);
@@ -147,6 +175,26 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
         // Allow null-pointer to catch illegal states.
         tisBinder.getTaskbarManager().getCurrentActivityContext().enableManualStashingDuringTests(
                 enable);
+    }
+
+    private void enableBlockingTimeout(
+            TouchInteractionService.TISBinder tisBinder, boolean enable) {
+        // Allow null-pointer to catch illegal states.
+        tisBinder.getTaskbarManager().getCurrentActivityContext().enableBlockingTimeoutDuringTests(
+                enable);
+    }
+
+    private void enableTransientTaskbar(
+            TouchInteractionService.TISBinder tisBinder, boolean enable) {
+        TaskbarActivityContext context = tisBinder.getTaskbarManager().getCurrentActivityContext();
+        if (context == null) {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(NPE_TRANSIENT_TASKBAR, "enableTransientTaskbar: enable=" + enable,
+                        new Exception());
+            }
+        } else {
+            DisplayController.INSTANCE.get(context).enableTransientTaskbarForTests(enable);
+        }
     }
 
     /**

@@ -84,6 +84,10 @@ public final class TestProtocol {
     public static final String REQUEST_UNFREEZE_APP_LIST = "unfreeze-app-list";
     public static final String REQUEST_ENABLE_MANUAL_TASKBAR_STASHING = "enable-taskbar-stashing";
     public static final String REQUEST_DISABLE_MANUAL_TASKBAR_STASHING = "disable-taskbar-stashing";
+    public static final String REQUEST_ENABLE_BLOCK_TIMEOUT = "enable-block-timeout";
+    public static final String REQUEST_DISABLE_BLOCK_TIMEOUT = "disable-block-timeout";
+    public static final String REQUEST_ENABLE_TRANSIENT_TASKBAR = "enable-transient-taskbar";
+    public static final String REQUEST_DISABLE_TRANSIENT_TASKBAR = "disable-transient-taskbar";
     public static final String REQUEST_UNSTASH_TASKBAR_IF_STASHED = "unstash-taskbar-if-stashed";
     public static final String REQUEST_STASHED_TASKBAR_HEIGHT = "stashed-taskbar-height";
     public static final String REQUEST_RECREATE_TASKBAR = "recreate-taskbar";
@@ -144,6 +148,7 @@ public final class TestProtocol {
     public static final String MISSING_PROMISE_ICON = "b/202985412";
     public static final String TASKBAR_IN_APP_STATE = "b/227657604";
     public static final String INCORRECT_INFO_UPDATED = "b/239465630";
+    public static final String NPE_TRANSIENT_TASKBAR = "b/257549303";
 
     public static final String REQUEST_EMULATE_DISPLAY = "emulate-display";
     public static final String REQUEST_STOP_EMULATE_DISPLAY = "stop-emulate-display";

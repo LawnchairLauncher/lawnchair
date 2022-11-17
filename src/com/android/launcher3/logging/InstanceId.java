@@ -47,7 +47,6 @@ public final class InstanceId implements Parcelable {
         this(in.readInt());
     }
 
-    @VisibleForTesting
     public int getId() {
         return mId;
     }
