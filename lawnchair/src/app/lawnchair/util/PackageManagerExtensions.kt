@@ -2,10 +2,11 @@ package app.lawnchair.util
 
 import android.content.pm.PackageManager
 import com.android.launcher3.Utilities
-import app.lawnchair.util.Constants.LAWNCHAIR_INTENT
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.ComponentName
+import android.content.Context
+import com.android.launcher3.icons.R
 
 fun PackageManager.isPackageInstalled(packageName: String): Boolean =
     try {
@@ -32,13 +33,14 @@ fun PackageManager.isPackageInstalledAndEnabled(packageName: String) = try {
     false
 }
 
-fun PackageManager.getThemedIconPacksInstalled(applicationIfo: ApplicationInfo) : List<String> = try {
-    queryIntentActivityOptions(
-        ComponentName(applicationIfo.packageName, applicationIfo.className),
-        null,
-        Intent(LAWNCHAIR_INTENT),
-        PackageManager.GET_RESOLVED_FILTER
-    ).map { it.activityInfo.packageName }
-} catch (_: PackageManager.NameNotFoundException) {
-    emptyList()
-}
+fun PackageManager.getThemedIconPacksInstalled(context: Context): List<String> =
+    try {
+        queryIntentActivityOptions(
+            ComponentName(context.applicationInfo.packageName, context.applicationInfo.className),
+            null,
+            Intent(context.resources.getString(R.string.icon_packs_intent_name)),
+            PackageManager.GET_RESOLVED_FILTER
+        ).map { it.activityInfo.packageName }
+    } catch (_: PackageManager.NameNotFoundException) {
+        emptyList()
+    }

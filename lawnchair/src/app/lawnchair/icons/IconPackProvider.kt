@@ -51,7 +51,7 @@ class IconPackProvider(private val context: Context) {
         iconPack.loadBlocking()
         val packageManager =  context.packageManager
         val drawable = iconPack.getIcon(iconEntry, iconDpi) ?: return null
-        val themedIconPacks = packageManager.getThemedIconPacksInstalled(context.applicationInfo)
+        val themedIconPacks = packageManager.getThemedIconPacksInstalled(context)
         if (
             context.isThemedIconsEnabled() && iconEntry.packPackageName in themedIconPacks
         ) {

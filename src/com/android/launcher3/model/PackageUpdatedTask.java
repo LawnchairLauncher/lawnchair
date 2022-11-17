@@ -83,7 +83,6 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
     public static final int OP_UNSUSPEND = 6; // package unsuspended
     public static final int OP_USER_AVAILABILITY_CHANGE = 7; // user available/unavailable
 
-    private static final String LAWNCHAIR_INTENT = "app.lawnchair.icons.THEMED_ICON";
     private final int mOp;
     private final UserHandle mUser;
     private final String[] mPackages;
@@ -157,7 +156,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                         .queryIntentActivityOptions(
                             new ComponentName(context.getApplicationInfo().packageName, context.getApplicationInfo().className),
                             null,
-                            new Intent(LAWNCHAIR_INTENT),
+                            new Intent(context.getResources().getString(R.string.icon_packs_intent_name)),
                             PackageManager.GET_RESOLVED_FILTER).stream().map(it -> it.activityInfo.packageName)
                         .noneMatch(it -> packageManagerHelper.isAppInstalled(it, mUser));
                     if (isThemedIconsAvailable) {

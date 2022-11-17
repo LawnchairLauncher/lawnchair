@@ -135,7 +135,7 @@ fun IconPackPreferences() {
             )
             PreferenceGroup {
                 val themedIconsAvailable = LocalContext.current.packageManager
-                    .getThemedIconPacksInstalled(LocalContext.current.applicationInfo)
+                    .getThemedIconPacksInstalled(LocalContext.current)
                     .any { LocalContext.current.packageManager.isPackageInstalled(it) }
                 ListPreference(
                     enabled = themedIconsAvailable,
