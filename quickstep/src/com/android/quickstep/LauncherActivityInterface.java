@@ -109,15 +109,6 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
-    public void onOneHandedModeStateChanged(boolean activated) {
-        Launcher launcher = getCreatedActivity();
-        if (launcher == null) {
-            return;
-        }
-        launcher.onOneHandedStateChanged(activated);
-    }
-
-    @Override
     public AnimationFactory prepareRecentsUI(RecentsAnimationDeviceState deviceState,
             boolean activityVisible, Consumer<AnimatorControllerWithResistance> callback) {
         notifyRecentsOfOrientation(deviceState.getRotationTouchHelper());
