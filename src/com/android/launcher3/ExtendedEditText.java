@@ -18,6 +18,7 @@ package com.android.launcher3;
 import static com.android.launcher3.logging.KeyboardStateManager.KeyboardState.SHOW;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.DragEvent;
@@ -27,12 +28,17 @@ import android.widget.EditText;
 
 import com.android.launcher3.views.ActivityContext;
 
+import java.util.HashSet;
+import java.util.Set;
+
 
 /**
  * The edit text that reports back when the back key has been pressed.
  * Note: AppCompatEditText doesn't fully support #displayCompletions and #onCommitCompletion
  */
 public class ExtendedEditText extends EditText {
+    private final Set<OnFocusChangeListener> mOnFocusChangeListeners = new HashSet<>();
+
     private boolean mForceDisableSuggestions = false;
 
     /**
@@ -127,6 +133,30 @@ public class ExtendedEditText extends EditText {
     public void reset() {
         if (!TextUtils.isEmpty(getText())) {
             setText("");
+        }
+    }
+
+    /**
+     * This method should be preferred to {@link #setOnFocusChangeListener(OnFocusChangeListener)},
+     * as it allows for multiple listeners from different sources.
+     */
+    public void addOnFocusChangeListener(OnFocusChangeListener listener) {
+        mOnFocusChangeListeners.add(listener);
+    }
+
+    /**
+     * Removes the given listener from the set of registered focus listeners, or does nothing if it
+     * wasn't registered in the first place.
+     */
+    public void removeOnFocusChangeListener(OnFocusChangeListener listener) {
+        mOnFocusChangeListeners.remove(listener);
+    }
+
+    @Override
+    protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+        super.onFocusChanged(focused, direction, previouslyFocusedRect);
+        for (OnFocusChangeListener listener : mOnFocusChangeListeners) {
+            listener.onFocusChange(this, focused);
         }
     }
 }
