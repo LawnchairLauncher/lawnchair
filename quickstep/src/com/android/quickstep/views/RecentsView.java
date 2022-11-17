@@ -125,7 +125,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.core.graphics.ColorUtils;
 
-import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseActivity.MultiWindowModeChangedListener;
 import com.android.launcher3.DeviceProfile;
@@ -2764,13 +2763,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * @param gridProgress 0 = carousel; 1 = 2 row grid.
      */
     private void setGridProgress(float gridProgress) {
-        int taskCount = getTaskViewCount();
-        if (taskCount == 0) {
-            return;
-        }
-
         mGridProgress = gridProgress;
 
+        int taskCount = getTaskViewCount();
         for (int i = 0; i < taskCount; i++) {
             requireTaskViewAt(i).setGridProgress(gridProgress);
         }
