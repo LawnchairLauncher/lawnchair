@@ -255,6 +255,7 @@ public class DeviceProfile {
     public boolean isTaskbarPresentInApps;
     public int taskbarSize;
     public int stashedTaskbarSize;
+    public int transientTaskbarMargin;
 
     // DragController
     public int flingToDeleteThresholdVelocity;
@@ -320,6 +321,8 @@ public class DeviceProfile {
                 taskbarSize = res.getDimensionPixelSize(R.dimen.transient_taskbar_size);
                 stashedTaskbarSize =
                         res.getDimensionPixelSize(R.dimen.transient_taskbar_stashed_size);
+                transientTaskbarMargin =
+                        res.getDimensionPixelSize(R.dimen.transient_taskbar_margin);
             } else {
                 taskbarSize = res.getDimensionPixelSize(R.dimen.taskbar_size);
                 stashedTaskbarSize = res.getDimensionPixelSize(R.dimen.taskbar_stashed_size);
@@ -1305,15 +1308,15 @@ public class DeviceProfile {
      * Returns the number of pixels required below OverviewActions excluding insets.
      */
     public int getOverviewActionsClaimedSpaceBelow() {
-        if (isTaskbarPresent && !isGestureMode
-                // If taskbar is in overview, overview action has dedicated space above nav buttons
-                && !FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get()) {
-            // Align vertically to where nav buttons are.
-            return ((taskbarSize - overviewActionsHeight) / 2) + getTaskbarOffsetY();
-        }
-
         if (isTaskbarPresent) {
-            return FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get() ? taskbarSize : stashedTaskbarSize;
+            if (FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get()) {
+                return taskbarSize + transientTaskbarMargin;
+            }
+
+            return isGestureMode
+                    ? stashedTaskbarSize
+                    // Align vertically to where nav buttons are.
+                    : ((taskbarSize - overviewActionsHeight) / 2) + getTaskbarOffsetY();
         }
         return mInsets.bottom;
     }
