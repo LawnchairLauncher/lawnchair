@@ -132,7 +132,8 @@ public class QuickstepModelDelegate extends ModelDelegate {
 
         // Widgets prediction isn't used frequently. And thus, it is not persisted on disk.
         mDataModel.extraItems.put(mWidgetsRecommendationState.containerId,
-                new FixedContainerItems(mWidgetsRecommendationState.containerId));
+                new FixedContainerItems(mWidgetsRecommendationState.containerId,
+                        new ArrayList<>()));
         mActive = true;
     }
 
