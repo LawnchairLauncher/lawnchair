@@ -52,4 +52,15 @@ public class SimpleBroadcastReceiver extends BroadcastReceiver {
         }
         context.registerReceiver(this, filter, flags);
     }
+
+    /**
+     * Unregisters the receiver ignoring any errors
+     */
+    public void unregisterReceiverSafely(Context context) {
+        try {
+            context.unregisterReceiver(this);
+        } catch (IllegalArgumentException e) {
+            // It was probably never registered or already unregistered. Ignore.
+        }
+    }
 }
