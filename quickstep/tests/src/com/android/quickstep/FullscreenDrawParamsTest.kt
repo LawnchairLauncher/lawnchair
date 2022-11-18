@@ -94,8 +94,13 @@ class FullscreenDrawParamsTest : DeviceProfileBaseTest() {
         params.setProgress(/* fullscreenProgress= */ 1.0f, /* parentScale= */ 1.0f,
                 /* taskViewScale= */ 1.0f,  /* previewWidth= */ 0, dp, mPreviewPositionHelper)
 
+        // Probably  unhelpful, but also unclear how to test otherwise ¯\_(ツ)_/¯
+        val fullscreenTaskHeight = (dp.heightPx - dp.taskbarSize) *
+                (1 - (splitBounds.topTaskPercent + splitBounds.dividerHeightPercent))
+        val canvasScreenRatio = canvasHeight / fullscreenTaskHeight
+        val expectedBottomHint = dp.taskbarSize * canvasScreenRatio
         assertThat(params.mCurrentDrawnInsets.bottom)
-                .isWithin(1f).of((dp.taskbarSize * TASK_SCALE))
+                .isWithin(1f).of(expectedBottomHint)
     }
 
     @Test
