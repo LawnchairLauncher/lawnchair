@@ -473,7 +473,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         InvariantDeviceProfile idp = app.getInvariantDeviceProfile();
         initDeviceProfile(idp);
         idp.addOnChangeListener(this);
-        mSharedPrefs = Utilities.getPrefs(this);
+        mSharedPrefs = LauncherPrefs.getPrefs(this);
         mIconCache = app.getIconCache();
         mAccessibilityDelegate = createAccessibilityDelegate();
 
@@ -1563,7 +1563,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     public SharedPreferences getDevicePrefs() {
-        return Utilities.getDevicePrefs(this);
+        return LauncherPrefs.getDevicePrefs(this);
     }
 
     public int getOrientation() {

@@ -29,7 +29,7 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 
 import java.util.Locale;
@@ -58,7 +58,7 @@ public class DeviceGridState implements Comparable<DeviceGridState> {
     }
 
     public DeviceGridState(Context context) {
-        SharedPreferences prefs = Utilities.getPrefs(context);
+        SharedPreferences prefs = LauncherPrefs.getPrefs(context);
         mGridSizeString = prefs.getString(KEY_WORKSPACE_SIZE, "");
         mNumHotseat = prefs.getInt(KEY_HOTSEAT_COUNT, -1);
         mDeviceType = prefs.getInt(KEY_DEVICE_TYPE, TYPE_PHONE);
@@ -90,7 +90,7 @@ public class DeviceGridState implements Comparable<DeviceGridState> {
      * Stores the device state to shared preferences
      */
     public void writeToPrefs(Context context) {
-        Utilities.getPrefs(context).edit()
+        LauncherPrefs.getPrefs(context).edit()
                 .putString(KEY_WORKSPACE_SIZE, mGridSizeString)
                 .putInt(KEY_HOTSEAT_COUNT, mNumHotseat)
                 .putInt(KEY_DEVICE_TYPE, mDeviceType)
