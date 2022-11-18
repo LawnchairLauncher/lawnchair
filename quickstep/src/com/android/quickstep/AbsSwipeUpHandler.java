@@ -95,6 +95,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.statemanager.BaseState;
@@ -1381,6 +1382,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         // If we are transitioning to launcher, then listen for the activity to be restarted while
         // the transition is in progress
         if (mGestureState.getEndTarget().isLauncher) {
+            // This is also called when the launcher is resumed, in order to clear the pending
+            // widgets that have yet to be configured.
+            DragView.removeAllViews(mActivity);
+
             TaskStackChangeListeners.getInstance().registerTaskStackListener(
                     mActivityRestartListener);
 
