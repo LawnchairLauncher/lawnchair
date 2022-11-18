@@ -207,8 +207,13 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
 
                     if (FeatureFlags.ENABLE_TASKBAR_POPUP_MENU.get()
                             && !shouldStartDrag(0)) {
-                        // Immediately close the popup menu.
-                        mDragView.setOnAnimationEndCallback(() -> callOnDragStart());
+                        mDragView.setOnAnimationEndCallback(() -> {
+                            // Drag might be cancelled during the DragView animation, so check
+                            // mIsPreDrag again.
+                            if (mIsInPreDrag) {
+                                callOnDragStart();
+                            }
+                        });
                     }
                 }
 
