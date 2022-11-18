@@ -210,6 +210,7 @@ import com.android.launcher3.views.OptionsPopupView;
 import com.android.launcher3.views.ScrimView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.widget.LauncherWidgetHolder;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
@@ -645,14 +646,6 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     public void onAssistantVisibilityChanged(float visibility) {
         mHotseat.getQsb().setAlpha(1f - visibility);
-    }
-
-    /**
-     * Called when one handed mode activated and deactivated.
-     * @param activated true if one handed mode activated, false otherwise.
-     */
-    public void onOneHandedStateChanged(boolean activated) {
-        mDragLayer.onOneHandedModeStateChanged(activated);
     }
 
     /**
@@ -1720,6 +1713,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         } catch (NullPointerException ex) {
             Log.w(TAG, "problem while stopping AppWidgetHost during Launcher destruction", ex);
         }
+        mAppWidgetHolder.destroy();
 
         TextKeyListener.getInstance().release();
         clearPendingBinds();

@@ -18,7 +18,6 @@ package com.android.quickstep.util;
 import static com.android.launcher3.LauncherAnimUtils.HOTSEAT_SCALE_PROPERTY_FACTORY;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_UNFOLD_ANIMATION;
 import static com.android.launcher3.LauncherAnimUtils.WORKSPACE_SCALE_PROPERTY_FACTORY;
-import static com.android.launcher3.Utilities.comp;
 
 import android.annotation.Nullable;
 import android.util.FloatProperty;
@@ -135,7 +134,7 @@ public class LauncherUnfoldAnimationController {
         @Override
         public void onTransitionProgress(float progress) {
             if (mQsbInsettable != null) {
-                float insetPercentage = comp(progress) * MAX_WIDTH_INSET_FRACTION;
+                float insetPercentage = (1 - progress) * MAX_WIDTH_INSET_FRACTION;
                 mQsbInsettable.setHorizontalInsets(insetPercentage);
             }
         }

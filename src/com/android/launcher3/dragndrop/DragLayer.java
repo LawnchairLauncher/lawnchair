@@ -56,7 +56,6 @@ import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.graphics.Scrim;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
-import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlayCallbacks;
 
@@ -472,16 +471,6 @@ public class DragLayer extends BaseDragLayer<Launcher> implements LauncherOverla
 
     public Scrim getWorkspaceDragScrim() {
         return mWorkspaceDragScrim;
-    }
-
-    /**
-     * Called when one handed mode state changed.
-     * @param activated true if one handed mode activated, false otherwise.
-     */
-    public void onOneHandedModeStateChanged(boolean activated) {
-        for (TouchController controller : mControllers) {
-            controller.onOneHandedModeStateChanged(activated);
-        }
     }
 
     @Override

@@ -22,7 +22,6 @@ import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
 
 import android.annotation.TargetApi;
 import android.app.backup.BackupManager;
-import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.ContentProvider;
@@ -55,6 +54,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Xml;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.AutoInstallsLayout.LayoutParserCallback;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.config.FeatureFlags;
@@ -70,7 +71,7 @@ import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.NoLocaleSQLiteHelper;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Thunk;
-import com.android.launcher3.widget.LauncherAppWidgetHost;
+import com.android.launcher3.widget.LauncherWidgetHolder;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -255,17 +256,20 @@ public class LauncherProvider extends ContentProvider {
                     values.getAsString(Favorites.APPWIDGET_PROVIDER));
 
             if (cn != null) {
+                LauncherWidgetHolder widgetHolder = mOpenHelper.newLauncherWidgetHolder();
                 try {
-                    AppWidgetHost widgetHost = mOpenHelper.newLauncherWidgetHost();
-                    int appWidgetId = widgetHost.allocateAppWidgetId();
+                    int appWidgetId = widgetHolder.allocateAppWidgetId();
                     values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
                     if (!appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId,cn)) {
-                        widgetHost.deleteAppWidgetId(appWidgetId);
+                        widgetHolder.deleteAppWidgetId(appWidgetId);
                         return false;
                     }
                 } catch (RuntimeException e) {
                     Log.e(TAG, "Failed to initialize external widget", e);
                     return false;
+                } finally {
+                    // Necessary to destroy the holder to free up possible activity context
+                    widgetHolder.destroy();
                 }
             } else {
                 return false;
@@ -533,10 +537,10 @@ public class LauncherProvider extends ContentProvider {
         if (sp.getBoolean(mOpenHelper.getKey(EMPTY_DATABASE_CREATED), false)) {
             Log.d(TAG, "loading default workspace");
 
-            AppWidgetHost widgetHost = mOpenHelper.newLauncherWidgetHost();
-            AutoInstallsLayout loader = createWorkspaceLoaderFromAppRestriction(widgetHost);
+            LauncherWidgetHolder widgetHolder = mOpenHelper.newLauncherWidgetHolder();
+            AutoInstallsLayout loader = createWorkspaceLoaderFromAppRestriction(widgetHolder);
             if (loader == null) {
-                loader = AutoInstallsLayout.get(getContext(),widgetHost, mOpenHelper);
+                loader = AutoInstallsLayout.get(getContext(), widgetHolder, mOpenHelper);
             }
             if (loader == null) {
                 final Partner partner = Partner.get(getContext().getPackageManager());
@@ -545,7 +549,7 @@ public class LauncherProvider extends ContentProvider {
                     int workspaceResId = partnerRes.getIdentifier(Partner.RES_DEFAULT_LAYOUT,
                             "xml", partner.getPackageName());
                     if (workspaceResId != 0) {
-                        loader = new DefaultLayoutParser(getContext(), widgetHost,
+                        loader = new DefaultLayoutParser(getContext(), widgetHolder,
                                 mOpenHelper, partnerRes, workspaceResId);
                     }
                 }
@@ -553,7 +557,7 @@ public class LauncherProvider extends ContentProvider {
 
             final boolean usingExternallyProvidedLayout = loader != null;
             if (loader == null) {
-                loader = getDefaultLayoutParser(widgetHost);
+                loader = getDefaultLayoutParser(widgetHolder);
             }
 
             // There might be some partially restored DB items, due to buggy restore logic in
@@ -565,9 +569,10 @@ public class LauncherProvider extends ContentProvider {
                 // Unable to load external layout. Cleanup and load the internal layout.
                 mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
                 mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(),
-                        getDefaultLayoutParser(widgetHost));
+                        getDefaultLayoutParser(widgetHolder));
             }
             clearFlagEmptyDbCreated();
+            widgetHolder.destroy();
         }
     }
 
@@ -576,7 +581,8 @@ public class LauncherProvider extends ContentProvider {
      *
      * @return the loader if the restrictions are set and the resource exists; null otherwise.
      */
-    private AutoInstallsLayout createWorkspaceLoaderFromAppRestriction(AppWidgetHost widgetHost) {
+    private AutoInstallsLayout createWorkspaceLoaderFromAppRestriction(
+            LauncherWidgetHolder widgetHolder) {
         Context ctx = getContext();
         final String authority;
         if (!TextUtils.isEmpty(mProviderAuthority)) {
@@ -602,7 +608,7 @@ public class LauncherProvider extends ContentProvider {
             parser.setInput(new StringReader(layout));
 
             Log.d(TAG, "Loading layout from " + authority);
-            return new AutoInstallsLayout(ctx, widgetHost, mOpenHelper,
+            return new AutoInstallsLayout(ctx, widgetHolder, mOpenHelper,
                     ctx.getPackageManager().getResourcesForApplication(pi.applicationInfo),
                     () -> parser, AutoInstallsLayout.TAG_WORKSPACE);
         } catch (Exception e) {
@@ -621,7 +627,7 @@ public class LauncherProvider extends ContentProvider {
                 .build();
     }
 
-    private DefaultLayoutParser getDefaultLayoutParser(AppWidgetHost widgetHost) {
+    private DefaultLayoutParser getDefaultLayoutParser(LauncherWidgetHolder widgetHolder) {
         InvariantDeviceProfile idp = LauncherAppState.getIDP(getContext());
         int defaultLayout = mUseTestWorkspaceLayout
                 ? TEST_WORKSPACE_LAYOUT_RES_XML : idp.defaultLayoutId;
@@ -631,7 +637,7 @@ public class LauncherProvider extends ContentProvider {
             defaultLayout = idp.demoModeLayoutId;
         }
 
-        return new DefaultLayoutParser(getContext(), widgetHost,
+        return new DefaultLayoutParser(getContext(), widgetHolder,
                 mOpenHelper, getContext().getResources(), defaultLayout);
     }
 
@@ -932,40 +938,46 @@ public class LauncherProvider extends ContentProvider {
          */
         public void removeGhostWidgets(SQLiteDatabase db) {
             // Get all existing widget ids.
-            final AppWidgetHost host = newLauncherWidgetHost();
-            final int[] allWidgets;
+            final LauncherWidgetHolder holder = newLauncherWidgetHolder();
             try {
-                // Although the method was defined in O, it has existed since the beginning of time,
-                // so it might work on older platforms as well.
-                allWidgets = host.getAppWidgetIds();
-            } catch (IncompatibleClassChangeError e) {
-                Log.e(TAG, "getAppWidgetIds not supported", e);
-                return;
-            }
-            final IntSet validWidgets = IntSet.wrap(LauncherDbUtils.queryIntArray(false, db,
-                    Favorites.TABLE_NAME, Favorites.APPWIDGET_ID,
-                    "itemType=" + Favorites.ITEM_TYPE_APPWIDGET, null, null));
-            boolean isAnyWidgetRemoved = false;
-            for (int widgetId : allWidgets) {
-                if (!validWidgets.contains(widgetId)) {
-                    try {
-                        FileLog.d(TAG, "Deleting invalid widget " + widgetId);
-                        host.deleteAppWidgetId(widgetId);
-                        isAnyWidgetRemoved = true;
-                    } catch (RuntimeException e) {
-                        // Ignore
+                final int[] allWidgets;
+                try {
+                    // Although the method was defined in O, it has existed since the beginning of
+                    // time, so it might work on older platforms as well.
+                    allWidgets = holder.getAppWidgetIds();
+                } catch (IncompatibleClassChangeError e) {
+                    Log.e(TAG, "getAppWidgetIds not supported", e);
+                    // Necessary to destroy the holder to free up possible activity context
+                    holder.destroy();
+                    return;
+                }
+                final IntSet validWidgets = IntSet.wrap(LauncherDbUtils.queryIntArray(false, db,
+                        Favorites.TABLE_NAME, Favorites.APPWIDGET_ID,
+                        "itemType=" + Favorites.ITEM_TYPE_APPWIDGET, null, null));
+                boolean isAnyWidgetRemoved = false;
+                for (int widgetId : allWidgets) {
+                    if (!validWidgets.contains(widgetId)) {
+                        try {
+                            FileLog.d(TAG, "Deleting invalid widget " + widgetId);
+                            holder.deleteAppWidgetId(widgetId);
+                            isAnyWidgetRemoved = true;
+                        } catch (RuntimeException e) {
+                            // Ignore
+                        }
                     }
                 }
-            }
-            if (isAnyWidgetRemoved) {
-                final String allWidgetsIds = Arrays.stream(allWidgets).mapToObj(String::valueOf)
-                        .collect(Collectors.joining(",", "[", "]"));
-                final String validWidgetsIds = Arrays.stream(
-                        validWidgets.getArray().toArray()).mapToObj(String::valueOf)
-                        .collect(Collectors.joining(",", "[", "]"));
-                FileLog.d(TAG, "One or more widgets was removed. db_path=" + db.getPath()
-                        + " allWidgetsIds=" + allWidgetsIds
-                        + ", validWidgetsIds=" + validWidgetsIds);
+                if (isAnyWidgetRemoved) {
+                    final String allWidgetsIds = Arrays.stream(allWidgets).mapToObj(String::valueOf)
+                            .collect(Collectors.joining(",", "[", "]"));
+                    final String validWidgetsIds = Arrays.stream(
+                                    validWidgets.getArray().toArray()).mapToObj(String::valueOf)
+                            .collect(Collectors.joining(",", "[", "]"));
+                    FileLog.d(TAG, "One or more widgets was removed. db_path=" + db.getPath()
+                            + " allWidgetsIds=" + allWidgetsIds
+                            + ", validWidgetsIds=" + validWidgetsIds);
+                }
+            } finally {
+                holder.destroy();
             }
         }
 
@@ -1066,8 +1078,12 @@ public class LauncherProvider extends ContentProvider {
             return mMaxItemId;
         }
 
-        public AppWidgetHost newLauncherWidgetHost() {
-            return new LauncherAppWidgetHost(mContext);
+        /**
+         * @return A new {@link LauncherWidgetHolder} based on the current context
+         */
+        @NonNull
+        public LauncherWidgetHolder newLauncherWidgetHolder() {
+            return new LauncherWidgetHolder(mContext);
         }
 
         @Override

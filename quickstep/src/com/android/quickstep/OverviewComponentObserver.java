@@ -115,11 +115,6 @@ public final class OverviewComponentObserver {
         if (mDeviceState.isHomeDisabled() != mIsHomeDisabled) {
             updateOverviewTargets();
         }
-
-        // Notify ALL_APPS touch controller when one handed mode state activated or deactivated
-        if (mDeviceState.isOneHandedModeEnabled()) {
-            mActivityInterface.onOneHandedModeStateChanged(mDeviceState.isOneHandedModeActive());
-        }
     }
 
     private void updateOverviewTargets(Intent unused) {
