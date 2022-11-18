@@ -76,9 +76,11 @@
     <!-- which time format to use by default on smartspace -->
     <string name="config_default_smartspace_time_format" translatable="false">system</string>
 
+    <!-- which hotseat mode to use by default -->
+    <string name="config_default_hotseat_mode" translatable="false">lawnchair</string>
+
     <bool name="config_default_always_reload_icons">true</bool>
     <bool name="config_default_dark_status_bar">false</bool>
-    <bool name="config_default_dock_search_bar">true</bool>
     <bool name="config_default_show_notification_count">false</bool>
     <bool name="config_default_themed_hotseat_qsb">true</bool>
     <bool name="config_default_dock_search_bar_force_website">false</bool>
