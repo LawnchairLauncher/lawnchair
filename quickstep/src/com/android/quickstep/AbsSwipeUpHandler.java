@@ -316,6 +316,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private final int mTaskbarAppWindowThreshold;
     private final int mTaskbarCatchUpThreshold;
     private boolean mTaskbarAlreadyOpen;
+    private final boolean mIsTransientTaskbar;
+    // Only used when mIsTransientTaskbar is true.
+    private boolean mHasReachedHomeOverviewThreshold;
 
     public AbsSwipeUpHandler(Context context, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
@@ -342,6 +345,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mTaskbarAppWindowThreshold = res
                 .getDimensionPixelSize(R.dimen.taskbar_app_window_threshold);
         mTaskbarCatchUpThreshold = res.getDimensionPixelSize(R.dimen.taskbar_catch_up_threshold);
+        mIsTransientTaskbar = DisplayController.isTransientTaskbar(mActivity);
 
         mQuickSwitchScaleScrollThreshold = res
                 .getDimension(R.dimen.quick_switch_scaling_scroll_threshold);
@@ -818,7 +822,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     @UiThread
     @Override
     public void updateFinalShift() {
-        final boolean passed = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW;
+        final boolean passed = hasReachedHomeOverviewThreshold();
         if (passed != mPassedOverviewThreshold) {
             mPassedOverviewThreshold = passed;
             if (mDeviceState.isTwoButtonNavMode() && !mGestureState.isHandlingAtomicEvent()) {
@@ -1142,16 +1146,16 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         }
 
         if (!mDeviceState.isFullyGesturalNavMode()) {
-            return (!hasReachedOverviewThreshold() && willGoToNewTask) ? NEW_TASK : RECENTS;
+            return (!hasReachedHomeOverviewThreshold() && willGoToNewTask) ? NEW_TASK : RECENTS;
         }
         return willGoToNewTask ? NEW_TASK : HOME;
     }
 
     private GestureEndTarget calculateEndTargetForNonFling(PointF velocity) {
         final boolean isScrollingToNewTask = isScrollingToNewTask();
-        final boolean reachedOverviewThreshold = hasReachedOverviewThreshold();
+        final boolean reachedHomeOverviewThreshold = hasReachedHomeOverviewThreshold();
         if (!mDeviceState.isFullyGesturalNavMode()) {
-            return reachedOverviewThreshold && mGestureStarted
+            return reachedHomeOverviewThreshold && mGestureStarted
                     ? RECENTS
                     : (isScrollingToNewTask ? NEW_TASK : LAST_TASK);
         }
@@ -1167,7 +1171,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             return RECENTS;
         } else if (isScrollingToNewTask) {
             return NEW_TASK;
-        } else if (reachedOverviewThreshold) {
+        } else if (reachedHomeOverviewThreshold) {
             return HOME;
         }
         return LAST_TASK;
@@ -1186,8 +1190,22 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         return runningTaskIndex >= 0 && mRecentsView.getNextPage() != runningTaskIndex;
     }
 
-    private boolean hasReachedOverviewThreshold() {
-        return getTaskbarProgress() > MIN_PROGRESS_FOR_OVERVIEW;
+    /**
+     * Sets whether the current swipe has reached the threshold where if user lets go they would
+     * go to either the home state or overview state.
+     */
+    public void setHasReachedHomeOverviewThreshold(boolean hasReachedHomeOverviewThreshold) {
+        mHasReachedHomeOverviewThreshold = hasReachedHomeOverviewThreshold;
+    }
+
+    /**
+     * Returns true iff swipe has reached the overview threshold.
+     */
+    public boolean hasReachedHomeOverviewThreshold() {
+        if (mIsTransientTaskbar) {
+            return mHasReachedHomeOverviewThreshold;
+        }
+        return mCurrentShift.value > MIN_PROGRESS_FOR_OVERVIEW;
     }
 
     @UiThread
@@ -2264,7 +2282,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
      * There is also a catch up period so that the window can start moving 1:1 with the swipe.
      */
     private float getTaskbarProgress() {
-        if (!DisplayController.isTransientTaskbar(mContext)) {
+        if (!mIsTransientTaskbar) {
             return mCurrentShift.value;
         }
 
