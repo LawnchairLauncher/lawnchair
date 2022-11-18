@@ -154,6 +154,7 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
 
     private void updateVisibility() {
         clearAnimation();
+        onApplyWindowInsets(getRootWindowInsets());
         if (mWorkEnabled && mOnWorkTab) {
             setFlag(FLAG_FADE_ONGOING);
             setVisibility(VISIBLE);
