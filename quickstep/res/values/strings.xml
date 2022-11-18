@@ -224,6 +224,8 @@
     <string name="accessibility_rotate_button">Rotate screen</string>
 
     <!-- ******* Taskbar Edu ******* -->
+    <!-- Accessibility title for the taskbar education window. [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_edu_a11y_title">Taskbar education</string>
     <!-- Accessibility text spoken when the taskbar education panel appears [CHAR_LIMIT=NONE] -->
     <string name="taskbar_edu_opened">Taskbar education appeared</string>
     <!-- Accessibility text spoken when the taskbar education panel disappears [CHAR_LIMIT=NONE] -->
@@ -259,6 +261,10 @@
     <string name="taskbar_button_notifications">Notifications</string>
     <!-- Content description for quick settings button [CHAR_LIMIT=16] -->
     <string name="taskbar_button_quick_settings">Quick Settings</string>
+    <!-- Accessibility title for the taskbar window. [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_a11y_title">Taskbar</string>
+    <!-- Accessibility title for the taskbar window on phones. [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_phone_a11y_title">Navigation bar</string>
 
     <!-- Label for moving drop target to the top or left side of the screen, depending on orientation (from the taskbar only). -->
     <string name="move_drop_target_top_or_left">Move to top&#47;left</string>
