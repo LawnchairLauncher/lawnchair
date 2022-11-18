@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import android.appwidget.AppWidgetHost;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -48,6 +47,7 @@ import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.widget.LauncherWidgetHolder;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -74,7 +74,7 @@ public class AutoInstallsLayout {
     private static final String FORMATTED_LAYOUT_RES = "default_layout_%dx%d";
     private static final String LAYOUT_RES = "default_layout";
 
-    static AutoInstallsLayout get(Context context, AppWidgetHost appWidgetHost,
+    static AutoInstallsLayout get(Context context, LauncherWidgetHolder appWidgetHolder,
             LayoutParserCallback callback) {
         Pair<String, Resources> customizationApkInfo = PackageManagerHelper.findSystemApk(
                 ACTION_LAUNCHER_CUSTOMIZATION, context.getPackageManager());
@@ -109,7 +109,7 @@ public class AutoInstallsLayout {
             Log.e(TAG, "Layout definition not found in package: " + pkg);
             return null;
         }
-        return new AutoInstallsLayout(context, appWidgetHost, callback, targetRes, layoutId,
+        return new AutoInstallsLayout(context, appWidgetHolder, callback, targetRes, layoutId,
                 TAG_WORKSPACE);
     }
 
@@ -156,7 +156,7 @@ public class AutoInstallsLayout {
     @Thunk
     final Context mContext;
     @Thunk
-    final AppWidgetHost mAppWidgetHost;
+    final LauncherWidgetHolder mAppWidgetHolder;
     protected final LayoutParserCallback mCallback;
 
     protected final PackageManager mPackageManager;
@@ -174,17 +174,17 @@ public class AutoInstallsLayout {
 
     protected SQLiteDatabase mDb;
 
-    public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,
+    public AutoInstallsLayout(Context context, LauncherWidgetHolder appWidgetHolder,
             LayoutParserCallback callback, Resources res,
             int layoutId, String rootTag) {
-        this(context, appWidgetHost, callback, res, () -> res.getXml(layoutId), rootTag);
+        this(context, appWidgetHolder, callback, res, () -> res.getXml(layoutId), rootTag);
     }
 
-    public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,
+    public AutoInstallsLayout(Context context, LauncherWidgetHolder appWidgetHolder,
             LayoutParserCallback callback, Resources res,
             Supplier<XmlPullParser> initialLayoutSupplier, String rootTag) {
         mContext = context;
-        mAppWidgetHost = appWidgetHost;
+        mAppWidgetHolder = appWidgetHolder;
         mCallback = callback;
 
         mPackageManager = context.getPackageManager();

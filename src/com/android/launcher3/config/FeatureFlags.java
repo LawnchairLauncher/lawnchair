@@ -258,6 +258,10 @@ public final class FeatureFlags {
             getDebugFlag("ENABLE_SPLIT_FROM_FULLSCREEN_SHORTCUT", false,
                     "Enable splitting from fullscreen app with keyboard shortcuts");
 
+    public static final BooleanFlag ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE = getDebugFlag(
+            "ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE", false,
+            "Enable initiating split screen from workspace to workspace.");
+
     public static final BooleanFlag ENABLE_NEW_MIGRATION_LOGIC = getDebugFlag(
             "ENABLE_NEW_MIGRATION_LOGIC", true,
             "Enable the new grid migration logic, keeping pages when src < dest");
@@ -349,6 +353,11 @@ public final class FeatureFlags {
 
     public static final BooleanFlag ENABLE_DEVICE_PROFILE_LOGGING = new DeviceFlag(
             "ENABLE_DEVICE_PROFILE_LOGGING", false, "Allows DeviceProfile logging");
+
+    public static final BooleanFlag ENABLE_LAUNCH_FROM_STAGED_APP = getDebugFlag(
+            "ENABLE_LAUNCH_FROM_STAGED_APP", false,
+            "Enable the ability to tap a staged app during split select to launch it in full screen"
+    );
 
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {

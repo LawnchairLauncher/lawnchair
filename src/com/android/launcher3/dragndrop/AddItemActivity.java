@@ -53,6 +53,8 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
@@ -69,8 +71,8 @@ import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.views.AbstractSlideInView;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.AddItemWidgetsBottomSheet;
-import com.android.launcher3.widget.LauncherAppWidgetHost;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.widget.LauncherWidgetHolder;
 import com.android.launcher3.widget.NavigableAppWidgetHostView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
@@ -105,7 +107,8 @@ public class AddItemActivity extends BaseActivity
     private WidgetCell mWidgetCell;
 
     // Widget request specific options.
-    private LauncherAppWidgetHost mAppWidgetHost;
+    @Nullable
+    private LauncherWidgetHolder mAppWidgetHolder = null;
     private WidgetManagerHelper mAppWidgetManager;
     private int mPendingBindWidgetId;
     private Bundle mWidgetOptions;
@@ -284,7 +287,7 @@ public class AddItemActivity extends BaseActivity
         mWidgetCell.setRemoteViewsPreview(PinItemDragListener.getPreview(mRequest));
 
         mAppWidgetManager = new WidgetManagerHelper(this);
-        mAppWidgetHost = new LauncherAppWidgetHost(this);
+        mAppWidgetHolder = new LauncherWidgetHolder(this);
 
         PendingAddWidgetInfo pendingInfo =
                 new PendingAddWidgetInfo(widgetInfo, CONTAINER_PIN_WIDGETS);
@@ -338,7 +341,7 @@ public class AddItemActivity extends BaseActivity
             return;
         }
 
-        mPendingBindWidgetId = mAppWidgetHost.allocateAppWidgetId();
+        mPendingBindWidgetId = mAppWidgetHolder.allocateAppWidgetId();
         AppWidgetProviderInfo widgetProviderInfo = mRequest.getAppWidgetProviderInfo(this);
         boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
                 mPendingBindWidgetId, widgetProviderInfo, mWidgetOptions);
@@ -349,7 +352,7 @@ public class AddItemActivity extends BaseActivity
         }
 
         // request bind widget
-        mAppWidgetHost.startBindFlow(this, mPendingBindWidgetId,
+        mAppWidgetHolder.startBindFlow(this, mPendingBindWidgetId,
                 mRequest.getAppWidgetProviderInfo(this), REQUEST_BIND_APPWIDGET);
     }
 
@@ -360,6 +363,15 @@ public class AddItemActivity extends BaseActivity
         mRequest.accept(mWidgetOptions);
         logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_PLACED_AUTOMATICALLY);
         mSlideInView.close(/* animate= */ true);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mAppWidgetHolder != null) {
+            // Necessary to destroy the holder to free up possible activity context
+            mAppWidgetHolder.destroy();
+        }
     }
 
     @Override
@@ -378,7 +390,7 @@ public class AddItemActivity extends BaseActivity
                 acceptWidget(widgetId);
             } else {
                 // Simply wait it out.
-                mAppWidgetHost.deleteAppWidgetId(widgetId);
+                mAppWidgetHolder.deleteAppWidgetId(widgetId);
                 mPendingBindWidgetId = -1;
             }
             return;

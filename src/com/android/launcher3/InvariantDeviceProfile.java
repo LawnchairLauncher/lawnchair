@@ -308,8 +308,7 @@ public class InvariantDeviceProfile {
     }
 
     public static String getCurrentGridName(Context context) {
-        return Utilities.isGridOptionsEnabled(context)
-                ? Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null) : null;
+        return Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null);
     }
 
     private String initGrid(Context context, String gridName) {
@@ -384,10 +383,6 @@ public class InvariantDeviceProfile {
         allAppsBorderSpaces = displayOption.allAppsBorderSpaces;
         allAppsIconSize = displayOption.allAppsIconSizes;
         allAppsIconTextSize = displayOption.allAppsIconTextSizes;
-        if (!Utilities.isGridOptionsEnabled(context)) {
-            allAppsIconSize = iconSize;
-            allAppsIconTextSize = iconTextSize;
-        }
 
         if (devicePaddingId != 0) {
             devicePaddings = new DevicePaddings(context, devicePaddingId);

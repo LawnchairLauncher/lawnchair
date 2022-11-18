@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.model;
 
-import static com.android.launcher3.Utilities.isValidExtraType;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -148,5 +146,13 @@ public class ModelUtils {
         info.contentDescription = info.title = Utilities.trim(label);
         info.intent = launchIntent;
         return info;
+    }
+
+    /**
+     * @return true if the extra is either null or is of type {@param type}
+     */
+    private static boolean isValidExtraType(Intent intent, String key, Class type) {
+        Object extra = intent.getParcelableExtra(key);
+        return extra == null || type.isInstance(extra);
     }
 }
