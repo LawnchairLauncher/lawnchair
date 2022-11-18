@@ -364,6 +364,10 @@ public class FloatingHeaderView extends LinearLayout implements
         onHeightUpdated();
     }
 
+    public int getClipTop() {
+        return mHeaderClip.top;
+    }
+
     public void reset(boolean animate) {
         if (mAnimator.isStarted()) {
             mAnimator.cancel();
