@@ -24,6 +24,7 @@ import androidx.test.filters.SmallTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.search.StringMatcherUtility.StringMatcher;
+import com.android.launcher3.search.StringMatcherUtility.StringMatcherSpace;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,11 +35,12 @@ import org.junit.runner.RunWith;
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class StringMatcherUtilityTest {
-    private static final StringMatcher MATCHER =
-            StringMatcher.getInstance();
+    private static final StringMatcher MATCHER = StringMatcher.getInstance();
+    private static final StringMatcherSpace MATCHER_SPACE = StringMatcherSpace.getInstance();
 
     @Test
     public void testMatches() {
+        assertTrue(matches("white", "white cow", MATCHER));
         assertTrue(matches("white ", "white cow", MATCHER));
         assertTrue(matches("white c", "white cow", MATCHER));
         assertTrue(matches("cow", "white cow", MATCHER));
@@ -92,5 +94,48 @@ public class StringMatcherUtilityTest {
         assertFalse(matches("ㄷㄷ", "다운로드 드라이브", MATCHER));
         assertFalse(matches("ㄷ", "로드라이브", MATCHER));
         assertFalse(matches("åç", "abc", MATCHER));
+    }
+
+    @Test
+    public void testMatchesWithSpaceBreakOnly() {
+        assertTrue(matches("white", "white cow", MATCHER_SPACE));
+        assertTrue(matches("white ", "white cow", MATCHER_SPACE));
+        assertTrue(matches("white c", "white cow", MATCHER_SPACE));
+        assertTrue(matches("cow", "white cow", MATCHER_SPACE));
+        assertTrue(matches("cow", "whitecow cow", MATCHER_SPACE));
+
+        assertFalse(matches("cow", "whiteCow", MATCHER_SPACE));
+        assertFalse(matches("cow", "whiteCOW", MATCHER_SPACE));
+        assertFalse(matches("cow", "whitecowCOW", MATCHER_SPACE));
+        assertFalse(matches("cow", "white2cow", MATCHER_SPACE));
+        assertFalse(matches("cow", "whitecow", MATCHER_SPACE));
+        assertFalse(matches("cow", "whitEcow", MATCHER_SPACE));
+        assertFalse(matches("cow", "whitecowCow", MATCHER_SPACE));
+        assertFalse(matches("cow", "whitecowcow", MATCHER_SPACE));
+        assertFalse(matches("cow", "whit ecowcow", MATCHER_SPACE));
+
+        assertFalse(matches("dog", "cats&dogs", MATCHER_SPACE));
+        assertFalse(matches("dog", "cats&Dogs", MATCHER_SPACE));
+        assertFalse(matches("&", "cats&Dogs", MATCHER_SPACE));
+
+        assertFalse(matches("43", "2+43", MATCHER_SPACE));
+        assertFalse(matches("3", "2+43", MATCHER_SPACE));
+
+        assertTrue(matches("q", "Q", MATCHER_SPACE));
+        assertTrue(matches("q", "  Q", MATCHER_SPACE));
+
+        // match lower case words
+        assertTrue(matches("e", "elephant", MATCHER_SPACE));
+        assertTrue(matches("eL", "Elephant", MATCHER_SPACE));
+
+        assertTrue(matches("电", "电子邮件", MATCHER_SPACE));
+        assertTrue(matches("电子", "电子邮件", MATCHER_SPACE));
+        assertTrue(matches("子", "电子邮件", MATCHER_SPACE));
+        assertTrue(matches("邮件", "电子邮件", MATCHER_SPACE));
+
+        assertFalse(matches("ba", "Bot", MATCHER_SPACE));
+        assertFalse(matches("ba", "bot", MATCHER_SPACE));
+        assertFalse(matches("phant", "elephant", MATCHER_SPACE));
+        assertFalse(matches("elephants", "elephant", MATCHER_SPACE));
     }
 }
