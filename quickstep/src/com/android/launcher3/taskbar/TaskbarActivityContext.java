@@ -333,6 +333,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         windowLayoutParams.layoutInDisplayCutoutMode = LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
         windowLayoutParams.privateFlags =
                 WindowManager.LayoutParams.PRIVATE_FLAG_NO_MOVE_ANIMATION;
+        windowLayoutParams.accessibilityTitle = getString(
+                TaskbarManager.isPhoneMode(mDeviceProfile)
+                        ? R.string.taskbar_phone_a11y_title
+                        : R.string.taskbar_a11y_title);
         return windowLayoutParams;
     }
 
