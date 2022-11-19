@@ -340,8 +340,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         boolean minSwipeMet = upDist >= mMotionPauseMinDisplacement;
                         if (mIsTransientTaskbar) {
                             minSwipeMet = upDist >= mTaskbarHomeOverviewThreshold;
-                            mInteractionHandler.setHasReachedHomeOverviewThreshold(minSwipeMet);
                         }
+                        mInteractionHandler.setCanSlowSwipeGoHome(minSwipeMet);
                         mMotionPauseDetector.setDisallowPause(!minSwipeMet
                                 || isLikelyToStartNewTask);
                         mMotionPauseDetector.addPosition(ev);
