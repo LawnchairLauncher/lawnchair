@@ -378,6 +378,9 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mInteractionHandler.onGestureStarted(isLikelyToStartNewTask);
 
         mInteractionHandler.setTaskbarAlreadyOpen(mTaskbarAlreadyOpen);
+        if (mIsTransientTaskbar && !mTaskbarAlreadyOpen && !isLikelyToStartNewTask) {
+            mInteractionHandler.setClampScrollOffset(true);
+        }
     }
 
     private void startTouchTrackingForWindowAnimation(long touchTimeMs) {
@@ -473,6 +476,9 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     @UiThread
     private void onInteractionGestureFinished() {
         Preconditions.assertUIThread();
+        if (mInteractionHandler != null) {
+            mInteractionHandler.setClampScrollOffset(false);
+        }
         removeListener();
         mInteractionHandler = null;
         cleanupAfterGesture();
