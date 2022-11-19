@@ -31,6 +31,7 @@ import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYS
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_UNLOCK_ANIMATION_CONTROLLER;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_FREEFORM_ACTIVE_IN_DESKTOP_MODE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_TRACING_ENABLED;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_BACK_ANIMATION;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_DESKTOP_MODE;
@@ -69,6 +70,7 @@ import androidx.annotation.UiThread;
 
 import com.android.app.viewcapture.ViewCapture;
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
@@ -479,7 +481,7 @@ public class TouchInteractionService extends Service
         }
 
         // Reset home bounce seen on quick step enabled for first time
-        SharedPreferences sharedPrefs = Utilities.getPrefs(this);
+        SharedPreferences sharedPrefs = LauncherPrefs.getPrefs(this);
         if (!sharedPrefs.getBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)) {
             sharedPrefs.edit()
                     .putBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)
@@ -533,9 +535,10 @@ public class TouchInteractionService extends Service
                 }
             }
 
-            boolean wasExpanded = (lastSysUIFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) != 0;
-            boolean isExpanded =
-                    (systemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) != 0;
+            int isShadeExpandedFlag =
+                    SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED | SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
+            boolean wasExpanded = (lastSysUIFlags & isShadeExpandedFlag) != 0;
+            boolean isExpanded = (systemUiStateFlags & isShadeExpandedFlag) != 0;
             if (wasExpanded != isExpanded && isExpanded) {
                 // End live tile when expanding the notification panel for the first time from
                 // overview.

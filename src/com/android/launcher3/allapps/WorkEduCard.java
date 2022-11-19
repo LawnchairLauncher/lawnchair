@@ -26,8 +26,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.model.StringCache;
 import com.android.launcher3.views.ActivityContext;
 
@@ -85,7 +85,7 @@ public class WorkEduCard extends FrameLayout implements
     @Override
     public void onClick(View view) {
         startAnimation(mDismissAnim);
-        Utilities.getPrefs(getContext()).edit().putInt(WorkProfileManager.KEY_WORK_EDU_STEP,
+        LauncherPrefs.getPrefs(getContext()).edit().putInt(WorkProfileManager.KEY_WORK_EDU_STEP,
                 1).apply();
     }
 

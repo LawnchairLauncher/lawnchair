@@ -50,8 +50,8 @@ import androidx.annotation.IntDef;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.BaseActivity;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.views.ArrowTipView;
 import com.android.quickstep.util.AssistContentRequester;
 import com.android.quickstep.util.RecentsOrientedState;
@@ -124,7 +124,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
                 AssistContentRequester assistContentRequester) {
             super(taskThumbnailView);
             mFactoryContentRequester = assistContentRequester;
-            mSharedPreferences = Utilities.getPrefs(mApplicationContext);
+            mSharedPreferences = LauncherPrefs.getPrefs(mApplicationContext);
         }
 
         /**
@@ -151,7 +151,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
             boolean isAllowedByPolicy = mThumbnailView.isRealSnapshot() && !isManagedProfileTask;
             getActionsView().setCallbacks(new OverlayUICallbacksGoImpl(isAllowedByPolicy, task));
             mTaskPackageName = task.key.getPackageName();
-            mSharedPreferences = Utilities.getPrefs(mApplicationContext);
+            mSharedPreferences = LauncherPrefs.getPrefs(mApplicationContext);
             checkSettings();
 
             if (!mAssistStructurePermitted || !mAssistScreenshotPermitted

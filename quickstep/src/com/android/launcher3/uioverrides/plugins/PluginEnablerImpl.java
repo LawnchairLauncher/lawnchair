@@ -18,10 +18,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.android.launcher3.Utilities;
-import com.android.systemui.shared.plugins.PluginEnabler;
-
 import androidx.preference.PreferenceDataStore;
+
+import com.android.launcher3.LauncherPrefs;
+import com.android.systemui.shared.plugins.PluginEnabler;
 
 public class PluginEnablerImpl extends PreferenceDataStore implements PluginEnabler {
 
@@ -30,7 +30,7 @@ public class PluginEnablerImpl extends PreferenceDataStore implements PluginEnab
     final private SharedPreferences mSharedPrefs;
 
     public PluginEnablerImpl(Context context) {
-        mSharedPrefs = Utilities.getDevicePrefs(context);
+        mSharedPrefs = LauncherPrefs.getDevicePrefs(context);
     }
 
     @Override

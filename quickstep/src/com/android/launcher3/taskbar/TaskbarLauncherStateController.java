@@ -186,6 +186,10 @@ import java.util.StringJoiner;
         animatorSet.play(stashController.applyStateWithoutStart(duration));
         animatorSet.play(applyState(duration, false));
 
+        if (mTaskBarRecentsAnimationListener != null) {
+            mTaskBarRecentsAnimationListener.endGestureStateOverride(
+                    !mLauncher.isInState(LauncherState.OVERVIEW));
+        }
         mTaskBarRecentsAnimationListener = new TaskBarRecentsAnimationListener(callbacks);
         callbacks.addListener(mTaskBarRecentsAnimationListener);
         ((RecentsView) mLauncher.getOverviewPanel()).setTaskLaunchListener(() ->

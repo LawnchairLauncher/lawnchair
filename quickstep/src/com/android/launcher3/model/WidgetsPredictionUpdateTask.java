@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.QuickstepModelDelegate.PredictorState;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
@@ -91,10 +92,12 @@ public final class WidgetsPredictionUpdateTask extends BaseModelUpdateTask {
         if (servicePredictedItems.isEmpty()) {
             servicePredictedItems.addAll(localFilteredWidgets);
         }
+
+        List<ItemInfo> items = servicePredictedItems.stream()
+                .map(it -> new PendingAddWidgetInfo(it.widgetInfo, CONTAINER_WIDGETS_PREDICTION))
+                .collect(Collectors.toList());
         FixedContainerItems fixedContainerItems =
-                new FixedContainerItems(mPredictorState.containerId);
-        servicePredictedItems.forEach(w -> fixedContainerItems.items.add(
-                new PendingAddWidgetInfo(w.widgetInfo, CONTAINER_WIDGETS_PREDICTION)));
+                new FixedContainerItems(mPredictorState.containerId, items);
 
         dataModel.extraItems.put(mPredictorState.containerId, fixedContainerItems);
         bindExtraContainerItems(fixedContainerItems);
