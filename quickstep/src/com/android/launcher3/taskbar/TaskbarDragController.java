@@ -305,6 +305,9 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         if (mDisallowGlobalDrag) {
             AbstractFloatingView.closeAllOpenViewsExcept(mActivity, TYPE_TASKBAR_ALL_APPS);
         } else {
+            // stash the transient taskbar
+            mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
+
             AbstractFloatingView.closeAllOpenViews(mActivity);
         }
 
@@ -413,6 +416,9 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                     if (dragEvent.getResult()) {
                         maybeOnDragEnd();
                     } else {
+                        // un-stash the transient taskbar in case drag and drop was canceled
+                        mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(false);
+
                         // This will take care of calling maybeOnDragEnd() after the animation
                         animateGlobalDragViewToOriginalPosition(btv, dragEvent);
                     }
