@@ -273,6 +273,10 @@ public final class FeatureFlags {
             "ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES", false,
             "Enable option to replace decorator-based search result backgrounds with drawables");
 
+    public static final BooleanFlag TWO_PREDICTED_ROWS_ALL_APPS_SEARCH = new DeviceFlag(
+            "TWO_PREDICTED_ROWS_ALL_APPS_SEARCH", false,
+            "Use 2 rows of app predictions in All Apps search zero-state");
+
     public static final BooleanFlag ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS = new DeviceFlag(
             "ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS", true,
             "Enable option to show keyboard when going to all-apps");

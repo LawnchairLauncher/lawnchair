@@ -333,6 +333,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         windowLayoutParams.layoutInDisplayCutoutMode = LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
         windowLayoutParams.privateFlags =
                 WindowManager.LayoutParams.PRIVATE_FLAG_NO_MOVE_ANIMATION;
+        windowLayoutParams.accessibilityTitle = getString(
+                TaskbarManager.isPhoneMode(mDeviceProfile)
+                        ? R.string.taskbar_phone_a11y_title
+                        : R.string.taskbar_a11y_title);
         return windowLayoutParams;
     }
 
@@ -959,12 +963,13 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         }
         mControllers.taskbarStashController.addUnstashToHotseatAnimation(fullAnimation, duration);
 
-        if (!FeatureFlags.ENABLE_ALL_APPS_BUTTON_IN_HOTSEAT.get()) {
+        View allAppsButton = mControllers.taskbarViewController.getAllAppsButtonView();
+        if (allAppsButton != null && !FeatureFlags.ENABLE_ALL_APPS_BUTTON_IN_HOTSEAT.get()) {
             ValueAnimator alphaOverride = ValueAnimator.ofFloat(0, 1);
             alphaOverride.setDuration(duration);
             alphaOverride.addUpdateListener(a -> {
                 // Override the alpha updates in the icon alignment animation.
-                mControllers.taskbarViewController.getAllAppsButtonView().setAlpha(0);
+                allAppsButton.setAlpha(0);
             });
             fullAnimation.play(alphaOverride);
         }

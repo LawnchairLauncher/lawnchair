@@ -42,6 +42,7 @@ import androidx.annotation.VisibleForTesting;
 import com.android.internal.jank.InteractionJankMonitor;
 import com.android.launcher3.Alarm;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorListeners;
@@ -187,7 +188,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
     public TaskbarStashController(TaskbarActivityContext activity) {
         mActivity = activity;
-        mPrefs = Utilities.getPrefs(mActivity);
+        mPrefs = LauncherPrefs.getPrefs(mActivity);
         mSystemUiProxy = SystemUiProxy.INSTANCE.get(activity);
         if (isPhoneMode()) {
             // DeviceProfile's taskbar vars aren't initialized w/ the flag off

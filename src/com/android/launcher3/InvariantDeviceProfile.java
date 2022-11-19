@@ -200,7 +200,8 @@ public class InvariantDeviceProfile {
         String gridName = getCurrentGridName(context);
         String newGridName = initGrid(context, gridName);
         if (!newGridName.equals(gridName)) {
-            Utilities.getPrefs(context).edit().putString(KEY_IDP_GRID_NAME, newGridName).apply();
+            LauncherPrefs.getPrefs(context).edit().putString(KEY_IDP_GRID_NAME, newGridName)
+                    .apply();
         }
         new DeviceGridState(this).writeToPrefs(context);
 
@@ -308,7 +309,7 @@ public class InvariantDeviceProfile {
     }
 
     public static String getCurrentGridName(Context context) {
-        return Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null);
+        return LauncherPrefs.getPrefs(context).getString(KEY_IDP_GRID_NAME, null);
     }
 
     private String initGrid(Context context, String gridName) {
@@ -436,7 +437,7 @@ public class InvariantDeviceProfile {
 
     public void setCurrentGrid(Context context, String gridName) {
         Context appContext = context.getApplicationContext();
-        Utilities.getPrefs(appContext).edit().putString(KEY_IDP_GRID_NAME, gridName).apply();
+        LauncherPrefs.getPrefs(appContext).edit().putString(KEY_IDP_GRID_NAME, gridName).apply();
         MAIN_EXECUTOR.execute(() -> onConfigChanged(appContext));
     }
 

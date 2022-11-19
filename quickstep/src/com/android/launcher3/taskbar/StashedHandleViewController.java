@@ -26,8 +26,8 @@ import android.view.View;
 import android.view.ViewOutlineProvider;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.RevealOutlineAnimation;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.util.DisplayController;
@@ -81,7 +81,7 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
     public StashedHandleViewController(TaskbarActivityContext activity,
             StashedHandleView stashedHandleView) {
         mActivity = activity;
-        mPrefs = Utilities.getPrefs(mActivity);
+        mPrefs = LauncherPrefs.getPrefs(mActivity);
         mStashedHandleView = stashedHandleView;
         mTaskbarStashedHandleAlpha = new MultiValueAlpha(mStashedHandleView, NUM_ALPHA_CHANNELS);
         mTaskbarStashedHandleAlpha.setUpdateVisibility(true);

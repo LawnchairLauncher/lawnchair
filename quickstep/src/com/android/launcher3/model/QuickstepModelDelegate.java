@@ -18,12 +18,12 @@ package com.android.launcher3.model;
 import static android.text.format.DateUtils.DAY_IN_MILLIS;
 import static android.text.format.DateUtils.formatElapsedTime;
 
+import static com.android.launcher3.LauncherPrefs.getDevicePrefs;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
-import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.hybridhotseat.HotseatPredictionModel.convertDataModelToAppTargetBundle;
 import static com.android.launcher3.model.PredictionHelper.getAppTargetFromItemInfo;
 import static com.android.launcher3.model.PredictionHelper.wrapAppTargetWithItemLocation;
@@ -132,7 +132,8 @@ public class QuickstepModelDelegate extends ModelDelegate {
 
         // Widgets prediction isn't used frequently. And thus, it is not persisted on disk.
         mDataModel.extraItems.put(mWidgetsRecommendationState.containerId,
-                new FixedContainerItems(mWidgetsRecommendationState.containerId));
+                new FixedContainerItems(mWidgetsRecommendationState.containerId,
+                        new ArrayList<>()));
         mActive = true;
     }
 

@@ -138,15 +138,11 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                 return response;
 
             case TestProtocol.REQUEST_ENABLE_TRANSIENT_TASKBAR:
-                runOnTISBinder(tisBinder -> {
-                    enableTransientTaskbar(tisBinder, true);
-                });
+                enableTransientTaskbar(true);
                 return response;
 
             case TestProtocol.REQUEST_DISABLE_TRANSIENT_TASKBAR:
-                runOnTISBinder(tisBinder -> {
-                    enableTransientTaskbar(tisBinder, false);
-                });
+                enableTransientTaskbar(false);
                 return response;
         }
 
@@ -190,17 +186,8 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
         }
     }
 
-    private void enableTransientTaskbar(
-            TouchInteractionService.TISBinder tisBinder, boolean enable) {
-        TaskbarActivityContext context = tisBinder.getTaskbarManager().getCurrentActivityContext();
-        if (context == null) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(NPE_TRANSIENT_TASKBAR, "enableTransientTaskbar: enable=" + enable,
-                        new Exception());
-            }
-        } else {
-            DisplayController.INSTANCE.get(context).enableTransientTaskbarForTests(enable);
-        }
+    private void enableTransientTaskbar(boolean enable) {
+        DisplayController.INSTANCE.get(mContext).enableTransientTaskbarForTests(enable);
     }
 
     /**

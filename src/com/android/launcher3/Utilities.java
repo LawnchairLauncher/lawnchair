@@ -30,7 +30,6 @@ import android.app.ActivityManager;
 import android.app.Person;
 import android.app.WallpaperManager;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.ShortcutInfo;
@@ -513,18 +512,6 @@ public final class Utilities {
         spanned.setSpan(new TintedDrawableSpan(context, iconRes),
                 0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         return spanned;
-    }
-
-    public static SharedPreferences getPrefs(Context context) {
-        // Use application context for shared preferences, so that we use a single cached instance
-        return context.getApplicationContext().getSharedPreferences(
-                LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
-    }
-
-    public static SharedPreferences getDevicePrefs(Context context) {
-        // Use application context for shared preferences, so that we use a single cached instance
-        return context.getApplicationContext().getSharedPreferences(
-                LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
     public static boolean isWallpaperSupported(Context context) {

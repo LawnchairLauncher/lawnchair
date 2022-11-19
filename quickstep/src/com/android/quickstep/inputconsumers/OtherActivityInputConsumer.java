@@ -38,7 +38,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.PointF;
 import android.os.Build;
 import android.util.Log;
@@ -152,10 +151,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mHandlerFactory = handlerFactory;
         mActivityInterface = mGestureState.getActivityInterface();
 
-        Resources res = base.getResources();
-        mTaskbarHomeOverviewThreshold = res
-                .getDimensionPixelSize(R.dimen.taskbar_home_overview_threshold);
-
         mMotionPauseDetector = new MotionPauseDetector(base, false,
                 mNavBarPosition.isLeftEdge() || mNavBarPosition.isRightEdge()
                         ? MotionEvent.AXIS_X : MotionEvent.AXIS_Y);
@@ -170,6 +165,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         TaskbarUIController controller = mActivityInterface.getTaskbarController();
         mTaskbarAlreadyOpen = controller != null && !controller.isTaskbarStashed();
         mIsTransientTaskbar = DisplayController.isTransientTaskbar(base);
+        mTaskbarHomeOverviewThreshold = base.getResources()
+                .getDimensionPixelSize(R.dimen.taskbar_home_overview_threshold);
 
         boolean continuingPreviousGesture = mTaskAnimationManager.isRecentsAnimationRunning();
         mIsDeferredDownTarget = !continuingPreviousGesture && isDeferredDownTarget;
@@ -333,13 +330,12 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                     }
 
                     if (mDeviceState.isFullyGesturalNavMode()) {
-                        float minDisplacement = mMotionPauseMinDisplacement;
-
-                        if (mIsTransientTaskbar && !mTaskbarAlreadyOpen) {
-                            minDisplacement += mTaskbarHomeOverviewThreshold;
+                        boolean minSwipeMet = upDist >= mMotionPauseMinDisplacement;
+                        if (mIsTransientTaskbar) {
+                            minSwipeMet = upDist >= mTaskbarHomeOverviewThreshold;
+                            mInteractionHandler.setHasReachedHomeOverviewThreshold(minSwipeMet);
                         }
-
-                        mMotionPauseDetector.setDisallowPause(upDist < minDisplacement
+                        mMotionPauseDetector.setDisallowPause(!minSwipeMet
                                 || isLikelyToStartNewTask);
                         mMotionPauseDetector.addPosition(ev);
                         mInteractionHandler.setIsLikelyToStartNewTask(isLikelyToStartNewTask);
