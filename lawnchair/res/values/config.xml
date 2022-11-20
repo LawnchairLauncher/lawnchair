@@ -32,12 +32,7 @@
         <item>org.withouthat.acalendar</item>
         <item>ws.xsoh.etar</item>
     </string-array>
-    <string-array name="themed_icon_packs" translatable="false">
-        <!-- The package will working when lawnicons fully converted as iconpack-->
-        <item>app.lawnchair.lawnicons</item>
-        <item>com.donnnno.arcticons</item>
-        <item>com.whicons.iconpack</item>
-    </string-array>
+    <string name="icon_packs_intent_name" translatable="false">app.lawnchair.icons.THEMED_ICON</string>
     <string name="clock_component_name" translatable="false">com.google.android.deskclock/com.android.deskclock.DeskClock</string>
     <string name="launcher_activity_logic_class" translatable="false">app.lawnchair.LauncherActivityCachingLogic</string>
     <string name="main_process_initializer_class" translatable="false">app.lawnchair.LawnchairProcessInitializer</string>

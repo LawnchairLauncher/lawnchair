@@ -152,8 +152,14 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                     if (packages[i].equals(pm.getIconPackPackage().get())) {
                         pm.getIconPackPackage().set("");
                     };
-                    if (Arrays.stream(context.getResources().getStringArray(R.array.themed_icon_packs))
-                        .noneMatch(it -> packageManagerHelper.isAppInstalled(it, mUser))) {
+                    final boolean isThemedIconsAvailable = context.getPackageManager()
+                        .queryIntentActivityOptions(
+                            new ComponentName(context.getApplicationInfo().packageName, context.getApplicationInfo().className),
+                            null,
+                            new Intent(context.getResources().getString(R.string.icon_packs_intent_name)),
+                            PackageManager.GET_RESOLVED_FILTER).stream().map(it -> it.activityInfo.packageName)
+                        .noneMatch(it -> packageManagerHelper.isAppInstalled(it, mUser));
+                    if (isThemedIconsAvailable) {
                         pm.getThemedIcons().set(false);
                     }
                 }

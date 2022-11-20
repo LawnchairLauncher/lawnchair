@@ -58,7 +58,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
         lawniconsVersion =
             if (isSupported) context.packageManager.getPackageVersionCode(LAWNICONS_PACKAGE_NAME)
             else 0L
-        _themeMap = if (isSupported) null else DISABLED_MAP
+        _themeMap = if (isSupported && lawniconsVersion in 1..3) null else DISABLED_MAP
     }
 
     private fun resolveIconEntry(componentName: ComponentName, user: UserHandle): IconEntry? {
