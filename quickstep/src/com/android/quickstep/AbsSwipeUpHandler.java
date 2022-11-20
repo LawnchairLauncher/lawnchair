@@ -754,6 +754,21 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         }
     }
 
+    /**
+     * Sets whether or not we should clamp the scroll offset.
+     * This is used to avoid x-axis movement when swiping up transient taskbar.
+     * @param clampScrollOffset When true, we clamp the scroll to 0 before the clamp threshold is
+     *                          met.
+     */
+    public void setClampScrollOffset(boolean clampScrollOffset) {
+        if (mRecentsView == null) {
+            mStateCallback.runOnceAtState(STATE_LAUNCHER_PRESENT,
+                    () -> mRecentsView.setClampScrollOffset(clampScrollOffset));
+            return;
+        }
+        mRecentsView.setClampScrollOffset(clampScrollOffset);
+    }
+
     public void setIsLikelyToStartNewTask(boolean isLikelyToStartNewTask) {
         setIsLikelyToStartNewTask(
                 isLikelyToStartNewTask,
