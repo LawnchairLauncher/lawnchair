@@ -53,7 +53,7 @@
     <string name="always_reload_icons_description">Избегать использования кэшированных иконок из наборов иконок</string>
     <string name="transparent_background_icons">Прозрачные тематические иконки</string>
     <string name="transparent_background_icons_description">Использовать прозрачный фон на тематических значках</string>
-    <string name="smartspace_mode_selection">На выборке поставщика Glance</string>
+    <string name="smartspace_mode_selection">Выбрать поставщик At a Glance</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Поворачивать домашний экран</string>
     <string name="home_screen_rotaton_description">При повороте устройства.</string>
@@ -138,13 +138,13 @@
     <string name="font_weight_medium">Средний</string>
     <string name="font_weight_semi_bold">Полужирный</string>
     <string name="font_weight_bold">Жирный</string>
-    <string name="font_weight_extra_bold">Экстра толстый</string>
+    <string name="font_weight_extra_bold">Экстра жирный</string>
     <string name="font_weight_extra_black">Сверхжирный</string>
     <string name="reset_font">Сброс</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Динамический</string>
     <string name="swatches">Образцы</string>
-    <string name="presets">Предустановки</string>
+    <string name="presets">Пресеты</string>
     <string name="custom">Настраиваемый</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Красный</string>
@@ -204,7 +204,7 @@
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Зарядка</string>
     <string name="smartspace_battery_full">Заряжено</string>
-    <string name="smartspace_battery_low">Батарея разряжена</string>
+    <string name="smartspace_battery_low">Низкий заряд</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Полная через %2$s"</string>
     <string name="accessibility_smartspace_page">Страница %1$d из %2$d</string>
     <string name="smartspace_widget">Самое главное</string>
@@ -236,13 +236,16 @@
     <string name="smartspace_mode_google_search">Поиск Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="hotseat_mode_label">Виджет поиска</string>
+    <string name="hotseat_mode_disabled">Отключено</string>
+    <string name="hotseat_mode_lawnchair">Lawnchair</string>
+    <string name="hotseat_mode_google_search">Поиск Google</string>
     <string name="search_bar_label">Панель поиска</string>
-    <string name="hotseat_qsb_label">Показать строку поиска</string>
     <string name="corner_radius_label">Скругление углов</string>
     <string name="apply_accent_color_label">Применить цвет акцента</string>
     <string name="search_provider">Поисковик</string>
     <string name="grid">Сетка</string>
-    <string name="dock_icons">Иконки в доке</string>
+    <string name="dock_icons">Иконки в док-баре</string>
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">Поиск приложений</string>
@@ -322,7 +325,7 @@
     <string name="support">Поддержка</string>
     <string name="product">Продукт</string>
     <string name="design_and_development">Дизайн и Разработка</string>
-    <string name="development">Разработчик</string>
+    <string name="development">Разработка</string>
     <string name="quickswitch_maintenance">Поддержка QuickSwitch</string>
     <string name="devops">DevOps-инженер</string>
     <string name="support_and_pr">Поддержка и PR</string>

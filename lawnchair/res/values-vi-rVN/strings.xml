@@ -236,8 +236,11 @@
     <string name="smartspace_mode_google_search">Google Tìm kiếm</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="hotseat_mode_label">Search Bar Widget</string>
+    <string name="hotseat_mode_disabled">Disabled</string>
+    <string name="hotseat_mode_lawnchair">Lawnchair</string>
+    <string name="hotseat_mode_google_search">Google Search Bar</string>
     <string name="search_bar_label">Thanh tìm kiếm</string>
-    <string name="hotseat_qsb_label">Hiện thanh tìm kiếm</string>
     <string name="corner_radius_label">Độ cong của góc</string>
     <string name="apply_accent_color_label">Áp dụng màu nhấn</string>
     <string name="search_provider">Nhà cung cấp dịch vụ tìm kiếm</string>

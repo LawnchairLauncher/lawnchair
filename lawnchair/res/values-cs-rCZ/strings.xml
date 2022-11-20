@@ -236,8 +236,11 @@
     <string name="smartspace_mode_google_search">Vyhledávání Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="hotseat_mode_label">Widget vyhledávacího panelu</string>
+    <string name="hotseat_mode_disabled">Zakázáno</string>
+    <string name="hotseat_mode_lawnchair">Lawnchair</string>
+    <string name="hotseat_mode_google_search">Vyhledávání Google</string>
     <string name="search_bar_label">Vyhledávací lišta</string>
-    <string name="hotseat_qsb_label">Zobrazit vyhledávací lištu</string>
     <string name="corner_radius_label">Poloměr rohů</string>
     <string name="apply_accent_color_label">Použít zvýrazňující barvu</string>
     <string name="search_provider">Poskytovatel vyhledávání</string>

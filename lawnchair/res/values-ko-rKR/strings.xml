@@ -236,8 +236,11 @@
     <string name="smartspace_mode_google_search">구글 검색</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="hotseat_mode_label">Search Bar Widget</string>
+    <string name="hotseat_mode_disabled">Disabled</string>
+    <string name="hotseat_mode_lawnchair">Lawnchair</string>
+    <string name="hotseat_mode_google_search">Google Search Bar</string>
     <string name="search_bar_label">검색 상자</string>
-    <string name="hotseat_qsb_label">검색 창 활성화</string>
     <string name="corner_radius_label">가장자리 둥글기</string>
     <string name="apply_accent_color_label">강조 색상 적용하기</string>
     <string name="search_provider">검색 제공자</string>

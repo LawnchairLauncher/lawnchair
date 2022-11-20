@@ -47,13 +47,13 @@
     <string name="font_picker_description">Algum texto permanece inalterado.</string>
     <string name="smartspace_calendar_label">Personalização do Calendário no Resumo</string>
     <string name="smartspace_calendar_description">Permitir mostrar data em sistema de calendário não-Gregoriano.</string>
-    <string name="workspace_increase_max_grid_size_label">Aumentar o Tamanho Máximo da Grade da Tela Inicial</string>
-    <string name="workspace_increase_max_grid_size_description">Aumenta o tamanho máximo permitido da grade da tela inicial de 10 x 10 para 20 x 20.</string>
-    <string name="always_reload_icons_label">Sempre Recarregar Ícones</string>
-    <string name="always_reload_icons_description">Evite usar ícones em cache de pacotes de ícones</string>
+    <string name="workspace_increase_max_grid_size_label">Aumentar o Tamanho Máximo da Grade da Tela inicial</string>
+    <string name="workspace_increase_max_grid_size_description">Aumentar o tamanho máximo permitido da grade da Tela inicial de 10 x 10 para 20 x 20.</string>
+    <string name="always_reload_icons_label">Sempre atualizar os Ícones</string>
+    <string name="always_reload_icons_description">Evite usar ícones guardados no cache dos pacotes de ícones</string>
     <string name="transparent_background_icons">Ícones Temáticos Transparentes</string>
-    <string name="transparent_background_icons_description">Usa fundo transparente em ícones temáticos</string>
-    <string name="smartspace_mode_selection">Seleção do Provedor de Resumo</string>
+    <string name="transparent_background_icons_description">Usar fundo transparente nos ícones temáticos</string>
+    <string name="smartspace_mode_selection">Seleção do Provedor no Resumo</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotação da Tela Inicial</string>
     <string name="home_screen_rotaton_description">Quando o dispositivo for rotacionado.</string>
@@ -70,7 +70,7 @@
     <string name="show_notification_count">Mostrar Contador de Notificações</string>
     <string name="notification_dots_color">Cor do Ponto de Notificação</string>
     <string name="notification_dots_text_color">Cor do Contador de Notificação</string>
-    <string name="notification_dots_color_contrast_warning_always">Aviso: Ponto de notificação e cores do contador não têm contraste suficiente entre si</string>
+    <string name="notification_dots_color_contrast_warning_always">Aviso: Ponto de notificação &amp; com as cores do contador não têm contraste suficiente entre si</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Aviso: Ponto de notificação e Cores do Contador não têm contraste suficiente entre si</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Necessário o Acesso às Notificações</string>
@@ -85,22 +85,22 @@
     <string name="theme_follow_wallpaper">Corresponder ao Papel de Parede</string>
     <string name="accent_color">Cor de Destaque</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Formato de Icone Personalizado</string>
-    <string name="custom_icon_shape_create">Criar formato de ícones personalizados</string>
-    <string name="custom_icon_shape_edit">Editar Formato de Ícone Personalizado</string>
-    <string name="icon_shape_corner">Formato do Canto</string>
+    <string name="custom_icon_shape">Formato de Ícone Personalizado</string>
+    <string name="custom_icon_shape_create">Criar formato customizado para os ícones personalizados</string>
+    <string name="custom_icon_shape_edit">Editar Formato Customizado dos Ícone Personalizado</string>
+    <string name="icon_shape_corner">Formato dos Cantos</string>
     <string name="icon_shape_corner_round">Arredondado</string>
     <string name="icon_shape_corner_squircle">Suave</string>
     <string name="icon_shape_corner_cut">Recorte</string>
     <string name="icon_shape_top_left">Superior Esquerdo</string>
     <string name="icon_shape_top_right">Superior Direito</string>
-    <string name="icon_shape_bottom_left">Inferior Esquerdo</string>
-    <string name="icon_shape_bottom_right">Inferior Direito</string>
+    <string name="icon_shape_bottom_left">Abaixo Esquerda</string>
+    <string name="icon_shape_bottom_right">Abaixo Direita</string>
     <string name="create">Criar</string>
     <string name="clipboard">Área de transferência</string>
     <string name="export_to_clipboard">Copiar para Área de transferência</string>
     <string name="import_from_clipboard">Importar da área de transferência</string>
-    <string name="icon_shape_clipboard_import_error">Área de transferência não contém uma válida ícone forma</string>
+    <string name="icon_shape_clipboard_import_error">A Área de transferência não contem uma forma de ícone personalizado válida</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Pacote de ícones</string>
@@ -109,7 +109,7 @@
     <string name="themed_icons_off_label">Desligado</string>
     <string name="themed_icons_home_label">Tela inicial</string>
     <string name="themed_icons_home_and_drawer_label">Tela Inicial &amp; Gaveta de Aplicativos</string>
-    <string name="lawnicons_not_installed_description">Lawnicons não instalado.</string>
+    <string name="lawnicons_not_installed_description">Lawnicons não está instalado.</string>
     <!-- <string name="cancel" /> (unknown source)-->
     <!-- IconPickerPreference -->
     <!-- <string name="icon_shape_label" /> -->
@@ -120,7 +120,7 @@
     <string name="icon_shape_egg">Ovo</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Octógono</string>
-    <string name="icon_shape_sammy">Interface de Usuário</string>
+    <string name="icon_shape_sammy">Interface do Usuário</string>
     <string name="icon_shape_rounded_square">Quadrado Arredondado</string>
     <string name="icon_shape_sharp_square">Quadrado Afiado</string>
     <string name="icon_shape_square">Quadrado</string>
@@ -175,7 +175,7 @@
     <string name="layout">Aparência</string>
     <string name="home_screen_grid">Grade da Tela Inicial</string>
     <string name="home_screen_lock">Bloquear Tela Inicial</string>
-    <string name="home_screen_lock_description">Impede mudanças no layout da tela inicial.</string>
+    <string name="home_screen_lock_description">Previnir mudanças no layout da tela inicial.</string>
     <string name="home_screen_unlock">Desbloquear Tela Inicial</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">Mostrar Botão de Bloqueio no Pop-Up</string>
@@ -236,8 +236,11 @@
     <string name="smartspace_mode_google_search">Pesquisa do Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="hotseat_mode_label">Widget da Barra de Pesquisa</string>
+    <string name="hotseat_mode_disabled">Desativado</string>
+    <string name="hotseat_mode_lawnchair">Lawnchair</string>
+    <string name="hotseat_mode_google_search">Barra de Pesquisa do Google</string>
     <string name="search_bar_label">Barra de Pesquisa</string>
-    <string name="hotseat_qsb_label">Exibir Barra de Pesquisa</string>
     <string name="corner_radius_label">Raio do Canto</string>
     <string name="apply_accent_color_label">Aplicar Cor de Destaque</string>
     <string name="search_provider">Provedor de Pesquisa</string>

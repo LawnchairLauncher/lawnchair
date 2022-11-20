@@ -52,8 +52,8 @@
     <string name="always_reload_icons_label">Увек учитавај иконе изнова</string>
     <string name="always_reload_icons_description">Избегавај коришћење кешираних икона из пакета икона</string>
     <string name="transparent_background_icons">117788</string>
-    <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
-    <string name="smartspace_mode_selection">At a Glance Provider selection</string>
+    <string name="transparent_background_icons_description">Користи прозирну позадину на тематским иконама</string>
+    <string name="smartspace_mode_selection">Избор добављача за „Кратак преглед”</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Ротација почетног екрана</string>
     <string name="home_screen_rotaton_description">Када се уређај ротира.</string>
@@ -85,22 +85,22 @@
     <string name="theme_follow_wallpaper">На основу позадине</string>
     <string name="accent_color">Боја за наглашавање</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Custom Icon Shape</string>
-    <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
-    <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
-    <string name="icon_shape_corner">Corner Shape</string>
-    <string name="icon_shape_corner_round">Round</string>
-    <string name="icon_shape_corner_squircle">Smooth</string>
-    <string name="icon_shape_corner_cut">Cut</string>
-    <string name="icon_shape_top_left">Top Left</string>
-    <string name="icon_shape_top_right">Top Right</string>
-    <string name="icon_shape_bottom_left">Bottom Left</string>
-    <string name="icon_shape_bottom_right">Bottom Right</string>
+    <string name="custom_icon_shape">Прилагођени облик икона</string>
+    <string name="custom_icon_shape_create">Направи прилагођени облик икона</string>
+    <string name="custom_icon_shape_edit">Уреди прилагођени облик икона</string>
+    <string name="icon_shape_corner">Облик углова</string>
+    <string name="icon_shape_corner_round">Округао</string>
+    <string name="icon_shape_corner_squircle">Углађен</string>
+    <string name="icon_shape_corner_cut">Опсечен</string>
+    <string name="icon_shape_top_left">Горе лево</string>
+    <string name="icon_shape_top_right">Горе десно</string>
+    <string name="icon_shape_bottom_left">Доле лево</string>
+    <string name="icon_shape_bottom_right">Доле десно</string>
     <string name="create">Направи</string>
-    <string name="clipboard">Clipboard</string>
-    <string name="export_to_clipboard">Export to Clipboard</string>
-    <string name="import_from_clipboard">Import from Clipboard</string>
-    <string name="icon_shape_clipboard_import_error">Clipboard does not contain a valid icon shape</string>
+    <string name="clipboard">Привремена меморија</string>
+    <string name="export_to_clipboard">Извези у привремену меморију</string>
+    <string name="import_from_clipboard">Увези из привремене меморије</string>
+    <string name="icon_shape_clipboard_import_error">Привремена меморија не садржи важећи облик икона</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Пакет икона</string>
@@ -143,7 +143,7 @@
     <string name="reset_font">Ресетуј</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Динамичка</string>
-    <string name="swatches">Swatches</string>
+    <string name="swatches">Обрасци</string>
     <string name="presets">Шаблони</string>
     <string name="custom">Прилагођена</string>
     <string name="rgb">RGB</string>
@@ -189,7 +189,7 @@
     <string name="label_size">Величина ознака</string>
     <string name="reset_custom_icons">Ресетуј прилагођене иконе</string>
     <string name="reset_custom_icons_confirmation">Све прилагођене иконе ће се ресетовати. Желите ли да наставите?</string>
-    <string name="home_screen_text_color">Text Color</string>
+    <string name="home_screen_text_color">Боја текста</string>
     <string name="color_light">Светла</string>
     <string name="color_dark">Тамна</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
@@ -230,14 +230,17 @@
     <string name="smartspace_preferences">Подешавања</string>
     <string name="smartspace_widget_toggle_label">Прикажи на почетном екрану</string>
     <string name="smartspace_widget_toggle_description">„Кратак преглед” можете да додате ручно постављањем виџета „Lawnchair”.</string>
-    <string name="smartspace_mode_label">At a Glance Provider</string>
+    <string name="smartspace_mode_label">Добављач за „Кратак преглед”</string>
     <string name="smartspace_mode_lawnchair">Lawnchair</string>
     <string name="smartspace_mode_google">Google</string>
-    <string name="smartspace_mode_google_search">Google Search</string>
+    <string name="smartspace_mode_google_search">Google претрага</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="hotseat_mode_label">Виџет траке за претрагу</string>
+    <string name="hotseat_mode_disabled">Онемогућено</string>
+    <string name="hotseat_mode_lawnchair">Lawnchair</string>
+    <string name="hotseat_mode_google_search">Google трака за претрагу</string>
     <string name="search_bar_label">Оквир за претрагу</string>
-    <string name="hotseat_qsb_label">Прикажи оквир за претрагу</string>
     <string name="corner_radius_label">Радијус угла</string>
     <string name="apply_accent_color_label">Примени боју за наглашавање</string>
     <string name="search_provider">Претраживач</string>
@@ -255,8 +258,8 @@
     <string name="background_opacity">Прозирност позадине</string>
     <!-- hiddenApps_label -->
     <string name="hidden_apps_label">Скривене апликације</string>
-    <string name="show_enable_smart_hide">Show when Full Name is Typed</string>
-    <string name="hide_hidden_apps_search">Hide in Search Results</string>
+    <string name="show_enable_smart_hide">Прикажи по уносу пуног имена</string>
+    <string name="hide_hidden_apps_search">Сакриј у резултатима претраге</string>
     <string name="pref_category_search">Претрага</string>
     <string name="show_app_search_bar">Прикажи оквир за претрагу</string>
     <string name="pref_search_auto_show_keyboard">Аутоматски приказуј тастатуру</string>

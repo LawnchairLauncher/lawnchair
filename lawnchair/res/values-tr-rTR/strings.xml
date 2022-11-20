@@ -236,8 +236,11 @@
     <string name="smartspace_mode_google_search">Google Arama</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="hotseat_mode_label">Arama Kutusu Widget\'ı</string>
+    <string name="hotseat_mode_disabled">Devre dışı</string>
+    <string name="hotseat_mode_lawnchair">Lawnchair</string>
+    <string name="hotseat_mode_google_search">Google Arama Kutusu</string>
     <string name="search_bar_label">Arama Kutusu</string>
-    <string name="hotseat_qsb_label">Arama Çubuğunu Göster</string>
     <string name="corner_radius_label">Köşe Yarıçapı</string>
     <string name="apply_accent_color_label">Vurgu Rengini Uygula</string>
     <string name="search_provider">Arama Sağlayıcısı</string>

@@ -236,8 +236,11 @@
     <string name="smartspace_mode_google_search">Szukaj w Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="hotseat_mode_label">Widżet paska wyszukiwania</string>
+    <string name="hotseat_mode_disabled">Wyłączono</string>
+    <string name="hotseat_mode_lawnchair">Lawnchair</string>
+    <string name="hotseat_mode_google_search">Pasek wyszukiwania Google</string>
     <string name="search_bar_label">Pasek wyszukiwania</string>
-    <string name="hotseat_qsb_label">Pokaż pasek wyszukiwania</string>
     <string name="corner_radius_label">Promień narożnika</string>
     <string name="apply_accent_color_label">Zastosuj kolor akcentujący</string>
     <string name="search_provider">Dostawca wyszukiwania</string>
