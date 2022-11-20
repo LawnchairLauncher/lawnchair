@@ -1,8 +1,8 @@
 buildscript {
     ext {
         ANDROID_X_VERSION = "1+"
-        BUILD_TOOLS_VERSION = "32.0.0"
-        COMPILE_SDK = 32
+        BUILD_TOOLS_VERSION = "33.0.0"
+        COMPILE_SDK = 33
         TARGET_SDK = 32
         MIN_SDK = 26
         kotlin_version = "1.7.10"
