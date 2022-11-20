@@ -236,8 +236,11 @@
     <string name="smartspace_mode_google_search">Google Search</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="hotseat_mode_label">Search Bar Widget</string>
+    <string name="hotseat_mode_disabled">Disabled</string>
+    <string name="hotseat_mode_lawnchair">Lawnchair</string>
+    <string name="hotseat_mode_google_search">Google Search Bar</string>
     <string name="search_bar_label">Search Bar</string>
-    <string name="hotseat_qsb_label">Ipakita ang Search Bar</string>
     <string name="corner_radius_label">Radius ng sulok</string>
     <string name="apply_accent_color_label">Ilapat ang Kulay ng Accent</string>
     <string name="search_provider">Search Provider</string>

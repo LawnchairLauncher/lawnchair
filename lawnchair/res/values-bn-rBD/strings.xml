@@ -236,8 +236,11 @@
     <string name="smartspace_mode_google_search">Google Search</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="hotseat_mode_label">Search Bar Widget</string>
+    <string name="hotseat_mode_disabled">Disabled</string>
+    <string name="hotseat_mode_lawnchair">Lawnchair</string>
+    <string name="hotseat_mode_google_search">Google Search Bar</string>
     <string name="search_bar_label">সার্চ বার</string>
-    <string name="hotseat_qsb_label">সার্চ বার দেখান</string>
     <string name="corner_radius_label">কোণের ব্যাসার্ধ</string>
     <string name="apply_accent_color_label">অ্যাকসেন্ট রং ব্যবহার করুন</string>
     <string name="search_provider">সার্চ প্রদানকারী</string>

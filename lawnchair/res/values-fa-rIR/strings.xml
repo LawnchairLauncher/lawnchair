@@ -85,9 +85,9 @@
     <string name="theme_follow_wallpaper">تطابق با کاغذ دیواری</string>
     <string name="accent_color">رنگ برنامه</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Custom Icon Shape</string>
-    <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
-    <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
+    <string name="custom_icon_shape">شکل آیکن شخصی‌سازی شده</string>
+    <string name="custom_icon_shape_create">ساخت شکل آیکن شخصی‌سازی شده</string>
+    <string name="custom_icon_shape_edit">ویرایش شکل آیکن شخصی‌سازی شده</string>
     <string name="icon_shape_corner">شکل گوشه</string>
     <string name="icon_shape_corner_round">گرد</string>
     <string name="icon_shape_corner_squircle">صاف</string>
@@ -98,7 +98,7 @@
     <string name="icon_shape_bottom_right">سمت راست پایین</string>
     <string name="create">ساخت</string>
     <string name="clipboard">کلیپ بورد</string>
-    <string name="export_to_clipboard">Export to Clipboard</string>
+    <string name="export_to_clipboard">صادر کردن به کلیپ بورد</string>
     <string name="import_from_clipboard">وارد کردن از کلیپ بورد</string>
     <string name="icon_shape_clipboard_import_error">Clipboard does not contain a valid icon shape</string>
     <!-- IconPackPreferences -->
@@ -236,8 +236,11 @@
     <string name="smartspace_mode_google_search">جستجوی گوگل</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="hotseat_mode_label">Search Bar Widget</string>
+    <string name="hotseat_mode_disabled">Disabled</string>
+    <string name="hotseat_mode_lawnchair">Lawnchair</string>
+    <string name="hotseat_mode_google_search">Google Search Bar</string>
     <string name="search_bar_label">نوار جست‌و‌جو</string>
-    <string name="hotseat_qsb_label">نشان‌دادن نوار جست‌و‌جو</string>
     <string name="corner_radius_label">شعاع گوشه</string>
     <string name="apply_accent_color_label">اعمال رنگ برنامه</string>
     <string name="search_provider">تامین کننده جست‌وجو</string>

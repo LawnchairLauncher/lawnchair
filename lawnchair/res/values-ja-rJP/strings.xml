@@ -236,8 +236,11 @@
     <string name="smartspace_mode_google_search">Google 検索</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="hotseat_mode_label">検索バーウィジェット</string>
+    <string name="hotseat_mode_disabled">無効</string>
+    <string name="hotseat_mode_lawnchair">Lawnchair</string>
+    <string name="hotseat_mode_google_search">Google 検索バー</string>
     <string name="search_bar_label">検索バー</string>
-    <string name="hotseat_qsb_label">検索バーを表示</string>
     <string name="corner_radius_label">角の丸み</string>
     <string name="apply_accent_color_label">アクセントカラーを適用</string>
     <string name="search_provider">検索プロバイダー</string>
