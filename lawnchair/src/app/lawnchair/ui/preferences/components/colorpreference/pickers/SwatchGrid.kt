@@ -15,9 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreferenceEntry
+import com.android.launcher3.R
 
 object SwatchGridDefaults {
     val GutterSize = 12.dp
@@ -38,6 +40,7 @@ fun <T> SwatchGrid(
     val gutter = SwatchGridDefaults.GutterSize
 
     PreferenceGroup(
+        heading = stringResource(id = R.string.swatches),
         modifier = modifier,
         showDividers = false,
     ) {

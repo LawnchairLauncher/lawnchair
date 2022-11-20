@@ -1,22 +1,26 @@
 package app.lawnchair.ui.preferences.components.colorpreference
 
+import android.content.Context
+import android.graphics.Color
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
 import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import app.lawnchair.preferences.getAdapter
-import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.theme.color.ColorOption
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.BottomSpacer
+import app.lawnchair.ui.preferences.components.Chip
+import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.colorpreference.pickers.CustomColorPicker
 import app.lawnchair.ui.preferences.components.colorpreference.pickers.PresetsList
 import app.lawnchair.ui.preferences.components.colorpreference.pickers.SwatchGrid
@@ -41,25 +45,12 @@ fun NavGraphBuilder.colorSelectionGraph(route: String) {
 
             val args = backStackEntry.arguments!!
             val prefKey = args.getString("prefKey")!!
-            val preferenceManager2 = preferenceManager2()
-            val pref = when (prefKey) {
-                preferenceManager2.accentColor.key.name -> preferenceManager2.accentColor
-                preferenceManager2.notificationDotColor.key.name -> preferenceManager2.notificationDotColor
-                else -> return@composable
-            }
-            val label = when (prefKey) {
-                preferenceManager2.accentColor.key.name -> stringResource(id = R.string.accent_color)
-                preferenceManager2.notificationDotColor.key.name -> stringResource(id = R.string.notification_dots_color)
-                else -> return@composable
-            }
-            val dynamicEntries = when (prefKey) {
-                preferenceManager2.notificationDotColor.key.name -> dynamicColorsForNotificationDot
-                else -> dynamicColors
-            }
+            val modelList = ColorPreferenceModelList.INSTANCE.get(LocalContext.current)
+            val model = modelList[prefKey]
             ColorSelection(
-                label = label,
-                preference = pref,
-                dynamicEntries = dynamicEntries,
+                label = stringResource(id = model.labelRes),
+                preference = model.prefObject,
+                dynamicEntries = model.dynamicEntries,
             )
         }
     }
@@ -73,26 +64,39 @@ fun ColorSelection(
     dynamicEntries: List<ColorPreferenceEntry<ColorOption>> = dynamicColors,
     staticEntries: List<ColorPreferenceEntry<ColorOption>> = staticColors,
 ) {
-
     val adapter = preference.getAdapter()
-    val appliedColor by adapter
-    val selectedColor = remember { mutableStateOf(appliedColor) }
+    val appliedColor = adapter.state.value
+    val context = LocalContext.current
+    val selectedColor = remember { mutableStateOf(appliedColor.forCustomPicker(context)) }
+    val selectedColorApplied = derivedStateOf {
+        appliedColor is ColorOption.CustomColor && appliedColor.color == selectedColor.value
+    }
     val defaultTabIndex = when {
         dynamicEntries.any { it.value == appliedColor } -> 0
         staticEntries.any { it.value == appliedColor } -> 1
         else -> 2
     }
 
+    val onPresetClick = { option: ColorOption ->
+        selectedColor.value = option.forCustomPicker(context)
+        adapter.onChange(newValue = option)
+    }
+
+    val pagerState = rememberPagerState(defaultTabIndex)
     PreferenceLayout(
         label = label,
         bottomBar = {
+            if (pagerState.currentPage == 0) {
+                BottomSpacer()
+                return@PreferenceLayout
+            }
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.End
             ) {
                 Button(
-                    enabled = selectedColor.value != appliedColor,
-                    onClick = { adapter.onChange(newValue = selectedColor.value) },
+                    enabled = !selectedColorApplied.value,
+                    onClick = { adapter.onChange(newValue = ColorOption.CustomColor(selectedColor.value)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(all = 16.dp),
@@ -103,74 +107,72 @@ fun ColorSelection(
             }
         },
     ) {
-
-        val pagerState = rememberPagerState(defaultTabIndex)
         val scope = rememberCoroutineScope()
         val scrollToPage =
             { page: Int -> scope.launch { pagerState.animateScrollToPage(page) } }
 
         Column {
-
             Row(
                 horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
                 modifier = Modifier.padding(horizontal = 16.dp),
             ) {
                 Chip(
-                    label = stringResource(id = R.string.dynamic),
+                    label = stringResource(id = R.string.presets),
                     onClick = { scrollToPage(0) },
                     currentOffset = pagerState.currentPage + pagerState.currentPageOffset,
                     page = 0,
                 )
                 Chip(
-                    label = stringResource(id = R.string.presets),
+                    label = stringResource(id = R.string.custom),
                     onClick = { scrollToPage(1) },
                     currentOffset = pagerState.currentPage + pagerState.currentPageOffset,
                     page = 1,
                 )
-                Chip(
-                    label = stringResource(id = R.string.custom),
-                    onClick = { scrollToPage(2) },
-                    currentOffset = pagerState.currentPage + pagerState.currentPageOffset,
-                    page = 2,
-                )
             }
             HorizontalPager(
-                count = 3,
+                count = 2,
                 state = pagerState,
                 verticalAlignment = Alignment.Top,
                 modifier = Modifier.animateContentSize(),
             ) { page ->
                 when (page) {
                     0 -> {
-                        PresetsList(
-                            dynamicEntries = dynamicEntries,
-                            onPresetClick = { selectedColor.value = it },
-                            isPresetSelected = { it == selectedColor.value },
-                        )
+                        Column {
+                            PresetsList(
+                                dynamicEntries = dynamicEntries,
+                                onPresetClick = onPresetClick,
+                                isPresetSelected = { it == appliedColor },
+                            )
+                            SwatchGrid(
+                                modifier = Modifier.padding(top = 12.dp),
+                                contentModifier = Modifier.padding(
+                                    start = 16.dp,
+                                    top = 20.dp,
+                                    end = 16.dp,
+                                    bottom = 16.dp,
+                                ),
+                                entries = staticEntries,
+                                onSwatchClick = onPresetClick,
+                                isSwatchSelected = { it == appliedColor },
+                            )
+                        }
                     }
                     1 -> {
-                        SwatchGrid(
-                            modifier = Modifier.padding(top = 12.dp),
-                            contentModifier = Modifier.padding(
-                                start = 16.dp,
-                                top = 20.dp,
-                                end = 16.dp,
-                                bottom = 16.dp,
-                            ),
-                            entries = staticEntries,
-                            onSwatchClick = { selectedColor.value = it },
-                            isSwatchSelected = { it == selectedColor.value },
-                        )
-                    }
-                    2 -> {
                         CustomColorPicker(
-                            selectedColorOption = selectedColor.value,
+                            selectedColor = selectedColor.value,
                             onSelect = { selectedColor.value = it },
                         )
                     }
                 }
             }
-
         }
     }
+}
+
+private fun ColorOption.forCustomPicker(context: Context): Int {
+    val color = colorPreferenceEntry.lightColor(context)
+    if (color == 0) {
+        return Color.BLACK
+    }
+    return color
 }

@@ -8,7 +8,7 @@ import com.android.launcher3.R
  *
  * @param formatCustomizationSupport If the calendar system supports date & time format customization.
  */
-open class SmartspaceCalendar(@StringRes val nameResourceId: Int, val formatCustomizationSupport: Boolean = true) {
+sealed class SmartspaceCalendar(@StringRes val nameResourceId: Int, val formatCustomizationSupport: Boolean = true) {
 
     companion object {
 

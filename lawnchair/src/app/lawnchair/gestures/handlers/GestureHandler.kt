@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package app.lawnchair.gestures
+package app.lawnchair.gestures.handlers
 
 import android.content.Context
 import app.lawnchair.LawnchairLauncher
 
-abstract class GestureHandler(val context: Context) {
+sealed class GestureHandler(val context: Context) {
 
     abstract suspend fun onTrigger(launcher: LawnchairLauncher)
 }

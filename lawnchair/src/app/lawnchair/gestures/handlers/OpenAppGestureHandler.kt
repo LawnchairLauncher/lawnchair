@@ -6,7 +6,6 @@ import android.content.pm.LauncherApps
 import android.os.UserHandle
 import androidx.core.content.getSystemService
 import app.lawnchair.LawnchairLauncher
-import app.lawnchair.gestures.GestureHandler
 import app.lawnchair.util.ComponentKeySerializer
 import app.lawnchair.util.IntentSerializer
 import app.lawnchair.util.UserHandlerSerializer

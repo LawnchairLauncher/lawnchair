@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.ui.preferences.components.PreferenceDivider
@@ -19,8 +20,8 @@ import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceTemplate
 import app.lawnchair.ui.preferences.components.colorpreference.ColorDot
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreferenceEntry
+import com.android.launcher3.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PresetsList(
     dynamicEntries: List<ColorPreferenceEntry<ColorOption>>,
@@ -29,6 +30,7 @@ fun PresetsList(
 ) {
 
     PreferenceGroup(
+        heading = stringResource(id = R.string.dynamic),
         modifier = Modifier.padding(top = 12.dp),
         showDividers = false,
     ) {

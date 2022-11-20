@@ -51,8 +51,7 @@ import app.lawnchair.root.RootNotAvailableException
 import app.lawnchair.search.LawnchairSearchAdapterProvider
 import app.lawnchair.theme.ThemeProvider
 import app.lawnchair.ui.popup.LawnchairShortcut
-import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
-import app.lawnchair.util.isPackageInstalled
+import app.lawnchair.util.getThemedIconPacksInstalled
 import com.android.launcher3.*
 import com.android.launcher3.R
 import com.android.launcher3.allapps.AllAppsContainerView
@@ -67,6 +66,7 @@ import com.android.launcher3.util.TouchController
 import com.android.launcher3.widget.RoundedCornerEnforcement
 import com.android.systemui.plugins.shared.LauncherOverlayManager
 import com.android.systemui.shared.system.QuickStepContract
+import com.patrykmichalik.opto.core.firstBlocking
 import com.patrykmichalik.opto.core.onEach
 import dev.kdrag0n.monet.theme.ColorScheme
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -190,8 +190,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
             lifecycleScope.launch {
                 try {
                     RootHelperManager.INSTANCE.get(this@LawnchairLauncher).getService()
-                } catch (e: RootNotAvailableException) {
-                    // do nothing
+                } catch (_: RootNotAvailableException) {
                 }
             }
         }
@@ -227,7 +226,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         // Handle update from version 12 Alpha 4 to version 12 Alpha 5.
         if (
             prefs.themedIcons.get() &&
-            !packageManager.isPackageInstalled(packageName = LAWNICONS_PACKAGE_NAME)
+            packageManager.getThemedIconPacksInstalled(this).isEmpty()
         ) {
             prefs.themedIcons.set(newValue = false)
         }
@@ -235,6 +234,8 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         colorScheme = themeProvider.colorScheme
 
         showQuickstepWarningIfNecessary()
+
+        reloadIconsIfNeeded()
     }
 
     override fun setupViews() {
@@ -390,6 +391,18 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         }
     }
 
+    /**
+     * Reloads app icons if there is an active icon pack & [PreferenceManager2.alwaysReloadIcons] is enabled.
+     */
+    private fun reloadIconsIfNeeded() {
+        if (
+            preferenceManager2.alwaysReloadIcons.firstBlocking() &&
+            prefs.iconPackPackage.get().isNotEmpty()
+        ) {
+            LauncherAppState.getInstance(this).reloadIcons()
+        }
+    }
+
     companion object {
         private const val FLAG_RECREATE = 1 shl 0
         private const val FLAG_RESTART = 1 shl 1
@@ -403,10 +416,8 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
 val Context.launcher: LawnchairLauncher
     get() = BaseActivity.fromContext(this)
 
-val Context.launcherNullable: LawnchairLauncher? get() {
-    return try {
-        launcher
-    } catch (e: IllegalArgumentException) {
-        null
-    }
+val Context.launcherNullable: LawnchairLauncher? get() = try {
+    launcher
+} catch (_: IllegalArgumentException) {
+    null
 }

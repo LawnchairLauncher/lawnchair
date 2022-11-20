@@ -36,10 +36,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairLauncher
-import app.lawnchair.gestures.GestureHandler
 import app.lawnchair.lawnchairApp
 import app.lawnchair.root.RootHelperManager
 import app.lawnchair.ui.AlertBottomSheetContent
+import app.lawnchair.util.requireSystemService
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -56,7 +56,7 @@ class SleepGestureHandler(context: Context) : GestureHandler(context) {
         SleepMethodDeviceAdmin(context)
     )
 
-    abstract class SleepMethod(protected val context: Context) {
+    sealed class SleepMethod(protected val context: Context) {
         abstract suspend fun isSupported(): Boolean
         abstract suspend fun sleep(launcher: LawnchairLauncher)
     }
@@ -99,7 +99,7 @@ class SleepMethodDeviceAdmin(context: Context) : SleepGestureHandler.SleepMethod
     override suspend fun isSupported() = true
 
     override suspend fun sleep(launcher: LawnchairLauncher) {
-        val devicePolicyManager = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
+        val devicePolicyManager: DevicePolicyManager = context.requireSystemService()
         if (!devicePolicyManager.isAdminActive(ComponentName(context, SleepDeviceAdmin::class.java))) {
             val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN)
             intent.putExtra(

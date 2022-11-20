@@ -26,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.ui.theme.dividerColor
-import app.lawnchair.ui.util.addIf
 
 @Composable
 fun SwitchPreference(
@@ -82,13 +81,10 @@ fun SwitchPreference(
             }
             Switch(
                 modifier = Modifier
-                    .addIf(onClick != null) {
-                        clickable(enabled = enabled) { onCheckedChange(!checked) }
-                    }
                     .padding(all = 16.dp)
                     .height(24.dp),
                 checked = checked,
-                onCheckedChange = null,
+                onCheckedChange = onCheckedChange,
                 enabled = enabled,
             )
         },

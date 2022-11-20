@@ -2,14 +2,29 @@ name: Build debug APK
 
 on:
   workflow_dispatch:
+  workflow_call:
   push:
     branches:
-      - '*'
-      - '*/*'
-      - '**'
-      - '!12.1-dev-localization'
-      - '!12.1-alpha'
+      - '*-dev'
+    paths-ignore:
+      - '.idea/**'
+      - '.gitattributes'
+      - '.github/**.json'
+      - '.gitignore'
+      - '.gitmodules'
+      - '**.md'
+      - 'LICENSE'
+      - 'NOTICE'
   pull_request:
+    paths-ignore:
+      - '.idea/**'
+      - '.gitattributes'
+      - '.github/**.json'
+      - '.gitignore'
+      - '.gitmodules'
+      - '**.md'
+      - 'LICENSE'
+      - 'NOTICE'
 
 jobs:
   build-debug-apk:
@@ -26,6 +41,8 @@ jobs:
           distribution: 'zulu'
           java-version: 17
       - uses: gradle/gradle-build-action@v2
+        with:
+          gradle-home-cache-cleanup: true
       - name: Write sign info
         if: github.repository == 'LawnchairLauncher/lawnchair'
         run: |
@@ -43,6 +60,7 @@ jobs:
         with:
           name: Debug APK
           path: build/outputs/apk/lawnWithQuickstep/debug/*.apk
+
   send-notifications:
     runs-on: ubuntu-latest
     if: github.repository == 'LawnchairLauncher/lawnchair'
@@ -54,7 +72,7 @@ jobs:
           submodules: true
           fetch-depth: 0
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: '3.x'
       - name: Install Python packages

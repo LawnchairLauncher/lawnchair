@@ -22,6 +22,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.datastore.preferences.core.Preferences
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.theme.color.ColorOption
@@ -36,18 +38,19 @@ import com.patrykmichalik.opto.domain.Preference
  * @see ColorSelection
  */
 @Composable
-fun ColorPreference(
-    preference: Preference<ColorOption, String, *>,
-    label: String,
-) {
-    val adapter: PreferenceAdapter<ColorOption> = preference.getAdapter()
+fun ColorPreference(preference: Preference<ColorOption, String, Preferences.Key<String>>) {
+    val modelList = ColorPreferenceModelList.INSTANCE.get(LocalContext.current)
+    val model = modelList[preference.key.name]
+    val adapter: PreferenceAdapter<ColorOption> = model.prefObject.getAdapter()
     val navController = LocalNavController.current
     PreferenceTemplate(
-        title = { Text(text = label) },
-        endWidget = { ColorDot(Color(adapter.state.value.colorPreferenceEntry.lightColor(LocalContext.current))) },
+        title = { Text(text = stringResource(id = model.labelRes)) },
+        endWidget = {
+            ColorDot(adapter.state.value.colorPreferenceEntry)
+        },
         description = {
             Text(text = adapter.state.value.colorPreferenceEntry.label())
         },
-        modifier = Modifier.clickable { navController.navigate(route = "/colorSelection/${preference.key}/") },
+        modifier = Modifier.clickable { navController.navigate(route = "/colorSelection/${model.prefObject.key.name}/") },
     )
 }

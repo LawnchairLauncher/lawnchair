@@ -130,8 +130,8 @@ fun getSteps(valueRange: ClosedFloatingPointRange<Float>, step: Float): Int {
     val start = valueRange.start
     val end = valueRange.endInclusive
     val steps = ((end - start) / step).toInt()
-    if (start + step * steps != end) {
-        throw IllegalArgumentException("value range must be a multiple of step")
+    require (start + step * steps == end) {
+        "value range must be a multiple of step"
     }
     return steps - 1
 }

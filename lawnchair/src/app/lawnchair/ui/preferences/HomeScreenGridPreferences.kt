@@ -45,6 +45,7 @@ fun HomeScreenGridPreferences() {
         val prefs = preferenceManager()
         val columnsAdapter = prefs.workspaceColumns.getAdapter()
         val rowsAdapter = prefs.workspaceRows.getAdapter()
+        val increaseMaxGridSize = prefs.workspaceIncreaseMaxGridSize.getAdapter()
 
         val originalColumns = remember { columnsAdapter.state.value }
         val originalRows = remember { rowsAdapter.state.value }
@@ -64,18 +65,20 @@ fun HomeScreenGridPreferences() {
             }
         }
 
+        val maxGridSize = if (increaseMaxGridSize.state.value) 20 else 10
+
         PreferenceGroup {
             SliderPreference(
                 label = stringResource(id = R.string.columns),
                 adapter = columns.asPreferenceAdapter(),
                 step = 1,
-                valueRange = 3..10,
+                valueRange = 3..maxGridSize,
             )
             SliderPreference(
                 label = stringResource(id = R.string.rows),
                 adapter = rows.asPreferenceAdapter(),
                 step = 1,
-                valueRange = 3..10,
+                valueRange = 3..maxGridSize,
             )
         }
 

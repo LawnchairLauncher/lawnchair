@@ -24,23 +24,36 @@ import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.Executors
 import com.android.launcher3.util.PackageManagerHelper
 import com.patrykmichalik.opto.core.onEach
+import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio
-import java.util.*
 
 class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context) {
 
     private val appState = LauncherAppState.getInstance(context)
     private val resultHandler = Handler(Executors.MAIN_EXECUTOR.looper)
     private var enableFuzzySearch = false
+    private lateinit var hiddenApps: Set<String>
+    private var showHiddenAppsInSearch = false
+    private var enableSmartHide = false
     private val marketSearchComponent = resolveMarketSearchActivity()
     private val coroutineScope = CoroutineScope(context = Dispatchers.IO)
+    private val pref2 = PreferenceManager2.getInstance(context)
 
     init {
-        PreferenceManager2.getInstance(context).enableFuzzySearch.onEach(launchIn = coroutineScope) {
+        pref2.enableFuzzySearch.onEach(launchIn = coroutineScope) {
             enableFuzzySearch = it
+        }
+        pref2.hiddenApps.onEach(launchIn = coroutineScope) {
+            hiddenApps = it
+        }
+        pref2.showHiddenAppsInSearch.onEach(launchIn = coroutineScope) {
+            showHiddenAppsInSearch = it
+        }
+        pref2.enableSmartHide.onEach(launchIn = coroutineScope) {
+            enableSmartHide = it
         }
     }
 
@@ -82,6 +95,9 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
             appResults.mapTo(results, ::createSearchTarget)
         }
         if (results.isEmpty()) {
+            if (marketSearchComponent == null) {
+                return arrayListOf(AllAppsGridAdapter.AdapterItem.asEmptySearch(0))
+            }
             results.add(getEmptySearchItem(query))
         }
         val adapterItems = transformSearchResults(results)
@@ -101,17 +117,21 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         // apps that don't match all of the words in the query.
         val queryTextLower = query.lowercase(Locale.getDefault())
         val matcher = StringMatcherUtility.StringMatcher.getInstance()
-
         return apps.asSequence()
             .filter { StringMatcherUtility.matches(queryTextLower, it.title.toString(), matcher) }
+            .filterHiddenApps(queryTextLower)
             .take(maxResultsCount)
             .toList()
     }
 
     private fun fuzzySearch(apps: List<AppInfo>, query: String): List<AppInfo> {
+
+        val queryTextLower = query.lowercase(Locale.getDefault())
+        val filteredApps = apps.asSequence()
+            .filterHiddenApps(queryTextLower)
+            .toList()
         val matches = FuzzySearch.extractSorted(
-            query.lowercase(Locale.getDefault()), apps,
-            { it.title.toString() }, WeightedRatio(), 65
+            queryTextLower, filteredApps, { it.title.toString() }, WeightedRatio(), 65
         )
 
         return matches.take(maxResultsCount)
@@ -144,6 +164,20 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
             putBoolean(SearchResultView.EXTRA_HIDE_SUBTITLE, true)
         }
         return createSearchTarget(id, action, extras)
+    }
+
+    private fun Sequence<AppInfo>.filterHiddenApps(query: String): Sequence<AppInfo> {
+
+        return if (showHiddenAppsInSearch) {
+            this
+        } else if (enableSmartHide) {
+            filter {
+                it.toComponentKey().toString() !in hiddenApps ||
+                    it.title.toString().lowercase(Locale.getDefault()) == query
+            }
+        } else {
+            filter { it.toComponentKey().toString() !in hiddenApps }
+        }
     }
 
     companion object {

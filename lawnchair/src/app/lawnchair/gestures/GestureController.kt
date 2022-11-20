@@ -20,6 +20,8 @@ import androidx.lifecycle.lifecycleScope
 import app.lawnchair.LawnchairApp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.gestures.config.GestureHandlerConfig
+import app.lawnchair.gestures.handlers.GestureHandler
+import app.lawnchair.gestures.handlers.NoOpGestureHandler
 import app.lawnchair.preferences2.PreferenceManager2
 import com.android.quickstep.SysUINavigationMode
 import com.android.quickstep.util.VibratorWrapper

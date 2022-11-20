@@ -25,6 +25,7 @@ import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
+import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import com.android.launcher3.R
 
 fun NavGraphBuilder.folderGraph(route: String) {
@@ -37,6 +38,7 @@ fun FolderPreferences() {
         val prefs = preferenceManager()
         val prefs2 = preferenceManager2()
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
+            ColorPreference(preference = prefs2.folderColor)
             SliderPreference(
                 label = stringResource(id = R.string.folder_preview_bg_opacity_label),
                 adapter = prefs2.folderPreviewBackgroundOpacity.getAdapter(),

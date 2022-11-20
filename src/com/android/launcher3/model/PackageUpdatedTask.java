@@ -21,7 +21,6 @@ import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_
 import static com.android.launcher3.model.data.WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON;
 import static com.android.launcher3.model.data.WorkspaceItemInfo.FLAG_RESTORED_ICON;
 
-import static app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -32,6 +31,7 @@ import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.Log;
+import android.content.pm.PackageManager;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
@@ -54,6 +54,7 @@ import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.SafeCloseable;
+import com.android.launcher3.icons.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,6 +107,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 : ItemInfoMatcher.ofPackages(packageSet, mUser);
         final HashSet<ComponentName> removedComponents = new HashSet<>();
         final HashMap<String, List<LauncherActivityInfo>> activitiesLists = new HashMap<>();
+        final PackageManagerHelper packageManagerHelper = new PackageManagerHelper(context);
 
         switch (mOp) {
             case OP_ADD: {
@@ -150,7 +152,14 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                     if (packages[i].equals(pm.getIconPackPackage().get())) {
                         pm.getIconPackPackage().set("");
                     };
-                    if (packages[i].equals(LAWNICONS_PACKAGE_NAME)) {
+                    final boolean isThemedIconsAvailable = context.getPackageManager()
+                        .queryIntentActivityOptions(
+                            new ComponentName(context.getApplicationInfo().packageName, context.getApplicationInfo().className),
+                            null,
+                            new Intent(context.getResources().getString(R.string.icon_packs_intent_name)),
+                            PackageManager.GET_RESOLVED_FILTER).stream().map(it -> it.activityInfo.packageName)
+                        .noneMatch(it -> packageManagerHelper.isAppInstalled(it, mUser));
+                    if (isThemedIconsAvailable) {
                         pm.getThemedIcons().set(false);
                     }
                 }

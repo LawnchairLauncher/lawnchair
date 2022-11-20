@@ -159,6 +159,26 @@ open class IconShape(val topLeft: Corner,
 
     open fun getHashString() = toString()
 
+    fun copy(
+        topLeftShape: IconCornerShape = topLeft.shape,
+        topRightShape: IconCornerShape = topRight.shape,
+        bottomLeftShape: IconCornerShape = bottomLeft.shape,
+        bottomRightShape: IconCornerShape = bottomRight.shape,
+        topLeftScale: Float = topLeft.scale.x,
+        topRightScale: Float = topRight.scale.x,
+        bottomLeftScale: Float = bottomLeft.scale.x,
+        bottomRightScale: Float = bottomRight.scale.x,
+    ): IconShape = IconShape(
+        topLeftShape = topLeftShape,
+        topRightShape = topRightShape,
+        bottomLeftShape = bottomLeftShape,
+        bottomRightShape = bottomRightShape,
+        topLeftScale = topLeftScale,
+        topRightScale = topRightScale,
+        bottomLeftScale = bottomLeftScale,
+        bottomRightScale = bottomRightScale
+    )
+
     data class Corner(val shape: IconCornerShape, val scale: PointF) {
 
         constructor(shape: IconCornerShape, scale: Float) : this(shape, PointF(scale, scale))
@@ -175,8 +195,8 @@ open class IconShape(val topLeft: Corner,
                 val parts = value.split(",")
                 val scaleX = parts[1].toFloat()
                 val scaleY = if (parts.size >= 3) parts[2].toFloat() else scaleX
-                if (scaleX !in 0f..1f) error("scaleX must be in [0, 1]")
-                if (scaleY !in 0f..1f) error("scaleY must be in [0, 1]")
+                check (scaleX in 0f..1f) { "scaleX must be in [0, 1]" }
+                check (scaleY in 0f..1f) { "scaleY must be in [0, 1]" }
                 return Corner(IconCornerShape.fromString(parts[0]), PointF(scaleX, scaleY))
             }
         }
@@ -206,6 +226,19 @@ open class IconShape(val topLeft: Corner,
         }
     }
 
+    object SharpSquare : IconShape(IconCornerShape.arc,
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        0f, 0f, 0f, 0f) {
+
+        override val windowTransitionRadius = 0f
+
+        override fun toString(): String {
+            return "sharpSquare"
+        }
+    }
+
     object RoundedSquare : IconShape(IconCornerShape.arc,
         IconCornerShape.arc,
         IconCornerShape.arc,
@@ -219,10 +252,10 @@ open class IconShape(val topLeft: Corner,
         }
     }
 
-    object Squircle : IconShape(IconCornerShape.squircle,
-        IconCornerShape.squircle,
-        IconCornerShape.squircle,
-        IconCornerShape.squircle,
+    object Squircle : IconShape(IconCornerShape.Squircle,
+        IconCornerShape.Squircle,
+        IconCornerShape.Squircle,
+        IconCornerShape.Squircle,
         1f, 1f, 1f, 1f) {
 
         override fun toString(): String {
@@ -230,10 +263,10 @@ open class IconShape(val topLeft: Corner,
         }
     }
 
-    object Sammy : IconShape(IconCornerShape.sammy,
-        IconCornerShape.sammy,
-        IconCornerShape.sammy,
-        IconCornerShape.sammy,
+    object Sammy : IconShape(IconCornerShape.Sammy,
+        IconCornerShape.Sammy,
+        IconCornerShape.Sammy,
+        IconCornerShape.Sammy,
         1f, 1f, 1f, 1f) {
 
         override fun toString(): String {
@@ -266,10 +299,10 @@ open class IconShape(val topLeft: Corner,
         }
     }
 
-    object Cupertino : IconShape(IconCornerShape.cupertino,
-        IconCornerShape.cupertino,
-        IconCornerShape.cupertino,
-        IconCornerShape.cupertino,
+    object Cupertino : IconShape(IconCornerShape.Cupertino,
+        IconCornerShape.Cupertino,
+        IconCornerShape.Cupertino,
+        IconCornerShape.Cupertino,
         1f, 1f, 1f, 1f) {
 
         override val windowTransitionRadius = .45f
@@ -279,38 +312,84 @@ open class IconShape(val topLeft: Corner,
         }
     }
 
+    object Octagon : IconShape(IconCornerShape.Cut,
+        IconCornerShape.Cut,
+        IconCornerShape.Cut,
+        IconCornerShape.Cut,
+        .5f, .5f, .5f, .5f) {
+
+        override fun toString(): String {
+            return "octagon"
+        }
+    }
+
+    object Diamond : IconShape(IconCornerShape.Cut,
+        IconCornerShape.Cut,
+        IconCornerShape.Cut,
+        IconCornerShape.Cut,
+        1f, 1f, 1f, 1f) {
+
+        override val windowTransitionRadius = 0f
+
+        override fun toString(): String {
+            return "diamond"
+        }
+    }
+
+    object Egg : IconShape(IconCornerShape.arc,
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        1f, 1f, 0.75f, 0.75f) {
+
+        override val windowTransitionRadius = 0.85f
+
+        override fun toString(): String {
+            return "egg"
+        }
+    }
+
     companion object {
 
         fun fromString(value: String): IconShape? {
             return when (value) {
                 "circle" -> Circle
                 "square" -> Square
+                "sharpSquare" -> SharpSquare
                 "roundedSquare" -> RoundedSquare
                 "squircle" -> Squircle
                 "sammy" -> Sammy
                 "teardrop" -> Teardrop
                 "cylinder" -> Cylinder
                 "cupertino" -> Cupertino
+                "octagon" -> Octagon
+                "diamond" -> Diamond
+                "egg" -> Egg
                 "" -> null
-                else -> try {
-                    parseCustomShape(value)
-                } catch (ex: Exception) {
-                    Log.e("IconShape", "Error creating shape $value", ex)
-                    null
-                }
+                else -> runCatching { parseCustomShape(value) }.getOrNull()
             }
         }
 
         private fun parseCustomShape(value: String): IconShape {
             val parts = value.split("|")
-            if (parts[0] != "v1") error("unknown config format")
-            if (parts.size != 5) error("invalid arguments size")
+            check (parts[0] == "v1") { "unknown config format" }
+            check (parts.size == 5) { "invalid arguments size" }
             return IconShape(
                 Corner.fromString(parts[1]),
                 Corner.fromString(parts[2]),
                 Corner.fromString(parts[3]),
                 Corner.fromString(parts[4])
             )
+        }
+
+        fun isCustomShape(iconShape: IconShape): Boolean {
+            return try {
+                parseCustomShape(iconShape.toString())
+                true
+            } catch (e: Exception) {
+                Log.e("IconShape", "Error creating shape $iconShape", e)
+                false
+            }
         }
     }
 }

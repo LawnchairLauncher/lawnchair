@@ -40,10 +40,12 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val iconPackPackage = StringPref("pref_iconPackPackage", "", reloadIcons)
     val allowRotation = BoolPref("pref_allowRotation", false)
     val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", false, reloadIcons)
+    val transparentIconBackground = BoolPref("prefs_transparentIconBackground", false, reloadIcons)
     val addIconToHome = BoolPref("pref_add_icon_to_home", true)
     val hotseatColumns = IntPref("pref_hotseatColumns", 4, reloadGrid)
     val workspaceColumns = IntPref("pref_workspaceColumns", 4)
     val workspaceRows = IntPref("pref_workspaceRows", 5)
+    val workspaceIncreaseMaxGridSize = BoolPref("pref_workspace_increase_max_grid_size", false)
     val folderRows = IdpIntPref("pref_folderRows", { numFolderRows }, reloadGrid)
 
     val drawerOpacity = FloatPref("pref_drawerOpacity", 1F, recreate)

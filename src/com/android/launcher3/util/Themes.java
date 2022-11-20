@@ -33,7 +33,10 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.GraphicsUtils;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
+import app.lawnchair.preferences2.PreferenceManager2;
+import app.lawnchair.theme.color.ColorMode;
 import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.wallpaper.WallpaperColorsCompat;
 import app.lawnchair.wallpaper.WallpaperManagerCompat;
@@ -62,15 +65,29 @@ public class Themes {
     }
 
     public static int getActivityThemeRes(Context context, int wallpaperColorHints) {
+        PreferenceManager2 prefs2 = PreferenceManager2.getInstance(context);
+        ColorMode colorMode = PreferenceExtensionsKt.firstBlocking(prefs2.getWorkspaceTextColor());
         boolean supportsDarkText = (wallpaperColorHints & HINT_SUPPORTS_DARK_TEXT) != 0;
         boolean isMainColorDark = (wallpaperColorHints & HINT_SUPPORTS_DARK_THEME) != 0;
 
         if (Utilities.isDarkTheme(context)) {
-            return supportsDarkText ? R.style.AppTheme_Dark_DarkText
+            if (colorMode == ColorMode.LIGHT) {
+                return R.style.AppTheme_Dark;
+            } else if (colorMode == ColorMode.DARK) {
+                return R.style.AppTheme_Dark_DarkText;
+            } else {
+                return supportsDarkText ? R.style.AppTheme_Dark_DarkText
                     : isMainColorDark ? R.style.AppTheme_Dark_DarkMainColor : R.style.AppTheme_Dark;
+            }
         } else {
-            return supportsDarkText ? R.style.AppTheme_DarkText
+            if (colorMode == ColorMode.LIGHT) {
+                return R.style.AppTheme;
+            } else if (colorMode == ColorMode.DARK) {
+                return R.style.AppTheme_DarkText;
+            } else {
+                return supportsDarkText ? R.style.AppTheme_DarkText
                     : isMainColorDark ? R.style.AppTheme_DarkMainColor : R.style.AppTheme;
+            }
         }
     }
 

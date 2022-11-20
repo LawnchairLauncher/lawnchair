@@ -1,7 +1,6 @@
 package app.lawnchair.allapps
 
 import android.content.Context
-import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
@@ -98,7 +97,7 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
     }
 
     private fun setSubtitleText(subtitleText: CharSequence?, showDelimiter: Boolean) {
-        if (TextUtils.isEmpty(subtitleText) || icon.hasFlag(FLAG_HIDE_SUBTITLE)) {
+        if (subtitleText.isNullOrEmpty() || icon.hasFlag(FLAG_HIDE_SUBTITLE)) {
             subtitle.isVisible = false
             delimiter?.isVisible = false
         } else {

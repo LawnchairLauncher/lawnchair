@@ -22,4 +22,4 @@ val dynamicColors = listOf(ColorOption.SystemAccent, ColorOption.WallpaperPrimar
     .filter(ColorOption::isSupported)
     .map(ColorOption::colorPreferenceEntry)
 
-val dynamicColorsForNotificationDot = dynamicColors + listOf(ColorOption.AppIcon.colorPreferenceEntry)
+val dynamicColorsWithDefault = dynamicColors + listOf(ColorOption.Default.colorPreferenceEntry)

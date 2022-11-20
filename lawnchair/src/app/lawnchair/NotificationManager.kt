@@ -32,8 +32,9 @@ class NotificationManager(@Suppress("UNUSED_PARAMETER") context: Context) {
 
     fun onNotificationFullRefresh() {
         scope.launch(Dispatchers.IO) {
-            val tmpMap = NotificationListener.getInstanceIfConnected()
-                ?.activeNotifications?.associateBy { it.key }
+            val tmpMap = runCatching {
+                NotificationListener.getInstanceIfConnected()?.activeNotifications?.associateBy { it.key }
+            }.getOrNull()
             withContext(Dispatchers.Main) {
                 notificationsMap.clear()
                 if (tmpMap != null) {
@@ -70,8 +71,7 @@ fun Context.getAppName(name: String): CharSequence {
     try {
         return packageManager.getApplicationLabel(
             packageManager.getApplicationInfo(name, PackageManager.GET_META_DATA))
-    } catch (ignored: PackageManager.NameNotFoundException) {
+    } catch (_: PackageManager.NameNotFoundException) {
     }
-
     return name
 }

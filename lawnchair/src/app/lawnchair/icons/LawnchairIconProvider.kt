@@ -58,7 +58,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
         lawniconsVersion =
             if (isSupported) context.packageManager.getPackageVersionCode(LAWNICONS_PACKAGE_NAME)
             else 0L
-        _themeMap = if (isSupported) null else DISABLED_MAP
+        _themeMap = if (isSupported && lawniconsVersion in 1..3) null else DISABLED_MAP
     }
 
     private fun resolveIconEntry(componentName: ComponentName, user: UserHandle): IconEntry? {
@@ -135,6 +135,10 @@ class LawnchairIconProvider @JvmOverloads constructor(
     }
 
     override fun getThemeData(componentName: ComponentName): ThemedIconDrawable.ThemeData? {
+        val td = getDynamicIconsFromMap(context, themeMap, componentName)
+        if(td != null){
+            return td
+        }
         return themeMap[componentName] ?: themeMap[ComponentName(componentName.packageName, "")]
     }
 
@@ -288,7 +292,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
                         if (type != XmlPullParser.START_TAG) continue
                         if (TAG_ICON == parser.name) {
                             val pkg = parser.getAttributeValue(null, ATTR_PACKAGE)
-                            val cmp = parser.getAttributeValue(null, ATTR_COMPONENT) ?: ""
+                            val cmp = parser.getAttributeValue(null, ATTR_COMPONENT).orEmpty()
                             val iconId = parser.getAttributeResourceValue(null, ATTR_DRAWABLE, 0)
                             if (iconId != 0 && pkg.isNotEmpty()) {
                                 map[ComponentName(pkg, cmp)] = ThemedIconDrawable.ThemeData(resources, packageName, iconId)
@@ -311,6 +315,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
                 resources = context.packageManager.getResourcesForApplication(LAWNICONS_PACKAGE_NAME),
                 packageName = LAWNICONS_PACKAGE_NAME
             )
+            updateMapWithDynamicIcons(context, map)
         }
 
         return map

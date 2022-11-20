@@ -51,6 +51,7 @@ import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 import java.io.PrintWriter;
 
 import app.lawnchair.DeviceProfileOverrides;
+import app.lawnchair.hotseat.DisabledHotseat;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.color.ColorOption;
 
@@ -351,7 +352,7 @@ public class DeviceProfile {
         int hotseatBottomPaddingRes;
         int hotseatBottomNonTallPaddingRes;
         int hotseatExtraVerticalSizeRes;
-        boolean hotseatQsb = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getHotseatQsb());
+        boolean hotseatQsb = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getHotseatMode()) != DisabledHotseat.INSTANCE;
         if (hotseatQsb) {
             hotseatTopPaddingRes = R.dimen.dynamic_grid_hotseat_top_padding;
             hotseatBottomPaddingRes = R.dimen.dynamic_grid_hotseat_bottom_padding;
@@ -504,14 +505,18 @@ public class DeviceProfile {
         }
 
         // Load dot color
-        ColorOption colorOption = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getNotificationDotColor());
-        int color = colorOption.getColorPreferenceEntry().getLightColor().invoke(context);
+        ColorOption dotColorOption = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getNotificationDotColor());
+        int dotColor = dotColorOption.getColorPreferenceEntry().getLightColor().invoke(context);
+
+        // Load counter color
+        ColorOption counterColorOption = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getNotificationDotTextColor());
+        int countColor = counterColorOption.getColorPreferenceEntry().getLightColor().invoke(context);
 
         // This is done last, after iconSizePx is calculated above.
         Path dotPath = GraphicsUtils.getShapePath(DEFAULT_DOT_SIZE);
-        mDotRendererWorkSpace = new DotRenderer(iconSizePx, dotPath, DEFAULT_DOT_SIZE, showNotificationCount, typeface, color);
+        mDotRendererWorkSpace = new DotRenderer(iconSizePx, dotPath, DEFAULT_DOT_SIZE, showNotificationCount, typeface, dotColor, countColor);
         mDotRendererAllApps = iconSizePx == allAppsIconSizePx ? mDotRendererWorkSpace :
-                new DotRenderer(allAppsIconSizePx, dotPath, DEFAULT_DOT_SIZE, showNotificationCount, typeface, color);
+                new DotRenderer(allAppsIconSizePx, dotPath, DEFAULT_DOT_SIZE, showNotificationCount, typeface, dotColor, countColor);
     }
 
     private int getHorizontalMarginPx(InvariantDeviceProfile idp, Resources res) {

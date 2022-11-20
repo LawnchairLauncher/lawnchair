@@ -7,7 +7,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.core.content.getSystemService
 import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -19,6 +18,7 @@ import app.lawnchair.ui.preferences.components.ClickablePreference
 import app.lawnchair.ui.preferences.components.PreferenceLayoutLazyColumn
 import app.lawnchair.ui.preferences.components.preferenceGroupItems
 import app.lawnchair.ui.util.OnResult
+import app.lawnchair.util.requireSystemService
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
 import com.google.accompanist.navigation.animation.composable
@@ -47,7 +47,7 @@ fun NavGraphBuilder.selectIconGraph(route: String) {
 fun SelectIconPreference(componentKey: ComponentKey) {
     val context = LocalContext.current
     val label = remember(componentKey) {
-        val launcherApps = context.getSystemService<LauncherApps>()!!
+        val launcherApps: LauncherApps = context.requireSystemService()
         val intent = Intent().setComponent(componentKey.componentName)
         val activity = launcherApps.resolveActivity(intent, componentKey.user)
         activity.label.toString()
@@ -96,7 +96,7 @@ fun SelectIconPreference(componentKey: ComponentKey) {
                 label = iconPack.name,
                 icon = remember(iconPack) { iconPack.icon.toBitmap() },
                 onClick = {
-                    if (iconPack.packageName == "") {
+                    if (iconPack.packageName.isEmpty()) {
                         navController.navigate("/${Routes.ICON_PICKER}/")
                     } else {
                         navController.navigate("/${Routes.ICON_PICKER}/${iconPack.packageName}/")

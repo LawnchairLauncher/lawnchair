@@ -53,7 +53,7 @@ class CustomIconPack(context: Context, packPackageName: String) :
                 packResources.getDrawableForDensity(id, iconDpi, null),
                 true
             )
-        } catch (e: Resources.NotFoundException) {
+        } catch (_: Resources.NotFoundException) {
             null
         }
     }
@@ -126,7 +126,6 @@ class CustomIconPack(context: Context, packPackageName: String) :
         }
     }
 
-    @Suppress("BlockingMethodInNonBlockingContext")
     override fun getAllIcons(): Flow<List<IconPickerCategory>> = flow {
         load()
 
@@ -183,9 +182,9 @@ class CustomIconPack(context: Context, packPackageName: String) :
                 parser.setInput(res.assets.open("$name.xml"), Xml.Encoding.UTF_8.toString())
                 parser
             }
-        } catch (e: PackageManager.NameNotFoundException) {
-        } catch (e: IOException) {
-        } catch (e: XmlPullParserException) {
+        } catch (_: PackageManager.NameNotFoundException) {
+        } catch (_: IOException) {
+        } catch (_: XmlPullParserException) {
         }
         return null
     }

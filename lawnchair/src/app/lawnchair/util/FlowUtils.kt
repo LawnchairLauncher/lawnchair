@@ -16,7 +16,7 @@ fun <T> Flow<T>.firstBlocking() = runBlocking { first() }
 @Composable
 fun <T> Flow<T>.collectAsStateBlocking() = collectAsState(initial = firstBlocking())
 
-fun broadcastReceiverFlow(context: Context, filter: IntentFilter) = callbackFlow<Intent> {
+fun broadcastReceiverFlow(context: Context, filter: IntentFilter) = callbackFlow {
     val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             trySend(intent)

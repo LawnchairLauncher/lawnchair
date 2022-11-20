@@ -8,7 +8,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import java.util.concurrent.Semaphore
 
-abstract class IconPack(
+sealed class IconPack(
     protected val context: Context,
     val packPackageName: String,
 ) {
@@ -49,7 +49,6 @@ abstract class IconPack(
 
     abstract fun getAllIcons(): Flow<List<IconPickerCategory>>
 
-    @Suppress("BlockingMethodInNonBlockingContext")
     protected abstract fun loadInternal()
 
     protected fun removeDuplicates(items: List<IconPickerItem>): List<IconPickerItem> {

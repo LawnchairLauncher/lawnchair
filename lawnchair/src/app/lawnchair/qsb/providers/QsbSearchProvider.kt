@@ -16,7 +16,7 @@ import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.patrykmichalik.opto.core.first
 
-open class QsbSearchProvider(
+sealed class QsbSearchProvider(
     val id: String,
     @StringRes val name: Int,
     @DrawableRes val icon: Int = R.drawable.ic_qsb_search,
@@ -92,7 +92,7 @@ open class QsbSearchProvider(
                     Uri.parse("market://details?id=$packageName")
                 )
             )
-        } catch (e: ActivityNotFoundException) {
+        } catch (_: ActivityNotFoundException) {
             try {
                 context.startActivity(
                     Intent(
@@ -100,7 +100,7 @@ open class QsbSearchProvider(
                         Uri.parse("https://play.google.com/store/apps/details?id=$packageName")
                     )
                 )
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 Toast.makeText(
                     context,
                     context.getString(R.string.error_no_market_or_browser_installed),
@@ -123,7 +123,8 @@ open class QsbSearchProvider(
             Presearch,
             Wikipedia,
             Bing,
-            Sesame
+            Sesame,
+            Brave
         )
 
         /**

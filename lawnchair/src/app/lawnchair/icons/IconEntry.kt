@@ -6,7 +6,7 @@ data class IconEntry(
     val type: IconType
 ) {
     fun resolveDynamicCalendar(day: Int): IconEntry {
-        if (type != IconType.Calendar) throw IllegalStateException("type is not calendar")
+        check (type == IconType.Calendar) { "type is not calendar" }
         return IconEntry(packPackageName, "$name${day + 1}", IconType.Normal)
     }
 }

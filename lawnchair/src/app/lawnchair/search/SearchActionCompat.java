@@ -43,7 +43,7 @@ public final class SearchActionCompat implements Parcelable {
     private static final String TAG = "SearchActionCompat";
 
     @NonNull
-    private String mId;
+    private final String mId;
 
     @Nullable
     private final Icon mIcon;
@@ -67,7 +67,7 @@ public final class SearchActionCompat implements Parcelable {
     private final UserHandle mUserHandle;
 
     @Nullable
-    private Bundle mExtras;
+    private final Bundle mExtras;
 
     SearchActionCompat(Parcel in) {
         mId = in.readString();
@@ -220,7 +220,7 @@ public final class SearchActionCompat implements Parcelable {
 
     @Override
     public String toString() {
-        String str = "id=" + mId
+        return "id=" + mId
                 + " title=" + mTitle
                 + " contentDescription=" + mContentDescription
                 + " subtitle=" + mSubtitle
@@ -228,7 +228,6 @@ public final class SearchActionCompat implements Parcelable {
                 + " pendingIntent=" + (mPendingIntent == null ? "" : mPendingIntent)
                 + " intent=" + mIntent
                 + " userHandle=" + mUserHandle;
-        return str;
     }
 
     public static SearchActionCompat wrap(SearchAction action) {
@@ -256,10 +255,10 @@ public final class SearchActionCompat implements Parcelable {
      */
     public static final class Builder {
         @NonNull
-        private String mId;
+        private final String mId;
 
         @NonNull
-        private CharSequence mTitle;
+        private final CharSequence mTitle;
 
         @Nullable
         private Icon mIcon;

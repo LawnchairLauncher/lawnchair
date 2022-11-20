@@ -20,16 +20,16 @@ open class StretchRecyclerViewContainer @JvmOverloads constructor(
             return super.drawChild(canvas, child, drawingTime)
         }
 
-        if (!childEffect.isFinished) {
+        return if (!childEffect.isFinished) {
             val save = canvas.save()
             clipChild(canvas, child)
             childEffect.setSize(width, height)
             childEffect.applyStretch(canvas, StretchEdgeEffect.POSITION_BOTTOM)
             val result = super.drawChild(canvas, child, drawingTime)
             canvas.restoreToCount(save)
-            return result
+            result
         } else {
-            return super.drawChild(canvas, child, drawingTime)
+            super.drawChild(canvas, child, drawingTime)
         }
     }
 

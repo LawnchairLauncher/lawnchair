@@ -3,7 +3,6 @@ package app.lawnchair.gestures.handlers
 import android.annotation.SuppressLint
 import android.content.Context
 import app.lawnchair.LawnchairLauncher
-import app.lawnchair.gestures.GestureHandler
 import java.lang.reflect.InvocationTargetException
 
 class OpenNotificationsHandler(context: Context) : GestureHandler(context) {
@@ -13,6 +12,7 @@ class OpenNotificationsHandler(context: Context) : GestureHandler(context) {
         try {
             Class.forName("android.app.StatusBarManager")
                 .getMethod("expandNotificationsPanel")
+                .apply { isAccessible = true }
                 .invoke(context.getSystemService("statusbar"))
         } catch (e: IllegalAccessException) {
             e.printStackTrace()

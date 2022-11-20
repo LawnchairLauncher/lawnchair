@@ -55,11 +55,12 @@ class FontCache private constructor(private val context: Context) {
     private val customFontsDir = TTFFont.getFontsDir(context)
     val customFonts = customFontsDir.subscribeFiles()
         .map { files ->
-            files
+            files.asSequence()
                 .sortedByDescending { it.lastModified() }
                 .map { TTFFont(context, it) }
                 .filter { it.isAvailable }
                 .map { Family(it) }
+                .toList()
         }
 
     val uiRegular = ResourceFont(context, R.font.inter_regular, "Inter")
@@ -129,7 +130,7 @@ class FontCache private constructor(private val context: Context) {
         val default = variants.getOrElse("regular") { variants.values.firstOrNull() }
     }
 
-    abstract class Font {
+    sealed class Font {
 
         abstract val fullDisplayName: String
         abstract val displayName: String
@@ -154,24 +155,20 @@ class FontCache private constructor(private val context: Context) {
             return obj.toString()
         }
 
-        interface LoadCallback {
-
-            fun onFontLoaded(typeface: Typeface?)
-        }
-
         companion object {
 
             fun fromJsonString(context: Context, jsonString: String): Font {
                 val obj = JSONObject(jsonString)
                 val className = obj.getString(KEY_CLASS_NAME)
-                val clazz = Class.forName(className)
-                val constructor = clazz.getMethod("fromJson", Context::class.java, JSONObject::class.java)
-                return constructor.invoke(null, context, obj) as Font
+                return Class.forName(className)
+                    .getMethod("fromJson", Context::class.java, JSONObject::class.java)
+                    .apply { isAccessible = true }
+                    .invoke(null, context, obj) as Font
             }
         }
     }
 
-    abstract class TypefaceFont(protected val typeface: Typeface?) : Font() {
+    sealed class TypefaceFont(protected val typeface: Typeface?) : Font() {
 
         override val fullDisplayName = typeface.toString()
         override val displayName get() = fullDisplayName
@@ -238,13 +235,8 @@ class FontCache private constructor(private val context: Context) {
 
         companion object {
 
-            fun createTypeface(file: File): Typeface? {
-                return try {
-                    Typeface.createFromFile(file)
-                } catch (e: Exception) {
-                    null
-                }
-            }
+            fun createTypeface(file: File): Typeface? =
+                runCatching { Typeface.createFromFile(file) }.getOrNull()
 
             fun getFontsDir(context: Context): File {
                 return File(context.filesDir, "customFonts").apply { mkdirs() }

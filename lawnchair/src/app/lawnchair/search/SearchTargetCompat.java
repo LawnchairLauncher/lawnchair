@@ -65,7 +65,7 @@ import java.util.Objects;
  */
 public final class SearchTargetCompat implements Parcelable {
 
-    public static final int RESULT_TYPE_APPLICATION = 1 << 0;
+    public static final int RESULT_TYPE_APPLICATION = 1;
     public static final int RESULT_TYPE_SHORTCUT = 1 << 1;
     public static final int RESULT_TYPE_SLICE = 1 << 2;
     public static final int RESULT_TYPE_WIDGETS = 1 << 3;
@@ -111,7 +111,7 @@ public final class SearchTargetCompat implements Parcelable {
     private final String mId;
 
     @Nullable
-    private String mParentId;
+    private final String mParentId;
 
     private final float mScore;
 
@@ -364,11 +364,11 @@ public final class SearchTargetCompat implements Parcelable {
      * @hide
      */
     public static final class Builder {
-        private int mResultType;
+        private final int mResultType;
         @NonNull
-        private String mLayoutType;
+        private final String mLayoutType;
         @NonNull
-        private String mId;
+        private final String mId;
         @Nullable
         private String mParentId;
         private float mScore;

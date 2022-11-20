@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.pm.LauncherApps
 import android.graphics.drawable.Drawable
 import android.os.Process
-import androidx.core.content.getSystemService
+import app.lawnchair.util.requireSystemService
 import com.android.launcher3.R
 import com.android.launcher3.pm.UserCache
 import com.android.launcher3.util.ComponentKey
@@ -19,7 +19,7 @@ class SystemIconPack(context: Context) : IconPack(context, "") {
     override val label = context.getString(R.string.system_icons)
     private val appMap = run {
         val profiles = UserCache.INSTANCE.get(context).userProfiles
-        val launcherApps = context.getSystemService<LauncherApps>()!!
+        val launcherApps: LauncherApps = context.requireSystemService()
         profiles
             .flatMap { launcherApps.getActivityList(null, Process.myUserHandle()) }
             .associateBy { ComponentKey(it.componentName, it.user) }

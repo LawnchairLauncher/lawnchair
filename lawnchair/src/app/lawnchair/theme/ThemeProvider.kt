@@ -115,7 +115,7 @@ class ThemeProvider(private val context: Context) {
         val INSTANCE = MainThreadInitializedObject(::ThemeProvider)
     }
 
-    interface ColorSchemeChangeListener {
+    sealed interface ColorSchemeChangeListener {
         fun onColorSchemeChanged()
     }
 }

@@ -13,18 +13,16 @@ import kotlinx.coroutines.launch
 sealed interface RestoreBackupUiState {
     val isLoading: Boolean
 
-    data class Success(
-        val backup: LawnchairBackup
-    ) : RestoreBackupUiState {
-        override val isLoading = false
+    data class Success(val backup: LawnchairBackup) : RestoreBackupUiState {
+        override val isLoading: Boolean = false
     }
 
     object Loading : RestoreBackupUiState {
-        override val isLoading = true
+        override val isLoading: Boolean = true
     }
 
     object Error : RestoreBackupUiState {
-        override val isLoading = true
+        override val isLoading: Boolean = true
     }
 }
 
