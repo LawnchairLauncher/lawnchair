@@ -47,9 +47,9 @@ import android.view.Display;
 
 import androidx.annotation.DimenRes;
 import androidx.annotation.IntDef;
-import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
 import androidx.annotation.VisibleForTesting;
+import androidx.annotation.XmlRes;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.android.launcher3.icons.DotRenderer;
@@ -172,7 +172,8 @@ public class InvariantDeviceProfile {
      * Do not query directly. see {@link DeviceProfile#isScalableGrid}.
      */
     protected boolean isScalable;
-    public int devicePaddingId;
+    @XmlRes
+    public int devicePaddingId = INVALID_RESOURCE_HANDLE;
 
     public String dbFile;
     public int defaultLayoutId;
@@ -183,9 +184,6 @@ public class InvariantDeviceProfile {
      * An immutable list of supported profiles.
      */
     public List<DeviceProfile> supportedProfiles = Collections.EMPTY_LIST;
-
-    @Nullable
-    public DevicePaddings devicePaddings;
 
     public Point defaultWallpaperSize;
     public Rect defaultWidgetPadding;
@@ -384,10 +382,6 @@ public class InvariantDeviceProfile {
         allAppsBorderSpaces = displayOption.allAppsBorderSpaces;
         allAppsIconSize = displayOption.allAppsIconSizes;
         allAppsIconTextSize = displayOption.allAppsIconTextSizes;
-
-        if (devicePaddingId != 0) {
-            devicePaddings = new DevicePaddings(context, devicePaddingId);
-        }
 
         inlineQsb = closestProfile.inlineQsb;
 
@@ -826,7 +820,7 @@ public class InvariantDeviceProfile {
             isScalable = a.getBoolean(
                     R.styleable.GridDisplayOption_isScalable, false);
             devicePaddingId = a.getResourceId(
-                    R.styleable.GridDisplayOption_devicePaddingId, 0);
+                    R.styleable.GridDisplayOption_devicePaddingId, INVALID_RESOURCE_HANDLE);
 
             int deviceCategory = a.getInt(R.styleable.GridDisplayOption_deviceCategory,
                     DEVICE_CATEGORY_ALL);
