@@ -153,7 +153,6 @@ android {
         buildConfigField "String", "COMMIT_HASH", "\"${buildCommit}\""
         buildConfigField "boolean", "ENABLE_AUTO_INSTALLS_LAYOUT", "false"
 
-        resValue("string", "launcher_component", "${applicationId}/app.lawnchair.LawnchairLauncher")
         manifestPlaceholders.quickstepMinSdk = quickstepMinSdk
         manifestPlaceholders.quickstepMaxSdk = quickstepMaxSdk
         buildConfigField "int", "QUICKSTEP_MIN_SDK", quickstepMinSdk
@@ -258,6 +257,10 @@ android {
 
         withoutQuickstep {
             dimension "recents"
+        }
+
+        all {
+            resValue("string", "launcher_component", "${applicationId}/app.lawnchair.LawnchairLauncher")
         }
     }
 
