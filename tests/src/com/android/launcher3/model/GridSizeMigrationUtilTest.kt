@@ -26,7 +26,7 @@ import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherFiles
 import com.android.launcher3.LauncherSettings.Favorites.*
 import com.android.launcher3.config.FeatureFlags
-import com.android.launcher3.model.GridSizeMigrationTaskV2.DbReader
+import com.android.launcher3.model.GridSizeMigrationUtil.DbReader
 import com.android.launcher3.pm.UserCache
 import com.android.launcher3.provider.LauncherDbUtils
 import com.android.launcher3.util.LauncherModelHelper
@@ -37,10 +37,10 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
-/** Unit tests for [GridSizeMigrationTaskV2]  */
+/** Unit tests for [GridSizeMigrationUtil]  */
 @SmallTest
 @RunWith(AndroidJUnit4::class)
-class GridSizeMigrationTaskV2Test {
+class GridSizeMigrationUtilTest {
     private lateinit var modelHelper: LauncherModelHelper
     private lateinit var context: Context
     private lateinit var db: SQLiteDatabase
@@ -122,15 +122,16 @@ class GridSizeMigrationTaskV2Test {
         idp.numRows = 4
         val srcReader = DbReader(db, TMP_TABLE, context, validPackages)
         val destReader = DbReader(db, TABLE_NAME, context, validPackages)
-        val task = GridSizeMigrationTaskV2(
-            context,
-            db,
-            srcReader,
-            destReader,
-            idp.numDatabaseHotseatIcons,
-            Point(idp.numColumns, idp.numRows)
+        GridSizeMigrationUtil.migrate(
+                context,
+                db,
+                srcReader,
+                destReader,
+                idp.numDatabaseHotseatIcons,
+                Point(idp.numColumns, idp.numRows),
+                DeviceGridState(context),
+                DeviceGridState(idp)
         )
-        task.migrate(DeviceGridState(context), DeviceGridState(idp))
 
         // Check hotseat items
         var c = context.contentResolver.query(
@@ -207,15 +208,16 @@ class GridSizeMigrationTaskV2Test {
         idp.numRows = 4
         val srcReader = DbReader(db, TMP_TABLE, context, validPackages)
         val destReader = DbReader(db, TABLE_NAME, context, validPackages)
-        val task = GridSizeMigrationTaskV2(
-            context,
-            db,
-            srcReader,
-            destReader,
-            idp.numDatabaseHotseatIcons,
-            Point(idp.numColumns, idp.numRows)
+        GridSizeMigrationUtil.migrate(
+                context,
+                db,
+                srcReader,
+                destReader,
+                idp.numDatabaseHotseatIcons,
+                Point(idp.numColumns, idp.numRows),
+                DeviceGridState(context),
+                DeviceGridState(idp)
         )
-        task.migrate(DeviceGridState(context), DeviceGridState(idp))
 
         // Check hotseat items
         val c = context.contentResolver.query(
@@ -262,15 +264,16 @@ class GridSizeMigrationTaskV2Test {
         idp.numRows = 4
         val srcReader = DbReader(db, TMP_TABLE, context, validPackages)
         val destReader = DbReader(db, TABLE_NAME, context, validPackages)
-        val task = GridSizeMigrationTaskV2(
-            context,
-            db,
-            srcReader,
-            destReader,
-            idp.numDatabaseHotseatIcons,
-            Point(idp.numColumns, idp.numRows)
+        GridSizeMigrationUtil.migrate(
+                context,
+                db,
+                srcReader,
+                destReader,
+                idp.numDatabaseHotseatIcons,
+                Point(idp.numColumns, idp.numRows),
+                DeviceGridState(context),
+                DeviceGridState(idp)
         )
-        task.migrate(DeviceGridState(context), DeviceGridState(idp))
 
         // Check hotseat items
         val c = context.contentResolver.query(
@@ -327,15 +330,16 @@ class GridSizeMigrationTaskV2Test {
 
         val srcReader = DbReader(db, TMP_TABLE, context, validPackages)
         val destReader = DbReader(db, TABLE_NAME, context, validPackages)
-        val task = GridSizeMigrationTaskV2(
-            context,
-            db,
-            srcReader,
-            destReader,
-            idp.numDatabaseHotseatIcons,
-            Point(idp.numColumns, idp.numRows)
+        GridSizeMigrationUtil.migrate(
+                context,
+                db,
+                srcReader,
+                destReader,
+                idp.numDatabaseHotseatIcons,
+                Point(idp.numColumns, idp.numRows),
+                DeviceGridState(context),
+                DeviceGridState(idp)
         )
-        task.migrate(DeviceGridState(context), DeviceGridState(idp))
 
         // Get workspace items
         val c = context.contentResolver.query(
@@ -387,15 +391,16 @@ class GridSizeMigrationTaskV2Test {
         idp.numRows = 5
         val srcReader = DbReader(db, TMP_TABLE, context, validPackages)
         val destReader = DbReader(db, TABLE_NAME, context, validPackages)
-        val task = GridSizeMigrationTaskV2(
-            context,
-            db,
-            srcReader,
-            destReader,
-            idp.numDatabaseHotseatIcons,
-            Point(idp.numColumns, idp.numRows)
+        GridSizeMigrationUtil.migrate(
+                context,
+                db,
+                srcReader,
+                destReader,
+                idp.numDatabaseHotseatIcons,
+                Point(idp.numColumns, idp.numRows),
+                DeviceGridState(context),
+                DeviceGridState(idp)
         )
-        task.migrate(DeviceGridState(context), DeviceGridState(idp))
 
         // Get workspace items
         val c = context.contentResolver.query(
@@ -448,15 +453,16 @@ class GridSizeMigrationTaskV2Test {
         idp.numRows = 4
         val srcReader = DbReader(db, TMP_TABLE, context, validPackages)
         val destReader = DbReader(db, TABLE_NAME, context, validPackages)
-        val task = GridSizeMigrationTaskV2(
-            context,
-            db,
-            srcReader,
-            destReader,
-            idp.numDatabaseHotseatIcons,
-            Point(idp.numColumns, idp.numRows)
+        GridSizeMigrationUtil.migrate(
+                context,
+                db,
+                srcReader,
+                destReader,
+                idp.numDatabaseHotseatIcons,
+                Point(idp.numColumns, idp.numRows),
+                DeviceGridState(context),
+                DeviceGridState(idp)
         )
-        task.migrate(DeviceGridState(context), DeviceGridState(idp))
 
         // Get workspace items
         val c = context.contentResolver.query(
