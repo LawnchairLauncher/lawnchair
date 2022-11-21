@@ -139,14 +139,13 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
         mTargetRect.roundOut(outPos);
     }
 
-    public static OptionsPopupView show(
-            Launcher launcher, RectF targetRect, List<OptionItem> items, boolean shouldAddArrow) {
+    public static OptionsPopupView show(AppLauncher launcher, RectF targetRect,
+            List<OptionItem> items, boolean shouldAddArrow) {
         return show(launcher, targetRect, items, shouldAddArrow, 0 /* width */);
     }
 
-    public static OptionsPopupView show(
-            Launcher launcher, RectF targetRect, List<OptionItem> items, boolean shouldAddArrow,
-            int width) {
+    public static OptionsPopupView show(AppLauncher launcher, RectF targetRect,
+            List<OptionItem> items, boolean shouldAddArrow, int width) {
         OptionsPopupView popup = (OptionsPopupView) launcher.getLayoutInflater()
                 .inflate(R.layout.longpress_options_menu, launcher.getDragLayer(), false);
         popup.mTargetRect = targetRect;
@@ -165,19 +164,8 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
             popup.mItemMap.put(view, item);
         }
 
-        popup.addPreDrawForColorExtraction(launcher);
         popup.show();
         return popup;
-    }
-
-    @Override
-    protected List<View> getChildrenForColorExtraction() {
-        int childCount = getChildCount();
-        ArrayList<View> children = new ArrayList<>(childCount);
-        for (int i = 0; i < childCount; ++i) {
-            children.add(getChildAt(i));
-        }
-        return children;
     }
 
     /**
