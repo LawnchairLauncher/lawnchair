@@ -116,7 +116,7 @@ public abstract class SwipeUpAnimationLogic implements
     @UiThread
     public void updateDisplacement(float displacement) {
         // We are moving in the negative x/y direction
-        displacement = -displacement;
+        displacement = overrideDisplacementForTransientTaskbar(-displacement);
         mCurrentDisplacement = displacement;
 
         float shift;
@@ -128,6 +128,17 @@ public abstract class SwipeUpAnimationLogic implements
         }
 
         mCurrentShift.updateValue(shift);
+    }
+
+    /**
+     * When Transient Taskbar is enabled, subclasses can override the displacement to keep the app
+     * window at the bottom of the screen while taskbar is being swiped in.
+     * @param displacement The distance the user has swiped up from the bottom of the screen. This
+     *                     value will be positive unless the user swipe downwards.
+     * @return the overridden displacement.
+     */
+    protected float overrideDisplacementForTransientTaskbar(float displacement) {
+        return displacement;
     }
 
     /**
