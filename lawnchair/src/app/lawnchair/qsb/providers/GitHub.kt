@@ -6,7 +6,7 @@ object GitHub : QsbSearchProvider(
     id = "github",
     name = R.string.search_provider_github,
     icon = R.drawable.ic_github,
-    packageName = "com.github.android",
-    className = "com.github.android.activities.SearchResultsActivity",
+    // todo: Add packageName & className back after https://github.com/orgs/community/discussions/39678 is resolved.
+    packageName = "",
     website = "https://github.com/search"
 )
