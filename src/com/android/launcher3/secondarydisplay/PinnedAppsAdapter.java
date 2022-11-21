@@ -33,10 +33,9 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsStore;
+import com.android.launcher3.allapps.AppInfoComparator;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.model.data.ItemInfoWithIcon;
-import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.ComponentKey;
@@ -62,10 +61,10 @@ public class PinnedAppsAdapter extends BaseAdapter implements OnSharedPreference
     private final OnLongClickListener mOnLongClickListener;
     private final SharedPreferences mPrefs;
     private final AllAppsStore mAllAppsList;
-    private final ItemInfoComparator mItemInfoComparator;
+    private final AppInfoComparator mAppNameComparator;
 
     private final Set<ComponentKey> mPinnedApps = new HashSet<>();
-    private final ArrayList<ItemInfo> mItems = new ArrayList<>();
+    private final ArrayList<AppInfo> mItems = new ArrayList<>();
 
     public PinnedAppsAdapter(SecondaryDisplayLauncher launcher, AllAppsStore allAppsStore,
             OnLongClickListener onLongClickListener) {
@@ -74,7 +73,7 @@ public class PinnedAppsAdapter extends BaseAdapter implements OnSharedPreference
         mOnLongClickListener = onLongClickListener;
         mAllAppsList = allAppsStore;
         mPrefs = launcher.getSharedPreferences(PINNED_APPS_KEY, MODE_PRIVATE);
-        mItemInfoComparator = new ItemInfoComparator(launcher);
+        mAppNameComparator = new AppInfoComparator(launcher);
 
         mAllAppsList.addUpdateListener(this::createFilteredAppsList);
     }
@@ -112,7 +111,7 @@ public class PinnedAppsAdapter extends BaseAdapter implements OnSharedPreference
      * {@inheritDoc}
      */
     @Override
-    public ItemInfo getItem(int position) {
+    public AppInfo getItem(int position) {
         return mItems.get(position);
     }
 
@@ -142,15 +141,7 @@ public class PinnedAppsAdapter extends BaseAdapter implements OnSharedPreference
             icon.setPadding(padding, padding, padding, padding);
         }
 
-        ItemInfo itemInfo = mItems.get(position);
-        if (itemInfo instanceof AppInfo) {
-            icon.applyFromApplicationInfo((AppInfo) itemInfo);
-        } else if (itemInfo instanceof WorkspaceItemInfo) {
-            icon.applyFromWorkspaceItem((WorkspaceItemInfo) itemInfo);
-        } else if (itemInfo instanceof ItemInfoWithIcon) {
-            icon.applyFromItemInfoWithIcon((ItemInfoWithIcon) itemInfo);
-        }
-
+        icon.applyFromApplicationInfo(mItems.get(position));
         return icon;
     }
 
@@ -158,7 +149,7 @@ public class PinnedAppsAdapter extends BaseAdapter implements OnSharedPreference
         mItems.clear();
         mPinnedApps.stream().map(mAllAppsList::getApp)
                 .filter(Objects::nonNull).forEach(mItems::add);
-        mItems.sort(mItemInfoComparator);
+        mItems.sort(mAppNameComparator);
         notifyDataSetChanged();
     }
 
@@ -227,14 +218,6 @@ public class PinnedAppsAdapter extends BaseAdapter implements OnSharedPreference
      */
     public void addPinnedApp(ItemInfo info) {
         update(info, mPinnedApps::add);
-    }
-
-    /**
-     * Pins app to home screen
-     */
-    public void addItem(ItemInfo item) {
-        mItems.add(item);
-        notifyDataSetChanged();
     }
 
     private class PinUnPinShortcut extends SystemShortcut<SecondaryDisplayLauncher> {
