@@ -53,6 +53,7 @@ import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.RecentsAnimationTargets;
+import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
 import com.android.quickstep.util.TransformParams;
@@ -226,6 +227,10 @@ public class DeviceLockedInputConsumer implements InputConsumer,
                     mStateCallback.setState(STATE_HANDLER_INVALIDATED);
                 }
             });
+            RemoteAnimationTargets targets = mTransformParams.getTargetSet();
+            if (targets != null) {
+                targets.addReleaseCheck(new DeviceLockedReleaseCheck(animator));
+            }
             animator.start();
         } else {
             mStateCallback.setState(STATE_HANDLER_INVALIDATED);
@@ -303,5 +308,28 @@ public class DeviceLockedInputConsumer implements InputConsumer,
     @Override
     public boolean allowInterceptByParent() {
         return !mThresholdCrossed;
+    }
+
+    private static final class DeviceLockedReleaseCheck extends
+            RemoteAnimationTargets.ReleaseCheck {
+
+        private DeviceLockedReleaseCheck(Animator animator) {
+            setCanRelease(true);
+
+            animator.addListener(new AnimatorListenerAdapter() {
+
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                    setCanRelease(false);
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    setCanRelease(true);
+                }
+            });
+        }
     }
 }
