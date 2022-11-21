@@ -498,10 +498,11 @@ public class DeviceProfile {
         extraSpace = updateAvailableDimensions(res);
 
         // Now that we have all of the variables calculated, we can tune certain sizes.
-        if (isScalableGrid && inv.devicePaddings != null) {
+        if (isScalableGrid && inv.devicePaddingId != INVALID_RESOURCE_HANDLE) {
             // Paddings were created assuming no scaling, so we first unscale the extra space.
             int unscaledExtraSpace = (int) (extraSpace / cellScaleToFit);
-            DevicePadding padding = inv.devicePaddings.getDevicePadding(unscaledExtraSpace);
+            DevicePaddings devicePaddings = new DevicePaddings(context, inv.devicePaddingId);
+            DevicePadding padding = devicePaddings.getDevicePadding(unscaledExtraSpace);
 
             int paddingWorkspaceTop = padding.getWorkspaceTopPadding(unscaledExtraSpace);
             int paddingWorkspaceBottom = padding.getWorkspaceBottomPadding(unscaledExtraSpace);
@@ -1565,10 +1566,11 @@ public class DeviceProfile {
         writer.println(prefix + pxToDpStr("extraSpace", extraSpace));
         writer.println(prefix + pxToDpStr("unscaled extraSpace", extraSpace / iconScale));
 
-        if (inv.devicePaddings != null) {
+        if (inv.devicePaddingId != INVALID_RESOURCE_HANDLE) {
             int unscaledExtraSpace = (int) (extraSpace / iconScale);
+            DevicePaddings devicePaddings = new DevicePaddings(context, inv.devicePaddingId);
             writer.println(prefix + pxToDpStr("maxEmptySpace",
-                    inv.devicePaddings.getDevicePadding(unscaledExtraSpace).getMaxEmptySpacePx()));
+                    devicePaddings.getDevicePadding(unscaledExtraSpace).getMaxEmptySpacePx()));
         }
         writer.println(prefix + pxToDpStr("workspaceTopPadding", workspaceTopPadding));
         writer.println(prefix + pxToDpStr("workspaceBottomPadding", workspaceBottomPadding));
