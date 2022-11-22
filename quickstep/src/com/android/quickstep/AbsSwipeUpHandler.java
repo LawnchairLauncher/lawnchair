@@ -27,6 +27,7 @@ import static com.android.launcher3.PagedView.INVALID_PAGE;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_REVISED_THRESHOLDS;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_GESTURE;
@@ -344,7 +345,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
         Resources res = context.getResources();
         mTaskbarAppWindowThreshold = res
-                .getDimensionPixelSize(R.dimen.taskbar_app_window_threshold);
+                .getDimensionPixelSize(ENABLE_TASKBAR_REVISED_THRESHOLDS.get()
+                        ? R.dimen.taskbar_app_window_threshold_v2
+                        : R.dimen.taskbar_app_window_threshold);
         mTaskbarCatchUpThreshold = res.getDimensionPixelSize(R.dimen.taskbar_catch_up_threshold);
         mIsTransientTaskbar = DisplayController.isTransientTaskbar(mActivity);
 

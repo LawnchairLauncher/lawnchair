@@ -388,6 +388,9 @@
     <dimen name="taskbar_app_window_threshold">0dp</dimen>
     <dimen name="taskbar_home_overview_threshold">0dp</dimen>
     <dimen name="taskbar_catch_up_threshold">0dp</dimen>
+    <dimen name="taskbar_nav_threshold_v2">0dp</dimen>
+    <dimen name="taskbar_app_window_threshold_v2">0dp</dimen>
+    <dimen name="taskbar_home_overview_threshold_v2">0dp</dimen>
 
     <!-- Size of the maximum radius for the enforced rounded rectangles. -->
     <dimen name="enforced_rounded_corner_max_radius">16dp</dimen>

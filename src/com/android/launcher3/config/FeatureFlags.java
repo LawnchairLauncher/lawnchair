@@ -322,6 +322,10 @@ public final class FeatureFlags {
             "HOME_GARDENING_WORKSPACE_BUTTONS", false,
             "Change workspace edit buttons to reflect home gardening");
 
+    public static final BooleanFlag ENABLE_TASKBAR_REVISED_THRESHOLDS = getDebugFlag(
+            "ENABLE_TASKBAR_REVISED_THRESHOLDS", false,
+            "Uses revised thresholds for transient taskbar.");
+
     public static final BooleanFlag ENABLE_TRANSIENT_TASKBAR = getDebugFlag(
             "ENABLE_TRANSIENT_TASKBAR", false, "Enables transient taskbar.");
 
