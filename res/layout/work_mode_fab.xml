@@ -12,24 +12,35 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.allapps.WorkModeSwitch xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/TextHeadline"
+<com.android.launcher3.allapps.WorkModeSwitch
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/work_mode_toggle"
     android:layout_alignParentBottom="true"
     android:layout_alignParentEnd="true"
     android:layout_height="@dimen/work_fab_height"
     android:layout_width="wrap_content"
-    android:gravity="center"
-    android:includeFontPadding="false"
-    android:textDirection="locale"
-    android:drawableTint="@color/all_apps_tab_text"
-    android:textColor="@color/all_apps_tab_text"
-    android:textSize="14sp"
+    android:minHeight="@dimen/work_fab_height"
+    android:gravity="center_vertical"
     android:background="@drawable/work_apps_toggle_background"
     android:forceHasOverlappingRendering="false"
-    android:drawablePadding="8dp"
-    android:drawableStart="@drawable/ic_corp_off"
-    android:layout_marginBottom="@dimen/work_fab_margin_bottom"
-    android:paddingLeft="@dimen/work_mode_fab_padding"
-    android:paddingRight="@dimen/work_mode_fab_padding"
-    android:text="@string/work_apps_pause_btn_text" />
+    android:contentDescription="@string/work_apps_pause_btn_text"
+    android:animateLayoutChanges="true">
+    <ImageView
+        android:id="@+id/work_icon"
+        android:layout_width="@dimen/work_fab_icon_size"
+        android:layout_height="@dimen/work_fab_icon_size"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_corp_off"
+        android:scaleType="center"/>
+    <TextView
+        android:id="@+id/pause_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/all_apps_tab_text"
+        android:textSize="14sp"
+        android:includeFontPadding="false"
+        android:textDirection="locale"
+        android:text="@string/work_apps_pause_btn_text"
+        android:layout_marginStart="@dimen/work_fab_text_start_margin"
+        style="@style/TextHeadline"/>
+</com.android.launcher3.allapps.WorkModeSwitch>
