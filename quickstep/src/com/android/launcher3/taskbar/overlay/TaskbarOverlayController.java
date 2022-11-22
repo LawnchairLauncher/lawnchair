@@ -20,6 +20,7 @@ import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
+import static com.android.launcher3.LauncherState.ALL_APPS;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -148,6 +149,16 @@ public final class TaskbarOverlayController {
             AbstractFloatingView.closeAllOpenViewsExcept(c, false, TYPE_REBIND_SAFE);
             c.dispatchDeviceProfileChanged();
         });
+    }
+
+    /** The default open duration for overlays. */
+    public int getOpenDuration() {
+        return ALL_APPS.getTransitionDuration(mTaskbarContext, true);
+    }
+
+    /** The default close duration for overlays. */
+    public int getCloseDuration() {
+        return ALL_APPS.getTransitionDuration(mTaskbarContext, false);
     }
 
     @SuppressLint("WrongConstant")

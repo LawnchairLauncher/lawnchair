@@ -15,8 +15,12 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_STASHED_IN_APP_EDU;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+
 import com.android.launcher3.R;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
+import com.android.launcher3.taskbar.overlay.TaskbarOverlayController;
 
 import java.io.PrintWriter;
 
@@ -39,19 +43,26 @@ public class TaskbarEduController implements TaskbarControllers.LoggableTaskbarC
     }
 
     void showEdu() {
-        mActivity.setTaskbarWindowFullscreen(true);
-        mActivity.getDragLayer().post(() -> {
-            TaskbarOverlayContext overlayContext =
-                    mControllers.taskbarOverlayController.requestWindow();
-            mTaskbarEduView = (TaskbarEduView) overlayContext.getLayoutInflater().inflate(
-                    R.layout.taskbar_edu, overlayContext.getDragLayer(), false);
-            mTaskbarEduView.init(new TaskbarEduCallbacks());
-            mControllers.navbarButtonsViewController.setSlideInViewVisible(true);
-            mTaskbarEduView.setOnCloseBeginListener(
-                    () -> mControllers.navbarButtonsViewController.setSlideInViewVisible(false));
-            mTaskbarEduView.addOnCloseListener(() -> mTaskbarEduView = null);
-            mTaskbarEduView.show();
+        TaskbarOverlayController overlayController = mControllers.taskbarOverlayController;
+        TaskbarOverlayContext overlayContext = overlayController.requestWindow();
+        mTaskbarEduView = (TaskbarEduView) overlayContext.getLayoutInflater().inflate(
+                R.layout.taskbar_edu, overlayContext.getDragLayer(), false);
+        mTaskbarEduView.init(new TaskbarEduCallbacks());
+        mControllers.navbarButtonsViewController.setSlideInViewVisible(true);
+
+        TaskbarStashController stashController = mControllers.taskbarStashController;
+        stashController.updateStateForFlag(FLAG_STASHED_IN_APP_EDU, true);
+        stashController.applyState(overlayController.getOpenDuration());
+
+        mTaskbarEduView.setOnCloseBeginListener(() -> {
+            mControllers.navbarButtonsViewController.setSlideInViewVisible(false);
+            // Post in case view is closing due to gesture navigation. If a gesture is in progress,
+            // wait to unstash until after the gesture is finished.
+            MAIN_EXECUTOR.post(() -> stashController.resetFlagIfNoGestureInProgress(
+                    FLAG_STASHED_IN_APP_EDU));
         });
+        mTaskbarEduView.addOnCloseListener(() -> mTaskbarEduView = null);
+        mTaskbarEduView.show();
     }
 
     @Override
@@ -83,6 +94,14 @@ public class TaskbarEduController implements TaskbarControllers.LoggableTaskbarC
 
         int getIconLayoutBoundsWidth() {
             return mControllers.taskbarViewController.getIconLayoutWidth();
+        }
+
+        int getOpenDuration() {
+            return mControllers.taskbarOverlayController.getOpenDuration();
+        }
+
+        int getCloseDuration() {
+            return mControllers.taskbarOverlayController.getCloseDuration();
         }
     }
 }
