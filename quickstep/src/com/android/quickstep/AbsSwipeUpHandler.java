@@ -292,7 +292,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     private boolean mWasLauncherAlreadyVisible;
 
-    private boolean mPassedOverviewThreshold;
     private boolean mGestureStarted;
     private boolean mLogDirectionUpOrLeft = true;
     private boolean mIsLikelyToStartNewTask;
@@ -318,8 +317,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private final int mTaskbarCatchUpThreshold;
     private boolean mTaskbarAlreadyOpen;
     private final boolean mIsTransientTaskbar;
-    // Only used when mIsTransientTaskbar is true.
-    private boolean mHasReachedHomeOverviewThreshold;
+    // May be set to false when mIsTransientTaskbar is true.
+    private boolean mCanSlowSwipeGoHome = true;
 
     public AbsSwipeUpHandler(Context context, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
@@ -810,14 +809,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     @UiThread
     @Override
     public void updateFinalShift() {
-        final boolean passed = hasReachedHomeOverviewThreshold();
-        if (passed != mPassedOverviewThreshold) {
-            mPassedOverviewThreshold = passed;
-            if (mDeviceState.isTwoButtonNavMode() && !mGestureState.isHandlingAtomicEvent()) {
-                performHapticFeedback();
-            }
-        }
-
         updateSysUiFlags(mCurrentShift.value);
         applyScrollAndTransform();
 
@@ -902,8 +893,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mStateCallback.runOnceAtState(STATE_APP_CONTROLLER_RECEIVED | STATE_GESTURE_STARTED,
                 this::startInterceptingTouchesForGesture);
         mStateCallback.setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
-
-        mPassedOverviewThreshold = false;
     }
 
     @Override
@@ -1129,20 +1118,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             return willGoToNewTask || isCenteredOnNewTask ? NEW_TASK : LAST_TASK;
         }
 
-        if (!mDeviceState.isFullyGesturalNavMode()) {
-            return (!hasReachedHomeOverviewThreshold() && willGoToNewTask) ? NEW_TASK : RECENTS;
-        }
         return willGoToNewTask ? NEW_TASK : HOME;
     }
 
     private GestureEndTarget calculateEndTargetForNonFling(PointF velocity) {
         final boolean isScrollingToNewTask = isScrollingToNewTask();
-        final boolean reachedHomeOverviewThreshold = hasReachedHomeOverviewThreshold();
-        if (!mDeviceState.isFullyGesturalNavMode()) {
-            return reachedHomeOverviewThreshold && mGestureStarted
-                    ? RECENTS
-                    : (isScrollingToNewTask ? NEW_TASK : LAST_TASK);
-        }
 
         // Fully gestural mode.
         final boolean isFlingX = Math.abs(velocity.x) > mContext.getResources()
@@ -1155,10 +1135,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             return RECENTS;
         } else if (isScrollingToNewTask) {
             return NEW_TASK;
-        } else if (reachedHomeOverviewThreshold) {
-            return HOME;
         }
-        return LAST_TASK;
+        return velocity.y < 0 && mCanSlowSwipeGoHome ? HOME : LAST_TASK;
     }
 
     private boolean isScrollingToNewTask() {
@@ -1175,21 +1153,15 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     /**
-     * Sets whether the current swipe has reached the threshold where if user lets go they would
-     * go to either the home state or overview state.
+     * Sets whether a slow swipe can go to the HOME end target when the user lets go. A slow swipe
+     * for this purpose must meet two criteria:
+     *   1) y-velocity is less than quickstep_fling_threshold_speed
+     *   AND
+     *   2) motion pause has not been detected (possibly because
+     *   {@link MotionPauseDetector#setDisallowPause} has been called with disallowPause == true)
      */
-    public void setHasReachedHomeOverviewThreshold(boolean hasReachedHomeOverviewThreshold) {
-        mHasReachedHomeOverviewThreshold = hasReachedHomeOverviewThreshold;
-    }
-
-    /**
-     * Returns true iff swipe has reached the overview threshold.
-     */
-    public boolean hasReachedHomeOverviewThreshold() {
-        if (mIsTransientTaskbar) {
-            return mHasReachedHomeOverviewThreshold;
-        }
-        return mCurrentShift.value > MIN_PROGRESS_FOR_OVERVIEW;
+    public void setCanSlowSwipeGoHome(boolean canSlowSwipeGoHome) {
+        mCanSlowSwipeGoHome = canSlowSwipeGoHome;
     }
 
     @UiThread
