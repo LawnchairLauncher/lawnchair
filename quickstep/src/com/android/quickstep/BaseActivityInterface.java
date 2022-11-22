@@ -60,7 +60,6 @@ import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.views.ScrimView;
-import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.views.RecentsView;
@@ -399,16 +398,14 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
     public interface AnimationFactory {
 
-        void createActivityInterface(long transitionLength, ActiveGestureLog.CompoundString reason);
+        void createActivityInterface(long transitionLength);
 
         /**
          * @param attached Whether to show RecentsView alongside the app window. If false, recents
          *                 will be hidden by some property we can animate, e.g. alpha.
          * @param animate Whether to animate recents to/from its new attached state.
-         * @param reason Explanation for why this method is being called with the given param values
          */
-        default void setRecentsAttachedToAppWindow(
-                boolean attached, boolean animate, ActiveGestureLog.CompoundString reason) { }
+        default void setRecentsAttachedToAppWindow(boolean attached, boolean animate) { }
 
         default boolean isRecentsAttachedToAppWindow() {
             return false;
@@ -450,8 +447,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         }
 
         @Override
-        public void createActivityInterface(
-                long transitionLength, ActiveGestureLog.CompoundString reason) {
+        public void createActivityInterface(long transitionLength) {
             PendingAnimation pa = new PendingAnimation(transitionLength * 2);
             createBackgroundToOverviewAnim(mActivity, pa);
             AnimatorPlaybackController controller = pa.createPlaybackController();
@@ -474,29 +470,13 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             // (because we set the animation as the current state animation), so we reapply the
             // attached state here as well to ensure recents is shown/hidden appropriately.
             if (DisplayController.getNavigationMode(mActivity) == NavigationMode.NO_BUTTON) {
-                setRecentsAttachedToAppWindow(
-                        mIsAttachedToWindow,
-                        false,
-                        reason.append("; reapplying the attached state (attached=")
-                                .append(Boolean.toString(mIsAttachedToWindow))
-                                .append(", animate=false)"));
+                setRecentsAttachedToAppWindow(mIsAttachedToWindow, false);
             }
         }
 
         @Override
-        public void setRecentsAttachedToAppWindow(
-                boolean attached, boolean animate, ActiveGestureLog.CompoundString reason) {
-            // TODO(b/244593270): remove these logs; too verbose
-            ActiveGestureLog.INSTANCE.addLog(
-                    new ActiveGestureLog.CompoundString("setRecentsAttachedToAppWindow: attached=")
-                            .append(Boolean.toString(attached))
-                            .append(", animate=")
-                            .append(Boolean.toString(animate))
-                            .append(", reason=")
-                            .append(reason));
+        public void setRecentsAttachedToAppWindow(boolean attached, boolean animate) {
             if (mIsAttachedToWindow == attached && animate) {
-                ActiveGestureLog.INSTANCE.addLog(new ActiveGestureLog.CompoundString(
-                        "setRecentsAttachedToAppWindow: exiting early"));
                 return;
             }
             mActivity.getStateManager()
@@ -525,11 +505,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             float fromTranslation = ADJACENT_PAGE_HORIZONTAL_OFFSET.get(
                     mActivity.getOverviewPanel());
             float toTranslation = attached ? 0 : 1;
-            ActiveGestureLog.INSTANCE.addLog(new ActiveGestureLog.CompoundString(
-                    "setRecentsAttachedToAppWindow: fromTranslation=")
-                    .append(Float.toString(fromTranslation))
-                    .append(", toTranslation=")
-                    .append(Float.toString(toTranslation)));
 
             Animator translationAnimator = mActivity.getStateManager().createStateElementAnimation(
                     INDEX_RECENTS_TRANSLATE_X_ANIM, fromTranslation, toTranslation);

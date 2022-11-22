@@ -36,9 +36,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.popup.PopupContainerWithArrow;
-import com.android.launcher3.popup.PopupContainerWithArrow.PopupItemDragHandler;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.ShortcutUtil;
@@ -209,28 +207,6 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
         final PopupContainerWithArrow container =
                 (PopupContainerWithArrow) mActivity.getLayoutInflater().inflate(
                         R.layout.popup_container, mActivity.getDragLayer(), false);
-
-        container.setPopupItemDragHandler(new PopupItemDragHandler() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (!(v.getTag() instanceof ItemInfoWithIcon)) {
-                    return false;
-                }
-
-                if (FeatureFlags.ENABLE_SECONDARY_DEEP_SHORTCUTS.get()) {
-                    ((SecondaryDragLayer) mActivity.getDragLayer()).getPinnedAppsAdapter()
-                            .addItem((ItemInfoWithIcon) v.getTag());
-                    return true;
-                }
-
-                return false;
-            }
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return false;
-            }
-        });
 
         container.populateAndShow((BubbleTextView) v,
                 popupDataProvider.getShortcutCountForItem(item),

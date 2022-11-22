@@ -79,10 +79,6 @@ public final class FeatureFlags {
     public static final BooleanFlag PROMISE_APPS_IN_ALL_APPS = getDebugFlag(
             "PROMISE_APPS_IN_ALL_APPS", false, "Add promise icon in all-apps");
 
-    // TODO: b/206508141: Long pressing on some icons on home screen cause launcher to crash.
-    public static final BooleanFlag ENABLE_LOCAL_COLOR_POPUPS = getDebugFlag(
-            "ENABLE_LOCAL_COLOR_POPUPS", false, "Enable local color extraction for popups.");
-
     public static final BooleanFlag KEYGUARD_ANIMATION = getDebugFlag(
             "KEYGUARD_ANIMATION", false, "Enable animation for keyguard going away on wallpaper");
 
@@ -303,11 +299,6 @@ public final class FeatureFlags {
     public static final BooleanFlag SECONDARY_DRAG_N_DROP_TO_PIN = getDebugFlag(
             "SECONDARY_DRAG_N_DROP_TO_PIN", false,
             "Enable dragging and dropping to pin apps within secondary display");
-
-    // TODO(b/241843710): Deep Shortcut Icons can be rendered, but do not persist.
-    public static final BooleanFlag ENABLE_SECONDARY_DEEP_SHORTCUTS = getDebugFlag(
-            "ENABLE_SECONDARY_DEEP_SHORTCUTS", false,
-            "Enable deep shortcut pinning within secondary display");
 
     public static final BooleanFlag FOLDABLE_WORKSPACE_REORDER = getDebugFlag(
             "FOLDABLE_WORKSPACE_REORDER", false,

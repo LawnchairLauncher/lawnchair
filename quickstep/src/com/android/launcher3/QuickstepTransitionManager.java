@@ -1685,9 +1685,10 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 mLauncher.getStateManager().moveToRestState();
             }
 
+            RectF windowTargetBounds =
+                    new RectF(getWindowTargetBounds(appTargets, getRotationChange(appTargets)));
             Pair<RectFSpringAnim, AnimatorSet> pair = createWallpaperOpenAnimations(
-                    appTargets, wallpaperTargets, mFromUnlock,
-                    new RectF(0, 0, mDeviceProfile.widthPx, mDeviceProfile.heightPx),
+                    appTargets, wallpaperTargets, mFromUnlock, windowTargetBounds,
                     QuickStepContract.getWindowCornerRadius(mLauncher));
 
             mLauncher.clearForceInvisibleFlag(INVISIBLE_ALL);

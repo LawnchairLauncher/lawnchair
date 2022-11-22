@@ -763,9 +763,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             });
         } else if (tag instanceof WorkspaceItemInfo) {
             WorkspaceItemInfo info = (WorkspaceItemInfo) tag;
-            if (info.isDisabled()) {
-                ItemClickHandler.handleDisabledItemClicked(info, this);
-            } else {
+            if (!info.isDisabled() || !ItemClickHandler.handleDisabledItemClicked(info, this)) {
                 TaskbarUIController taskbarUIController = mControllers.uiController;
                 RecentsView recents = taskbarUIController.getRecentsView();
                 if (recents != null
