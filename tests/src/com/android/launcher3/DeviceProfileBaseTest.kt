@@ -109,7 +109,7 @@ abstract class DeviceProfileBaseTest {
             numFolderColumns = 3
             folderStyle = R.style.FolderDefaultStyle
 
-            inlineNavButtonsEndSpacing = R.dimen.taskbar_button_margin_4_5
+            inlineNavButtonsEndSpacing = R.dimen.taskbar_button_margin_split
 
             horizontalMargin = FloatArray(4) { 22f }
 
@@ -277,7 +277,7 @@ abstract class DeviceProfileBaseTest {
             numFolderColumns = 3
             folderStyle = R.style.FolderDefaultStyle
 
-            inlineNavButtonsEndSpacing = R.dimen.taskbar_button_margin_4_4
+            inlineNavButtonsEndSpacing = R.dimen.taskbar_button_margin_split
 
             horizontalMargin = floatArrayOf(21.5f, 21.5f, 22.5f, 30.5f)
 
