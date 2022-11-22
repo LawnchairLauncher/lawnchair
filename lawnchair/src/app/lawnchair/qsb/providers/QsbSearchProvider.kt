@@ -124,7 +124,8 @@ sealed class QsbSearchProvider(
             Wikipedia,
             Bing,
             Sesame,
-            Brave
+            Brave,
+            GitHub,
         )
 
         /**
