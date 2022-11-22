@@ -51,6 +51,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
+import com.android.launcher3.touch.ItemClickHandler.ItemClickProxy;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.OnboardingPrefs;
@@ -332,7 +333,9 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         if (v.getWindowToken() == null) return;
 
         Object tag = v.getTag();
-        if (tag instanceof ItemInfo) {
+        if (tag instanceof ItemClickProxy) {
+            ((ItemClickProxy) tag).onItemClicked(v);
+        } else if (tag instanceof ItemInfo) {
             ItemInfo item = (ItemInfo) tag;
             Intent intent;
             if (item instanceof ItemInfoWithIcon
