@@ -427,6 +427,8 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                         // This will take care of calling maybeOnDragEnd() after the animation
                         animateGlobalDragViewToOriginalPosition(btv, dragEvent);
                     }
+                    mActivity.getDragLayer().setOnDragListener(null);
+
                     return true;
             }
             return false;
