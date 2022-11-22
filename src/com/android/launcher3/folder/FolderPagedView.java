@@ -365,7 +365,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
     public int findNearestArea(int pixelX, int pixelY) {
         int pageIndex = getNextPage();
         CellLayout page = getPageAt(pageIndex);
-        page.findNearestArea(pixelX, pixelY, 1, 1, sTmpArray);
+        page.findNearestAreaIgnoreOccupied(pixelX, pixelY, 1, 1, sTmpArray);
         if (mFolder.isLayoutRtl()) {
             sTmpArray[0] = page.getCountX() - sTmpArray[0] - 1;
         }
