@@ -824,7 +824,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             return;
         }
         mLauncherTransitionController.setProgress(
-                Math.max(getTaskbarProgress(), getScaleProgressDueToScroll()), mDragLengthFactor);
+                Math.max(mCurrentShift.value, getScaleProgressDueToScroll()), mDragLengthFactor);
     }
 
     /**
@@ -2184,7 +2184,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             AnimatorControllerWithResistance playbackController =
                     remoteHandle.getPlaybackController();
             if (playbackController != null) {
-                playbackController.setProgress(Math.max(getTaskbarProgress(),
+                playbackController.setProgress(Math.max(mCurrentShift.value,
                         getScaleProgressDueToScroll()), mDragLengthFactor);
             }
 
@@ -2236,31 +2236,32 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     /**
-     * Overrides the current shift progress to keep the app window at the bottom of the screen
-     * while the transient taskbar is being swiped in.
+     * Overrides the gesture displacement to keep the app window at the bottom of the screen while
+     * the transient taskbar is being swiped in.
      *
      * There is also a catch up period so that the window can start moving 1:1 with the swipe.
      */
-    private float getTaskbarProgress() {
+    @Override
+    protected float overrideDisplacementForTransientTaskbar(float displacement) {
         if (!mIsTransientTaskbar) {
-            return mCurrentShift.value;
+            return displacement;
         }
 
         if (mTaskbarAlreadyOpen) {
-            return mCurrentShift.value;
+            return displacement;
         }
 
-        if (mCurrentDisplacement < mTaskbarAppWindowThreshold) {
+        if (displacement < mTaskbarAppWindowThreshold) {
             return 0;
         }
 
-        // "Catch up" with `mCurrentShift.value`.
-        if (mCurrentDisplacement < mTaskbarCatchUpThreshold) {
-            return Utilities.mapToRange(mCurrentDisplacement, mTaskbarAppWindowThreshold,
-                    mTaskbarCatchUpThreshold, 0, mCurrentShift.value, ACCEL_DEACCEL);
+        // "Catch up" with the displacement at mTaskbarCatchUpThreshold.
+        if (displacement < mTaskbarCatchUpThreshold) {
+            return Utilities.mapToRange(displacement, mTaskbarAppWindowThreshold,
+                    mTaskbarCatchUpThreshold, 0, mTaskbarCatchUpThreshold, ACCEL_DEACCEL);
         }
 
-        return mCurrentShift.value;
+        return displacement;
     }
 
     private void setDividerShown(boolean shown, boolean immediate) {
