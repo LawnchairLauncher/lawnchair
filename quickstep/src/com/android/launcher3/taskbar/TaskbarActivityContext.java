@@ -341,6 +341,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
     public void onConfigurationChanged(@Config int configChanges) {
         mControllers.onConfigurationChanged(configChanges);
+        if (!mIsUserSetupComplete) {
+            setTaskbarWindowHeight(getSetupWindowHeight());
+        }
     }
 
     public boolean isThreeButtonNav() {
@@ -673,7 +676,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         }
 
         if (!isUserSetupComplete()) {
-            return resources.getDimensionPixelSize(R.dimen.taskbar_suw_frame);
+            return getSetupWindowHeight();
         }
 
         if (DisplayController.isTransientTaskbar(this)) {
@@ -683,6 +686,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         }
 
         return mDeviceProfile.taskbarSize + Math.max(getLeftCornerRadius(), getRightCornerRadius());
+    }
+
+    public int getSetupWindowHeight() {
+        return getResources().getDimensionPixelSize(R.dimen.taskbar_suw_frame);
     }
 
     /**
