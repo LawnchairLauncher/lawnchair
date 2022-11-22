@@ -1074,13 +1074,14 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mXDown = ev.getX();
         mYDown = ev.getY();
         if (mFirstPagePinnedItem != null) {
-            mTempFXY[0] = mXDown + getScrollX();
-            mTempFXY[1] = mYDown + getScrollY();
-            Utilities.mapCoordInSelfToDescendant(mFirstPagePinnedItem, this, mTempFXY);
-            mIsEventOverFirstPagePinnedItem = mFirstPagePinnedItem.getLeft() <= mTempFXY[0]
-                    && mFirstPagePinnedItem.getRight() >= mTempFXY[0]
-                    && mFirstPagePinnedItem.getTop() <= mTempFXY[1]
-                    && mFirstPagePinnedItem.getBottom() >= mTempFXY[1];
+            final float[] tempFXY = new float[2];
+            tempFXY[0] = mXDown;
+            tempFXY[1] = mYDown;
+            Utilities.mapCoordInSelfToDescendant(mFirstPagePinnedItem, this, tempFXY);
+            mIsEventOverFirstPagePinnedItem = mFirstPagePinnedItem.getLeft() <= tempFXY[0]
+                    && mFirstPagePinnedItem.getRight() >= tempFXY[0]
+                    && mFirstPagePinnedItem.getTop() <= tempFXY[1]
+                    && mFirstPagePinnedItem.getBottom() >= tempFXY[1];
         } else {
             mIsEventOverFirstPagePinnedItem = false;
         }
