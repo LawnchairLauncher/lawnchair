@@ -262,6 +262,10 @@ public final class FeatureFlags {
             "ENABLE_NEW_MIGRATION_LOGIC", true,
             "Enable the new grid migration logic, keeping pages when src < dest");
 
+    public static final BooleanFlag ENABLE_WIDGET_HOST_IN_BACKGROUND = getDebugFlag(
+            "ENABLE_WIDGET_HOST_IN_BACKGROUND", false,
+            "Enable background widget updates listening for widget holder");
+
     public static final BooleanFlag ENABLE_ONE_SEARCH_MOTION = new DeviceFlag(
             "ENABLE_ONE_SEARCH_MOTION", true, "Enables animations in OneSearch.");
 
@@ -325,6 +329,10 @@ public final class FeatureFlags {
     public static final BooleanFlag HOME_GARDENING_WORKSPACE_BUTTONS = getDebugFlag(
             "HOME_GARDENING_WORKSPACE_BUTTONS", false,
             "Change workspace edit buttons to reflect home gardening");
+
+    public static final BooleanFlag ENABLE_TASKBAR_REVISED_THRESHOLDS = getDebugFlag(
+            "ENABLE_TASKBAR_REVISED_THRESHOLDS", false,
+            "Uses revised thresholds for transient taskbar.");
 
     public static final BooleanFlag ENABLE_TRANSIENT_TASKBAR = getDebugFlag(
             "ENABLE_TRANSIENT_TASKBAR", false, "Enables transient taskbar.");

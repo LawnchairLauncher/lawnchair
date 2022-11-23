@@ -29,6 +29,7 @@ import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.getXVelocity;
 import static com.android.launcher3.Utilities.getYVelocity;
 import static com.android.launcher3.Utilities.squaredHypot;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_REVISED_THRESHOLDS;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.TraceHelper.FLAG_CHECK_FOR_RACE_CONDITIONS;
 import static com.android.launcher3.util.VelocityUtils.PX_PER_MS;
@@ -166,7 +167,9 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mTaskbarAlreadyOpen = controller != null && !controller.isTaskbarStashed();
         mIsTransientTaskbar = DisplayController.isTransientTaskbar(base);
         mTaskbarHomeOverviewThreshold = base.getResources()
-                .getDimensionPixelSize(R.dimen.taskbar_home_overview_threshold);
+                .getDimensionPixelSize(ENABLE_TASKBAR_REVISED_THRESHOLDS.get()
+                        ? R.dimen.taskbar_home_overview_threshold_v2
+                        : R.dimen.taskbar_home_overview_threshold);
 
         boolean continuingPreviousGesture = mTaskAnimationManager.isRecentsAnimationRunning();
         mIsDeferredDownTarget = !continuingPreviousGesture && isDeferredDownTarget;
@@ -333,8 +336,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         boolean minSwipeMet = upDist >= mMotionPauseMinDisplacement;
                         if (mIsTransientTaskbar) {
                             minSwipeMet = upDist >= mTaskbarHomeOverviewThreshold;
-                            mInteractionHandler.setHasReachedHomeOverviewThreshold(minSwipeMet);
                         }
+                        mInteractionHandler.setCanSlowSwipeGoHome(minSwipeMet);
                         mMotionPauseDetector.setDisallowPause(!minSwipeMet
                                 || isLikelyToStartNewTask);
                         mMotionPauseDetector.addPosition(ev);
