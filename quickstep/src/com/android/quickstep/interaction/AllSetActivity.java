@@ -256,9 +256,6 @@ public class AllSetActivity extends Activity {
     }
 
     private AnimatedFloat createSwipeUpProxy(GestureState state) {
-        if (!state.getHomeIntent().getComponent().getPackageName().equals(getPackageName())) {
-            return null;
-        }
         if (state.getRunningTaskId() != getTaskId()) {
             return null;
         }
