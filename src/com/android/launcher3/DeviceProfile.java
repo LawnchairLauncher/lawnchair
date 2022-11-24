@@ -126,6 +126,7 @@ public class DeviceProfile {
     public final int workspaceSpringLoadedMinNextPageVisiblePx;
 
     private final int extraSpace;
+    private int maxEmptySpace;
     public int workspaceTopPadding;
     public int workspaceBottomPadding;
 
@@ -503,6 +504,7 @@ public class DeviceProfile {
             int unscaledExtraSpace = (int) (extraSpace / cellScaleToFit);
             DevicePaddings devicePaddings = new DevicePaddings(context, inv.devicePaddingId);
             DevicePadding padding = devicePaddings.getDevicePadding(unscaledExtraSpace);
+            maxEmptySpace = padding.getMaxEmptySpacePx();
 
             int paddingWorkspaceTop = padding.getWorkspaceTopPadding(unscaledExtraSpace);
             int paddingWorkspaceBottom = padding.getWorkspaceBottomPadding(unscaledExtraSpace);
@@ -1566,12 +1568,7 @@ public class DeviceProfile {
         writer.println(prefix + pxToDpStr("extraSpace", extraSpace));
         writer.println(prefix + pxToDpStr("unscaled extraSpace", extraSpace / iconScale));
 
-        if (inv.devicePaddingId != INVALID_RESOURCE_HANDLE) {
-            int unscaledExtraSpace = (int) (extraSpace / iconScale);
-            DevicePaddings devicePaddings = new DevicePaddings(context, inv.devicePaddingId);
-            writer.println(prefix + pxToDpStr("maxEmptySpace",
-                    devicePaddings.getDevicePadding(unscaledExtraSpace).getMaxEmptySpacePx()));
-        }
+        writer.println(prefix + pxToDpStr("maxEmptySpace", maxEmptySpace));
         writer.println(prefix + pxToDpStr("workspaceTopPadding", workspaceTopPadding));
         writer.println(prefix + pxToDpStr("workspaceBottomPadding", workspaceBottomPadding));
 
