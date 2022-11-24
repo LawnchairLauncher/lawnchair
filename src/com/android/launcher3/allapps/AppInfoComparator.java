@@ -24,6 +24,7 @@ import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.LabelComparator;
 
 import java.util.Comparator;
+import java.util.Locale;
 
 /**
  * A comparator to arrange items based on user profiles.
@@ -44,6 +45,10 @@ public class AppInfoComparator implements Comparator<AppInfo> {
     public int compare(AppInfo a, AppInfo b) {
         // Order by the title in the current locale
         int result = mLabelComparator.compare(a.title.toString(), b.title.toString());
+        // Group app list by sectionName before sorting for Simplified Chinese only
+        if (isSimpledChineseLocale()) {
+            result += a.sectionName.compareTo(b.sectionName);
+        }
         if (result != 0) {
             return result;
         }
@@ -61,5 +66,11 @@ public class AppInfoComparator implements Comparator<AppInfo> {
             Long bUserSerial = mUserManager.getSerialNumberForUser(b.user);
             return aUserSerial.compareTo(bUserSerial);
         }
+    }
+
+    private boolean isSimpledChineseLocale() {
+        final Locale defaultLocale = Locale.getDefault();
+        return defaultLocale.getLanguage().equals("zh") &&
+            (defaultLocale.getCountry().equals("CN") || defaultLocale.getScript().equals("Hans"));
     }
 }
