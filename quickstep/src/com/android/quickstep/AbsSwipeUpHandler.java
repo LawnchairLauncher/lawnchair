@@ -315,6 +315,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private final float mQuickSwitchScaleScrollThreshold;
 
     private final int mTaskbarAppWindowThreshold;
+    private final int mTaskbarHomeOverviewThreshold;
     private final int mTaskbarCatchUpThreshold;
     private boolean mTaskbarAlreadyOpen;
     private final boolean mIsTransientTaskbar;
@@ -343,21 +344,29 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mContinuingLastGesture = continuingLastGesture;
 
         Resources res = context.getResources();
-        mTaskbarAppWindowThreshold = res
-                .getDimensionPixelSize(ENABLE_TASKBAR_REVISED_THRESHOLDS.get()
-                        ? R.dimen.taskbar_app_window_threshold_v2
-                        : R.dimen.taskbar_app_window_threshold);
-        mTaskbarCatchUpThreshold = res.getDimensionPixelSize(R.dimen.taskbar_catch_up_threshold);
-        mIsTransientTaskbar = DisplayController.isTransientTaskbar(mActivity);
-
         mQuickSwitchScaleScrollThreshold = res
                 .getDimension(R.dimen.quick_switch_scaling_scroll_threshold);
 
         mSplashMainWindowShiftLength = -res
                 .getDimensionPixelSize(R.dimen.starting_surface_exit_animation_window_shift_length);
 
-        initAfterSubclassConstructor();
+        initTransitionEndpoints(mRemoteTargetHandles[0].getTaskViewSimulator()
+                .getOrientationState().getLauncherDeviceProfile());
         initStateCallbacks();
+
+        mIsTransientTaskbar = mDp.isTaskbarPresent
+                && DisplayController.isTransientTaskbar(mActivity);
+        TaskbarUIController controller = mActivityInterface.getTaskbarController();
+        mTaskbarAlreadyOpen = controller != null && !controller.isTaskbarStashed();
+        mTaskbarAppWindowThreshold = res
+                .getDimensionPixelSize(ENABLE_TASKBAR_REVISED_THRESHOLDS.get()
+                        ? R.dimen.taskbar_app_window_threshold_v2
+                        : R.dimen.taskbar_app_window_threshold);
+        mTaskbarHomeOverviewThreshold = res.getDimensionPixelSize(
+                ENABLE_TASKBAR_REVISED_THRESHOLDS.get()
+                        ? R.dimen.taskbar_home_overview_threshold_v2
+                        : R.dimen.taskbar_home_overview_threshold);
+        mTaskbarCatchUpThreshold = res.getDimensionPixelSize(R.dimen.taskbar_catch_up_threshold);
     }
 
     @Nullable
@@ -736,18 +745,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     /**
-     * Sets whether or not we should clamp the scroll offset.
-     * This is used to avoid x-axis movement when swiping up transient taskbar.
-     * @param clampScrollOffset When true, we clamp the scroll to 0 before the clamp threshold is
-     *                          met.
+     * Returns threshold that needs to be met in order for motion pause to be allowed.
      */
-    public void setClampScrollOffset(boolean clampScrollOffset) {
-        if (mRecentsView == null) {
-            mStateCallback.runOnceAtState(STATE_LAUNCHER_PRESENT,
-                    () -> mRecentsView.setClampScrollOffset(clampScrollOffset));
-            return;
-        }
-        mRecentsView.setClampScrollOffset(clampScrollOffset);
+    public float getThresholdToAllowMotionPause() {
+        return mIsTransientTaskbar
+                ? mTaskbarHomeOverviewThreshold
+                : 0;
     }
 
     public void setIsLikelyToStartNewTask(boolean isLikelyToStartNewTask) {
@@ -946,9 +949,32 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         }
         notifyGestureStartedAsync();
         setIsLikelyToStartNewTask(isLikelyToStartNewTask, false /* animate */);
+
+        if (mIsTransientTaskbar && !mTaskbarAlreadyOpen && !isLikelyToStartNewTask) {
+            setClampScrollOffset(true);
+        }
         mStateCallback.setStateOnUiThread(STATE_GESTURE_STARTED);
         mGestureStarted = true;
     }
+
+    /**
+     * Sets whether or not we should clamp the scroll offset.
+     * This is used to avoid x-axis movement when swiping up transient taskbar.
+     * @param clampScrollOffset When true, we clamp the scroll to 0 before the clamp threshold is
+     *                          met.
+     */
+    private void setClampScrollOffset(boolean clampScrollOffset) {
+        if (!mIsTransientTaskbar) {
+            return;
+        }
+        if (mRecentsView == null) {
+            mStateCallback.runOnceAtState(STATE_LAUNCHER_PRESENT,
+                    () -> mRecentsView.setClampScrollOffset(clampScrollOffset));
+            return;
+        }
+        mRecentsView.setClampScrollOffset(clampScrollOffset);
+    }
+
 
     /**
      * Notifies the launcher that the swipe gesture has started. This can be called multiple times.
@@ -1174,6 +1200,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         float currentShift = mCurrentShift.value;
         final GestureEndTarget endTarget = calculateEndTarget(velocity, endVelocity,
                 isFling, isCancel);
+
+        setClampScrollOffset(false);
         // Set the state, but don't notify until the animation completes
         mGestureState.setEndTarget(endTarget, false /* isAtomic */);
         mAnimationFactory.setEndTarget(endTarget);
@@ -1966,15 +1994,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 || app.windowConfiguration.getActivityType() == ACTIVITY_TYPE_HOME;
     }
 
-    /**
-     * To be called at the end of constructor of subclasses. This calls various methods which can
-     * depend on proper class initialization.
-     */
-    protected void initAfterSubclassConstructor() {
-        initTransitionEndpoints(mRemoteTargetHandles[0].getTaskViewSimulator()
-                        .getOrientationState().getLauncherDeviceProfile());
-    }
-
     protected void performHapticFeedback() {
         VibratorWrapper.INSTANCE.get(mContext).vibrate(OVERVIEW_HAPTIC);
     }
@@ -2226,13 +2245,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         }
 
         return scaleProgress;
-    }
-
-    /**
-     * Updates the current status of taskbar during this swipe.
-     */
-    public void setTaskbarAlreadyOpen(boolean taskbarAlreadyOpen) {
-        mTaskbarAlreadyOpen = taskbarAlreadyOpen;
     }
 
     /**
