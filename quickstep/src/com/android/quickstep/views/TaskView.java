@@ -1632,7 +1632,7 @@ public class TaskView extends FrameLayout implements Reusable {
          */
         private static RectF getInsetsToDrawInFullscreen(PreviewPositionHelper pph,
                 DeviceProfile dp, boolean isTaskbarTransient) {
-            if (isTaskbarTransient) {
+            if (dp.isTaskbarPresent && isTaskbarTransient) {
                 return pph.getClippedInsets();
             }
             return dp.isTaskbarPresent && !dp.isTaskbarPresentInApps
