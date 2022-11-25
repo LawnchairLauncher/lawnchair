@@ -102,61 +102,61 @@ data class SearchActionCompat(
      * @hide
      */
     class Builder(private val id: String, private val title: String) {
-        private var mIcon: Icon? = null
-        private var mSubtitle: CharSequence? = null
-        private var mContentDescription: CharSequence? = null
-        private var mPendingIntent: PendingIntent? = null
-        private var mIntent: Intent? = null
-        private var mUserHandle: UserHandle? = null
-        private var mExtras: Bundle? = null
+        private var icon: Icon? = null
+        private var subtitle: CharSequence? = null
+        private var contentDescription: CharSequence? = null
+        private var pendingIntent: PendingIntent? = null
+        private var intent: Intent? = null
+        private var userHandle: UserHandle? = null
+        private var extras: Bundle? = null
 
         /**
          * Sets the subtitle.
          */
         fun setIcon(icon: Icon?) = apply {
-            mIcon = icon
+            this.icon = icon
         }
 
         /**
          * Sets the subtitle.
          */
         fun setSubtitle(subtitle: CharSequence?) = apply {
-            mSubtitle = subtitle
+            this.subtitle = subtitle
         }
 
         /**
          * Sets the content description.
          */
         fun setContentDescription(contentDescription: CharSequence?) = apply {
-            mContentDescription = contentDescription
+            this.contentDescription = contentDescription
         }
 
         /**
          * Sets the pending intent.
          */
         fun setPendingIntent(pendingIntent: PendingIntent?) = apply {
-            mPendingIntent = pendingIntent
+            this.pendingIntent = pendingIntent
         }
 
         /**
          * Sets the user handle.
          */
         fun setUserHandle(userHandle: UserHandle?) = apply {
-            mUserHandle = userHandle
+            this.userHandle = userHandle
         }
 
         /**
          * Sets the intent.
          */
         fun setIntent(intent: Intent?) = apply {
-            mIntent = intent
+            this.intent = intent
         }
 
         /**
          * Sets the extra.
          */
         fun setExtras(extras: Bundle?) = apply {
-            mExtras = extras
+            this.extras = extras
         }
 
         /**
@@ -165,13 +165,13 @@ data class SearchActionCompat(
         fun build(): SearchActionCompat = SearchActionCompat(
             id,
             title,
-            mIcon,
-            mSubtitle,
-            mContentDescription,
-            mPendingIntent,
-            mIntent,
-            mUserHandle,
-            mExtras
+            icon,
+            subtitle,
+            contentDescription,
+            pendingIntent,
+            intent,
+            userHandle,
+            extras
         )
     }
 

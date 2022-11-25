@@ -149,88 +149,88 @@ data class SearchTargetCompat(
     class Builder(
         @SearchResultType private val resultType: Int,
         @SearchLayoutType private val layoutType: String,
-        private val mId: String
+        private val id: String
     ) {
-        private var mParentId: String? = null
-        private var mScore: Float = 1f
-        private var mHidden: Boolean = false
-        private lateinit var mPackageName: String
-        private lateinit var mUserHandle: UserHandle
-        private var mSearchAction: SearchActionCompat? = null
-        private var mShortcutInfo: ShortcutInfo? = null
-        private var mSliceUri: Uri? = null
-        private var mAppWidgetProviderInfo: AppWidgetProviderInfo? = null
-        private lateinit var mExtras: Bundle
+        private var parentId: String? = null
+        private var score: Float = 1f
+        private var hidden: Boolean = false
+        private lateinit var packageName: String
+        private lateinit var userHandle: UserHandle
+        private var searchAction: SearchActionCompat? = null
+        private var shortcutInfo: ShortcutInfo? = null
+        private var sliceUri: Uri? = null
+        private var appWidgetProviderInfo: AppWidgetProviderInfo? = null
+        private lateinit var extras: Bundle
 
         /**
          * Sets the parent id.
          */
         fun setParentId(parentId: String) = apply {
-            mParentId = parentId
+            this.parentId = parentId
         }
 
         /**
          * Sets the package name.
          */
         fun setPackageName(packageName: String) = apply {
-            mPackageName = packageName
+            this.packageName = packageName
         }
 
         /**
          * Sets the user handle.
          */
         fun setUserHandle(userHandle: UserHandle) = apply {
-            mUserHandle = userHandle
+            this.userHandle = userHandle
         }
 
         /**
          * Sets the shortcut info.
          */
         fun setShortcutInfo(shortcutInfo: ShortcutInfo) = apply {
-            mShortcutInfo = shortcutInfo
-            mPackageName = shortcutInfo.getPackage()
+            this.shortcutInfo = shortcutInfo
+            packageName = shortcutInfo.getPackage()
         }
 
         /**
          * Sets the app widget provider info.
          */
         fun setAppWidgetProviderInfo(appWidgetProviderInfo: AppWidgetProviderInfo) = apply {
-            mAppWidgetProviderInfo = appWidgetProviderInfo
+            this.appWidgetProviderInfo = appWidgetProviderInfo
         }
 
         /**
          * Sets the slice URI.
          */
         fun setSliceUri(sliceUri: Uri) = apply {
-            mSliceUri = sliceUri
+            this.sliceUri = sliceUri
         }
 
         /**
          * Set the [SearchActionCompat] object to this target.
          */
         fun setSearchAction(searchAction: SearchActionCompat?) = apply {
-            mSearchAction = searchAction
+            this.searchAction = searchAction
         }
 
         /**
          * Set any extra information that needs to be shared between service and the client.
          */
         fun setExtras(extras: Bundle) = apply {
-            mExtras = extras
+            this.extras = extras
         }
 
         /**
          * Sets the score of the object.
          */
         fun setScore(@FloatRange(from = 0.0, to = 1.0) score: Float) = apply {
-            mScore = score
+            this.score = score
         }
 
         /**
          * Sets whether the result should be hidden (e.g. not visible) by default inside client.
          */
         fun setHidden(hidden: Boolean) = apply {
-            mHidden = hidden
+            this.hidden = hidden
         }
 
         /**
@@ -241,17 +241,17 @@ data class SearchTargetCompat(
         fun build(): SearchTargetCompat = SearchTargetCompat(
             resultType,
             layoutType,
-            mId,
-            mParentId,
-            mScore,
-            mHidden,
-            mPackageName,
-            mUserHandle,
-            mSearchAction,
-            mShortcutInfo,
-            mSliceUri,
-            mAppWidgetProviderInfo,
-            mExtras
+            id,
+            parentId,
+            score,
+            hidden,
+            packageName,
+            userHandle,
+            searchAction,
+            shortcutInfo,
+            sliceUri,
+            appWidgetProviderInfo,
+            extras
         )
     }
 

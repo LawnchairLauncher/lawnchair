@@ -21,12 +21,12 @@ import java.util.function.Consumer
 
 class LawnchairDeviceSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context),
     PreferenceChangeListener {
-    private val mPrefs: PreferenceManager
-    private var mSearchSession: SearchSession? = null
-    private var mActiveQuery: PendingQuery? = null
+    private val prefs: PreferenceManager
+    private var searchSession: SearchSession? = null
+    private var activeQuery: PendingQuery? = null
 
     init {
-        mPrefs = PreferenceManager.getInstance(context).also {
+        prefs = PreferenceManager.getInstance(context).also {
             createSearchSession()
             it.searchResultShortcuts.addListener(this)
             it.searchResultPeople.addListener(this)
@@ -41,7 +41,7 @@ class LawnchairDeviceSearchAlgorithm(context: Context) : LawnchairSearchAlgorith
 
     private fun createSearchSession() {
         Executors.UI_HELPER_EXECUTOR.execute {
-            mSearchSession?.destroy()
+            searchSession?.destroy()
             val idp = LauncherAppState.getIDP(context)
             val extras = bundleOf(
                 "launcher.gridSize" to idp.numDatabaseAllAppsColumns,
@@ -49,45 +49,45 @@ class LawnchairDeviceSearchAlgorithm(context: Context) : LawnchairSearchAlgorith
                 "launcher.maxInlineIcons" to 3,
             )
             var resultTypes = 1 /* apps */ or 2 /* shortcuts */
-            if (mPrefs.searchResultShortcuts.get()) {
+            if (prefs.searchResultShortcuts.get()) {
                 resultTypes = resultTypes or 1546
             }
-            if (mPrefs.searchResultPeople.get()) {
+            if (prefs.searchResultPeople.get()) {
                 resultTypes = resultTypes or 4
             }
-            if (mPrefs.searchResultPixelTips.get()) {
+            if (prefs.searchResultPixelTips.get()) {
                 resultTypes = resultTypes or 8192
                 extras.putString("tips_source", "superpacks_tips_source")
             }
-            if (mPrefs.searchResultSettings.get()) {
+            if (prefs.searchResultSettings.get()) {
                 resultTypes = resultTypes or 80
                 extras.putString("settings_source", "superpacks_settings_source")
             }
             val searchContext = SearchContext(resultTypes, 200, extras)
             val searchSession = context.requireSystemService<SearchUiManager>()
                 .createSearchSession(searchContext)
-            Executors.MAIN_EXECUTOR.post { mSearchSession = searchSession }
+            Executors.MAIN_EXECUTOR.post { this.searchSession = searchSession }
         }
     }
 
     override fun doSearch(query: String, callback: SearchCallback<AllAppsGridAdapter.AdapterItem>) {
-        mActiveQuery?.cancel()
-        mSearchSession ?: return
-        mActiveQuery = PendingQuery(query, callback)
+        activeQuery?.cancel()
+        searchSession ?: return
+        activeQuery = PendingQuery(query, callback)
         val searchQuery = Query(query, System.currentTimeMillis(), null)
-        mSearchSession!!.query(searchQuery, Executors.MAIN_EXECUTOR, mActiveQuery)
+        searchSession!!.query(searchQuery, Executors.MAIN_EXECUTOR, activeQuery)
     }
 
     override fun cancel(interruptActiveRequests: Boolean) {
-        mActiveQuery?.cancel()
+        activeQuery?.cancel()
     }
 
     override fun destroy() {
         super.destroy()
         Executors.UI_HELPER_EXECUTOR.execute {
-            mSearchSession?.destroy()
+            searchSession?.destroy()
         }
-        mPrefs.let {
+        prefs.let {
             it.searchResultShortcuts.removeListener(this)
             it.searchResultPeople.removeListener(this)
             it.searchResultPixelTips.removeListener(this)
@@ -96,25 +96,25 @@ class LawnchairDeviceSearchAlgorithm(context: Context) : LawnchairSearchAlgorith
     }
 
     private inner class PendingQuery(
-        private val mQuery: String,
-        private val mCallback: SearchCallback<AllAppsGridAdapter.AdapterItem>
+        private val query: String,
+        private val callback: SearchCallback<AllAppsGridAdapter.AdapterItem>
     ) : Consumer<List<SearchTarget>> {
-        private var mCanceled = false
+        private var canceled = false
 
         override fun accept(platformTargets: List<SearchTarget>) {
-            if (!mCanceled) {
+            if (!canceled) {
                 val targets = platformTargets.map { SearchTargetCompat.wrap(it) }
                 val adapterItems = transformSearchResults(targets)
                 LawnchairSearchAdapterProvider.setFirstItemQuickLaunch(adapterItems)
-                mCallback.onSearchResult(
-                    mQuery,
+                callback.onSearchResult(
+                    query,
                     ArrayList<AllAppsGridAdapter.AdapterItem>(adapterItems)
                 )
             }
         }
 
         fun cancel() {
-            mCanceled = true
+            canceled = true
         }
     }
 
