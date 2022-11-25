@@ -26,11 +26,10 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: true
-      - name: Set up Java 17
-        uses: actions/setup-java@v3
+      - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: 17
+          java-version: 19
       - uses: gradle/gradle-build-action@v2
       - name: Build release APK
         run: ./gradlew assembleLawnWithQuickstepRelease

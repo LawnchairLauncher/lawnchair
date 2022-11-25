@@ -9,17 +9,16 @@ jobs:
   build-debug-apk:
     name: Build debug APK
     runs-on: ubuntu-latest
-    if: github.event.pull_request.user.login == 'lawnchair-bot' && github.event.pull_request.title == 'New Crowdin translations by Github Action' 
+    if: github.event.pull_request.user.login == 'lawnchair-bot' && github.event.pull_request.title == 'New Crowdin translations by Github Action'
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
         with:
           submodules: true
-      - name: Set up Java 17
-        uses: actions/setup-java@v3
+      - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: 17
+          java-version: 19
       - uses: gradle/gradle-build-action@v2
       - name: Write sign info
         if: github.repository == 'LawnchairLauncher/lawnchair'
@@ -38,7 +37,7 @@ jobs:
         with:
           name: Debug APK
           path: build/outputs/apk/lawnWithQuickstep/debug/*.apk
-    
+
   auto-merge:
     name: Auto-merge PR
     runs-on: ubuntu-latest
