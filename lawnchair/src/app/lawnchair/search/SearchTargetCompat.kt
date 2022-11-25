@@ -121,8 +121,7 @@ data class SearchTargetCompat(
         if (appWidgetProviderInfo != null) published++
         if (sliceUri != null) published++
         check(published <= 1) {
-            ("Only one of SearchAction, ShortcutInfo,"
-                + " AppWidgetProviderInfo, SliceUri can be assigned in a SearchTargetCompat.")
+            "Only one of SearchAction, ShortcutInfo, AppWidgetProviderInfo, SliceUri can be assigned in a SearchTargetCompat."
         }
     }
 
@@ -268,23 +267,6 @@ data class SearchTargetCompat(
         const val RESULT_TYPE_SHORTCUT = 1 shl 1
         const val RESULT_TYPE_SLICE = 1 shl 2
         const val RESULT_TYPE_WIDGETS = 1 shl 3
-
-        //     ------
-        //    | icon |
-        //     ------
-        //      text
-        const val LAYOUT_TYPE_ICON = "icon"
-
-        //     ------                            ------   ------
-        //    |      | title                    |(opt)|  |(opt)|
-        //    | icon | subtitle (optional)      | icon|  | icon|
-        //     ------                            ------  ------
-        const val LAYOUT_TYPE_ICON_ROW = "icon_row"
-
-        //     ------
-        //    | icon | title / subtitle (optional)
-        //     ------
-        const val LAYOUT_TYPE_SHORT_ICON_ROW = "short_icon_row"
 
         fun wrap(target: SearchTarget): SearchTargetCompat = SearchTargetCompat(target)
     }
