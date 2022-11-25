@@ -11,7 +11,6 @@ github_ref = os.getenv("GITHUB_REF")
 
 telegram_bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
 telegram_ci_channel_id = os.getenv("TELEGRAM_CI_CHANNEL_ID")
-telegram_team_group_id = os.getenv("TELEGRAM_TEAM_GROUP_ID")
 telegram_news_channel_id = os.getenv("TELEGRAM_NEWS_CHANNEL_ID")
 
 artifact_directory = os.getenv("ARTIFACT_DIRECTORY")
@@ -59,7 +58,6 @@ def send_internal_notifications():
         message += f"\n• {commit_link_tag}: {encoded_message}"
 
     send_message_to_telegram_chat(chat_id=telegram_ci_channel_id, message=message, silent=False)
-    send_message_to_telegram_chat(chat_id=telegram_team_group_id, message=message, silent=True)
     send_artifact_to_telegram_chat(chat_id=telegram_ci_channel_id)
 
 def send_update_announcement():
