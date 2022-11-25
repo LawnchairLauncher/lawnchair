@@ -8,10 +8,10 @@ import android.app.search.SearchUiManager
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import androidx.core.os.bundleOf
 import app.lawnchair.preferences.PreferenceChangeListener
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.requireSystemService
-import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.allapps.AllAppsGridAdapter
 import com.android.launcher3.search.SearchCallback
@@ -42,12 +42,12 @@ class LawnchairDeviceSearchAlgorithm(context: Context) : LawnchairSearchAlgorith
     private fun createSearchSession() {
         Executors.UI_HELPER_EXECUTOR.execute {
             mSearchSession?.destroy()
-            val context = context
-            val extras = Bundle()
-            val idp: InvariantDeviceProfile = LauncherAppState.getIDP(context)
-            extras.putInt("launcher.gridSize", idp.numDatabaseAllAppsColumns)
-            extras.putBoolean("allowlist_enabled", false)
-            extras.putInt("launcher.maxInlineIcons", 3)
+            val idp = LauncherAppState.getIDP(context)
+            val extras = bundleOf(
+                "launcher.gridSize" to idp.numDatabaseAllAppsColumns,
+                "allowlist_enabled" to false,
+                "launcher.maxInlineIcons" to 3,
+            )
             var resultTypes = 1 /* apps */ or 2 /* shortcuts */
             if (mPrefs.searchResultShortcuts.get()) {
                 resultTypes = resultTypes or 1546
@@ -75,7 +75,7 @@ class LawnchairDeviceSearchAlgorithm(context: Context) : LawnchairSearchAlgorith
         mSearchSession ?: return
         mActiveQuery = PendingQuery(query, callback)
         val searchQuery = Query(query, System.currentTimeMillis(), null)
-        mSearchSession?.query(searchQuery, Executors.MAIN_EXECUTOR, mActiveQuery)
+        mSearchSession!!.query(searchQuery, Executors.MAIN_EXECUTOR, mActiveQuery)
     }
 
     override fun cancel(interruptActiveRequests: Boolean) {
@@ -87,32 +87,29 @@ class LawnchairDeviceSearchAlgorithm(context: Context) : LawnchairSearchAlgorith
         Executors.UI_HELPER_EXECUTOR.execute {
             mSearchSession?.destroy()
         }
-        mPrefs.searchResultShortcuts.removeListener(this)
-        mPrefs.searchResultPeople.removeListener(this)
-        mPrefs.searchResultPixelTips.removeListener(this)
-        mPrefs.searchResultSettings.removeListener(this)
+        mPrefs.let {
+            it.searchResultShortcuts.removeListener(this)
+            it.searchResultPeople.removeListener(this)
+            it.searchResultPixelTips.removeListener(this)
+            it.searchResultSettings.removeListener(this)
+        }
     }
 
     private inner class PendingQuery(
         private val mQuery: String,
-        callback: SearchCallback<AllAppsGridAdapter.AdapterItem>
-    ) : Consumer<List<SearchTarget>> {
         private val mCallback: SearchCallback<AllAppsGridAdapter.AdapterItem>
+    ) : Consumer<List<SearchTarget>> {
         private var mCanceled = false
-
-        init {
-            mCallback = callback
-        }
 
         override fun accept(platformTargets: List<SearchTarget>) {
             if (!mCanceled) {
-                val targets: MutableList<SearchTargetCompat> = ArrayList()
-                for (target in platformTargets) {
-                    targets.add(SearchTargetCompat.wrap(target))
-                }
+                val targets = platformTargets.map { SearchTargetCompat.wrap(it) }
                 val adapterItems = transformSearchResults(targets)
                 LawnchairSearchAdapterProvider.setFirstItemQuickLaunch(adapterItems)
-                mCallback.onSearchResult(mQuery, ArrayList<AllAppsGridAdapter.AdapterItem>(adapterItems))
+                mCallback.onSearchResult(
+                    mQuery,
+                    ArrayList<AllAppsGridAdapter.AdapterItem>(adapterItems)
+                )
             }
         }
 
@@ -125,8 +122,7 @@ class LawnchairDeviceSearchAlgorithm(context: Context) : LawnchairSearchAlgorith
         fun checkSearchCompatibility(context: Context) {
             Executors.UI_HELPER_EXECUTOR.execute {
                 val searchContext = SearchContext(1 or 2, 200, Bundle())
-                val searchManager: SearchUiManager =
-                    context.getSystemService(SearchUiManager::class.java)
+                val searchManager = context.requireSystemService<SearchUiManager>()
                 val searchSession: SearchSession = searchManager.createSearchSession(searchContext)
                 val searchQuery = Query("dummy", System.currentTimeMillis(), null)
                 val prefs = PreferenceManager.getInstance(context)
@@ -153,7 +149,7 @@ class LawnchairDeviceSearchAlgorithm(context: Context) : LawnchairSearchAlgorith
             Executors.MAIN_EXECUTOR.execute { prefs.deviceSearch.set(isCompatible) }
             try {
                 session.destroy()
-            } catch (ignore: Exception) {
+            } catch (_: Exception) {
             }
         }
     }
