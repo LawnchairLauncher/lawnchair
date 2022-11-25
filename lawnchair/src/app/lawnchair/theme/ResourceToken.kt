@@ -6,7 +6,7 @@ import com.android.launcher3.util.Themes
 import dev.kdrag0n.monet.theme.ColorScheme
 
 interface ResourceToken<T> {
-    fun resolve(context: Context) = resolve(context, UiColorMode(Themes.getAttrInteger(context, R.attr.uiColorMode)))
+    fun resolve(context: Context): T = resolve(context, UiColorMode(Themes.getAttrInteger(context, R.attr.uiColorMode)))
     fun resolve(context: Context, uiColorMode: UiColorMode): T {
         val themeProvider = ThemeProvider.INSTANCE.get(context)
         return resolve(context, themeProvider.colorScheme, uiColorMode)

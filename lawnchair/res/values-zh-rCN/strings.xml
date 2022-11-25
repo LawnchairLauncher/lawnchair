@@ -236,8 +236,11 @@
     <string name="smartspace_mode_google_search">Google 搜索</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="hotseat_mode_label">搜索栏小部件</string>
+    <string name="hotseat_mode_disabled">已禁用</string>
+    <string name="hotseat_mode_lawnchair">Lawnchair</string>
+    <string name="hotseat_mode_google_search">Google 搜索栏</string>
     <string name="search_bar_label">搜索栏</string>
-    <string name="hotseat_qsb_label">显示搜索栏</string>
     <string name="corner_radius_label">圆角半径</string>
     <string name="apply_accent_color_label">使用强调色</string>
     <string name="search_provider">搜索提供商</string>

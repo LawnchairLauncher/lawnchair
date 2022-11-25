@@ -53,7 +53,7 @@
     <string name="always_reload_icons_description">Evita utilitzar icones en memòria cau de paquets d\'icones</string>
     <string name="transparent_background_icons">Icones amb fons transparent</string>
     <string name="transparent_background_icons_description">Utilitzar fons transparent en les icones tematitzades</string>
-    <string name="smartspace_mode_selection">At a Glance Provider selection</string>
+    <string name="smartspace_mode_selection">Selecció del proveïdor D\'una ullada</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotació de la Pantalla d\'inici</string>
     <string name="home_screen_rotaton_description">Quan es gira el dispositiu.</string>
@@ -85,22 +85,22 @@
     <string name="theme_follow_wallpaper">Segueix el Fons de Pantalla</string>
     <string name="accent_color">Color d\'èmfasi</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Custom Icon Shape</string>
-    <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
-    <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
-    <string name="icon_shape_corner">Corner Shape</string>
-    <string name="icon_shape_corner_round">Round</string>
-    <string name="icon_shape_corner_squircle">Smooth</string>
-    <string name="icon_shape_corner_cut">Cut</string>
-    <string name="icon_shape_top_left">Top Left</string>
-    <string name="icon_shape_top_right">Top Right</string>
-    <string name="icon_shape_bottom_left">Bottom Left</string>
-    <string name="icon_shape_bottom_right">Bottom Right</string>
+    <string name="custom_icon_shape">Forma d\'icona personalitzada</string>
+    <string name="custom_icon_shape_create">Crear forma d\'icona personalitzada</string>
+    <string name="custom_icon_shape_edit">Editar la forma de la icona personalitzada</string>
+    <string name="icon_shape_corner">Figura amb cantonades</string>
+    <string name="icon_shape_corner_round">Rodona</string>
+    <string name="icon_shape_corner_squircle">Suau</string>
+    <string name="icon_shape_corner_cut">Tall</string>
+    <string name="icon_shape_top_left">A dalt de tot, a la esquerra</string>
+    <string name="icon_shape_top_right">A dalt de tot, a la dreta</string>
+    <string name="icon_shape_bottom_left">A baix de tot a l\'esquerra</string>
+    <string name="icon_shape_bottom_right">A baix de tot a la dreta</string>
     <string name="create">Crea</string>
-    <string name="clipboard">Clipboard</string>
-    <string name="export_to_clipboard">Export to Clipboard</string>
-    <string name="import_from_clipboard">Import from Clipboard</string>
-    <string name="icon_shape_clipboard_import_error">Clipboard does not contain a valid icon shape</string>
+    <string name="clipboard">Porta-retalls</string>
+    <string name="export_to_clipboard">Exportar a porta-retalls</string>
+    <string name="import_from_clipboard">Importar del porta-retalls</string>
+    <string name="icon_shape_clipboard_import_error">El porta-retalls no té una forma d\'icona vàlida</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Paquet d\'icones</string>
@@ -189,7 +189,7 @@
     <string name="label_size">Mida de les etiquetes</string>
     <string name="reset_custom_icons">Reiniciar Icones Personalitzades</string>
     <string name="reset_custom_icons_confirmation">Totes les icones seran reiniciades. Vols continuar?</string>
-    <string name="home_screen_text_color">Text Color</string>
+    <string name="home_screen_text_color">Color del text</string>
     <string name="color_light">Clar</string>
     <string name="color_dark">Fosc</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
@@ -230,14 +230,17 @@
     <string name="smartspace_preferences">Preferències</string>
     <string name="smartspace_widget_toggle_label">Mostrar a la pantalla principal</string>
     <string name="smartspace_widget_toggle_description">D\'una ullada pot ser manualment afegit posant la Widget \"Lawnchair\".</string>
-    <string name="smartspace_mode_label">At a Glance Provider</string>
+    <string name="smartspace_mode_label">Proveïdor d\'una ullada</string>
     <string name="smartspace_mode_lawnchair">Lawnchair</string>
     <string name="smartspace_mode_google">Google</string>
-    <string name="smartspace_mode_google_search">Google Search</string>
+    <string name="smartspace_mode_google_search">Busqueda de Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="hotseat_mode_label">Search Bar Widget</string>
+    <string name="hotseat_mode_disabled">Disabled</string>
+    <string name="hotseat_mode_lawnchair">Lawnchair</string>
+    <string name="hotseat_mode_google_search">Google Search Bar</string>
     <string name="search_bar_label">Barra de cerca</string>
-    <string name="hotseat_qsb_label">Mostra la Barra de Cerca</string>
     <string name="corner_radius_label">Radi de cantonada</string>
     <string name="apply_accent_color_label">Aplica el color d\'èmfasi</string>
     <string name="search_provider">Proveïdor del cercador</string>
@@ -255,8 +258,8 @@
     <string name="background_opacity">Opacitat del fons</string>
     <!-- hiddenApps_label -->
     <string name="hidden_apps_label">Aplicacions amagades</string>
-    <string name="show_enable_smart_hide">Show when Full Name is Typed</string>
-    <string name="hide_hidden_apps_search">Hide in Search Results</string>
+    <string name="show_enable_smart_hide">Mostrar quan un nom complet està escrit</string>
+    <string name="hide_hidden_apps_search">Amagar a la barra de cercar</string>
     <string name="pref_category_search">Cerca</string>
     <string name="show_app_search_bar">Mostra la Barra de Cerca</string>
     <string name="pref_search_auto_show_keyboard">Mostrar teclat automàticament</string>

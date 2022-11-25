@@ -280,8 +280,11 @@
 
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="search_bar_label">Search Bar</string>
-      <string name="hotseat_qsb_label">Show Search Bar</string>
+    <string name="hotseat_mode_label">Search Bar Widget</string>
+      <string name="hotseat_mode_disabled">Disabled</string>
+      <string name="hotseat_mode_lawnchair">Lawnchair</string>
+      <string name="hotseat_mode_google_search">Google Search Bar</string>
+      <string name="search_bar_label">Search Bar</string>
       <string name="corner_radius_label">Corner Radius</string>
       <string name="apply_accent_color_label">Apply Accent Color</string>
       <string name="search_provider">Search Provider</string>
@@ -300,6 +303,7 @@
     <string name="search_provider_bing" translatable="false">Bing</string>
     <string name="search_provider_sesame" translatable="false">Sesame</string>
     <string name="search_provider_brave" translatable="false">Brave</string>
+    <string name="search_provider_github" translatable="false">GitHub</string>
     <string name="app_label">App</string>
     <string name="website_label">Website</string>
     <string name="qsb_search_provider_app_required">App required.</string>

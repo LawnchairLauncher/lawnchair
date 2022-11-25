@@ -97,10 +97,10 @@
     <string name="icon_shape_bottom_left">Vľavo dole</string>
     <string name="icon_shape_bottom_right">Vpravo dole</string>
     <string name="create">Vytvoriť</string>
-    <string name="clipboard">Clipboard</string>
-    <string name="export_to_clipboard">Export to Clipboard</string>
-    <string name="import_from_clipboard">Import from Clipboard</string>
-    <string name="icon_shape_clipboard_import_error">Clipboard does not contain a valid icon shape</string>
+    <string name="clipboard">Schránka</string>
+    <string name="export_to_clipboard">Exportovať do schránky</string>
+    <string name="import_from_clipboard">Importovať zo stránky</string>
+    <string name="icon_shape_clipboard_import_error">Schránka neobsahuje platný tvar ikony</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Balíček ikon</string>
@@ -189,7 +189,7 @@
     <string name="label_size">Veľkosť štítkov</string>
     <string name="reset_custom_icons">Obnoviť vlastné ikony</string>
     <string name="reset_custom_icons_confirmation">Všetky vlastné ikony budú obnovené, naozaj chcete pokračovať?</string>
-    <string name="home_screen_text_color">Text Color</string>
+    <string name="home_screen_text_color">Farba textu</string>
     <string name="color_light">Tenké</string>
     <string name="color_dark">Tmavý</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
@@ -236,8 +236,11 @@
     <string name="smartspace_mode_google_search">Google Search</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="hotseat_mode_label">Search Bar Widget</string>
+    <string name="hotseat_mode_disabled">Disabled</string>
+    <string name="hotseat_mode_lawnchair">Lawnchair</string>
+    <string name="hotseat_mode_google_search">Google Search Bar</string>
     <string name="search_bar_label">Vyhľadávací panel</string>
-    <string name="hotseat_qsb_label">Ukázať vyhľadávacie okno</string>
     <string name="corner_radius_label">Polomer rohov</string>
     <string name="apply_accent_color_label">Použiť farebný akcent</string>
     <string name="search_provider">Poskytovateľ vyhľadávania</string>

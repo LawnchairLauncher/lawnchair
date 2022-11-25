@@ -1,5 +1,6 @@
 package com.google.android.libraries.launcherclient;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.IBinder;
@@ -7,6 +8,7 @@ import android.os.IBinder;
 import java.lang.ref.WeakReference;
 
 public class LauncherClientService extends BaseClientService {
+    @SuppressLint("StaticFieldLeak")
     public static LauncherClientService sInstance;
     public ILauncherOverlay mOverlay;
     public WeakReference<LauncherClient> mClient;

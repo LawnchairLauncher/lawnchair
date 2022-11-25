@@ -16,6 +16,7 @@
 
 package app.lawnchair.util
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_CANCEL_CURRENT
@@ -73,12 +74,12 @@ fun <T> useApplicationContext(creator: (Context) -> T): (Context) -> T = { it ->
 fun restartLauncher(context: Context) {
     val pm = context.packageManager
     var intent: Intent? = Intent(Intent.ACTION_MAIN)
-    intent!!.addCategory(Intent.CATEGORY_HOME)
-    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-    val componentName = intent.resolveActivity(pm)
+        .addCategory(Intent.CATEGORY_HOME)
+        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    val componentName = intent!!.resolveActivity(pm)
     if (context.packageName != componentName.packageName) {
         intent = pm.getLaunchIntentForPackage(context.packageName)
-        intent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            ?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
     }
     restartLauncher(context, intent)
 }
@@ -88,7 +89,8 @@ fun restartLauncher(context: Context, intent: Intent?) {
 
     // Create a pending intent so the application is restarted after System.exit(0) was called.
     // We use an AlarmManager to call this intent in 100ms
-    val mPendingIntent = PendingIntent.getActivity(context, 0, intent, FLAG_CANCEL_CURRENT or FLAG_IMMUTABLE)
+    val mPendingIntent =
+        PendingIntent.getActivity(context, 0, intent, FLAG_CANCEL_CURRENT or FLAG_IMMUTABLE)
     val mgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     mgr[AlarmManager.RTC, System.currentTimeMillis() + 100] = mPendingIntent
 
@@ -140,13 +142,16 @@ fun <T> JSONArray.toArrayList(): ArrayList<T> {
     return arrayList
 }
 
-val ViewGroup.recursiveChildren: Sequence<View> get() = children.flatMap {
-    if (it is ViewGroup) {
-        it.recursiveChildren + sequenceOf(it)
-    } else sequenceOf(it)
-}
+val ViewGroup.recursiveChildren: Sequence<View>
+    get() = children.flatMap {
+        if (it is ViewGroup) {
+            it.recursiveChildren + sequenceOf(it)
+        } else sequenceOf(it)
+    }
 
-private val pendingIntentTagId = Resources.getSystem().getIdentifier("pending_intent_tag", "id", "android")
+@SuppressLint("DiscouragedApi")
+private val pendingIntentTagId =
+    Resources.getSystem().getIdentifier("pending_intent_tag", "id", "android")
 
 val View?.pendingIntent get() = this?.getTag(pendingIntentTagId) as? PendingIntent
 
@@ -219,10 +224,12 @@ fun Size.scaleDownTo(maxSize: Int): Size {
             val newHeight = (height * maxSize.toFloat() / width).toInt()
             Size(maxSize, newHeight)
         }
+
         height > maxSize -> {
             val newWidth = (width * maxSize.toFloat() / height).toInt()
             Size(newWidth, maxSize)
         }
+
         else -> this
     }
 }

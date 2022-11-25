@@ -32,7 +32,7 @@
     <string name="folders_label">फ़ोल्डर</string>
     <string name="folders_description">पंक्ति और स्तंभ गणना</string>
     <string name="gestures_label">संकेत</string>
-    <string name="gestures_description">Taps and Swipes</string>
+    <string name="gestures_description">Gerneral_xd</string>
     <string name="quickstep_label">हाल ही</string>
     <string name="quickstep_description">\"सभी हटाएं\" बटन के किनारे</string>
     <string name="about_label">बारे में</string>
@@ -45,10 +45,10 @@
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">फॉन्ट बदलें</string>
     <string name="font_picker_description">कुछ शब्द नहीं बदलेंगे</string>
-    <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <string name="smartspace_calendar_label">F5gt</string>
+    <string name="smartspace_calendar_description">Vrv4c</string>
+    <string name="workspace_increase_max_grid_size_label">Gegr</string>
+    <string name="workspace_increase_max_grid_size_description">Home grr</string>
     <string name="always_reload_icons_label">हमेशा आइकन को पुनः लोड करे</string>
     <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
     <string name="transparent_background_icons">पारदर्शी थीम पर आधारित आइकन</string>
@@ -236,8 +236,11 @@
     <string name="smartspace_mode_google_search">Google Search</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="hotseat_mode_label">Search Bar Widget</string>
+    <string name="hotseat_mode_disabled">Disabled</string>
+    <string name="hotseat_mode_lawnchair">Lawnchair</string>
+    <string name="hotseat_mode_google_search">Google Search Bar</string>
     <string name="search_bar_label">सर्च बार</string>
-    <string name="hotseat_qsb_label">खोज बार दिखाएँ</string>
     <string name="corner_radius_label">किनारे</string>
     <string name="apply_accent_color_label">असेंट रंग इस्तेमाल करें</string>
     <string name="search_provider">खोज प्रदाता</string>

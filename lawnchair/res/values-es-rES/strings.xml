@@ -236,8 +236,11 @@
     <string name="smartspace_mode_google_search">Búsqueda de Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="hotseat_mode_label">Widget de barra de búsqueda</string>
+    <string name="hotseat_mode_disabled">Deshabilitado</string>
+    <string name="hotseat_mode_lawnchair">Lawnchair</string>
+    <string name="hotseat_mode_google_search">Barra de búsqueda de Google</string>
     <string name="search_bar_label">Barra de Búsqueda</string>
-    <string name="hotseat_qsb_label">Mostrar Barra de Búsqueda</string>
     <string name="corner_radius_label">Radio de esquina</string>
     <string name="apply_accent_color_label">Aplicar Acento de Color</string>
     <string name="search_provider">Proveedor de Búsqueda</string>

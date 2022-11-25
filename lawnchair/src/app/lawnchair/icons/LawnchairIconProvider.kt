@@ -58,7 +58,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
         lawniconsVersion =
             if (isSupported) context.packageManager.getPackageVersionCode(LAWNICONS_PACKAGE_NAME)
             else 0L
-        _themeMap = if (isSupported) null else DISABLED_MAP
+        _themeMap = if (isSupported && lawniconsVersion in 1..3) null else DISABLED_MAP
     }
 
     private fun resolveIconEntry(componentName: ComponentName, user: UserHandle): IconEntry? {
@@ -137,7 +137,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
     override fun getThemeData(componentName: ComponentName): ThemedIconDrawable.ThemeData? {
         val td = getDynamicIconsFromMap(context, themeMap, componentName)
         if(td != null){
-            return td;
+            return td
         }
         return themeMap[componentName] ?: themeMap[ComponentName(componentName.packageName, "")]
     }

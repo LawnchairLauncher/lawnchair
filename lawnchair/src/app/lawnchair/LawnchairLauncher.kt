@@ -51,8 +51,7 @@ import app.lawnchair.root.RootNotAvailableException
 import app.lawnchair.search.LawnchairSearchAdapterProvider
 import app.lawnchair.theme.ThemeProvider
 import app.lawnchair.ui.popup.LawnchairShortcut
-import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
-import app.lawnchair.util.isPackageInstalled
+import app.lawnchair.util.getThemedIconPacksInstalled
 import com.android.launcher3.*
 import com.android.launcher3.R
 import com.android.launcher3.allapps.AllAppsContainerView
@@ -227,7 +226,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         // Handle update from version 12 Alpha 4 to version 12 Alpha 5.
         if (
             prefs.themedIcons.get() &&
-            !packageManager.isPackageInstalled(packageName = LAWNICONS_PACKAGE_NAME)
+            packageManager.getThemedIconPacksInstalled(this).isEmpty()
         ) {
             prefs.themedIcons.set(newValue = false)
         }

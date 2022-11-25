@@ -2,7 +2,6 @@ package app.lawnchair.ui.theme
 
 import android.content.Context
 import android.graphics.Color
-import android.text.TextUtils
 import android.util.TypedValue
 import android.view.ContextThemeWrapper
 import androidx.annotation.ColorInt
@@ -45,7 +44,7 @@ fun Context.getSystemAccent(darkTheme: Boolean): Int {
         res.getColor(colorId)
     } else {
         var propertyValue = Utilities.getSystemProperty("persist.sys.theme.accentcolor", "")
-        if (!TextUtils.isEmpty(propertyValue)) {
+        if (!propertyValue.isNullOrEmpty()) {
             if (!propertyValue.startsWith('#')) {
                 propertyValue = "#$propertyValue"
             }

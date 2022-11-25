@@ -97,10 +97,10 @@
     <string name="icon_shape_bottom_left">왼쪽 하단</string>
     <string name="icon_shape_bottom_right">오른쪽 하단</string>
     <string name="create">생성</string>
-    <string name="clipboard">Clipboard</string>
-    <string name="export_to_clipboard">Export to Clipboard</string>
-    <string name="import_from_clipboard">Import from Clipboard</string>
-    <string name="icon_shape_clipboard_import_error">Clipboard does not contain a valid icon shape</string>
+    <string name="clipboard">클립보드</string>
+    <string name="export_to_clipboard">클립보드로 내보내기</string>
+    <string name="import_from_clipboard">클립보드에서 가져오기</string>
+    <string name="icon_shape_clipboard_import_error">클립보드에 올바른 아이콘 모양이 없습니다.</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">아이콘 팩</string>
@@ -189,7 +189,7 @@
     <string name="label_size">라벨 사이즈</string>
     <string name="reset_custom_icons">사용자 정의 아이콘 재설정</string>
     <string name="reset_custom_icons_confirmation">모든 사용자 정의 아이콘이 재설정됩니다. 계속하시겠습니까?</string>
-    <string name="home_screen_text_color">Text Color</string>
+    <string name="home_screen_text_color">텍스트 색상</string>
     <string name="color_light">라이트</string>
     <string name="color_dark">다크</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
@@ -236,8 +236,11 @@
     <string name="smartspace_mode_google_search">구글 검색</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="hotseat_mode_label">Search Bar Widget</string>
+    <string name="hotseat_mode_disabled">Disabled</string>
+    <string name="hotseat_mode_lawnchair">Lawnchair</string>
+    <string name="hotseat_mode_google_search">Google Search Bar</string>
     <string name="search_bar_label">검색 상자</string>
-    <string name="hotseat_qsb_label">검색 창 활성화</string>
     <string name="corner_radius_label">가장자리 둥글기</string>
     <string name="apply_accent_color_label">강조 색상 적용하기</string>
     <string name="search_provider">검색 제공자</string>

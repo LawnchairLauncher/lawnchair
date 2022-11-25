@@ -72,7 +72,6 @@ fun SearchProviderPreferences() {
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun ListItem(
     title: String,
     description: String?,
@@ -113,7 +112,6 @@ private fun ListItem(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun Options(
     appEnabled: Boolean,
     appSelected: Boolean,

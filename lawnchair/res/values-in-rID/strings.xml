@@ -236,8 +236,11 @@
     <string name="smartspace_mode_google_search">Google Search</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
+    <string name="hotseat_mode_label">Search Bar Widget</string>
+    <string name="hotseat_mode_disabled">Disabled</string>
+    <string name="hotseat_mode_lawnchair">Lawnchair</string>
+    <string name="hotseat_mode_google_search">Google Search Bar</string>
     <string name="search_bar_label">Bilah Pencarian</string>
-    <string name="hotseat_qsb_label">Tampilkan Bilah Pencarian</string>
     <string name="corner_radius_label">Radius sudut</string>
     <string name="apply_accent_color_label">Terapkan Warna Aksen</string>
     <string name="search_provider">Penyedia Pencarian</string>
