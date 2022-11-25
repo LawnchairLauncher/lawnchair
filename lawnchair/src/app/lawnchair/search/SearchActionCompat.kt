@@ -22,8 +22,8 @@ import android.graphics.drawable.Icon
 import android.os.Bundle
 import android.os.Parcelable
 import android.os.UserHandle
-import kotlinx.parcelize.Parcelize
 import java.util.Objects
+import kotlinx.parcelize.Parcelize
 
 /**
  * Represents a searchable action info that can be called from another process
@@ -69,8 +69,7 @@ data class SearchActionCompat(
      * Returns the extra bundle for this object.
      */
     val extras: Bundle?,
-
-    ) : Parcelable {
+) : Parcelable {
 
     init {
         check(!(this.pendingIntent == null && this.intent == null)) { "At least one type of intent should be available." }
@@ -89,15 +88,13 @@ data class SearchActionCompat(
         from.getExtras()
     )
 
-    override fun equals(o: Any?): Boolean = when {
-        this === o -> true
-        o !is SearchActionCompat -> false
-        else -> id == o.id && title == o.title
+    override fun equals(other: Any?): Boolean = when {
+        this === other -> true
+        other !is SearchActionCompat -> false
+        else -> id == other.id && title == other.title
     }
 
-    override fun hashCode(): Int {
-        return Objects.hash(id, title)
-    }
+    override fun hashCode(): Int = Objects.hash(id, title)
 
     /**
      * A builder for search action object.
