@@ -115,20 +115,14 @@ ext {
     optoVersion = "1.0.18"
 }
 
-final def commitHash = { ->
-    final def stdout = new ByteArrayOutputStream()
-    exec {
-        commandLine 'git', 'rev-parse', '--short=7', 'HEAD'
-        standardOutput = stdout
-    }
-    stdout.toString().trim()
-}
+final def buildCommit = providers.exec {
+    commandLine('git', 'rev-parse', '--short=7', 'HEAD')
+}.standardOutput.asText.get().trim()
 
 def ciBuild = System.getenv("CI") == "true"
 def ciRef = System.getenv("GITHUB_REF") ?: ""
 def ciRunNumber = System.getenv("GITHUB_RUN_NUMBER") ?: ""
 def isReleaseBuild = ciBuild && ciRef.contains("alpha")
-def buildCommit = commitHash()
 def devReleaseName
 if (ciBuild) {
     devReleaseName = "Dev (#${ciRunNumber})"
