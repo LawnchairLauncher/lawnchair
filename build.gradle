@@ -115,34 +115,23 @@ ext {
     optoVersion = "1.0.18"
 }
 
-final def commitHash = { ->
-    final def stdout = new ByteArrayOutputStream()
-    exec {
-        commandLine 'git', 'rev-parse', '--short=7', 'HEAD'
-        standardOutput = stdout
-    }
-    stdout.toString().trim()
-}
+final def buildCommit = providers.exec {
+    commandLine('git', 'rev-parse', '--short=7', 'HEAD')
+}.standardOutput.asText.get().trim()
 
-def ciBuild = System.getenv("CI") == "true"
-def ciRef = System.getenv("GITHUB_REF") ?: ""
-def ciRunNumber = System.getenv("GITHUB_RUN_NUMBER") ?: ""
-def isReleaseBuild = ciBuild && ciRef.contains("alpha")
-def buildCommit = commitHash()
-def devReleaseName
-if (ciBuild) {
-    devReleaseName = "Dev (#${ciRunNumber})"
-} else {
-    devReleaseName = "Dev (${buildCommit})"
-}
+final def ciBuild = System.getenv("CI") == "true"
+final def ciRef = System.getenv("GITHUB_REF") ?: ""
+final def ciRunNumber = System.getenv("GITHUB_RUN_NUMBER") ?: ""
+final def isReleaseBuild = ciBuild && ciRef.contains("alpha")
+final def devReleaseName = ciBuild ? "Dev (#${ciRunNumber})" : "Dev (${buildCommit})"
 
-def version = "12.1.0"
-def releaseName = "Alpha 4"
-def versionDisplayName = "${version} ${isReleaseBuild ? releaseName : devReleaseName}"
-def majorVersion = versionDisplayName.split("\\.")[0]
+final def version = "12.1.0"
+final def releaseName = "Alpha 4"
+final def versionDisplayName = "${version} ${isReleaseBuild ? releaseName : devReleaseName}"
+final def majorVersion = versionDisplayName.split("\\.")[0]
 
-def quickstepMinSdk = "32"
-def quickstepMaxSdk = "32"
+final def quickstepMinSdk = "32"
+final def quickstepMaxSdk = "32"
 
 android {
     defaultConfig {
