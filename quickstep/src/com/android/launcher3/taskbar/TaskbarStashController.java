@@ -21,9 +21,14 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_SHOW;
 import static com.android.launcher3.taskbar.Utilities.appendFlag;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BOUNCER_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SWITCHER_SHOWING;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -66,7 +71,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
     public static final int FLAG_IN_APP = 1 << 0;
     public static final int FLAG_STASHED_IN_APP_MANUAL = 1 << 1; // long press, persisted
-    public static final int FLAG_STASHED_IN_APP_PINNED = 1 << 2; // app pinning
+    public static final int FLAG_STASHED_IN_SYSUI_STATE = 1 << 2; // app pinning, keyguard, etc.
     public static final int FLAG_STASHED_IN_APP_EMPTY = 1 << 3; // no hotseat icons
     public static final int FLAG_STASHED_IN_APP_SETUP = 1 << 4; // setup wizard and AllSetActivity
     public static final int FLAG_STASHED_IN_APP_IME = 1 << 5; // IME is visible
@@ -81,7 +86,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
     // If we're in an app and any of these flags are enabled, taskbar should be stashed.
     private static final int FLAGS_STASHED_IN_APP = FLAG_STASHED_IN_APP_MANUAL
-            | FLAG_STASHED_IN_APP_PINNED | FLAG_STASHED_IN_APP_EMPTY | FLAG_STASHED_IN_APP_SETUP
+            | FLAG_STASHED_IN_SYSUI_STATE | FLAG_STASHED_IN_APP_EMPTY | FLAG_STASHED_IN_APP_SETUP
             | FLAG_STASHED_IN_APP_IME | FLAG_STASHED_IN_TASKBAR_ALL_APPS
             | FLAG_STASHED_SMALL_SCREEN | FLAG_STASHED_IN_APP_AUTO;
 
@@ -751,12 +756,18 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         long animDuration = TASKBAR_STASH_DURATION;
         long startDelay = 0;
 
-        updateStateForFlag(FLAG_STASHED_IN_APP_PINNED,
-                hasAnyFlag(systemUiStateFlags, SYSUI_STATE_SCREEN_PINNING));
+        updateStateForFlag(FLAG_STASHED_IN_SYSUI_STATE, hasAnyFlag(systemUiStateFlags,
+                SYSUI_STATE_SCREEN_PINNING
+                        | SYSUI_STATE_BOUNCER_SHOWING
+                        | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING
+                        | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED
+                        | SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED
+                        | SYSUI_STATE_QUICK_SETTINGS_EXPANDED));
 
         // Only update FLAG_STASHED_IN_APP_IME when system gesture is not in progress.
         mIsImeShowing = hasAnyFlag(systemUiStateFlags, SYSUI_STATE_IME_SHOWING);
         mIsImeSwitcherShowing = hasAnyFlag(systemUiStateFlags, SYSUI_STATE_IME_SWITCHER_SHOWING);
+
         if (!mIsSystemGestureInProgress) {
             updateStateForFlag(FLAG_STASHED_IN_APP_IME, shouldStashForIme());
             animDuration = TASKBAR_STASH_DURATION_FOR_IME;
@@ -900,7 +911,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         StringJoiner sj = new StringJoiner("|");
         appendFlag(sj, flags, FLAGS_IN_APP, "FLAG_IN_APP");
         appendFlag(sj, flags, FLAG_STASHED_IN_APP_MANUAL, "FLAG_STASHED_IN_APP_MANUAL");
-        appendFlag(sj, flags, FLAG_STASHED_IN_APP_PINNED, "FLAG_STASHED_IN_APP_PINNED");
+        appendFlag(sj, flags, FLAG_STASHED_IN_SYSUI_STATE, "FLAG_STASHED_IN_SYSUI_STATE");
         appendFlag(sj, flags, FLAG_STASHED_IN_APP_EMPTY, "FLAG_STASHED_IN_APP_EMPTY");
         appendFlag(sj, flags, FLAG_STASHED_IN_APP_SETUP, "FLAG_STASHED_IN_APP_SETUP");
         appendFlag(sj, flags, FLAG_STASHED_IN_APP_IME, "FLAG_STASHED_IN_APP_IME");
