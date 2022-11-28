@@ -35,9 +35,6 @@ import com.android.launcher3.views.AbstractSlideInView;
 public class TaskbarEduView extends AbstractSlideInView<TaskbarOverlayContext>
         implements Insettable {
 
-    private static final int DEFAULT_OPEN_DURATION = 500;
-    private static final int DEFAULT_CLOSE_DURATION = 200;
-
     private final Rect mInsets = new Rect();
 
     // Initialized in init.
@@ -65,7 +62,7 @@ public class TaskbarEduView extends AbstractSlideInView<TaskbarOverlayContext>
 
     @Override
     protected void handleClose(boolean animate) {
-        handleClose(animate, DEFAULT_CLOSE_DURATION);
+        handleClose(animate, mTaskbarEduCallbacks.getCloseDuration());
     }
 
     @Override
@@ -161,7 +158,7 @@ public class TaskbarEduView extends AbstractSlideInView<TaskbarOverlayContext>
         mOpenCloseAnimator.setValues(
                 PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
         mOpenCloseAnimator.setInterpolator(AGGRESSIVE_EASE);
-        mOpenCloseAnimator.setDuration(DEFAULT_OPEN_DURATION).start();
+        mOpenCloseAnimator.setDuration(mTaskbarEduCallbacks.getOpenDuration()).start();
     }
 
     void snapToPage(int page) {
