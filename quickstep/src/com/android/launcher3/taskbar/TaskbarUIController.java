@@ -29,7 +29,6 @@ import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
 import java.io.PrintWriter;
-import java.util.stream.Stream;
 
 /**
  * Base class for providing different taskbar UI
@@ -65,10 +64,6 @@ public class TaskbarUIController {
     }
 
     protected void onStashedInAppChanged() { }
-
-    public Stream<ItemInfoWithIcon> getAppIconsForEdu() {
-        return Stream.empty();
-    }
 
     /** Called when an icon is launched. */
     public void onTaskbarIconLaunched(ItemInfo item) { }
