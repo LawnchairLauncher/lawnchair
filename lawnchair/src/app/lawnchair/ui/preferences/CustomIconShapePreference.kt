@@ -205,7 +205,7 @@ private fun IconShapeClipboardPreferenceGroup(
             label = stringResource(id = R.string.import_from_clipboard),
         ) {
             getClipboardContent(context)?.let {
-                IconShape.fromString(value = it)
+                IconShape.fromString(value = it, context = context)
             }?.let {
                 onSelectedIconShapeChange(it)
             } ?: run {
