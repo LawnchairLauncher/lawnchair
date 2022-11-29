@@ -301,10 +301,6 @@ public final class FeatureFlags {
             "USE_SEARCH_REQUEST_TIMEOUT_OVERRIDES", false,
             "Use local overrides for search request timeout");
 
-    public static final BooleanFlag ENABLE_RICH_ANSWER = new DeviceFlag(
-            "ENABLE_RICH_ANSWER", false,
-            "Enable rich answer new UI for web answer search results");
-
     public static final BooleanFlag CONTINUOUS_VIEW_TREE_CAPTURE = getDebugFlag(
             "CONTINUOUS_VIEW_TREE_CAPTURE", false, "Capture View tree every frame");
 
