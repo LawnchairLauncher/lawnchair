@@ -149,7 +149,8 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
         if (context.dragLayer.alpha < AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD) {
             // Let touches pass through us.
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
-        } else if (controllers.navbarButtonsViewController.isImeVisible) {
+        } else if (controllers.navbarButtonsViewController.isImeVisible
+                && controllers.taskbarStashController.isStashed()) {
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
         } else if (!controllers.uiController.isTaskbarTouchable) {
             // Let touches pass through us.
