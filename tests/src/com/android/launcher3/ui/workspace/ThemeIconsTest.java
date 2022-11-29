@@ -32,6 +32,7 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.icons.ThemedIconDrawable;
 import com.android.launcher3.tapl.HomeAllApps;
 import com.android.launcher3.tapl.HomeAppIcon;
+import com.android.launcher3.tapl.HomeAppIconMenuItem;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TaplTestsLauncher3;
 
@@ -49,6 +50,8 @@ import java.util.Queue;
 public class ThemeIconsTest extends AbstractLauncherUiTest {
 
     private static final String APP_NAME = "ThemeIconTestActivity";
+    private static final String SHORTCUT_APP_NAME = "LauncherTestApp";
+    private static final String SHORTCUT_NAME = "Shortcut 1";
 
     @Test
     public void testIconWithoutTheme() throws Exception {
@@ -60,9 +63,28 @@ public class ThemeIconsTest extends AbstractLauncherUiTest {
 
         try {
             HomeAppIcon icon = allApps.getAppIcon(APP_NAME);
-            executeOnLauncher(l -> verifyIconTheme(l.getAppsView(), false));
+            executeOnLauncher(l -> verifyIconTheme(APP_NAME, l.getAppsView(), false));
             icon.dragToWorkspace(false, false);
-            executeOnLauncher(l -> verifyIconTheme(l.getWorkspace(), false));
+            executeOnLauncher(l -> verifyIconTheme(APP_NAME, l.getWorkspace(), false));
+        } finally {
+            allApps.unfreeze();
+        }
+    }
+
+    @Test
+    public void testShortcutIconWithoutTheme() throws Exception {
+        setThemeEnabled(false);
+        TaplTestsLauncher3.initialize(this);
+
+        HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
+        allApps.freeze();
+
+        try {
+            HomeAppIcon icon = allApps.getAppIcon(SHORTCUT_APP_NAME);
+            HomeAppIconMenuItem shortcutItem =
+                    (HomeAppIconMenuItem) icon.openDeepShortcutMenu().getMenuItem(SHORTCUT_NAME);
+            shortcutItem.dragToWorkspace(false, false);
+            executeOnLauncher(l -> verifyIconTheme(SHORTCUT_NAME, l.getWorkspace(), false));
         } finally {
             allApps.unfreeze();
         }
@@ -78,15 +100,34 @@ public class ThemeIconsTest extends AbstractLauncherUiTest {
 
         try {
             HomeAppIcon icon = allApps.getAppIcon(APP_NAME);
-            executeOnLauncher(l -> verifyIconTheme(l.getAppsView(), false));
+            executeOnLauncher(l -> verifyIconTheme(APP_NAME, l.getAppsView(), false));
             icon.dragToWorkspace(false, false);
-            executeOnLauncher(l -> verifyIconTheme(l.getWorkspace(), true));
+            executeOnLauncher(l -> verifyIconTheme(APP_NAME, l.getWorkspace(), true));
         } finally {
             allApps.unfreeze();
         }
     }
 
-    private void verifyIconTheme(ViewGroup parent, boolean isThemed) {
+    @Test
+    public void testShortcutIconWithTheme() throws Exception {
+        setThemeEnabled(true);
+        TaplTestsLauncher3.initialize(this);
+
+        HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
+        allApps.freeze();
+
+        try {
+            HomeAppIcon icon = allApps.getAppIcon(SHORTCUT_APP_NAME);
+            HomeAppIconMenuItem shortcutItem =
+                    (HomeAppIconMenuItem) icon.openDeepShortcutMenu().getMenuItem(SHORTCUT_NAME);
+            shortcutItem.dragToWorkspace(false, false);
+            executeOnLauncher(l -> verifyIconTheme(SHORTCUT_NAME, l.getWorkspace(), true));
+        } finally {
+            allApps.unfreeze();
+        }
+    }
+
+    private void verifyIconTheme(String title, ViewGroup parent, boolean isThemed) {
         // Find the app icon
         Queue<View> viewQueue = new ArrayDeque<>();
         viewQueue.add(parent);
@@ -100,7 +141,7 @@ public class ThemeIconsTest extends AbstractLauncherUiTest {
                 }
             } else if (view instanceof BubbleTextView) {
                 BubbleTextView btv = (BubbleTextView) view;
-                if (APP_NAME.equals(btv.getText())) {
+                if (title.equals(btv.getText())) {
                     icon = btv;
                     break;
                 }
