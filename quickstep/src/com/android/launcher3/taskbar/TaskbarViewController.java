@@ -193,7 +193,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
      * Should be called when the IME visibility changes, so we can make Taskbar not steal touches.
      */
     public void setImeIsVisible(boolean isImeVisible) {
-        mTaskbarView.setTouchesEnabled(!isImeVisible);
+        mTaskbarView.setTouchesEnabled(!isImeVisible
+                || DisplayController.isTransientTaskbar(mActivity));
     }
 
     /**
