@@ -67,7 +67,7 @@ public class AllAppsSearchBarController
         mInput.addTextChangedListener(this);
         mInput.setOnEditorActionListener(this);
         mInput.setOnBackKeyListener(this);
-        mInput.setOnFocusChangeListener(this);
+        mInput.addOnFocusChangeListener(this);
         mSearchAlgorithm = searchAlgorithm;
     }
 
@@ -153,6 +153,7 @@ public class AllAppsSearchBarController
         mCallback.clearSearchResult();
         mInput.reset();
         mQuery = null;
+        mInput.removeOnFocusChangeListener(this);
     }
 
     /**

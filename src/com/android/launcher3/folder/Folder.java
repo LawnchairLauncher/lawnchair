@@ -282,7 +282,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mFolderName = findViewById(R.id.folder_name);
         mFolderName.setTextSize(TypedValue.COMPLEX_UNIT_PX, dp.folderLabelTextSizePx);
         mFolderName.setOnBackKeyListener(this);
-        mFolderName.setOnFocusChangeListener(this);
         mFolderName.setOnEditorActionListener(this);
         mFolderName.setSelectAllOnFocus(true);
         mFolderName.setInputType(mFolderName.getInputType()
@@ -457,6 +456,13 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         // the folder itself.
         requestFocus();
         super.onAttachedToWindow();
+        mFolderName.addOnFocusChangeListener(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mFolderName.removeOnFocusChangeListener(this);
     }
 
     @Override
