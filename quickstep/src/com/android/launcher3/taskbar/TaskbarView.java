@@ -74,9 +74,6 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     private View.OnClickListener mIconClickListener;
     private View.OnLongClickListener mIconLongClickListener;
 
-    // Prevents dispatching touches to children if true
-    private boolean mTouchEnabled = true;
-
     // Only non-null when the corresponding Folder is open.
     private @Nullable FolderIcon mLeaveBehindFolderIcon;
 
@@ -382,14 +379,6 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (!mTouchEnabled) {
-            return true;
-        }
-        return super.dispatchTouchEvent(ev);
-    }
-
-    @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         mControllerCallbacks.onInterceptTouchEvent(ev);
         return super.onInterceptTouchEvent(ev);
@@ -397,9 +386,6 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (!mTouchEnabled) {
-            return true;
-        }
         if (mIconLayoutBounds.left <= event.getX()
                 && event.getX() <= mIconLayoutBounds.right
                 && !DisplayController.isTransientTaskbar(mActivityContext)) {
@@ -418,11 +404,6 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             }
         }
         return super.onTouchEvent(event);
-    }
-
-    public void setTouchesEnabled(boolean touchEnabled) {
-        this.mTouchEnabled = touchEnabled;
-        mControllerCallbacks.clearTouchInProgress();
     }
 
     /**
