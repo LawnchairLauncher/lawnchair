@@ -249,12 +249,13 @@ public class TaskIconCache implements DisplayInfoChangeListener {
     private BitmapInfo getBitmapInfo(Drawable drawable, int userId,
             int primaryColor, boolean isInstantApp) {
         try (BaseIconFactory bif = getIconFactory()) {
-            bif.disableColorExtraction();
             bif.setWrapperBackgroundColor(primaryColor);
 
             // User version code O, so that the icon is always wrapped in an adaptive icon container
             return bif.createBadgedIconBitmap(drawable,
-                    new IconOptions().setUser(UserHandle.of(userId)).setInstantApp(isInstantApp));
+                    new IconOptions().setUser(UserHandle.of(userId))
+                            .setInstantApp(isInstantApp)
+                            .setExtractedColor(0));
         }
     }
 
