@@ -375,11 +375,11 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
         if (supportsVisualStashing() && hasAnyFlag(FLAGS_REPORT_STASHED_INSETS_TO_APP)) {
             DeviceProfile dp = mActivity.getDeviceProfile();
-            if (hasAnyFlag(FLAG_STASHED_IN_APP_SETUP) && dp.isTaskbarPresent && !dp.isLandscape) {
+            if (hasAnyFlag(FLAG_STASHED_IN_APP_SETUP) && dp.isTaskbarPresent) {
                 // We always show the back button in SUW but in portrait the SUW layout may not
-                // be wide enough to support overlapping the nav bar with its content.  For now,
-                // just inset by the bar height.
-                return mUnstashedHeight;
+                // be wide enough to support overlapping the nav bar with its content.
+                // We're sending different res values in portrait vs landscape
+                return mActivity.getResources().getDimensionPixelSize(R.dimen.taskbar_suw_insets);
             }
             boolean isAnimating = mAnimator != null && mAnimator.isStarted();
             if (!mControllers.stashedHandleViewController.isStashedHandleVisible()
@@ -393,10 +393,6 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             return mStashedHeight;
         }
 
-        if (!mActivity.isUserSetupComplete()) {
-            // Special insets for SUW.
-            return mActivity.getResources().getDimensionPixelSize(R.dimen.taskbar_suw_insets);
-        }
         return mUnstashedHeight;
     }
 
