@@ -19,6 +19,8 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_FROM_WORKSP
 import static com.android.launcher3.util.SplitConfigurationOptions.getLogEventForPosition;
 import static com.android.quickstep.util.SplitAnimationTimings.TABLET_HOME_TO_SPLIT;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
@@ -115,13 +117,19 @@ public interface QuickstepSystemShortcut {
 
             PendingAnimation anim = new PendingAnimation(TABLET_HOME_TO_SPLIT.getDuration());
             RectF startingTaskRect = new RectF();
-            FloatingTaskView floatingTaskView = FloatingTaskView.getFloatingTaskView(mTarget,
-                    source.view, null /* thumbnail */,
-                    source.drawable, startingTaskRect);
+            final FloatingTaskView floatingTaskView = FloatingTaskView.getFloatingTaskView(mTarget,
+                    source.view, null /* thumbnail */, source.drawable, startingTaskRect);
             floatingTaskView.setAlpha(1);
             floatingTaskView.addStagingAnimation(anim, startingTaskRect, mTempRect,
                     false /* fadeWithThumbnail */, true /* isStagedTask */);
             controller.setFirstFloatingTaskView(floatingTaskView);
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    mTarget.getDragLayer().removeView(floatingTaskView);
+                    controller.resetState();
+                }
+            });
             anim.buildAnim().start();
         }
     }
