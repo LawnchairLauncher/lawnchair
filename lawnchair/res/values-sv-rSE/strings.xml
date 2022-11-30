@@ -26,7 +26,7 @@
     -->
     <string name="what_to_show">Vad ska visas</string>
     <string name="dock_label">Docka</string>
-    <string name="dock_description">Sökfält, antal ikoner</string>
+    <string name="dock_description">Sökfält, ikonantal</string>
     <string name="app_drawer_label">Applåda</string>
     <string name="app_drawer_description">Dolda appar, kolumnantal, ikoner</string>
     <string name="folders_label">Mappar</string>
