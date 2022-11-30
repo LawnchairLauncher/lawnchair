@@ -116,7 +116,7 @@
     <string name="icon_shape_system">Система</string>
     <string name="icon_shape_circle">Круг</string>
     <string name="icon_shape_cylinder">Цилиндр</string>
-    <string name="icon_shape_diamond">Алмаз</string>
+    <string name="icon_shape_diamond">Ромб</string>
     <string name="icon_shape_egg">Яйцо</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Октагон</string>
@@ -140,7 +140,7 @@
     <string name="font_weight_bold">Жирный</string>
     <string name="font_weight_extra_bold">Экстра жирный</string>
     <string name="font_weight_extra_black">Сверхжирный</string>
-    <string name="reset_font">Сброс</string>
+    <string name="reset_font">Сбросить</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Динамический</string>
     <string name="swatches">Образцы</string>

@@ -352,7 +352,7 @@
     <string name="dt2s_warning_open_settings">Abrir Configurações</string>
     <string name="loading">Carregando…</string>
     <string name="system">Sistema</string>
-    <string name="customize_button_text">Personalizado</string>
+    <string name="customize_button_text">Personalizar</string>
     <string name="label">Título</string>
     <string name="hide_from_drawer">Esconder da Gaveta de Aplicativos</string>
     <string name="suggestion_pref_screen_title">Sugestões</string>
