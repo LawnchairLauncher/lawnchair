@@ -124,6 +124,10 @@ public final class FeatureFlags {
             "FOLDER_NAME_MAJORITY_RANKING", true,
             "Suggests folder names based on majority based ranking.");
 
+    public static final BooleanFlag INJECT_FALLBACK_APP_CORPUS_RESULTS = new DeviceFlag(
+            "INJECT_FALLBACK_APP_CORPUS_RESULTS", false, "Inject "
+            + "fallback app corpus result when AiAi fails to return it.");
+
     public static final BooleanFlag ASSISTANT_GIVES_LAUNCHER_FOCUS = getDebugFlag(
             "ASSISTANT_GIVES_LAUNCHER_FOCUS", false,
             "Allow Launcher to handle nav bar gestures while Assistant is running over it");
@@ -333,6 +337,10 @@ public final class FeatureFlags {
     public static final BooleanFlag HOME_GARDENING_WORKSPACE_BUTTONS = getDebugFlag(
             "HOME_GARDENING_WORKSPACE_BUTTONS", false,
             "Change workspace edit buttons to reflect home gardening");
+
+    public static final BooleanFlag ENABLE_DOWNLOAD_APP_UX_V2 = getDebugFlag(
+            "ENABLE_DOWNLOAD_APP_UX_V2", false, "Updates the download app UX"
+                    + " to have better visuals");
 
     public static final BooleanFlag ENABLE_TASKBAR_REVISED_THRESHOLDS = getDebugFlag(
             "ENABLE_TASKBAR_REVISED_THRESHOLDS", false,
