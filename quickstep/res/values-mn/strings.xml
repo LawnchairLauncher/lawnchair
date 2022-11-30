@@ -78,10 +78,8 @@
     <string name="allset_title" msgid="5021126669778966707">"Тохируулж дууслаа!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Нүүр хуудас руу очихын тулд дээш шударна уу"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Үндсэн нүүр лүүгээ очихын тулд нүүр хуудасны товчлуурыг товшино уу"</string>
-    <!-- no translation found for allset_description_generic (5385500062202019855) -->
-    <skip />
-    <!-- no translation found for default_device_name (6660656727127422487) -->
-    <skip />
+    <string name="allset_description_generic" msgid="5385500062202019855">"Та <xliff:g id="DEVICE">%1$s</xliff:g>-г ашиглаж эхлэхэд бэлэн боллоо"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"төхөөрөмж"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Системийн навигацын тохиргоо"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Хуваалцах"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Дэлгэцийн агшин дарах"</string>
@@ -94,8 +92,7 @@
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Цуцлах"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Алгасах"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Дэлгэцийг эргүүлэх"</string>
-    <!-- no translation found for taskbar_edu_a11y_title (5417986057866415355) -->
-    <skip />
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Ажлын хэсгийн боловсрол"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Боловсролын ажлын талбар гарч ирсэн"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Боловсролын ажлын талбарыг хаасан"</string>
     <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Аппуудыг сэлгэхийн тулд талбарыг ашиглана уу"</string>
@@ -112,10 +109,8 @@
     <string name="taskbar_button_recents" msgid="7273376136216613134">"Саяхны"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Мэдэгдэл"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Шуурхай тохиргоо"</string>
-    <!-- no translation found for taskbar_a11y_title (6432169809852243110) -->
-    <skip />
-    <!-- no translation found for taskbar_phone_a11y_title (4933360237131229395) -->
-    <skip />
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"Ажлын хэсэг"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Навигацын самбар"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Зүүн дээд хэсэг рүү зөөх"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Баруун доод хэсэг рүү зөөх"</string>
 </resources>
