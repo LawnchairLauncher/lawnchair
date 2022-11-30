@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.taskbar.allapps;
 
-import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
 
 import android.animation.PropertyValuesHolder;
@@ -28,6 +27,7 @@ import android.view.animation.Interpolator;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
+import com.android.launcher3.taskbar.allapps.TaskbarAllAppsViewController.TaskbarAllAppsCallbacks;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 import com.android.launcher3.views.AbstractSlideInView;
 
@@ -37,6 +37,9 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
     private TaskbarAllAppsContainerView mAppsView;
     private float mShiftRange;
 
+    // Initialized in init.
+    private TaskbarAllAppsCallbacks mAllAppsCallbacks;
+
     public TaskbarAllAppsSlideInView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
@@ -44,6 +47,10 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
     public TaskbarAllAppsSlideInView(Context context, AttributeSet attrs,
             int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    void init(TaskbarAllAppsCallbacks callbacks) {
+        mAllAppsCallbacks = callbacks;
     }
 
     /** Opens the all apps view. */
@@ -58,8 +65,7 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
             mOpenCloseAnimator.setValues(
                     PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
             mOpenCloseAnimator.setInterpolator(EMPHASIZED);
-            mOpenCloseAnimator.setDuration(
-                    ALL_APPS.getTransitionDuration(mActivityContext, true /* isToState */)).start();
+            mOpenCloseAnimator.setDuration(mAllAppsCallbacks.getOpenDuration()).start();
         } else {
             mTranslationShift = TRANSLATION_SHIFT_OPENED;
         }
@@ -72,8 +78,7 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
 
     @Override
     protected void handleClose(boolean animate) {
-        handleClose(animate,
-                ALL_APPS.getTransitionDuration(mActivityContext, false /* isToState */));
+        handleClose(animate, mAllAppsCallbacks.getCloseDuration());
     }
 
     @Override

@@ -42,7 +42,6 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.OnboardingPrefs;
@@ -51,7 +50,6 @@ import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.views.RecentsView;
 
 import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -254,11 +252,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
      */
     public void forceHideBackground(boolean forceHide) {
         mTaskbarOverrideBackgroundAlpha.updateValue(forceHide ? 0 : 1);
-    }
-
-    @Override
-    public Stream<ItemInfoWithIcon> getAppIconsForEdu() {
-        return Arrays.stream(mLauncher.getAppsView().getAppsStore().getApps());
     }
 
     /**

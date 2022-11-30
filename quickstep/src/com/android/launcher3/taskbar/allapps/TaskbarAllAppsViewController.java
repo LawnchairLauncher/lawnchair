@@ -17,6 +17,7 @@ package com.android.launcher3.taskbar.allapps;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_STASHED_IN_TASKBAR_ALL_APPS;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.OnboardingPrefs.ALL_APPS_VISITED_COUNT;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -26,6 +27,7 @@ import com.android.launcher3.taskbar.NavbarButtonsViewController;
 import com.android.launcher3.taskbar.TaskbarControllers;
 import com.android.launcher3.taskbar.TaskbarStashController;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
+import com.android.launcher3.taskbar.overlay.TaskbarOverlayController;
 
 /**
  * Handles the {@link TaskbarAllAppsContainerView} behavior and synchronizes its transitions with
@@ -38,6 +40,7 @@ final class TaskbarAllAppsViewController {
     private final TaskbarAllAppsContainerView mAppsView;
     private final TaskbarStashController mTaskbarStashController;
     private final NavbarButtonsViewController mNavbarButtonsViewController;
+    private final TaskbarOverlayController mOverlayController;
 
     TaskbarAllAppsViewController(
             TaskbarOverlayContext context,
@@ -49,7 +52,9 @@ final class TaskbarAllAppsViewController {
         mAppsView = mSlideInView.getAppsView();
         mTaskbarStashController = taskbarControllers.taskbarStashController;
         mNavbarButtonsViewController = taskbarControllers.navbarButtonsViewController;
+        mOverlayController = taskbarControllers.taskbarOverlayController;
 
+        mSlideInView.init(new TaskbarAllAppsCallbacks());
         setUpIconLongClick();
         setUpAppDivider();
         setUpTaskbarStashing();
@@ -93,7 +98,18 @@ final class TaskbarAllAppsViewController {
                     mContext, AbstractFloatingView.TYPE_ACTION_POPUP);
             // Post in case view is closing due to gesture navigation. If a gesture is in progress,
             // wait to unstash until after the gesture is finished.
-            mSlideInView.post(mTaskbarStashController::maybeResetStashedInAppAllApps);
+            MAIN_EXECUTOR.post(() -> mTaskbarStashController.resetFlagIfNoGestureInProgress(
+                    FLAG_STASHED_IN_TASKBAR_ALL_APPS));
         });
+    }
+
+    class TaskbarAllAppsCallbacks {
+        int getOpenDuration() {
+            return mOverlayController.getOpenDuration();
+        }
+
+        int getCloseDuration() {
+            return mOverlayController.getCloseDuration();
+        }
     }
 }

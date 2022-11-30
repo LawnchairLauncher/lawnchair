@@ -17,7 +17,6 @@ package com.android.launcher3.taskbar;
 
 import static android.view.HapticFeedbackConstants.LONG_PRESS;
 
-import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_SHOW;
 import static com.android.launcher3.taskbar.Utilities.appendFlag;
@@ -80,6 +79,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     public static final int FLAG_IN_SETUP = 1 << 8; // In the Setup Wizard
     public static final int FLAG_STASHED_SMALL_SCREEN = 1 << 9; // phone screen gesture nav, stashed
     public static final int FLAG_STASHED_IN_APP_AUTO = 1 << 10; // Autohide (transient taskbar).
+    public static final int FLAG_STASHED_IN_APP_EDU = 1 << 11; // EDU is visible.
 
     // If any of these flags are enabled, isInApp should return true.
     private static final int FLAGS_IN_APP = FLAG_IN_APP | FLAG_IN_SETUP;
@@ -88,7 +88,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     private static final int FLAGS_STASHED_IN_APP = FLAG_STASHED_IN_APP_MANUAL
             | FLAG_STASHED_IN_SYSUI_STATE | FLAG_STASHED_IN_APP_EMPTY | FLAG_STASHED_IN_APP_SETUP
             | FLAG_STASHED_IN_APP_IME | FLAG_STASHED_IN_TASKBAR_ALL_APPS
-            | FLAG_STASHED_SMALL_SCREEN | FLAG_STASHED_IN_APP_AUTO;
+            | FLAG_STASHED_SMALL_SCREEN | FLAG_STASHED_IN_APP_AUTO | FLAG_STASHED_IN_APP_EDU;
 
     private static final int FLAGS_STASHED_IN_APP_IGNORING_IME =
             FLAGS_STASHED_IN_APP & ~FLAG_STASHED_IN_APP_IME;
@@ -98,7 +98,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     // Currently any flag that causes us to stash in an app is included, except for IME or All Apps
     // since those cover the underlying app anyway and thus the app shouldn't change insets.
     private static final int FLAGS_REPORT_STASHED_INSETS_TO_APP = FLAGS_STASHED_IN_APP
-            & ~FLAG_STASHED_IN_APP_IME & ~FLAG_STASHED_IN_TASKBAR_ALL_APPS;
+            & ~FLAG_STASHED_IN_APP_IME & ~FLAG_STASHED_IN_TASKBAR_ALL_APPS
+            & ~FLAG_STASHED_IN_APP_EDU;
 
     /**
      * How long to stash/unstash when manually invoked via long press.
@@ -706,34 +707,27 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
         // Only update the following flags when system gesture is not in progress.
         boolean shouldStashForIme = shouldStashForIme();
-        maybeResetStashedInAppAllApps(
-                hasAnyFlag(FLAG_STASHED_IN_APP_IME) == shouldStashForIme);
+        updateStateForFlag(FLAG_STASHED_IN_TASKBAR_ALL_APPS, false);
+        updateStateForFlag(FLAG_STASHED_IN_APP_EDU, false);
         if (hasAnyFlag(FLAG_STASHED_IN_APP_IME) != shouldStashForIme) {
             updateStateForFlag(FLAG_STASHED_IN_APP_IME, shouldStashForIme);
             applyState(TASKBAR_STASH_DURATION_FOR_IME, getTaskbarStashStartDelayForIme());
+        } else {
+            applyState(mControllers.taskbarOverlayController.getCloseDuration());
         }
     }
 
     /**
-     * Reset stashed in all apps only if no system gesture is in progress.
+     * Resets the flag if no system gesture is in progress.
      * <p>
      * Otherwise, the reset should be deferred until after the gesture is finished.
      *
      * @see #setSystemGestureInProgress
      */
-    public void maybeResetStashedInAppAllApps() {
-        maybeResetStashedInAppAllApps(true);
-    }
-
-    private void maybeResetStashedInAppAllApps(boolean applyState) {
-        if (mIsSystemGestureInProgress) {
-            return;
-        }
-
-        updateStateForFlag(FLAG_STASHED_IN_TASKBAR_ALL_APPS, false);
-        if (applyState) {
-            applyState(ALL_APPS.getTransitionDuration(
-                    mControllers.taskbarActivityContext, false /* isToState */));
+    public void resetFlagIfNoGestureInProgress(int flag) {
+        if (!mIsSystemGestureInProgress) {
+            updateStateForFlag(flag, false);
+            applyState(mControllers.taskbarOverlayController.getCloseDuration());
         }
     }
 

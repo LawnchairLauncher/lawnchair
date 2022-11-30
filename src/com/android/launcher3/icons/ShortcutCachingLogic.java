@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.icons.BaseIconFactory.IconOptions;
 import com.android.launcher3.icons.cache.CachingLogic;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.Themes;
@@ -76,9 +77,8 @@ public class ShortcutCachingLogic implements CachingLogic<ShortcutInfo> {
             Drawable unbadgedDrawable = ShortcutCachingLogic.getIcon(
                     context, info, LauncherAppState.getIDP(context).fillResIconDpi);
             if (unbadgedDrawable == null) return BitmapInfo.LOW_RES_INFO;
-            return new BitmapInfo(
-                    li.createScaledBitmap(unbadgedDrawable, BaseIconFactory.MODE_WITH_SHADOW),
-                    Themes.getColorAccent(context));
+            return li.createBadgedIconBitmap(unbadgedDrawable,
+                    new IconOptions().setExtractedColor(Themes.getColorAccent(context)));
         }
     }
 
