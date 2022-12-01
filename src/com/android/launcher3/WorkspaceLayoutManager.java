@@ -114,7 +114,7 @@ public interface WorkspaceLayoutManager {
         ViewGroup.LayoutParams genericLp = child.getLayoutParams();
         CellLayoutLayoutParams lp;
         if (genericLp == null || !(genericLp instanceof CellLayoutLayoutParams)) {
-            lp = new CellLayoutLayoutParams(x, y, spanX, spanY);
+            lp = new CellLayoutLayoutParams(x, y, spanX, spanY, screenId);
         } else {
             lp = (CellLayoutLayoutParams) genericLp;
             lp.cellX = x;

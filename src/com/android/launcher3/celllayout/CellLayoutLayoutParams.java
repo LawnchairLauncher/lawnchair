@@ -28,6 +28,9 @@ import androidx.annotation.Nullable;
  * Represents the logic of where a view is in a CellLayout and its size
  */
 public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
+
+    public int screenId = -1;
+
     /**
      * Horizontal location of the item in the grid.
      */
@@ -106,14 +109,20 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
         this.cellY = source.cellY;
         this.cellHSpan = source.cellHSpan;
         this.cellVSpan = source.cellVSpan;
+        this.screenId = source.screenId;
+        this.tmpCellX = source.tmpCellX;
+        this.tmpCellY = source.tmpCellY;
+        this.useTmpCoords = source.useTmpCoords;
     }
 
-    public CellLayoutLayoutParams(int cellX, int cellY, int cellHSpan, int cellVSpan) {
+    public CellLayoutLayoutParams(int cellX, int cellY, int cellHSpan, int cellVSpan,
+            int screenId) {
         super(CellLayoutLayoutParams.MATCH_PARENT, CellLayoutLayoutParams.MATCH_PARENT);
         this.cellX = cellX;
         this.cellY = cellY;
         this.cellHSpan = cellHSpan;
         this.cellVSpan = cellVSpan;
+        this.screenId = screenId;
     }
 
     /**
