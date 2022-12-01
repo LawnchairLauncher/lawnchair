@@ -342,6 +342,10 @@ public class StatsLogCompatManager extends StatsLogManager {
                 return;
             }
 
+            if (mItemInfo == null) {
+                return;
+            }
+
             if (mItemInfo.container < 0 || appState == null) {
                 // Write log on the model thread so that logs do not go out of order
                 // (for eg: drop comes after drag)

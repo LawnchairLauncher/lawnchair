@@ -28,6 +28,7 @@ import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_SU
 
 import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -315,10 +316,16 @@ public class ItemClickHandler {
      */
     public static void onClickSearchAction(Launcher launcher, SearchActionItemInfo itemInfo) {
         if (itemInfo.getIntent() != null) {
-            if (itemInfo.hasFlags(SearchActionItemInfo.FLAG_SHOULD_START_FOR_RESULT)) {
-                launcher.startActivityForResult(itemInfo.getIntent(), 0);
-            } else {
-                launcher.startActivity(itemInfo.getIntent());
+            try {
+                if (itemInfo.hasFlags(SearchActionItemInfo.FLAG_SHOULD_START_FOR_RESULT)) {
+                    launcher.startActivityForResult(itemInfo.getIntent(), 0);
+                } else {
+                    launcher.startActivity(itemInfo.getIntent());
+                }
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(launcher,
+                        launcher.getResources().getText(R.string.shortcut_not_available),
+                        Toast.LENGTH_SHORT).show();
             }
         } else if (itemInfo.getPendingIntent() != null) {
             try {
