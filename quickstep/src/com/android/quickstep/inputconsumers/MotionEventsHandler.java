@@ -54,8 +54,8 @@ public class MotionEventsHandler {
     public void onActionDown(MotionEvent ev) {
         mActivePointerId = ev.getPointerId(0);
         if (isTrackpadMotionEvent(ev)) {
-            mCurrentTrackpadOffsetX = ev.getAxisValue(AXIS_GESTURE_X_OFFSET);
-            mCurrentTrackpadOffsetY = ev.getAxisValue(AXIS_GESTURE_Y_OFFSET);
+            mCurrentTrackpadOffsetX = 0;
+            mCurrentTrackpadOffsetY = 0;
         } else {
             mDownPos.set(ev.getX(), ev.getY());
             mLastPos.set(mDownPos);
