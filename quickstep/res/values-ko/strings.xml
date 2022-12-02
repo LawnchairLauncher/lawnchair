@@ -78,10 +78,8 @@
     <string name="allset_title" msgid="5021126669778966707">"설정 완료"</string>
     <string name="allset_hint" msgid="2384632994739392447">"위로 스와이프하여 홈으로 이동"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"홈 화면으로 이동하려면 홈 버튼을 탭하세요."</string>
-    <!-- no translation found for allset_description_generic (5385500062202019855) -->
-    <skip />
-    <!-- no translation found for default_device_name (6660656727127422487) -->
-    <skip />
+    <string name="allset_description_generic" msgid="5385500062202019855">"<xliff:g id="DEVICE">%1$s</xliff:g> 기기를 사용할 준비가 되었습니다."</string>
+    <string name="default_device_name" msgid="6660656727127422487">"기기"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"시스템 탐색 설정"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"공유"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"스크린샷"</string>
@@ -94,8 +92,7 @@
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"취소"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"건너뛰기"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"화면 회전"</string>
-    <!-- no translation found for taskbar_edu_a11y_title (5417986057866415355) -->
-    <skip />
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"태스크 바 정보"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"작업 표시줄 튜토리얼 패널 표시됨"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"작업 표시줄 튜토리얼 패널 닫힘"</string>
     <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"작업 표시줄을 사용하여 앱 전환"</string>
@@ -112,10 +109,8 @@
     <string name="taskbar_button_recents" msgid="7273376136216613134">"최근 항목"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"알림"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"빠른 설정"</string>
-    <!-- no translation found for taskbar_a11y_title (6432169809852243110) -->
-    <skip />
-    <!-- no translation found for taskbar_phone_a11y_title (4933360237131229395) -->
-    <skip />
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"태스크 바"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"탐색 메뉴"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"상단/왼쪽으로 이동"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"하단/오른쪽으로 이동"</string>
 </resources>
