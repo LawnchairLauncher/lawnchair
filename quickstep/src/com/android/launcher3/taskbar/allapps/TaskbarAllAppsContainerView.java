@@ -39,4 +39,9 @@ public class TaskbarAllAppsContainerView extends
         setInsets(insets.getInsets(WindowInsets.Type.systemBars()).toRect());
         return super.onApplyWindowInsets(insets);
     }
+
+    @Override
+    protected boolean isSearchSupported() {
+        return false;
+    }
 }
