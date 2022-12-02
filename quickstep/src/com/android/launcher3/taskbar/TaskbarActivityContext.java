@@ -85,6 +85,7 @@ import com.android.launcher3.taskbar.overlay.TaskbarOverlayController;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
+import com.android.launcher3.touch.ItemClickHandler.ItemClickProxy;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -829,6 +830,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 mControllers.uiController.onTaskbarIconLaunched((AppInfo) tag);
             }
             mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
+        } else if (tag instanceof ItemClickProxy) {
+            ((ItemClickProxy) tag).onItemClicked(view);
         } else {
             Log.e(TAG, "Unknown type clicked: " + tag);
         }
