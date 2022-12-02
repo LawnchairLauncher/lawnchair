@@ -203,7 +203,9 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             Resources resources = mActivity.getResources();
             boolean isTransientTaskbar = DisplayController.isTransientTaskbar(mActivity);
             mUnstashedHeight = resources.getDimensionPixelSize(isTransientTaskbar
-                    ? R.dimen.transient_taskbar_size
+                    ? (mActivity.getDeviceProfile().isTwoPanels
+                            ? R.dimen.transient_taskbar_two_panels_size
+                            : R.dimen.transient_taskbar_size)
                     : R.dimen.taskbar_size);
             mStashedHeight = resources.getDimensionPixelSize(isTransientTaskbar
                     ? R.dimen.transient_taskbar_stashed_size
