@@ -313,6 +313,12 @@ public class Launcher extends StatefulActivity<LauncherState>
     private static final FloatProperty<Hotseat> HOTSEAT_WIDGET_SCALE =
             HOTSEAT_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_WIDGET_TRANSITION);
 
+    private static final boolean DESKTOP_MODE_1_SUPPORTED =
+            "1".equals(Utilities.getSystemProperty("persist.wm.debug.desktop_mode", "0"));
+
+    private static final boolean DESKTOP_MODE_2_SUPPORTED =
+            "1".equals(Utilities.getSystemProperty("persist.wm.debug.desktop_mode_2", "0"));
+
     @Thunk
     Workspace<?> mWorkspace;
     @Thunk
@@ -3154,6 +3160,10 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     private void updateDisallowBack() {
+        if (DESKTOP_MODE_1_SUPPORTED || DESKTOP_MODE_2_SUPPORTED) {
+            // Do not disable back in launcher when prototype behavior is enabled
+            return;
+        }
         LauncherRootView rv = getRootView();
         if (rv != null) {
             boolean disableBack = getStateManager().getState() == NORMAL
