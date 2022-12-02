@@ -42,7 +42,8 @@ public class DesktopVisibilityController {
      * Whether desktop mode is supported.
      */
     private boolean isDesktopModeSupported() {
-        return SystemProperties.getBoolean("persist.wm.debug.desktop_mode", false);
+        return SystemProperties.getBoolean("persist.wm.debug.desktop_mode", false)
+            || SystemProperties.getBoolean("persist.wm.debug.desktop_mode_2", false);
     }
 
     /**
