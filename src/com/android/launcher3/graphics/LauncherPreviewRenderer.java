@@ -534,7 +534,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
             View qsb = mHomeElementInflater.inflate(R.layout.qsb_preview, firstScreen,
                     false);
             CellLayoutLayoutParams lp = new CellLayoutLayoutParams(0, 0, firstScreen.getCountX(),
-                    1);
+                    1, FIRST_SCREEN_ID);
             lp.canReorder = false;
             firstScreen.addViewToCellLayout(qsb, 0, R.id.search_container_workspace, lp, true);
         }
