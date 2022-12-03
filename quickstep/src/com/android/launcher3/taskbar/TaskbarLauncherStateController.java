@@ -385,6 +385,13 @@ import java.util.StringJoiner;
         }
     }
 
+    /**
+     * Returns if the current Launcher state has hotseat on top of other elemnets.
+     */
+    public boolean isInHotseatOnTopStates() {
+        return mLauncherState != LauncherState.ALL_APPS;
+    }
+
     private void playStateTransitionAnim(AnimatorSet animatorSet, long duration,
             boolean committed) {
         boolean isInStashedState = mLauncherState.isTaskbarStashed(mLauncher);
@@ -438,14 +445,16 @@ import java.util.StringJoiner;
 
     private void updateIconAlphaForHome(float alpha) {
         mIconAlphaForHome.setValue(alpha);
-
+        boolean hotseatVisible = alpha == 0
+                || (!mControllers.uiController.isHotseatIconOnTopWhenAligned()
+                && mIconAlignment.value > 0);
         /*
          * Hide Launcher Hotseat icons when Taskbar icons have opacity. Both icon sets
          * should not be visible at the same time.
          */
-        mLauncher.getHotseat().setIconsAlpha(alpha > 0 ? 0 : 1);
+        mLauncher.getHotseat().setIconsAlpha(hotseatVisible ? 1 : 0);
         mLauncher.getHotseat().setQsbAlpha(
-                mLauncher.getDeviceProfile().isQsbInline && alpha > 0 ? 0 : 1);
+                mLauncher.getDeviceProfile().isQsbInline && !hotseatVisible ? 0 : 1);
     }
 
     private final class TaskBarRecentsAnimationListener implements

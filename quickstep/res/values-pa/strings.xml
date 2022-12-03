@@ -78,10 +78,8 @@
     <string name="allset_title" msgid="5021126669778966707">"ਪੂਰੀ ਤਰ੍ਹਾਂ ਤਿਆਰ!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"ਹੋਮ \'ਤੇ ਜਾਣ ਲਈ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰੋ"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"ਆਪਣੀ ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਜਾਣ ਲਈ ਹੋਮ ਬਟਨ \'ਤੇ ਟੈਪ ਕਰੋ"</string>
-    <!-- no translation found for allset_description_generic (5385500062202019855) -->
-    <skip />
-    <!-- no translation found for default_device_name (6660656727127422487) -->
-    <skip />
+    <string name="allset_description_generic" msgid="5385500062202019855">"ਤੁਸੀਂ ਆਪਣਾ <xliff:g id="DEVICE">%1$s</xliff:g> ਵਰਤਣ ਲਈ ਤਿਆਰ ਹੋ"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"ਡੀਵਾਈਸ"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"ਸਿਸਟਮ ਨੈਵੀਗੇਸ਼ਨ ਸੈਟਿੰਗਾਂ"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"ਸਾਂਝਾ ਕਰੋ"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ਸਕ੍ਰੀਨਸ਼ਾਟ"</string>
@@ -94,8 +92,7 @@
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"ਰੱਦ ਕਰੋ"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ਛੱਡੋ"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"ਸਕ੍ਰੀਨ ਘੁਮਾਓ"</string>
-    <!-- no translation found for taskbar_edu_a11y_title (5417986057866415355) -->
-    <skip />
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"ਟਾਸਕਬਾਰ ਸਿੱਖਿਆ"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ਟਾਸਕਵਾਰ ਸਿੱਖਿਆ ਪੈਨਲ ਦਿਖਾਇਆ ਗਿਆ"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ਟਾਸਕਵਾਰ ਸਿੱਖਿਆ ਪੈਨਲ ਬੰਦ ਕੀਤਾ ਗਿਆ"</string>
     <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ਐਪਾਂ ਸਵਿੱਚ ਕਰਨ ਲਈ ਟਾਸਕਬਾਰ ਵਰਤੋ"</string>
@@ -112,10 +109,8 @@
     <string name="taskbar_button_recents" msgid="7273376136216613134">"ਹਾਲੀਆ"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"ਸੂਚਨਾਵਾਂ"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"ਤਤਕਾਲ ਸੈਟਿੰਗਾਂ"</string>
-    <!-- no translation found for taskbar_a11y_title (6432169809852243110) -->
-    <skip />
-    <!-- no translation found for taskbar_phone_a11y_title (4933360237131229395) -->
-    <skip />
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"ਟਾਸਕਬਾਰ"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"ਨੈਵੀਗੇਸ਼ਨ ਵਾਲੀ ਪੱਟੀ"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ਸਿਖਰਲੇ/ਖੱਬੇ ਪਾਸੇ ਲੈ ਕੇ ਜਾਓ"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ਹੇਠਾਂ/ਸੱਜੇ ਪਾਸੇ ਲੈ ਕੇ ਜਾਓ"</string>
 </resources>

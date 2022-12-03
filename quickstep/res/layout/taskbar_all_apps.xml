@@ -48,7 +48,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/search_container_all_apps"
             android:clipToPadding="false"
-            android:paddingTop="@dimen/all_apps_header_top_padding"
             android:orientation="vertical">
 
             <include layout="@layout/floating_header_content" />
