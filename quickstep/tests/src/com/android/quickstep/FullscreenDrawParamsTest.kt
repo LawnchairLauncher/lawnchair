@@ -21,6 +21,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.launcher3.DeviceProfileBaseTest
 import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT
+import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT
 import com.android.quickstep.views.TaskView.FullscreenDrawParams
 import com.android.systemui.shared.recents.model.ThumbnailData
 import com.android.systemui.shared.recents.utilities.PreviewPositionHelper
@@ -94,13 +95,40 @@ class FullscreenDrawParamsTest : DeviceProfileBaseTest() {
         params.setProgress(/* fullscreenProgress= */ 1.0f, /* parentScale= */ 1.0f,
                 /* taskViewScale= */ 1.0f,  /* previewWidth= */ 0, dp, mPreviewPositionHelper)
 
-        // Probably  unhelpful, but also unclear how to test otherwise ¯\_(ツ)_/¯
-        val fullscreenTaskHeight = (dp.heightPx - dp.taskbarSize) *
+        // Probably unhelpful, but also unclear how to test otherwise ¯\_(ツ)_/¯
+        val fullscreenTaskHeight = dp.heightPx *
                 (1 - (splitBounds.topTaskPercent + splitBounds.dividerHeightPercent))
         val canvasScreenRatio = canvasHeight / fullscreenTaskHeight
         val expectedBottomHint = dp.taskbarSize * canvasScreenRatio
         assertThat(params.mCurrentDrawnInsets.bottom)
                 .isWithin(1f).of(expectedBottomHint)
+    }
+
+    @Test
+    fun setFullProgress_currentDrawnInsets_clipTaskbarSizeFromTopForTablets_splitPortrait() {
+        initializeVarsForTablet()
+        val dp = newDP()
+        val previewRect = Rect(0, 0, 100, 100)
+        val canvasWidth = (dp.widthPx * TASK_SCALE).roundToInt()
+        val canvasHeight = (dp.heightPx * TASK_SCALE / 2).roundToInt()
+        val currentRotation = 0
+        val isRtl = false
+        // portrait/vertical split apps
+        val dividerSize = 10
+        val splitBounds = SplitBounds(
+                Rect(0, 0, dp.widthPx, (dp.heightPx - dividerSize) / 2),
+                Rect(0, (dp.heightPx + dividerSize) / 2, dp.widthPx, dp.heightPx),
+                0 /*lefTopTaskId*/, 0 /*rightBottomTaskId*/)
+        mPreviewPositionHelper.setSplitBounds(splitBounds, STAGE_POSITION_TOP_OR_LEFT)
+
+        mPreviewPositionHelper.updateThumbnailMatrix(previewRect, mThumbnailData, canvasWidth,
+                canvasHeight, dp.widthPx, dp.heightPx, dp.taskbarSize, dp.isTablet, currentRotation,
+                isRtl)
+        params.setProgress(/* fullscreenProgress= */ 1.0f, /* parentScale= */ 1.0f,
+                /* taskViewScale= */ 1.0f,  /* previewWidth= */ 0, dp, mPreviewPositionHelper)
+
+        assertThat(params.mCurrentDrawnInsets.bottom)
+                .isWithin(1f).of((0f))
     }
 
     @Test

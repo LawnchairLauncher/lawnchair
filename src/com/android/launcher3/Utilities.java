@@ -77,7 +77,6 @@ import com.android.launcher3.icons.ShortcutCachingLogic;
 import com.android.launcher3.icons.ThemedIconDrawable;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
-import com.android.launcher3.model.data.SearchActionItemInfo;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
@@ -597,8 +596,8 @@ public final class Utilities {
             outObj[0] = icon;
             return icon;
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SEARCH_ACTION
-                && info instanceof SearchActionItemInfo) {
-            return ((SearchActionItemInfo) info).bitmap.newIcon(context);
+                && info instanceof ItemInfoWithIcon) {
+            return ((ItemInfoWithIcon) info).bitmap.newIcon(context);
         } else {
             return null;
         }

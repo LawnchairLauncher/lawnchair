@@ -31,8 +31,8 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import com.android.launcher3.util.ScrollableLayoutManager;
 import com.android.launcher3.views.ActivityContext;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The grid view adapter of all the apps.
@@ -44,7 +44,8 @@ public class AllAppsGridAdapter<T extends Context & ActivityContext> extends
 
     public static final String TAG = "AppsGridAdapter";
     private final AppsGridLayoutManager mGridLayoutMgr;
-    private final List<OnLayoutCompletedListener> mOnLayoutCompletedListeners = new ArrayList<>();
+    private final CopyOnWriteArrayList<OnLayoutCompletedListener> mOnLayoutCompletedListeners =
+            new CopyOnWriteArrayList<>();
 
     /**
      * Listener for {@link RecyclerView.LayoutManager#onLayoutCompleted(RecyclerView.State)}

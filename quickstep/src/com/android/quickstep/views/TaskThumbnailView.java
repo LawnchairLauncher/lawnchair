@@ -464,6 +464,8 @@ public class TaskThumbnailView extends View {
     }
 
     private void updateThumbnailMatrix() {
+        DeviceProfile dp = mActivity.getDeviceProfile();
+        mPreviewPositionHelper.setTaskbarInApp(dp.isTaskbarPresentInApps);
         mPreviewPositionHelper.setOrientationChanged(false);
         if (mBitmapShader != null && mThumbnailData != null) {
             mPreviewRect.set(0, 0, mThumbnailData.thumbnail.getWidth(),
@@ -471,7 +473,6 @@ public class TaskThumbnailView extends View {
             int currentRotation = getTaskView().getRecentsView().getPagedViewOrientedState()
                     .getRecentsActivityRotation();
             boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
-            DeviceProfile dp = mActivity.getDeviceProfile();
             mPreviewPositionHelper.updateThumbnailMatrix(mPreviewRect, mThumbnailData,
                     getMeasuredWidth(), getMeasuredHeight(), dp.widthPx, dp.heightPx,
                     dp.taskbarSize, dp.isTablet, currentRotation, isRtl);
