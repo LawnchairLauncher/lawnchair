@@ -1221,18 +1221,50 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     /**
-     * Returns a {@link TaskView} that has ComponentName matching {@code componentName} or null if
-     * no match.
+     * Pulls the list of active Tasks from RecentModel, and finds the most recently active Task
+     * matching a given ComponentName. Then uses that Task (which could be null) with the given
+     * callback.
+     *
+     * Used in various splitscreen operations when we need to check if there is a currently running
+     * Task of a certain type and use the most recent one.
      */
-    @Nullable
-    public TaskView getTaskViewByComponentName(ComponentName componentName) {
-        for (int i = 0; i < getTaskViewCount(); i++) {
-            TaskView taskView = requireTaskViewAt(i);
-            if (taskView.getTask().key.sourceComponent.equals(componentName)) {
-                return taskView;
+    public void findLastActiveTaskAndDoSplitOperation(ComponentName componentName,
+            Consumer<Task> callback) {
+        mModel.getTasks(taskGroups -> {
+            Task lastActiveTask = null;
+            // Loop through tasks in reverse, since they are ordered with most-recent tasks last.
+            for (int i = taskGroups.size() - 1; i >= 0; i--) {
+                GroupTask groupTask = taskGroups.get(i);
+                Task task1 = groupTask.task1;
+                if (isInstanceOfComponent(task1, componentName)) {
+                    lastActiveTask = task1;
+                    break;
+                }
+                Task task2 = groupTask.task2;
+                if (isInstanceOfComponent(task2, componentName)) {
+                    lastActiveTask = task2;
+                    break;
+                }
             }
+
+            callback.accept(lastActiveTask);
+        });
+    }
+
+    /**
+     * Checks if a given Task is the most recently-active Task of type componentName. Used for
+     * selecting already-running Tasks for splitscreen.
+     */
+    public boolean isInstanceOfComponent(@Nullable Task task, ComponentName componentName) {
+        if (task == null) {
+            return false;
         }
-        return null;
+        // Exclude the task that is already staged
+        if (mSplitHiddenTaskView != null && mSplitHiddenTaskView.getTask().equals(task)) {
+            return false;
+        }
+
+        return task.key.baseIntent.getComponent().equals(componentName);
     }
 
     public void setOverviewStateEnabled(boolean enabled) {
@@ -1509,13 +1541,41 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         int previousCurrentPage = mCurrentPage;
         removeAllViews();
 
-        // Add views as children based on whether it's grouped or single task
+        // If we are entering Overview as a result of initiating a split from somewhere else
+        // (e.g. split from Home), we need to make sure the staged app is not drawn as a thumbnail.
+        Task stagedTaskToBeRemovedFromGrid =
+                mSplitSelectSource != null ? mSplitSelectSource.alreadyRunningTask : null;
+
+        // Add views as children based on whether it's grouped or single task. Looping through
+        // taskGroups backwards populates the thumbnail grid from least recent to most recent.
         for (int i = taskGroups.size() - 1; i >= 0; i--) {
             GroupTask groupTask = taskGroups.get(i);
-            TaskView taskView = getTaskViewFromPool(groupTask.taskViewType);
+            boolean isRemovalNeeded = stagedTaskToBeRemovedFromGrid != null
+                    && groupTask.containsTask(stagedTaskToBeRemovedFromGrid.key.id);
+
+            TaskView taskView;
+            if (isRemovalNeeded && groupTask.hasMultipleTasks()) {
+                // If we need to remove half of a pair of tasks, force a TaskView with Type.SINGLE
+                // to be a temporary container for the remaining task.
+                taskView = getTaskViewFromPool(TaskView.Type.SINGLE);
+            } else {
+                taskView = getTaskViewFromPool(groupTask.taskViewType);
+            }
+
             addView(taskView);
 
-            if (taskView instanceof GroupedTaskView) {
+            if (isRemovalNeeded && groupTask.hasMultipleTasks()) {
+                if (groupTask.task1.equals(stagedTaskToBeRemovedFromGrid)) {
+                    taskView.bind(groupTask.task2, mOrientationState);
+                } else {
+                    taskView.bind(groupTask.task1, mOrientationState);
+                }
+            } else if (isRemovalNeeded) {
+                // If the task we need to remove is not part of a pair, bind it to the TaskView
+                // first (to prevent problems), then remove the whole thing.
+                taskView.bind(groupTask.task1, mOrientationState);
+                removeView(taskView);
+            } else if (taskView instanceof GroupedTaskView) {
                 boolean firstTaskIsLeftTopTask =
                         groupTask.mSplitBounds.leftTopTaskId == groupTask.task1.key.id;
                 Task leftTopTask = firstTaskIsLeftTopTask ? groupTask.task1 : groupTask.task2;
@@ -4269,7 +4329,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSplitSelectSource = splitSelectSource;
         mSplitSelectStateController.setInitialTaskSelect(splitSelectSource.intent,
                 splitSelectSource.position.stagePosition, splitSelectSource.itemInfo,
-                splitSelectSource.splitEvent);
+                splitSelectSource.splitEvent, splitSelectSource.alreadyRunningTask);
     }
 
     /**
