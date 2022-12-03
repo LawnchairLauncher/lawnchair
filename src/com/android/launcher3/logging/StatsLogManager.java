@@ -779,7 +779,8 @@ public class StatsLogManager implements ResourceBasedOverride {
             FAIL(4),
             COLD_USERWAITING(5),
             ATOMIC(6),
-            CONTROLLED(7);
+            CONTROLLED(7),
+            CACHED(8);
             private final int mId;
 
             LatencyType(int id) {

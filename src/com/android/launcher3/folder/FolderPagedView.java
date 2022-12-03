@@ -223,7 +223,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
         CellLayoutLayoutParams lp = (CellLayoutLayoutParams) textView.getLayoutParams();
         if (lp == null) {
             textView.setLayoutParams(new CellLayoutLayoutParams(
-                    item.cellX, item.cellY, item.spanX, item.spanY));
+                    item.cellX, item.cellY, item.spanX, item.spanY, item.screenId));
         } else {
             lp.cellX = item.cellX;
             lp.cellY = item.cellY;
