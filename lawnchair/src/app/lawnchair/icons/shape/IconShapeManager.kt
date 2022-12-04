@@ -45,7 +45,7 @@ class IconShapeManager(private val context: Context) {
                 return Path(iconMask)
             }
 
-            override fun toString() = ""
+            override fun toString() = "system"
 
             override fun getHashString(): String {
                 val resId = IconProvider.CONFIG_ICON_MASK_RES_ID
