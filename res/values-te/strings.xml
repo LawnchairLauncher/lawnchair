@@ -58,7 +58,7 @@
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"విడ్జెట్ సెట్టింగ్‌లను మార్చండి"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"యాప్‌ల కోసం సెర్చ్ చేయండి"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"అప్లికేషన్‌లను లోడ్ చేస్తోంది…"</string>
-    <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"కి సరిపోలే అప్లికేషన్‌లేవీ కనుగొనబడలేదు"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"కి మ్యాచ్ అయ్యే అప్లికేషన్‌లేవీ కనుగొనబడలేదు"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"మరిన్ని యాప్‌ల కోసం సెర్చ్ చేయండి"</string>
     <string name="label_application" msgid="8531721983832654978">"యాప్"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"అన్ని యాప్‌లు"</string>
@@ -147,12 +147,12 @@
     <string name="create_folder_with" msgid="4050141361160214248">"ఈ పేరుతో ఫోల్డర్‌ను క్రియేట్ చేయండి: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"ఫోల్డర్ క్రియేట్ చేయబడింది"</string>
     <string name="action_move_to_workspace" msgid="39528912300293768">"మొదటి స్క్రీన్‌కు తరలించండి"</string>
-    <string name="action_resize" msgid="1802976324781771067">"పరిమాణం మార్చు"</string>
+    <string name="action_resize" msgid="1802976324781771067">"సైజ్‌ మార్చు"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"వెడల్పును పెంచు"</string>
     <string name="action_increase_height" msgid="459390020612501122">"ఎత్తును పెంచు"</string>
     <string name="action_decrease_width" msgid="1374549771083094654">"వెడల్పును తగ్గించు"</string>
     <string name="action_decrease_height" msgid="282377193880900022">"ఎత్తును తగ్గించు"</string>
-    <string name="widget_resized" msgid="9130327887929620">"విడ్జెట్ పరిమాణం వెడల్పు <xliff:g id="NUMBER_0">%1$s</xliff:g>కి, ఎత్తు <xliff:g id="NUMBER_1">%2$s</xliff:g>కి మార్చబడింది"</string>
+    <string name="widget_resized" msgid="9130327887929620">"విడ్జెట్ సైజ్‌ వెడల్పు <xliff:g id="NUMBER_0">%1$s</xliff:g>కి, ఎత్తు <xliff:g id="NUMBER_1">%2$s</xliff:g>కి మార్చబడింది"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"షార్ట్‌కట్స్"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"షార్ట్‌కట్‌లు మరియు నోటిఫికేషన్‌లు"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"తీసివేయండి"</string>
