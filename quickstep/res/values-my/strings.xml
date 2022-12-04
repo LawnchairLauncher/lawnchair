@@ -78,10 +78,8 @@
     <string name="allset_title" msgid="5021126669778966707">"အားလုံး အဆင်သင့်ပါ။"</string>
     <string name="allset_hint" msgid="2384632994739392447">"ပင်မစာမျက်နှာသို့သွားရန် အပေါ်သို့ ပွတ်ဆွဲပါ"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"ပင်မစာမျက်နှာသို့ သွားရန် ပင်မခလုတ်ကို တို့ပါ"</string>
-    <!-- no translation found for allset_description_generic (5385500062202019855) -->
-    <skip />
-    <!-- no translation found for default_device_name (6660656727127422487) -->
-    <skip />
+    <string name="allset_description_generic" msgid="5385500062202019855">"<xliff:g id="DEVICE">%1$s</xliff:g> ကို စသုံးရန် အသင့်ဖြစ်ပါပြီ"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"စက်"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"စနစ် လမ်းညွှန် ဆက်တင်များ"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"မျှဝေရန်"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ဖန်သားပြင်ဓာတ်ပုံ"</string>
@@ -94,8 +92,7 @@
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"မလုပ်တော့"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ကျော်ရန်"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"ဖန်သားပြင်လှည့်ရန်"</string>
-    <!-- no translation found for taskbar_edu_a11y_title (5417986057866415355) -->
-    <skip />
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"လုပ်ဆောင်စရာဘား ပညာပေး"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ပညာရေး လုပ်ဆောင်စရာဘား ပြထားသည်"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ပညာရေး လုပ်ဆောင်စရာဘား ပိတ်ထားသည်"</string>
     <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"အက်ပ်များပြောင်းရန် လုပ်ဆောင်စရာဘားကို သုံးပါ"</string>
@@ -112,10 +109,8 @@
     <string name="taskbar_button_recents" msgid="7273376136216613134">"လတ်တလောများ"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"အကြောင်းကြားချက်"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"အမြန်ဆက်တင်များ"</string>
-    <!-- no translation found for taskbar_a11y_title (6432169809852243110) -->
-    <skip />
-    <!-- no translation found for taskbar_phone_a11y_title (4933360237131229395) -->
-    <skip />
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"လုပ်ဆောင်စရာဘား"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"လမ်းညွှန်ဘား"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"အပေါ်/ဘယ်ဘက်သို့ ရွှေ့ရန်"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"အောက်ခြေ/ညာဘက်သို့ ရွှေ့ရန်"</string>
 </resources>
