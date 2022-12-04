@@ -87,7 +87,7 @@
     <!-- CustomIconShapePreference -->
     <string name="custom_icon_shape">Formato de Ícone Personalizado</string>
     <string name="custom_icon_shape_create">Criar formato customizado para os ícones personalizados</string>
-    <string name="custom_icon_shape_edit">Editar Formato Customizado dos Ícone Personalizado</string>
+    <string name="custom_icon_shape_edit">Editar Formato de Ícone Personalizado</string>
     <string name="icon_shape_corner">Formato dos Cantos</string>
     <string name="icon_shape_corner_round">Arredondado</string>
     <string name="icon_shape_corner_squircle">Suave</string>
