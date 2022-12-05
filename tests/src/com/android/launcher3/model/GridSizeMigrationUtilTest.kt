@@ -17,6 +17,7 @@ package com.android.launcher3.model
 
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase
 import android.graphics.Point
 import android.os.Process
@@ -183,15 +184,232 @@ class GridSizeMigrationUtilTest {
         // Expected dest grid icons
         // _ _ _ _
         // 5 6 7 8
-        // 9 _ 10_
+        // 9 _ _ _
         // _ _ _ _
-        assertThat(locMap.size.toLong()).isEqualTo(6)
+        assertThat(locMap.size.toLong()).isEqualTo(5)
         assertThat(locMap[testPackage5]).isEqualTo(Point(0, 1))
         assertThat(locMap[testPackage6]).isEqualTo(Point(1, 1))
         assertThat(locMap[testPackage7]).isEqualTo(Point(2, 1))
         assertThat(locMap[testPackage8]).isEqualTo(Point(3, 1))
         assertThat(locMap[testPackage9]).isEqualTo(Point(0, 2))
-        assertThat(locMap[testPackage10]).isEqualTo(Point(2, 2))
+    }
+
+    /**
+     * Old migration logic, should be modified once [FeatureFlags.ENABLE_NEW_MIGRATION_LOGIC] is
+     * not needed anymore
+     */
+    @Test
+    @Throws(Exception::class)
+    fun testMigrationBackAndForth() {
+        // Hotseat items in grid A
+        // 1 2 _ 3 4
+        modelHelper.addItem(APP_ICON, 0, HOTSEAT, 0, 0, testPackage1, 1, TMP_CONTENT_URI)
+        modelHelper.addItem(SHORTCUT, 1, HOTSEAT, 0, 0, testPackage2, 2, TMP_CONTENT_URI)
+        modelHelper.addItem(SHORTCUT, 3, HOTSEAT, 0, 0, testPackage3, 3, TMP_CONTENT_URI)
+        modelHelper.addItem(APP_ICON, 4, HOTSEAT, 0, 0, testPackage4, 4, TMP_CONTENT_URI)
+        // Workspace items in grid A
+        // _ _ _ _ _
+        // _ _ _ _ 5
+        // _ _ 6 _ 7
+        // _ _ 8 _ _
+        // _ _ _ _ _
+        modelHelper.addItem(APP_ICON, 0, DESKTOP, 4, 1, testPackage5, 5, TMP_CONTENT_URI)
+        modelHelper.addItem(APP_ICON, 0, DESKTOP, 2, 2, testPackage6, 6, TMP_CONTENT_URI)
+        modelHelper.addItem(APP_ICON, 0, DESKTOP, 4, 2, testPackage7, 7, TMP_CONTENT_URI)
+        modelHelper.addItem(APP_ICON, 0, DESKTOP, 2, 3, testPackage8, 8, TMP_CONTENT_URI)
+
+        // Hotseat items in grid B
+        // 2 _ _ _
+        modelHelper.addItem(SHORTCUT, 0, HOTSEAT, 0, 0, testPackage2)
+        // Workspace items in grid B
+        // _ _ _ _
+        // _ _ _ 10
+        // _ _ _ _
+        // _ _ _ _
+        modelHelper.addItem(APP_ICON, 0, DESKTOP, 1, 3, testPackage10)
+
+        idp.numDatabaseHotseatIcons = 4
+        idp.numColumns = 4
+        idp.numRows = 4
+        val readerGridA = DbReader(db, TMP_TABLE, context, validPackages)
+        val readerGridB = DbReader(db, TABLE_NAME, context, validPackages)
+        // migrate from A -> B
+        GridSizeMigrationUtil.migrate(
+                context,
+                db,
+                readerGridA,
+                readerGridB,
+                idp.numDatabaseHotseatIcons,
+                Point(idp.numColumns, idp.numRows),
+                DeviceGridState(context),
+                DeviceGridState(idp)
+        )
+
+        // Check hotseat items in grid B
+        var c = context.contentResolver.query(
+                CONTENT_URI,
+                arrayOf(SCREEN, INTENT),
+                "container=$CONTAINER_HOTSEAT",
+                null,
+                SCREEN,
+                null
+        ) ?: throw IllegalStateException()
+        // Expected hotseat items in grid B
+        // 2 1 3 4
+        verifyHotseat(c, idp,
+                mutableListOf(testPackage2, testPackage1, testPackage3, testPackage4).toList())
+
+        // Check workspace items in grid B
+        c = context.contentResolver.query(
+                CONTENT_URI,
+                arrayOf(SCREEN, CELLX, CELLY, INTENT),
+                "container=$CONTAINER_DESKTOP",
+                null,
+                null,
+                null
+        ) ?: throw IllegalStateException()
+        var locMap = parseLocMap(context, c)
+        // Expected items in grid B
+        // _ _ _ _
+        // 5 6 7 8
+        // _ _ _ _
+        // _ _ _ _
+        assertThat(locMap.size.toLong()).isEqualTo(4)
+        assertThat(locMap[testPackage5]).isEqualTo(Triple(0, 0, 1))
+        assertThat(locMap[testPackage6]).isEqualTo(Triple(0, 1, 1))
+        assertThat(locMap[testPackage7]).isEqualTo(Triple(0, 2, 1))
+        assertThat(locMap[testPackage8]).isEqualTo(Triple(0, 3, 1))
+
+        // add item in B
+        modelHelper.addItem(APP_ICON, 0, DESKTOP, 0, 2, testPackage9)
+
+        // migrate from B -> A
+        GridSizeMigrationUtil.migrate(
+                context,
+                db,
+                readerGridB,
+                readerGridA,
+                5,
+                Point(5, 5),
+                DeviceGridState(idp),
+                DeviceGridState(context)
+        )
+        // Check hotseat items in grid A
+        c = context.contentResolver.query(
+                TMP_CONTENT_URI,
+                arrayOf(SCREEN, INTENT),
+                "container=$CONTAINER_HOTSEAT",
+                null,
+                SCREEN,
+                null
+        ) ?: throw IllegalStateException()
+        // Expected hotseat items in grid A
+        // 1 2 _ 3 4
+        verifyHotseat(c, idp, mutableListOf(
+                testPackage1, testPackage2, null, testPackage3, testPackage4).toList())
+
+        // Check workspace items in grid A
+        c = context.contentResolver.query(
+                TMP_CONTENT_URI,
+                arrayOf(SCREEN, CELLX, CELLY, INTENT),
+                "container=$CONTAINER_DESKTOP",
+                null,
+                null,
+                null
+        ) ?: throw IllegalStateException()
+        locMap = parseLocMap(context, c)
+        // Expected workspace items in grid A
+        // _ _ _ _ _
+        // _ _ _ _ 5
+        // 9 _ 6 _ 7
+        // _ _ 8 _ _
+        // _ _ _ _ _
+        assertThat(locMap.size.toLong()).isEqualTo(5)
+        // Verify items that existed in grid A remains in same position
+        assertThat(locMap[testPackage5]).isEqualTo(Triple(0, 4, 1))
+        assertThat(locMap[testPackage6]).isEqualTo(Triple(0, 2, 2))
+        assertThat(locMap[testPackage7]).isEqualTo(Triple(0, 4, 2))
+        assertThat(locMap[testPackage8]).isEqualTo(Triple(0, 2, 3))
+        // Verify items that didn't exist in grid A are added in new screen
+        assertThat(locMap[testPackage9]).isEqualTo(Triple(0, 0, 2))
+
+        // remove item from B
+        modelHelper.deleteItem(7, TMP_TABLE)
+
+        // migrate from A -> B
+        GridSizeMigrationUtil.migrate(
+                context,
+                db,
+                readerGridA,
+                readerGridB,
+                idp.numDatabaseHotseatIcons,
+                Point(idp.numColumns, idp.numRows),
+                DeviceGridState(context),
+                DeviceGridState(idp)
+        )
+
+        // Check hotseat items in grid B
+        c = context.contentResolver.query(
+                CONTENT_URI,
+                arrayOf(SCREEN, INTENT),
+                "container=$CONTAINER_HOTSEAT",
+                null,
+                SCREEN,
+                null
+        ) ?: throw IllegalStateException()
+        // Expected hotseat items in grid B
+        // 2 1 3 4
+        verifyHotseat(c, idp,
+                mutableListOf(testPackage2, testPackage1, testPackage3, testPackage4).toList())
+
+        // Check workspace items in grid B
+        c = context.contentResolver.query(
+                CONTENT_URI,
+                arrayOf(SCREEN, CELLX, CELLY, INTENT),
+                "container=$CONTAINER_DESKTOP",
+                null,
+                null,
+                null
+        ) ?: throw IllegalStateException()
+        locMap = parseLocMap(context, c)
+        // Expected workspace items in grid B
+        // _ _ _ _
+        // 5 6 _ 8
+        // 9 _ _ _
+        // _ _ _ _
+        assertThat(locMap.size.toLong()).isEqualTo(4)
+        assertThat(locMap[testPackage5]).isEqualTo(Triple(0, 0, 1))
+        assertThat(locMap[testPackage6]).isEqualTo(Triple(0, 1, 1))
+        assertThat(locMap[testPackage8]).isEqualTo(Triple(0, 3, 1))
+        assertThat(locMap[testPackage9]).isEqualTo(Triple(0, 0, 2))
+    }
+
+    private fun verifyHotseat(c: Cursor, idp: InvariantDeviceProfile, expected: List<String?>) {
+        assertThat(c.count).isEqualTo(idp.numDatabaseHotseatIcons)
+        val screenIndex = c.getColumnIndex(SCREEN)
+        val intentIndex = c.getColumnIndex(INTENT)
+        expected.forEachIndexed { idx, pkg ->
+            if (pkg == null) return@forEachIndexed
+            c.moveToNext()
+            assertThat(c.getInt(screenIndex).toLong()).isEqualTo(idx)
+            assertThat(c.getString(intentIndex)).contains(pkg)
+        }
+        c.close()
+    }
+
+    private fun parseLocMap(context: Context, c: Cursor): Map<String, Triple<Int, Int, Int>> {
+        // Check workspace items
+        val intentIndex = c.getColumnIndex(INTENT)
+        val screenIndex = c.getColumnIndex(SCREEN)
+        val cellXIndex = c.getColumnIndex(CELLX)
+        val cellYIndex = c.getColumnIndex(CELLY)
+        val locMap = mutableMapOf<String, Triple<Int, Int, Int>>()
+        while (c.moveToNext()) {
+            locMap[Intent.parseUri(c.getString(intentIndex), 0).getPackage()] =
+                    Triple(c.getInt(screenIndex), c.getInt(cellXIndex), c.getInt(cellYIndex))
+        }
+        c.close()
+        return locMap.toMap()
     }
 
     @Test
