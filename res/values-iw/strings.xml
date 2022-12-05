@@ -32,7 +32,7 @@
     <string name="split_screen_position_left" msgid="7537793098851830883">"פיצול שמאלה"</string>
     <string name="split_screen_position_right" msgid="1569377524925193369">"פיצול ימינה"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"‏פרטים על האפליקציה %1$s"</string>
-    <string name="long_press_widget_to_add" msgid="3587712543577675817">"כדי להעביר ווידג\'ט למקום אחר יש לגעת ולא להרפות."</string>
+    <string name="long_press_widget_to_add" msgid="3587712543577675817">"להעברת ווידג\'ט למקום אחר לוחצים עליו לחיצה ארוכה."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"כדי להעביר ווידג\'ט למקום אחר או להשתמש בפעולות מותאמות אישית, יש ללחוץ פעמיים ולא להרפות."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"‏רוחב %1$d על גובה %2$d"</string>
@@ -59,7 +59,6 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"חיפוש אפליקציות"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"טעינת אפליקציות מתבצעת…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"לא נמצאו אפליקציות התואמות ל-\"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"חיפוש אפליקציות נוספות"</string>
     <string name="label_application" msgid="8531721983832654978">"אפליקציה"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"כל האפליקציות"</string>
     <string name="notifications_header" msgid="1404149926117359025">"התראות"</string>
@@ -114,6 +113,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"כדי להציג את סימני ההתראות,יש להפעיל התראות מהאפליקציה <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"שינוי ההגדרות"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"הצגת סימני ההתראות"</string>
+    <string name="developer_options_title" msgid="700788437593726194">"אפשרויות למפתחים"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"הוספת סמלי אפליקציות למסך הבית"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"לאפליקציות חדשות"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"לא ידוע"</string>
@@ -124,14 +124,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> בתהליך התקנה, <xliff:g id="PROGRESS">%2$s</xliff:g> הושלמו"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"הורדת <xliff:g id="NAME">%1$s</xliff:g> מתבצעת, <xliff:g id="PROGRESS">%2$s</xliff:g> הושלמו"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"מחכה להתקנה של <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"נדרש עדכון לאפליקציה"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"האפליקציה של הסמל הזה לא מעודכנת. אפשר לעדכן אותה ידנית כדי להפעיל מחדש את קיצור הדרך הזה, או להסיר את הסמל."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"עדכון"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"הסרה"</string>
     <string name="widgets_list" msgid="796804551140113767">"רשימת ווידג\'טים"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"רשימת הווידג\'טים נסגרה"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"הוספה למסך הבית"</string>
@@ -140,7 +136,7 @@
     <string name="item_removed" msgid="851119963877842327">"הפריט הוסר"</string>
     <string name="undo" msgid="4151576204245173321">"ביטול"</string>
     <string name="action_move" msgid="4339390619886385032">"העברת הפריט"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"העברה אל שורה <xliff:g id="NUMBER_0">%1$s</xliff:g> עמודה <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"צריך לעבור לשורה <xliff:g id="NUMBER_0">%1$s</xliff:g> ולטור <xliff:g id="NUMBER_1">%2$s</xliff:g> ב-<xliff:g id="STRING">%3$s</xliff:g>"</string>
     <string name="move_to_position" msgid="6750008980455459790">"העברה אל מיקום <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"העברה אל מיקום <xliff:g id="NUMBER">%1$s</xliff:g> במועדפים"</string>
     <string name="item_moved" msgid="4606538322571412879">"הפריט הועבר"</string>
@@ -161,7 +157,7 @@
     <string name="action_dismiss_notification" msgid="5909461085055959187">"סגירה"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"סגירה"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ההתראה נסגרה"</string>
-    <string name="all_apps_personal_tab" msgid="4190252696685155002">"אישיות"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"אישי"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"עבודה"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"פרופיל עבודה"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"‏האפליקציות לעבודה מתויגות ומוצגות למנהל ה-IT"</string>
@@ -171,8 +167,10 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"האפליקציות לעבודה מושבתות. האפליקציות לא יכולות לשלוח לך התראות, להשתמש בסוללה או לגשת למיקום שלך"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"‏האפליקציות לעבודה מתויגות ומוצגות למנהל ה-IT"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"הבנתי"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"כיבוי של אפליקציות לעבודה"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"השהיית האפליקציות לעבודה"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"הפעלה של אפליקציות לעבודה"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"סינון"</string>
+    <string name="search_pref_screen_title" msgid="3258959643336315962">"חיפוש בטלפון"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"חיפוש בטאבלט"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"הפעולה נכשלה: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
