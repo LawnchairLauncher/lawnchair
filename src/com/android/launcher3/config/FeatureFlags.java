@@ -342,6 +342,10 @@ public final class FeatureFlags {
             "ENABLE_TASKBAR_REVISED_THRESHOLDS", false,
             "Uses revised thresholds for transient taskbar.");
 
+    public static final BooleanFlag FORCE_PERSISTENT_TASKBAR = getDebugFlag(
+            "FORCE_PERSISTENT_TASKBAR", false, "Forces taskbar to be persistent, even in gesture"
+                    + " nav mode and when transient taskbar is enabled.");
+
     public static final BooleanFlag ENABLE_TRANSIENT_TASKBAR = getDebugFlag(
             "ENABLE_TRANSIENT_TASKBAR", false, "Enables transient taskbar.");
 
