@@ -2392,10 +2392,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             mDragTargetLayout.visualizeDropLocation(mTargetCell[0], mTargetCell[1],
                     item.spanX, item.spanY, d);
         } else if ((mDragMode == DRAG_MODE_NONE || mDragMode == DRAG_MODE_REORDER)
-                && !mReorderAlarm.alarmPending()
                 && (mLastReorderX != reorderX || mLastReorderY != reorderY)
                 && targetCellDistance < mDragTargetLayout.getReorderRadius(mTargetCell, item.spanX,
                 item.spanY)) {
+            mReorderAlarm.cancelAlarm();
             mLastReorderX = reorderX;
             mLastReorderY = reorderY;
             mDragTargetLayout.performReorder((int) mDragViewVisualCenter[0],
