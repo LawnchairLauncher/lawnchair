@@ -66,7 +66,7 @@ import java.util.stream.Collectors;
 public class GridSizeMigrationUtil {
 
     private static final String TAG = "GridSizeMigrationUtil";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     private GridSizeMigrationUtil() {
         // Util class should not be instantiated
@@ -188,27 +188,54 @@ public class GridSizeMigrationUtil {
             @NonNull final DeviceGridState srcDeviceState,
             @NonNull final DeviceGridState destDeviceState) {
 
-        final List<DbEntry> hotseatItems = destReader.loadHotseatEntries();
-        final List<DbEntry> workspaceItems = destReader.loadAllWorkspaceEntries();
-        final List<DbEntry> hotseatDiff =
-                calcDiff(srcReader.loadHotseatEntries(), hotseatItems);
-        final List<DbEntry> workspaceDiff =
-                calcDiff(srcReader.loadAllWorkspaceEntries(), workspaceItems);
+        final List<DbEntry> srcHotseatItems = srcReader.loadHotseatEntries();
+        final List<DbEntry> srcWorkspaceItems = srcReader.loadAllWorkspaceEntries();
+        final List<DbEntry> dstHotseatItems = destReader.loadHotseatEntries();
+        final List<DbEntry> dstWorkspaceItems = destReader.loadAllWorkspaceEntries();
+        final List<DbEntry> hotseatToBeAdded = new ArrayList<>(1);
+        final List<DbEntry> workspaceToBeAdded = new ArrayList<>(1);
+        final IntArray toBeRemoved = new IntArray();
+
+        calcDiff(srcHotseatItems, dstHotseatItems, hotseatToBeAdded, toBeRemoved);
+        calcDiff(srcWorkspaceItems, dstWorkspaceItems, workspaceToBeAdded, toBeRemoved);
 
         final int trgX = targetSize.x;
         final int trgY = targetSize.y;
 
-        if (hotseatDiff.isEmpty() && workspaceDiff.isEmpty()) {
+        if (DEBUG) {
+            Log.d(TAG, "Start migration:"
+                    + "\n Source Device:"
+                    + srcWorkspaceItems.stream().map(DbEntry::toString).collect(
+                    Collectors.joining(",\n", "[", "]"))
+                    + "\n Target Device:"
+                    + dstWorkspaceItems.stream().map(DbEntry::toString).collect(
+                    Collectors.joining(",\n", "[", "]"))
+                    + "\n Removing Items:"
+                    + dstWorkspaceItems.stream().filter(entry ->
+                            toBeRemoved.contains(entry.id)).map(DbEntry::toString).collect(
+                    Collectors.joining(",\n", "[", "]"))
+                    + "\n Adding Workspace Items:"
+                    + workspaceToBeAdded.stream().map(DbEntry::toString).collect(
+                    Collectors.joining(",\n", "[", "]"))
+                    + "\n Adding Hotseat Items:"
+                    + hotseatToBeAdded.stream().map(DbEntry::toString).collect(
+                    Collectors.joining(",\n", "[", "]"))
+            );
+        }
+        if (!toBeRemoved.isEmpty()) {
+            removeEntryFromDb(destReader.mDb, destReader.mTableName, toBeRemoved);
+        }
+        if (hotseatToBeAdded.isEmpty() && workspaceToBeAdded.isEmpty()) {
             return false;
         }
 
         // Sort the items by the reading order.
-        Collections.sort(hotseatDiff);
-        Collections.sort(workspaceDiff);
+        Collections.sort(hotseatToBeAdded);
+        Collections.sort(workspaceToBeAdded);
 
         // Migrate hotseat
         solveHotseatPlacement(db, srcReader,
-                destReader, context, destHotseatSize, hotseatItems, hotseatDiff);
+                destReader, context, destHotseatSize, dstHotseatItems, hotseatToBeAdded);
 
         // Migrate workspace.
         // First we create a collection of the screens
@@ -229,8 +256,8 @@ public class GridSizeMigrationUtil {
                 Log.d(TAG, "Migrating " + screenId);
             }
             solveGridPlacement(db, srcReader,
-                    destReader, context, screenId, trgX, trgY, workspaceDiff, false);
-            if (workspaceDiff.isEmpty()) {
+                    destReader, context, screenId, trgX, trgY, workspaceToBeAdded, false);
+            if (workspaceToBeAdded.isEmpty()) {
                 break;
             }
         }
@@ -238,42 +265,37 @@ public class GridSizeMigrationUtil {
         // In case the new grid is smaller, there might be some leftover items that don't fit on
         // any of the screens, in this case we add them to new screens until all of them are placed.
         int screenId = destReader.mLastScreenId + 1;
-        while (!workspaceDiff.isEmpty()) {
+        while (!workspaceToBeAdded.isEmpty()) {
             solveGridPlacement(db, srcReader,
-                    destReader, context, screenId, trgX, trgY, workspaceDiff, preservePages);
+                    destReader, context, screenId, trgX, trgY, workspaceToBeAdded, preservePages);
             screenId++;
         }
 
         return true;
     }
 
-    /** Return what's in the src but not in the dest */
-    private static List<DbEntry> calcDiff(List<DbEntry> src, List<DbEntry> dest) {
-        Map<String, Integer> destIdSet = new HashMap<>();
-        for (DbEntry entry : dest) {
-            String entryID = entry.getEntryMigrationId();
-            if (destIdSet.containsKey(entryID)) {
-                destIdSet.put(entryID, destIdSet.get(entryID) + 1);
-            } else {
-                destIdSet.put(entryID, 1);
+    /**
+     * Calculate the differences between {@code src} (denoted by A) and {@code dest}
+     * (denoted by B).
+     * All DbEntry in A - B will be added to {@code toBeAdded}
+     * All DbEntry.id in B - A will be added to {@code toBeRemoved}
+     */
+    private static void calcDiff(@NonNull final List<DbEntry> src,
+            @NonNull final List<DbEntry> dest, @NonNull final List<DbEntry> toBeAdded,
+            @NonNull final IntArray toBeRemoved) {
+        src.forEach(entry -> {
+            if (!dest.contains(entry)) {
+                toBeAdded.add(entry);
             }
-        }
-        List<DbEntry> diff = new ArrayList<>();
-        for (DbEntry entry : src) {
-            String entryID = entry.getEntryMigrationId();
-            if (destIdSet.containsKey(entryID)) {
-                Integer count = destIdSet.get(entryID);
-                if (count <= 0) {
-                    diff.add(entry);
-                    destIdSet.remove(entryID);
-                } else {
-                    destIdSet.put(entryID, count - 1);
+        });
+        dest.forEach(entry -> {
+            if (!src.contains(entry)) {
+                toBeRemoved.add(entry.id);
+                if (entry.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+                    entry.mFolderItems.values().forEach(ids -> ids.forEach(toBeRemoved::add));
                 }
-            } else {
-                diff.add(entry);
             }
-        }
-        return diff;
+        });
     }
 
     private static void insertEntryInDb(SQLiteDatabase db, Context context, DbEntry entry,
@@ -682,12 +704,12 @@ public class GridSizeMigrationUtil {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             DbEntry entry = (DbEntry) o;
-            return Objects.equals(mIntent, entry.mIntent);
+            return Objects.equals(getEntryMigrationId(), entry.getEntryMigrationId());
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(mIntent);
+            return Objects.hash(getEntryMigrationId());
         }
 
         public void updateContentValues(ContentValues values) {

@@ -362,6 +362,12 @@ public class LauncherModelHelper {
         sandboxContext.getContentResolver().insert(contentUri, values);
     }
 
+    public void deleteItem(int itemId, @NonNull final String tableName) {
+        final Uri uri = Uri.parse("content://"
+                + LauncherProvider.AUTHORITY + "/" + tableName + "/" + itemId);
+        sandboxContext.getContentResolver().delete(uri, null, null);
+    }
+
     public int[][][] createGrid(int[][][] typeArray) {
         return createGrid(typeArray, 1);
     }

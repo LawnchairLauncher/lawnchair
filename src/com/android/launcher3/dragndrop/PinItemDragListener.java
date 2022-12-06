@@ -72,8 +72,8 @@ public class PinItemDragListener extends BaseItemDragListener {
     }
 
     @Override
-    public boolean init(Launcher launcher, boolean alreadyOnHome) {
-        super.init(launcher, alreadyOnHome);
+    public boolean onActivityReady(Launcher launcher, boolean alreadyOnHome) {
+        super.onActivityReady(launcher, alreadyOnHome);
         if (!alreadyOnHome) {
             launcher.useFadeOutAnimationForLauncherStart(mCancelSignal);
         }
