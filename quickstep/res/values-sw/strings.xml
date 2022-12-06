@@ -78,10 +78,8 @@
     <string name="allset_title" msgid="5021126669778966707">"Tayari!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Telezesha kidole juu ili uende kwenye skrini ya kwanza"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Gusa kitufe cha ukurasa wa mwanzo ili uende kwenye skrini ya kwanza"</string>
-    <!-- no translation found for allset_description_generic (5385500062202019855) -->
-    <skip />
-    <!-- no translation found for default_device_name (6660656727127422487) -->
-    <skip />
+    <string name="allset_description_generic" msgid="5385500062202019855">"Uko tayari kuanza kutumia <xliff:g id="DEVICE">%1$s</xliff:g> yako"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"kifaa"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Mipangilio ya usogezaji kwenye mfumo"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Shiriki"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Picha ya skrini"</string>
@@ -94,8 +92,7 @@
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Ghairi"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Ruka"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Zungusha skrini"</string>
-    <!-- no translation found for taskbar_edu_a11y_title (5417986057866415355) -->
-    <skip />
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Elimu ya Upauzana"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Paneli ya elimu kwenye upau wa shughuli inaonyeshwa"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Paneli ya elimu kwenye upau wa shughuli imefungwa"</string>
     <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Tumia upau wa shughuli kubadilisha programu"</string>
@@ -112,10 +109,8 @@
     <string name="taskbar_button_recents" msgid="7273376136216613134">"Vilivyotumika majuzi"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Arifa"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Mipangilio ya Haraka"</string>
-    <!-- no translation found for taskbar_a11y_title (6432169809852243110) -->
-    <skip />
-    <!-- no translation found for taskbar_phone_a11y_title (4933360237131229395) -->
-    <skip />
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"Upauzana"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Sehemu ya viungo muhimu"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Sogeza juu/kushoto"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Sogeza chini/kulia"</string>
 </resources>
