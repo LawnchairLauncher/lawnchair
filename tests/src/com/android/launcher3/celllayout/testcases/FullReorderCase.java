@@ -81,8 +81,29 @@ public class FullReorderCase {
             MOVE_TO_4x4,
             END_BOARD_STR_4x4);
 
+    /** 4x4 Test
+     **/
+    private static final String START_BOARD_STR_4x5 = ""
+            + "xxxx\n"
+            + "22mm\n"
+            + "iimm\n"
+            + "ii11\n"
+            + "ii11";
+    private static final Point MOVE_TO_4x5 = new Point(0, 3);
+    private static final String END_BOARD_STR_4x5 = ""
+            + "xxxx\n"
+            + "22ii\n"
+            + "mmii\n"
+            + "mm11\n"
+            + "ii11";
+
+    private static final ReorderTestCase TEST_CASE_4x5 = new ReorderTestCase(START_BOARD_STR_4x5,
+            MOVE_TO_4x5,
+            END_BOARD_STR_4x5);
+
     public static final Map<Point, ReorderTestCase> TEST_BY_GRID_SIZE =
             Map.of(new Point(5, 5), TEST_CASE_5x5,
                     new Point(6, 5), TEST_CASE_6x5,
-                    new Point(4, 4), TEST_CASE_4x4);
+                    new Point(4, 4), TEST_CASE_4x4,
+                    new Point(4, 5), TEST_CASE_4x5);
 }
