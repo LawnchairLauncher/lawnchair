@@ -335,7 +335,7 @@ public final class FeatureFlags {
                     + " to have better visuals");
 
     public static final BooleanFlag ENABLE_TASKBAR_REVISED_THRESHOLDS = getDebugFlag(
-            "ENABLE_TASKBAR_REVISED_THRESHOLDS", false,
+            "ENABLE_TASKBAR_REVISED_THRESHOLDS", true,
             "Uses revised thresholds for transient taskbar.");
 
     public static final BooleanFlag FORCE_PERSISTENT_TASKBAR = getDebugFlag(
