@@ -50,6 +50,7 @@ import static com.android.quickstep.GestureState.STATE_RECENTS_SCROLLING_FINISHE
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.CANCEL_RECENTS_ANIMATION;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.EXPECTING_TASK_APPEARED;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.LAUNCHER_DESTROYED;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.ON_SETTLED_ON_END_TARGET;
 import static com.android.quickstep.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
@@ -113,7 +114,7 @@ import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
 import com.android.quickstep.util.ActiveGestureErrorDetector;
 import com.android.quickstep.util.ActiveGestureLog;
-import com.android.quickstep.util.ActivityInitListener;
+import com.android.quickstep.util.ActivityLifecycleListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.InputConsumerProxy;
 import com.android.quickstep.util.InputProxyHandlerFactory;
@@ -159,7 +160,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     protected final BaseActivityInterface<S, T> mActivityInterface;
     protected final InputConsumerProxy mInputConsumerProxy;
-    protected final ActivityInitListener mActivityInitListener;
+    protected final ActivityLifecycleListener mActivityInitListener;
     // Callbacks to be made once the recents animation starts
     private final ArrayList<Runnable> mRecentsAnimationStartCallbacks = new ArrayList<>();
     private final OnScrollChangedListener mOnRecentsScrollListener = this::onRecentsViewScroll;
@@ -328,7 +329,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             InputConsumerController inputConsumer) {
         super(context, deviceState, gestureState);
         mActivityInterface = gestureState.getActivityInterface();
-        mActivityInitListener = mActivityInterface.createActivityInitListener(this::onActivityInit);
+        mActivityInitListener = mActivityInterface.createActivityLifecycleListener(
+                this::onActivityInit, this::onActivityDestroy);
         mInputConsumerProxy =
                 new InputConsumerProxy(context, /* rotationSupplier = */ () -> {
                     if (mRecentsView == null) {
@@ -517,6 +519,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
         mActivity.registerActivityLifecycleCallbacks(mLifecycleCallbacks);
         return true;
+    }
+
+    private void onActivityDestroy() {
+        ActiveGestureLog.INSTANCE.addLog("Launcher activity destroyed", LAUNCHER_DESTROYED);
+        onGestureCancelled();
     }
 
     /**

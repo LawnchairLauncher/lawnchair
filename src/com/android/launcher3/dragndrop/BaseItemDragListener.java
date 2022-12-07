@@ -74,7 +74,7 @@ public abstract class BaseItemDragListener implements View.OnDragListener, DragS
     }
 
     @Override
-    public boolean init(Launcher launcher, boolean alreadyOnHome) {
+    public boolean onActivityReady(Launcher launcher, boolean alreadyOnHome) {
         AbstractFloatingView.closeAllOpenViews(launcher, alreadyOnHome);
         launcher.getStateManager().goToState(NORMAL, alreadyOnHome /* animated */);
         launcher.getDragLayer().setOnDragListener(this);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 The Android Open Source Project
+ * Copyright (C) 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,23 @@
 package com.android.launcher3;
 
 import android.animation.AnimatorSet;
+import android.annotation.Nullable;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.CancellationSignal;
 import android.view.RemoteAnimationTarget;
 
 import com.android.launcher3.uioverrides.QuickstepLauncher;
-import com.android.quickstep.util.ActivityInitListener;
+import com.android.quickstep.util.ActivityLifecycleListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
 
 import java.util.function.BiPredicate;
 
+/**
+ * {@link ActivityLifecycleListener} for the in-launcher recents.
+ */
 @TargetApi(Build.VERSION_CODES.P)
-public class LauncherInitListener extends ActivityInitListener<Launcher> {
+public class LauncherLifecycleListener extends ActivityLifecycleListener<Launcher> {
 
     private RemoteAnimationProvider mRemoteAnimationProvider;
 
@@ -36,13 +40,16 @@ public class LauncherInitListener extends ActivityInitListener<Launcher> {
      * @param onInitListener a callback made when the activity is initialized. The callback should
      *                       return true to continue receiving callbacks (ie. for if the activity is
      *                       recreated).
+     * @param onDestroyListener a callback made when the activity is destroyed.
      */
-    public LauncherInitListener(BiPredicate<Launcher, Boolean> onInitListener) {
-        super(onInitListener, Launcher.ACTIVITY_TRACKER);
+    public LauncherLifecycleListener(
+            @Nullable BiPredicate<Launcher, Boolean> onInitListener,
+            @Nullable Runnable onDestroyListener) {
+        super(onInitListener, onDestroyListener, Launcher.ACTIVITY_TRACKER);
     }
 
     @Override
-    public boolean handleInit(Launcher launcher, boolean alreadyOnHome) {
+    public boolean handleActivityReady(Launcher launcher, boolean alreadyOnHome) {
         if (mRemoteAnimationProvider != null) {
             QuickstepTransitionManager appTransitionManager =
                     ((QuickstepLauncher) launcher).getAppTransitionManager();
@@ -68,7 +75,7 @@ public class LauncherInitListener extends ActivityInitListener<Launcher> {
             }, cancellationSignal);
         }
         launcher.deferOverlayCallbacksUntilNextResumeOrStop();
-        return super.handleInit(launcher, alreadyOnHome);
+        return super.handleActivityReady(launcher, alreadyOnHome);
     }
 
     @Override

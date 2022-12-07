@@ -60,7 +60,7 @@ import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.views.ScrimView;
-import com.android.quickstep.util.ActivityInitListener;
+import com.android.quickstep.util.ActivityLifecycleListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -123,8 +123,17 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public abstract AnimationFactory prepareRecentsUI(RecentsAnimationDeviceState deviceState,
             boolean activityVisible, Consumer<AnimatorControllerWithResistance> callback);
 
-    public abstract ActivityInitListener createActivityInitListener(
-            Predicate<Boolean> onInitListener);
+    /**
+     * Creates a activity listener for activity initialized and/or destroyed. One or both of these
+     * listeners must be provided.
+     *
+     * @param onInitListener a callback made when the activity is initialized. The callback should
+     *                       return true to continue receiving callbacks (ie. for if the activity is
+     *                       recreated).
+     * @param onDestroyListener a callback made when the activity is destroyed.
+     */
+    public abstract ActivityLifecycleListener createActivityLifecycleListener(
+            @Nullable Predicate<Boolean> onInitListener, @Nullable Runnable onDestroyListener);
 
     /**
      * Sets a callback to be run when an activity launch happens while launcher is not yet resumed.
