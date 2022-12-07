@@ -58,6 +58,7 @@ import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.model.StringCache;
 import com.android.launcher3.model.data.ItemInfo;
@@ -123,6 +124,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
     protected FloatingHeaderView mHeader;
     private View mBottomSheetBackground;
     private View mBottomSheetHandleArea;
+    @Nullable private View mSearchBarProtection;
 
     protected boolean mUsingTabs;
     private boolean mHasWorkApps;
@@ -363,6 +365,11 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         return mSearchRecyclerView;
     }
 
+    @Nullable
+    public View getSearchBarProtection() {
+        return mSearchBarProtection;
+    }
+
     protected boolean isPersonalTab() {
         return mViewPager == null || mViewPager.getNextPage() == 0;
     }
@@ -410,6 +417,12 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         });
 
         mHeader = findViewById(R.id.all_apps_header);
+        mSearchBarProtection = findViewById(R.id.search_protection);
+        if (mSearchBarProtection != null) {
+            mSearchBarProtection.setBackgroundColor(mScrimColor);
+            mSearchBarProtection.setVisibility(
+                    FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get() ? VISIBLE : GONE);
+        }
         mSearchRecyclerView = findViewById(R.id.search_results_list_view);
         mAH.get(AdapterHolder.SEARCH).setup(mSearchRecyclerView,
                 /* Filter out A-Z apps */ itemInfo -> false);
@@ -744,7 +757,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         if (mHeaderPaint.getColor() != mScrimColor && mHeaderPaint.getColor() != 0) {
             int bottom = getHeaderBottom();
             FloatingHeaderView headerView = getFloatingHeaderView();
-            if (!mUsingTabs) {
+            if (!mUsingTabs && !FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
                 // Add protection which is otherwise added when tabs scroll up.
                 bottom += headerView.getTabsAdditionalPaddingTop();
             }
@@ -801,17 +814,6 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
      */
     public View getVisibleContainerView() {
         return mActivityContext.getDeviceProfile().isTablet ? mBottomSheetBackground : this;
-    }
-
-    /**
-     * Sets whether the view or its children should react to the window inset.
-     * Used for when exiting all apps -> workspace and determines if window inset
-     * should be applied.. ex) the work mode switch.
-     */
-    public void setApplyWindowInset(boolean shouldApplyWindowInset) {
-        if (mWorkManager.getWorkModeSwitch() != null) {
-            mWorkManager.getWorkModeSwitch().setApplyWindowInset(shouldApplyWindowInset);
-        }
     }
 
     protected void onInitializeRecyclerView(RecyclerView rv) {

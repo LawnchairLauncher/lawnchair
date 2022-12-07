@@ -53,10 +53,21 @@ public class KeyboardInsetAnimationCallback extends WindowInsetsAnimation.Callba
             mView.setTranslationY(mInitialTranslation);
             return windowInsets;
         }
-        float progress = list.get(0).getInterpolatedFraction();
+        WindowInsetsAnimation animation = list.get(0);
 
-        mView.setTranslationY(
-                Utilities.mapRange(progress, mInitialTranslation, mTerminalTranslation));
+        if (animation.getDurationMillis() > -1) {
+            float progress = animation.getInterpolatedFraction();
+            mView.setTranslationY(
+                    Utilities.mapRange(progress, mInitialTranslation, mTerminalTranslation));
+        } else {
+            // Manually controlled animation: Set translation to keyboard height.
+            int translationY = -windowInsets.getInsets(WindowInsets.Type.ime()).bottom;
+            if (mView.getParent() instanceof View) {
+                // Offset any translation of the parent (e.g. All Apps parallax).
+                translationY -= ((View) mView.getParent()).getTranslationY();
+            }
+            mView.setTranslationY(translationY);
+        }
 
         return windowInsets;
     }
@@ -73,6 +84,7 @@ public class KeyboardInsetAnimationCallback extends WindowInsetsAnimation.Callba
 
     @Override
     public void onEnd(WindowInsetsAnimation animation) {
+        mView.setTranslationY(mTerminalTranslation);
         if (mView instanceof KeyboardInsetListener) {
             ((KeyboardInsetListener) mView).onTranslationEnd();
         }
