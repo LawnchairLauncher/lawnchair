@@ -63,6 +63,7 @@ import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.os.IBinder;
 import android.os.SystemProperties;
+import android.util.Log;
 import android.view.Display;
 import android.view.HapticFeedbackConstants;
 import android.view.RemoteAnimationTarget;
@@ -720,6 +721,7 @@ public class QuickstepLauncher extends Launcher {
                     mUnfoldTransitionProgressProvider,
                     mRotationChangeProvider
             );
+            Log.d("b/261320823", "initUnfoldTransitionProgressProvider completed");
         }
     }
 
