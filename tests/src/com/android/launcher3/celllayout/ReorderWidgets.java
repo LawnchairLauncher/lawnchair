@@ -41,6 +41,7 @@ import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 import org.junit.Assume;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -150,11 +151,13 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
                 SimpleReorderCase.class.getSimpleName());
     }
 
+    @Ignore
     @Test
     public void pushTest() throws ExecutionException, InterruptedException {
         runTestCaseMap(PushReorderCase.TEST_BY_GRID_SIZE, PushReorderCase.class.getSimpleName());
     }
 
+    @Ignore
     @Test
     public void fullReorder() throws ExecutionException, InterruptedException {
         runTestCaseMap(FullReorderCase.TEST_BY_GRID_SIZE, FullReorderCase.class.getSimpleName());

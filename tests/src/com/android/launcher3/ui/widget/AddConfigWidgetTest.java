@@ -38,6 +38,7 @@ import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,6 +66,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
         mAppWidgetManager = AppWidgetManager.getInstance(mTargetContext);
     }
 
+    @Ignore
     @Test
     @PortraitLandscape
     public void testWidgetConfig() throws Throwable {
