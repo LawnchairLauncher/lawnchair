@@ -24,6 +24,7 @@ import com.android.launcher3.util.RaceConditionReproducer;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -56,6 +57,7 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
         eventProcessor.finishIteration();
     }
 
+    @Ignore
     @Test
     @NavigationModeSwitch
     public void testStressPressHome() {
@@ -68,6 +70,7 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
         }
     }
 
+    @Ignore
     @Test
     @NavigationModeSwitch
     public void testStressSwipeToOverview() {
