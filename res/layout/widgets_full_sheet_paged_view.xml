@@ -89,8 +89,7 @@
             android:gravity="center_horizontal"
             android:orientation="horizontal"
             android:paddingVertical="8dp"
-            android:paddingLeft="@dimen/widget_tabs_horizontal_padding"
-            android:paddingRight="@dimen/widget_tabs_horizontal_padding"
+            android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
             android:background="?android:attr/colorBackground"
             style="@style/TextHeadline"
             launcher:layout_sticky="true">
