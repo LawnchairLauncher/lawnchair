@@ -89,14 +89,6 @@ public final class FeatureFlags {
             getDebugFlag("ENABLE_FLOATING_SEARCH_BAR", false,
                     "Keep All Apps search bar at the bottom (but above keyboard if open)");
 
-    public static final BooleanFlag ENABLE_QUICK_LAUNCH_V2 = new DeviceFlag(
-            "ENABLE_QUICK_LAUNCH_V2", false, "Use quick launch v2 "
-            + "behavior. Quick search and quick launch v1 would be unavailable if this is enabled");
-
-    public static final BooleanFlag GBOARD_UPDATE_ENTER_KEY = new DeviceFlag(
-            "GBOARD_UPDATE_ENTER_KEY", false, "Update gBoard enter key "
-            + "icon dynamically based on top search content for Quick Launch V2");
-
     public static final BooleanFlag ENABLE_HIDE_HEADER = new DeviceFlag("ENABLE_HIDE_HEADER",
             true, "Hide header on keyboard before typing in all apps");
 
