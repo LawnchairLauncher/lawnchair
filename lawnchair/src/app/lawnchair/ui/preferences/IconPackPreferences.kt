@@ -56,6 +56,7 @@ import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.util.Constants
 import app.lawnchair.util.getThemedIconPacksInstalled
 import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.R
@@ -137,6 +138,8 @@ fun IconPackPreferences() {
                 val themedIconsAvailable = LocalContext.current.packageManager
                     .getThemedIconPacksInstalled(LocalContext.current)
                     .any { LocalContext.current.packageManager.isPackageInstalled(it) }
+                    || LocalContext.current.packageManager
+                    .isPackageInstalled(Constants.LAWNICONS_PACKAGE_NAME)
                 ListPreference(
                     enabled = themedIconsAvailable,
                     label = stringResource(id = R.string.themed_icon_title),
@@ -218,7 +221,8 @@ private fun getIconPackItemWidth(
     while (true) {
         gutterCount += 1f
         visibleItemCount += 1f
-        val possibleIconPackItemWidth = (availableWidth - gutterCount * gutterWidth) / visibleItemCount
+        val possibleIconPackItemWidth =
+            (availableWidth - gutterCount * gutterWidth) / visibleItemCount
         if (possibleIconPackItemWidth >= minimumWidth) {
             iconPackItemWidth = possibleIconPackItemWidth
         } else break
