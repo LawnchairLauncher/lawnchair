@@ -44,6 +44,7 @@ import com.android.quickstep.views.RecentsView;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -224,6 +225,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         return launcher.<RecentsView>getOverviewPanel().getBottomRowTaskCountForTablet();
     }
 
+    @Ignore
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
@@ -236,6 +238,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
                 isInState(() -> LauncherState.OVERVIEW));
     }
 
+    @Ignore
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
@@ -363,6 +366,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
     }
 
+    @Ignore
     @Test
     @PortraitLandscape
     public void testOverviewForTablet() throws Exception {
