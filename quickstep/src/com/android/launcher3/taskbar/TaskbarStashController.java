@@ -19,6 +19,7 @@ import static android.view.HapticFeedbackConstants.LONG_PRESS;
 
 import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
+import static com.android.launcher3.config.FeatureFlags.FORCE_PERSISTENT_TASKBAR;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_SHOW;
 import static com.android.launcher3.taskbar.Utilities.appendFlag;
@@ -241,8 +242,9 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         // it to work properly for tests that recreate taskbar. This check is here just to ensure
         // that taskbar unstashes when going to 3 button mode (supportsVisualStashing() false).
         boolean isManuallyStashedInApp = supportsVisualStashing()
-                && mPrefs.getBoolean(SHARED_PREFS_STASHED_KEY, DEFAULT_STASHED_PREF)
-                && !isTransientTaskbar;
+                && !isTransientTaskbar
+                && !FORCE_PERSISTENT_TASKBAR.get()
+                && mPrefs.getBoolean(SHARED_PREFS_STASHED_KEY, DEFAULT_STASHED_PREF);
         boolean isInSetup = !mActivity.isUserSetupComplete() || setupUIVisible;
         updateStateForFlag(FLAG_STASHED_IN_APP_MANUAL, isManuallyStashedInApp);
         updateStateForFlag(FLAG_STASHED_IN_APP_AUTO, isTransientTaskbar);
@@ -270,6 +272,9 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * Returns whether the user can manually stash the taskbar based on the current device state.
      */
     protected boolean supportsManualStashing() {
+        if (FORCE_PERSISTENT_TASKBAR.get()) {
+            return false;
+        }
         return supportsVisualStashing()
                 && isInApp()
                 && (!Utilities.IS_RUNNING_IN_TEST_HARNESS || mEnableManualStashingDuringTests)
