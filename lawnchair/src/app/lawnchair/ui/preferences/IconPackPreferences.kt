@@ -221,8 +221,7 @@ private fun getIconPackItemWidth(
     while (true) {
         gutterCount += 1f
         visibleItemCount += 1f
-        val possibleIconPackItemWidth =
-            (availableWidth - gutterCount * gutterWidth) / visibleItemCount
+        val possibleIconPackItemWidth = (availableWidth - gutterCount * gutterWidth) / visibleItemCount
         if (possibleIconPackItemWidth >= minimumWidth) {
             iconPackItemWidth = possibleIconPackItemWidth
         } else break
