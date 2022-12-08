@@ -15,11 +15,11 @@
  */
 package com.android.launcher3.taskbar;
 
-import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_STASHED_IN_APP_EDU;
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayController;
@@ -62,20 +62,21 @@ public class TaskbarEduController implements TaskbarControllers.LoggableTaskbarC
                         : R.layout.taskbar_edu_pages_persistent,
                 mPagedView,
                 true);
+
+        // Provide enough room for taskbar.
+        View startButton = mTaskbarEduView.findViewById(R.id.edu_start_button);
+        ViewGroup.MarginLayoutParams layoutParams =
+                (ViewGroup.MarginLayoutParams) startButton.getLayoutParams();
+        DeviceProfile dp = overlayContext.getDeviceProfile();
+        layoutParams.bottomMargin += DisplayController.isTransientTaskbar(overlayContext)
+                ? dp.taskbarSize + dp.transientTaskbarMargin
+                : dp.taskbarSize;
+
         mTaskbarEduView.init(new TaskbarEduCallbacks());
 
         mControllers.navbarButtonsViewController.setSlideInViewVisible(true);
-        TaskbarStashController stashController = mControllers.taskbarStashController;
-        stashController.updateStateForFlag(FLAG_STASHED_IN_APP_EDU, true);
-        stashController.applyState(overlayController.getOpenDuration());
-
-        mTaskbarEduView.setOnCloseBeginListener(() -> {
-            mControllers.navbarButtonsViewController.setSlideInViewVisible(false);
-            // Post in case view is closing due to gesture navigation. If a gesture is in progress,
-            // wait to unstash until after the gesture is finished.
-            MAIN_EXECUTOR.post(() -> stashController.resetFlagIfNoGestureInProgress(
-                    FLAG_STASHED_IN_APP_EDU));
-        });
+        mTaskbarEduView.setOnCloseBeginListener(
+                () -> mControllers.navbarButtonsViewController.setSlideInViewVisible(false));
         mTaskbarEduView.addOnCloseListener(() -> mTaskbarEduView = null);
         mTaskbarEduView.show();
     }
