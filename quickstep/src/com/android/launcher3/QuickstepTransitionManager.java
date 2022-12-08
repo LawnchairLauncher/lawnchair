@@ -518,6 +518,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 appsView.setAlpha(startAlpha);
                 SCALE_PROPERTY.set(appsView, startScale);
                 appsView.setLayerType(View.LAYER_TYPE_NONE, null);
+                mLauncher.resumeExpensiveViewUpdates();
             };
         } else if (mLauncher.isInState(OVERVIEW)) {
             endListener = composeViewContentAnimator(launcherAnimator, alphas, scales);
@@ -647,6 +648,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             overview.setFreezeViewVisibility(false);
             SCALE_PROPERTY.set(overview, 1f);
             mLauncher.getStateManager().reapplyState();
+            mLauncher.resumeExpensiveViewUpdates();
         };
     }
 
