@@ -31,7 +31,6 @@ import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.Pair;
 import android.util.Patterns;
 import android.util.Xml;
 
@@ -45,7 +44,7 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.util.IntArray;
-import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.Partner;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.LauncherWidgetHolder;
 
@@ -76,19 +75,16 @@ public class AutoInstallsLayout {
 
     static AutoInstallsLayout get(Context context, LauncherWidgetHolder appWidgetHolder,
             LayoutParserCallback callback) {
-        Pair<String, Resources> customizationApkInfo = PackageManagerHelper.findSystemApk(
-                ACTION_LAUNCHER_CUSTOMIZATION, context.getPackageManager());
-        if (customizationApkInfo == null) {
+        Partner partner = Partner.get(context.getPackageManager(), ACTION_LAUNCHER_CUSTOMIZATION);
+        if (partner == null) {
             return null;
         }
-        String pkg = customizationApkInfo.first;
-        Resources targetRes = customizationApkInfo.second;
         InvariantDeviceProfile grid = LauncherAppState.getIDP(context);
 
         // Try with grid size and hotseat count
         String layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES_WITH_HOSTEAT,
                 grid.numColumns, grid.numRows, grid.numDatabaseHotseatIcons);
-        int layoutId = targetRes.getIdentifier(layoutName, "xml", pkg);
+        int layoutId = partner.getXmlResId(layoutName);
 
         // Try with only grid size
         if (layoutId == 0) {
@@ -96,21 +92,21 @@ public class AutoInstallsLayout {
                     + " not found. Trying layout without hosteat");
             layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES,
                     grid.numColumns, grid.numRows);
-            layoutId = targetRes.getIdentifier(layoutName, "xml", pkg);
+            layoutId = partner.getXmlResId(layoutName);
         }
 
         // Try the default layout
         if (layoutId == 0) {
             Log.d(TAG, "Formatted layout: " + layoutName + " not found. Trying the default layout");
-            layoutId = targetRes.getIdentifier(LAYOUT_RES, "xml", pkg);
+            layoutId = partner.getXmlResId(LAYOUT_RES);
         }
 
         if (layoutId == 0) {
-            Log.e(TAG, "Layout definition not found in package: " + pkg);
+            Log.e(TAG, "Layout definition not found in package: " + partner.getPackageName());
             return null;
         }
-        return new AutoInstallsLayout(context, appWidgetHolder, callback, targetRes, layoutId,
-                TAG_WORKSPACE);
+        return new AutoInstallsLayout(context, appWidgetHolder, callback, partner.getResources(),
+                layoutId, TAG_WORKSPACE);
     }
 
     // Object Tags
