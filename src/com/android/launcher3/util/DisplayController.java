@@ -131,7 +131,10 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
      * Returns whether taskbar is transient.
      */
     public static boolean isTransientTaskbar(Context context) {
-        if (FORCE_PERSISTENT_TASKBAR.get()) {
+        // TODO(b/258604917): When running in test harness, use !sTransientTaskbarStatusForTests
+        //  once tests are updated to expect new persistent behavior such as not allowing long press
+        //  to stash.
+        if (!Utilities.IS_RUNNING_IN_TEST_HARNESS && FORCE_PERSISTENT_TASKBAR.get()) {
             return false;
         }
         return getNavigationMode(context) == NavigationMode.NO_BUTTON
