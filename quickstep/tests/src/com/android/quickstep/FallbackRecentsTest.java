@@ -63,6 +63,7 @@ import com.android.quickstep.views.RecentsView;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -167,6 +168,7 @@ public class FallbackRecentsTest {
 
     // b/143488140
     //@NavigationModeSwitch
+    @Ignore
     @Test
     public void goToOverviewFromHome() {
         mDevice.pressHome();
@@ -178,6 +180,7 @@ public class FallbackRecentsTest {
 
     // b/143488140
     //@NavigationModeSwitch
+    @Ignore
     @Test
     public void goToOverviewFromApp() {
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
@@ -213,6 +216,7 @@ public class FallbackRecentsTest {
 
     // b/143488140
     //@NavigationModeSwitch
+    @Ignore
     @Test
     public void testOverview() {
         startAppFast(getAppPackageName());

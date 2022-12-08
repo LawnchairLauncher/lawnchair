@@ -247,7 +247,7 @@ public final class FeatureFlags {
             "Enables One Search box in Taskbar All Apps.");
 
     public static final BooleanFlag ENABLE_TASKBAR_IN_OVERVIEW = getDebugFlag(
-            "ENABLE_TASKBAR_IN_OVERVIEW", false,
+            "ENABLE_TASKBAR_IN_OVERVIEW", true,
             "Enables accessing the system Taskbar in overview.");
 
     public static final BooleanFlag ENABLE_SPLIT_FROM_WORKSPACE = getDebugFlag(
@@ -339,7 +339,7 @@ public final class FeatureFlags {
                     + " to have better visuals");
 
     public static final BooleanFlag ENABLE_TASKBAR_REVISED_THRESHOLDS = getDebugFlag(
-            "ENABLE_TASKBAR_REVISED_THRESHOLDS", false,
+            "ENABLE_TASKBAR_REVISED_THRESHOLDS", true,
             "Uses revised thresholds for transient taskbar.");
 
     public static final BooleanFlag FORCE_PERSISTENT_TASKBAR = getDebugFlag(

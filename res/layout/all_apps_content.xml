@@ -44,6 +44,13 @@
 
     </com.android.launcher3.allapps.FloatingHeaderView>
 
+    <View
+        android:id="@+id/search_protection"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:forceHasOverlappingRendering="false" />
+
     <include layout="@layout/search_container_all_apps" />
 
     <include layout="@layout/all_apps_fast_scroller" />
