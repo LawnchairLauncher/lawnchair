@@ -123,6 +123,7 @@ public final class TestProtocol {
 
     public static final String REQUEST_WORKSPACE_CELL_LAYOUT_SIZE = "workspace-cell-layout-size";
     public static final String REQUEST_WORKSPACE_CELL_CENTER = "workspace-cell-center";
+    public static final String REQUEST_WORKSPACE_COLUMNS_ROWS = "workspace-columns-rows";
 
     public static final String REQUEST_HOTSEAT_CELL_CENTER = "hotseat-cell-center";
 
