@@ -19,13 +19,15 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.getTabWidth;
 
 import android.content.Context;
-import android.graphics.Insets;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.WindowInsets;
 import android.widget.Button;
+
+import androidx.core.graphics.Insets;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
@@ -49,10 +51,10 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
     private static final int FLAG_PROFILE_TOGGLE_ONGOING = 1 << 3;
 
     private final Rect mInsets = new Rect();
+    private final Rect mImeInsets = new Rect();
     private int mFlags;
     private boolean mWorkEnabled;
     private boolean mOnWorkTab;
-    private boolean mApplyWindowInset;
 
     public WorkModeSwitch(Context context) {
         this(context, null, 0);
@@ -89,12 +91,12 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
     @Override
     public void setInsets(Rect insets) {
         mInsets.set(insets);
+        updateTranslationY();
         MarginLayoutParams lp = (MarginLayoutParams) getLayoutParams();
         if (lp != null) {
             int bottomMargin = getResources().getDimensionPixelSize(R.dimen.work_fab_margin_bottom);
             DeviceProfile dp = ActivityContext.lookupContext(getContext()).getDeviceProfile();
             if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
-                bottomMargin <<= 1;  // Double margin to add space above search bar.
                 bottomMargin += dp.hotseatQsbHeight;
             }
 
@@ -154,7 +156,6 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
 
     private void updateVisibility() {
         clearAnimation();
-        onApplyWindowInsets(getRootWindowInsets());
         if (mWorkEnabled && mOnWorkTab) {
             setFlag(FLAG_FADE_ONGOING);
             setVisibility(VISIBLE);
@@ -170,16 +171,29 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
 
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        if (!Utilities.ATLEAST_R || !mApplyWindowInset) {
-            return insets;
-        }
-        if (insets.isVisible(WindowInsets.Type.ime())) {
-            Insets keyboardInsets = insets.getInsets(WindowInsets.Type.ime());
-            setTranslationY(mInsets.bottom - keyboardInsets.bottom);
+        WindowInsetsCompat windowInsetsCompat =
+                WindowInsetsCompat.toWindowInsetsCompat(insets, this);
+        if (windowInsetsCompat.isVisible(WindowInsetsCompat.Type.ime())) {
+            setInsets(mImeInsets, windowInsetsCompat.getInsets(WindowInsetsCompat.Type.ime()));
         } else {
-            setTranslationY(0);
+            mImeInsets.setEmpty();
         }
-        return insets;
+        updateTranslationY();
+        return super.onApplyWindowInsets(insets);
+    }
+
+    private void updateTranslationY() {
+        setTranslationY(-mImeInsets.bottom);
+    }
+
+    @Override
+    public void setTranslationY(float translationY) {
+        // Always translate at least enough for nav bar insets.
+        super.setTranslationY(Math.min(translationY, -mInsets.bottom));
+    }
+
+    private void setInsets(Rect rect, Insets insets) {
+        rect.set(insets.left, insets.top, insets.right, insets.bottom);
     }
 
     @Override
@@ -198,9 +212,5 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
 
     private void removeFlag(int flag) {
         mFlags &= ~flag;
-    }
-
-    public void setApplyWindowInset(boolean applyWindowInset){
-        mApplyWindowInset = applyWindowInset;
     }
 }
