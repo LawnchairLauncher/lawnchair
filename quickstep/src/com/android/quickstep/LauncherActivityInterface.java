@@ -37,7 +37,7 @@ import androidx.annotation.UiThread;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
-import com.android.launcher3.LauncherLifecycleListener;
+import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statehandlers.DepthController;
@@ -49,7 +49,7 @@ import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.NavigationMode;
 import com.android.quickstep.GestureState.GestureEndTarget;
-import com.android.quickstep.util.ActivityLifecycleListener;
+import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
@@ -136,10 +136,9 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
-    public ActivityLifecycleListener createActivityLifecycleListener(
-            @Nullable Predicate<Boolean> onInitListener, @Nullable Runnable onDestroyListener) {
-        return new LauncherLifecycleListener((activity, alreadyOnHome) ->
-                onInitListener.test(alreadyOnHome), onDestroyListener);
+    public ActivityInitListener createActivityInitListener(Predicate<Boolean> onInitListener) {
+        return new LauncherInitListener((activity, alreadyOnHome) ->
+                onInitListener.test(alreadyOnHome));
     }
 
     @Override
