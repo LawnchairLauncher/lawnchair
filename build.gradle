@@ -110,7 +110,7 @@ ext {
     compose_compiler_version = "1.3.2"
     accompanist_version = '0.28.0'
     libsu_version = '5.0.3'
-    protocVersion = '3.21.10'
+    protocVersion = '3.21.11'
     room_version = '2.4.3'
     optoVersion = "1.0.18"
 }
