@@ -48,7 +48,6 @@ import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.DeviceProfile.DeviceProfileListenable;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
@@ -81,8 +80,8 @@ import java.util.stream.Stream;
  *
  * @param <T> Type of context inflating all apps.
  */
-public abstract class BaseAllAppsContainerView<T extends Context & ActivityContext
-        & DeviceProfileListenable> extends SpringRelativeLayout implements DragSource, Insettable,
+public abstract class BaseAllAppsContainerView<T extends Context & ActivityContext>
+        extends SpringRelativeLayout implements DragSource, Insettable,
         OnDeviceProfileChangeListener, OnActivePageChangedListener,
         ScrimView.ScrimDrawingController {
 

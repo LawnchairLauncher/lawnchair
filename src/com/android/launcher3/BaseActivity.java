@@ -30,14 +30,13 @@ import android.window.OnBackInvokedDispatcher;
 
 import androidx.annotation.IntDef;
 
-import com.android.launcher3.DeviceProfile.DeviceProfileListenable;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.ViewCache;
-import com.android.launcher3.views.AppLauncher;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.ScrimView;
 
 import java.io.PrintWriter;
@@ -48,8 +47,7 @@ import java.util.List;
 /**
  * Launcher BaseActivity
  */
-public abstract class BaseActivity extends Activity implements AppLauncher,
-        DeviceProfileListenable {
+public abstract class BaseActivity extends Activity implements ActivityContext {
 
     private static final String TAG = "BaseActivity";
 
