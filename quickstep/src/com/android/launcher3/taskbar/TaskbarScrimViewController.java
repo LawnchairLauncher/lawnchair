@@ -22,7 +22,7 @@ import android.animation.ObjectAnimator;
 import android.view.animation.Interpolator;
 import android.view.animation.PathInterpolator;
 
-import com.android.quickstep.AnimatedFloat;
+import com.android.launcher3.anim.AnimatedFloat;
 import com.android.quickstep.SystemUiProxy;
 
 import java.io.PrintWriter;
