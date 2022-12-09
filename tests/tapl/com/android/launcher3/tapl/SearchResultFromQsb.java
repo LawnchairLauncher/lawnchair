@@ -55,7 +55,7 @@ public class SearchResultFromQsb {
     }
 
     /** Find the web suggestion from search suggestion's title text */
-    public void findWebSuggest(String text) {
+    public void verifyWebSuggestIsPresent(String text) {
         ArrayList<UiObject2> goldenGateResults =
                 new ArrayList<>(mLauncher.waitForObjectsInContainer(
                         mLauncher.waitForSystemLauncherObject(SEARCH_CONTAINER_RES_ID),

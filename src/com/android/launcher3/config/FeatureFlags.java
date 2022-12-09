@@ -89,14 +89,6 @@ public final class FeatureFlags {
             getDebugFlag("ENABLE_FLOATING_SEARCH_BAR", false,
                     "Keep All Apps search bar at the bottom (but above keyboard if open)");
 
-    public static final BooleanFlag ENABLE_QUICK_LAUNCH_V2 = new DeviceFlag(
-            "ENABLE_QUICK_LAUNCH_V2", false, "Use quick launch v2 "
-            + "behavior. Quick search and quick launch v1 would be unavailable if this is enabled");
-
-    public static final BooleanFlag GBOARD_UPDATE_ENTER_KEY = new DeviceFlag(
-            "GBOARD_UPDATE_ENTER_KEY", false, "Update gBoard enter key "
-            + "icon dynamically based on top search content for Quick Launch V2");
-
     public static final BooleanFlag ENABLE_HIDE_HEADER = new DeviceFlag("ENABLE_HIDE_HEADER",
             true, "Hide header on keyboard before typing in all apps");
 
@@ -372,6 +364,11 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_LAUNCH_FROM_STAGED_APP = getDebugFlag(
             "ENABLE_LAUNCH_FROM_STAGED_APP", false,
             "Enable the ability to tap a staged app during split select to launch it in full screen"
+    );
+
+    public static final BooleanFlag ENABLE_FORCED_MONO_ICON = getDebugFlag(
+            "ENABLE_FORCED_MONO_ICON", false,
+            "Enable the ability to generate monochromatic icons, if it is not provided by the app"
     );
 
     public static void initialize(Context context) {
