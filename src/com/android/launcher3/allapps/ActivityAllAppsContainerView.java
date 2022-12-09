@@ -27,13 +27,12 @@ import android.widget.RelativeLayout;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.launcher3.DeviceProfile.DeviceProfileListenable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.views.AppLauncher;
+import com.android.launcher3.views.ActivityContext;
 
 import java.util.ArrayList;
 
@@ -42,8 +41,8 @@ import java.util.ArrayList;
  *
  * @param <T> Type of context inflating all apps.
  */
-public class ActivityAllAppsContainerView<T extends Context & AppLauncher
-        & DeviceProfileListenable> extends BaseAllAppsContainerView<T> {
+public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
+        extends BaseAllAppsContainerView<T> {
 
     private static final long DEFAULT_SEARCH_TRANSITION_DURATION_MS = 300;
 

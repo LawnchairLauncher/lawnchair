@@ -139,12 +139,12 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
         mTargetRect.roundOut(outPos);
     }
 
-    public static OptionsPopupView show(AppLauncher launcher, RectF targetRect,
+    public static OptionsPopupView show(ActivityContext launcher, RectF targetRect,
             List<OptionItem> items, boolean shouldAddArrow) {
         return show(launcher, targetRect, items, shouldAddArrow, 0 /* width */);
     }
 
-    public static OptionsPopupView show(AppLauncher launcher, RectF targetRect,
+    public static OptionsPopupView show(ActivityContext launcher, RectF targetRect,
             List<OptionItem> items, boolean shouldAddArrow, int width) {
         OptionsPopupView popup = (OptionsPopupView) launcher.getLayoutInflater()
                 .inflate(R.layout.longpress_options_menu, launcher.getDragLayer(), false);

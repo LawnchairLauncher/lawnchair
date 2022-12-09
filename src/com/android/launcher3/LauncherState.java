@@ -41,6 +41,7 @@ import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.uioverrides.states.AllAppsState;
 import com.android.launcher3.uioverrides.states.OverviewState;
+import com.android.launcher3.views.ActivityContext;
 
 import java.util.Arrays;
 
@@ -261,7 +262,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      *
      * 0 means completely zoomed in, without blurs. 1 is zoomed out, with blurs.
      */
-    public final  <DEVICE_PROFILE_CONTEXT extends Context & DeviceProfile.DeviceProfileListenable>
+    public final  <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext>
             float getDepth(DEVICE_PROFILE_CONTEXT context) {
         return getDepth(context,
                 BaseDraggingActivity.fromContext(context).getDeviceProfile().isMultiWindowMode);
@@ -272,7 +273,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      *
      * @see #getDepth(Context).
      */
-    public final <DEVICE_PROFILE_CONTEXT extends Context & DeviceProfile.DeviceProfileListenable>
+    public final <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext>
             float getDepth(DEVICE_PROFILE_CONTEXT context, boolean isMultiWindowMode) {
         if (isMultiWindowMode) {
             return 0;
@@ -280,7 +281,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         return getDepthUnchecked(context);
     }
 
-    protected <DEVICE_PROFILE_CONTEXT extends Context & DeviceProfile.DeviceProfileListenable>
+    protected <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext>
             float getDepthUnchecked(DEVICE_PROFILE_CONTEXT context) {
         return 0f;
     }

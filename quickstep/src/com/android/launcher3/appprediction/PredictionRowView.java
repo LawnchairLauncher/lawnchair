@@ -30,7 +30,6 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.DeviceProfile.DeviceProfileListenable;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -51,7 +50,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @TargetApi(Build.VERSION_CODES.P)
-public class PredictionRowView<T extends Context & ActivityContext & DeviceProfileListenable>
+public class PredictionRowView<T extends Context & ActivityContext>
         extends LinearLayout implements OnDeviceProfileChangeListener, FloatingHeaderRow {
 
     private final T mActivityContext;
