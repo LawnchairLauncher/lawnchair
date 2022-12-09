@@ -36,8 +36,6 @@ import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
@@ -109,9 +107,7 @@ public class SearchTransitionController {
         }
 
         mSearchToAzAnimator = ObjectAnimator.ofFloat(this, SEARCH_TO_AZ_PROGRESS, targetProgress);
-        boolean inAllApps = Launcher.getLauncher(
-                mAllAppsContainerView.getContext()).getStateManager().isInStableState(
-                LauncherState.ALL_APPS);
+        boolean inAllApps = mAllAppsContainerView.isInAllApps();
         if (!inAllApps) {
             duration = 0;  // Don't want to animate when coming from QSB.
         }
