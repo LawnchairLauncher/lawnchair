@@ -23,11 +23,11 @@ import android.view.ViewTreeObserver;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.util.DimensionUtils;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.TouchController;
-import com.android.quickstep.AnimatedFloat;
 
 import java.io.PrintWriter;
 

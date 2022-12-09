@@ -15,8 +15,8 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.anim.AnimatedFloat.VALUE;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
-import static com.android.quickstep.AnimatedFloat.VALUE;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -26,10 +26,10 @@ import android.animation.ValueAnimator;
 import androidx.annotation.Nullable;
 import androidx.dynamicanimation.animation.SpringForce;
 
+import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.launcher3.util.DisplayController;
-import com.android.quickstep.AnimatedFloat;
 
 import java.io.PrintWriter;
 
