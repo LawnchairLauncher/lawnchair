@@ -18,9 +18,14 @@ package com.android.launcher3.taskbar;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_STASHED_IN_APP_EDU;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
+import android.view.LayoutInflater;
+
 import com.android.launcher3.R;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayController;
+import com.android.launcher3.util.DisplayController;
+
+import com.airbnb.lottie.LottieAnimationView;
 
 import java.io.PrintWriter;
 
@@ -33,6 +38,7 @@ public class TaskbarEduController implements TaskbarControllers.LoggableTaskbarC
     TaskbarControllers mControllers;
 
     private TaskbarEduView mTaskbarEduView;
+    private TaskbarEduPagedView mPagedView;
 
     public TaskbarEduController(TaskbarActivityContext activity) {
         mActivity = activity;
@@ -45,11 +51,20 @@ public class TaskbarEduController implements TaskbarControllers.LoggableTaskbarC
     void showEdu() {
         TaskbarOverlayController overlayController = mControllers.taskbarOverlayController;
         TaskbarOverlayContext overlayContext = overlayController.requestWindow();
-        mTaskbarEduView = (TaskbarEduView) overlayContext.getLayoutInflater().inflate(
-                R.layout.taskbar_edu, overlayContext.getDragLayer(), false);
-        mTaskbarEduView.init(new TaskbarEduCallbacks());
-        mControllers.navbarButtonsViewController.setSlideInViewVisible(true);
+        LayoutInflater layoutInflater = overlayContext.getLayoutInflater();
 
+        mTaskbarEduView = (TaskbarEduView) layoutInflater.inflate(
+                R.layout.taskbar_edu, overlayContext.getDragLayer(), false);
+        mPagedView = mTaskbarEduView.findViewById(R.id.content);
+        layoutInflater.inflate(
+                DisplayController.isTransientTaskbar(overlayContext)
+                        ? R.layout.taskbar_edu_pages_transient
+                        : R.layout.taskbar_edu_pages_persistent,
+                mPagedView,
+                true);
+        mTaskbarEduView.init(new TaskbarEduCallbacks());
+
+        mControllers.navbarButtonsViewController.setSlideInViewVisible(true);
         TaskbarStashController stashController = mControllers.taskbarStashController;
         stashController.updateStateForFlag(FLAG_STASHED_IN_APP_EDU, true);
         stashController.applyState(overlayController.getOpenDuration());
@@ -75,7 +90,17 @@ public class TaskbarEduController implements TaskbarControllers.LoggableTaskbarC
      * Callbacks for {@link TaskbarEduView} to interact with its controller.
      */
     class TaskbarEduCallbacks {
-        void onPageChanged(int currentPage, int pageCount) {
+        void onPageChanged(int prevPage, int currentPage, int pageCount) {
+            // Reset previous pages' animation.
+            LottieAnimationView prevAnimation = mPagedView.getChildAt(prevPage)
+                    .findViewById(R.id.animation);
+            prevAnimation.cancelAnimation();
+            prevAnimation.setFrame(0);
+
+            mPagedView.getChildAt(currentPage)
+                    .<LottieAnimationView>findViewById(R.id.animation)
+                    .playAnimation();
+
             if (currentPage == 0) {
                 mTaskbarEduView.updateStartButton(R.string.taskbar_edu_close,
                         v -> mTaskbarEduView.close(true /* animate */));
