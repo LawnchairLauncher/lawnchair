@@ -44,7 +44,8 @@ fun PreferencesDashboard() {
         backArrowVisible = false,
         actions = { PreferencesOverflowMenu() }
     ) {
-        PreferencesDebugWarning()
+        if (BuildConfig.DEBUG) PreferencesDebugWarning()
+
         PreferenceCategory(
             label = stringResource(R.string.general_label),
             description = stringResource(R.string.general_description),
@@ -165,18 +166,17 @@ fun PreferencesOverflowMenu() {
 @Composable
 fun PreferencesDebugWarning() {
     val enableDebug by preferenceManager().enableDebugMenu.observeAsState()
-    if (BuildConfig.DEBUG && !enableDebug) {
-        Surface(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            shape = MaterialTheme.shapes.large,
-            color = Material3Theme.colorScheme.errorContainer
-        ) {
-            WarningPreference(
-                // Don't move to strings.xml, no need to translate this warning
-                modifier = Modifier,
-                text = "Warning: You are currently using a development build. These builds WILL contain bugs, broken features, and unexpected crashes. Use at your own risk!"
-            )
-        }
+    if (enableDebug) return
+
+    Surface(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        shape = MaterialTheme.shapes.large,
+        color = Material3Theme.colorScheme.errorContainer
+    ) {
+        WarningPreference(
+            // Don't move to strings.xml, no need to translate this warning
+            text = "Warning: You are currently using a development build. These builds WILL contain bugs, broken features, and unexpected crashes. Use at your own risk!"
+        )
     }
 }
 
