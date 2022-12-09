@@ -271,7 +271,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
         } else {
             lp.leftMargin = lp.rightMargin = 0;
             lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-            lp.bottomMargin = grid.hotseatBarSizePx + insets.bottom;
+            lp.bottomMargin = grid.hotseatBarSizePx;
         }
         setLayoutParams(lp);
     }

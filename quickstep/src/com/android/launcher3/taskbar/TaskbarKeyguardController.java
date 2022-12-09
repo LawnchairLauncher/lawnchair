@@ -111,11 +111,9 @@ public class TaskbarKeyguardController implements TaskbarControllers.LoggableTas
     public void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "TaskbarKeyguardController:");
 
-        pw.println(String.format(
-                "%s\tmKeyguardSysuiFlags=%s",
-                prefix,
-                QuickStepContract.getSystemUiStateString(mKeyguardSysuiFlags)));
-        pw.println(String.format("%s\tmBouncerShowing=%b", prefix, mBouncerShowing));
-        pw.println(String.format("%s\tmIsScreenOff=%b", prefix, mIsScreenOff));
+        pw.println(prefix + "\tmKeyguardSysuiFlags=" + QuickStepContract.getSystemUiStateString(
+                mKeyguardSysuiFlags));
+        pw.println(prefix + "\tmBouncerShowing=" + mBouncerShowing);
+        pw.println(prefix + "\tmIsScreenOff=" + mIsScreenOff);
     }
 }

@@ -21,7 +21,6 @@ import static com.android.launcher3.recyclerview.ViewHolderBinder.POSITION_FIRST
 import static com.android.launcher3.recyclerview.ViewHolderBinder.POSITION_LAST;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.Process;
 import android.util.Log;
 import android.util.SparseArray;
@@ -36,7 +35,6 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
-import androidx.recyclerview.widget.RecyclerView.LayoutParams;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.android.launcher3.R;
@@ -80,10 +78,10 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     private static final boolean DEBUG = false;
 
     /** Uniquely identifies widgets list view type within the app. */
-    private static final int VIEW_TYPE_WIDGETS_SPACE = R.id.view_type_widgets_space;
-    private static final int VIEW_TYPE_WIDGETS_LIST = R.id.view_type_widgets_list;
-    private static final int VIEW_TYPE_WIDGETS_HEADER = R.id.view_type_widgets_header;
-    private static final int VIEW_TYPE_WIDGETS_SEARCH_HEADER = R.id.view_type_widgets_search_header;
+    public static final int VIEW_TYPE_WIDGETS_SPACE = R.id.view_type_widgets_space;
+    public static final int VIEW_TYPE_WIDGETS_LIST = R.id.view_type_widgets_list;
+    public static final int VIEW_TYPE_WIDGETS_HEADER = R.id.view_type_widgets_header;
+    public static final int VIEW_TYPE_WIDGETS_SEARCH_HEADER = R.id.view_type_widgets_search_header;
 
     private final Context mContext;
     private final WidgetsDiffReporter mDiffReporter;
@@ -103,7 +101,6 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     @Nullable private Predicate<WidgetsListBaseEntry> mFilter = null;
     @Nullable private RecyclerView mRecyclerView;
     @Nullable private PackageUserKey mPendingClickHeader;
-    private final int mSpacingBetweenEntries;
     private int mMaxSpanSize = 4;
 
     public WidgetsListAdapter(Context context, LayoutInflater layoutInflater,
@@ -133,28 +130,11 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         mViewHolderBinders.put(
                 VIEW_TYPE_WIDGETS_SPACE,
                 new WidgetsSpaceViewHolderBinder(emptySpaceHeightProvider));
-        mSpacingBetweenEntries =
-                context.getResources().getDimensionPixelSize(R.dimen.widget_list_entry_spacing);
     }
 
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         mRecyclerView = recyclerView;
-
-        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(
-                    @NonNull Rect outRect,
-                    @NonNull View view,
-                    @NonNull RecyclerView parent,
-                    @NonNull RecyclerView.State state) {
-                super.getItemOffsets(outRect, view, parent, state);
-                int position = ((LayoutParams) view.getLayoutParams()).getViewLayoutPosition();
-                boolean isHeader =
-                        view.getTag(R.id.tag_widget_entry) instanceof WidgetsListBaseEntry.Header;
-                outRect.top += position > 0 && isHeader ? mSpacingBetweenEntries : 0;
-            }
-        });
     }
 
     @Override
@@ -286,7 +266,6 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
             listPos |= POSITION_LAST;
         }
         viewHolderBinder.bindViewHolder(holder, mVisibleEntries.get(pos), listPos, payloads);
-        holder.itemView.setTag(R.id.tag_widget_entry, entry);
     }
 
     @Override

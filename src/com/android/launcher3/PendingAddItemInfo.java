@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import android.content.ComponentName;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.model.data.ItemInfo;
@@ -43,6 +44,7 @@ public class PendingAddItemInfo extends ItemInfo {
     /**
      * Returns shallow copy of the object.
      */
+    @NonNull
     @Override
     public ItemInfo makeShallowCopy() {
         PendingAddItemInfo itemInfo = new PendingAddItemInfo();

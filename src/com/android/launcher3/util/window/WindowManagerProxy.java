@@ -16,16 +16,16 @@
 package com.android.launcher3.util.window;
 
 import static android.view.Display.DEFAULT_DISPLAY;
-import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION;
 
-import static com.android.launcher3.ResourceUtils.INVALID_RESOURCE_HANDLE;
-import static com.android.launcher3.ResourceUtils.NAVBAR_HEIGHT;
-import static com.android.launcher3.ResourceUtils.NAVBAR_HEIGHT_LANDSCAPE;
-import static com.android.launcher3.ResourceUtils.NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE;
-import static com.android.launcher3.ResourceUtils.STATUS_BAR_HEIGHT;
-import static com.android.launcher3.ResourceUtils.STATUS_BAR_HEIGHT_LANDSCAPE;
-import static com.android.launcher3.ResourceUtils.STATUS_BAR_HEIGHT_PORTRAIT;
 import static com.android.launcher3.Utilities.dpiFromPx;
+import static com.android.launcher3.testing.shared.ResourceUtils.INVALID_RESOURCE_HANDLE;
+import static com.android.launcher3.testing.shared.ResourceUtils.NAVBAR_HEIGHT;
+import static com.android.launcher3.testing.shared.ResourceUtils.NAVBAR_HEIGHT_LANDSCAPE;
+import static com.android.launcher3.testing.shared.ResourceUtils.NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE;
+import static com.android.launcher3.testing.shared.ResourceUtils.NAV_BAR_INTERACTION_MODE_RES_NAME;
+import static com.android.launcher3.testing.shared.ResourceUtils.STATUS_BAR_HEIGHT;
+import static com.android.launcher3.testing.shared.ResourceUtils.STATUS_BAR_HEIGHT_LANDSCAPE;
+import static com.android.launcher3.testing.shared.ResourceUtils.STATUS_BAR_HEIGHT_PORTRAIT;
 import static com.android.launcher3.util.MainThreadInitializedObject.forOverride;
 import static com.android.launcher3.util.RotationUtils.deltaRotation;
 import static com.android.launcher3.util.RotationUtils.rotateRect;
@@ -41,7 +41,7 @@ import android.graphics.Rect;
 import android.hardware.display.DisplayManager;
 import android.os.Build;
 import android.util.ArrayMap;
-import android.util.Pair;
+import android.util.Log;
 import android.view.Display;
 import android.view.DisplayCutout;
 import android.view.Surface;
@@ -50,9 +50,10 @@ import android.view.WindowManager;
 import android.view.WindowMetrics;
 
 import com.android.launcher3.R;
-import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.launcher3.util.WindowBounds;
 
@@ -61,6 +62,7 @@ import com.android.launcher3.util.WindowBounds;
  */
 public class WindowManagerProxy implements ResourceBasedOverride {
 
+    private static final String TAG = "WindowManagerProxy";
     public static final int MIN_TABLET_WIDTH = 600;
 
     public static final MainThreadInitializedObject<WindowManagerProxy> INSTANCE =
@@ -88,20 +90,12 @@ public class WindowManagerProxy implements ResourceBasedOverride {
      * Returns a map of normalized info of internal displays to estimated window bounds
      * for that display
      */
-    public ArrayMap<String, Pair<CachedDisplayInfo, WindowBounds[]>> estimateInternalDisplayBounds(
-            Context context) {
-        Display[] displays = getDisplays(context);
-        ArrayMap<String, Pair<CachedDisplayInfo, WindowBounds[]>> result = new ArrayMap<>();
-        for (Display display : displays) {
-            if (isInternalDisplay(display)) {
-                Context displayContext = Utilities.ATLEAST_S
-                        ? context.createWindowContext(display, TYPE_APPLICATION, null)
-                        : context.createDisplayContext(display);
-                CachedDisplayInfo info = getDisplayInfo(displayContext, display).normalize();
-                WindowBounds[] bounds = estimateWindowBounds(context, info);
-                result.put(info.id, Pair.create(info, bounds));
-            }
-        }
+    public ArrayMap<CachedDisplayInfo, WindowBounds[]> estimateInternalDisplayBounds(
+            Context displayInfoContext) {
+        CachedDisplayInfo info = getDisplayInfo(displayInfoContext).normalize();
+        WindowBounds[] bounds = estimateWindowBounds(displayInfoContext, info);
+        ArrayMap<CachedDisplayInfo, WindowBounds[]> result = new ArrayMap<>();
+        result.put(info, bounds);
         return result;
     }
 
@@ -109,12 +103,11 @@ public class WindowManagerProxy implements ResourceBasedOverride {
      * Returns the real bounds for the provided display after applying any insets normalization
      */
     @TargetApi(Build.VERSION_CODES.R)
-    public WindowBounds getRealBounds(Context windowContext,
-            Display display, CachedDisplayInfo info) {
+    public WindowBounds getRealBounds(Context displayInfoContext, CachedDisplayInfo info) {
         if (!Utilities.ATLEAST_R) {
             Point smallestSize = new Point();
             Point largestSize = new Point();
-            display.getCurrentSizeRange(smallestSize, largestSize);
+            getDisplay(displayInfoContext).getCurrentSizeRange(smallestSize, largestSize);
 
             if (info.size.y > info.size.x) {
                 // Portrait
@@ -122,17 +115,16 @@ public class WindowManagerProxy implements ResourceBasedOverride {
                         info.rotation);
             } else {
                 // Landscape
-                new WindowBounds(info.size.x, info.size.y, largestSize.x, smallestSize.y,
+                return new WindowBounds(info.size.x, info.size.y, largestSize.x, smallestSize.y,
                         info.rotation);
             }
         }
 
-        WindowMetrics wm = windowContext.getSystemService(WindowManager.class)
+        WindowMetrics windowMetrics = displayInfoContext.getSystemService(WindowManager.class)
                 .getMaximumWindowMetrics();
-
         Rect insets = new Rect();
-        normalizeWindowInsets(windowContext, wm.getWindowInsets(), insets);
-        return new WindowBounds(wm.getBounds(), insets, info.rotation);
+        normalizeWindowInsets(displayInfoContext, windowMetrics.getWindowInsets(), insets);
+        return new WindowBounds(windowMetrics.getBounds(), insets, info.rotation);
     }
 
     /**
@@ -169,12 +161,9 @@ public class WindowManagerProxy implements ResourceBasedOverride {
         insetsBuilder.setInsetsIgnoringVisibility(WindowInsets.Type.navigationBars(), newNavInsets);
 
         Insets statusBarInsets = oldInsets.getInsets(WindowInsets.Type.statusBars());
-
-
         int statusBarHeight = getDimenByName(systemRes,
                 (isPortrait) ? STATUS_BAR_HEIGHT_PORTRAIT : STATUS_BAR_HEIGHT_LANDSCAPE,
                 STATUS_BAR_HEIGHT);
-
         Insets newStatusBarInsets = Insets.of(
                 statusBarInsets.left,
                 Math.max(statusBarInsets.top, statusBarHeight),
@@ -202,21 +191,14 @@ public class WindowManagerProxy implements ResourceBasedOverride {
     }
 
     /**
-     * Returns true if the display is an internal displays
-     */
-    protected boolean isInternalDisplay(Display display) {
-        return display.getDisplayId() == Display.DEFAULT_DISPLAY;
-    }
-
-    /**
      * Returns a list of possible WindowBounds for the display keyed on the 4 surface rotations
      */
-    public WindowBounds[] estimateWindowBounds(Context context, CachedDisplayInfo display) {
+    protected WindowBounds[] estimateWindowBounds(Context context, CachedDisplayInfo displayInfo) {
         int densityDpi = context.getResources().getConfiguration().densityDpi;
-        int rotation = display.rotation;
-        Rect safeCutout = display.cutout;
+        int rotation = displayInfo.rotation;
+        Rect safeCutout = displayInfo.cutout;
 
-        int minSize = Math.min(display.size.x, display.size.y);
+        int minSize = Math.min(displayInfo.size.x, displayInfo.size.y);
         int swDp = (int) dpiFromPx(minSize, densityDpi);
 
         Resources systemRes;
@@ -255,7 +237,7 @@ public class WindowManagerProxy implements ResourceBasedOverride {
         Point tempSize = new Point();
         for (int i = 0; i < 4; i++) {
             int rotationChange = deltaRotation(rotation, i);
-            tempSize.set(display.size.x, display.size.y);
+            tempSize.set(displayInfo.size.x, displayInfo.size.y);
             rotateSize(tempSize, rotationChange);
             Rect bounds = new Rect(0, 0, tempSize.x, tempSize.y);
 
@@ -311,55 +293,78 @@ public class WindowManagerProxy implements ResourceBasedOverride {
      * Returns a CachedDisplayInfo initialized for the current display
      */
     @TargetApi(Build.VERSION_CODES.S)
-    public CachedDisplayInfo getDisplayInfo(Context displayContext, Display display) {
-        int rotation = getRotation(displayContext);
-        Rect cutoutRect = new Rect();
-        Point size = new Point();
+    public CachedDisplayInfo getDisplayInfo(Context displayInfoContext) {
+        int rotation = getRotation(displayInfoContext);
         if (Utilities.ATLEAST_S) {
-            WindowMetrics wm = displayContext.getSystemService(WindowManager.class)
+            WindowMetrics windowMetrics = displayInfoContext.getSystemService(WindowManager.class)
                     .getMaximumWindowMetrics();
-            DisplayCutout cutout = wm.getWindowInsets().getDisplayCutout();
-            if (cutout != null) {
-                cutoutRect.set(cutout.getSafeInsetLeft(), cutout.getSafeInsetTop(),
-                        cutout.getSafeInsetRight(), cutout.getSafeInsetBottom());
-            }
-
-            size.set(wm.getBounds().right, wm.getBounds().bottom);
+            return getDisplayInfo(windowMetrics, rotation);
         } else {
+            Point size = new Point();
+            Display display = getDisplay(displayInfoContext);
             display.getRealSize(size);
+            Rect cutoutRect = new Rect();
+            return new CachedDisplayInfo(size, rotation, cutoutRect);
         }
-        return new CachedDisplayInfo(getDisplayId(display), size, rotation, cutoutRect);
     }
 
     /**
-     * Returns a unique ID representing the display
+     * Returns a CachedDisplayInfo initialized for the current display
      */
-    protected String getDisplayId(Display display) {
-        return Integer.toString(display.getDisplayId());
+    @TargetApi(Build.VERSION_CODES.S)
+    protected CachedDisplayInfo getDisplayInfo(WindowMetrics windowMetrics, int rotation) {
+        Point size = new Point(windowMetrics.getBounds().right, windowMetrics.getBounds().bottom);
+        Rect cutoutRect = new Rect();
+        DisplayCutout cutout = windowMetrics.getWindowInsets().getDisplayCutout();
+        if (cutout != null) {
+            cutoutRect.set(cutout.getSafeInsetLeft(), cutout.getSafeInsetTop(),
+                    cutout.getSafeInsetRight(), cutout.getSafeInsetBottom());
+        }
+        return new CachedDisplayInfo(size, rotation, cutoutRect);
     }
 
     /**
-     * Returns rotation of the display associated with the context.
+     * Returns rotation of the display associated with the context, or rotation of DEFAULT_DISPLAY
+     * if the context isn't associated with a display.
      */
-    public int getRotation(Context context) {
-        Display d = null;
+    public int getRotation(Context displayInfoContext) {
+        return getDisplay(displayInfoContext).getRotation();
+    }
+
+    /**
+     *
+     * Returns the display associated with the context, or DEFAULT_DISPLAY if the context isn't
+     * associated with a display.
+     */
+    protected Display getDisplay(Context displayInfoContext) {
         if (Utilities.ATLEAST_R) {
             try {
-                d = context.getDisplay();
+                return displayInfoContext.getDisplay();
             } catch (UnsupportedOperationException e) {
                 // Ignore
             }
         }
-        if (d == null) {
-            d = context.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY);
-        }
-        return d.getRotation();
+        return displayInfoContext.getSystemService(DisplayManager.class).getDisplay(
+                DEFAULT_DISPLAY);
     }
 
     /**
-     * Returns all currently valid logical displays.
+     * Returns the current navigation mode from resource.
      */
-    protected Display[] getDisplays(Context context) {
-        return context.getSystemService(DisplayManager.class).getDisplays();
+    public NavigationMode getNavigationMode(Context context) {
+        int modeInt = ResourceUtils.getIntegerByName(NAV_BAR_INTERACTION_MODE_RES_NAME,
+                context.getResources(), INVALID_RESOURCE_HANDLE);
+
+        if (modeInt == INVALID_RESOURCE_HANDLE) {
+            Log.e(TAG, "Failed to get system resource ID. Incompatible framework version?");
+        } else {
+            for (NavigationMode m : NavigationMode.values()) {
+                if (m.resValue == modeInt) {
+                    return m;
+                }
+            }
+        }
+        return Utilities.ATLEAST_S ? NavigationMode.NO_BUTTON :
+                NavigationMode.THREE_BUTTONS;
     }
 }

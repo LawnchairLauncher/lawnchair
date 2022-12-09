@@ -26,7 +26,7 @@
         launcher:numHotseatIcons="3"
         launcher:dbFile="launcher_3_by_3.db"
         launcher:defaultLayoutId="@xml/default_workspace_3x3"
-        launcher:deviceCategory="phone|multi_display" >
+        launcher:deviceCategory="phone" >
 
         <display-option
             launcher:name="Super Short Stubby"
@@ -58,6 +58,7 @@
         launcher:numFolderColumns="4"
         launcher:numHotseatIcons="4"
         launcher:dbFile="launcher_4_by_4.db"
+        launcher:inlineNavButtonsEndSpacing="@dimen/taskbar_button_margin_4_4"
         launcher:defaultLayoutId="@xml/default_workspace_4x4"
         launcher:deviceCategory="phone|multi_display" >
 
@@ -121,6 +122,7 @@
         launcher:numFolderColumns="4"
         launcher:numHotseatIcons="5"
         launcher:dbFile="launcher.db"
+        launcher:inlineNavButtonsEndSpacing="@dimen/taskbar_button_margin_5_5"
         launcher:defaultLayoutId="@xml/default_workspace_5x5"
         launcher:deviceCategory="phone|multi_display" >
 
@@ -167,6 +169,7 @@
         launcher:hotseatColumnSpanLandscape="4"
         launcher:numAllAppsColumns="6"
         launcher:isScalable="true"
+        launcher:inlineNavButtonsEndSpacing="@dimen/taskbar_button_margin_6_5"
         launcher:devicePaddingId="@xml/paddings_6x5"
         launcher:dbFile="launcher_6_by_5.db"
         launcher:defaultLayoutId="@xml/default_workspace_6x5"
@@ -197,8 +200,8 @@
             launcher:allAppsBorderSpaceHorizontal="8"
             launcher:allAppsBorderSpaceVertical="16"
             launcher:allAppsBorderSpaceLandscape="16"
-            launcher:hotseatBorderSpace="58"
-            launcher:hotseatBorderSpaceLandscape="50.4"
+            launcher:hotseatBarBottomSpace="76"
+            launcher:hotseatBarBottomSpaceLandscape="40"
             launcher:canBeDefault="true" />
 
     </grid-option>

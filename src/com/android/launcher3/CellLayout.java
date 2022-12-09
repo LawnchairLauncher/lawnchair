@@ -496,8 +496,8 @@ public class CellLayout extends ViewGroup {
 
                     // Draw reorder drag target.
                     debugPaint.setColor(Color.RED);
-                    canvas.drawCircle(cellCenter[0], cellCenter[1], getReorderRadius(targetCell),
-                            debugPaint);
+                    canvas.drawCircle(cellCenter[0], cellCenter[1],
+                            getReorderRadius(targetCell, 1, 1), debugPaint);
 
                     // Draw folder creation drag target.
                     if (canCreateFolder) {
@@ -829,8 +829,8 @@ public class CellLayout extends ViewGroup {
         final int hStartPadding = getPaddingLeft();
         final int vStartPadding = getPaddingTop();
 
-        result[0] = (x - hStartPadding) / mCellWidth;
-        result[1] = (y - vStartPadding) / mCellHeight;
+        result[0] = (x - hStartPadding) / (mCellWidth + mBorderSpace.x);
+        result[1] = (y - vStartPadding) / (mCellHeight + mBorderSpace.y);
 
         final int xAxis = mCountX;
         final int yAxis = mCountY;
@@ -839,16 +839,6 @@ public class CellLayout extends ViewGroup {
         if (result[0] >= xAxis) result[0] = xAxis - 1;
         if (result[1] < 0) result[1] = 0;
         if (result[1] >= yAxis) result[1] = yAxis - 1;
-    }
-
-    /**
-     * Given a point, return the cell that most closely encloses that point
-     * @param x X coordinate of the point
-     * @param y Y coordinate of the point
-     * @param result Array of 2 ints to hold the x and y coordinate of the cell
-     */
-    void pointToCellRounded(int x, int y, int[] result) {
-        pointToCellExact(x + (mCellWidth / 2), y + (mCellHeight / 2), result);
     }
 
     /**
@@ -922,18 +912,18 @@ public class CellLayout extends ViewGroup {
         DeviceProfile grid = mActivity.getDeviceProfile();
         float iconVisibleRadius = ICON_VISIBLE_AREA_FACTOR * grid.iconSizePx / 2;
         // Halfway between reorder radius and icon.
-        return (getReorderRadius(targetCell) + iconVisibleRadius) / 2;
+        return (getReorderRadius(targetCell, 1, 1) + iconVisibleRadius) / 2;
     }
 
     /**
      * Returns the max distance from the center of a cell that will start to reorder on drag over.
      */
-    public float getReorderRadius(int[] targetCell) {
+    public float getReorderRadius(int[] targetCell, int spanX, int spanY) {
         int[] centerPoint = mTmpPoint;
         getWorkspaceCellVisualCenter(targetCell[0], targetCell[1], centerPoint);
 
         Rect cellBoundsWithSpacing = mTempRect;
-        cellToRect(targetCell[0], targetCell[1], 1, 1, cellBoundsWithSpacing);
+        cellToRect(targetCell[0], targetCell[1], spanX, spanY, cellBoundsWithSpacing);
         cellBoundsWithSpacing.inset(-mBorderSpace.x / 2, -mBorderSpace.y / 2);
 
         if (canCreateFolder(getChildAt(targetCell[0], targetCell[1]))) {
@@ -1202,13 +1192,14 @@ public class CellLayout extends ViewGroup {
             int row = cellY + 1;
             int col = workspace.mIsRtl ? mCountX - cellX : cellX + 1;
             int panelCount = workspace.getPanelCount();
+            int screenId = workspace.getIdForScreen(this);
+            int pageIndex = workspace.getPageIndexForScreenId(screenId);
             if (panelCount > 1) {
                 // Increment the column if the target is on the right side of a two panel home
-                int screenId = workspace.getIdForScreen(this);
-                int pageIndex = workspace.getPageIndexForScreenId(screenId);
                 col += (pageIndex % panelCount) * mCountX;
             }
-            return getContext().getString(R.string.move_to_empty_cell, row, col);
+            return getContext().getString(R.string.move_to_empty_cell_description, row, col,
+                    workspace.getPageDescription(pageIndex));
         }
     }
 
@@ -1239,7 +1230,7 @@ public class CellLayout extends ViewGroup {
      */
     int[] findNearestVacantArea(int pixelX, int pixelY, int minSpanX, int minSpanY, int spanX,
             int spanY, int[] result, int[] resultSpan) {
-        return findNearestArea(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY, true,
+        return findNearestArea(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY, false,
                 result, resultSpan);
     }
 
@@ -1261,9 +1252,10 @@ public class CellLayout extends ViewGroup {
     /**
      * Find a vacant area that will fit the given bounds nearest the requested
      * cell location. Uses Euclidean distance to score multiple vacant areas.
-     *
-     * @param pixelX The X location at which you want to search for a vacant area.
-     * @param pixelY The Y location at which you want to search for a vacant area.
+     * @param relativeXPos The X location relative to the Cell layout at which you want to search
+     *                     for a vacant area.
+     * @param relativeYPos The Y location relative to the Cell layout at which you want to search
+     *                     for a vacant area.
      * @param minSpanX The minimum horizontal span required
      * @param minSpanY The minimum vertical span required
      * @param spanX Horizontal span of the object.
@@ -1274,15 +1266,15 @@ public class CellLayout extends ViewGroup {
      * @return The X, Y cell of a vacant area that can contain this object,
      *         nearest the requested location.
      */
-    private int[] findNearestArea(int pixelX, int pixelY, int minSpanX, int minSpanY, int spanX,
-            int spanY, boolean ignoreOccupied, int[] result, int[] resultSpan) {
+    private int[] findNearestArea(int relativeXPos, int relativeYPos, int minSpanX, int minSpanY,
+            int spanX, int spanY, boolean ignoreOccupied, int[] result, int[] resultSpan) {
         lazyInitTempRectStack();
 
-        // For items with a spanX / spanY > 1, the passed in point (pixelX, pixelY) corresponds
-        // to the center of the item, but we are searching based on the top-left cell, so
-        // we translate the point over to correspond to the top-left.
-        pixelX -= mCellWidth * (spanX - 1) / 2f;
-        pixelY -= mCellHeight * (spanY - 1) / 2f;
+        // For items with a spanX / spanY > 1, the passed in point (relativeXPos, relativeYPos)
+        // corresponds to the center of the item, but we are searching based on the top-left cell,
+        // so we translate the point over to correspond to the top-left.
+        relativeXPos = (int) (relativeXPos - (mCellWidth + mBorderSpace.x) * (spanX - 1) / 2f);
+        relativeYPos = (int) (relativeYPos - (mCellHeight + mBorderSpace.y) * (spanY - 1) / 2f);
 
         // Keep track of best-scoring drop area
         final int[] bestXY = result != null ? result : new int[2];
@@ -1303,7 +1295,7 @@ public class CellLayout extends ViewGroup {
             for (int x = 0; x < countX - (minSpanX - 1); x++) {
                 int ySize = -1;
                 int xSize = -1;
-                if (ignoreOccupied) {
+                if (!ignoreOccupied) {
                     // First, let's see if this thing fits anywhere
                     for (int i = 0; i < minSpanX; i++) {
                         for (int j = 0; j < minSpanY; j++) {
@@ -1367,7 +1359,7 @@ public class CellLayout extends ViewGroup {
                     }
                 }
                 validRegions.push(currentRect);
-                double distance = Math.hypot(cellXY[0] - pixelX,  cellXY[1] - pixelY);
+                double distance = Math.hypot(cellXY[0] - relativeXPos,  cellXY[1] - relativeYPos);
 
                 if ((distance <= bestDistance && !contained) ||
                         currentRect.contains(bestRect)) {
@@ -2628,7 +2620,7 @@ public class CellLayout extends ViewGroup {
      *         nearest the requested location.
      */
     public int[] findNearestArea(int pixelX, int pixelY, int spanX, int spanY, int[] result) {
-        return findNearestArea(pixelX, pixelY, spanX, spanY, spanX, spanY, false, result, null);
+        return findNearestArea(pixelX, pixelY, spanX, spanY, spanX, spanY, true, result, null);
     }
 
     boolean existsEmptyCell() {

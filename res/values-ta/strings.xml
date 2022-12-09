@@ -59,7 +59,6 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ஆப்ஸில் தேடுக"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ஆப்ஸை ஏற்றுகிறது…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" உடன் பொருந்தும் ஆப்ஸ் இல்லை"</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"கூடுதல் பயன்பாடுகளைத் தேடு"</string>
     <string name="label_application" msgid="8531721983832654978">"ஆப்ஸ்"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"அனைத்து ஆப்ஸும்"</string>
     <string name="notifications_header" msgid="1404149926117359025">"அறிவிப்புகள்"</string>
@@ -137,7 +136,7 @@
     <string name="item_removed" msgid="851119963877842327">"அகற்றப்பட்டது"</string>
     <string name="undo" msgid="4151576204245173321">"செயல்தவிர்"</string>
     <string name="action_move" msgid="4339390619886385032">"நகர்த்து"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"<xliff:g id="NUMBER_0">%1$s</xliff:g> வரிசை, <xliff:g id="NUMBER_1">%2$s</xliff:g> நெடுவரிசைக்கு நகர்த்து"</string>
+    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"<xliff:g id="STRING">%3$s</xliff:g> என்பதில் <xliff:g id="NUMBER_0">%1$s</xliff:g>வது வரிசை <xliff:g id="NUMBER_1">%2$s</xliff:g>வது நெடுவரிசைக்கு நகர்த்தப்படும்"</string>
     <string name="move_to_position" msgid="6750008980455459790">"நிலை <xliff:g id="NUMBER">%1$s</xliff:g>க்கு நகர்த்து"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"விரும்பும் நிலை <xliff:g id="NUMBER">%1$s</xliff:g>க்கு நகர்த்து"</string>
     <string name="item_moved" msgid="4606538322571412879">"உருப்படி நகர்த்தப்பட்டது"</string>

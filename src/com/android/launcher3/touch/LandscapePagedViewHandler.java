@@ -19,6 +19,7 @@ package com.android.launcher3.touch;
 import static android.view.Gravity.BOTTOM;
 import static android.view.Gravity.CENTER_VERTICAL;
 import static android.view.Gravity.END;
+import static android.view.Gravity.LEFT;
 import static android.view.Gravity.START;
 import static android.view.Gravity.TOP;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -50,9 +51,9 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.SplitConfigurationOptions;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
-import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.Collections;
@@ -311,7 +312,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public Pair<Float, Float> getDwbLayoutTranslations(int taskViewWidth,
-            int taskViewHeight, StagedSplitBounds splitBounds, DeviceProfile deviceProfile,
+            int taskViewHeight, SplitBounds splitBounds, DeviceProfile deviceProfile,
             View[] thumbnailViews, int desiredTaskId, View banner) {
         boolean isRtl = banner.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
         float translationX = 0;
@@ -375,6 +376,19 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         return isRtl ? 1 : -1;
     }
 
+    @Override
+    public void setSecondaryTaskMenuPosition(SplitBounds splitBounds, View taskView,
+            DeviceProfile deviceProfile, View primarySnaphotView, View taskMenuView) {
+        float topLeftTaskPlusDividerPercent = splitBounds.appsStackedVertically
+                ? (splitBounds.topTaskPercent + splitBounds.dividerHeightPercent)
+                : (splitBounds.leftTaskPercent + splitBounds.dividerWidthPercent);
+        FrameLayout.LayoutParams snapshotParams =
+                (FrameLayout.LayoutParams) primarySnaphotView.getLayoutParams();
+        float additionalOffset = (taskView.getHeight() - snapshotParams.topMargin)
+                * topLeftTaskPlusDividerPercent;
+        taskMenuView.setY(taskMenuView.getY() + additionalOffset);
+    }
+
     /* -------------------- */
 
     @Override
@@ -424,7 +438,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void updateStagedSplitIconParams(View out, float onScreenRectCenterX,
+    public void updateSplitIconParams(View out, float onScreenRectCenterX,
             float onScreenRectCenterY, float fullscreenScaleX, float fullscreenScaleY,
             int drawableWidth, int drawableHeight, DeviceProfile dp,
             @StagePosition int stagePosition) {
@@ -433,6 +447,28 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
                 - 1.0f * drawableWidth / 2));
         out.setY(Math.round((onScreenRectCenterY + (inset / 2f)) / fullscreenScaleY
                 - 1.0f * drawableHeight / 2));
+    }
+
+    @Override
+    public void setSplitInstructionsParams(View out, DeviceProfile dp, int splitInstructionsHeight,
+            int splitInstructionsWidth, int threeButtonNavShift) {
+        out.setPivotX(0);
+        out.setPivotY(splitInstructionsHeight);
+        out.setRotation(getDegreesRotated());
+        int distanceToEdge = out.getResources().getDimensionPixelSize(
+                R.dimen.split_instructions_bottom_margin_phone_landscape);
+        // Adjust for any insets on the left edge
+        int insetCorrectionX = dp.getInsets().left;
+        // Center the view in case of unbalanced insets on top or bottom of screen
+        int insetCorrectionY = (dp.getInsets().bottom - dp.getInsets().top) / 2;
+        out.setTranslationX(distanceToEdge - insetCorrectionX);
+        out.setTranslationY(((-splitInstructionsHeight - splitInstructionsWidth) / 2f)
+                + insetCorrectionY);
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) out.getLayoutParams();
+        // Setting gravity to LEFT instead of the lint-recommended START because we always want this
+        // view to be screen-left when phone is in landscape, regardless of the RtL setting.
+        lp.gravity = LEFT | CENTER_VERTICAL;
+        out.setLayoutParams(lp);
     }
 
     @Override
@@ -447,7 +483,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect,
-            StagedSplitBounds splitInfo, int desiredStagePosition) {
+            SplitBounds splitInfo, int desiredStagePosition) {
         float topLeftTaskPercent = splitInfo.appsStackedVertically
                 ? splitInfo.topTaskPercent
                 : splitInfo.leftTaskPercent;
@@ -464,13 +500,13 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public void measureGroupedTaskViewThumbnailBounds(View primarySnapshot, View secondarySnapshot,
-            int parentWidth, int parentHeight, StagedSplitBounds splitBoundsConfig,
+            int parentWidth, int parentHeight, SplitBounds splitBoundsConfig,
             DeviceProfile dp, boolean isRtl) {
         int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
         int totalThumbnailHeight = parentHeight - spaceAboveSnapshot;
         int dividerBar = splitBoundsConfig.appsStackedVertically
-                ? splitBoundsConfig.visualDividerBounds.height()
-                : splitBoundsConfig.visualDividerBounds.width();
+                ? (int) (splitBoundsConfig.dividerHeightPercent * parentHeight)
+                : (int) (splitBoundsConfig.dividerWidthPercent * parentWidth);
         int primarySnapshotHeight;
         int primarySnapshotWidth;
         int secondarySnapshotHeight;
@@ -500,13 +536,14 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         iconParams.rightMargin = -taskIconHeight - taskIconMargin / 2;
         iconParams.leftMargin = 0;
         iconParams.topMargin = thumbnailTopMargin / 2;
+        iconParams.bottomMargin = 0;
     }
 
     @Override
     public void setSplitIconParams(View primaryIconView, View secondaryIconView,
             int taskIconHeight, int primarySnapshotWidth, int primarySnapshotHeight,
             int groupedTaskViewHeight, int groupedTaskViewWidth, boolean isRtl,
-            DeviceProfile deviceProfile, StagedSplitBounds splitConfig) {
+            DeviceProfile deviceProfile, SplitBounds splitConfig) {
         FrameLayout.LayoutParams primaryIconParams =
                 (FrameLayout.LayoutParams) primaryIconView.getLayoutParams();
         FrameLayout.LayoutParams secondaryIconParams =
@@ -515,7 +552,8 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         // We calculate the "midpoint" of the thumbnail area, and place the icons there.
         // This is the place where the thumbnail area splits by default, in a near-50/50 split.
         // It is usually not exactly 50/50, due to insets/screen cutouts.
-        int fullscreenInsetThickness = deviceProfile.getInsets().top;
+        int fullscreenInsetThickness = deviceProfile.getInsets().top
+                - deviceProfile.getInsets().bottom;
         int fullscreenMidpointFromBottom = ((deviceProfile.heightPx - fullscreenInsetThickness)
                 / 2);
         float midpointFromBottomPct = (float) fullscreenMidpointFromBottom / deviceProfile.heightPx;
@@ -555,5 +593,23 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     public Pair<FloatProperty, FloatProperty> getSplitSelectTaskOffset(FloatProperty primary,
             FloatProperty secondary, DeviceProfile deviceProfile) {
         return new Pair<>(primary, secondary);
+    }
+
+    @Override
+    public float getFloatingTaskOffscreenTranslationTarget(View floatingTask, RectF onScreenRect,
+            @StagePosition int stagePosition, DeviceProfile dp) {
+        float currentTranslationY = floatingTask.getTranslationY();
+        return currentTranslationY - onScreenRect.height();
+    }
+
+    @Override
+    public void setFloatingTaskPrimaryTranslation(View floatingTask, float translation,
+            DeviceProfile dp) {
+        floatingTask.setTranslationY(translation);
+    }
+
+    @Override
+    public Float getFloatingTaskPrimaryTranslation(View floatingTask, DeviceProfile dp) {
+        return floatingTask.getTranslationY();
     }
 }

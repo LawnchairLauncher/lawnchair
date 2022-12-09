@@ -59,7 +59,6 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"অ্যাপ খুঁজুন"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"অ্যাপ লোড হচ্ছে…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" এর সাথে মেলে এমন কোনো অ্যাপ পাওয়া যায়নি"</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"আরও অ্যাপ্লিকেশানের জন্য খুঁজুন"</string>
     <string name="label_application" msgid="8531721983832654978">"অ্যাপ"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"সব অ্যাপ"</string>
     <string name="notifications_header" msgid="1404149926117359025">"বিজ্ঞপ্তি"</string>
@@ -137,7 +136,7 @@
     <string name="item_removed" msgid="851119963877842327">"আইটেম সরানো হয়েছে"</string>
     <string name="undo" msgid="4151576204245173321">"ফিরিয়ে আনুন"</string>
     <string name="action_move" msgid="4339390619886385032">"আইটেম সরান"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"সারি <xliff:g id="NUMBER_0">%1$s</xliff:g> কলাম <xliff:g id="NUMBER_1">%2$s</xliff:g> এ সরান"</string>
+    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"<xliff:g id="STRING">%3$s</xliff:g>-এ সারি <xliff:g id="NUMBER_0">%1$s</xliff:g> কলাম <xliff:g id="NUMBER_1">%2$s</xliff:g> সরান"</string>
     <string name="move_to_position" msgid="6750008980455459790">"অবস্থানে সরান <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"পছন্দসই অবস্থানে সরান <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="item_moved" msgid="4606538322571412879">"আইটেম সরানো হয়েছে"</string>

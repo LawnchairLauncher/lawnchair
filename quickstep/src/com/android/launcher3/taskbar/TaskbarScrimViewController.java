@@ -98,6 +98,6 @@ public class TaskbarScrimViewController implements TaskbarControllers.LoggableTa
     public void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "TaskbarScrimViewController:");
 
-        pw.println(String.format("%s\tmScrimAlpha.value=%.2f", prefix, mScrimAlpha.value));
+        pw.println(prefix + "\tmScrimAlpha.value=" + mScrimAlpha.value);
     }
 }

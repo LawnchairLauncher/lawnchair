@@ -17,19 +17,22 @@ package com.android.quickstep.util;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 
 import com.android.launcher3.Alarm;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
-import com.android.launcher3.testing.TestProtocol;
 
 /**
  * Given positions along x- or y-axis, tracks velocity and acceleration and determines when there is
  * a pause in motion.
  */
 public class MotionPauseDetector {
+
+    private static final String TAG = "MotionPauseDetector";
 
     // The percentage of the previous speed that determines whether this is a rapid deceleration.
     // The bigger this number, the easier it is to trigger the first pause.
@@ -42,6 +45,12 @@ public class MotionPauseDetector {
      * After {@link #mMakePauseHarderToTrigger}, must move slowly for this long to trigger a pause.
      */
     private static final long HARDER_TRIGGER_TIMEOUT = 400;
+
+    /**
+     * When running in a test harness, if no motion is added for this amount of time, assume the
+     * motion has paused. (We use an increased timeout since sometimes test devices can be slow.)
+     */
+    private static final long TEST_HARNESS_TRIGGER_TIMEOUT = 2000;
 
     private final float mSpeedVerySlow;
     private final float mSpeedSlow;
@@ -85,7 +94,8 @@ public class MotionPauseDetector {
         mSpeedSomewhatFast = res.getDimension(R.dimen.motion_pause_detector_speed_somewhat_fast);
         mSpeedFast = res.getDimension(R.dimen.motion_pause_detector_speed_fast);
         mForcePauseTimeout = new Alarm();
-        mForcePauseTimeout.setOnAlarmListener(alarm -> updatePaused(true /* isPaused */));
+        mForcePauseTimeout.setOnAlarmListener(alarm -> updatePaused(true /* isPaused */,
+                "Force pause timeout after " +  alarm.getLastSetTimeout() + "ms" /* reason */));
         mMakePauseHarderToTrigger = makePauseHarderToTrigger;
         mVelocityProvider = new SystemVelocityProvider(axis);
     }
@@ -102,7 +112,7 @@ public class MotionPauseDetector {
      */
     public void setDisallowPause(boolean disallowPause) {
         mDisallowPause = disallowPause;
-        updatePaused(mIsPaused);
+        updatePaused(mIsPaused, "Set disallowPause=" + disallowPause);
     }
 
     /**
@@ -119,9 +129,11 @@ public class MotionPauseDetector {
      * @param pointerIndex Index for the pointer being tracked in the motion event
      */
     public void addPosition(MotionEvent ev, int pointerIndex) {
-        long timeoutMs = TestProtocol.sForcePauseTimeout != null
-                ? TestProtocol.sForcePauseTimeout
-                : mMakePauseHarderToTrigger ? HARDER_TRIGGER_TIMEOUT : FORCE_PAUSE_TIMEOUT;
+        long timeoutMs = Utilities.IS_RUNNING_IN_TEST_HARNESS
+                ? TEST_HARNESS_TRIGGER_TIMEOUT
+                : mMakePauseHarderToTrigger
+                        ? HARDER_TRIGGER_TIMEOUT
+                        : FORCE_PAUSE_TIMEOUT;
         mForcePauseTimeout.setAlarm(timeoutMs);
         float newVelocity = mVelocityProvider.addMotionEvent(ev, ev.getPointerId(pointerIndex));
         if (mPreviousVelocity != null) {
@@ -134,21 +146,27 @@ public class MotionPauseDetector {
         float speed = Math.abs(velocity);
         float previousSpeed = Math.abs(prevVelocity);
         boolean isPaused;
+        String isPausedReason = "";
         if (mIsPaused) {
             // Continue to be paused until moving at a fast speed.
             isPaused = speed < mSpeedFast || previousSpeed < mSpeedFast;
+            isPausedReason = "Was paused, but started moving at a fast speed";
         } else {
             if (velocity < 0 != prevVelocity < 0) {
                 // We're just changing directions, not necessarily stopping.
                 isPaused = false;
+                isPausedReason = "Velocity changed directions";
             } else {
                 isPaused = speed < mSpeedVerySlow && previousSpeed < mSpeedVerySlow;
+                isPausedReason = "Pause requires back to back slow speeds";
                 if (!isPaused && !mHasEverBeenPaused) {
                     // We want to be more aggressive about detecting the first pause to ensure it
                     // feels as responsive as possible; getting two very slow speeds back to back
                     // takes too long, so also check for a rapid deceleration.
                     boolean isRapidDeceleration = speed < previousSpeed * RAPID_DECELERATION_FACTOR;
                     isPaused = isRapidDeceleration && speed < mSpeedSomewhatFast;
+                    isPausedReason = "Didn't have back to back slow speeds, checking for rapid"
+                            + " deceleration on first pause only";
                 }
                 if (mMakePauseHarderToTrigger) {
                     if (speed < mSpeedSlow) {
@@ -156,22 +174,31 @@ public class MotionPauseDetector {
                             mSlowStartTime = time;
                         }
                         isPaused = time - mSlowStartTime >= HARDER_TRIGGER_TIMEOUT;
+                        isPausedReason = "Maintained slow speed for sufficient duration when making"
+                                + " pause harder to trigger";
                     } else {
                         mSlowStartTime = 0;
                         isPaused = false;
+                        isPausedReason = "Intentionally making pause harder to trigger";
                     }
                 }
             }
         }
-        updatePaused(isPaused);
+        updatePaused(isPaused, isPausedReason);
     }
 
-    private void updatePaused(boolean isPaused) {
+    private void updatePaused(boolean isPaused, String reason) {
         if (mDisallowPause) {
+            reason = "Disallow pause; otherwise, would have been " + isPaused + " due to " + reason;
             isPaused = false;
         }
         if (mIsPaused != isPaused) {
             mIsPaused = isPaused;
+            String logString = "onMotionPauseChanged, paused=" + mIsPaused + " reason=" + reason;
+            if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                Log.d(TAG, logString);
+            }
+            ActiveGestureLog.INSTANCE.addLog(logString);
             boolean isFirstDetectedPause = !mHasEverBeenPaused && mIsPaused;
             if (mIsPaused) {
                 AccessibilityManagerCompat.sendPauseDetectedEventToTest(mContext);

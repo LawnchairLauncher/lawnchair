@@ -17,7 +17,7 @@ package com.android.launcher3.model;
 
 import static android.content.pm.LauncherApps.ShortcutQuery.FLAG_GET_KEY_FIELDS_ONLY;
 
-import static com.android.launcher3.model.WidgetsModel.GO_DISABLE_WIDGETS;
+import static com.android.launcher3.model.WidgetsModel.GO_DISABLE_SHORTCUTS;
 import static com.android.launcher3.shortcuts.ShortcutRequest.PINNED;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -286,7 +286,7 @@ public class BgDataModel {
      * shortcuts and unpinning any extra shortcuts.
      */
     public synchronized void updateShortcutPinnedState(Context context, UserHandle user) {
-        if (GO_DISABLE_WIDGETS) {
+        if (GO_DISABLE_SHORTCUTS) {
             return;
         }
 

@@ -23,7 +23,7 @@ import android.view.ViewGroup;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.DisplayController;
-import com.android.launcher3.util.DisplayController.NavigationMode;
+import com.android.launcher3.util.NavigationMode;
 import com.android.quickstep.LauncherActivityInterface;
 
 public class LayoutUtils {

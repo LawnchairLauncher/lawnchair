@@ -53,6 +53,8 @@
     <attr name="workProfileOverlayTextColor" format="color" />
     <attr name="workspaceAccentColor" format="color" />
     <attr name="dropTargetHoverTextColor" format="color" />
+    <attr name="preloadIconAccentColor" format="color" />
+    <attr name="preloadIconBackgroundColor" format="color" />
 
     <attr name="allAppsButtonBgColor" format="color" />
     <attr name="allAppsButtonColor1" format="color" />
@@ -134,6 +136,10 @@
         <attr name="layout_ignoreInsets" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="StickyScroller_Layout">
+        <attr name="layout_sticky" format="boolean" />
+    </declare-styleable>
+
     <declare-styleable name="GridDisplayOption">
         <attr name="name" format="string" />
 
@@ -152,9 +158,6 @@
 
         <!-- numHotseatIcons defaults to numColumns, if not specified -->
         <attr name="numHotseatIcons" format="integer" />
-        <!-- Number of icons to use when shrinking the hotseat size,
-         defaults to numHotseatIcons / 2 -->
-        <attr name="numShrunkenHotseatIcons" format="integer" />
         <!-- Number of icons to use when extending the hotseat size,
          defaults to 2 * numHotseatIcons -->
         <attr name="numExtendedHotseatIcons" format="integer" />
@@ -170,6 +173,10 @@
         <!-- defaults to numColumns, if not specified -->
         <attr name="hotseatColumnSpanTwoPanelPortrait" format="integer" />
 
+        <!-- Spacing to have at the end of the nav buttons in large screen 3 button nav,
+             defaults to @dimen/taskbar_button_margin_default -->
+        <attr name="inlineNavButtonsEndSpacing" format="reference" />
+
         <attr name="dbFile" format="string" />
         <attr name="defaultLayoutId" format="reference" />
         <attr name="defaultSplitDisplayLayoutId" format="reference" />
@@ -177,13 +184,25 @@
         <attr name="isScalable" format="boolean" />
         <attr name="devicePaddingId" format="reference" />
         <!-- By default all categories are enabled -->
-        <attr name="deviceCategory" format="integer" >
+        <attr name="deviceCategory" format="integer">
             <!-- Enable on phone only -->
             <flag name="phone" value="1" />
             <!-- Enable on tablets only -->
             <flag name="tablet" value="2" />
             <!-- Enable on multi display devices only -->
             <flag name="multi_display" value="4" />
+        </attr>
+
+        <!-- By default all are false -->
+        <attr name="inlineQsb" format="integer">
+            <!-- Enable on landscape only -->
+            <flag name="portrait" value="1" />
+            <!-- Enable on portrait only -->
+            <flag name="landscape" value="2" />
+            <!-- Enable on two panel portrait only -->
+            <flag name="twoPanelPortrait" value="4" />
+            <!-- Enable on two panel landscape only -->
+            <flag name="twoPanelLandscape" value="8" />
         </attr>
 
     </declare-styleable>
@@ -252,9 +271,10 @@
         if not specified -->
         <attr name="borderSpaceTwoPanelLandscapeVertical" format="float" />
 
-        <!-- These min cell values are only used if GridDisplayOption#isScalable is true -->
-        <!-- defaults to minCellHeight, if not specified -->
+        <!-- defaults to minCellHeight if not specified when GridDisplayOption#isScalable is true.
+         Must be defined when GridDisplayOption#isScalable is false. -->
         <attr name="allAppsCellHeight" format="float" />
+        <!-- These min cell values are only used if GridDisplayOption#isScalable is true -->
         <!-- defaults to minCellWidth, if not specified -->
         <attr name="allAppsCellWidth" format="float" />
         <!-- defaults to allAppsCellHeight, if not specified -->
@@ -272,6 +292,8 @@
         <!-- The following values are only enabled if grid is supported. -->
         <!-- defaults to iconImageSize, if not specified -->
         <attr name="allAppsIconSize" format="float" />
+        <!-- defaults to allAppsIconSize, if not specified -->
+        <attr name="allAppsIconSizeLandscape" format="float" />
         <!-- defaults to allAppsIconSize, if not specified -->
         <attr name="allAppsIconSizeTwoPanelPortrait" format="float" />
         <!-- defaults to allAppsIconSize, if not specified -->
@@ -317,14 +339,36 @@
         if not specified -->
         <attr name="allAppsBorderSpaceTwoPanelLandscapeVertical" format="float" />
 
-        <!-- defaults to borderSpaceDps, if not specified -->
-        <attr name="hotseatBorderSpace" format="float" />
-        <!-- defaults to hotseatBorderSpace, if not specified -->
-        <attr name="hotseatBorderSpaceLandscape" format="float" />
-        <!-- defaults to hotseatBorderSpace, if not specified -->
-        <attr name="hotseatBorderSpaceTwoPanelLandscape" format="float" />
-        <!-- defaults to hotseatBorderSpace, if not specified -->
-        <attr name="hotseatBorderSpaceTwoPanelPortrait" format="float" />
+        <!-- defaults to minCellHeight if not specified
+        when GridDisplayOption#isScalable is true. -->
+        <attr name="folderCellHeight" format="float" />
+        <!-- defaults to minCellWidth, if not specified -->
+        <attr name="folderCellWidth" format="float" />
+
+        <!-- defaults to borderSpace, if not specified -->
+        <!-- space to be used horizontally and vertically -->
+        <attr name="folderBorderSpace" format="float" />
+
+        <!-- defaults to folderBorderSpace vertical, if not specified -->
+        <attr name="folderTopPadding" format="float" />
+
+        <!-- defaults to res.hotseat_bar_bottom_space_default, if not specified -->
+        <attr name="hotseatBarBottomSpace" format="float" />
+        <!-- defaults to hotseatBarBottomSpace, if not specified -->
+        <attr name="hotseatBarBottomSpaceLandscape" format="float" />
+        <!-- defaults to hotseatBarBottomSpace, if not specified -->
+        <attr name="hotseatBarBottomSpaceTwoPanelLandscape" format="float" />
+        <!-- defaults to hotseatBarBottomSpace, if not specified -->
+        <attr name="hotseatBarBottomSpaceTwoPanelPortrait" format="float" />
+
+        <!-- defaults to res.hotseat_qsb_space_default, if not specified -->
+        <attr name="hotseatQsbSpace" format="float" />
+        <!-- defaults to hotseatQsbSpace, if not specified -->
+        <attr name="hotseatQsbSpaceLandscape" format="float" />
+        <!-- defaults to hotseatQsbSpace, if not specified -->
+        <attr name="hotseatQsbSpaceTwoPanelLandscape" format="float" />
+        <!-- defaults to hotseatQsbSpace, if not specified -->
+        <attr name="hotseatQsbSpaceTwoPanelPortrait" format="float" />
 
         <attr name="iconImageSize" format="float" />
         <!-- defaults to iconImageSize, if not specified -->
@@ -354,17 +398,6 @@
         <!-- defaults to horizontalMargin if not specified -->
         <attr name="horizontalMarginTwoPanelPortrait" format="float"/>
 
-        <!-- By default all are false -->
-        <attr name="inlineQsb" format="integer" >
-            <!-- Enable on landscape only -->
-            <flag name="portrait" value="1" />
-            <!-- Enable on portrait only -->
-            <flag name="landscape" value="2" />
-            <!-- Enable on two panel portrait only -->
-            <flag name="twoPanelPortrait" value="4" />
-            <!-- Enable on two panel landscape only -->
-            <flag name="twoPanelLandscape" value="8" />
-        </attr>
     </declare-styleable>
 
     <declare-styleable name="CellLayout">

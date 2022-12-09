@@ -18,6 +18,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/drag_layer"
+    android:clipChildren="false"
     android:padding="@dimen/dynamic_grid_edge_margin">
 
     <GridView
@@ -52,7 +53,6 @@
         android:saveEnabled="false"
         android:layout_gravity="bottom|end"
         android:background="@drawable/round_rect_primary"
-        android:elevation="2dp"
         android:visibility="invisible" >
 
         <include
@@ -76,35 +76,8 @@
             android:paddingTop="@dimen/all_apps_header_top_padding"
             android:orientation="vertical" >
 
-            <com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip
-                android:id="@+id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/all_apps_header_pill_height"
-                android:orientation="horizontal"
-                style="@style/TextHeadline">
-
-                <Button
-                    android:id="@+id/tab_personal"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:text="@string/all_apps_personal_tab"
-                    android:textAllCaps="true"
-                    android:textColor="@color/all_apps_tab_text"
-                    android:textSize="14sp" />
-
-                <Button
-                    android:id="@+id/tab_work"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:text="@string/all_apps_work_tab"
-                    android:textAllCaps="true"
-                    android:textColor="@color/all_apps_tab_text"
-                    android:textSize="14sp" />
-            </com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip>
+            <include layout="@layout/floating_header_content" />
+            <include layout="@layout/all_apps_personal_work_tabs" />
         </com.android.launcher3.allapps.FloatingHeaderView>
 
         <com.android.launcher3.allapps.search.AppsSearchContainerLayout
@@ -113,12 +86,14 @@
             android:layout_height="@dimen/all_apps_search_bar_field_height"
             android:layout_centerHorizontal="true"
             android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="24dp"
             android:background="@drawable/bg_all_apps_searchbox"
             android:elevation="1dp"
             android:focusableInTouchMode="true"
             android:gravity="center"
             android:hint="@string/all_apps_search_bar_hint"
             android:imeOptions="actionSearch|flagNoExtractUi"
+            android:importantForAutofill="no"
             android:inputType="text|textNoSuggestions|textCapWords"
             android:maxLines="1"
             android:padding="8dp"

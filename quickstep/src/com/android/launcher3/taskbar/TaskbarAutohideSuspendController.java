@@ -71,8 +71,7 @@ public class TaskbarAutohideSuspendController implements
     public void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "TaskbarAutohideSuspendController:");
 
-        pw.println(String.format(
-                "%s\tmAutohideSuspendFlags=%s", prefix, getStateString(mAutohideSuspendFlags)));
+        pw.println(prefix + "\tmAutohideSuspendFlags=" + getStateString(mAutohideSuspendFlags));
     }
 
     private static String getStateString(int flags) {

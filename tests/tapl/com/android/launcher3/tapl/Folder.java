@@ -16,11 +16,6 @@
 
 package com.android.launcher3.tapl;
 
-import android.graphics.Point;
-import android.graphics.Rect;
-import android.os.SystemClock;
-import android.view.MotionEvent;
-
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
 
@@ -50,25 +45,15 @@ public class Folder {
         }
     }
 
-    private void touchOutsideFolder() {
-        Rect containerBounds = mLauncher.getVisibleBounds(this.mContainer);
-        final long downTime = SystemClock.uptimeMillis();
-        Point containerLeftTopCorner = new Point(containerBounds.left - 1, containerBounds.top - 1);
-        mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN,
-                containerLeftTopCorner, LauncherInstrumentation.GestureScope.INSIDE);
-        mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_UP,
-                containerLeftTopCorner, LauncherInstrumentation.GestureScope.INSIDE);
-    }
-
     /**
-     * CLose opened folder if possible. It throws assertion error if the folder is already closed.
+     * Close opened folder if possible. It throws assertion error if the folder is already closed.
      */
     public Workspace close() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "Want to close opened folder")) {
             mLauncher.waitForLauncherObject(FOLDER_CONTENT_RES_ID);
-            touchOutsideFolder();
+            mLauncher.touchOutsideContainer(this.mContainer, false /* tapRight */);
             mLauncher.waitUntilLauncherObjectGone(FOLDER_CONTENT_RES_ID);
             return mLauncher.getWorkspace();
         }

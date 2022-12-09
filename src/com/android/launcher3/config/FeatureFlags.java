@@ -63,14 +63,19 @@ public final class FeatureFlags {
      * Declare a new ToggleableFlag below. Give it a unique key (e.g. "QSB_ON_FIRST_SCREEN"),
      *    and set a default value for the flag. This will be the default value on Debug builds.
      */
+    public static final BooleanFlag ENABLE_INPUT_CONSUMER_REASON_LOGGING = getDebugFlag(
+            "ENABLE_INPUT_CONSUMER_REASON_LOGGING",
+            true,
+            "Log the reason why an Input Consumer was selected for a gesture.");
+
+    public static final BooleanFlag ENABLE_GESTURE_ERROR_DETECTION = getDebugFlag(
+            "ENABLE_GESTURE_ERROR_DETECTION",
+            true,
+            "Analyze gesture events and log detected errors");
+
     // When enabled the promise icon is visible in all apps while installation an app.
     public static final BooleanFlag PROMISE_APPS_IN_ALL_APPS = getDebugFlag(
             "PROMISE_APPS_IN_ALL_APPS", false, "Add promise icon in all-apps");
-
-    // When enabled a promise icon is added to the home screen when install session is active.
-    public static final BooleanFlag PROMISE_APPS_NEW_INSTALLS = getDebugFlag(
-            "PROMISE_APPS_NEW_INSTALLS", true,
-            "Adds a promise icon to the home screen for new install sessions.");
 
     // TODO: b/206508141: Long pressing on some icons on home screen cause launcher to crash.
     public static final BooleanFlag ENABLE_LOCAL_COLOR_POPUPS = getDebugFlag(
@@ -82,10 +87,6 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_QUICKSTEP_LIVE_TILE = getDebugFlag(
             "ENABLE_QUICKSTEP_LIVE_TILE", true, "Enable live tile in Quickstep overview");
 
-    public static final BooleanFlag ENABLE_QUICKSTEP_WIDGET_APP_START = getDebugFlag(
-            "ENABLE_QUICKSTEP_WIDGET_APP_START", true,
-            "Enable Quickstep animation when launching activities from an app widget");
-
     public static final BooleanFlag ENABLE_DEVICE_SEARCH = new DeviceFlag(
             "ENABLE_DEVICE_SEARCH", true, "Allows on device search in all apps");
 
@@ -93,8 +94,11 @@ public final class FeatureFlags {
             getDebugFlag("ENABLE_FLOATING_SEARCH_BAR", false,
                     "Keep All Apps search bar at the bottom (but above keyboard if open)");
 
-    public static final BooleanFlag ENABLE_QUICK_SEARCH = new DeviceFlag("ENABLE_QUICK_SEARCH",
-            true, "Use quick search behavior.");
+    public static final BooleanFlag ENABLE_HIDE_HEADER = new DeviceFlag("ENABLE_HIDE_HEADER",
+            true, "Hide header on keyboard before typing in all apps");
+
+    public static final BooleanFlag ENABLE_HIDE_HEADER_STATIC = new DeviceFlag(
+            "ENABLE_HIDE_HEADER_STATIC", false, "Hide keyboard suggestion strip");
 
     public static final BooleanFlag COLLECT_SEARCH_HISTORY = new DeviceFlag(
             "COLLECT_SEARCH_HISTORY", false, "Allow launcher to collect search history for log");
@@ -113,29 +117,13 @@ public final class FeatureFlags {
             "ENABLE_PEOPLE_TILE_PREVIEW", false,
             "Experimental: Shows conversation shortcuts on home screen as search results");
 
-    public static final BooleanFlag FOLDER_NAME_SUGGEST = new DeviceFlag(
-            "FOLDER_NAME_SUGGEST", true,
-            "Suggests folder names instead of blank text.");
-
     public static final BooleanFlag FOLDER_NAME_MAJORITY_RANKING = getDebugFlag(
             "FOLDER_NAME_MAJORITY_RANKING", true,
             "Suggests folder names based on majority based ranking.");
 
-    public static final BooleanFlag ENABLE_PREDICTION_DISMISS = getDebugFlag(
-            "ENABLE_PREDICTION_DISMISS", true, "Allow option to dimiss apps from predicted list");
-
     public static final BooleanFlag ASSISTANT_GIVES_LAUNCHER_FOCUS = getDebugFlag(
             "ASSISTANT_GIVES_LAUNCHER_FOCUS", false,
             "Allow Launcher to handle nav bar gestures while Assistant is running over it");
-
-    public static final BooleanFlag HOTSEAT_MIGRATE_TO_FOLDER = getDebugFlag(
-            "HOTSEAT_MIGRATE_TO_FOLDER", false, "Should move hotseat items into a folder");
-
-    public static final BooleanFlag ENABLE_DEEP_SHORTCUT_ICON_CACHE = getDebugFlag(
-            "ENABLE_DEEP_SHORTCUT_ICON_CACHE", true, "R/W deep shortcut in IconCache");
-
-    public static final BooleanFlag ENABLE_THEMED_ICONS = getDebugFlag(
-            "ENABLE_THEMED_ICONS", true, "Enable themed icons on workspace");
 
     public static final BooleanFlag ENABLE_BULK_WORKSPACE_ICON_LOADING = getDebugFlag(
             "ENABLE_BULK_WORKSPACE_ICON_LOADING",
@@ -166,14 +154,17 @@ public final class FeatureFlags {
             "ENABLE_SMARTSPACE_DISMISS", true,
             "Adds a menu option to dismiss the current Enhanced Smartspace card.");
 
+    /**
+     * Enables region sampling for text color: Needs system health assessment before turning on
+     */
+    public static final BooleanFlag ENABLE_REGION_SAMPLING =  getDebugFlag(
+            "ENABLE_REGION_SAMPLING", false,
+            "Enable region sampling to determine color of text on screen.");
+
     public static final BooleanFlag ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS =
             getDebugFlag(
             "ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS", false,
             "Always use hardware optimization for folder animations.");
-
-    public static final BooleanFlag ENABLE_ALL_APPS_EDU = getDebugFlag(
-            "ENABLE_ALL_APPS_EDU", true,
-            "Shows user a tutorial on how to get to All Apps after X amount of attempts.");
 
     public static final BooleanFlag SEPARATE_RECENTS_ACTIVITY = getDebugFlag(
             "SEPARATE_RECENTS_ACTIVITY", false,
@@ -182,10 +173,6 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_MINIMAL_DEVICE = getDebugFlag(
             "ENABLE_MINIMAL_DEVICE", false,
             "Allow user to toggle minimal device mode in launcher.");
-
-    public static final BooleanFlag EXPANDED_SMARTSPACE = new DeviceFlag(
-            "EXPANDED_SMARTSPACE", false, "Expands smartspace height to two rows. "
-              + "Any apps occupying the first row will be removed from workspace.");
 
     // TODO: b/172467144 Remove ENABLE_LAUNCHER_ACTIVITY_THEME_CROSSFADE feature flag.
     public static final BooleanFlag ENABLE_LAUNCHER_ACTIVITY_THEME_CROSSFADE = new DeviceFlag(
@@ -208,9 +195,6 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_SCRIM_FOR_APP_LAUNCH = getDebugFlag(
             "ENABLE_SCRIM_FOR_APP_LAUNCH", false,
             "Enables scrim during app launch animation.");
-
-    public static final BooleanFlag ENABLE_SPLIT_SELECT = getDebugFlag(
-            "ENABLE_SPLIT_SELECT", true, "Uses new split screen selection overview UI");
 
     public static final BooleanFlag ENABLE_ENFORCED_ROUNDED_CORNERS = new DeviceFlag(
             "ENABLE_ENFORCED_ROUNDED_CORNERS", true, "Enforce rounded corners on all App Widgets");
@@ -265,6 +249,11 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_ONE_SEARCH_MOTION = new DeviceFlag(
             "ENABLE_ONE_SEARCH_MOTION", true, "Enables animations in OneSearch.");
 
+    public static final BooleanFlag ENABLE_KEYBOARD_TRANSITION_SYNC = new DeviceFlag(
+            "ENABLE_KEYBOARD_TRANSITION_SYNC", IS_STUDIO_BUILD,
+            "Enable option to synchronize the keyboard open and close animations when transitioning"
+                    + " between home and all apps");
+
     public static final BooleanFlag ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS = new DeviceFlag(
             "ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS", true,
             "Enable option to show keyboard when going to all-apps");
@@ -276,6 +265,32 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_DISMISS_PREDICTION_UNDO = getDebugFlag(
             "ENABLE_DISMISS_PREDICTION_UNDO", false,
             "Show an 'Undo' snackbar when users dismiss a predicted hotseat item");
+
+    public static final BooleanFlag ENABLE_CACHED_WIDGET = getDebugFlag(
+            "ENABLE_CACHED_WIDGET", true,
+            "Show previously cached widgets as opposed to deferred widget where available");
+
+    public static final BooleanFlag USE_SEARCH_REQUEST_TIMEOUT_OVERRIDES = getDebugFlag(
+            "USE_SEARCH_REQUEST_TIMEOUT_OVERRIDES", false,
+            "Use local overrides for search request timeout");
+
+    public static final BooleanFlag CONTINUOUS_VIEW_TREE_CAPTURE = getDebugFlag(
+            "CONTINUOUS_VIEW_TREE_CAPTURE", false, "Capture View tree every frame");
+
+    public static final BooleanFlag FOLDABLE_WORKSPACE_REORDER = getDebugFlag(
+            "FOLDABLE_WORKSPACE_REORDER", true,
+            "In foldables, when reordering the icons and widgets, is now going to use both sides");
+
+    public static final BooleanFlag ENABLE_WIDGET_PICKER_DEPTH = new DeviceFlag(
+            "ENABLE_WIDGET_PICKER_DEPTH", false, "Enable changing depth in widget picker.");
+
+    public static final BooleanFlag SHOW_DELIGHTFUL_PAGINATION_FOLDER = new DeviceFlag(
+            "SHOW_DELIGHTFUL_PAGINATION_FOLDER", false,
+            "Enable showing the new 'delightful pagination'"
+                    + " which is a brand new animation for folder pagination");
+
+    public static final BooleanFlag POPUP_MATERIAL_U = new DeviceFlag(
+            "POPUP_MATERIAL_U", false, "Switch popup UX to use material U");
 
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {

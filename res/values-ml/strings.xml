@@ -59,7 +59,6 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ആപ്പുകൾ തിരയുക"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ആപ്പുകൾ ലോഡുചെയ്യുന്നു..."</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" എന്നതുമായി പൊരുത്തപ്പെടുന്ന ആപ്പുകളൊന്നും കണ്ടെത്തിയില്ല"</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"കൂടുതൽ ആപ്പുകൾക്ക് തിരയുക"</string>
     <string name="label_application" msgid="8531721983832654978">"ആപ്പ്"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"എല്ലാ ആപ്പുകളും"</string>
     <string name="notifications_header" msgid="1404149926117359025">"അറിയിപ്പുകൾ"</string>
@@ -137,7 +136,7 @@
     <string name="item_removed" msgid="851119963877842327">"ഇനം നീക്കംചെയ്‌തു"</string>
     <string name="undo" msgid="4151576204245173321">"പഴയപടിയാക്കുക"</string>
     <string name="action_move" msgid="4339390619886385032">"ഇനം നീക്കുക"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"വരി <xliff:g id="NUMBER_0">%1$s</xliff:g> നിര <xliff:g id="NUMBER_1">%2$s</xliff:g>-ലേക്ക് നീക്കുക"</string>
+    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"<xliff:g id="STRING">%3$s</xliff:g> എന്നതിലെ <xliff:g id="NUMBER_1">%2$s</xliff:g>-ാം കോളത്തിലെ <xliff:g id="NUMBER_0">%1$s</xliff:g>-ാം വരിയിലേക്ക് നീക്കുക"</string>
     <string name="move_to_position" msgid="6750008980455459790">"<xliff:g id="NUMBER">%1$s</xliff:g>-ലേക്ക് നീക്കുക"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"ഇഷ്‌ടമുള്ള <xliff:g id="NUMBER">%1$s</xliff:g> സ്ഥാനത്തേക്ക് നീക്കുക"</string>
     <string name="item_moved" msgid="4606538322571412879">"ഇനം നീക്കി"</string>

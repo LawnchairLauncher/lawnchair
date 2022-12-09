@@ -19,6 +19,10 @@ package com.android.launcher3.util;
 import android.view.View;
 import android.view.Window;
 
+import androidx.annotation.IntDef;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 
 /**
@@ -31,15 +35,26 @@ public class SystemUiController {
     public static final int UI_STATE_SCRIM_VIEW = 1;
     public static final int UI_STATE_WIDGET_BOTTOM_SHEET = 2;
     public static final int UI_STATE_FULLSCREEN_TASK = 3;
-    public static final int UI_STATE_ALLAPPS = 4;
 
     public static final int FLAG_LIGHT_NAV = 1 << 0;
     public static final int FLAG_DARK_NAV = 1 << 1;
     public static final int FLAG_LIGHT_STATUS = 1 << 2;
     public static final int FLAG_DARK_STATUS = 1 << 3;
 
+    /**
+     * Security type based on WifiConfiguration.KeyMgmt
+     */
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef(flag = true, value = {
+            FLAG_LIGHT_NAV,
+            FLAG_DARK_NAV,
+            FLAG_LIGHT_STATUS,
+            FLAG_DARK_STATUS,
+    })
+    public @interface SystemUiControllerFlags {}
+
     private final Window mWindow;
-    private final int[] mStates = new int[5];
+    private final int[] mStates = new int[4];
 
     public SystemUiController(Window window) {
         mWindow = window;
@@ -50,7 +65,7 @@ public class SystemUiController {
                 ? (FLAG_LIGHT_NAV | FLAG_LIGHT_STATUS) : (FLAG_DARK_NAV | FLAG_DARK_STATUS));
     }
 
-    public void updateUiState(int uiState, int flags) {
+    public void updateUiState(int uiState, @SystemUiControllerFlags int flags) {
         if (mStates[uiState] == flags) {
             return;
         }

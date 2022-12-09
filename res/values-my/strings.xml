@@ -59,7 +59,6 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ရှာဖွေမှု အက်ပ်များ"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"အက်ပ်များကို ဖွင့်နေသည်…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" နှင့်ကိုက်ညီသည့် အပ်ပ်များကို မတွေ့ပါ"</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"နောက်ထပ် အက်ပ်များကို ရှာပါ"</string>
     <string name="label_application" msgid="8531721983832654978">"အက်ပ်"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"အက်ပ်အားလုံး"</string>
     <string name="notifications_header" msgid="1404149926117359025">"အကြောင်းကြားချက်များ"</string>
@@ -137,7 +136,7 @@
     <string name="item_removed" msgid="851119963877842327">"ဖယ်ရှားပြီးပြီ"</string>
     <string name="undo" msgid="4151576204245173321">"နောက်ပြန်ရန်"</string>
     <string name="action_move" msgid="4339390619886385032">"၎င်းအား ရွှေ့ပါ"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"အတန်း <xliff:g id="NUMBER_0">%1$s</xliff:g> အတိုင် <xliff:g id="NUMBER_1">%2$s</xliff:g> သို့ ရွှေ့ပါ"</string>
+    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"<xliff:g id="STRING">%3$s</xliff:g> တွင် အတန်း <xliff:g id="NUMBER_0">%1$s</xliff:g> ကော်လံ <xliff:g id="NUMBER_1">%2$s</xliff:g> သို့ ရွှေ့နိုင်သည်"</string>
     <string name="move_to_position" msgid="6750008980455459790">"<xliff:g id="NUMBER">%1$s</xliff:g> သို့ နေရာရွှေ့ပါ"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"စိတ်ကြိုက်နေရာ <xliff:g id="NUMBER">%1$s</xliff:g> သို့ ရွှေ့ပါ"</string>
     <string name="item_moved" msgid="4606538322571412879">"၎င်းအားရွှေ့ပြီး"</string>

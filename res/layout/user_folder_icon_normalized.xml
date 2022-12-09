@@ -30,11 +30,12 @@
     <LinearLayout
         android:id="@+id/folder_footer"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/folder_label_height"
         android:clipChildren="false"
         android:orientation="horizontal"
         android:paddingLeft="12dp"
-        android:paddingRight="12dp" >
+        android:paddingRight="12dp"
+        android:alpha="0">
 
         <com.android.launcher3.folder.FolderNameEditText
             android:id="@+id/folder_name"
@@ -47,6 +48,7 @@
             android:gravity="center_horizontal"
             android:hint="@string/folder_hint_text"
             android:imeOptions="flagNoExtractUi"
+            android:importantForAutofill="no"
             android:singleLine="true"
             android:textColor="?attr/folderTextColor"
             android:textColorHighlight="?android:attr/colorControlHighlight"

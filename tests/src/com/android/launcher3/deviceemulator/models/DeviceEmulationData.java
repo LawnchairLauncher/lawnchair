@@ -17,10 +17,10 @@ package com.android.launcher3.deviceemulator.models;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
-import static com.android.launcher3.ResourceUtils.NAVBAR_HEIGHT;
-import static com.android.launcher3.ResourceUtils.NAVBAR_HEIGHT_LANDSCAPE;
-import static com.android.launcher3.ResourceUtils.NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE;
-import static com.android.launcher3.ResourceUtils.getDimenByName;
+import static com.android.launcher3.testing.shared.ResourceUtils.NAVBAR_HEIGHT;
+import static com.android.launcher3.testing.shared.ResourceUtils.NAVBAR_HEIGHT_LANDSCAPE;
+import static com.android.launcher3.testing.shared.ResourceUtils.NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE;
+import static com.android.launcher3.testing.shared.ResourceUtils.getDimenByName;
 
 import android.content.Context;
 import android.content.res.Resources;

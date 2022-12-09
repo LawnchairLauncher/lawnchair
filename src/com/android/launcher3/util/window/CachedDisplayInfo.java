@@ -30,7 +30,6 @@ import java.util.Objects;
  */
 public class CachedDisplayInfo {
 
-    public final String id;
     public final Point size;
     public final int rotation;
     public final Rect cutout;
@@ -40,11 +39,10 @@ public class CachedDisplayInfo {
     }
 
     public CachedDisplayInfo(Point size, int rotation) {
-        this("", size, rotation, new Rect());
+        this(size, rotation, new Rect());
     }
 
-    public CachedDisplayInfo(String id, Point size, int rotation, Rect cutout) {
-        this.id = id;
+    public CachedDisplayInfo(Point size, int rotation, Rect cutout) {
         this.size = size;
         this.rotation = rotation;
         this.cutout = cutout;
@@ -62,16 +60,15 @@ public class CachedDisplayInfo {
 
         Rect newCutout = new Rect(cutout);
         rotateRect(newCutout, deltaRotation(rotation, Surface.ROTATION_0));
-        return new CachedDisplayInfo(id, newSize, Surface.ROTATION_0, newCutout);
+        return new CachedDisplayInfo(newSize, Surface.ROTATION_0, newCutout);
     }
 
     @Override
     public String toString() {
         return "CachedDisplayInfo{"
-                + "id='" + id + '\''
-                + ", size=" + size
-                + ", rotation=" + rotation
+                + "size=" + size
                 + ", cutout=" + cutout
+                + ", rotation=" + rotation
                 + '}';
     }
 
@@ -80,13 +77,13 @@ public class CachedDisplayInfo {
         if (this == o) return true;
         if (!(o instanceof CachedDisplayInfo)) return false;
         CachedDisplayInfo that = (CachedDisplayInfo) o;
-        return rotation == that.rotation && Objects.equals(id, that.id)
-                && Objects.equals(size, that.size) && Objects.equals(cutout,
-                that.cutout);
+        return rotation == that.rotation
+                && Objects.equals(size, that.size)
+                && Objects.equals(cutout, that.cutout);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, size, rotation, cutout);
+        return Objects.hash(size, rotation, cutout);
     }
 }

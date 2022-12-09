@@ -43,4 +43,9 @@
     <!-- Accessibility actions -->
     <item type="id" name="action_move_to_top_or_left" />
     <item type="id" name="action_move_to_bottom_or_right" />
+
+    <!-- The max scale for the wallpaper when it's zoomed in -->
+    <item name="config_wallpaperMaxScale" format="float" type="dimen">
+        @*android:dimen/config_wallpaperMaxScale
+    </item>
 </resources>

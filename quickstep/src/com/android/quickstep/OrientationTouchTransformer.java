@@ -32,9 +32,9 @@ import android.view.MotionEvent;
 import android.view.Surface;
 
 import com.android.launcher3.R;
-import com.android.launcher3.ResourceUtils;
+import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.util.DisplayController.Info;
-import com.android.launcher3.util.DisplayController.NavigationMode;
+import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.window.CachedDisplayInfo;
 
 import java.io.PrintWriter;

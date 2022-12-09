@@ -90,6 +90,9 @@ public class TaskbarEduController implements TaskbarControllers.LoggableTaskbarC
             mTaskbarEduView = (TaskbarEduView) mActivity.getLayoutInflater().inflate(
                     R.layout.taskbar_edu, mActivity.getDragLayer(), false);
             mTaskbarEduView.init(new TaskbarEduCallbacks());
+            mControllers.navbarButtonsViewController.setSlideInViewVisible(true);
+            mTaskbarEduView.setOnCloseBeginListener(
+                    () -> mControllers.navbarButtonsViewController.setSlideInViewVisible(false));
             mTaskbarEduView.addOnCloseListener(() -> mTaskbarEduView = null);
             mTaskbarEduView.show();
             startAnim(createWaveAnim());
@@ -191,12 +194,10 @@ public class TaskbarEduController implements TaskbarControllers.LoggableTaskbarC
     public void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "TaskbarEduController:");
 
-        pw.println(String.format("%s\tisShowingEdu=%b", prefix, mTaskbarEduView != null));
-        pw.println(String.format("%s\tmWaveAnimTranslationY=%.2f", prefix, mWaveAnimTranslationY));
-        pw.println(String.format(
-                "%s\tmWaveAnimTranslationYReturnOvershoot=%.2f",
-                prefix,
-                mWaveAnimTranslationYReturnOvershoot));
+        pw.println(prefix + "\tisShowingEdu=" + (mTaskbarEduView != null));
+        pw.println(prefix + "\tmWaveAnimTranslationY=" + mWaveAnimTranslationY);
+        pw.println(prefix + "\tmWaveAnimTranslationYReturnOvershoot="
+                + mWaveAnimTranslationYReturnOvershoot);
     }
 
     /**

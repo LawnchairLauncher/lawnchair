@@ -59,7 +59,6 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"શોધ ઍપ્લિકેશનો"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ઍપ્લિકેશનો લોડ કરી રહ્યું છે…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"થી મેળ ખાતી કોઈ ઍપ્લિકેશનો મળી નથી"</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"વધુ ઍપ્લિકેશનો શોધો"</string>
     <string name="label_application" msgid="8531721983832654978">"ઍપ"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"બધી ઍપ"</string>
     <string name="notifications_header" msgid="1404149926117359025">"નોટિફિકેશન"</string>
@@ -137,7 +136,7 @@
     <string name="item_removed" msgid="851119963877842327">"આઇટમ કાઢી નાખી"</string>
     <string name="undo" msgid="4151576204245173321">"રદ કરો"</string>
     <string name="action_move" msgid="4339390619886385032">"આઇટમ ખસેડો"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"<xliff:g id="NUMBER_0">%1$s</xliff:g> પંક્તિ <xliff:g id="NUMBER_1">%2$s</xliff:g> કૉલમ પર ખસેડો"</string>
+    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"<xliff:g id="STRING">%3$s</xliff:g>માં પંક્તિ <xliff:g id="NUMBER_0">%1$s</xliff:g> કૉલમ <xliff:g id="NUMBER_1">%2$s</xliff:g> પર આ આઇટમને ખસેડો"</string>
     <string name="move_to_position" msgid="6750008980455459790">"<xliff:g id="NUMBER">%1$s</xliff:g> સ્થિતિ પર ખસેડો"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"મનપસંદ સ્થિતિ <xliff:g id="NUMBER">%1$s</xliff:g> પર ખસેડો"</string>
     <string name="item_moved" msgid="4606538322571412879">"આઇટમ ખસેડી"</string>

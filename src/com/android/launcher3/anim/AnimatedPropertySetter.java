@@ -43,9 +43,17 @@ public class AnimatedPropertySetter extends PropertySetter {
 
     @Override
     public Animator setViewAlpha(View view, float alpha, TimeInterpolator interpolator) {
-        if (view == null || view.getAlpha() == alpha) {
+        if (view == null) {
             return NO_OP;
         }
+
+        // Short-circuit if the view already has this alpha value, but make sure the visibility is
+        // set correctly for the requested alpha.
+        if (Float.compare(view.getAlpha(), alpha) == 0) {
+            AlphaUpdateListener.updateVisibility(view);
+            return NO_OP;
+        }
+
         ObjectAnimator anim = ObjectAnimator.ofFloat(view, View.ALPHA, alpha);
         anim.addListener(new AlphaUpdateListener(view));
         anim.setInterpolator(interpolator);
@@ -89,6 +97,18 @@ public class AnimatedPropertySetter extends PropertySetter {
         return anim;
     }
 
+    @NonNull
+    @Override
+    public <T> Animator setColor(T target, IntProperty<T> property, int value,
+            TimeInterpolator interpolator) {
+        if (property.get(target) == value) {
+            return NO_OP;
+        }
+        Animator anim = ObjectAnimator.ofArgb(target, property, value);
+        anim.setInterpolator(interpolator);
+        add(anim);
+        return anim;
+    }
 
     /**
      * Adds a callback to be run on every frame of the animation

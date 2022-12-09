@@ -59,7 +59,6 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"搜尋應用程式"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"正在載入應用程式…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"找不到與「<xliff:g id="QUERY">%1$s</xliff:g>」相符的應用程式"</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"搜尋更多應用程式"</string>
     <string name="label_application" msgid="8531721983832654978">"應用程式"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"所有應用程式"</string>
     <string name="notifications_header" msgid="1404149926117359025">"通知"</string>
@@ -137,7 +136,7 @@
     <string name="item_removed" msgid="851119963877842327">"項目已移除"</string>
     <string name="undo" msgid="4151576204245173321">"復原"</string>
     <string name="action_move" msgid="4339390619886385032">"移動項目"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"移動至第 <xliff:g id="NUMBER_0">%1$s</xliff:g> 行第 <xliff:g id="NUMBER_1">%2$s</xliff:g> 列"</string>
+    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"移去 <xliff:g id="STRING">%3$s</xliff:g> 嘅第 <xliff:g id="NUMBER_0">%1$s</xliff:g> 列，第 <xliff:g id="NUMBER_1">%2$s</xliff:g> 欄"</string>
     <string name="move_to_position" msgid="6750008980455459790">"移動至位置 <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"移動至喜愛的位置 <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="item_moved" msgid="4606538322571412879">"已移動項目"</string>
