@@ -16,8 +16,6 @@
 
 package com.android.launcher3.util;
 
-import static android.content.pm.PackageManager.MATCH_SYSTEM_ONLY;
-
 import android.app.AppOpsManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -31,7 +29,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
@@ -40,7 +37,6 @@ import android.os.PatternMatcher;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.Pair;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -293,25 +289,6 @@ public class PackageManagerHelper {
         } else {
             return false;
         }
-    }
-
-    /**
-     * Finds a system apk which had a broadcast receiver listening to a particular action.
-     * @param action intent action used to find the apk
-     * @return a pair of apk package name and the resources.
-     */
-    public static Pair<String, Resources> findSystemApk(String action, PackageManager pm) {
-        final Intent intent = new Intent(action);
-        for (ResolveInfo info : pm.queryBroadcastReceivers(intent, MATCH_SYSTEM_ONLY)) {
-            final String packageName = info.activityInfo.packageName;
-            try {
-                final Resources res = pm.getResourcesForApplication(packageName);
-                return Pair.create(packageName, res);
-            } catch (NameNotFoundException e) {
-                Log.w(TAG, "Failed to find resources for " + packageName);
-            }
-        }
-        return null;
     }
 
     /**

@@ -36,7 +36,7 @@ import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.fallback.RecentsState;
-import com.android.quickstep.util.ActivityLifecycleListener;
+import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.views.RecentsView;
 
@@ -88,12 +88,10 @@ public final class FallbackActivityInterface extends
     }
 
     @Override
-    public ActivityLifecycleListener createActivityLifecycleListener(
-            @Nullable Predicate<Boolean> onInitListener, @Nullable Runnable onDestroyListener) {
-        return new ActivityLifecycleListener<>(
-                (activity, alreadyOnHome) -> onInitListener.test(alreadyOnHome),
-                onDestroyListener,
-                RecentsActivity.ACTIVITY_TRACKER);
+    public ActivityInitListener createActivityInitListener(
+            Predicate<Boolean> onInitListener) {
+        return new ActivityInitListener<>((activity, alreadyOnHome) ->
+                onInitListener.test(alreadyOnHome), RecentsActivity.ACTIVITY_TRACKER);
     }
 
     @Nullable
