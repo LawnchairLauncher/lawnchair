@@ -230,15 +230,12 @@
     <string name="taskbar_edu_opened">Taskbar education appeared</string>
     <!-- Accessibility text spoken when the taskbar education panel disappears [CHAR_LIMIT=NONE] -->
     <string name="taskbar_edu_closed">Taskbar education closed</string>
-    <!-- Text in dialog that lets a user know how they can use the taskbar to switch apps on their device.
-         [CHAR_LIMIT=60] -->
-    <string name="taskbar_edu_switch_apps">Use the taskbar to switch apps</string>
-    <!-- Text in dialog that lets a user know how they can use the taskbar to use multiple apps at once on their device.
-         [CHAR_LIMIT=60] -->
-    <string name="taskbar_edu_splitscreen">Drag to the side to use two apps at once</string>
-    <!-- Text in dialog that lets a user know how they can hide the taskbar on their device.
-         [CHAR_LIMIT=60] -->
-    <string name="taskbar_edu_stashing">Touch &amp; hold to hide the taskbar</string>
+    <!-- Text in dialog that lets a user know how they can use the taskbar to use multiple apps at once on their device. [CHAR_LIMIT=60] -->
+    <string name="taskbar_edu_splitscreen">Drag to the side to use 2 apps at once</string>
+    <!-- Text in dialog that lets a user know how they can show the taskbar on their device. [CHAR_LIMIT=60] -->
+    <string name="taskbar_edu_stashing">Short swipe up to show the taskbar</string>
+    <!-- Text in dialog that lets a user know how the taskbar suggests apps based on their usage. [CHAR_LIMIT=60] -->
+    <string name="taskbar_edu_suggestions">The taskbar suggests apps based on your routine</string>
     <!-- Text on button to go to the next screen of a tutorial [CHAR_LIMIT=16] -->
     <string name="taskbar_edu_next">Next</string>
     <!-- Text on button to go to the previous screen of a tutorial [CHAR_LIMIT=16] -->
