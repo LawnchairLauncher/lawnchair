@@ -63,4 +63,11 @@ public interface BaseState<T extends BaseState> {
     default boolean displayOverviewTasksAsGrid(DeviceProfile deviceProfile) {
         return false;
     }
+
+    /**
+     * For this state, whether tasks should show the thumbnail splash.
+     */
+    default boolean showTaskThumbnailSplash() {
+        return false;
+    }
 }

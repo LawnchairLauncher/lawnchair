@@ -19,7 +19,7 @@ package com.android.quickstep;
 
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
-import static com.android.launcher3.util.DisplayController.NavigationMode.NO_BUTTON;
+import static com.android.launcher3.util.NavigationMode.NO_BUTTON;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -35,14 +35,13 @@ import android.graphics.Rect;
 import android.util.ArrayMap;
 import android.util.DisplayMetrics;
 import android.util.Size;
-import android.view.Display;
 import android.view.MotionEvent;
 import android.view.Surface;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
-import com.android.launcher3.ResourceUtils;
+import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.RotationUtils;
 import com.android.launcher3.util.WindowBounds;
@@ -290,15 +289,17 @@ public class OrientationTouchTransformerTest {
     private DisplayController.Info createDisplayInfo(Size screenSize, int rotation) {
         Point displaySize = new Point(screenSize.getWidth(), screenSize.getHeight());
         RotationUtils.rotateSize(displaySize, rotation);
-        CachedDisplayInfo cdi = new CachedDisplayInfo(displaySize, rotation);
-        WindowBounds wm = new WindowBounds(
+        CachedDisplayInfo cachedDisplayInfo = new CachedDisplayInfo(displaySize, rotation);
+        WindowBounds windowBounds = new WindowBounds(
                 new Rect(0, 0, displaySize.x, displaySize.y),
                 new Rect());
         WindowManagerProxy wmProxy = mock(WindowManagerProxy.class);
-        doReturn(cdi).when(wmProxy).getDisplayInfo(any(), any());
-        doReturn(wm).when(wmProxy).getRealBounds(any(), any(), any());
+        doReturn(cachedDisplayInfo).when(wmProxy).getDisplayInfo(any());
+        doReturn(windowBounds).when(wmProxy).getRealBounds(any(), any());
+        ArrayMap<CachedDisplayInfo, WindowBounds[]> internalDisplayBounds = new ArrayMap<>();
+        doReturn(internalDisplayBounds).when(wmProxy).estimateInternalDisplayBounds(any());
         return new DisplayController.Info(
-                getApplicationContext(), mock(Display.class), wmProxy, new ArrayMap<>());
+                getApplicationContext(), wmProxy, new ArrayMap<>());
     }
 
     private float generateTouchRegionHeight(Size screenSize, int rotation) {

@@ -26,6 +26,7 @@ import androidx.test.uiautomator.UiObject2;
 public class SearchResultFromQsb {
     // The input resource id in the search box.
     private static final String INPUT_RES = "input";
+    private static final String BOTTOM_SHEET_RES_ID = "bottom_sheet_background";
     private final LauncherInstrumentation mLauncher;
 
     SearchResultFromQsb(LauncherInstrumentation launcher) {
@@ -46,5 +47,24 @@ public class SearchResultFromQsb {
     public Launchable findAppIcon(String appName) {
         UiObject2 icon = mLauncher.waitForLauncherObject(By.clazz(TextView.class).text(appName));
         return new AllAppsAppIcon(mLauncher, icon);
+    }
+
+    /**
+     * Taps outside bottom sheet to dismiss and return to workspace. Available on tablets only.
+     * @param tapRight Tap on the right of bottom sheet if true, or left otherwise.
+     */
+    public Workspace dismissByTappingOutsideForTablet(boolean tapRight) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to tap outside AllApps bottom sheet on the "
+                             + (tapRight ? "right" : "left"))) {
+            final UiObject2 allAppsBottomSheet =
+                    mLauncher.waitForLauncherObject(BOTTOM_SHEET_RES_ID);
+            mLauncher.touchOutsideContainer(allAppsBottomSheet, tapRight);
+            try (LauncherInstrumentation.Closable tapped = mLauncher.addContextLayer(
+                    "tapped outside AllApps bottom sheet")) {
+                return mLauncher.getWorkspace();
+            }
+        }
     }
 }

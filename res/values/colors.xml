@@ -85,4 +85,9 @@
     <color name="all_apps_button_color_2">#00677E</color>
     <color name="all_apps_button_color_3">#5F757E</color>
     <color name="all_apps_button_color_4">#005A6E</color>
+
+    <color name="preload_icon_accent_color_light">#00668B</color>
+    <color name="preload_icon_background_color_light">#B5CAD7</color>
+    <color name="preload_icon_accent_color_dark">#4BB6E8</color>
+    <color name="preload_icon_background_color_dark">#40484D</color>
 </resources>

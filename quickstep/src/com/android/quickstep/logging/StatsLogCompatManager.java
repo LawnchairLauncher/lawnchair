@@ -336,8 +336,9 @@ public class StatsLogCompatManager extends StatsLogManager {
                 appState.getModel().enqueueModelUpdateTask(
                         new BaseModelUpdateTask() {
                             @Override
-                            public void execute(LauncherAppState app, BgDataModel dataModel,
-                                    AllAppsList apps) {
+                            public void execute(@NonNull final LauncherAppState app,
+                                    @NonNull final BgDataModel dataModel,
+                                    @NonNull final AllAppsList apps) {
                                 FolderInfo folderInfo = dataModel.folders.get(mItemInfo.container);
                                 write(event, applyOverwrites(mItemInfo.buildProto(folderInfo)));
                             }

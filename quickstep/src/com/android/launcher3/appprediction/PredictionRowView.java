@@ -33,6 +33,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.DeviceProfileListenable;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.FloatingHeaderRow;
 import com.android.launcher3.allapps.FloatingHeaderView;
 import com.android.launcher3.anim.AlphaUpdateListener;
@@ -117,9 +118,14 @@ public class PredictionRowView<T extends Context & ActivityContext & DeviceProfi
 
     @Override
     public int getExpectedHeight() {
-        return getVisibility() == GONE ? 0
-                : mActivityContext.getDeviceProfile().allAppsCellHeightPx + getPaddingTop()
-                        + getPaddingBottom();
+        DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
+        int iconHeight = deviceProfile.allAppsIconSizePx;
+        int iconPadding = deviceProfile.allAppsIconDrawablePaddingPx;
+        int textHeight = Utilities.calculateTextHeight(deviceProfile.allAppsIconTextSizePx);
+        int verticalPadding = getResources().getDimensionPixelSize(
+                R.dimen.all_apps_predicted_icon_vertical_padding);
+        int totalHeight = iconHeight + iconPadding + textHeight + verticalPadding * 2;
+        return getVisibility() == GONE ? 0 : totalHeight + getPaddingTop() + getPaddingBottom();
     }
 
     @Override

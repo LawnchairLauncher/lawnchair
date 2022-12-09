@@ -48,7 +48,7 @@
         android:textColor="?attr/workProfileOverlayTextColor"
         android:text="@string/work_apps_enable_btn_text"
         android:textAlignment="center"
-        android:background="@drawable/rounded_action_button"
+        android:background="@drawable/bg_work_apps_paused_action_button"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:textSize="14sp" />

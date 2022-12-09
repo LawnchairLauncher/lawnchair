@@ -17,12 +17,18 @@ package com.android.launcher3
 
 import android.content.Context
 import android.graphics.PointF
+import android.graphics.Rect
+import android.util.SparseArray
 import androidx.test.core.app.ApplicationProvider
+import com.android.launcher3.DeviceProfile.DEFAULT_PROVIDER;
 import com.android.launcher3.util.DisplayController.Info
 import com.android.launcher3.util.WindowBounds
 import org.junit.Before
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.Mockito.mock
+import java.io.PrintWriter
+import java.io.StringWriter
 import org.mockito.Mockito.`when` as whenever
 
 abstract class DeviceProfileBaseTest {
@@ -35,6 +41,9 @@ abstract class DeviceProfileBaseTest {
     protected var transposeLayoutWithOrientation: Boolean = false
     protected var useTwoPanels: Boolean = false
     protected var isGestureMode: Boolean = true
+    protected var devicePaddingsMock: DevicePaddings = mock(DevicePaddings::class.java)
+    protected var staticdevicePaddingsMock: DevicePaddings.DevicePadding =
+            mock(DevicePaddings.DevicePadding::class.java)
 
     @Before
     fun setUp() {
@@ -49,88 +58,305 @@ abstract class DeviceProfileBaseTest {
         inv,
         info,
         windowBounds,
+        SparseArray(),
         isMultiWindowMode,
         transposeLayoutWithOrientation,
         useTwoPanels,
-        isGestureMode
+        isGestureMode,
+        DEFAULT_PROVIDER
     )
 
-    protected fun initializeVarsForPhone(isLandscape: Boolean = false) {
-        val (x, y) = if (isLandscape)
-            Pair(3120, 1440)
+    protected fun initializeVarsForPhone(isGestureMode: Boolean = true,
+                                         isVerticalBar: Boolean = false) {
+        val (x, y) = if (isVerticalBar)
+            Pair(2400, 1080)
         else
-            Pair(1440, 3120)
+            Pair(1080, 2400)
 
-        windowBounds = WindowBounds(x, y, x, y - 100, 0)
+        windowBounds = WindowBounds(Rect(0, 0, x, y), Rect(
+                if (isVerticalBar) 118 else 0,
+                if (isVerticalBar) 74 else 118,
+                if (!isGestureMode && isVerticalBar) 126 else 0,
+                if (isGestureMode) 63 else if (isVerticalBar) 0 else 126))
 
         whenever(info.isTablet(any())).thenReturn(false)
-        whenever(info.getDensityDpi()).thenReturn(560)
+        whenever(info.getDensityDpi()).thenReturn(420)
+        whenever(info.smallestSizeDp(any())).thenReturn(411f)
+        whenever(devicePaddingsMock.getDevicePadding(anyInt())).thenReturn(staticdevicePaddingsMock)
+        whenever(staticdevicePaddingsMock.getWorkspaceTopPadding(anyInt())).thenReturn(95)
+        whenever(staticdevicePaddingsMock.getWorkspaceBottomPadding(anyInt())).thenReturn(116)
+        whenever(staticdevicePaddingsMock.maxEmptySpacePx)
+                .thenReturn(if (isVerticalBar) if (isGestureMode) 131 else 184 else 315)
 
-        inv = newScalableInvariantDeviceProfile()
+        this.isGestureMode = isGestureMode
+        transposeLayoutWithOrientation = true
+
+        inv = InvariantDeviceProfile().apply {
+            numRows = 5
+            numColumns = 4
+            numSearchContainerColumns = 4
+
+            iconSize = floatArrayOf(60f, 54f, 60f, 60f)
+            iconTextSize = FloatArray(4) { 14f }
+            deviceType = InvariantDeviceProfile.TYPE_PHONE
+
+            minCellSize = listOf(
+                    PointF(80f, 104f),
+                    PointF(80f, 104f),
+                    PointF(80f, 104f),
+                    PointF(80f, 104f)
+            ).toTypedArray()
+
+            borderSpaces = listOf(
+                    PointF(16f, 16f),
+                    PointF(16f, 16f),
+                    PointF(16f, 16f),
+                    PointF(16f, 16f)
+            ).toTypedArray()
+
+            numFolderRows = 3
+            numFolderColumns = 3
+            folderBorderSpaces = PointF(16f, 16f)
+            folderTopPadding = 24f
+            folderCellSize = PointF(80f, 94f)
+
+
+            inlineNavButtonsEndSpacing = R.dimen.taskbar_button_margin_4_5
+
+            horizontalMargin = FloatArray(4) { 22f }
+
+            allAppsCellSize = listOf(
+                    PointF(80f, 104f),
+                    PointF(80f, 104f),
+                    PointF(80f, 104f),
+                    PointF(80f, 104f)
+            ).toTypedArray()
+            allAppsIconSize = floatArrayOf(60f, 60f, 60f, 60f)
+            allAppsIconTextSize = FloatArray(4) { 14f }
+            allAppsBorderSpaces = listOf(
+                    PointF(16f, 16f),
+                    PointF(16f, 16f),
+                    PointF(16f, 16f),
+                    PointF(16f, 16f)
+            ).toTypedArray()
+
+            numShownHotseatIcons = 4
+
+            numDatabaseHotseatIcons = 4
+
+            hotseatColumnSpan = IntArray(4) { 4 }
+            hotseatBarBottomSpace = FloatArray(4) { 48f }
+            hotseatQsbSpace = FloatArray(4) { 36f }
+
+            numAllAppsColumns = 4
+
+            isScalable = true
+
+            inlineQsb = BooleanArray(4) { false }
+
+            devicePaddings = devicePaddingsMock
+        }
     }
 
-    protected fun initializeVarsForTablet(isLandscape: Boolean = false) {
+    protected fun initializeVarsForTablet(isLandscape: Boolean = false,
+                                          isGestureMode: Boolean = true) {
         val (x, y) = if (isLandscape)
             Pair(2560, 1600)
         else
             Pair(1600, 2560)
 
-        windowBounds = WindowBounds(x, y, x, y - 100, 0)
+        windowBounds =
+                WindowBounds(Rect(0, 0, x, y), Rect(0, 104, 0, 0))
 
         whenever(info.isTablet(any())).thenReturn(true)
         whenever(info.getDensityDpi()).thenReturn(320)
+        whenever(info.smallestSizeDp(any())).thenReturn(800f)
+        whenever(devicePaddingsMock.getDevicePadding(anyInt())).thenReturn(staticdevicePaddingsMock)
+        whenever(staticdevicePaddingsMock.getWorkspaceTopPadding(anyInt()))
+                .thenReturn(if (isLandscape) 32 else 159)
+        whenever(staticdevicePaddingsMock.getWorkspaceBottomPadding(anyInt()))
+                .thenReturn(if (isLandscape) 72 else 203)
+        whenever(staticdevicePaddingsMock.maxEmptySpacePx).thenReturn(if (isLandscape) 200 else 19998)
 
-        inv = newScalableInvariantDeviceProfile()
+
+        this.isGestureMode = isGestureMode
+        useTwoPanels = false
+
+        inv = InvariantDeviceProfile().apply {
+            numRows = 5
+            numColumns = 6
+            numSearchContainerColumns = 3
+
+            iconSize = FloatArray(4) { 60f }
+            iconTextSize = FloatArray(4) { 14f }
+            deviceType = InvariantDeviceProfile.TYPE_TABLET
+
+            minCellSize = listOf(
+                    PointF(102f, 120f),
+                    PointF(120f, 104f),
+                    PointF(102f, 120f),
+                    PointF(102f, 120f)
+            ).toTypedArray()
+
+            borderSpaces = listOf(
+                    PointF(16f, 64f),
+                    PointF(64f, 16f),
+                    PointF(16f, 64f),
+                    PointF(16f, 64f)
+            ).toTypedArray()
+
+            numFolderRows = 3
+            numFolderColumns = 3
+            folderBorderSpaces = PointF(16f, 16f)
+            folderTopPadding = 24f
+            folderCellSize = PointF(120f, 104f)
+
+            inlineNavButtonsEndSpacing = R.dimen.taskbar_button_margin_6_5
+
+            horizontalMargin = floatArrayOf(54f, 120f, 54f, 54f)
+
+            allAppsCellSize = listOf(
+                    PointF(96f, 142f),
+                    PointF(126f, 126f),
+                    PointF(96f, 142f),
+                    PointF(96f, 142f)
+            ).toTypedArray()
+            allAppsIconSize = FloatArray(4) { 60f }
+            allAppsIconTextSize = FloatArray(4) { 14f }
+            allAppsBorderSpaces = listOf(
+                    PointF(8f, 16f),
+                    PointF(16f, 16f),
+                    PointF(8f, 16f),
+                    PointF(8f, 16f)
+            ).toTypedArray()
+
+            numShownHotseatIcons = 6
+
+            numDatabaseHotseatIcons = 6
+
+            hotseatColumnSpan = intArrayOf(6, 4, 6, 6)
+            hotseatBarBottomSpace = floatArrayOf(36f, 40f, 36f, 36f)
+            hotseatQsbSpace = FloatArray(4) { 32f }
+
+            numAllAppsColumns = 6
+
+            isScalable = true
+            devicePaddingId = 2132148242 // "@xml/paddings_6x5"
+
+            inlineQsb = booleanArrayOf(
+                    false,
+                    true,
+                    false,
+                    false
+            )
+
+            devicePaddings = devicePaddingsMock
+        }
     }
 
-    /**
-     * A very generic grid, just to make qsb tests work. For real calculations, make sure to use
-     * values that better represent a real grid.
-     */
-    protected fun newScalableInvariantDeviceProfile(): InvariantDeviceProfile =
-        InvariantDeviceProfile().apply {
-            isScalable = true
-            numColumns = 4
+    protected fun initializeVarsForTwoPanel(isLandscape: Boolean = false,
+            isGestureMode: Boolean = true) {
+        val (x, y) = if (isLandscape)
+            Pair(2208, 1840)
+        else
+            Pair(1840, 2208)
+
+        windowBounds = WindowBounds(Rect(0, 0, x, y),
+                Rect(0, 110, 0, 0))
+
+        whenever(info.isTablet(any())).thenReturn(true)
+        whenever(info.getDensityDpi()).thenReturn(420)
+        whenever(info.smallestSizeDp(any())).thenReturn(700f)
+        whenever(devicePaddingsMock.getDevicePadding(anyInt())).thenReturn(staticdevicePaddingsMock)
+
+        val topPadding = if (isLandscape) 18 else 89
+        val bottomPadding = if (isLandscape) 39 else 146
+        val maxEmptySpace = if (isLandscape) 131 else 236
+        whenever(staticdevicePaddingsMock.getWorkspaceTopPadding(anyInt())).thenReturn(topPadding)
+        whenever(staticdevicePaddingsMock.getWorkspaceBottomPadding(anyInt()))
+                .thenReturn(bottomPadding)
+        whenever(staticdevicePaddingsMock.maxEmptySpacePx).thenReturn(maxEmptySpace)
+
+        this.isGestureMode = isGestureMode
+        useTwoPanels = true
+
+        inv = InvariantDeviceProfile().apply {
             numRows = 4
-            numShownHotseatIcons = 4
-            numDatabaseHotseatIcons = 6
-            numShrunkenHotseatIcons = 5
-            horizontalMargin = FloatArray(4) { 22f }
-            borderSpaces = listOf(
-                PointF(16f, 16f),
-                PointF(16f, 16f),
-                PointF(16f, 16f),
-                PointF(16f, 16f)
-            ).toTypedArray()
-            allAppsBorderSpaces = listOf(
-                PointF(16f, 16f),
-                PointF(16f, 16f),
-                PointF(16f, 16f),
-                PointF(16f, 16f)
-            ).toTypedArray()
-            hotseatBorderSpaces = FloatArray(4) { 16f }
-            hotseatColumnSpan = IntArray(4) { 4 }
-            iconSize = FloatArray(4) { 56f }
-            allAppsIconSize = FloatArray(4) { 56f }
-            iconTextSize = FloatArray(4) { 14f }
-            allAppsIconTextSize = FloatArray(4) { 14f }
+            numColumns = 4
+            numSearchContainerColumns = 4
+
+            iconSize = floatArrayOf(60f, 52f, 52f, 60f)
+            iconTextSize = floatArrayOf(14f, 14f, 12f, 14f)
+            deviceType = InvariantDeviceProfile.TYPE_MULTI_DISPLAY
+
             minCellSize = listOf(
-                PointF(64f, 83f),
-                PointF(64f, 83f),
-                PointF(64f, 83f),
-                PointF(64f, 83f)
+                    PointF(80f, 104f),
+                    PointF(80f, 104f),
+                    PointF(68f, 116f),
+                    PointF(80f, 102f)
             ).toTypedArray()
+
+            borderSpaces = listOf(
+                    PointF(16f, 16f),
+                    PointF(16f, 16f),
+                    PointF(16f, 20f),
+                    PointF(20f, 20f)
+            ).toTypedArray()
+
+            numFolderRows = 3
+            numFolderColumns = 3
+            folderBorderSpaces = PointF(16f, 16f)
+            folderTopPadding = 24f
+            folderCellSize = PointF(80f, 94f)
+
+            inlineNavButtonsEndSpacing = R.dimen.taskbar_button_margin_4_4
+
+            horizontalMargin = floatArrayOf(21.5f, 21.5f, 22.5f, 30.5f)
+
             allAppsCellSize = listOf(
-                PointF(64f, 83f),
-                PointF(64f, 83f),
-                PointF(64f, 83f),
-                PointF(64f, 83f)
+                    PointF(0f, 0f),
+                    PointF(0f, 0f),
+                    PointF(68f, 104f),
+                    PointF(80f, 104f)
             ).toTypedArray()
+            allAppsIconSize = floatArrayOf(60f, 60f, 52f, 60f)
+            allAppsIconTextSize = floatArrayOf(14f, 14f, 12f, 14f)
+            allAppsBorderSpaces = listOf(
+                    PointF(16f, 16f),
+                    PointF(16f, 16f),
+                    PointF(16f, 28f),
+                    PointF(20f, 16f)
+            ).toTypedArray()
+
+            numShownHotseatIcons = 6
+
+            numDatabaseHotseatIcons = 6
+
+            hotseatColumnSpan = IntArray(4) { 6 }
+            hotseatBarBottomSpace = floatArrayOf(48f, 48f, 36f, 20f)
+            hotseatQsbSpace = floatArrayOf(36f, 36f, 36f, 28f)
+
+            numAllAppsColumns = 6
+            numDatabaseAllAppsColumns = 6
+
+            isScalable = true
+
             inlineQsb = booleanArrayOf(
-                false,
-                false,
-                false,
-                false
+                    false,
+                    false,
+                    false,
+                    false
             )
+
+            devicePaddings = devicePaddingsMock
         }
+    }
+
+    fun dump(dp: DeviceProfile): String {
+        val stringWriter = StringWriter()
+        val printWriter = PrintWriter(stringWriter)
+        dp.dump(context, "", printWriter)
+        printWriter.flush()
+        return stringWriter.toString()
+    }
 }

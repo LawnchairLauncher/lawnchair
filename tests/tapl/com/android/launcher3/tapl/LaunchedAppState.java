@@ -16,9 +16,10 @@
 
 package com.android.launcher3.tapl;
 
-import static com.android.launcher3.testing.TestProtocol.REQUEST_DISABLE_MANUAL_TASKBAR_STASHING;
-import static com.android.launcher3.testing.TestProtocol.REQUEST_ENABLE_MANUAL_TASKBAR_STASHING;
-import static com.android.launcher3.testing.TestProtocol.REQUEST_STASHED_TASKBAR_HEIGHT;
+import static com.android.launcher3.tapl.LauncherInstrumentation.TASKBAR_RES_ID;
+import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_DISABLE_MANUAL_TASKBAR_STASHING;
+import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_ENABLE_MANUAL_TASKBAR_STASHING;
+import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_STASHED_TASKBAR_HEIGHT;
 
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -27,7 +28,7 @@ import android.view.MotionEvent;
 
 import androidx.test.uiautomator.By;
 
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 
 /**
  * Background state operations specific to when an app has been launched.
@@ -54,9 +55,19 @@ public final class LaunchedAppState extends Background {
     public Taskbar getTaskbar() {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to get the taskbar")) {
-            mLauncher.waitForLauncherObject("taskbar_view");
+            mLauncher.waitForLauncherObject(TASKBAR_RES_ID);
 
             return new Taskbar(mLauncher);
+        }
+    }
+
+    /**
+     * Waits for the taskbar to be hidden, or fails.
+     */
+    public void assertTaskbarHidden() {
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "waiting for taskbar to be hidden")) {
+            mLauncher.waitUntilLauncherObjectGone(TASKBAR_RES_ID);
         }
     }
 
@@ -71,7 +82,7 @@ public final class LaunchedAppState extends Background {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                      "want to show the taskbar")) {
-            mLauncher.waitUntilLauncherObjectGone("taskbar_view");
+            mLauncher.waitUntilLauncherObjectGone(TASKBAR_RES_ID);
 
             final long downTime = SystemClock.uptimeMillis();
             final int unstashTargetY = mLauncher.getRealDisplaySize().y
@@ -85,7 +96,7 @@ public final class LaunchedAppState extends Background {
             LauncherInstrumentation.log("showTaskbar: sent down");
 
             try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("pressed down")) {
-                mLauncher.waitForLauncherObject("taskbar_view");
+                mLauncher.waitForLauncherObject(TASKBAR_RES_ID);
                 mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_UP, unstashTarget,
                         LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER);
 

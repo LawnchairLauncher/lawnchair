@@ -57,6 +57,10 @@ public class Interpolators {
     public static final Interpolator DECELERATED_EASE = new PathInterpolator(0, 0, .2f, 1f);
     public static final Interpolator ACCELERATED_EASE = new PathInterpolator(0.4f, 0, 1f, 1f);
 
+    /**
+     * The default emphasized interpolator. Used for hero / emphasized movement of content.
+     */
+    public static final Interpolator EMPHASIZED = createEmphasizedInterpolator();
     public static final Interpolator EMPHASIZED_ACCELERATE = new PathInterpolator(
             0.3f, 0f, 0.8f, 0.15f);
     public static final Interpolator EMPHASIZED_DECELERATE = new PathInterpolator(
@@ -79,6 +83,7 @@ public class Interpolators {
         EXAGGERATED_EASE = new PathInterpolator(exaggeratedEase);
     }
 
+    public static final Interpolator OVERSHOOT_0_75 = new OvershootInterpolator(0.75f);
     public static final Interpolator OVERSHOOT_1_2 = new OvershootInterpolator(1.2f);
     public static final Interpolator OVERSHOOT_1_7 = new OvershootInterpolator(1.7f);
 
@@ -86,7 +91,6 @@ public class Interpolators {
             new PathInterpolator(0.3f, 0f, 0.1f, 1f);
     public static final Interpolator TOUCH_RESPONSE_INTERPOLATOR_ACCEL_DEACCEL =
             v -> ACCEL_DEACCEL.getInterpolation(TOUCH_RESPONSE_INTERPOLATOR.getInterpolation(v));
-
 
     /**
      * Inversion of ZOOM_OUT, compounded with an ease-out.
@@ -217,5 +221,15 @@ public class Interpolators {
      */
     public static Interpolator reverse(Interpolator interpolator) {
         return t -> 1 - interpolator.getInterpolation(1 - t);
+    }
+
+    // Create the default emphasized interpolator
+    private static PathInterpolator createEmphasizedInterpolator() {
+        Path path = new Path();
+        // Doing the same as fast_out_extra_slow_in
+        path.moveTo(0f, 0f);
+        path.cubicTo(0.05f, 0f, 0.133333f, 0.06f, 0.166666f, 0.4f);
+        path.cubicTo(0.208333f, 0.82f, 0.25f, 1f, 1f, 1f);
+        return new PathInterpolator(path);
     }
 }

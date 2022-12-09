@@ -13,21 +13,21 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto" >
     <com.android.launcher3.widget.picker.WidgetsRecyclerView
         android:id="@+id/primary_widgets_list_view"
         android:layout_below="@id/collapse_handle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
+        android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
         android:clipToPadding="false" />
 
     <!-- SearchAndRecommendationsView without the tab layout as well -->
-    <com.android.launcher3.widget.picker.SearchAndRecommendationsView
+    <com.android.launcher3.views.StickyHeaderLayout
         android:id="@+id/search_and_recommendations_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
         android:layout_below="@id/collapse_handle"
         android:paddingBottom="16dp"
         android:orientation="vertical">
@@ -40,6 +40,7 @@
             android:textSize="24sp"
             android:layout_marginTop="24dp"
             android:textColor="?android:attr/textColorSecondary"
+            android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
             android:text="@string/widget_button_text"/>
 
         <FrameLayout
@@ -48,8 +49,10 @@
             android:layout_height="wrap_content"
             android:elevation="0.1dp"
             android:background="?android:attr/colorBackground"
+            android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
             android:paddingBottom="8dp"
-            android:clipToPadding="false">
+            android:clipToPadding="false"
+            launcher:layout_sticky="true" >
             <include layout="@layout/widgets_search_bar" />
         </FrameLayout>
 
@@ -60,7 +63,8 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/widgets_recommendation_background"
             android:paddingVertical="@dimen/recommended_widgets_table_vertical_padding"
+            android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
             android:visibility="gone" />
-    </com.android.launcher3.widget.picker.SearchAndRecommendationsView>
+    </com.android.launcher3.views.StickyHeaderLayout>
 
 </merge>

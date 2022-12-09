@@ -23,7 +23,7 @@ import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
 
 import static com.android.launcher3.tapl.Folder.FOLDER_CONTENT_RES_ID;
 import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
-import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 
 import android.app.ActivityManager;
 import android.app.Instrumentation;
@@ -65,10 +65,9 @@ import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
-import com.android.launcher3.ResourceUtils;
-import com.android.launcher3.testing.TestInformationRequest;
-import com.android.launcher3.testing.TestProtocol;
-import com.android.systemui.shared.system.ContextUtils;
+import com.android.launcher3.testing.shared.ResourceUtils;
+import com.android.launcher3.testing.shared.TestInformationRequest;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.systemui.shared.system.QuickStepContract;
 
 import org.junit.Assert;
@@ -84,7 +83,6 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -101,7 +99,6 @@ public final class LauncherInstrumentation {
     private static final String TAG = "Tapl";
     private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 15;
     private static final int GESTURE_STEP_MS = 16;
-    private static final long FORCE_PAUSE_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(2);
 
     static final Pattern EVENT_TOUCH_DOWN = getTouchEventPattern("ACTION_DOWN");
     static final Pattern EVENT_TOUCH_UP = getTouchEventPattern("ACTION_UP");
@@ -113,8 +110,11 @@ public final class LauncherInstrumentation {
     static final Pattern EVENT_TOUCH_UP_TIS = getTouchEventPatternTIS("ACTION_UP");
     static final Pattern EVENT_TOUCH_CANCEL_TIS = getTouchEventPatternTIS("ACTION_CANCEL");
 
-    static final Pattern EVENT_KEY_BACK_DOWN = getKeyEventPattern("ACTION_DOWN", "KEYCODE_BACK");
-    static final Pattern EVENT_KEY_BACK_UP = getKeyEventPattern("ACTION_UP", "KEYCODE_BACK");
+    private static final Pattern EVENT_KEY_BACK_DOWN =
+            getKeyEventPattern("ACTION_DOWN", "KEYCODE_BACK");
+    private static final Pattern EVENT_KEY_BACK_UP =
+            getKeyEventPattern("ACTION_UP", "KEYCODE_BACK");
+    private static final Pattern EVENT_ON_BACK_INVOKED = Pattern.compile("onBackInvoked");
 
     private final String mLauncherPackage;
     private Boolean mIsLauncher3;
@@ -123,8 +123,8 @@ public final class LauncherInstrumentation {
     // Types for launcher containers that the user is interacting with. "Background" is a
     // pseudo-container corresponding to inactive launcher covered by another app.
     public enum ContainerType {
-        WORKSPACE, HOME_ALL_APPS, OVERVIEW, WIDGETS, FALLBACK_OVERVIEW, LAUNCHED_APP,
-        TASKBAR_ALL_APPS
+        WORKSPACE, HOME_ALL_APPS, OVERVIEW, SPLIT_SCREEN_SELECT, WIDGETS, FALLBACK_OVERVIEW,
+        LAUNCHED_APP, TASKBAR_ALL_APPS
     }
 
     public enum NavigationModel {ZERO_BUTTON, THREE_BUTTON}
@@ -170,8 +170,9 @@ public final class LauncherInstrumentation {
     private static final String OVERVIEW_RES_ID = "overview_panel";
     private static final String WIDGETS_RES_ID = "primary_widgets_list_view";
     private static final String CONTEXT_MENU_RES_ID = "popup_container";
-    private static final String TASKBAR_RES_ID = "taskbar_view";
-    public static final int WAIT_TIME_MS = 60000;
+    static final String TASKBAR_RES_ID = "taskbar_view";
+    private static final String SPLIT_PLACEHOLDER_RES_ID = "split_placeholder";
+    public static final int WAIT_TIME_MS = 30000;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
     private static final String ANDROID_PACKAGE = "android";
 
@@ -238,7 +239,7 @@ public final class LauncherInstrumentation {
         // Launcher package. As during inproc tests the tested launcher may not be selected as the
         // current launcher, choosing target package for inproc. For out-of-proc, use the installed
         // launcher package.
-        mLauncherPackage = testPackage.equals(targetPackage)
+        mLauncherPackage = testPackage.equals(targetPackage) || isGradleInstrumentation()
                 ? getLauncherPackageName()
                 : targetPackage;
 
@@ -264,7 +265,7 @@ public final class LauncherInstrumentation {
                 SystemClock.sleep(5000);
             } else {
                 try {
-                    final int userId = ContextUtils.getUserId(getContext());
+                    final int userId = getContext().getUserId();
                     final String launcherPidCommand = "pidof " + pi.packageName;
                     final String initialPid = mDevice.executeShellCommand(launcherPidCommand)
                             .replaceAll("\\s", "");
@@ -283,6 +284,20 @@ public final class LauncherInstrumentation {
                 }
             }
         }
+    }
+
+    /**
+     * Gradle only supports out of process instrumentation. The test package is automatically
+     * generated by appending `.test` to the target package.
+     */
+    private boolean isGradleInstrumentation() {
+        final String testPackage = getContext().getPackageName();
+        final String targetPackage = mInstrumentation.getTargetContext().getPackageName();
+        final String testSuffix = ".test";
+
+        return testPackage.endsWith(testSuffix) && testPackage.length() > testSuffix.length()
+            && testPackage.substring(0, testPackage.length() - testSuffix.length())
+            .equals(targetPackage);
     }
 
     public void enableCheckEventsForSuccessfulGestures() {
@@ -362,10 +377,6 @@ public final class LauncherInstrumentation {
         return getRealDisplaySize().x / 2f;
     }
 
-    private void setForcePauseTimeout(long timeout) {
-        getTestInfo(TestProtocol.REQUEST_SET_FORCE_PAUSE_TIMEOUT, Long.toString(timeout));
-    }
-
     public void setEnableRotation(boolean on) {
         getTestInfo(TestProtocol.REQUEST_ENABLE_ROTATION, Boolean.toString(on));
     }
@@ -377,6 +388,17 @@ public final class LauncherInstrumentation {
 
     void setActiveContainer(VisibleContainer container) {
         sActiveContainer = new WeakReference<>(container);
+    }
+
+    /**
+     * Sets the accesibility interactive timeout to be effectively indefinite (UI using this
+     * accesibility timeout will not automatically dismiss if true).
+     */
+    void setIndefiniteAccessibilityInteractiveUiTimeout(boolean indefiniteTimeout) {
+        final String cmd = indefiniteTimeout
+                ? "settings put secure accessibility_interactive_ui_timeout_ms 10000"
+                : "settings delete secure accessibility_interactive_ui_timeout_ms";
+        logShellCommand(cmd);
     }
 
     public NavigationModel getNavigationModel() {
@@ -719,6 +741,7 @@ public final class LauncherInstrumentation {
                     waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
                     waitUntilLauncherObjectGone(TASKBAR_RES_ID);
+                    waitUntilLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
 
                     return waitForLauncherObject(WORKSPACE_RES_ID);
                 }
@@ -727,6 +750,7 @@ public final class LauncherInstrumentation {
                     waitUntilLauncherObjectGone(APPS_RES_ID);
                     waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
                     waitUntilLauncherObjectGone(TASKBAR_RES_ID);
+                    waitUntilLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
 
                     return waitForLauncherObject(WIDGETS_RES_ID);
                 }
@@ -736,6 +760,7 @@ public final class LauncherInstrumentation {
                     waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
                     waitUntilLauncherObjectGone(TASKBAR_RES_ID);
+                    waitUntilLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
 
                     return waitForLauncherObject(APPS_RES_ID);
                 }
@@ -744,7 +769,17 @@ public final class LauncherInstrumentation {
                     waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
                     waitUntilLauncherObjectGone(TASKBAR_RES_ID);
+                    waitUntilLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
 
+                    return waitForLauncherObject(OVERVIEW_RES_ID);
+                }
+                case SPLIT_SCREEN_SELECT: {
+                    waitUntilLauncherObjectGone(APPS_RES_ID);
+                    waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
+                    waitUntilLauncherObjectGone(WIDGETS_RES_ID);
+                    waitUntilLauncherObjectGone(TASKBAR_RES_ID);
+
+                    waitForLauncherObject(SPLIT_PLACEHOLDER_RES_ID);
                     return waitForLauncherObject(OVERVIEW_RES_ID);
                 }
                 case FALLBACK_OVERVIEW: {
@@ -752,6 +787,7 @@ public final class LauncherInstrumentation {
                     waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
                     waitUntilLauncherObjectGone(TASKBAR_RES_ID);
+                    waitUntilLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
 
                     return waitForFallbackLauncherObject(OVERVIEW_RES_ID);
                 }
@@ -760,6 +796,7 @@ public final class LauncherInstrumentation {
                     waitUntilLauncherObjectGone(APPS_RES_ID);
                     waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
+                    waitUntilLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
 
                     if (isTablet() && !isFallbackOverview()) {
                         waitForLauncherObject(TASKBAR_RES_ID);
@@ -870,7 +907,14 @@ public final class LauncherInstrumentation {
     }
 
     /**
-     * Presses nav bar home button.
+     * Goes to home by swiping up in zero-button mode or pressing Home button.
+     * Calling it after another TAPL call is safe because all TAPL methods wait for the animations
+     * to finish.
+     * When calling it after a non-TAPL method, make sure that all animations have already
+     * completed, otherwise it may detect the current state (for example "Application" or "Home")
+     * incorrectly.
+     * The method expects either app or Launcher to be active when it's called. Other states, such
+     * as visible notification shade are not supported.
      *
      * @return the Workspace object.
      */
@@ -886,7 +930,6 @@ public final class LauncherInstrumentation {
             final String action;
             if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
                 checkForAnomaly(false, true);
-                setForcePauseTimeout(FORCE_PAUSE_TIMEOUT_MS);
 
                 final Point displaySize = getRealDisplaySize();
                 // The swipe up to home gesture starts from inside the launcher when the user is
@@ -964,8 +1007,12 @@ public final class LauncherInstrumentation {
                 }
             }
             if (launcherVisible) {
-                expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KEY_BACK_DOWN);
-                expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KEY_BACK_UP);
+                if (getContext().getApplicationInfo().isOnBackInvokedCallbackEnabled()) {
+                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ON_BACK_INVOKED);
+                } else {
+                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KEY_BACK_DOWN);
+                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KEY_BACK_UP);
+                }
             }
         }
     }
@@ -1087,12 +1134,30 @@ public final class LauncherInstrumentation {
     }
 
     @NonNull
+    UiObject2 waitForSystemUiObject(BySelector selector) {
+        final UiObject2 object = TestHelpers.wait(
+                Until.findObject(selector), WAIT_TIME_MS);
+        assertNotNull("Can't find a systemui object with selector: " + selector, object);
+        return object;
+    }
+
+    @NonNull
     UiObject2 waitForNavigationUiObject(String resId) {
         String resPackage = getNavigationButtonResPackage();
         final UiObject2 object = mDevice.wait(
                 Until.findObject(By.res(resPackage, resId)), WAIT_TIME_MS);
         assertNotNull("Can't find a navigation UI object with id: " + resId, object);
         return object;
+    }
+
+    @Nullable
+    UiObject2 findObjectInContainer(UiObject2 container, String resName) {
+        try {
+            return container.findObject(getLauncherObjectSelector(resName));
+        } catch (StaleObjectException e) {
+            fail("The container disappeared from screen");
+            return null;
+        }
     }
 
     @Nullable
@@ -1215,6 +1280,13 @@ public final class LauncherInstrumentation {
                 Until.findObject(By.res(ANDROID_PACKAGE, resId)), WAIT_TIME_MS);
         assertNotNull("Can't find a android object with id: " + resId, object);
         return object;
+    }
+
+    @NonNull
+    List<UiObject2> waitForObjectsBySelector(BySelector selector) {
+        final List<UiObject2> objects = mDevice.wait(Until.findObjects(selector), WAIT_TIME_MS);
+        assertNotNull("Can't find any view in Launcher, selector: " + selector, objects);
+        return objects;
     }
 
     private UiObject2 waitForObjectBySelector(BySelector selector) {
@@ -1710,6 +1782,15 @@ public final class LauncherInstrumentation {
         getTestInfo(TestProtocol.REQUEST_UNSTASH_TASKBAR_IF_STASHED);
     }
 
+    /**
+     * Recreates the taskbar (outside of tests this is done for certain configuration changes).
+     * The expected behavior is that the taskbar retains its current state after being recreated.
+     * For example, if taskbar is currently stashed, it should still be stashed after recreating.
+     */
+    public void recreateTaskbar() {
+        getTestInfo(TestProtocol.REQUEST_RECREATE_TASKBAR);
+    }
+
     public List<String> getHotseatIconNames() {
         return getTestInfo(TestProtocol.REQUEST_HOTSEAT_ICON_NAMES)
                 .getStringArrayList(TestProtocol.TEST_INFO_RESPONSE_FIELD);
@@ -1830,5 +1911,28 @@ public final class LauncherInstrumentation {
     private static boolean supportsRoundedCornersOnWindows(Resources resources) {
         return ResourceUtils.getBoolByName(
                 "config_supportsRoundedCornersOnWindows", resources, false);
+    }
+
+    /**
+     * Taps outside container to dismiss.
+     *
+     * @param container container to be dismissed
+     * @param tapRight  tap on the right of the container if true, or left otherwise
+     */
+    void touchOutsideContainer(UiObject2 container, boolean tapRight) {
+        try (LauncherInstrumentation.Closable c = addContextLayer(
+                "want to tap outside container on the " + (tapRight ? "right" : "left"))) {
+            Rect containerBounds = getVisibleBounds(container);
+            final long downTime = SystemClock.uptimeMillis();
+            final Point tapTarget = new Point(
+                    tapRight
+                            ? (containerBounds.right + getRealDisplaySize().x) / 2
+                            : containerBounds.left / 2,
+                    containerBounds.top + 1);
+            sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, tapTarget,
+                    LauncherInstrumentation.GestureScope.INSIDE);
+            sendPointer(downTime, downTime, MotionEvent.ACTION_UP, tapTarget,
+                    LauncherInstrumentation.GestureScope.INSIDE);
+        }
     }
 }

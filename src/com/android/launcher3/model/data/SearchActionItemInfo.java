@@ -24,6 +24,7 @@ import android.graphics.drawable.Icon;
 import android.os.Process;
 import android.os.UserHandle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppState;
@@ -70,7 +71,7 @@ public class SearchActionItemInfo extends ItemInfoWithIcon implements WorkspaceI
     }
 
     @Override
-    public void copyFrom(com.android.launcher3.model.data.ItemInfo info) {
+    public void copyFrom(@NonNull com.android.launcher3.model.data.ItemInfo info) {
         super.copyFrom(info);
         SearchActionItemInfo itemInfo = (SearchActionItemInfo) info;
         this.mFallbackPackageName = itemInfo.mFallbackPackageName;
@@ -91,6 +92,7 @@ public class SearchActionItemInfo extends ItemInfoWithIcon implements WorkspaceI
     }
 
     @Override
+    @Nullable
     public Intent getIntent() {
         return mIntent;
     }
@@ -131,8 +133,9 @@ public class SearchActionItemInfo extends ItemInfoWithIcon implements WorkspaceI
         return new SearchActionItemInfo(this);
     }
 
+    @NonNull
     @Override
-    public ItemInfo buildProto(FolderInfo fInfo) {
+    public ItemInfo buildProto(@Nullable FolderInfo fInfo) {
         SearchActionItem.Builder itemBuilder = SearchActionItem.newBuilder()
                 .setPackageName(mFallbackPackageName);
 

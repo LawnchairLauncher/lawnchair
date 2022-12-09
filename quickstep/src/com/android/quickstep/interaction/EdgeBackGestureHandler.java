@@ -29,7 +29,7 @@ import android.view.ViewGroup.LayoutParams;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.ResourceUtils;
+import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DisplayController;
 

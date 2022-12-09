@@ -15,16 +15,12 @@
  */
 package com.android.launcher3.widget.picker;
 
-import static android.view.View.MeasureSpec.EXACTLY;
-import static android.view.View.MeasureSpec.makeMeasureSpec;
-
-import android.content.Context;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.android.launcher3.recyclerview.ViewHolderBinder;
+import com.android.launcher3.views.StickyHeaderLayout.EmptySpaceView;
 import com.android.launcher3.widget.model.WidgetListSpaceEntry;
 
 import java.util.List;
@@ -51,65 +47,5 @@ public class WidgetsSpaceViewHolderBinder
     public void bindViewHolder(ViewHolder holder, WidgetListSpaceEntry data,
             @ListPosition int position, List<Object> payloads) {
         ((EmptySpaceView) holder.itemView).setFixedHeight(mEmptySpaceHeightProvider.getAsInt());
-    }
-
-    /**
-     * Empty view which allows listening for 'Y' changes
-     */
-    public static class EmptySpaceView extends View {
-
-        private Runnable mOnYChangeCallback;
-        private int mHeight = 0;
-
-        private EmptySpaceView(Context context) {
-            super(context);
-            animate().setUpdateListener(v -> notifyYChanged());
-        }
-
-        /**
-         * Sets the height for the empty view
-         * @return true if the height changed, false otherwise
-         */
-        public boolean setFixedHeight(int height) {
-            if (mHeight != height) {
-                mHeight = height;
-                requestLayout();
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            super.onMeasure(widthMeasureSpec, makeMeasureSpec(mHeight, EXACTLY));
-        }
-
-        public void setOnYChangeCallback(Runnable callback) {
-            mOnYChangeCallback = callback;
-        }
-
-        @Override
-        protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-            super.onLayout(changed, left, top, right, bottom);
-            notifyYChanged();
-        }
-
-        @Override
-        public void offsetTopAndBottom(int offset) {
-            super.offsetTopAndBottom(offset);
-            notifyYChanged();
-        }
-
-        @Override
-        public void setTranslationY(float translationY) {
-            super.setTranslationY(translationY);
-            notifyYChanged();
-        }
-
-        private void notifyYChanged() {
-            if (mOnYChangeCallback != null) {
-                mOnYChangeCallback.run();
-            }
-        }
     }
 }

@@ -27,6 +27,8 @@ import android.content.pm.LauncherApps;
 import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
@@ -52,7 +54,8 @@ public class PredictionUpdateTask extends BaseModelUpdateTask {
     }
 
     @Override
-    public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+    public void execute(@NonNull final LauncherAppState app, @NonNull final BgDataModel dataModel,
+            @NonNull final AllAppsList apps) {
         Context context = app.getContext();
 
         // TODO: remove this

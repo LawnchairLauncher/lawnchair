@@ -19,6 +19,8 @@ import android.content.Context;
 import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -38,13 +40,20 @@ import java.util.stream.Collectors;
  */
 public class ShortcutsChangedTask extends BaseModelUpdateTask {
 
+    @NonNull
     private final String mPackageName;
+
+    @NonNull
     private final List<ShortcutInfo> mShortcuts;
+
+    @NonNull
     private final UserHandle mUser;
+
     private final boolean mUpdateIdMap;
 
-    public ShortcutsChangedTask(String packageName, List<ShortcutInfo> shortcuts,
-            UserHandle user, boolean updateIdMap) {
+    public ShortcutsChangedTask(@NonNull final String packageName,
+            @NonNull final List<ShortcutInfo> shortcuts, @NonNull final UserHandle user,
+            final boolean updateIdMap) {
         mPackageName = packageName;
         mShortcuts = shortcuts;
         mUser = user;
@@ -52,7 +61,8 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
     }
 
     @Override
-    public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+    public void execute(@NonNull final LauncherAppState app, @NonNull final BgDataModel dataModel,
+            @NonNull final AllAppsList apps) {
         final Context context = app.getContext();
         // Find WorkspaceItemInfo's that have changed on the workspace.
         ArrayList<WorkspaceItemInfo> matchingWorkspaceItems = new ArrayList<>();

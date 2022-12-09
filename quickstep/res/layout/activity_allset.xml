@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/content_view"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="false">
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/animated_background"

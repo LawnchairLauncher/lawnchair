@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
 
 public class HomeAllApps extends AllApps {
+    private static final String BOTTOM_SHEET_RES_ID = "bottom_sheet_background";
 
     HomeAllApps(LauncherInstrumentation launcher) {
         super(launcher);
@@ -44,5 +45,24 @@ public class HomeAllApps extends AllApps {
     @Override
     protected boolean hasSearchBox() {
         return true;
+    }
+
+    /**
+     * Taps outside bottom sheet to dismiss and return to workspace. Available on tablets only.
+     * @param tapRight Tap on the right of bottom sheet if true, or left otherwise.
+     */
+    public Workspace dismissByTappingOutsideForTablet(boolean tapRight) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to tap outside AllApps bottom sheet on the "
+                             + (tapRight ? "right" : "left"))) {
+            final UiObject2 allAppsBottomSheet =
+                    mLauncher.waitForLauncherObject(BOTTOM_SHEET_RES_ID);
+            mLauncher.touchOutsideContainer(allAppsBottomSheet, tapRight);
+            try (LauncherInstrumentation.Closable tapped = mLauncher.addContextLayer(
+                    "tapped outside AllApps bottom sheet")) {
+                return mLauncher.getWorkspace();
+            }
+        }
     }
 }

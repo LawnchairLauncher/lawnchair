@@ -25,12 +25,16 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Bundle;
+import android.window.OnBackInvokedDispatcher;
 
 import androidx.annotation.IntDef;
 
 import com.android.launcher3.DeviceProfile.DeviceProfileListenable;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.ViewCache;
 import com.android.launcher3.views.AppLauncher;
@@ -77,8 +81,8 @@ public abstract class BaseActivity extends Activity implements AppLauncher,
             new ArrayList<>();
 
     protected DeviceProfile mDeviceProfile;
-    protected StatsLogManager mStatsLogManager;
     protected SystemUiController mSystemUiController;
+    private StatsLogManager mStatsLogManager;
 
 
     public static final int ACTIVITY_STATE_STARTED = 1 << 0;
@@ -169,6 +173,19 @@ public abstract class BaseActivity extends Activity implements AppLauncher,
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (Utilities.ATLEAST_T) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                    () -> {
+                        onBackPressed();
+                        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onBackInvoked");
+                    });
+        }
     }
 
     @Override

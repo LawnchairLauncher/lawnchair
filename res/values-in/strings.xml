@@ -59,7 +59,6 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Telusuri aplikasi"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Memuat aplikasi…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Tidak ditemukan aplikasi yang cocok dengan \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"Telusuri aplikasi lainnya"</string>
     <string name="label_application" msgid="8531721983832654978">"Aplikasi"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"Semua aplikasi"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Notifikasi"</string>
@@ -137,7 +136,7 @@
     <string name="item_removed" msgid="851119963877842327">"Item dihapus"</string>
     <string name="undo" msgid="4151576204245173321">"Urungkan"</string>
     <string name="action_move" msgid="4339390619886385032">"Pindahkan item"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"Pindahkan ke baris <xliff:g id="NUMBER_0">%1$s</xliff:g> kolom <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"Pindahkan ke baris <xliff:g id="NUMBER_0">%1$s</xliff:g> kolom <xliff:g id="NUMBER_1">%2$s</xliff:g> di <xliff:g id="STRING">%3$s</xliff:g>"</string>
     <string name="move_to_position" msgid="6750008980455459790">"PIndahkan ke posisi <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"Pindahkan ke posisi favorit <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="item_moved" msgid="4606538322571412879">"Item dipindahkan"</string>

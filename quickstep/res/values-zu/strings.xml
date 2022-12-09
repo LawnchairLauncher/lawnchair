@@ -35,7 +35,6 @@
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Thola iziphakamiso zohlelo lokusebenza kumugqa wezintandokazi Zesikrini sakho sasekhaya"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Finyelela kalula izinhlelo zakho zokusebenza ezisetshenziswa kakhulu khona kusikrini sasekhaya. Iziphakamiso zizoshintsha ngokususelwe kwimijikelezo yakho. Izinhlelo zokusebenza ezisemgqeni ongezansi zizoya phezulu kusikrini sakho sasekhaya."</string>
     <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Finyelela kalula izinhlelo zakho zokusebenza ezisetshenziswa kakhulu khona kusikrini sasekhaya. Iziphakamiso zizoshintsha ngokususelwe kwimijikelezo yakho. Izintandokazi zomugqa wezinhlelo zokusebenza zizoya Kusikrini sakho sasekhaya."</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Finyelela kalula izinhlelo zakho zokusebenza ezisetshenziswa njalo, kusikrini sasekhaya. Iziphakamiso zizoshintsha ngokususelwe kwimijikelezo yakho. Izinhlelo zokusebenza ezisemgqeni ongezansi zizoya phezulu kufolda entsha."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"Thola iziphakamiso zohlelo lokusebenza"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Cha ngiyabonga"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Amasethingi"</string>

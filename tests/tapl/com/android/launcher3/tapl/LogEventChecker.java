@@ -15,13 +15,13 @@
  */
 package com.android.launcher3.tapl;
 
-import static com.android.launcher3.testing.TestProtocol.SEQUENCE_MAIN;
-import static com.android.launcher3.testing.TestProtocol.SEQUENCE_PILFER;
-import static com.android.launcher3.testing.TestProtocol.SEQUENCE_TIS;
+import static com.android.launcher3.testing.shared.TestProtocol.SEQUENCE_MAIN;
+import static com.android.launcher3.testing.shared.TestProtocol.SEQUENCE_PILFER;
+import static com.android.launcher3.testing.shared.TestProtocol.SEQUENCE_TIS;
 
 import android.os.SystemClock;
 
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 
 import java.util.ArrayList;
 import java.util.HashMap;

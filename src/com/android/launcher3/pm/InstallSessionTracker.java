@@ -28,12 +28,15 @@ import android.os.UserHandle;
 import android.util.Log;
 import android.util.SparseArray;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 
 @WorkerThread
 public class InstallSessionTracker extends PackageInstaller.SessionCallback {
@@ -41,14 +44,22 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback {
     // Lazily initialized
     private SparseArray<PackageUserKey> mActiveSessions = null;
 
+    @NonNull
     private final WeakReference<InstallSessionHelper> mWeakHelper;
+
+    @NonNull
     private final WeakReference<Callback> mWeakCallback;
+
+    @NonNull
     private final PackageInstaller mInstaller;
+
+    @Nullable
     private final LauncherApps mLauncherApps;
 
 
-    InstallSessionTracker(InstallSessionHelper installerCompat, Callback callback,
-            PackageInstaller installer, LauncherApps launcherApps) {
+    InstallSessionTracker(@Nullable final InstallSessionHelper installerCompat,
+            @Nullable final Callback callback, @NonNull final PackageInstaller installer,
+            @Nullable LauncherApps launcherApps) {
         mWeakHelper = new WeakReference<>(installerCompat);
         mWeakCallback = new WeakReference<>(callback);
         mInstaller = installer;
@@ -56,7 +67,7 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback {
     }
 
     @Override
-    public void onCreated(int sessionId) {
+    public void onCreated(final int sessionId) {
         InstallSessionHelper helper = mWeakHelper.get();
         Callback callback = mWeakCallback.get();
         if (TestProtocol.sDebugTracing) {
@@ -80,7 +91,7 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback {
     }
 
     @Override
-    public void onFinished(int sessionId, boolean success) {
+    public void onFinished(final int sessionId, final boolean success) {
         InstallSessionHelper helper = mWeakHelper.get();
         Callback callback = mWeakCallback.get();
         if (callback == null || helper == null) {
@@ -108,7 +119,7 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback {
     }
 
     @Override
-    public void onProgressChanged(int sessionId, float progress) {
+    public void onProgressChanged(final int sessionId, final float progress) {
         InstallSessionHelper helper = mWeakHelper.get();
         Callback callback = mWeakCallback.get();
         if (callback == null || helper == null) {
@@ -121,10 +132,10 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback {
     }
 
     @Override
-    public void onActiveChanged(int sessionId, boolean active) { }
+    public void onActiveChanged(final int sessionId, final boolean active) { }
 
     @Override
-    public void onBadgingChanged(int sessionId) {
+    public void onBadgingChanged(final int sessionId) {
         InstallSessionHelper helper = mWeakHelper.get();
         Callback callback = mWeakCallback.get();
         if (callback == null || helper == null) {
@@ -136,8 +147,9 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback {
         }
     }
 
-    private SessionInfo pushSessionDisplayToLauncher(
-            int sessionId, InstallSessionHelper helper, Callback callback) {
+    @Nullable
+    private SessionInfo pushSessionDisplayToLauncher(final int sessionId,
+            @NonNull final InstallSessionHelper helper, @NonNull final Callback callback) {
         SessionInfo session = helper.getVerifiedSessionInfo(sessionId);
         if (session != null && session.getAppPackageName() != null) {
             PackageUserKey key =
@@ -149,7 +161,9 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback {
         return null;
     }
 
-    private SparseArray<PackageUserKey> getActiveSessionMap(InstallSessionHelper helper) {
+    @NonNull
+    private SparseArray<PackageUserKey> getActiveSessionMap(
+            @NonNull final InstallSessionHelper helper) {
         if (mActiveSessions == null) {
             mActiveSessions = new SparseArray<>();
             helper.getActiveSessions().forEach(
@@ -162,7 +176,8 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             mInstaller.registerSessionCallback(this, MODEL_EXECUTOR.getHandler());
         } else {
-            mLauncherApps.registerPackageInstallerSessionCallback(MODEL_EXECUTOR, this);
+            Objects.requireNonNull(mLauncherApps).registerPackageInstallerSessionCallback(
+                    MODEL_EXECUTOR, this);
         }
     }
 
@@ -170,18 +185,18 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             mInstaller.unregisterSessionCallback(this);
         } else {
-            mLauncherApps.unregisterPackageInstallerSessionCallback(this);
+            Objects.requireNonNull(mLauncherApps).unregisterPackageInstallerSessionCallback(this);
         }
     }
 
     public interface Callback {
 
-        void onSessionFailure(String packageName, UserHandle user);
+        void onSessionFailure(@NonNull String packageName, @NonNull UserHandle user);
 
-        void onUpdateSessionDisplay(PackageUserKey key, SessionInfo info);
+        void onUpdateSessionDisplay(@NonNull PackageUserKey key, @NonNull SessionInfo info);
 
-        void onPackageStateChanged(PackageInstallInfo info);
+        void onPackageStateChanged(@NonNull PackageInstallInfo info);
 
-        void onInstallSessionCreated(PackageInstallInfo info);
+        void onInstallSessionCreated(@NonNull PackageInstallInfo info);
     }
 }

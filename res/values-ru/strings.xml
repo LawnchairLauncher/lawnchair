@@ -59,7 +59,6 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Поиск приложений"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Загрузка приложений…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"По запросу \"<xliff:g id="QUERY">%1$s</xliff:g>\" ничего не найдено"</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"Искать другие приложения"</string>
     <string name="label_application" msgid="8531721983832654978">"Приложение"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"Все приложения"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Уведомления"</string>
@@ -137,7 +136,7 @@
     <string name="item_removed" msgid="851119963877842327">"Объект убран."</string>
     <string name="undo" msgid="4151576204245173321">"Отменить"</string>
     <string name="action_move" msgid="4339390619886385032">"Переместить элемент"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"Переместить в ячейку <xliff:g id="NUMBER_0">%1$s</xliff:g> <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"Переместите в строку <xliff:g id="NUMBER_0">%1$s</xliff:g> столбца <xliff:g id="NUMBER_1">%2$s</xliff:g> на экране \"<xliff:g id="STRING">%3$s</xliff:g>\""</string>
     <string name="move_to_position" msgid="6750008980455459790">"Переместить в позицию <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"Переместить в Избранное (<xliff:g id="NUMBER">%1$s</xliff:g>)"</string>
     <string name="item_moved" msgid="4606538322571412879">"Элемент перемещен."</string>

@@ -22,6 +22,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.android.launcher3.Utilities;
+import com.android.launcher3.testing.shared.TestProtocol;
 
 import java.util.function.BiConsumer;
 

@@ -17,6 +17,7 @@ package com.android.launcher3.model;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppState;
@@ -47,14 +48,17 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     private static final boolean DEBUG_TASKS = false;
     private static final String TAG = "BaseModelUpdateTask";
 
+    // Nullabilities are explicitly omitted here because these are late-init fields,
+    // They will be non-null after init(), which is always the case in enqueueModelUpdateTask().
     private LauncherAppState mApp;
     private LauncherModel mModel;
     private BgDataModel mDataModel;
     private AllAppsList mAllAppsList;
     private Executor mUiExecutor;
 
-    public void init(LauncherAppState app, LauncherModel model,
-            BgDataModel dataModel, AllAppsList allAppsList, Executor uiExecutor) {
+    public void init(@NonNull final LauncherAppState app, @NonNull final LauncherModel model,
+            @NonNull final BgDataModel dataModel, @NonNull final AllAppsList allAppsList,
+            @NonNull final Executor uiExecutor) {
         mApp = app;
         mModel = model;
         mDataModel = dataModel;
@@ -64,7 +68,7 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
 
     @Override
     public final void run() {
-        if (!mModel.isModelLoaded()) {
+        if (!Objects.requireNonNull(mModel).isModelLoaded()) {
             if (DEBUG_TASKS) {
                 Log.d(TAG, "Ignoring model task since loader is pending=" + this);
             }
@@ -77,13 +81,13 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     /**
      * Execute the actual task. Called on the worker thread.
      */
-    public abstract void execute(
-            LauncherAppState app, BgDataModel dataModel, AllAppsList apps);
+    public abstract void execute(@NonNull LauncherAppState app,
+            @NonNull BgDataModel dataModel, @NonNull AllAppsList apps);
 
     /**
      * Schedules a {@param task} to be executed on the current callbacks.
      */
-    public final void scheduleCallbackTask(final CallbackTask task) {
+    public final void scheduleCallbackTask(@NonNull final CallbackTask task) {
         for (final Callbacks cb : mModel.getCallbacks()) {
             mUiExecutor.execute(() -> task.execute(cb));
         }
@@ -95,7 +99,7 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
         return mModel.getWriter(false /* hasVerticalHotseat */, false /* verifyChanges */, null);
     }
 
-    public void bindUpdatedWorkspaceItems(List<WorkspaceItemInfo> allUpdates) {
+    public void bindUpdatedWorkspaceItems(@NonNull final List<WorkspaceItemInfo> allUpdates) {
         // Bind workspace items
         List<WorkspaceItemInfo> workspaceUpdates = allUpdates.stream()
                 .filter(info -> info.id != ItemInfo.NO_ID)
@@ -113,18 +117,18 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
                 .forEach(this::bindExtraContainerItems);
     }
 
-    public void bindExtraContainerItems(FixedContainerItems item) {
+    public void bindExtraContainerItems(@NonNull final FixedContainerItems item) {
         FixedContainerItems copy = item.clone();
         scheduleCallbackTask(c -> c.bindExtraContainerItems(copy));
     }
 
-    public void bindDeepShortcuts(BgDataModel dataModel) {
+    public void bindDeepShortcuts(@NonNull final BgDataModel dataModel) {
         final HashMap<ComponentKey, Integer> shortcutMapCopy =
                 new HashMap<>(dataModel.deepShortcutMap);
         scheduleCallbackTask(callbacks -> callbacks.bindDeepShortcutMap(shortcutMapCopy));
     }
 
-    public void bindUpdatedWidgets(BgDataModel dataModel) {
+    public void bindUpdatedWidgets(@NonNull final BgDataModel dataModel) {
         final ArrayList<WidgetsListBaseEntry> widgets =
                 dataModel.widgetsModel.getWidgetsListForPicker(mApp.getContext());
         scheduleCallbackTask(c -> c.bindAllWidgets(widgets));

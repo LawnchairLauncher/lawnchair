@@ -25,6 +25,7 @@ import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.RevealOutlineAnimation;
@@ -43,7 +44,8 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
 
     public static final int ALPHA_INDEX_STASHED = 0;
     public static final int ALPHA_INDEX_HOME_DISABLED = 1;
-    private static final int NUM_ALPHA_CHANNELS = 2;
+    public static final int ALPHA_INDEX_ASSISTANT_INVOKED = 2;
+    private static final int NUM_ALPHA_CHANNELS = 3;
 
     /**
      * The SharedPreferences key for whether the stashed handle region is dark.
@@ -54,9 +56,9 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
     private final TaskbarActivityContext mActivity;
     private final SharedPreferences mPrefs;
     private final StashedHandleView mStashedHandleView;
-    private final int mStashedHandleWidth;
+    private int mStashedHandleWidth;
     private final int mStashedHandleHeight;
-    private final RegionSamplingHelper mRegionSamplingHelper;
+    private RegionSamplingHelper mRegionSamplingHelper;
     private final MultiValueAlpha mTaskbarStashedHandleAlpha;
     private final AnimatedFloat mTaskbarStashedHandleHintScale = new AnimatedFloat(
             this::updateStashedHandleHintScale);
@@ -84,30 +86,27 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
                 mPrefs.getBoolean(SHARED_PREFS_STASHED_HANDLE_REGION_DARK_KEY, false),
                 false /* animate */);
         final Resources resources = mActivity.getResources();
-        mStashedHandleWidth = resources.getDimensionPixelSize(R.dimen.taskbar_stashed_handle_width);
         mStashedHandleHeight = resources.getDimensionPixelSize(
                 R.dimen.taskbar_stashed_handle_height);
-        mRegionSamplingHelper = new RegionSamplingHelper(mStashedHandleView,
-                new RegionSamplingHelper.SamplingCallback() {
-                    @Override
-                    public void onRegionDarknessChanged(boolean isRegionDark) {
-                        mStashedHandleView.updateHandleColor(isRegionDark, true /* animate */);
-                        mPrefs.edit().putBoolean(SHARED_PREFS_STASHED_HANDLE_REGION_DARK_KEY,
-                                isRegionDark).apply();
-                    }
-
-                    @Override
-                    public Rect getSampledRegion(View sampledView) {
-                        return mStashedHandleView.getSampledRegion();
-                    }
-                }, Executors.UI_HELPER_EXECUTOR);
     }
 
     public void init(TaskbarControllers controllers) {
         mControllers = controllers;
-        mStashedHandleView.getLayoutParams().height = mActivity.getDeviceProfile().taskbarSize;
+        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+        Resources resources = mActivity.getResources();
+        if (isPhoneGestureNavMode(mActivity.getDeviceProfile())) {
+            mStashedHandleView.getLayoutParams().height =
+                    resources.getDimensionPixelSize(R.dimen.taskbar_size);
+            mStashedHandleWidth =
+                    resources.getDimensionPixelSize(R.dimen.taskbar_stashed_small_screen);
+        } else {
+            mStashedHandleView.getLayoutParams().height = deviceProfile.taskbarSize;
+            mStashedHandleWidth =
+                    resources.getDimensionPixelSize(R.dimen.taskbar_stashed_handle_width);
+        }
 
-        mTaskbarStashedHandleAlpha.getProperty(ALPHA_INDEX_STASHED).setValue(0);
+        mTaskbarStashedHandleAlpha.getProperty(ALPHA_INDEX_STASHED).setValue(
+                isPhoneGestureNavMode(deviceProfile) ? 1 : 0);
         mTaskbarStashedHandleHintScale.updateValue(1f);
 
         final int stashedTaskbarHeight = mControllers.taskbarStashController.getStashedHeight();
@@ -134,10 +133,37 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
             view.setPivotX(stashedCenterX);
             view.setPivotY(stashedCenterY);
         });
+        initRegionSampler();
+        if (isPhoneGestureNavMode(deviceProfile)) {
+            onIsStashedChanged(true);
+        }
     }
+
+    private void initRegionSampler() {
+        mRegionSamplingHelper = new RegionSamplingHelper(mStashedHandleView,
+                new RegionSamplingHelper.SamplingCallback() {
+                    @Override
+                    public void onRegionDarknessChanged(boolean isRegionDark) {
+                        mStashedHandleView.updateHandleColor(isRegionDark, true /* animate */);
+                        mPrefs.edit().putBoolean(SHARED_PREFS_STASHED_HANDLE_REGION_DARK_KEY,
+                                isRegionDark).apply();
+                    }
+
+                    @Override
+                    public Rect getSampledRegion(View sampledView) {
+                        return mStashedHandleView.getSampledRegion();
+                    }
+                }, Executors.UI_HELPER_EXECUTOR);
+    }
+
 
     public void onDestroy() {
         mRegionSamplingHelper.stopAndDestroy();
+        mRegionSamplingHelper = null;
+    }
+
+    private boolean isPhoneGestureNavMode(DeviceProfile deviceProfile) {
+        return TaskbarManager.isPhoneMode(deviceProfile) && !mActivity.isThreeButtonNav();
     }
 
     public MultiValueAlpha getStashedHandleAlpha() {
@@ -208,10 +234,9 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
     public void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "StashedHandleViewController:");
 
-        pw.println(String.format(
-                "%s\tisStashedHandleVisible=%b", prefix, isStashedHandleVisible()));
-        pw.println(String.format("%s\tmStashedHandleWidth=%dpx", prefix, mStashedHandleWidth));
-        pw.println(String.format("%s\tmStashedHandleHeight=%dpx", prefix, mStashedHandleHeight));
+        pw.println(prefix + "\tisStashedHandleVisible=" + isStashedHandleVisible());
+        pw.println(prefix + "\tmStashedHandleWidth=" + mStashedHandleWidth);
+        pw.println(prefix + "\tmStashedHandleHeight=" + mStashedHandleHeight);
         mRegionSamplingHelper.dump(prefix, pw);
     }
 }

@@ -43,6 +43,9 @@ import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -54,6 +57,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Utility methods using package manager
@@ -62,22 +66,28 @@ public class PackageManagerHelper {
 
     private static final String TAG = "PackageManagerHelper";
 
+    @NonNull
     private final Context mContext;
+
+    @NonNull
     private final PackageManager mPm;
+
+    @NonNull
     private final LauncherApps mLauncherApps;
 
-    public PackageManagerHelper(Context context) {
+    public PackageManagerHelper(@NonNull final Context context) {
         mContext = context;
         mPm = context.getPackageManager();
-        mLauncherApps = context.getSystemService(LauncherApps.class);
+        mLauncherApps = Objects.requireNonNull(context.getSystemService(LauncherApps.class));
     }
 
     /**
      * Returns true if the app can possibly be on the SDCard. This is just a workaround and doesn't
      * guarantee that the app is on SD card.
      */
-    public boolean isAppOnSdcard(String packageName, UserHandle user) {
-        ApplicationInfo info = getApplicationInfo(
+    public boolean isAppOnSdcard(@NonNull final String packageName,
+            @NonNull final UserHandle user) {
+        final ApplicationInfo info = getApplicationInfo(
                 packageName, user, PackageManager.MATCH_UNINSTALLED_PACKAGES);
         return info != null && (info.flags & ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0;
     }
@@ -86,23 +96,27 @@ public class PackageManagerHelper {
      * Returns whether the target app is suspended for a given user as per
      * {@link android.app.admin.DevicePolicyManager#isPackageSuspended}.
      */
-    public boolean isAppSuspended(String packageName, UserHandle user) {
-        ApplicationInfo info = getApplicationInfo(packageName, user, 0);
+    public boolean isAppSuspended(@NonNull final String packageName,
+            @NonNull final UserHandle user) {
+        final ApplicationInfo info = getApplicationInfo(packageName, user, 0);
         return info != null && isAppSuspended(info);
     }
 
     /**
      * Returns whether the target app is installed for a given user
      */
-    public boolean isAppInstalled(String packageName, UserHandle user) {
-        ApplicationInfo info = getApplicationInfo(packageName, user, 0);
+    public boolean isAppInstalled(@NonNull final String packageName,
+            @NonNull final UserHandle user) {
+        final ApplicationInfo info = getApplicationInfo(packageName, user, 0);
         return info != null;
     }
 
     /**
      * Returns the application info for the provided package or null
      */
-    public ApplicationInfo getApplicationInfo(String packageName, UserHandle user, int flags) {
+    @Nullable
+    public ApplicationInfo getApplicationInfo(@NonNull final String packageName,
+            @NonNull final UserHandle user, final int flags) {
         try {
             ApplicationInfo info = mLauncherApps.getApplicationInfo(packageName, flags, user);
             return (info.flags & ApplicationInfo.FLAG_INSTALLED) == 0 || !info.enabled
@@ -116,7 +130,8 @@ public class PackageManagerHelper {
         return mPm.isSafeMode();
     }
 
-    public Intent getAppLaunchIntent(String pkg, UserHandle user) {
+    @Nullable
+    public Intent getAppLaunchIntent(@Nullable final String pkg, @NonNull final UserHandle user) {
         List<LauncherActivityInfo> activities = mLauncherApps.getActivityList(pkg, user);
         return activities.isEmpty() ? null :
                 AppInfo.makeLaunchIntent(activities.get(0));
@@ -251,7 +266,8 @@ public class PackageManagerHelper {
         return packageFilter;
     }
 
-    public static boolean isSystemApp(Context context, Intent intent) {
+    public static boolean isSystemApp(@NonNull final Context context,
+            @NonNull final Intent intent) {
         PackageManager pm = context.getPackageManager();
         ComponentName cn = intent.getComponent();
         String packageName = null;

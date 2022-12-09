@@ -59,7 +59,6 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"መተግበሪያዎችን ፈልግ"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"መተግበሪያዎችን በመጫን ላይ…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"ከ«<xliff:g id="QUERY">%1$s</xliff:g>» ጋር የሚዛመዱ ምንም መተግበሪያዎች አልተገኙም"</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"ተጨማሪ መተግበሪያዎች ይፈልጉ"</string>
     <string name="label_application" msgid="8531721983832654978">"መተግበሪያ"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"ሁሉም መተግበሪያዎች"</string>
     <string name="notifications_header" msgid="1404149926117359025">"ማሳወቂያዎች"</string>
@@ -137,7 +136,7 @@
     <string name="item_removed" msgid="851119963877842327">"ንጥል ነገር ተንቀሳቅሷል"</string>
     <string name="undo" msgid="4151576204245173321">"ቀልብስ"</string>
     <string name="action_move" msgid="4339390619886385032">"ንጥልን አንቀሳቅስ"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"ወደ ረድፍ <xliff:g id="NUMBER_0">%1$s</xliff:g> ዓምድ <xliff:g id="NUMBER_1">%2$s</xliff:g> አንቀሳቅስ"</string>
+    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"በ<xliff:g id="STRING">%3$s</xliff:g> ውስጥ ወደ ረድፍ <xliff:g id="NUMBER_0">%1$s</xliff:g> ዓምድ <xliff:g id="NUMBER_1">%2$s</xliff:g> ይውሰዱ"</string>
     <string name="move_to_position" msgid="6750008980455459790">"ወደ አቀማመጥ <xliff:g id="NUMBER">%1$s</xliff:g> አንቀሳቅስ"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"ወደ ተወዳጆች አቀማመጥ <xliff:g id="NUMBER">%1$s</xliff:g> አንቀሳቅስ"</string>
     <string name="item_moved" msgid="4606538322571412879">"ንጥል ተንቀሳቅሷል"</string>

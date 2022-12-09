@@ -1,8 +1,8 @@
 package com.android.quickstep.views;
 
-import static com.android.launcher3.anim.Interpolators.ACCEL;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
+import static com.android.launcher3.AbstractFloatingView.TYPE_TASK_MENU;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.anim.Interpolators.clampToProgress;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -13,15 +13,16 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.FloatProperty;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.InsettableFrameLayout;
-import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
@@ -29,7 +30,9 @@ import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.quickstep.util.AnimUtils;
 import com.android.quickstep.util.MultiValueUpdateListener;
+import com.android.quickstep.util.SplitAnimationTimings;
 import com.android.quickstep.util.TaskCornerRadius;
 import com.android.systemui.shared.system.QuickStepContract;
 
@@ -39,13 +42,37 @@ import com.android.systemui.shared.system.QuickStepContract;
  * which will have the thumbnail from the provided existing TaskView overlaying the taskview itself.
  *
  * Can then animate the taskview using
- * {@link #addAnimation(PendingAnimation, RectF, Rect, boolean, boolean)}
+ * {@link #addStagingAnimation(PendingAnimation, RectF, Rect, boolean, boolean)} or
+ * {@link #addConfirmAnimation(PendingAnimation, RectF, Rect, boolean, boolean)}
  * giving a starting and ending bounds. Currently this is set to use the split placeholder view,
  * but it could be generified.
  *
  * TODO: Figure out how to copy thumbnail data from existing TaskView to this view.
  */
 public class FloatingTaskView extends FrameLayout {
+
+    public static final FloatProperty<FloatingTaskView> PRIMARY_TRANSLATE_OFFSCREEN =
+            new FloatProperty<FloatingTaskView>("floatingTaskPrimaryTranslateOffscreen") {
+        @Override
+        public void setValue(FloatingTaskView view, float translation) {
+            ((RecentsView) view.mActivity.getOverviewPanel()).getPagedOrientationHandler()
+                    .setFloatingTaskPrimaryTranslation(
+                            view,
+                            translation,
+                            view.mActivity.getDeviceProfile()
+                    );
+        }
+
+        @Override
+        public Float get(FloatingTaskView view) {
+            return ((RecentsView) view.mActivity.getOverviewPanel())
+                    .getPagedOrientationHandler()
+                    .getFloatingTaskPrimaryTranslation(
+                            view,
+                            view.mActivity.getDeviceProfile()
+                    );
+        }
+    };
 
     private FloatingTaskThumbnailView mThumbnailView;
     private SplitPlaceholderView mSplitPlaceholderView;
@@ -98,7 +125,7 @@ public class FloatingTaskView extends FrameLayout {
 
         RecentsView recentsView = launcher.getOverviewPanel();
         mOrientationHandler = recentsView.getPagedOrientationHandler();
-        mStagePosition = recentsView.getSplitPlaceholder().getActiveSplitStagePosition();
+        mStagePosition = recentsView.getSplitSelectController().getActiveSplitStagePosition();
         mSplitPlaceholderView.setIcon(icon,
                 mContext.getResources().getDimensionPixelSize(R.dimen.split_placeholder_icon_size));
         mSplitPlaceholderView.getIconView().setRotation(mOrientationHandler.getDegreesRotated());
@@ -110,13 +137,19 @@ public class FloatingTaskView extends FrameLayout {
      */
     public static FloatingTaskView getFloatingTaskView(StatefulActivity launcher,
             View originalView, @Nullable Bitmap thumbnail, Drawable icon, RectF positionOut) {
-        final BaseDragLayer dragLayer = launcher.getDragLayer();
-        ViewGroup parent = (ViewGroup) dragLayer.getParent();
+        final ViewGroup dragLayer = launcher.getDragLayer();
         final FloatingTaskView floatingView = (FloatingTaskView) launcher.getLayoutInflater()
-                .inflate(R.layout.floating_split_select_view, parent, false);
+                .inflate(R.layout.floating_split_select_view, dragLayer, false);
 
         floatingView.init(launcher, originalView, thumbnail, icon, positionOut);
-        parent.addView(floatingView);
+        // Add this animating view underneath the existing open task menu view (if there is one)
+        View openTaskView = AbstractFloatingView.getOpenView(launcher, TYPE_TASK_MENU);
+        int openTaskViewIndex = dragLayer.indexOfChild(openTaskView);
+        if (openTaskViewIndex == -1) {
+            // Add to top if not
+            openTaskViewIndex = dragLayer.getChildCount();
+        }
+        dragLayer.addView(floatingView, openTaskViewIndex - 1);
         return floatingView;
     }
 
@@ -125,7 +158,7 @@ public class FloatingTaskView extends FrameLayout {
         Utilities.getBoundsForViewInDragLayer(mActivity.getDragLayer(), originalView, viewBounds,
                 false /* ignoreTransform */, null /* recycle */,
                 mStartingPosition);
-        final InsettableFrameLayout.LayoutParams lp = new InsettableFrameLayout.LayoutParams(
+        final BaseDragLayer.LayoutParams lp = new BaseDragLayer.LayoutParams(
                 Math.round(mStartingPosition.width()),
                 Math.round(mStartingPosition.height()));
         initPosition(mStartingPosition, lp);
@@ -177,8 +210,50 @@ public class FloatingTaskView extends FrameLayout {
         layout(left, lp.topMargin, left + lp.width, lp.topMargin + lp.height);
     }
 
-    public void addAnimation(PendingAnimation animation, RectF startingBounds, Rect endBounds,
-            boolean fadeWithThumbnail, boolean isStagedTask) {
+    /**
+     * Animates a FloatingTaskThumbnailView and its overlapping SplitPlaceholderView when a split
+     * is staged.
+     */
+    public void addStagingAnimation(PendingAnimation animation, RectF startingBounds,
+            Rect endBounds, boolean fadeWithThumbnail, boolean isStagedTask) {
+        boolean isTablet = mActivity.getDeviceProfile().isTablet;
+        boolean splittingFromOverview = fadeWithThumbnail;
+        SplitAnimationTimings timings;
+
+        if (isTablet && splittingFromOverview) {
+            timings = SplitAnimationTimings.TABLET_OVERVIEW_TO_SPLIT;
+        } else if (!isTablet && splittingFromOverview) {
+            timings = SplitAnimationTimings.PHONE_OVERVIEW_TO_SPLIT;
+        } else {
+            // Splitting from Home is currently only available on tablets
+            timings = SplitAnimationTimings.TABLET_HOME_TO_SPLIT;
+        }
+
+        addAnimation(animation, startingBounds, endBounds, fadeWithThumbnail, isStagedTask,
+                timings);
+    }
+
+    /**
+     * Animates the FloatingTaskThumbnailView and SplitPlaceholderView for the two thumbnails
+     * when a split is confirmed.
+     */
+    public void addConfirmAnimation(PendingAnimation animation, RectF startingBounds,
+            Rect endBounds, boolean fadeWithThumbnail, boolean isStagedTask) {
+        SplitAnimationTimings timings =
+                AnimUtils.getDeviceSplitToConfirmTimings(mActivity.getDeviceProfile().isTablet);
+
+        addAnimation(animation, startingBounds, endBounds, fadeWithThumbnail, isStagedTask,
+                timings);
+    }
+
+    /**
+     * Sets up and builds a split staging animation.
+     * Called by {@link #addStagingAnimation(PendingAnimation, RectF, Rect, boolean, boolean)} and
+     * {@link #addConfirmAnimation(PendingAnimation, RectF, Rect, boolean, boolean)}.
+     */
+    public void addAnimation(PendingAnimation animation, RectF startingBounds,
+            Rect endBounds, boolean fadeWithThumbnail, boolean isStagedTask,
+            SplitAnimationTimings timings) {
         mFullscreenParams.setIsStagedTask(isStagedTask);
         final BaseDragLayer dragLayer = mActivity.getDragLayer();
         int[] dragLayerBounds = new int[2];
@@ -192,26 +267,47 @@ public class FloatingTaskView extends FrameLayout {
         RectF floatingTaskViewBounds = new RectF();
 
         if (fadeWithThumbnail) {
-            animation.addFloat(mSplitPlaceholderView, SplitPlaceholderView.ALPHA_FLOAT,
-                    0, 1, ACCEL);
-            animation.addFloat(mThumbnailView, LauncherAnimUtils.VIEW_ALPHA,
-                    1, 0, DEACCEL_3);
+            // This code block runs for the placeholder view during Overview > OverviewSplitSelect
+            // and for the selected (secondary) thumbnail during OverviewSplitSelect > Confirmed
+
+            // FloatingTaskThumbnailView: thumbnail fades out to transparent
+            animation.setViewAlpha(mThumbnailView, 0, clampToProgress(LINEAR,
+                    timings.getPlaceholderFadeInStartOffset(),
+                    timings.getPlaceholderFadeInEndOffset()));
+
+            // SplitPlaceholderView: gray background fades in at same time, then new icon fades in
+            fadeInSplitPlaceholder(animation, timings);
         } else if (isStagedTask) {
-            // Fade in the placeholder view when split is initiated from homescreen / all apps
-            // icons.
+            // This code block runs for the placeholder view during Normal > OverviewSplitSelect
+            // and for the placeholder (primary) thumbnail during OverviewSplitSelect > Confirmed
+
+            // Fade in the placeholder view during Normal > OverviewSplitSelect
             if (mSplitPlaceholderView.getAlpha() == 0) {
-                animation.addFloat(mSplitPlaceholderView, SplitPlaceholderView.ALPHA_FLOAT,
-                        0.3f, 1, ACCEL);
+                mSplitPlaceholderView.getIconView().setAlpha(0);
+                fadeInSplitPlaceholder(animation, timings);
             }
+
+            // No-op for placeholder during OverviewSplitSelect > Confirmed, alpha should be set
         }
 
         MultiValueUpdateListener listener = new MultiValueUpdateListener() {
-            final FloatProp mDx = new FloatProp(0, prop.dX, 0, animDuration, LINEAR);
-            final FloatProp mDy = new FloatProp(0, prop.dY, 0, animDuration, LINEAR);
+            // SplitPlaceholderView: rectangle translates and stretches to new position
+            final FloatProp mDx = new FloatProp(0, prop.dX, 0, animDuration,
+                    clampToProgress(timings.getStagedRectXInterpolator(),
+                            timings.getStagedRectSlideStartOffset(),
+                            timings.getStagedRectSlideEndOffset()));
+            final FloatProp mDy = new FloatProp(0, prop.dY, 0, animDuration,
+                    clampToProgress(timings.getStagedRectYInterpolator(),
+                            timings.getStagedRectSlideStartOffset(),
+                            timings.getStagedRectSlideEndOffset()));
             final FloatProp mTaskViewScaleX = new FloatProp(1f, prop.finalTaskViewScaleX, 0,
-                    animDuration, LINEAR);
+                    animDuration, clampToProgress(timings.getStagedRectScaleXInterpolator(),
+                    timings.getStagedRectSlideStartOffset(),
+                    timings.getStagedRectSlideEndOffset()));
             final FloatProp mTaskViewScaleY = new FloatProp(1f, prop.finalTaskViewScaleY, 0,
-                    animDuration, LINEAR);
+                    animDuration, clampToProgress(timings.getStagedRectScaleYInterpolator(),
+                    timings.getStagedRectSlideStartOffset(),
+                    timings.getStagedRectSlideEndOffset()));
             @Override
             public void onUpdate(float percent, boolean initOnly) {
                 // Calculate the icon position.
@@ -223,7 +319,17 @@ public class FloatingTaskView extends FrameLayout {
                 update(floatingTaskViewBounds, percent);
             }
         };
+
         transitionAnimator.addUpdateListener(listener);
+    }
+
+    void fadeInSplitPlaceholder(PendingAnimation animation, SplitAnimationTimings timings) {
+        animation.setViewAlpha(mSplitPlaceholderView, 1, clampToProgress(LINEAR,
+                timings.getPlaceholderFadeInStartOffset(),
+                timings.getPlaceholderFadeInEndOffset()));
+        animation.setViewAlpha(mSplitPlaceholderView.getIconView(), 1, clampToProgress(LINEAR,
+                timings.getPlaceholderIconFadeInStartOffset(),
+                timings.getPlaceholderIconFadeInEndOffset()));
     }
 
     void drawRoundedRect(Canvas canvas, Paint paint) {
@@ -246,10 +352,14 @@ public class FloatingTaskView extends FrameLayout {
      *                        offscreen).
      */
     void centerIconView(IconView iconView, float onScreenRectCenterX, float onScreenRectCenterY) {
-        mOrientationHandler.updateStagedSplitIconParams(iconView, onScreenRectCenterX,
+        mOrientationHandler.updateSplitIconParams(iconView, onScreenRectCenterX,
                 onScreenRectCenterY, mFullscreenParams.mScaleX, mFullscreenParams.mScaleY,
                 iconView.getDrawableWidth(), iconView.getDrawableHeight(),
                 mActivity.getDeviceProfile(), mStagePosition);
+    }
+
+    public int getStagePosition() {
+        return mStagePosition;
     }
 
     private static class SplitOverlayProperties {

@@ -59,7 +59,6 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ଆପ୍‌ ଖୋଜନ୍ତୁ"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ଆପ୍‌ ଲୋଡ୍‌ ହେଉଛି..."</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ସହିତ ମେଳ ହେଉଥିବା କୌଣସି ଆପ୍‌ ମିଳିଲା ନାହିଁ"</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"ଅଧିକ ଆପ୍‌ ଖୋଜନ୍ତୁ"</string>
     <string name="label_application" msgid="8531721983832654978">"ଆପ୍"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"ସବୁ ଆପ"</string>
     <string name="notifications_header" msgid="1404149926117359025">"ବିଜ୍ଞପ୍ତି"</string>
@@ -137,7 +136,7 @@
     <string name="item_removed" msgid="851119963877842327">"ଆଇଟମକୁ କାଢ଼ି ଦିଆଯାଇଛି"</string>
     <string name="undo" msgid="4151576204245173321">"ପୂର୍ବବତ୍‍"</string>
     <string name="action_move" msgid="4339390619886385032">"ଆଇଟମ୍‌ ଘୁଞ୍ଚାନ୍ତୁ"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"ଧାଡ଼ି <xliff:g id="NUMBER_0">%1$s</xliff:g> ସ୍ତମ୍ଭ <xliff:g id="NUMBER_1">%2$s</xliff:g>କୁ ନିଅନ୍ତୁ"</string>
+    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"<xliff:g id="STRING">%3$s</xliff:g>ରେ ଧାଡି <xliff:g id="NUMBER_0">%1$s</xliff:g> ସ୍ତମ୍ଭ <xliff:g id="NUMBER_1">%2$s</xliff:g>କୁ ମୁଭ କରନ୍ତୁ"</string>
     <string name="move_to_position" msgid="6750008980455459790">"<xliff:g id="NUMBER">%1$s</xliff:g> ସ୍ଥିତିକୁ ନିଅନ୍ତୁ"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"ପସନ୍ଦର ସ୍ଥିତି <xliff:g id="NUMBER">%1$s</xliff:g>କୁ ନିଅନ୍ତୁ"</string>
     <string name="item_moved" msgid="4606538322571412879">"ଆଇଟମ୍‌ ଘୁଞ୍ଚେଇ ଦିଆଗଲା"</string>

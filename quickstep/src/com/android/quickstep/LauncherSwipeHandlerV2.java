@@ -35,10 +35,10 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.ObjectWrapper;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.launcher3.views.FloatingView;
@@ -57,7 +57,7 @@ import java.util.ArrayList;
  * Temporary class to allow easier refactoring
  */
 public class LauncherSwipeHandlerV2 extends
-        AbsSwipeUpHandler<BaseQuickstepLauncher, RecentsView, LauncherState> {
+        AbsSwipeUpHandler<QuickstepLauncher, RecentsView, LauncherState> {
 
     public LauncherSwipeHandlerV2(Context context, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState, long touchTimeMs,
@@ -91,7 +91,7 @@ public class LauncherSwipeHandlerV2 extends
             mActivity.setHintUserWillBeActive();
         }
 
-        if (!canUseWorkspaceView || appCanEnterPip || mIsSwipeForStagedSplit) {
+        if (!canUseWorkspaceView || appCanEnterPip || mIsSwipeForSplit) {
             return new LauncherHomeAnimationFactory();
         }
         if (workspaceView instanceof LauncherAppWidgetHostView) {
