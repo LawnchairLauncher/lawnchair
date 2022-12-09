@@ -48,7 +48,7 @@ public class TaskbarEduPagedView extends PagedView<PageIndicatorDots> {
 
     void setControllerCallbacks(TaskbarEduCallbacks controllerCallbacks) {
         mControllerCallbacks = controllerCallbacks;
-        mControllerCallbacks.onPageChanged(getCurrentPage(), getPageCount());
+        mControllerCallbacks.onPageChanged(getCurrentPage(), getCurrentPage(), getPageCount());
     }
 
     @Override
@@ -67,7 +67,7 @@ public class TaskbarEduPagedView extends PagedView<PageIndicatorDots> {
     @Override
     protected void notifyPageSwitchListener(int prevPage) {
         super.notifyPageSwitchListener(prevPage);
-        mControllerCallbacks.onPageChanged(getCurrentPage(), getPageCount());
+        mControllerCallbacks.onPageChanged(prevPage, getCurrentPage(), getPageCount());
     }
 
     @Override
