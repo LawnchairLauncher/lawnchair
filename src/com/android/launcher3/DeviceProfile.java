@@ -867,8 +867,8 @@ public class DeviceProfile {
         float invIconSizeDp = inv.iconSize[mTypeIndex];
         float invIconTextSizeSp = inv.iconTextSize[mTypeIndex];
 
-        iconSizePx = Math.max(1, pxFromDp(invIconSizeDp, mMetrics, iconScale));
-        iconTextSizePx = (int) (pxFromSp(invIconTextSizeSp, mMetrics) * iconScale);
+        iconSizePx = Math.max(1, pxFromDp(invIconSizeDp, mMetrics));
+        iconTextSizePx = pxFromSp(invIconTextSizeSp, mMetrics);
         iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * iconScale);
 
         cellLayoutBorderSpacePx = getCellLayoutBorderSpace(inv, scale);
@@ -876,8 +876,46 @@ public class DeviceProfile {
         if (isScalableGrid) {
             cellWidthPx = pxFromDp(inv.minCellSize[mTypeIndex].x, mMetrics, scale);
             cellHeightPx = pxFromDp(inv.minCellSize[mTypeIndex].y, mMetrics, scale);
-            int cellContentHeight = iconSizePx + iconDrawablePaddingPx
-                    + Utilities.calculateTextHeight(iconTextSizePx);
+
+            if (cellWidthPx < iconSizePx) {
+                // If cellWidth no longer fit iconSize, reduce borderSpace to make cellWidth bigger.
+                int numColumns = getPanelCount() * inv.numColumns;
+                int numBorders = numColumns - 1;
+                int extraWidthRequired = (iconSizePx - cellWidthPx) * numColumns;
+                if (cellLayoutBorderSpacePx.x * numBorders >= extraWidthRequired) {
+                    cellWidthPx = iconSizePx;
+                    cellLayoutBorderSpacePx.x -= extraWidthRequired / numBorders;
+                } else {
+                    // If it still doesn't fit, set borderSpace to 0 and distribute the space for
+                    // cellWidth, and reduce iconSize.
+                    cellWidthPx = (cellWidthPx * numColumns
+                            + cellLayoutBorderSpacePx.x * numBorders) / numColumns;
+                    iconSizePx = Math.min(iconSizePx, cellWidthPx);
+                    cellLayoutBorderSpacePx.x = 0;
+                }
+            }
+
+            int cellTextAndPaddingHeight =
+                    iconDrawablePaddingPx + Utilities.calculateTextHeight(iconTextSizePx);
+            int cellContentHeight = iconSizePx + cellTextAndPaddingHeight;
+            if (cellHeightPx < cellContentHeight) {
+                // If cellHeight no longer fit iconSize, reduce borderSpace to make cellHeight
+                // bigger.
+                int numBorders = inv.numRows - 1;
+                int extraHeightRequired = (cellContentHeight - cellHeightPx) * inv.numRows;
+                if (cellLayoutBorderSpacePx.y * numBorders >= extraHeightRequired) {
+                    cellHeightPx = cellContentHeight;
+                    cellLayoutBorderSpacePx.y -= extraHeightRequired / numBorders;
+                } else {
+                    // If it still doesn't fit, set borderSpace to 0 and distribute the space for
+                    // cellHeight, and reduce iconSize.
+                    cellHeightPx = (cellHeightPx * inv.numRows
+                            + cellLayoutBorderSpacePx.y * numBorders) / inv.numRows;
+                    iconSizePx = Math.min(iconSizePx, cellHeightPx - cellTextAndPaddingHeight);
+                    cellLayoutBorderSpacePx.y = 0;
+                }
+                cellContentHeight = iconSizePx + cellTextAndPaddingHeight;
+            }
             cellYPaddingPx = Math.max(0, cellHeightPx - cellContentHeight) / 2;
             desiredWorkspaceHorizontalMarginPx =
                     (int) (desiredWorkspaceHorizontalMarginOriginalPx * scale);
@@ -929,17 +967,41 @@ public class DeviceProfile {
                 pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].y, mMetrics, scale));
         // AllApps cells don't have real space between cells,
         // so we add the border space to the cell height
-        allAppsCellHeightPx = pxFromDp(inv.allAppsCellSize[mTypeIndex].y, mMetrics, scale)
+        allAppsCellHeightPx = pxFromDp(inv.allAppsCellSize[mTypeIndex].y, mMetrics)
                 + allAppsBorderSpacePx.y;
         // but width is just the cell,
         // the border is added in #updateAllAppsContainerWidth
         if (isScalableGrid) {
-            allAppsIconSizePx =
-                    pxFromDp(inv.allAppsIconSize[mTypeIndex], mMetrics, scale);
-            allAppsIconTextSizePx =
-                    pxFromSp(inv.allAppsIconTextSize[mTypeIndex], mMetrics, scale);
+            allAppsIconSizePx = pxFromDp(inv.allAppsIconSize[mTypeIndex], mMetrics);
+            allAppsIconTextSizePx = pxFromSp(inv.allAppsIconTextSize[mTypeIndex], mMetrics);
             allAppsIconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
             allAppsCellWidthPx = pxFromDp(inv.allAppsCellSize[mTypeIndex].x, mMetrics, scale);
+
+            if (allAppsCellWidthPx < allAppsIconSizePx) {
+                // If allAppsCellWidth no longer fit allAppsIconSize, reduce allAppsBorderSpace to
+                // make allAppsCellWidth bigger.
+                int numBorders = inv.numAllAppsColumns - 1;
+                int extraWidthRequired =
+                        (allAppsIconSizePx - allAppsCellWidthPx) * inv.numAllAppsColumns;
+                if (allAppsBorderSpacePx.x * numBorders >= extraWidthRequired) {
+                    allAppsCellWidthPx = allAppsIconSizePx;
+                    allAppsBorderSpacePx.x -= extraWidthRequired / numBorders;
+                } else {
+                    // If it still doesn't fit, set allAppsBorderSpace to 0 and distribute the space
+                    // for allAppsCellWidth, and reduce allAppsIconSize.
+                    allAppsCellWidthPx = (allAppsCellWidthPx * inv.numAllAppsColumns
+                            + allAppsBorderSpacePx.x * numBorders) / inv.numAllAppsColumns;
+                    allAppsIconSizePx = Math.min(allAppsIconSizePx, allAppsCellWidthPx);
+                    allAppsBorderSpacePx.x = 0;
+                }
+            }
+
+            int cellContentHeight = allAppsIconSizePx
+                    + Utilities.calculateTextHeight(allAppsIconTextSizePx) + allAppsBorderSpacePx.y;
+            if (allAppsCellHeightPx < cellContentHeight) {
+                // Increase allAppsCellHeight to fit its content.
+                allAppsCellHeightPx = cellContentHeight;
+            }
         } else {
             float invIconSizeDp = inv.allAppsIconSize[mTypeIndex];
             float invIconTextSizeSp = inv.allAppsIconTextSize[mTypeIndex];

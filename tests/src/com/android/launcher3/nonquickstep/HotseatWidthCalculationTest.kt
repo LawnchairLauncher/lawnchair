@@ -63,13 +63,13 @@ class HotseatWidthCalculationTest : DeviceProfileBaseTest() {
 
         assertThat(dp.hotseatBarEndOffset).isEqualTo(0)
         assertThat(dp.numShownHotseatIcons).isEqualTo(6)
-        assertThat(dp.hotseatBorderSpace).isEqualTo(94)
+        assertThat(dp.hotseatBorderSpace).isEqualTo(72)
 
-        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(121)
-        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(121)
+        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(110)
+        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(110)
 
         assertThat(dp.isQsbInline).isFalse()
-        assertThat(dp.hotseatQsbWidth).isEqualTo(1058)
+        assertThat(dp.hotseatQsbWidth).isEqualTo(1080)
     }
 
     /**
@@ -84,13 +84,13 @@ class HotseatWidthCalculationTest : DeviceProfileBaseTest() {
 
         assertThat(dp.hotseatBarEndOffset).isEqualTo(0)
         assertThat(dp.numShownHotseatIcons).isEqualTo(6)
-        assertThat(dp.hotseatBorderSpace).isEqualTo(105)
+        assertThat(dp.hotseatBorderSpace).isEqualTo(104)
 
         assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(370)
         assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(370)
 
         assertThat(dp.isQsbInline).isFalse()
-        assertThat(dp.hotseatQsbWidth).isEqualTo(1467)
+        assertThat(dp.hotseatQsbWidth).isEqualTo(1468)
     }
 
     /**
@@ -130,13 +130,13 @@ class HotseatWidthCalculationTest : DeviceProfileBaseTest() {
 
         assertThat(dp.hotseatBarEndOffset).isEqualTo(0)
         assertThat(dp.numShownHotseatIcons).isEqualTo(6)
-        assertThat(dp.hotseatBorderSpace).isEqualTo(96)
+        assertThat(dp.hotseatBorderSpace).isEqualTo(91)
 
-        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(643)
-        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(643)
+        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(640)
+        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(640)
 
         assertThat(dp.isQsbInline).isFalse()
-        assertThat(dp.hotseatQsbWidth).isEqualTo(1174)
+        assertThat(dp.hotseatQsbWidth).isEqualTo(1179)
     }
 
     /**
@@ -152,12 +152,12 @@ class HotseatWidthCalculationTest : DeviceProfileBaseTest() {
 
         assertThat(dp.hotseatBarEndOffset).isEqualTo(0)
         assertThat(dp.numShownHotseatIcons).isEqualTo(6)
-        assertThat(dp.hotseatBorderSpace).isEqualTo(89)
+        assertThat(dp.hotseatBorderSpace).isEqualTo(75)
 
-        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(589)
-        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(589)
+        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(582)
+        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(582)
 
         assertThat(dp.isQsbInline).isFalse()
-        assertThat(dp.hotseatQsbWidth).isEqualTo(1081)
+        assertThat(dp.hotseatQsbWidth).isEqualTo(1095)
     }
 }
