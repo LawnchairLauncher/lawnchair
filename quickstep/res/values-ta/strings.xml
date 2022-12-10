@@ -78,10 +78,8 @@
     <string name="allset_title" msgid="5021126669778966707">"அனைத்தையும் அமைத்துவிட்டீர்கள்!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"முகப்புத் திரைக்குச் செல்ல மேல்நோக்கி ஸ்வைப் செய்யுங்கள்"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"முகப்புத் திரைக்குச் செல்வதற்கு முகப்பு பட்டனைத் தட்டவும்"</string>
-    <!-- no translation found for allset_description_generic (5385500062202019855) -->
-    <skip />
-    <!-- no translation found for default_device_name (6660656727127422487) -->
-    <skip />
+    <string name="allset_description_generic" msgid="5385500062202019855">"உங்கள் <xliff:g id="DEVICE">%1$s</xliff:g> சாதனத்தைப் பயன்படுத்தத் தயாராகிவிட்டீர்கள்"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"சாதனம்"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"சிஸ்டம் வழிசெலுத்தல் அமைப்புகள்"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"பகிர்"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ஸ்கிரீன்ஷாட்"</string>
@@ -94,8 +92,7 @@
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"ரத்துசெய்"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"தவிர்"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"திரையைச் சுழற்றும்"</string>
-    <!-- no translation found for taskbar_edu_a11y_title (5417986057866415355) -->
-    <skip />
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"செயல் பட்டியைப் பயன்படுத்தும் விதம்"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"பணிப்பட்டியை எவ்வாறு பயன்படுத்துவது என்பது பற்றிய பலகம் காட்டப்படுகிறது"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"பணிப்பட்டியை எவ்வாறு பயன்படுத்துவது என்பது பற்றிய பலகம் மூடப்பட்டது"</string>
     <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ஆப்ஸிற்கு இடையே மாற பணிப்பட்டியைப் பயன்படுத்தவும்"</string>
@@ -112,10 +109,8 @@
     <string name="taskbar_button_recents" msgid="7273376136216613134">"சமீபத்தியவை"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"அறிவிப்புகள்"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"விரைவு அமைப்புகள்"</string>
-    <!-- no translation found for taskbar_a11y_title (6432169809852243110) -->
-    <skip />
-    <!-- no translation found for taskbar_phone_a11y_title (4933360237131229395) -->
-    <skip />
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"செயல் பட்டி"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"வழிசெலுத்தல் பட்டி"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"மேலே/இடதுபுறம் நகர்த்தும்"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"கீழே/வலதுபுறம் நகர்த்தும்"</string>
 </resources>

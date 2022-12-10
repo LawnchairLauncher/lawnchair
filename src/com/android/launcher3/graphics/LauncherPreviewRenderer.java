@@ -63,6 +63,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -174,6 +175,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
         }
     }
 
+    private final List<OnDeviceProfileChangeListener> mDpChangeListeners = new ArrayList<>();
     private final Handler mUiHandler;
     private final Context mContext;
     private final InvariantDeviceProfile mIdp;
@@ -328,6 +330,11 @@ public class LauncherPreviewRenderer extends ContextWrapper
     @Override
     public DeviceProfile getDeviceProfile() {
         return mDp;
+    }
+
+    @Override
+    public List<OnDeviceProfileChangeListener> getOnDeviceProfileChangeListeners() {
+        return mDpChangeListeners;
     }
 
     @Override
