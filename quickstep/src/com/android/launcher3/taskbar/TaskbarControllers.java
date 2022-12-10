@@ -21,9 +21,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
+import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsController;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayController;
-import com.android.quickstep.AnimatedFloat;
 import com.android.systemui.shared.rotation.RotationButtonController;
 
 import java.io.PrintWriter;

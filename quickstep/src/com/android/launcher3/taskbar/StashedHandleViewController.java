@@ -28,13 +28,13 @@ import android.view.ViewOutlineProvider;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.RevealOutlineAnimation;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.MultiValueAlpha;
-import com.android.quickstep.AnimatedFloat;
 import com.android.systemui.shared.navigationbar.RegionSamplingHelper;
 
 import java.io.PrintWriter;
