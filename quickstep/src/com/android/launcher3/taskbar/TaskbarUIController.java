@@ -25,6 +25,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
+import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
@@ -84,7 +85,9 @@ public class TaskbarUIController {
      * Manually closes the overlay window.
      */
     public void hideOverlayWindow() {
-        mControllers.taskbarOverlayController.hideWindow();
+        if (!DisplayController.isTransientTaskbar(mControllers.taskbarActivityContext)) {
+            mControllers.taskbarOverlayController.hideWindow();
+        }
     }
 
     /**
