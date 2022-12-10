@@ -307,10 +307,6 @@ public final class FeatureFlags {
             "SCROLL_TOP_TO_RESET", false, "Bring up IME and focus on "
             + "input when scroll to top if 'Always show keyboard' is enabled or in prefix state");
 
-    public static final BooleanFlag SHOW_DELIGHTFUL_PAGINATION = getDebugFlag(
-            "SHOW_DELIGHTFUL_PAGINATION", false,
-            "Enable showing the new 'delightful pagination' which is a brand"
-                    + " new animation for folder pagination and workspace pagination");
     public static final BooleanFlag POPUP_MATERIAL_U = new DeviceFlag(
             "POPUP_MATERIAL_U", false, "Switch popup UX to use material U");
 
