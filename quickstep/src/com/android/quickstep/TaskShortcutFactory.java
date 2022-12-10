@@ -27,6 +27,7 @@ import android.app.ActivityOptions;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
@@ -196,7 +197,7 @@ public interface TaskShortcutFactory {
             dismissTaskMenuView(mTarget);
 
             ActivityOptions options = mFactory.makeLaunchOptions(mTarget);
-            if (options != null && Utilities.ATLEAST_S) {
+            if (options != null && Utilities.ATLEAST_S && Build.VERSION.SDK_INT < 33) {
                 options.setSplashscreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
             }
             if (options != null

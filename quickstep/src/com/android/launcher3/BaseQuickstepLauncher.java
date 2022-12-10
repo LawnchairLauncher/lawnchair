@@ -43,6 +43,7 @@ import android.os.IBinder;
 import android.view.View;
 import android.view.WindowInsets;
 import android.window.SplashScreen;
+import android.os.Build;
 
 import androidx.annotation.Nullable;
 
@@ -510,7 +511,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
             ActivityOptionsCompat.setLauncherSourceInfo(
                     activityOptions.options, mLastTouchUpTime);
         }
-        if (Utilities.ATLEAST_S && LawnchairApp.isRecentsEnabled()) {
+        if (Build.VERSION.SDK_INT < 33 && LawnchairApp.isRecentsEnabled()) {
             activityOptions.options.setSplashscreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
             addLaunchCookie(item, activityOptions.options);
         }

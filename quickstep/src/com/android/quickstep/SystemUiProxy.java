@@ -18,6 +18,7 @@ package com.android.quickstep;
 import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_SPLIT_SCREEN;
 
 import android.app.PendingIntent;
 import android.app.PictureInPictureParams;
@@ -59,8 +60,14 @@ import com.android.wm.shell.startingsurface.IStartingWindowListener;
 import com.android.wm.shell.transition.IShellTransitions;
 import com.android.wm.shell.util.GroupedRecentTaskInfo;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import com.android.quickstep.ISplitScreenExt;
+
+import android.os.Build;
+
 
 /**
  * Holds the reference to SystemUI.
@@ -75,7 +82,7 @@ public class SystemUiProxy implements ISystemUiProxy,
     private ISystemUiProxy mSystemUiProxy;
     private IPip mPip;
     private ISmartspaceTransitionController mSmartspaceTransitionController;
-    private ISplitScreen mSplitScreen;
+    private ISplitScreenExt mSplitScreen;
     private IOneHanded mOneHanded;
     private IShellTransitions mShellTransitions;
     private IStartingWindow mStartingWindow;
@@ -155,7 +162,7 @@ public class SystemUiProxy implements ISystemUiProxy,
         return null;
     }
 
-    public void setProxy(ISystemUiProxy proxy, IPip pip, ISplitScreen splitScreen,
+    public void setProxy(ISystemUiProxy proxy, IPip pip, ISplitScreenExt splitScreen,
             IOneHanded oneHanded, IShellTransitions shellTransitions,
             IStartingWindow startingWindow, IRecentTasks recentTasks,
             ISmartspaceTransitionController smartSpaceTransitionController) {
@@ -671,6 +678,15 @@ public class SystemUiProxy implements ISystemUiProxy,
             RemoteAnimationTarget[] apps) {
         if (mSplitScreen != null) {
             try {
+                if(Build.VERSION.SDK_INT == 33){
+                    try{
+                        Class<ISplitScreen> c = ISplitScreen.class;
+                        Method methods = ISplitScreen.class.getDeclaredMethod ("onGoingToRecentsLegacy", RemoteAnimationTarget[].class);
+                        return (RemoteAnimationTarget[]) methods.invoke (c, apps);
+                    }catch (Exception err){
+                        return mSplitScreen.onGoingToRecentsLegacy (apps);
+                    }
+                }
                 return mSplitScreen.onGoingToRecentsLegacy(cancel, apps);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call onGoingToRecentsLegacy");

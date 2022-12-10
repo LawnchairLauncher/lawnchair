@@ -112,7 +112,7 @@ public class ActivityManagerWrapper {
         // TODO: Switch to QuickstepCompat call
         // Note: The set of running tasks from the system is ordered by recency
         List<ActivityManager.RunningTaskInfo> tasks =
-                mAtm.getTasks(1, filterOnlyVisibleRecents);
+            mAtm.getTasks(1, filterOnlyVisibleRecents);
         if (tasks.isEmpty()) {
             return null;
         }
@@ -131,7 +131,7 @@ public class ActivityManagerWrapper {
     public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents) {
         // Note: The set of running tasks from the system is ordered by recency
         List<ActivityManager.RunningTaskInfo> tasks =
-                mAtm.getTasks(NUM_RECENT_ACTIVITIES_REQUEST, filterOnlyVisibleRecents);
+            mAtm.getTasks(NUM_RECENT_ACTIVITIES_REQUEST, filterOnlyVisibleRecents);
         return tasks.toArray(new RunningTaskInfo[tasks.size()]);
     }
 
@@ -165,7 +165,7 @@ public class ActivityManagerWrapper {
     public void invalidateHomeTaskSnapshot(final Activity homeActivity) {
         try {
             ActivityClient.getInstance().invalidateHomeTaskSnapshot(
-                    homeActivity.getActivityToken());
+                homeActivity.getActivityToken());
         } catch (Throwable e) {
             Log.w(TAG, "Failed to invalidate home snapshot", e);
         }
@@ -175,8 +175,8 @@ public class ActivityManagerWrapper {
      * Starts the recents activity. The caller should manage the thread on which this is called.
      */
     public void startRecentsActivity(Intent intent, long eventTime,
-            final RecentsAnimationListener animationHandler, final Consumer<Boolean> resultCallback,
-            Handler resultCallbackHandler) {
+                                     final RecentsAnimationListener animationHandler, final Consumer<Boolean> resultCallback,
+                                     Handler resultCallbackHandler) {
         boolean result = startRecentsActivity(intent, eventTime, animationHandler);
         if (resultCallback != null) {
             resultCallbackHandler.post(new Runnable() {
@@ -192,35 +192,35 @@ public class ActivityManagerWrapper {
      * Starts the recents activity. The caller should manage the thread on which this is called.
      */
     public boolean startRecentsActivity(
-            Intent intent, long eventTime, RecentsAnimationListener animationHandler) {
+        Intent intent, long eventTime, RecentsAnimationListener animationHandler) {
         try {
             IRecentsAnimationRunner runner = null;
             if (animationHandler != null) {
                 runner = new IRecentsAnimationRunner.Stub() {
                     @Override
                     public void onAnimationStart(IRecentsAnimationController controller,
-                            RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
-                            Rect homeContentInsets, Rect minimizedHomeBounds) {
+                                                 RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
+                                                 Rect homeContentInsets, Rect minimizedHomeBounds) {
                         final RecentsAnimationControllerCompat controllerCompat =
-                                new RecentsAnimationControllerCompat(controller);
+                            new RecentsAnimationControllerCompat(controller);
                         final RemoteAnimationTargetCompat[] appsCompat =
-                                RemoteAnimationTargetCompat.wrap(apps);
+                            RemoteAnimationTargetCompat.wrap(apps);
                         final RemoteAnimationTargetCompat[] wallpapersCompat =
-                                RemoteAnimationTargetCompat.wrap(wallpapers);
+                            RemoteAnimationTargetCompat.wrap(wallpapers);
                         animationHandler.onAnimationStart(controllerCompat, appsCompat,
-                                wallpapersCompat, homeContentInsets, minimizedHomeBounds);
+                            wallpapersCompat, homeContentInsets, minimizedHomeBounds);
                     }
 
                     @Override
                     public void onAnimationCanceled(int[] taskIds, TaskSnapshot[] taskSnapshots) {
                         animationHandler.onAnimationCanceled(
-                                ThumbnailData.wrap(taskIds, taskSnapshots));
+                            ThumbnailData.wrap(taskIds, taskSnapshots));
                     }
 
                     @Override
                     public void onTasksAppeared(RemoteAnimationTarget[] apps) {
                         final RemoteAnimationTargetCompat[] compats =
-                                new RemoteAnimationTargetCompat[apps.length];
+                            new RemoteAnimationTargetCompat[apps.length];
                         for (int i = 0; i < apps.length; ++i) {
                             compats[i] = new RemoteAnimationTargetCompat(apps[i]);
                         }
@@ -253,7 +253,7 @@ public class ActivityManagerWrapper {
      * @param resultCallbackHandler The handler to receive the result callback
      */
     public void startActivityFromRecentsAsync(Task.TaskKey taskKey, ActivityOptions options,
-            Consumer<Boolean> resultCallback, Handler resultCallbackHandler) {
+                                              Consumer<Boolean> resultCallback, Handler resultCallbackHandler) {
         final boolean result = startActivityFromRecents(taskKey, options);
         if (resultCallback != null) {
             resultCallbackHandler.post(new Runnable() {
@@ -380,7 +380,7 @@ public class ActivityManagerWrapper {
      */
     public boolean showVoiceSession(IBinder token, Bundle args, int flags) {
         IVoiceInteractionManagerService service = IVoiceInteractionManagerService.Stub.asInterface(
-                ServiceManager.getService(Context.VOICE_INTERACTION_MANAGER_SERVICE));
+            ServiceManager.getService(Context.VOICE_INTERACTION_MANAGER_SERVICE));
         if (service == null) {
             return false;
         }
@@ -398,11 +398,11 @@ public class ActivityManagerWrapper {
      */
     public boolean supportsFreeformMultiWindow(Context context) {
         final boolean freeformDevOption = Settings.Global.getInt(context.getContentResolver(),
-                Settings.Global.DEVELOPMENT_ENABLE_FREEFORM_WINDOWS_SUPPORT, 0) != 0;
+            Settings.Global.DEVELOPMENT_ENABLE_FREEFORM_WINDOWS_SUPPORT, 0) != 0;
         return ActivityTaskManager.supportsMultiWindow(context)
-                && (context.getPackageManager().hasSystemFeature(
-                PackageManager.FEATURE_FREEFORM_WINDOW_MANAGEMENT)
-                || freeformDevOption);
+            && (context.getPackageManager().hasSystemFeature(
+            PackageManager.FEATURE_FREEFORM_WINDOW_MANAGEMENT)
+            || freeformDevOption);
     }
 
     /**
@@ -410,6 +410,6 @@ public class ActivityManagerWrapper {
      */
     public static boolean isHomeTask(RunningTaskInfo info) {
         return info.configuration.windowConfiguration.getActivityType()
-                == WindowConfiguration.ACTIVITY_TYPE_HOME;
+            == WindowConfiguration.ACTIVITY_TYPE_HOME;
     }
 }
