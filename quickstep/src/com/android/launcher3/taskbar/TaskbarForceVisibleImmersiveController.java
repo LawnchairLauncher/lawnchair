@@ -30,10 +30,10 @@ import android.os.Looper;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.TouchController;
-import com.android.quickstep.AnimatedFloat;
 
 /**
  * Controller for taskbar when force visible in immersive mode is set.
