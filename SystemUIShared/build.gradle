@@ -17,6 +17,7 @@ android {
 }
 
 dependencies {
+    implementation projects.hiddenApi
     compileOnly fileTree(dir: new File(rootProject.projectDir, 'prebuilts/libs'), include: 'WindowManager-Shell.jar')
     implementation "androidx.concurrent:concurrent-futures:1.1.0"
     implementation "androidx.lifecycle:lifecycle-common:2.5.1"

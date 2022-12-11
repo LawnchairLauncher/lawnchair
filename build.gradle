@@ -129,7 +129,7 @@ final def versionDisplayName = "${version} ${isReleaseBuild ? releaseName : devR
 final def majorVersion = versionDisplayName.split("\\.")[0]
 
 final def quickstepMinSdk = "32"
-final def quickstepMaxSdk = "32"
+final def quickstepMaxSdk = "33"
 
 android {
     defaultConfig {

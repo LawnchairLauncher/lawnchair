@@ -18,9 +18,13 @@ package com.android.quickstep;
 import static com.android.launcher3.uioverrides.QuickstepLauncher.GO_LOW_RAM_RECENTS_ENABLED;
 import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
 
+import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.ActivityManager.TaskDescription;
+import android.app.AppGlobals;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.content.pm.IPackageManager;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -29,10 +33,13 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.UserHandle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.accessibility.AccessibilityManager;
 
+import androidx.annotation.OptIn;
 import androidx.annotation.WorkerThread;
+import androidx.core.os.BuildCompat;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -62,7 +69,7 @@ public class TaskIconCache implements DisplayInfoChangeListener {
 
     private final Executor mBgExecutor;
     private final AccessibilityManager mAccessibilityManager;
-
+    private BitmapInfo mDefaultIconBase = null;
     private final Context mContext;
     private final TaskKeyLruCache<TaskCacheEntry> mIconCache;
     private final SparseArray<BitmapInfo> mDefaultIcons = new SparseArray<>();
@@ -91,6 +98,7 @@ public class TaskIconCache implements DisplayInfoChangeListener {
         }
     }
 
+
     /**
      * Asynchronously fetches the icon and other task data.
      *
@@ -107,7 +115,7 @@ public class TaskIconCache implements DisplayInfoChangeListener {
         }
         CancellableTask<TaskCacheEntry> request = new CancellableTask<TaskCacheEntry>() {
             @Override
-            public TaskCacheEntry getResultOnBg() {
+            public TaskCacheEntry getResultOnBg() throws PackageManager.NameNotFoundException {
                 return getCacheEntry(task);
             }
 
@@ -121,6 +129,7 @@ public class TaskIconCache implements DisplayInfoChangeListener {
         mBgExecutor.execute(request);
         return request;
     }
+
 
     /**
      * Clears the icon cache
@@ -139,7 +148,7 @@ public class TaskIconCache implements DisplayInfoChangeListener {
     }
 
     @WorkerThread
-    private TaskCacheEntry getCacheEntry(Task task) {
+    private TaskCacheEntry getCacheEntry(Task task) throws PackageManager.NameNotFoundException {
         TaskCacheEntry entry = mIconCache.getAndInvalidateIfModified(task.key);
         if (entry != null) {
             return entry;
@@ -154,39 +163,44 @@ public class TaskIconCache implements DisplayInfoChangeListener {
 
         // Load icon
         // TODO: Load icon resource (b/143363444)
+
         Bitmap icon = TaskDescriptionCompat.getIcon(desc, key.userId);
+
+        PackageManager pm = mContext.getPackageManager();
+
         if (icon != null && TaskIconUtils.allowCustomIcon(task)) {
-            /* isInstantApp */
             entry.icon = getBitmapInfo(
-                    new BitmapDrawable(mContext.getResources(), icon),
-                    key.userId,
-                    desc.getPrimaryColor(),
-                    false /* isInstantApp */).newIcon(mContext);
+                new BitmapDrawable(mContext.getResources(), icon),
+                key.userId,
+                desc.getPrimaryColor(),
+                false /* isInstantApp */).newIcon(mContext);
         } else {
-            activityInfo = PackageManagerWrapper.getInstance().getActivityInfo(
-                    key.getComponent(), key.userId);
+
+            activityInfo = pm.getActivityInfo (key.getComponent (), PackageManager.GET_META_DATA);
+
             if (activityInfo != null) {
                 BitmapInfo bitmapInfo = getBitmapInfo(
-                        mIconProvider.getIcon(activityInfo),
-                        key.userId,
-                        desc.getPrimaryColor(),
-                        activityInfo.applicationInfo.isInstantApp());
+                    mIconProvider.getIcon(activityInfo),
+                    key.userId,
+                    desc.getPrimaryColor(),
+                    pm.isInstantApp ());
                 entry.icon = bitmapInfo.newIcon(mContext);
             } else {
                 entry.icon = getDefaultIcon(key.userId);
             }
         }
 
+
         // Loading content descriptions if accessibility or low RAM recents is enabled.
         if (GO_LOW_RAM_RECENTS_ENABLED || mAccessibilityManager.isEnabled()) {
             // Skip loading the content description if the activity no longer exists
             if (activityInfo == null) {
-                activityInfo = PackageManagerWrapper.getInstance().getActivityInfo(
-                        key.getComponent(), key.userId);
+                activityInfo = pm.getActivityInfo (key.getComponent (), PackageManager.GET_META_DATA);
             }
+
             if (activityInfo != null) {
                 entry.contentDescription = getBadgedContentDescription(
-                        activityInfo, task.key.userId, task.taskDescription);
+                    activityInfo, task.key.userId, task.taskDescription);
             }
         }
 
@@ -222,6 +236,8 @@ public class TaskIconCache implements DisplayInfoChangeListener {
             return info.newIcon(mContext);
         }
     }
+
+
 
     @WorkerThread
     private BitmapInfo getBitmapInfo(Drawable drawable, int userId,

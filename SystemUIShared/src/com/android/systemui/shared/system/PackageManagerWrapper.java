@@ -36,7 +36,7 @@ public class PackageManagerWrapper {
     private static final IPackageManager mIPackageManager = AppGlobals.getPackageManager();
 
     public static final String ACTION_PREFERRED_ACTIVITY_CHANGED =
-            Intent.ACTION_PREFERRED_ACTIVITY_CHANGED;
+        Intent.ACTION_PREFERRED_ACTIVITY_CHANGED;
 
     public static PackageManagerWrapper getInstance() {
         return sInstance;
@@ -50,7 +50,7 @@ public class PackageManagerWrapper {
     public ActivityInfo getActivityInfo(ComponentName componentName, int userId) {
         try {
             return mIPackageManager.getActivityInfo(componentName, PackageManager.GET_META_DATA,
-                    userId);
+                userId);
         } catch (RemoteException e) {
             e.printStackTrace();
             return null;
@@ -75,10 +75,10 @@ public class PackageManagerWrapper {
      */
     public ResolveInfo resolveActivity(Intent intent, @ResolveInfoFlags int flags) {
         final String resolvedType =
-                intent.resolveTypeIfNeeded(AppGlobals.getInitialApplication().getContentResolver());
+            intent.resolveTypeIfNeeded(AppGlobals.getInitialApplication().getContentResolver());
         try {
             return mIPackageManager.resolveIntent(
-                    intent, resolvedType, flags, UserHandle.getCallingUserId());
+                intent, resolvedType, flags, UserHandle.getCallingUserId());
         } catch (RemoteException e) {
             e.printStackTrace();
             return null;

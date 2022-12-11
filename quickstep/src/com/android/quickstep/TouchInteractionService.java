@@ -179,7 +179,7 @@ public class TouchInteractionService extends Service
                     bundle.getBinder(KEY_EXTRA_RECENT_TASKS));
             MAIN_EXECUTOR.execute(() -> {
                 SystemUiProxy.INSTANCE.get(TouchInteractionService.this).setProxy(proxy, pip,
-                        splitscreen, onehanded, shellTransitions, startingWindow, recentTasks,
+                    null, onehanded, shellTransitions, startingWindow, recentTasks,
                         smartspaceTransitionController);
                 TouchInteractionService.this.initInputMonitor();
                 preloadOverview(true /* fromInit */);

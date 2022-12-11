@@ -69,6 +69,7 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.LocusId;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.BlendMode;
 import android.graphics.Canvas;
@@ -522,18 +523,27 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             Task.TaskKey taskKey = taskView.getTask().key;
             UI_HELPER_EXECUTOR.execute(new HandlerRunnable<>(
                     UI_HELPER_EXECUTOR.getHandler(),
-                    () -> PackageManagerWrapper.getInstance()
-                            .getActivityInfo(taskKey.getComponent(), taskKey.userId) == null,
+                    () -> {
+                        PackageManager pm = mContext.getPackageManager ();
+                        try {
+                            return pm.getActivityInfo (taskKey.getComponent (), PackageManager.GET_META_DATA) == null;
+                        } catch (PackageManager.NameNotFoundException e) {
+                            e.printStackTrace ( );
+                            return null;
+                        }
+                    } ,
                     MAIN_EXECUTOR,
                     apkRemoved -> {
-                        if (apkRemoved) {
-                            dismissTask(taskId);
-                        } else {
-                            mModel.isTaskRemoved(taskKey.id, taskRemoved -> {
-                                if (taskRemoved) {
-                                    dismissTask(taskId);
-                                }
-                            });
+                        if(apkRemoved != null){
+                            if (apkRemoved) {
+                                dismissTask(taskId);
+                            } else {
+                                mModel.isTaskRemoved(taskKey.id, taskRemoved -> {
+                                    if (taskRemoved) {
+                                        dismissTask(taskId);
+                                    }
+                                });
+                            }
                         }
                     }));
         }

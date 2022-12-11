@@ -81,7 +81,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             }
 
             if (menuOption == TaskShortcutFactory.SPLIT_SCREEN &&
-                    FeatureFlags.ENABLE_SPLIT_SELECT.get()) {
+                    FeatureFlags.ENABLE_SPLIT_SELECT.get() && Build.VERSION.SDK_INT < 33) {
                 addSplitOptions(shortcuts, activity, taskView, deviceProfile);
             } else {
                 shortcuts.add(shortcut);
@@ -168,7 +168,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
     /** Note that these will be shown in order from top to bottom, if available for the task. */
     private static final TaskShortcutFactory[] MENU_OPTIONS = new TaskShortcutFactory[]{
             TaskShortcutFactory.APP_INFO,
-            TaskShortcutFactory.SPLIT_SCREEN,
+//            TaskShortcutFactory.SPLIT_SCREEN,
             TaskShortcutFactory.UNINSTALL,
             TaskShortcutFactory.PIN,
             TaskShortcutFactory.INSTALL,
