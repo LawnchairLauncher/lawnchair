@@ -46,7 +46,7 @@
             android:id="@+id/edu_start_button"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:layout_marginBottom="92dp"
+            android:layout_marginBottom="18dp"
             android:layout_marginTop="32dp"
             app:layout_constraintTop_toBottomOf="@id/content"
             app:layout_constraintBottom_toBottomOf="parent"
