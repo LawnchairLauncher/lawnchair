@@ -17,10 +17,11 @@
 package com.android.launcher3;
 
 import android.os.Handler;
-import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+
+import com.android.launcher3.util.TouchUtil;
 
 /**
  * Utility class to handle tripper long press or right click on a view with custom timeout and
@@ -64,7 +65,7 @@ public class CheckLongPressHelper {
                 cancelLongPress();
 
                 // Mouse right click should immediately trigger a long press
-                if (isMouseRightClickDownOrMove(ev)) {
+                if (TouchUtil.isMouseRightClickDownOrMove(ev)) {
                     mIsInMouseRightClick = true;
                     triggerLongPress();
                     final Handler handler = mView.getHandler();
@@ -175,15 +176,5 @@ public class CheckLongPressHelper {
     private static boolean isStylusButtonPressed(MotionEvent event) {
         return event.getToolType(0) == MotionEvent.TOOL_TYPE_STYLUS
                 && event.isButtonPressed(MotionEvent.BUTTON_SECONDARY);
-    }
-
-    /**
-     * Detect ACTION_DOWN or ACTION_MOVE from mouse right button. Note that we cannot detect
-     * ACTION_UP from mouse's right button because, in that case,
-     * {@link MotionEvent#getButtonState()} returns 0 for any mouse button (right, middle, right).
-     */
-    private static boolean isMouseRightClickDownOrMove(MotionEvent event) {
-        return event.isFromSource(InputDevice.SOURCE_MOUSE)
-                && ((event.getButtonState() & MotionEvent.BUTTON_SECONDARY) != 0);
     }
 }
