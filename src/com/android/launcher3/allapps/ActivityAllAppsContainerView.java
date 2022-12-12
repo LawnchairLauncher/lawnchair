@@ -281,6 +281,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     @Override
     public int getHeaderBottom() {
         if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
+            if (mActivityContext.getDeviceProfile().isTablet) {
+                return super.getHeaderBottom() + mHeader.getClipTop()
+                        + mBottomSheetBackground.getTop();
+            }
             return super.getHeaderBottom() + mHeader.getClipTop();
         }
         return super.getHeaderBottom() + mSearchContainer.getBottom();

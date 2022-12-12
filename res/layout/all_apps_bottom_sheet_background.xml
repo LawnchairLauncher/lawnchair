@@ -16,8 +16,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/bottom_sheet_background"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg_rounded_corner_bottom_sheet">
+    android:layout_height="match_parent">
 
     <View
         android:id="@+id/bottom_sheet_handle_area"
