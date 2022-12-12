@@ -878,6 +878,16 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(false);
     }
 
+    /** Called when we want to hide the overlay window when user performs swipe up gesture. */
+    public void onSwipeToHideOverlay() {
+        mControllers.taskbarOverlayController.hideWindow();
+    }
+
+    /** Returns {@code true} if taskbar is stashed. */
+    public boolean isTaskbarStashed() {
+        return mControllers.taskbarStashController.isStashed();
+    }
+
     /**
      * Called to start the taskbar translation spring to its settled translation (0).
      */
