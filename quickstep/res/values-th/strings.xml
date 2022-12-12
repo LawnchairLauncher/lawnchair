@@ -95,9 +95,12 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"แถบงาน Education"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"แถบงาน Education ปรากฎขึ้น"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ปิดแถบงาน Education แล้ว"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ใช้แถบงานเพื่อเปลี่ยนแอป"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"ลากไปด้านข้างเพื่อใช้ 2 แอปพร้อมกัน"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"แตะค้างไว้เพื่อซ่อนแถบงาน"</string>
+    <!-- no translation found for taskbar_edu_splitscreen (5563823414110661454) -->
+    <skip />
+    <!-- no translation found for taskbar_edu_stashing (2805035263048176462) -->
+    <skip />
+    <!-- no translation found for taskbar_edu_suggestions (1416699696825090402) -->
+    <skip />
     <string name="taskbar_edu_next" msgid="4007618274426775841">"ถัดไป"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"กลับ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ปิด"</string>
