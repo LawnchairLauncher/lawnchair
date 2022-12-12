@@ -95,9 +95,12 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Poučni nasveti o opravilni vrstici"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Poučni nasveti o opravilni vrstici so prikazani."</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Poučni nasveti o opravilni vrstici so zaprti."</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Za preklop aplikacij uporabite opravilno vrstico."</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Povlecite vstran za uporabo dveh aplikacij hkrati."</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Pridržite, če želite opravilno vrstico skriti."</string>
+    <!-- no translation found for taskbar_edu_splitscreen (5563823414110661454) -->
+    <skip />
+    <!-- no translation found for taskbar_edu_stashing (2805035263048176462) -->
+    <skip />
+    <!-- no translation found for taskbar_edu_suggestions (1416699696825090402) -->
+    <skip />
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Naprej"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Nazaj"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Zapri"</string>
