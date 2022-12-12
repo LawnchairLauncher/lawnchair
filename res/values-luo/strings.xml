@@ -45,7 +45,7 @@
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Many'"</string>
-    <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Clear text from search box"</string>
+    <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Ruch gima indiko e box mar menyo"</string>
     <string name="no_widgets_available" msgid="9140948620298620513">"Widgets onge"</string>
     <string name="no_search_results" msgid="6518732304311458580">"Results ma imanyo onge"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Personal"</string>
@@ -59,11 +59,11 @@
     <string name="notifications_header" msgid="1404149926117359025">"Notifications"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Touch &amp; hold to move a shortcut."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Double-tap &amp; hold to move a shortcut or use custom actions."</string>
-    <string name="out_of_space" msgid="4691004494942118364">"No more room on this Home screen."</string>
+    <string name="out_of_space" msgid="4691004494942118364">"Space orumo e Home screen."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"No more room in the Favourites tray"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Apps list"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Personal apps list"</string>
-    <string name="all_apps_button_work_label" msgid="7270707118948892488">"Work apps list"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"List mar Apps mar tich"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Remove"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Uninstall"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"App info"</string>
@@ -77,7 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"write Home settings and shortcuts"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Allows the app to change the settings and shortcuts in Home."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> is not allowed to make phone calls"</string>
-    <string name="gadget_error_text" msgid="6081085226050792095">"Problem loading widget"</string>
+    <string name="gadget_error_text" msgid="6081085226050792095">"P widget"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Setup"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">" App ni en mar system kendo ok inyal gole ."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Edit Name"</string>
@@ -110,8 +110,8 @@
     <string name="title_change_settings" msgid="1376365968844349552">"Change settings"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Show notification dots"</string>
     <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Add app icons to the home screen"</string>
-    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"For new apps"</string>
-    <string name="package_state_unknown" msgid="7592128424511031410">"Ok ongere"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Mar Apps manyien"</string>
+    <string name="package_state_unknown" msgid="7592128424511031410">"Ok ong\'ere"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Gol oko "</string>
     <string name="abandoned_search" msgid="891119232568284442">"Search"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"App ni ok en installed"</string>
@@ -148,7 +148,7 @@
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Weri godo"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"Lor"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Notification dismissed"</string>
-    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personal"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Mari kendi"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Tich"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profile mar tich"</string>
     <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Personal data is separate and hidden from work apps"</string>
@@ -163,7 +163,7 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Chung apps mag tich"</string>
     <string name="work_apps_enable_btn_text" msgid="82111102541971856">"Yau "</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Rachungi"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Geng" apps mag tich gi weche Pause work apps and notifications"</string>
+    <string name="work_switch_tip" msgid="808075064383839144">"Chung Apps  mag tich gi notifications"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Otamore: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
 
