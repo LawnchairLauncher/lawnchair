@@ -339,7 +339,7 @@ public final class FeatureFlags {
                     + " nav mode and when transient taskbar is enabled.");
 
     public static final BooleanFlag ENABLE_TRANSIENT_TASKBAR = getDebugFlag(
-            "ENABLE_TRANSIENT_TASKBAR", false, "Enables transient taskbar.");
+            "ENABLE_TRANSIENT_TASKBAR", true, "Enables transient taskbar.");
 
     public static final BooleanFlag ENABLE_TRACKPAD_GESTURE = getDebugFlag(
             "ENABLE_TRACKPAD_GESTURE", false, "Enables trackpad gesture.");
