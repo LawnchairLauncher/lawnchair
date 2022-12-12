@@ -19,6 +19,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.WindowInsets;
 
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.R;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 
@@ -43,5 +45,12 @@ public class TaskbarAllAppsContainerView extends
     @Override
     protected boolean isSearchSupported() {
         return false;
+    }
+
+    @Override
+    protected void updateBackground(DeviceProfile deviceProfile) {
+        super.updateBackground(deviceProfile);
+        // TODO(b/240670050): Remove this and add header protection for the taskbar entrypoint.
+        mBottomSheetBackground.setBackgroundResource(R.drawable.bg_rounded_corner_bottom_sheet);
     }
 }
