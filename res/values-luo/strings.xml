@@ -57,8 +57,8 @@
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Search for more apps"</string>
     <string name="label_application" msgid="8531721983832654978">"App"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Notifications"</string>
-    <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Touch &amp; hold to move a shortcut."</string>
-    <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Double-tap &amp; hold to move a shortcut or use custom actions."</string>
+    <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Dii &amp; mak mondo ichor shortcut."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Dii diriyo &amp; mak mondo ichor  shortcut ama iti gi custom actions."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Space orumo e Home screen."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"No more room in the Favourites tray"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Apps list"</string>
@@ -75,7 +75,7 @@
     <string name="permlab_read_settings" msgid="1941457408239617576">"read Home settings and shortcuts"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"Allows the app to read the settings and shortcuts in Home."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"write Home settings and shortcuts"</string>
-    <string name="permdesc_write_settings" msgid="5440712911516509985">"Allows the app to change the settings and shortcuts in Home."</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"Yie mondo Apps olok settings gi shortcuts e Homescreen."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> is not allowed to make phone calls"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"P widget"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Setup"</string>
