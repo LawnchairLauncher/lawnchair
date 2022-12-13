@@ -28,8 +28,10 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
+import com.android.systemui.shared.recents.model.Task;
 
 import java.io.PrintWriter;
+import java.util.function.Consumer;
 
 /**
  * Base class for providing different taskbar UI
@@ -160,23 +162,30 @@ public class TaskbarUIController {
      */
     public void triggerSecondAppForSplit(ItemInfoWithIcon info, Intent intent, View startingView) {
         RecentsView recents = getRecentsView();
-        TaskView foundTaskView = recents.getTaskViewByComponentName(info.getTargetComponent());
-        if (foundTaskView != null) {
-            recents.confirmSplitSelect(
-                    foundTaskView,
-                    foundTaskView.getTask(),
-                    foundTaskView.getIconView().getDrawable(),
-                    foundTaskView.getThumbnail(),
-                    foundTaskView.getThumbnail().getThumbnail(),
-                    /* intent */ null);
-        } else {
-            recents.confirmSplitSelect(
-                    /* containerTaskView */ null,
-                    /* task */ null,
-                    new BitmapDrawable(info.bitmap.icon),
-                    startingView,
-                    /* thumbnail */ null,
-                    intent);
-        }
+        recents.findLastActiveTaskAndDoSplitOperation(
+                info.getTargetComponent(),
+                (Consumer<Task>) foundTask -> {
+                    if (foundTask != null) {
+                        TaskView foundTaskView = recents.getTaskViewByTaskId(foundTask.key.id);
+                        // There is already a running app of this type, use that as second app.
+                        recents.confirmSplitSelect(
+                                foundTaskView,
+                                foundTaskView.getTask(),
+                                foundTaskView.getIconView().getDrawable(),
+                                foundTaskView.getThumbnail(),
+                                foundTaskView.getThumbnail().getThumbnail(),
+                                null /* intent */);
+                    } else {
+                        // No running app of that type, create a new instance as second app.
+                        recents.confirmSplitSelect(
+                                null /* containerTaskView */,
+                                null /* task */,
+                                new BitmapDrawable(info.bitmap.icon),
+                                startingView,
+                                null /* thumbnail */,
+                                intent);
+                    }
+                }
+        );
     }
 }

@@ -30,6 +30,8 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.PendingAnimation;
@@ -41,6 +43,9 @@ import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.quickstep.util.SplitSelectStateController;
 import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.RecentsView;
+import com.android.systemui.shared.recents.model.Task;
+
+import java.util.function.Consumer;
 
 public interface QuickstepSystemShortcut {
 
@@ -93,14 +98,22 @@ public interface QuickstepSystemShortcut {
             }
 
             StatsLogManager.EventEnum splitEvent = getLogEventForPosition(mPosition.stagePosition);
-            SplitSelectSource source = new SplitSelectSource(mOriginalView,
-                    new BitmapDrawable(bitmap), intent, mPosition, mItemInfo, splitEvent);
-            if (ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
-                startSplitToHome(source);
-            } else {
-                RecentsView recentsView = mTarget.getOverviewPanel();
-                recentsView.initiateSplitSelect(source);
-            }
+            RecentsView recentsView = mTarget.getOverviewPanel();
+            // Check if there is already an instance of this app running, if so, initiate the split
+            // using that.
+            recentsView.findLastActiveTaskAndDoSplitOperation(
+                    intent.getComponent(),
+                    (Consumer<Task>) foundTask -> {
+                        SplitSelectSource source = new SplitSelectSource(mOriginalView,
+                                new BitmapDrawable(bitmap), intent, mPosition, mItemInfo,
+                                splitEvent, foundTask);
+                        if (ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+                            startSplitToHome(source);
+                        } else {
+                            recentsView.initiateSplitSelect(source);
+                        }
+                    }
+            );
         }
 
         private void startSplitToHome(SplitSelectSource source) {
@@ -108,7 +121,7 @@ public interface QuickstepSystemShortcut {
 
             SplitSelectStateController controller = mTarget.getSplitSelectStateController();
             controller.setInitialTaskSelect(source.intent, source.position.stagePosition,
-                    source.itemInfo, source.splitEvent);
+                    source.itemInfo, source.splitEvent, source.alreadyRunningTask);
 
             RecentsView recentsView = mTarget.getOverviewPanel();
             recentsView.getPagedOrientationHandler().getInitialSplitPlaceholderBounds(
@@ -142,16 +155,19 @@ public interface QuickstepSystemShortcut {
         public final SplitPositionOption position;
         public final ItemInfo itemInfo;
         public final StatsLogManager.EventEnum splitEvent;
+        @Nullable
+        public final Task alreadyRunningTask;
 
         public SplitSelectSource(View view, Drawable drawable, Intent intent,
                 SplitPositionOption position, ItemInfo itemInfo,
-                StatsLogManager.EventEnum splitEvent) {
+                StatsLogManager.EventEnum splitEvent, @Nullable Task foundTask) {
             this.view = view;
             this.drawable = drawable;
             this.intent = intent;
             this.position = position;
             this.itemInfo = itemInfo;
             this.splitEvent = splitEvent;
+            this.alreadyRunningTask = foundTask;
         }
     }
 }
