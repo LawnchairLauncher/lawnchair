@@ -96,7 +96,8 @@ public class RecentsModel implements IconChangeListener, TaskStackChangeListener
     }
 
     /**
-     * Fetches the list of recent tasks.
+     * Fetches the list of recent tasks. Tasks are ordered by recency, with the latest active tasks
+     * at the end of the list.
      *
      * @param callback The callback to receive the task plan once its complete or null. This is
      *                always called on the UI thread.
