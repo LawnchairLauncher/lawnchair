@@ -16,6 +16,7 @@
 package com.android.launcher3.workprofile;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -24,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.R;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.views.ActivityContext;
 
@@ -31,11 +33,17 @@ import com.android.launcher3.views.ActivityContext;
  * Supports two indicator colors, dedicated for personal and work tabs.
  */
 public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageIndicator {
+    private final boolean mIsAlignOnIcon;
     private OnActivePageChangedListener mOnActivePageChangedListener;
     private int mLastActivePage = 0;
 
     public PersonalWorkSlidingTabStrip(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs,
+                R.styleable.PersonalWorkSlidingTabStrip);
+        mIsAlignOnIcon = typedArray.getBoolean(
+                R.styleable.PersonalWorkSlidingTabStrip_alignOnIcon, false);
+        typedArray.recycle();
     }
 
     /**
@@ -76,7 +84,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (getPaddingLeft() == 0 && getPaddingRight() == 0) {
+        if (mIsAlignOnIcon) {
             // If any padding is not specified, restrict the width to emulate padding
             int size = MeasureSpec.getSize(widthMeasureSpec);
             size = getTabWidth(getContext(), size);

@@ -214,6 +214,10 @@
         <attr name="c" format="float|dimension" />
     </declare-styleable>
 
+    <declare-styleable name="PersonalWorkSlidingTabStrip">
+        <attr name="alignOnIcon" format="boolean" />
+    </declare-styleable>
+
     <declare-styleable name="ProfileDisplayOption">
         <attr name="name" />
         <attr name="minWidthDps" format="float" />
