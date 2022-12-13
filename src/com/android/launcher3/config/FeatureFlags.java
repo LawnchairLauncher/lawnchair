@@ -330,6 +330,10 @@ public final class FeatureFlags {
             "FORCE_PERSISTENT_TASKBAR", false, "Forces taskbar to be persistent, even in gesture"
                     + " nav mode and when transient taskbar is enabled.");
 
+    public static final BooleanFlag FOLDABLE_SINGLE_PAGE = getDebugFlag(
+            "FOLDABLE_SINGLE_PAGE", false,
+            "Use a single page for the workspace");
+
     public static final BooleanFlag ENABLE_TRANSIENT_TASKBAR = getDebugFlag(
             "ENABLE_TRANSIENT_TASKBAR", true, "Enables transient taskbar.");
 
