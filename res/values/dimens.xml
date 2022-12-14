@@ -114,6 +114,8 @@
     <dimen name="all_apps_tabs_indicator_height">2dp</dimen>
     <dimen name="all_apps_header_top_margin">33dp</dimen>
     <dimen name="all_apps_header_top_padding">36dp</dimen>
+    <!-- Additional top padding to add when Floating Searchbar is enabled. -->
+    <dimen name="all_apps_additional_top_padding_floating_search">16dp</dimen>
     <dimen name="all_apps_header_bottom_padding">14dp</dimen>
     <dimen name="all_apps_header_top_adjustment">6dp</dimen>
     <dimen name="all_apps_header_bottom_adjustment">4dp</dimen>
