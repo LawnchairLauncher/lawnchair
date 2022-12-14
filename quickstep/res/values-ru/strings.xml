@@ -95,9 +95,12 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Обучение по работе с панелью задач"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Обучение по работе с панелью задач показано"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Обучение по работе с панелью задач скрыто"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Используйте панель задач, чтобы переключать приложения."</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Перетащите в сторону, чтобы использовать два приложения сразу."</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Чтобы скрыть панель задач, коснитесь ее и удерживайте."</string>
+    <!-- no translation found for taskbar_edu_splitscreen (5563823414110661454) -->
+    <skip />
+    <!-- no translation found for taskbar_edu_stashing (2805035263048176462) -->
+    <skip />
+    <!-- no translation found for taskbar_edu_suggestions (1416699696825090402) -->
+    <skip />
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Далее"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Назад"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Закрыть"</string>
