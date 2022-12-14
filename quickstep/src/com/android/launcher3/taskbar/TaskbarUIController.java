@@ -87,7 +87,8 @@ public class TaskbarUIController {
      * Manually closes the overlay window.
      */
     public void hideOverlayWindow() {
-        if (!DisplayController.isTransientTaskbar(mControllers.taskbarActivityContext)) {
+        if (!DisplayController.isTransientTaskbar(mControllers.taskbarActivityContext)
+                || mControllers.taskbarAllAppsController.isOpen()) {
             mControllers.taskbarOverlayController.hideWindow();
         }
     }
@@ -104,10 +105,17 @@ public class TaskbarUIController {
     }
 
     /**
-     * Returns true iff taskbar is stashed.
+     * Returns {@code true} iff taskbar is stashed.
      */
     public boolean isTaskbarStashed() {
         return mControllers.taskbarStashController.isStashed();
+    }
+
+    /**
+     * Returns {@code true} iff taskbar All Apps is open.
+     */
+    public boolean isTaskbarAllAppsOpen() {
+        return mControllers.taskbarAllAppsController.isOpen();
     }
 
     /**

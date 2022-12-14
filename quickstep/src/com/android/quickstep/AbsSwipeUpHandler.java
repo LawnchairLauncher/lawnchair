@@ -317,7 +317,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private final int mTaskbarAppWindowThreshold;
     private final int mTaskbarHomeOverviewThreshold;
     private final int mTaskbarCatchUpThreshold;
-    private boolean mTaskbarAlreadyOpen;
+    private final boolean mTaskbarAlreadyOpen;
+    private final boolean mIsTaskbarAllAppsOpen;
     private final boolean mIsTransientTaskbar;
     // May be set to false when mIsTransientTaskbar is true.
     private boolean mCanSlowSwipeGoHome = true;
@@ -358,6 +359,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 && DisplayController.isTransientTaskbar(mActivity);
         TaskbarUIController controller = mActivityInterface.getTaskbarController();
         mTaskbarAlreadyOpen = controller != null && !controller.isTaskbarStashed();
+        mIsTaskbarAllAppsOpen = controller != null && controller.isTaskbarAllAppsOpen();
         mTaskbarAppWindowThreshold = res
                 .getDimensionPixelSize(ENABLE_TASKBAR_REVISED_THRESHOLDS.get()
                         ? R.dimen.taskbar_app_window_threshold_v2
@@ -2261,7 +2263,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             return displacement;
         }
 
-        if (mTaskbarAlreadyOpen) {
+        if (mTaskbarAlreadyOpen || mIsTaskbarAllAppsOpen) {
             return displacement;
         }
 

@@ -42,6 +42,7 @@ import java.util.List;
 public final class TaskbarAllAppsController {
 
     private TaskbarControllers mControllers;
+    private @Nullable TaskbarAllAppsSlideInView mSlideInView;
     private @Nullable TaskbarAllAppsContainerView mAppsView;
 
     // Application data models.
@@ -107,6 +108,11 @@ public final class TaskbarAllAppsController {
         show(true);
     }
 
+    /** Returns {@code true} if All Apps is open. */
+    public boolean isOpen() {
+        return mSlideInView != null && mSlideInView.isOpen();
+    }
+
     private void show(boolean animate) {
         if (mAppsView != null) {
             return;
@@ -117,15 +123,15 @@ public final class TaskbarAllAppsController {
 
         TaskbarOverlayContext overlayContext =
                 mControllers.taskbarOverlayController.requestWindow();
-        TaskbarAllAppsSlideInView slideInView =
-                (TaskbarAllAppsSlideInView) overlayContext.getLayoutInflater().inflate(
-                        R.layout.taskbar_all_apps, overlayContext.getDragLayer(), false);
-        slideInView.addOnCloseListener(() -> {
+        mSlideInView = (TaskbarAllAppsSlideInView) overlayContext.getLayoutInflater().inflate(
+                R.layout.taskbar_all_apps, overlayContext.getDragLayer(), false);
+        mSlideInView.addOnCloseListener(() -> {
             mControllers.getSharedState().allAppsVisible = false;
+            mSlideInView = null;
             mAppsView = null;
         });
         TaskbarAllAppsViewController viewController = new TaskbarAllAppsViewController(
-                overlayContext, slideInView, mControllers);
+                overlayContext, mSlideInView, mControllers);
 
         viewController.show(animate);
         mAppsView = overlayContext.getAppsView();
