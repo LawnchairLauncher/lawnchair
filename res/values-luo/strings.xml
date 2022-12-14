@@ -44,7 +44,7 @@
     </plurals>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
-    <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Many'"</string>
+    <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Mangeny'"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Ruch gima indiko e box mar menyo"</string>
     <string name="no_widgets_available" msgid="9140948620298620513">"Widgets onge"</string>
     <string name="no_search_results" msgid="6518732304311458580">"Results ma imanyo onge"</string>
@@ -60,9 +60,9 @@
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Dii &amp; mak mondo ichor shortcut."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Dii diriyo &amp; mak mondo ichor  shortcut ama iti gi custom actions."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Space orumo e Home screen."</string>
-    <string name="hotseat_out_of_space" msgid="7448809638125333693">"No more room in the Favourites tray"</string>
-    <string name="all_apps_button_label" msgid="8130441508702294465">"Apps list"</string>
-    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Personal apps list"</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"Space orumo e  Favourites tray"</string>
+    <string name="all_apps_button_label" msgid="8130441508702294465">"list mar Apps"</string>
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"List mar Personal apps"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"List mar Apps mar tich"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Gol"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Uninstall"</string>
@@ -105,8 +105,8 @@
     <string name="notification_dots_title" msgid="9062440428204120317">"Notification dots"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"On"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Off"</string>
-    <string name="title_missing_notification_access" msgid="7503287056163941064">"Notification access neededgi"</string>
-    <string name="msg_missing_notification_access" msgid="281113995110910548">"To show Notification Dots, turn on app notifications for <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"Access mar notifications dwarore"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"Mondo ine dots mar notifications, yau notifications  mar apps mar <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Change settings"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Nyis dots mar notifications"</string>
     <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Med icons mar Apps e home screen"</string>
@@ -115,12 +115,12 @@
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Gol oko "</string>
     <string name="abandoned_search" msgid="891119232568284442">"Search"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"App ni ok en installed"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"The app for this icon isn\'t installed. You can remove it, or search for the app and install it manually."</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"App mar icon ni pokobedo installed. Inyalo gole ,kata imany app no mondo i install go kendi."</string>
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> installing, <xliff:g id="PROGRESS">%2$s</xliff:g> complete"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> downloading, <xliff:g id="PROGRESS">%2$s</xliff:g> complete"</string>
-    <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> waiting to install"</string>
+    <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> Rito mondo o install"</string>
     <string name="widgets_list" msgid="796804551140113767">"Widgets list"</string>
-    <string name="widgets_list_closed" msgid="6141506579418771922">"Widgets list closed"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"List mar widgets olor"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Med e Home Screen"</string>
     <string name="action_move_here" msgid="2170188780612570250">""</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Osemede e homescreen"</string>
