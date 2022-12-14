@@ -80,11 +80,7 @@
     <color name="workspace_accent_color_light">#ff8df5e3</color>
     <color name="workspace_accent_color_dark">#ff3d665f</color>
 
-    <color name="all_apps_button_bg_color">#F7F9FA</color>
-    <color name="all_apps_button_color_1">#00677E</color>
-    <color name="all_apps_button_color_2">#00677E</color>
-    <color name="all_apps_button_color_3">#5F757E</color>
-    <color name="all_apps_button_color_4">#005A6E</color>
+    <color name="all_apps_button_color">#40484B</color>
 
     <color name="preload_icon_accent_color_light">#00668B</color>
     <color name="preload_icon_background_color_light">#B5CAD7</color>

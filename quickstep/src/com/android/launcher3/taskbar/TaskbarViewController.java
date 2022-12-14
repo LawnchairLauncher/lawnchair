@@ -401,8 +401,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                 // Note that there is no All Apps button in the hotseat, this position is only used
                 // as its convenient for animation purposes.
                 positionInHotseat = Utilities.isRtl(child.getResources())
-                        ? -1
-                        : taskbarDp.numShownHotseatIcons;
+                        ? taskbarDp.numShownHotseatIcons
+                        : -1;
             } else if (child.getTag() instanceof ItemInfo) {
                 positionInHotseat = ((ItemInfo) child.getTag()).screenId;
             } else {
