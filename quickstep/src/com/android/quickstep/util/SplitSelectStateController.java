@@ -37,7 +37,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.UserHandle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.view.RemoteAnimationAdapter;
@@ -124,10 +123,15 @@ public class SplitSelectStateController {
      * To be called after first task selected from home or all apps.
      */
     public void setInitialTaskSelect(Intent intent, @StagePosition int stagePosition,
-            @NonNull ItemInfo itemInfo, StatsLogManager.EventEnum splitEvent) {
-        mInitialTaskIntent = intent;
-        mUser = itemInfo.user;
-        mItemInfo = itemInfo;
+            @NonNull ItemInfo itemInfo, StatsLogManager.EventEnum splitEvent,
+            @Nullable Task alreadyRunningTask) {
+        if (alreadyRunningTask != null) {
+            mInitialTaskId = alreadyRunningTask.key.id;
+        } else {
+            mInitialTaskIntent = intent;
+            mUser = itemInfo.user;
+        }
+
         setInitialData(stagePosition, splitEvent, itemInfo);
     }
 

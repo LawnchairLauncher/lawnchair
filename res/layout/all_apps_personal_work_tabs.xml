@@ -16,6 +16,7 @@
 
 <com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/tabs"
     android:layout_width="match_parent"
     android:layout_height="@dimen/all_apps_header_pill_height"
@@ -24,7 +25,8 @@
     android:paddingBottom="@dimen/all_apps_tabs_vertical_padding"
     android:layout_marginTop="@dimen/all_apps_tabs_margin_top"
     android:orientation="horizontal"
-    style="@style/TextHeadline">
+    style="@style/TextHeadline"
+    launcher:alignOnIcon="true">
 
     <Button
         android:id="@+id/tab_personal"

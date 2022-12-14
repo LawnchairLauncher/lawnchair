@@ -308,7 +308,7 @@ public final class FeatureFlags {
             "ENABLE_WIDGET_PICKER_DEPTH", true, "Enable changing depth in widget picker.");
 
     public static final BooleanFlag SCROLL_TOP_TO_RESET = new DeviceFlag(
-            "SCROLL_TOP_TO_RESET", false, "Bring up IME and focus on "
+            "SCROLL_TOP_TO_RESET", true, "Bring up IME and focus on "
             + "input when scroll to top if 'Always show keyboard' is enabled or in prefix state");
 
     public static final BooleanFlag POPUP_MATERIAL_U = new DeviceFlag(
@@ -333,6 +333,10 @@ public final class FeatureFlags {
     public static final BooleanFlag FORCE_PERSISTENT_TASKBAR = getDebugFlag(
             "FORCE_PERSISTENT_TASKBAR", false, "Forces taskbar to be persistent, even in gesture"
                     + " nav mode and when transient taskbar is enabled.");
+
+    public static final BooleanFlag FOLDABLE_SINGLE_PAGE = getDebugFlag(
+            "FOLDABLE_SINGLE_PAGE", false,
+            "Use a single page for the workspace");
 
     public static final BooleanFlag ENABLE_TRANSIENT_TASKBAR = getDebugFlag(
             "ENABLE_TRANSIENT_TASKBAR", true, "Enables transient taskbar.");

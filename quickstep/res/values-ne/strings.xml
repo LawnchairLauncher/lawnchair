@@ -98,9 +98,12 @@
     <skip />
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"टास्कबार एजुकेसन देखिएको छ"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"टास्कबार एजुकेसन बन्द गरिएको छ"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"एउटा एपबाट अर्को एपमा जान टास्कबार प्रयोग गर्नुहोस्"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"टास्कबार छेउतिर ड्र्याग गरेर एकै पटक दुई वटा एप चलाउनुहोस्"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"टास्कबार लुकाउन टास्कबार थिचिराख्नुहोस्"</string>
+    <!-- no translation found for taskbar_edu_splitscreen (5563823414110661454) -->
+    <skip />
+    <!-- no translation found for taskbar_edu_stashing (2805035263048176462) -->
+    <skip />
+    <!-- no translation found for taskbar_edu_suggestions (1416699696825090402) -->
+    <skip />
     <string name="taskbar_edu_next" msgid="4007618274426775841">"अर्को"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"पछाडि"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"बन्द गर्नुहोस्"</string>

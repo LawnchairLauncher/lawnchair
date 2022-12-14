@@ -41,7 +41,7 @@ public class OnboardingPrefs<T extends ActivityContext> {
     public static final String SEARCH_KEYBOARD_EDU_SEEN = "launcher.search_edu_seen";
     public static final String SEARCH_SNACKBAR_COUNT = "launcher.keyboard_snackbar_count";
     public static final String SEARCH_ONBOARDING_COUNT = "launcher.search_onboarding_count";
-    public static final String TASKBAR_EDU_SEEN = "launcher.taskbar_edu_seen";
+    public static final String TASKBAR_EDU_SEEN = "launcher.taskbar_edu_seen2";
     public static final String ALL_APPS_VISITED_COUNT = "launcher.all_apps_visited_count";
     public static final String QSB_SEARCH_ONBOARDING_CARD_DISMISSED = "launcher.qsb_edu_dismiss";
     // When adding a new key, add it here as well, to be able to reset it from Developer Options.

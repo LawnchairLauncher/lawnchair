@@ -414,7 +414,9 @@ public class TaskThumbnailView extends View {
             return false;
         }
 
-        float thumbnailViewAspect = getWidth() / (float) getHeight();
+        RectF insets = mPreviewPositionHelper.getClippedInsets();
+        float thumbnailViewAspect = (getWidth() + insets.left + insets.right)
+                / (getHeight() + insets.top + insets.bottom);
         float thumbnailDataAspect =
                 mThumbnailData.thumbnail.getWidth() / (float) mThumbnailData.thumbnail.getHeight();
 
@@ -465,7 +467,6 @@ public class TaskThumbnailView extends View {
 
     private void updateThumbnailMatrix() {
         DeviceProfile dp = mActivity.getDeviceProfile();
-        mPreviewPositionHelper.setTaskbarInApp(dp.isTaskbarPresentInApps);
         mPreviewPositionHelper.setOrientationChanged(false);
         if (mBitmapShader != null && mThumbnailData != null) {
             mPreviewRect.set(0, 0, mThumbnailData.thumbnail.getWidth(),
