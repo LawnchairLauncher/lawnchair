@@ -41,12 +41,23 @@ public class LauncherAllAppsContainerView extends ActivityAllAppsContainerView<L
                 public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                     int scrolledOffset = recyclerView.computeVerticalScrollOffset();
                     ExtendedEditText input = mSearchUiManager.getEditText();
-                    // Scroll up and scroll to top
-                    if (dy < 0 && scrolledOffset == 0 && input != null) {
-                        boolean isImeEnabledOnSwipeUp = Launcher.getLauncher(mActivityContext)
-                                .getSearchConfig().isImeEnabledOnSwipeUp();
-                        if (isImeEnabledOnSwipeUp || !TextUtils.isEmpty(input.getText())) {
-                            input.showKeyboard();
+                    if (input != null) {
+                        // Save the input box state on scroll down
+                        if (dy > 0) {
+                            input.saveFocusedStateAndUpdateToUnfocusedState();
+                        }
+
+                        // Scroll up and scroll to top
+                        if (dy < 0 && scrolledOffset == 0) {
+                            // Show keyboard
+                            boolean isImeEnabledOnSwipeUp = Launcher.getLauncher(mActivityContext)
+                                    .getSearchConfig().isImeEnabledOnSwipeUp();
+                            if (isImeEnabledOnSwipeUp || !TextUtils.isEmpty(input.getText())) {
+                                input.showKeyboard();
+                            }
+
+                            // Restore state in input box
+                            input.restoreToFocusedState();
                         }
                     }
                 }
