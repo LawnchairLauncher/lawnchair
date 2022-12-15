@@ -397,16 +397,16 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 mInteractionHandler.onGestureCancelled();
             } else {
                 mVelocityTracker.computeCurrentVelocity(PX_PER_MS);
-                float velocityX = mVelocityTracker.getXVelocity(mActivePointerId);
-                float velocityY = mVelocityTracker.getYVelocity(mActivePointerId);
-                float velocity = mNavBarPosition.isRightEdge()
-                        ? velocityX
+                float velocityXPxPerMs = mVelocityTracker.getXVelocity(mActivePointerId);
+                float velocityYPxPerMs = mVelocityTracker.getYVelocity(mActivePointerId);
+                float velocityPxPerMs = mNavBarPosition.isRightEdge()
+                        ? velocityXPxPerMs
                         : mNavBarPosition.isLeftEdge()
-                                ? -velocityX
-                                : velocityY;
+                                ? -velocityXPxPerMs
+                                : velocityYPxPerMs;
                 mInteractionHandler.updateDisplacement(getDisplacement(ev) - mStartDisplacement);
-                mInteractionHandler.onGestureEnded(velocity, new PointF(velocityX, velocityY),
-                        mDownPos);
+                mInteractionHandler.onGestureEnded(
+                        velocityPxPerMs, new PointF(velocityXPxPerMs, velocityYPxPerMs), mDownPos);
             }
         } else {
             // Since we start touch tracking on DOWN, we may reach this state without actually
