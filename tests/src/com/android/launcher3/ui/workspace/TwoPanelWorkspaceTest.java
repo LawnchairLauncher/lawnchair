@@ -21,8 +21,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
-import android.view.View;
-
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
@@ -33,6 +31,7 @@ import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TaplTestsLauncher3;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,20 +52,22 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        mLauncher.useTest2WorkspaceLayoutOnReload();
         TaplTestsLauncher3.initialize(this);
 
         assumeTrue(mLauncher.isTwoPanels());
 
-        // Removing the Gmail widget so there are space in the right panel to run the test.
-        Workspace workspace = mLauncher.getWorkspace();
-        workspace.deleteWidget(workspace.tryGetWidget("Gmail", DEFAULT_UI_TIMEOUT));
-
         // Pre verifying the screens
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1);
-            assertItemsOnPage(launcher, 0, "Play Store", "Gmail", "Photos", "YouTube");
-            assertItemsOnPage(launcher, 1, "Weather");
+            assertItemsOnPage(launcher, 0, "Play Store", "Maps");
+            assertPageEmpty(launcher, 1);
         });
+    }
+
+    @After
+    public void tearDown() {
+        mLauncher.useDefaultWorkspaceLayoutOnReload();
     }
 
     @Test
@@ -78,8 +79,8 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1);
-            assertItemsOnPage(launcher, 0, "Play Store", "Gmail", "Photos", "YouTube");
-            assertItemsOnPage(launcher, 1, "Weather", "Chrome");
+            assertItemsOnPage(launcher, 0, "Maps", "Play Store");
+            assertItemsOnPage(launcher, 1, "Chrome");
         });
     }
 
@@ -92,39 +93,39 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
 
         workspace.flingBackward();
 
-        workspace.dragIcon(workspace.getWorkspaceAppIcon("Photos"), 3);
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Maps"), 3);
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 2, 3);
-            assertItemsOnPage(launcher, 0, "Play Store", "Gmail", "YouTube");
-            assertItemsOnPage(launcher, 1, "Weather");
+            assertItemsOnPage(launcher, 0, "Play Store");
+            assertPageEmpty(launcher, 1);
             assertItemsOnPage(launcher, 2, "Chrome");
-            assertItemsOnPage(launcher, 3, "Photos");
+            assertItemsOnPage(launcher, 3, "Maps");
         });
 
-        workspace.dragIcon(workspace.getWorkspaceAppIcon("Photos"), 3);
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Maps"), 3);
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 2, 3, 4, 5);
-            assertItemsOnPage(launcher, 0, "Play Store", "Gmail", "YouTube");
-            assertItemsOnPage(launcher, 1, "Weather");
+            assertItemsOnPage(launcher, 0, "Play Store");
+            assertPageEmpty(launcher, 1);
             assertItemsOnPage(launcher, 2, "Chrome");
             assertPageEmpty(launcher, 3);
             assertPageEmpty(launcher, 4);
-            assertItemsOnPage(launcher, 5, "Photos");
+            assertItemsOnPage(launcher, 5, "Maps");
         });
 
-        workspace.dragIcon(workspace.getWorkspaceAppIcon("Photos"), -1);
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Maps"), -1);
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 2, 3);
-            assertItemsOnPage(launcher, 0, "Play Store", "Gmail", "YouTube");
-            assertItemsOnPage(launcher, 1, "Weather");
+            assertItemsOnPage(launcher, 0, "Play Store");
+            assertPageEmpty(launcher, 1);
             assertItemsOnPage(launcher, 2, "Chrome");
-            assertItemsOnPage(launcher, 3, "Photos");
+            assertItemsOnPage(launcher, 3, "Maps");
         });
 
-        workspace.dragIcon(workspace.getWorkspaceAppIcon("Photos"), -1);
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Maps"), -1);
 
         workspace.flingForward();
 
@@ -132,8 +133,8 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1);
-            assertItemsOnPage(launcher, 0, "Chrome", "Play Store", "Gmail", "YouTube");
-            assertItemsOnPage(launcher, 1, "Weather", "Photos");
+            assertItemsOnPage(launcher, 0, "Chrome", "Play Store");
+            assertItemsOnPage(launcher, 1, "Maps");
         });
     }
 
@@ -142,13 +143,13 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
     public void testDragIconToPage2() {
         Workspace workspace = mLauncher.getWorkspace();
 
-        workspace.dragIcon(workspace.getWorkspaceAppIcon("Photos"), 2);
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Maps"), 2);
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 2, 3);
-            assertItemsOnPage(launcher, 0, "Play Store", "Gmail", "YouTube");
-            assertItemsOnPage(launcher, 1, "Weather");
-            assertItemsOnPage(launcher, 2, "Photos");
+            assertItemsOnPage(launcher, 0, "Play Store");
+            assertPageEmpty(launcher, 1);
+            assertItemsOnPage(launcher, 2, "Maps");
             assertPageEmpty(launcher, 3);
         });
     }
@@ -162,8 +163,8 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 2, 3);
-            assertItemsOnPage(launcher, 0, "Play Store", "Gmail", "Photos", "YouTube");
-            assertItemsOnPage(launcher, 1, "Weather");
+            assertItemsOnPage(launcher, 0, "Play Store", "Maps");
+            assertPageEmpty(launcher, 1);
             assertPageEmpty(launcher, 2);
             assertItemsOnPage(launcher, 3, "Phone");
         });
@@ -178,16 +179,16 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
 
         workspace.flingBackward();
 
-        workspace.dragIcon(workspace.getWorkspaceAppIcon("Photos"), 5);
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Maps"), 5);
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 2, 3, 4, 5);
-            assertItemsOnPage(launcher, 0, "Play Store", "Gmail", "YouTube");
-            assertItemsOnPage(launcher, 1, "Weather");
+            assertItemsOnPage(launcher, 0, "Play Store");
+            assertPageEmpty(launcher, 1);
             assertItemsOnPage(launcher, 2, "Messages");
             assertPageEmpty(launcher, 3);
             assertPageEmpty(launcher, 4);
-            assertItemsOnPage(launcher, 5, "Photos");
+            assertItemsOnPage(launcher, 5, "Maps");
         });
 
         workspace.flingBackward();
@@ -196,10 +197,10 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 4, 5, 6, 7);
-            assertItemsOnPage(launcher, 0, "Play Store", "Gmail", "YouTube");
-            assertItemsOnPage(launcher, 1, "Weather");
+            assertItemsOnPage(launcher, 0, "Play Store");
+            assertPageEmpty(launcher, 1);
             assertPageEmpty(launcher, 4);
-            assertItemsOnPage(launcher, 5, "Photos");
+            assertItemsOnPage(launcher, 5, "Maps");
             assertItemsOnPage(launcher, 6, "Messages");
             assertPageEmpty(launcher, 7);
         });
@@ -208,10 +209,10 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 4, 5);
-            assertItemsOnPage(launcher, 0, "Play Store", "Gmail", "YouTube");
-            assertItemsOnPage(launcher, 1, "Weather", "Messages");
+            assertItemsOnPage(launcher, 0, "Play Store");
+            assertItemsOnPage(launcher, 1, "Messages");
             assertPageEmpty(launcher, 4);
-            assertItemsOnPage(launcher, 5, "Photos");
+            assertItemsOnPage(launcher, 5, "Maps");
         });
     }
 
@@ -220,23 +221,23 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
     public void testEmptyPageDoesNotGetRemovedIfPagePairIsNotEmpty() {
         Workspace workspace = mLauncher.getWorkspace();
 
-        workspace.dragIcon(workspace.getWorkspaceAppIcon("Photos"), 3);
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Maps"), 3);
         workspace.dragIcon(workspace.getHotseatAppIcon("Chrome"), 0);
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 2, 3);
-            assertItemsOnPage(launcher, 0, "Play Store", "Gmail", "YouTube");
-            assertItemsOnPage(launcher, 1, "Weather");
+            assertItemsOnPage(launcher, 0, "Play Store");
+            assertPageEmpty(launcher, 1);
             assertItemsOnPage(launcher, 2, "Chrome");
-            assertItemsOnPage(launcher, 3, "Photos");
+            assertItemsOnPage(launcher, 3, "Maps");
         });
 
-        workspace.dragIcon(workspace.getWorkspaceAppIcon("Photos"), -1);
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Maps"), -1);
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 2, 3);
-            assertItemsOnPage(launcher, 0, "Play Store", "Gmail", "YouTube");
-            assertItemsOnPage(launcher, 1, "Weather", "Photos");
+            assertItemsOnPage(launcher, 0, "Play Store");
+            assertItemsOnPage(launcher, 1, "Maps");
             assertItemsOnPage(launcher, 2, "Chrome");
             assertPageEmpty(launcher, 3);
         });
@@ -248,8 +249,8 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 2, 3);
-            assertItemsOnPage(launcher, 0, "Play Store", "Gmail", "YouTube");
-            assertItemsOnPage(launcher, 1, "Weather", "Photos");
+            assertItemsOnPage(launcher, 0, "Play Store");
+            assertItemsOnPage(launcher, 1, "Maps");
             assertPageEmpty(launcher, 2);
             assertItemsOnPage(launcher, 3, "Chrome");
         });
@@ -265,8 +266,8 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 2, 3);
-            assertItemsOnPage(launcher, 0, "Gmail", "Photos", "YouTube");
-            assertItemsOnPage(launcher, 1, "Weather");
+            assertItemsOnPage(launcher, 0, "Maps");
+            assertPageEmpty(launcher, 1);
             assertItemsOnPage(launcher, 2, "Play Store");
             assertItemsOnPage(launcher, 3, "Chrome");
         });
@@ -277,8 +278,8 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1);
-            assertItemsOnPage(launcher, 0, "Play Store", "Gmail", "Photos", "YouTube");
-            assertItemsOnPage(launcher, 1, "Weather", "Chrome");
+            assertItemsOnPage(launcher, 0, "Play Store", "Maps");
+            assertItemsOnPage(launcher, 1, "Chrome");
         });
     }
 
@@ -287,27 +288,27 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
     public void testMiddleEmptyPagesGetRemoved() {
         Workspace workspace = mLauncher.getWorkspace();
 
-        workspace.dragIcon(workspace.getWorkspaceAppIcon("Photos"), 2);
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Maps"), 2);
         workspace.dragIcon(workspace.getHotseatAppIcon("Messages"), 3);
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 2, 3, 4, 5);
-            assertItemsOnPage(launcher, 0, "Play Store", "Gmail", "YouTube");
-            assertItemsOnPage(launcher, 1, "Weather");
-            assertItemsOnPage(launcher, 2, "Photos");
+            assertItemsOnPage(launcher, 0, "Play Store");
+            assertPageEmpty(launcher, 1);
+            assertItemsOnPage(launcher, 2, "Maps");
             assertPageEmpty(launcher, 3);
             assertPageEmpty(launcher, 4);
             assertItemsOnPage(launcher, 5, "Messages");
         });
 
         workspace.flingBackward();
-        workspace.dragIcon(workspace.getWorkspaceAppIcon("Photos"), 2);
+        workspace.dragIcon(workspace.getWorkspaceAppIcon("Maps"), 2);
 
         executeOnLauncher(launcher -> {
             assertPagesExist(launcher, 0, 1, 4, 5);
-            assertItemsOnPage(launcher, 0, "Play Store", "Gmail", "YouTube");
-            assertItemsOnPage(launcher, 1, "Weather");
-            assertItemsOnPage(launcher, 4, "Photos");
+            assertItemsOnPage(launcher, 0, "Play Store");
+            assertPageEmpty(launcher, 1);
+            assertItemsOnPage(launcher, 4, "Maps");
             assertItemsOnPage(launcher, 5, "Messages");
         });
     }
@@ -335,21 +336,14 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
         CellLayout page = launcher.getWorkspace().getScreenWithId(pageId);
         int itemCount = page.getShortcutsAndWidgets().getChildCount();
         for (int i = 0; i < itemCount; i++) {
-            CharSequence title = null;
-            View child = page.getShortcutsAndWidgets().getChildAt(i);
-            ItemInfo itemInfo = (ItemInfo) child.getTag();
+            ItemInfo itemInfo = (ItemInfo) page.getShortcutsAndWidgets().getChildAt(i).getTag();
             if (itemInfo != null) {
-                title = itemInfo.title;
-            }
-            if (title == null) {
-                title = child.getContentDescription();
-            }
-            if (title != null) {
-                assertTrue("There was an extra item on page " + pageId + ": " + title,
-                        itemTitleSet.remove(title));
+                assertTrue("There was an extra item on page " + pageId + ": " + itemInfo.title,
+                        itemTitleSet.remove(itemInfo.title));
             }
         }
         assertTrue("Could NOT find some of the items on page " + pageId + ": "
-                        + String.join(",", itemTitleSet), itemTitleSet.isEmpty());
+                        + itemTitleSet.stream().collect(Collectors.joining(",")),
+                itemTitleSet.isEmpty());
     }
 }

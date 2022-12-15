@@ -106,6 +106,7 @@ public class LauncherProvider extends ContentProvider {
     public static final String KEY_LAYOUT_PROVIDER_AUTHORITY = "KEY_LAYOUT_PROVIDER_AUTHORITY";
 
     private static final int TEST_WORKSPACE_LAYOUT_RES_XML = R.xml.default_test_workspace;
+    private static final int TEST2_WORKSPACE_LAYOUT_RES_XML = R.xml.default_test2_workspace;
 
     static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
 
@@ -114,7 +115,7 @@ public class LauncherProvider extends ContentProvider {
 
     private long mLastRestoreTimestamp = 0L;
 
-    private boolean mUseTestWorkspaceLayout;
+    private int mDefaultWorkspaceLayoutOverride = 0;
 
     /**
      * $ adb shell dumpsys activity provider com.android.launcher3
@@ -402,11 +403,21 @@ public class LauncherProvider extends ContentProvider {
                 return null;
             }
             case LauncherSettings.Settings.METHOD_SET_USE_TEST_WORKSPACE_LAYOUT_FLAG: {
-                mUseTestWorkspaceLayout = true;
+                switch (arg) {
+                    case LauncherSettings.Settings.ARG_DEFAULT_WORKSPACE_LAYOUT_TEST:
+                        mDefaultWorkspaceLayoutOverride = TEST_WORKSPACE_LAYOUT_RES_XML;
+                        break;
+                    case LauncherSettings.Settings.ARG_DEFAULT_WORKSPACE_LAYOUT_TEST2:
+                        mDefaultWorkspaceLayoutOverride = TEST2_WORKSPACE_LAYOUT_RES_XML;
+                        break;
+                    default:
+                        mDefaultWorkspaceLayoutOverride = 0;
+                        break;
+                }
                 return null;
             }
             case LauncherSettings.Settings.METHOD_CLEAR_USE_TEST_WORKSPACE_LAYOUT_FLAG: {
-                mUseTestWorkspaceLayout = false;
+                mDefaultWorkspaceLayoutOverride = 0;
                 return null;
             }
             case LauncherSettings.Settings.METHOD_LOAD_DEFAULT_FAVORITES: {
@@ -628,8 +639,8 @@ public class LauncherProvider extends ContentProvider {
 
     private DefaultLayoutParser getDefaultLayoutParser(LauncherWidgetHolder widgetHolder) {
         InvariantDeviceProfile idp = LauncherAppState.getIDP(getContext());
-        int defaultLayout = mUseTestWorkspaceLayout
-                ? TEST_WORKSPACE_LAYOUT_RES_XML : idp.defaultLayoutId;
+        int defaultLayout = mDefaultWorkspaceLayoutOverride > 0
+                ? mDefaultWorkspaceLayoutOverride : idp.defaultLayoutId;
 
         if (getContext().getSystemService(UserManager.class).isDemoUser()
                 && idp.demoModeLayoutId != 0) {

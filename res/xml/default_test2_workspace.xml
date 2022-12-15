@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Split display specific version of Launcher3/res/xml/default_workspace_4x4.xml -->
+<favorites xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3" >
+
+    <!-- Hotseat (We use the screen as the position of the item in the hotseat) -->
+    <!-- Dialer Messaging Chrome Camera -->
+    <favorite
+        launcher:container="-101"
+        launcher:screen="0"
+        launcher:x="0"
+        launcher:y="0"
+        launcher:className="com.google.android.dialer.extensions.GoogleDialtactsActivity"
+        launcher:packageName="com.google.android.dialer" />
+
+    <favorite
+        launcher:container="-101"
+        launcher:screen="1"
+        launcher:x="1"
+        launcher:y="0"
+        launcher:className="com.google.android.apps.messaging.ui.ConversationListActivity"
+        launcher:packageName="com.google.android.apps.messaging" />
+
+    <favorite
+        launcher:container="-101"
+        launcher:screen="2"
+        launcher:x="2"
+        launcher:y="0"
+        launcher:className="com.google.android.apps.chrome.Main"
+        launcher:packageName="com.android.chrome" />
+
+    <favorite
+        launcher:container="-101"
+        launcher:screen="3"
+        launcher:x="3"
+        launcher:y="0"
+        launcher:className="com.android.camera.CameraLauncher"
+        launcher:packageName="com.google.android.GoogleCamera" />
+
+    <!-- Bottom row -->
+    <!-- Maps [space] [space] Play -->
+    <favorite
+        launcher:className="com.google.android.maps.MapsActivity"
+        launcher:packageName="com.google.android.apps.maps"
+        launcher:screen="0"
+        launcher:x="0"
+        launcher:y="-1" />
+
+    <favorite
+        launcher:className="com.android.vending.AssetBrowserActivity"
+        launcher:packageName="com.android.vending"
+        launcher:screen="0"
+        launcher:x="3"
+        launcher:y="-1" />
+
+    <!-- TODO: Place weather widget when it's available -->
+
+</favorites>
