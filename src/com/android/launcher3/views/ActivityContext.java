@@ -54,7 +54,6 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
-import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.folder.FolderIcon;
@@ -225,16 +224,6 @@ public interface ActivityContext {
 
     @Nullable
     default StringCache getStringCache() {
-        return null;
-    }
-
-    /**
-     * Creates and returns {@link SearchAdapterProvider} for build variant specific search result
-     * views.
-     */
-    @Nullable
-    default SearchAdapterProvider<?> createSearchAdapterProvider(
-            ActivityAllAppsContainerView<?> appsView) {
         return null;
     }
 

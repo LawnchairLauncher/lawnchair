@@ -34,6 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
+        android:layout_below="@id/search_container_all_apps"
         android:paddingTop="@dimen/all_apps_header_top_padding"
         android:paddingBottom="@dimen/all_apps_header_bottom_padding"
         android:orientation="vertical" >
@@ -44,15 +45,5 @@
 
     </com.android.launcher3.allapps.FloatingHeaderView>
 
-    <View
-        android:id="@+id/search_protection"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:forceHasOverlappingRendering="false" />
-
-    <include layout="@layout/search_container_all_apps" />
-
     <include layout="@layout/all_apps_fast_scroller" />
-
 </merge>

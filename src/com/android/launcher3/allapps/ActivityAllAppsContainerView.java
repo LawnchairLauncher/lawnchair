@@ -30,7 +30,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
-import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.views.ActivityContext;
 
@@ -49,12 +48,6 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     // Used to animate Search results out and A-Z apps in, or vice-versa.
     private final SearchTransitionController mSearchTransitionController;
 
-    protected SearchUiManager mSearchUiManager;
-    /**
-     * View that defines the search box. Result is rendered inside the recycler view defined in the
-     * base class.
-     */
-    private View mSearchContainer;
     /** {@code true} when rendered view is in search state instead of the scroll state. */
     private boolean mIsSearching;
     private boolean mRebindAdaptersAfterSearchAnimation;
@@ -71,6 +64,12 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         super(context, attrs, defStyleAttr);
 
         mSearchTransitionController = new SearchTransitionController(this);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        mSearchUiManager.initializeSearch(this);
     }
 
     public SearchUiManager getSearchUiManager() {
@@ -143,11 +142,6 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     }
 
     @Override
-    protected final SearchAdapterProvider<?> createMainAdapterProvider() {
-        return mActivityContext.createSearchAdapterProvider(this);
-    }
-
-    @Override
     public boolean shouldContainerScroll(MotionEvent ev) {
         // IF the MotionEvent is inside the search box, and the container keeps on receiving
         // touch input, container should move down.
@@ -164,14 +158,6 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mSearchUiManager.resetSearch();
         // Animate to A-Z with 0 time to reset the animation with proper state management.
         animateToSearchState(false, 0);
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        mSearchContainer = findViewById(R.id.search_container_all_apps);
-        mSearchUiManager = (SearchUiManager) mSearchContainer;
-        mSearchUiManager.initializeSearch(this);
     }
 
     @Override
@@ -278,18 +264,6 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 (int) (mSearchContainer.getAlpha() * 255));
     }
 
-    @Override
-    public int getHeaderBottom() {
-        if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
-            if (mActivityContext.getDeviceProfile().isTablet) {
-                return super.getHeaderBottom() + mHeader.getClipTop()
-                        + mBottomSheetBackground.getTop();
-            }
-            return super.getHeaderBottom() + mHeader.getClipTop();
-        }
-        return super.getHeaderBottom() + mSearchContainer.getBottom();
-    }
-
     private void layoutBelowSearchContainer(View v, boolean includeTabsMargin) {
         if (!(v.getLayoutParams() instanceof RelativeLayout.LayoutParams)) {
             return;
@@ -363,5 +337,11 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         layoutParams.topMargin = getContext().getResources().getDimensionPixelSize(includeTabsMargin
                 ? R.dimen.all_apps_header_pill_height
                 : R.dimen.all_apps_header_top_margin);
+    }
+
+    @Override
+    public boolean isInAllApps() {
+        // TODO: Make this abstract
+        return true;
     }
 }
