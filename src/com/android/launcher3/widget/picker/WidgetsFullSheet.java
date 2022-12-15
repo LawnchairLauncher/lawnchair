@@ -615,12 +615,13 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         // Disable swipe down when recycler view is scrolling
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = false;
-            RecyclerViewFastScroller scroller = getRecyclerView().getScrollbar();
+            WidgetsRecyclerView recyclerView = getRecyclerView();
+            RecyclerViewFastScroller scroller = recyclerView.getScrollbar();
             if (scroller.getThumbOffsetY() >= 0
                     && getPopupContainer().isEventOverView(scroller, ev)) {
                 mNoIntercept = true;
-            } else if (getPopupContainer().isEventOverView(mContent, ev)) {
-                mNoIntercept = !getRecyclerView().shouldContainerScroll(ev, getPopupContainer());
+            } else if (getPopupContainer().isEventOverView(recyclerView, ev)) {
+                mNoIntercept = !recyclerView.shouldContainerScroll(ev, getPopupContainer());
             }
 
             if (mSearchBar.isSearchBarFocused()
