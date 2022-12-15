@@ -15,7 +15,7 @@
  */
 package com.android.launcher3.taskbar;
 
-import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
+import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
 
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
@@ -24,6 +24,7 @@ import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
+import android.view.animation.Interpolator;
 import android.widget.Button;
 
 import com.android.launcher3.Insettable;
@@ -63,6 +64,11 @@ public class TaskbarEduView extends AbstractSlideInView<TaskbarOverlayContext>
     @Override
     protected void handleClose(boolean animate) {
         handleClose(animate, mTaskbarEduCallbacks.getCloseDuration());
+    }
+
+    @Override
+    protected Interpolator getIdleInterpolator() {
+        return EMPHASIZED;
     }
 
     @Override
@@ -157,7 +163,7 @@ public class TaskbarEduView extends AbstractSlideInView<TaskbarOverlayContext>
         mIsOpen = true;
         mOpenCloseAnimator.setValues(
                 PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-        mOpenCloseAnimator.setInterpolator(AGGRESSIVE_EASE);
+        mOpenCloseAnimator.setInterpolator(EMPHASIZED);
         mOpenCloseAnimator.setDuration(mTaskbarEduCallbacks.getOpenDuration()).start();
     }
 

@@ -159,4 +159,14 @@ public class ExtendedEditText extends EditText {
             listener.onFocusChange(this, focused);
         }
     }
+
+    /**
+     * Save the input, suggestion, hint states when it's on focus, and set to unfocused states.
+     */
+    public void saveFocusedStateAndUpdateToUnfocusedState() {}
+
+    /**
+     * Restore to the previous saved focused state.
+     */
+    public void restoreToFocusedState() {}
 }

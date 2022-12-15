@@ -888,6 +888,11 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         return mControllers.taskbarStashController.isStashed();
     }
 
+    /** Returns {@code true} if taskbar All Apps is open. */
+    public boolean isTaskbarAllAppsOpen() {
+        return mControllers.taskbarAllAppsController.isOpen();
+    }
+
     /**
      * Called to start the taskbar translation spring to its settled translation (0).
      */
