@@ -63,6 +63,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     private final int mIconTouchSize;
     private final int mItemMarginLeftRight;
     private final int mItemPadding;
+    private final boolean mIsRtl;
 
     private final TaskbarActivityContext mActivityContext;
 
@@ -100,6 +101,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         super(context, attrs, defStyleAttr, defStyleRes);
         mActivityContext = ActivityContext.lookupContext(context);
         mIconLayoutBounds = mActivityContext.getTransientTaskbarBounds();
+        mIsRtl = Utilities.isRtl(getResources());
 
         Resources resources = getResources();
         mIconTouchSize = resources.getDimensionPixelSize(R.dimen.taskbar_icon_touch_size);
@@ -122,6 +124,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             mAllAppsButton = LayoutInflater.from(context)
                     .inflate(R.layout.taskbar_all_apps_button, this, false);
             mAllAppsButton.setPadding(mItemPadding, mItemPadding, mItemPadding, mItemPadding);
+            mAllAppsButton.setScaleX(mIsRtl ? -1 : 1);
             if (mActivityContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_PC)) {
                 mAllAppsButton.setVisibility(GONE);
             }
@@ -254,11 +257,11 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         }
 
         if (mAllAppsButton != null) {
-            int index = Utilities.isRtl(getResources()) ? 0 : getChildCount();
+            int index = mIsRtl ? getChildCount() : 0;
             addView(mAllAppsButton, index);
         }
         if (mActivityContext.getDeviceProfile().isQsbInline) {
-            addView(mQsb, Utilities.isRtl(getResources()) ? getChildCount() : 0);
+            addView(mQsb, mIsRtl ? getChildCount() : 0);
             // Always set QSB to invisible after re-adding.
             mQsb.setVisibility(View.INVISIBLE);
         }
