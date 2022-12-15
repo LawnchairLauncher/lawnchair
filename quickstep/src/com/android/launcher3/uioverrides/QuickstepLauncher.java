@@ -96,7 +96,6 @@ import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.WellbeingModel;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.proxy.ProxyActivityStarter;
 import com.android.launcher3.proxy.StartActivityParams;
@@ -141,6 +140,7 @@ import com.android.quickstep.util.SplitSelectStateController;
 import com.android.quickstep.util.SplitToWorkspaceController;
 import com.android.quickstep.util.SplitWithKeyboardShortcutController;
 import com.android.quickstep.util.TISBindHelper;
+import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -659,6 +659,20 @@ public class QuickstepLauncher extends Launcher {
         } else {
             super.startActivityForResult(intent, requestCode, options);
         }
+    }
+
+    @Override
+    public void setResumed() {
+        if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
+            DesktopVisibilityController controller = mDesktopVisibilityController;
+            if (controller != null && controller.areFreeformTasksVisible()) {
+                // Return early to skip setting activity to appear as resumed
+                // TODO(b/255649902): shouldn't be needed when we have a separate launcher state
+                //  for desktop that we can use to control other parts of launcher
+                return;
+            }
+        }
+        super.setResumed();
     }
 
     @Override
