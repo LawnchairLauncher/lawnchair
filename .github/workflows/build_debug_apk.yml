@@ -52,7 +52,7 @@ jobs:
             echo storeFile='${{ github.workspace }}/key.jks' >> keystore.properties
             echo ${{ secrets.KEYSTORE }} | base64 --decode > ${{ github.workspace }}/key.jks
           fi
-      - name: Build debug APK
+      - name: Build release APK
         run: ./gradlew assembleLawnWithQuickstepRelease
       - name: Upload artifact
         uses: actions/upload-artifact@v3
