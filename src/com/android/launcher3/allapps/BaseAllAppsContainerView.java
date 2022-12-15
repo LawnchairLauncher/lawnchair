@@ -60,6 +60,7 @@ import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.allapps.search.DefaultSearchAdapterProvider;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
@@ -105,7 +106,6 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
     protected final List<AdapterHolder> mAH;
     protected final Predicate<ItemInfo> mPersonalMatcher = ItemInfoMatcher.ofUser(
             Process.myUserHandle());
-    private final SearchAdapterProvider<?> mMainAdapterProvider;
     private final AllAppsStore mAllAppsStore = new AllAppsStore();
 
     private final RecyclerView.OnScrollListener mScrollListener =
@@ -123,11 +123,17 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
 
     protected AllAppsPagedView mViewPager;
     private SearchRecyclerView mSearchRecyclerView;
+    private SearchAdapterProvider<?> mMainAdapterProvider;
 
     protected FloatingHeaderView mHeader;
     protected View mBottomSheetBackground;
     private View mBottomSheetHandleArea;
-    @Nullable private View mSearchBarProtection;
+
+    /**
+     * View that defines the search box. Result is rendered inside {@link #mSearchRecyclerView}.
+     */
+    protected View mSearchContainer;
+    protected SearchUiManager mSearchUiManager;
 
     protected boolean mUsingTabs;
     private boolean mHasWorkApps;
@@ -135,7 +141,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
     protected RecyclerViewFastScroller mTouchHandler;
     protected final Point mFastScrollerOffset = new Point();
 
-    private final int mScrimColor;
+    protected final int mScrimColor;
     private final int mHeaderProtectionColor;
     protected final float mHeaderThreshold;
     private final Path mTmpPath = new Path();
@@ -149,7 +155,6 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
     protected BaseAllAppsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mActivityContext = ActivityContext.lookupContext(context);
-        mMainAdapterProvider = createMainAdapterProvider();
 
         mScrimColor = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
         mHeaderThreshold = getResources().getDimensionPixelSize(
@@ -160,19 +165,84 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
                 mActivityContext.getSystemService(UserManager.class),
                 this, LauncherPrefs.getPrefs(mActivityContext));
         mAH = Arrays.asList(null, null, null);
-        mAH.set(AdapterHolder.MAIN, new AdapterHolder(AdapterHolder.MAIN));
-        mAH.set(AdapterHolder.WORK, new AdapterHolder(AdapterHolder.WORK));
-        mAH.set(AdapterHolder.SEARCH, new AdapterHolder(AdapterHolder.SEARCH));
-
         mNavBarScrimPaint = new Paint();
         mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
 
         mAllAppsStore.addUpdateListener(this::onAppsUpdated);
         mActivityContext.addOnDeviceProfileChangeListener(this);
+
+        // This is a focus listener that proxies focus from a view into the list view.  This is to
+        // work around the search box from getting first focus and showing the cursor.
+        setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus && getActiveRecyclerView() != null) {
+                getActiveRecyclerView().requestFocus();
+            }
+        });
+        initContent();
+    }
+
+    /**
+     * Initializes the view hierarchy and internal variables. Any initialization which actually uses
+     * these members should be done in {@link #onFinishInflate()}.
+     * In terms of subclass initialization, the following would be parallel order for activity:
+     *   initContent -> onPreCreate
+     *   constructor/init -> onCreate
+     *   onFinishInflate -> onPostCreate
+     */
+    protected void initContent() {
+        mMainAdapterProvider = createMainAdapterProvider();
+
+        mAH.set(AdapterHolder.MAIN, new AdapterHolder(AdapterHolder.MAIN));
+        mAH.set(AdapterHolder.WORK, new AdapterHolder(AdapterHolder.WORK));
+        mAH.set(AdapterHolder.SEARCH, new AdapterHolder(AdapterHolder.SEARCH));
+
+        getLayoutInflater().inflate(R.layout.all_apps_content, this);
+        mHeader = findViewById(R.id.all_apps_header);
+        mBottomSheetBackground = findViewById(R.id.bottom_sheet_background);
+        mBottomSheetHandleArea = findViewById(R.id.bottom_sheet_handle_area);
+        mSearchRecyclerView = findViewById(R.id.search_results_list_view);
+
+        // Add the search box next to the header
+        mSearchContainer = inflateSearchBox();
+        addView(mSearchContainer, indexOfChild(mHeader) + 1);
+        mSearchUiManager = (SearchUiManager) mSearchContainer;
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        mAH.get(AdapterHolder.SEARCH).setup(mSearchRecyclerView,
+                /* Filter out A-Z apps */ itemInfo -> false);
+        rebindAdapters(true /* force */);
+        float cornerRadius = Themes.getDialogCornerRadius(getContext());
+        mBottomSheetCornerRadii = new float[]{
+                cornerRadius,
+                cornerRadius, // Top left radius in px
+                cornerRadius,
+                cornerRadius, // Top right radius in px
+                0,
+                0, // Bottom right
+                0,
+                0 // Bottom left
+        };
+        final TypedValue value = new TypedValue();
+        getContext().getTheme().resolveAttribute(android.R.attr.colorBackground, value, true);
+        mBottomSheetBackgroundColor = value.data;
+        updateBackground(mActivityContext.getDeviceProfile());
+    }
+
+    /**
+     * Inflates the search box
+     */
+    protected View inflateSearchBox() {
+        return getLayoutInflater().inflate(R.layout.search_container_all_apps, this, false);
     }
 
     /** Creates the adapter provider for the main section. */
-    protected abstract SearchAdapterProvider<?> createMainAdapterProvider();
+    protected SearchAdapterProvider<?> createMainAdapterProvider() {
+        return new DefaultSearchAdapterProvider(mActivityContext);
+    }
 
     /** The adapter provider for the main section. */
     public final SearchAdapterProvider<?> getMainAdapterProvider() {
@@ -289,6 +359,13 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        // The AllAppsContainerView houses the QSB and is hence visible from the Workspace
+        // Overview states. We shouldn't intercept for the scrubber in these cases.
+        if (!isInAllApps()) {
+            mTouchHandler = null;
+            return false;
+        }
+
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             AllAppsRecyclerView rv = getActiveRecyclerView();
             if (rv != null && rv.getScrollbar() != null
@@ -306,6 +383,10 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        if (!isInAllApps()) {
+            return false;
+        }
+
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             AllAppsRecyclerView rv = getActiveRecyclerView();
             if (rv != null && rv.getScrollbar() != null
@@ -375,11 +456,6 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         return mSearchRecyclerView;
     }
 
-    @Nullable
-    public View getSearchBarProtection() {
-        return mSearchBarProtection;
-    }
-
     protected boolean isPersonalTab() {
         return mViewPager == null || mViewPager.getNextPage() == 0;
     }
@@ -412,49 +488,6 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         }
         // Reset the base recycler view after transitioning home.
         updateHeaderScroll(0);
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-
-        // This is a focus listener that proxies focus from a view into the list view.  This is to
-        // work around the search box from getting first focus and showing the cursor.
-        setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus && getActiveRecyclerView() != null) {
-                getActiveRecyclerView().requestFocus();
-            }
-        });
-
-        mHeader = findViewById(R.id.all_apps_header);
-        mSearchBarProtection = findViewById(R.id.search_protection);
-        if (mSearchBarProtection != null) {
-            mSearchBarProtection.setBackgroundColor(mScrimColor);
-            mSearchBarProtection.setVisibility(
-                    FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get() ? VISIBLE : GONE);
-        }
-        mSearchRecyclerView = findViewById(R.id.search_results_list_view);
-        mAH.get(AdapterHolder.SEARCH).setup(mSearchRecyclerView,
-                /* Filter out A-Z apps */ itemInfo -> false);
-        rebindAdapters(true /* force */);
-
-        mBottomSheetBackground = findViewById(R.id.bottom_sheet_background);
-        mBottomSheetHandleArea = findViewById(R.id.bottom_sheet_handle_area);
-        float cornerRadius = Themes.getDialogCornerRadius(getContext());
-        mBottomSheetCornerRadii = new float[]{
-                cornerRadius,
-                cornerRadius, // Top left radius in px
-                cornerRadius,
-                cornerRadius, // Top right radius in px
-                0,
-                0, // Bottom right
-                0,
-                0 // Bottom left
-        };
-        final TypedValue value = new TypedValue();
-        getContext().getTheme().resolveAttribute(android.R.attr.colorBackground, value, true);
-        mBottomSheetBackgroundColor = value.data;
-        updateBackground(mActivityContext.getDeviceProfile());
     }
 
     @Override
@@ -781,9 +814,6 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
             canvas.drawPath(mTmpPath, mHeaderPaint);
         }
 
-        if (!mHeader.isHeaderProtectionSupported()) {
-            return;
-        }
         if (DEBUG_HEADER_PROTECTION) {
             mHeaderPaint.setColor(Color.MAGENTA);
             mHeaderPaint.setAlpha(255);
@@ -796,10 +826,6 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         }
         int bottom = getHeaderBottom();
         FloatingHeaderView headerView = getFloatingHeaderView();
-        if (!mUsingTabs && !FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
-            // Add protection which is otherwise added when tabs scroll up.
-            bottom += headerView.getTabsAdditionalPaddingTop();
-        }
         if (isTablet) {
             // Start adding header protection if search bar or tabs will attach to the top.
             if (!FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get() || mUsingTabs) {
@@ -836,7 +862,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
      * redraws header protection
      */
     public void invalidateHeader() {
-        if (mScrimView != null && mHeader.isHeaderProtectionSupported()) {
+        if (mScrimView != null) {
             mScrimView.invalidate();
         }
     }
@@ -863,7 +889,14 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
             BaseAdapterProvider[] adapterProviders);
 
     public int getHeaderBottom() {
-        return (int) getTranslationY();
+        int bottom = (int) getTranslationY() + mHeader.getClipTop();
+        if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
+            if (mActivityContext.getDeviceProfile().isTablet) {
+                return bottom + mBottomSheetBackground.getTop();
+            }
+            return bottom;
+        }
+        return bottom + mHeader.getTop();
     }
 
     /**
@@ -876,6 +909,12 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
     protected void onInitializeRecyclerView(RecyclerView rv) {
         rv.addOnScrollListener(mScrollListener);
     }
+
+    /**
+     * Returns {@code true} the All Apps UI is currently being displayed on the target surface and
+     * is interactive.
+     */
+    public abstract boolean isInAllApps();
 
     /** Holds a {@link BaseAllAppsAdapter} and related fields. */
     public class AdapterHolder {

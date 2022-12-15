@@ -16,60 +16,17 @@
 package com.android.launcher3.allapps;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.WindowInsets;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 
 /**
  * AllAppsContainerView with launcher specific callbacks
  */
 public class LauncherAllAppsContainerView extends ActivityAllAppsContainerView<Launcher> {
-
-    private final RecyclerView.OnScrollListener mActivityScrollListener =
-            new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                    int scrolledOffset = recyclerView.computeVerticalScrollOffset();
-                    ExtendedEditText input = mSearchUiManager.getEditText();
-                    if (input != null) {
-                        // Save the input box state on scroll down
-                        if (dy > 0) {
-                            input.saveFocusedStateAndUpdateToUnfocusedState();
-                        }
-
-                        // Scroll up and scroll to top
-                        if (dy < 0 && scrolledOffset == 0) {
-                            // Show keyboard
-                            boolean isImeEnabledOnSwipeUp = Launcher.getLauncher(mActivityContext)
-                                    .getSearchConfig().isImeEnabledOnSwipeUp();
-                            if (isImeEnabledOnSwipeUp || !TextUtils.isEmpty(input.getText())) {
-                                input.showKeyboard();
-                            }
-
-                            // Restore state in input box
-                            input.restoreToFocusedState();
-                        }
-                    }
-                }
-            };
-
-    @Override
-    protected void onInitializeRecyclerView(RecyclerView rv) {
-        super.onInitializeRecyclerView(rv);
-        if (FeatureFlags.SCROLL_TOP_TO_RESET.get()) {
-            rv.addOnScrollListener(mActivityScrollListener);
-        }
-    }
 
     public LauncherAllAppsContainerView(Context context) {
         this(context, null);
@@ -84,31 +41,16 @@ public class LauncherAllAppsContainerView extends ActivityAllAppsContainerView<L
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        // The AllAppsContainerView houses the QSB and is hence visible from the Workspace
-        // Overview states. We shouldn't intercept for the scrubber in these cases.
-        if (!mActivityContext.isInState(LauncherState.ALL_APPS)) {
-            mTouchHandler = null;
-            return false;
-        }
-
-        return super.onInterceptTouchEvent(ev);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        if (!mActivityContext.isInState(LauncherState.ALL_APPS)) {
-            return false;
-        }
-        return super.onTouchEvent(ev);
-    }
-
-    @Override
     protected int getNavBarScrimHeight(WindowInsets insets) {
         if (Utilities.ATLEAST_Q) {
             return insets.getTappableElementInsets().bottom;
         } else {
             return insets.getStableInsetBottom();
         }
+    }
+
+    @Override
+    public boolean isInAllApps() {
+        return mActivityContext.getStateManager().isInStableState(LauncherState.ALL_APPS);
     }
 }
