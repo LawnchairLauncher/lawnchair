@@ -463,20 +463,20 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
         boolean pinToRight = stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT;
         float insetAdjustment = getPlaceholderSizeAdjustment(dp, pinToRight) / 2f;
         if (!dp.isLandscape) {
-            out.setX(Math.round(onScreenRectCenterX / fullscreenScaleX
-                    - 1.0f * drawableWidth / 2));
-            out.setY(Math.round((onScreenRectCenterY + insetAdjustment) / fullscreenScaleY
-                    - 1.0f * drawableHeight / 2));
+            out.setX(onScreenRectCenterX / fullscreenScaleX
+                    - 1.0f * drawableWidth / 2);
+            out.setY((onScreenRectCenterY + insetAdjustment) / fullscreenScaleY
+                    - 1.0f * drawableHeight / 2);
         } else {
             if (pinToRight) {
-                out.setX(Math.round((onScreenRectCenterX - insetAdjustment) / fullscreenScaleX
-                        - 1.0f * drawableWidth / 2));
+                out.setX((onScreenRectCenterX - insetAdjustment) / fullscreenScaleX
+                        - 1.0f * drawableWidth / 2);
             } else {
-                out.setX(Math.round((onScreenRectCenterX + insetAdjustment) / fullscreenScaleX
-                        - 1.0f * drawableWidth / 2));
+                out.setX((onScreenRectCenterX + insetAdjustment) / fullscreenScaleX
+                        - 1.0f * drawableWidth / 2);
             }
-            out.setY(Math.round(onScreenRectCenterY / fullscreenScaleY
-                    - 1.0f * drawableHeight / 2));
+            out.setY(onScreenRectCenterY / fullscreenScaleY
+                    - 1.0f * drawableHeight / 2);
         }
     }
 

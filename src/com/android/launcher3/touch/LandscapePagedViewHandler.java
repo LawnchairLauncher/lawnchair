@@ -432,10 +432,10 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
             int drawableWidth, int drawableHeight, DeviceProfile dp,
             @StagePosition int stagePosition) {
         float insetAdjustment = getPlaceholderSizeAdjustment(dp) / 2f;
-        out.setX(Math.round(onScreenRectCenterX / fullscreenScaleX
-                - 1.0f * drawableWidth / 2));
-        out.setY(Math.round((onScreenRectCenterY + insetAdjustment) / fullscreenScaleY
-                - 1.0f * drawableHeight / 2));
+        out.setX(onScreenRectCenterX / fullscreenScaleX
+                - 1.0f * drawableWidth / 2);
+        out.setY((onScreenRectCenterY + insetAdjustment) / fullscreenScaleY
+                - 1.0f * drawableHeight / 2);
     }
 
     /**
