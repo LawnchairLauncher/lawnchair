@@ -1002,24 +1002,25 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     /**
-     * @param endVelocity The velocity in the direction of the nav bar to the middle of the screen.
-     * @param velocity The x and y components of the velocity when the gesture ends.
+     * @param endVelocityPxPerMs The velocity in the direction of the nav bar to the middle of the
+     *                           screen.
+     * @param velocityPxPerMs The x and y components of the velocity when the gesture ends.
      */
     @UiThread
-    public void onGestureEnded(float endVelocity, PointF velocity) {
+    public void onGestureEnded(float endVelocityPxPerMs, PointF velocityPxPerMs) {
         float flingThreshold = mContext.getResources()
                 .getDimension(R.dimen.quickstep_fling_threshold_speed);
         boolean isFling = mGestureStarted && !mIsMotionPaused
-                && Math.abs(endVelocity) > flingThreshold;
+                && Math.abs(endVelocityPxPerMs) > flingThreshold;
         mStateCallback.setStateOnUiThread(STATE_GESTURE_COMPLETED);
-        boolean isVelocityVertical = Math.abs(velocity.y) > Math.abs(velocity.x);
+        boolean isVelocityVertical = Math.abs(velocityPxPerMs.y) > Math.abs(velocityPxPerMs.x);
         if (isVelocityVertical) {
-            mLogDirectionUpOrLeft = velocity.y < 0;
+            mLogDirectionUpOrLeft = velocityPxPerMs.y < 0;
         } else {
-            mLogDirectionUpOrLeft = velocity.x < 0;
+            mLogDirectionUpOrLeft = velocityPxPerMs.x < 0;
         }
-        Runnable handleNormalGestureEndCallback = () ->
-                handleNormalGestureEnd(endVelocity, isFling, velocity, /* isCancel= */ false);
+        Runnable handleNormalGestureEndCallback = () -> handleNormalGestureEnd(
+                endVelocityPxPerMs, isFling, velocityPxPerMs, /* isCancel= */ false);
         if (mRecentsView != null) {
             mRecentsView.runOnPageScrollsInitialized(handleNormalGestureEndCallback);
         } else {
@@ -1114,8 +1115,20 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         return false;
     }
 
+    private float dpiFromPx(float pixels) {
+        return Utilities.dpiFromPx(pixels, mContext.getResources().getDisplayMetrics().densityDpi);
+    }
+
     private GestureEndTarget calculateEndTarget(
-            PointF velocity, float endVelocity, boolean isFlingY, boolean isCancel) {
+            PointF velocityPxPerMs, float endVelocityPxPerMs, boolean isFlingY, boolean isCancel) {
+        ActiveGestureLog.INSTANCE.addLog(
+                new ActiveGestureLog.CompoundString("calculateEndTarget: velocities=(x=")
+                        .append(Float.toString(dpiFromPx(velocityPxPerMs.x)))
+                        .append("dp/ms, y=")
+                        .append(Float.toString(dpiFromPx(velocityPxPerMs.y)))
+                        .append("dp/ms), angle=")
+                        .append(Double.toString(Math.toDegrees(Math.atan2(
+                                -velocityPxPerMs.y, velocityPxPerMs.x)))));
 
         if (mGestureState.isHandlingAtomicEvent()) {
             // Button mode, this is only used to go to recents.
@@ -1126,9 +1139,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         if (isCancel) {
             endTarget = LAST_TASK;
         } else if (isFlingY) {
-            endTarget = calculateEndTargetForFlingY(velocity, endVelocity);
+            endTarget = calculateEndTargetForFlingY(velocityPxPerMs, endVelocityPxPerMs);
         } else {
-            endTarget = calculateEndTargetForNonFling(velocity);
+            endTarget = calculateEndTargetForNonFling(velocityPxPerMs);
         }
 
         if (mDeviceState.isOverviewDisabled() && endTarget == RECENTS) {
@@ -1196,13 +1209,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     @UiThread
-    private void handleNormalGestureEnd(float endVelocity, boolean isFling, PointF velocity,
-            boolean isCancel) {
+    private void handleNormalGestureEnd(
+            float endVelocityPxPerMs, boolean isFling, PointF velocityPxPerMs, boolean isCancel) {
         long duration = MAX_SWIPE_DURATION;
         float currentShift = mCurrentShift.value;
-        final GestureEndTarget endTarget = calculateEndTarget(velocity, endVelocity,
-                isFling, isCancel);
-
+        final GestureEndTarget endTarget = calculateEndTarget(
+                velocityPxPerMs, endVelocityPxPerMs, isFling, isCancel);
         // Set the state, but don't notify until the animation completes
         mGestureState.setEndTarget(endTarget, false /* isAtomic */);
         mAnimationFactory.setEndTarget(endTarget);
@@ -1215,16 +1227,16 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             duration = Math.min(MAX_SWIPE_DURATION, expectedDuration);
             startShift = currentShift;
         } else {
-            startShift = Utilities.boundToRange(currentShift - velocity.y
+            startShift = Utilities.boundToRange(currentShift - velocityPxPerMs.y
                     * getSingleFrameMs(mContext) / mTransitionDragLength, 0, mDragLengthFactor);
             if (mTransitionDragLength > 0) {
-                    float distanceToTravel = (endShift - currentShift) * mTransitionDragLength;
+                float distanceToTravel = (endShift - currentShift) * mTransitionDragLength;
 
-                    // we want the page's snap velocity to approximately match the velocity at
-                    // which the user flings, so we scale the duration by a value near to the
-                    // derivative of the scroll interpolator at zero, ie. 2.
-                    long baseDuration = Math.round(Math.abs(distanceToTravel / velocity.y));
-                    duration = Math.min(MAX_SWIPE_DURATION, 2 * baseDuration);
+                // we want the page's snap velocity to approximately match the velocity at
+                // which the user flings, so we scale the duration by a value near to the
+                // derivative of the scroll interpolator at zero, ie. 2.
+                long baseDuration = Math.round(Math.abs(distanceToTravel / velocityPxPerMs.y));
+                duration = Math.min(MAX_SWIPE_DURATION, 2 * baseDuration);
             }
         }
         Interpolator interpolator;
@@ -1292,7 +1304,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             onPageTransitionEnd.run();
         }
 
-        animateToProgress(startShift, endShift, duration, interpolator, endTarget, velocity);
+        animateToProgress(startShift, endShift, duration, interpolator, endTarget, velocityPxPerMs);
     }
 
     private void doLogGesture(GestureEndTarget endTarget, @Nullable TaskView targetTask) {

@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  */
 public final class Widget extends Launchable implements WorkspaceDragSource {
 
-    private static final Pattern LONG_CLICK_EVENT = Pattern.compile("Widgets.onLongClick");
+    static final Pattern LONG_CLICK_EVENT = Pattern.compile("Widgets.onLongClick");
 
     Widget(LauncherInstrumentation launcher, UiObject2 icon) {
         super(launcher, icon);

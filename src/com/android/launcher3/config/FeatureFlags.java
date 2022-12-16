@@ -247,7 +247,7 @@ public final class FeatureFlags {
             "Enable initiating split screen from workspace.");
 
     public static final BooleanFlag ENABLE_SPLIT_FROM_FULLSCREEN_WITH_KEYBOARD_SHORTCUTS =
-            getDebugFlag("ENABLE_SPLIT_FROM_FULLSCREEN_SHORTCUT", false,
+            getDebugFlag("ENABLE_SPLIT_FROM_FULLSCREEN_SHORTCUT", true,
                     "Enable splitting from fullscreen app with keyboard shortcuts");
 
     public static final BooleanFlag ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE = getDebugFlag(
@@ -306,6 +306,10 @@ public final class FeatureFlags {
 
     public static final BooleanFlag ENABLE_WIDGET_PICKER_DEPTH = new DeviceFlag(
             "ENABLE_WIDGET_PICKER_DEPTH", true, "Enable changing depth in widget picker.");
+
+    public static final BooleanFlag ENABLE_MULTI_DISPLAY_PARTIAL_DEPTH = getDebugFlag(
+            "ENABLE_MULTI_DISPLAY_PARTIAL_DEPTH", false,
+            "Allow bottom sheet depth to be smaller than 1 for multi-display devices.");
 
     public static final BooleanFlag SCROLL_TOP_TO_RESET = new DeviceFlag(
             "SCROLL_TOP_TO_RESET", true, "Bring up IME and focus on "
