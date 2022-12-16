@@ -23,6 +23,7 @@ import static com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_PORTR
 import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.Utilities.pxFromSp;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_MULTI_DISPLAY_PARTIAL_DEPTH;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ICON_OVERLAP_FACTOR;
 import static com.android.launcher3.icons.GraphicsUtils.getShapePath;
 import static com.android.launcher3.testing.shared.ResourceUtils.INVALID_RESOURCE_HANDLE;
@@ -78,6 +79,7 @@ public class DeviceProfile {
     public final boolean isTablet;
     public final boolean isPhone;
     public final boolean transposeLayoutWithOrientation;
+    public final boolean isMultiDisplay;
     public final boolean isTwoPanels;
     public final boolean isQsbInline;
 
@@ -263,13 +265,14 @@ public class DeviceProfile {
     /** TODO: Once we fully migrate to staged split, remove "isMultiWindowMode" */
     DeviceProfile(Context context, InvariantDeviceProfile inv, Info info, WindowBounds windowBounds,
             SparseArray<DotRenderer> dotRendererCache, boolean isMultiWindowMode,
-            boolean transposeLayoutWithOrientation, boolean useTwoPanels, boolean isGestureMode,
+            boolean transposeLayoutWithOrientation, boolean isMultiDisplay, boolean isGestureMode,
             @NonNull final ViewScaleProvider viewScaleProvider) {
 
         this.inv = inv;
         this.isLandscape = windowBounds.isLandscape();
         this.isMultiWindowMode = isMultiWindowMode;
         this.transposeLayoutWithOrientation = transposeLayoutWithOrientation;
+        this.isMultiDisplay = isMultiDisplay;
         this.isGestureMode = isGestureMode;
         windowX = windowBounds.bounds.left;
         windowY = windowBounds.bounds.top;
@@ -281,7 +284,7 @@ public class DeviceProfile {
         mInfo = info;
         isTablet = info.isTablet(windowBounds);
         isPhone = !isTablet;
-        isTwoPanels = isTablet && useTwoPanels;
+        isTwoPanels = isTablet && isMultiDisplay;
         isTaskbarPresent = isTablet && ApiWrapper.TASKBAR_DRAWN_IN_PROCESS;
 
         // Some more constants.
@@ -348,13 +351,19 @@ public class DeviceProfile {
         bottomSheetCloseDuration = res.getInteger(R.integer.config_bottomSheetCloseDuration);
         if (isTablet) {
             bottomSheetWorkspaceScale = workspaceContentScale;
-            // The goal is to set wallpaper to zoom at workspaceContentScale when in AllApps.
-            // When depth is 0, wallpaper zoom is set to maxWallpaperScale.
-            // When depth is 1, wallpaper zoom is set to 1.
-            // For depth to achieve zoom set to maxWallpaperScale * workspaceContentScale:
-            float maxWallpaperScale = res.getFloat(R.dimen.config_wallpaperMaxScale);
-            bottomSheetDepth = Utilities.mapToRange(maxWallpaperScale * workspaceContentScale,
-                    maxWallpaperScale, 1f, 0f, 1f, LINEAR);
+            if (isMultiDisplay && !ENABLE_MULTI_DISPLAY_PARTIAL_DEPTH.get()) {
+                // TODO(b/259893832): Revert to use maxWallpaperScale to calculate bottomSheetDepth
+                // when screen recorder bug is fixed.
+                bottomSheetDepth = 1f;
+            } else {
+                // The goal is to set wallpaper to zoom at workspaceContentScale when in AllApps.
+                // When depth is 0, wallpaper zoom is set to maxWallpaperScale.
+                // When depth is 1, wallpaper zoom is set to 1.
+                // For depth to achieve zoom set to maxWallpaperScale * workspaceContentScale:
+                float maxWallpaperScale = res.getFloat(R.dimen.config_wallpaperMaxScale);
+                bottomSheetDepth = Utilities.mapToRange(maxWallpaperScale * workspaceContentScale,
+                        maxWallpaperScale, 1f, 0f, 1f, LINEAR);
+            }
         } else {
             bottomSheetWorkspaceScale = 1f;
             bottomSheetDepth = 0f;
@@ -723,7 +732,7 @@ public class DeviceProfile {
 
         return new Builder(context, inv, mInfo)
                 .setWindowBounds(bounds)
-                .setUseTwoPanels(isTwoPanels)
+                .setIsMultiDisplay(isMultiDisplay)
                 .setMultiWindowMode(isMultiWindowMode)
                 .setDotRendererCache(dotRendererCache)
                 .setGestureMode(isGestureMode);
@@ -1714,7 +1723,7 @@ public class DeviceProfile {
         private Info mInfo;
 
         private WindowBounds mWindowBounds;
-        private boolean mUseTwoPanels;
+        private boolean mIsMultiDisplay;
 
         private boolean mIsMultiWindowMode = false;
         private Boolean mTransposeLayoutWithOrientation;
@@ -1734,8 +1743,8 @@ public class DeviceProfile {
             return this;
         }
 
-        public Builder setUseTwoPanels(boolean useTwoPanels) {
-            mUseTwoPanels = useTwoPanels;
+        public Builder setIsMultiDisplay(boolean isMultiDisplay) {
+            mIsMultiDisplay = isMultiDisplay;
             return this;
         }
 
@@ -1789,7 +1798,7 @@ public class DeviceProfile {
                 mViewScaleProvider = DEFAULT_PROVIDER;
             }
             return new DeviceProfile(mContext, mInv, mInfo, mWindowBounds, mDotRendererCache,
-                    mIsMultiWindowMode, mTransposeLayoutWithOrientation, mUseTwoPanels,
+                    mIsMultiWindowMode, mTransposeLayoutWithOrientation, mIsMultiDisplay,
                     mIsGestureMode, mViewScaleProvider);
         }
     }

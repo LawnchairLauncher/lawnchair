@@ -72,7 +72,7 @@
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Спіс працоўных праграм"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Выдаліць"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Дэінсталяваць"</string>
-    <string name="app_info_drop_target_label" msgid="692894985365717661">"Пра праграму"</string>
+    <string name="app_info_drop_target_label" msgid="692894985365717661">"Звесткі аб праграме"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Усталяваць"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Не прапаноўваць праграму"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Замацаваць прапанаваную праграму"</string>
