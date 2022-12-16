@@ -2,8 +2,8 @@ import com.android.build.gradle.BasePlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id 'com.android.application' version "7.3.1"
-    id 'com.android.library' version "7.3.1" apply false
+    id 'com.android.application' version "7.4.0-rc01"
+    id 'com.android.library' version "7.4.0-rc01" apply false
     id 'org.jetbrains.kotlin.android' version "1.7.20"
     id 'org.jetbrains.kotlin.plugin.parcelize' version "1.7.20"
     id 'org.jetbrains.kotlin.plugin.serialization' version "1.7.20"
@@ -36,7 +36,7 @@ allprojects {
             implementation 'androidx.core:core-ktx:1.9.0'
 
             testImplementation 'junit:junit:4.13.2'
-            androidTestImplementation 'org.mockito:mockito-core:4.9.0'
+            androidTestImplementation 'org.mockito:mockito-core:4.10.0'
             androidTestImplementation 'com.google.dexmaker:dexmaker:1.2'
             androidTestImplementation 'com.google.dexmaker:dexmaker-mockito:1.2'
             androidTestImplementation 'com.android.support.test:runner:1.0.2'
@@ -108,7 +108,7 @@ allprojects {
 ext {
     accompanist_version = '0.28.0'
     libsu_version = '5.0.3'
-    protocVersion = '3.21.11'
+    protocVersion = '3.21.12'
     room_version = '2.4.3'
     optoVersion = "1.0.18"
 }
