@@ -377,6 +377,8 @@ public class LauncherSettings {
 
         public static final String METHOD_SET_USE_TEST_WORKSPACE_LAYOUT_FLAG =
                 "set_use_test_workspace_layout_flag";
+        public static final String ARG_DEFAULT_WORKSPACE_LAYOUT_TEST = "default_test_workspace";
+        public static final String ARG_DEFAULT_WORKSPACE_LAYOUT_TEST2 = "default_test2_workspace";
 
         public static final String METHOD_CLEAR_USE_TEST_WORKSPACE_LAYOUT_FLAG =
                 "clear_use_test_workspace_layout_flag";

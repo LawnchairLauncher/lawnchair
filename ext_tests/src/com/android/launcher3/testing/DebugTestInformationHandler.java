@@ -210,12 +210,19 @@ public class DebugTestInformationHandler extends TestInformationHandler {
             }
 
             case TestProtocol.REQUEST_USE_TEST_WORKSPACE_LAYOUT: {
-                useTestWorkspaceLayout(true);
+                useTestWorkspaceLayout(
+                        LauncherSettings.Settings.ARG_DEFAULT_WORKSPACE_LAYOUT_TEST);
+                return response;
+            }
+
+            case TestProtocol.REQUEST_USE_TEST2_WORKSPACE_LAYOUT: {
+                useTestWorkspaceLayout(
+                        LauncherSettings.Settings.ARG_DEFAULT_WORKSPACE_LAYOUT_TEST2);
                 return response;
             }
 
             case TestProtocol.REQUEST_USE_DEFAULT_WORKSPACE_LAYOUT: {
-                useTestWorkspaceLayout(false);
+                useTestWorkspaceLayout(null);
                 return response;
             }
 
@@ -257,12 +264,17 @@ public class DebugTestInformationHandler extends TestInformationHandler {
         }
     }
 
-    private void useTestWorkspaceLayout(boolean useTestWorkspaceLayout) {
+    private void useTestWorkspaceLayout(String layout) {
         final long identity = Binder.clearCallingIdentity();
         try {
-            LauncherSettings.Settings.call(mContext.getContentResolver(), useTestWorkspaceLayout
-                    ? LauncherSettings.Settings.METHOD_SET_USE_TEST_WORKSPACE_LAYOUT_FLAG
-                    : LauncherSettings.Settings.METHOD_CLEAR_USE_TEST_WORKSPACE_LAYOUT_FLAG);
+            if (layout != null) {
+                LauncherSettings.Settings.call(mContext.getContentResolver(),
+                        LauncherSettings.Settings.METHOD_SET_USE_TEST_WORKSPACE_LAYOUT_FLAG,
+                        layout);
+            } else {
+                LauncherSettings.Settings.call(mContext.getContentResolver(),
+                        LauncherSettings.Settings.METHOD_CLEAR_USE_TEST_WORKSPACE_LAYOUT_FLAG);
+            }
         } finally {
             Binder.restoreCallingIdentity(identity);
         }
