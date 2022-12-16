@@ -428,8 +428,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     }
 
     public void onRotationChanged(DeviceProfile deviceProfile) {
-        if (mControllers.taskbarStashController.isInApp()) {
-            // We only translate on rotation when on home
+        if (!mControllers.uiController.isIconAlignedWithHotseat()) {
+            // We only translate on rotation when icon is aligned with hotseat
             return;
         }
         mActivity.setTaskbarWindowHeight(
