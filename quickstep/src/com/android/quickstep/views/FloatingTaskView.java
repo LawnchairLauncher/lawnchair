@@ -28,6 +28,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.views.BaseDragLayer;
@@ -85,6 +86,7 @@ public class FloatingTaskView extends FrameLayout {
     private PagedOrientationHandler mOrientationHandler;
     @SplitConfigurationOptions.StagePosition
     private int mStagePosition;
+    private final Rect mTmpRect = new Rect();
 
     public FloatingTaskView(Context context) {
         this(context, null);
@@ -158,10 +160,24 @@ public class FloatingTaskView extends FrameLayout {
     }
 
     public void updateInitialPositionForView(View originalView) {
-        Rect viewBounds = new Rect(0, 0, originalView.getWidth(), originalView.getHeight());
-        Utilities.getBoundsForViewInDragLayer(mActivity.getDragLayer(), originalView, viewBounds,
-                false /* ignoreTransform */, null /* recycle */,
-                mStartingPosition);
+        if (originalView.getContext() instanceof TaskbarActivityContext) {
+            // If original View is a button on the Taskbar, find the on-screen bounds and calculate
+            // the equivalent bounds in the DragLayer, so we can set the initial position of
+            // this FloatingTaskView and start the split animation at the correct spot.
+            originalView.getBoundsOnScreen(mTmpRect);
+            mStartingPosition.set(mTmpRect);
+            int[] dragLayerPositionRelativeToScreen =
+                    mActivity.getDragLayer().getLocationOnScreen();
+            mStartingPosition.offset(
+                    -dragLayerPositionRelativeToScreen[0],
+                    -dragLayerPositionRelativeToScreen[1]);
+        } else {
+            Rect viewBounds = new Rect(0, 0, originalView.getWidth(), originalView.getHeight());
+            Utilities.getBoundsForViewInDragLayer(mActivity.getDragLayer(), originalView,
+                    viewBounds, false /* ignoreTransform */, null /* recycle */,
+                    mStartingPosition);
+        }
+
         final BaseDragLayer.LayoutParams lp = new BaseDragLayer.LayoutParams(
                 Math.round(mStartingPosition.width()),
                 Math.round(mStartingPosition.height()));
