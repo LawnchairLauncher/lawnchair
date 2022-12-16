@@ -323,6 +323,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private final boolean mIsTransientTaskbar;
     // May be set to false when mIsTransientTaskbar is true.
     private boolean mCanSlowSwipeGoHome = true;
+    private boolean mHasReachedOverviewThreshold = false;
 
     public AbsSwipeUpHandler(Context context, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
@@ -762,6 +763,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     private void setIsLikelyToStartNewTask(boolean isLikelyToStartNewTask, boolean animate) {
         if (mIsLikelyToStartNewTask != isLikelyToStartNewTask) {
+            if (isLikelyToStartNewTask && mIsTransientTaskbar) {
+                setDividerShown(false /* shown */, true /* immediate */);
+            }
+
             mIsLikelyToStartNewTask = isLikelyToStartNewTask;
             maybeUpdateRecentsAttachedState(animate);
         }
@@ -1656,7 +1661,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mRecentsAnimationController.enableInputConsumer();
 
         // Start hiding the divider
-        setDividerShown(false /* shown */, true /* immediate */);
+        if (!mIsTransientTaskbar || mTaskbarAlreadyOpen || mIsTaskbarAllAppsOpen) {
+            setDividerShown(false /* shown */, true /* immediate */);
+        }
     }
 
     private void computeRecentsScrollIfInvisible() {
@@ -2288,6 +2295,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
         // "Catch up" with the displacement at mTaskbarCatchUpThreshold.
         if (displacement < mTaskbarCatchUpThreshold) {
+            if (!mHasReachedOverviewThreshold) {
+                setDividerShown(false /* shown */, true /* immediate */);
+                mHasReachedOverviewThreshold = true;
+            }
             return Utilities.mapToRange(displacement, mTaskbarAppWindowThreshold,
                     mTaskbarCatchUpThreshold, 0, mTaskbarCatchUpThreshold, ACCEL_DEACCEL);
         }
