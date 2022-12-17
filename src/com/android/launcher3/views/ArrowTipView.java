@@ -162,6 +162,7 @@ public class ArrowTipView extends AbstractFloatingView {
         params.gravity = gravity;
         params.leftMargin = mArrowMinOffset + grid.getInsets().left;
         params.rightMargin = mArrowMinOffset + grid.getInsets().right;
+        params.width = LayoutParams.MATCH_PARENT;
         LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mArrowView.getLayoutParams();
 
         lp.gravity = gravity;

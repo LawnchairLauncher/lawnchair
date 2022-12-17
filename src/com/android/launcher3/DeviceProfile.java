@@ -817,6 +817,11 @@ public class DeviceProfile {
      * Returns the amount of extra (or unused) vertical space.
      */
     private int updateAvailableDimensions(Resources res) {
+        float invIconSizeDp = inv.iconSize[mTypeIndex];
+        float invIconTextSizeSp = inv.iconTextSize[mTypeIndex];
+        iconSizePx = Math.max(1, pxFromDp(invIconSizeDp, mMetrics));
+        iconTextSizePx = pxFromSp(invIconTextSizeSp, mMetrics);
+
         updateIconSize(1f, res);
 
         updateWorkspacePadding();
@@ -873,13 +878,7 @@ public class DeviceProfile {
 
         // Workspace
         final boolean isVerticalLayout = isVerticalBarLayout();
-        float invIconSizeDp = inv.iconSize[mTypeIndex];
-        float invIconTextSizeSp = inv.iconTextSize[mTypeIndex];
-
-        iconSizePx = Math.max(1, pxFromDp(invIconSizeDp, mMetrics));
-        iconTextSizePx = pxFromSp(invIconTextSizeSp, mMetrics);
         iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * iconScale);
-
         cellLayoutBorderSpacePx = getCellLayoutBorderSpace(inv, scale);
 
         if (isScalableGrid) {
