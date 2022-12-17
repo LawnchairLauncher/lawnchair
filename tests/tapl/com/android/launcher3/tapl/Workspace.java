@@ -334,28 +334,14 @@ public final class Workspace extends Home {
      * @return validated workspace after the existing appIcon being deleted.
      */
     public Workspace deleteAppIcon(HomeAppIcon homeAppIcon) {
-        return deleteLaunchable(homeAppIcon, LONG_CLICK_EVENT);
-    }
-
-    /**
-     * Delete the widget from the workspace.
-     *
-     * @param widget to be deleted.
-     * @return validated workspace after the existing widget being deleted.
-     */
-    public Workspace deleteWidget(Widget widget) {
-        return deleteLaunchable(widget, Widget.LONG_CLICK_EVENT);
-    }
-
-    private Workspace deleteLaunchable(Launchable launchable, Pattern longClickEvent) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "removing app icon from workspace")) {
             dragIconToWorkspace(
                     mLauncher,
-                    launchable,
+                    homeAppIcon,
                     () -> getDropPointFromDropTargetBar(mLauncher, DELETE_TARGET_TEXT_ID),
-                    () -> mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, longClickEvent),
+                    () -> mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT),
                     /* expectDropEvents= */ null);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(

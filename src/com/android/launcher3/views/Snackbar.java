@@ -31,6 +31,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
@@ -97,7 +98,11 @@ public class Snackbar extends AbstractFloatingView {
                 dragLayer.getWidth() - maxMarginLeftRight * 2 - insets.left - insets.right,
                 absoluteMaxWidth);
         params.width = minWidth;
-        params.setMargins(0, 0, 0, marginBottom + insets.bottom);
+        DeviceProfile deviceProfile = activity.getDeviceProfile();
+        params.setMargins(0, 0, 0, marginBottom
+                + (deviceProfile.isTaskbarPresent
+                ? deviceProfile.taskbarSize + deviceProfile.getTaskbarOffsetY()
+                : insets.bottom));
 
         TextView labelView = snackbar.findViewById(R.id.label);
         String labelText = res.getString(labelStringResId);

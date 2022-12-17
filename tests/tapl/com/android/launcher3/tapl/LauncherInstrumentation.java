@@ -1853,6 +1853,14 @@ public final class LauncherInstrumentation {
         getTestInfo(TestProtocol.REQUEST_USE_TEST_WORKSPACE_LAYOUT);
     }
 
+    /**
+     * Reloads the workspace with a test layout that includes Maps/Play on workspace, and
+     * Dialer/Messaging/Chrome/Camera on hotseat.
+     */
+    public void useTest2WorkspaceLayoutOnReload() {
+        getTestInfo(TestProtocol.REQUEST_USE_TEST2_WORKSPACE_LAYOUT);
+    }
+
     /** Reloads the workspace with the default layout defined by the user's grid size selection. */
     public void useDefaultWorkspaceLayoutOnReload() {
         getTestInfo(TestProtocol.REQUEST_USE_DEFAULT_WORKSPACE_LAYOUT);
