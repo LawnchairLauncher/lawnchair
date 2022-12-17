@@ -95,12 +95,9 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"태스크 바 정보"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"작업 표시줄 튜토리얼 패널 표시됨"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"작업 표시줄 튜토리얼 패널 닫힘"</string>
-    <!-- no translation found for taskbar_edu_splitscreen (5563823414110661454) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_stashing (2805035263048176462) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_suggestions (1416699696825090402) -->
-    <skip />
+    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"옆으로 드래그하여 2개의 앱을 동시에 사용합니다."</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"위로 짧게 스와이프하여 태스크 바를 표시합니다."</string>
+    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"태스크 바에서 루틴에 따라 앱을 제안합니다."</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"다음"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"뒤로"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"닫기"</string>
