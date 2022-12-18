@@ -25,11 +25,4 @@ public class BaseSearchConfig {
     public boolean isKeyboardSyncEnabled() {
         return false;
     }
-
-    /**
-     * Returns whether IME is enabled on swipe up.
-     */
-    public boolean isImeEnabledOnSwipeUp() {
-        return false;
-    }
 }

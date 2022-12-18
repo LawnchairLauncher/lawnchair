@@ -2716,6 +2716,7 @@ public class CellLayout extends ViewGroup {
      */
     void onDragEnter() {
         mDragging = true;
+        mPreviousSolution = null;
     }
 
     /**
@@ -2730,6 +2731,7 @@ public class CellLayout extends ViewGroup {
         }
 
         // Invalidate the drag data
+        mPreviousSolution = null;
         mDragCell[0] = mDragCell[1] = -1;
         mDragCellSpan[0] = mDragCellSpan[1] = -1;
         mDragOutlineAnims[mDragOutlineCurrent].animateOut();
