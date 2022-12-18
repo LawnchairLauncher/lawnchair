@@ -54,11 +54,8 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
     private final float mScreenWidth;
 
     private final int mTaskbarNavThresholdY;
-    private final int mTaskbarAppWindowThresholdY;
-    private final boolean mTaskbarAlreadyOpen;
     private final boolean mIsTaskbarAllAppsOpen;
     private boolean mHasPassedTaskbarNavThreshold;
-    private boolean mHasPassedTaskbarAppWindowThreshold;
 
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
@@ -80,15 +77,8 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
         int taskbarNavThreshold = res.getDimensionPixelSize(ENABLE_TASKBAR_REVISED_THRESHOLDS.get()
                 ? R.dimen.taskbar_nav_threshold_v2
                 : R.dimen.taskbar_nav_threshold);
-        int taskbarAppWindowThreshold = res.getDimensionPixelSize(
-                ENABLE_TASKBAR_REVISED_THRESHOLDS.get()
-                        ? R.dimen.taskbar_app_window_threshold_v2
-                        : R.dimen.taskbar_app_window_threshold);
         int screenHeight = taskbarActivityContext.getDeviceProfile().heightPx;
         mTaskbarNavThresholdY = screenHeight - taskbarNavThreshold;
-        mTaskbarAppWindowThresholdY = screenHeight - taskbarAppWindowThreshold;
-        mTaskbarAlreadyOpen = mTaskbarActivityContext != null
-                && !mTaskbarActivityContext.isTaskbarStashed();
         mIsTaskbarAllAppsOpen =
                 mTaskbarActivityContext != null && mTaskbarActivityContext.isTaskbarAllAppsOpen();
 
@@ -127,7 +117,6 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
                         mLastPos.set(mDownPos);
 
                         mHasPassedTaskbarNavThreshold = false;
-                        mHasPassedTaskbarAppWindowThreshold = false;
                         mTaskbarActivityContext.setAutohideSuspendFlag(
                                 FLAG_AUTOHIDE_SUSPEND_TOUCHING, true);
                         if (isInArea(x)) {
@@ -172,17 +161,10 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
                             float dY = mLastPos.y - mDownPos.y;
                             boolean passedTaskbarNavThreshold = dY < 0
                                     && mLastPos.y < mTaskbarNavThresholdY;
-                            boolean passedTaskbarAppWindowThreshold = dY < 0
-                                    && mLastPos.y < mTaskbarAppWindowThresholdY;
 
                             if (!mHasPassedTaskbarNavThreshold && passedTaskbarNavThreshold) {
                                 mHasPassedTaskbarNavThreshold = true;
                                 mTaskbarActivityContext.onSwipeToUnstashTaskbar();
-                            }
-                            if (mTaskbarAlreadyOpen || (!mHasPassedTaskbarAppWindowThreshold
-                                    && passedTaskbarAppWindowThreshold)) {
-                                mHasPassedTaskbarAppWindowThreshold = true;
-                                mTaskbarActivityContext.onSwipeToHideOverlay();
                             }
 
                             if (dY < 0) {
@@ -205,7 +187,6 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
                             mTransitionCallback.onActionEnd();
                         }
                         mHasPassedTaskbarNavThreshold = false;
-                        mHasPassedTaskbarAppWindowThreshold = false;
                         break;
                 }
             }
