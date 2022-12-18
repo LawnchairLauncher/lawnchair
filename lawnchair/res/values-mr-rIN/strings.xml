@@ -39,8 +39,8 @@
     <!-- <string name="version" /> (unknown source) -->
     <!-- PreferencesOverflowMenu() in PreferencesDashboard -->
     <string name="app_info_drop_target_label">ॲपची माहिती</string>
-    <string name="debug_restart_launcher">Restart Lawnchair</string>
-    <string name="experimental_features_label">Experimental Features</string>
+    <string name="debug_restart_launcher">ऍप रिस्टार्ट करा</string>
+    <string name="experimental_features_label">प्रायोगिक फीचर्स</string>
     <!-- ExperimentalFeaturesPreferences -->
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">Font Customization</string>
@@ -51,7 +51,7 @@
     <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
     <string name="always_reload_icons_label">नेहमी चिन्हांना पुन्हा लोड करा</string>
     <string name="always_reload_icons_description">साठवून ठेवलेल्या चिन्ह पॅक मधून चिन्ह वापरणे टाळा</string>
-    <string name="transparent_background_icons">Transparent Themed Icons</string>
+    <string name="transparent_background_icons">थीम वर आधारित पारदर्शक आयकॉन</string>
     <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
     <string name="smartspace_mode_selection">At a Glance Provider selection</string>
     <!-- GeneralPreferences -->
@@ -60,16 +60,16 @@
     <string name="font_label">Font (Experimental)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">चिन्ह_गाठोडा</string>
-    <string name="icon_shape_label">Icon Shape</string>
+    <string name="icon_shape_label">चिन्हांचे आकार</string>
     <string name="auto_adaptive_icons_label">Auto Adaptive Icons</string>
     <string name="auto_adaptive_icons_description">For all non-Adaptive icons.</string>
     <string name="background_lightness_label">पार्श्वभूमी लघिमा(हलकेपणा)</string>
     <string name="adaptive_icon_background_description">भाषांतर करा.</string>
     <string name="notification_dots">सूचना टिंब</string>
     <!-- <string name="notification_dots" />-->
-    <string name="show_notification_count">Show Notification Count</string>
+    <string name="show_notification_count">सूचना टिंब दाखवा</string>
     <string name="notification_dots_color">सूचना टिंबाचे रंग</string>
-    <string name="notification_dots_text_color">Notification Count Color</string>
+    <string name="notification_dots_text_color">सूचना टिंबाचे रंग</string>
     <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
     <!-- Notification popup -->
@@ -77,7 +77,7 @@
     <string name="missing_notification_access_description">Notification access needed.</string>
     <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">Change Settings</string>
-    <string name="colors">Colors</string>
+    <string name="colors">रंग</string>
     <string name="theme_label">Theme</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">गडद</string>
