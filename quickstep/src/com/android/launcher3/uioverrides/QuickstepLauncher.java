@@ -238,7 +238,7 @@ public class QuickstepLauncher extends Launcher {
         mActionsView.updateDimension(getDeviceProfile(), overviewPanel.getLastComputedTaskSize());
         mActionsView.updateVerticalMargin(DisplayController.getNavigationMode(this));
 
-        mAppTransitionManager = new QuickstepTransitionManager(this);
+        mAppTransitionManager = buildAppTransitionManager();
         mAppTransitionManager.registerRemoteAnimations();
         mAppTransitionManager.registerRemoteTransitions();
 
@@ -305,6 +305,13 @@ public class QuickstepLauncher extends Launcher {
      */
     public HotseatPredictionController getHotseatPredictionController() {
         return mHotseatPredictionController;
+    }
+
+    /**
+     * Builds the {@link QuickstepTransitionManager} instance to use for managing transitions.
+     */
+    protected QuickstepTransitionManager buildAppTransitionManager() {
+        return new QuickstepTransitionManager(this);
     }
 
     @Override
