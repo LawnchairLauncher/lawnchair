@@ -95,12 +95,9 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Información sobre a función Barra de tarefas"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Panel de información de barra de tarefas aberto"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Panel de información de barra de tarefas pechado"</string>
-    <!-- no translation found for taskbar_edu_splitscreen (5563823414110661454) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_stashing (2805035263048176462) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_suggestions (1416699696825090402) -->
-    <skip />
+    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"Para usar 2 aplicacións á vez, arrastra cara ao lado"</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Pasa o dedo un pouco cara arriba para ver a barra de tarefas"</string>
+    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"Na barra de tarefas suxírense apps segundo a túa rutina"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Seguinte"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Atrás"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Pechar"</string>
