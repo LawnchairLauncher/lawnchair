@@ -96,7 +96,6 @@ import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.WellbeingModel;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.proxy.ProxyActivityStarter;
 import com.android.launcher3.proxy.StartActivityParams;
@@ -106,6 +105,7 @@ import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.taskbar.TaskbarManager;
+import com.android.launcher3.uioverrides.QuickstepWidgetHolder.QuickstepHolderFactory;
 import com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory;
 import com.android.launcher3.uioverrides.touchcontrollers.NavBarToHomeTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.NoButtonNavbarToOverviewTouchController;
@@ -517,9 +517,11 @@ public class QuickstepLauncher extends Launcher {
 
     @Override
     protected LauncherWidgetHolder createAppWidgetHolder() {
-        LauncherWidgetHolder appWidgetHolder = super.createAppWidgetHolder();
-        appWidgetHolder.setInteractionHandler(new QuickstepInteractionHandler(this));
-        return appWidgetHolder;
+        final QuickstepHolderFactory factory =
+                (QuickstepHolderFactory) LauncherWidgetHolder.HolderFactory.newFactory(this);
+        return factory.newInstance(this,
+                appWidgetId -> getWorkspace().removeWidget(appWidgetId),
+                new QuickstepInteractionHandler(this));
     }
 
     @Override
