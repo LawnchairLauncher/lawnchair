@@ -11,6 +11,7 @@ plugins {
     id 'com.google.protobuf' version "0.9.1"
     id 'com.google.android.gms.oss-licenses-plugin' version "0.10.5"
     id 'com.google.gms.google-services' version "4.3.14"
+    id 'com.google.firebase.crashlytics' version "2.9.2"
     id 'com.google.firebase.firebase-perf' version "1.4.2"
     id 'dev.rikka.tools.refine' version "3.1.1"
 }
@@ -407,6 +408,8 @@ dependencies {
 
     implementation platform('com.google.firebase:firebase-bom:31.1.1')
     implementation 'com.google.firebase:firebase-perf-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
 }
 
 protobuf {
