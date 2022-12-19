@@ -295,7 +295,7 @@ public class AddItemActivity extends BaseActivity
         mWidgetCell.setRemoteViewsPreview(PinItemDragListener.getPreview(mRequest));
 
         mAppWidgetManager = new WidgetManagerHelper(this);
-        mAppWidgetHolder = new LauncherWidgetHolder(this);
+        mAppWidgetHolder = LauncherWidgetHolder.newInstance(this);
 
         PendingAddWidgetInfo pendingInfo =
                 new PendingAddWidgetInfo(widgetInfo, CONTAINER_PIN_WIDGETS);

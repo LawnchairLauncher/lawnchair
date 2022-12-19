@@ -1548,8 +1548,8 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     protected LauncherWidgetHolder createAppWidgetHolder() {
-        return new LauncherWidgetHolder(this,
-                appWidgetId -> getWorkspace().removeWidget(appWidgetId));
+        return LauncherWidgetHolder.HolderFactory.newFactory(this).newInstance(
+                this, appWidgetId -> getWorkspace().removeWidget(appWidgetId));
     }
 
     public LauncherModel getModel() {
