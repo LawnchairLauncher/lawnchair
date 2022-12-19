@@ -422,6 +422,21 @@ public class InvariantDeviceProfile {
         }
         supportedProfiles = Collections.unmodifiableList(localSupportedProfiles);
 
+        int numMinShownHotseatIconsForTablet = supportedProfiles
+                .stream()
+                .filter(deviceProfile -> deviceProfile.isTablet)
+                .mapToInt(deviceProfile -> deviceProfile.numShownHotseatIcons)
+                .min()
+                .orElse(0);
+
+        supportedProfiles
+                .stream()
+                .filter(deviceProfile -> deviceProfile.isTablet)
+                .forEach(deviceProfile -> {
+                    deviceProfile.numShownHotseatIcons = numMinShownHotseatIconsForTablet;
+                    deviceProfile.recalculateHotseatWidthAndBorderSpace();
+                });
+
         ComponentName cn = new ComponentName(context.getPackageName(), getClass().getName());
         defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
     }
