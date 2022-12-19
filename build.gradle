@@ -10,6 +10,7 @@ plugins {
     id "com.google.devtools.ksp" version "1.7.20-1.0.8"
     id 'com.google.protobuf' version "0.9.1"
     id 'com.google.android.gms.oss-licenses-plugin' version "0.10.5"
+    id 'com.google.gms.google-services' version "4.3.14"
     id 'com.google.firebase.firebase-perf' version "1.4.2"
     id 'dev.rikka.tools.refine' version "3.1.1"
 }
