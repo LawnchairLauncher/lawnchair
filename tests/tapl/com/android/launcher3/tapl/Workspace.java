@@ -385,7 +385,7 @@ public final class Workspace extends Home {
                     Until.hasObject(installerAlert), LauncherInstrumentation.WAIT_TIME_MS));
             final UiObject2 ok = device.findObject(By.text("OK"));
             assertNotNull("OK button is not shown", ok);
-            launcher.clickObject(ok);
+            launcher.clickObject(ok, LauncherInstrumentation.GestureScope.OUTSIDE_WITHOUT_PILFER);
             assertTrue("Uninstall alert is not dismissed after clicking OK", device.wait(
                     Until.gone(installerAlert), LauncherInstrumentation.WAIT_TIME_MS));
 
