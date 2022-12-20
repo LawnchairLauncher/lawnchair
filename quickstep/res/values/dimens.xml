@@ -281,8 +281,7 @@
     <dimen name="taskbar_icon_size_kids">32dp</dimen>
 
     <!-- Transient taskbar -->
-    <dimen name="transient_taskbar_size">76dp</dimen>
-    <dimen name="transient_taskbar_two_panels_size">72dp</dimen>
+    <dimen name="transient_taskbar_size">72dp</dimen>
     <dimen name="transient_taskbar_margin">24dp</dimen>
     <dimen name="transient_taskbar_shadow_blur">40dp</dimen>
     <dimen name="transient_taskbar_key_shadow_distance">10dp</dimen>

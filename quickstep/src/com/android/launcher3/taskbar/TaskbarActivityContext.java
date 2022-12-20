@@ -285,9 +285,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     private void updateIconSize(Resources resources) {
         mDeviceProfile.iconSizePx = resources.getDimensionPixelSize(
                 DisplayController.isTransientTaskbar(this)
-                    ? mDeviceProfile.isTwoPanels
-                            ? R.dimen.transient_taskbar_two_panels_icon_size
-                            : R.dimen.transient_taskbar_icon_size
+                    ? R.dimen.transient_taskbar_icon_size
                     : R.dimen.taskbar_icon_size);
         mDeviceProfile.updateIconSize(1f, resources);
     }
@@ -695,9 +693,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         }
 
         if (DisplayController.isTransientTaskbar(this)) {
-            int taskbarSize = resources.getDimensionPixelSize(mDeviceProfile.isTwoPanels
-                    ? R.dimen.transient_taskbar_two_panels_size
-                    : R.dimen.transient_taskbar_size);
+            int taskbarSize = resources.getDimensionPixelSize(R.dimen.transient_taskbar_size);
             return taskbarSize
                     + (2 * resources.getDimensionPixelSize(R.dimen.transient_taskbar_margin))
                     + resources.getDimensionPixelSize(R.dimen.transient_taskbar_shadow_blur);
