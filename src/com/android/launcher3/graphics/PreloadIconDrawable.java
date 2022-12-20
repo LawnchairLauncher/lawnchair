@@ -17,31 +17,41 @@
 
 package com.android.launcher3.graphics;
 
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_DOWNLOAD_APP_UX_V2;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
+import android.os.SystemClock;
 import android.util.Property;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.util.window.RefreshRateTracker;
+
+import java.util.WeakHashMap;
+import java.util.function.Function;
 
 /**
  * Extension of {@link FastBitmapDrawable} which shows a progress bar around the icon.
  */
-public class PreloadIconDrawable extends FastBitmapDrawable {
+public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable {
 
     private static final Property<PreloadIconDrawable, Float> INTERNAL_STATE =
             new Property<PreloadIconDrawable, Float>(Float.TYPE, "internalStateProgress") {
@@ -67,11 +77,19 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     // Duration = COMPLETE_ANIM_FRACTION * DURATION_SCALE
     private static final float COMPLETE_ANIM_FRACTION = 0.3f;
 
-    private static final float SMALL_SCALE = 0.7f;
+    private static final float SMALL_SCALE = ENABLE_DOWNLOAD_APP_UX_V2.get() ? 0.85f : 0.7f;
     private static final float PROGRESS_STROKE_SCALE = 0.075f;
 
     private static final int PRELOAD_ACCENT_COLOR_INDEX = 0;
     private static final int PRELOAD_BACKGROUND_COLOR_INDEX = 1;
+
+    private static final int ALPHA_DURATION_MILLIS = 3000;
+    private static final float OVERLAY_ALPHA_RANGE = 127.5f;
+    private static final long WAVE_MOTION_DELAY_FACTOR_MILLIS = 100;
+    private static final WeakHashMap<Integer, PorterDuffColorFilter> COLOR_FILTER_MAP =
+            new WeakHashMap<>();
+    public static final Function<Integer, PorterDuffColorFilter> FILTER_FACTORY =
+            currArgb -> new PorterDuffColorFilter(currArgb, PorterDuff.Mode.SRC_ATOP);
 
     private final Matrix mTmpMatrix = new Matrix();
     private final PathMeasure mPathMeasure = new PathMeasure();
@@ -96,6 +114,9 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
 
     private boolean mRanFinishAnimation;
 
+    private int mOverlayAlpha = 127;
+    private int mRefreshRateMillis;
+
     // Progress of the internal state. [0, 1] indicates the fraction of completed progress,
     // [1, (1 + COMPLETE_ANIM_FRACTION)] indicates the progress of zoom animation.
     private float mInternalStateProgress;
@@ -109,14 +130,16 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
                 info,
                 IconPalette.getPreloadProgressColor(context, info.bitmap.color),
                 getPreloadColors(context),
-                Utilities.isDarkTheme(context));
+                Utilities.isDarkTheme(context),
+                getRefreshRateMillis(context));
     }
 
     public PreloadIconDrawable(
             ItemInfoWithIcon info,
             int indicatorColor,
             int[] preloadColors,
-            boolean isDarkMode) {
+            boolean isDarkMode,
+            int refreshRateMillis) {
         super(info.bitmap);
         mItem = info;
         mShapePath = GraphicsUtils.getShapePath(DEFAULT_PATH_SIZE);
@@ -130,6 +153,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
         mSystemAccentColor = preloadColors[PRELOAD_ACCENT_COLOR_INDEX];
         mSystemBackgroundColor = preloadColors[PRELOAD_BACKGROUND_COLOR_INDEX];
         mIsDarkMode = isDarkMode;
+        mRefreshRateMillis = refreshRateMillis;
 
         setLevel(info.getProgressLevel());
         setIsStartable(info.isAppStartable());
@@ -178,11 +202,17 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
         canvas.scale(mIconScale, mIconScale, bounds.exactCenterX(), bounds.exactCenterY());
         super.drawInternal(canvas, bounds);
         canvas.restoreToCount(saveCount);
+
+        if (ENABLE_DOWNLOAD_APP_UX_V2.get() && mInternalStateProgress == 0) {
+            reschedule();
+        }
     }
 
     @Override
     protected void updateFilter() {
-        setAlpha(mIsDisabled ? DISABLED_ICON_ALPHA : MAX_PAINT_ALPHA);
+        if (!ENABLE_DOWNLOAD_APP_UX_V2.get()) {
+            setAlpha(mIsDisabled ? DISABLED_ICON_ALPHA : MAX_PAINT_ALPHA);
+        }
     }
 
     /**
@@ -237,7 +267,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
             mCurrentAnim = ObjectAnimator.ofFloat(this, INTERNAL_STATE, finalProgress);
             mCurrentAnim.setDuration(
                     (long) ((finalProgress - mInternalStateProgress) * DURATION_SCALE));
-            mCurrentAnim.setInterpolator(Interpolators.LINEAR);
+            mCurrentAnim.setInterpolator(LINEAR);
             if (isFinish) {
                 mCurrentAnim.addListener(new AnimatorListenerAdapter() {
                     @Override
@@ -253,13 +283,13 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     /**
      * Sets the internal progress and updates the UI accordingly
      *   for progress <= 0:
-     *     - icon in the small scale and disabled state
-     *     - progress track is visible
+     *     - icon with pending motion
+     *     - progress track is not visible
      *     - progress bar is not visible
-     *   for 0 < progress < 1
-     *     - icon in the small scale and disabled state
+     *   for progress < 1
+     *     - icon without pending motion
      *     - progress track is visible
-     *     - progress bar is visible with dominant color. Progress bar is drawn as a fraction of
+     *     - progress bar is visible. Progress bar is drawn as a fraction of
      *       {@link #mScaledTrackPath}.
      *       @see PathMeasure#getSegment(float, float, Path, boolean)
      *   for 1 <= progress < (1 + COMPLETE_ANIM_FRACTION)
@@ -273,16 +303,18 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     private void setInternalProgress(float progress) {
         mInternalStateProgress = progress;
         if (progress <= 0) {
-            mIconScale = SMALL_SCALE;
+            mIconScale = ENABLE_DOWNLOAD_APP_UX_V2.get() ? 1 : SMALL_SCALE;
             mScaledTrackPath.reset();
             mTrackAlpha = MAX_PAINT_ALPHA;
-        }
-
-        if (progress < 1 && progress > 0) {
+        } else if (progress < 1) {
             mPathMeasure.getSegment(0, progress * mTrackLength, mScaledProgressPath, true);
+            if (ENABLE_DOWNLOAD_APP_UX_V2.get()) {
+                mPaint.setColorFilter(null);
+                mPathMeasure.getSegment(0, mTrackLength, mScaledTrackPath, true);
+            }
             mIconScale = SMALL_SCALE;
             mTrackAlpha = MAX_PAINT_ALPHA;
-        } else if (progress >= 1) {
+        } else {
             setIsDisabled(mItem.isDisabled());
             mScaledTrackPath.set(mScaledProgressPath);
             float fraction = (progress - 1) / COMPLETE_ANIM_FRACTION;
@@ -310,6 +342,10 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
         return preloadColors;
     }
 
+    private static int getRefreshRateMillis(Context context) {
+        return RefreshRateTracker.getSingleFrameMs(context);
+    }
+
     /**
      * Returns a FastBitmapDrawable with the icon.
      */
@@ -325,7 +361,75 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
                 mItem,
                 mIndicatorColor,
                 new int[] {mSystemAccentColor, mSystemBackgroundColor},
-                mIsDarkMode);
+                mIsDarkMode,
+                mRefreshRateMillis);
+    }
+
+    @Override
+    public void run() {
+        if (!ENABLE_DOWNLOAD_APP_UX_V2.get() || mInternalStateProgress > 0) {
+            return;
+        }
+        if (applyPendingIconOverlay()) {
+            invalidateSelf();
+        } else {
+            reschedule();
+        }
+    }
+
+    @Override
+    public boolean setVisible(boolean visible, boolean restart) {
+        boolean result = super.setVisible(visible, restart);
+        if (visible) {
+            reschedule();
+        } else {
+            unscheduleSelf(this);
+        }
+        return result;
+    }
+
+    private void reschedule() {
+        unscheduleSelf(this);
+
+        if (!isVisible()) {
+            return;
+        }
+
+        final long upTime = SystemClock.uptimeMillis();
+        scheduleSelf(this, upTime - ((upTime % mRefreshRateMillis)) + mRefreshRateMillis);
+    }
+
+
+    /**
+     * Apply an overlay on the pending icon with cascading motion based on its position.
+     * Returns {@code true} if the icon alpha is updated, so that we re-draw.
+     */
+    private boolean applyPendingIconOverlay() {
+        long waveMotionDelay = (mItem.cellX * WAVE_MOTION_DELAY_FACTOR_MILLIS)
+                + (mItem.cellY * WAVE_MOTION_DELAY_FACTOR_MILLIS);
+        long time = SystemClock.uptimeMillis();
+        int newAlpha = (int) Utilities.mapBoundToRange(
+                (float) (time + waveMotionDelay) % ALPHA_DURATION_MILLIS,
+                0,
+                ALPHA_DURATION_MILLIS,
+                0,
+                MAX_PAINT_ALPHA,
+                LINEAR);
+        if (newAlpha > OVERLAY_ALPHA_RANGE) {
+            newAlpha = (int) (OVERLAY_ALPHA_RANGE - (newAlpha % OVERLAY_ALPHA_RANGE));
+        }
+
+        boolean invalidate = false;
+        if (mOverlayAlpha != newAlpha) {
+            mOverlayAlpha = newAlpha;
+            int overlayColor = mIsDarkMode ? 0 : 255;
+            int currArgb = Color.argb(mOverlayAlpha, overlayColor, overlayColor, overlayColor);
+            mPaint.setColorFilter(COLOR_FILTER_MAP.computeIfAbsent(
+                    currArgb,
+                    FILTER_FACTORY));
+            invalidate = true;
+        }
+        return invalidate;
     }
 
     protected static class PreloadIconConstantState extends FastBitmapConstantState {
@@ -335,6 +439,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
         protected final int[] mPreloadColors;
         protected final boolean mIsDarkMode;
         protected final int mLevel;
+        protected final int mRefreshRateMillis;
 
         public PreloadIconConstantState(
                 Bitmap bitmap,
@@ -342,13 +447,15 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
                 ItemInfoWithIcon info,
                 int indicatorColor,
                 int[] preloadColors,
-                boolean isDarkMode) {
+                boolean isDarkMode,
+                int refreshRateMillis) {
             super(bitmap, iconColor);
             mInfo = info;
             mIndicatorColor = indicatorColor;
             mPreloadColors = preloadColors;
             mIsDarkMode = isDarkMode;
             mLevel = info.getProgressLevel();
+            mRefreshRateMillis = refreshRateMillis;
         }
 
         @Override
@@ -357,7 +464,8 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
                     mInfo,
                     mIndicatorColor,
                     mPreloadColors,
-                    mIsDarkMode);
+                    mIsDarkMode,
+                    mRefreshRateMillis);
         }
     }
 }
