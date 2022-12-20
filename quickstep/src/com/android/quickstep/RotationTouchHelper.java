@@ -232,9 +232,9 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
     /**
      * @return whether the coordinates of the {@param event} is in the swipe up gesture region.
      */
-    public boolean isInSwipeUpTouchRegion(MotionEvent event) {
+    public boolean isInSwipeUpTouchRegion(MotionEvent event, BaseActivityInterface activity) {
         if (isTrackpadMotionEvent(event)) {
-            return true;
+            return !activity.isResumed();
         }
         return mOrientationTouchTransformer.touchInValidSwipeRegions(event.getX(), event.getY());
     }
@@ -243,9 +243,10 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
      * @return whether the coordinates of the {@param event} with the given {@param pointerIndex}
      *         is in the swipe up gesture region.
      */
-    public boolean isInSwipeUpTouchRegion(MotionEvent event, int pointerIndex) {
+    public boolean isInSwipeUpTouchRegion(MotionEvent event, int pointerIndex,
+            BaseActivityInterface activity) {
         if (isTrackpadMotionEvent(event)) {
-            return true;
+            return !activity.isResumed();
         }
         return mOrientationTouchTransformer.touchInValidSwipeRegions(event.getX(pointerIndex),
                 event.getY(pointerIndex));

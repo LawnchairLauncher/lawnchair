@@ -236,7 +236,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 if (!mPassedPilferInputSlop) {
                     // Cancel interaction in case of multi-touch interaction
                     int ptrIdx = ev.getActionIndex();
-                    if (!mRotationTouchHelper.isInSwipeUpTouchRegion(ev, ptrIdx)) {
+                    if (!mRotationTouchHelper.isInSwipeUpTouchRegion(ev, ptrIdx,
+                            mActivityInterface)) {
                         forceCancelGesture(ev);
                     }
                 }
