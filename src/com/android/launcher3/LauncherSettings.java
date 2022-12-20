@@ -207,12 +207,9 @@ public class LauncherSettings {
         public static final int CONTAINER_BOTTOM_WIDGETS_TRAY = -112;
         public static final int CONTAINER_PIN_WIDGETS = -113;
         public static final int CONTAINER_WALLPAPERS = -114;
-        // Represents search results view.
-        public static final int CONTAINER_SEARCH_RESULTS = -106;
         public static final int CONTAINER_SHORTCUTS = -107;
         public static final int CONTAINER_SETTINGS = -108;
         public static final int CONTAINER_TASKSWITCHER = -109;
-        public static final int CONTAINER_QSB = -110;
 
         // Represents any of the extended containers implemented in non-AOSP variants.
         public static final int EXTENDED_CONTAINERS = -200;
@@ -226,7 +223,6 @@ public class LauncherSettings {
                 case CONTAINER_PREDICTION: return "prediction";
                 case CONTAINER_ALL_APPS: return "all_apps";
                 case CONTAINER_WIDGETS_TRAY: return "widgets_tray";
-                case CONTAINER_SEARCH_RESULTS: return "search_result";
                 case CONTAINER_SHORTCUTS: return "shortcuts";
                 default: return String.valueOf(container);
             }
