@@ -152,9 +152,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             TaskbarNavButtonController buttonController, ScopedUnfoldTransitionProgressProvider
             unfoldTransitionProgressProvider) {
         super(windowContext);
-        mDeviceProfile = launcherDp.copy(this);
-
         final Resources resources = getResources();
+
+        matchDeviceProfile(launcherDp, getResources());
 
         mNavMode = DisplayController.getNavigationMode(windowContext);
         mImeDrawsImeNavBar = getBoolByName(IME_DRAWS_IME_NAV_BAR_RES_NAME, resources, false);
@@ -170,8 +170,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         //  to get correct value when recreating the taskbar
         mIsNavBarKidsMode = settingsCache.getValue(
                 Settings.Secure.getUriFor(Settings.Secure.NAV_BAR_KIDS_MODE), 0);
-
-        updateIconSize(resources);
 
         // Get display and corners first, as views might use them in constructor.
         Display display = windowContext.getDisplay();
@@ -260,8 +258,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     public void updateDeviceProfile(DeviceProfile launcherDp, NavigationMode navMode) {
         mNavMode = navMode;
         mControllers.taskbarOverlayController.updateLauncherDeviceProfile(launcherDp);
-        mDeviceProfile = launcherDp.copy(this);
-        updateIconSize(getResources());
+        matchDeviceProfile(launcherDp, getResources());
 
         AbstractFloatingView.closeAllOpenViewsExcept(this, false, TYPE_REBIND_SAFE);
         // Reapply fullscreen to take potential new screen size into account.
@@ -269,6 +266,21 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
         dispatchDeviceProfileChanged();
     }
+
+    /**
+     * Copy the original DeviceProfile, match the number of hotseat icons and qsb width and update
+     * the icon size
+     */
+    private void matchDeviceProfile(DeviceProfile originDeviceProfile, Resources resources) {
+        mDeviceProfile = originDeviceProfile.copy(this);
+        // Taskbar should match the number of icons of hotseat
+        mDeviceProfile.numShownHotseatIcons = originDeviceProfile.numShownHotseatIcons;
+        // Same QSB width to have a smooth animation
+        mDeviceProfile.hotseatQsbWidth = originDeviceProfile.hotseatQsbWidth;
+        // Update the size of the icons
+        updateIconSize(resources);
+    }
+
 
     private void updateIconSize(Resources resources) {
         mDeviceProfile.iconSizePx = resources.getDimensionPixelSize(
@@ -875,16 +887,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      */
     public void onSwipeToUnstashTaskbar() {
         mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(false);
-    }
-
-    /** Called when we want to hide the overlay window when user performs swipe up gesture. */
-    public void onSwipeToHideOverlay() {
-        mControllers.taskbarOverlayController.hideWindow();
-    }
-
-    /** Returns {@code true} if taskbar is stashed. */
-    public boolean isTaskbarStashed() {
-        return mControllers.taskbarStashController.isStashed();
     }
 
     /** Returns {@code true} if taskbar All Apps is open. */

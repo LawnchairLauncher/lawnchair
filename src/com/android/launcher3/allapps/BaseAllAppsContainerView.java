@@ -508,8 +508,12 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         if (grid.isVerticalBarLayout()) {
             setPadding(grid.workspacePadding.left, 0, grid.workspacePadding.right, 0);
         } else {
-            setPadding(grid.allAppsLeftRightMargin, grid.allAppsTopPadding,
-                    grid.allAppsLeftRightMargin, 0);
+            int topPadding = grid.allAppsTopPadding;
+            if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get() && !grid.isTablet) {
+                topPadding += getResources().getDimensionPixelSize(
+                        R.dimen.all_apps_additional_top_padding_floating_search);
+            }
+            setPadding(grid.allAppsLeftRightMargin, topPadding, grid.allAppsLeftRightMargin, 0);
         }
 
         InsettableFrameLayout.dispatchInsets(this, insets);
@@ -824,7 +828,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         if (mHeaderPaint.getColor() == mScrimColor || mHeaderPaint.getColor() == 0) {
             return;
         }
-        int bottom = getHeaderBottom();
+        int bottom = getHeaderBottom() + getVisibleContainerView().getPaddingTop();
         FloatingHeaderView headerView = getFloatingHeaderView();
         if (isTablet) {
             // Start adding header protection if search bar or tabs will attach to the top.

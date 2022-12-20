@@ -39,12 +39,12 @@ class HotseatWidthCalculationTest : DeviceProfileBaseTest() {
         val dp = newDP()
         dp.isTaskbarPresentInApps = true
 
-        assertThat(dp.hotseatBarEndOffset).isEqualTo(558)
+        assertThat(dp.hotseatBarEndOffset).isEqualTo(510)
         assertThat(dp.numShownHotseatIcons).isEqualTo(6)
-        assertThat(dp.hotseatBorderSpace).isEqualTo(69)
+        assertThat(dp.hotseatBorderSpace).isEqualTo(70)
 
-        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(176)
-        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(558)
+        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(150)
+        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(580)
 
         assertThat(dp.isQsbInline).isFalse()
         assertThat(dp.hotseatQsbWidth).isEqualTo(1445)
@@ -61,12 +61,12 @@ class HotseatWidthCalculationTest : DeviceProfileBaseTest() {
         val dp = newDP()
         dp.isTaskbarPresentInApps = true
 
-        assertThat(dp.hotseatBarEndOffset).isEqualTo(558)
+        assertThat(dp.hotseatBarEndOffset).isEqualTo(510)
         assertThat(dp.numShownHotseatIcons).isEqualTo(4)
-        assertThat(dp.hotseatBorderSpace).isEqualTo(50)
+        assertThat(dp.hotseatBorderSpace).isEqualTo(40)
 
-        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(112)
-        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(558)
+        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(150)
+        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(550)
 
         assertThat(dp.isQsbInline).isFalse()
         assertThat(dp.hotseatQsbWidth).isEqualTo(1080)
@@ -82,12 +82,12 @@ class HotseatWidthCalculationTest : DeviceProfileBaseTest() {
         val dp = newDP()
         dp.isTaskbarPresentInApps = true
 
-        assertThat(dp.hotseatBarEndOffset).isEqualTo(744)
+        assertThat(dp.hotseatBarEndOffset).isEqualTo(705)
         assertThat(dp.numShownHotseatIcons).isEqualTo(6)
-        assertThat(dp.hotseatBorderSpace).isEqualTo(82)
+        assertThat(dp.hotseatBorderSpace).isEqualTo(54)
 
-        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(106)
-        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(744)
+        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(231)
+        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(759)
 
         assertThat(dp.isQsbInline).isFalse()
         assertThat(dp.hotseatQsbWidth).isEqualTo(1468)
@@ -107,12 +107,12 @@ class HotseatWidthCalculationTest : DeviceProfileBaseTest() {
         val dp = newDP()
         dp.isTaskbarPresentInApps = true
 
-        assertThat(dp.hotseatBarEndOffset).isEqualTo(705)
+        assertThat(dp.hotseatBarEndOffset).isEqualTo(660)
         assertThat(dp.numShownHotseatIcons).isEqualTo(6)
-        assertThat(dp.hotseatBorderSpace).isEqualTo(102)
+        assertThat(dp.hotseatBorderSpace).isEqualTo(100)
 
-        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(625)
-        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(705)
+        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(300)
+        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(1040)
 
         assertThat(dp.isQsbInline).isFalse()
         assertThat(dp.hotseatQsbWidth).isEqualTo(1233)
@@ -128,15 +128,15 @@ class HotseatWidthCalculationTest : DeviceProfileBaseTest() {
         val dp = newDP()
         dp.isTaskbarPresentInApps = true
 
-        assertThat(dp.hotseatBarEndOffset).isEqualTo(705)
+        assertThat(dp.hotseatBarEndOffset).isEqualTo(660)
         assertThat(dp.numShownHotseatIcons).isEqualTo(6)
         assertThat(dp.hotseatBorderSpace).isEqualTo(36)
 
-        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(854)
-        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(705)
+        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(864)
+        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(696)
 
         assertThat(dp.isQsbInline).isTrue()
-        assertThat(dp.hotseatQsbWidth).isEqualTo(531)
+        assertThat(dp.hotseatQsbWidth).isEqualTo(528)
     }
 
     /**
@@ -150,12 +150,12 @@ class HotseatWidthCalculationTest : DeviceProfileBaseTest() {
         val dp = newDP()
         dp.isTaskbarPresentInApps = true
 
-        assertThat(dp.hotseatBarEndOffset).isEqualTo(705)
+        assertThat(dp.hotseatBarEndOffset).isEqualTo(660)
         assertThat(dp.numShownHotseatIcons).isEqualTo(5)
-        assertThat(dp.hotseatBorderSpace).isEqualTo(43)
+        assertThat(dp.hotseatBorderSpace).isEqualTo(36)
 
-        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(782)
-        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(705)
+        assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(816)
+        assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(700)
 
         assertThat(dp.isQsbInline).isTrue()
         assertThat(dp.hotseatQsbWidth).isEqualTo(480)
