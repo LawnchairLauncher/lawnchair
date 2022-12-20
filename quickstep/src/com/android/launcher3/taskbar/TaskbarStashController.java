@@ -492,7 +492,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                 /* isStashed= */ false,
                 placeholderDuration,
                 /* startDelay= */ 0,
-                /* animateBg= */ false);
+                /* animateBg= */ false,
+                /* changedFlags=*/ 0);
         animation.play(mAnimator);
     }
 
@@ -503,8 +504,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * @param startDelay how many milliseconds to delay the animation after starting it.
      * @param animateBg whether the taskbar's background should be animated
      */
-    private void createAnimToIsStashed(
-            boolean isStashed, long duration, long startDelay, boolean animateBg) {
+    private void createAnimToIsStashed(boolean isStashed, long duration, long startDelay,
+            boolean animateBg, int changedFlags) {
         if (mAnimator != null) {
             mAnimator.cancel();
         }
@@ -542,8 +543,10 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         final float firstHalfDurationScale;
         final float secondHalfDurationScale;
 
-        boolean isHotseatIconOnTopWhenAligned =
-                mControllers.uiController.isHotseatIconOnTopWhenAligned();
+        // If Hotseat is not the top element during animation to/from Launcher, fade in/out a
+        // already stashed Taskbar.
+        boolean skipStashAnimation = !mControllers.uiController.isHotseatIconOnTopWhenAligned()
+                && hasAnyFlag(changedFlags, FLAG_IN_APP);
         if (isStashed) {
             firstHalfDurationScale = 0.75f;
             secondHalfDurationScale = 0.5f;
@@ -565,8 +568,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                     mTaskbarStashedHandleAlpha.animateToValue(1)
             );
 
-            // If Hotseat is not the top element, an already stashed Taskbar should fade in.
-            if (!isHotseatIconOnTopWhenAligned) {
+            if (skipStashAnimation) {
                 fullLengthAnimatorSet.setInterpolator(INSTANT);
                 firstHalfAnimatorSet.setInterpolator(INSTANT);
             }
@@ -591,9 +593,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                     mIconAlphaForStash.animateToValue(1)
             );
 
-            // If Hotseat is not the top element, the stashed Taskbar should fade out without
-            // unstashing.
-            if (!isHotseatIconOnTopWhenAligned) {
+            if (skipStashAnimation) {
                 fullLengthAnimatorSet.setInterpolator(FINAL_FRAME);
                 secondHalfAnimatorSet.setInterpolator(FINAL_FRAME);
             }
@@ -986,7 +986,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                 mIsHotseatIconOnTopWhenAligned = isHotseatIconOnTopWhenAligned;
 
                 // This sets mAnimator.
-                createAnimToIsStashed(mIsStashed, duration, startDelay, /* animateBg= */ true);
+                createAnimToIsStashed(
+                        mIsStashed, duration, startDelay, /* animateBg= */ true, changedFlags);
                 if (start) {
                     mAnimator.start();
                 }
