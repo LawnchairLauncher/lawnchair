@@ -114,6 +114,8 @@
     <dimen name="all_apps_tabs_indicator_height">2dp</dimen>
     <dimen name="all_apps_header_top_margin">33dp</dimen>
     <dimen name="all_apps_header_top_padding">36dp</dimen>
+    <!-- Additional top padding to add when Floating Searchbar is enabled. -->
+    <dimen name="all_apps_additional_top_padding_floating_search">16dp</dimen>
     <dimen name="all_apps_header_bottom_padding">14dp</dimen>
     <dimen name="all_apps_header_top_adjustment">6dp</dimen>
     <dimen name="all_apps_header_bottom_adjustment">4dp</dimen>
@@ -359,6 +361,7 @@
     <dimen name="qsb_widget_height">0dp</dimen>
     <dimen name="qsb_shadow_height">0dp</dimen>
     <dimen name="min_hotseat_icon_space">18dp</dimen>
+    <dimen name="max_hotseat_icon_space">50dp</dimen>
     <dimen name="min_hotseat_qsb_width">0dp</dimen>
     <dimen name="taskbar_icon_size">44dp</dimen>
     <dimen name="transient_taskbar_icon_size">57dp</dimen>
@@ -381,10 +384,8 @@
     <dimen name="taskbar_button_margin_default">0dp</dimen>
     <dimen name="taskbar_button_space_inbetween">0dp</dimen>
     <dimen name="taskbar_button_space_inbetween_phone">0dp</dimen>
-    <dimen name="taskbar_button_margin_5_5">0dp</dimen>
+    <dimen name="taskbar_button_margin_split">0dp</dimen>
     <dimen name="taskbar_button_margin_6_5">0dp</dimen>
-    <dimen name="taskbar_button_margin_4_5">0dp</dimen>
-    <dimen name="taskbar_button_margin_4_4">0dp</dimen>
     <!-- Taskbar swipe up thresholds threshold -->
     <dimen name="taskbar_nav_threshold">0dp</dimen>
     <dimen name="taskbar_app_window_threshold">0dp</dimen>

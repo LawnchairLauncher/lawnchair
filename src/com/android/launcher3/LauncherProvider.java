@@ -1093,7 +1093,7 @@ public class LauncherProvider extends ContentProvider {
          */
         @NonNull
         public LauncherWidgetHolder newLauncherWidgetHolder() {
-            return new LauncherWidgetHolder(mContext);
+            return LauncherWidgetHolder.newInstance(mContext);
         }
 
         @Override

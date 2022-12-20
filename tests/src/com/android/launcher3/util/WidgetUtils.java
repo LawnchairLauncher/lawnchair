@@ -70,7 +70,7 @@ public class WidgetUtils {
             pendingInfo.minSpanY = item.minSpanY;
             Bundle options = pendingInfo.getDefaultSizeOptions(targetContext);
 
-            LauncherWidgetHolder holder = new LauncherWidgetHolder(targetContext);
+            LauncherWidgetHolder holder = LauncherWidgetHolder.newInstance(targetContext);
             try {
                 int widgetId = holder.allocateAppWidgetId();
                 if (!new WidgetManagerHelper(targetContext)
