@@ -372,6 +372,10 @@ public final class FeatureFlags {
             "Enable the ability to generate monochromatic icons, if it is not provided by the app"
     );
 
+    public static final BooleanFlag ENABLE_TASKBAR_EDU_TOOLTIP = getDebugFlag(
+            "ENABLE_TASKBAR_EDU_TOOLTIP", false,
+            "Enable the tooltip version of the Taskbar education flow.");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
