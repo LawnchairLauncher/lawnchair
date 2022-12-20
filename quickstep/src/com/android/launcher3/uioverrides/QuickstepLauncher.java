@@ -96,7 +96,6 @@ import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.WellbeingModel;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.proxy.ProxyActivityStarter;
 import com.android.launcher3.proxy.StartActivityParams;
@@ -920,7 +919,11 @@ public class QuickstepLauncher extends Launcher {
         // When changing screens, force moving to rest state similar to StatefulActivity.onStop, as
         // StatefulActivity isn't called consistently.
         if ((flags & CHANGE_ACTIVE_SCREEN) != 0) {
-            getStateManager().moveToRestState();
+            // Do not animate moving to rest state, as it can clash with Launcher#onIdpChanged
+            // where reapplyUi calls StateManager's reapplyState during the state change animation,
+            // and cancel the state change unexpectedly. The screen will be off during screen
+            // transition, hiding the unanimated transition.
+            getStateManager().moveToRestState(/* isAnimated = */false);
         }
 
         if ((flags & CHANGE_NAVIGATION_MODE) != 0) {
