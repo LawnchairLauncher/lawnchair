@@ -43,7 +43,7 @@ public class DesktopVisibilityController {
      */
     private boolean isDesktopModeSupported() {
         return SystemProperties.getBoolean("persist.wm.debug.desktop_mode", false)
-            || SystemProperties.getBoolean("persist.wm.debug.desktop_mode_2", false);
+                || SystemProperties.getBoolean("persist.wm.debug.desktop_mode_2", false);
     }
 
     /**
@@ -81,7 +81,9 @@ public class DesktopVisibilityController {
         StatefulActivity<LauncherState> activity =
                 QuickstepLauncher.ACTIVITY_TRACKER.getCreatedActivity();
         View workspaceView = mLauncher.getWorkspace();
-        if (activity == null || workspaceView == null || !isDesktopModeSupported()) return;
+        if (activity == null || workspaceView == null || !isDesktopModeSupported()) {
+            return;
+        }
 
         if (mFreeformTasksVisible) {
             workspaceView.setVisibility(View.INVISIBLE);
@@ -93,7 +95,12 @@ public class DesktopVisibilityController {
         } else {
             workspaceView.setVisibility(View.VISIBLE);
             // If freeform isn't visible ensure that launcher appears resumed to behave normally.
-            activity.setResumed();
+            // Check activity state before calling setResumed(). Launcher may have been actually
+            // paused (eg fullscreen task moved to front).
+            // In this case we should not mark the activity as resumed.
+            if (activity.isResumed()) {
+                activity.setResumed();
+            }
         }
     }
 }
