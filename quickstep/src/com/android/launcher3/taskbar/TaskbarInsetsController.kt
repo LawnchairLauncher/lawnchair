@@ -18,8 +18,8 @@ package com.android.launcher3.taskbar
 import android.graphics.Insets
 import android.graphics.Region
 import android.view.InsetsFrameProvider
-import android.view.InsetsState.ITYPE_BOTTOM_MANDATORY_GESTURES
 import android.view.InsetsState
+import android.view.InsetsState.ITYPE_BOTTOM_MANDATORY_GESTURES
 import android.view.InsetsState.ITYPE_BOTTOM_TAPPABLE_ELEMENT
 import android.view.InsetsState.ITYPE_EXTRA_NAVIGATION_BAR
 import android.view.ViewTreeObserver
@@ -82,29 +82,39 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
         val contentHeight = controllers.taskbarStashController.contentHeightToReportToApps
         val tappableHeight = controllers.taskbarStashController.tappableHeightToReportToApps
         for (provider in windowLayoutParams.providedInsets) {
-            if (provider.type == ITYPE_EXTRA_NAVIGATION_BAR) {
+            if (provider.type == ITYPE_EXTRA_NAVIGATION_BAR
+                    || provider.type == ITYPE_BOTTOM_MANDATORY_GESTURES) {
                 provider.insetsSize = getInsetsByNavMode(contentHeight)
-            } else if (provider.type == ITYPE_BOTTOM_TAPPABLE_ELEMENT
-                      || provider.type == ITYPE_BOTTOM_MANDATORY_GESTURES) {
+            } else if (provider.type == ITYPE_BOTTOM_TAPPABLE_ELEMENT) {
                 provider.insetsSize = getInsetsByNavMode(tappableHeight)
             }
         }
 
         val imeInsetsSize = getInsetsByNavMode(taskbarHeightForIme)
-        // Use 0 insets for the VoiceInteractionWindow (assistant) when gesture nav is enabled.
-        val visInsetsSize = getInsetsByNavMode(if (context.isGestureNav) 0 else tappableHeight)
         val insetsSizeOverride = arrayOf(
+            InsetsFrameProvider.InsetsSizeOverride(
+                TYPE_INPUT_METHOD,
+                imeInsetsSize
+            ),
+        )
+        // Use 0 tappableElement insets for the VoiceInteractionWindow when gesture nav is enabled.
+        val visInsetsSizeForGestureNavTappableElement = getInsetsByNavMode(0)
+        val insetsSizeOverrideForGestureNavTappableElement = arrayOf(
             InsetsFrameProvider.InsetsSizeOverride(
                 TYPE_INPUT_METHOD,
                 imeInsetsSize
             ),
             InsetsFrameProvider.InsetsSizeOverride(
                 TYPE_VOICE_INTERACTION,
-                visInsetsSize
-            )
+                visInsetsSizeForGestureNavTappableElement
+            ),
         )
         for (provider in windowLayoutParams.providedInsets) {
-            provider.insetsSizeOverrides = insetsSizeOverride
+            if (context.isGestureNav && provider.type == ITYPE_BOTTOM_TAPPABLE_ELEMENT) {
+                provider.insetsSizeOverrides = insetsSizeOverrideForGestureNavTappableElement
+            } else {
+                provider.insetsSizeOverrides = insetsSizeOverride
+            }
         }
     }
 
