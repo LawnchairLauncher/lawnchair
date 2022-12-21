@@ -95,12 +95,9 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"செயல் பட்டியைப் பயன்படுத்தும் விதம்"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"பணிப்பட்டியை எவ்வாறு பயன்படுத்துவது என்பது பற்றிய பலகம் காட்டப்படுகிறது"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"பணிப்பட்டியை எவ்வாறு பயன்படுத்துவது என்பது பற்றிய பலகம் மூடப்பட்டது"</string>
-    <!-- no translation found for taskbar_edu_splitscreen (5563823414110661454) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_stashing (2805035263048176462) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_suggestions (1416699696825090402) -->
-    <skip />
+    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"ஒரே நேரத்தில் 2 ஆப்ஸை உபயோகிக்க பக்கவாட்டிற்கு இழுக்கவும்"</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"செயல் பட்டியைக் காட்டுவதற்கு மேலே சிறிது ஸ்வைப் செய்யவும்"</string>
+    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"உங்கள் வழக்கத்திற்கேற்ப ஆப்ஸை செயல் பட்டி பரிந்துரைக்கும்"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"அடுத்து"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"பின்செல்"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"மூடுக"</string>

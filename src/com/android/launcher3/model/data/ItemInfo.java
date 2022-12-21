@@ -21,7 +21,6 @@ import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PREDICTION;
-import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SEARCH_RESULTS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SETTINGS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SHORTCUTS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_TASKSWITCHER;
@@ -54,7 +53,6 @@ import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logger.LauncherAtom.AllAppsContainer;
 import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.logger.LauncherAtom.PredictionContainer;
-import com.android.launcher3.logger.LauncherAtom.SearchResultContainer;
 import com.android.launcher3.logger.LauncherAtom.SettingsContainer;
 import com.android.launcher3.logger.LauncherAtom.Shortcut;
 import com.android.launcher3.logger.LauncherAtom.ShortcutsContainer;
@@ -439,10 +437,6 @@ public class ItemInfo {
                 return ContainerInfo.newBuilder()
                         .setPredictionContainer(PredictionContainer.getDefaultInstance())
                         .build();
-            case CONTAINER_SEARCH_RESULTS:
-                return ContainerInfo.newBuilder()
-                        .setSearchResultContainer(SearchResultContainer.getDefaultInstance())
-                        .build();
             case CONTAINER_SHORTCUTS:
                 return ContainerInfo.newBuilder()
                         .setShortcutsContainer(ShortcutsContainer.getDefaultInstance())
@@ -459,10 +453,12 @@ public class ItemInfo {
                 return ContainerInfo.newBuilder()
                         .setWallpapersContainer(WallpapersContainer.getDefaultInstance())
                         .build();
-            case EXTENDED_CONTAINERS:
-                return ContainerInfo.newBuilder()
-                        .setExtendedContainers(getExtendedContainer())
-                        .build();
+            default:
+                if (container <= EXTENDED_CONTAINERS) {
+                    return ContainerInfo.newBuilder()
+                            .setExtendedContainers(getExtendedContainer())
+                            .build();
+                }
         }
         return ContainerInfo.getDefaultInstance();
     }
