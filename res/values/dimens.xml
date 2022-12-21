@@ -149,6 +149,8 @@
     <!-- Floating action button inside work tab to toggle work profile -->
     <dimen name="work_fab_height">56dp</dimen>
     <dimen name="work_fab_radius">16dp</dimen>
+    <dimen name="work_fab_icon_size">24dp</dimen>
+    <dimen name="work_fab_text_start_margin">8dp</dimen>
     <dimen name="work_card_padding_horizontal">10dp</dimen>
     <dimen name="work_card_button_height">52dp</dimen>
     <dimen name="work_fab_margin">16dp</dimen>
