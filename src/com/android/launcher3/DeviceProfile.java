@@ -325,9 +325,7 @@ public class DeviceProfile {
 
         if (isTaskbarPresent) {
             if (DisplayController.isTransientTaskbar(context)) {
-                taskbarSize = res.getDimensionPixelSize(isTwoPanels
-                        ? R.dimen.transient_taskbar_two_panels_size
-                        : R.dimen.transient_taskbar_size);
+                taskbarSize = res.getDimensionPixelSize(R.dimen.transient_taskbar_size);
                 stashedTaskbarSize =
                         res.getDimensionPixelSize(R.dimen.transient_taskbar_stashed_size);
                 transientTaskbarMargin =
@@ -1050,12 +1048,9 @@ public class DeviceProfile {
     }
 
     private void updateFolderCellSize(float scale, Resources res) {
-        float invIconSizeDp = isVerticalBarLayout()
-                ? inv.iconSize[INDEX_LANDSCAPE]
-                : inv.iconSize[INDEX_DEFAULT];
+        float invIconSizeDp = inv.iconSize[mTypeIndex];
         folderChildIconSizePx = Math.max(1, pxFromDp(invIconSizeDp, mMetrics, scale));
-        folderChildTextSizePx =
-                pxFromSp(inv.iconTextSize[INDEX_DEFAULT], mMetrics, scale);
+        folderChildTextSizePx = pxFromSp(inv.iconTextSize[mTypeIndex], mMetrics, scale);
         folderLabelTextSizePx = Math.max(pxFromSp(MIN_FOLDER_TEXT_SIZE_SP, mMetrics),
                 (int) (folderChildTextSizePx * folderLabelTextScale));
 
@@ -1376,7 +1371,7 @@ public class DeviceProfile {
     public int getOverviewActionsClaimedSpaceBelow() {
         if (isTaskbarPresent) {
             if (FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get()) {
-                return taskbarSize + transientTaskbarMargin;
+                return taskbarSize + transientTaskbarMargin * 2;
             }
 
             return isGestureMode
@@ -1647,6 +1642,8 @@ public class DeviceProfile {
                 overviewActionsTopMarginPx));
         writer.println(prefix + pxToDpStr("overviewActionsHeight",
                 overviewActionsHeight));
+        writer.println(prefix + pxToDpStr("overviewActionsClaimedSpaceBelow",
+                getOverviewActionsClaimedSpaceBelow()));
         writer.println(prefix + pxToDpStr("overviewActionsButtonSpacing",
                 overviewActionsButtonSpacing));
         writer.println(prefix + pxToDpStr("overviewPageSpacing", overviewPageSpacing));

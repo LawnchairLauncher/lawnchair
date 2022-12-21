@@ -203,8 +203,12 @@ public class AllAppsGridAdapter<T extends Context & ActivityContext> extends
 
         @Override
         public int getSpanSize(int position) {
-            int viewType = mApps.getAdapterItems().get(position).viewType;
             int totalSpans = mGridLayoutMgr.getSpanCount();
+            List<AdapterItem> items = mApps.getAdapterItems();
+            if (position >= items.size()) {
+                return totalSpans;
+            }
+            int viewType = items.get(position).viewType;
             if (isIconViewType(viewType)) {
                 return totalSpans / mAppsPerRow;
             } else {

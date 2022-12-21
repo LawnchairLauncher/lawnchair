@@ -37,4 +37,7 @@
     <!-- All Set page-->
     <dimen name="allset_page_allset_text_size">42sp</dimen>
     <dimen name="allset_page_swipe_up_text_size">16sp</dimen>
+
+    <!-- Transient taskbar -->
+    <dimen name="transient_taskbar_size">76dp</dimen>
 </resources>
