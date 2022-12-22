@@ -39,6 +39,7 @@ import android.view.IRemoteAnimationFinishedCallback;
 import android.view.IRemoteAnimationRunner;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
+import android.view.ViewRootImpl;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.window.BackEvent;
@@ -72,7 +73,10 @@ import com.android.systemui.shared.system.QuickStepContract;
  */
 public class LauncherBackAnimationController {
     private static final int CANCEL_TRANSITION_DURATION = 233;
-    private static final float MIN_WINDOW_SCALE = 0.7f;
+    private static final int SCRIM_FADE_DURATION = 233;
+    private static final float MIN_WINDOW_SCALE = 0.85f;
+    private static final float MAX_SCRIM_ALPHA_DARK = 0.8f;
+    private static final float MAX_SCRIM_ALPHA_LIGHT = 0.2f;
     private final QuickstepTransitionManager mQuickstepTransitionManager;
     private final Matrix mTransformMatrix = new Matrix();
     /** The window position at the beginning of the back animation. */
@@ -99,6 +103,9 @@ public class LauncherBackAnimationController {
     private IOnBackInvokedCallback mBackCallback;
     private IRemoteAnimationFinishedCallback mAnimationFinishedCallback;
     private BackProgressAnimator mProgressAnimator = new BackProgressAnimator();
+    private SurfaceControl mScrimLayer;
+    private ValueAnimator mScrimAlphaAnimator;
+    private float mScrimAlpha;
 
     public LauncherBackAnimationController(
             QuickstepLauncher launcher,
@@ -220,13 +227,50 @@ public class LauncherBackAnimationController {
             return;
         }
 
-        mTransaction.show(appTarget.leash).apply();
-        mTransaction.setAnimationTransaction();
+        mTransaction
+                .show(appTarget.leash)
+                .setAnimationTransaction();
+        mBackTarget = appTarget;
         mInitialTouchPos.set(backEvent.getTouchX(), backEvent.getTouchY());
 
         // TODO(b/218916755): Offset start rectangle in multiwindow mode.
         mStartRect.set(appTarget.windowConfiguration.getMaxBounds());
         mCurrentRect.set(mStartRect);
+        addScrimLayer();
+        mTransaction.apply();
+    }
+
+    void addScrimLayer() {
+        ViewRootImpl viewRootImpl = mLauncher.getDragLayer().getViewRootImpl();
+        SurfaceControl parent = viewRootImpl != null
+                ? viewRootImpl.getSurfaceControl()
+                : null;
+        boolean isDarkTheme = Utilities.isDarkTheme(mLauncher);
+        mScrimLayer = new SurfaceControl.Builder()
+                .setName("Back to launcher background scrim")
+                .setCallsite("LauncherBackAnimationController")
+                .setColorLayer()
+                .setParent(parent)
+                .setOpaque(false)
+                .setHidden(false)
+                .build();
+        final float[] colorComponents = new float[] { 0f, 0f, 0f };
+        mScrimAlpha = (isDarkTheme)
+                ? MAX_SCRIM_ALPHA_DARK : MAX_SCRIM_ALPHA_LIGHT;
+        mTransaction
+                .setColor(mScrimLayer, colorComponents)
+                .setAlpha(mScrimLayer, mScrimAlpha)
+                .show(mScrimLayer);
+    }
+
+    void removeScrimLayer() {
+        if (mScrimLayer == null) {
+            return;
+        }
+        if (mScrimLayer.isValid()) {
+            mTransaction.remove(mScrimLayer).apply();
+        }
+        mScrimLayer = null;
     }
 
     private void updateBackProgress(float progress, BackEvent event) {
@@ -339,6 +383,10 @@ public class LauncherBackAnimationController {
             }
             mAnimationFinishedCallback = null;
         }
+        if (mScrimAlphaAnimator != null && mScrimAlphaAnimator.isRunning()) {
+            mScrimAlphaAnimator.cancel();
+            mScrimAlphaAnimator = null;
+        }
     }
 
     private void startTransitionAnimations(RectFSpringAnim springAnim, AnimatorSet anim) {
@@ -362,7 +410,27 @@ public class LauncherBackAnimationController {
                 tryFinishBackAnimation();
             }
         });
+        mScrimAlphaAnimator = new ValueAnimator().ofFloat(1, 0);
+        mScrimAlphaAnimator.addUpdateListener(animation -> {
+            float value = (Float) animation.getAnimatedValue();
+            if (mScrimLayer.isValid()) {
+                mTransaction.setAlpha(mScrimLayer, value * mScrimAlpha);
+                mTransaction.apply();
+            }
+        });
+        mScrimAlphaAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                resetScrim();
+            }
+        });
+        mScrimAlphaAnimator.setDuration(SCRIM_FADE_DURATION).start();
         anim.start();
+    }
+
+    private void resetScrim() {
+        removeScrimLayer();
+        mScrimAlpha = 0;
     }
 
     private void tryFinishBackAnimation() {
