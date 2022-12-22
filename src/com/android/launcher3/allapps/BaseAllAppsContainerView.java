@@ -575,6 +575,10 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
             mAH.get(AdapterHolder.MAIN).setup(mViewPager.getChildAt(0), mPersonalMatcher);
             mAH.get(AdapterHolder.WORK).setup(mViewPager.getChildAt(1), mWorkManager.getMatcher());
             mAH.get(AdapterHolder.WORK).mRecyclerView.setId(R.id.apps_list_view_work);
+            if (FeatureFlags.ENABLE_EXPANDING_PAUSE_WORK_BUTTON.get()) {
+                mAH.get(AdapterHolder.WORK).mRecyclerView.addOnScrollListener(
+                        mWorkManager.newScrollListener());
+            }
             mViewPager.getPageIndicator().setActiveMarker(AdapterHolder.MAIN);
             findViewById(R.id.tab_personal)
                     .setOnClickListener((View view) -> {
@@ -666,10 +670,10 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
             mViewPager = (AllAppsPagedView) newView;
             mViewPager.initParentViews(this);
             mViewPager.getPageIndicator().setOnActivePageChangedListener(this);
-            if (mWorkManager.attachWorkModeSwitch()) {
-                mWorkManager.getWorkModeSwitch().post(
-                        () -> mAH.get(AdapterHolder.WORK).applyPadding());
-            }
+
+            mWorkManager.reset();
+            post(() -> mAH.get(AdapterHolder.WORK).applyPadding());
+
         } else {
             mWorkManager.detachWorkModeSwitch();
             mViewPager = null;
