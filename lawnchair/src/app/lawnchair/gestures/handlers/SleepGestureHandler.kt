@@ -24,8 +24,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.PowerManager
-import android.os.SystemClock
 import android.provider.Settings
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.requiredWidth
@@ -45,8 +43,6 @@ import app.lawnchair.util.requireSystemService
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.android.launcher3.util.PackageManagerHelper
-import java.lang.reflect.InvocationTargetException
 
 class SleepGestureHandler(context: Context) : GestureHandler(context) {
 
@@ -55,7 +51,6 @@ class SleepGestureHandler(context: Context) : GestureHandler(context) {
     }
 
     private val methods = listOf(
-        SleepMethodSystem(context),
         SleepMethodRoot(context),
         SleepMethodPieAccessibility(context),
         SleepMethodDeviceAdmin(context)
@@ -64,29 +59,6 @@ class SleepGestureHandler(context: Context) : GestureHandler(context) {
     sealed class SleepMethod(protected val context: Context) {
         abstract suspend fun isSupported(): Boolean
         abstract suspend fun sleep(launcher: LawnchairLauncher)
-    }
-}
-
-/**
- * Allows Lawnchair to sleep the device without any extra permissions when it is installed as a system app.
- */
-class SleepMethodSystem(context: Context) : SleepGestureHandler.SleepMethod(context) {
-    override suspend fun isSupported() = PackageManagerHelper.isSystemApp(context, context.packageName)
-
-    override suspend fun sleep(launcher: LawnchairLauncher) {
-        val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-        try {
-            powerManager.javaClass.getMethod(
-                "goToSleep",
-                *arrayOf<Class<*>?>(Long::class.javaPrimitiveType)
-            ).invoke(powerManager, SystemClock.uptimeMillis())
-        } catch (e: IllegalAccessException) {
-            e.printStackTrace()
-        } catch (e: InvocationTargetException) {
-            e.printStackTrace()
-        } catch (e: NoSuchMethodException) {
-            e.printStackTrace()
-        }
     }
 }
 
