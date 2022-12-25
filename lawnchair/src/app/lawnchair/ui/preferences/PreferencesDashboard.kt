@@ -165,9 +165,6 @@ fun PreferencesOverflowMenu() {
 
 @Composable
 fun PreferencesDebugWarning() {
-    val enableDebug by preferenceManager().enableDebugMenu.observeAsState()
-    if (enableDebug) return
-
     Surface(
         modifier = Modifier.padding(horizontal = 16.dp),
         shape = MaterialTheme.shapes.large,
