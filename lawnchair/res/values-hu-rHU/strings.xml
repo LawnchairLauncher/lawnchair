@@ -53,7 +53,7 @@
     <string name="always_reload_icons_description">Kerülje a gyorsítótárazott ikonok használatát</string>
     <string name="transparent_background_icons">Áttetsző témájú ikonok</string>
     <string name="transparent_background_icons_description">Áttetsző háttér használata téma ikonok esetén</string>
-    <string name="smartspace_mode_selection">At a Glance Provider selection</string>
+    <string name="smartspace_mode_selection">At a Glance szolgáltató kiválasztása</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Kezdőképernyő tájolása</string>
     <string name="home_screen_rotaton_description">Amikor az eszköz el van forgatva.</string>
@@ -71,7 +71,7 @@
     <string name="notification_dots_color">Értesítési pöttyök színe</string>
     <string name="notification_dots_text_color">Értesítési pöttyök színe</string>
     <string name="notification_dots_color_contrast_warning_always">Figyelmeztetés: Értesítési pötty: A pult színeinek nincs elég kontrasztja egymással</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Figyelem: Értesítési pöttynek &amp; Számláló színeknek nem biztos, hogy mindig elég kontrasztjuk lesz egymáshoz képest</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Értesítés hozzáférés szükséges</string>
     <string name="missing_notification_access_description">Értesítés hozzáférés szükséges.</string>
@@ -85,22 +85,22 @@
     <string name="theme_follow_wallpaper">Háttérkép szerinti téma</string>
     <string name="accent_color">Kiemelő szín</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Custom Icon Shape</string>
-    <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
-    <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
-    <string name="icon_shape_corner">Corner Shape</string>
-    <string name="icon_shape_corner_round">Round</string>
-    <string name="icon_shape_corner_squircle">Smooth</string>
-    <string name="icon_shape_corner_cut">Cut</string>
-    <string name="icon_shape_top_left">Top Left</string>
-    <string name="icon_shape_top_right">Top Right</string>
-    <string name="icon_shape_bottom_left">Bottom Left</string>
-    <string name="icon_shape_bottom_right">Bottom Right</string>
+    <string name="custom_icon_shape">Egyéni ikon alak</string>
+    <string name="custom_icon_shape_create">Egyéni ikon alak létrehozása</string>
+    <string name="custom_icon_shape_edit">Egyéni ikon alak személyre szabása</string>
+    <string name="icon_shape_corner">Sarok alak</string>
+    <string name="icon_shape_corner_round">Kerek</string>
+    <string name="icon_shape_corner_squircle">Lágy</string>
+    <string name="icon_shape_corner_cut">Vágott</string>
+    <string name="icon_shape_top_left">Bal felül</string>
+    <string name="icon_shape_top_right">Jobb felül</string>
+    <string name="icon_shape_bottom_left">Bal lenn</string>
+    <string name="icon_shape_bottom_right">Jobb lenn</string>
     <string name="create">Létrehoz</string>
-    <string name="clipboard">Clipboard</string>
-    <string name="export_to_clipboard">Export to Clipboard</string>
-    <string name="import_from_clipboard">Import from Clipboard</string>
-    <string name="icon_shape_clipboard_import_error">Clipboard does not contain a valid icon shape</string>
+    <string name="clipboard">Vágólap</string>
+    <string name="export_to_clipboard">Exportálás vágólapra</string>
+    <string name="import_from_clipboard">Importálás vágólapról</string>
+    <string name="icon_shape_clipboard_import_error">A vágólap nem tartalmaz megfelelő ikon alakot</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Ikoncsomag</string>
@@ -122,7 +122,7 @@
     <string name="icon_shape_octagon">Nyolcszög</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Lekerekített négyszög</string>
-    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_sharp_square">Éles négyzet</string>
     <string name="icon_shape_square">Négyzet</string>
     <string name="icon_shape_squircle">Lekerekített négyzet</string>
     <string name="icon_shape_teardrop">Könycsepp</string>
@@ -143,7 +143,7 @@
     <string name="reset_font">Visszaállítás</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Dinamikus</string>
-    <string name="swatches">Swatches</string>
+    <string name="swatches">Színminták</string>
     <string name="presets">Előbeállítások</string>
     <string name="custom">Egyéni</string>
     <string name="rgb">RGB</string>
@@ -175,7 +175,7 @@
     <string name="layout">Elrendezés</string>
     <string name="home_screen_grid">Kezdőképernyő rács</string>
     <string name="home_screen_lock">Kezdőképernyő zárolása</string>
-    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_lock_description">A kezdőlap elrendezés megváltoztatásának megakadályozása.</string>
     <string name="home_screen_unlock">Kezdőképernyő feloldása</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
@@ -189,7 +189,7 @@
     <string name="label_size">Címkeméret</string>
     <string name="reset_custom_icons">Egyéni ikonok alaphelyzetbe állítása</string>
     <string name="reset_custom_icons_confirmation">Az összes egyéni ikon alaphelyzetbe lesz állítva. Folytatja?</string>
-    <string name="home_screen_text_color">Text Color</string>
+    <string name="home_screen_text_color">Szöveg szín</string>
     <string name="color_light">Világos</string>
     <string name="color_dark">Sötét</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
@@ -228,18 +228,18 @@
     <string name="smartspace_calendar_gregorian">Gregorián</string>
     <string name="smartspace_calendar_persian">Perzsa</string>
     <string name="smartspace_preferences">Beállítások</string>
-    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
-    <string name="smartspace_mode_label">At a Glance Provider</string>
+    <string name="smartspace_widget_toggle_label">Mutatás kezdőlapon</string>
+    <string name="smartspace_widget_toggle_description">Az At a Glance manuálisan is hozzáadható a kezdőlaphoz a \"Lawnchair\" widgettel.</string>
+    <string name="smartspace_mode_label">At a Glance szolgáltató kiválasztása</string>
     <string name="smartspace_mode_lawnchair">Lawnchair</string>
     <string name="smartspace_mode_google">Google</string>
-    <string name="smartspace_mode_google_search">Google Search</string>
+    <string name="smartspace_mode_google_search">Google Keresés</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="hotseat_mode_label">Search Bar Widget</string>
-    <string name="hotseat_mode_disabled">Disabled</string>
+    <string name="hotseat_mode_label">Keresősáv widget</string>
+    <string name="hotseat_mode_disabled">Letiltva</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
-    <string name="hotseat_mode_google_search">Google Search Bar</string>
+    <string name="hotseat_mode_google_search">Google Keresősáv</string>
     <string name="search_bar_label">Kereső sáv</string>
     <string name="corner_radius_label">Sarok sugár</string>
     <string name="apply_accent_color_label">Kiemelő szín alkalmazása</string>
@@ -258,8 +258,8 @@
     <string name="background_opacity">Háttér átlátszósága</string>
     <!-- hiddenApps_label -->
     <string name="hidden_apps_label">Elrejtett alkalmazások</string>
-    <string name="show_enable_smart_hide">Show when Full Name is Typed</string>
-    <string name="hide_hidden_apps_search">Hide in Search Results</string>
+    <string name="show_enable_smart_hide">Mutatás amikor a teljes név ki van írva</string>
+    <string name="hide_hidden_apps_search">Elrejtés a keresési találatokban</string>
     <string name="pref_category_search">Keresés</string>
     <string name="show_app_search_bar">Keresősáv megjelenítése</string>
     <string name="pref_search_auto_show_keyboard">Billentyűzet automatikus mutatása</string>
@@ -284,7 +284,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Ikon háttér átlátszósága</string>
-    <string name="folder_preview_bg_color_label">Icon Background Color</string>
+    <string name="folder_preview_bg_color_label">Ikon háttérszín</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Mappa oszlopok legnagyobb száma</string>
     <string name="max_folder_rows">Mappa sorok legnagyobb száma</string>
