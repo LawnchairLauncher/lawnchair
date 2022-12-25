@@ -52,7 +52,7 @@
     <string name="always_reload_icons_label">आइकन को हमेशा पुनः लोड करें</string>
     <string name="always_reload_icons_description">आइकन पैक से कैश्ड आइकन का उपयोग करने से बचें</string>
     <string name="transparent_background_icons">पारदर्शी थीम पर आधारित आइकन</string>
-    <string name="transparent_background_icons_description">थीम्ड आइकन की पृष्ठभूमि पारदर्शी रखे</string>
+    <string name="transparent_background_icons_description">थीम्ड आइकन की पृष्ठभूमि पारदर्शी रखें</string>
     <string name="smartspace_mode_selection">ऐट अ ग्लैन्स प्रदाता चयन</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">होम स्क्रीन रोटेशन</string>
