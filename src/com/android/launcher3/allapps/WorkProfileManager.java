@@ -43,8 +43,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip;
 
 import java.lang.annotation.Retention;
@@ -80,6 +80,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
     private final UserManager mUserManager;
     private final BaseAllAppsContainerView<?> mAllApps;
     private final Predicate<ItemInfo> mMatcher;
+    private final StatsLogManager mStatsLogManager;
 
     private WorkModeSwitch mWorkModeSwitch;
 
@@ -88,11 +89,13 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
     private SharedPreferences mPreferences;
 
     public WorkProfileManager(
-            UserManager userManager, BaseAllAppsContainerView<?> allApps, SharedPreferences prefs) {
+            UserManager userManager, BaseAllAppsContainerView<?> allApps, SharedPreferences prefs,
+            StatsLogManager statsLogManager) {
         mUserManager = userManager;
         mAllApps = allApps;
         mPreferences = prefs;
         mMatcher = mAllApps.mPersonalMatcher.negate();
+        mStatsLogManager = statsLogManager;
     }
 
     /**
@@ -227,9 +230,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
 
     private void onWorkFabClicked(View view) {
         if (Utilities.ATLEAST_P && mCurrentState == STATE_ENABLED && mWorkModeSwitch.isEnabled()) {
-            ActivityContext activityContext = ActivityContext.lookupContext(
-                    mWorkModeSwitch.getContext());
-            activityContext.getStatsLogManager().logger().log(LAUNCHER_TURN_OFF_WORK_APPS_TAP);
+            mStatsLogManager.logger().log(LAUNCHER_TURN_OFF_WORK_APPS_TAP);
             setWorkProfileEnabled(false);
         }
     }
