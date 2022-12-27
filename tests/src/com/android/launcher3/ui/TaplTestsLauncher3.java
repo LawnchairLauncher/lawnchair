@@ -196,6 +196,15 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     @Test
     @PortraitLandscape
+    public void testAllAppsSwitchToWorkspace() {
+        assertNotNull("switchToWorkspace() returned null",
+                mLauncher.getWorkspace().switchToAllApps().switchToWorkspace());
+        assertTrue("Launcher internal state is not Workspace",
+                isInState(() -> LauncherState.NORMAL));
+    }
+
+    @Test
+    @PortraitLandscape
     public void testAllAppsDeadzoneForTablet() throws Exception {
         assumeTrue(mLauncher.isTablet());
 
