@@ -244,7 +244,7 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
         return mLauncher.waitForObjectInContainer(allAppsContainer, "apps_list_view");
     }
 
-    private UiObject2 getSearchBox(UiObject2 allAppsContainer) {
+    protected UiObject2 getSearchBox(UiObject2 allAppsContainer) {
         return mLauncher.waitForObjectInContainer(allAppsContainer, "search_container_all_apps");
     }
 
