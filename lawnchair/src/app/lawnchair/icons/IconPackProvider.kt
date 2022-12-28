@@ -10,11 +10,17 @@ import android.os.UserHandle
 import com.android.launcher3.icons.ClockDrawableWrapper
 import com.android.launcher3.util.MainThreadInitializedObject
 import android.graphics.drawable.InsetDrawable
+import android.graphics.drawable.ScaleDrawable
 import android.graphics.drawable.AdaptiveIconDrawable
 import com.android.launcher3.icons.ThemedIconDrawable
 import android.graphics.drawable.ColorDrawable
+import android.view.Gravity
 import app.lawnchair.icons.*
 import app.lawnchair.util.getThemedIconPacksInstalled
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.R.attr.scaleHeight
+import android.R.attr.scaleWidth
 
 
 
@@ -61,10 +67,13 @@ class IconPackProvider(private val context: Context) {
             val resId = res.getIdentifier(iconEntry.name, "drawable", iconEntry.packPackageName)
             val bg: Drawable = ColorDrawable(themedColors[0])
             val td = ThemedIconDrawable.ThemeData(res, iconEntry.packPackageName, resId)
-            val fg = td.wrapDrawable(drawable, 0)
-            return if (fg is AdaptiveIconDrawable) {
-                val foregroundDr = fg.foreground.apply { setTint(themedColors[1]) }
-                CustomAdaptiveIconDrawable(bg, foregroundDr)
+            return if (drawable is AdaptiveIconDrawable) {
+                if (context.shouldTransparentBGIcons() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && drawable.monochrome != null) {
+                    drawable.monochrome?.apply { setTint(themedColors[1]) }
+                }else {
+                    val foregroundDr = drawable.foreground.apply { setTint(themedColors[1]) }
+                    CustomAdaptiveIconDrawable(bg, foregroundDr)
+                }
             } else {
                 val iconFromPack = InsetDrawable(drawable, .3f).apply { setTint(themedColors[1]) }
                 td.wrapDrawable(CustomAdaptiveIconDrawable(bg, iconFromPack), 0)

@@ -38,9 +38,10 @@ class PreferenceManager private constructor(private val context: Context) : Base
     }
 
     val iconPackPackage = StringPref("pref_iconPackPackage", "", reloadIcons)
+    val themedIconPackPackage = StringPref("pref_themedIconPackPackage", "", reloadIcons)
     val allowRotation = BoolPref("pref_allowRotation", false)
-    val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", false, reloadIcons)
-    val transparentIconBackground = BoolPref("prefs_transparentIconBackground", false, reloadIcons)
+    val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", false, recreate)
+    val transparentIconBackground = BoolPref("prefs_transparentIconBackground", false, recreate)
     val addIconToHome = BoolPref("pref_add_icon_to_home", true)
     val hotseatColumns = IntPref("pref_hotseatColumns", 4, reloadGrid)
     val workspaceColumns = IntPref("pref_workspaceColumns", 4)
