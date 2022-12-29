@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * Singleton class to load and manage recents model.
@@ -104,7 +105,22 @@ public class RecentsModel implements IconChangeListener, TaskStackChangeListener
      * @return the request id associated with this call.
      */
     public int getTasks(Consumer<ArrayList<GroupTask>> callback) {
-        return mTaskList.getTasks(false /* loadKeysOnly */, callback);
+        return mTaskList.getTasks(false /* loadKeysOnly */, callback,
+                RecentsFilterState.DEFAULT_FILTER);
+    }
+
+
+    /**
+     * Fetches the list of recent tasks, based on a filter
+     *
+     * @param callback The callback to receive the task plan once its complete or null. This is
+     *                always called on the UI thread.
+     * @param filter  Returns true if a GroupTask should be included into the list passed into
+     *                callback.
+     * @return the request id associated with this call.
+     */
+    public int getTasks(Consumer<ArrayList<GroupTask>> callback, Predicate<GroupTask> filter) {
+        return mTaskList.getTasks(false /* loadKeysOnly */, callback, filter);
     }
 
     /**
@@ -126,8 +142,9 @@ public class RecentsModel implements IconChangeListener, TaskStackChangeListener
      * Checks if a task has been removed or not.
      *
      * @param callback Receives true if task is removed, false otherwise
+     * @param filter Returns true if GroupTask should be in the list of considerations
      */
-    public void isTaskRemoved(int taskId, Consumer<Boolean> callback) {
+    public void isTaskRemoved(int taskId, Consumer<Boolean> callback, Predicate<GroupTask> filter) {
         mTaskList.getTasks(true /* loadKeysOnly */, (taskGroups) -> {
             for (GroupTask group : taskGroups) {
                 if (group.containsTask(taskId)) {
@@ -136,7 +153,7 @@ public class RecentsModel implements IconChangeListener, TaskStackChangeListener
                 }
             }
             callback.accept(true);
-        });
+        }, filter);
     }
 
     @Override
