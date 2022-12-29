@@ -9,7 +9,7 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.serialization' version "1.7.20"
     id "com.google.devtools.ksp" version "1.7.20-1.0.8"
     id 'com.google.protobuf' version "0.9.1"
-    id 'com.google.android.gms.oss-licenses-plugin' version "0.10.5"
+    id 'com.google.android.gms.oss-licenses-plugin' version "0.10.6"
     id 'dev.rikka.tools.refine' version "3.1.1"
 }
 
@@ -56,12 +56,6 @@ allprojects {
         it.name.contains("transformClassesWithHiddenApiRefine")
     }.configureEach {
         notCompatibleWithConfigurationCache("https://github.com/RikkaApps/HiddenApiRefinePlugin/issues/9")
-    }
-
-    tasks.matching {
-        it.name.contains("OssLicensesTask")
-    }.configureEach {
-        notCompatibleWithConfigurationCache("https://github.com/google/play-services-plugins/issues/206")
     }
 
     ext.getFrameworkJar = { String name ->
