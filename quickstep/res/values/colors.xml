@@ -76,4 +76,7 @@
 
     <color name="all_set_page_background">#FFFFFFFF</color>
 
+    <!-- Recents overview -->
+    <color name="recents_filter_icon">#333333</color>
+
 </resources>
