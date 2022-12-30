@@ -20,6 +20,7 @@ import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
+import static com.android.launcher3.Utilities.isTrackpadMotionEvent;
 import static com.android.launcher3.config.FeatureFlags.ASSISTANT_GIVES_LAUNCHER_FOCUS;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.GestureState.DEFAULT_STATE;
@@ -619,7 +620,8 @@ public class TouchInteractionService extends Service
             mRotationTouchHelper.setOrientationTransformIfNeeded(event);
 
             if (!mDeviceState.isOneHandedModeActive()
-                    && mRotationTouchHelper.isInSwipeUpTouchRegion(event)) {
+                    && mRotationTouchHelper.isInSwipeUpTouchRegion(event,
+                    mOverviewComponentObserver.getActivityInterface())) {
                 // Clone the previous gesture state since onConsumerAboutToBeSwitched might trigger
                 // onConsumerInactive and wipe the previous gesture state
                 GestureState prevGestureState = new GestureState(mGestureState);
@@ -850,7 +852,7 @@ public class TouchInteractionService extends Service
                         .append("accessibility menu is available")
                         .append(", using AccessibilityInputConsumer");
                 base = new AccessibilityInputConsumer(
-                        this, mDeviceState, base, mInputMonitorCompat);
+                        this, mDeviceState, mGestureState, base, mInputMonitorCompat);
             }
         } else {
             String reasonPrefix = "device is not in gesture navigation mode";

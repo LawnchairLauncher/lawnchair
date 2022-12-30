@@ -380,6 +380,10 @@ public final class FeatureFlags {
             "ENABLE_TASKBAR_EDU_TOOLTIP", false,
             "Enable the tooltip version of the Taskbar education flow.");
 
+    public static final BooleanFlag ENABLE_MULTI_INSTANCE = getDebugFlag(
+            "ENABLE_MULTI_INSTANCE", false,
+            "Enables creation and filtering of multiple task instances in overview");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
