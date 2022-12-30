@@ -306,6 +306,9 @@
     <dimen name="taskbar_button_margin_6_5">75dp</dimen>
     <dimen name="taskbar_button_margin_default">48dp</dimen>
 
+    <!-- Recents overview -->
+    <dimen name="recents_filter_icon_size">30dp</dimen>
+
     <!-- Launcher splash screen -->
     <!-- Note: keep this value in sync with the WindowManager/Shell dimens.xml -->
     <!--     starting_surface_exit_animation_window_shift_length -->
