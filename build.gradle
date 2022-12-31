@@ -9,7 +9,7 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.serialization' version "1.7.20"
     id "com.google.devtools.ksp" version "1.7.20-1.0.8"
     id 'com.google.protobuf' version "0.9.1"
-    id 'com.google.android.gms.oss-licenses-plugin' version "0.10.5"
+    id 'com.google.android.gms.oss-licenses-plugin' version "0.10.6"
     id 'dev.rikka.tools.refine' version "3.1.1"
 }
 
@@ -36,7 +36,7 @@ allprojects {
             implementation 'androidx.core:core-ktx:1.9.0'
 
             testImplementation 'junit:junit:4.13.2'
-            androidTestImplementation 'org.mockito:mockito-core:4.10.0'
+            androidTestImplementation 'org.mockito:mockito-core:4.11.0'
             androidTestImplementation 'com.google.dexmaker:dexmaker:1.2'
             androidTestImplementation 'com.google.dexmaker:dexmaker-mockito:1.2'
             androidTestImplementation 'com.android.support.test:runner:1.0.2'
@@ -56,12 +56,6 @@ allprojects {
         it.name.contains("transformClassesWithHiddenApiRefine")
     }.configureEach {
         notCompatibleWithConfigurationCache("https://github.com/RikkaApps/HiddenApiRefinePlugin/issues/9")
-    }
-
-    tasks.matching {
-        it.name.contains("OssLicensesTask")
-    }.configureEach {
-        notCompatibleWithConfigurationCache("https://github.com/google/play-services-plugins/issues/206")
     }
 
     ext.getFrameworkJar = { String name ->
@@ -144,8 +138,6 @@ android {
         manifestPlaceholders.quickstepMaxSdk = quickstepMaxSdk
         buildConfigField "int", "QUICKSTEP_MIN_SDK", quickstepMinSdk
         buildConfigField "int", "QUICKSTEP_MAX_SDK", quickstepMaxSdk
-
-        ksp { arg("room.schemaLocation", "$projectDir/schemas".toString()) }
     }
 
     applicationVariants.all { variant ->
@@ -402,6 +394,11 @@ dependencies {
     implementation 'com.github.samanzamani:PersianDate:1.5.4'
 
     implementation 'com.airbnb.android:lottie:5.2.0'
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+    arg("room.incremental", "true")
 }
 
 protobuf {
