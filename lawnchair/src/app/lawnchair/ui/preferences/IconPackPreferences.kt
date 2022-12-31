@@ -104,6 +104,7 @@ fun IconPackPreferences() {
     val drawerThemedIconsAdapter = prefs.drawerThemedIcons.getAdapter()
     val isPortrait = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
     val scrollState = rememberScrollState()
+    val drawerThemedIconsEnabled = drawerThemedIconsAdapter.state.value
 
     PreferenceLayout(
         label = stringResource(id = R.string.icon_style),
@@ -150,7 +151,7 @@ fun IconPackPreferences() {
                     },
                     value = ThemedIconsState.getForSettings(
                         themedIcons = themedIconsAdapter.state.value,
-                        drawerThemedIcons = drawerThemedIconsAdapter.state.value,
+                        drawerThemedIcons = drawerThemedIconsEnabled,
                     ),
                     onValueChange = {
                         themedIconsAdapter.onChange(newValue = it.themedIcons)
@@ -164,34 +165,34 @@ fun IconPackPreferences() {
                 )
             }
 
-            ExpandAndShrink(visible = themedIconsAdapter.state.value && !drawerThemedIconsAdapter.state.value) {
-                PreferenceGroup {
-                    PreferenceGroupHeading(heading = stringResource(id = R.string.themed_icon_pack))
+            ExpandAndShrink(visible = themedIconsAdapter.state.value && !drawerThemedIconsEnabled) {
+                PreferenceGroup(
+                    heading = stringResource(id = R.string.themed_icon_pack)
+                ) {
                     IconPackGrid(
                         adapter = themedIconPackAdapter,
-                        modifier = Modifier.padding(bottom = 6.dp, top = 6.dp),
-                        drawerThemedIconsAdapter.state.value,
+                        drawerThemedIconsEnabled,
                         true
                     )
                 }
             }
-            ExpandAndShrink(visible = drawerThemedIconsAdapter.state.value) {
-                PreferenceGroup {
-                    PreferenceGroupHeading(heading = stringResource(id = R.string.themed_icon_pack))
+            ExpandAndShrink(visible = drawerThemedIconsEnabled) {
+                PreferenceGroup(
+                    heading = stringResource(id = R.string.themed_icon_pack)
+                ) {
                     IconPackGrid(
                         adapter = iconPackAdapter,
-                        modifier = Modifier.padding(bottom = 6.dp, top = 6.dp),
-                        drawerThemedIconsAdapter.state.value,
+                        drawerThemedIconsEnabled,
                         true
                     )
                 }
             }
-            ExpandAndShrink(visible = !drawerThemedIconsAdapter.state.value) {
-                PreferenceGroup {
-                    PreferenceGroupHeading(heading = stringResource(id = R.string.icon_pack))
+            ExpandAndShrink(visible = !drawerThemedIconsEnabled) {
+                PreferenceGroup(
+                    heading = stringResource(id = R.string.icon_pack)
+                ) {
                     IconPackGrid(
                         adapter = iconPackAdapter,
-                        modifier = Modifier.padding(bottom = 6.dp, top = 6.dp),
                         themedIconsAdapter.state.value,
                         false
                     )
@@ -204,7 +205,6 @@ fun IconPackPreferences() {
 @Composable
 fun IconPackGrid(
     adapter: PreferenceAdapter<String>,
-    modifier: Modifier,
     drawerThemedIcons: Boolean,
     isThemedIconPack: Boolean
 ) {
@@ -214,6 +214,7 @@ fun IconPackGrid(
     val padding = 12.dp
     var _iconPacks = iconPacks
     val themedIconPacksName = themedIconPacks.map { it.name }
+    val modifier = Modifier.padding(bottom = 6.dp, top = 6.dp)
 
     if (isThemedIconPack) {
         _iconPacks = if (drawerThemedIcons) {
@@ -221,10 +222,8 @@ fun IconPackGrid(
         } else {
             themedIconPacks.filter { it.packageName != "" }
         }
-    } else {
-        if (drawerThemedIcons) {
-            _iconPacks = iconPacks.filter { it.packageName == "" || !themedIconPacksName.contains(it.name) }
-        }
+    } else if (drawerThemedIcons) {
+        _iconPacks = iconPacks.filter { it.packageName == "" || !themedIconPacksName.contains(it.name) }
     }
 
 
