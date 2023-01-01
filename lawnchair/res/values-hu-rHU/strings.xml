@@ -209,7 +209,7 @@
     <string name="accessibility_smartspace_page">Oldal %1$d a %2$d-ból</string>
     <string name="smartspace_widget">At a Glance</string>
     <string name="smartspace_widget_description">Mit mutasson</string>
-    <string name="smartspace_widget_placeholder_date">Péntek, Március 3</string>
+    <string name="smartspace_widget_placeholder_date">Péntek, március 3.</string>
     <string name="preview_label">Előnézet</string>
     <string name="smartspace_calendar">Naptár</string>
     <string name="smartspace_date_and_time">Dátum &amp; Idő</string>
