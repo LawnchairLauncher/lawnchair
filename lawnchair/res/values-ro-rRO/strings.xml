@@ -51,8 +51,8 @@
     <string name="workspace_increase_max_grid_size_description">Mărește dimensiunea maximă permisă a grilei ecranului de pornire de la 10 x 10 la 20 x 20.</string>
     <string name="always_reload_icons_label">Reîncarcă întotdeauna pictogramele</string>
     <string name="always_reload_icons_description">Evită utilizarea pictogramelor stocate în cache din pachetele de pictograme</string>
-    <string name="transparent_background_icons">Transparent Themed Icons</string>
-    <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
+    <string name="transparent_background_icons">Pictograme cu aspect transparent</string>
+    <string name="transparent_background_icons_description">Utilizează fundal transparent pe pictograme tematice</string>
     <string name="smartspace_mode_selection">At a Glance Provider selection</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotația ecranului de pornire</string>
@@ -69,7 +69,7 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Arată numărul notificărilor</string>
     <string name="notification_dots_color">Culoarea insignei notificării</string>
-    <string name="notification_dots_text_color">Notification Count Color</string>
+    <string name="notification_dots_text_color">Culoare număr de notificări</string>
     <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
     <!-- Notification popup -->
@@ -85,7 +85,7 @@
     <string name="theme_follow_wallpaper">Potrivire a imaginii de fundal</string>
     <string name="accent_color">Culoare de accent</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Custom Icon Shape</string>
+    <string name="custom_icon_shape">Formă pictogramă personalizată</string>
     <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
     <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
     <string name="icon_shape_corner">Corner Shape</string>

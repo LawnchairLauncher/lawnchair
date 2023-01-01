@@ -85,10 +85,10 @@
     <string name="theme_follow_wallpaper">На основе обоев</string>
     <string name="accent_color">Цветовой акцент</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Форма иконок</string>
-    <string name="custom_icon_shape_create">Пользовательская форма иконок</string>
+    <string name="custom_icon_shape">Пользовательская форма иконок</string>
+    <string name="custom_icon_shape_create">Содать свою форму иконок</string>
     <string name="custom_icon_shape_edit">Редактировать свою форму иконок</string>
-    <string name="icon_shape_corner">Угловая форма</string>
+    <string name="icon_shape_corner">Форма углов</string>
     <string name="icon_shape_corner_round">Круглая</string>
     <string name="icon_shape_corner_squircle">Сглаженная</string>
     <string name="icon_shape_corner_cut">Обрезанная</string>
@@ -116,10 +116,10 @@
     <string name="icon_shape_system">Система</string>
     <string name="icon_shape_circle">Круг</string>
     <string name="icon_shape_cylinder">Цилиндр</string>
-    <string name="icon_shape_diamond">Ромб</string>
+    <string name="icon_shape_diamond">Алмаз</string>
     <string name="icon_shape_egg">Яйцо</string>
     <string name="icon_shape_cupertino">iOS</string>
-    <string name="icon_shape_octagon">Октагон</string>
+    <string name="icon_shape_octagon">Восьмиугольник</string>
     <string name="icon_shape_sammy">Из OneUI</string>
     <string name="icon_shape_rounded_square">Скруглённый квадрат</string>
     <string name="icon_shape_sharp_square">Острый квадрат</string>
@@ -139,13 +139,13 @@
     <string name="font_weight_semi_bold">Полужирный</string>
     <string name="font_weight_bold">Жирный</string>
     <string name="font_weight_extra_bold">Экстра жирный</string>
-    <string name="font_weight_extra_black">Сверхжирный</string>
-    <string name="reset_font">Сбросить</string>
+    <string name="font_weight_extra_black">Черный</string>
+    <string name="reset_font">Сброс</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Динамический</string>
     <string name="swatches">Образцы</string>
-    <string name="presets">Пресеты</string>
-    <string name="custom">Настраиваемый</string>
+    <string name="presets">Предустановки</string>
+    <string name="custom">Пользовательский</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Красный</string>
     <string name="rgb_green">Зелёный</string>
@@ -156,7 +156,7 @@
     <string name="hsb_brightness">Яркость</string>
     <string name="hex">Hex</string>
     <string name="color_sliders">Ползунки</string>
-    <string name="action_copy">Скопировать</string>
+    <string name="action_copy">Копировать</string>
     <string name="action_paste">Вставить</string>
     <string name="copied_toast">Скопировано в буфер обмена.</string>
     <string name="invalid_color">Недопустимый цвет</string>
@@ -204,7 +204,7 @@
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Зарядка</string>
     <string name="smartspace_battery_full">Заряжено</string>
-    <string name="smartspace_battery_low">Низкий заряд</string>
+    <string name="smartspace_battery_low">Батарея разряжена</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Полная через %2$s"</string>
     <string name="accessibility_smartspace_page">Страница %1$d из %2$d</string>
     <string name="smartspace_widget">Самое главное</string>
@@ -258,7 +258,7 @@
     <string name="background_opacity">Прозрачность фона</string>
     <!-- hiddenApps_label -->
     <string name="hidden_apps_label">Скрытые приложения</string>
-    <string name="show_enable_smart_hide">Показать, когда полное имя введено</string>
+    <string name="show_enable_smart_hide">Показать, когда полное название введено</string>
     <string name="hide_hidden_apps_search">Скрывать в результатах поиска</string>
     <string name="pref_category_search">Поиск</string>
     <string name="show_app_search_bar">Показать строку поиска</string>
@@ -355,7 +355,7 @@
     <string name="loading">Загрузка…</string>
     <string name="system">Система</string>
     <string name="customize_button_text">Настроить</string>
-    <string name="label">Метка</string>
+    <string name="label">Название</string>
     <string name="hide_from_drawer">Скрыть из меню приложений</string>
     <string name="suggestion_pref_screen_title">Рекомендации</string>
     <string name="n_percent">%1$d%%</string>
