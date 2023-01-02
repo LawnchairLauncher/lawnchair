@@ -64,7 +64,10 @@ class IconPackProvider(private val context: Context) {
                 ) else drawable
             }
             if (clockDrawable != null) {
-                if(context.shouldTransparentBGIcons()) clockDrawable.foreground else return clockDrawable
+                return if (context.shouldTransparentBGIcons()) clockDrawable.foreground else CustomAdaptiveIconDrawable(
+                    clockDrawable.background,
+                    clockDrawable.foreground
+                )
             }
         }
         if (isThemedIconsEnabled) {
