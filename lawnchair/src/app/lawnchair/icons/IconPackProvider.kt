@@ -10,17 +10,11 @@ import android.os.UserHandle
 import com.android.launcher3.icons.ClockDrawableWrapper
 import com.android.launcher3.util.MainThreadInitializedObject
 import android.graphics.drawable.InsetDrawable
-import android.graphics.drawable.ScaleDrawable
 import android.graphics.drawable.AdaptiveIconDrawable
 import com.android.launcher3.icons.ThemedIconDrawable
 import android.graphics.drawable.ColorDrawable
-import android.view.Gravity
 import app.lawnchair.icons.*
 import app.lawnchair.util.getThemedIconPacksInstalled
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.R.attr.scaleHeight
-import android.R.attr.scaleWidth
 
 
 class IconPackProvider(private val context: Context) {
