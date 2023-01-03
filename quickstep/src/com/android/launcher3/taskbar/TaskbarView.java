@@ -101,15 +101,14 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         super(context, attrs, defStyleAttr, defStyleRes);
         mActivityContext = ActivityContext.lookupContext(context);
         mIconLayoutBounds = mActivityContext.getTransientTaskbarBounds();
-        mIsRtl = Utilities.isRtl(getResources());
-
         Resources resources = getResources();
-        mIconTouchSize = resources.getDimensionPixelSize(R.dimen.taskbar_icon_touch_size);
+        mIsRtl = Utilities.isRtl(resources);
 
-        int actualMargin = DisplayController.isTransientTaskbar(mActivityContext)
-                ? resources.getDimensionPixelSize(R.dimen.transient_taskbar_icon_spacing)
-                : resources.getDimensionPixelSize(R.dimen.taskbar_icon_spacing);
+        int actualMargin = resources.getDimensionPixelSize(R.dimen.taskbar_icon_spacing);
         int actualIconSize = mActivityContext.getDeviceProfile().iconSizePx;
+
+        mIconTouchSize = Math.max(actualIconSize,
+                resources.getDimensionPixelSize(R.dimen.taskbar_icon_min_touch_size));
 
         // We layout the icons to be of mIconTouchSize in width and height
         mItemMarginLeftRight = actualMargin - (mIconTouchSize - actualIconSize) / 2;
