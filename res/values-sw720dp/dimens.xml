@@ -46,7 +46,4 @@
 
     <!--  Folder spaces  -->
     <dimen name="folder_footer_horiz_padding">24dp</dimen>
-
-    <!-- Transient taskbar -->
-    <dimen name="transient_taskbar_icon_size">57dp</dimen>
 </resources>
