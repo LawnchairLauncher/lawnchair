@@ -132,10 +132,10 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
                             (CellLayoutLayoutParams) callView.getLayoutParams();
                     // is icon
                     if (callView instanceof DoubleShadowBubbleTextView) {
-                        board.addIcon(params.cellX, params.cellY);
+                        board.addIcon(params.getCellX(), params.getCellY());
                     } else {
                         // is widget
-                        board.addWidget(params.cellX, params.cellY, params.cellHSpan,
+                        board.addWidget(params.getCellX(), params.getCellY(), params.cellHSpan,
                                 params.cellVSpan, (char) ('A' + widgetCount));
                         widgetCount++;
                     }
