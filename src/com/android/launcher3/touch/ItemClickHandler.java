@@ -343,7 +343,8 @@ public class ItemClickHandler {
                 return;
             }
         }
-        if (v != null && launcher.supportsAdaptiveIconAnimation(v)) {
+        if (v != null && launcher.supportsAdaptiveIconAnimation(v)
+                && !item.shouldUseBackgroundAnimation()) {
             // Preload the icon to reduce latency b/w swapping the floating view with the original.
             FloatingIconView.fetchIcon(launcher, v, item, true /* isOpening */);
         }
