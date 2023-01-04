@@ -1557,6 +1557,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 ActiveGestureErrorDetector.GestureEvent.SCROLLER_ANIMATION_ABORTED);
     }
 
+    @Override
+    protected boolean isPageScrollsInitialized() {
+        return super.isPageScrollsInitialized() && mLoadPlanEverApplied;
+    }
+
     protected void applyLoadPlan(ArrayList<GroupTask> taskGroups) {
         if (mPendingAnimation != null) {
             mPendingAnimation.addEndListener(success -> applyLoadPlan(taskGroups));
@@ -1570,6 +1575,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // With all tasks removed, touch handling in PagedView is disabled and we need to reset
             // touch state or otherwise values will be obsolete.
             resetTouchState();
+            if (isPageScrollsInitialized()) {
+                onPageScrollsInitialized();
+            }
             return;
         }
 
@@ -1723,6 +1731,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         resetTaskVisuals();
         onTaskStackUpdated();
         updateEnabledOverlays();
+        if (isPageScrollsInitialized()) {
+            onPageScrollsInitialized();
+        }
     }
 
     private boolean isModal() {
@@ -2066,7 +2077,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (!mActivity.getDeviceProfile().isTablet) {
             return super.getDestinationPage(scaledScroll);
         }
-        if (!pageScrollsInitialized()) {
+        if (!isPageScrollsInitialized()) {
             Log.e(TAG,
                     "Cannot get destination page: RecentsView not properly initialized",
                     new IllegalStateException());
