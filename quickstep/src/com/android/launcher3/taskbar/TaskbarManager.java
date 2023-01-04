@@ -320,6 +320,12 @@ public class TaskbarManager {
         }
     }
 
+    public void onLongPressHomeEnabled(boolean assistantLongPressEnabled) {
+        if (mNavButtonController != null) {
+            mNavButtonController.setAssistantLongPressEnabled(assistantLongPressEnabled);
+        }
+    }
+
     /**
      * Sets the flag indicating setup UI is visible
      */

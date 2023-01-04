@@ -67,6 +67,7 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
 
     private long mLastScreenPinLongPress;
     private boolean mScreenPinned;
+    private boolean mAssistantLongPressEnabled;
 
     @Override
     public void dumpLogs(String prefix, PrintWriter pw) {
@@ -251,6 +252,10 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
         mStatsLogManager = null;
     }
 
+    public void setAssistantLongPressEnabled(boolean assistantLongPressEnabled) {
+        mAssistantLongPressEnabled = assistantLongPressEnabled;
+    }
+
     private void logEvent(StatsLogManager.LauncherEvent event) {
         if (mStatsLogManager == null) {
             Log.w(TAG, "No stats log manager to log taskbar button event");
@@ -289,7 +294,7 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
     }
 
     private void startAssistant() {
-        if (mScreenPinned) {
+        if (mScreenPinned || !mAssistantLongPressEnabled) {
             return;
         }
         Bundle args = new Bundle();
