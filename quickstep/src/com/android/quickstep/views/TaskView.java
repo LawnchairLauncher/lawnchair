@@ -561,10 +561,12 @@ public class TaskView extends FrameLayout implements Reusable {
      */
     protected void updateFilterCallback(@NonNull View filterView,
             @Nullable View.OnClickListener callback) {
+        // Filtering changes alpha instead of the visibility since visibility
+        // can be altered separately through RecentsView#resetFromSplitSelectionState()
         if (callback == null) {
-            filterView.setVisibility(GONE);
+            filterView.setAlpha(0);
         } else {
-            filterView.setVisibility(VISIBLE);
+            filterView.setAlpha(1);
         }
 
         filterView.setOnClickListener(callback);
