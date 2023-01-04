@@ -22,6 +22,8 @@ import static android.view.WindowManager.TRANSIT_OPEN;
 import static android.view.WindowManager.TRANSIT_TO_FRONT;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.QuickstepTransitionManager.ANIMATION_DELAY_NAV_FADE_IN;
@@ -330,6 +332,17 @@ public final class TaskViewUtils {
                 Matrix localMti = new Matrix();
                 localMt.invert(localMti);
                 mti[i] = localMti;
+
+                // Translations for child thumbnails also get scaled as the parent taskView scales
+                // Add inverse scaling to keep translations the same
+                float translationY = ttv.getTranslationY();
+                float translationX = ttv.getTranslationX();
+                float fullScreenScale =
+                        topMostSimulators[i].getTaskViewSimulator().getFullScreenScale();
+                out.addFloat(ttv, VIEW_TRANSLATE_Y, translationY,
+                        translationY / fullScreenScale, TOUCH_RESPONSE_INTERPOLATOR);
+                out.addFloat(ttv, VIEW_TRANSLATE_X, translationX,
+                         translationX / fullScreenScale, TOUCH_RESPONSE_INTERPOLATOR);
             }
 
             Matrix[] k0i = new Matrix[matrixSize];

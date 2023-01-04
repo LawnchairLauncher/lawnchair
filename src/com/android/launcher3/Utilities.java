@@ -768,4 +768,14 @@ public final class Utilities {
     public static float getYVelocity(VelocityTracker velocityTracker, MotionEvent event) {
         return getYVelocity(velocityTracker, event, -1 /* ACTIVE_POINTER_ID */);
     }
+
+    /** Logs the Scale and Translate properties of a matrix. Ignores skew and perspective. */
+    public static void logMatrix(String label, Matrix matrix) {
+        float[] matrixValues = new float[9];
+        matrix.getValues(matrixValues);
+        Log.d(label, String.format("%s: %s\nscale (x,y) = (%f, %f)\ntranslate (x,y) = (%f, %f)",
+                label, matrix, matrixValues[Matrix.MSCALE_X], matrixValues[Matrix.MSCALE_Y],
+                matrixValues[Matrix.MTRANS_X], matrixValues[Matrix.MTRANS_Y]
+        ));
+    }
 }
