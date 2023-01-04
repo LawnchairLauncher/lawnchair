@@ -17,6 +17,7 @@
 
 package com.android.launcher3.graphics;
 
+import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_DOWNLOAD_APP_UX_V2;
 
@@ -39,6 +40,7 @@ import android.util.Property;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
@@ -72,12 +74,13 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
     private static final int DISABLED_ICON_ALPHA = (int) (0.6f * MAX_PAINT_ALPHA);
 
     private static final long DURATION_SCALE = 500;
+    private static final long SCALE_AND_ALPHA_ANIM_DURATION = 500;
 
     // The smaller the number, the faster the animation would be.
     // Duration = COMPLETE_ANIM_FRACTION * DURATION_SCALE
     private static final float COMPLETE_ANIM_FRACTION = 0.3f;
 
-    private static final float SMALL_SCALE = ENABLE_DOWNLOAD_APP_UX_V2.get() ? 0.85f : 0.7f;
+    private static final float SMALL_SCALE = ENABLE_DOWNLOAD_APP_UX_V2.get() ? 0.867f : 0.7f;
     private static final float PROGRESS_STROKE_SCALE = 0.075f;
 
     private static final int PRELOAD_ACCENT_COLOR_INDEX = 0;
@@ -110,12 +113,13 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
 
     private int mTrackAlpha;
     private float mTrackLength;
-    private float mIconScale;
 
     private boolean mRanFinishAnimation;
 
-    private int mOverlayAlpha = 127;
-    private int mRefreshRateMillis;
+    private final int mRefreshRateMillis;
+    private final AnimatedFloat mIconScale = new AnimatedFloat(this::invalidateSelf);
+    private final AnimatedFloat mOverlayAlpha = new AnimatedFloat(this::updateOverlayAlpha);
+    private boolean mShouldAnimateScaleAndAlpha;
 
     // Progress of the internal state. [0, 1] indicates the fraction of completed progress,
     // [1, (1 + COMPLETE_ANIM_FRACTION)] indicates the progress of zoom animation.
@@ -154,6 +158,12 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
         mSystemBackgroundColor = preloadColors[PRELOAD_BACKGROUND_COLOR_INDEX];
         mIsDarkMode = isDarkMode;
         mRefreshRateMillis = refreshRateMillis;
+
+        // If it's a pending app we will animate scale and alpha when it's no longer pending.
+        if (ENABLE_DOWNLOAD_APP_UX_V2.get() && info.getProgressLevel() == 0) {
+            mShouldAnimateScaleAndAlpha = true;
+            mOverlayAlpha.updateValue(127);
+        }
 
         setLevel(info.getProgressLevel());
         setIsStartable(info.isAppStartable());
@@ -199,7 +209,8 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
         canvas.drawPath(mScaledProgressPath, mProgressPaint);
 
         int saveCount = canvas.save();
-        canvas.scale(mIconScale, mIconScale, bounds.exactCenterX(), bounds.exactCenterY());
+        canvas.scale(
+                mIconScale.value, mIconScale.value, bounds.exactCenterX(), bounds.exactCenterY());
         super.drawInternal(canvas, bounds);
         canvas.restoreToCount(saveCount);
 
@@ -301,18 +312,34 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
      *     - only icon is drawn in normal state
      */
     private void setInternalProgress(float progress) {
+        // Animate scale and alpha from pending to downloading state.
+        if (ENABLE_DOWNLOAD_APP_UX_V2.get()
+                && mShouldAnimateScaleAndAlpha && mInternalStateProgress == 0 && progress > 0) {
+            Animator iconScaleAnimator = mIconScale.animateToValue(SMALL_SCALE);
+            iconScaleAnimator.setDuration(SCALE_AND_ALPHA_ANIM_DURATION);
+            iconScaleAnimator.setInterpolator(EMPHASIZED);
+            iconScaleAnimator.start();
+
+            Animator overlayAlphaAnimator = mOverlayAlpha.animateToValue(0);
+            overlayAlphaAnimator.setDuration(SCALE_AND_ALPHA_ANIM_DURATION);
+            overlayAlphaAnimator.setInterpolator(EMPHASIZED);
+            overlayAlphaAnimator.start();
+        }
+
         mInternalStateProgress = progress;
         if (progress <= 0) {
-            mIconScale = ENABLE_DOWNLOAD_APP_UX_V2.get() ? 1 : SMALL_SCALE;
+            mIconScale.updateValue(ENABLE_DOWNLOAD_APP_UX_V2.get() ? 1 : SMALL_SCALE);
             mScaledTrackPath.reset();
             mTrackAlpha = MAX_PAINT_ALPHA;
         } else if (progress < 1) {
             mPathMeasure.getSegment(0, progress * mTrackLength, mScaledProgressPath, true);
             if (ENABLE_DOWNLOAD_APP_UX_V2.get()) {
-                mPaint.setColorFilter(null);
                 mPathMeasure.getSegment(0, mTrackLength, mScaledTrackPath, true);
             }
-            mIconScale = SMALL_SCALE;
+
+            if (!ENABLE_DOWNLOAD_APP_UX_V2.get() || !mShouldAnimateScaleAndAlpha) {
+                mIconScale.updateValue(SMALL_SCALE);
+            }
             mTrackAlpha = MAX_PAINT_ALPHA;
         } else {
             setIsDisabled(mItem.isDisabled());
@@ -321,11 +348,11 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
 
             if (fraction >= 1) {
                 // Animation has completed
-                mIconScale = 1;
+                mIconScale.updateValue(1);
                 mTrackAlpha = 0;
             } else {
                 mTrackAlpha = Math.round((1 - fraction) * MAX_PAINT_ALPHA);
-                mIconScale = SMALL_SCALE + (1 - SMALL_SCALE) * fraction;
+                mIconScale.updateValue(SMALL_SCALE + (1 - SMALL_SCALE) * fraction);
             }
         }
         invalidateSelf();
@@ -370,9 +397,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
         if (!ENABLE_DOWNLOAD_APP_UX_V2.get() || mInternalStateProgress > 0) {
             return;
         }
-        if (applyPendingIconOverlay()) {
-            invalidateSelf();
-        } else {
+        if (!applyPendingIconOverlay()) {
             reschedule();
         }
     }
@@ -408,7 +433,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
         long waveMotionDelay = (mItem.cellX * WAVE_MOTION_DELAY_FACTOR_MILLIS)
                 + (mItem.cellY * WAVE_MOTION_DELAY_FACTOR_MILLIS);
         long time = SystemClock.uptimeMillis();
-        int newAlpha = (int) Utilities.mapBoundToRange(
+        float newAlpha = Utilities.mapBoundToRange(
                 (float) (time + waveMotionDelay) % ALPHA_DURATION_MILLIS,
                 0,
                 ALPHA_DURATION_MILLIS,
@@ -416,20 +441,23 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
                 MAX_PAINT_ALPHA,
                 LINEAR);
         if (newAlpha > OVERLAY_ALPHA_RANGE) {
-            newAlpha = (int) (OVERLAY_ALPHA_RANGE - (newAlpha % OVERLAY_ALPHA_RANGE));
+            newAlpha = (OVERLAY_ALPHA_RANGE - (newAlpha % OVERLAY_ALPHA_RANGE));
         }
 
         boolean invalidate = false;
-        if (mOverlayAlpha != newAlpha) {
-            mOverlayAlpha = newAlpha;
-            int overlayColor = mIsDarkMode ? 0 : 255;
-            int currArgb = Color.argb(mOverlayAlpha, overlayColor, overlayColor, overlayColor);
-            mPaint.setColorFilter(COLOR_FILTER_MAP.computeIfAbsent(
-                    currArgb,
-                    FILTER_FACTORY));
+        if ((int) mOverlayAlpha.value != newAlpha) {
+            mOverlayAlpha.updateValue(newAlpha);
             invalidate = true;
         }
         return invalidate;
+    }
+
+    private void updateOverlayAlpha() {
+        int overlayColor = mIsDarkMode ? 0 : 255;
+        int currArgb =
+                Color.argb((int) mOverlayAlpha.value, overlayColor, overlayColor, overlayColor);
+        mPaint.setColorFilter(COLOR_FILTER_MAP.computeIfAbsent(currArgb, FILTER_FACTORY));
+        invalidateSelf();
     }
 
     protected static class PreloadIconConstantState extends FastBitmapConstantState {
