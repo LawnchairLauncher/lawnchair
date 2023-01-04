@@ -3178,8 +3178,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             }
         }
 
-        announceForAccessibility(getResources().getString(R.string.task_view_closed));
-
         float dismissTranslationInterpolationEnd = 1;
         boolean closeGapBetweenClearAll = false;
         boolean isClearAllHidden = isClearAllHidden();
@@ -3506,6 +3504,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                             } else {
                                 removeTaskInternal(dismissedTaskViewId);
                             }
+                            announceForAccessibility(
+                                    getResources().getString(R.string.task_view_closed));
                             mActivity.getStatsLogManager().logger()
                                     .withItemInfo(dismissedTaskView.getItemInfo())
                                     .log(LAUNCHER_TASK_DISMISS_SWIPE_UP);
