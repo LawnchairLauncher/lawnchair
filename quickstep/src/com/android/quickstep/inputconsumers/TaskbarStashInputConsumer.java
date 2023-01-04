@@ -17,6 +17,7 @@ package com.android.quickstep.inputconsumers;
 
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
+import static com.android.launcher3.Utilities.isTrackpadMotionEvent;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_REVISED_THRESHOLDS;
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_TOUCHING;
@@ -107,7 +108,8 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
         if (mState != STATE_ACTIVE) {
             mDelegate.onMotionEvent(ev);
 
-            if (mTaskbarActivityContext != null) {
+            // Only show the transient task bar if the touch events are on the screen.
+            if (mTaskbarActivityContext != null && !isTrackpadMotionEvent(ev)) {
                 final float x = ev.getRawX();
                 final float y = ev.getRawY();
                 switch (ev.getAction()) {
