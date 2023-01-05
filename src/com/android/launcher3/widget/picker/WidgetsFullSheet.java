@@ -169,6 +169,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private View mSearchBarContainer;
     private WidgetsSearchBar mSearchBar;
     private TextView mHeaderTitle;
+    private @Nullable WidgetsRecyclerView mCurrentTouchEventRecyclerView;
 
     public WidgetsFullSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -640,6 +641,51 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         sheet.mIsOpen = true;
         sheet.open(animate);
         return sheet;
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return isTouchOnScrollbar(ev) || super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        return maybeHandleTouchEvent(ev) || super.onTouchEvent(ev);
+    }
+
+    private boolean maybeHandleTouchEvent(MotionEvent ev) {
+        boolean isEventHandled = false;
+
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            mCurrentTouchEventRecyclerView = isTouchOnScrollbar(ev) ? getRecyclerView() : null;
+        }
+
+        if (mCurrentTouchEventRecyclerView != null) {
+            final float offsetX = mContent.getX();
+            final float offsetY = mContent.getY();
+            ev.offsetLocation(-offsetX, -offsetY);
+            isEventHandled = mCurrentTouchEventRecyclerView.dispatchTouchEvent(ev);
+            ev.offsetLocation(offsetX, offsetY);
+        }
+
+        if (ev.getAction() == MotionEvent.ACTION_UP
+                || ev.getAction() == MotionEvent.ACTION_CANCEL) {
+            mCurrentTouchEventRecyclerView = null;
+        }
+
+        return isEventHandled;
+    }
+
+    private boolean isTouchOnScrollbar(MotionEvent ev) {
+        final float offsetX = mContent.getX();
+        final float offsetY = mContent.getY();
+        WidgetsRecyclerView rv = getRecyclerView();
+
+        ev.offsetLocation(-offsetX, -offsetY);
+        boolean isOnScrollBar = rv != null && rv.getScrollbar() != null && rv.isHitOnScrollBar(ev);
+        ev.offsetLocation(offsetX, offsetY);
+
+        return isOnScrollBar;
     }
 
     /** Gets the {@link WidgetsRecyclerView} which shows all widgets in {@link WidgetsFullSheet}. */
