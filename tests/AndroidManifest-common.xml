@@ -280,7 +280,7 @@
             </intent-filter>
         </activity-alias>
         <activity-alias android:name="Activity15" android:exported="true"
-            android:label="ThemeIconTestActivity"
+            android:label="IconThemedActivity"
             android:icon="@drawable/test_theme_icon"
             android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
             <intent-filter>
