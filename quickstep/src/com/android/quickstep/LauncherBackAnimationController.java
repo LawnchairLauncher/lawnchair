@@ -17,6 +17,7 @@
 package com.android.quickstep;
 
 import static android.view.RemoteAnimationTarget.MODE_CLOSING;
+import static android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.BaseActivity.INVISIBLE_ALL;
@@ -39,6 +40,7 @@ import android.view.IRemoteAnimationFinishedCallback;
 import android.view.IRemoteAnimationRunner;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
+import android.view.View;
 import android.view.ViewRootImpl;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
@@ -47,6 +49,7 @@ import android.window.BackMotionEvent;
 import android.window.BackProgressAnimator;
 import android.window.IOnBackInvokedCallback;
 
+import com.android.internal.view.AppearanceRegion;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
@@ -77,6 +80,8 @@ public class LauncherBackAnimationController {
     private static final float MIN_WINDOW_SCALE = 0.85f;
     private static final float MAX_SCRIM_ALPHA_DARK = 0.8f;
     private static final float MAX_SCRIM_ALPHA_LIGHT = 0.2f;
+    private static final float UPDATE_SYSUI_FLAGS_THRESHOLD = 0.20f;
+
     private final QuickstepTransitionManager mQuickstepTransitionManager;
     private final Matrix mTransformMatrix = new Matrix();
     /** The window position at the beginning of the back animation. */
@@ -106,6 +111,7 @@ public class LauncherBackAnimationController {
     private SurfaceControl mScrimLayer;
     private ValueAnimator mScrimAlphaAnimator;
     private float mScrimAlpha;
+    private boolean mOverridingStatusBarFlags;
 
     public LauncherBackAnimationController(
             QuickstepLauncher launcher,
@@ -204,6 +210,8 @@ public class LauncherBackAnimationController {
         cancelAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
+                // Refresh the status bar appearance to the original one.
+                customizeStatusBarAppearance(false);
                 finishAnimation();
             }
         });
@@ -295,6 +303,8 @@ public class LauncherBackAnimationController {
         float cornerRadius = Utilities.mapRange(
                 progress, mWindowScaleStartCornerRadius, mWindowScaleEndCornerRadius);
         applyTransform(mCurrentRect, cornerRadius);
+
+        customizeStatusBarAppearance(progress > UPDATE_SYSUI_FLAGS_THRESHOLD);
     }
 
     private void updateCancelProgress(float progress) {
@@ -376,6 +386,9 @@ public class LauncherBackAnimationController {
         mInitialTouchPos.set(0, 0);
         mAnimatorSetInProgress = false;
         mSpringAnimationInProgress = false;
+        // We don't call customizeStatusBarAppearance here to prevent the status bar update with
+        // the legacy appearance. It should be refreshed after the transition done.
+        mOverridingStatusBarFlags = false;
         if (mAnimationFinishedCallback != null) {
             try {
                 mAnimationFinishedCallback.onAnimationFinished();
@@ -438,5 +451,21 @@ public class LauncherBackAnimationController {
         if (!mSpringAnimationInProgress && !mAnimatorSetInProgress) {
             finishAnimation();
         }
+    }
+
+    private void customizeStatusBarAppearance(boolean overridingStatusBarFlags) {
+        if (mOverridingStatusBarFlags == overridingStatusBarFlags) {
+            return;
+        }
+
+        mOverridingStatusBarFlags = overridingStatusBarFlags;
+        final boolean isBackgroundDark =
+                (mLauncher.getWindow().getDecorView().getSystemUiVisibility()
+                        & View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) == 0;
+        final AppearanceRegion region = mOverridingStatusBarFlags
+                ? new AppearanceRegion(!isBackgroundDark ? APPEARANCE_LIGHT_STATUS_BARS : 0,
+                        mBackTarget.windowConfiguration.getBounds())
+                : null;
+        SystemUiProxy.INSTANCE.get(mLauncher).customizeStatusBarAppearance(region);
     }
 }
