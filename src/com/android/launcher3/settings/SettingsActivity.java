@@ -268,8 +268,8 @@ public class SettingsActivity extends FragmentActivity
                     return !WidgetsModel.GO_DISABLE_NOTIFICATION_DOTS;
 
                 case ALLOW_ROTATION_PREFERENCE_KEY:
-                    DisplayController.Info info = InvariantDeviceProfile.INSTANCE.get(
-                            getContext()).getDeviceProfile(getContext()).getDisplayInfo();
+                    DisplayController.Info info =
+                            DisplayController.INSTANCE.get(getContext()).getInfo();
                     if (info.isTablet(info.realBounds)) {
                         // Launcher supports rotation by default. No need to show this setting.
                         return false;

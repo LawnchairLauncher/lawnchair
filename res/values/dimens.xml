@@ -365,8 +365,8 @@
     <dimen name="min_hotseat_icon_space">18dp</dimen>
     <dimen name="max_hotseat_icon_space">50dp</dimen>
     <dimen name="min_hotseat_qsb_width">0dp</dimen>
-    <dimen name="taskbar_icon_size">44dp</dimen>
-    <dimen name="transient_taskbar_icon_size">50dp</dimen>
+    <dimen name="taskbar_icon_size">0dp</dimen>
+    <dimen name="transient_taskbar_icon_size">0dp</dimen>
     <!-- Transient taskbar (placeholders to compile in Launcher3 without Quickstep) -->
     <dimen name="transient_taskbar_size">0dp</dimen>
     <dimen name="transient_taskbar_margin">0dp</dimen>
@@ -374,10 +374,7 @@
     <dimen name="transient_taskbar_key_shadow_distance">0dp</dimen>
     <dimen name="transient_taskbar_stashed_size">0dp</dimen>
     <dimen name="transient_taskbar_clamped_offset_bound">0dp</dimen>
-    <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
-    <dimen name="transient_taskbar_icon_spacing">0dp</dimen>
-    <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
-    <dimen name="taskbar_icon_spacing">8dp</dimen>
+    <dimen name="taskbar_icon_spacing">0dp</dimen>
     <dimen name="taskbar_nav_buttons_size">0dp</dimen>
     <dimen name="taskbar_contextual_button_margin">0dp</dimen>
     <dimen name="taskbar_hotseat_nav_spacing">0dp</dimen>
