@@ -18,6 +18,7 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_S
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -103,9 +104,17 @@ public class TaskbarNavButtonControllerTest {
     }
 
     @Test
-    public void testLongPressHome() {
+    public void testLongPressHome_enabled() {
+        mNavButtonController.setAssistantLongPressEnabled(true /*assistantLongPressEnabled*/);
         mNavButtonController.onButtonLongClick(BUTTON_HOME, mockView);
         verify(mockSystemUiProxy, times(1)).startAssistant(any());
+    }
+
+    @Test
+    public void testLongPressHome_disabled() {
+        mNavButtonController.setAssistantLongPressEnabled(false /*assistantLongPressEnabled*/);
+        mNavButtonController.onButtonLongClick(BUTTON_HOME, mockView);
+        verify(mockSystemUiProxy, never()).startAssistant(any());
     }
 
     @Test
