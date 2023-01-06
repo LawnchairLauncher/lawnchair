@@ -127,8 +127,7 @@ public class WidgetsRecyclerView extends FastScrollRecyclerView implements OnIte
     @Override
     public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
         if (e.getAction() == MotionEvent.ACTION_DOWN) {
-            mTouchDownOnScroller =
-                    mScrollbar.isHitInParent(e.getX(), e.getY(), mFastScrollerOffset);
+            mTouchDownOnScroller = isHitOnScrollBar(e);
         }
         if (mTouchDownOnScroller) {
             final boolean result = mScrollbar.handleTouchEvent(e, mFastScrollerOffset);
@@ -142,6 +141,15 @@ public class WidgetsRecyclerView extends FastScrollRecyclerView implements OnIte
         if (mTouchDownOnScroller) {
             mScrollbar.handleTouchEvent(e, mFastScrollerOffset);
         }
+    }
+
+    /**
+     * Detects whether a {@code MotionEvent} is on the scroll bar
+     * @param e The {@code MotionEvent} on the screen
+     * @return {@code true} if the motion is on the scroll bar
+     */
+    boolean isHitOnScrollBar(MotionEvent e) {
+        return mScrollbar.isHitInParent(e.getX(), e.getY(), mFastScrollerOffset);
     }
 
     @Override
