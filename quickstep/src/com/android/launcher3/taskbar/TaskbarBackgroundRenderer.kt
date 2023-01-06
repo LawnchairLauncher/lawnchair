@@ -16,20 +16,17 @@
 
 package com.android.launcher3.taskbar
 
-import com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound
-import com.android.launcher3.Utilities.mapToRange
-
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import com.android.launcher3.R
+import com.android.launcher3.Utilities.mapToRange
 import com.android.launcher3.anim.Interpolators
+import com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound
 import com.android.launcher3.util.DisplayController
 
-/**
- * Helps draw the taskbar background, made up of a rectangle plus two inverted rounded corners.
- */
+/** Helps draw the taskbar background, made up of a rectangle plus two inverted rounded corners. */
 class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
 
     val paint: Paint = Paint()
@@ -39,7 +36,7 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
     private var maxBackgroundHeight = context.deviceProfile.taskbarSize.toFloat()
     private val transientBackgroundBounds = context.transientTaskbarBounds
 
-    private val isTransientTaskbar = DisplayController.isTransientTaskbar(context);
+    private val isTransientTaskbar = DisplayController.isTransientTaskbar(context)
 
     private var shadowBlur = 0f
     private var keyShadowDistance = 0f
@@ -98,9 +95,7 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
         invertedRightCornerPath.op(square, circle, Path.Op.DIFFERENCE)
     }
 
-    /**
-     * Draws the background with the given paint and height, on the provided canvas.
-     */
+    /** Draws the background with the given paint and height, on the provided canvas. */
     fun draw(canvas: Canvas) {
         canvas.save()
         canvas.translate(0f, canvas.height - backgroundHeight - bottomMargin)
@@ -124,21 +119,26 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
             canvas.translate(0f, bottomMargin * ((1f - scaleFactor) / 2f))
 
             // Draw shadow.
-            val shadowAlpha = mapToRange(paint.alpha.toFloat(), 0f, 255f, 0f, 25f,
-                Interpolators.LINEAR)
-            paint.setShadowLayer(shadowBlur, 0f, keyShadowDistance,
+            val shadowAlpha =
+                mapToRange(paint.alpha.toFloat(), 0f, 255f, 0f, 25f, Interpolators.LINEAR)
+            paint.setShadowLayer(
+                shadowBlur,
+                0f,
+                keyShadowDistance,
                 setColorAlphaBound(Color.BLACK, Math.round(shadowAlpha))
             )
 
             // Draw background.
-            val radius = backgroundHeight / 2f;
+            val radius = backgroundHeight / 2f
 
             canvas.drawRoundRect(
                 transientBackgroundBounds.left + (delta / 2f),
                 translationYForSwipe,
                 transientBackgroundBounds.right - (delta / 2f),
                 backgroundHeight + translationYForSwipe,
-                radius, radius, paint
+                radius,
+                radius,
+                paint
             )
         }
 
