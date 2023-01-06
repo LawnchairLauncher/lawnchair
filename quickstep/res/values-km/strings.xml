@@ -95,12 +95,9 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"ការអប់រំលើរបារកិច្ចការ"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ការបង្រៀនអំពីរបារកិច្ចការបានបង្ហាញ"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ការបង្រៀនអំពីរបារកិច្ចការត្រូវបានបិទ"</string>
-    <!-- no translation found for taskbar_edu_splitscreen (5563823414110661454) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_stashing (2805035263048176462) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_suggestions (1416699696825090402) -->
-    <skip />
+    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"អូស​ទៅចំហៀង ដើម្បីប្រើ​កម្មវិធី 2 ក្នុងពេលតែមួយ"</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"អូសឡើងលើបន្តិច ដើម្បីបង្ហាញរបារកិច្ចការ"</string>
+    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"របារកិច្ចការនេះណែនាំកម្មវិធីផ្អែកលើទម្លាប់របស់អ្នក"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"បន្ទាប់"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"ថយក្រោយ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"បិទ"</string>
