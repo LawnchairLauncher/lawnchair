@@ -217,10 +217,12 @@ public class TouchInteractionService extends Service
 
         @BinderThread
         @Override
-        public void onAssistantAvailable(boolean available) {
+        public void onAssistantAvailable(boolean available, boolean longPressHomeEnabled) {
             MAIN_EXECUTOR.execute(() -> {
                 mDeviceState.setAssistantAvailable(available);
                 TouchInteractionService.this.onAssistantVisibilityChanged();
+                executeForTaskbarManager(() -> mTaskbarManager
+                        .onLongPressHomeEnabled(longPressHomeEnabled));
             });
         }
 
