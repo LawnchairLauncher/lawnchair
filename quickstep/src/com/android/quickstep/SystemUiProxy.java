@@ -29,7 +29,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
-import android.graphics.Insets;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -52,10 +51,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.android.internal.logging.InstanceId;
+import com.android.internal.util.ScreenshotRequest;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.systemui.shared.recents.ISystemUiProxy;
-import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.smartspace.ILauncherUnlockAnimationController;
 import com.android.systemui.shared.system.smartspace.ISysuiUnlockAnimationController;
 import com.android.systemui.shared.system.smartspace.SmartspaceState;
@@ -388,14 +387,12 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     @Override
-    public void handleImageBundleAsScreenshot(Bundle screenImageBundle, Rect locationInScreen,
-            Insets visibleInsets, Task.TaskKey task) {
+    public void takeScreenshot(ScreenshotRequest request) {
         if (mSystemUiProxy != null) {
             try {
-                mSystemUiProxy.handleImageBundleAsScreenshot(screenImageBundle, locationInScreen,
-                    visibleInsets, task);
+                mSystemUiProxy.takeScreenshot(request);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call handleImageBundleAsScreenshot");
+                Log.w(TAG, "Failed call takeScreenshot");
             }
         }
     }
