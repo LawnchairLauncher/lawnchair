@@ -324,6 +324,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     // May be set to false when mIsTransientTaskbar is true.
     private boolean mCanSlowSwipeGoHome = true;
 
+    @Nullable
+    private RemoteAnimationTargets.ReleaseCheck mSwipePipToHomeReleaseCheck = null;
+
     public AbsSwipeUpHandler(Context context, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
             long touchTimeMs, boolean continuingLastGesture,
@@ -869,6 +872,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mRemoteTargetHandles = mTargetGluer.assignTargetsForSplitScreen(mContext, targets);
         mRecentsAnimationController = controller;
         mRecentsAnimationTargets = targets;
+        mSwipePipToHomeReleaseCheck = new RemoteAnimationTargets.ReleaseCheck();
+        mSwipePipToHomeReleaseCheck.setCanRelease(true);
+        mRecentsAnimationTargets.addReleaseCheck(mSwipePipToHomeReleaseCheck);
 
         // Only initialize the device profile, if it has not been initialized before, as in some
         // configurations targets.homeContentInsets may not be correct.
@@ -1430,9 +1436,16 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 mSwipePipToHomeAnimator = createWindowAnimationToPip(
                         homeAnimFactory, runningTaskTarget, start);
                 mSwipePipToHomeAnimators[0] = mSwipePipToHomeAnimator;
+                if (mSwipePipToHomeReleaseCheck != null) {
+                    mSwipePipToHomeReleaseCheck.setCanRelease(false);
+                }
                 windowAnim = mSwipePipToHomeAnimators;
             } else {
                 mSwipePipToHomeAnimator = null;
+                if (mSwipePipToHomeReleaseCheck != null) {
+                    mSwipePipToHomeReleaseCheck.setCanRelease(true);
+                    mSwipePipToHomeReleaseCheck = null;
+                }
                 windowAnim = createWindowAnimationToHome(start, homeAnimFactory);
 
                 windowAnim[0].addAnimatorListener(new AnimationSuccessListener() {
@@ -1953,6 +1966,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             maybeFinishSwipeToHome();
             finishRecentsControllerToHome(
                     () -> mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
+        }
+        if (mSwipePipToHomeReleaseCheck != null) {
+            mSwipePipToHomeReleaseCheck.setCanRelease(true);
+            mSwipePipToHomeReleaseCheck = null;
         }
         doLogGesture(HOME, mRecentsView == null ? null : mRecentsView.getCurrentPageTaskView());
     }
