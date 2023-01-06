@@ -38,7 +38,6 @@ import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayDeque;
@@ -52,7 +51,7 @@ import java.util.Queue;
 @LargeTest
 public class ThemeIconsTest extends AbstractLauncherUiTest {
 
-    private static final String APP_NAME = "ThemeIconTestActivity";
+    private static final String APP_NAME = "IconThemedActivity";
     private static final String SHORTCUT_APP_NAME = "LauncherTestApp";
     private static final String SHORTCUT_NAME = "Shortcut 1";
 
@@ -111,7 +110,6 @@ public class ThemeIconsTest extends AbstractLauncherUiTest {
         }
     }
 
-    @Ignore
     @Test
     @ScreenRecord // b/260722220
     public void testShortcutIconWithTheme() throws Exception {

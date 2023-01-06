@@ -310,7 +310,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
             return;
         }
         mTaskbarInAppDisplayProgress.put(progressIndex, progress);
-        if (!mControllers.taskbarStashController.isInApp()
+        if (mControllers.uiController.isIconAlignedWithHotseat()
                 && !mTaskbarLauncherStateController.isAnimatingToLauncher()) {
             // Only animate the nav buttons while home and not animating home, otherwise let
             // the TaskbarViewController handle it.

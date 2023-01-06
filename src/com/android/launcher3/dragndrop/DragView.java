@@ -568,7 +568,8 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
                     .setSpring(new SpringForce(0)
                             .setDampingRatio(DAMPENING_RATIO)
                             .setStiffness(STIFFNESS));
-            mDelta = view.getResources().getDisplayMetrics().density * PARALLAX_MAX_IN_DP;
+            mDelta = Math.min(
+                    range, view.getResources().getDisplayMetrics().density * PARALLAX_MAX_IN_DP);
         }
 
         public void animateToPos(float value) {
