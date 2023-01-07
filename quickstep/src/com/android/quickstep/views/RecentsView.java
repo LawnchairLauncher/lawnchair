@@ -1275,14 +1275,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     /**
-     * Pulls the list of active Tasks from RecentModel, and finds the most recently active Task
+     * Pulls the list of active Tasks from RecentsModel, and finds the most recently active Task
      * matching a given ComponentName. Then uses that Task (which could be null) with the given
      * callback.
      *
-     * Used in various splitscreen operations when we need to check if there is a currently running
-     * Task of a certain type and use the most recent one.
+     * Used in various task-switching or splitscreen operations when we need to check if there is a
+     * currently running Task of a certain type and use the most recent one.
      */
-    public void findLastActiveTaskAndDoSplitOperation(ComponentName componentName,
+    public void findLastActiveTaskAndRunCallback(ComponentName componentName,
             Consumer<Task> callback) {
         mModel.getTasks(taskGroups -> {
             Task lastActiveTask = null;
