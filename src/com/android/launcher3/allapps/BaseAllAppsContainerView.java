@@ -163,7 +163,8 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
 
         mWorkManager = new WorkProfileManager(
                 mActivityContext.getSystemService(UserManager.class),
-                this, LauncherPrefs.getPrefs(mActivityContext));
+                this, LauncherPrefs.getPrefs(mActivityContext),
+                mActivityContext.getStatsLogManager());
         mAH = Arrays.asList(null, null, null);
         mNavBarScrimPaint = new Paint();
         mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));

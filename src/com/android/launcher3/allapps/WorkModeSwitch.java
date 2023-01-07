@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORK_FAB_BUTTON_COLLAPSE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORK_FAB_BUTTON_EXTEND;
 import static com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.getTabWidth;
 
 import android.animation.LayoutTransition;
@@ -37,6 +39,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.KeyboardInsetAnimationCallback;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.StringCache;
 import com.android.launcher3.views.ActivityContext;
 /**
@@ -59,6 +62,8 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
     private final int mScrollThreshold;
     private ImageView mIcon;
     private TextView mTextView;
+    private final StatsLogManager mStatsLogManager;
+
 
     public WorkModeSwitch(@NonNull Context context) {
         this(context, null, 0);
@@ -72,6 +77,7 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
         super(context, attrs, defStyleAttr);
         mScrollThreshold = Utilities.dpToPx(SCROLL_THRESHOLD_DP);
         mActivityContext = ActivityContext.lookupContext(getContext());
+        mStatsLogManager = mActivityContext.getStatsLogManager();
     }
 
     @Override
@@ -197,10 +203,12 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
 
     public void extend() {
         mTextView.setVisibility(VISIBLE);
+        mStatsLogManager.logger().log(LAUNCHER_WORK_FAB_BUTTON_EXTEND);
     }
 
     public void shrink(){
         mTextView.setVisibility(GONE);
+        mStatsLogManager.logger().log(LAUNCHER_WORK_FAB_BUTTON_COLLAPSE);
     }
 
     public int getScrollThreshold() {

@@ -264,6 +264,19 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         return launchedAppState;
     }
 
+    private void quickSwitchToPreviousAppAndAssert(boolean toRight) {
+        final LaunchedAppState launchedAppState = getAndAssertLaunchedApp();
+        if (toRight) {
+            launchedAppState.quickSwitchToPreviousApp();
+        } else {
+            launchedAppState.quickSwitchToPreviousAppSwipeLeft();
+        }
+
+        // While enable shell transition, Launcher can be resumed due to transient launch.
+        waitForLauncherCondition("Launcher shouldn't stay in resume forever",
+                this::isInLaunchedApp, 3000 /* timeout */);
+    }
+
     @Test
     @PortraitLandscape
     public void testAllAppsFromHome() throws Exception {
@@ -290,13 +303,11 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         startTestActivity(3);
         startTestActivity(4);
 
-        LaunchedAppState launchedAppState = getAndAssertLaunchedApp();
-        launchedAppState.quickSwitchToPreviousApp();
+        quickSwitchToPreviousAppAndAssert(true /* toRight */);
         assertTrue("The first app we should have quick switched to is not running",
                 isTestActivityRunning(3));
 
-        launchedAppState = getAndAssertLaunchedApp();
-        launchedAppState.quickSwitchToPreviousApp();
+        quickSwitchToPreviousAppAndAssert(true /* toRight */);
         if (mLauncher.getNavigationModel() == NavigationModel.THREE_BUTTON) {
             // 3-button mode toggles between 2 apps, rather than going back further.
             assertTrue("Second quick switch should have returned to the first app.",
@@ -305,12 +316,12 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
             assertTrue("The second app we should have quick switched to is not running",
                     isTestActivityRunning(2));
         }
-        launchedAppState = getAndAssertLaunchedApp();
-        launchedAppState.quickSwitchToPreviousAppSwipeLeft();
+
+        quickSwitchToPreviousAppAndAssert(false /* toRight */);
         assertTrue("The 2nd app we should have quick switched to is not running",
                 isTestActivityRunning(3));
 
-        launchedAppState = getAndAssertLaunchedApp();
+        final LaunchedAppState launchedAppState = getAndAssertLaunchedApp();
         launchedAppState.switchToOverview();
     }
 
@@ -329,8 +340,10 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         launchedAppState.assertTaskbarHidden();
 
         // Quick-switch to the test app with swiping to right.
-        launchedAppState.quickSwitchToPreviousApp();
+        quickSwitchToPreviousAppAndAssert(true /* toRight */);
 
+        assertTrue("The first app we should have quick switched to is not running",
+                isTestActivityRunning(2));
         // Expect task bar visible when the launched app was the test activity.
         launchedAppState = getAndAssertLaunchedApp();
         launchedAppState.assertTaskbarVisible();
