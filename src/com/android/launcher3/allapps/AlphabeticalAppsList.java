@@ -239,23 +239,24 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
             mAdapterItems.addAll(mSearchResults);
         } else {
             int position = 0;
+            boolean addApps = true;
             if (mWorkProviderManager != null) {
                 position += mWorkProviderManager.addWorkItems(mAdapterItems);
-                if (!mWorkProviderManager.shouldShowWorkApps()) {
-                    return;
-                }
+                addApps = mWorkProviderManager.shouldShowWorkApps();
             }
-            String lastSectionName = null;
-            for (AppInfo info : mApps) {
-                mAdapterItems.add(AdapterItem.asApp(info));
+            if (addApps) {
+                String lastSectionName = null;
+                for (AppInfo info : mApps) {
+                    mAdapterItems.add(AdapterItem.asApp(info));
 
-                String sectionName = info.sectionName;
-                // Create a new section if the section names do not match
-                if (!sectionName.equals(lastSectionName)) {
-                    lastSectionName = sectionName;
-                    mFastScrollerSections.add(new FastScrollSectionInfo(sectionName, position));
+                    String sectionName = info.sectionName;
+                    // Create a new section if the section names do not match
+                    if (!sectionName.equals(lastSectionName)) {
+                        lastSectionName = sectionName;
+                        mFastScrollerSections.add(new FastScrollSectionInfo(sectionName, position));
+                    }
+                    position++;
                 }
-                position++;
             }
         }
         mAccessibilityResultsCount = (int) mAdapterItems.stream()
