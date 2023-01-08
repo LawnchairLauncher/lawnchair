@@ -118,20 +118,19 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         val queryTextLower = query.lowercase(Locale.getDefault())
         val matcher = StringMatcherUtility.StringMatcher.getInstance()
         return apps.asSequence()
-            .filter { StringMatcherUtility.matches(queryTextLower, it.title.toString(), matcher) }
+            .filter { StringMatcherUtility.matches(queryTextLower, it.sectionName + it.title, matcher) }
             .filterHiddenApps(queryTextLower)
             .take(maxResultsCount)
             .toList()
     }
 
     private fun fuzzySearch(apps: List<AppInfo>, query: String): List<AppInfo> {
-
         val queryTextLower = query.lowercase(Locale.getDefault())
         val filteredApps = apps.asSequence()
             .filterHiddenApps(queryTextLower)
             .toList()
         val matches = FuzzySearch.extractSorted(
-            queryTextLower, filteredApps, { it.title.toString() }, WeightedRatio(), 65
+            queryTextLower, filteredApps, { it.sectionName + it.title }, WeightedRatio(), 65
         )
 
         return matches.take(maxResultsCount)
