@@ -47,7 +47,7 @@ public class AppInfoComparator implements Comparator<AppInfo> {
         int result = mLabelComparator.compare(a.title.toString(), b.title.toString());
         // Group app list by sectionName before sorting for Simplified Chinese only
         if (isSimpledChineseLocale()) {
-            result += a.sectionName.compareTo(b.sectionName);
+            result += a.sectionName.compareTo(b.sectionName) * 10;
         }
         if (result != 0) {
             return result;
@@ -70,7 +70,7 @@ public class AppInfoComparator implements Comparator<AppInfo> {
 
     private boolean isSimpledChineseLocale() {
         final Locale defaultLocale = Locale.getDefault();
-        return defaultLocale.getLanguage().equals("zh") &&
-            (defaultLocale.getCountry().equals("CN") || defaultLocale.getScript().equals("Hans"));
+        return "zh".equals(defaultLocale.getLanguage()) &&
+            ("CN".equals(defaultLocale.getCountry()) || "Hans".equals(defaultLocale.getScript()));
     }
 }
