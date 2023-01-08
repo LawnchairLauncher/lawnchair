@@ -47,7 +47,7 @@ public class AppInfoComparator implements Comparator<AppInfo> {
         int result = mLabelComparator.compare(a.title.toString(), b.title.toString());
         // Group app list by sectionName before sorting for Simplified Chinese only
         if (isSimpledChineseLocale()) {
-            result += a.sectionName.compareTo(b.sectionName);
+            result += a.sectionName.compareTo(b.sectionName) * 10;
         }
         if (result != 0) {
             return result;
