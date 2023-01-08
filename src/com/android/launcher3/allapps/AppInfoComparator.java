@@ -70,7 +70,7 @@ public class AppInfoComparator implements Comparator<AppInfo> {
 
     private boolean isSimpledChineseLocale() {
         final Locale defaultLocale = Locale.getDefault();
-        return defaultLocale.getLanguage().equals("zh") &&
-            (defaultLocale.getCountry().equals("CN") || defaultLocale.getScript().equals("Hans"));
+        return "zh".equals(defaultLocale.getLanguage()) &&
+            ("CN".equals(defaultLocale.getCountry()) || "Hans".equals(defaultLocale.getScript()));
     }
 }
