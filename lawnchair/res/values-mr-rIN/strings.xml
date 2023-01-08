@@ -20,30 +20,30 @@
     <string name="general_label">सर्वसाधारण</string>
     <string name="general_description">रंग, चिन्हांचा गाठोडा, सूचना टिंब</string>
     <string name="home_screen_label">मुख्यपृष्ठ</string>
-    <string name="home_screen_description">Feed, Grid, Icons</string>
+    <string name="home_screen_description">फीड, ग्रिड आणि आयकॉन</string>
     <!--
     <string name="smartspace" />
     -->
-    <string name="what_to_show">What to Show</string>
+    <string name="what_to_show">काय दाखवायचे</string>
     <string name="dock_label">गोदद</string>
     <string name="dock_description">शोध गज, चिन्ह मोजणी</string>
     <string name="app_drawer_label">ॲपचा कपाट</string>
     <string name="app_drawer_description">लपविलेले ॲप, खांब मोजणी, चिन्ह</string>
     <string name="folders_label">पेटी</string>
     <string name="folders_description">पंक्ती आणि खांब आकृती</string>
-    <string name="gestures_label">Gestures</string>
-    <string name="gestures_description">Taps and Swipes</string>
+    <string name="gestures_label">जेश्चर</string>
+    <string name="gestures_description">टॅप आणि स्वाइप</string>
     <string name="quickstep_label">अलीकडील</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
     <string name="about_label">आउठ</string>
     <!-- <string name="version" /> (unknown source) -->
     <!-- PreferencesOverflowMenu() in PreferencesDashboard -->
     <string name="app_info_drop_target_label">ॲपची माहिती</string>
-    <string name="debug_restart_launcher">ऍप रिस्टार्ट करा</string>
+    <string name="debug_restart_launcher">ऍप पुन्हा सुरू करा</string>
     <string name="experimental_features_label">प्रायोगिक फीचर्स</string>
     <!-- ExperimentalFeaturesPreferences -->
     <!-- <string name="experimental_features_label" />-->
-    <string name="font_picker_label">Font Customization</string>
+    <string name="font_picker_label">अक्षर सानुकूलन</string>
     <string name="font_picker_description">Some text remains unchanged.</string>
     <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
     <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
@@ -61,7 +61,7 @@
     <!-- <string name="icons" /> -->
     <string name="icon_style">चिन्ह_गाठोडा</string>
     <string name="icon_shape_label">चिन्हांचे आकार</string>
-    <string name="auto_adaptive_icons_label">Auto Adaptive Icons</string>
+    <string name="auto_adaptive_icons_label">स्वयं अनुकूली चिन्ह</string>
     <string name="auto_adaptive_icons_description">For all non-Adaptive icons.</string>
     <string name="background_lightness_label">पार्श्वभूमी लघिमा(हलकेपणा)</string>
     <string name="adaptive_icon_background_description">भाषांतर करा.</string>
@@ -76,9 +76,9 @@
     <string name="missing_notification_access_label">Notification Access Needed</string>
     <string name="missing_notification_access_description">Notification access needed.</string>
     <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
-    <string name="title_change_settings">Change Settings</string>
+    <string name="title_change_settings">सेटिंग्ज बदला</string>
     <string name="colors">रंग</string>
-    <string name="theme_label">Theme</string>
+    <string name="theme_label">थीम</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">गडद</string>
     <string name="theme_system_default">निरूती</string>
@@ -88,14 +88,14 @@
     <string name="custom_icon_shape">Custom Icon Shape</string>
     <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
     <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
-    <string name="icon_shape_corner">Corner Shape</string>
-    <string name="icon_shape_corner_round">Round</string>
+    <string name="icon_shape_corner">चिन्हांच्या कोपऱ्यांचे आकार</string>
+    <string name="icon_shape_corner_round">गोल</string>
     <string name="icon_shape_corner_squircle">Smooth</string>
     <string name="icon_shape_corner_cut">Cut</string>
-    <string name="icon_shape_top_left">Top Left</string>
-    <string name="icon_shape_top_right">Top Right</string>
-    <string name="icon_shape_bottom_left">Bottom Left</string>
-    <string name="icon_shape_bottom_right">Bottom Right</string>
+    <string name="icon_shape_top_left">वर डावीकडे</string>
+    <string name="icon_shape_top_right">वर उजवीकडे</string>
+    <string name="icon_shape_bottom_left">खाली डावीकडे</string>
+    <string name="icon_shape_bottom_right">खाली उजवीकडे</string>
     <string name="create">Create</string>
     <string name="clipboard">Clipboard</string>
     <string name="export_to_clipboard">Export to Clipboard</string>
