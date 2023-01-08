@@ -134,37 +134,17 @@ fun IconPackPreferences() {
             }
         }
         Column {
-            PreferenceGroup {
-                val themedIconsAvailable = LocalContext.current.packageManager
-                    .getThemedIconPacksInstalled(LocalContext.current)
-                    .any { LocalContext.current.packageManager.isPackageInstalled(it) }
-                    || LocalContext.current.packageManager
-                    .isPackageInstalled(Constants.LAWNICONS_PACKAGE_NAME)
-                ListPreference(
-                    enabled = themedIconsAvailable,
-                    label = stringResource(id = R.string.themed_icon_title),
-                    entries = ThemedIconsState.values().map {
-                        ListPreferenceEntry(
-                            value = it,
-                            label = { stringResource(id = it.labelResourceId) },
-                        )
-                    },
-                    value = ThemedIconsState.getForSettings(
-                        themedIcons = themedIconsAdapter.state.value,
-                        drawerThemedIcons = drawerThemedIconsEnabled,
-                    ),
-                    onValueChange = {
-                        themedIconsAdapter.onChange(newValue = it.themedIcons)
-                        drawerThemedIconsAdapter.onChange(newValue = it.drawerThemedIcons)
-                        iconPackAdapter.onChange(newValue = "")
-                        themedIconPackAdapter.onChange(newValue = "")
-                    },
-                    description = if (themedIconsAvailable.not()) {
-                        stringResource(id = R.string.lawnicons_not_installed_description)
-                    } else null,
-                )
+            ExpandAndShrink(visible = !drawerThemedIconsEnabled) {
+                PreferenceGroup(
+                    heading = stringResource(id = R.string.icon_pack)
+                ) {
+                    IconPackGrid(
+                        adapter = iconPackAdapter,
+                        themedIconsAdapter.state.value,
+                        false
+                    )
+                }
             }
-
             ExpandAndShrink(visible = themedIconsAdapter.state.value && !drawerThemedIconsEnabled) {
                 PreferenceGroup(
                     heading = stringResource(id = R.string.themed_icon_pack)
@@ -187,16 +167,39 @@ fun IconPackPreferences() {
                     )
                 }
             }
-            ExpandAndShrink(visible = !drawerThemedIconsEnabled) {
-                PreferenceGroup(
-                    heading = stringResource(id = R.string.icon_pack)
-                ) {
-                    IconPackGrid(
-                        adapter = iconPackAdapter,
-                        themedIconsAdapter.state.value,
-                        false
-                    )
-                }
+            PreferenceGroup {
+                val themedIconsAvailable = LocalContext.current.packageManager
+                    .getThemedIconPacksInstalled(LocalContext.current)
+                    .any { LocalContext.current.packageManager.isPackageInstalled(it) }
+                    || LocalContext.current.packageManager
+                    .isPackageInstalled(Constants.LAWNICONS_PACKAGE_NAME)
+                ListPreference(
+                    enabled = themedIconsAvailable,
+                    label = stringResource(id = R.string.themed_icon_title),
+                    entries = ThemedIconsState.values().map {
+                        ListPreferenceEntry(
+                            value = it,
+                            label = { stringResource(id = it.labelResourceId) },
+                        )
+                    },
+                    value = ThemedIconsState.getForSettings(
+                        themedIcons = themedIconsAdapter.state.value,
+                        drawerThemedIcons = drawerThemedIconsEnabled,
+                    ),
+                    onValueChange = {
+                        themedIconsAdapter.onChange(newValue = it.themedIcons)
+                        drawerThemedIconsAdapter.onChange(newValue = it.drawerThemedIcons)
+                        iconPackAdapter  .onChange(newValue = iconPackAdapter.state.value)
+                        if(it.themedIcons && !it.drawerThemedIcons) {
+                            themedIconPackAdapter.onChange(newValue = themedIconPackAdapter.state.value)
+                        }else{
+                            themedIconPackAdapter.onChange(newValue = "")
+                        }
+                    },
+                    description = if (themedIconsAvailable.not()) {
+                        stringResource(id = R.string.lawnicons_not_installed_description)
+                    } else null,
+                )
             }
         }
     }
