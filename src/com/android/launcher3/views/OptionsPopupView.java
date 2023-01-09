@@ -15,12 +15,16 @@
  */
 package com.android.launcher3.views;
 
+import static androidx.core.content.ContextCompat.getColorStateList;
+
+import static com.android.launcher3.config.FeatureFlags.ENABLE_MATERIAL_U_POPUP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -31,6 +35,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -137,6 +142,16 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
     @Override
     protected void getTargetObjectLocation(Rect outPos) {
         mTargetRect.roundOut(outPos);
+    }
+
+    @Override
+    public void assignMarginsAndBackgrounds(ViewGroup viewGroup) {
+        if (ENABLE_MATERIAL_U_POPUP.get()) {
+            assignMarginsAndBackgrounds(viewGroup,
+                    getColorStateList(getContext(), mColorIds[0]).getDefaultColor());
+        } else {
+            assignMarginsAndBackgrounds(viewGroup, Color.TRANSPARENT);
+        }
     }
 
     public static OptionsPopupView show(ActivityContext launcher, RectF targetRect,

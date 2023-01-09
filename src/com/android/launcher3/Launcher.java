@@ -3211,7 +3211,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     @Override
-    public boolean shouldUseColorExtractionForPopup() {
+    public boolean canUseMultipleShadesForPopup() {
         return getTopOpenViewWithType(this, TYPE_FOLDER) == null
                 && getStateManager().getState() != LauncherState.ALL_APPS;
     }

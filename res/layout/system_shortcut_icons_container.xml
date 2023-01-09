@@ -14,16 +14,19 @@
      limitations under the License.
 -->
 
-<com.android.launcher3.shortcuts.DeepShortcutView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/bg_popup_item_width"
-    android:layout_height="wrap_content"
-    android:id="@+id/system_shortcut"
-    android:minHeight="@dimen/bg_popup_item_height"
+    android:id="@+id/system_shortcut_icons"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/system_shortcut_header_height"
+    android:orientation="horizontal"
+    android:gravity="end|center_vertical"
+    android:background="@drawable/single_item_primary"
     android:elevation="@dimen/deep_shortcuts_elevation"
-    android:background="@drawable/middle_item_primary"
-    android:theme="@style/PopupItem" >
+    android:clipToPadding="true">
 
-    <include layout="@layout/system_shortcut_content" />
-
-</com.android.launcher3.shortcuts.DeepShortcutView>
+    <Space android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:id="@+id/separator"/>
+</LinearLayout>

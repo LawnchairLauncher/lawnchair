@@ -199,9 +199,9 @@ public interface ActivityContext {
     }
 
     /**
-     * Returns {@code true} if popups should use color extraction.
+     * Returns {@code true} if popups can use a range of color shades instead of a singular color.
      */
-    default boolean shouldUseColorExtractionForPopup() {
+    default boolean canUseMultipleShadesForPopup() {
         return true;
     }
 

@@ -21,6 +21,7 @@ import static androidx.core.content.ContextCompat.getColorStateList;
 import static com.android.launcher3.anim.Interpolators.ACCELERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.DECELERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_MATERIAL_U_POPUP;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -116,7 +117,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
 
     private final String mIterateChildrenTag;
 
-    private final int[] mColorIds;
+    protected final int[] mColorIds;
 
     public ArrowPopup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -125,8 +126,8 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         mActivityContext = ActivityContext.lookupContext(context);
         mIsRtl = Utilities.isRtl(getResources());
 
-        int backgroundColor = Themes.getAttrColor(context, R.attr.popupColorPrimary);
-        mArrowColor = backgroundColor;
+        int popupPrimaryColor = Themes.getAttrColor(context, R.attr.popupColorPrimary);
+        mArrowColor = popupPrimaryColor;
         mElevation = getResources().getDimension(R.dimen.deep_shortcuts_elevation);
 
         // Initialize arrow view
@@ -143,18 +144,18 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
 
         int smallerRadius = resources.getDimensionPixelSize(R.dimen.popup_smaller_radius);
         mRoundedTop = new GradientDrawable();
-        mRoundedTop.setColor(backgroundColor);
+        mRoundedTop.setColor(popupPrimaryColor);
         mRoundedTop.setCornerRadii(new float[] { mOutlineRadius, mOutlineRadius, mOutlineRadius,
                 mOutlineRadius, smallerRadius, smallerRadius, smallerRadius, smallerRadius});
 
         mRoundedBottom = new GradientDrawable();
-        mRoundedBottom.setColor(backgroundColor);
+        mRoundedBottom.setColor(popupPrimaryColor);
         mRoundedBottom.setCornerRadii(new float[] { smallerRadius, smallerRadius, smallerRadius,
                 smallerRadius, mOutlineRadius, mOutlineRadius, mOutlineRadius, mOutlineRadius});
 
         mIterateChildrenTag = getContext().getString(R.string.popup_container_iterate_children);
 
-        if (mActivityContext.shouldUseColorExtractionForPopup()) {
+        if (!ENABLE_MATERIAL_U_POPUP.get() && mActivityContext.canUseMultipleShadesForPopup()) {
             mColorIds = new int[]{R.color.popup_shade_first, R.color.popup_shade_second,
                     R.color.popup_shade_third};
         } else {
@@ -241,15 +242,23 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
                 mlp.bottomMargin = 0;
 
                 if (colors != null) {
-                    backgroundColor = colors[numVisibleChild % colors.length];
+                    if (!ENABLE_MATERIAL_U_POPUP.get()) {
+                        backgroundColor = colors[numVisibleChild % colors.length];
+                    }
+
+                    if (ENABLE_MATERIAL_U_POPUP.get() && isShortcutContainer(view)) {
+                        setChildColor(view, colors[0], colorAnimator);
+                        mArrowColor = colors[0];
+                    }
                 }
 
                 // Arrow color matches the first child or the last child.
-                if (mIsAboveIcon || (numVisibleChild == 0 && viewGroup == this)) {
+                if (!ENABLE_MATERIAL_U_POPUP.get()
+                        && (mIsAboveIcon || (numVisibleChild == 0 && viewGroup == this))) {
                     mArrowColor = backgroundColor;
                 }
 
-                if (view instanceof ViewGroup && mIterateChildrenTag.equals(view.getTag())) {
+                if (view instanceof ViewGroup && isShortcutContainer(view)) {
                     assignMarginsAndBackgrounds((ViewGroup) view, backgroundColor);
                     numVisibleChild++;
                     continue;
@@ -287,6 +296,13 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
     }
 
     /**
+     * Returns {@code true} if view is a layout container of shortcuts
+     */
+    boolean isShortcutContainer(View view) {
+        return mIterateChildrenTag.equals(view.getTag());
+    }
+
+    /**
      * Sets the background color of the child.
      */
     protected void setChildColor(View view, int color, AnimatorSet animatorSetOut) {
@@ -308,7 +324,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
      */
     protected void reorderAndShow(int viewsToFlip) {
         setupForDisplay();
-        boolean reverseOrder = mIsAboveIcon;
+        boolean reverseOrder = !ENABLE_MATERIAL_U_POPUP.get() && mIsAboveIcon;
         if (reverseOrder) {
             reverseOrder(viewsToFlip);
         }
@@ -634,7 +650,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         for (int i = group.getChildCount() - 1; i >= 0; --i) {
             View view = group.getChildAt(i);
             if (view.getVisibility() == VISIBLE && view instanceof ViewGroup) {
-                if (mIterateChildrenTag.equals(view.getTag())) {
+                if (isShortcutContainer(view)) {
                     fadeInChildViews((ViewGroup) view, alphaValues, startDelay, duration, out);
                     continue;
                 }

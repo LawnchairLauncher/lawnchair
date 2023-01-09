@@ -349,7 +349,7 @@
     <dimen name="developer_options_filter_margins">10dp</dimen>
 
     <!-- Theming related -->
-    <dimen name="default_dialog_corner_radius">8dp</dimen>
+    <dimen name="default_dialog_corner_radius">26dp</dimen>
     <dimen name="dialogCornerRadius">@dimen/default_dialog_corner_radius</dimen>
 
     <!-- Onboarding bottomsheet related -->
