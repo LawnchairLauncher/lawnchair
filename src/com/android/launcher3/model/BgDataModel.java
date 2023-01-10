@@ -433,26 +433,9 @@ public class BgDataModel {
         public final int containerId;
         public final List<ItemInfo> items;
 
-        public FixedContainerItems(int containerId) {
-            this(containerId, new ArrayList<>());
-        }
-
         public FixedContainerItems(int containerId, List<ItemInfo> items) {
             this.containerId = containerId;
-            this.items = items;
-        }
-
-        @Override
-        public FixedContainerItems clone() {
-            return new FixedContainerItems(containerId, new ArrayList<>(items));
-        }
-
-        public void setItems(List<ItemInfo> newItems) {
-            items.clear();
-            newItems.forEach(item -> {
-                item.container = containerId;
-                items.add(item);
-            });
+            this.items = Collections.unmodifiableList(items);
         }
     }
 

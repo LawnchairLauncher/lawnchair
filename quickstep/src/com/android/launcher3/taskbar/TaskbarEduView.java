@@ -15,7 +15,7 @@
  */
 package com.android.launcher3.taskbar;
 
-import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
+import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
 
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
@@ -24,20 +24,22 @@ import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
+import android.view.animation.Interpolator;
 import android.widget.Button;
 
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
+import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 import com.android.launcher3.views.AbstractSlideInView;
 
 /** Education view about the Taskbar. */
-public class TaskbarEduView extends AbstractSlideInView<TaskbarActivityContext>
+public class TaskbarEduView extends AbstractSlideInView<TaskbarOverlayContext>
         implements Insettable {
 
-    private static final int DEFAULT_OPEN_DURATION = 500;
-    private static final int DEFAULT_CLOSE_DURATION = 200;
-
     private final Rect mInsets = new Rect();
+
+    // Initialized in init.
+    private TaskbarEduController.TaskbarEduCallbacks mTaskbarEduCallbacks;
 
     private Button mStartButton;
     private Button mEndButton;
@@ -56,11 +58,17 @@ public class TaskbarEduView extends AbstractSlideInView<TaskbarActivityContext>
         if (mPagedView != null) {
             mPagedView.setControllerCallbacks(callbacks);
         }
+        mTaskbarEduCallbacks = callbacks;
     }
 
     @Override
     protected void handleClose(boolean animate) {
-        handleClose(animate, DEFAULT_CLOSE_DURATION);
+        handleClose(animate, mTaskbarEduCallbacks.getCloseDuration());
+    }
+
+    @Override
+    protected Interpolator getIdleInterpolator() {
+        return EMPHASIZED;
     }
 
     @Override
@@ -101,6 +109,22 @@ public class TaskbarEduView extends AbstractSlideInView<TaskbarActivityContext>
                 Settings.Secure.LAUNCHER_TASKBAR_EDUCATION_SHOWING, 0);
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        int contentWidth = Math.min(getContentAreaWidth(), getMeasuredWidth());
+        contentWidth = Math.max(contentWidth, mTaskbarEduCallbacks.getIconLayoutBoundsWidth());
+        int contentAreaWidthSpec = MeasureSpec.makeMeasureSpec(contentWidth, MeasureSpec.EXACTLY);
+
+        mContent.measure(contentAreaWidthSpec, MeasureSpec.UNSPECIFIED);
+    }
+
+    private int getContentAreaWidth() {
+        return mTaskbarEduCallbacks.getIconLayoutBoundsWidth()
+                + getResources().getDimensionPixelSize(R.dimen.taskbar_edu_horizontal_margin) * 2;
+    }
+
     /** Show the Education flow. */
     public void show() {
         attachToContainer();
@@ -139,8 +163,8 @@ public class TaskbarEduView extends AbstractSlideInView<TaskbarActivityContext>
         mIsOpen = true;
         mOpenCloseAnimator.setValues(
                 PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-        mOpenCloseAnimator.setInterpolator(AGGRESSIVE_EASE);
-        mOpenCloseAnimator.setDuration(DEFAULT_OPEN_DURATION).start();
+        mOpenCloseAnimator.setInterpolator(EMPHASIZED);
+        mOpenCloseAnimator.setDuration(mTaskbarEduCallbacks.getOpenDuration()).start();
     }
 
     void snapToPage(int page) {

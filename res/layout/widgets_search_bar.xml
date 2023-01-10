@@ -23,6 +23,7 @@
         android:layout_weight="1"
         android:inputType="text"
         android:imeOptions="actionSearch"
+        android:importantForAutofill="no"
         android:textColor="?android:attr/textColorPrimary"
         android:textColorHint="?android:attr/textColorSecondary"/>
 

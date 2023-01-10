@@ -56,12 +56,6 @@
     <attr name="preloadIconAccentColor" format="color" />
     <attr name="preloadIconBackgroundColor" format="color" />
 
-    <attr name="allAppsButtonBgColor" format="color" />
-    <attr name="allAppsButtonColor1" format="color" />
-    <attr name="allAppsButtonColor2" format="color" />
-    <attr name="allAppsButtonColor3" format="color" />
-    <attr name="allAppsButtonColor4" format="color" />
-
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="BubbleTextView">
         <attr name="layoutHorizontal" format="boolean" />
@@ -147,9 +141,12 @@
         <attr name="numColumns" format="integer" />
         <!--  numSearchContainerColumns defaults to numColumns, if not specified -->
         <attr name="numSearchContainerColumns" format="integer" />
+
         <!-- numFolderRows & numFolderColumns defaults to numRows & numColumns, if not specified -->
         <attr name="numFolderRows" format="integer" />
         <attr name="numFolderColumns" format="integer" />
+        <attr name="folderStyle" format="reference" />
+
         <!-- numAllAppsColumns defaults to numColumns, if not specified -->
         <attr name="numAllAppsColumns" format="integer" />
         <!-- Number of columns to use when extending the all-apps size,
@@ -179,18 +176,29 @@
 
         <attr name="dbFile" format="string" />
         <attr name="defaultLayoutId" format="reference" />
-        <attr name="defaultSplitDisplayLayoutId" format="reference" />
         <attr name="demoModeLayoutId" format="reference" />
         <attr name="isScalable" format="boolean" />
         <attr name="devicePaddingId" format="reference" />
         <!-- By default all categories are enabled -->
-        <attr name="deviceCategory" format="integer" >
+        <attr name="deviceCategory" format="integer">
             <!-- Enable on phone only -->
             <flag name="phone" value="1" />
             <!-- Enable on tablets only -->
             <flag name="tablet" value="2" />
             <!-- Enable on multi display devices only -->
             <flag name="multi_display" value="4" />
+        </attr>
+
+        <!-- By default all are false -->
+        <attr name="inlineQsb" format="integer">
+            <!-- Enable on landscape only -->
+            <flag name="portrait" value="1" />
+            <!-- Enable on portrait only -->
+            <flag name="landscape" value="2" />
+            <!-- Enable on two panel portrait only -->
+            <flag name="twoPanelPortrait" value="4" />
+            <!-- Enable on two panel landscape only -->
+            <flag name="twoPanelLandscape" value="8" />
         </attr>
 
     </declare-styleable>
@@ -203,6 +211,10 @@
         <attr name="a" format="float|dimension" />
         <attr name="b" format="float|dimension" />
         <attr name="c" format="float|dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="PersonalWorkSlidingTabStrip">
+        <attr name="alignOnIcon" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="ProfileDisplayOption">
@@ -280,6 +292,8 @@
         <!-- The following values are only enabled if grid is supported. -->
         <!-- defaults to iconImageSize, if not specified -->
         <attr name="allAppsIconSize" format="float" />
+        <!-- defaults to allAppsIconSize, if not specified -->
+        <attr name="allAppsIconSizeLandscape" format="float" />
         <!-- defaults to allAppsIconSize, if not specified -->
         <attr name="allAppsIconSizeTwoPanelPortrait" format="float" />
         <!-- defaults to allAppsIconSize, if not specified -->
@@ -371,18 +385,23 @@
         <!-- defaults to horizontalMargin if not specified -->
         <attr name="horizontalMarginTwoPanelPortrait" format="float"/>
 
-        <!-- By default all are false -->
-        <attr name="inlineQsb" format="integer" >
-            <!-- Enable on landscape only -->
-            <flag name="portrait" value="1" />
-            <!-- Enable on portrait only -->
-            <flag name="landscape" value="2" />
-            <!-- Enable on two panel portrait only -->
-            <flag name="twoPanelPortrait" value="4" />
-            <!-- Enable on two panel landscape only -->
-            <flag name="twoPanelLandscape" value="8" />
-        </attr>
     </declare-styleable>
+
+    <declare-styleable name="FolderDisplayStyle">
+        <!-- defaults to minCellHeight if not specified
+        when GridDisplayOption#isScalable is true. -->
+        <attr name="folderCellHeight" format="dimension" />
+        <!-- defaults to minCellWidth, if not specified -->
+        <attr name="folderCellWidth" format="dimension" />
+        <!-- space to be used horizontally and vertically between icons,
+        and to the left and right of folder -->
+        <attr name="folderBorderSpace" format="dimension" />
+        <!-- height of the footer of the folder -->
+        <attr name="folderFooterHeight" format="dimension" />
+        <!-- padding on top of the folder -->
+        <attr name="folderTopPadding" format="dimension" />
+    </declare-styleable>
+
 
     <declare-styleable name="CellLayout">
         <attr name="containerType" format="integer">

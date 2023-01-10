@@ -38,6 +38,32 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <!-- Filtering affects only alpha instead of the visibility since visibility can be altered
+         separately through RecentsView#resetFromSplitSelectionState() -->
+    <ImageView
+        android:id="@+id/show_windows"
+        android:layout_height="@dimen/recents_filter_icon_size"
+        android:layout_width="@dimen/recents_filter_icon_size"
+        android:layout_gravity="start"
+        android:alpha="0"
+        android:tint="@color/recents_filter_icon"
+        android:contentDescription="@string/recents_filter_icon_desc"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_select_windows" />
+
+    <!-- Filtering affects only alpha instead of the visibility since visibility can be altered
+         separately through RecentsView#resetFromSplitSelectionState() -->
+    <ImageView
+        android:id="@+id/show_windows_right"
+        android:layout_height="@dimen/recents_filter_icon_size"
+        android:layout_width="@dimen/recents_filter_icon_size"
+        android:layout_gravity="end"
+        android:alpha="0"
+        android:tint="@color/recents_filter_icon"
+        android:contentDescription="@string/recents_filter_icon_desc"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_select_windows" />
+
     <com.android.quickstep.views.IconView
         android:id="@+id/icon"
         android:layout_width="@dimen/task_thumbnail_icon_size"

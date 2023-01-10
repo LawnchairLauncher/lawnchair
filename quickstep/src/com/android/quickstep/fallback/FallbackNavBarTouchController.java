@@ -22,7 +22,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DisplayController;
-import com.android.launcher3.util.DisplayController.NavigationMode;
+import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.util.NavBarPosition;

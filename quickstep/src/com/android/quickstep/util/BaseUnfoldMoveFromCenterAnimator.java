@@ -16,12 +16,14 @@
 package com.android.quickstep.util;
 
 import android.annotation.CallSuper;
+import android.view.Surface.Rotation;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import com.android.systemui.shared.animation.UnfoldMoveFromCenterAnimator;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider.TransitionProgressListener;
+import com.android.systemui.unfold.updates.RotationChangeProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,15 +34,20 @@ import java.util.Map;
 public abstract class BaseUnfoldMoveFromCenterAnimator implements TransitionProgressListener {
 
     private final UnfoldMoveFromCenterAnimator mMoveFromCenterAnimation;
+    private final RotationChangeProvider mRotationChangeProvider;
 
     private final Map<ViewGroup, Boolean> mOriginalClipToPadding = new HashMap<>();
     private final Map<ViewGroup, Boolean> mOriginalClipChildren = new HashMap<>();
 
+    private final UnfoldMoveFromCenterRotationListener mRotationListener =
+            new UnfoldMoveFromCenterRotationListener();
     private boolean mAnimationInProgress = false;
 
-    public BaseUnfoldMoveFromCenterAnimator(WindowManager windowManager) {
+    public BaseUnfoldMoveFromCenterAnimator(WindowManager windowManager,
+            RotationChangeProvider rotationChangeProvider) {
         mMoveFromCenterAnimation = new UnfoldMoveFromCenterAnimator(windowManager,
                 new LauncherViewsMoveFromCenterTranslationApplier());
+        mRotationChangeProvider = rotationChangeProvider;
     }
 
     @CallSuper
@@ -50,6 +57,7 @@ public abstract class BaseUnfoldMoveFromCenterAnimator implements TransitionProg
         mMoveFromCenterAnimation.updateDisplayProperties();
         onPrepareViewsForAnimation();
         onTransitionProgress(0f);
+        mRotationChangeProvider.addCallback(mRotationListener);
     }
 
     @CallSuper
@@ -62,6 +70,7 @@ public abstract class BaseUnfoldMoveFromCenterAnimator implements TransitionProg
     @Override
     public void onTransitionFinished() {
         mAnimationInProgress = false;
+        mRotationChangeProvider.removeCallback(mRotationListener);
         mMoveFromCenterAnimation.onTransitionFinished();
         clearRegisteredViews();
     }
@@ -107,6 +116,16 @@ public abstract class BaseUnfoldMoveFromCenterAnimator implements TransitionProg
         final Boolean originalClipChildren = mOriginalClipChildren.get(view);
         if (originalClipChildren != null) {
             view.setClipChildren(originalClipChildren);
+        }
+    }
+
+    private class UnfoldMoveFromCenterRotationListener implements
+            RotationChangeProvider.RotationListener {
+
+        @Override
+        public void onRotationChanged(@Rotation int newRotation) {
+            mMoveFromCenterAnimation.updateDisplayProperties(newRotation);
+            updateRegisteredViewsIfNeeded();
         }
     }
 }

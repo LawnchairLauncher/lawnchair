@@ -43,4 +43,7 @@
 
 <!-- Bottom sheet-->
     <dimen name="bottom_sheet_extra_top_padding">300dp</dimen>
+
+    <!--  Folder spaces  -->
+    <dimen name="folder_footer_horiz_padding">24dp</dimen>
 </resources>

@@ -28,8 +28,8 @@ import android.view.Window;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.quickstep.TouchInteractionService.TISBinder;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
@@ -63,7 +63,7 @@ public class GestureSandboxActivity extends FragmentActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.gesture_tutorial_activity);
 
-        mSharedPrefs = Utilities.getPrefs(this);
+        mSharedPrefs = LauncherPrefs.getPrefs(this);
         mStatsLogManager = StatsLogManager.newInstance(getApplicationContext());
 
         Bundle args = savedInstanceState == null ? getIntent().getExtras() : savedInstanceState;

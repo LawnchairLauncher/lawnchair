@@ -30,39 +30,117 @@ import java.util.Set;
 
 public class CellLayoutBoard {
 
+    public static class CellType {
+        // The cells marked by this will be filled by 1x1 widgets and will be ignored when
+        // validating
+        public static final char IGNORE = 'x';
+        // The cells marked by this will be filled by app icons
+        public static final char ICON = 'i';
+        // Empty space
+        public static final char EMPTY = '-';
+        // Widget that will be saved as "main widget" for easier retrieval
+        public static final char MAIN_WIDGET = 'm';
+        // Everything else will be consider a widget
+    }
+
+    public static class WidgetRect {
+        public char mType;
+        public Rect mBounds;
+
+        WidgetRect(char type, Rect bounds) {
+            this.mType = type;
+            this.mBounds = bounds;
+        }
+
+        int getSpanX() {
+            return mBounds.right - mBounds.left + 1;
+        }
+
+        int getSpanY() {
+            return mBounds.top - mBounds.bottom + 1;
+        }
+
+        int getCellX() {
+            return mBounds.left;
+        }
+
+        int getCellY() {
+            return mBounds.bottom;
+        }
+
+        boolean shouldIgnore() {
+            return this.mType == CellType.IGNORE;
+        }
+
+        @Override
+        public String toString() {
+            return "WidgetRect type = " + mType + " bounds = " + mBounds.toString();
+        }
+    }
+
+    public static class IconPoint {
+        public Point coord;
+        public char mType;
+
+        public IconPoint(Point coord, char type) {
+            this.coord = coord;
+            mType = type;
+        }
+
+        public char getType() {
+            return mType;
+        }
+
+        public void setType(char type) {
+            mType = type;
+        }
+
+        public Point getCoord() {
+            return coord;
+        }
+
+        public void setCoord(Point coord) {
+            this.coord = coord;
+        }
+    }
+
     static final int INFINITE = 99999;
 
-    char[][] mBoard = new char[30][30];
+    char[][] mWidget = new char[30][30];
 
-    List<TestBoardWidget> mWidgetsRects = new ArrayList<>();
-    Map<Character, TestBoardWidget> mWidgetsMap = new HashMap<>();
+    List<WidgetRect> mWidgetsRects = new ArrayList<>();
+    Map<Character, WidgetRect> mWidgetsMap = new HashMap<>();
 
-    List<TestBoardAppIcon> mIconPoints = new ArrayList<>();
-    Map<Character, TestBoardAppIcon> mIconsMap = new HashMap<>();
+    List<IconPoint> mIconPoints = new ArrayList<>();
+    Map<Character, IconPoint> mIconsMap = new HashMap<>();
 
     Point mMain = new Point();
 
     CellLayoutBoard() {
-        for (int x = 0; x < mBoard.length; x++) {
-            for (int y = 0; y < mBoard[0].length; y++) {
-                mBoard[x][y] = '-';
+        for (int x = 0; x < mWidget.length; x++) {
+            for (int y = 0; y < mWidget[0].length; y++) {
+                mWidget[x][y] = CellType.EMPTY;
             }
         }
     }
 
-    public List<TestBoardWidget> getWidgets() {
+    public List<WidgetRect> getWidgets() {
         return mWidgetsRects;
+    }
+
+    public List<IconPoint> getIcons() {
+        return mIconPoints;
     }
 
     public Point getMain() {
         return mMain;
     }
 
-    public TestBoardWidget getWidgetRect(char c) {
+    public WidgetRect getWidgetRect(char c) {
         return mWidgetsMap.get(c);
     }
 
-    public static TestBoardWidget getWidgetRect(int x, int y, Set<Point> used, char[][] board) {
+    public static WidgetRect getWidgetRect(int x, int y, Set<Point> used, char[][] board) {
         char type = board[x][y];
         Queue<Point> search = new ArrayDeque<Point>();
         Point current = new Point(x, y);
@@ -91,20 +169,20 @@ public class CellLayoutBoard {
                 }
             }
         }
-        return new TestBoardWidget(type, widgetRect);
+        return new WidgetRect(type, widgetRect);
     }
 
     public static boolean isWidget(char type) {
-        return type != 'i' && type != '-';
+        return type != CellType.ICON && type != CellType.EMPTY;
     }
 
     public static boolean isIcon(char type) {
-        return type == 'i';
+        return type == CellType.ICON;
     }
 
-    private static List<TestBoardWidget> getRects(char[][] board) {
+    private static List<WidgetRect> getRects(char[][] board) {
         Set<Point> used = new HashSet<>();
-        List<TestBoardWidget> widgetsRects = new ArrayList<>();
+        List<WidgetRect> widgetsRects = new ArrayList<>();
         for (int x = 0; x < board.length; x++) {
             for (int y = 0; y < board[0].length; y++) {
                 if (!used.contains(new Point(x, y)) && isWidget(board[x][y])) {
@@ -115,12 +193,12 @@ public class CellLayoutBoard {
         return widgetsRects;
     }
 
-    private static List<TestBoardAppIcon> getIconPoints(char[][] board) {
-        List<TestBoardAppIcon> iconPoints = new ArrayList<>();
+    private static List<IconPoint> getIconPoints(char[][] board) {
+        List<IconPoint> iconPoints = new ArrayList<>();
         for (int x = 0; x < board.length; x++) {
             for (int y = 0; y < board[0].length; y++) {
                 if (isIcon(board[x][y])) {
-                    iconPoints.add(new TestBoardAppIcon(new Point(x, y), board[x][y]));
+                    iconPoints.add(new IconPoint(new Point(x, y), board[x][y]));
                 }
             }
         }
@@ -135,18 +213,18 @@ public class CellLayoutBoard {
             String line = lines[y];
             for (int x = 0; x < line.length(); x++) {
                 char c = line.charAt(x);
-                if (c == 'm') {
+                if (c == CellType.MAIN_WIDGET) {
                     board.mMain = new Point(x, y);
                 }
-                if (c != '-') {
-                    board.mBoard[x][y] = line.charAt(x);
+                if (c != CellType.EMPTY) {
+                    board.mWidget[x][y] = line.charAt(x);
                 }
             }
         }
-        board.mWidgetsRects = getRects(board.mBoard);
+        board.mWidgetsRects = getRects(board.mWidget);
         board.mWidgetsRects.forEach(
                 widgetRect -> board.mWidgetsMap.put(widgetRect.mType, widgetRect));
-        board.mIconPoints = getIconPoints(board.mBoard);
+        board.mIconPoints = getIconPoints(board.mWidget);
         return board;
     }
 }

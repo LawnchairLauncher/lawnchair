@@ -282,7 +282,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mFolderName = findViewById(R.id.folder_name);
         mFolderName.setTextSize(TypedValue.COMPLEX_UNIT_PX, dp.folderLabelTextSizePx);
         mFolderName.setOnBackKeyListener(this);
-        mFolderName.setOnFocusChangeListener(this);
         mFolderName.setOnEditorActionListener(this);
         mFolderName.setSelectAllOnFocus(true);
         mFolderName.setInputType(mFolderName.getInputType()
@@ -292,7 +291,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mFolderName.forceDisableSuggestions(true);
 
         mFooter = findViewById(R.id.folder_footer);
-        mFooterHeight = getResources().getDimensionPixelSize(R.dimen.folder_label_height);
+        mFooterHeight = dp.folderFooterHeightPx;
 
         if (Utilities.ATLEAST_R) {
             mKeyboardInsetAnimationCallback = new KeyboardInsetAnimationCallback(this);
@@ -368,9 +367,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     public void startEditingFolderName() {
         post(() -> {
-            if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
-                showLabelSuggestions();
-            }
+            showLabelSuggestions();
             mFolderName.setHint("");
             mIsEditingName = true;
         });
@@ -459,6 +456,13 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         // the folder itself.
         requestFocus();
         super.onAttachedToWindow();
+        mFolderName.addOnFocusChangeListener(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mFolderName.removeOnFocusChangeListener(this);
     }
 
     @Override
@@ -1080,8 +1084,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         if (!items.isEmpty()) {
             mLauncherDelegate.getModelWriter().moveItemsInDatabase(items, mInfo.id, 0);
         }
-        if (FeatureFlags.FOLDER_NAME_SUGGEST.get() && !isBind
-                && total > 1 /* no need to update if there's one icon */) {
+        if (!isBind && total > 1 /* no need to update if there's one icon */) {
             Executors.MODEL_EXECUTOR.post(() -> {
                 FolderNameInfos nameInfos = new FolderNameInfos();
                 FolderNameProvider fnp = FolderNameProvider.newInstance(getContext());
@@ -1170,14 +1173,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mContent.setFixedSize(contentWidth, contentHeight);
         mContent.measure(contentAreaWidthSpec, contentAreaHeightSpec);
 
-        if (mContent.getChildCount() > 0) {
-            int cellIconGap = (mContent.getPageAt(0).getCellWidth()
-                    - mActivityContext.getDeviceProfile().iconSizePx) / 2;
-            mFooter.setPadding(mContent.getPaddingLeft() + cellIconGap,
-                    mFooter.getPaddingTop(),
-                    mContent.getPaddingRight() + cellIconGap,
-                    mFooter.getPaddingBottom());
-        }
         mFooter.measure(contentAreaWidthSpec,
                 MeasureSpec.makeMeasureSpec(mFooterHeight, MeasureSpec.EXACTLY));
 

@@ -24,6 +24,7 @@ import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.LauncherAppState;
@@ -192,7 +193,8 @@ public class FolderNameProvider implements ResourceBasedOverride {
 
     private class FolderNameWorker extends BaseModelUpdateTask {
         @Override
-        public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+        public void execute(@NonNull final LauncherAppState app,
+                @NonNull final BgDataModel dataModel, @NonNull final AllAppsList apps) {
             mFolderInfos = dataModel.folders.clone();
             mAppInfos = Arrays.asList(apps.copyData());
         }

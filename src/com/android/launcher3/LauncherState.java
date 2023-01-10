@@ -41,6 +41,7 @@ import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.uioverrides.states.AllAppsState;
 import com.android.launcher3.uioverrides.states.OverviewState;
+import com.android.launcher3.views.ActivityContext;
 
 import java.util.Arrays;
 
@@ -71,17 +72,14 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public static final int FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED = BaseState.getFlag(2);
     // Flag to indicate that workspace should draw page background
     public static final int FLAG_WORKSPACE_HAS_BACKGROUNDS = BaseState.getFlag(3);
-    // True if the back button should be hidden when in this state (assuming no floating views are
-    // open, launcher has window focus, etc).
-    public static final int FLAG_HIDE_BACK_BUTTON = BaseState.getFlag(4);
     // Flag to indicate if the state would have scrim over sysui region: statu sbar and nav bar
-    public static final int FLAG_HAS_SYS_UI_SCRIM = BaseState.getFlag(5);
+    public static final int FLAG_HAS_SYS_UI_SCRIM = BaseState.getFlag(4);
     // Flag to inticate that all popups should be closed when this state is enabled.
-    public static final int FLAG_CLOSE_POPUPS = BaseState.getFlag(6);
-    public static final int FLAG_OVERVIEW_UI = BaseState.getFlag(7);
+    public static final int FLAG_CLOSE_POPUPS = BaseState.getFlag(5);
+    public static final int FLAG_OVERVIEW_UI = BaseState.getFlag(6);
 
     // Flag indicating that hotseat and its contents are not accessible.
-    public static final int FLAG_HOTSEAT_INACCESSIBLE = BaseState.getFlag(8);
+    public static final int FLAG_HOTSEAT_INACCESSIBLE = BaseState.getFlag(7);
 
 
     public static final float NO_OFFSET = 0;
@@ -110,8 +108,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      */
     public static final LauncherState NORMAL = new LauncherState(NORMAL_STATE_ORDINAL,
             LAUNCHER_STATE_HOME,
-            FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_HIDE_BACK_BUTTON |
-                    FLAG_HAS_SYS_UI_SCRIM) {
+            FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_HAS_SYS_UI_SCRIM) {
         @Override
         public int getTransitionDuration(Context context, boolean isToState) {
             // Arbitrary duration, when going to NORMAL we use the state we're coming from instead.
@@ -265,7 +262,8 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      *
      * 0 means completely zoomed in, without blurs. 1 is zoomed out, with blurs.
      */
-    public final float getDepth(Context context) {
+    public final  <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext>
+            float getDepth(DEVICE_PROFILE_CONTEXT context) {
         return getDepth(context,
                 BaseDraggingActivity.fromContext(context).getDeviceProfile().isMultiWindowMode);
     }
@@ -275,14 +273,16 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      *
      * @see #getDepth(Context).
      */
-    public final float getDepth(Context context, boolean isMultiWindowMode) {
+    public final <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext>
+            float getDepth(DEVICE_PROFILE_CONTEXT context, boolean isMultiWindowMode) {
         if (isMultiWindowMode) {
             return 0;
         }
         return getDepthUnchecked(context);
     }
 
-    protected float getDepthUnchecked(Context context) {
+    protected <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext>
+            float getDepthUnchecked(DEVICE_PROFILE_CONTEXT context) {
         return 0f;
     }
 

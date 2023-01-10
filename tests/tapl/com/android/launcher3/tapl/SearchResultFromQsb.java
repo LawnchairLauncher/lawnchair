@@ -20,6 +20,8 @@ import android.widget.TextView;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiObject2;
 
+import java.util.ArrayList;
+
 /**
  * Operations on search result page opened from home screen qsb.
  */
@@ -27,6 +29,9 @@ public class SearchResultFromQsb {
     // The input resource id in the search box.
     private static final String INPUT_RES = "input";
     private static final String BOTTOM_SHEET_RES_ID = "bottom_sheet_background";
+
+    // This particular ID change should happen with caution
+    private static final String SEARCH_CONTAINER_RES_ID = "search_results_list_view";
     private final LauncherInstrumentation mLauncher;
 
     SearchResultFromQsb(LauncherInstrumentation launcher) {
@@ -47,6 +52,33 @@ public class SearchResultFromQsb {
     public Launchable findAppIcon(String appName) {
         UiObject2 icon = mLauncher.waitForLauncherObject(By.clazz(TextView.class).text(appName));
         return new AllAppsAppIcon(mLauncher, icon);
+    }
+
+    /** Find the web suggestion from search suggestion's title text */
+    public void verifyWebSuggestIsPresent(String text) {
+        ArrayList<UiObject2> goldenGateResults =
+                new ArrayList<>(mLauncher.waitForObjectsInContainer(
+                        mLauncher.waitForSystemLauncherObject(SEARCH_CONTAINER_RES_ID),
+                        By.clazz(TextView.class)));
+        boolean found = false;
+        for(UiObject2 uiObject: goldenGateResults) {
+            String currentString = uiObject.getText();
+            if (currentString.equals(text)) {
+                found = true;
+            }
+        }
+        if (!found) {
+            throw new IllegalStateException("Web suggestion title: " + text + " not found");
+        }
+    }
+
+    /** Find the total amount of views being displayed and return the size */
+    public int getSearchResultItemSize() {
+        ArrayList<UiObject2> searchResultItems =
+                new ArrayList<>(mLauncher.waitForObjectsInContainer(
+                        mLauncher.waitForSystemLauncherObject(SEARCH_CONTAINER_RES_ID),
+                        By.clazz(TextView.class)));
+        return searchResultItems.size();
     }
 
     /**

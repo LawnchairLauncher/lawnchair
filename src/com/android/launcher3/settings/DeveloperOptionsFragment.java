@@ -59,10 +59,11 @@ import androidx.preference.PreferenceScreen;
 import androidx.preference.PreferenceViewHolder;
 import androidx.preference.SwitchPreference;
 
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.FlagTogglerPrefUi;
+import com.android.launcher3.secondarydisplay.SecondaryDisplayLauncher;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.OnboardingPrefs;
 
@@ -369,6 +370,16 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
             return true;
         });
         sandboxCategory.addPreference(launchSandboxModeTutorialPreference);
+
+        Preference launchSecondaryDisplayPreference = new Preference(context);
+        launchSecondaryDisplayPreference.setKey("launchSecondaryDisplay");
+        launchSecondaryDisplayPreference.setTitle("Launch Secondary Display");
+        launchSecondaryDisplayPreference.setSummary("Launch secondary display activity");
+        launchSecondaryDisplayPreference.setOnPreferenceClickListener(preference -> {
+            startActivity(new Intent(context, SecondaryDisplayLauncher.class));
+            return true;
+        });
+        sandboxCategory.addPreference(launchSecondaryDisplayPreference);
     }
 
     private void addOnboardingPrefsCatergory() {
@@ -381,7 +392,8 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
             onboardingPref.setTitle(title);
             onboardingPref.setSummary("Tap to reset");
             onboardingPref.setOnPreferenceClickListener(preference -> {
-                SharedPreferences.Editor sharedPrefsEdit = Utilities.getPrefs(getContext()).edit();
+                SharedPreferences.Editor sharedPrefsEdit = LauncherPrefs.getPrefs(getContext())
+                        .edit();
                 for (String key : keys) {
                     sharedPrefsEdit.remove(key);
                 }

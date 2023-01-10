@@ -25,6 +25,7 @@
     <string name="stats_log_manager_class" translatable="false">com.android.quickstep.logging.StatsLogCompatManager</string>
     <string name="test_information_handler_class" translatable="false">com.android.quickstep.QuickstepTestInformationHandler</string>
     <string name="window_manager_proxy_class" translatable="false">com.android.quickstep.util.SystemWindowManagerProxy</string>
+    <string name="widget_holder_factory_class" translatable="false">com.android.launcher3.uioverrides.QuickstepWidgetHolder$QuickstepHolderFactory</string>
 
     <!-- The number of thumbnails and icons to keep in the cache. The thumbnail cache size also
          determines how many thumbnails will be fetched in the background. -->
@@ -43,4 +44,9 @@
     <!-- Accessibility actions -->
     <item type="id" name="action_move_to_top_or_left" />
     <item type="id" name="action_move_to_bottom_or_right" />
+
+    <!-- The max scale for the wallpaper when it's zoomed in -->
+    <item name="config_wallpaperMaxScale" format="float" type="dimen">
+        @*android:dimen/config_wallpaperMaxScale
+    </item>
 </resources>

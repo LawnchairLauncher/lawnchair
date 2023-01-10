@@ -28,13 +28,13 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
+import android.view.RemoteAnimationTarget;
 
 import androidx.annotation.BinderThread;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.lang.ref.WeakReference;
 
@@ -55,7 +55,7 @@ import java.lang.ref.WeakReference;
  * reference to the runner, leaving only the weak ref from the runner.
  */
 @TargetApi(Build.VERSION_CODES.P)
-public class LauncherAnimationRunner implements RemoteAnimationRunnerCompat {
+public class LauncherAnimationRunner extends RemoteAnimationRunnerCompat {
 
     private static final RemoteAnimationFactory DEFAULT_FACTORY =
             (transit, appTargets, wallpaperTargets, nonAppTargets, result) ->
@@ -82,9 +82,9 @@ public class LauncherAnimationRunner implements RemoteAnimationRunnerCompat {
     @BinderThread
     public void onAnimationStart(
             int transit,
-            RemoteAnimationTargetCompat[] appTargets,
-            RemoteAnimationTargetCompat[] wallpaperTargets,
-            RemoteAnimationTargetCompat[] nonAppTargets,
+            RemoteAnimationTarget[] appTargets,
+            RemoteAnimationTarget[] wallpaperTargets,
+            RemoteAnimationTarget[] nonAppTargets,
             Runnable runnable) {
         Runnable r = () -> {
             finishExistingAnimation();
@@ -98,22 +98,6 @@ public class LauncherAnimationRunner implements RemoteAnimationRunnerCompat {
             postAsyncCallback(mHandler, r);
         }
     }
-
-    // Called only in R platform
-    @BinderThread
-    public void onAnimationStart(RemoteAnimationTargetCompat[] appTargets,
-            RemoteAnimationTargetCompat[] wallpaperTargets, Runnable runnable) {
-        onAnimationStart(0 /* transit */, appTargets, wallpaperTargets,
-                new RemoteAnimationTargetCompat[0], runnable);
-    }
-
-    // Called only in Q platform
-    @BinderThread
-    @Deprecated
-    public void onAnimationStart(RemoteAnimationTargetCompat[] appTargets, Runnable runnable) {
-        onAnimationStart(appTargets, new RemoteAnimationTargetCompat[0], runnable);
-    }
-
 
     private RemoteAnimationFactory getFactory() {
         RemoteAnimationFactory factory = mFactory.get();
@@ -133,7 +117,7 @@ public class LauncherAnimationRunner implements RemoteAnimationRunnerCompat {
      */
     @BinderThread
     @Override
-    public void onAnimationCancelled() {
+    public void onAnimationCancelled(boolean isKeyguardOccluded) {
         postAsyncCallback(mHandler, () -> {
             finishExistingAnimation();
             getFactory().onAnimationCancelled();
@@ -229,9 +213,9 @@ public class LauncherAnimationRunner implements RemoteAnimationRunnerCompat {
          * call {@link AnimationResult#setAnimation} with the target animation to be run.
          */
         void onCreateAnimation(int transit,
-                RemoteAnimationTargetCompat[] appTargets,
-                RemoteAnimationTargetCompat[] wallpaperTargets,
-                RemoteAnimationTargetCompat[] nonAppTargets,
+                RemoteAnimationTarget[] appTargets,
+                RemoteAnimationTarget[] wallpaperTargets,
+                RemoteAnimationTarget[] nonAppTargets,
                 LauncherAnimationRunner.AnimationResult result);
 
         /**

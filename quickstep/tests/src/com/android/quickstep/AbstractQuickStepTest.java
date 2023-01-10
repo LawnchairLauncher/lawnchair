@@ -16,8 +16,6 @@
 
 package com.android.quickstep;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-
 import static org.junit.Assert.assertTrue;
 
 import android.os.SystemProperties;
@@ -41,6 +39,7 @@ public abstract class AbstractQuickStepTest extends AbstractLauncherUiTest {
     protected TestRule getRulesInsideActivityMonitor() {
         return RuleChain.
                 outerRule(new NavigationModeSwitchRule(mLauncher)).
+                around(new TaskbarModeSwitchRule(mLauncher)).
                 around(super.getRulesInsideActivityMonitor());
     }
 
@@ -79,8 +78,7 @@ public abstract class AbstractQuickStepTest extends AbstractLauncherUiTest {
 
     private boolean isInLiveTileMode(Launcher launcher,
             LauncherInstrumentation.ContainerType expectedContainerType) {
-        if (!ENABLE_QUICKSTEP_LIVE_TILE.get()
-                || expectedContainerType != LauncherInstrumentation.ContainerType.OVERVIEW) {
+        if (expectedContainerType != LauncherInstrumentation.ContainerType.OVERVIEW) {
             return false;
         }
 

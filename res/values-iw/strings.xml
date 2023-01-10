@@ -40,8 +40,8 @@
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"לוחצים לחיצה ארוכה על הווידג\'ט כדי להזיז אותו במסך הבית"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"הוספה למסך הבית"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"הווידג\'ט <xliff:g id="WIDGET_NAME">%1$s</xliff:g> נוסף למסך הבית"</string>
-    <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{ווידג\'ט אחד}two{# ווידג\'טים}many{# ווידג\'טים}other{# ווידג\'טים}}"</string>
-    <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{קיצור דרך אחד}two{# קיצורי דרך}many{# קיצורי דרך}other{# קיצורי דרך}}"</string>
+    <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{ווידג\'ט אחד}one{# ווידג\'טים}two{# ווידג\'טים}other{# ווידג\'טים}}"</string>
+    <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{קיצור דרך אחד}one{# קיצורי דרך}two{# קיצורי דרך}other{# קיצורי דרך}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"ווידג\'טים"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"חיפוש"</string>
@@ -89,7 +89,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"זוהי אפליקציית מערכת ולא ניתן להסיר את התקנתה."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"עריכת השם"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> מושבתת"</string>
-    <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{לאפליקציה {app_name} יש התראה אחת}two{לאפליקציה {app_name} יש # התראות}many{לאפליקציה {app_name} יש # התראות}other{לאפליקציה {app_name} יש # התראות}}"</string>
+    <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{לאפליקציה {app_name} יש התראה אחת}one{לאפליקציה {app_name} יש # התראות}two{לאפליקציה {app_name} יש # התראות}other{לאפליקציה {app_name} יש # התראות}}"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"‏דף %1$d מתוך %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"‏מסך הבית %1$d מתוך %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"מסך הבית חדש"</string>

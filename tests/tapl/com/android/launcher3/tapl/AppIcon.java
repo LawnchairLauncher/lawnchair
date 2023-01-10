@@ -18,6 +18,7 @@ package com.android.launcher3.tapl;
 
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiObject2;
@@ -85,5 +86,11 @@ public abstract class AppIcon extends Launchable {
     @Override
     protected String launchableType() {
         return "app icon";
+    }
+
+    /** Return the app name of a icon */
+    @NonNull
+    public String getIconName() {
+        return getObject().getText();
     }
 }

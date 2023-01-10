@@ -22,6 +22,7 @@ import android.content.Context;
 import android.os.Handler;
 
 import androidx.annotation.AnyThread;
+import androidx.annotation.NonNull;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
@@ -68,7 +69,8 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm<AdapterItem> {
     public void doSearch(String query, SearchCallback<AdapterItem> callback) {
         mAppState.getModel().enqueueModelUpdateTask(new BaseModelUpdateTask() {
             @Override
-            public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+            public void execute(@NonNull final LauncherAppState app,
+                    @NonNull final BgDataModel dataModel, @NonNull final AllAppsList apps) {
                 ArrayList<AdapterItem> result = getTitleMatchResult(apps.data, query);
                 if (mAddNoResultsMessage && result.isEmpty()) {
                     result.add(getEmptyMessageAdapterItem(query));

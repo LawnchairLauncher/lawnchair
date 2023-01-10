@@ -34,6 +34,7 @@ import static com.android.launcher3.anim.Interpolators.EMPHASIZED_DECELERATE;
 import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.anim.Interpolators.OVERSHOOT_0_75;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
@@ -62,6 +63,7 @@ import com.android.launcher3.touch.AllAppsSwipeController;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.util.RecentsAtomicAnimationFactory;
+import com.android.quickstep.util.SplitAnimationTimings;
 import com.android.quickstep.views.RecentsView;
 
 /**
@@ -111,18 +113,18 @@ public class QuickstepAtomicAnimationFactory extends
                 config.setInterpolator(ANIM_OVERVIEW_FADE, FINAL_FRAME);
                 config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, EMPHASIZED_DECELERATE);
                 config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, FINAL_FRAME);
+
+                // Scroll RecentsView to page 0 as it goes offscreen, if necessary.
+                int numPagesToScroll = overview.getNextPage() - DEFAULT_PAGE;
+                long scrollDuration = Math.min(MAX_PAGE_SCROLL_DURATION,
+                        numPagesToScroll * PER_PAGE_SCROLL_DURATION);
+                config.duration = Math.max(config.duration, scrollDuration);
+                overview.snapToPage(DEFAULT_PAGE, Math.toIntExact(config.duration));
             } else {
                 config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, ACCEL_DEACCEL);
                 config.setInterpolator(ANIM_OVERVIEW_SCALE, clampToProgress(ACCEL, 0, 0.9f));
                 config.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL_1_7);
             }
-
-            // Scroll RecentsView to page 0 as it goes offscreen, if necessary.
-            int numPagesToScroll = overview.getNextPage() - DEFAULT_PAGE;
-            long scrollDuration = Math.min(MAX_PAGE_SCROLL_DURATION,
-                    numPagesToScroll * PER_PAGE_SCROLL_DURATION);
-            config.duration = Math.max(config.duration, scrollDuration);
-            overview.snapToPage(DEFAULT_PAGE, Math.toIntExact(config.duration));
 
             Workspace<?> workspace = mActivity.getWorkspace();
             // Start from a higher workspace scale, but only if we're invisible so we don't jump.
@@ -188,6 +190,22 @@ public class QuickstepAtomicAnimationFactory extends
             AllAppsSwipeController.applyAllAppsToNormalConfig(mActivity, config);
         } else if (fromState == NORMAL && toState == ALL_APPS) {
             AllAppsSwipeController.applyNormalToAllAppsAnimConfig(mActivity, config);
+        } else if (fromState == OVERVIEW && toState == OVERVIEW_SPLIT_SELECT) {
+            SplitAnimationTimings timings = mActivity.getDeviceProfile().isTablet
+                    ? SplitAnimationTimings.TABLET_OVERVIEW_TO_SPLIT
+                    : SplitAnimationTimings.PHONE_OVERVIEW_TO_SPLIT;
+            config.setInterpolator(ANIM_OVERVIEW_ACTIONS_FADE, clampToProgress(LINEAR,
+                    timings.getActionsFadeStartOffset(),
+                    timings.getActionsFadeEndOffset()));
+        } else if ((fromState == NORMAL || fromState == ALL_APPS)
+                && toState == OVERVIEW_SPLIT_SELECT) {
+            // Splitting from Home is currently only available on tablets
+            SplitAnimationTimings timings = SplitAnimationTimings.TABLET_HOME_TO_SPLIT;
+            config.setInterpolator(ANIM_SCRIM_FADE, clampToProgress(LINEAR,
+                    timings.getScrimFadeInStartOffset(),
+                    timings.getScrimFadeInEndOffset()));
+            config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, OVERSHOOT_0_75);
+            config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, OVERSHOOT_0_75);
         }
     }
 }

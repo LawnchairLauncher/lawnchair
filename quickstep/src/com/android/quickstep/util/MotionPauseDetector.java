@@ -194,7 +194,11 @@ public class MotionPauseDetector {
         }
         if (mIsPaused != isPaused) {
             mIsPaused = isPaused;
-            Log.d(TAG, "onMotionPauseChanged, paused=" + mIsPaused + " reason=" + reason);
+            String logString = "onMotionPauseChanged, paused=" + mIsPaused + " reason=" + reason;
+            if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                Log.d(TAG, logString);
+            }
+            ActiveGestureLog.INSTANCE.addLog(logString);
             boolean isFirstDetectedPause = !mHasEverBeenPaused && mIsPaused;
             if (mIsPaused) {
                 AccessibilityManagerCompat.sendPauseDetectedEventToTest(mContext);

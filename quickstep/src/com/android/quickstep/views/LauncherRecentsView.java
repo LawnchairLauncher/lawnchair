@@ -32,11 +32,12 @@ import android.view.Surface;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.popup.QuickstepSystemShortcut;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager.StateListener;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.PendingSplitSelectInfo;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.LauncherActivityInterface;
@@ -46,7 +47,7 @@ import com.android.quickstep.util.SplitSelectStateController;
  * {@link RecentsView} used in Launcher activity
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, LauncherState>
+public class LauncherRecentsView extends RecentsView<QuickstepLauncher, LauncherState>
         implements StateListener<LauncherState> {
 
     public LauncherRecentsView(Context context) {
@@ -94,7 +95,7 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
             if (recoveryData.getStagedTaskId() == taskId) {
                 initiateSplitSelect(
                         getTaskViewByTaskId(recoveryData.getStagedTaskId()),
-                        recoveryData.getStagePosition()
+                        recoveryData.getStagePosition(), recoveryData.getSource()
                 );
                 mActivity.finishSplitSelectRecovery();
             }
@@ -104,7 +105,6 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
     @Override
     public void reset() {
         super.reset();
-
         setLayoutRotation(Surface.ROTATION_0, Surface.ROTATION_0);
     }
 
@@ -147,6 +147,9 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
                     & CLEAR_ALL_BUTTON) != 0;
             setDisallowScrollToClearAll(!hasClearAllButton);
         }
+        if (mActivity.getDesktopVisibilityController() != null) {
+            mActivity.getDesktopVisibilityController().setOverviewStateEnabled(enabled);
+        }
     }
 
     @Override
@@ -162,13 +165,12 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
     }
 
     @Override
-    public void setModalStateEnabled(boolean isModalState) {
-        super.setModalStateEnabled(isModalState);
+    public void setModalStateEnabled(boolean isModalState, boolean animate) {
         if (isModalState) {
-            mActivity.getStateManager().goToState(LauncherState.OVERVIEW_MODAL_TASK);
+            mActivity.getStateManager().goToState(LauncherState.OVERVIEW_MODAL_TASK, animate);
         } else {
             if (mActivity.isInState(LauncherState.OVERVIEW_MODAL_TASK)) {
-                mActivity.getStateManager().goToState(LauncherState.OVERVIEW);
+                mActivity.getStateManager().goToState(LauncherState.OVERVIEW, animate);
                 resetModalVisuals();
             }
         }
@@ -187,8 +189,9 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
 
     @Override
     public void initiateSplitSelect(TaskView taskView,
-            @SplitConfigurationOptions.StagePosition int stagePosition) {
-        super.initiateSplitSelect(taskView, stagePosition);
+            @SplitConfigurationOptions.StagePosition int stagePosition,
+            StatsLogManager.EventEnum splitEvent) {
+        super.initiateSplitSelect(taskView, stagePosition, splitEvent);
         mActivity.getStateManager().goToState(LauncherState.OVERVIEW_SPLIT_SELECT);
     }
 

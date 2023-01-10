@@ -18,7 +18,7 @@ package com.android.launcher3.statemanager;
 import android.content.Context;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.DeviceProfile.DeviceProfileListenable;
+import com.android.launcher3.views.ActivityContext;
 
 /**
  * Interface representing a state of a StatefulActivity
@@ -37,7 +37,7 @@ public interface BaseState<T extends BaseState> {
     /**
      * @return How long the animation to this state should take (or from this state to NORMAL).
      */
-    <DEVICE_PROFILE_CONTEXT extends Context & DeviceProfileListenable>
+    <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext>
     int getTransitionDuration(DEVICE_PROFILE_CONTEXT context, boolean isToState);
 
     /**
@@ -61,6 +61,13 @@ public interface BaseState<T extends BaseState> {
      * For this state, whether tasks should layout as a grid rather than a list.
      */
     default boolean displayOverviewTasksAsGrid(DeviceProfile deviceProfile) {
+        return false;
+    }
+
+    /**
+     * For this state, whether tasks should show the thumbnail splash.
+     */
+    default boolean showTaskThumbnailSplash() {
         return false;
     }
 }

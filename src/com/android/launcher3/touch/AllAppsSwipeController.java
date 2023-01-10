@@ -18,6 +18,7 @@ package com.android.launcher3.touch;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.Interpolators.DECELERATED_EASE;
+import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
 import static com.android.launcher3.anim.Interpolators.EMPHASIZED_ACCELERATE;
 import static com.android.launcher3.anim.Interpolators.EMPHASIZED_DECELERATE;
 import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
@@ -199,8 +200,10 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
                     Interpolators.reverse(ALL_APPS_SCRIM_RESPONDER));
             config.setInterpolator(ANIM_ALL_APPS_FADE, FINAL_FRAME);
             if (!config.userControlled) {
-                config.setInterpolator(ANIM_VERTICAL_PROGRESS, EMPHASIZED_ACCELERATE);
+                config.setInterpolator(ANIM_VERTICAL_PROGRESS, EMPHASIZED);
             }
+            config.setInterpolator(ANIM_WORKSPACE_SCALE, EMPHASIZED);
+            config.setInterpolator(ANIM_DEPTH, EMPHASIZED);
         } else {
             if (config.userControlled) {
                 config.setInterpolator(ANIM_DEPTH, Interpolators.reverse(BLUR_MANUAL));
@@ -238,8 +241,10 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
             config.setInterpolator(ANIM_ALL_APPS_FADE, INSTANT);
             config.setInterpolator(ANIM_SCRIM_FADE, ALL_APPS_SCRIM_RESPONDER);
             if (!config.userControlled) {
-                config.setInterpolator(ANIM_VERTICAL_PROGRESS, EMPHASIZED_DECELERATE);
+                config.setInterpolator(ANIM_VERTICAL_PROGRESS, EMPHASIZED);
             }
+            config.setInterpolator(ANIM_WORKSPACE_SCALE, EMPHASIZED);
+            config.setInterpolator(ANIM_DEPTH, EMPHASIZED);
         } else {
             config.setInterpolator(ANIM_DEPTH, config.userControlled ? BLUR_MANUAL : BLUR_ATOMIC);
             config.setInterpolator(ANIM_WORKSPACE_FADE,

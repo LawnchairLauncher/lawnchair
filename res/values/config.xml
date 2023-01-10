@@ -49,9 +49,6 @@
     <!-- View tag key used to determine if we should fade in the child views.. -->
     <string name="popup_container_iterate_children" translatable="false">popup_container_iterate_children</string>
 
-    <!-- config used to determine if header protection is supported in AllApps -->
-    <bool name="config_header_protection_supported">false</bool>
-
     <!-- Workspace -->
     <!-- The duration (in ms) of the fade animation on the object outlines, used when
          we are dragging objects around on the home screen. -->
@@ -85,6 +82,8 @@
     <string name="launcher_activity_logic_class" translatable="false"></string>
     <string name="model_delegate_class" translatable="false"></string>
     <string name="window_manager_proxy_class" translatable="false"></string>
+    <string name="secondary_display_predictions_class" translatable="false"></string>
+    <string name="widget_holder_factory_class" translatable="false"></string>
 
     <!-- View ID to use for QSB widget -->
     <item type="id" name="qsb_widget" />
@@ -156,6 +155,7 @@
 
     <item name="swipe_up_rect_scale_damping_ratio" type="dimen" format="float">0.75</item>
     <item name="swipe_up_rect_scale_stiffness" type="dimen" format="float">200</item>
+    <item name="swipe_up_rect_scale_higher_stiffness" type="dimen" format="float">400</item>
 
     <item name="swipe_up_rect_xy_fling_friction" type="dimen" format="float">1.5</item>
 
@@ -191,4 +191,16 @@
     <dimen name="swipe_back_window_scale_x_margin">10dp</dimen>
     <dimen name="swipe_back_window_max_delta_y">160dp</dimen>
     <dimen name="swipe_back_window_corner_radius">40dp</dimen>
+
+    <!-- The duration of the bottom sheet opening and closing animation -->
+    <integer name="config_bottomSheetOpenDuration">267</integer>
+    <integer name="config_bottomSheetCloseDuration">267</integer>
+
+    <!-- The duration of the AllApps opening and closing animation -->
+    <integer name="config_allAppsOpenDuration">600</integer>
+    <integer name="config_allAppsCloseDuration">300</integer>
+
+    <!-- The max scale for the wallpaper when it's zoomed in -->
+    <item name="config_wallpaperMaxScale" format="float" type="dimen">0</item>
+
 </resources>

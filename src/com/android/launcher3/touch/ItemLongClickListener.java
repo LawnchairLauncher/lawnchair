@@ -27,7 +27,6 @@ import android.view.View;
 import android.view.View.OnLongClickListener;
 
 import com.android.launcher3.CellLayout;
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.dragndrop.DragController;
@@ -118,10 +117,7 @@ public class ItemLongClickListener {
             }
         });
 
-        DeviceProfile grid = launcher.getDeviceProfile();
-        DragOptions options = new DragOptions();
-        options.intrinsicIconScaleFactor = (float) grid.allAppsIconSizePx / grid.iconSizePx;
-        launcher.getWorkspace().beginDragShared(v, launcher.getAppsView(), options);
+        launcher.getWorkspace().beginDragShared(v, launcher.getAppsView(), new DragOptions());
         return false;
     }
 

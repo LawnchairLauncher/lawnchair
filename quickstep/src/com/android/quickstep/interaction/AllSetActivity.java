@@ -42,6 +42,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.AccessibilityDelegate;
@@ -53,12 +54,13 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.core.graphics.ColorUtils;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.util.Executors;
-import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.TouchInteractionService.TISBinder;
 import com.android.quickstep.util.TISBindHelper;
@@ -78,6 +80,7 @@ public class AllSetActivity extends Activity {
             "#Intent;action=com.android.settings.SEARCH_RESULT_TRAMPOLINE;S.:settings:fragment_args_key=gesture_system_navigation_input_summary;S.:settings:show_fragment=com.android.settings.gestures.SystemNavigationGestureSettings;end";
     private static final String EXTRA_ACCENT_COLOR_DARK_MODE = "suwColorAccentDark";
     private static final String EXTRA_ACCENT_COLOR_LIGHT_MODE = "suwColorAccentLight";
+    private static final String EXTRA_DEVICE_NAME = "suwDeviceName";
 
     private static final float HINT_BOTTOM_FACTOR = 1 - .94f;
 
@@ -109,7 +112,8 @@ public class AllSetActivity extends Activity {
 
         int mode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         boolean isDarkTheme = mode == Configuration.UI_MODE_NIGHT_YES;
-        int accentColor = getIntent().getIntExtra(
+        Intent intent = getIntent();
+        int accentColor = intent.getIntExtra(
                 isDarkTheme ? EXTRA_ACCENT_COLOR_DARK_MODE : EXTRA_ACCENT_COLOR_LIGHT_MODE,
                 isDarkTheme ? Color.WHITE : Color.BLACK);
 
@@ -120,11 +124,12 @@ public class AllSetActivity extends Activity {
         mContentView = findViewById(R.id.content_view);
         mSwipeUpShift = getResources().getDimension(R.dimen.allset_swipe_up_shift);
 
-        boolean isTablet = InvariantDeviceProfile.INSTANCE.get(getApplicationContext())
-                .getDeviceProfile(this).isTablet;
         TextView subtitle = findViewById(R.id.subtitle);
-        subtitle.setText(isTablet
-                ? R.string.allset_description_tablet : R.string.allset_description);
+        String suwDeviceName = intent.getStringExtra(EXTRA_DEVICE_NAME);
+        subtitle.setText(getString(
+                R.string.allset_description_generic,
+                !TextUtils.isEmpty(suwDeviceName)
+                        ? suwDeviceName : getString(R.string.default_device_name)));
 
         TextView tv = findViewById(R.id.navigation_settings);
         tv.setTextColor(accentColor);
@@ -135,14 +140,23 @@ public class AllSetActivity extends Activity {
             } catch (URISyntaxException e) {
                 Log.e(LOG_TAG, "Failed to parse system nav settings intent", e);
             }
-            finish();
         });
 
-        findViewById(R.id.hint).setAccessibilityDelegate(new SkipButtonAccessibilityDelegate());
+        TextView hintTextView = findViewById(R.id.hint);
+        DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(this).getDeviceProfile(this);
+        if (!dp.isGestureMode) {
+            hintTextView.setText(R.string.allset_button_hint);
+        }
+        hintTextView.setAccessibilityDelegate(new SkipButtonAccessibilityDelegate());
         mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
 
         mVibrator = getSystemService(Vibrator.class);
         mAnimatedBackground = findViewById(R.id.animated_background);
+        // There's a bug in the currently used external Lottie library (v5.2.0), and it doesn't load
+        // the correct animation from the raw resources when configuration changes, so we need to
+        // manually load the resource and pass it to Lottie.
+        mAnimatedBackground.setAnimation(getResources().openRawResource(R.raw.all_set_page_bg),
+                null);
         startBackgroundAnimation();
     }
 
@@ -248,9 +262,6 @@ public class AllSetActivity extends Activity {
     }
 
     private AnimatedFloat createSwipeUpProxy(GestureState state) {
-        if (!state.getHomeIntent().getComponent().getPackageName().equals(getPackageName())) {
-            return null;
-        }
         if (state.getRunningTaskId() != getTaskId()) {
             return null;
         }

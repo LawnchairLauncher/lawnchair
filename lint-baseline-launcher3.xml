@@ -606,4 +606,20 @@
             column="61"/>
     </issue>
 
+    <issue
+        id="NewApi"
+        message="Call requires API level 33 (current min is 26): `android.app.Activity#getOnBackInvokedDispatcher`">
+        <location
+            file="packages/apps/Launcher3/src/com/android/launcher3/BaseActivity.java"
+            line="182"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 33 (current min is 26): `android.window.OnBackInvokedDispatcher#registerOnBackInvokedCallback`">
+        <location
+            file="packages/apps/Launcher3/src/com/android/launcher3/BaseActivity.java"
+            line="182"/>
+    </issue>
+
 </issues>

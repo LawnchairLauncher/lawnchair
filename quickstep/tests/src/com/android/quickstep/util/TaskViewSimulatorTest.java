@@ -23,8 +23,8 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.ArrayMap;
+import android.view.RemoteAnimationTarget;
 import android.view.Surface;
-import android.view.SurfaceControl;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
@@ -34,6 +34,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.LauncherModelHelper;
+import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.ReflectionHelpers;
 import com.android.launcher3.util.RotationUtils;
 import com.android.launcher3.util.WindowBounds;
@@ -41,8 +42,7 @@ import com.android.launcher3.util.window.CachedDisplayInfo;
 import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.quickstep.FallbackActivityInterface;
 import com.android.quickstep.SystemUiProxy;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
+import com.android.quickstep.util.SurfaceTransaction.MockProperties;
 
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
@@ -164,6 +164,7 @@ public class TaskViewSimulatorTest {
                 WindowManagerProxy wmProxy = mock(WindowManagerProxy.class);
                 doReturn(cdi).when(wmProxy).getDisplayInfo(any());
                 doReturn(wm).when(wmProxy).getRealBounds(any(), any());
+                doReturn(NavigationMode.NO_BUTTON).when(wmProxy).getNavigationMode(any());
 
                 ArrayMap<CachedDisplayInfo, WindowBounds[]> perDisplayBoundsCache =
                         new ArrayMap<>();
@@ -205,17 +206,21 @@ public class TaskViewSimulatorTest {
         }
 
         @Override
-        public SurfaceParams[] createSurfaceParams(BuilderProxy proxy) {
-            SurfaceParams.Builder builder = new SurfaceParams.Builder((SurfaceControl) null);
-            proxy.onBuildTargetParams(builder, mock(RemoteAnimationTargetCompat.class), this);
-            return new SurfaceParams[] {builder.build()};
+        public SurfaceTransaction createSurfaceParams(BuilderProxy proxy) {
+            RecordingSurfaceTransaction transaction = new RecordingSurfaceTransaction();
+            proxy.onBuildTargetParams(
+                    transaction.mockProperties, mock(RemoteAnimationTarget.class), this);
+            return transaction;
         }
 
         @Override
-        public void applySurfaceParams(SurfaceParams[] params) {
+        public void applySurfaceParams(SurfaceTransaction params) {
+            Assert.assertTrue(params instanceof RecordingSurfaceTransaction);
+            MockProperties p = ((RecordingSurfaceTransaction) params).mockProperties;
+
             // Verify that the task position remains the same
             RectF newAppBounds = new RectF(mAppBounds);
-            params[0].matrix.mapRect(newAppBounds);
+            p.matrix.mapRect(newAppBounds);
             Assert.assertThat(newAppBounds, new AlmostSame(mAppBounds));
 
             System.err.println("Bounds mapped: " + mAppBounds + " => " + newAppBounds);

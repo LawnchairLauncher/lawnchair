@@ -33,4 +33,12 @@
     <dimen name="overview_page_spacing">44dp</dimen>
     <!--  The space to the left and to the right of the "Clear all" button  -->
     <dimen name="overview_grid_side_margin">64dp</dimen>
+
+    <!-- All Set page-->
+    <dimen name="allset_page_allset_text_size">42sp</dimen>
+    <dimen name="allset_page_swipe_up_text_size">16sp</dimen>
+
+    <!-- Transient taskbar -->
+    <dimen name="transient_taskbar_size">76dp</dimen>
+    <dimen name="transient_taskbar_icon_size">52dp</dimen>
 </resources>

@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import static com.android.launcher3.ButtonDropTarget.TOOLTIP_DEFAULT;
 import static com.android.launcher3.anim.AlphaUpdateListener.updateVisibility;
+import static com.android.launcher3.config.FeatureFlags.HOME_GARDENING_WORKSPACE_BUTTONS;
 
 import android.animation.TimeInterpolator;
 import android.content.Context;
@@ -118,7 +119,13 @@ public class DropTargetBar extends FrameLayout
             lp.rightMargin = (grid.widthPx - lp.width) / 2;
         }
         lp.height = grid.dropTargetBarSizePx;
-        lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
+        // TODO: Add tablet support for DropTargetBar when HOME_GARDENING_WORKSPACE_BUTTONS flag
+        //  is on
+        if (HOME_GARDENING_WORKSPACE_BUTTONS.get()) {
+            lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+        } else {
+            lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
+        }
 
         DeviceProfile dp = mLauncher.getDeviceProfile();
         int horizontalPadding = dp.dropTargetHorizontalPaddingPx;
@@ -151,6 +158,8 @@ public class DropTargetBar extends FrameLayout
             int widthSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST);
 
             ButtonDropTarget firstButton = mTempTargets[0];
+            firstButton.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    mLauncher.getDeviceProfile().dropTargetTextSizePx);
             firstButton.setTextVisible(true);
             firstButton.setIconVisible(true);
             firstButton.measure(widthSpec, heightSpec);
@@ -160,14 +169,16 @@ public class DropTargetBar extends FrameLayout
             int horizontalPadding = dp.dropTargetHorizontalPaddingPx;
 
             ButtonDropTarget firstButton = mTempTargets[0];
+            firstButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, dp.dropTargetTextSizePx);
             firstButton.setTextVisible(true);
             firstButton.setIconVisible(true);
             firstButton.setTextMultiLine(false);
-            // Reset second button padding in case it was previously changed to multi-line text.
+            // Reset first button padding in case it was previously changed to multi-line text.
             firstButton.setPadding(horizontalPadding, verticalPadding, horizontalPadding,
                     verticalPadding);
 
             ButtonDropTarget secondButton = mTempTargets[1];
+            secondButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, dp.dropTargetTextSizePx);
             secondButton.setTextVisible(true);
             secondButton.setIconVisible(true);
             secondButton.setTextMultiLine(false);
@@ -175,20 +186,14 @@ public class DropTargetBar extends FrameLayout
             secondButton.setPadding(horizontalPadding, verticalPadding, horizontalPadding,
                     verticalPadding);
 
-            float scale = dp.getWorkspaceSpringLoadScale(mLauncher);
-            int scaledPanelWidth = (int) (dp.getCellLayoutWidth() * scale);
-
             int availableWidth;
             if (dp.isTwoPanels) {
-                // Both buttons for two panel fit to the width of one Cell Layout (less
-                // half of the center gap between the buttons).
-                int halfButtonGap = dp.dropTargetGapPx / 2;
-                availableWidth = scaledPanelWidth - halfButtonGap / 2;
+                // Each button for two panel fits to half the width of the screen excluding the
+                // center gap between the buttons.
+                availableWidth = (dp.availableWidthPx - dp.dropTargetGapPx) / 2;
             } else {
-                // Both buttons plus the button gap do not display past the edge of the scaled
-                // workspace, less a pre-defined gap from the edge of the workspace.
-                availableWidth = scaledPanelWidth - dp.dropTargetGapPx
-                        - 2 * dp.dropTargetButtonWorkspaceEdgeGapPx;
+                // Both buttons plus the button gap do not display past the edge of the screen.
+                availableWidth = dp.availableWidthPx - dp.dropTargetGapPx;
             }
 
             int widthSpec = MeasureSpec.makeMeasureSpec(availableWidth, MeasureSpec.AT_MOST);
@@ -218,6 +223,15 @@ public class DropTargetBar extends FrameLayout
                     secondButton.setPadding(horizontalPadding, verticalPadding / 2,
                             horizontalPadding, verticalPadding / 2);
                 }
+            }
+
+            // If text is still truncated, shrink to fit in measured width and resize both targets.
+            float minTextSize =
+                    Math.min(firstButton.resizeTextToFit(), secondButton.resizeTextToFit());
+            if (firstButton.getTextSize() != minTextSize
+                    || secondButton.getTextSize() != minTextSize) {
+                firstButton.setTextSize(minTextSize);
+                secondButton.setTextSize(minTextSize);
             }
         }
         setMeasuredDimension(width, height);

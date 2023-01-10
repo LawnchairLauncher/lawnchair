@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.states;
 
+import static com.android.launcher3.config.FeatureFlags.SHOW_HOME_GARDENING;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 
 import android.content.Context;
@@ -31,8 +32,7 @@ public class SpringLoadedState extends LauncherState {
 
     private static final int STATE_FLAGS = FLAG_MULTI_PAGE
             | FLAG_WORKSPACE_INACCESSIBLE | FLAG_DISABLE_RESTORE
-            | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_WORKSPACE_HAS_BACKGROUNDS
-            | FLAG_HIDE_BACK_BUTTON;
+            | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_WORKSPACE_HAS_BACKGROUNDS;
 
     public SpringLoadedState(int id) {
         super(id, LAUNCHER_STATE_HOME, STATE_FLAGS);
@@ -45,6 +45,11 @@ public class SpringLoadedState extends LauncherState {
 
     @Override
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
+
+        if (SHOW_HOME_GARDENING.get()) {
+            return super.getWorkspaceScaleAndTranslation(launcher);
+        }
+
         DeviceProfile grid = launcher.getDeviceProfile();
         Workspace<?> ws = launcher.getWorkspace();
         if (ws.getChildCount() == 0) {
@@ -63,6 +68,9 @@ public class SpringLoadedState extends LauncherState {
 
     @Override
     protected float getDepthUnchecked(Context context) {
+        if (SHOW_HOME_GARDENING.get()) {
+            return 0;
+        }
         return 0.5f;
     }
 
@@ -73,6 +81,10 @@ public class SpringLoadedState extends LauncherState {
 
     @Override
     public float getWorkspaceBackgroundAlpha(Launcher launcher) {
+        if (SHOW_HOME_GARDENING.get()) {
+            return 0;
+        }
+
         return 0.2f;
     }
 }

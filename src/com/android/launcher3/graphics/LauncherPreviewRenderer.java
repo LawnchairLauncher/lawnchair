@@ -20,6 +20,7 @@ import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 import static android.view.View.VISIBLE;
 
+import static com.android.launcher3.DeviceProfile.DEFAULT_SCALE;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
 import static com.android.launcher3.model.ModelUtils.getMissingHotseatRanks;
@@ -36,6 +37,7 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -55,11 +57,13 @@ import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.widget.TextClock;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -69,6 +73,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.WorkspaceLayoutManager;
+import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.icons.BaseIconFactory;
@@ -95,11 +100,12 @@ import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.BaseLauncherAppWidgetHostView;
-import com.android.launcher3.widget.LauncherAppWidgetHost;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.widget.LauncherWidgetHolder;
 import com.android.launcher3.widget.LocalColorExtractor;
 import com.android.launcher3.widget.NavigableAppWidgetHostView;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
+import com.android.launcher3.widget.util.WidgetSizes;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -169,10 +175,12 @@ public class LauncherPreviewRenderer extends ContextWrapper
         }
     }
 
+    private final List<OnDeviceProfileChangeListener> mDpChangeListeners = new ArrayList<>();
     private final Handler mUiHandler;
     private final Context mContext;
     private final InvariantDeviceProfile mIdp;
     private final DeviceProfile mDp;
+    private final DeviceProfile mDpOrig;
     private final Rect mInsets;
     private final WorkspaceItemInfo mWorkspaceItemInfo;
     private final LayoutInflater mHomeElementInflater;
@@ -192,7 +200,16 @@ public class LauncherPreviewRenderer extends ContextWrapper
         mUiHandler = new Handler(Looper.getMainLooper());
         mContext = context;
         mIdp = idp;
-        mDp = idp.getDeviceProfile(context).copy(context);
+        mDp = idp.getDeviceProfile(context).toBuilder(context).setViewScaleProvider(
+                this::getAppWidgetScale).build();
+        if (context instanceof PreviewContext) {
+            Context tempContext = ((PreviewContext) context).getBaseContext();
+            mDpOrig = new InvariantDeviceProfile(tempContext, InvariantDeviceProfile
+                    .getCurrentGridName(tempContext)).getDeviceProfile(tempContext)
+                    .copy(tempContext);
+        } else {
+            mDpOrig = mDp;
+        }
 
         WindowInsets currentWindowInsets = context.getSystemService(WindowManager.class)
                 .getCurrentWindowMetrics().getWindowInsets();
@@ -316,6 +333,11 @@ public class LauncherPreviewRenderer extends ContextWrapper
     }
 
     @Override
+    public List<OnDeviceProfileChangeListener> getOnDeviceProfileChangeListeners() {
+        return mDpChangeListeners;
+    }
+
+    @Override
     public Hotseat getHotseat() {
         return mHotseat;
     }
@@ -388,6 +410,41 @@ public class LauncherPreviewRenderer extends ContextWrapper
 
         view.setTag(info);
         addInScreenFromBind(view, info);
+    }
+
+    @NonNull
+    private PointF getAppWidgetScale(@Nullable ItemInfo itemInfo) {
+        if (!(itemInfo instanceof LauncherAppWidgetInfo)) {
+            return DEFAULT_SCALE;
+        }
+        LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) itemInfo;
+        final Size launcherWidgetSize = mLauncherWidgetSpanInfo.get(info.appWidgetId);
+        if (launcherWidgetSize == null) {
+            return DEFAULT_SCALE;
+        }
+        final Size origSize = WidgetSizes.getWidgetSizePx(mDpOrig,
+                launcherWidgetSize.getWidth(), launcherWidgetSize.getHeight());
+        final Size newSize = WidgetSizes.getWidgetSizePx(mDp, info.spanX, info.spanY);
+        final Rect previewInset = new Rect();
+        final Rect origInset = new Rect();
+        // When the setup() is called for the LayoutParams, insets are added to the width
+        // and height of the view. This is not accounted for in WidgetSizes and is handled
+        // here.
+        if (mDp.shouldInsetWidgets()) {
+            previewInset.set(mDp.inv.defaultWidgetPadding);
+        } else {
+            previewInset.setEmpty();
+        }
+        if (mDpOrig.shouldInsetWidgets()) {
+            origInset.set(mDpOrig.inv.defaultWidgetPadding);
+        } else {
+            origInset.setEmpty();
+        }
+
+        return new PointF((float) newSize.getWidth() / (origSize.getWidth()
+                + origInset.left + origInset.right),
+                (float) newSize.getHeight() / (origSize.getHeight()
+                + origInset.top + origInset.bottom));
     }
 
     private void inflateAndAddPredictedIcon(WorkspaceItemInfo info) {
@@ -483,8 +540,8 @@ public class LauncherPreviewRenderer extends ContextWrapper
             CellLayout firstScreen = mWorkspaceScreens.get(FIRST_SCREEN_ID);
             View qsb = mHomeElementInflater.inflate(R.layout.qsb_preview, firstScreen,
                     false);
-            CellLayout.LayoutParams lp =
-                    new CellLayout.LayoutParams(0, 0, firstScreen.getCountX(), 1);
+            CellLayoutLayoutParams lp = new CellLayoutLayoutParams(0, 0, firstScreen.getCountX(),
+                    1, FIRST_SCREEN_ID);
             lp.canReorder = false;
             firstScreen.addViewToCellLayout(qsb, 0, R.id.search_container_workspace, lp, true);
         }
@@ -504,7 +561,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
     private class LauncherPreviewAppWidgetHost extends AppWidgetHost {
 
         private LauncherPreviewAppWidgetHost(Context context) {
-            super(context, LauncherAppWidgetHost.APPWIDGET_HOST_ID);
+            super(context, LauncherWidgetHolder.APPWIDGET_HOST_ID);
         }
 
         @Override

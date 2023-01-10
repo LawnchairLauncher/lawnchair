@@ -17,12 +17,17 @@ package com.android.launcher3.allapps;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.core.util.Consumer;
 
 import com.android.launcher3.views.RecyclerViewFastScroller;
 
 /** A RecyclerView for AllApps Search results. */
 public class SearchRecyclerView extends AllAppsRecyclerView {
-    private static final String TAG = "SearchRecyclerView";
+
+    private Consumer<View> mChildAttachedConsumer;
 
     public SearchRecyclerView(Context context) {
         this(context, null);
@@ -41,6 +46,11 @@ public class SearchRecyclerView extends AllAppsRecyclerView {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    /** This will be called just before a new child is attached to the window. */
+    public void setChildAttachedConsumer(Consumer<View> childAttachedConsumer) {
+        mChildAttachedConsumer = childAttachedConsumer;
+    }
+
     @Override
     protected void updatePoolSize() {
         RecycledViewPool pool = getRecycledViewPool();
@@ -56,5 +66,13 @@ public class SearchRecyclerView extends AllAppsRecyclerView {
     @Override
     public RecyclerViewFastScroller getScrollbar() {
         return null;
+    }
+
+    @Override
+    public void onChildAttachedToWindow(@NonNull View child) {
+        if (mChildAttachedConsumer != null) {
+            mChildAttachedConsumer.accept(child);
+        }
+        super.onChildAttachedToWindow(child);
     }
 }

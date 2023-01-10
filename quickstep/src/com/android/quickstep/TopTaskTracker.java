@@ -24,6 +24,7 @@ import static android.view.Display.DEFAULT_DISPLAY;
 
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 
+import android.annotation.UserIdInt;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 
@@ -281,6 +282,17 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
                 });
             }
             return result;
+        }
+
+        @UserIdInt
+        @Nullable
+        public Integer getUserId() {
+            return mTopTask == null ? null : mTopTask.userId;
+        }
+
+        @Nullable
+        public String getPackageName() {
+            return mTopTask == null ? null : mTopTask.baseActivity.getPackageName();
         }
     }
 }

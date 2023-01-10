@@ -35,6 +35,7 @@ import androidx.core.content.ContextCompat;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.FloatingHeaderRow;
 import com.android.launcher3.allapps.FloatingHeaderView;
+import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 
@@ -92,8 +93,10 @@ public class AppsDividerView extends View implements FloatingHeaderRow {
                 ? R.color.all_apps_label_text_dark
                 : R.color.all_apps_label_text);
 
-        mShowAllAppsLabel = !ActivityContext.lookupContext(
-                getContext()).getOnboardingPrefs().hasReachedMaxCount(ALL_APPS_VISITED_COUNT);
+        OnboardingPrefs<?> onboardingPrefs = ActivityContext.lookupContext(
+                getContext()).getOnboardingPrefs();
+        mShowAllAppsLabel = onboardingPrefs == null || !onboardingPrefs.hasReachedMaxCount(
+                ALL_APPS_VISITED_COUNT);
     }
 
     public void setup(FloatingHeaderView parent, FloatingHeaderRow[] rows, boolean tabsHidden) {
@@ -216,8 +219,8 @@ public class AppsDividerView extends View implements FloatingHeaderRow {
 
             CharSequence allAppsLabelText = getResources().getText(R.string.all_apps_label);
             mAllAppsLabelLayout = StaticLayout.Builder.obtain(
-                    allAppsLabelText, 0, allAppsLabelText.length(), mPaint,
-                    Math.round(mPaint.measureText(allAppsLabelText.toString())))
+                            allAppsLabelText, 0, allAppsLabelText.length(), mPaint,
+                            Math.round(mPaint.measureText(allAppsLabelText.toString())))
                     .setAlignment(Layout.Alignment.ALIGN_CENTER)
                     .setMaxLines(1)
                     .setIncludePad(true)

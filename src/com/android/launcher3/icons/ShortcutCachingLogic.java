@@ -29,9 +29,10 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.icons.BaseIconFactory.IconOptions;
 import com.android.launcher3.icons.cache.CachingLogic;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.Themes;
@@ -44,41 +45,47 @@ public class ShortcutCachingLogic implements CachingLogic<ShortcutInfo> {
     private static final String TAG = "ShortcutCachingLogic";
 
     @Override
-    public ComponentName getComponent(ShortcutInfo info) {
+    @NonNull
+    public ComponentName getComponent(@NonNull ShortcutInfo info) {
         return ShortcutKey.fromInfo(info).componentName;
     }
 
+    @NonNull
     @Override
-    public UserHandle getUser(ShortcutInfo info) {
+    public UserHandle getUser(@NonNull ShortcutInfo info) {
         return info.getUserHandle();
     }
 
+    @NonNull
     @Override
-    public CharSequence getLabel(ShortcutInfo info) {
+    public CharSequence getLabel(@NonNull ShortcutInfo info) {
         return info.getShortLabel();
     }
 
     @Override
-    public CharSequence getDescription(ShortcutInfo object, CharSequence fallback) {
+    @NonNull
+    public CharSequence getDescription(@NonNull ShortcutInfo object,
+            @NonNull CharSequence fallback) {
         CharSequence label = object.getLongLabel();
         return TextUtils.isEmpty(label) ? fallback : label;
     }
 
     @NonNull
     @Override
-    public BitmapInfo loadIcon(Context context, ShortcutInfo info) {
+    public BitmapInfo loadIcon(@NonNull Context context, @NonNull ShortcutInfo info) {
         try (LauncherIcons li = LauncherIcons.obtain(context)) {
             Drawable unbadgedDrawable = ShortcutCachingLogic.getIcon(
                     context, info, LauncherAppState.getIDP(context).fillResIconDpi);
             if (unbadgedDrawable == null) return BitmapInfo.LOW_RES_INFO;
-            return new BitmapInfo(li.createScaledBitmapWithoutShadow(unbadgedDrawable),
-                    Themes.getColorAccent(context));
+            return li.createBadgedIconBitmap(unbadgedDrawable,
+                    new IconOptions().setExtractedColor(Themes.getColorAccent(context)));
         }
     }
 
     @Override
-    public long getLastUpdatedTime(ShortcutInfo shortcutInfo, PackageInfo info) {
-        if (shortcutInfo == null || !FeatureFlags.ENABLE_DEEP_SHORTCUT_ICON_CACHE.get()) {
+    public long getLastUpdatedTime(@Nullable ShortcutInfo shortcutInfo,
+            @NonNull PackageInfo info) {
+        if (shortcutInfo == null) {
             return info.lastUpdateTime;
         }
         return Math.max(shortcutInfo.getLastChangedTimestamp(), info.lastUpdateTime);

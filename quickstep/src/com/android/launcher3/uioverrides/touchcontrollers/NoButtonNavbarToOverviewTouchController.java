@@ -25,7 +25,8 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
-import static com.android.quickstep.util.VibratorWrapper.OVERVIEW_HAPTIC;
+import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_ONE_HANDED_ACTIVE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
 import android.animation.ObjectAnimator;
@@ -34,18 +35,18 @@ import android.graphics.PointF;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
-import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.taskbar.LauncherTaskbarUIController;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
+import com.android.launcher3.util.VibratorWrapper;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.OverviewToHomeAnim;
-import com.android.quickstep.util.VibratorWrapper;
 import com.android.quickstep.views.RecentsView;
 
 /**
@@ -86,6 +87,11 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     @Override
     protected boolean canInterceptTouch(MotionEvent ev) {
         mDidTouchStartInNavBar = (ev.getEdgeFlags() & EDGE_NAV_BAR) != 0;
+        boolean isOneHandedModeActive = (SystemUiProxy.INSTANCE.get(mLauncher)
+                .getLastSystemUiStateFlags() & SYSUI_STATE_ONE_HANDED_ACTIVE) != 0;
+        // Reset touch slop multiplier to default 1.0f if one-handed-mode is not active
+        mDetector.setTouchSlopMultiplier(
+                isOneHandedModeActive ? ONE_HANDED_ACTIVATED_SLOP_MULTIPLIER : 1f /* default */);
         return super.canInterceptTouch(ev) && !mLauncher.isInState(HINT_STATE);
     }
 
@@ -114,7 +120,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     public void onDragStart(boolean start, float startDisplacement) {
         if (mLauncher.isInState(ALL_APPS)) {
             LauncherTaskbarUIController controller =
-                    ((BaseQuickstepLauncher) mLauncher).getTaskbarUIController();
+                    ((QuickstepLauncher) mLauncher).getTaskbarUIController();
             if (controller != null) {
                 controller.setShouldDelayLauncherStateAnim(true);
             }
@@ -151,7 +157,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     @Override
     public void onDragEnd(float velocity) {
         LauncherTaskbarUIController controller =
-                ((BaseQuickstepLauncher) mLauncher).getTaskbarUIController();
+                ((QuickstepLauncher) mLauncher).getTaskbarUIController();
         if (controller != null) {
             controller.setShouldDelayLauncherStateAnim(false);
         }
@@ -276,15 +282,5 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
 
     private float dpiFromPx(float pixels) {
         return Utilities.dpiFromPx(pixels, mLauncher.getResources().getDisplayMetrics().densityDpi);
-    }
-
-    @Override
-    public void onOneHandedModeStateChanged(boolean activated) {
-        if (activated) {
-            mDetector.setTouchSlopMultiplier(ONE_HANDED_ACTIVATED_SLOP_MULTIPLIER);
-        } else {
-            // Reset touch slop multiplier to default 1.0f
-            mDetector.setTouchSlopMultiplier(1f /* default */);
-        }
     }
 }

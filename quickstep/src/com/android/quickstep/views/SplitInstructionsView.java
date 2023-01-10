@@ -16,7 +16,7 @@
 
 package com.android.quickstep.views;
 
-import static com.android.launcher3.util.DisplayController.NavigationMode.THREE_BUTTONS;
+import static com.android.launcher3.util.NavigationMode.THREE_BUTTONS;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -25,9 +25,11 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.util.DisplayController;
 
@@ -40,18 +42,18 @@ import com.android.launcher3.util.DisplayController;
  */
 public class SplitInstructionsView extends FrameLayout {
     private final StatefulActivity mLauncher;
+    private AppCompatTextView mTextView;
 
-    public static final FloatProperty<SplitInstructionsView> ALPHA_FLOAT =
-            new FloatProperty<SplitInstructionsView>("SplitInstructionsAlpha") {
+    public static final FloatProperty<SplitInstructionsView> UNFOLD =
+            new FloatProperty<SplitInstructionsView>("SplitInstructionsUnfold") {
                 @Override
                 public void setValue(SplitInstructionsView splitInstructionsView, float v) {
-                    splitInstructionsView.setVisibility(v != 0 ? VISIBLE : GONE);
-                    splitInstructionsView.setAlpha(v);
+                    splitInstructionsView.setScaleY(v);
                 }
 
                 @Override
                 public Float get(SplitInstructionsView splitInstructionsView) {
-                    return splitInstructionsView.getAlpha();
+                    return splitInstructionsView.getScaleY();
                 }
             };
 
@@ -76,6 +78,14 @@ public class SplitInstructionsView extends FrameLayout {
                         dragLayer,
                         false
                 );
+
+        splitInstructionsView.mTextView = splitInstructionsView.findViewById(
+                R.id.split_instructions_text);
+
+        // Since textview overlays base view, and we sometimes manipulate the alpha of each
+        // simultaneously, force overlapping rendering to false prevents redrawing of pixels,
+        // improving performance at the cost of some accuracy.
+        splitInstructionsView.forceHasOverlappingRendering(false);
 
         dragLayer.addView(splitInstructionsView);
         return splitInstructionsView;
@@ -105,11 +115,13 @@ public class SplitInstructionsView extends FrameLayout {
     int getThreeButtonNavShift() {
         DeviceProfile dp = mLauncher.getDeviceProfile();
         if ((DisplayController.getNavigationMode(getContext()) == THREE_BUTTONS)
-                && ((dp.isTwoPanels) || (dp.isTablet && !dp.isLandscape))) {
+                && ((dp.isTwoPanels) || (dp.isTablet && !dp.isLandscape))
+                // If taskbar is in overview, overview action has dedicated space above nav buttons
+                && !FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get()) {
             int navButtonWidth = getResources().getDimensionPixelSize(
                     R.dimen.taskbar_nav_buttons_size);
             int extraMargin = getResources().getDimensionPixelSize(
-                    R.dimen.taskbar_contextual_button_margin);
+                    R.dimen.taskbar_split_instructions_margin);
             // Explanation: The 3-button nav for non-phones sits on one side of the screen, taking
             // up 3 buttons + a side margin worth of space. Our splitInstructionsView starts in the
             // center of the screen and we want to center it in the remaining space, therefore we
@@ -119,5 +131,9 @@ public class SplitInstructionsView extends FrameLayout {
         } else {
             return 0;
         }
+    }
+
+    public AppCompatTextView getTextView() {
+        return mTextView;
     }
 }

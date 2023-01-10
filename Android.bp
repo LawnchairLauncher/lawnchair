@@ -19,6 +19,54 @@ package {
 
 min_launcher3_sdk_version = "26"
 
+// Common source files used to build launcher (java and kotlin)
+// All sources are split so they can be reused in many other libraries/apps in other folders
+filegroup {
+    name: "launcher-src",
+    srcs: [ "src/**/*.java", "src/**/*.kt" ],
+}
+
+filegroup {
+    name: "launcher-quickstep-src",
+    srcs: [ "quickstep/src/**/*.java", "quickstep/src/**/*.kt" ],
+}
+
+filegroup {
+    name: "launcher-go-src",
+    srcs: [ "go/src/**/*.java", "go/src/**/*.kt" ],
+}
+
+filegroup {
+    name: "launcher-go-quickstep-src",
+    srcs: [ "go/quickstep/src/**/*.java", "go/quickstep/src/**/*.kt" ],
+}
+
+filegroup {
+    name: "launcher-src_shortcuts_overrides",
+    srcs: [ "src_shortcuts_overrides/**/*.java", "src_shortcuts_overrides/**/*.kt" ],
+}
+
+filegroup {
+    name: "launcher-src_ui_overrides",
+    srcs: [ "src_ui_overrides/**/*.java", "src_ui_overrides/**/*.kt" ],
+}
+
+filegroup {
+    name: "launcher-ext_tests",
+    srcs: [ "ext_tests/**/*.java", "ext_tests/**/*.kt" ],
+}
+
+filegroup {
+    name: "launcher-quickstep-ext_tests",
+    srcs: [ "quickstep/ext_tests/**/*.java", "quickstep/ext_tests/**/*.kt" ],
+}
+
+// Proguard files for Launcher3
+filegroup {
+    name: "launcher-proguard-rules",
+    srcs: ["proguard.flags"],
+}
+
 android_library {
     name: "launcher-aosp-tapl",
     libs: [
@@ -105,6 +153,7 @@ android_library {
         "androidx.cardview_cardview",
         "com.google.android.material_material",
         "iconloader_base",
+        "view_capture"
     ],
     manifest: "AndroidManifest-common.xml",
     sdk_version: "current",
@@ -139,14 +188,10 @@ android_app {
         "Launcher3CommonDepsLib",
     ],
     srcs: [
-        "src/**/*.java",
-        "src/**/*.kt",
-        "src_shortcuts_overrides/**/*.java",
-        "src_shortcuts_overrides/**/*.kt",
-        "src_ui_overrides/**/*.java",
-        "src_ui_overrides/**/*.kt",
-        "ext_tests/src/**/*.java",
-        "ext_tests/src/**/*.kt",
+        ":launcher-src",
+        ":launcher-src_shortcuts_overrides",
+        ":launcher-src_ui_overrides",
+        ":launcher-ext_tests",
     ],
     resource_dirs: [
         "ext_tests/res",
@@ -202,61 +247,14 @@ android_library {
 }
 
 
-// Source code used for test helpers
-filegroup {
-    name: "launcher-src-ext-tests",
-    srcs: [
-        "ext_tests/src/**/*.java",
-        "ext_tests/src/**/*.kt",
-        "quickstep/ext_tests/src/**/*.java",
-        "quickstep/ext_tests/src/**/*.kt",
-    ],
-}
-
-// Common source files used to build launcher
-filegroup {
-    name: "launcher-src-no-build-config",
-    srcs: [
-        "src/**/*.java",
-        "src/**/*.kt",
-        "src_shortcuts_overrides/**/*.java",
-        "src_shortcuts_overrides/**/*.kt",
-        "quickstep/src/**/*.java",
-        "quickstep/src/**/*.kt",
-    ],
-}
-
-// Common source files used to build go launcher except go/src files
-filegroup {
-    name: "launcher-go-src-no-build-config",
-    srcs: [
-        "src/**/*.java",
-        "src/**/*.kt",
-        "quickstep/src/**/*.java",
-        "quickstep/src/**/*.kt",
-        "go/quickstep/src/**/*.java",
-        "go/quickstep/src/**/*.kt",
-    ],
-}
-
-// Proguard files for Launcher3
-filegroup {
-    name: "launcher-proguard-rules",
-    srcs: ["proguard.flags"],
-}
-
 // Library with all the dependencies for building Launcher Go
 android_library {
     name: "LauncherGoResLib",
     srcs: [
-        "src/**/*.java",
-        "src/**/*.kt",
-        "quickstep/src/**/*.java",
-        "quickstep/src/**/*.kt",
-        "go/src/**/*.java",
-        "go/src/**/*.kt",
-        "go/quickstep/src/**/*.java",
-        "go/quickstep/src/**/*.kt",
+        ":launcher-src",
+        ":launcher-quickstep-src",
+        ":launcher-go-src",
+        ":launcher-go-quickstep-src",
     ],
     resource_dirs: [
         "go/res",
@@ -287,7 +285,9 @@ android_library {
 android_library {
     name: "Launcher3QuickStepLib",
     srcs: [
-        ":launcher-src-no-build-config",
+        ":launcher-src",
+        ":launcher-quickstep-src",
+        ":launcher-src_shortcuts_overrides",
     ],
     resource_dirs: [],
     libs: [
@@ -319,9 +319,9 @@ android_app {
     static_libs: ["Launcher3CommonDepsLib"],
 
     srcs: [
-        "src/**/*.java",
-        "src_ui_overrides/**/*.java",
-        "go/src/**/*.java",
+        ":launcher-src",
+        ":launcher-go-src",
+        ":launcher-src_ui_overrides",
     ],
 
     resource_dirs: ["go/res"],
@@ -405,12 +405,7 @@ android_app {
     min_sdk_version: "current",
     target_sdk_version: "current",
 
-    srcs: [
-        "src/**/*.java",
-        "quickstep/src/**/*.java",
-        "go/src/**/*.java",
-        "go/quickstep/src/**/*.java",
-    ],
+    srcs: [ ],
 
     resource_dirs: [
         "go/quickstep/res",

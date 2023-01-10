@@ -14,7 +14,8 @@ private const val STASHED_HANDLE_FADE_DURATION = 180L
  * Controls Taskbar behavior while Voice Interaction Window (assistant) is showing.
  */
 class VoiceInteractionWindowController(val context: TaskbarActivityContext)
-    : TaskbarControllers.LoggableTaskbarController {
+    : TaskbarControllers.LoggableTaskbarController,
+        TaskbarControllers.BackgroundRendererController {
 
     private val taskbarBackgroundRenderer = TaskbarBackgroundRenderer(context)
 
@@ -63,11 +64,11 @@ class VoiceInteractionWindowController(val context: TaskbarActivityContext)
         // Fade out taskbar icons and stashed handle.
         val taskbarIconAlpha = if (isVoiceInteractionWindowVisible) 0f else 1f
         val fadeTaskbarIcons = controllers.taskbarViewController.taskbarIconAlpha
-            .getProperty(TaskbarViewController.ALPHA_INDEX_ASSISTANT_INVOKED)
+            .get(TaskbarViewController.ALPHA_INDEX_ASSISTANT_INVOKED)
             .animateToValue(taskbarIconAlpha)
             .setDuration(TASKBAR_ICONS_FADE_DURATION)
         val fadeStashedHandle = controllers.stashedHandleViewController.stashedHandleAlpha
-            .getProperty(StashedHandleViewController.ALPHA_INDEX_ASSISTANT_INVOKED)
+            .get(StashedHandleViewController.ALPHA_INDEX_ASSISTANT_INVOKED)
             .animateToValue(taskbarIconAlpha)
             .setDuration(STASHED_HANDLE_FADE_DURATION)
         fadeTaskbarIcons.start()
@@ -77,7 +78,7 @@ class VoiceInteractionWindowController(val context: TaskbarActivityContext)
             fadeStashedHandle.end()
         }
 
-        moveTaskbarBackgroundToAppropriateLayer()
+        moveTaskbarBackgroundToAppropriateLayer(skipAnim)
     }
 
     /**
@@ -86,25 +87,34 @@ class VoiceInteractionWindowController(val context: TaskbarActivityContext)
      * OR
      * Removes the temporary window and show the TaskbarDragLayer background again.
      */
-    private fun moveTaskbarBackgroundToAppropriateLayer() {
+    private fun moveTaskbarBackgroundToAppropriateLayer(skipAnim: Boolean) {
         val taskbarBackgroundOverride = controllers.taskbarDragLayerController
             .overrideBackgroundAlpha
         val moveToLowerLayer = isVoiceInteractionWindowVisible
-        if (moveToLowerLayer) {
+        val onWindowsSynchronized = if (moveToLowerLayer) {
             // First add the temporary window, then hide the overlapping taskbar background.
-            context.addWindowView(separateWindowForTaskbarBackground, separateWindowLayoutParams)
-            ViewRootSync.synchronizeNextDraw(separateWindowForTaskbarBackground, context.dragLayer
-            ) {
-                taskbarBackgroundOverride.updateValue(0f)
-            }
+            context.addWindowView(separateWindowForTaskbarBackground, separateWindowLayoutParams);
+            { taskbarBackgroundOverride.updateValue(0f) }
         } else {
             // First reapply the original taskbar background, then remove the temporary window.
-            taskbarBackgroundOverride.updateValue(1f)
-            ViewRootSync.synchronizeNextDraw(separateWindowForTaskbarBackground, context.dragLayer
-            ) {
-                context.removeWindowView(separateWindowForTaskbarBackground)
-            }
+            taskbarBackgroundOverride.updateValue(1f);
+            { context.removeWindowView(separateWindowForTaskbarBackground) }
         }
+
+        if (skipAnim) {
+            onWindowsSynchronized()
+        } else {
+            ViewRootSync.synchronizeNextDraw(
+                separateWindowForTaskbarBackground,
+                context.dragLayer,
+                onWindowsSynchronized
+            )
+        }
+    }
+
+    override fun setCornerRoundness(cornerRoundness: Float) {
+        taskbarBackgroundRenderer.setCornerRoundness(cornerRoundness)
+        separateWindowForTaskbarBackground.invalidate()
     }
 
     override fun dumpLogs(prefix: String, pw: PrintWriter) {

@@ -127,6 +127,11 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
         public boolean isContentSame(AdapterItem other) {
             return itemInfo == null && other.itemInfo == null;
         }
+
+        /** Sets the alpha of the decorator for this item. Returns true if successful. */
+        public boolean setDecorationFillAlpha(int alpha) {
+            return false;
+        }
     }
 
     protected final T mActivityContext;

@@ -32,7 +32,6 @@ import android.animation.ObjectAnimator;
 import android.util.FloatProperty;
 import android.view.View;
 
-import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -41,6 +40,7 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DynamicResource;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.plugins.ResourceProvider;
@@ -84,9 +84,9 @@ public class WorkspaceRevealAnim {
         }
 
         // Add depth controller animation.
-        if (launcher instanceof BaseQuickstepLauncher) {
+        if (launcher instanceof QuickstepLauncher) {
             PendingAnimation depthBuilder = new PendingAnimation(DURATION_MS);
-            DepthController depth = ((BaseQuickstepLauncher) launcher).getDepthController();
+            DepthController depth = ((QuickstepLauncher) launcher).getDepthController();
             depth.setStateWithAnimation(NORMAL, new StateAnimationConfig(), depthBuilder);
             mAnimators.play(depthBuilder.buildAnim());
         }

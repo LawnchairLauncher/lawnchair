@@ -38,8 +38,6 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -65,11 +63,9 @@ import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RotationTouchHelper;
 import com.android.quickstep.TaskAnimationManager;
-import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.NavBarPosition;
-import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputChannelCompat.InputEventReceiver;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
@@ -135,12 +131,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     // Might be displacement in X or Y, depending on the direction we are swiping from the nav bar.
     private float mStartDisplacement;
 
-    private Handler mMainThreadHandler;
-    private Runnable mCancelRecentsAnimationRunnable = () -> {
-        ActivityManagerWrapper.getInstance().cancelRecentsAnimation(
-                true /* restoreHomeStackPosition */);
-    };
-
     public OtherActivityInputConsumer(Context base, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
             boolean isDeferredDownTarget, Consumer<OtherActivityInputConsumer> onCompleteCallback,
@@ -151,7 +141,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mNavBarPosition = mDeviceState.getNavBarPosition();
         mTaskAnimationManager = taskAnimationManager;
         mGestureState = gestureState;
-        mMainThreadHandler = new Handler(Looper.getMainLooper());
         mHandlerFactory = handlerFactory;
         mActivityInterface = mGestureState.getActivityInterface();
 
@@ -291,6 +280,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 float upDist = -displacement;
                 boolean passedSlop = squaredHypot(displacementX, displacementY)
                         >= mSquaredTouchSlop;
+
                 if (!mPassedSlopOnThisGesture && passedSlop) {
                     mPassedSlopOnThisGesture = true;
                 }
@@ -335,7 +325,10 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                     }
 
                     if (mDeviceState.isFullyGesturalNavMode()) {
-                        mMotionPauseDetector.setDisallowPause(upDist < mMotionPauseMinDisplacement
+                        boolean minSwipeMet = upDist >= Math.max(mMotionPauseMinDisplacement,
+                                mInteractionHandler.getThresholdToAllowMotionPause());
+                        mInteractionHandler.setCanSlowSwipeGoHome(minSwipeMet);
+                        mMotionPauseDetector.setDisallowPause(!minSwipeMet
                                 || isLikelyToStartNewTask);
                         mMotionPauseDetector.addPosition(ev);
                         mInteractionHandler.setIsLikelyToStartNewTask(isLikelyToStartNewTask);
@@ -359,7 +352,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     private void notifyGestureStarted(boolean isLikelyToStartNewTask) {
-        ActiveGestureLog.INSTANCE.addLog("startQuickstep");
         if (mInteractionHandler == null) {
             return;
         }
@@ -373,8 +365,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     private void startTouchTrackingForWindowAnimation(long touchTimeMs) {
-        ActiveGestureLog.INSTANCE.addLog("startRecentsAnimation");
-
         mInteractionHandler = mHandlerFactory.newHandler(mGestureState, touchTimeMs);
         mInteractionHandler.setGestureEndCallback(this::onInteractionGestureFinished);
         mMotionPauseDetector.setOnMotionPauseListener(mInteractionHandler.getMotionPauseListener());
@@ -407,16 +397,16 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 mInteractionHandler.onGestureCancelled();
             } else {
                 mVelocityTracker.computeCurrentVelocity(PX_PER_MS);
-                float velocityX = mVelocityTracker.getXVelocity(mActivePointerId);
-                float velocityY = mVelocityTracker.getYVelocity(mActivePointerId);
-                float velocity = mNavBarPosition.isRightEdge()
-                        ? velocityX
+                float velocityXPxPerMs = mVelocityTracker.getXVelocity(mActivePointerId);
+                float velocityYPxPerMs = mVelocityTracker.getYVelocity(mActivePointerId);
+                float velocityPxPerMs = mNavBarPosition.isRightEdge()
+                        ? velocityXPxPerMs
                         : mNavBarPosition.isLeftEdge()
-                                ? -velocityX
-                                : velocityY;
+                                ? -velocityXPxPerMs
+                                : velocityYPxPerMs;
                 mInteractionHandler.updateDisplacement(getDisplacement(ev) - mStartDisplacement);
-                mInteractionHandler.onGestureEnded(velocity, new PointF(velocityX, velocityY),
-                        mDownPos);
+                mInteractionHandler.onGestureEnded(
+                        velocityPxPerMs, new PointF(velocityXPxPerMs, velocityYPxPerMs), mDownPos);
             }
         } else {
             // Since we start touch tracking on DOWN, we may reach this state without actually
@@ -435,13 +425,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             }
             onConsumerAboutToBeSwitched();
             onInteractionGestureFinished();
-
-            // Cancel the recents animation if SysUI happens to handle UP before we have a chance
-            // to start the recents animation. In addition, workaround for b/126336729 by delaying
-            // the cancel of the animation for a period, in case SysUI is slow to handle UP and we
-            // handle DOWN & UP and move the home stack before SysUI can start the activity
-            mMainThreadHandler.removeCallbacks(mCancelRecentsAnimationRunnable);
-            mMainThreadHandler.postDelayed(mCancelRecentsAnimationRunnable, 100);
         }
         cleanupAfterGesture();
         TraceHelper.INSTANCE.endSection(traceToken);
@@ -463,7 +446,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     @Override
     public void onConsumerAboutToBeSwitched() {
         Preconditions.assertUIThread();
-        mMainThreadHandler.removeCallbacks(mCancelRecentsAnimationRunnable);
         if (mInteractionHandler != null) {
             // The consumer is being switched while we are active. Set up the shared state to be
             // used by the next animation

@@ -21,38 +21,39 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.QUICK_SWITCH;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.content.Context;
 import android.graphics.Rect;
 import android.view.MotionEvent;
+import android.view.RemoteAnimationTarget;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
-import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statehandlers.DepthController;
-import com.android.launcher3.statehandlers.DepthController.ClampedDepthProperty;
+import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DisplayController;
-import com.android.launcher3.util.DisplayController.NavigationMode;
+import com.android.launcher3.util.NavigationMode;
 import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.plugins.shared.LauncherOverlayManager;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -61,7 +62,7 @@ import java.util.function.Predicate;
  * {@link BaseActivityInterface} for the in-launcher recents.
  */
 public final class LauncherActivityInterface extends
-        BaseActivityInterface<LauncherState, BaseQuickstepLauncher> {
+        BaseActivityInterface<LauncherState, QuickstepLauncher> {
 
     public static final LauncherActivityInterface INSTANCE = new LauncherActivityInterface();
 
@@ -108,34 +109,26 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
-    public void onOneHandedModeStateChanged(boolean activated) {
-        Launcher launcher = getCreatedActivity();
-        if (launcher == null) {
-            return;
-        }
-        launcher.onOneHandedStateChanged(activated);
-    }
-
-    @Override
     public AnimationFactory prepareRecentsUI(RecentsAnimationDeviceState deviceState,
             boolean activityVisible, Consumer<AnimatorControllerWithResistance> callback) {
         notifyRecentsOfOrientation(deviceState.getRotationTouchHelper());
         DefaultAnimationFactory factory = new DefaultAnimationFactory(callback) {
             @Override
-            protected void createBackgroundToOverviewAnim(BaseQuickstepLauncher activity,
+            protected void createBackgroundToOverviewAnim(QuickstepLauncher activity,
                     PendingAnimation pa) {
                 super.createBackgroundToOverviewAnim(activity, pa);
 
                 // Animate the blur and wallpaper zoom
                 float fromDepthRatio = BACKGROUND_APP.getDepth(activity);
                 float toDepthRatio = OVERVIEW.getDepth(activity);
-                pa.addFloat(getDepthController(),
-                        new ClampedDepthProperty(fromDepthRatio, toDepthRatio),
+                pa.addFloat(getDepthController().stateDepth,
+                        new LauncherAnimUtils.ClampedProperty<>(
+                                MULTI_PROPERTY_VALUE, fromDepthRatio, toDepthRatio),
                         fromDepthRatio, toDepthRatio, LINEAR);
             }
         };
 
-        BaseQuickstepLauncher launcher = factory.initBackgroundStateUI();
+        QuickstepLauncher launcher = factory.initBackgroundStateUI();
         // Since all apps is not visible, we can safely reset the scroll position.
         // This ensures then the next swipe up to all-apps starts from scroll 0.
         launcher.getAppsView().reset(false /* animate */);
@@ -159,14 +152,14 @@ public final class LauncherActivityInterface extends
 
     @Nullable
     @Override
-    public BaseQuickstepLauncher getCreatedActivity() {
-        return BaseQuickstepLauncher.ACTIVITY_TRACKER.getCreatedActivity();
+    public QuickstepLauncher getCreatedActivity() {
+        return QuickstepLauncher.ACTIVITY_TRACKER.getCreatedActivity();
     }
 
     @Nullable
     @Override
     public DepthController getDepthController() {
-        BaseQuickstepLauncher launcher = getCreatedActivity();
+        QuickstepLauncher launcher = getCreatedActivity();
         if (launcher == null) {
             return null;
         }
@@ -175,8 +168,18 @@ public final class LauncherActivityInterface extends
 
     @Nullable
     @Override
+    public DesktopVisibilityController getDesktopVisibilityController() {
+        QuickstepLauncher launcher = getCreatedActivity();
+        if (launcher == null) {
+            return null;
+        }
+        return launcher.getDesktopVisibilityController();
+    }
+
+    @Nullable
+    @Override
     public LauncherTaskbarUIController getTaskbarController() {
-        BaseQuickstepLauncher launcher = getCreatedActivity();
+        QuickstepLauncher launcher = getCreatedActivity();
         if (launcher == null) {
             return null;
         }
@@ -203,8 +206,7 @@ public final class LauncherActivityInterface extends
     private Launcher getVisibleLauncher() {
         Launcher launcher = getCreatedActivity();
         return (launcher != null) && launcher.isStarted()
-                && ((ENABLE_QUICKSTEP_LIVE_TILE.get() && isInLiveTileMode())
-                || launcher.hasBeenResumed()) ? launcher : null;
+                && (isInLiveTileMode() || launcher.hasBeenResumed()) ? launcher : null;
     }
 
     @Override
@@ -213,7 +215,7 @@ public final class LauncherActivityInterface extends
         if (launcher == null) {
             return false;
         }
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isInLiveTileMode()) {
+        if (isInLiveTileMode()) {
             RecentsView recentsView = getVisibleRecentsView();
             if (recentsView == null) {
                 return false;
@@ -253,7 +255,7 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
-    public Rect getOverviewWindowBounds(Rect homeBounds, RemoteAnimationTargetCompat target) {
+    public Rect getOverviewWindowBounds(Rect homeBounds, RemoteAnimationTarget target) {
         return homeBounds;
     }
 
@@ -291,10 +293,6 @@ public final class LauncherActivityInterface extends
         } else {
             om.hideOverlay(150);
         }
-        LauncherTaskbarUIController taskbarController = getTaskbarController();
-        if (taskbarController != null) {
-            taskbarController.hideEdu();
-        }
     }
 
     @Override
@@ -318,7 +316,7 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
-    protected int getOverviewScrimColorForState(BaseQuickstepLauncher launcher,
+    protected int getOverviewScrimColorForState(QuickstepLauncher launcher,
             LauncherState state) {
         return state.getWorkspaceScrimColor(launcher);
     }

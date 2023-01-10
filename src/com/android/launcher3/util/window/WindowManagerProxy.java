@@ -17,14 +17,15 @@ package com.android.launcher3.util.window;
 
 import static android.view.Display.DEFAULT_DISPLAY;
 
+import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.testing.shared.ResourceUtils.INVALID_RESOURCE_HANDLE;
 import static com.android.launcher3.testing.shared.ResourceUtils.NAVBAR_HEIGHT;
 import static com.android.launcher3.testing.shared.ResourceUtils.NAVBAR_HEIGHT_LANDSCAPE;
 import static com.android.launcher3.testing.shared.ResourceUtils.NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE;
+import static com.android.launcher3.testing.shared.ResourceUtils.NAV_BAR_INTERACTION_MODE_RES_NAME;
 import static com.android.launcher3.testing.shared.ResourceUtils.STATUS_BAR_HEIGHT;
 import static com.android.launcher3.testing.shared.ResourceUtils.STATUS_BAR_HEIGHT_LANDSCAPE;
 import static com.android.launcher3.testing.shared.ResourceUtils.STATUS_BAR_HEIGHT_PORTRAIT;
-import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.util.MainThreadInitializedObject.forOverride;
 import static com.android.launcher3.util.RotationUtils.deltaRotation;
 import static com.android.launcher3.util.RotationUtils.rotateRect;
@@ -40,6 +41,7 @@ import android.graphics.Rect;
 import android.hardware.display.DisplayManager;
 import android.os.Build;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.view.Display;
 import android.view.DisplayCutout;
 import android.view.Surface;
@@ -48,9 +50,10 @@ import android.view.WindowManager;
 import android.view.WindowMetrics;
 
 import com.android.launcher3.R;
-import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.launcher3.util.WindowBounds;
 
@@ -59,6 +62,7 @@ import com.android.launcher3.util.WindowBounds;
  */
 public class WindowManagerProxy implements ResourceBasedOverride {
 
+    private static final String TAG = "WindowManagerProxy";
     public static final int MIN_TABLET_WIDTH = 600;
 
     public static final MainThreadInitializedObject<WindowManagerProxy> INSTANCE =
@@ -342,5 +346,25 @@ public class WindowManagerProxy implements ResourceBasedOverride {
         }
         return displayInfoContext.getSystemService(DisplayManager.class).getDisplay(
                 DEFAULT_DISPLAY);
+    }
+
+    /**
+     * Returns the current navigation mode from resource.
+     */
+    public NavigationMode getNavigationMode(Context context) {
+        int modeInt = ResourceUtils.getIntegerByName(NAV_BAR_INTERACTION_MODE_RES_NAME,
+                context.getResources(), INVALID_RESOURCE_HANDLE);
+
+        if (modeInt == INVALID_RESOURCE_HANDLE) {
+            Log.e(TAG, "Failed to get system resource ID. Incompatible framework version?");
+        } else {
+            for (NavigationMode m : NavigationMode.values()) {
+                if (m.resValue == modeInt) {
+                    return m;
+                }
+            }
+        }
+        return Utilities.ATLEAST_S ? NavigationMode.NO_BUTTON :
+                NavigationMode.THREE_BUTTONS;
     }
 }

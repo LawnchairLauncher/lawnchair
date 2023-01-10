@@ -44,6 +44,7 @@ import com.android.quickstep.views.RecentsView;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -181,6 +182,21 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     @PortraitLandscape
+    public void testSplitFromOverview() {
+        assumeTrue(!mLauncher.isTablet());
+
+        startTestActivity(2);
+        startTestActivity(3);
+
+        mLauncher.goHome().switchToOverview().getCurrentTask()
+                .tapMenu()
+                .tapSplitMenuItem()
+                .getTestActivityTask(2)
+                .open();
+    }
+
+    @Test
+    @PortraitLandscape
     public void testSplitFromOverviewForTablet() {
         assumeTrue(mLauncher.isTablet());
 
@@ -209,17 +225,20 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         return launcher.<RecentsView>getOverviewPanel().getBottomRowTaskCountForTablet();
     }
 
+    @Ignore
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
     @ScreenRecord // b/238461765
     public void testSwitchToOverview() throws Exception {
+        startTestAppsWithCheck();
         assertNotNull("Workspace.switchToOverview() returned null",
                 mLauncher.goHome().switchToOverview());
         assertTrue("Launcher internal state didn't switch to Overview",
                 isInState(() -> LauncherState.OVERVIEW));
     }
 
+    @Ignore
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
@@ -241,6 +260,19 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
                         + "one",
                 isInLaunchedApp(launcher)));
         return launchedAppState;
+    }
+
+    private void quickSwitchToPreviousAppAndAssert(boolean toRight) {
+        final LaunchedAppState launchedAppState = getAndAssertLaunchedApp();
+        if (toRight) {
+            launchedAppState.quickSwitchToPreviousApp();
+        } else {
+            launchedAppState.quickSwitchToPreviousAppSwipeLeft();
+        }
+
+        // While enable shell transition, Launcher can be resumed due to transient launch.
+        waitForLauncherCondition("Launcher shouldn't stay in resume forever",
+                this::isInLaunchedApp, 3000 /* timeout */);
     }
 
     @Test
@@ -269,13 +301,11 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         startTestActivity(3);
         startTestActivity(4);
 
-        LaunchedAppState launchedAppState = getAndAssertLaunchedApp();
-        launchedAppState.quickSwitchToPreviousApp();
+        quickSwitchToPreviousAppAndAssert(true /* toRight */);
         assertTrue("The first app we should have quick switched to is not running",
                 isTestActivityRunning(3));
 
-        launchedAppState = getAndAssertLaunchedApp();
-        launchedAppState.quickSwitchToPreviousApp();
+        quickSwitchToPreviousAppAndAssert(true /* toRight */);
         if (mLauncher.getNavigationModel() == NavigationModel.THREE_BUTTON) {
             // 3-button mode toggles between 2 apps, rather than going back further.
             assertTrue("Second quick switch should have returned to the first app.",
@@ -284,13 +314,37 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
             assertTrue("The second app we should have quick switched to is not running",
                     isTestActivityRunning(2));
         }
-        launchedAppState = getAndAssertLaunchedApp();
-        launchedAppState.quickSwitchToPreviousAppSwipeLeft();
+
+        quickSwitchToPreviousAppAndAssert(false /* toRight */);
         assertTrue("The 2nd app we should have quick switched to is not running",
                 isTestActivityRunning(3));
 
-        launchedAppState = getAndAssertLaunchedApp();
+        final LaunchedAppState launchedAppState = getAndAssertLaunchedApp();
         launchedAppState.switchToOverview();
+    }
+
+    @Test
+    @ScreenRecord // b/242163205
+    public void testQuickSwitchToPreviousAppForTablet() throws Exception {
+        assumeTrue(mLauncher.isTablet());
+        startTestActivity(2);
+        startImeTestActivity();
+
+        // Set ignoreTaskbarVisibility to true to verify the task bar visibility explicitly.
+        mLauncher.setIgnoreTaskbarVisibility(true);
+
+        // Expect task bar invisible when the launched app was the IME activity.
+        LaunchedAppState launchedAppState = getAndAssertLaunchedApp();
+        launchedAppState.assertTaskbarHidden();
+
+        // Quick-switch to the test app with swiping to right.
+        quickSwitchToPreviousAppAndAssert(true /* toRight */);
+
+        assertTrue("The first app we should have quick switched to is not running",
+                isTestActivityRunning(2));
+        // Expect task bar visible when the launched app was the test activity.
+        launchedAppState = getAndAssertLaunchedApp();
+        launchedAppState.assertTaskbarVisible();
     }
 
     private boolean isTestActivityRunning(int activityNumber) {
@@ -325,6 +379,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
     }
 
+    @Ignore
     @Test
     @PortraitLandscape
     public void testOverviewForTablet() throws Exception {

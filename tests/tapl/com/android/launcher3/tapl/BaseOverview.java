@@ -244,34 +244,36 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      * Returns if clear all button is visible.
      */
     public boolean isClearAllVisible() {
-        return mLauncher.hasLauncherObject(mLauncher.getOverviewObjectSelector("clear_all"));
+        return verifyActiveContainer().hasObject(
+                mLauncher.getOverviewObjectSelector("clear_all"));
+    }
+
+    protected boolean isActionsViewVisible() {
+        if (!hasTasks() || isClearAllVisible()) {
+            return false;
+        }
+        OverviewTask task = mLauncher.isTablet() ? getFocusedTaskForTablet() : getCurrentTask();
+        if (task == null) {
+            return false;
+        }
+        // In tablets, if focused task is not in center, overview actions aren't visible.
+        if (mLauncher.isTablet()
+                && Math.abs(task.getExactCenterX() - mLauncher.getExactScreenCenterX()) >= 1) {
+            return false;
+        }
+        // Overview actions aren't visible for split screen tasks.
+        return !task.isTaskSplit();
     }
 
     private void verifyActionsViewVisibility() {
-        if (!hasTasks()) {
-            return;
-        }
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to assert overview actions view visibility")) {
-            if (mLauncher.isTablet() && !isOverviewSnappedToFocusedTaskForTablet()) {
-                mLauncher.waitUntilOverviewObjectGone("action_buttons");
-            } else {
+            if (isActionsViewVisible()) {
                 mLauncher.waitForOverviewObject("action_buttons");
+            } else {
+                mLauncher.waitUntilOverviewObjectGone("action_buttons");
             }
         }
-    }
-
-    /**
-     * Returns if focused task is currently snapped task in tablet grid overview.
-     */
-    private boolean isOverviewSnappedToFocusedTaskForTablet() {
-        UiObject2 focusedTask = getFocusedTaskForTablet();
-        if (focusedTask == null) {
-            return false;
-        }
-        return Math.abs(
-                focusedTask.getVisibleBounds().exactCenterX() - mLauncher.getExactScreenCenterX())
-                < 1;
     }
 
     /**
@@ -279,7 +281,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      *
      * @throws IllegalStateException if not run on a tablet device.
      */
-    UiObject2 getFocusedTaskForTablet() {
+    OverviewTask getFocusedTaskForTablet() {
         if (!mLauncher.isTablet()) {
             throw new IllegalStateException("Must be run on tablet device.");
         }
@@ -290,7 +292,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         int focusedTaskHeight = mLauncher.getFocusedTaskHeightForTablet();
         for (UiObject2 task : taskViews) {
             if (task.getVisibleBounds().height() == focusedTaskHeight) {
-                return task;
+                return new OverviewTask(mLauncher, task, this);
             }
         }
         return null;

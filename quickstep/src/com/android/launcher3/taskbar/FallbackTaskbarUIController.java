@@ -21,6 +21,7 @@ import static com.android.launcher3.taskbar.TaskbarStashController.TASKBAR_STASH
 
 import android.animation.Animator;
 
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.fallback.RecentsState;
@@ -40,8 +41,7 @@ public class FallbackTaskbarUIController extends TaskbarUIController {
                     animateToRecentsState(toState);
 
                     // Handle tapping on live tile.
-                    RecentsView recentsView = mRecentsActivity.getOverviewPanel();
-                    recentsView.setTaskLaunchListener(toState == RecentsState.DEFAULT
+                    getRecentsView().setTaskLaunchListener(toState == RecentsState.DEFAULT
                             ? (() -> animateToRecentsState(RecentsState.BACKGROUND_APP)) : null);
                 }
             };
@@ -70,12 +70,14 @@ public class FallbackTaskbarUIController extends TaskbarUIController {
      * Currently this animation just force stashes the taskbar in Overview.
      */
     public Animator createAnimToRecentsState(RecentsState toState, long duration) {
-        boolean forceStashed = toState.hasOverviewActions();
+        boolean useStashedLauncherState = toState.hasOverviewActions();
+        boolean stashedLauncherState =
+                useStashedLauncherState && !FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get();
         TaskbarStashController controller = mControllers.taskbarStashController;
         // Set both FLAG_IN_STASHED_LAUNCHER_STATE and FLAG_IN_APP to ensure the state is respected.
         // For all other states, just use the current stashed-in-app setting (e.g. if long clicked).
-        controller.updateStateForFlag(FLAG_IN_STASHED_LAUNCHER_STATE, forceStashed);
-        controller.updateStateForFlag(FLAG_IN_APP, !forceStashed);
+        controller.updateStateForFlag(FLAG_IN_STASHED_LAUNCHER_STATE, stashedLauncherState);
+        controller.updateStateForFlag(FLAG_IN_APP, !useStashedLauncherState);
         return controller.applyStateWithoutStart(duration);
     }
 
@@ -84,5 +86,10 @@ public class FallbackTaskbarUIController extends TaskbarUIController {
         if (anim != null) {
             anim.start();
         }
+    }
+
+    @Override
+    public RecentsView getRecentsView() {
+        return mRecentsActivity.getOverviewPanel();
     }
 }
