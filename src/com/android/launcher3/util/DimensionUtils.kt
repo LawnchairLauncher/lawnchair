@@ -24,12 +24,15 @@ import com.android.launcher3.R
 
 object DimensionUtils {
     /**
-     * Point where x is width, and y is height of taskbar based on provided [deviceProfile]
-     * x or y could also be -1 to indicate there is no dimension specified
+     * Point where x is width, and y is height of taskbar based on provided [deviceProfile] x or y
+     * could also be -1 to indicate there is no dimension specified
      */
     @JvmStatic
-    fun getTaskbarPhoneDimensions(deviceProfile: DeviceProfile, res: Resources,
-                                  isPhoneMode: Boolean): Point {
+    fun getTaskbarPhoneDimensions(
+        deviceProfile: DeviceProfile,
+        res: Resources,
+        isPhoneMode: Boolean
+    ): Point {
         val p = Point()
         // Taskbar for large screen
         if (!isPhoneMode) {
