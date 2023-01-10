@@ -26,6 +26,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.CellLayout;
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.celllayout.testcases.FullReorderCase;
 import com.android.launcher3.celllayout.testcases.MoveOutReorderCase;
 import com.android.launcher3.celllayout.testcases.PushReorderCase;
@@ -46,6 +47,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -108,6 +110,42 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
         return match;
     }
 
+    private void printCurrentWorkspace() {
+        InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(mTargetContext);
+        ArrayList<CellLayoutBoard> boards = workspaceToBoards();
+        for (int i = 0; i < boards.size(); i++) {
+            Log.d(TAG, "Screen number " + i);
+            Log.d(TAG, ".\n" + boards.get(i).toString(idp.numColumns, idp.numRows));
+        }
+    }
+
+    private ArrayList<CellLayoutBoard> workspaceToBoards() {
+        return getFromLauncher(l -> {
+            ArrayList<CellLayoutBoard> boards = new ArrayList<>();
+            int widgetCount = 0;
+            for (CellLayout cellLayout : l.getWorkspace().mWorkspaceScreens) {
+                CellLayoutBoard board = new CellLayoutBoard();
+                int count = cellLayout.getShortcutsAndWidgets().getChildCount();
+                for (int i = 0; i < count; i++) {
+                    View callView = cellLayout.getShortcutsAndWidgets().getChildAt(i);
+                    CellLayoutLayoutParams params =
+                            (CellLayoutLayoutParams) callView.getLayoutParams();
+                    // is icon
+                    if (callView instanceof DoubleShadowBubbleTextView) {
+                        board.addIcon(params.cellX, params.cellY);
+                    } else {
+                        // is widget
+                        board.addWidget(params.cellX, params.cellY, params.cellHSpan,
+                                params.cellVSpan, (char) ('A' + widgetCount));
+                        widgetCount++;
+                    }
+                }
+                boards.add(board);
+            }
+            return boards;
+        });
+    }
+
     private void runTestCase(ReorderTestCase testCase)
             throws ExecutionException, InterruptedException {
         Point mainWidgetCellPos = testCase.mStart.getMain();
@@ -127,6 +165,7 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
         for (CellLayoutBoard board : testCase.mEnd) {
             isValid |= validateBoard(board);
         }
+        printCurrentWorkspace();
         assertTrue("Non of the valid boards match with the current state", isValid);
     }
 
