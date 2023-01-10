@@ -203,12 +203,10 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
 
     public void extend() {
         mTextView.setVisibility(VISIBLE);
-        mStatsLogManager.logger().log(LAUNCHER_WORK_FAB_BUTTON_EXTEND);
     }
 
     public void shrink(){
         mTextView.setVisibility(GONE);
-        mStatsLogManager.logger().log(LAUNCHER_WORK_FAB_BUTTON_COLLAPSE);
     }
 
     public int getScrollThreshold() {
