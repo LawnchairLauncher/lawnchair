@@ -35,56 +35,47 @@ import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.DRAWABLE_SYS
 import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.DRAWABLE_SYSBAR_HOME_KIDS
 
 class KidsNavLayoutter(
-        resources: Resources,
-        navBarContainer: LinearLayout,
-        endContextualContainer: ViewGroup,
-        startContextualContainer: ViewGroup
-) : AbstractNavButtonLayoutter(
+    resources: Resources,
+    navBarContainer: LinearLayout,
+    endContextualContainer: ViewGroup,
+    startContextualContainer: ViewGroup
+) :
+    AbstractNavButtonLayoutter(
         resources,
         navBarContainer,
         endContextualContainer,
         startContextualContainer
-) {
+    ) {
 
     override fun layoutButtons(dp: DeviceProfile, isContextualButtonShowing: Boolean) {
-        val iconSize: Int = resources.getDimensionPixelSize(
-                DIMEN_TASKBAR_ICON_SIZE_KIDS)
-        val buttonWidth: Int = resources.getDimensionPixelSize(
-                DIMEN_TASKBAR_NAV_BUTTONS_WIDTH_KIDS)
-        val buttonHeight: Int = resources.getDimensionPixelSize(
-                DIMEN_TASKBAR_NAV_BUTTONS_HEIGHT_KIDS)
-        val buttonRadius: Int = resources.getDimensionPixelSize(
-                DIMEN_TASKBAR_NAV_BUTTONS_CORNER_RADIUS_KIDS)
+        val iconSize: Int = resources.getDimensionPixelSize(DIMEN_TASKBAR_ICON_SIZE_KIDS)
+        val buttonWidth: Int = resources.getDimensionPixelSize(DIMEN_TASKBAR_NAV_BUTTONS_WIDTH_KIDS)
+        val buttonHeight: Int =
+            resources.getDimensionPixelSize(DIMEN_TASKBAR_NAV_BUTTONS_HEIGHT_KIDS)
+        val buttonRadius: Int =
+            resources.getDimensionPixelSize(DIMEN_TASKBAR_NAV_BUTTONS_CORNER_RADIUS_KIDS)
         val paddingLeft = (buttonWidth - iconSize) / 2
         val paddingTop = (buttonHeight - iconSize) / 2
 
         // Update icons
-        backButton.setImageDrawable(
-                backButton.context.getDrawable(DRAWABLE_SYSBAR_BACK_KIDS))
+        backButton.setImageDrawable(backButton.context.getDrawable(DRAWABLE_SYSBAR_BACK_KIDS))
         backButton.scaleType = ImageView.ScaleType.FIT_CENTER
         backButton.setPadding(paddingLeft, paddingTop, paddingLeft, paddingTop)
-        homeButton.setImageDrawable(
-                homeButton.getContext().getDrawable(DRAWABLE_SYSBAR_HOME_KIDS))
+        homeButton.setImageDrawable(homeButton.getContext().getDrawable(DRAWABLE_SYSBAR_HOME_KIDS))
         homeButton.scaleType = ImageView.ScaleType.FIT_CENTER
         homeButton.setPadding(paddingLeft, paddingTop, paddingLeft, paddingTop)
 
         // Home button layout
-        val homeLayoutparams = LinearLayout.LayoutParams(
-                buttonWidth,
-                buttonHeight
-        )
-        val homeButtonLeftMargin: Int = resources.getDimensionPixelSize(
-                DIMEN_TASKBAR_HOME_BUTTON_LEFT_MARGIN_KIDS)
+        val homeLayoutparams = LinearLayout.LayoutParams(buttonWidth, buttonHeight)
+        val homeButtonLeftMargin: Int =
+            resources.getDimensionPixelSize(DIMEN_TASKBAR_HOME_BUTTON_LEFT_MARGIN_KIDS)
         homeLayoutparams.setMargins(homeButtonLeftMargin, 0, 0, 0)
         homeButton.layoutParams = homeLayoutparams
 
         // Back button layout
-        val backLayoutParams = LinearLayout.LayoutParams(
-                buttonWidth,
-                buttonHeight
-        )
-        val backButtonLeftMargin: Int = resources.getDimensionPixelSize(
-                DIMEN_TASKBAR_BACK_BUTTON_LEFT_MARGIN_KIDS)
+        val backLayoutParams = LinearLayout.LayoutParams(buttonWidth, buttonHeight)
+        val backButtonLeftMargin: Int =
+            resources.getDimensionPixelSize(DIMEN_TASKBAR_BACK_BUTTON_LEFT_MARGIN_KIDS)
         backLayoutParams.setMargins(backButtonLeftMargin, 0, 0, 0)
         backButton.layoutParams = backLayoutParams
 
