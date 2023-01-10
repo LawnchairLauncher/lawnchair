@@ -47,12 +47,11 @@ import java.util.Objects;
 import java.util.concurrent.Executor;
 
 /**
- * Base Helper class to handle results of {@link com.android.launcher3.model.LoaderTask}.
+ * Binds the results of {@link com.android.launcher3.model.LoaderTask} to the Callbacks objects.
  */
-public abstract class BaseLoaderResults {
+public abstract class BaseLauncherBinder {
 
-    protected static final String TAG = "LoaderResults";
-    protected static final int INVALID_SCREEN_ID = -1;
+    protected static final String TAG = "LauncherBinder";
     private static final int ITEMS_CHUNK = 6; // batch size for the workspace icons
 
     protected final LooperExecutor mUiExecutor;
@@ -65,7 +64,7 @@ public abstract class BaseLoaderResults {
 
     private int mMyBindingId;
 
-    public BaseLoaderResults(LauncherAppState app, BgDataModel dataModel,
+    public BaseLauncherBinder(LauncherAppState app, BgDataModel dataModel,
             AllAppsList allAppsList, Callbacks[] callbacksList, LooperExecutor uiExecutor) {
         mUiExecutor = uiExecutor;
         mApp = app;
@@ -101,8 +100,14 @@ public abstract class BaseLoaderResults {
         }
     }
 
+    /**
+     * BindDeepShortcuts is abstract because it is a no-op for the go launcher.
+     */
     public abstract void bindDeepShortcuts();
 
+    /**
+     * Binds the all apps results from LoaderTask to the callbacks UX.
+     */
     public void bindAllApps() {
         // shallow copy
         AppInfo[] apps = mBgAllAppsList.copyData();
@@ -110,6 +115,9 @@ public abstract class BaseLoaderResults {
         executeCallbacksTask(c -> c.bindAllApplications(apps, flags), mUiExecutor);
     }
 
+    /**
+     * bindWidgets is abstract because it is a no-op for the go launcher.
+     */
     public abstract void bindWidgets();
 
     /**
@@ -160,6 +168,9 @@ public abstract class BaseLoaderResults {
         });
     }
 
+    /**
+     * Only used in LoaderTask.
+     */
     public LooperIdleLock newIdleLock(Object lock) {
         LooperIdleLock idleLock = new LooperIdleLock(lock, mUiExecutor.getLooper());
         // If we are not binding or if the main looper is already idle, there is no reason to wait

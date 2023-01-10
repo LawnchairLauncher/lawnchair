@@ -125,7 +125,7 @@ public class LoaderTask implements Runnable {
 
     private FirstScreenBroadcast mFirstScreenBroadcast;
 
-    private final LoaderResults mResults;
+    private final LauncherBinder mLauncherBinder;
 
     private final LauncherApps mLauncherApps;
     private final UserManager mUserManager;
@@ -145,12 +145,12 @@ public class LoaderTask implements Runnable {
     private String mDbName;
 
     public LoaderTask(LauncherAppState app, AllAppsList bgAllAppsList, BgDataModel dataModel,
-            ModelDelegate modelDelegate, LoaderResults results) {
+            ModelDelegate modelDelegate, LauncherBinder launcherBinder) {
         mApp = app;
         mBgAllAppsList = bgAllAppsList;
         mBgDataModel = dataModel;
         mModelDelegate = modelDelegate;
-        mResults = results;
+        mLauncherBinder = launcherBinder;
 
         mLauncherApps = mApp.getContext().getSystemService(LauncherApps.class);
         mUserManager = mApp.getContext().getSystemService(UserManager.class);
@@ -163,7 +163,7 @@ public class LoaderTask implements Runnable {
         // Wait until the either we're stopped or the other threads are done.
         // This way we don't start loading all apps until the workspace has settled
         // down.
-        LooperIdleLock idleLock = mResults.newIdleLock(this);
+        LooperIdleLock idleLock = mLauncherBinder.newIdleLock(this);
         // Just in case mFlushingWorkerThread changes but we aren't woken up,
         // wait no longer than 1sec at a time
         while (!mStopped && idleLock.awaitLocked(1000));
@@ -221,7 +221,7 @@ public class LoaderTask implements Runnable {
             }
 
             verifyNotStopped();
-            mResults.bindWorkspace(true /* incrementBindId */);
+            mLauncherBinder.bindWorkspace(true /* incrementBindId */);
             logASplit(logger, "bindWorkspace");
 
             mModelDelegate.workspaceLoadComplete();
@@ -245,7 +245,7 @@ public class LoaderTask implements Runnable {
             logASplit(logger, "loadAllApps");
 
             verifyNotStopped();
-            mResults.bindAllApps();
+            mLauncherBinder.bindAllApps();
             logASplit(logger, "bindAllApps");
 
             verifyNotStopped();
@@ -271,7 +271,7 @@ public class LoaderTask implements Runnable {
             logASplit(logger, "loadDeepShortcuts");
 
             verifyNotStopped();
-            mResults.bindDeepShortcuts();
+            mLauncherBinder.bindDeepShortcuts();
             logASplit(logger, "bindDeepShortcuts");
 
             verifyNotStopped();
@@ -290,7 +290,7 @@ public class LoaderTask implements Runnable {
             logASplit(logger, "load widgets");
 
             verifyNotStopped();
-            mResults.bindWidgets();
+            mLauncherBinder.bindWidgets();
             logASplit(logger, "bindWidgets");
             verifyNotStopped();
 
