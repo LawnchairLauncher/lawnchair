@@ -668,7 +668,8 @@ public class QuickstepLauncher extends Launcher {
     public void setResumed() {
         if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
             DesktopVisibilityController controller = mDesktopVisibilityController;
-            if (controller != null && controller.areFreeformTasksVisible()) {
+            if (controller != null && controller.areFreeformTasksVisible()
+                    && !controller.isGestureInProgress()) {
                 // Return early to skip setting activity to appear as resumed
                 // TODO(b/255649902): shouldn't be needed when we have a separate launcher state
                 //  for desktop that we can use to control other parts of launcher

@@ -36,12 +36,15 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.popup.QuickstepSystemShortcut;
 import com.android.launcher3.statehandlers.DepthController;
+import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.PendingSplitSelectInfo;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.LauncherActivityInterface;
+import com.android.quickstep.RotationTouchHelper;
 import com.android.quickstep.util.SplitSelectStateController;
+import com.android.systemui.shared.recents.model.Task;
 
 /**
  * {@link RecentsView} used in Launcher activity
@@ -204,5 +207,26 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
     @Override
     protected boolean canLaunchFullscreenTask() {
         return !mActivity.isInState(OVERVIEW_SPLIT_SELECT);
+    }
+
+    @Override
+    public void onGestureAnimationStart(Task[] runningTasks,
+            RotationTouchHelper rotationTouchHelper) {
+        super.onGestureAnimationStart(runningTasks, rotationTouchHelper);
+        DesktopVisibilityController desktopVisibilityController =
+                mActivity.getDesktopVisibilityController();
+        if (desktopVisibilityController != null) {
+            desktopVisibilityController.setGestureInProgress(true);
+        }
+    }
+
+    @Override
+    public void onGestureAnimationEnd() {
+        super.onGestureAnimationEnd();
+        DesktopVisibilityController desktopVisibilityController =
+                mActivity.getDesktopVisibilityController();
+        if (desktopVisibilityController != null) {
+            desktopVisibilityController.setGestureInProgress(false);
+        }
     }
 }
