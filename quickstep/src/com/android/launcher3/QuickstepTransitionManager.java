@@ -1672,7 +1672,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
 
         @Override
-        public void onCreateAnimation(int transit,
+        public void onAnimationStart(int transit,
                 RemoteAnimationTarget[] appTargets,
                 RemoteAnimationTarget[] wallpaperTargets,
                 RemoteAnimationTarget[] nonAppTargets,
@@ -1714,7 +1714,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
 
         @Override
-        public void onCreateAnimation(int transit,
+        public void onAnimationStart(int transit,
                 RemoteAnimationTarget[] appTargets,
                 RemoteAnimationTarget[] wallpaperTargets,
                 RemoteAnimationTarget[] nonAppTargets,
