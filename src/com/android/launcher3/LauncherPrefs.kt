@@ -9,12 +9,17 @@ object LauncherPrefs {
     fun getPrefs(context: Context): SharedPreferences {
         // Use application context for shared preferences, so that we use a single cached instance
         return context.applicationContext.getSharedPreferences(
-                LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+            LauncherFiles.SHARED_PREFERENCES_KEY,
+            Context.MODE_PRIVATE
+        )
     }
 
     @JvmStatic
     fun getDevicePrefs(context: Context): SharedPreferences {
         // Use application context for shared preferences, so that we use a single cached instance
         return context.applicationContext.getSharedPreferences(
-                LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE)
-    }}
+            LauncherFiles.DEVICE_PREFERENCES_KEY,
+            Context.MODE_PRIVATE
+        )
+    }
+}

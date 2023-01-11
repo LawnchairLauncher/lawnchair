@@ -26,17 +26,24 @@ import com.android.launcher3.R
 import com.android.launcher3.taskbar.TaskbarManager
 import com.android.launcher3.util.DimensionUtils
 
-class PhonePortraitNavLayoutter(resources: Resources, navBarContainer: LinearLayout,
-                                endContextualContainer: ViewGroup,
-                                startContextualContainer: ViewGroup) :
-        AbstractNavButtonLayoutter(resources, navBarContainer, endContextualContainer,
-                startContextualContainer) {
+class PhonePortraitNavLayoutter(
+    resources: Resources,
+    navBarContainer: LinearLayout,
+    endContextualContainer: ViewGroup,
+    startContextualContainer: ViewGroup
+) :
+    AbstractNavButtonLayoutter(
+        resources,
+        navBarContainer,
+        endContextualContainer,
+        startContextualContainer
+    ) {
 
     override fun layoutButtons(dp: DeviceProfile, isContextualButtonShowing: Boolean) {
         // TODO(b/230395757): Polish pending, this is just to make it usable
         val navContainerParams = navButtonContainer.layoutParams as FrameLayout.LayoutParams
-        val taskbarDimensions = DimensionUtils.getTaskbarPhoneDimensions(dp, resources,
-                TaskbarManager.isPhoneMode(dp))
+        val taskbarDimensions =
+            DimensionUtils.getTaskbarPhoneDimensions(dp, resources, TaskbarManager.isPhoneMode(dp))
         val endStartMargins = resources.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size)
         navContainerParams.width = taskbarDimensions.x
         navContainerParams.height = ViewGroup.LayoutParams.MATCH_PARENT
@@ -58,7 +65,7 @@ class PhonePortraitNavLayoutter(resources: Resources, navBarContainer: LinearLay
 
         // Add the spaces in between the nav buttons
         val spaceInBetween =
-                resources.getDimensionPixelSize(R.dimen.taskbar_button_space_inbetween_phone)
+            resources.getDimensionPixelSize(R.dimen.taskbar_button_space_inbetween_phone)
         for (i in 0 until navButtonContainer.childCount) {
             val navButton = navButtonContainer.getChildAt(i)
             val buttonLayoutParams = navButton.layoutParams as LinearLayout.LayoutParams
