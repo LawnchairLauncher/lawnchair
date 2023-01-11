@@ -27,15 +27,13 @@ import com.android.systemui.shared.recents.model.ThumbnailData
 import com.android.systemui.shared.recents.utilities.PreviewPositionHelper
 import com.android.wm.shell.util.SplitBounds
 import com.google.common.truth.Truth.assertThat
+import kotlin.math.roundToInt
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
-import kotlin.math.roundToInt
 
-/**
- * Test for FullscreenDrawParams class.
- */
+/** Test for FullscreenDrawParams class. */
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class FullscreenDrawParamsTest : DeviceProfileBaseTest() {
@@ -61,15 +59,29 @@ class FullscreenDrawParamsTest : DeviceProfileBaseTest() {
         val currentRotation = 0
         val isRtl = false
 
-        mPreviewPositionHelper.updateThumbnailMatrix(previewRect, mThumbnailData, canvasWidth,
-                canvasHeight, dp.widthPx, dp.heightPx, dp.taskbarSize, dp.isTablet, currentRotation,
-                isRtl)
-        params.setProgress(/* fullscreenProgress= */ 1.0f, /* parentScale= */ 1.0f,
-                /* taskViewScale= */ 1.0f,  /* previewWidth= */ 0, dp, mPreviewPositionHelper)
+        mPreviewPositionHelper.updateThumbnailMatrix(
+            previewRect,
+            mThumbnailData,
+            canvasWidth,
+            canvasHeight,
+            dp.widthPx,
+            dp.heightPx,
+            dp.taskbarSize,
+            dp.isTablet,
+            currentRotation,
+            isRtl
+        )
+        params.setProgress(
+            /* fullscreenProgress= */ 1.0f,
+            /* parentScale= */ 1.0f,
+            /* taskViewScale= */ 1.0f,
+            /* previewWidth= */ 0,
+            dp,
+            mPreviewPositionHelper
+        )
 
         val expectedClippedInsets = RectF(0f, 0f, 0f, dp.taskbarSize * TASK_SCALE)
-        assertThat(params.mCurrentDrawnInsets)
-                .isEqualTo(expectedClippedInsets)
+        assertThat(params.mCurrentDrawnInsets).isEqualTo(expectedClippedInsets)
     }
 
     @Test
@@ -83,25 +95,42 @@ class FullscreenDrawParamsTest : DeviceProfileBaseTest() {
         val isRtl = false
         // portrait/vertical split apps
         val dividerSize = 10
-        val splitBounds = SplitBounds(
+        val splitBounds =
+            SplitBounds(
                 Rect(0, 0, dp.widthPx, (dp.heightPx - dividerSize) / 2),
                 Rect(0, (dp.heightPx + dividerSize) / 2, dp.widthPx, dp.heightPx),
-                0 /*lefTopTaskId*/, 0 /*rightBottomTaskId*/)
+                0 /*lefTopTaskId*/,
+                0 /*rightBottomTaskId*/
+            )
         mPreviewPositionHelper.setSplitBounds(splitBounds, STAGE_POSITION_BOTTOM_OR_RIGHT)
 
-        mPreviewPositionHelper.updateThumbnailMatrix(previewRect, mThumbnailData, canvasWidth,
-                canvasHeight, dp.widthPx, dp.heightPx, dp.taskbarSize, dp.isTablet, currentRotation,
-                isRtl)
-        params.setProgress(/* fullscreenProgress= */ 1.0f, /* parentScale= */ 1.0f,
-                /* taskViewScale= */ 1.0f,  /* previewWidth= */ 0, dp, mPreviewPositionHelper)
+        mPreviewPositionHelper.updateThumbnailMatrix(
+            previewRect,
+            mThumbnailData,
+            canvasWidth,
+            canvasHeight,
+            dp.widthPx,
+            dp.heightPx,
+            dp.taskbarSize,
+            dp.isTablet,
+            currentRotation,
+            isRtl
+        )
+        params.setProgress(
+            /* fullscreenProgress= */ 1.0f,
+            /* parentScale= */ 1.0f,
+            /* taskViewScale= */ 1.0f,
+            /* previewWidth= */ 0,
+            dp,
+            mPreviewPositionHelper
+        )
 
         // Probably unhelpful, but also unclear how to test otherwise ¯\_(ツ)_/¯
-        val fullscreenTaskHeight = dp.heightPx *
-                (1 - (splitBounds.topTaskPercent + splitBounds.dividerHeightPercent))
+        val fullscreenTaskHeight =
+            dp.heightPx * (1 - (splitBounds.topTaskPercent + splitBounds.dividerHeightPercent))
         val canvasScreenRatio = canvasHeight / fullscreenTaskHeight
         val expectedBottomHint = dp.taskbarSize * canvasScreenRatio
-        assertThat(params.mCurrentDrawnInsets.bottom)
-                .isWithin(1f).of(expectedBottomHint)
+        assertThat(params.mCurrentDrawnInsets.bottom).isWithin(1f).of(expectedBottomHint)
     }
 
     @Test
@@ -115,20 +144,37 @@ class FullscreenDrawParamsTest : DeviceProfileBaseTest() {
         val isRtl = false
         // portrait/vertical split apps
         val dividerSize = 10
-        val splitBounds = SplitBounds(
+        val splitBounds =
+            SplitBounds(
                 Rect(0, 0, dp.widthPx, (dp.heightPx - dividerSize) / 2),
                 Rect(0, (dp.heightPx + dividerSize) / 2, dp.widthPx, dp.heightPx),
-                0 /*lefTopTaskId*/, 0 /*rightBottomTaskId*/)
+                0 /*lefTopTaskId*/,
+                0 /*rightBottomTaskId*/
+            )
         mPreviewPositionHelper.setSplitBounds(splitBounds, STAGE_POSITION_TOP_OR_LEFT)
 
-        mPreviewPositionHelper.updateThumbnailMatrix(previewRect, mThumbnailData, canvasWidth,
-                canvasHeight, dp.widthPx, dp.heightPx, dp.taskbarSize, dp.isTablet, currentRotation,
-                isRtl)
-        params.setProgress(/* fullscreenProgress= */ 1.0f, /* parentScale= */ 1.0f,
-                /* taskViewScale= */ 1.0f,  /* previewWidth= */ 0, dp, mPreviewPositionHelper)
+        mPreviewPositionHelper.updateThumbnailMatrix(
+            previewRect,
+            mThumbnailData,
+            canvasWidth,
+            canvasHeight,
+            dp.widthPx,
+            dp.heightPx,
+            dp.taskbarSize,
+            dp.isTablet,
+            currentRotation,
+            isRtl
+        )
+        params.setProgress(
+            /* fullscreenProgress= */ 1.0f,
+            /* parentScale= */ 1.0f,
+            /* taskViewScale= */ 1.0f,
+            /* previewWidth= */ 0,
+            dp,
+            mPreviewPositionHelper
+        )
 
-        assertThat(params.mCurrentDrawnInsets.bottom)
-                .isWithin(1f).of((0f))
+        assertThat(params.mCurrentDrawnInsets.bottom).isWithin(1f).of((0f))
     }
 
     @Test
@@ -142,20 +188,37 @@ class FullscreenDrawParamsTest : DeviceProfileBaseTest() {
         val isRtl = false
         // portrait/vertical split apps
         val dividerSize = 10
-        val splitBounds = SplitBounds(
+        val splitBounds =
+            SplitBounds(
                 Rect(0, 0, (dp.widthPx - dividerSize) / 2, dp.heightPx),
                 Rect((dp.widthPx + dividerSize) / 2, 0, dp.widthPx, dp.heightPx),
-                0 /*lefTopTaskId*/, 0 /*rightBottomTaskId*/)
+                0 /*lefTopTaskId*/,
+                0 /*rightBottomTaskId*/
+            )
         mPreviewPositionHelper.setSplitBounds(splitBounds, STAGE_POSITION_BOTTOM_OR_RIGHT)
 
-        mPreviewPositionHelper.updateThumbnailMatrix(previewRect, mThumbnailData, canvasWidth,
-                canvasHeight, dp.widthPx, dp.heightPx, dp.taskbarSize, dp.isTablet, currentRotation,
-                isRtl)
-        params.setProgress(/* fullscreenProgress= */ 1.0f, /* parentScale= */ 1.0f,
-                /* taskViewScale= */ 1.0f,  /* previewWidth= */ 0, dp, mPreviewPositionHelper)
+        mPreviewPositionHelper.updateThumbnailMatrix(
+            previewRect,
+            mThumbnailData,
+            canvasWidth,
+            canvasHeight,
+            dp.widthPx,
+            dp.heightPx,
+            dp.taskbarSize,
+            dp.isTablet,
+            currentRotation,
+            isRtl
+        )
+        params.setProgress(
+            /* fullscreenProgress= */ 1.0f,
+            /* parentScale= */ 1.0f,
+            /* taskViewScale= */ 1.0f,
+            /* previewWidth= */ 0,
+            dp,
+            mPreviewPositionHelper
+        )
 
-        assertThat(params.mCurrentDrawnInsets.bottom)
-                .isWithin(1f).of((dp.taskbarSize * TASK_SCALE))
+        assertThat(params.mCurrentDrawnInsets.bottom).isWithin(1f).of((dp.taskbarSize * TASK_SCALE))
     }
 
     @Test
@@ -168,14 +231,28 @@ class FullscreenDrawParamsTest : DeviceProfileBaseTest() {
         val currentRotation = 0
         val isRtl = false
 
-        mPreviewPositionHelper.updateThumbnailMatrix(previewRect, mThumbnailData, canvasWidth,
-                canvasHeight, dp.widthPx, dp.heightPx, dp.taskbarSize, dp.isTablet, currentRotation,
-                isRtl)
-        params.setProgress(/* fullscreenProgress= */ 1.0f, /* parentScale= */ 1.0f,
-                /* taskViewScale= */ 1.0f,  /* previewWidth= */ 0, dp, mPreviewPositionHelper)
+        mPreviewPositionHelper.updateThumbnailMatrix(
+            previewRect,
+            mThumbnailData,
+            canvasWidth,
+            canvasHeight,
+            dp.widthPx,
+            dp.heightPx,
+            dp.taskbarSize,
+            dp.isTablet,
+            currentRotation,
+            isRtl
+        )
+        params.setProgress(
+            /* fullscreenProgress= */ 1.0f,
+            /* parentScale= */ 1.0f,
+            /* taskViewScale= */ 1.0f,
+            /* previewWidth= */ 0,
+            dp,
+            mPreviewPositionHelper
+        )
 
         val expectedClippedInsets = RectF(0f, 0f, 0f, 0f)
-        assertThat(params.mCurrentDrawnInsets)
-                .isEqualTo(expectedClippedInsets)
+        assertThat(params.mCurrentDrawnInsets).isEqualTo(expectedClippedInsets)
     }
 }

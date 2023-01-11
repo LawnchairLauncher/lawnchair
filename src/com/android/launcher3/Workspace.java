@@ -62,6 +62,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
@@ -161,7 +162,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     protected ShortcutAndWidgetContainer mDragSourceInternal;
 
-    @Thunk final IntSparseArrayMap<CellLayout> mWorkspaceScreens = new IntSparseArrayMap<>();
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    @Thunk public final IntSparseArrayMap<CellLayout> mWorkspaceScreens = new IntSparseArrayMap<>();
+
     @Thunk final IntArray mScreenOrder = new IntArray();
 
     @Thunk boolean mDeferRemoveExtraEmptyScreen = false;

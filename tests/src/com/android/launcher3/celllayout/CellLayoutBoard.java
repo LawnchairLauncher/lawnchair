@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class CellLayoutBoard {
@@ -140,6 +141,73 @@ public class CellLayoutBoard {
         return mWidgetsMap.get(c);
     }
 
+    private void removeWidgetFromBoard(WidgetRect widget) {
+        for (int xi = widget.mBounds.left; xi < widget.mBounds.right; xi++) {
+            for (int yi = widget.mBounds.top; yi < widget.mBounds.bottom; yi++) {
+                mWidget[xi][yi] = '-';
+            }
+        }
+    }
+
+    private void removeOverlappingItems(Rect rect) {
+        // Remove overlapping widgets and remove them from the board
+        mWidgetsRects = mWidgetsRects.stream().filter(widget -> {
+            if (rect.intersect(widget.mBounds)) {
+                removeWidgetFromBoard(widget);
+                return false;
+            }
+            return true;
+        }).collect(Collectors.toList());
+        // Remove overlapping icons and remove them from the board
+        mIconPoints = mIconPoints.stream().filter(iconPoint -> {
+            int x = iconPoint.coord.x;
+            int y = iconPoint.coord.y;
+            if (rect.contains(x, y)) {
+                mWidget[x][y] = '-';
+                return false;
+            }
+            return true;
+        }).collect(Collectors.toList());
+    }
+
+    private void removeOverlappingItems(Point p) {
+        // Remove overlapping widgets and remove them from the board
+        mWidgetsRects = mWidgetsRects.stream().filter(widget -> {
+            if (widget.mBounds.contains(p.x, p.y)) {
+                removeWidgetFromBoard(widget);
+                return false;
+            }
+            return true;
+        }).collect(Collectors.toList());
+        // Remove overlapping icons and remove them from the board
+        mIconPoints = mIconPoints.stream().filter(iconPoint -> {
+            int x = iconPoint.coord.x;
+            int y = iconPoint.coord.y;
+            if (p.x == x && p.y == y) {
+                mWidget[x][y] = '-';
+                return false;
+            }
+            return true;
+        }).collect(Collectors.toList());
+    }
+
+    public void addWidget(int x, int y, int spanX, int spanY, char type) {
+        Rect rect = new Rect(x, y + spanY - 1, x + spanX - 1, y);
+        removeOverlappingItems(rect);
+        WidgetRect widgetRect = new WidgetRect(type, rect);
+        mWidgetsRects.add(widgetRect);
+        for (int xi = rect.left; xi < rect.right + 1; xi++) {
+            for (int yi = rect.bottom; yi < rect.top + 1; yi++) {
+                mWidget[xi][yi] = type;
+            }
+        }
+    }
+
+    public void addIcon(int x, int y) {
+        removeOverlappingItems(new Point(x, y));
+        mWidget[x][y] = 'i';
+    }
+
     public static WidgetRect getWidgetRect(int x, int y, Set<Point> used, char[][] board) {
         char type = board[x][y];
         Queue<Point> search = new ArrayDeque<Point>();
@@ -226,5 +294,18 @@ public class CellLayoutBoard {
                 widgetRect -> board.mWidgetsMap.put(widgetRect.mType, widgetRect));
         board.mIconPoints = getIconPoints(board.mWidget);
         return board;
+    }
+
+    public String toString(int maxX, int maxY) {
+        StringBuilder s = new StringBuilder();
+        maxX = Math.min(maxX, mWidget.length);
+        maxY = Math.min(maxY, mWidget[0].length);
+        for (int y = 0; y < maxY; y++) {
+            for (int x = 0; x < maxX; x++) {
+                s.append(mWidget[x][y]);
+            }
+            s.append('\n');
+        }
+        return s.toString();
     }
 }
