@@ -76,11 +76,9 @@ import android.app.PendingIntent;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -198,6 +196,8 @@ import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SafeCloseable;
+import com.android.launcher3.util.ScreenOnTracker;
+import com.android.launcher3.util.ScreenOnTracker.ScreenOnListener;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
@@ -536,9 +536,8 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
         getRootView().dispatchInsets();
 
-        // Listen for broadcasts
-        registerReceiver(mScreenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
-
+        // Listen for screen turning off
+        ScreenOnTracker.INSTANCE.get(this).addListener(mScreenOnListener);
         getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
                 Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
 
@@ -1476,12 +1475,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         hostView.setOnFocusChangeListener(mFocusHandler);
     }
 
-    private final BroadcastReceiver mScreenOffReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            onScreenOff();
-        }
-    };
+    private final ScreenOnListener mScreenOnListener = this::onScreenOnChanged;
 
     private void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
         mWorkspace.updateNotificationDots(updatedDots);
@@ -1715,7 +1709,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         super.onDestroy();
         ACTIVITY_TRACKER.onActivityDestroyed(this);
 
-        unregisterReceiver(mScreenOffReceiver);
+        ScreenOnTracker.INSTANCE.get(this).removeListener(mScreenOnListener);
         mWorkspace.removeFolderListeners();
         PluginManagerWrapper.INSTANCE.get(this).removePluginListener(this);
 
@@ -2083,10 +2077,10 @@ public class Launcher extends StatefulActivity<LauncherState>
         mStateManager.getState().onBackCancelled(this);
     }
 
-    protected void onScreenOff() {
+    protected void onScreenOnChanged(boolean isOn) {
         // Reset AllApps to its initial state only if we are not in the middle of
         // processing a multi-step drop
-        if (mPendingRequestArgs == null) {
+        if (!isOn && mPendingRequestArgs == null) {
             if (!isInState(NORMAL)) {
                 onUiChangedWhileSleeping();
             }
