@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.settings;
 
+import static android.content.Intent.ACTION_PACKAGE_ADDED;
+import static android.content.Intent.ACTION_PACKAGE_CHANGED;
+import static android.content.Intent.ACTION_PACKAGE_REMOVED;
 import static android.content.pm.PackageManager.GET_RESOLVED_FILTER;
 import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
 import static android.view.View.GONE;
@@ -25,11 +28,9 @@ import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.PLU
 import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.pluginEnabledKey;
 
 import android.annotation.TargetApi;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -66,6 +67,7 @@ import com.android.launcher3.config.FlagTogglerPrefUi;
 import com.android.launcher3.secondarydisplay.SecondaryDisplayLauncher;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.OnboardingPrefs;
+import com.android.launcher3.util.SimpleBroadcastReceiver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,12 +85,8 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
     private static final String ACTION_PLUGIN_SETTINGS = "com.android.systemui.action.PLUGIN_SETTINGS";
     private static final String PLUGIN_PERMISSION = "com.android.systemui.permission.PLUGIN";
 
-    private final BroadcastReceiver mPluginReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            loadPluginPrefs();
-        }
-    };
+    private final SimpleBroadcastReceiver mPluginReceiver =
+            new SimpleBroadcastReceiver(i -> loadPluginPrefs());
 
     private PreferenceScreen mPreferenceScreen;
 
@@ -97,13 +95,9 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
-        filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
-        filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-        filter.addDataScheme("package");
-        getContext().registerReceiver(mPluginReceiver, filter);
-        getContext().registerReceiver(mPluginReceiver,
-                new IntentFilter(Intent.ACTION_USER_UNLOCKED));
+        mPluginReceiver.registerPkgActions(getContext(), null,
+                ACTION_PACKAGE_ADDED, ACTION_PACKAGE_CHANGED, ACTION_PACKAGE_REMOVED);
+        mPluginReceiver.register(getContext(), Intent.ACTION_USER_UNLOCKED);
 
         mPreferenceScreen = getPreferenceManager().createPreferenceScreen(getContext());
         setPreferenceScreen(mPreferenceScreen);
@@ -185,7 +179,7 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getContext().unregisterReceiver(mPluginReceiver);
+        mPluginReceiver.unregisterReceiverSafely(getContext());
     }
 
     private PreferenceCategory newCategory(String title) {
