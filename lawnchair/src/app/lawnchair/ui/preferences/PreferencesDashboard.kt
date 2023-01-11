@@ -9,7 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Build
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.Surface
+import androidx.compose.material3.MaterialTheme as Material3Theme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -28,6 +31,7 @@ import app.lawnchair.ui.preferences.components.ClickableIcon
 import app.lawnchair.ui.preferences.components.PreferenceCategory
 import app.lawnchair.ui.preferences.components.PreferenceDivider
 import app.lawnchair.ui.preferences.components.PreferenceLayout
+import app.lawnchair.ui.preferences.components.WarningPreference
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
@@ -40,6 +44,8 @@ fun PreferencesDashboard() {
         backArrowVisible = false,
         actions = { PreferencesOverflowMenu() }
     ) {
+        if (BuildConfig.DEBUG) PreferencesDebugWarning()
+
         PreferenceCategory(
             label = stringResource(R.string.general_label),
             description = stringResource(R.string.general_description),
@@ -156,6 +162,21 @@ fun PreferencesOverflowMenu() {
         }
     }
 }
+
+@Composable
+fun PreferencesDebugWarning() {
+    Surface(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        shape = MaterialTheme.shapes.large,
+        color = Material3Theme.colorScheme.errorContainer
+    ) {
+        WarningPreference(
+            // Don't move to strings.xml, no need to translate this warning
+            text = "Warning: You are currently using a development build. These builds WILL contain bugs, broken features, and unexpected crashes. Use at your own risk!"
+        )
+    }
+}
+
 
 fun openAppInfo(context: Context) {
     val launcherApps = context.getSystemService<LauncherApps>()

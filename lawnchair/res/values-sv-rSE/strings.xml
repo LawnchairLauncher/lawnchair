@@ -33,8 +33,8 @@
     <string name="folders_description">Rad- och kolumnantal</string>
     <string name="gestures_label">Gester</string>
     <string name="gestures_description">Tryckningar och svepningar</string>
-    <string name="quickstep_label">Nyligen</string>
-    <string name="quickstep_description">Rensa allt knapp, hörn rundning</string>
+    <string name="quickstep_label">Senaste</string>
+    <string name="quickstep_description">Rensa alla-knapp, hörnradie</string>
     <string name="about_label">Om</string>
     <!-- <string name="version" /> (unknown source) -->
     <!-- PreferencesOverflowMenu() in PreferencesDashboard -->
@@ -46,13 +46,13 @@
     <string name="font_picker_label">Anpassning av typsnitt</string>
     <string name="font_picker_description">En del text förblir oförändrad.</string>
     <string name="smartspace_calendar_label">Anpassning av Snabbkoll-kalender</string>
-    <string name="smartspace_calendar_description">Tillåt att visa datum i icke-gregorianska kalendersystem.</string>
-    <string name="workspace_increase_max_grid_size_label">Öka maximala rutnätet av startskärmen</string>
-    <string name="workspace_increase_max_grid_size_description">Öka maximala rutnätet storlek från 10 x 10 till 20 x 20 på startskärmen.</string>
+    <string name="smartspace_calendar_description">Tillåt att datum visas i icke-gregorianska kalendersystem.</string>
+    <string name="workspace_increase_max_grid_size_label">Utökad maxstorlek på hemskärmsrutnät</string>
+    <string name="workspace_increase_max_grid_size_description">Utöka den högsta tillåtna storleken på hemskärmsrutnätet från 10 x 10 till 20 x 20.</string>
     <string name="always_reload_icons_label">Ladda alltid om ikoner</string>
     <string name="always_reload_icons_description">Undvik att använda cachade ikoner från ikonpaket</string>
     <string name="transparent_background_icons">Transparenta tematiserade ikoner</string>
-    <string name="transparent_background_icons_description">Använd transparent bakgrund på temikoner</string>
+    <string name="transparent_background_icons_description">Använd transparent bakgrund på tematiserade ikoner</string>
     <string name="smartspace_mode_selection">Val av Snabbkoll-leverantör</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotation på hemskärmen</string>

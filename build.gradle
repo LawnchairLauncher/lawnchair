@@ -2,14 +2,14 @@ import com.android.build.gradle.BasePlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id 'com.android.application' version "7.3.1"
-    id 'com.android.library' version "7.3.1" apply false
+    id 'com.android.application' version "7.4.0-rc03"
+    id 'com.android.library' version "7.4.0-rc03" apply false
     id 'org.jetbrains.kotlin.android' version "1.7.20"
     id 'org.jetbrains.kotlin.plugin.parcelize' version "1.7.20"
     id 'org.jetbrains.kotlin.plugin.serialization' version "1.7.20"
     id "com.google.devtools.ksp" version "1.7.20-1.0.8"
     id 'com.google.protobuf' version "0.9.1"
-    id 'com.google.android.gms.oss-licenses-plugin' version "0.10.5"
+    id 'com.google.android.gms.oss-licenses-plugin' version "0.10.6"
     id 'dev.rikka.tools.refine' version "3.1.1"
 }
 
@@ -37,7 +37,7 @@ allprojects {
             implementation 'androidx.appcompat:appcompat:1.5.1'
 
             testImplementation 'junit:junit:4.13.2'
-            androidTestImplementation 'org.mockito:mockito-core:4.9.0'
+            androidTestImplementation 'org.mockito:mockito-core:4.11.0'
             androidTestImplementation 'com.google.dexmaker:dexmaker:1.2'
             androidTestImplementation 'com.google.dexmaker:dexmaker-mockito:1.2'
             androidTestImplementation 'com.android.support.test:runner:1.0.2'
@@ -57,12 +57,6 @@ allprojects {
         it.name.contains("transformClassesWithHiddenApiRefine")
     }.configureEach {
         notCompatibleWithConfigurationCache("https://github.com/RikkaApps/HiddenApiRefinePlugin/issues/9")
-    }
-
-    tasks.matching {
-        it.name.contains("OssLicensesTask")
-    }.configureEach {
-        notCompatibleWithConfigurationCache("https://github.com/google/play-services-plugins/issues/206")
     }
 
     ext.getFrameworkJar = { String name ->
@@ -107,11 +101,9 @@ allprojects {
 
 // todo remove ext block after migrating to version catalog
 ext {
-    compose_version = '1.3.1'
-    compose_compiler_version = "1.3.2"
     accompanist_version = '0.28.0'
     libsu_version = '5.0.3'
-    protocVersion = '3.21.10'
+    protocVersion = '3.21.12'
     room_version = '2.4.3'
     optoVersion = "1.0.18"
 }
@@ -147,8 +139,6 @@ android {
         manifestPlaceholders.quickstepMaxSdk = quickstepMaxSdk
         buildConfigField "int", "QUICKSTEP_MIN_SDK", quickstepMinSdk
         buildConfigField "int", "QUICKSTEP_MAX_SDK", quickstepMaxSdk
-
-        ksp { arg("room.schemaLocation", "$projectDir/schemas".toString()) }
     }
 
     applicationVariants.all { variant ->
@@ -162,7 +152,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = compose_compiler_version
+        kotlinCompilerExtensionVersion = "1.3.2"
     }
 
     final def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -357,15 +347,15 @@ dependencies {
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:3.1.1'
 
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling:$compose_version"
-    implementation "androidx.compose.ui:ui-text-google-fonts:$compose_version"
-    implementation "androidx.compose.foundation:foundation:$compose_version"
-    implementation "androidx.compose.material:material-icons-extended:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.material3:material3:1.1.0-alpha02"
-    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
-    implementation "androidx.compose.compiler:compiler:$compose_compiler_version"
+    implementation platform("androidx.compose:compose-bom:2022.12.00")
+    implementation "androidx.compose.ui:ui"
+    implementation "androidx.compose.ui:ui-tooling"
+    implementation "androidx.compose.ui:ui-text-google-fonts"
+    implementation "androidx.compose.foundation:foundation"
+    implementation "androidx.compose.material:material-icons-extended"
+    implementation "androidx.compose.material:material"
+    implementation "androidx.compose.runtime:runtime-livedata"
+    implementation 'androidx.compose.material3:material3:1.1.0-alpha03'
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation "androidx.activity:activity-compose:1.6.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
@@ -405,6 +395,11 @@ dependencies {
     implementation 'com.github.samanzamani:PersianDate:1.5.4'
 
     implementation 'com.airbnb.android:lottie:5.2.0'
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+    arg("room.incremental", "true")
 }
 
 protobuf {
