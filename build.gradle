@@ -147,7 +147,10 @@ android {
     }
 
     buildFeatures {
+        aidl true
+        buildConfig true
         compose true
+        resValues true
     }
 
     composeOptions {
