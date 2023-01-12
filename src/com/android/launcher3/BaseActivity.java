@@ -176,14 +176,7 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Utilities.ATLEAST_T) {
-            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
-                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
-                    () -> {
-                        onBackPressed();
-                        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onBackInvoked");
-                    });
-        }
+        registerBackDispatcher();
     }
 
     @Override
@@ -244,6 +237,17 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
             removeActivityFlags(ACTIVITY_STATE_WINDOW_FOCUSED);
         }
 
+    }
+
+    protected void registerBackDispatcher() {
+        if (Utilities.ATLEAST_T) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                    () -> {
+                        onBackPressed();
+                        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onBackInvoked");
+                    });
+        }
     }
 
     public boolean isStarted() {
