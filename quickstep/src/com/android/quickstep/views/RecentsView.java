@@ -3040,7 +3040,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     false /* fadeWithThumbnail */, true /* isStagedTask */);
         }
 
-        // TODO (b/257513449): Launch animation not fully complete. OK to remove flag once it is.
+        // Allow user to click staged app to launch into fullscreen
         if (ENABLE_LAUNCH_FROM_STAGED_APP.get()) {
             mFirstFloatingTaskView.setOnClickListener(this::animateToFullscreen);
         }
@@ -3111,7 +3111,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 false /* fadeWithThumbnail */,
                 true /* isStagedTask */);
 
-        pendingAnimation.addEndListener(success -> launchStagedTask());
+        pendingAnimation.addEndListener(animationSuccess ->
+                mSplitSelectStateController.launchSplitTasks(launchSuccess ->
+                        resetFromSplitSelectionState()));
 
         pendingAnimation.buildAnim().start();
     }
@@ -4816,16 +4818,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             mPendingAnimation = null;
         });
         return mPendingAnimation;
-    }
-
-    protected void launchStagedTask() {
-        if (mSplitHiddenTaskView != null) {
-            // Split staging was started from an existing running task (in Overview)
-            mSplitHiddenTaskView.launchTask(success -> resetFromSplitSelectionState());
-        } else {
-            // Split staging was started from a new intent (from app menu in Home/AllApps)
-            mActivity.startActivity(mSplitSelectSource.intent);
-        }
     }
 
     protected void onTaskLaunchAnimationEnd(boolean success) {
