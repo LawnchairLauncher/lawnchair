@@ -147,7 +147,8 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
 
         // Set callback
         PendingIntent callback = PendingIntent.getBroadcast(mTargetContext, 0,
-                new Intent(mCallbackAction), FLAG_ONE_SHOT | FLAG_MUTABLE);
+                new Intent(mCallbackAction).setPackage(mTargetContext.getPackageName()),
+                FLAG_ONE_SHOT | FLAG_MUTABLE);
         mTargetContext.sendBroadcast(RequestPinItemActivity.getCommandIntent(
                 RequestPinItemActivity.class, "setCallback").putExtra(
                 RequestPinItemActivity.EXTRA_PARAM + "0", callback));
