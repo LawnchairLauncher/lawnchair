@@ -3326,4 +3326,12 @@ public class Launcher extends StatefulActivity<LauncherState>
             return false; // Return false to continue iterating through all the items.
         });
     }
+
+    /**
+     * Returns {@code true} if there are visible tasks with windowing mode set to
+     * {@link android.app.WindowConfiguration#WINDOWING_MODE_FREEFORM}
+     */
+    public boolean areFreeformTasksVisible() {
+        return false; // Base launcher does not track freeform tasks
+    }
 }

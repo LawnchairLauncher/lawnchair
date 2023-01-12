@@ -1031,6 +1031,14 @@ public class QuickstepLauncher extends Launcher {
         mPendingSplitSelectInfo = null;
     }
 
+    @Override
+    public boolean areFreeformTasksVisible() {
+        if (mDesktopVisibilityController != null) {
+            return mDesktopVisibilityController.areFreeformTasksVisible();
+        }
+        return false;
+    }
+
     private static final class LauncherTaskViewController extends
             TaskViewTouchController<Launcher> {
 

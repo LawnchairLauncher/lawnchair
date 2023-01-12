@@ -28,6 +28,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.RecentsView;
 
 /**
@@ -91,6 +92,12 @@ public class BackgroundAppState extends OverviewState {
 
     @Override
     protected float getDepthUnchecked(Context context) {
+        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
+            if (Launcher.getLauncher(context).areFreeformTasksVisible()) {
+                // Don't blur the background while freeform tasks are visible
+                return 0;
+            }
+        }
         return 1;
     }
 
