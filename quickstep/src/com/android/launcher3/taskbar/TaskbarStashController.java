@@ -364,7 +364,12 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * Returns the height that taskbar will be touchable.
      */
     public int getTouchableHeight() {
-        return mIsStashed ? mStashedHeight : mUnstashedHeight;
+        int bottomMargin = 0;
+        if (DisplayController.isTransientTaskbar(mActivity)) {
+            bottomMargin = mActivity.getResources().getDimensionPixelSize(
+                    R.dimen.transient_taskbar_margin);
+        }
+        return mIsStashed ? mStashedHeight : (mUnstashedHeight + bottomMargin);
     }
 
     /**
