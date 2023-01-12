@@ -28,6 +28,8 @@ import android.animation.AnimatorSet;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.annotation.FloatRange;
+
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
@@ -192,6 +194,21 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
             if (wasInAnimation) {
                 onStateTransitionEnd(mState);
             }
+        }
+    }
+
+    /** Handles backProgress in predictive back gesture by passing it to state handlers. */
+    public void onBackProgressed(
+            STATE_TYPE toState, @FloatRange(from = 0.0, to = 1.0) float backProgress) {
+        for (StateHandler handler : getStateHandlers()) {
+            handler.onBackProgressed(toState, backProgress);
+        }
+    }
+
+    /** Handles back cancelled event in predictive back gesture by passing it to state handlers. */
+    public void onBackCancelled(STATE_TYPE toState) {
+        for (StateHandler handler : getStateHandlers()) {
+            handler.onBackCancelled(toState);
         }
     }
 
@@ -586,6 +603,13 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
          */
         void setStateWithAnimation(
                 STATE_TYPE toState, StateAnimationConfig config, PendingAnimation animation);
+
+        /** Handles backProgress in predictive back gesture for target state. */
+        default void onBackProgressed(
+                STATE_TYPE toState, @FloatRange(from = 0.0, to = 1.0) float backProgress) {};
+
+        /** Handles back cancelled event in predictive back gesture for target state.  */
+        default void onBackCancelled(STATE_TYPE toState) {};
     }
 
     public interface StateListener<STATE_TYPE> {

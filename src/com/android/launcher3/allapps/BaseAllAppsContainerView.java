@@ -808,7 +808,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
     }
 
     @Override
-    public void drawOnScrim(Canvas canvas) {
+    public void drawOnScrimWithScale(Canvas canvas, float scale) {
         boolean isTablet = mActivityContext.getDeviceProfile().isTablet;
 
         // Draw full background panel for tablets.
@@ -833,7 +833,9 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         if (mHeaderPaint.getColor() == mScrimColor || mHeaderPaint.getColor() == 0) {
             return;
         }
-        int bottom = getHeaderBottom() + getVisibleContainerView().getPaddingTop();
+        final float offset = (getVisibleContainerView().getHeight() * (1 - scale) / 2);
+        final float bottom =
+                scale * (getHeaderBottom() + getVisibleContainerView().getPaddingTop()) + offset;
         FloatingHeaderView headerView = getFloatingHeaderView();
         if (isTablet) {
             // Start adding header protection if search bar or tabs will attach to the top.

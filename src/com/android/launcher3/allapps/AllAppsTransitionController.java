@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
@@ -33,11 +34,15 @@ import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.animation.Interpolator;
 
+import androidx.annotation.FloatRange;
+
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimatorListeners;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
@@ -61,6 +66,8 @@ public class AllAppsTransitionController
         implements StateHandler<LauncherState>, OnDeviceProfileChangeListener {
     // This constant should match the second derivative of the animator interpolator.
     public static final float INTERP_COEFF = 1.7f;
+    private static final float SWIPE_ALL_APPS_TO_HOME_MIN_SCALE = 0.9f;
+    private static final int REVERT_SWIPE_ALL_APPS_TO_HOME_ANIMATION_DURATION_MS = 200;
 
     public static final FloatProperty<AllAppsTransitionController> ALL_APPS_PROGRESS =
             new FloatProperty<AllAppsTransitionController>("allAppsProgress") {
@@ -139,6 +146,7 @@ public class AllAppsTransitionController
     private ActivityAllAppsContainerView<Launcher> mAppsView;
 
     private final Launcher mLauncher;
+    private final AnimatedFloat mAllAppScale = new AnimatedFloat(this::onScaleProgressChanged);
     private boolean mIsVerticalLayout;
 
     // Whether this class should take care of closing the keyboard.
@@ -232,6 +240,52 @@ public class AllAppsTransitionController
         onProgressAnimationEnd();
     }
 
+    @Override
+    public void onBackProgressed(
+            LauncherState toState, @FloatRange(from = 0.0, to = 1.0) float backProgress) {
+        if (!mLauncher.isInState(ALL_APPS) || !NORMAL.equals(toState)) {
+            return;
+        }
+
+        float deceleratedProgress =
+                Interpolators.PREDICTIVE_BACK_DECELERATED_EASE.getInterpolation(backProgress);
+        float scaleProgress = SWIPE_ALL_APPS_TO_HOME_MIN_SCALE
+                + (1 - SWIPE_ALL_APPS_TO_HOME_MIN_SCALE) * (1 - deceleratedProgress);
+
+        mAllAppScale.updateValue(scaleProgress);
+    }
+
+    @Override
+    public void onBackCancelled(LauncherState toState) {
+        if (!mLauncher.isInState(ALL_APPS) || !NORMAL.equals(toState)) {
+            return;
+        }
+
+        // TODO: once ag/20649618 is picked into tm-qpr, we don't need to animate back on cancel
+        // swipe because framework will do that for us in {@link #onBackProgressed}.
+        animateAllAppsToNoScale();
+    }
+
+    private void onScaleProgressChanged() {
+        final float scaleProgress = mAllAppScale.value;
+        SCALE_PROPERTY.set(mLauncher.getAppsView(), scaleProgress);
+        mLauncher.getScrimView().setScrimHeaderScale(scaleProgress);
+
+        AllAppsRecyclerView rv = mLauncher.getAppsView().getActiveRecyclerView();
+        if (rv != null && rv.getScrollbar() != null) {
+            rv.getScrollbar().setVisibility(scaleProgress < 1f ? View.INVISIBLE : View.VISIBLE);
+        }
+
+        // TODO(b/264906511): We need to disable view clipping on all apps' parent views so
+        //  that the extra roll of app icons are displayed.
+    }
+
+    private void animateAllAppsToNoScale() {
+        mAllAppScale.animateToValue(1f)
+                .setDuration(REVERT_SWIPE_ALL_APPS_TO_HOME_ANIMATION_DURATION_MS)
+                .start();
+    }
+
     /**
      * Creates an animation which updates the vertical transition progress and updates all the
      * dependent UI using various animation events
@@ -258,6 +312,8 @@ public class AllAppsTransitionController
                 if (config.userControlled && success && mShouldControlKeyboard) {
                     mLauncher.getAppsView().getSearchUiManager().getEditText().hideKeyboard();
                 }
+
+                mAllAppScale.updateValue(1f);
             });
         }
 
