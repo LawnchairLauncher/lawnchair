@@ -544,8 +544,8 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                 transaction.remove(dragSurface);
                 SurfaceSyncGroup syncGroup = new SurfaceSyncGroup("TaskBarController");
                 syncGroup.addSyncCompleteCallback(mActivity.getMainExecutor(), transaction::close);
-                syncGroup.addToSync(viewRoot);
-                syncGroup.addTransactionToSync(transaction);
+                syncGroup.add(viewRoot, null /* runnable */);
+                syncGroup.addTransaction(transaction);
                 syncGroup.markSyncReady();
                 mReturnAnimator = null;
             }
