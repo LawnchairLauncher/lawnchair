@@ -126,6 +126,7 @@ final def quickstepMinSdk = "32"
 final def quickstepMaxSdk = "32"
 
 android {
+    namespace "com.android.launcher3"
     defaultConfig {
         versionCode 12_01_00_05
         versionName "${versionDisplayName}"
