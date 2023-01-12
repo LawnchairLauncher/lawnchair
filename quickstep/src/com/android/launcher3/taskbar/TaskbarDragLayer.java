@@ -116,6 +116,22 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     }
 
     @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (mControllerCallbacks != null) {
+            mControllerCallbacks.tryStashBasedOnMotionEvent(ev);
+        }
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (mControllerCallbacks != null) {
+            mControllerCallbacks.tryStashBasedOnMotionEvent(ev);
+        }
+        return super.onTouchEvent(ev);
+    }
+
+    @Override
     public void onViewRemoved(View child) {
         super.onViewRemoved(child);
         if (mControllerCallbacks != null) {
@@ -147,6 +163,23 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
      */
     protected void setTaskbarBackgroundOffset(float offset) {
         mTaskbarBackgroundOffset = offset;
+        invalidate();
+    }
+
+    /**
+     * Sets the roundness of the round corner above Taskbar.
+     * @param cornerRoundness 0 has no round corner, 1 has complete round corner.
+     */
+    protected void setCornerRoundness(float cornerRoundness) {
+        mBackgroundRenderer.setCornerRoundness(cornerRoundness);
+        invalidate();
+    }
+
+    /*
+     * Sets the translation of the background during the swipe up gesture.
+     */
+    protected void setBackgroundTranslationYForSwipe(float translationY) {
+        mBackgroundRenderer.setTranslationYForSwipe(translationY);
         invalidate();
     }
 

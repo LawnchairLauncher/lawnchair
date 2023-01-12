@@ -349,7 +349,7 @@ public class LoaderTask implements Runnable {
         final WidgetManagerHelper widgetHelper = new WidgetManagerHelper(context);
 
         boolean clearDb = false;
-        if (!GridSizeMigrationTaskV2.migrateGridIfNeeded(context)) {
+        if (!GridSizeMigrationUtil.migrateGridIfNeeded(context)) {
             // Migration failed. Clear workspace.
             clearDb = true;
         }

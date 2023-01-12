@@ -244,40 +244,36 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      * Returns if clear all button is visible.
      */
     public boolean isClearAllVisible() {
-        return mLauncher.hasLauncherObject(mLauncher.getOverviewObjectSelector("clear_all"));
+        return verifyActiveContainer().hasObject(
+                mLauncher.getOverviewObjectSelector("clear_all"));
     }
 
     protected boolean isActionsViewVisible() {
+        if (!hasTasks() || isClearAllVisible()) {
+            return false;
+        }
         OverviewTask task = mLauncher.isTablet() ? getFocusedTaskForTablet() : getCurrentTask();
         if (task == null) {
             return false;
         }
+        // In tablets, if focused task is not in center, overview actions aren't visible.
+        if (mLauncher.isTablet()
+                && Math.abs(task.getExactCenterX() - mLauncher.getExactScreenCenterX()) >= 1) {
+            return false;
+        }
+        // Overview actions aren't visible for split screen tasks.
         return !task.isTaskSplit();
     }
 
     private void verifyActionsViewVisibility() {
-        if (!hasTasks() || !isActionsViewVisible()) {
-            return;
-        }
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to assert overview actions view visibility")) {
-            if (mLauncher.isTablet() && !isOverviewSnappedToFocusedTaskForTablet()) {
-                mLauncher.waitUntilOverviewObjectGone("action_buttons");
-            } else {
+            if (isActionsViewVisible()) {
                 mLauncher.waitForOverviewObject("action_buttons");
+            } else {
+                mLauncher.waitUntilOverviewObjectGone("action_buttons");
             }
         }
-    }
-
-    /**
-     * Returns if focused task is currently snapped task in tablet grid overview.
-     */
-    private boolean isOverviewSnappedToFocusedTaskForTablet() {
-        OverviewTask focusedTask = getFocusedTaskForTablet();
-        if (focusedTask == null) {
-            return false;
-        }
-        return Math.abs(focusedTask.getExactCenterX() - mLauncher.getExactScreenCenterX()) < 1;
     }
 
     /**

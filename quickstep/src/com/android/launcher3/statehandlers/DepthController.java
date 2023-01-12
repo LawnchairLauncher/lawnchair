@@ -19,11 +19,11 @@ package com.android.launcher3.statehandlers;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_DEPTH;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_DEPTH_CONTROLLER;
+import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.util.FloatProperty;
 import android.view.CrossWindowBlurListeners;
 import android.view.View;
 import android.view.ViewRootImpl;
@@ -32,7 +32,6 @@ import android.view.ViewTreeObserver;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
@@ -47,42 +46,11 @@ import java.util.function.Consumer;
 public class DepthController extends BaseDepthController implements StateHandler<LauncherState>,
         BaseActivity.MultiWindowModeChangedListener {
 
-    /**
-     * A property that updates the background blur within a given range of values (ie. even if the
-     * animator goes beyond 0..1, the interpolated value will still be bounded).
-     */
-    public static class ClampedDepthProperty extends FloatProperty<DepthController> {
-        private final float mMinValue;
-        private final float mMaxValue;
-
-        public ClampedDepthProperty(float minValue, float maxValue) {
-            super("depthClamped");
-            mMinValue = minValue;
-            mMaxValue = maxValue;
-        }
-
-        @Override
-        public void setValue(DepthController depthController, float depth) {
-            depthController.setDepth(Utilities.boundToRange(depth, mMinValue, mMaxValue));
-        }
-
-        @Override
-        public Float get(DepthController depthController) {
-            return depthController.mDepth;
-        }
-    }
-
     private final ViewTreeObserver.OnDrawListener mOnDrawListener = this::onLauncherDraw;
 
     private final Consumer<Boolean> mCrossWindowBlurListener = this::setCrossWindowBlursEnabled;
 
     private final Runnable mOpaquenessListener = this::applyDepthAndBlur;
-
-    /**
-     * If we're launching and app and should not be blurring the screen for performance reasons.
-     */
-    private boolean mBlurDisabledForAppLaunch;
-
 
     // Workaround for animating the depth when multiwindow mode changes.
     private boolean mIgnoreStateChangesDuringMultiWindowAnimation = false;
@@ -145,12 +113,8 @@ public class DepthController extends BaseDepthController implements StateHandler
             return;
         }
 
-        float toDepth = toState.getDepth(mLauncher);
-        if (Float.compare(mDepth, toDepth) != 0) {
-            setDepth(toDepth);
-        } else if (toState == LauncherState.OVERVIEW) {
-            applyDepthAndBlur();
-        } else if (toState == LauncherState.BACKGROUND_APP) {
+        stateDepth.setValue(toState.getDepth(mLauncher));
+        if (toState == LauncherState.BACKGROUND_APP) {
             mLauncher.getDragLayer().getViewTreeObserver().addOnDrawListener(mOnDrawListener);
         }
     }
@@ -164,10 +128,8 @@ public class DepthController extends BaseDepthController implements StateHandler
         }
 
         float toDepth = toState.getDepth(mLauncher);
-        if (Float.compare(mDepth, toDepth) != 0) {
-            animation.setFloat(this, STATE_DEPTH, toDepth,
-                    config.getInterpolator(ANIM_DEPTH, LINEAR));
-        }
+        animation.setFloat(stateDepth, MULTI_PROPERTY_VALUE, toDepth,
+                config.getInterpolator(ANIM_DEPTH, LINEAR));
     }
 
     @Override
@@ -180,7 +142,7 @@ public class DepthController extends BaseDepthController implements StateHandler
     public void onMultiWindowModeChanged(boolean isInMultiWindowMode) {
         mIgnoreStateChangesDuringMultiWindowAnimation = true;
 
-        ObjectAnimator mwAnimation = ObjectAnimator.ofFloat(this, STATE_DEPTH,
+        ObjectAnimator mwAnimation = ObjectAnimator.ofFloat(stateDepth, MULTI_PROPERTY_VALUE,
                 mLauncher.getStateManager().getState().getDepth(mLauncher, isInMultiWindowMode))
                 .setDuration(300);
         mwAnimation.addListener(new AnimatorListenerAdapter() {
@@ -198,9 +160,9 @@ public class DepthController extends BaseDepthController implements StateHandler
         writer.println(prefix + "\tmMaxBlurRadius=" + mMaxBlurRadius);
         writer.println(prefix + "\tmCrossWindowBlursEnabled=" + mCrossWindowBlursEnabled);
         writer.println(prefix + "\tmSurface=" + mSurface);
-        writer.println(prefix + "\tmDepth=" + mDepth);
+        writer.println(prefix + "\tmStateDepth=" + stateDepth.getValue());
+        writer.println(prefix + "\tmWidgetDepth=" + widgetDepth.getValue());
         writer.println(prefix + "\tmCurrentBlur=" + mCurrentBlur);
-        writer.println(prefix + "\tmBlurDisabledForAppLaunch=" + mBlurDisabledForAppLaunch);
         writer.println(prefix + "\tmInEarlyWakeUp=" + mInEarlyWakeUp);
         writer.println(prefix + "\tmIgnoreStateChangesDuringMultiWindowAnimation="
                 + mIgnoreStateChangesDuringMultiWindowAnimation);

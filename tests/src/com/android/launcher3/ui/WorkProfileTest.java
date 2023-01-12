@@ -38,6 +38,7 @@ import com.android.launcher3.tapl.LauncherInstrumentation;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Objects;
@@ -118,6 +119,7 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @Ignore("b/243855320")
     public void toggleWorks() {
         assumeTrue(mWorkProfileSetupSuccessful);
         waitForWorkTabSetup();

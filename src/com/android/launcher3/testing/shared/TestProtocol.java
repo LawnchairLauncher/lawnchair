@@ -84,6 +84,10 @@ public final class TestProtocol {
     public static final String REQUEST_UNFREEZE_APP_LIST = "unfreeze-app-list";
     public static final String REQUEST_ENABLE_MANUAL_TASKBAR_STASHING = "enable-taskbar-stashing";
     public static final String REQUEST_DISABLE_MANUAL_TASKBAR_STASHING = "disable-taskbar-stashing";
+    public static final String REQUEST_ENABLE_BLOCK_TIMEOUT = "enable-block-timeout";
+    public static final String REQUEST_DISABLE_BLOCK_TIMEOUT = "disable-block-timeout";
+    public static final String REQUEST_ENABLE_TRANSIENT_TASKBAR = "enable-transient-taskbar";
+    public static final String REQUEST_DISABLE_TRANSIENT_TASKBAR = "disable-transient-taskbar";
     public static final String REQUEST_UNSTASH_TASKBAR_IF_STASHED = "unstash-taskbar-if-stashed";
     public static final String REQUEST_STASHED_TASKBAR_HEIGHT = "stashed-taskbar-height";
     public static final String REQUEST_RECREATE_TASKBAR = "recreate-taskbar";
@@ -102,6 +106,7 @@ public final class TestProtocol {
     public static final String REQUEST_STOP_EVENT_LOGGING = "stop-event-logging";
     public static final String REQUEST_CLEAR_DATA = "clear-data";
     public static final String REQUEST_USE_TEST_WORKSPACE_LAYOUT = "use-test-workspace-layout";
+    public static final String REQUEST_USE_TEST2_WORKSPACE_LAYOUT = "use-test2-workspace-layout";
     public static final String REQUEST_USE_DEFAULT_WORKSPACE_LAYOUT =
             "use-default-workspace-layout";
     public static final String REQUEST_HOTSEAT_ICON_NAMES = "get-hotseat-icon-names";
@@ -112,6 +117,9 @@ public final class TestProtocol {
             "get-activities-created-count";
     public static final String REQUEST_GET_ACTIVITIES = "get-activities";
     public static final String REQUEST_HAS_TIS = "has-touch-interaction-service";
+    public static final String REQUEST_TASKBAR_ALL_APPS_TOP_PADDING =
+            "taskbar-all-apps-top-padding";
+    public static final String REQUEST_ALL_APPS_TOP_PADDING = "all-apps-top-padding";
 
     public static final String REQUEST_WORKSPACE_CELL_LAYOUT_SIZE = "workspace-cell-layout-size";
     public static final String REQUEST_WORKSPACE_CELL_CENTER = "workspace-cell-center";
@@ -124,6 +132,8 @@ public final class TestProtocol {
             "get-grid-task-size-rect-for-tablet";
     public static final String REQUEST_GET_OVERVIEW_PAGE_SPACING = "get-overview-page-spacing";
     public static final String REQUEST_ENABLE_ROTATION = "enable_rotation";
+    public static final String REQUEST_ENABLE_SUGGESTION = "enable-suggestion";
+    public static final String REQUEST_MODEL_QUEUE_CLEARED = "model-queue-cleared";
 
     public static boolean sDebugTracing = false;
     public static final String REQUEST_ENABLE_DEBUG_TRACING = "enable-debug-tracing";
@@ -138,7 +148,7 @@ public final class TestProtocol {
     public static final String NULL_INT_SET = "b/200572078";
     public static final String MISSING_PROMISE_ICON = "b/202985412";
     public static final String TASKBAR_IN_APP_STATE = "b/227657604";
-    public static final String INCORRECT_INFO_UPDATED = "b/239465630";
+    public static final String NPE_TRANSIENT_TASKBAR = "b/257549303";
 
     public static final String REQUEST_EMULATE_DISPLAY = "emulate-display";
     public static final String REQUEST_STOP_EMULATE_DISPLAY = "stop-emulate-display";

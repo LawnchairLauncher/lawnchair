@@ -55,7 +55,8 @@ public class RecentsState implements BaseState<RecentsState> {
     public static final RecentsState HOME = new RecentsState(3, 0);
     public static final RecentsState BG_LAUNCHER = new LauncherState(4, 0);
     public static final RecentsState OVERVIEW_SPLIT_SELECT = new RecentsState(5,
-            FLAG_SHOW_AS_GRID | FLAG_SCRIM | FLAG_OVERVIEW_UI | FLAG_CLOSE_POPUPS);
+            FLAG_SHOW_AS_GRID | FLAG_SCRIM | FLAG_OVERVIEW_UI | FLAG_CLOSE_POPUPS
+                    | FLAG_DISABLE_RESTORE);
 
     public final int ordinal;
     private final int mFlags;

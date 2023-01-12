@@ -30,12 +30,11 @@
     <LinearLayout
         android:id="@+id/folder_footer"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/folder_label_height"
+        android:layout_height="@dimen/folder_footer_height_default"
         android:clipChildren="false"
         android:orientation="horizontal"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:alpha="0">
+        android:paddingLeft="@dimen/folder_footer_horiz_padding"
+        android:paddingRight="@dimen/folder_footer_horiz_padding">
 
         <com.android.launcher3.folder.FolderNameEditText
             android:id="@+id/folder_name"

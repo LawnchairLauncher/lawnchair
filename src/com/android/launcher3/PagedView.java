@@ -699,7 +699,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     /** Returns true iff this PagedView's scroll amounts are initialized to each page index. */
-    protected boolean pageScrollsInitialized() {
+    protected boolean isPageScrollsInitialized() {
         return mPageScrolls != null && mPageScrolls.length == getChildCount();
     }
 
@@ -708,12 +708,12 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
      */
     public void runOnPageScrollsInitialized(Runnable callback) {
         mOnPageScrollsInitializedCallbacks.add(callback);
-        if (pageScrollsInitialized()) {
+        if (isPageScrollsInitialized()) {
             onPageScrollsInitialized();
         }
     }
 
-    private void onPageScrollsInitialized() {
+    protected void onPageScrollsInitialized() {
         for (Runnable callback : mOnPageScrollsInitializedCallbacks) {
             callback.run();
         }
@@ -727,7 +727,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         final int childCount = getChildCount();
         int[] pageScrolls = mPageScrolls;
         boolean pageScrollChanged = false;
-        if (!pageScrollsInitialized()) {
+        if (!isPageScrollsInitialized()) {
             pageScrolls = new int[childCount];
             pageScrollChanged = true;
         }
@@ -772,6 +772,13 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
 
         if (mScroller.isFinished() && pageScrollChanged) {
+            // TODO(b/246283207): Remove logging once root cause of flake detected.
+            if (Utilities.IS_RUNNING_IN_TEST_HARNESS && !(this instanceof Workspace)) {
+                Log.d("b/246283207", this.getClass().getSimpleName() + "#onLayout() -> "
+                        + "if(mScroller.isFinished() && pageScrollChanged) -> getNextPage(): "
+                        + getNextPage() + ", getScrollForPage(getNextPage()): "
+                        + getScrollForPage(getNextPage()));
+            }
             setCurrentPage(getNextPage());
         }
         onPageScrollsInitialized();
@@ -1192,7 +1199,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     public int getScrollForPage(int index) {
-        if (!pageScrollsInitialized() || index >= mPageScrolls.length || index < 0) {
+        if (!isPageScrollsInitialized() || index >= mPageScrolls.length || index < 0) {
             return 0;
         } else {
             return mPageScrolls[index];
@@ -1202,7 +1209,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     // While layout transitions are occurring, a child's position may stray from its baseline
     // position. This method returns the magnitude of this stray at any given time.
     public int getLayoutTransitionOffsetForPage(int index) {
-        if (!pageScrollsInitialized() || index >= mPageScrolls.length || index < 0) {
+        if (!isPageScrollsInitialized() || index >= mPageScrolls.length || index < 0) {
             return 0;
         } else {
             View child = getChildAt(index);

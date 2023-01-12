@@ -20,6 +20,8 @@ import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION;
 
 import static com.android.launcher3.Utilities.dpiFromPx;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_TRANSIENT_TASKBAR;
+import static com.android.launcher3.config.FeatureFlags.FORCE_PERSISTENT_TASKBAR;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
 import static com.android.launcher3.util.window.WindowManagerProxy.MIN_TABLET_WIDTH;
@@ -41,6 +43,7 @@ import android.view.Display;
 
 import androidx.annotation.AnyThread;
 import androidx.annotation.UiThread;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.window.CachedDisplayInfo;
@@ -62,6 +65,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
 
     private static final String TAG = "DisplayController";
     private static final boolean DEBUG = false;
+    private static boolean sTransientTaskbarStatusForTests;
 
     public static final MainThreadInitializedObject<DisplayController> INSTANCE =
             new MainThreadInitializedObject<>(DisplayController::new);
@@ -121,6 +125,37 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
      */
     public static NavigationMode getNavigationMode(Context context) {
         return INSTANCE.get(context).getInfo().navigationMode;
+    }
+
+    /**
+     * Returns whether taskbar is transient.
+     */
+    public static boolean isTransientTaskbar(Context context) {
+        return INSTANCE.get(context).isTransientTaskbar();
+    }
+
+    /**
+     * Returns whether taskbar is transient.
+     */
+    public boolean isTransientTaskbar() {
+        // TODO(b/258604917): When running in test harness, use !sTransientTaskbarStatusForTests
+        //  once tests are updated to expect new persistent behavior such as not allowing long press
+        //  to stash.
+        if (!Utilities.IS_RUNNING_IN_TEST_HARNESS && FORCE_PERSISTENT_TASKBAR.get()) {
+            return false;
+        }
+        return getInfo().navigationMode == NavigationMode.NO_BUTTON
+                && (Utilities.IS_RUNNING_IN_TEST_HARNESS
+                    ? sTransientTaskbarStatusForTests
+                    : ENABLE_TRANSIENT_TASKBAR.get());
+    }
+
+    /**
+     * Enables transient taskbar status for tests.
+     */
+    @VisibleForTesting
+    public static void enableTransientTaskbarForTests(boolean enable) {
+        sTransientTaskbarStatusForTests = enable;
     }
 
     @Override

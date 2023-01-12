@@ -43,6 +43,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PropertyResetListener;
+import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
 
@@ -167,9 +168,11 @@ public class FolderAnimationManager {
         final int paddingOffsetY = (int) (mContent.getPaddingTop() * initialScale);
 
         int initialX = folderIconPos.left + mFolder.getPaddingLeft()
-                + mPreviewBackground.getOffsetX() - paddingOffsetX - previewItemOffsetX;
+                + Math.round(mPreviewBackground.getOffsetX() * scaleRelativeToDragLayer)
+                - paddingOffsetX - previewItemOffsetX;
         int initialY = folderIconPos.top + mFolder.getPaddingTop()
-                + mPreviewBackground.getOffsetY() - paddingOffsetY;
+                + Math.round(mPreviewBackground.getOffsetY() * scaleRelativeToDragLayer)
+                - paddingOffsetY;
         final float xDistance = initialX - lp.x;
         final float yDistance = initialY - lp.y;
 
@@ -215,6 +218,7 @@ public class FolderAnimationManager {
         final int footerStartDelay;
         if (isLargeFolder()) {
             if (mIsOpening) {
+                mFolder.mFooter.setAlpha(0);
                 footerAlphaDuration = LARGE_FOLDER_FOOTER_DURATION;
                 footerStartDelay = mDuration - footerAlphaDuration;
             } else {
@@ -232,9 +236,9 @@ public class FolderAnimationManager {
                 mFolder, startRect, endRect, finalRadius, !mIsOpening));
 
         // Create reveal animator for the folder content (capture the top 4 icons 2x2)
-        int width = mDeviceProfile.folderCellLayoutBorderSpacePx.x
+        int width = mDeviceProfile.folderCellLayoutBorderSpacePx
                 + mDeviceProfile.folderCellWidthPx * 2;
-        int height = mDeviceProfile.folderCellLayoutBorderSpacePx.y
+        int height = mDeviceProfile.folderCellLayoutBorderSpacePx
                 + mDeviceProfile.folderCellHeightPx * 2;
         int page = mIsOpening ? mContent.getCurrentPage() : mContent.getDestinationPage();
         int left = mContent.getPaddingLeft() + page * lp.width;
@@ -311,7 +315,7 @@ public class FolderAnimationManager {
         addPreviewItemAnimators(a, initialScale / scaleRelativeToDragLayer,
                 // Background can have a scaled radius in drag and drop mode, so we need to add the
                 // difference to keep the preview items centered.
-                previewItemOffsetX + radiusDiff, radiusDiff);
+                (int) (previewItemOffsetX / scaleRelativeToDragLayer) + radiusDiff, radiusDiff);
         return a;
     }
 
@@ -341,7 +345,7 @@ public class FolderAnimationManager {
         ShortcutAndWidgetContainer cwc = mContent.getPageAt(0).getShortcutsAndWidgets();
         for (int i = 0; i < numItemsInPreview; ++i) {
             final BubbleTextView btv = itemsInPreview.get(i);
-            CellLayout.LayoutParams btvLp = (CellLayout.LayoutParams) btv.getLayoutParams();
+            CellLayoutLayoutParams btvLp = (CellLayoutLayoutParams) btv.getLayoutParams();
 
             // Calculate the final values in the LayoutParams.
             btvLp.isLockedToGrid = true;

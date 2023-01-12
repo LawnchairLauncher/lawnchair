@@ -59,6 +59,7 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Maghanap ng mga app"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Naglo-load ng mga app…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Walang nahanap na app na tumutugma sa \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"Maghanap ng higit pang mga app"</string>
     <string name="label_application" msgid="8531721983832654978">"App"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"Lahat ng app"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Mga Notification"</string>
@@ -113,7 +114,6 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Upang ipakita ang Mga Notification Dot, i-on ang mga notification ng app para sa <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Baguhin ang mga setting"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Ipakita ang mga notification dot"</string>
-    <string name="developer_options_title" msgid="700788437593726194">"Mga Opsyon ng Developer"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Magdagdag ng mga icon ng app sa home screen"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Para sa mga bagong app"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Hindi kilala"</string>
@@ -124,10 +124,14 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Ini-install ang <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> kumpleto"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Dina-download na ang <xliff:g id="NAME">%1$s</xliff:g>, tapos na ang <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Hinihintay nang mag-install ang <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="dialog_update_title" msgid="114234265740994042">"Kinakailangang i-update ang app"</string>
-    <string name="dialog_update_message" msgid="4176784553982226114">"Hindi updated ang app para sa icon na ito. Puwede kang manual na mag-update para ma-enable ulit ang shortcut na ito, o alisin ang icon."</string>
-    <string name="dialog_update" msgid="2178028071796141234">"I-update"</string>
-    <string name="dialog_remove" msgid="6510806469849709407">"Alisin"</string>
+    <!-- no translation found for dialog_update_title (114234265740994042) -->
+    <skip />
+    <!-- no translation found for dialog_update_message (4176784553982226114) -->
+    <skip />
+    <!-- no translation found for dialog_update (2178028071796141234) -->
+    <skip />
+    <!-- no translation found for dialog_remove (6510806469849709407) -->
+    <skip />
     <string name="widgets_list" msgid="796804551140113767">"Listahan ng mga widget"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Nakasara ang listahan ng mga widget"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Idagdag sa home screen"</string>
@@ -136,7 +140,7 @@
     <string name="item_removed" msgid="851119963877842327">"Naalis na ang item"</string>
     <string name="undo" msgid="4151576204245173321">"I-undo"</string>
     <string name="action_move" msgid="4339390619886385032">"Ilipat ang item"</string>
-    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"Pumunta sa row <xliff:g id="NUMBER_0">%1$s</xliff:g> column <xliff:g id="NUMBER_1">%2$s</xliff:g> sa <xliff:g id="STRING">%3$s</xliff:g>"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"Ilipat sa row <xliff:g id="NUMBER_0">%1$s</xliff:g> column <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="move_to_position" msgid="6750008980455459790">"Ilipat sa posisyon <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"Ilipat sa posisyon <xliff:g id="NUMBER">%1$s</xliff:g> sa mga paborito"</string>
     <string name="item_moved" msgid="4606538322571412879">"Nalipat ang item"</string>
@@ -167,10 +171,8 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Naka-off ang mga app para sa trabaho. Ang mga app mo para sa trabaho ay hindi makakapagpadala sa iyo ng mga notification, makakagamit ng baterya mo, o makaka-access ng iyong lokasyon"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"May badge at nakikita ng iyong IT admin ang mga app para sa trabaho"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"I-pause ang mga app para sa trabaho"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"I-off ang mga app para sa trabaho"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"I-on ang mga app para sa trabaho"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filter"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"Maghanap sa iyong telepono"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Maghanap sa iyong tablet"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Hindi nagawa: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

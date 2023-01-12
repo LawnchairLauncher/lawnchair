@@ -23,6 +23,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ADD_EXTERNAL_ITEM_PLACED_AUTOMATICALLY;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ADD_EXTERNAL_ITEM_START;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+import static com.android.launcher3.widget.WidgetSections.NO_CATEGORY;
 
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
@@ -53,6 +54,8 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
@@ -61,16 +64,17 @@ import com.android.launcher3.R;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.pm.PinRequestHelper;
 import com.android.launcher3.util.PackageManagerHelper;
-import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.views.AbstractSlideInView;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.AddItemWidgetsBottomSheet;
-import com.android.launcher3.widget.LauncherAppWidgetHost;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.widget.LauncherWidgetHolder;
 import com.android.launcher3.widget.NavigableAppWidgetHostView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
@@ -78,6 +82,7 @@ import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.WidgetCellPreview;
 import com.android.launcher3.widget.WidgetImageView;
 import com.android.launcher3.widget.WidgetManagerHelper;
+import com.android.launcher3.widget.WidgetSections;
 
 import java.util.function.Supplier;
 
@@ -105,7 +110,8 @@ public class AddItemActivity extends BaseActivity
     private WidgetCell mWidgetCell;
 
     // Widget request specific options.
-    private LauncherAppWidgetHost mAppWidgetHost;
+    @Nullable
+    private LauncherWidgetHolder mAppWidgetHolder = null;
     private WidgetManagerHelper mAppWidgetManager;
     private int mPendingBindWidgetId;
     private Bundle mWidgetOptions;
@@ -139,13 +145,16 @@ public class AddItemActivity extends BaseActivity
         mAccessibilityManager =
                 getApplicationContext().getSystemService(AccessibilityManager.class);
 
-        PackageUserKey targetApp = null;
+        final PackageItemInfo targetApp;
         switch (mRequest.getRequestType()) {
             case PinItemRequest.REQUEST_TYPE_SHORTCUT:
                 targetApp = setupShortcut();
                 break;
             case PinItemRequest.REQUEST_TYPE_APPWIDGET:
                 targetApp = setupWidget();
+                break;
+            default:
+                targetApp = null;
                 break;
         }
         if (targetApp == null) {
@@ -154,7 +163,7 @@ public class AddItemActivity extends BaseActivity
             return;
         }
         ApplicationInfo info = new PackageManagerHelper(this)
-                .getApplicationInfo(targetApp.mPackageName, targetApp.mUser, 0);
+                .getApplicationInfo(targetApp.packageName, targetApp.user, 0);
         if (info == null) {
             finish();
             return;
@@ -174,7 +183,10 @@ public class AddItemActivity extends BaseActivity
         // Set the label synchronously instead of via IconCache as this is the first thing
         // user sees
         TextView widgetAppName = findViewById(R.id.widget_appName);
-        widgetAppName.setText(info.loadLabel(getPackageManager()));
+        WidgetSections.WidgetSection section = targetApp.widgetCategory == NO_CATEGORY ? null
+                : WidgetSections.getWidgetSections(this).get(targetApp.widgetCategory);
+        widgetAppName.setText(section == null ? info.loadLabel(getPackageManager())
+                : getString(section.mSectionTitle));
 
         mSlideInView = findViewById(R.id.add_item_bottom_sheet);
         mSlideInView.addOnCloseListener(this);
@@ -263,19 +275,18 @@ public class AddItemActivity extends BaseActivity
         }
     }
 
-    private PackageUserKey setupShortcut() {
+    private PackageItemInfo setupShortcut() {
         PinShortcutRequestActivityInfo shortcutInfo =
                 new PinShortcutRequestActivityInfo(mRequest, this);
         mWidgetCell.getWidgetView().setTag(new PendingAddShortcutInfo(shortcutInfo));
         applyWidgetItemAsync(
                 () -> new WidgetItem(shortcutInfo, mApp.getIconCache(), getPackageManager()));
-        return new PackageUserKey(
-                mRequest.getShortcutInfo().getPackage(),
+        return new PackageItemInfo(mRequest.getShortcutInfo().getPackage(),
                 mRequest.getShortcutInfo().getUserHandle());
     }
 
-    private PackageUserKey setupWidget() {
-        LauncherAppWidgetProviderInfo widgetInfo = LauncherAppWidgetProviderInfo
+    private PackageItemInfo setupWidget() {
+        final LauncherAppWidgetProviderInfo widgetInfo = LauncherAppWidgetProviderInfo
                 .fromProviderInfo(this, mRequest.getAppWidgetProviderInfo(this));
         if (widgetInfo.minSpanX > mIdp.numColumns || widgetInfo.minSpanY > mIdp.numRows) {
             // Cannot add widget
@@ -284,7 +295,7 @@ public class AddItemActivity extends BaseActivity
         mWidgetCell.setRemoteViewsPreview(PinItemDragListener.getPreview(mRequest));
 
         mAppWidgetManager = new WidgetManagerHelper(this);
-        mAppWidgetHost = new LauncherAppWidgetHost(this);
+        mAppWidgetHolder = LauncherWidgetHolder.newInstance(this);
 
         PendingAddWidgetInfo pendingInfo =
                 new PendingAddWidgetInfo(widgetInfo, CONTAINER_PIN_WIDGETS);
@@ -294,7 +305,8 @@ public class AddItemActivity extends BaseActivity
         mWidgetCell.getWidgetView().setTag(pendingInfo);
 
         applyWidgetItemAsync(() -> new WidgetItem(widgetInfo, mIdp, mApp.getIconCache()));
-        return new PackageUserKey(widgetInfo.provider.getPackageName(), widgetInfo.getUser());
+        return WidgetsModel.newPendingItemInfo(this, widgetInfo.getComponent(),
+                widgetInfo.getUser());
     }
 
     private void applyWidgetItemAsync(final Supplier<WidgetItem> itemProvider) {
@@ -338,7 +350,7 @@ public class AddItemActivity extends BaseActivity
             return;
         }
 
-        mPendingBindWidgetId = mAppWidgetHost.allocateAppWidgetId();
+        mPendingBindWidgetId = mAppWidgetHolder.allocateAppWidgetId();
         AppWidgetProviderInfo widgetProviderInfo = mRequest.getAppWidgetProviderInfo(this);
         boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
                 mPendingBindWidgetId, widgetProviderInfo, mWidgetOptions);
@@ -349,7 +361,7 @@ public class AddItemActivity extends BaseActivity
         }
 
         // request bind widget
-        mAppWidgetHost.startBindFlow(this, mPendingBindWidgetId,
+        mAppWidgetHolder.startBindFlow(this, mPendingBindWidgetId,
                 mRequest.getAppWidgetProviderInfo(this), REQUEST_BIND_APPWIDGET);
     }
 
@@ -360,6 +372,15 @@ public class AddItemActivity extends BaseActivity
         mRequest.accept(mWidgetOptions);
         logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_PLACED_AUTOMATICALLY);
         mSlideInView.close(/* animate= */ true);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mAppWidgetHolder != null) {
+            // Necessary to destroy the holder to free up possible activity context
+            mAppWidgetHolder.destroy();
+        }
     }
 
     @Override
@@ -378,7 +399,7 @@ public class AddItemActivity extends BaseActivity
                 acceptWidget(widgetId);
             } else {
                 // Simply wait it out.
-                mAppWidgetHost.deleteAppWidgetId(widgetId);
+                mAppWidgetHolder.deleteAppWidgetId(widgetId);
                 mPendingBindWidgetId = -1;
             }
             return;

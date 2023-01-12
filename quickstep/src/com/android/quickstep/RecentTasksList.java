@@ -17,10 +17,14 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.quickstep.views.DesktopTaskView.DESKTOP_MODE_SUPPORTED;
+import static com.android.wm.shell.util.GroupedRecentTaskInfo.TYPE_FREEFORM;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.KeyguardManager;
+import android.app.TaskInfo;
+import android.content.ComponentName;
 import android.os.Build;
 import android.os.Process;
 import android.os.RemoteException;
@@ -30,6 +34,7 @@ import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.SplitConfigurationOptions;
+import com.android.quickstep.util.DesktopTask;
 import com.android.quickstep.util.GroupTask;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.wm.shell.recents.IRecentTasksListener;
@@ -40,6 +45,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Manages the recent task list from the system, caching it as necessary.
@@ -124,14 +131,18 @@ public class RecentTasksList {
      * @return The change id of the current task list
      */
     public synchronized int getTasks(boolean loadKeysOnly,
-            Consumer<ArrayList<GroupTask>> callback) {
+            Consumer<ArrayList<GroupTask>> callback, Predicate<GroupTask> filter) {
         final int requestLoadId = mChangeId;
         if (mResultsUi.isValidForRequest(requestLoadId, loadKeysOnly)) {
             // The list is up to date, send the callback on the next frame,
             // so that requestID can be returned first.
             if (callback != null) {
                 // Copy synchronously as the changeId might change by next frame
-                ArrayList<GroupTask> result = copyOf(mResultsUi);
+                // and filter GroupTasks
+                ArrayList<GroupTask> result = mResultsUi.stream().filter(filter)
+                        .map(GroupTask::copy)
+                        .collect(Collectors.toCollection(ArrayList<GroupTask>::new));
+
                 mMainThreadExecutor.post(() -> {
                     callback.accept(result);
                 });
@@ -151,7 +162,11 @@ public class RecentTasksList {
                 mLoadingTasksInBackground = false;
                 mResultsUi = loadResult;
                 if (callback != null) {
-                    ArrayList<GroupTask> result = copyOf(mResultsUi);
+                    // filter the tasks if needed before passing them into the callback
+                    ArrayList<GroupTask> result = mResultsUi.stream().filter(filter)
+                            .map(GroupTask::copy)
+                            .collect(Collectors.toCollection(ArrayList<GroupTask>::new));
+
                     callback.accept(result);
                 }
             });
@@ -253,8 +268,9 @@ public class RecentTasksList {
         };
 
         TaskLoadResult allTasks = new TaskLoadResult(requestId, loadKeysOnly, rawTasks.size());
+
         for (GroupedRecentTaskInfo rawTask : rawTasks) {
-            if (rawTask.getType() == GroupedRecentTaskInfo.TYPE_FREEFORM) {
+            if (DESKTOP_MODE_SUPPORTED && rawTask.getType() == TYPE_FREEFORM) {
                 GroupTask desktopTask = createDesktopTask(rawTask);
                 allTasks.add(desktopTask);
                 continue;
@@ -284,14 +300,18 @@ public class RecentTasksList {
         return allTasks;
     }
 
-    private GroupTask createDesktopTask(GroupedRecentTaskInfo taskInfo) {
-        // TODO(b/244348395): create a subclass of GroupTask for desktop tile
-        // We need a single task information as the primary task. Use the first task
-        Task.TaskKey key = new Task.TaskKey(taskInfo.getTaskInfo1());
-        Task task = new Task(key);
-        task.desktopTile = true;
-        task.topActivity = key.sourceComponent;
-        return new GroupTask(task, null, null);
+    private DesktopTask createDesktopTask(GroupedRecentTaskInfo recentTaskInfo) {
+        ArrayList<Task> tasks = new ArrayList<>(recentTaskInfo.getTaskInfoList().size());
+        for (ActivityManager.RecentTaskInfo taskInfo : recentTaskInfo.getTaskInfoList()) {
+            Task.TaskKey key = new Task.TaskKey(taskInfo);
+            Task task = Task.from(key, taskInfo, false);
+            task.setLastSnapshotData(taskInfo);
+            task.positionInParent = taskInfo.positionInParent;
+            task.appBounds = taskInfo.configuration.windowConfiguration.getAppBounds();
+            // TODO(b/244348395): tasks should be sorted from oldest to most recently used
+            tasks.add(task);
+        }
+        return new DesktopTask(tasks);
     }
 
     private SplitConfigurationOptions.SplitBounds convertSplitBounds(
@@ -306,7 +326,7 @@ public class RecentTasksList {
     private ArrayList<GroupTask> copyOf(ArrayList<GroupTask> tasks) {
         ArrayList<GroupTask> newTasks = new ArrayList<>();
         for (int i = 0; i < tasks.size(); i++) {
-            newTasks.add(new GroupTask(tasks.get(i)));
+            newTasks.add(tasks.get(i).copy());
         }
         return newTasks;
     }
@@ -316,8 +336,14 @@ public class RecentTasksList {
         writer.println(prefix + "  mChangeId=" + mChangeId);
         writer.println(prefix + "  mResultsUi=[id=" + mResultsUi.mRequestId + ", tasks=");
         for (GroupTask task : mResultsUi) {
-            writer.println(prefix + "    t1=" + task.task1.key.id
-                    + " t2=" + (task.hasMultipleTasks() ? task.task2.key.id : "-1"));
+            Task task1 = task.task1;
+            Task task2 = task.task2;
+            ComponentName cn1 = task1.getTopComponent();
+            ComponentName cn2 = task2 != null ? task2.getTopComponent() : null;
+            writer.println(prefix + "    t1: (id=" + task1.key.id
+                    + "; package=" + (cn1 != null ? cn1.getPackageName() + ")" : "no package)")
+                    + " t2: (id=" + (task2 != null ? task2.key.id : "-1")
+                    + "; package=" + (cn2 != null ? cn2.getPackageName() + ")" : "no package)"));
         }
         writer.println(prefix + "  ]");
         int currentUserId = Process.myUserHandle().getIdentifier();
@@ -325,8 +351,14 @@ public class RecentTasksList {
                 mSysUiProxy.getRecentTasks(Integer.MAX_VALUE, currentUserId);
         writer.println(prefix + "  rawTasks=[");
         for (GroupedRecentTaskInfo task : rawTasks) {
-            writer.println(prefix + "    t1=" + task.getTaskInfo1().taskId
-                    + " t2=" + (task.getTaskInfo2() != null ? task.getTaskInfo2().taskId : "-1"));
+            TaskInfo taskInfo1 = task.getTaskInfo1();
+            TaskInfo taskInfo2 = task.getTaskInfo2();
+            ComponentName cn1 = taskInfo1.topActivity;
+            ComponentName cn2 = taskInfo2 != null ? taskInfo2.topActivity : null;
+            writer.println(prefix + "    t1: (id=" + taskInfo1.taskId
+                    + "; package=" + (cn1 != null ? cn1.getPackageName() + ")" : "no package)")
+                    + " t2: (id=" + (taskInfo2 != null ? taskInfo2.taskId : "-1")
+                    + "; package=" + (cn2 != null ? cn2.getPackageName() + ")" : "no package)"));
         }
         writer.println(prefix + "  ]");
     }

@@ -29,17 +29,23 @@ import android.widget.GridView;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.DropTarget;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
+import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * DragLayer for Secondary launcher
@@ -59,7 +65,8 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
 
     @Override
     public void recreateControllers() {
-        mControllers = new TouchController[] {new CloseAllAppsTouchController()};
+        mControllers = new TouchController[]{new CloseAllAppsTouchController(),
+                mActivity.getDragController()};
     }
 
     /**
@@ -72,7 +79,8 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
 
         mAppsView = findViewById(R.id.apps_view);
         mAppsView.setOnIconLongClickListener(this::onIconLongClicked);
-
+        mActivity.getSecondaryDisplayPredictions()
+                .setLongClickListener(mAppsView, this::onIconLongClicked);
         // Setup workspace
         mWorkspace = findViewById(R.id.workspace_grid);
         mPinnedAppsAdapter = new PinnedAppsAdapter(mActivity, mAppsView.getAppsStore(),
@@ -166,6 +174,10 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
         }
     }
 
+    public PinnedAppsAdapter getPinnedAppsAdapter() {
+        return mPinnedAppsAdapter;
+    }
+
     private boolean onIconLongClicked(View v) {
         if (!(v instanceof BubbleTextView)) {
             return false;
@@ -183,16 +195,58 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
         if (popupDataProvider == null) {
             return false;
         }
+
+        List<SystemShortcut> systemShortcuts = new ArrayList<>();
+
+        // Hide redundant pin shortcut for app drawer icons if drag-n-drop is enabled.
+        if (!FeatureFlags.SECONDARY_DRAG_N_DROP_TO_PIN.get() || !mActivity.isAppDrawerShown()) {
+            systemShortcuts.add(mPinnedAppsAdapter.getSystemShortcut(item, v));
+        }
+        systemShortcuts.add(APP_INFO.getShortcut(mActivity, item, v));
+
         final PopupContainerWithArrow container =
                 (PopupContainerWithArrow) mActivity.getLayoutInflater().inflate(
                         R.layout.popup_container, mActivity.getDragLayer(), false);
 
         container.populateAndShow((BubbleTextView) v,
                 popupDataProvider.getShortcutCountForItem(item),
-                Collections.emptyList(),
-                Arrays.asList(mPinnedAppsAdapter.getSystemShortcut(item, v),
-                        APP_INFO.getShortcut(mActivity, item, v)));
-        v.getParent().requestDisallowInterceptTouchEvent(true);
+                Collections.emptyList(), systemShortcuts);
+        container.requestFocus();
+
+        if (!FeatureFlags.SECONDARY_DRAG_N_DROP_TO_PIN.get() || !mActivity.isAppDrawerShown()) {
+            return true;
+        }
+
+        DragOptions options = new DragOptions();
+        DeviceProfile grid = mActivity.getDeviceProfile();
+        options.intrinsicIconScaleFactor = (float) grid.allAppsIconSizePx / grid.iconSizePx;
+        options.preDragCondition = container.createPreDragCondition(false);
+        if (options.preDragCondition == null) {
+            options.preDragCondition = new DragOptions.PreDragCondition() {
+                private DragView<SecondaryDisplayLauncher> mDragView;
+
+                @Override
+                public boolean shouldStartDrag(double distanceDragged) {
+                    return mDragView != null && mDragView.isAnimationFinished();
+                }
+
+                @Override
+                public void onPreDragStart(DropTarget.DragObject dragObject) {
+                    mDragView = dragObject.dragView;
+                    if (!shouldStartDrag(0)) {
+                        mDragView.setOnAnimationEndCallback(() -> {
+                            mActivity.beginDragShared(v, mActivity.getAppsView(), options);
+                        });
+                    }
+                }
+
+                @Override
+                public void onPreDragEnd(DropTarget.DragObject dragObject, boolean dragStarted) {
+                    mDragView = null;
+                }
+            };
+        }
+        mActivity.beginDragShared(v, mActivity.getAppsView(), options);
         return true;
     }
 }

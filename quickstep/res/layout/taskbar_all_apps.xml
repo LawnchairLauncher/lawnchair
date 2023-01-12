@@ -17,7 +17,8 @@
 <com.android.launcher3.taskbar.allapps.TaskbarAllAppsSlideInView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:accessibilityPaneTitle="@string/all_apps_label">
 
     <com.android.launcher3.taskbar.allapps.TaskbarAllAppsContainerView
         android:id="@+id/apps_view"
@@ -26,41 +27,5 @@
         android:clipChildren="true"
         android:clipToPadding="false"
         android:focusable="false"
-        android:saveEnabled="false"
-        android:theme="?attr/allAppsTheme">
-
-        <include
-            layout="@layout/all_apps_bottom_sheet_background"
-            android:visibility="gone" />
-
-        <include
-            layout="@layout/search_results_rv_layout"
-            android:visibility="gone" />
-
-        <include
-            layout="@layout/all_apps_rv_layout"
-            android:visibility="gone" />
-
-        <com.android.launcher3.allapps.FloatingHeaderView
-            android:id="@+id/all_apps_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/search_container_all_apps"
-            android:clipToPadding="false"
-            android:paddingTop="@dimen/all_apps_header_top_padding"
-            android:orientation="vertical">
-
-            <include layout="@layout/floating_header_content" />
-
-            <include layout="@layout/all_apps_personal_work_tabs" />
-        </com.android.launcher3.allapps.FloatingHeaderView>
-
-        <com.android.launcher3.taskbar.allapps.TaskbarAllAppsFallbackSearchContainer
-            android:id="@+id/search_container_all_apps"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone" />
-
-        <include layout="@layout/all_apps_fast_scroller" />
-    </com.android.launcher3.taskbar.allapps.TaskbarAllAppsContainerView>
+        android:saveEnabled="false" />
 </com.android.launcher3.taskbar.allapps.TaskbarAllAppsSlideInView>

@@ -32,13 +32,13 @@ import android.graphics.drawable.Drawable;
 import android.util.FloatProperty;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.ItemInfo;
 
 /** Coordinates the transition between Search and A-Z in All Apps. */
@@ -107,9 +107,7 @@ public class SearchTransitionController {
         }
 
         mSearchToAzAnimator = ObjectAnimator.ofFloat(this, SEARCH_TO_AZ_PROGRESS, targetProgress);
-        boolean inAllApps = Launcher.getLauncher(
-                mAllAppsContainerView.getContext()).getStateManager().isInStableState(
-                LauncherState.ALL_APPS);
+        boolean inAllApps = mAllAppsContainerView.isInAllApps();
         if (!inAllApps) {
             duration = 0;  // Don't want to animate when coming from QSB.
         }
@@ -126,6 +124,7 @@ public class SearchTransitionController {
         mSearchToAzAnimator.addListener(forSuccessCallback(onEndRunnable));
 
         mAllAppsContainerView.getFloatingHeaderView().setFloatingRowsCollapsed(true);
+        mAllAppsContainerView.getFloatingHeaderView().setVisibility(VISIBLE);
         mAllAppsContainerView.getAppsRecyclerViewContainer().setVisibility(VISIBLE);
         getSearchRecyclerView().setVisibility(VISIBLE);
         getSearchRecyclerView().setChildAttachedConsumer(this::onSearchChildAttached);
@@ -169,12 +168,13 @@ public class SearchTransitionController {
     /**
      * Updates the children views of SearchRecyclerView based on the current animation progress.
      *
-     * @return the total height of animating views (excluding any app icons).
+     * @return the total height of animating views (excluding at most one row of app icons).
      */
     private int updateSearchRecyclerViewProgress() {
         int numSearchResultsAnimated = 0;
         int totalHeight = 0;
         int appRowHeight = 0;
+        boolean appRowComplete = false;
         Integer top = null;
         SearchRecyclerView searchRecyclerView = getSearchRecyclerView();
 
@@ -188,67 +188,91 @@ public class SearchTransitionController {
                 top = searchResultView.getTop();
             }
 
-            if (searchResultView instanceof BubbleTextView
-                    && searchResultView.getTag() instanceof ItemInfo
-                    && ((ItemInfo) searchResultView.getTag()).itemType == ITEM_TYPE_APPLICATION) {
-                // The first app icon will set appRowHeight, which will also contribute to
-                // totalHeight. Additional app icons should remove the appRowHeight to remain in
-                // the same row as the first app.
-                searchResultView.setY(top + totalHeight - appRowHeight);
-                if (appRowHeight == 0) {
-                    appRowHeight = searchResultView.getHeight();
-                    totalHeight += appRowHeight;
+            int adapterPosition = searchRecyclerView.getChildAdapterPosition(searchResultView);
+            int spanIndex = getSpanIndex(searchRecyclerView, adapterPosition);
+            appRowComplete |= appRowHeight > 0 && spanIndex == 0;
+            // We don't animate the first (currently only) app row we see, as that is assumed to be
+            // predicted/prefix-matched apps.
+            boolean shouldAnimate = !isAppIcon(searchResultView) || appRowComplete;
+
+            float contentAlpha = 1f;
+            float backgroundAlpha = 1f;
+            if (shouldAnimate) {
+                if (spanIndex > 0) {
+                    // Animate this item with the previous item on the same row.
+                    numSearchResultsAnimated--;
                 }
-                // Don't scale/fade app row.
-                searchResultView.setScaleY(1);
-                searchResultView.setAlpha(1);
-                continue;
+
+                // Adjust content alpha based on start progress and stagger.
+                float startContentFadeProgress = Math.max(0,
+                        TOP_CONTENT_FADE_PROGRESS_START
+                                - CONTENT_STAGGER * numSearchResultsAnimated);
+                float endContentFadeProgress = Math.min(1,
+                        startContentFadeProgress + CONTENT_FADE_PROGRESS_DURATION);
+                contentAlpha = 1 - clampToProgress(mSearchToAzProgress,
+                        startContentFadeProgress, endContentFadeProgress);
+
+                // Adjust background (or decorator) alpha based on start progress and stagger.
+                float startBackgroundFadeProgress = Math.max(0,
+                        TOP_BACKGROUND_FADE_PROGRESS_START
+                                - CONTENT_STAGGER * numSearchResultsAnimated);
+                float endBackgroundFadeProgress = Math.min(1,
+                        startBackgroundFadeProgress + BACKGROUND_FADE_PROGRESS_DURATION);
+                backgroundAlpha = 1 - clampToProgress(mSearchToAzProgress,
+                        startBackgroundFadeProgress, endBackgroundFadeProgress);
+
+                numSearchResultsAnimated++;
             }
 
-            // Adjust content alpha based on start progress and stagger.
-            float startContentFadeProgress = Math.max(0,
-                    TOP_CONTENT_FADE_PROGRESS_START - CONTENT_STAGGER * numSearchResultsAnimated);
-            float endContentFadeProgress = Math.min(1,
-                    startContentFadeProgress + CONTENT_FADE_PROGRESS_DURATION);
-            searchResultView.setAlpha(1 - clampToProgress(mSearchToAzProgress,
-                    startContentFadeProgress, endContentFadeProgress));
+            Drawable background = searchResultView.getBackground();
+            if (background != null
+                    && searchResultView instanceof ViewGroup
+                    && FeatureFlags.ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES.get()) {
+                searchResultView.setAlpha(1f);
 
-            // Adjust background (or decorator) alpha based on start progress and stagger.
-            float startBackgroundFadeProgress = Math.max(0,
-                    TOP_BACKGROUND_FADE_PROGRESS_START
-                            - CONTENT_STAGGER * numSearchResultsAnimated);
-            float endBackgroundFadeProgress = Math.min(1,
-                    startBackgroundFadeProgress + BACKGROUND_FADE_PROGRESS_DURATION);
-            float backgroundAlpha = 1 - clampToProgress(mSearchToAzProgress,
-                    startBackgroundFadeProgress, endBackgroundFadeProgress);
-            int adapterPosition = searchRecyclerView.getChildAdapterPosition(searchResultView);
-            boolean decoratorFilled =
-                    adapterPosition != NO_POSITION
-                            && searchRecyclerView.getApps().getAdapterItems().get(adapterPosition)
+                // Apply content alpha to each child, since the view needs to be fully opaque for
+                // the background to show properly.
+                ViewGroup searchResultViewGroup = (ViewGroup) searchResultView;
+                for (int j = 0; j < searchResultViewGroup.getChildCount(); j++) {
+                    searchResultViewGroup.getChildAt(j).setAlpha(contentAlpha);
+                }
+
+                // Apply background alpha to the background drawable directly.
+                background.setAlpha((int) (255 * backgroundAlpha));
+            } else {
+                searchResultView.setAlpha(contentAlpha);
+
+                // Apply background alpha to decorator if possible.
+                if (adapterPosition != NO_POSITION) {
+                    searchRecyclerView.getApps().getAdapterItems().get(adapterPosition)
                             .setDecorationFillAlpha((int) (255 * backgroundAlpha));
-            if (!decoratorFilled) {
-                // Try to adjust background alpha instead (e.g. for Search Edu card).
-                Drawable background = searchResultView.getBackground();
+                }
+
+                // Apply background alpha to view's background (e.g. for Search Edu card).
                 if (background != null) {
                     background.setAlpha((int) (255 * backgroundAlpha));
                 }
             }
 
-            float scaleY = 1 - mSearchToAzProgress;
+            float scaleY = 1;
+            if (shouldAnimate) {
+                scaleY = 1 - mSearchToAzProgress;
+            }
             int scaledHeight = (int) (searchResultView.getHeight() * scaleY);
             searchResultView.setScaleY(scaleY);
 
             // For rows with multiple elements, only count the height once and translate elements to
             // the same y position.
             int y = top + totalHeight;
-            int spanIndex = getSpanIndex(searchRecyclerView, adapterPosition);
             if (spanIndex > 0) {
                 // Continuation of an existing row; move this item into the row.
                 y -= scaledHeight;
             } else {
-                // Start of a new row contributes to total height and animation stagger.
-                numSearchResultsAnimated++;
+                // Start of a new row contributes to total height.
                 totalHeight += scaledHeight;
+                if (!shouldAnimate) {
+                    appRowHeight = scaledHeight;
+                }
             }
             searchResultView.setY(y);
         }
@@ -274,6 +298,11 @@ public class SearchTransitionController {
         return adapter.getSpanIndex(adapterPosition);
     }
 
+    private boolean isAppIcon(View item) {
+        return item instanceof BubbleTextView && item.getTag() instanceof ItemInfo
+                && ((ItemInfo) item.getTag()).itemType == ITEM_TYPE_APPLICATION;
+    }
+
     /** Called just before a child is attached to the SearchRecyclerView. */
     private void onSearchChildAttached(View child) {
         // Avoid allocating hardware layers for alpha changes.
@@ -291,6 +320,13 @@ public class SearchTransitionController {
             if (adapterPosition != NO_POSITION) {
                 getSearchRecyclerView().getApps().getAdapterItems().get(adapterPosition)
                         .setDecorationFillAlpha(255);
+            }
+            if (child instanceof ViewGroup
+                    && FeatureFlags.ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES.get()) {
+                ViewGroup childGroup = (ViewGroup) child;
+                for (int i = 0; i < childGroup.getChildCount(); i++) {
+                    childGroup.getChildAt(i).setAlpha(1f);
+                }
             }
             if (child.getBackground() != null) {
                 child.getBackground().setAlpha(255);

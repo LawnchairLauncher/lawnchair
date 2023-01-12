@@ -21,7 +21,6 @@
     android:layout_centerHorizontal="true"
     android:layout_gravity="top|center_horizontal"
     android:background="@drawable/bg_all_apps_searchbox"
-    android:elevation="1dp"
     android:focusableInTouchMode="true"
     android:gravity="center"
     android:hint="@string/all_apps_search_bar_hint"

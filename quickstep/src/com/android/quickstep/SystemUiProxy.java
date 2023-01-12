@@ -44,6 +44,8 @@ import android.view.RemoteAnimationAdapter;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 import android.window.IOnBackInvokedCallback;
+import android.window.RemoteTransition;
+import android.window.TransitionFilter;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
@@ -53,13 +55,11 @@ import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
-import com.android.systemui.shared.system.RemoteTransitionCompat;
 import com.android.systemui.shared.system.smartspace.ILauncherUnlockAnimationController;
 import com.android.systemui.shared.system.smartspace.ISysuiUnlockAnimationController;
 import com.android.systemui.shared.system.smartspace.SmartspaceState;
 import com.android.wm.shell.back.IBackAnimation;
 import com.android.wm.shell.desktopmode.IDesktopMode;
-import com.android.wm.shell.floating.IFloatingTasks;
 import com.android.wm.shell.onehanded.IOneHanded;
 import com.android.wm.shell.pip.IPip;
 import com.android.wm.shell.pip.IPipAnimationListener;
@@ -74,6 +74,7 @@ import com.android.wm.shell.util.GroupedRecentTaskInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 
 /**
  * Holds the reference to SystemUI.
@@ -90,7 +91,6 @@ public class SystemUiProxy implements ISystemUiProxy {
     private IPip mPip;
     private ISysuiUnlockAnimationController mSysuiUnlockAnimationController;
     private ISplitScreen mSplitScreen;
-    private IFloatingTasks mFloatingTasks;
     private IOneHanded mOneHanded;
     private IShellTransitions mShellTransitions;
     private IStartingWindow mStartingWindow;
@@ -110,7 +110,8 @@ public class SystemUiProxy implements ISystemUiProxy {
     private IStartingWindowListener mStartingWindowListener;
     private ILauncherUnlockAnimationController mLauncherUnlockAnimationController;
     private IRecentTasksListener mRecentTasksListener;
-    private final ArrayList<RemoteTransitionCompat> mRemoteTransitions = new ArrayList<>();
+    private final LinkedHashMap<RemoteTransition, TransitionFilter> mRemoteTransitions =
+            new LinkedHashMap<>();
     private IOnBackInvokedCallback mBackToLauncherCallback;
 
     // Used to dedupe calls to SystemUI
@@ -168,7 +169,7 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     public void setProxy(ISystemUiProxy proxy, IPip pip, ISplitScreen splitScreen,
-            IFloatingTasks floatingTasks, IOneHanded oneHanded, IShellTransitions shellTransitions,
+            IOneHanded oneHanded, IShellTransitions shellTransitions,
             IStartingWindow startingWindow, IRecentTasks recentTasks,
             ISysuiUnlockAnimationController sysuiUnlockAnimationController,
             IBackAnimation backAnimation, IDesktopMode desktopMode) {
@@ -176,7 +177,6 @@ public class SystemUiProxy implements ISystemUiProxy {
         mSystemUiProxy = proxy;
         mPip = pip;
         mSplitScreen = splitScreen;
-        mFloatingTasks = floatingTasks;
         mOneHanded = oneHanded;
         mShellTransitions = shellTransitions;
         mStartingWindow = startingWindow;
@@ -187,7 +187,7 @@ public class SystemUiProxy implements ISystemUiProxy {
         linkToDeath();
         // re-attach the listeners once missing due to setProxy has not been initialized yet.
         if (mPipAnimationListener != null && mPip != null) {
-            setPinnedStackAnimationListener(mPipAnimationListener);
+            setPipAnimationListener(mPipAnimationListener);
         }
         if (mSplitScreenListener != null && mSplitScreen != null) {
             registerSplitScreenListener(mSplitScreenListener);
@@ -198,9 +198,7 @@ public class SystemUiProxy implements ISystemUiProxy {
         if (mSysuiUnlockAnimationController != null && mLauncherUnlockAnimationController != null) {
             setLauncherUnlockAnimationController(mLauncherUnlockAnimationController);
         }
-        for (int i = mRemoteTransitions.size() - 1; i >= 0; --i) {
-            registerRemoteTransition(mRemoteTransitions.get(i));
-        }
+        new LinkedHashMap<>(mRemoteTransitions).forEach(this::registerRemoteTransition);
         if (mRecentTasksListener != null && mRecentTasks != null) {
             registerRecentTasksListener(mRecentTasksListener);
         }
@@ -210,7 +208,7 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     public void clearProxy() {
-        setProxy(null, null, null, null, null, null, null, null, null, null, null);
+        setProxy(null, null, null, null, null, null, null, null, null, null);
     }
 
     // TODO(141886704): Find a way to remove this
@@ -347,31 +345,6 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     @Override
-    public void notifySwipeUpGestureStarted() {
-        if (mSystemUiProxy != null) {
-            try {
-                mSystemUiProxy.notifySwipeUpGestureStarted();
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call notifySwipeUpGestureStarted", e);
-            }
-        }
-    }
-
-    /**
-     * Notifies that swipe-to-home action is finished.
-     */
-    @Override
-    public void notifySwipeToHomeFinished() {
-        if (mSystemUiProxy != null) {
-            try {
-                mSystemUiProxy.notifySwipeToHomeFinished();
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call notifySwipeToHomeFinished", e);
-            }
-        }
-    }
-
-    @Override
     public void notifyPrioritizedRotation(int rotation) {
         if (mSystemUiProxy != null) {
             try {
@@ -475,12 +448,12 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     /**
-     * Sets listener to get pinned stack animation callbacks.
+     * Sets listener to get pip animation callbacks.
      */
-    public void setPinnedStackAnimationListener(IPipAnimationListener listener) {
+    public void setPipAnimationListener(IPipAnimationListener listener) {
         if (mPip != null) {
             try {
-                mPip.setPinnedStackAnimationListener(listener);
+                mPip.setPipAnimationListener(listener);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call setPinnedStackAnimationListener", e);
             }
@@ -522,6 +495,19 @@ public class SystemUiProxy implements ISystemUiProxy {
         }
     }
 
+    /**
+     * Sets the next pip animation type to be the alpha animation.
+     */
+    public void setPipAnimationTypeToAlpha() {
+        if (mPip != null) {
+            try {
+                mPip.setPipAnimationTypeToAlpha();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call setPipAnimationTypeToAlpha", e);
+            }
+        }
+    }
+
     //
     // Splitscreen
     //
@@ -549,15 +535,55 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     /** Start multiple tasks in split-screen simultaneously. */
-    public void startTasks(int mainTaskId, Bundle mainOptions, int sideTaskId, Bundle sideOptions,
-            @SplitConfigurationOptions.StagePosition int sidePosition, float splitRatio,
-            RemoteTransitionCompat remoteTransition, InstanceId instanceId) {
+    public void startTasks(int taskId1, Bundle options1, int taskId2, Bundle options2,
+            @SplitConfigurationOptions.StagePosition int splitPosition, float splitRatio,
+            RemoteTransition remoteTransition, InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
-                mSplitScreen.startTasks(mainTaskId, mainOptions, sideTaskId, sideOptions,
-                        sidePosition, splitRatio, remoteTransition.getTransition(), instanceId);
+                mSplitScreen.startTasks(taskId1, options1, taskId2, options2, splitPosition,
+                        splitRatio, remoteTransition, instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startTask");
+                Log.w(TAG, "Failed call startTasks");
+            }
+        }
+    }
+
+    public void startIntentAndTask(PendingIntent pendingIntent, Bundle options1, int taskId,
+            Bundle options2, @SplitConfigurationOptions.StagePosition int splitPosition,
+            float splitRatio, RemoteTransition remoteTransition, InstanceId instanceId) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSplitScreen.startIntentAndTask(pendingIntent, options1, taskId, options2,
+                        splitPosition, splitRatio, remoteTransition, instanceId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call startIntentAndTask");
+            }
+        }
+    }
+
+    public void startIntents(PendingIntent pendingIntent1, Bundle options1,
+            PendingIntent pendingIntent2, Bundle options2,
+            @SplitConfigurationOptions.StagePosition int splitPosition,
+            float splitRatio, RemoteTransition remoteTransition, InstanceId instanceId) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSplitScreen.startIntents(pendingIntent1, options1, pendingIntent2, options2,
+                        splitPosition, splitRatio, remoteTransition, instanceId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call startIntents");
+            }
+        }
+    }
+
+    public void startShortcutAndTask(ShortcutInfo shortcutInfo, Bundle options1, int taskId,
+            Bundle options2, @SplitConfigurationOptions.StagePosition int splitPosition,
+            float splitRatio, RemoteTransition remoteTransition, InstanceId instanceId) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSplitScreen.startShortcutAndTask(shortcutInfo, options1, taskId, options2,
+                        splitPosition, splitRatio, remoteTransition, instanceId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call startShortcutAndTask");
             }
         }
     }
@@ -565,13 +591,13 @@ public class SystemUiProxy implements ISystemUiProxy {
     /**
      * Start multiple tasks in split-screen simultaneously.
      */
-    public void startTasksWithLegacyTransition(int mainTaskId, Bundle mainOptions, int sideTaskId,
-            Bundle sideOptions, @SplitConfigurationOptions.StagePosition int sidePosition,
+    public void startTasksWithLegacyTransition(int taskId1, Bundle options1, int taskId2,
+            Bundle options2, @SplitConfigurationOptions.StagePosition int splitPosition,
             float splitRatio, RemoteAnimationAdapter adapter, InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
-                mSplitScreen.startTasksWithLegacyTransition(mainTaskId, mainOptions, sideTaskId,
-                        sideOptions, sidePosition, splitRatio, adapter, instanceId);
+                mSplitScreen.startTasksWithLegacyTransition(taskId1, options1, taskId2, options2,
+                        splitPosition, splitRatio, adapter, instanceId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startTasksWithLegacyTransition");
             }
@@ -579,30 +605,42 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     public void startIntentAndTaskWithLegacyTransition(PendingIntent pendingIntent,
-            Intent fillInIntent, int taskId, Bundle mainOptions, Bundle sideOptions,
-            @SplitConfigurationOptions.StagePosition int sidePosition, float splitRatio,
+            Bundle options1, int taskId, Bundle options2,
+            @SplitConfigurationOptions.StagePosition int splitPosition, float splitRatio,
             RemoteAnimationAdapter adapter, InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
-                mSplitScreen.startIntentAndTaskWithLegacyTransition(pendingIntent, fillInIntent,
-                        taskId, mainOptions, sideOptions, sidePosition, splitRatio, adapter,
-                        instanceId);
+                mSplitScreen.startIntentAndTaskWithLegacyTransition(pendingIntent, options1, taskId,
+                        options2, splitPosition, splitRatio, adapter, instanceId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startIntentAndTaskWithLegacyTransition");
             }
         }
     }
 
-    public void startShortcutAndTaskWithLegacyTransition(ShortcutInfo shortcutInfo, int taskId,
-            Bundle mainOptions, Bundle sideOptions,
+    public void startShortcutAndTaskWithLegacyTransition(ShortcutInfo shortcutInfo, Bundle options1,
+            int taskId, Bundle options2, @SplitConfigurationOptions.StagePosition int splitPosition,
+            float splitRatio, RemoteAnimationAdapter adapter, InstanceId instanceId) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSplitScreen.startShortcutAndTaskWithLegacyTransition(shortcutInfo, options1,
+                        taskId, options2, splitPosition, splitRatio, adapter, instanceId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call startShortcutAndTaskWithLegacyTransition");
+            }
+        }
+    }
+
+    public void startIntentsWithLegacyTransition(PendingIntent pendingIntent1, Bundle options1,
+            PendingIntent pendingIntent2, Bundle options2,
             @SplitConfigurationOptions.StagePosition int sidePosition, float splitRatio,
             RemoteAnimationAdapter adapter, InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
-                mSplitScreen.startShortcutAndTaskWithLegacyTransition(shortcutInfo, taskId,
-                        mainOptions, sideOptions, sidePosition, splitRatio, adapter, instanceId);
+                mSplitScreen.startIntentsWithLegacyTransition(pendingIntent1, options1,
+                        pendingIntent2, options2, sidePosition, splitRatio, adapter, instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startShortcutAndTaskWithLegacyTransition");
+                Log.w(TAG, "Failed call startIntentsWithLegacyTransition");
             }
         }
     }
@@ -646,6 +684,7 @@ public class SystemUiProxy implements ISystemUiProxy {
      *
      * @return RemoteAnimationTargets of windows that need to animate but only exist in shell.
      */
+    @Nullable
     public RemoteAnimationTarget[] onGoingToRecentsLegacy(RemoteAnimationTarget[] apps) {
         if (mSplitScreen != null) {
             try {
@@ -657,6 +696,7 @@ public class SystemUiProxy implements ISystemUiProxy {
         return null;
     }
 
+    @Nullable
     public RemoteAnimationTarget[] onStartingSplitLegacy(RemoteAnimationTarget[] apps) {
         if (mSplitScreen != null) {
             try {
@@ -666,20 +706,6 @@ public class SystemUiProxy implements ISystemUiProxy {
             }
         }
         return null;
-    }
-
-    //
-    // Floating tasks
-    //
-
-    public void showFloatingTask(Intent intent) {
-        if (mFloatingTasks != null) {
-            try {
-                mFloatingTasks.showTask(intent);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Launcher: Failed call showFloatingTask", e);
-            }
-        }
     }
 
     //
@@ -710,24 +736,24 @@ public class SystemUiProxy implements ISystemUiProxy {
     // Remote transitions
     //
 
-    public void registerRemoteTransition(RemoteTransitionCompat remoteTransition) {
+    public void registerRemoteTransition(
+            RemoteTransition remoteTransition, TransitionFilter filter) {
         if (mShellTransitions != null) {
             try {
-                mShellTransitions.registerRemote(remoteTransition.getFilter(),
-                        remoteTransition.getTransition());
+                mShellTransitions.registerRemote(filter, remoteTransition);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call registerRemoteTransition");
             }
         }
-        if (!mRemoteTransitions.contains(remoteTransition)) {
-            mRemoteTransitions.add(remoteTransition);
+        if (!mRemoteTransitions.containsKey(remoteTransition)) {
+            mRemoteTransitions.put(remoteTransition, filter);
         }
     }
 
-    public void unregisterRemoteTransition(RemoteTransitionCompat remoteTransition) {
+    public void unregisterRemoteTransition(RemoteTransition remoteTransition) {
         if (mShellTransitions != null) {
             try {
-                mShellTransitions.unregisterRemote(remoteTransition.getTransition());
+                mShellTransitions.unregisterRemote(remoteTransition);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call registerRemoteTransition");
             }

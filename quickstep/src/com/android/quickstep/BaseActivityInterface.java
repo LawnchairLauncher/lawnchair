@@ -30,6 +30,7 @@ import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -40,6 +41,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.RemoteAnimationTarget;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -50,6 +52,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statehandlers.DepthController;
+import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.TaskbarUIController;
@@ -61,7 +64,6 @@ import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.HashMap;
 import java.util.Optional;
@@ -118,9 +120,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
     public abstract void onAssistantVisibilityChanged(float visibility);
 
-    /** Called when one handed mode activated or deactivated. */
-    public abstract void onOneHandedModeStateChanged(boolean activated);
-
     public abstract AnimationFactory prepareRecentsUI(RecentsAnimationDeviceState deviceState,
             boolean activityVisible, Consumer<AnimatorControllerWithResistance> callback);
 
@@ -137,6 +136,11 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
     @Nullable
     public DepthController getDepthController() {
+        return null;
+    }
+
+    @Nullable
+    public DesktopVisibilityController getDesktopVisibilityController() {
         return null;
     }
 
@@ -161,7 +165,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public abstract boolean switchToRecentsIfVisible(Runnable onCompleteCallback);
 
     public abstract Rect getOverviewWindowBounds(
-            Rect homeBounds, RemoteAnimationTargetCompat target);
+            Rect homeBounds, RemoteAnimationTarget target);
 
     public abstract boolean allowMinimizeSplitScreen();
 
@@ -187,7 +191,8 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
      * Closes any overlays.
      */
     public void closeOverlay() {
-        Optional.ofNullable(getTaskbarController()).ifPresent(TaskbarUIController::hideAllApps);
+        Optional.ofNullable(getTaskbarController()).ifPresent(
+                TaskbarUIController::hideOverlayWindow);
     }
 
     public void switchRunningTaskViewToScreenshot(HashMap<Integer, ThumbnailData> thumbnailDatas,
@@ -474,33 +479,38 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             if (mIsAttachedToWindow == attached && animate) {
                 return;
             }
-            mIsAttachedToWindow = attached;
-            RecentsView recentsView = mActivity.getOverviewPanel();
-            if (attached) {
-                mHasEverAttachedToWindow = true;
-            }
-            Animator fadeAnim = mActivity.getStateManager()
-                    .createStateElementAnimation(INDEX_RECENTS_FADE_ANIM, attached ? 1 : 0);
-
-            float fromTranslation = attached ? 1 : 0;
-            float toTranslation = attached ? 0 : 1;
+            mActivity.getStateManager()
+                    .cancelStateElementAnimation(INDEX_RECENTS_FADE_ANIM);
             mActivity.getStateManager()
                     .cancelStateElementAnimation(INDEX_RECENTS_TRANSLATE_X_ANIM);
-            if (!recentsView.isShown() && animate) {
-                ADJACENT_PAGE_HORIZONTAL_OFFSET.set(recentsView, fromTranslation);
-            } else {
-                fromTranslation = ADJACENT_PAGE_HORIZONTAL_OFFSET.get(recentsView);
-            }
-            if (!animate) {
-                ADJACENT_PAGE_HORIZONTAL_OFFSET.set(recentsView, toTranslation);
-            } else {
-                mActivity.getStateManager().createStateElementAnimation(
-                        INDEX_RECENTS_TRANSLATE_X_ANIM,
-                        fromTranslation, toTranslation).start();
-            }
 
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                    mIsAttachedToWindow = attached;
+                    if (attached) {
+                        mHasEverAttachedToWindow = true;
+                    }
+                }});
+
+            long animationDuration = animate ? RECENTS_ATTACH_DURATION : 0;
+            Animator fadeAnim = mActivity.getStateManager()
+                    .createStateElementAnimation(INDEX_RECENTS_FADE_ANIM, attached ? 1 : 0);
             fadeAnim.setInterpolator(attached ? INSTANT : ACCEL_2);
-            fadeAnim.setDuration(animate ? RECENTS_ATTACH_DURATION : 0).start();
+            fadeAnim.setDuration(animationDuration);
+            animatorSet.play(fadeAnim);
+
+            float fromTranslation = ADJACENT_PAGE_HORIZONTAL_OFFSET.get(
+                    mActivity.getOverviewPanel());
+            float toTranslation = attached ? 0 : 1;
+
+            Animator translationAnimator = mActivity.getStateManager().createStateElementAnimation(
+                    INDEX_RECENTS_TRANSLATE_X_ANIM, fromTranslation, toTranslation);
+            translationAnimator.setDuration(animationDuration);
+            animatorSet.play(translationAnimator);
+            animatorSet.start();
         }
 
         @Override

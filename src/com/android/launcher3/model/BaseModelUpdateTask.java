@@ -118,8 +118,7 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     }
 
     public void bindExtraContainerItems(@NonNull final FixedContainerItems item) {
-        FixedContainerItems copy = item.clone();
-        scheduleCallbackTask(c -> c.bindExtraContainerItems(copy));
+        scheduleCallbackTask(c -> c.bindExtraContainerItems(item));
     }
 
     public void bindDeepShortcuts(@NonNull final BgDataModel dataModel) {

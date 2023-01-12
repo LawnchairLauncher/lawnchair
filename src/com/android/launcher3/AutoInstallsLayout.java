@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import android.appwidget.AppWidgetHost;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -32,7 +31,6 @@ import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.Pair;
 import android.util.Patterns;
 import android.util.Xml;
 
@@ -46,8 +44,9 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.util.IntArray;
-import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.Partner;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.widget.LauncherWidgetHolder;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -74,21 +73,18 @@ public class AutoInstallsLayout {
     private static final String FORMATTED_LAYOUT_RES = "default_layout_%dx%d";
     private static final String LAYOUT_RES = "default_layout";
 
-    static AutoInstallsLayout get(Context context, AppWidgetHost appWidgetHost,
+    static AutoInstallsLayout get(Context context, LauncherWidgetHolder appWidgetHolder,
             LayoutParserCallback callback) {
-        Pair<String, Resources> customizationApkInfo = PackageManagerHelper.findSystemApk(
-                ACTION_LAUNCHER_CUSTOMIZATION, context.getPackageManager());
-        if (customizationApkInfo == null) {
+        Partner partner = Partner.get(context.getPackageManager(), ACTION_LAUNCHER_CUSTOMIZATION);
+        if (partner == null) {
             return null;
         }
-        String pkg = customizationApkInfo.first;
-        Resources targetRes = customizationApkInfo.second;
         InvariantDeviceProfile grid = LauncherAppState.getIDP(context);
 
         // Try with grid size and hotseat count
         String layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES_WITH_HOSTEAT,
                 grid.numColumns, grid.numRows, grid.numDatabaseHotseatIcons);
-        int layoutId = targetRes.getIdentifier(layoutName, "xml", pkg);
+        int layoutId = partner.getXmlResId(layoutName);
 
         // Try with only grid size
         if (layoutId == 0) {
@@ -96,21 +92,21 @@ public class AutoInstallsLayout {
                     + " not found. Trying layout without hosteat");
             layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES,
                     grid.numColumns, grid.numRows);
-            layoutId = targetRes.getIdentifier(layoutName, "xml", pkg);
+            layoutId = partner.getXmlResId(layoutName);
         }
 
         // Try the default layout
         if (layoutId == 0) {
             Log.d(TAG, "Formatted layout: " + layoutName + " not found. Trying the default layout");
-            layoutId = targetRes.getIdentifier(LAYOUT_RES, "xml", pkg);
+            layoutId = partner.getXmlResId(LAYOUT_RES);
         }
 
         if (layoutId == 0) {
-            Log.e(TAG, "Layout definition not found in package: " + pkg);
+            Log.e(TAG, "Layout definition not found in package: " + partner.getPackageName());
             return null;
         }
-        return new AutoInstallsLayout(context, appWidgetHost, callback, targetRes, layoutId,
-                TAG_WORKSPACE);
+        return new AutoInstallsLayout(context, appWidgetHolder, callback, partner.getResources(),
+                layoutId, TAG_WORKSPACE);
     }
 
     // Object Tags
@@ -156,7 +152,7 @@ public class AutoInstallsLayout {
     @Thunk
     final Context mContext;
     @Thunk
-    final AppWidgetHost mAppWidgetHost;
+    final LauncherWidgetHolder mAppWidgetHolder;
     protected final LayoutParserCallback mCallback;
 
     protected final PackageManager mPackageManager;
@@ -174,17 +170,17 @@ public class AutoInstallsLayout {
 
     protected SQLiteDatabase mDb;
 
-    public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,
+    public AutoInstallsLayout(Context context, LauncherWidgetHolder appWidgetHolder,
             LayoutParserCallback callback, Resources res,
             int layoutId, String rootTag) {
-        this(context, appWidgetHost, callback, res, () -> res.getXml(layoutId), rootTag);
+        this(context, appWidgetHolder, callback, res, () -> res.getXml(layoutId), rootTag);
     }
 
-    public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,
+    public AutoInstallsLayout(Context context, LauncherWidgetHolder appWidgetHolder,
             LayoutParserCallback callback, Resources res,
             Supplier<XmlPullParser> initialLayoutSupplier, String rootTag) {
         mContext = context;
-        mAppWidgetHost = appWidgetHost;
+        mAppWidgetHolder = appWidgetHolder;
         mCallback = callback;
 
         mPackageManager = context.getPackageManager();

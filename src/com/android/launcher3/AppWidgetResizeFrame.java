@@ -32,6 +32,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
+import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.InstanceId;
@@ -248,11 +249,11 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                                 /* widgetHandler= */ null,
                                 (ItemInfo) mWidgetView.getTag()));
                 mLauncher
-                    .getAppWidgetHost()
-                    .startConfigActivity(
-                            mLauncher,
-                            mWidgetView.getAppWidgetId(),
-                            Launcher.REQUEST_RECONFIGURE_APPWIDGET);
+                        .getAppWidgetHolder()
+                        .startConfigActivity(
+                                mLauncher,
+                                mWidgetView.getAppWidgetId(),
+                                Launcher.REQUEST_RECONFIGURE_APPWIDGET);
             });
             if (!hasSeenReconfigurableWidgetEducationTip()) {
                 post(() -> {
@@ -265,7 +266,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             }
         }
 
-        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) mWidgetView.getLayoutParams();
+        CellLayoutLayoutParams lp = (CellLayoutLayoutParams) mWidgetView.getLayoutParams();
         ItemInfo widgetInfo = (ItemInfo) mWidgetView.getTag();
         lp.cellX = lp.tmpCellX = widgetInfo.cellX;
         lp.cellY = lp.tmpCellY = widgetInfo.cellY;
@@ -405,7 +406,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
      */
     private void resizeWidgetIfNeeded(boolean onDismiss) {
         ViewGroup.LayoutParams wlp = mWidgetView.getLayoutParams();
-        if (!(wlp instanceof CellLayout.LayoutParams)) {
+        if (!(wlp instanceof CellLayoutLayoutParams)) {
             return;
         }
         DeviceProfile dp = mLauncher.getDeviceProfile();
@@ -420,7 +421,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mDirectionVector[0] = 0;
         mDirectionVector[1] = 0;
 
-        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) wlp;
+        CellLayoutLayoutParams lp = (CellLayoutLayoutParams) wlp;
 
         int spanX = lp.cellHSpan;
         int spanY = lp.cellVSpan;

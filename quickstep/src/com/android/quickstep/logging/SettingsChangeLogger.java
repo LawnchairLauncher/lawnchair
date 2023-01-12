@@ -16,8 +16,8 @@
 
 package com.android.quickstep.logging;
 
-import static com.android.launcher3.Utilities.getDevicePrefs;
-import static com.android.launcher3.Utilities.getPrefs;
+import static com.android.launcher3.LauncherPrefs.getDevicePrefs;
+import static com.android.launcher3.LauncherPrefs.getPrefs;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_SCREEN_SUGGESTIONS_DISABLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_SCREEN_SUGGESTIONS_ENABLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NOTIFICATION_DOT_DISABLED;

@@ -25,7 +25,7 @@ import android.view.animation.Interpolator;
  */
 public interface SplitAnimationTimings {
     int TABLET_ENTER_DURATION = 866;
-    int TABLET_CONFIRM_DURATION = 383;
+    int TABLET_CONFIRM_DURATION = 500;
 
     int PHONE_ENTER_DURATION = 517;
     int PHONE_CONFIRM_DURATION = 333;

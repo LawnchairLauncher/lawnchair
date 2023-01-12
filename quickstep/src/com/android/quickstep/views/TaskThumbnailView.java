@@ -16,11 +16,11 @@
 
 package com.android.quickstep.views;
 
-import static android.app.WindowConfiguration.WINDOWING_MODE_FULLSCREEN;
 import static android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
 import static android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.systemui.shared.recents.utilities.PreviewPositionHelper.MAX_PCT_BEFORE_ASPECT_RATIOS_CONSIDERED_DIFFERENT;
+import static com.android.systemui.shared.recents.utilities.Utilities.isRelativePercentDifferenceGreaterThan;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -41,7 +41,6 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Property;
-import android.view.Surface;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -60,6 +59,7 @@ import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.quickstep.views.TaskView.FullscreenDrawParams;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.recents.utilities.PreviewPositionHelper;
 
 /**
  * A task in the Recents view.
@@ -67,7 +67,6 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 public class TaskThumbnailView extends View {
     private static final MainThreadInitializedObject<FullscreenDrawParams> TEMP_PARAMS =
             new MainThreadInitializedObject<>(FullscreenDrawParams::new);
-    private static final float MAX_PCT_BEFORE_ASPECT_RATIOS_CONSIDERED_DIFFERENT = 0.1f;
 
     public static final Property<TaskThumbnailView, Float> DIM_ALPHA =
             new FloatProperty<TaskThumbnailView>("dimAlpha") {
@@ -320,13 +319,11 @@ public class TaskThumbnailView extends View {
 
     public void drawOnCanvas(Canvas canvas, float x, float y, float width, float height,
             float cornerRadius) {
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            if (mTask != null && getTaskView().isRunningTask() && !getTaskView().showScreenshot()) {
-                canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mClearPaint);
-                canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius,
-                        mDimmingPaintAfterClearing);
-                return;
-            }
+        if (mTask != null && getTaskView().isRunningTask() && !getTaskView().showScreenshot()) {
+            canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mClearPaint);
+            canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius,
+                    mDimmingPaintAfterClearing);
+            return;
         }
 
         // Always draw the background since the snapshots might be translucent or partially empty
@@ -373,7 +370,7 @@ public class TaskThumbnailView extends View {
      * <p>We want to show the splash if the aspect ratio or rotation of the thumbnail would be
      * different from the task.
      */
-    boolean shouldShowSplashView() {
+    public boolean shouldShowSplashView() {
         return isThumbnailAspectRatioDifferentFromThumbnailData()
                 || isThumbnailRotationDifferentFromTask();
     }
@@ -417,11 +414,13 @@ public class TaskThumbnailView extends View {
             return false;
         }
 
-        float thumbnailViewAspect = getWidth() / (float) getHeight();
+        RectF insets = mPreviewPositionHelper.getClippedInsets();
+        float thumbnailViewAspect = (getWidth() + insets.left + insets.right)
+                / (getHeight() + insets.top + insets.bottom);
         float thumbnailDataAspect =
                 mThumbnailData.thumbnail.getWidth() / (float) mThumbnailData.thumbnail.getHeight();
 
-        return Utilities.isRelativePercentDifferenceGreaterThan(thumbnailViewAspect,
+        return isRelativePercentDifferenceGreaterThan(thumbnailViewAspect,
                 thumbnailDataAspect, MAX_PCT_BEFORE_ASPECT_RATIOS_CONSIDERED_DIFFERENT);
     }
 
@@ -445,8 +444,8 @@ public class TaskThumbnailView extends View {
      */
     private void refreshOverlay() {
         if (mOverlayEnabled) {
-            getTaskOverlay().initOverlay(mTask, mThumbnailData, mPreviewPositionHelper.mMatrix,
-                    mPreviewPositionHelper.mIsOrientationChanged);
+            getTaskOverlay().initOverlay(mTask, mThumbnailData, mPreviewPositionHelper.getMatrix(),
+                    mPreviewPositionHelper.isOrientationChanged());
         } else {
             getTaskOverlay().reset();
         }
@@ -467,7 +466,8 @@ public class TaskThumbnailView extends View {
     }
 
     private void updateThumbnailMatrix() {
-        mPreviewPositionHelper.mIsOrientationChanged = false;
+        DeviceProfile dp = mActivity.getDeviceProfile();
+        mPreviewPositionHelper.setOrientationChanged(false);
         if (mBitmapShader != null && mThumbnailData != null) {
             mPreviewRect.set(0, 0, mThumbnailData.thumbnail.getWidth(),
                     mThumbnailData.thumbnail.getHeight());
@@ -475,10 +475,10 @@ public class TaskThumbnailView extends View {
                     .getRecentsActivityRotation();
             boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
             mPreviewPositionHelper.updateThumbnailMatrix(mPreviewRect, mThumbnailData,
-                    getMeasuredWidth(), getMeasuredHeight(), mActivity.getDeviceProfile(),
-                    currentRotation, isRtl);
+                    getMeasuredWidth(), getMeasuredHeight(), dp.widthPx, dp.heightPx,
+                    dp.taskbarSize, dp.isTablet, currentRotation, isRtl);
 
-            mBitmapShader.setLocalMatrix(mPreviewPositionHelper.mMatrix);
+            mBitmapShader.setLocalMatrix(mPreviewPositionHelper.getMatrix());
             mPaint.setShader(mBitmapShader);
         }
         getTaskView().updateCurrentFullscreenParams(mPreviewPositionHelper);
@@ -517,200 +517,5 @@ public class TaskThumbnailView extends View {
             return false;
         }
         return mThumbnailData.isRealSnapshot && !mTask.isLocked;
-    }
-
-    /**
-     * Utility class to position the thumbnail in the TaskView
-     */
-    public static class PreviewPositionHelper {
-
-        private static final RectF EMPTY_RECT_F = new RectF();
-
-        // Contains the portion of the thumbnail that is unclipped when fullscreen progress = 1.
-        private final RectF mClippedInsets = new RectF();
-        private final Matrix mMatrix = new Matrix();
-        private boolean mIsOrientationChanged;
-
-        public Matrix getMatrix() {
-            return mMatrix;
-        }
-
-        /**
-         * Updates the matrix based on the provided parameters
-         */
-        public void updateThumbnailMatrix(Rect thumbnailBounds, ThumbnailData thumbnailData,
-                int canvasWidth, int canvasHeight, DeviceProfile dp, int currentRotation,
-                boolean isRtl) {
-            boolean isRotated = false;
-            boolean isOrientationDifferent;
-
-            int thumbnailRotation = thumbnailData.rotation;
-            int deltaRotate = getRotationDelta(currentRotation, thumbnailRotation);
-            RectF thumbnailClipHint = new RectF();
-            float canvasScreenRatio = canvasWidth / (float) dp.widthPx;
-            float scaledTaskbarSize = dp.taskbarSize * canvasScreenRatio;
-            thumbnailClipHint.bottom = dp.isTablet ? scaledTaskbarSize : 0;
-
-            float scale = thumbnailData.scale;
-            final float thumbnailScale;
-
-            // Landscape vs portrait change.
-            // Note: Disable rotation in grid layout.
-            boolean windowingModeSupportsRotation =
-                    thumbnailData.windowingMode == WINDOWING_MODE_FULLSCREEN && !dp.isTablet;
-            isOrientationDifferent = isOrientationChange(deltaRotate)
-                    && windowingModeSupportsRotation;
-            if (canvasWidth == 0 || canvasHeight == 0 || scale == 0) {
-                // If we haven't measured , skip the thumbnail drawing and only draw the background
-                // color
-                thumbnailScale = 0f;
-            } else {
-                // Rotate the screenshot if not in multi-window mode
-                isRotated = deltaRotate > 0 && windowingModeSupportsRotation;
-
-                float surfaceWidth = thumbnailBounds.width() / scale;
-                float surfaceHeight = thumbnailBounds.height() / scale;
-                float availableWidth = surfaceWidth
-                        - (thumbnailClipHint.left + thumbnailClipHint.right);
-                float availableHeight = surfaceHeight
-                        - (thumbnailClipHint.top + thumbnailClipHint.bottom);
-
-                float canvasAspect = canvasWidth / (float) canvasHeight;
-                float availableAspect = isRotated
-                        ? availableHeight / availableWidth
-                        : availableWidth / availableHeight;
-                boolean isAspectLargelyDifferent =
-                        Utilities.isRelativePercentDifferenceGreaterThan(canvasAspect,
-                                availableAspect, MAX_PCT_BEFORE_ASPECT_RATIOS_CONSIDERED_DIFFERENT);
-                if (isRotated && isAspectLargelyDifferent) {
-                    // Do not rotate thumbnail if it would not improve fit
-                    isRotated = false;
-                    isOrientationDifferent = false;
-                }
-
-                if (isAspectLargelyDifferent) {
-                    // Crop letterbox insets if insets isn't already clipped
-                    thumbnailClipHint.left = thumbnailData.letterboxInsets.left;
-                    thumbnailClipHint.right = thumbnailData.letterboxInsets.right;
-                    thumbnailClipHint.top = thumbnailData.letterboxInsets.top;
-                    thumbnailClipHint.bottom = thumbnailData.letterboxInsets.bottom;
-                    availableWidth = surfaceWidth
-                            - (thumbnailClipHint.left + thumbnailClipHint.right);
-                    availableHeight = surfaceHeight
-                            - (thumbnailClipHint.top + thumbnailClipHint.bottom);
-                }
-
-                final float targetW, targetH;
-                if (isOrientationDifferent) {
-                    targetW = canvasHeight;
-                    targetH = canvasWidth;
-                } else {
-                    targetW = canvasWidth;
-                    targetH = canvasHeight;
-                }
-                float targetAspect = targetW / targetH;
-
-                // Update the clipHint such that
-                //   > the final clipped position has same aspect ratio as requested by canvas
-                //   > first fit the width and crop the extra height
-                //   > if that will leave empty space, fit the height and crop the width instead
-                float croppedWidth = availableWidth;
-                float croppedHeight = croppedWidth / targetAspect;
-                if (croppedHeight > availableHeight) {
-                    croppedHeight = availableHeight;
-                    if (croppedHeight < targetH) {
-                        croppedHeight = Math.min(targetH, surfaceHeight);
-                    }
-                    croppedWidth = croppedHeight * targetAspect;
-
-                    // One last check in case the task aspect radio messed up something
-                    if (croppedWidth > surfaceWidth) {
-                        croppedWidth = surfaceWidth;
-                        croppedHeight = croppedWidth / targetAspect;
-                    }
-                }
-
-                // Update the clip hints. Align to 0,0, crop the remaining.
-                if (isRtl) {
-                    thumbnailClipHint.left += availableWidth - croppedWidth;
-                    if (thumbnailClipHint.right < 0) {
-                        thumbnailClipHint.left += thumbnailClipHint.right;
-                        thumbnailClipHint.right = 0;
-                    }
-                } else {
-                    thumbnailClipHint.right += availableWidth - croppedWidth;
-                    if (thumbnailClipHint.left < 0) {
-                        thumbnailClipHint.right += thumbnailClipHint.left;
-                        thumbnailClipHint.left = 0;
-                    }
-                }
-                thumbnailClipHint.bottom += availableHeight - croppedHeight;
-                if (thumbnailClipHint.top < 0) {
-                    thumbnailClipHint.bottom += thumbnailClipHint.top;
-                    thumbnailClipHint.top = 0;
-                } else if (thumbnailClipHint.bottom < 0) {
-                    thumbnailClipHint.top += thumbnailClipHint.bottom;
-                    thumbnailClipHint.bottom = 0;
-                }
-
-                thumbnailScale = targetW / (croppedWidth * scale);
-            }
-
-            if (!isRotated) {
-                mMatrix.setTranslate(
-                        -thumbnailClipHint.left * scale,
-                        -thumbnailClipHint.top * scale);
-            } else {
-                setThumbnailRotation(deltaRotate, thumbnailBounds);
-            }
-
-            mClippedInsets.set(0, 0, 0, scaledTaskbarSize);
-
-            mMatrix.postScale(thumbnailScale, thumbnailScale);
-            mIsOrientationChanged = isOrientationDifferent;
-        }
-
-        private int getRotationDelta(int oldRotation, int newRotation) {
-            int delta = newRotation - oldRotation;
-            if (delta < 0) delta += 4;
-            return delta;
-        }
-
-        /**
-         * @param deltaRotation the number of 90 degree turns from the current orientation
-         * @return {@code true} if the change in rotation results in a shift from landscape to
-         * portrait or vice versa, {@code false} otherwise
-         */
-        private boolean isOrientationChange(int deltaRotation) {
-            return deltaRotation == Surface.ROTATION_90 || deltaRotation == Surface.ROTATION_270;
-        }
-
-        private void setThumbnailRotation(int deltaRotate, Rect thumbnailPosition) {
-            float translateX = 0;
-            float translateY = 0;
-
-            mMatrix.setRotate(90 * deltaRotate);
-            switch (deltaRotate) { /* Counter-clockwise */
-                case Surface.ROTATION_90:
-                    translateX = thumbnailPosition.height();
-                    break;
-                case Surface.ROTATION_270:
-                    translateY = thumbnailPosition.width();
-                    break;
-                case Surface.ROTATION_180:
-                    translateX = thumbnailPosition.width();
-                    translateY = thumbnailPosition.height();
-                    break;
-            }
-            mMatrix.postTranslate(translateX, translateY);
-        }
-
-        /**
-         * Insets to used for clipping the thumbnail (in case it is drawing outside its own space)
-         */
-        public RectF getInsetsToDrawInFullscreen(DeviceProfile dp) {
-            return dp.isTaskbarPresent && !dp.isTaskbarPresentInApps
-                    ? mClippedInsets : EMPTY_RECT_F;
-        }
     }
 }

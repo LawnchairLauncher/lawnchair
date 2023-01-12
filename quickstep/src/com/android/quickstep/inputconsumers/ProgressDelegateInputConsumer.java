@@ -28,14 +28,12 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.view.MotionEvent;
 
-import androidx.annotation.Nullable;
-
+import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.util.DisplayController;
-import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.MultiStateCallback;
@@ -43,7 +41,6 @@ import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.TaskAnimationManager;
-import com.android.quickstep.util.ActiveGestureErrorDetector;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
@@ -102,8 +99,7 @@ public class ProgressDelegateInputConsumer implements InputConsumer,
         mDisplaySize = DisplayController.INSTANCE.get(context).getInfo().currentSize;
 
         // Init states
-        mStateCallback = new MultiStateCallback(
-                STATE_NAMES, ProgressDelegateInputConsumer::getTrackedEventForState);
+        mStateCallback = new MultiStateCallback(STATE_NAMES);
         mStateCallback.runOnceAtState(STATE_TARGET_RECEIVED | STATE_HANDLER_INVALIDATED,
                 this::endRemoteAnimation);
         mStateCallback.runOnceAtState(STATE_TARGET_RECEIVED | STATE_FLING_FINISHED,
@@ -111,14 +107,6 @@ public class ProgressDelegateInputConsumer implements InputConsumer,
 
         mSwipeDetector = new SingleAxisSwipeDetector(mContext, this, VERTICAL);
         mSwipeDetector.setDetectableScrollConditions(DIRECTION_POSITIVE, false);
-    }
-
-    @Nullable
-    private static ActiveGestureErrorDetector.GestureEvent getTrackedEventForState(int stateFlag) {
-        if (stateFlag == STATE_HANDLER_INVALIDATED) {
-            return ActiveGestureErrorDetector.GestureEvent.STATE_HANDLER_INVALIDATED;
-        }
-        return null;
     }
 
     @Override

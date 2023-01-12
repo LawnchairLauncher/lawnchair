@@ -59,6 +59,7 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Cari apl"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Memuatkan apl…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Tiada apl yang ditemui sepadan dengan \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"Cari lagi apl"</string>
     <string name="label_application" msgid="8531721983832654978">"Apl"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"Semua apl"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Pemberitahuan"</string>
@@ -100,9 +101,9 @@
     <string name="folder_renamed" msgid="1794088362165669656">"Folder dinamakan semula kepada <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Folder: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> item"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Folder: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> atau lebih banyak item"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"Hiasan latar"</string>
+    <string name="wallpaper_button_text" msgid="8404103075899945851">"Kertas dinding"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Kertas dinding &amp; gaya"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Tetapan skrin utama"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Tetapan laman utama"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Dilumpuhkan oleh pentadbir anda"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Benarkan putaran skrin utama"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Apabila telefon diputar"</string>
@@ -113,7 +114,6 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Untuk menunjukkan Titik Pemberitahuan, hidupkan pemberitahuan apl untuk <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Tukar tetapan"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Tunjukkan titik pemberitahuan"</string>
-    <string name="developer_options_title" msgid="700788437593726194">"Pilihan Pembangun"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Tambahkan ikon apl pada skrin utama"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Untuk apl baharu"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Tidak diketahui"</string>
@@ -124,10 +124,14 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> dipasang, <xliff:g id="PROGRESS">%2$s</xliff:g> selesai"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> memuat turun, <xliff:g id="PROGRESS">%2$s</xliff:g> selesai"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> menunggu untuk dipasang"</string>
-    <string name="dialog_update_title" msgid="114234265740994042">"Kemas kini apl diperlukan"</string>
-    <string name="dialog_update_message" msgid="4176784553982226114">"Apl untuk ikon ini tidak dikemas kini. Anda boleh mengemas kini secara manual untuk mendayakan semula pintasan atau mengalih keluar ikon."</string>
-    <string name="dialog_update" msgid="2178028071796141234">"Kemas kini"</string>
-    <string name="dialog_remove" msgid="6510806469849709407">"Alih keluar"</string>
+    <!-- no translation found for dialog_update_title (114234265740994042) -->
+    <skip />
+    <!-- no translation found for dialog_update_message (4176784553982226114) -->
+    <skip />
+    <!-- no translation found for dialog_update (2178028071796141234) -->
+    <skip />
+    <!-- no translation found for dialog_remove (6510806469849709407) -->
+    <skip />
     <string name="widgets_list" msgid="796804551140113767">"Senarai widget"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Senarai widget ditutup"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Tambahkan pada skrin utama"</string>
@@ -136,7 +140,7 @@
     <string name="item_removed" msgid="851119963877842327">"Item dialih keluar"</string>
     <string name="undo" msgid="4151576204245173321">"Buat asal"</string>
     <string name="action_move" msgid="4339390619886385032">"Alihkan Item"</string>
-    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"Alihkan ke baris <xliff:g id="NUMBER_0">%1$s</xliff:g> lajur <xliff:g id="NUMBER_1">%2$s</xliff:g> dalam <xliff:g id="STRING">%3$s</xliff:g>"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"Alihkan ke baris <xliff:g id="NUMBER_0">%1$s</xliff:g> lajur <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="move_to_position" msgid="6750008980455459790">"Alihkan ke kedudukan <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"Alihkan ke kedudukan kegemaran <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="item_moved" msgid="4606538322571412879">"Item dialihkan"</string>
@@ -167,10 +171,8 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Apl kerja dimatikan. Apl kerja anda tidak boleh menghantar pemberitahuan kepada anda, menggunakan bateri anda atau mengakses lokasi anda"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Apl kerja mempunyai lencana dan kelihatan kepada pentadbir IT anda"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Jeda apl kerja"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Matikan apl kerja"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Hidupkan apl kerja"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Tapis"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"Cari telefon anda"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Cari tablet anda"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Gagal: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

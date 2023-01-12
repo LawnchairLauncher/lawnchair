@@ -25,6 +25,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MultiPropertyFactory;
+import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.systemui.shared.system.BlurUtils;
 
 /**
@@ -45,20 +46,15 @@ public class BaseDepthController {
                 }
             };
 
-    private static final MultiPropertyFactory<BaseDepthController> DEPTH_PROPERTY_FACTORY =
-            new MultiPropertyFactory<>("depthProperty", DEPTH, Float::max);
-
-    private static final int DEPTH_INDEX_STATE_TRANSITION = 1;
-    private static final int DEPTH_INDEX_WIDGET = 2;
-
-    /** Property to set the depth for state transition. */
-    public static final FloatProperty<BaseDepthController> STATE_DEPTH =
-            DEPTH_PROPERTY_FACTORY.get(DEPTH_INDEX_STATE_TRANSITION);
-    /** Property to set the depth for widget picker. */
-    public static final FloatProperty<BaseDepthController> WIDGET_DEPTH =
-            DEPTH_PROPERTY_FACTORY.get(DEPTH_INDEX_WIDGET);
+    private static final int DEPTH_INDEX_STATE_TRANSITION = 0;
+    private static final int DEPTH_INDEX_WIDGET = 1;
+    private static final int DEPTH_INDEX_COUNT = 2;
 
     protected final Launcher mLauncher;
+    /** Property to set the depth for state transition. */
+    public final MultiProperty stateDepth;
+    /** Property to set the depth for widget picker. */
+    public final MultiProperty widgetDepth;
 
     /**
      * Blur radius when completely zoomed out, in pixels.
@@ -71,7 +67,7 @@ public class BaseDepthController {
      * Ratio from 0 to 1, where 0 is fully zoomed out, and 1 is zoomed in.
      * @see android.service.wallpaper.WallpaperService.Engine#onZoomChanged(float)
      */
-    protected float mDepth;
+    private float mDepth;
 
     protected SurfaceControl mSurface;
 
@@ -92,6 +88,11 @@ public class BaseDepthController {
         mLauncher = activity;
         mMaxBlurRadius = activity.getResources().getInteger(R.integer.max_depth_blur_radius);
         mWallpaperManager = activity.getSystemService(WallpaperManager.class);
+
+        MultiPropertyFactory<BaseDepthController> depthProperty =
+                new MultiPropertyFactory<>(this, DEPTH, DEPTH_INDEX_COUNT, Float::max);
+        stateDepth = depthProperty.get(DEPTH_INDEX_STATE_TRANSITION);
+        widgetDepth = depthProperty.get(DEPTH_INDEX_WIDGET);
     }
 
     protected void setCrossWindowBlursEnabled(boolean isEnabled) {
@@ -143,7 +144,7 @@ public class BaseDepthController {
         }
     }
 
-    protected void setDepth(float depth) {
+    private void setDepth(float depth) {
         depth = Utilities.boundToRange(depth, 0, 1);
         // Round out the depth to dedupe frequent, non-perceptable updates
         int depthI = (int) (depth * 256);

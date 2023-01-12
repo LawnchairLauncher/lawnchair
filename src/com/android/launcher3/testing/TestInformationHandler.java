@@ -47,7 +47,9 @@ import com.android.launcher3.testing.shared.WorkspaceCellCenterRequest;
 import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -214,9 +216,13 @@ public class TestInformationHandler implements ResourceBasedOverride {
             }
 
             case TestProtocol.REQUEST_HAS_TIS: {
-                response.putBoolean(
-                        TestProtocol.REQUEST_HAS_TIS, false);
+                response.putBoolean(TestProtocol.REQUEST_HAS_TIS, false);
                 return response;
+            }
+
+            case TestProtocol.REQUEST_ALL_APPS_TOP_PADDING: {
+                return getLauncherUIProperty(Bundle::putInt,
+                        l -> l.getAppsView().getActiveRecyclerView().getClipBounds().top);
             }
 
             default:
@@ -261,17 +267,24 @@ public class TestInformationHandler implements ResourceBasedOverride {
      */
     private static <S, T> Bundle getUIProperty(
             BundleSetter<T> bundleSetter, Function<S, T> provider, Supplier<S> targetSupplier) {
+        return getFromExecutorSync(MAIN_EXECUTOR, () -> {
+            S target = targetSupplier.get();
+            if (target == null) {
+                return null;
+            }
+            T value = provider.apply(target);
+            Bundle response = new Bundle();
+            bundleSetter.set(response, TestProtocol.TEST_INFO_RESPONSE_FIELD, value);
+            return response;
+        });
+    }
+
+    /**
+     * Executes the callback on the executor and waits for the result
+     */
+    protected static <T> T getFromExecutorSync(ExecutorService executor, Callable<T> callback) {
         try {
-            return MAIN_EXECUTOR.submit(() -> {
-                S target = targetSupplier.get();
-                if (target == null) {
-                    return null;
-                }
-                T value = provider.apply(target);
-                Bundle response = new Bundle();
-                bundleSetter.set(response, TestProtocol.TEST_INFO_RESPONSE_FIELD, value);
-                return response;
-            }).get();
+            return executor.submit(callback).get();
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }

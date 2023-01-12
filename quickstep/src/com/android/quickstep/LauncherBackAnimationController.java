@@ -36,6 +36,7 @@ import android.view.SurfaceControl;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.window.BackEvent;
+import android.window.BackProgressAnimator;
 import android.window.IOnBackInvokedCallback;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -45,8 +46,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.systemui.shared.system.QuickStepContract;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 
 /**
  * Controls the animation of swiping back and returning to launcher.
@@ -84,13 +83,14 @@ public class LauncherBackAnimationController {
     private final Interpolator mCancelInterpolator;
     private final PointF mInitialTouchPos = new PointF();
 
-    private RemoteAnimationTargetCompat mBackTarget;
+    private RemoteAnimationTarget mBackTarget;
     private SurfaceControl.Transaction mTransaction = new SurfaceControl.Transaction();
     private boolean mSpringAnimationInProgress = false;
     private boolean mAnimatorSetInProgress = false;
     private float mBackProgress = 0;
     private boolean mBackInProgress = false;
     private IOnBackInvokedCallback mBackCallback;
+    private BackProgressAnimator mProgressAnimator = new BackProgressAnimator();
 
     public LauncherBackAnimationController(
             QuickstepLauncher launcher,
@@ -119,30 +119,41 @@ public class LauncherBackAnimationController {
         mBackCallback = new IOnBackInvokedCallback.Stub() {
             @Override
             public void onBackCancelled() {
-                handler.post(() -> resetPositionAnimated());
+                handler.post(() -> {
+                    resetPositionAnimated();
+                    mProgressAnimator.reset();
+                });
             }
 
             @Override
             public void onBackInvoked() {
-                handler.post(() -> startTransition());
+                handler.post(() -> {
+                    startTransition();
+                    mProgressAnimator.reset();
+                });
             }
 
             @Override
             public void onBackProgressed(BackEvent backEvent) {
-                mBackProgress = backEvent.getProgress();
-                // TODO: Update once the interpolation curve spec is finalized.
-                mBackProgress =
-                        1 - (1 - mBackProgress) * (1 - mBackProgress) * (1
-                                - mBackProgress);
-                if (!mBackInProgress) {
-                    startBack(backEvent);
-                } else {
-                    updateBackProgress(mBackProgress, backEvent);
-                }
+                handler.post(() -> {
+                    mProgressAnimator.onBackProgressed(backEvent);
+                });
             }
 
             @Override
-            public void onBackStarted() { }
+            public void onBackStarted(BackEvent backEvent) {
+                handler.post(() -> {
+                    startBack(backEvent);
+                    mProgressAnimator.onBackStarted(backEvent, event -> {
+                        mBackProgress = event.getProgress();
+                        // TODO: Update once the interpolation curve spec is finalized.
+                        mBackProgress =
+                                1 - (1 - mBackProgress) * (1 - mBackProgress) * (1
+                                        - mBackProgress);
+                        updateBackProgress(mBackProgress, event);
+                    });
+                });
+            }
         };
         SystemUiProxy.INSTANCE.get(mLauncher).setBackToLauncherCallback(mBackCallback);
     }
@@ -170,6 +181,7 @@ public class LauncherBackAnimationController {
         if (mBackCallback != null) {
             SystemUiProxy.INSTANCE.get(mLauncher).clearBackToLauncherCallback(mBackCallback);
         }
+        mProgressAnimator.reset();
         mBackCallback = null;
     }
 
@@ -183,33 +195,25 @@ public class LauncherBackAnimationController {
 
         mTransaction.show(appTarget.leash).apply();
         mTransaction.setAnimationTransaction();
-        mBackTarget = new RemoteAnimationTargetCompat(appTarget);
+        mBackTarget = appTarget;
         mInitialTouchPos.set(backEvent.getTouchX(), backEvent.getTouchY());
 
         // TODO(b/218916755): Offset start rectangle in multiwindow mode.
         mStartRect.set(mBackTarget.windowConfiguration.getMaxBounds());
+        mCurrentRect.set(mStartRect);
     }
 
     private void updateBackProgress(float progress, BackEvent event) {
-        if (mBackTarget == null) {
+        if (!mBackInProgress || mBackTarget == null) {
             return;
         }
         float screenWidth = mStartRect.width();
         float screenHeight = mStartRect.height();
-        float dX = Math.abs(event.getTouchX() - mInitialTouchPos.x);
-        // The 'follow width' is the width of the window if it completely matches
-        // the gesture displacement.
-        float followWidth = screenWidth - dX;
-        // The 'progress width' is the width of the window if it strictly linearly interpolates
-        // to minimum scale base on progress.
-        float progressWidth = Utilities.mapRange(progress, 1, MIN_WINDOW_SCALE) * screenWidth;
-        // The final width is derived from interpolating between the follow with and progress width
-        // using gesture progress.
-        float width = Utilities.mapRange(progress, followWidth, progressWidth);
+        float width = Utilities.mapRange(progress, 1, MIN_WINDOW_SCALE) * screenWidth;
         float height = screenHeight / screenWidth * width;
         float deltaYRatio = (event.getTouchY() - mInitialTouchPos.y) / screenHeight;
         // Base the window movement in the Y axis on the touch movement in the Y axis.
-        float deltaY = (float) Math.sin(deltaYRatio * Math.PI * 0.5f) * mWindowMaxDeltaY;
+        float deltaY = (float) Math.sin(deltaYRatio * Math.PI * 0.5f) * mWindowMaxDeltaY * progress;
         // Move the window along the Y axis.
         float top = (screenHeight - height) * 0.5f + deltaY;
         // Move the window along the X axis.
@@ -242,20 +246,17 @@ public class LauncherBackAnimationController {
 
     /** Transform the target window to match the target rect. */
     private void applyTransform(RectF targetRect, float cornerRadius) {
-        SyncRtSurfaceTransactionApplierCompat.SurfaceParams.Builder builder =
-                new SyncRtSurfaceTransactionApplierCompat.SurfaceParams.Builder(mBackTarget.leash);
         final float scale = targetRect.width() / mStartRect.width();
         mTransformMatrix.reset();
         mTransformMatrix.setScale(scale, scale);
         mTransformMatrix.postTranslate(targetRect.left, targetRect.top);
-        builder.withMatrix(mTransformMatrix)
-                .withWindowCrop(mStartRect)
-                .withCornerRadius(cornerRadius);
-        SyncRtSurfaceTransactionApplierCompat.SurfaceParams surfaceParams = builder.build();
 
-        if (surfaceParams.surface.isValid()) {
-            surfaceParams.applyTo(mTransaction);
+        if (mBackTarget.leash.isValid()) {
+            mTransaction.setMatrix(mBackTarget.leash, mTransformMatrix, new float[9]);
+            mTransaction.setWindowCrop(mBackTarget.leash, mStartRect);
+            mTransaction.setCornerRadius(mBackTarget.leash, cornerRadius);
         }
+
         mTransaction.apply();
     }
 
@@ -284,8 +285,8 @@ public class LauncherBackAnimationController {
                 mBackProgress, mWindowScaleStartCornerRadius, mWindowScaleEndCornerRadius);
         Pair<RectFSpringAnim, AnimatorSet> pair =
                 mQuickstepTransitionManager.createWallpaperOpenAnimations(
-                    new RemoteAnimationTargetCompat[]{mBackTarget},
-                    new RemoteAnimationTargetCompat[]{},
+                    new RemoteAnimationTarget[]{mBackTarget},
+                    new RemoteAnimationTarget[0],
                     false /* fromUnlock */,
                     mCurrentRect,
                     cornerRadius);

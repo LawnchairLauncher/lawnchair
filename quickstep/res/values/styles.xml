@@ -41,7 +41,7 @@
         parent="TextAppearance.GestureTutorial">
         <item name="android:gravity">start</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:fontFamily">google-sans-regular</item>
+        <item name="android:fontFamily">google-sans</item>
         <item name="android:letterSpacing">0.03</item>
         <item name="android:textSize">36sp</item>
         <item name="android:lineHeight">44sp</item>
@@ -51,6 +51,7 @@
         parent="TextAppearance.GestureTutorial.Feedback.Title">
         <item name="android:letterSpacing">0.03</item>
         <item name="android:lineHeight">44sp</item>
+        <item name="android:textSize">@dimen/allset_page_allset_text_size</item>
     </style>
 
     <style name="TextAppearance.GestureTutorial.Dialog.Title"
@@ -105,6 +106,7 @@
         <item name="android:letterSpacing">0.02</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">google-sans-text-medium</item>
     </style>
 
     <style name="TextAppearance.GestureTutorial.CancelButtonLabel"
@@ -151,6 +153,8 @@
         <item name="android:background">@drawable/bg_overview_clear_all_button</item>
         <item name="android:minWidth">96dp</item>
         <item name="android:minHeight">48dp</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
         <item name="android:stateListAnimator">@null</item>
     </style>
 

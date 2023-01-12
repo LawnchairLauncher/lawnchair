@@ -30,6 +30,7 @@ import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
+import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MAIN;
 
 import android.content.res.Resources;
@@ -265,20 +266,32 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public float getTaskMenuX(float x, View thumbnailView, int overScroll,
-            DeviceProfile deviceProfile) {
-        return thumbnailView.getMeasuredWidth() + x;
+    public float getTaskMenuX(float x, View thumbnailView,
+            DeviceProfile deviceProfile, float taskInsetMargin) {
+        return thumbnailView.getMeasuredWidth() + x - taskInsetMargin;
     }
 
     @Override
-    public float getTaskMenuY(float y, View thumbnailView, int overScroll) {
-        return y + overScroll +
-                (thumbnailView.getMeasuredHeight() - thumbnailView.getMeasuredWidth()) / 2f;
+    public float getTaskMenuY(float y, View thumbnailView, int stagePosition,
+            View taskMenuView, float taskInsetMargin) {
+        BaseDragLayer.LayoutParams lp = (BaseDragLayer.LayoutParams) taskMenuView.getLayoutParams();
+        int taskMenuWidth = lp.width;
+        if (stagePosition == STAGE_POSITION_UNDEFINED) {
+            return y + taskInsetMargin
+                    + (thumbnailView.getMeasuredHeight() - taskMenuWidth) / 2f;
+        } else {
+            return y + taskInsetMargin;
+        }
     }
 
     @Override
-    public int getTaskMenuWidth(View view, DeviceProfile deviceProfile) {
-        return view.getMeasuredWidth();
+    public int getTaskMenuWidth(View thumbnailView, DeviceProfile deviceProfile,
+            @StagePosition int stagePosition) {
+        if (stagePosition == SplitConfigurationOptions.STAGE_POSITION_UNDEFINED) {
+            return thumbnailView.getMeasuredWidth();
+        } else {
+            return thumbnailView.getMeasuredHeight();
+        }
     }
 
     @Override
@@ -297,17 +310,6 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         viewGroup.setOrientation(LinearLayout.HORIZONTAL);
         lp.width = MATCH_PARENT;
         lp.height = WRAP_CONTENT;
-    }
-
-    @Override
-    public void setTaskMenuAroundTaskView(LinearLayout taskView, float margin) {
-        BaseDragLayer.LayoutParams lp = (BaseDragLayer.LayoutParams) taskView.getLayoutParams();
-        lp.topMargin += margin;
-    }
-
-    @Override
-    public PointF getAdditionalInsetForTaskMenu(float margin) {
-        return new PointF(margin, 0);
     }
 
     @Override
@@ -376,19 +378,6 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         return isRtl ? 1 : -1;
     }
 
-    @Override
-    public void setSecondaryTaskMenuPosition(SplitBounds splitBounds, View taskView,
-            DeviceProfile deviceProfile, View primarySnaphotView, View taskMenuView) {
-        float topLeftTaskPlusDividerPercent = splitBounds.appsStackedVertically
-                ? (splitBounds.topTaskPercent + splitBounds.dividerHeightPercent)
-                : (splitBounds.leftTaskPercent + splitBounds.dividerWidthPercent);
-        FrameLayout.LayoutParams snapshotParams =
-                (FrameLayout.LayoutParams) primarySnaphotView.getLayoutParams();
-        float additionalOffset = (taskView.getHeight() - snapshotParams.topMargin)
-                * topLeftTaskPlusDividerPercent;
-        taskMenuView.setY(taskMenuView.getY() + additionalOffset);
-    }
-
     /* -------------------- */
 
     @Override
@@ -424,8 +413,8 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         // In fake land/seascape, the placeholder always needs to go to the "top" of the device,
         // which is the same bounds as 0 rotation.
         int width = dp.widthPx;
-        int insetThickness = dp.getInsets().top;
-        out.set(0, 0, width, placeholderHeight + insetThickness);
+        int insetSizeAdjustment = getPlaceholderSizeAdjustment(dp);
+        out.set(0, 0, width, placeholderHeight + insetSizeAdjustment);
         out.inset(placeholderInset, 0);
 
         // Adjust the top to account for content off screen. This will help to animate the view in
@@ -442,11 +431,19 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
             float onScreenRectCenterY, float fullscreenScaleX, float fullscreenScaleY,
             int drawableWidth, int drawableHeight, DeviceProfile dp,
             @StagePosition int stagePosition) {
-        float inset = dp.getInsets().top;
-        out.setX(Math.round(onScreenRectCenterX / fullscreenScaleX
-                - 1.0f * drawableWidth / 2));
-        out.setY(Math.round((onScreenRectCenterY + (inset / 2f)) / fullscreenScaleY
-                - 1.0f * drawableHeight / 2));
+        float insetAdjustment = getPlaceholderSizeAdjustment(dp) / 2f;
+        out.setX(onScreenRectCenterX / fullscreenScaleX
+                - 1.0f * drawableWidth / 2);
+        out.setY((onScreenRectCenterY + insetAdjustment) / fullscreenScaleY
+                - 1.0f * drawableHeight / 2);
+    }
+
+    /**
+     * The split placeholder comes with a default inset to buffer the icon from the top of the
+     * screen. But if the device already has a large inset (from cutouts etc), use that instead.
+     */
+    private int getPlaceholderSizeAdjustment(DeviceProfile dp) {
+        return Math.max(dp.getInsets().top - dp.splitPlaceholderInset, 0);
     }
 
     @Override
@@ -504,9 +501,9 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
             DeviceProfile dp, boolean isRtl) {
         int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
         int totalThumbnailHeight = parentHeight - spaceAboveSnapshot;
-        int dividerBar = splitBoundsConfig.appsStackedVertically
-                ? (int) (splitBoundsConfig.dividerHeightPercent * parentHeight)
-                : (int) (splitBoundsConfig.dividerWidthPercent * parentWidth);
+        int dividerBar = Math.round(totalThumbnailHeight * (splitBoundsConfig.appsStackedVertically
+                ? splitBoundsConfig.dividerHeightPercent
+                : splitBoundsConfig.dividerWidthPercent));
         int primarySnapshotHeight;
         int primarySnapshotWidth;
         int secondarySnapshotHeight;

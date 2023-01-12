@@ -24,8 +24,8 @@ import java.text.Collator;
 public class StringMatcherUtility {
 
     /**
-     * Returns {@code true} is {@code query} is a prefix substring of a complete word/phrase in
-     * {@code target}.
+     * Returns {@code true} if {@code query} is a prefix of a substring in {@code target}. How to
+     * break target to valid substring is defined in the given {@code matcher}.
      */
     public static boolean matches(String query, String target, StringMatcher matcher) {
         int queryLength = query.length();
@@ -50,58 +50,12 @@ public class StringMatcherUtility {
             thisType = nextType;
             nextType = i < (targetLength - 1)
                     ? Character.getType(target.codePointAt(i + 1)) : Character.UNASSIGNED;
-            if (isBreak(thisType, lastType, nextType)
+            if (matcher.isBreak(thisType, lastType, nextType)
                     && matcher.matches(query, target.substring(i, i + queryLength))) {
                 return true;
             }
         }
         return false;
-    }
-
-    /**
-     * Returns true if the current point should be a break point. Following cases
-     * are considered as break points:
-     *      1) Any non space character after a space character
-     *      2) Any digit after a non-digit character
-     *      3) Any capital character after a digit or small character
-     *      4) Any capital character before a small character
-     */
-    private static boolean isBreak(int thisType, int prevType, int nextType) {
-        switch (prevType) {
-            case Character.UNASSIGNED:
-            case Character.SPACE_SEPARATOR:
-            case Character.LINE_SEPARATOR:
-            case Character.PARAGRAPH_SEPARATOR:
-                return true;
-        }
-        switch (thisType) {
-            case Character.UPPERCASE_LETTER:
-                if (nextType == Character.UPPERCASE_LETTER) {
-                    return true;
-                }
-                // Follow through
-            case Character.TITLECASE_LETTER:
-                // Break point if previous was not a upper case
-                return prevType != Character.UPPERCASE_LETTER;
-            case Character.LOWERCASE_LETTER:
-                // Break point if previous was not a letter.
-                return prevType > Character.OTHER_LETTER || prevType <= Character.UNASSIGNED;
-            case Character.DECIMAL_DIGIT_NUMBER:
-            case Character.LETTER_NUMBER:
-            case Character.OTHER_NUMBER:
-                // Break point if previous was not a number
-                return !(prevType == Character.DECIMAL_DIGIT_NUMBER
-                        || prevType == Character.LETTER_NUMBER
-                        || prevType == Character.OTHER_NUMBER);
-            case Character.MATH_SYMBOL:
-            case Character.CURRENCY_SYMBOL:
-            case Character.OTHER_PUNCTUATION:
-            case Character.DASH_PUNCTUATION:
-                // Always a break point for a symbol
-                return true;
-            default:
-                return  false;
-        }
     }
 
     /**
@@ -141,6 +95,75 @@ public class StringMatcherUtility {
 
         public static StringMatcher getInstance() {
             return new StringMatcher();
+        }
+
+        /**
+         * Returns true if the current point should be a break point.
+         *
+         * Following cases are considered as break points:
+         *     1) Any non space character after a space character
+         *     2) Any digit after a non-digit character
+         *     3) Any capital character after a digit or small character
+         *     4) Any capital character before a small character
+         *
+         * E.g., "YouTube" matches the input "you" and "tube", but not "out".
+         */
+        protected boolean isBreak(int thisType, int prevType, int nextType) {
+            switch (prevType) {
+                case Character.UNASSIGNED:
+                case Character.SPACE_SEPARATOR:
+                case Character.LINE_SEPARATOR:
+                case Character.PARAGRAPH_SEPARATOR:
+                    return true;
+            }
+            switch (thisType) {
+                case Character.UPPERCASE_LETTER:
+                    if (nextType == Character.UPPERCASE_LETTER) {
+                        return true;
+                    }
+                    // Follow through
+                case Character.TITLECASE_LETTER:
+                    // Break point if previous was not a upper case
+                    return prevType != Character.UPPERCASE_LETTER;
+                case Character.LOWERCASE_LETTER:
+                    // Break point if previous was not a letter.
+                    return prevType > Character.OTHER_LETTER || prevType <= Character.UNASSIGNED;
+                case Character.DECIMAL_DIGIT_NUMBER:
+                case Character.LETTER_NUMBER:
+                case Character.OTHER_NUMBER:
+                    // Break point if previous was not a number
+                    return !(prevType == Character.DECIMAL_DIGIT_NUMBER
+                            || prevType == Character.LETTER_NUMBER
+                            || prevType == Character.OTHER_NUMBER);
+                case Character.MATH_SYMBOL:
+                case Character.CURRENCY_SYMBOL:
+                case Character.OTHER_PUNCTUATION:
+                case Character.DASH_PUNCTUATION:
+                    // Always a break point for a symbol
+                    return true;
+                default:
+                    return  false;
+            }
+        }
+    }
+
+    /**
+     * Subclass of {@code StringMatcher} using simple space break for prefix matching.
+     * E.g., "YouTube" matches the input "you". "Play Store" matches the input "play".
+     */
+    public static class StringMatcherSpace extends StringMatcher {
+
+        public static StringMatcherSpace getInstance() {
+            return new StringMatcherSpace();
+        }
+
+        /**
+         * The first character or any character after a space is considered as a break point.
+         * Returns true if the current point should be a break point.
+         */
+        @Override
+        protected boolean isBreak(int thisType, int prevType, int nextType) {
+            return prevType == Character.UNASSIGNED || prevType == Character.SPACE_SEPARATOR;
         }
     }
 

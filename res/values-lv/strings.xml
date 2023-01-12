@@ -59,6 +59,7 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Meklēt lietotnes"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Notiek lietotņu ielāde…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Vaicājumam “<xliff:g id="QUERY">%1$s</xliff:g>” neatbilda neviena lietotne"</string>
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"Meklēt citas lietotnes"</string>
     <string name="label_application" msgid="8531721983832654978">"Lietotne"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"Visas lietotnes"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Paziņojumi"</string>
@@ -113,7 +114,6 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Lai tiktu rādīti paziņojumu punkti, ieslēdziet paziņojumus lietotnei <xliff:g id="NAME">%1$s</xliff:g>."</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Mainīt iestatījumus"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Rādīt paziņojumu punktus"</string>
-    <string name="developer_options_title" msgid="700788437593726194">"Izstrādātāju opcijas"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Pievienot lietotņu ikonas sākuma ekrānam"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Jaunām lietotnēm"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Nezināma"</string>
@@ -124,10 +124,14 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Notiek lietotnes “<xliff:g id="NAME">%1$s</xliff:g>” instalēšana. Norise: <xliff:g id="PROGRESS">%2$s</xliff:g>."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Lietotnes <xliff:g id="NAME">%1$s</xliff:g> lejupielāde (<xliff:g id="PROGRESS">%2$s</xliff:g> pabeigti)"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Notiek <xliff:g id="NAME">%1$s</xliff:g> instalēšana"</string>
-    <string name="dialog_update_title" msgid="114234265740994042">"Lietotne ir jāatjaunina"</string>
-    <string name="dialog_update_message" msgid="4176784553982226114">"Šai ikonai paredzētā lietotne nav atjaunināta. Varat to atjaunināt manuāli, lai atkārtoti iespējotu šo saīsni, vai noņemt ikonu."</string>
-    <string name="dialog_update" msgid="2178028071796141234">"Atjaunināt"</string>
-    <string name="dialog_remove" msgid="6510806469849709407">"Noņemt"</string>
+    <!-- no translation found for dialog_update_title (114234265740994042) -->
+    <skip />
+    <!-- no translation found for dialog_update_message (4176784553982226114) -->
+    <skip />
+    <!-- no translation found for dialog_update (2178028071796141234) -->
+    <skip />
+    <!-- no translation found for dialog_remove (6510806469849709407) -->
+    <skip />
     <string name="widgets_list" msgid="796804551140113767">"Logrīku saraksts"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Logrīku saraksts aizvērts"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Pievienot sākuma ekrānam"</string>
@@ -136,7 +140,7 @@
     <string name="item_removed" msgid="851119963877842327">"Vienums noņemts"</string>
     <string name="undo" msgid="4151576204245173321">"Atsaukt"</string>
     <string name="action_move" msgid="4339390619886385032">"Pārvietot vienumu"</string>
-    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"Pārvietot uz rindu numur <xliff:g id="NUMBER_0">%1$s</xliff:g>, kolonnu numur <xliff:g id="NUMBER_1">%2$s</xliff:g> šajā ekrānā: <xliff:g id="STRING">%3$s</xliff:g>"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"Pārvietot uz <xliff:g id="NUMBER_0">%1$s</xliff:g>. rindu, <xliff:g id="NUMBER_1">%2$s</xliff:g>. kolonnu"</string>
     <string name="move_to_position" msgid="6750008980455459790">"Pārvietot uz <xliff:g id="NUMBER">%1$s</xliff:g>. pozīciju"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"Pārvietot uz <xliff:g id="NUMBER">%1$s</xliff:g>. izlases pozīciju"</string>
     <string name="item_moved" msgid="4606538322571412879">"Vienums pārvietots"</string>
@@ -167,10 +171,8 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Darba lietotnes ir izslēgtas. Jūsu darba lietotnes nevar sūtīt jums paziņojumus, izmantot akumulatoru un piekļūt jūsu atrašanās vietai."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Darba lietotnēm ir pievienota emblēma, un tās ir redzamas jūsu IT administratoram"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Labi"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Pārtraukt darba lietotņu darbību"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Izslēgt darba lietotnes"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Ieslēgt darba lietotnes"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtrs"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"Meklēšana tālrunī"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Meklēšana planšetdatorā"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Neizdevās: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

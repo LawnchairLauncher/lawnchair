@@ -19,18 +19,16 @@ import android.content.Context;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 
-import com.android.launcher3.DeviceProfile.DeviceProfileListenable;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.util.Themes;
-import com.android.launcher3.views.AppLauncher;
+import com.android.launcher3.views.ActivityContext;
 
 import java.util.ArrayList;
 import java.util.List;
 
 // TODO(b/218912746): Share more behavior to avoid all apps context depending directly on taskbar.
 /** Base for common behavior between taskbar window contexts. */
-public abstract class BaseTaskbarContext extends ContextThemeWrapper implements AppLauncher,
-        DeviceProfileListenable {
+public abstract class BaseTaskbarContext extends ContextThemeWrapper implements ActivityContext {
 
     protected final LayoutInflater mLayoutInflater;
     private final List<OnDeviceProfileChangeListener> mDPChangeListeners = new ArrayList<>();

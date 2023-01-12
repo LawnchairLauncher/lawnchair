@@ -21,7 +21,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
+import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsController;
+import com.android.launcher3.taskbar.overlay.TaskbarOverlayController;
 import com.android.systemui.shared.rotation.RotationButtonController;
 
 import java.io.PrintWriter;
@@ -54,8 +56,11 @@ public class TaskbarControllers {
     public final TaskbarInsetsController taskbarInsetsController;
     public final VoiceInteractionWindowController voiceInteractionWindowController;
     public final TaskbarRecentAppsController taskbarRecentAppsController;
+    public final TaskbarTranslationController taskbarTranslationController;
+    public final TaskbarOverlayController taskbarOverlayController;
 
     @Nullable private LoggableTaskbarController[] mControllersToLog = null;
+    @Nullable private BackgroundRendererController[] mBackgroundRendererControllers = null;
 
     /** Do not store this controller, as it may change at runtime. */
     @NonNull public TaskbarUIController uiController = TaskbarUIController.DEFAULT;
@@ -64,6 +69,9 @@ public class TaskbarControllers {
     private final List<Runnable> mPostInitCallbacks = new ArrayList<>();
 
     @Nullable private TaskbarSharedState mSharedState = null;
+
+    // Roundness property for round corner above taskbar .
+    private final AnimatedFloat mCornerRoundness = new AnimatedFloat(this::updateCornerRoundness);
 
     public TaskbarControllers(TaskbarActivityContext taskbarActivityContext,
             TaskbarDragController taskbarDragController,
@@ -81,9 +89,11 @@ public class TaskbarControllers {
             TaskbarAutohideSuspendController taskbarAutoHideSuspendController,
             TaskbarPopupController taskbarPopupController,
             TaskbarForceVisibleImmersiveController taskbarForceVisibleImmersiveController,
+            TaskbarOverlayController taskbarOverlayController,
             TaskbarAllAppsController taskbarAllAppsController,
             TaskbarInsetsController taskbarInsetsController,
             VoiceInteractionWindowController voiceInteractionWindowController,
+            TaskbarTranslationController taskbarTranslationController,
             TaskbarRecentAppsController taskbarRecentAppsController) {
         this.taskbarActivityContext = taskbarActivityContext;
         this.taskbarDragController = taskbarDragController;
@@ -101,9 +111,11 @@ public class TaskbarControllers {
         this.taskbarAutohideSuspendController = taskbarAutoHideSuspendController;
         this.taskbarPopupController = taskbarPopupController;
         this.taskbarForceVisibleImmersiveController = taskbarForceVisibleImmersiveController;
+        this.taskbarOverlayController = taskbarOverlayController;
         this.taskbarAllAppsController = taskbarAllAppsController;
         this.taskbarInsetsController = taskbarInsetsController;
         this.voiceInteractionWindowController = voiceInteractionWindowController;
+        this.taskbarTranslationController = taskbarTranslationController;
         this.taskbarRecentAppsController = taskbarRecentAppsController;
     }
 
@@ -129,11 +141,13 @@ public class TaskbarControllers {
         taskbarEduController.init(this);
         taskbarPopupController.init(this);
         taskbarForceVisibleImmersiveController.init(this);
+        taskbarOverlayController.init(this);
         taskbarAllAppsController.init(this, sharedState.allAppsVisible);
         navButtonController.init(this);
         taskbarInsetsController.init(this);
         voiceInteractionWindowController.init(this);
         taskbarRecentAppsController.init(this);
+        taskbarTranslationController.init(this);
 
         mControllersToLog = new LoggableTaskbarController[] {
                 taskbarDragController, navButtonController, navbarButtonsViewController,
@@ -141,8 +155,13 @@ public class TaskbarControllers {
                 taskbarUnfoldAnimationController, taskbarKeyguardController,
                 stashedHandleViewController, taskbarStashController, taskbarEduController,
                 taskbarAutohideSuspendController, taskbarPopupController, taskbarInsetsController,
+                voiceInteractionWindowController, taskbarTranslationController
+        };
+        mBackgroundRendererControllers = new BackgroundRendererController[] {
+                taskbarDragLayerController, taskbarScrimViewController,
                 voiceInteractionWindowController
         };
+        mCornerRoundness.updateValue(TaskbarBackgroundRenderer.DEFAULT_ROUNDNESS);
 
         mAreAllControllersInitialized = true;
         for (Runnable postInitCallback : mPostInitCallbacks) {
@@ -159,12 +178,14 @@ public class TaskbarControllers {
 
     public void onConfigurationChanged(@Config int configChanges) {
         navbarButtonsViewController.onConfigurationChanged(configChanges);
+        taskbarDragLayerController.onConfigurationChanged();
     }
 
     /**
      * Cleans up all controllers.
      */
     public void onDestroy() {
+        mAreAllControllersInitialized = false;
         mSharedState = null;
 
         navbarButtonsViewController.onDestroy();
@@ -178,13 +199,14 @@ public class TaskbarControllers {
         taskbarAutohideSuspendController.onDestroy();
         taskbarPopupController.onDestroy();
         taskbarForceVisibleImmersiveController.onDestroy();
-        taskbarAllAppsController.onDestroy();
+        taskbarOverlayController.onDestroy();
         navButtonController.onDestroy();
         taskbarInsetsController.onDestroy();
         voiceInteractionWindowController.onDestroy();
         taskbarRecentAppsController.onDestroy();
 
         mControllersToLog = null;
+        mBackgroundRendererControllers = null;
     }
 
     /**
@@ -218,6 +240,23 @@ public class TaskbarControllers {
         rotationButtonController.dumpLogs(prefix + "\t", pw);
     }
 
+    /**
+     * Returns a float property that animates roundness of the round corner above Taskbar.
+     */
+    public AnimatedFloat getTaskbarCornerRoundness() {
+        return mCornerRoundness;
+    }
+
+    private void updateCornerRoundness() {
+        if (mBackgroundRendererControllers == null) {
+            return;
+        }
+
+        for (BackgroundRendererController controller : mBackgroundRendererControllers) {
+            controller.setCornerRoundness(mCornerRoundness.value);
+        }
+    }
+
     @VisibleForTesting
     TaskbarActivityContext getTaskbarActivityContext() {
         // Used to mock
@@ -226,5 +265,13 @@ public class TaskbarControllers {
 
     protected interface LoggableTaskbarController {
         void dumpLogs(String prefix, PrintWriter pw);
+    }
+
+    protected interface BackgroundRendererController {
+        /**
+         * Sets the roundness of the round corner above Taskbar.
+         * @param cornerRoundness 0 has no round corner, 1 has complete round corner.
+         */
+        void setCornerRoundness(float cornerRoundness);
     }
 }

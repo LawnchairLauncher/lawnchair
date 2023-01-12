@@ -38,6 +38,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.uioverrides.PredictedAppIcon;
 import com.android.launcher3.views.AbstractSlideInView;
@@ -192,7 +193,7 @@ public class HotseatEduDialog extends AbstractSlideInView<Launcher> implements I
             icon.setEnabled(false);
             icon.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
             icon.verifyHighRes();
-            CellLayout.LayoutParams lp = new CellLayout.LayoutParams(i, 0, 1, 1);
+            CellLayoutLayoutParams lp = new CellLayoutLayoutParams(i, 0, 1, 1, -1);
             mSampleHotseat.addViewToCellLayout(icon, i, info.getViewId(), lp, true);
         }
     }

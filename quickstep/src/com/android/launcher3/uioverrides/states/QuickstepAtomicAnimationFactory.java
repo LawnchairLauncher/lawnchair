@@ -113,18 +113,18 @@ public class QuickstepAtomicAnimationFactory extends
                 config.setInterpolator(ANIM_OVERVIEW_FADE, FINAL_FRAME);
                 config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, EMPHASIZED_DECELERATE);
                 config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, FINAL_FRAME);
+
+                // Scroll RecentsView to page 0 as it goes offscreen, if necessary.
+                int numPagesToScroll = overview.getNextPage() - DEFAULT_PAGE;
+                long scrollDuration = Math.min(MAX_PAGE_SCROLL_DURATION,
+                        numPagesToScroll * PER_PAGE_SCROLL_DURATION);
+                config.duration = Math.max(config.duration, scrollDuration);
+                overview.snapToPage(DEFAULT_PAGE, Math.toIntExact(config.duration));
             } else {
                 config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, ACCEL_DEACCEL);
                 config.setInterpolator(ANIM_OVERVIEW_SCALE, clampToProgress(ACCEL, 0, 0.9f));
                 config.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL_1_7);
             }
-
-            // Scroll RecentsView to page 0 as it goes offscreen, if necessary.
-            int numPagesToScroll = overview.getNextPage() - DEFAULT_PAGE;
-            long scrollDuration = Math.min(MAX_PAGE_SCROLL_DURATION,
-                    numPagesToScroll * PER_PAGE_SCROLL_DURATION);
-            config.duration = Math.max(config.duration, scrollDuration);
-            overview.snapToPage(DEFAULT_PAGE, Math.toIntExact(config.duration));
 
             Workspace<?> workspace = mActivity.getWorkspace();
             // Start from a higher workspace scale, but only if we're invisible so we don't jump.
@@ -197,7 +197,8 @@ public class QuickstepAtomicAnimationFactory extends
             config.setInterpolator(ANIM_OVERVIEW_ACTIONS_FADE, clampToProgress(LINEAR,
                     timings.getActionsFadeStartOffset(),
                     timings.getActionsFadeEndOffset()));
-        } else if (fromState == NORMAL && toState == OVERVIEW_SPLIT_SELECT) {
+        } else if ((fromState == NORMAL || fromState == ALL_APPS)
+                && toState == OVERVIEW_SPLIT_SELECT) {
             // Splitting from Home is currently only available on tablets
             SplitAnimationTimings timings = SplitAnimationTimings.TABLET_HOME_TO_SPLIT;
             config.setInterpolator(ANIM_SCRIM_FADE, clampToProgress(LINEAR,
