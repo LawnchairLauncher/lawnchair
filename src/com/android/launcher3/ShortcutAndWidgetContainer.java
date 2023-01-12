@@ -83,8 +83,8 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
             View child = getChildAt(i);
             CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
 
-            if ((lp.cellX <= cellX) && (cellX < lp.cellX + lp.cellHSpan)
-                    && (lp.cellY <= cellY) && (cellY < lp.cellY + lp.cellVSpan)) {
+            if ((lp.getCellX() <= cellX) && (cellX < lp.getCellX() + lp.cellHSpan)
+                    && (lp.getCellY() <= cellY) && (cellY < lp.getCellY() + lp.cellVSpan)) {
                 return child;
             }
         }
@@ -260,7 +260,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
         lp.canReorder = false;
         if (mContainerType == HOTSEAT) {
             CellLayout cl = (CellLayout) getParent();
-            cl.setFolderLeaveBehindCell(lp.cellX, lp.cellY);
+            cl.setFolderLeaveBehindCell(lp.getCellX(), lp.getCellY());
         }
     }
 

@@ -623,8 +623,8 @@ public class CellLayout extends ViewGroup {
                 if (alpha <= 0) continue;
 
                 mVisualizeGridPaint.setAlpha(255);
-                int x = mDragOutlines[i].cellX;
-                int y = mDragOutlines[i].cellY;
+                int x = mDragOutlines[i].getCellX();
+                int y = mDragOutlines[i].getCellY();
                 int spanX = mDragOutlines[i].cellHSpan;
                 int spanY = mDragOutlines[i].cellVSpan;
 
@@ -764,7 +764,8 @@ public class CellLayout extends ViewGroup {
 
         // Generate an id for each view, this assumes we have at most 256x256 cells
         // per workspace screen
-        if (lp.cellX >= 0 && lp.cellX <= mCountX - 1 && lp.cellY >= 0 && lp.cellY <= mCountY - 1) {
+        if (lp.getCellX() >= 0 && lp.getCellX() <= mCountX - 1
+                && lp.getCellY() >= 0 && lp.getCellY() <= mCountY - 1) {
             // If the horizontal or vertical span is set to -1, it is taken to
             // mean that it spans the extent of the CellLayout
             if (lp.cellHSpan < 0) lp.cellHSpan = mCountX;
@@ -1072,7 +1073,7 @@ public class CellLayout extends ViewGroup {
 
             if (adjustOccupied) {
                 GridOccupancy occupied = permanent ? mOccupied : mTmpOccupied;
-                occupied.markCells(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan, false);
+                occupied.markCells(lp.getCellX(), lp.getCellY(), lp.cellHSpan, lp.cellVSpan, false);
                 occupied.markCells(cellX, cellY, lp.cellHSpan, lp.cellVSpan, true);
             }
 
@@ -1083,11 +1084,11 @@ public class CellLayout extends ViewGroup {
             final int oldY = lp.y;
             lp.isLockedToGrid = true;
             if (permanent) {
-                lp.cellX = info.cellX = cellX;
-                lp.cellY = info.cellY = cellY;
+                lp.setCellX(info.cellX = cellX);
+                lp.setCellY(info.cellY = cellY);
             } else {
-                lp.tmpCellX = cellX;
-                lp.tmpCellY = cellY;
+                lp.setTmpCellX(cellX);
+                lp.setTmpCellY(cellY);
             }
             clc.setupLp(child);
             final int newX = lp.x;
@@ -1167,8 +1168,8 @@ public class CellLayout extends ViewGroup {
             mDragOutlineCurrent = (oldIndex + 1) % mDragOutlines.length;
 
             CellLayoutLayoutParams cell = mDragOutlines[mDragOutlineCurrent];
-            cell.cellX = cellX;
-            cell.cellY = cellY;
+            cell.setCellX(cellX);
+            cell.setCellY(cellY);
             cell.cellHSpan = spanX;
             cell.cellVSpan = spanY;
 
@@ -1385,8 +1386,8 @@ public class CellLayout extends ViewGroup {
             CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
             CellAndSpan c = solution.map.get(child);
             if (c != null) {
-                lp.tmpCellX = c.cellX;
-                lp.tmpCellY = c.cellY;
+                lp.setTmpCellX(c.cellX);
+                lp.setTmpCellY(c.cellY);
                 lp.cellHSpan = c.spanX;
                 lp.cellVSpan = c.spanY;
                 mTmpOccupied.markCells(c, true);
@@ -1433,7 +1434,7 @@ public class CellLayout extends ViewGroup {
             CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
             if (c != null && !skip && (child instanceof Reorderable)) {
                 ReorderPreviewAnimation rha = new ReorderPreviewAnimation((Reorderable) child,
-                        mode, lp.cellX, lp.cellY, c.cellX, c.cellY, c.spanX, c.spanY);
+                        mode, lp.getCellX(), lp.getCellY(), c.cellX, c.cellY, c.spanX, c.spanY);
                 rha.animate();
             }
         }
@@ -1626,12 +1627,14 @@ public class CellLayout extends ViewGroup {
             // We do a null check here because the item info can be null in the case of the
             // AllApps button in the hotseat.
             if (info != null && child != dragView) {
-                final boolean requiresDbUpdate = (info.cellX != lp.tmpCellX
-                        || info.cellY != lp.tmpCellY || info.spanX != lp.cellHSpan
+                final boolean requiresDbUpdate = (info.cellX != lp.getTmpCellX()
+                        || info.cellY != lp.getTmpCellY() || info.spanX != lp.cellHSpan
                         || info.spanY != lp.cellVSpan);
 
-                info.cellX = lp.cellX = lp.tmpCellX;
-                info.cellY = lp.cellY = lp.tmpCellY;
+                lp.setCellX(lp.getTmpCellX());
+                info.cellX = lp.getTmpCellX();
+                info.cellY = lp.getTmpCellY();
+                lp.setCellY(lp.getTmpCellY());
                 info.spanX = lp.cellHSpan;
                 info.spanY = lp.cellVSpan;
 
@@ -1697,7 +1700,8 @@ public class CellLayout extends ViewGroup {
             if (child == dragView) continue;
             CellLayoutLayoutParams
                     lp = (CellLayoutLayoutParams) child.getLayoutParams();
-            r1.set(lp.cellX, lp.cellY, lp.cellX + lp.cellHSpan, lp.cellY + lp.cellVSpan);
+            r1.set(lp.getCellX(), lp.getCellY(), lp.getCellX() + lp.cellHSpan,
+                    lp.getCellY() + lp.cellVSpan);
             if (Rect.intersects(r0, r1)) {
                 mIntersectingViews.add(child);
                 if (boundingRect != null) {
@@ -1723,11 +1727,11 @@ public class CellLayout extends ViewGroup {
                 View child = mShortcutsAndWidgets.getChildAt(i);
                 CellLayoutLayoutParams
                         lp = (CellLayoutLayoutParams) child.getLayoutParams();
-                if (lp.tmpCellX != lp.cellX || lp.tmpCellY != lp.cellY) {
-                    lp.tmpCellX = lp.cellX;
-                    lp.tmpCellY = lp.cellY;
-                    animateChildToPosition(child, lp.cellX, lp.cellY, REORDER_ANIMATION_DURATION,
-                            0, false, false);
+                if (lp.getTmpCellX() != lp.getCellX() || lp.getTmpCellY() != lp.getCellY()) {
+                    lp.setTmpCellX(lp.getCellX());
+                    lp.setTmpCellY(lp.getCellY());
+                    animateChildToPosition(child, lp.getCellX(), lp.getCellY(),
+                            REORDER_ANIMATION_DURATION, 0, false, false);
                 }
             }
             setItemPlacementDirty(false);
@@ -2449,9 +2453,9 @@ public class CellLayout extends ViewGroup {
             CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
             CellAndSpan c;
             if (temp) {
-                c = new CellAndSpan(lp.tmpCellX, lp.tmpCellY, lp.cellHSpan, lp.cellVSpan);
+                c = new CellAndSpan(lp.getTmpCellX(), lp.getTmpCellY(), lp.cellHSpan, lp.cellVSpan);
             } else {
-                c = new CellAndSpan(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan);
+                c = new CellAndSpan(lp.getCellX(), lp.getCellY(), lp.cellHSpan, lp.cellVSpan);
             }
             solution.add(child, c);
         }
@@ -2794,7 +2798,7 @@ public class CellLayout extends ViewGroup {
         if (view == null || view.getParent() != mShortcutsAndWidgets) return;
         CellLayoutLayoutParams
                 lp = (CellLayoutLayoutParams) view.getLayoutParams();
-        mOccupied.markCells(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan, true);
+        mOccupied.markCells(lp.getCellX(), lp.getCellY(), lp.cellHSpan, lp.cellVSpan, true);
     }
 
     public void markCellsAsUnoccupiedForView(View view) {
@@ -2807,7 +2811,7 @@ public class CellLayout extends ViewGroup {
         if (view == null || view.getParent() != mShortcutsAndWidgets) return;
         CellLayoutLayoutParams
                 lp = (CellLayoutLayoutParams) view.getLayoutParams();
-        mOccupied.markCells(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan, false);
+        mOccupied.markCells(lp.getCellX(), lp.getCellY(), lp.cellHSpan, lp.cellVSpan, false);
     }
 
     public int getDesiredWidth() {
