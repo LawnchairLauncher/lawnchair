@@ -120,6 +120,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.CallSuper;
+import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -2063,6 +2064,14 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     protected void onStateBack() {
         mStateManager.getState().onBackPressed(this);
+    }
+
+    protected void onBackProgressed(@FloatRange(from = 0.0, to = 1.0) float backProgress) {
+        mStateManager.getState().onBackProgressed(this, backProgress);
+    }
+
+    protected void onBackCancelled() {
+        mStateManager.getState().onBackCancelled(this);
     }
 
     protected void onScreenOff() {
