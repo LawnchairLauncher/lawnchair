@@ -21,8 +21,7 @@
 -->
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.android.launcher3">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!--
     The manifest defines the common entries that should be present in any derivative of Launcher3.
