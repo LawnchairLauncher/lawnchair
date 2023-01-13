@@ -41,6 +41,7 @@ class SharedPreferencesMigration(private val context: Context) {
         "pref_enableMinusOne" to "enable_feed", "pref_enableIconSelection" to "enable_icon_selection",
         "pref_showComponentName" to "show_component_names", "pref_allAppsColumns" to "drawer_columns",
         "pref_folderColumns" to "folder_columns",
+        "pref_maxSearchResultCount" to "max_search_result_count",
     )
 
     fun produceMigration() = androidx.datastore.migrations.SharedPreferencesMigration(

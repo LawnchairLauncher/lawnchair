@@ -322,6 +322,7 @@
       <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
       <string name="fuzzy_search_title">Fuzzy Search</string>
       <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
+      <string name="max_search_result_count_title">Max search result count</string>
 
     <!-- <string name="grid" /> -->
       <string name="app_drawer_columns">App Drawer Columns</string>

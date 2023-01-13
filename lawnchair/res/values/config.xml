@@ -113,5 +113,6 @@
     <item name="config_default_home_icon_label_size_factor" type="dimen" format="float">1.0</item>
     <item name="config_default_drawer_icon_label_size_factor" type="dimen" format="float">1.0</item>
     <item name="config_default_drawer_cell_height_factor" type="dimen" format="float">1.0</item>
+    <item name="config_default_search_max_result_count" type="dimen" format="integer">5</item>
 
 </resources>
