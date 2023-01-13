@@ -51,7 +51,7 @@
     <string name="workspace_increase_max_grid_size_description">Aumenta la dimensione massima consentita della griglia della schermata home da 10 x 10 a 20 x 20.</string>
     <string name="always_reload_icons_label">Ricarica sempre le icone</string>
     <string name="always_reload_icons_description">Evita di utilizzare icone dalla cache dai pacchetti d\'icone</string>
-    <string name="transparent_background_icons">Transparent Themed Icons</string>
+    <string name="transparent_background_icons">Icone a tema trasparente</string>
     <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
     <string name="smartspace_mode_selection">At a Glance Provider selection</string>
     <!-- GeneralPreferences -->
@@ -85,7 +85,7 @@
     <string name="theme_follow_wallpaper">Abbina allo sfondo</string>
     <string name="accent_color">Colore primario</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Custom Icon Shape</string>
+    <string name="custom_icon_shape">Forma icona personalizzata</string>
     <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
     <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
     <string name="icon_shape_corner">Corner Shape</string>

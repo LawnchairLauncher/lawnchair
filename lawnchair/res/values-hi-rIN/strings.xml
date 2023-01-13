@@ -31,8 +31,8 @@
     <string name="app_drawer_description">हिडन ऐप्स, कॉलम काउंट, आइकॉन</string>
     <string name="folders_label">फ़ोल्डर</string>
     <string name="folders_description">पंक्ति और स्तंभ गणना</string>
-    <string name="gestures_label">संकेत</string>
-    <string name="gestures_description">Gerneral_xd</string>
+    <string name="gestures_label">जेस्चर</string>
+    <string name="gestures_description">टैप्स और स्वाइप्स</string>
     <string name="quickstep_label">हाल ही</string>
     <string name="quickstep_description">\"सभी हटाएं\" बटन के किनारे</string>
     <string name="about_label">बारे में</string>
@@ -45,15 +45,15 @@
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">फॉन्ट बदलें</string>
     <string name="font_picker_description">कुछ शब्द नहीं बदलेंगे</string>
-    <string name="smartspace_calendar_label">F5gt</string>
-    <string name="smartspace_calendar_description">Vrv4c</string>
-    <string name="workspace_increase_max_grid_size_label">Gegr</string>
-    <string name="workspace_increase_max_grid_size_description">Home grr</string>
-    <string name="always_reload_icons_label">हमेशा आइकन को पुनः लोड करे</string>
-    <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
+    <string name="smartspace_calendar_label">ऐट अ ग्लैन्स अनुकूलन</string>
+    <string name="smartspace_calendar_description">गैर-ग्रेगोरियन कैलेंडर सिस्टम में तारीख दिखाने की अनुमति दें।</string>
+    <string name="workspace_increase_max_grid_size_label">अधिकतम होम स्क्रीन ग्रिड आकार में वृद्धि</string>
+    <string name="workspace_increase_max_grid_size_description">अधिकतम अनुमत होम स्क्रीन ग्रिड आकार को 10 x 10 से बढ़ाकर 20 x 20 करें।</string>
+    <string name="always_reload_icons_label">आइकन को हमेशा पुनः लोड करें</string>
+    <string name="always_reload_icons_description">आइकन पैक से कैश्ड आइकन का उपयोग करने से बचें</string>
     <string name="transparent_background_icons">पारदर्शी थीम पर आधारित आइकन</string>
-    <string name="transparent_background_icons_description">थीम्ड आइकन की पार्श्वभूमि पारदर्शी रखे</string>
-    <string name="smartspace_mode_selection">At a Glance Provider selection</string>
+    <string name="transparent_background_icons_description">थीम्ड आइकन की पृष्ठभूमि पारदर्शी रखें</string>
+    <string name="smartspace_mode_selection">ऐट अ ग्लैन्स प्रदाता चयन</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">होम स्क्रीन रोटेशन</string>
     <string name="home_screen_rotaton_description">जब फोन घुमाया जाता है।</string>
@@ -70,8 +70,8 @@
     <string name="show_notification_count">नोटिफिकेशन की संख्या दिखाएं</string>
     <string name="notification_dots_color">अधिसूचना बिंदु का रंग</string>
     <string name="notification_dots_text_color">अधिसूचना गणना का रंग</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_always">चेतावनी: अधिसूचना डॉट &amp; काउंटर रंग एक दूसरे के साथ पर्याप्त कंट्रास्ट नहीं रखते हैं</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">चेतावनी: अधिसूचना डॉट &amp; काउंटर रंगों में हमेशा एक दूसरे के साथ पर्याप्त कंट्रास्ट नहीं हो सकता है</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">नोटिफिकेशन परमिशन चाहिए</string>
     <string name="missing_notification_access_description">नोटिफिकेशन परमिशन चाहिए.</string>
@@ -85,22 +85,22 @@
     <string name="theme_follow_wallpaper">मैच वॉलपेपर</string>
     <string name="accent_color">लहजे का रंग</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Custom Icon Shape</string>
-    <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
-    <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
-    <string name="icon_shape_corner">Corner Shape</string>
+    <string name="custom_icon_shape">कस्टम आइकन आकार</string>
+    <string name="custom_icon_shape_create">कस्टम आइकन आकार बनाएँ</string>
+    <string name="custom_icon_shape_edit">कस्टम आइकन आकार संपादित करें</string>
+    <string name="icon_shape_corner">कोने का आकार</string>
     <string name="icon_shape_corner_round">गोलाकार</string>
-    <string name="icon_shape_corner_squircle">Smooth</string>
-    <string name="icon_shape_corner_cut">काटे</string>
+    <string name="icon_shape_corner_squircle">चिकना</string>
+    <string name="icon_shape_corner_cut">कट</string>
     <string name="icon_shape_top_left">ऊपरी बाएं</string>
-    <string name="icon_shape_top_right">ऊपरी दाए</string>
-    <string name="icon_shape_bottom_left">निजी बाए</string>
-    <string name="icon_shape_bottom_right">निजी दाए</string>
+    <string name="icon_shape_top_right">ऊपरी दाएं</string>
+    <string name="icon_shape_bottom_left">निजी बाएं</string>
+    <string name="icon_shape_bottom_right">निजी दाएं</string>
     <string name="create">सृजन करे</string>
-    <string name="clipboard">Clipboard</string>
-    <string name="export_to_clipboard">Export to Clipboard</string>
-    <string name="import_from_clipboard">Import from Clipboard</string>
-    <string name="icon_shape_clipboard_import_error">Clipboard does not contain a valid icon shape</string>
+    <string name="clipboard">क्लिपबोर्ड</string>
+    <string name="export_to_clipboard">क्लिपबोर्ड पर निर्यात करें</string>
+    <string name="import_from_clipboard">क्लिपबोर्ड से आयात करें</string>
+    <string name="icon_shape_clipboard_import_error">क्लिपबोर्ड में वैध आइकान आकार नहीं है</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">चिह्न पैक</string>
@@ -108,7 +108,7 @@
     <string name="themed_icon_title">आइकन थीम करें</string>
     <string name="themed_icons_off_label">बंद</string>
     <string name="themed_icons_home_label">होम स्क्रीन</string>
-    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
+    <string name="themed_icons_home_and_drawer_label">होम स्क्रीन &amp; एप ड्रॉर</string>
     <string name="lawnicons_not_installed_description">लॉन आइकन्स ऐप इंस्टॉल नहीं है।</string>
     <!-- <string name="cancel" /> (unknown source)-->
     <!-- IconPickerPreference -->
@@ -119,16 +119,16 @@
     <string name="icon_shape_diamond">विषमकोण</string>
     <string name="icon_shape_egg">अंडाकार</string>
     <string name="icon_shape_cupertino">एप्पल आई-ओ-एस</string>
-    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_octagon">अष्टकोण</string>
     <string name="icon_shape_sammy">वन यूआई</string>
     <string name="icon_shape_rounded_square">गोलाकार वर्ग</string>
-    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_sharp_square">नुकीला चौकोर</string>
     <string name="icon_shape_square">चौकोर</string>
     <string name="icon_shape_squircle">वर्गाकार गोल</string>
     <string name="icon_shape_teardrop">आँसू आकार</string>
     <!-- FontSelectionPreferences -->
-    <string name="pref_fonts_add_fonts">Add Fonts</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
+    <string name="pref_fonts_add_fonts">फ़ॉन्ट्स जोड़ें</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF समर्थित।</string>
     <string name="pref_fonts_missing_font">फोंट नहीं मिला।</string>
     <string name="font_variant_italic">इटैलिक</string>
     <string name="font_weight_thin">पतला</string>
@@ -143,7 +143,7 @@
     <string name="reset_font">रीसेट</string>
     <!-- colorpreference/* -->
     <string name="dynamic">क्रियाशील</string>
-    <string name="swatches">Swatches</string>
+    <string name="swatches">नमूनें</string>
     <string name="presets">पूर्व निर्धारित</string>
     <string name="custom">रुचि अनुसार</string>
     <string name="rgb">RGB</string>
@@ -151,16 +151,16 @@
     <string name="rgb_green">हरा</string>
     <string name="rgb_blue">नीला</string>
     <string name="hsb">HSB</string>
-    <string name="hsb_hue">Hue</string>
-    <string name="hsb_saturation">Saturation</string>
-    <string name="hsb_brightness">Brightness</string>
+    <string name="hsb_hue">ह्यू</string>
+    <string name="hsb_saturation">संतृप्ति</string>
+    <string name="hsb_brightness">चमक</string>
     <string name="hex">Hex</string>
-    <string name="color_sliders">Sliders</string>
+    <string name="color_sliders">स्लाइडर्स</string>
     <string name="action_copy">कॉपी</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_paste">पेस्ट</string>
     <string name="copied_toast">क्लिपबोर्ड पर कॉपी हो गया</string>
     <string name="invalid_color">अमान्य रंग।</string>
-    <string name="launcher_default_color">Managed by Lawnchair</string>
+    <string name="launcher_default_color">Lawnchair द्वारा प्रबंधित</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">होम स्क्रीन पर नए ऐप्स जोड़ें</string>
@@ -169,17 +169,17 @@
     <string name="minus_one_unavailable">कोई फ़ीड स्थापित नहीं है।</string>
     <string name="wallpaper">वॉलपेपर</string>
     <string name="wallpaper_scrolling_label">स्क्रॉल वॉलपेपर</string>
-    <string name="wallpaper_depth_effect_label">Wallpaper Depth Effect</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_label">वॉलपेपर गहराई प्रभाव</string>
+    <string name="wallpaper_depth_effect_description">लॉन्चर के क्षेत्रों के बीच परिवर्तन करते समय वॉलपेपर में ज़ूम इन और आउट करें।</string>
     <string name="show_sys_ui_scrim">ऊपरी हिस्से पर प्रतिछाया</string>
-    <string name="layout">Layout</string>
+    <string name="layout">लेआउट</string>
     <string name="home_screen_grid">होम स्क्रीन ग्रिड</string>
     <string name="home_screen_lock">होम स्क्रीन लॉक करें</string>
-    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_lock_description">होम स्क्रीन लेआउट में परिवर्तन रोकता है।</string>
     <string name="home_screen_unlock">होम स्क्रीन अनलॉक करें</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
-    <string name="home_screen_locked">Home Screen is locked.</string>
+    <string name="home_screen_lock_toggle_from_home_popup">पॉप-अप मेनू में लॉक बटन दिखाएं</string>
+    <string name="home_screen_locked">होम स्क्रीन लॉक है।</string>
     <string name="status_bar_label">स्टेटस बार</string>
     <string name="show_status_bar">स्टेट्स बार दिखाएँ</string>
     <string name="dark_status_bar_label">गहरा स्टेट्स बार</string>
@@ -187,14 +187,14 @@
     <string name="icon_size">चिह्न आकार</string>
     <string name="show_home_labels">लेबल दिखाएं</string>
     <string name="label_size">नाम आकार</string>
-    <string name="reset_custom_icons">Reset Custom Icons</string>
-    <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
-    <string name="home_screen_text_color">Text Color</string>
+    <string name="reset_custom_icons">कस्टम आइकन रीसेट करें</string>
+    <string name="reset_custom_icons_confirmation">सभी कस्टम आइकन रीसेट होंगें। क्या आप जारी रखना चाहते हैं?</string>
+    <string name="home_screen_text_color">लिखावट का रंग</string>
     <string name="color_light">रोशनी</string>
     <string name="color_dark">अंधेरा</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
     <string name="force_rounded_widgets">गोलाकार किनारे</string>
-    <string name="allow_widget_overlap">Allow Overlap</string>
+    <string name="allow_widget_overlap">ओवरलैप की अनुमति दें</string>
     <!-- HomeScreenGridPreferences -->
     <!-- <string name="home_screen_grid" /> -->
     <string name="columns">कॉलम</string>
@@ -202,16 +202,16 @@
     <string name="apply_grid">ओके</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_battery_charging">चार्जिंग</string>
-    <string name="smartspace_battery_full">चार्जड</string>
+    <string name="smartspace_battery_charging">चार्ज हो रहा है</string>
+    <string name="smartspace_battery_full">चार्ज हो चुका है</string>
     <string name="smartspace_battery_low">बैटरी कम है</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% -- पूर्ति होगी %2$s में"</string>
-    <string name="accessibility_smartspace_page">Page %1$d of %2$d</string>
-    <string name="smartspace_widget">एक नजर में</string>
+    <string name="accessibility_smartspace_page">पृष्ठ %1$d का %2$d</string>
+    <string name="smartspace_widget">ऐट अ ग्लैन्स</string>
     <string name="smartspace_widget_description">क्या क्या दिखाना है</string>
-    <string name="smartspace_widget_placeholder_date">शुक्र, मार 3</string>
-    <string name="preview_label">Preview</string>
-    <string name="smartspace_calendar">पंचांग</string>
+    <string name="smartspace_widget_placeholder_date">शुक्र, मार्च ३</string>
+    <string name="preview_label">प्रीव्यू</string>
+    <string name="smartspace_calendar">कैलेंडर</string>
     <string name="smartspace_date_and_time">तिथि और समय</string>
     <string name="smartspace_date">तिथि</string>
     <string name="smartspace_time">समय</string>
@@ -220,37 +220,37 @@
     <string name="smartspace_time_12_hour_format">१२-घंटे वाला प्रारूप</string>
     <string name="smartspace_time_24_hour_format">२४-घंटे वाला प्रारूप</string>
     <string name="smartspace_weather">मौसम</string>
-    <string name="smartspace_battery_status">Battery Status</string>
-    <string name="smartspace_now_playing">Now Playing</string>
-    <string name="smartspace_requires_setup">Tap to Set Up</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
-    <string name="smartspace_media_info_separator">" — "</string>
-    <string name="smartspace_calendar_gregorian">Gregorian</string>
-    <string name="smartspace_calendar_persian">Persian</string>
+    <string name="smartspace_battery_status">बैटरी की स्थिति</string>
+    <string name="smartspace_now_playing">अभी चल रहा है</string>
+    <string name="smartspace_requires_setup">सेट अप के लिए टैप करें</string>
+    <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> का इस्तेमाल करने के लिए, नोटिफ़िकेशन डॉट्स चालू करें।</string>
+    <string name="smartspace_media_info_separator">" – "</string>
+    <string name="smartspace_calendar_gregorian">ग्रेगोरियन</string>
+    <string name="smartspace_calendar_persian">फ़ारसी</string>
     <string name="smartspace_preferences">पसंद</string>
-    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
-    <string name="smartspace_mode_label">At a Glance Provider</string>
+    <string name="smartspace_widget_toggle_label">होम स्क्रीन पर दिखाएं</string>
+    <string name="smartspace_widget_toggle_description">एक नज़र में \"Lawnchair\" विजेट रखकर मैन्युअल रूप से जोड़ा जा सकता है।</string>
+    <string name="smartspace_mode_label">ऐट अ ग्लैन्स प्रदाता</string>
     <string name="smartspace_mode_lawnchair">Lawnchair</string>
-    <string name="smartspace_mode_google">Google</string>
-    <string name="smartspace_mode_google_search">Google Search</string>
+    <string name="smartspace_mode_google">गूगल</string>
+    <string name="smartspace_mode_google_search">गूगल खोज</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="hotseat_mode_label">Search Bar Widget</string>
-    <string name="hotseat_mode_disabled">Disabled</string>
+    <string name="hotseat_mode_label">सर्च बार विजेट</string>
+    <string name="hotseat_mode_disabled">अक्षम करें</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
-    <string name="hotseat_mode_google_search">Google Search Bar</string>
+    <string name="hotseat_mode_google_search">गूगल सर्च बार</string>
     <string name="search_bar_label">सर्च बार</string>
     <string name="corner_radius_label">किनारे</string>
     <string name="apply_accent_color_label">असेंट रंग इस्तेमाल करें</string>
     <string name="search_provider">खोज प्रदाता</string>
     <string name="grid">ग्रिड</string>
-    <string name="dock_icons">डॉक प्रतीक I</string>
+    <string name="dock_icons">डॉक आइकान्स</string>
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
-    <string name="search_provider_app_search">एप खोजे</string>
-    <string name="app_label">App</string>
-    <string name="website_label">Website</string>
+    <string name="search_provider_app_search">ऐप खोजें</string>
+    <string name="app_label">ऐप</string>
+    <string name="website_label">वेबसाइट</string>
     <string name="qsb_search_provider_app_required">एप की जरूरत।</string>
     <!-- AppDrawerPrefences -->
     <!-- app_drawer_label -->
@@ -258,8 +258,8 @@
     <string name="background_opacity">चित्रभूमि अपारदर्शिता</string>
     <!-- hiddenApps_label -->
     <string name="hidden_apps_label">छिपे हुए ऐप्स</string>
-    <string name="show_enable_smart_hide">पूरा नाम टाईप होने पर दिखाए</string>
-    <string name="hide_hidden_apps_search">खोज में दिखाए</string>
+    <string name="show_enable_smart_hide">पूरा नाम टाईप होने पर दिखाएं</string>
+    <string name="hide_hidden_apps_search">खोज परिणामों में छिपाएँ</string>
     <string name="pref_category_search">खोजें</string>
     <string name="show_app_search_bar">खोज बार दिखाएँ</string>
     <string name="pref_search_auto_show_keyboard">स्वत: कीबोर्ड खोलें</string>
@@ -284,25 +284,25 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">आइकन के पीछे की अपारदर्शिता</string>
-    <string name="folder_preview_bg_color_label">Icon Background Color</string>
+    <string name="folder_preview_bg_color_label">आइकान पृष्ठभूमि रंग</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">मैक्स। फ़ोल्डर कॉलम</string>
     <string name="max_folder_rows">ज्यादा फ़ोल्डर पंक्तियाँ</string>
     <!-- GesturePreference -->
     <!-- <string name="gestures_label" /> -->
-    <string name="gesture_double_tap">Double Tap</string>
-    <string name="gesture_swipe_up">Swipe Up</string>
-    <string name="gesture_swipe_down">Swipe Down</string>
-    <string name="gesture_home_tap">Home Button Tap</string>
-    <string name="gesture_back_tap">Back Button Tap</string>
-    <string name="gesture_handler_no_op">कुछ नहीं करना</string>
+    <string name="gesture_double_tap">दो बार टैप</string>
+    <string name="gesture_swipe_up">ऊपर स्वाइप करें</string>
+    <string name="gesture_swipe_down">नीचे स्वाइप करें</string>
+    <string name="gesture_home_tap">होम बटन दबाने पर</string>
+    <string name="gesture_back_tap">बैक बटन दबाने पर</string>
+    <string name="gesture_handler_no_op">कुछ नहीं करें</string>
     <string name="gesture_handler_sleep">निलंबित</string>
-    <string name="gesture_handler_open_notifications">अधिसूचना सूचि खोलना</string>
-    <string name="gesture_handler_open_app_option">ऐप खोलना</string>
-    <string name="gesture_handler_open_app_config">%1$s खोलना</string>
-    <string name="gesture_handler_open_app_drawer">ऐप दराज खोलना</string>
-    <string name="gesture_handler_open_app_search">ऐप खोज खोले</string>
-    <string name="gesture_handler_open_search">एप खोजे</string>
+    <string name="gesture_handler_open_notifications">अधिसूचना सूचि खोलें</string>
+    <string name="gesture_handler_open_app_option">ऐप खोलें</string>
+    <string name="gesture_handler_open_app_config">%1$s खोलें</string>
+    <string name="gesture_handler_open_app_drawer">ऐप ड्रॉर खोलें</string>
+    <string name="gesture_handler_open_app_search">ऐप खोज खोलें</string>
+    <string name="gesture_handler_open_search">खोज खोलें</string>
     <string name="pick_app_for_gesture">ऐप चुनें</string>
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
@@ -338,7 +338,7 @@
     <string name="icon_picker_reset_to_default">डिफॉल्ट पर रीसेट करें</string>
     <string name="icon_pack_external_picker">अन्य आइकॉन पिकर खोलें</string>
     <string name="pick_icon_from_label">से आइकन चुनें</string>
-    <string name="icon_picker_load_failed">बाकी आइकॉनस लोड नहीं हो पाए|</string>
+    <string name="icon_picker_load_failed">बाकी आइकन लोड नहीं किए जा सके।</string>
     <!-- Misc -->
     <string name="all_apps_search_bar_hint">ऍप्स खोजें</string>
     <string name="settings_button_text">होम सेटिंग्स</string>
@@ -380,23 +380,23 @@
     <string name="label_voice_search">ध्वनि खोज</string>
     <string name="all_apps_search_market_message">और ऐप खोजें</string>
     <string name="error_no_market_or_browser_installed">कोई ऐप स्टोर या ब्राउज़र उपस्थित नहीं है|</string>
-    <string name="quickstep_incompatible">सिस्टम के साथ एकीकरण असंगत है</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
+    <string name="quickstep_incompatible">असंगत प्रणाली एकीकरण</string>
+    <string name="quickstep_incompatible_description">आपका डिवाइस %1$s द्वारा प्रदान किए गए सिस्टम जेस्चर (क्विकस्टेप के रूप में जाना जाता है) के लिए कॉन्फ़िगर किया गया है, लेकिन %1$s का यह संस्करण आपके Android संस्करण के साथ संगत नहीं है। अपने डिवाइस का उपयोग जारी रखने के लिए, कृपया %1$s अपडेट अनइंस्टॉल करें या %1$s को सिस्टम-जेस्चर प्रदाता के रूप में अक्षम करें।</string>
     <string name="delete">नष्ट करे</string>
     <!-- Backup -->
-    <string name="create_backup">बैकअप का सृजन करे|</string>
-    <string name="create_backup_action">सृजन करे</string>
+    <string name="create_backup">बैकअप बनाएँ</string>
+    <string name="create_backup_action">बनाएँ</string>
     <string name="what_to_backup">क्या-क्या बैकअप करना है</string>
-    <string name="backup_content_layout_and_settings">नक्शा और सेटिंग्स</string>
+    <string name="backup_content_layout_and_settings">लेआउट और सेटिंग्स</string>
     <string name="backup_content_wallpaper">वॉलपेपर</string>
-    <string name="backup_create_success">बैकअप बन गया.|</string>
-    <string name="backup_create_error">बैकअप बनाना असफल रहा|</string>
-    <string name="restore_backup">बैकअप को पुनर्स्थापित करे</string>
-    <string name="restore_backup_action">पुनर्स्थापित करे</string>
-    <string name="what_to_restore">क्या-क्या पुनर्स्थापित करना है</string>
-    <string name="backup_restore_success">बैकअप पुनर्स्थापित हो गया|</string>
-    <string name="backup_restore_error">बैकअप पुनर्स्थापित करना असफल रहा|</string>
-    <string name="invalid_backup_file">बैकअप फाइल अमान्य है|</string>
+    <string name="backup_create_success">बैकअप बन गया।</string>
+    <string name="backup_create_error">बैकअप बनाना असफल रहा।</string>
+    <string name="restore_backup">बैकअप को पुनर्स्थापित करें</string>
+    <string name="restore_backup_action">पुनर्स्थापित करें</string>
+    <string name="what_to_restore">क्या पुनर्स्थापित करना है</string>
+    <string name="backup_restore_success">बैकअप पुनर्स्थापित हो गया।</string>
+    <string name="backup_restore_error">बैकअप पुनर्स्थापित करना असफल रहा।</string>
+    <string name="invalid_backup_file">बैकअप फाइल अमान्य है।</string>
     <string name="x_by_y">%1$d × %2$d</string>
-    <string name="x_and_y">%s और %s</string>
+    <string name="x_and_y">%s &amp; %s</string>
 </resources>

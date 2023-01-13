@@ -19,6 +19,7 @@
 
 package app.lawnchair.icons.shape
 
+import android.content.Context
 import android.graphics.Path
 import android.graphics.PointF
 import android.util.Log
@@ -351,23 +352,30 @@ open class IconShape(val topLeft: Corner,
 
     companion object {
 
-        fun fromString(value: String): IconShape? {
-            return when (value) {
-                "circle" -> Circle
-                "square" -> Square
-                "sharpSquare" -> SharpSquare
-                "roundedSquare" -> RoundedSquare
-                "squircle" -> Squircle
-                "sammy" -> Sammy
-                "teardrop" -> Teardrop
-                "cylinder" -> Cylinder
-                "cupertino" -> Cupertino
-                "octagon" -> Octagon
-                "diamond" -> Diamond
-                "egg" -> Egg
-                "" -> null
-                else -> runCatching { parseCustomShape(value) }.getOrNull()
+        fun fromString(value: String, context: Context): IconShape? {
+            if (value == "system") {
+                runCatching {
+                    return IconShapeManager.getSystemIconShape(context = context)
+                }
             }
+            return fromStringWithoutContext(value = value)
+        }
+
+        private fun fromStringWithoutContext(value: String): IconShape? = when (value) {
+            "circle" -> Circle
+            "square" -> Square
+            "sharpSquare" -> SharpSquare
+            "roundedSquare" -> RoundedSquare
+            "squircle" -> Squircle
+            "sammy" -> Sammy
+            "teardrop" -> Teardrop
+            "cylinder" -> Cylinder
+            "cupertino" -> Cupertino
+            "octagon" -> Octagon
+            "diamond" -> Diamond
+            "egg" -> Egg
+            "" -> null
+            else -> runCatching { parseCustomShape(value) }.getOrNull()
         }
 
         private fun parseCustomShape(value: String): IconShape {

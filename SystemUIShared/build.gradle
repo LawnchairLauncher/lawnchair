@@ -5,6 +5,9 @@ plugins {
 
 android {
     namespace "com.android.systemui.shared"
+    buildFeatures {
+        aidl true
+    }
     sourceSets {
         main {
             java.srcDirs = ['src']

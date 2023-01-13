@@ -203,7 +203,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
     private final Map<Integer, CellLayout> mWorkspaceScreens = new HashMap<>();
     private final AppWidgetHost mAppWidgetHost;
     private final SparseIntArray mWallpaperColorResources;
-    private int mWorkspaceSearchContainer = R.layout.search_container_workspace;
+    private int mWorkspaceSearchContainer = R.layout.smartspace_container;
 
     public LauncherPreviewRenderer(Context context,
             InvariantDeviceProfile idp,

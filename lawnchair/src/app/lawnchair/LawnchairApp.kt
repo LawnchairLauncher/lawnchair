@@ -16,6 +16,7 @@
 
 package app.lawnchair
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.content.ComponentName
@@ -50,13 +51,11 @@ import com.android.systemui.shared.system.QuickStepContract
 import java.io.File
 
 class LawnchairApp : Application() {
-
-    val activityHandler = ActivityHandler()
     private val compatible = Build.VERSION.SDK_INT in BuildConfig.QUICKSTEP_MIN_SDK..BuildConfig.QUICKSTEP_MAX_SDK
-    private val isRecentsComponent by lazy { checkRecentsComponent() }
-    private val recentsEnabled get() = compatible && isRecentsComponent
+    private val isRecentsComponent: Boolean by lazy { checkRecentsComponent() }
+    private val recentsEnabled: Boolean get() = compatible && isRecentsComponent
     internal var accessibilityService: LawnchairAccessibilityService? = null
-    val vibrateOnIconAnimation by lazy { getSystemUiBoolean("config_vibrateOnIconAnimation", false) }
+    val isVibrateOnIconAnimation: Boolean by lazy { getSystemUiBoolean("config_vibrateOnIconAnimation", false) }
 
     override fun onCreate() {
         super.onCreate()
@@ -118,6 +117,7 @@ class LawnchairApp : Application() {
     private fun getSystemUiBoolean(resName: String, fallback: Boolean): Boolean {
         val systemUiPackage = "com.android.systemui"
         val res = packageManager.getResourcesForApplication(systemUiPackage)
+        @SuppressLint("DiscouragedApi")
         val resId = res.getIdentifier(resName, "bool", systemUiPackage)
         if (resId == 0) {
             return fallback
@@ -125,10 +125,9 @@ class LawnchairApp : Application() {
         return res.getBoolean(resId)
     }
 
-    class ActivityHandler : ActivityLifecycleCallbacks {
-
-        val activities = HashSet<Activity>()
-        var foregroundActivity: Activity? = null
+    private val activityHandler = object : ActivityLifecycleCallbacks {
+        private val activities = HashSet<Activity>()
+        private var foregroundActivity: Activity? = null
 
         fun finishAll() {
             HashSet(activities).forEach { it.finish() }
@@ -157,6 +156,7 @@ class LawnchairApp : Application() {
     }
 
     private fun checkRecentsComponent(): Boolean {
+        @SuppressLint("DiscouragedApi")
         val resId = resources.getIdentifier("config_recentsComponentName", "string", "android")
         if (resId == 0) {
             Log.d(TAG, "config_recentsComponentName not found, disabling recents")
@@ -182,13 +182,10 @@ class LawnchairApp : Application() {
     fun isAccessibilityServiceBound(): Boolean = accessibilityService != null
 
     fun performGlobalAction(action: Int): Boolean {
-        return if (accessibilityService != null) {
-            accessibilityService!!.performGlobalAction(action)
-        } else {
-            startActivity(
-                Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            )
+        return accessibilityService?.performGlobalAction(action) ?: run {
+            Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .let(::startActivity)
             false
         }
     }
@@ -197,12 +194,11 @@ class LawnchairApp : Application() {
         private const val TAG = "LawnchairApp"
 
         @JvmStatic
-        var instance: LawnchairApp? = null
+        lateinit var instance: LawnchairApp
             private set
 
         @JvmStatic
-        val isRecentsEnabled: Boolean
-            get() = instance?.recentsEnabled == true
+        val isRecentsEnabled: Boolean get() = instance.recentsEnabled
 
         fun Launcher.showQuickstepWarningIfNecessary() {
             val launcher = this
@@ -245,4 +241,3 @@ class LawnchairApp : Application() {
 }
 
 val Context.lawnchairApp get() = applicationContext as LawnchairApp
-val Context.foregroundActivity get() = lawnchairApp.activityHandler.foregroundActivity

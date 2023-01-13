@@ -110,7 +110,7 @@ public class StatusBarTouchController implements TouchController {
     }
 
     private void vibrate() {
-        if (!LawnchairAppKt.getLawnchairApp(mLauncher).getVibrateOnIconAnimation()) {
+        if (!LawnchairAppKt.getLawnchairApp(mLauncher).isVibrateOnIconAnimation()) {
             VibratorWrapper.INSTANCE.get(mLauncher).vibrate(VibratorWrapper.OVERVIEW_HAPTIC);
         }
     }

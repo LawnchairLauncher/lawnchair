@@ -87,15 +87,15 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
 
     val iconShape = preference(
         key = stringPreferencesKey(name = "icon_shape"),
-        defaultValue = IconShape.fromString(context.getString(R.string.config_default_icon_shape)) ?: IconShape.Circle,
-        parse = { IconShape.fromString(it) ?: IconShapeManager.getSystemIconShape(context) },
+        defaultValue = IconShape.fromString(value = context.getString(R.string.config_default_icon_shape), context = context) ?: IconShape.Circle,
+        parse = { IconShape.fromString(value = it, context = context) ?: IconShapeManager.getSystemIconShape(context) },
         save = { it.toString() },
     )
 
     val customIconShape = preference(
         key = stringPreferencesKey(name = "custom_icon_shape"),
         defaultValue = null,
-        parse = { IconShape.fromString(it) ?: IconShapeManager.getSystemIconShape(context) },
+        parse = { IconShape.fromString(value = it, context = context) ?: IconShapeManager.getSystemIconShape(context) },
         save = { it.toString() },
         onSet = { it?.let(iconShape::setBlocking) },
     )

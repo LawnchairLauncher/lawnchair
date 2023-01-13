@@ -47,12 +47,12 @@
     <string name="font_picker_description">بعضی متون بدون تغییر می‌مانند.</string>
     <string name="smartspace_calendar_label">شخصی‌سازی تقویمِ در یک نگاه</string>
     <string name="smartspace_calendar_description">اجازه نمایش تاریخ در سیستم‌های تقویم غیر گرگوری.</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <string name="workspace_increase_max_grid_size_label">افزودن حداکثر اندازه جدول صفحه اصلی</string>
+    <string name="workspace_increase_max_grid_size_description">افزایش حداکثر اندازه جدول صفحه اصلی از ۱۰ در ۱۰ به ۲۰ در ۲۰.</string>
     <string name="always_reload_icons_label">همیشه بارگذاری مجدد کردن آیکون‌ها</string>
     <string name="always_reload_icons_description">خودداری از استفاده از آیکون‌های ذخیره شده در آیکون پک‌ها</string>
-    <string name="transparent_background_icons">Transparent Themed Icons</string>
-    <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
+    <string name="transparent_background_icons">آیکون‌های خاص شفاف</string>
+    <string name="transparent_background_icons_description">استفاده از پس زمینه شفاف در آیکون‌های خاص</string>
     <string name="smartspace_mode_selection">انتخاب ارائه دهنده در یک نگاه</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">چرخش صفحه‌ اصلی</string>
@@ -70,8 +70,8 @@
     <string name="show_notification_count">نشان‌دادن تعداد اعلان‌ها</string>
     <string name="notification_dots_color">رنگ نشان اعلان‌ها</string>
     <string name="notification_dots_text_color">رنگ تعداد اعلان‌ها</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_always">هشدار: رنگ‌های نشان اعلان و تعداد اعلان‌ها باهم کنتراست کافی ندارند</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">هشدار: ممکن است رنگ‌های نشان اعلان و تعداد اعلان‌ها همیشه باهم کنتراست کافی نداشته باشند</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">دسترسی به اعلان‌ها نیاز است</string>
     <string name="missing_notification_access_description">دسترسی به اعلان‌ها نیاز است.</string>
@@ -100,7 +100,7 @@
     <string name="clipboard">کلیپ بورد</string>
     <string name="export_to_clipboard">صادر کردن به کلیپ بورد</string>
     <string name="import_from_clipboard">وارد کردن از کلیپ بورد</string>
-    <string name="icon_shape_clipboard_import_error">Clipboard does not contain a valid icon shape</string>
+    <string name="icon_shape_clipboard_import_error">کلیپ بورد دارای شکل آیکون معتبری نیست</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">آیکون پک</string>
@@ -229,17 +229,17 @@
     <string name="smartspace_calendar_persian">شمسی</string>
     <string name="smartspace_preferences">تنظیمات</string>
     <string name="smartspace_widget_toggle_label">نشان دادن در صفحه ‌اصلی</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <string name="smartspace_widget_toggle_description">در یک نگاه میتواند به صورت دستی با استفاده از ابزارک \"Lawnchair\" اضافه شود.</string>
     <string name="smartspace_mode_label">ارائه دهنده در یک نگاه</string>
     <string name="smartspace_mode_lawnchair">Lawnchair</string>
     <string name="smartspace_mode_google">گوگل</string>
     <string name="smartspace_mode_google_search">جستجوی گوگل</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="hotseat_mode_label">Search Bar Widget</string>
-    <string name="hotseat_mode_disabled">Disabled</string>
+    <string name="hotseat_mode_label">ابزارک نوار جستوجو</string>
+    <string name="hotseat_mode_disabled">غیر فعال</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
-    <string name="hotseat_mode_google_search">Google Search Bar</string>
+    <string name="hotseat_mode_google_search">نوار جستجوی گوگل</string>
     <string name="search_bar_label">نوار جست‌و‌جو</string>
     <string name="corner_radius_label">شعاع گوشه</string>
     <string name="apply_accent_color_label">اعمال رنگ برنامه</string>
