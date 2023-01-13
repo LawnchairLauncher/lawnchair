@@ -125,7 +125,8 @@ import java.util.StringJoiner;
                     mControllers.taskbarDragController.setDisallowLongClick(disallowLongClick);
                     mControllers.taskbarAllAppsController.setDisallowGlobalDrag(disallowGlobalDrag);
                     mControllers.taskbarAllAppsController.setDisallowLongClick(disallowLongClick);
-                    mControllers.taskbarPopupController.setHideSplitOptions(disallowGlobalDrag);
+                    mControllers.taskbarPopupController.setAllowInitialSplitSelection(
+                            disallowGlobalDrag);
                 }
             };
 

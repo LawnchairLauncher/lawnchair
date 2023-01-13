@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.taskbar;
 
+import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.os.Trace.TRACE_TAG_APP;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -92,6 +93,7 @@ import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SettingsCache;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.ViewCache;
 import com.android.launcher3.views.ActivityContext;
@@ -752,6 +754,11 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         if (view.isAttachedToWindow()) {
             mWindowManager.removeViewImmediate(view);
         }
+    }
+
+    @Override
+    public void startSplitSelection(SplitSelectSource splitSelectSource) {
+        mControllers.uiController.startSplitSelection(splitSelectSource);
     }
 
     protected void onTaskbarIconClicked(View view) {

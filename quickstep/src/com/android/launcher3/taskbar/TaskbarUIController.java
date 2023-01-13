@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.taskbar;
 
+import static android.app.ActivityTaskManager.INVALID_TASK_ID;
+
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.MotionEvent;
@@ -26,6 +28,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
@@ -163,6 +166,23 @@ public class TaskbarUIController {
      */
     public @Nullable RecentsView getRecentsView() {
         return null;
+    }
+
+    public void startSplitSelection(SplitConfigurationOptions.SplitSelectSource splitSelectSource) {
+        RecentsView recentsView = getRecentsView();
+        if (recentsView == null) {
+            return;
+        }
+        recentsView.findLastActiveTaskAndRunCallback(
+                splitSelectSource.intent.getComponent(),
+                (Consumer<Task>) foundTask -> {
+                    splitSelectSource.alreadyRunningTaskId = foundTask == null
+                            ? INVALID_TASK_ID
+                            : foundTask.key.id;
+                    splitSelectSource.animateCurrentTaskDismissal = foundTask != null;
+                    recentsView.initiateSplitSelect(splitSelectSource);
+                }
+        );
     }
 
     /**

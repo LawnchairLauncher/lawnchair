@@ -90,6 +90,8 @@ public class SplitSelectStateController {
     private Intent mSecondTaskIntent;
     private int mSecondTaskId = INVALID_TASK_ID;
     private boolean mRecentsAnimationRunning;
+    /** If {@code true}, animates the existing task view split placeholder view */
+    private boolean mAnimateCurrentTaskDismissal;
     @Nullable
     private UserHandle mUser;
     /** If not null, this is the TaskView we want to launch from */
@@ -111,22 +113,15 @@ public class SplitSelectStateController {
     }
 
     /**
-     * To be called after first task selected in Overview.
+     * @param alreadyRunningTask if set to {@link android.app.ActivityTaskManager#INVALID_TASK_ID}
+     *                           then @param intent will be used to launch the initial task
+     * @param intent will be ignored if @param alreadyRunningTask is set
      */
-    public void setInitialTaskSelect(Task task, @StagePosition int stagePosition,
-            StatsLogManager.EventEnum splitEvent, ItemInfo itemInfo) {
-        mInitialTaskId = task.key.id;
-        setInitialData(stagePosition, splitEvent, itemInfo);
-    }
-
-    /**
-     * To be called after first task selected from home or all apps.
-     */
-    public void setInitialTaskSelect(Intent intent, @StagePosition int stagePosition,
+    public void setInitialTaskSelect(@Nullable Intent intent, @StagePosition int stagePosition,
             @NonNull ItemInfo itemInfo, StatsLogManager.EventEnum splitEvent,
-            @Nullable Task alreadyRunningTask) {
-        if (alreadyRunningTask != null) {
-            mInitialTaskId = alreadyRunningTask.key.id;
+            int alreadyRunningTask) {
+        if (alreadyRunningTask != INVALID_TASK_ID) {
+            mInitialTaskId = alreadyRunningTask;
         } else {
             mInitialTaskIntent = intent;
             mUser = itemInfo.user;
@@ -348,6 +343,14 @@ public class SplitSelectStateController {
         return null;
     }
 
+    public boolean isAnimateCurrentTaskDismissal() {
+        return mAnimateCurrentTaskDismissal;
+    }
+
+    public void setAnimateCurrentTaskDismissal(boolean animateCurrentTaskDismissal) {
+        mAnimateCurrentTaskDismissal = animateCurrentTaskDismissal;
+    }
+
     /**
      * Requires Shell Transitions
      */
@@ -454,6 +457,7 @@ public class SplitSelectStateController {
         mLaunchingTaskView = null;
         mItemInfo = null;
         mSplitEvent = null;
+        mAnimateCurrentTaskDismissal = false;
     }
 
     /**
