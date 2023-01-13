@@ -2,8 +2,8 @@ import com.android.build.gradle.BasePlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id 'com.android.application' version "7.4.0-rc03"
-    id 'com.android.library' version "7.4.0-rc03" apply false
+    id 'com.android.application' version "7.4.0"
+    id 'com.android.library' version "7.4.0" apply false
     id 'org.jetbrains.kotlin.android' version "1.7.20"
     id 'org.jetbrains.kotlin.plugin.parcelize' version "1.7.20"
     id 'org.jetbrains.kotlin.plugin.serialization' version "1.7.20"
@@ -101,9 +101,9 @@ allprojects {
 // todo remove ext block after migrating to version catalog
 ext {
     accompanist_version = '0.28.0'
-    libsu_version = '5.0.3'
+    libsu_version = '5.0.4'
     protocVersion = '3.21.12'
-    room_version = '2.4.3'
+    room_version = '2.5.0'
     optoVersion = "1.0.18"
 }
 
@@ -126,6 +126,7 @@ final def quickstepMinSdk = "32"
 final def quickstepMaxSdk = "32"
 
 android {
+    namespace "com.android.launcher3"
     defaultConfig {
         versionCode 12_01_00_05
         versionName "${versionDisplayName}"
@@ -147,7 +148,10 @@ android {
     }
 
     buildFeatures {
+        aidl true
+        buildConfig true
         compose true
+        resValues true
     }
 
     composeOptions {
@@ -346,15 +350,15 @@ dependencies {
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:3.1.1'
 
-    implementation platform("androidx.compose:compose-bom:2022.12.00")
+    implementation platform("androidx.compose:compose-bom:2023.01.00")
     implementation "androidx.compose.ui:ui"
-    implementation "androidx.compose.ui:ui-tooling"
+    debugImplementation "androidx.compose.ui:ui-tooling"
     implementation "androidx.compose.ui:ui-text-google-fonts"
     implementation "androidx.compose.foundation:foundation"
     implementation "androidx.compose.material:material-icons-extended"
     implementation "androidx.compose.material:material"
     implementation "androidx.compose.runtime:runtime-livedata"
-    implementation 'androidx.compose.material3:material3:1.1.0-alpha03'
+    implementation 'androidx.compose.material3:material3:1.1.0-alpha04'
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation "androidx.activity:activity-compose:1.6.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
