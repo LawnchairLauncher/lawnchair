@@ -118,7 +118,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         val queryTextLower = query.lowercase(Locale.getDefault())
         val matcher = StringMatcherUtility.StringMatcher.getInstance()
         return apps.asSequence()
-            .filter { StringMatcherUtility.matches(queryTextLower, it.sectionName + it.title, matcher) }
+            .filter { StringMatcherUtility.matches(queryTextLower, it.title.toString(), matcher) }
             .filterHiddenApps(queryTextLower)
             .take(maxResultsCount)
             .toList()
