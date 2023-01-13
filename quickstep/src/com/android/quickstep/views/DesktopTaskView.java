@@ -81,6 +81,8 @@ public class DesktopTaskView extends TaskView {
 
     private final ArrayList<CancellableTask<?>> mPendingThumbnailRequests = new ArrayList<>();
 
+    private ShapeDrawable mBackground;
+
     public DesktopTaskView(Context context) {
         this(context, null);
     }
@@ -99,10 +101,11 @@ public class DesktopTaskView extends TaskView {
         float[] outerRadii = new float[8];
         Arrays.fill(outerRadii, getTaskCornerRadius());
         RoundRectShape shape = new RoundRectShape(outerRadii, null, null);
-        ShapeDrawable background = new ShapeDrawable(shape);
-        background.setTint(getResources().getColor(android.R.color.system_neutral2_300));
+        mBackground = new ShapeDrawable(shape);
+        mBackground.setTint(getResources().getColor(android.R.color.system_neutral2_300,
+                getContext().getTheme()));
         // TODO(b/244348395): this should be wallpaper
-        setBackground(background);
+        setBackground(mBackground);
 
         mSnapshotViews.add(mSnapshotView);
     }
@@ -427,6 +430,12 @@ public class DesktopTaskView extends TaskView {
         // TODO(b/249371338): this copies parent implementation and makes it work for N thumbs
         progress = Utilities.boundToRange(progress, 0, 1);
         mFullscreenProgress = progress;
+        if (mFullscreenProgress > 0) {
+            // Don't show background while we are transitioning to/from fullscreen
+            setBackground(null);
+        } else {
+            setBackground(mBackground);
+        }
         for (int i = 0; i < mSnapshotViewMap.size(); i++) {
             TaskThumbnailView thumbnailView = mSnapshotViewMap.valueAt(i);
             thumbnailView.getTaskOverlay().setFullscreenProgress(progress);
