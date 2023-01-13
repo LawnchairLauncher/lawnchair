@@ -290,7 +290,8 @@ public class LauncherBackAnimationController {
                     new RemoteAnimationTarget[0],
                     false /* fromUnlock */,
                     mCurrentRect,
-                    cornerRadius);
+                    cornerRadius,
+                    mBackInProgress /* fromPredictiveBack */);
         startTransitionAnimations(pair.first, pair.second);
         mLauncher.clearForceInvisibleFlag(INVISIBLE_ALL);
     }
