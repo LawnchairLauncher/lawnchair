@@ -43,7 +43,6 @@ import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_STATE_O
 import static com.android.launcher3.testing.shared.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
-import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 
@@ -63,7 +62,6 @@ import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.os.IBinder;
 import android.os.SystemProperties;
-import android.util.Log;
 import android.view.Display;
 import android.view.HapticFeedbackConstants;
 import android.view.RemoteAnimationTarget;
@@ -751,7 +749,7 @@ public class QuickstepLauncher extends Launcher {
                             getSystemService(SensorManager.class),
                             getMainThreadHandler(),
                             getMainExecutor(),
-                            /* backgroundExecutor= */ THREAD_POOL_EXECUTOR,
+                            /* backgroundExecutor= */ UI_HELPER_EXECUTOR,
                             /* tracingTagPrefix= */ "launcher",
                             WindowManagerGlobal.getWindowManagerService()
                     );
@@ -768,7 +766,6 @@ public class QuickstepLauncher extends Launcher {
                     mUnfoldTransitionProgressProvider,
                     mRotationChangeProvider
             );
-            Log.d("b/261320823", "initUnfoldTransitionProgressProvider completed");
         }
     }
 
