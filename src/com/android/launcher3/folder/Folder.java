@@ -1579,17 +1579,14 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         return getOpenView(activityContext, TYPE_FOLDER);
     }
 
-    /**
-     * Navigation bar back key or hardware input back key has been issued.
-     */
+    /** Navigation bar back key or hardware input back key has been issued. */
     @Override
-    public boolean onBackPressed() {
+    public void onBackInvoked() {
         if (isEditingName()) {
             mFolderName.dispatchBackKey();
         } else {
-            super.onBackPressed();
+            super.onBackInvoked();
         }
-        return true;
     }
 
     @Override
