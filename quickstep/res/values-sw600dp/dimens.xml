@@ -33,6 +33,8 @@
     <dimen name="overview_page_spacing">36dp</dimen>
     <!--  The space to the left and to the right of the "Clear all" button  -->
     <dimen name="overview_grid_side_margin">64dp</dimen>
+    <!--  Overview actions  -->
+    <dimen name="overview_actions_top_margin">24dp</dimen>
 
     <!-- All Set page -->
     <dimen name="allset_page_margin_horizontal">120dp</dimen>
