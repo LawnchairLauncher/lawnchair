@@ -44,8 +44,8 @@ project(':iconloaderlib').projectDir = new File(rootDir, 'platform_frameworks_li
 include ':searchuilib'
 project(':searchuilib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/searchuilib')
 
-include ':SystemUIShared'
-include ':CompatLib'
-include ':CompatLibVR'
-include ':CompatLibVS'
+include ':systemUIShared'
+include ':compatLib'
+include ':compatLibVR'
+include ':compatLibVS'
 include ':hidden-api'
