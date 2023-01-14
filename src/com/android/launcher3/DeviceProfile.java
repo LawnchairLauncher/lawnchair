@@ -910,12 +910,24 @@ public class DeviceProfile {
                     cellHeightPx = cellContentHeight;
                     cellLayoutBorderSpacePx.y -= extraHeightRequired / numBorders;
                 } else {
-                    // If it still doesn't fit, set borderSpace to 0 and distribute the space for
-                    // cellHeight, and reduce iconSize.
+                    // If it still doesn't fit, set borderSpace to 0 to recover space.
                     cellHeightPx = (cellHeightPx * inv.numRows
                             + cellLayoutBorderSpacePx.y * numBorders) / inv.numRows;
-                    iconSizePx = Math.min(iconSizePx, cellHeightPx - cellTextAndPaddingHeight);
                     cellLayoutBorderSpacePx.y = 0;
+                    // Reduce iconDrawablePaddingPx to make cellContentHeight smaller.
+                    int cellContentWithoutPadding = cellContentHeight - iconDrawablePaddingPx;
+                    if (cellContentWithoutPadding <= cellHeightPx) {
+                        iconDrawablePaddingPx = cellContentHeight - cellHeightPx;
+                    } else {
+                        // If it still doesn't fit, set iconDrawablePaddingPx to 0 to recover space,
+                        // then proportional reduce iconSizePx and iconTextSizePx to fit.
+                        iconDrawablePaddingPx = 0;
+                        float ratio = cellHeightPx / (float) cellContentWithoutPadding;
+                        iconSizePx = (int) (iconSizePx * ratio);
+                        iconTextSizePx = (int) (iconTextSizePx * ratio);
+                    }
+                    cellTextAndPaddingHeight =
+                            iconDrawablePaddingPx + Utilities.calculateTextHeight(iconTextSizePx);
                 }
                 cellContentHeight = iconSizePx + cellTextAndPaddingHeight;
             }

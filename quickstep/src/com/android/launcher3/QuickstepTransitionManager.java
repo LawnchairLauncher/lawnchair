@@ -1560,7 +1560,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             RemoteAnimationTarget[] wallpaperTargets,
             boolean fromUnlock,
             RectF startRect,
-            float startWindowCornerRadius) {
+            float startWindowCornerRadius,
+            boolean fromPredictiveBack) {
         AnimatorSet anim = null;
         RectFSpringAnim rectFSpringAnim = null;
 
@@ -1594,7 +1595,11 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 rectFSpringAnim = getClosingWindowAnimators(
                         anim, appTargets, launcherView, velocity, startRect,
                         startWindowCornerRadius);
-                if (!mLauncher.isInState(LauncherState.ALL_APPS)) {
+                if (mLauncher.isInState(LauncherState.ALL_APPS)) {
+                    // Skip scaling all apps, otherwise FloatingIconView will get wrong
+                    // layout bounds.
+                    skipAllAppsScale = true;
+                } else if (!fromPredictiveBack) {
                     anim.play(new StaggeredWorkspaceAnim(mLauncher, velocity.y,
                             true /* animateOverviewScrim */, launcherView).getAnimators());
 
@@ -1606,10 +1611,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
                     // We play StaggeredWorkspaceAnim as a part of the closing window animation.
                     playWorkspaceReveal = false;
-                } else {
-                    // Skip scaling all apps, otherwise FloatingIconView will get wrong
-                    // layout bounds.
-                    skipAllAppsScale = true;
                 }
             } else {
                 anim.play(getFallbackClosingWindowAnimators(appTargets));
@@ -1686,7 +1687,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     new RectF(getWindowTargetBounds(appTargets, getRotationChange(appTargets)));
             Pair<RectFSpringAnim, AnimatorSet> pair = createWallpaperOpenAnimations(
                     appTargets, wallpaperTargets, mFromUnlock, windowTargetBounds,
-                    QuickStepContract.getWindowCornerRadius(mLauncher));
+                    QuickStepContract.getWindowCornerRadius(mLauncher),
+                    false /* fromPredictiveBack */);
 
             mLauncher.clearForceInvisibleFlag(INVISIBLE_ALL);
             result.setAnimation(pair.second, mLauncher);

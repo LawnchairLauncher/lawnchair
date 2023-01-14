@@ -273,6 +273,10 @@ public final class FeatureFlags {
             "ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES", false,
             "Enable option to replace decorator-based search result backgrounds with drawables");
 
+    public static final BooleanFlag ENABLE_SEARCH_RESULT_LAUNCH_TRANSITION = new DeviceFlag(
+            "ENABLE_SEARCH_RESULT_LAUNCH_TRANSITION", false,
+            "Enable option to launch search results using the new standardized transitions");
+
     public static final BooleanFlag TWO_PREDICTED_ROWS_ALL_APPS_SEARCH = new DeviceFlag(
             "TWO_PREDICTED_ROWS_ALL_APPS_SEARCH", false,
             "Use 2 rows of app predictions in All Apps search zero-state");
@@ -364,7 +368,7 @@ public final class FeatureFlags {
             "ENABLE_DEVICE_PROFILE_LOGGING", false, "Allows DeviceProfile logging");
 
     public static final BooleanFlag ENABLE_LAUNCH_FROM_STAGED_APP = getDebugFlag(
-            "ENABLE_LAUNCH_FROM_STAGED_APP", false,
+            "ENABLE_LAUNCH_FROM_STAGED_APP", true,
             "Enable the ability to tap a staged app during split select to launch it in full screen"
     );
 
