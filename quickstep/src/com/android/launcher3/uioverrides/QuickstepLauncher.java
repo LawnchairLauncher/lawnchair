@@ -69,9 +69,13 @@ import android.view.HapticFeedbackConstants;
 import android.view.RemoteAnimationTarget;
 import android.view.View;
 import android.view.WindowManagerGlobal;
+import android.window.BackEvent;
+import android.window.OnBackAnimationCallback;
+import android.window.OnBackInvokedDispatcher;
 import android.window.SplashScreen;
 
 import androidx.annotation.BinderThread;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.app.viewcapture.ViewCapture;
@@ -105,6 +109,8 @@ import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.taskbar.TaskbarManager;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.uioverrides.QuickstepWidgetHolder.QuickstepHolderFactory;
 import com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory;
 import com.android.launcher3.uioverrides.touchcontrollers.NavBarToHomeTouchController;
@@ -623,6 +629,29 @@ public class QuickstepLauncher extends Launcher {
         }
     }
 
+    @Override
+    protected void registerBackDispatcher() {
+        getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                new OnBackAnimationCallback() {
+                    @Override
+                    public void onBackInvoked() {
+                        onBackPressed();
+                        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onBackInvoked");
+                    }
+
+                    @Override
+                    public void onBackProgressed(@NonNull BackEvent backEvent) {
+                        QuickstepLauncher.this.onBackProgressed(backEvent.getProgress());
+                    }
+
+                    @Override
+                    public void onBackCancelled() {
+                        QuickstepLauncher.this.onBackCancelled();
+                    }
+                });
+    }
+
     private void onTaskbarInAppDisplayProgressUpdate(float progress, int flag) {
         if (mTaskbarManager == null
                 || mTaskbarManager.getCurrentActivityContext() == null
@@ -1000,6 +1029,14 @@ public class QuickstepLauncher extends Launcher {
      */
     public void finishSplitSelectRecovery() {
         mPendingSplitSelectInfo = null;
+    }
+
+    @Override
+    public boolean areFreeformTasksVisible() {
+        if (mDesktopVisibilityController != null) {
+            return mDesktopVisibilityController.areFreeformTasksVisible();
+        }
+        return false;
     }
 
     private static final class LauncherTaskViewController extends

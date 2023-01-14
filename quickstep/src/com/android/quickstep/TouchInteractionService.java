@@ -198,7 +198,7 @@ public class TouchInteractionService extends Service
 
         @BinderThread
         @Override
-        public void onOverviewShown(boolean triggeredFromAltTab) {
+        public void onOverviewShown(boolean triggeredFromAltTab, boolean forward) {
             if (triggeredFromAltTab) {
                 TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
                 mOverviewCommandHelper.addCommand(OverviewCommandHelper.TYPE_SHOW_NEXT_FOCUS);

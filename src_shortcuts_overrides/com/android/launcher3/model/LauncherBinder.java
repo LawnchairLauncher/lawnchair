@@ -27,11 +27,11 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Helper class to handle results of {@link com.android.launcher3.model.LoaderTask}.
+ * Binds the results of {@link com.android.launcher3.model.LoaderTask} to the Callbacks objects.
  */
-public class LoaderResults extends BaseLoaderResults {
+public class LauncherBinder extends BaseLauncherBinder {
 
-    public LoaderResults(LauncherAppState app, BgDataModel dataModel,
+    public LauncherBinder(LauncherAppState app, BgDataModel dataModel,
             AllAppsList allAppsList, Callbacks[] callbacks) {
         super(app, dataModel, allAppsList, callbacks, MAIN_EXECUTOR);
     }

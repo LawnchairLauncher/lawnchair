@@ -120,6 +120,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.CallSuper;
+import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -2065,6 +2066,14 @@ public class Launcher extends StatefulActivity<LauncherState>
         mStateManager.getState().onBackPressed(this);
     }
 
+    protected void onBackProgressed(@FloatRange(from = 0.0, to = 1.0) float backProgress) {
+        mStateManager.getState().onBackProgressed(this, backProgress);
+    }
+
+    protected void onBackCancelled() {
+        mStateManager.getState().onBackCancelled(this);
+    }
+
     protected void onScreenOff() {
         // Reset AllApps to its initial state only if we are not in the middle of
         // processing a multi-step drop
@@ -3316,5 +3325,13 @@ public class Launcher extends StatefulActivity<LauncherState>
             }
             return false; // Return false to continue iterating through all the items.
         });
+    }
+
+    /**
+     * Returns {@code true} if there are visible tasks with windowing mode set to
+     * {@link android.app.WindowConfiguration#WINDOWING_MODE_FREEFORM}
+     */
+    public boolean areFreeformTasksVisible() {
+        return false; // Base launcher does not track freeform tasks
     }
 }

@@ -367,7 +367,7 @@ public final class FeatureFlags {
             "ENABLE_DEVICE_PROFILE_LOGGING", false, "Allows DeviceProfile logging");
 
     public static final BooleanFlag ENABLE_LAUNCH_FROM_STAGED_APP = getDebugFlag(
-            "ENABLE_LAUNCH_FROM_STAGED_APP", false,
+            "ENABLE_LAUNCH_FROM_STAGED_APP", true,
             "Enable the ability to tap a staged app during split select to launch it in full screen"
     );
 
