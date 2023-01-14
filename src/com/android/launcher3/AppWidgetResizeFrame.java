@@ -268,8 +268,10 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
         CellLayoutLayoutParams lp = (CellLayoutLayoutParams) mWidgetView.getLayoutParams();
         ItemInfo widgetInfo = (ItemInfo) mWidgetView.getTag();
-        lp.cellX = lp.tmpCellX = widgetInfo.cellX;
-        lp.cellY = lp.tmpCellY = widgetInfo.cellY;
+        lp.setCellX(widgetInfo.cellX);
+        lp.setTmpCellX(widgetInfo.cellX);
+        lp.setCellY(widgetInfo.cellY);
+        lp.setTmpCellY(widgetInfo.cellY);
         lp.cellHSpan = widgetInfo.spanX;
         lp.cellVSpan = widgetInfo.spanY;
         lp.isLockedToGrid = true;
@@ -425,8 +427,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
         int spanX = lp.cellHSpan;
         int spanY = lp.cellVSpan;
-        int cellX = lp.useTmpCoords ? lp.tmpCellX : lp.cellX;
-        int cellY = lp.useTmpCoords ? lp.tmpCellY : lp.cellY;
+        int cellX = lp.useTmpCoords ? lp.getTmpCellX() : lp.getCellX();
+        int cellY = lp.useTmpCoords ? lp.getTmpCellY() : lp.getCellY();
 
         // For each border, we bound the resizing based on the minimum width, and the maximum
         // expandability.
@@ -467,8 +469,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                         mLauncher.getString(R.string.widget_resized, spanX, spanY));
             }
 
-            lp.tmpCellX = cellX;
-            lp.tmpCellY = cellY;
+            lp.setTmpCellX(cellX);
+            lp.setTmpCellY(cellY);
             lp.cellHSpan = spanX;
             lp.cellVSpan = spanY;
             mRunningVInc += vSpanDelta;
