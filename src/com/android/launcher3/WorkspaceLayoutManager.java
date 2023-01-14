@@ -117,8 +117,8 @@ public interface WorkspaceLayoutManager {
             lp = new CellLayoutLayoutParams(x, y, spanX, spanY, screenId);
         } else {
             lp = (CellLayoutLayoutParams) genericLp;
-            lp.cellX = x;
-            lp.cellY = y;
+            lp.setCellX(x);
+            lp.setCellY(y);
             lp.cellHSpan = spanX;
             lp.cellVSpan = spanY;
         }
@@ -136,7 +136,8 @@ public interface WorkspaceLayoutManager {
             // TODO: This branch occurs when the workspace is adding views
             // outside of the defined grid
             // maybe we should be deleting these items from the LauncherModel?
-            Log.e(TAG, "Failed to add to item at (" + lp.cellX + "," + lp.cellY + ") to CellLayout");
+            Log.e(TAG, "Failed to add to item at (" + lp.getCellX() + "," + lp.getCellY()
+                    + ") to CellLayout");
         }
 
         child.setHapticFeedbackEnabled(false);
