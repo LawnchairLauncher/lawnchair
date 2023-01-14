@@ -124,7 +124,7 @@ public class StaggeredWorkspaceAnim {
                 for (int i = hotseatIcons.getChildCount() - 1; i >= 0; i--) {
                     View child = hotseatIcons.getChildAt(i);
                     CellLayoutLayoutParams lp = ((CellLayoutLayoutParams) child.getLayoutParams());
-                    addStaggeredAnimationForView(child, lp.cellY + 1, totalRows, duration);
+                    addStaggeredAnimationForView(child, lp.getCellY() + 1, totalRows, duration);
                 }
             } else {
                 final int hotseatRow, qsbRow;
@@ -194,7 +194,7 @@ public class StaggeredWorkspaceAnim {
         for (int i = itemsContainer.getChildCount() - 1; i >= 0; i--) {
             View child = itemsContainer.getChildAt(i);
             CellLayoutLayoutParams lp = ((CellLayoutLayoutParams) child.getLayoutParams());
-            addStaggeredAnimationForView(child, lp.cellY + lp.cellVSpan, totalRows, duration);
+            addStaggeredAnimationForView(child, lp.getCellY() + lp.cellVSpan, totalRows, duration);
         }
 
         mAnimators.addListener(new AnimatorListenerAdapter() {
