@@ -25,7 +25,7 @@
     <string name="smartspace" />
     -->
     <string name="what_to_show">Vad ska visas</string>
-    <string name="dock_label">Docka</string>
+    <string name="dock_label">Favoritfält</string>
     <string name="dock_description">Sökfält, ikonantal</string>
     <string name="app_drawer_label">Applåda</string>
     <string name="app_drawer_description">Dolda appar, kolumnantal, ikoner</string>
@@ -55,16 +55,16 @@
     <string name="transparent_background_icons_description">Använd transparent bakgrund på tematiserade ikoner</string>
     <string name="smartspace_mode_selection">Val av Snabbkoll-leverantör</string>
     <!-- GeneralPreferences -->
-    <string name="home_screen_rotation_label">Rotation på hemskärmen</string>
-    <string name="home_screen_rotaton_description">När enheten är roterad.</string>
+    <string name="home_screen_rotation_label">Rotation av hemskärmen</string>
+    <string name="home_screen_rotaton_description">När enheten roteras.</string>
     <string name="font_label">Typsnitt (experimentellt)</string>
     <!-- <string name="icons" /> -->
-    <string name="icon_style">Ikon stil</string>
-    <string name="icon_shape_label">Ikon form</string>
+    <string name="icon_style">Ikonstil</string>
+    <string name="icon_shape_label">Ikonform</string>
     <string name="auto_adaptive_icons_label">Automatiska adaptiva ikoner</string>
     <string name="auto_adaptive_icons_description">För alla icke-adaptiva ikoner.</string>
-    <string name="background_lightness_label">Bakgrundens lätthet</string>
-    <string name="adaptive_icon_background_description">Använd 100% bakgrund ljus för vit.</string>
+    <string name="background_lightness_label">Bakgrundens ljusstyrka</string>
+    <string name="adaptive_icon_background_description">Använd 100 % bakgrundsljusstyrka för vitt.</string>
     <string name="notification_dots">Aviseringsprickar</string>
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Visa aviseringsantal</string>
@@ -73,7 +73,7 @@
     <string name="notification_dots_color_contrast_warning_always">Varning: Färgerna på aviseringsprick &amp; aviseringsantal har inte tillräcklig kontrast mot varandra</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Varning: Färgerna på aviseringsprick &amp; aviseringsantal har kanske inte alltid tillräcklig kontrast mot varandra</string>
     <!-- Notification popup -->
-    <string name="missing_notification_access_label">Åtkomst till aviseringar krävs</string>
+    <string name="missing_notification_access_label">Aviseringsåtkomst krävs</string>
     <string name="missing_notification_access_description">Åtkomst till aviseringar krävs.</string>
     <string name="msg_missing_notification_access">För att använda aviseringsprickar, ge <xliff:g id="name" example="My App">%1$s</xliff:g> åtkomst till aviseringar.</string>
     <string name="title_change_settings">Ändra inställningar</string>
@@ -85,17 +85,17 @@
     <string name="theme_follow_wallpaper">Matcha bakgrundsbild</string>
     <string name="accent_color">Accentfärg</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Anpassad ikon form</string>
-    <string name="custom_icon_shape_create">Skapa anpassad ikon form</string>
-    <string name="custom_icon_shape_edit">Ändra anpassad ikon form</string>
-    <string name="icon_shape_corner">Hörn rundning</string>
+    <string name="custom_icon_shape">Anpassad ikonform</string>
+    <string name="custom_icon_shape_create">Skapa anpassad ikonform</string>
+    <string name="custom_icon_shape_edit">Redigera anpassad ikonform</string>
+    <string name="icon_shape_corner">Hörnform</string>
     <string name="icon_shape_corner_round">Rund</string>
-    <string name="icon_shape_corner_squircle">Smidig</string>
-    <string name="icon_shape_corner_cut">Klipp</string>
-    <string name="icon_shape_top_left">Uppe till vänster</string>
-    <string name="icon_shape_top_right">Uppe till höger</string>
-    <string name="icon_shape_bottom_left">Nere till vänster</string>
-    <string name="icon_shape_bottom_right">Nere till höger</string>
+    <string name="icon_shape_corner_squircle">Slät</string>
+    <string name="icon_shape_corner_cut">Klippt</string>
+    <string name="icon_shape_top_left">Övre vänstra</string>
+    <string name="icon_shape_top_right">Övre högra</string>
+    <string name="icon_shape_bottom_left">Nedre vänstra</string>
+    <string name="icon_shape_bottom_right">Nedre högra</string>
     <string name="create">Skapa</string>
     <string name="clipboard">Urklipp</string>
     <string name="export_to_clipboard">Exportera till urklipp</string>
@@ -105,7 +105,7 @@
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Ikonpaket</string>
     <string name="system_icons">Systemikoner</string>
-    <string name="themed_icon_title">Tematiska ikoner</string>
+    <string name="themed_icon_title">Tematiserade ikoner</string>
     <string name="themed_icons_off_label">Av</string>
     <string name="themed_icons_home_label">Hemskärm</string>
     <string name="themed_icons_home_and_drawer_label">Hemskärm &amp; applåda</string>
@@ -121,39 +121,39 @@
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Oktagon</string>
     <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_rounded_square">Rundad Kvadrat</string>
-    <string name="icon_shape_sharp_square">Skarpt Kvadrat</string>
+    <string name="icon_shape_rounded_square">Rundad kvadrat</string>
+    <string name="icon_shape_sharp_square">Skarp kvadrat</string>
     <string name="icon_shape_square">Kvadrat</string>
     <string name="icon_shape_squircle">Kvirkel</string>
     <string name="icon_shape_teardrop">Droppe</string>
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">Lägg till typsnitt</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF stöds.</string>
-    <string name="pref_fonts_missing_font">Typsnitt kunde inte hittas.</string>
+    <string name="pref_fonts_missing_font">Typsnitt hittades inte.</string>
     <string name="font_variant_italic">Kursiv</string>
     <string name="font_weight_thin">Tunn</string>
-    <string name="font_weight_extra_light">Extra Ljust</string>
-    <string name="font_weight_light">Ljust</string>
+    <string name="font_weight_extra_light">Extra mager</string>
+    <string name="font_weight_light">Mager</string>
     <string name="font_weight_regular">Normal</string>
     <string name="font_weight_medium">Medel</string>
-    <string name="font_weight_semi_bold">Semifet</string>
+    <string name="font_weight_semi_bold">Halvfet</string>
     <string name="font_weight_bold">Fet</string>
     <string name="font_weight_extra_bold">Extra fet</string>
     <string name="font_weight_extra_black">Svart</string>
-    <string name="reset_font">Reset</string>
+    <string name="reset_font">Återställ</string>
     <!-- colorpreference/* -->
-    <string name="dynamic">Dynamiskt</string>
-    <string name="swatches">Swatches</string>
+    <string name="dynamic">Dynamisk</string>
+    <string name="swatches">Exempel</string>
     <string name="presets">Förval</string>
-    <string name="custom">Anpassat</string>
+    <string name="custom">Anpassad</string>
     <string name="rgb">RGB</string>
-    <string name="rgb_red">Röd</string>
-    <string name="rgb_green">Grön</string>
-    <string name="rgb_blue">Blå</string>
+    <string name="rgb_red">Rött</string>
+    <string name="rgb_green">Grönt</string>
+    <string name="rgb_blue">Blått</string>
     <string name="hsb">HSB</string>
     <string name="hsb_hue">Nyans</string>
     <string name="hsb_saturation">Mättnad</string>
-    <string name="hsb_brightness">Ljusstyrka</string>
+    <string name="hsb_brightness">Ljushet</string>
     <string name="hex">Hex</string>
     <string name="color_sliders">Reglerare</string>
     <string name="action_copy">Kopiera</string>
@@ -245,7 +245,7 @@
     <string name="apply_accent_color_label">Tillämpa Accent Färg</string>
     <string name="search_provider">Sökleverantör</string>
     <string name="grid">Rutnät</string>
-    <string name="dock_icons">Ikoner för docka</string>
+    <string name="dock_icons">Favoritfältsikoner</string>
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">Appsök</string>
