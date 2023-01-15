@@ -15,6 +15,7 @@ import androidx.compose.material.ModalBottomSheetDefaults
 import androidx.compose.material3.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import app.lawnchair.ui.preferences.components.SystemUi
 import app.lawnchair.ui.theme.LawnchairTheme
@@ -113,12 +114,12 @@ class BlankActivity : AppCompatActivity() {
             dialogTitle: String, dialogMessage: String,
             positiveButton: String
         ) {
-            start(activity, targetIntent, Bundle().apply {
-                putParcelable("intent", targetIntent)
-                putString("dialogTitle", dialogTitle)
-                putString("dialogMessage", dialogMessage)
-                putString("positiveButton", positiveButton)
-            })
+            start(activity, targetIntent, bundleOf(
+                "intent" to targetIntent,
+                "dialogTitle" to dialogTitle,
+                "dialogMessage" to dialogMessage,
+                "positiveButton" to positiveButton,
+            ))
         }
 
         suspend fun startBlankActivityForResult(activity: Activity, targetIntent: Intent): ActivityResult {
