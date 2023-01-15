@@ -74,7 +74,7 @@ fun RestoreBackupScreen(viewModel: RestoreBackupViewModel) {
     val isPortrait = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
     val scrollState = rememberScrollState()
     val uiState = viewModel.uiState.collectAsState().value
-    
+
     PreferenceLayout(
         label = stringResource(id = R.string.restore_backup),
         scrollState = if (isPortrait) null else scrollState
@@ -208,11 +208,10 @@ fun restoreBackupOpener(): () -> Unit {
     }
 
     return {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = LawnchairBackup.MIME_TYPE
-            putExtra(Intent.EXTRA_MIME_TYPES, LawnchairBackup.EXTRA_MIME_TYPES)
-        }
-        request.launch(intent)
+        Intent(Intent.ACTION_OPEN_DOCUMENT)
+            .addCategory(Intent.CATEGORY_OPENABLE)
+            .setType(LawnchairBackup.MIME_TYPE)
+            .putExtra(Intent.EXTRA_MIME_TYPES, LawnchairBackup.EXTRA_MIME_TYPES)
+            .let { request.launch(it) }
     }
 }

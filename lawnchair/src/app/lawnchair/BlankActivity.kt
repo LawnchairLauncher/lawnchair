@@ -129,8 +129,8 @@ class BlankActivity : AppCompatActivity() {
         private suspend fun start(activity: Activity, targetIntent: Intent, extras: Bundle): ActivityResult {
             return suspendCoroutine { continuation ->
                 val intent = Intent(activity, BlankActivity::class.java)
-                intent.putExtras(extras)
-                intent.putExtra("intent", targetIntent)
+                    .putExtras(extras)
+                    .putExtra("intent", targetIntent)
                 val resultReceiver = createResultReceiver {
                     continuation.resume(it)
                 }
