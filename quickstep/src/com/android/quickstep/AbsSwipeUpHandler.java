@@ -368,10 +368,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 .getDimensionPixelSize(ENABLE_TASKBAR_REVISED_THRESHOLDS.get()
                         ? R.dimen.taskbar_app_window_threshold_v2
                         : R.dimen.taskbar_app_window_threshold);
-        mTaskbarHomeOverviewThreshold = res.getDimensionPixelSize(
-                ENABLE_TASKBAR_REVISED_THRESHOLDS.get()
-                        ? R.dimen.taskbar_home_overview_threshold_v2
-                        : R.dimen.taskbar_home_overview_threshold);
+        boolean swipeWillNotShowTaskbar = mTaskbarAlreadyOpen;
+        mTaskbarHomeOverviewThreshold = swipeWillNotShowTaskbar
+                ? 0
+                : res.getDimensionPixelSize(
+                        ENABLE_TASKBAR_REVISED_THRESHOLDS.get()
+                                ? R.dimen.taskbar_home_overview_threshold_v2
+                                : R.dimen.taskbar_home_overview_threshold);
         mTaskbarCatchUpThreshold = res.getDimensionPixelSize(R.dimen.taskbar_catch_up_threshold);
     }
 

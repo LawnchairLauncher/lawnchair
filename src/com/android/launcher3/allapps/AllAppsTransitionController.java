@@ -32,14 +32,18 @@ import android.animation.ObjectAnimator;
 import android.util.FloatProperty;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.animation.Interpolator;
 
 import androidx.annotation.FloatRange;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.Interpolators;
@@ -66,7 +70,7 @@ public class AllAppsTransitionController
         implements StateHandler<LauncherState>, OnDeviceProfileChangeListener {
     // This constant should match the second derivative of the animator interpolator.
     public static final float INTERP_COEFF = 1.7f;
-    private static final float SWIPE_ALL_APPS_TO_HOME_MIN_SCALE = 0.9f;
+    public static final float SWIPE_ALL_APPS_TO_HOME_MIN_SCALE = 0.9f;
     private static final int REVERT_SWIPE_ALL_APPS_TO_HOME_ANIMATION_DURATION_MS = 200;
 
     public static final FloatProperty<AllAppsTransitionController> ALL_APPS_PROGRESS =
@@ -167,6 +171,8 @@ public class AllAppsTransitionController
     private MultiPropertyFactory<View> mAppsViewTranslationY;
 
     private boolean mIsTablet;
+
+    private boolean mHasScaleEffect;
 
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
@@ -276,8 +282,18 @@ public class AllAppsTransitionController
             rv.getScrollbar().setVisibility(scaleProgress < 1f ? View.INVISIBLE : View.VISIBLE);
         }
 
-        // TODO(b/264906511): We need to disable view clipping on all apps' parent views so
-        //  that the extra roll of app icons are displayed.
+        // Disable view clipping from all apps' RecyclerView up to all apps view during scale
+        // animation, and vice versa. The goal is to display extra roll(s) app icons (rendered in
+        // {@link AppsGridLayoutManager#calculateExtraLayoutSpace}) during scale animation.
+        boolean hasScaleEffect = scaleProgress < 1f;
+        if (hasScaleEffect != mHasScaleEffect) {
+            mHasScaleEffect = hasScaleEffect;
+            if (mHasScaleEffect) {
+                setClipChildrenOnViewTree(rv, mLauncher.getAppsView(), false);
+            } else {
+                restoreClipChildrenOnViewTree(rv, mLauncher.getAppsView());
+            }
+        }
     }
 
     private void animateAllAppsToNoScale() {
@@ -378,6 +394,79 @@ public class AllAppsTransitionController
                 mAppsView, VIEW_TRANSLATE_Y, APPS_VIEW_INDEX_COUNT, Float::sum);
 
         mShouldControlKeyboard = !mLauncher.getSearchConfig().isKeyboardSyncEnabled();
+    }
+
+    /**
+     * Recursively call {@link ViewGroup#setClipChildren(boolean)} from {@link View} to ts parent
+     * (direct or indirect) inclusive. This method will also save the old clipChildren value on each
+     * view with {@link View#setTag(int, Object)}, which can be restored in
+     * {@link #restoreClipChildrenOnViewTree(View, ViewParent)}.
+     *
+     * Note that if parent is null or not a parent of the view, this method will be applied all the
+     * way to root view.
+     *
+     * @param v child view
+     * @param parent direct or indirect parent of child view
+     * @param clipChildren whether we should clip children
+     */
+    private static void setClipChildrenOnViewTree(
+            @Nullable View v,
+            @Nullable ViewParent parent,
+            boolean clipChildren) {
+        if (v == null) {
+            return;
+        }
+
+        if (v instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) v;
+            boolean oldClipChildren = viewGroup.getClipChildren();
+            if (oldClipChildren != clipChildren) {
+                v.setTag(R.id.saved_clip_children_tag_id, oldClipChildren);
+                viewGroup.setClipChildren(clipChildren);
+            }
+        }
+
+        if (v == parent) {
+            return;
+        }
+
+        if (v.getParent() instanceof View) {
+            setClipChildrenOnViewTree((View) v.getParent(), parent, clipChildren);
+        }
+    }
+
+    /**
+     * Recursively call {@link ViewGroup#setClipChildren(boolean)} to restore clip children value
+     * set in {@link #setClipChildrenOnViewTree(View, ViewParent, boolean)} on view to its parent
+     * (direct or indirect) inclusive.
+     *
+     * Note that if parent is null or not a parent of the view, this method will be applied all the
+     * way to root view.
+     *
+     * @param v child view
+     * @param parent direct or indirect parent of child view
+     */
+    private static void restoreClipChildrenOnViewTree(
+            @Nullable View v, @Nullable ViewParent parent) {
+        if (v == null) {
+            return;
+        }
+        if (v instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) v;
+            Object viewTag = viewGroup.getTag(R.id.saved_clip_children_tag_id);
+            if (viewTag instanceof Boolean) {
+                viewGroup.setClipChildren((boolean) viewTag);
+                viewGroup.setTag(R.id.saved_clip_children_tag_id, null);
+            }
+        }
+
+        if (v == parent) {
+            return;
+        }
+
+        if (v.getParent() instanceof View) {
+            restoreClipChildrenOnViewTree((View) v.getParent(), parent);
+        }
     }
 
     /**
