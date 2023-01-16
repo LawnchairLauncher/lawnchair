@@ -258,8 +258,9 @@ import java.util.StringJoiner;
     }
 
     private Animator onStateChangeApplied(int changedFlags, long duration, boolean start) {
-        boolean goingToLauncher = isInLauncher();
+        final boolean goingToLauncher = isInLauncher();
         final float toAlignment = isIconAlignedWithHotseat() ? 1 : 0;
+        boolean handleOpenFloatingViews = false;
         if (DEBUG) {
             Log.d(TAG, "onStateChangeApplied - mState: " + getStateString(mState)
                     + ", changedFlags: " + getStateString(changedFlags)
@@ -279,6 +280,10 @@ import java.util.StringJoiner;
                 // We're about to be paused, set immediately to ensure seamless handoff.
                 updateStateForFlag(FLAG_RESUMED, false);
                 applyState(0 /* duration */);
+            }
+            if (mLauncherState == LauncherState.NORMAL) {
+                // We're changing state to home, should close open popups e.g. Taskbar AllApps
+                handleOpenFloatingViews = true;
             }
         }
 
@@ -303,10 +308,11 @@ import java.util.StringJoiner;
                 }
             });
 
-            if (goingToLauncher) {
-                // Handle closing open popups when going home/overview
-                AbstractFloatingView.closeAllOpenViews(mControllers.taskbarActivityContext);
-            }
+            // Handle closing open popups when going home/overview
+            handleOpenFloatingViews = true;
+        }
+        if (handleOpenFloatingViews && goingToLauncher) {
+            AbstractFloatingView.closeAllOpenViews(mControllers.taskbarActivityContext);
         }
 
         float backgroundAlpha =
