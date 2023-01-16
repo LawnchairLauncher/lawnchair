@@ -6,6 +6,7 @@ import android.graphics.drawable.Icon
 import android.os.Bundle
 import android.os.Handler
 import android.os.Process
+import androidx.core.os.bundleOf
 import app.lawnchair.allapps.SearchResultView
 import app.lawnchair.launcher
 import app.lawnchair.preferences2.PreferenceManager2
@@ -154,14 +155,14 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
             .setIcon(Icon.createWithResource(context, R.drawable.ic_launcher_home))
             .setIntent(PackageManagerHelper.getMarketSearchIntent(context, query))
             .build()
-        val extras = Bundle().apply {
+        val extras = bundleOf(
             if (marketSearchComponent != null) {
-                putString(SearchResultView.EXTRA_ICON_COMPONENT_KEY, marketSearchComponent.toString())
+                SearchResultView.EXTRA_ICON_COMPONENT_KEY to marketSearchComponent.toString()
             } else {
-                putBoolean(SearchResultView.EXTRA_HIDE_ICON, true)
-            }
-            putBoolean(SearchResultView.EXTRA_HIDE_SUBTITLE, true)
-        }
+                SearchResultView.EXTRA_HIDE_ICON to true
+            },
+            SearchResultView.EXTRA_HIDE_SUBTITLE to true
+        )
         return createSearchTarget(id, action, extras)
     }
 

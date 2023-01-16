@@ -3,6 +3,7 @@ package app.lawnchair.search
 import android.content.pm.ShortcutInfo
 import android.os.Bundle
 import android.os.Process
+import androidx.core.os.bundleOf
 import com.android.app.search.LayoutType
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.util.ComponentKey
@@ -17,9 +18,7 @@ fun createSearchTarget(appInfo: AppInfo, asRow: Boolean = false): SearchTargetCo
     )
         .setPackageName(componentName.packageName)
         .setUserHandle(user)
-        .setExtras(Bundle().apply {
-            putString("class", componentName.className)
-        })
+        .setExtras(bundleOf("class" to componentName.className))
         .build()
 }
 
