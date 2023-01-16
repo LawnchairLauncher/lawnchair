@@ -60,8 +60,7 @@ fun HomeScreenGridPreferences() {
                     .align(Alignment.CenterHorizontally)
                     .clip(MaterialTheme.shapes.large)
             ) {
-                numColumns = columns.value
-                numRows = rows.value
+                copy(numColumns = columns.value, numRows = rows.value)
             }
         }
 
