@@ -16,6 +16,7 @@
 package com.android.launcher3.taskbar;
 
 import static android.content.pm.PackageManager.FEATURE_PC;
+import static android.os.Trace.TRACE_TAG_APP;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
@@ -46,6 +47,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Process;
 import android.os.SystemProperties;
+import android.os.Trace;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
@@ -264,6 +266,13 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         setTaskbarWindowFullscreen(mIsFullscreen);
 
         dispatchDeviceProfileChanged();
+    }
+
+    @Override
+    public void dispatchDeviceProfileChanged() {
+        super.dispatchDeviceProfileChanged();
+        Trace.instantForTrack(TRACE_TAG_APP, "TaskbarActivityContext#DeviceProfileChanged",
+                getDeviceProfile().toSmallString());
     }
 
     /**

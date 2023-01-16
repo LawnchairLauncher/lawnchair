@@ -1679,6 +1679,16 @@ public class DeviceProfile {
         writer.println(prefix + pxToDpStr("getCellLayoutWidth()", getCellLayoutWidth()));
     }
 
+    /** Returns a reduced representation of this DeviceProfile. */
+    public String toSmallString() {
+        return "isTablet:" + isTablet + ", "
+                + "isMultiDisplay:" + isMultiDisplay + ", "
+                + "widthPx:" + widthPx + ", "
+                + "heightPx:" + heightPx + ", "
+                + "insets:" + mInsets + ", "
+                + "rotationHint:" + rotationHint;
+    }
+
     private static Context getContext(Context c, Info info, int orientation, WindowBounds bounds) {
         Configuration config = new Configuration(c.getResources().getConfiguration());
         config.orientation = orientation;

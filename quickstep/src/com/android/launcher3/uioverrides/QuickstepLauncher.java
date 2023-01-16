@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.uioverrides;
 
+import static android.os.Trace.TRACE_TAG_APP;
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
@@ -62,6 +63,7 @@ import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.os.IBinder;
 import android.os.SystemProperties;
+import android.os.Trace;
 import android.view.Display;
 import android.view.HapticFeedbackConstants;
 import android.view.RemoteAnimationTarget;
@@ -1034,6 +1036,13 @@ public class QuickstepLauncher extends Launcher {
             return mDesktopVisibilityController.areFreeformTasksVisible();
         }
         return false;
+    }
+
+    @Override
+    public void dispatchDeviceProfileChanged() {
+        super.dispatchDeviceProfileChanged();
+        Trace.instantForTrack(TRACE_TAG_APP, "QuickstepLauncher#DeviceProfileChanged",
+                getDeviceProfile().toSmallString());
     }
 
     private static final class LauncherTaskViewController extends
