@@ -36,6 +36,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     private val appState = LauncherAppState.getInstance(context)
     private val resultHandler = Handler(Executors.MAIN_EXECUTOR.looper)
     private var enableFuzzySearch = false
+    private var maxResultsCount = 5
     private lateinit var hiddenApps: Set<String>
     private var showHiddenAppsInSearch = false
     private var enableSmartHide = false
@@ -46,6 +47,9 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     init {
         pref2.enableFuzzySearch.onEach(launchIn = coroutineScope) {
             enableFuzzySearch = it
+        }
+        pref2.maxSearchResultCount.onEach(launchIn = coroutineScope) {
+            maxResultsCount = it
         }
         pref2.hiddenApps.onEach(launchIn = coroutineScope) {
             hiddenApps = it
@@ -178,9 +182,5 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         } else {
             filter { it.toComponentKey().toString() !in hiddenApps }
         }
-    }
-
-    companion object {
-        private const val maxResultsCount = 5
     }
 }

@@ -265,6 +265,7 @@
     <string name="pref_search_auto_show_keyboard">自动显示键盘</string>
     <string name="fuzzy_search_title">模糊搜索</string>
     <string name="fuzzy_search_desc">搜索应用时显示近似结果</string>
+    <string name="max_search_result_count_title">最大搜索结果数</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">应用抽屉列数</string>
     <string name="row_height_label">行高度</string>
