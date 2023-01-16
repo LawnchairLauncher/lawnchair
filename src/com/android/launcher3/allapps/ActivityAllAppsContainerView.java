@@ -128,7 +128,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     public static final float PULL_MULTIPLIER = .02f;
     public static final float FLING_VELOCITY_MULTIPLIER = 1200f;
     protected static final String BUNDLE_KEY_CURRENT_PAGE = "launcher.allapps.current_page";
-    private static final long DEFAULT_SEARCH_TRANSITION_DURATION_MS = 300;
+    // As of this writing, search transition does not seem to work properly, so set duration to 0.
+    private static final long DEFAULT_SEARCH_TRANSITION_DURATION_MS = 0;
     // Render the header protection at all times to debug clipping issues.
     private static final boolean DEBUG_HEADER_PROTECTION = false;
     /** Context of an activity or window that is inflating this container. */
