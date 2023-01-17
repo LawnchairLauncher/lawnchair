@@ -142,9 +142,13 @@
         <!--  numSearchContainerColumns defaults to numColumns, if not specified -->
         <attr name="numSearchContainerColumns" format="integer" />
 
+        <!-- Support attributes in CellStyle. defaults to CellStyleDefault -->
+        <attr name="cellStyle" format="reference" />
+
         <!-- numFolderRows & numFolderColumns defaults to numRows & numColumns, if not specified -->
         <attr name="numFolderRows" format="integer" />
         <attr name="numFolderColumns" format="integer" />
+        <!-- Support attributes in FolderStyle -->
         <attr name="folderStyle" format="reference" />
 
         <!-- numAllAppsColumns defaults to numColumns, if not specified -->
@@ -387,7 +391,7 @@
 
     </declare-styleable>
 
-    <declare-styleable name="FolderDisplayStyle">
+    <declare-styleable name="FolderStyle">
         <!-- defaults to minCellHeight if not specified
         when GridDisplayOption#isScalable is true. -->
         <attr name="folderCellHeight" format="dimension" />
@@ -402,13 +406,16 @@
         <attr name="folderTopPadding" format="dimension" />
     </declare-styleable>
 
-
     <declare-styleable name="CellLayout">
         <attr name="containerType" format="integer">
             <enum name="workspace" value="0" />
             <enum name="hotseat" value="1" />
             <enum name="folder" value="2" />
         </attr>
+    </declare-styleable>
+
+    <declare-styleable name="CellStyle">
+        <attr name="iconDrawablePadding" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="ShadowDrawable">
