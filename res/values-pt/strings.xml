@@ -32,7 +32,7 @@
     <string name="split_screen_position_left" msgid="7537793098851830883">"Dividir para a esquerda"</string>
     <string name="split_screen_position_right" msgid="1569377524925193369">"Dividir para a direita"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Informações do app %1$s"</string>
-    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Toque e mantenha pressionado para mover um widget."</string>
+    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Toque e pressione para mover um widget."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Toque duas vezes e mantenha a tela pressionada para mover um widget ou usar ações personalizadas."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d de largura por %2$d de altura"</string>
