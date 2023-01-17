@@ -73,6 +73,13 @@ public class TaskbarControllers {
     // Roundness property for round corner above taskbar .
     private final AnimatedFloat mCornerRoundness = new AnimatedFloat(this::updateCornerRoundness);
 
+    /**
+     * Want to add a new controller? Don't forget to:
+     *   * Call init
+     *   * Call onDestroy
+     *   * Add to mControllersToLog
+     *   * Add tests by adding this controller to TaskbarBaseTestCase.kt and extending that class
+     */
     public TaskbarControllers(TaskbarActivityContext taskbarActivityContext,
             TaskbarDragController taskbarDragController,
             TaskbarNavButtonController navButtonController,
