@@ -184,6 +184,7 @@ android {
 
     buildTypes {
         debug {
+            applicationIdSuffix ".debug"
             signingConfig releaseSigning
         }
 
