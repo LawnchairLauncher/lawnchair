@@ -17,6 +17,7 @@
 package com.android.quickstep.util;
 
 import static android.app.ActivityTaskManager.INVALID_TASK_ID;
+import static android.app.PendingIntent.FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT;
 import static android.app.PendingIntent.FLAG_MUTABLE;
 
 import static com.android.launcher3.Utilities.postAsyncCallback;
@@ -310,8 +311,9 @@ public class SplitSelectStateController {
     private PendingIntent getPendingIntent(Intent intent) {
         return intent == null ? null : (mUser != null
                 ? PendingIntent.getActivityAsUser(mContext, 0, intent,
-                FLAG_MUTABLE, null /* options */, mUser)
-                : PendingIntent.getActivity(mContext, 0, intent, FLAG_MUTABLE));
+                FLAG_MUTABLE | FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT, null /* options */, mUser)
+                : PendingIntent.getActivity(mContext, 0, intent,
+                        FLAG_MUTABLE | FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT));
     }
 
     public @StagePosition int getActiveSplitStagePosition() {
