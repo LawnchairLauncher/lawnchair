@@ -24,7 +24,8 @@ import android.os.Process
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.launcher3.InvariantDeviceProfile
-import com.android.launcher3.LauncherFiles
+import com.android.launcher3.LauncherPrefs
+import com.android.launcher3.LauncherPrefs.Companion.WORKSPACE_SIZE
 import com.android.launcher3.LauncherSettings.Favorites.*
 import com.android.launcher3.config.FeatureFlags
 import com.android.launcher3.model.GridSizeMigrationUtil.DbReader
@@ -754,11 +755,7 @@ class GridSizeMigrationUtilTest {
             .edit()
             .putBoolean(FeatureFlags.ENABLE_NEW_MIGRATION_LOGIC.key, true)
             .commit()
-        context
-            .getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
-            .edit()
-            .putString(DeviceGridState.KEY_WORKSPACE_SIZE, srcGridSize)
-            .commit()
+        LauncherPrefs.get(context).putSync(WORKSPACE_SIZE.to(srcGridSize))
         FeatureFlags.initialize(context)
     }
 

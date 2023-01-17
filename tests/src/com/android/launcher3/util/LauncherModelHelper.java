@@ -55,6 +55,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.ModelUpdateTask;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.AllAppsList;
@@ -506,7 +507,7 @@ public class LauncherModelHelper {
 
         SanboxModelContext() {
             super(ApplicationProvider.getApplicationContext(),
-                    UserCache.INSTANCE, InstallSessionHelper.INSTANCE,
+                    UserCache.INSTANCE, InstallSessionHelper.INSTANCE, LauncherPrefs.INSTANCE,
                     LauncherAppState.INSTANCE, InvariantDeviceProfile.INSTANCE,
                     DisplayController.INSTANCE, CustomWidgetManager.INSTANCE,
                     SettingsCache.INSTANCE, PluginManagerWrapper.INSTANCE,
