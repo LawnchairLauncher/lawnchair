@@ -323,6 +323,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     // May be set to false when mIsTransientTaskbar is true.
     private boolean mCanSlowSwipeGoHome = true;
     private boolean mHasReachedOverviewThreshold = false;
+    private boolean mDividerHiddenBeforeAnimation = false;
 
     @Nullable
     private RemoteAnimationTargets.ReleaseCheck mSwipePipToHomeReleaseCheck = null;
@@ -1674,7 +1675,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mRecentsAnimationController.enableInputConsumer();
 
         // Start hiding the divider
-        if (!mIsTransientTaskbar || mTaskbarAlreadyOpen || mIsTaskbarAllAppsOpen) {
+        if (!mIsTransientTaskbar || mTaskbarAlreadyOpen || mIsTaskbarAllAppsOpen
+                || mDividerHiddenBeforeAnimation) {
             setDividerShown(false /* shown */, true /* immediate */);
         }
     }
@@ -2324,6 +2326,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     private void setDividerShown(boolean shown, boolean immediate) {
+        if (mRecentsAnimationTargets == null) {
+            if (!shown) {
+                mDividerHiddenBeforeAnimation = true;
+            }
+            return;
+        }
         if (mDividerAnimator != null) {
             mDividerAnimator.cancel();
         }
