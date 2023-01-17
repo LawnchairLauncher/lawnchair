@@ -104,6 +104,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private SplitBounds mSplitBounds;
     private Boolean mDrawsBelowRecents = null;
     private boolean mIsGridTask;
+    private boolean mIsDesktopTask;
     private int mTaskRectTranslationX;
     private int mTaskRectTranslationY;
 
@@ -145,6 +146,13 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         if (mDp == null) {
             return 1;
         }
+
+        if (mIsDesktopTask) {
+            mTaskRect.set(mThumbnailPosition);
+            mPivot.set(mTaskRect.centerX(), mTaskRect.centerY());
+            return 1;
+        }
+
         if (mIsGridTask) {
             mSizeStrategy.calculateGridTaskSize(mContext, mDp, mTaskRect,
                     mOrientationState.getOrientationHandler());
@@ -225,6 +233,13 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
      */
     public void setIsGridTask(boolean isGridTask) {
         mIsGridTask = isGridTask;
+    }
+
+    /**
+     * Sets whether this task is part of desktop tasks in overview.
+     */
+    public void setIsDesktopTask(boolean desktop) {
+        mIsDesktopTask = desktop;
     }
 
     /**

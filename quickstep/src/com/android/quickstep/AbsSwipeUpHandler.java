@@ -127,6 +127,7 @@ import com.android.quickstep.util.SurfaceTransaction;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.SwipePipToHomeAnimator;
 import com.android.quickstep.util.TaskViewSimulator;
+import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
@@ -877,7 +878,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     public void onRecentsAnimationStart(RecentsAnimationController controller,
             RecentsAnimationTargets targets) {
         super.onRecentsAnimationStart(controller, targets);
-        mRemoteTargetHandles = mTargetGluer.assignTargetsForSplitScreen(mContext, targets);
+        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED && targets.hasDesktopTasks()) {
+            mRemoteTargetHandles = mTargetGluer.assignTargetsForDesktop(targets);
+        } else {
+            mRemoteTargetHandles = mTargetGluer.assignTargetsForSplitScreen(mContext, targets);
+        }
         mRecentsAnimationController = controller;
         mRecentsAnimationTargets = targets;
         mSwipePipToHomeReleaseCheck = new RemoteAnimationTargets.ReleaseCheck();

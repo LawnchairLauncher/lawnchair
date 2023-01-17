@@ -39,6 +39,7 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
+import static com.android.quickstep.views.DesktopTaskView.DESKTOP_MODE_SUPPORTED;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -78,6 +79,7 @@ import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
+import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.GroupedTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
@@ -182,9 +184,12 @@ public final class TaskViewUtils {
             // Re-use existing handles
             remoteTargetHandles = recentsViewHandles;
         } else {
+            boolean forDesktop = DESKTOP_MODE_SUPPORTED && v instanceof DesktopTaskView;
             RemoteTargetGluer gluer = new RemoteTargetGluer(v.getContext(),
-                    recentsView.getSizeStrategy(), targets);
-            if (v.containsMultipleTasks()) {
+                    recentsView.getSizeStrategy(), targets, forDesktop);
+            if (forDesktop) {
+                remoteTargetHandles = gluer.assignTargetsForDesktop(targets);
+            } else if (v.containsMultipleTasks()) {
                 remoteTargetHandles = gluer.assignTargetsForSplitScreen(targets, v.getTaskIds());
             } else {
                 remoteTargetHandles = gluer.assignTargets(targets);
