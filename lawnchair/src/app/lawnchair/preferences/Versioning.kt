@@ -19,6 +19,7 @@ package app.lawnchair.preferences
 import com.android.launcher3.BuildConfig
 
 object Versioning {
+    const val commitHash = BuildConfig.COMMIT_HASH
     const val versionName = BuildConfig.VERSION_DISPLAY_NAME
     const val majorVersion = BuildConfig.MAJOR_VERSION
 }
