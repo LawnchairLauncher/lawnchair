@@ -1,5 +1,6 @@
 import com.android.build.gradle.BasePlugin
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
     id 'com.android.application' version "7.4.0"
@@ -37,9 +38,9 @@ allprojects {
         }
     }
 
-    tasks.withType(KotlinCompile).configureEach {
-        kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_1_8
+    tasks.withType(KotlinCompilationTask).configureEach {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_1_8
         }
     }
 
@@ -63,7 +64,7 @@ allprojects {
             tasks.withType(JavaCompile) {
                 options.bootstrapClasspath = files([frameworkJar] + (options.bootstrapClasspath.files as Iterable<File>))
             }
-            tasks.withType(KotlinCompile) {
+            tasks.withType(KotlinCompilationTask) {
                 it.classpath.from(files([frameworkJar]))
             }
         }
@@ -72,7 +73,7 @@ allprojects {
     ext.replaceFrameworkJar = { String name ->
         def frameworkJar = getFrameworkJar(name)
         gradle.projectsEvaluated {
-            tasks.withType(KotlinCompile) {
+            tasks.withType(KotlinCompilationTask) {
                 def originalFiles = [] + it.classpath.files
                 def newFiles = []
                 originalFiles.each { file ->
