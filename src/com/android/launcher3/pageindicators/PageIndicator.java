@@ -46,4 +46,11 @@ public interface PageIndicator {
     default void skipAnimationsToEnd() {
         // No-op by default
     }
+
+    /**
+     * Sets the paint color.
+     */
+    default void setPaintColor(int color) {
+        // No-op by default
+    }
 }
