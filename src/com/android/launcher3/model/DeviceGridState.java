@@ -17,7 +17,10 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.InvariantDeviceProfile.DeviceType;
-import static com.android.launcher3.InvariantDeviceProfile.TYPE_PHONE;
+import static com.android.launcher3.LauncherPrefs.DB_FILE;
+import static com.android.launcher3.LauncherPrefs.DEVICE_TYPE;
+import static com.android.launcher3.LauncherPrefs.HOTSEAT_COUNT;
+import static com.android.launcher3.LauncherPrefs.WORKSPACE_SIZE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_2;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_3;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_4;
@@ -25,7 +28,6 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_6;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.android.launcher3.InvariantDeviceProfile;
@@ -58,11 +60,11 @@ public class DeviceGridState implements Comparable<DeviceGridState> {
     }
 
     public DeviceGridState(Context context) {
-        SharedPreferences prefs = LauncherPrefs.getPrefs(context);
-        mGridSizeString = prefs.getString(KEY_WORKSPACE_SIZE, "");
-        mNumHotseat = prefs.getInt(KEY_HOTSEAT_COUNT, -1);
-        mDeviceType = prefs.getInt(KEY_DEVICE_TYPE, TYPE_PHONE);
-        mDbFile = prefs.getString(KEY_DB_FILE, "");
+        LauncherPrefs lp = LauncherPrefs.get(context);
+        mGridSizeString = lp.get(WORKSPACE_SIZE);
+        mNumHotseat = lp.get(HOTSEAT_COUNT);
+        mDeviceType = lp.get(DEVICE_TYPE);
+        mDbFile = lp.get(DB_FILE);
     }
 
     /**
@@ -90,12 +92,11 @@ public class DeviceGridState implements Comparable<DeviceGridState> {
      * Stores the device state to shared preferences
      */
     public void writeToPrefs(Context context) {
-        LauncherPrefs.getPrefs(context).edit()
-                .putString(KEY_WORKSPACE_SIZE, mGridSizeString)
-                .putInt(KEY_HOTSEAT_COUNT, mNumHotseat)
-                .putInt(KEY_DEVICE_TYPE, mDeviceType)
-                .putString(KEY_DB_FILE, mDbFile)
-                .apply();
+        LauncherPrefs.get(context).put(
+                WORKSPACE_SIZE.to(mGridSizeString),
+                HOTSEAT_COUNT.to(mNumHotseat),
+                DEVICE_TYPE.to(mDeviceType),
+                DB_FILE.to(mDbFile));
     }
 
     /**
