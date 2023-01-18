@@ -4,10 +4,6 @@
 
     <integer name="extracted_color_gradient_alpha">153</integer>
 
-    <!-- A string pointer to the original app name string. This allows derived projects to
-     easily override the app name without providing all translations -->
-    <string name="derived_app_name" translatable="false">@string/app_name</string>
-
     <!-- String representing the intent for search on the apps market. To specify a query, add
     q=<query> to the data to the intent -->
     <string name="market_search_intent" translatable="false">market://search?c=apps</string>

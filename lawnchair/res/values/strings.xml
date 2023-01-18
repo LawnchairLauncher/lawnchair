@@ -17,7 +17,6 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="iconPackPackageDefault" translatable="false">""</string>
-    <string name="derived_app_name" tools:override="true" translatable="false">Lawnchair</string>
 
     <!-- PreferenceDashboard -->
     <string name="settings">Settings</string>
@@ -117,6 +116,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Icon Pack</string>
+    <string name="themed_icon_pack">Themed Icon Source</string>
       <string name="system_icons">System Icons</string>
 
     <string name="themed_icon_title">Themed Icons</string>
