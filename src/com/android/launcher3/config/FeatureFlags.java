@@ -334,8 +334,8 @@ public final class FeatureFlags {
             "HOME_GARDENING_WORKSPACE_BUTTONS", false,
             "Change workspace edit buttons to reflect home gardening");
 
-    public static final BooleanFlag ENABLE_DOWNLOAD_APP_UX_V2 = getDebugFlag(
-            "ENABLE_DOWNLOAD_APP_UX_V2", false, "Updates the download app UX"
+    public static final BooleanFlag ENABLE_DOWNLOAD_APP_UX_V2 = new DeviceFlag(
+            "ENABLE_DOWNLOAD_APP_UX_V2", true, "Updates the download app UX"
                     + " to have better visuals");
 
     public static final BooleanFlag ENABLE_TASKBAR_REVISED_THRESHOLDS = getDebugFlag(
