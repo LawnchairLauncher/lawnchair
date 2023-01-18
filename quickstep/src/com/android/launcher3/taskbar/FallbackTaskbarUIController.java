@@ -73,12 +73,12 @@ public class FallbackTaskbarUIController extends TaskbarUIController {
         boolean useStashedLauncherState = toState.hasOverviewActions();
         boolean stashedLauncherState =
                 useStashedLauncherState && !FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get();
-        TaskbarStashController controller = mControllers.taskbarStashController;
+        TaskbarStashController stashController = mControllers.taskbarStashController;
         // Set both FLAG_IN_STASHED_LAUNCHER_STATE and FLAG_IN_APP to ensure the state is respected.
         // For all other states, just use the current stashed-in-app setting (e.g. if long clicked).
-        controller.updateStateForFlag(FLAG_IN_STASHED_LAUNCHER_STATE, stashedLauncherState);
-        controller.updateStateForFlag(FLAG_IN_APP, !useStashedLauncherState);
-        return controller.applyStateWithoutStart(duration);
+        stashController.updateStateForFlag(FLAG_IN_STASHED_LAUNCHER_STATE, stashedLauncherState);
+        stashController.updateStateForFlag(FLAG_IN_APP, !useStashedLauncherState);
+        return stashController.createApplyStateAnimator(duration);
     }
 
     private void animateToRecentsState(RecentsState toState) {
