@@ -26,7 +26,6 @@ import android.animation.AnimatorSet;
 import android.annotation.ColorInt;
 import android.os.RemoteException;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.TaskTransitionSpec;
 import android.view.WindowManagerGlobal;
 
@@ -45,13 +44,13 @@ import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.views.RecentsView;
 
 import java.io.PrintWriter;
 import java.util.Set;
-import java.util.stream.Stream;
 
 /**
  * A data source which integrates with a Launcher instance
@@ -65,7 +64,12 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     public static final int WIDGETS_PAGE_PROGRESS_INDEX = 2;
     public static final int SYSUI_SURFACE_PROGRESS_INDEX = 3;
 
-    private final SparseArray<Float> mTaskbarInAppDisplayProgress = new SparseArray<>(4);
+    private static final int DISPLAY_PROGRESS_COUNT = 4;
+
+    private final AnimatedFloat mTaskbarInAppDisplayProgress = new AnimatedFloat();
+    private final MultiPropertyFactory<AnimatedFloat> mTaskbarInAppDisplayProgressMultiProp =
+            new MultiPropertyFactory<>(mTaskbarInAppDisplayProgress,
+                    AnimatedFloat.VALUE, DISPLAY_PROGRESS_COUNT, Float::max);
 
     private final QuickstepLauncher mLauncher;
 
@@ -305,11 +309,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
      *                 1 => use in-app layout
      */
     public void onTaskbarInAppDisplayProgressUpdate(float progress, int progressIndex) {
+        mTaskbarInAppDisplayProgressMultiProp.get(progressIndex).setValue(progress);
         if (mControllers == null) {
             // This method can be called before init() is called.
             return;
         }
-        mTaskbarInAppDisplayProgress.put(progressIndex, progress);
         if (mControllers.uiController.isIconAlignedWithHotseat()
                 && !mTaskbarLauncherStateController.isAnimatingToLauncher()) {
             // Only animate the nav buttons while home and not animating home, otherwise let
@@ -317,30 +321,13 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
             mControllers.navbarButtonsViewController
                     .getTaskbarNavButtonTranslationYForInAppDisplay()
                     .updateValue(mLauncher.getDeviceProfile().getTaskbarOffsetY()
-                            * getInAppDisplayProgress());
+                            * mTaskbarInAppDisplayProgress.value);
         }
     }
 
     /** Returns true iff any in-app display progress > 0. */
     public boolean shouldUseInAppLayout() {
-        return getInAppDisplayProgress() > 0;
-    }
-
-    private float getInAppDisplayProgress(int index) {
-        if (!mTaskbarInAppDisplayProgress.contains(index)) {
-            mTaskbarInAppDisplayProgress.put(index, 0f);
-        }
-        return mTaskbarInAppDisplayProgress.get(index);
-    }
-
-    private float getInAppDisplayProgress() {
-        return Stream.of(
-                getInAppDisplayProgress(MINUS_ONE_PAGE_PROGRESS_INDEX),
-                getInAppDisplayProgress(ALL_APPS_PAGE_PROGRESS_INDEX),
-                getInAppDisplayProgress(WIDGETS_PAGE_PROGRESS_INDEX),
-                getInAppDisplayProgress(SYSUI_SURFACE_PROGRESS_INDEX))
-                .max(Float::compareTo)
-                .get();
+        return mTaskbarInAppDisplayProgress.value > 0;
     }
 
     @Override
@@ -358,7 +345,8 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     @Override
     public boolean isHotseatIconOnTopWhenAligned() {
         return mTaskbarLauncherStateController.isInHotseatOnTopStates()
-                && getInAppDisplayProgress(MINUS_ONE_PAGE_PROGRESS_INDEX) == 0;
+                && mTaskbarInAppDisplayProgressMultiProp.get(MINUS_ONE_PAGE_PROGRESS_INDEX)
+                    .getValue() == 0;
     }
 
     @Override
@@ -369,28 +357,15 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
                 "%s\tmTaskbarOverrideBackgroundAlpha=%.2f",
                 prefix,
                 mTaskbarOverrideBackgroundAlpha.value));
-
         pw.println(String.format("%s\tTaskbar in-app display progress:", prefix));
-        if (mControllers == null) {
-            pw.println(String.format("%s\t\tMissing mControllers", prefix));
-        } else {
-            pw.println(String.format(
-                    "%s\t\tprogress at MINUS_ONE_PAGE_PROGRESS_INDEX=%.2f",
-                    prefix,
-                    getInAppDisplayProgress(MINUS_ONE_PAGE_PROGRESS_INDEX)));
-            pw.println(String.format(
-                    "%s\t\tprogress at ALL_APPS_PAGE_PROGRESS_INDEX=%.2f",
-                    prefix,
-                    getInAppDisplayProgress(ALL_APPS_PAGE_PROGRESS_INDEX)));
-            pw.println(String.format(
-                    "%s\t\tprogress at WIDGETS_PAGE_PROGRESS_INDEX=%.2f",
-                    prefix,
-                    getInAppDisplayProgress(WIDGETS_PAGE_PROGRESS_INDEX)));
-            pw.println(String.format(
-                    "%s\t\tprogress at SYSUI_SURFACE_PROGRESS_INDEX=%.2f",
-                    prefix,
-                    getInAppDisplayProgress(SYSUI_SURFACE_PROGRESS_INDEX)));
-        }
+        mTaskbarInAppDisplayProgressMultiProp.dump(
+                prefix + "\t",
+                pw,
+                "mTaskbarInAppDisplayProgressMultiProp",
+                "MINUS_ONE_PAGE_PROGRESS_INDEX",
+                "ALL_APPS_PAGE_PROGRESS_INDEX",
+                "WIDGETS_PAGE_PROGRESS_INDEX",
+                "SYSUI_SURFACE_PROGRESS_INDEX");
 
         mTaskbarLauncherStateController.dumpLogs(prefix + "\t", pw);
     }
