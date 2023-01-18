@@ -61,10 +61,10 @@ allprojects {
     ext.addFrameworkJar = { String name ->
         def frameworkJar = getFrameworkJar(name)
         gradle.projectsEvaluated {
-            tasks.withType(JavaCompile) {
+            tasks.withType(JavaCompile).configureEach {
                 options.bootstrapClasspath = files([frameworkJar] + (options.bootstrapClasspath.files as Iterable<File>))
             }
-            tasks.withType(KotlinCompilationTask) {
+            tasks.withType(KotlinCompilationTask).configureEach {
                 it.classpath.from(files([frameworkJar]))
             }
         }
@@ -73,7 +73,7 @@ allprojects {
     ext.replaceFrameworkJar = { String name ->
         def frameworkJar = getFrameworkJar(name)
         gradle.projectsEvaluated {
-            tasks.withType(KotlinCompilationTask) {
+            tasks.withType(KotlinCompilationTask).configureEach {
                 def originalFiles = [] + it.classpath.files
                 def newFiles = []
                 originalFiles.each { file ->
@@ -134,8 +134,8 @@ android {
         buildConfigField "int", "QUICKSTEP_MAX_SDK", quickstepMaxSdk
     }
 
-    applicationVariants.all { variant ->
-        variant.outputs.all {
+    applicationVariants.configureEach { variant ->
+        variant.outputs.configureEach {
             outputFileName = "Lawnchair ${variant.versionName}.apk"
         }
     }
@@ -238,7 +238,7 @@ android {
             dimension "recents"
         }
 
-        all {
+        configureEach {
             resValue("string", "launcher_component", "${applicationId}/app.lawnchair.LawnchairLauncher")
         }
     }
