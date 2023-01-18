@@ -16,6 +16,7 @@
 package com.android.launcher3.uioverrides;
 
 import static android.os.Trace.TRACE_TAG_APP;
+import static android.view.WindowManager.LayoutParams.PRIVATE_FLAG_OPTIMIZE_MEASURE;
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
@@ -543,6 +544,7 @@ public class QuickstepLauncher extends Launcher {
         if (FeatureFlags.CONTINUOUS_VIEW_TREE_CAPTURE.get()) {
             mViewCapture = ViewCapture.getInstance().startCapture(getWindow());
         }
+        getWindow().addPrivateFlags(PRIVATE_FLAG_OPTIMIZE_MEASURE);
     }
 
     @Override
