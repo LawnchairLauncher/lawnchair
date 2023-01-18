@@ -120,7 +120,7 @@ public class TestWorkspaceBuilder {
      * be clean otherwise this doesn't overrides the existing icons.
      */
     public FavoriteItemsTransaction fillHotseatIcons(FavoriteItemsTransaction transaction) {
-        int hotseatCount = InvariantDeviceProfile.INSTANCE.get(mContext).numShownHotseatIcons;
+        int hotseatCount = InvariantDeviceProfile.INSTANCE.get(mContext).numDatabaseHotseatIcons;
         for (int i = 0; i < hotseatCount; i++) {
             transaction.addItem(getHotseatValues(i));
         }
