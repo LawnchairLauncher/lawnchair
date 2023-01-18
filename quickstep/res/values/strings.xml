@@ -18,9 +18,6 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <!-- Application name -->
-    <string name="derived_app_name" translatable="false">Quickstep</string>
-
     <!-- Options for recent tasks -->
     <!-- Title for an option to keep an app pinned to the screen until it is unpinned -->
     <string name="recent_task_option_pin">Pin</string>
