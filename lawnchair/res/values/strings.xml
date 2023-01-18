@@ -117,6 +117,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Icon Pack</string>
+    <string name="themed_icon_pack">Themed Icon Source</string>
       <string name="system_icons">System Icons</string>
 
     <string name="themed_icon_title">Themed Icons</string>
