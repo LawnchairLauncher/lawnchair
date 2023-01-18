@@ -15,11 +15,17 @@
  */
 package com.android.launcher3.taskbar
 
+import android.graphics.PorterDuff.Mode.SRC_ATOP
+import android.graphics.PorterDuffColorFilter
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IntDef
 import androidx.annotation.LayoutRes
+import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieProperty.COLOR_FILTER
+import com.airbnb.lottie.model.KeyPath
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
 import com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_EDU_TOOLTIP
 import com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_EDU_OPEN
@@ -82,7 +88,10 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
 
         tooltipStep = TOOLTIP_STEP_FEATURES
         inflateTooltip(R.layout.taskbar_edu_swipe)
-        tooltip?.show()
+        tooltip?.apply {
+            findViewById<LottieAnimationView>(R.id.swipe_animation).supportLightTheme()
+            show()
+        }
     }
 
     /**
@@ -99,6 +108,9 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
         tooltipStep = TOOLTIP_STEP_NONE
         inflateTooltip(R.layout.taskbar_edu_features)
         tooltip?.apply {
+            findViewById<LottieAnimationView>(R.id.splitscreen_animation).supportLightTheme()
+            findViewById<LottieAnimationView>(R.id.suggestions_animation).supportLightTheme()
+
             findViewById<View>(R.id.done_button)?.setOnClickListener { hide() }
             if (DisplayController.isTransientTaskbar(activityContext)) {
                 (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin +=
@@ -143,5 +155,39 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
         pw?.println("$prefix\tisTooltipEnabled=$isTooltipEnabled")
         pw?.println("$prefix\tisOpen=$isOpen")
         pw?.println("$prefix\ttooltipStep=$tooltipStep")
+    }
+}
+
+/**
+ * Maps colors in the dark-themed Lottie assets to their light-themed equivalents.
+ *
+ * For instance, `".blue100" to R.color.lottie_blue400` means objects that are material blue100 in
+ * dark theme should be changed to material blue400 in light theme.
+ */
+private val DARK_TO_LIGHT_COLORS =
+    mapOf(
+        ".blue100" to R.color.lottie_blue400,
+        ".blue400" to R.color.lottie_blue600,
+        ".green100" to R.color.lottie_green400,
+        ".green400" to R.color.lottie_green600,
+        ".grey300" to R.color.lottie_grey600,
+        ".grey400" to R.color.lottie_grey700,
+        ".grey800" to R.color.lottie_grey200,
+        ".red400" to R.color.lottie_red600,
+        ".yellow100" to R.color.lottie_yellow400,
+        ".yellow400" to R.color.lottie_yellow600,
+    )
+
+private fun LottieAnimationView.supportLightTheme() {
+    if (Utilities.isDarkTheme(context)) {
+        return
+    }
+
+    addLottieOnCompositionLoadedListener {
+        DARK_TO_LIGHT_COLORS.forEach { (key, color) ->
+            addValueCallback(KeyPath("**", key, "**"), COLOR_FILTER) {
+                PorterDuffColorFilter(context.getColor(color), SRC_ATOP)
+            }
+        }
     }
 }
