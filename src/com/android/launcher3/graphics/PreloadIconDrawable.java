@@ -82,7 +82,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     // Duration = COMPLETE_ANIM_FRACTION * DURATION_SCALE
     private static final float COMPLETE_ANIM_FRACTION = 1f;
 
-    private static final float SMALL_SCALE = ENABLE_DOWNLOAD_APP_UX_V2.get() ? 0.867f : 0.7f;
+    private static final float SMALL_SCALE = 0.7f;
     private static final float PROGRESS_STROKE_SCALE = ENABLE_DOWNLOAD_APP_UX_V2.get()
             ? 0.0655f
             : 0.075f;
