@@ -520,13 +520,20 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
     /**
      * Returns a padding in case a scrim is shown on the bottom of the view and a padding is needed.
      */
-    protected int getNavBarScrimHeight(WindowInsets insets) {
+    protected int computeNavBarScrimHeight(WindowInsets insets) {
         return 0;
+    }
+
+    /**
+     * Returns the current height of nav bar scrim
+     */
+    public int getNavBarScrimHeight() {
+        return mNavBarScrimHeight;
     }
 
     @Override
     public WindowInsets dispatchApplyWindowInsets(WindowInsets insets) {
-        mNavBarScrimHeight = getNavBarScrimHeight(insets);
+        mNavBarScrimHeight = computeNavBarScrimHeight(insets);
         applyAdapterSideAndBottomPaddings(mActivityContext.getDeviceProfile());
         return super.dispatchApplyWindowInsets(insets);
     }
