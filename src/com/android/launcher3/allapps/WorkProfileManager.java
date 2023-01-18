@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.LauncherPrefs.WORK_EDU_STEP;
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_WORK_DISABLED_CARD;
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_WORK_EDU_CARD;
 import static com.android.launcher3.allapps.BaseAllAppsContainerView.AdapterHolder.MAIN;
@@ -26,7 +27,6 @@ import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_ENABLED;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
@@ -40,6 +40,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
@@ -86,14 +87,12 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
 
     @WorkProfileState
     private int mCurrentState;
-    private SharedPreferences mPreferences;
 
     public WorkProfileManager(
-            UserManager userManager, BaseAllAppsContainerView<?> allApps, SharedPreferences prefs,
+            UserManager userManager, BaseAllAppsContainerView<?> allApps,
             StatsLogManager statsLogManager) {
         mUserManager = userManager;
         mAllApps = allApps;
-        mPreferences = prefs;
         mMatcher = mAllApps.mPersonalMatcher.negate();
         mStatsLogManager = statsLogManager;
     }
@@ -225,7 +224,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
     }
 
     private boolean isEduSeen() {
-        return mPreferences.getInt(KEY_WORK_EDU_STEP, 0) != 0;
+        return LauncherPrefs.get(mAllApps.getContext()).get(WORK_EDU_STEP) != 0;
     }
 
     private void onWorkFabClicked(View view) {

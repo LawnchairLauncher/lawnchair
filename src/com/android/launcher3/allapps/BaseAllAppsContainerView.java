@@ -57,7 +57,6 @@ import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InsettableFrameLayout;
-import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.search.DefaultSearchAdapterProvider;
@@ -161,10 +160,8 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
                 R.dimen.dynamic_grid_cell_border_spacing);
         mHeaderProtectionColor = Themes.getAttrColor(context, R.attr.allappsHeaderProtectionColor);
 
-        mWorkManager = new WorkProfileManager(
-                mActivityContext.getSystemService(UserManager.class),
-                this, LauncherPrefs.getPrefs(mActivityContext),
-                mActivityContext.getStatsLogManager());
+        mWorkManager = new WorkProfileManager(mActivityContext.getSystemService(UserManager.class),
+                this, mActivityContext.getStatsLogManager());
         mAH = Arrays.asList(null, null, null);
         mNavBarScrimPaint = new Paint();
         mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
