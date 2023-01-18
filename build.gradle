@@ -4,19 +4,17 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id 'com.android.application' version "7.4.0"
     id 'com.android.library' version "7.4.0" apply false
-    id 'org.jetbrains.kotlin.android' version "1.7.20"
-    id 'org.jetbrains.kotlin.plugin.parcelize' version "1.7.20"
-    id 'org.jetbrains.kotlin.plugin.serialization' version "1.7.20"
-    id "com.google.devtools.ksp" version "1.7.20-1.0.8"
+    id 'org.jetbrains.kotlin.android' version "1.8.0"
+    id 'org.jetbrains.kotlin.plugin.parcelize' version "1.8.0"
+    id 'org.jetbrains.kotlin.plugin.serialization' version "1.8.0"
+    id "com.google.devtools.ksp" version "1.8.0-1.0.8"
     id 'com.google.protobuf' version "0.9.1"
     id 'com.google.android.gms.oss-licenses-plugin' version "0.10.6"
     id 'dev.rikka.tools.refine' version "3.1.1"
-    id 'org.gradle.android.cache-fix' version "2.6.2"
 }
 
 allprojects {
     plugins.withType(BasePlugin).configureEach {
-        apply plugin: 'org.gradle.android.cache-fix'
         project.android {
             compileSdk 33
             defaultConfig {
@@ -123,6 +121,7 @@ android {
         versionCode 12_01_00_05
         versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
+        buildConfigField "String", "COMMIT_HASH", "\"${buildCommit}\""
         buildConfigField "String", "MAJOR_VERSION", "\"${majorVersion}\""
         buildConfigField "String", "COMMIT_HASH", "\"${buildCommit}\""
         buildConfigField "boolean", "ENABLE_AUTO_INSTALLS_LAYOUT", "false"
@@ -147,7 +146,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.3.2"
+        kotlinCompilerExtensionVersion = "1.4.0"
     }
 
     final def keystorePropertiesFile = rootProject.file("keystore.properties")

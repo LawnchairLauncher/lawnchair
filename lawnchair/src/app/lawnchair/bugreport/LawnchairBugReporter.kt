@@ -59,7 +59,7 @@ class LawnchairBugReporter(private val context: Context) {
             .generateBugReport() ?: return
 
         val notifications = notificationManager.activeNotifications
-        val hasNotification = notifications.any { it.id == bugReport.notificationId }
+        val hasNotification = notifications.any { it.id == bugReport.id }
         if (hasNotification || notifications.size > 3) {
             return
         }
