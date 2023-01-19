@@ -22,6 +22,8 @@ allprojects {
                 targetSdk 32
                 vectorDrawables.useSupportLibrary = true
             }
+            // Can remove this once https://issuetracker.google.com/issues/260059413 is fixed.
+            // https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
             compileOptions {
                 sourceCompatibility JavaVersion.VERSION_1_8
                 targetCompatibility JavaVersion.VERSION_1_8
@@ -33,12 +35,7 @@ allprojects {
         }
         project.dependencies {
             implementation 'androidx.core:core-ktx:1.9.0'
-        }
-    }
-
-    tasks.withType(KotlinCompile).configureEach {
-        kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_1_8
+            implementation 'androidx.appcompat:appcompat:1.6.0'
         }
     }
 
@@ -48,41 +45,17 @@ allprojects {
         notCompatibleWithConfigurationCache("https://github.com/RikkaApps/HiddenApiRefinePlugin/issues/9")
     }
 
-    ext.getFrameworkJar = { String name ->
-        def frameworkJar = new File(rootProject.projectDir, 'prebuilts/libs/' + name)
-        if (!frameworkJar.exists()) {
-            throw new IllegalArgumentException("Framework jar path doesn't exist")
-        }
-        return frameworkJar
-    }
-
     ext.addFrameworkJar = { String name ->
-        def frameworkJar = getFrameworkJar(name)
-        gradle.projectsEvaluated {
-            tasks.withType(JavaCompile) {
-                options.bootstrapClasspath = files([frameworkJar] + (options.bootstrapClasspath.files as Iterable<File>))
-            }
-            tasks.withType(KotlinCompile) {
-                it.classpath.from(files([frameworkJar]))
-            }
+        def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)
+        if (!frameworkJar.exists()) {
+            throw new IllegalArgumentException("Framework jar path ${frameworkJar.path} doesn't exist")
         }
-    }
-
-    ext.replaceFrameworkJar = { String name ->
-        def frameworkJar = getFrameworkJar(name)
         gradle.projectsEvaluated {
-            tasks.withType(KotlinCompile) {
-                def originalFiles = [] + it.classpath.files
-                def newFiles = []
-                originalFiles.each { file ->
-                    if (file.path.endsWith('android.jar')) {
-                        newFiles.add(frameworkJar)
-                    } else {
-                        newFiles.add(file)
-                    }
-                }
-                it.classpath.setFrom(files([]))
-                it.classpath.from(files(newFiles))
+            tasks.withType(JavaCompile).configureEach {
+                options.bootstrapClasspath = files(frameworkJar, options.bootstrapClasspath)
+            }
+            tasks.withType(KotlinCompile).configureEach {
+                it.libraries.from(files(frameworkJar))
             }
         }
     }
@@ -90,6 +63,7 @@ allprojects {
 
 // todo remove ext block after migrating to version catalog
 ext {
+    FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
     accompanist_version = '0.28.0'
     libsu_version = '5.0.4'
     protocVersion = '3.21.12'
@@ -132,8 +106,8 @@ android {
         buildConfigField "int", "QUICKSTEP_MAX_SDK", quickstepMaxSdk
     }
 
-    applicationVariants.all { variant ->
-        variant.outputs.all {
+    applicationVariants.configureEach { variant ->
+        variant.outputs.configureEach {
             outputFileName = "Lawnchair ${variant.versionName}.apk"
         }
     }
@@ -204,7 +178,7 @@ android {
 
     // The flavor dimensions for build variants (e.g. aospWithQuickstep, aospWithoutQuickstep)
     // See: https://developer.android.com/studio/build/build-variants#flavor-dimensions
-    flavorDimensions "app", "recents"
+    flavorDimensions += ["app", "recents"]
 
     productFlavors {
         aosp {
@@ -236,7 +210,7 @@ android {
             dimension "recents"
         }
 
-        all {
+        configureEach {
             resValue("string", "launcher_component", "${applicationId}/app.lawnchair.LawnchairLauncher")
         }
     }
@@ -323,22 +297,20 @@ android {
 }
 
 dependencies {
-    final def FRAMEWORK_PREBUILTS_DIR = "prebuilts/libs"
+    implementation projects.iconloaderlib
+    implementation projects.searchuilib
+    // Recents lib dependency
+    withQuickstepImplementation projects.systemUIShared
+    withQuickstepCompileOnly projects.hiddenApi
+
+    implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd.jar')
+    implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell.jar')
+    // Required for AOSP to compile. This is already included in the sysui_shared.jar
+    withoutQuickstepImplementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'plugin_core.jar')
 
     implementation "androidx.dynamicanimation:dynamicanimation:1.0.0"
     implementation "androidx.recyclerview:recyclerview:1.2.1"
     implementation "androidx.preference:preference-ktx:1.2.0"
-    implementation projects.iconloaderlib
-    implementation projects.searchuilib
-    implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd.jar')
-
-    // Recents lib dependency
-    withQuickstepImplementation projects.systemUIShared
-    withQuickstepCompileOnly projects.hiddenApi
-    implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell.jar')
-
-    // Required for AOSP to compile. This is already included in the sysui_shared.jar
-    withoutQuickstepImplementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'plugin_core.jar')
 
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1'
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
