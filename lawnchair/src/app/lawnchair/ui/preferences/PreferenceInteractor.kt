@@ -20,7 +20,7 @@ import app.lawnchair.ossnotices.OssLibrary
 import kotlinx.coroutines.flow.StateFlow
 
 sealed interface PreferenceInteractor {
-    val ossLibraries: StateFlow<List<OssLibrary>?>
+    val ossLibraries: StateFlow<List<OssLibrary>>
     val iconPacks: StateFlow<List<IconPackInfo>>
     val themedIconPacks: StateFlow<List<IconPackInfo>>
 }
