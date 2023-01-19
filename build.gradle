@@ -41,7 +41,7 @@ allprojects {
     // Configure Java to use our chosen language level. Kotlin will automatically pick this up.
     // See https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
     plugins.withType(KotlinBasePlugin).configureEach {
-        kotlin.jvmToolchain(8)
+        kotlin.jvmToolchain(11)
     }
 
     tasks.matching {
