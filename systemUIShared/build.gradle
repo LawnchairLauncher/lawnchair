@@ -20,7 +20,7 @@ android {
 }
 
 dependencies {
-    compileOnly fileTree(dir: new File(rootProject.projectDir, 'prebuilts/libs'), include: 'WindowManager-Shell.jar')
+    compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell.jar')
 
     implementation projects.compatLib
     implementation projects.compatLibVR
