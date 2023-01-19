@@ -41,11 +41,6 @@ allprojects {
             implementation 'androidx.appcompat:appcompat:1.6.0'
         }
     }
-    // Configure Java to use our chosen language level. Kotlin will automatically pick this up.
-    // See https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
-    plugins.withType(KotlinBasePlugin).configureEach {
-        kotlin.jvmToolchain(11)
-    }
 
     tasks.matching {
         it.name.contains("transformClassesWithHiddenApiRefine")
