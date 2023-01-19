@@ -170,7 +170,7 @@ public class TaskbarUIController {
      */
     public void triggerSecondAppForSplit(ItemInfoWithIcon info, Intent intent, View startingView) {
         RecentsView recents = getRecentsView();
-        recents.findLastActiveTaskAndDoSplitOperation(
+        recents.findLastActiveTaskAndRunCallback(
                 info.getTargetComponent(),
                 (Consumer<Task>) foundTask -> {
                     if (foundTask != null) {
