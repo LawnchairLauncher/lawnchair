@@ -101,7 +101,7 @@ public interface QuickstepSystemShortcut {
             RecentsView recentsView = mTarget.getOverviewPanel();
             // Check if there is already an instance of this app running, if so, initiate the split
             // using that.
-            recentsView.findLastActiveTaskAndDoSplitOperation(
+            recentsView.findLastActiveTaskAndRunCallback(
                     intent.getComponent(),
                     (Consumer<Task>) foundTask -> {
                         SplitSelectSource source = new SplitSelectSource(mOriginalView,
