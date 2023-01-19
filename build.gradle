@@ -27,6 +27,7 @@ allprojects {
                 vectorDrawables.useSupportLibrary = true
             }
             // Can remove this once https://issuetracker.google.com/issues/260059413 is fixed.
+            // https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
             compileOptions {
                 sourceCompatibility JavaVersion.VERSION_1_8
                 targetCompatibility JavaVersion.VERSION_1_8
