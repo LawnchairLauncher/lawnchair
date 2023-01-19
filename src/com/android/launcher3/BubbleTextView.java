@@ -16,11 +16,14 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_DOWNLOAD_APP_UX_V2;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_ICON_LABEL_AUTO_SCALING;
 import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
 import static com.android.launcher3.icons.BitmapInfo.FLAG_NO_BADGE;
 import static com.android.launcher3.icons.BitmapInfo.FLAG_THEMED;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
+import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_INCREMENTAL_DOWNLOAD_ACTIVE;
+import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -291,7 +294,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     @UiThread
     public void applyFromWorkspaceItem(WorkspaceItemInfo info, boolean animate, int staggerIndex) {
-        applyFromWorkspaceItem(info, false);
+        applyFromWorkspaceItem(info, null);
     }
 
     /**
@@ -320,10 +323,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     }
 
     @UiThread
-    public void applyFromWorkspaceItem(WorkspaceItemInfo info, boolean promiseStateChanged) {
+    public void applyFromWorkspaceItem(WorkspaceItemInfo info, PreloadIconDrawable icon) {
         applyIconAndLabel(info);
         setItemInfo(info);
-        applyLoadingState(promiseStateChanged);
+        applyLoadingState(icon);
         applyDotState(info, false /* animate */);
         setDownloadStateContentDescription(info, info.getProgressLevel());
     }
@@ -710,23 +713,23 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
      * If this app is installed and downloading incrementally, the progress bar will be updated
      * with the total download progress.
      */
-    public void applyLoadingState(boolean promiseStateChanged) {
+    public void applyLoadingState(PreloadIconDrawable icon) {
         if (getTag() instanceof ItemInfoWithIcon) {
             WorkspaceItemInfo info = (WorkspaceItemInfo) getTag();
-            if ((info.runtimeStatusFlags & ItemInfoWithIcon.FLAG_INCREMENTAL_DOWNLOAD_ACTIVE)
-                    != 0) {
-                updateProgressBarUi(info.getProgressLevel() == 100);
-            } else if (info.hasPromiseIconUi() || (info.runtimeStatusFlags
-                        & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
-                updateProgressBarUi(promiseStateChanged);
+            if ((info.runtimeStatusFlags & FLAG_INCREMENTAL_DOWNLOAD_ACTIVE) != 0
+                    || info.hasPromiseIconUi()
+                    || (info.runtimeStatusFlags & FLAG_INSTALL_SESSION_ACTIVE) != 0
+                    || (ENABLE_DOWNLOAD_APP_UX_V2.get() && icon != null)) {
+                updateProgressBarUi(icon);
             }
         }
     }
 
-    private void updateProgressBarUi(boolean maybePerformFinishedAnimation) {
+    private void updateProgressBarUi(PreloadIconDrawable oldIcon) {
+        FastBitmapDrawable originalIcon = mIcon;
         PreloadIconDrawable preloadDrawable = applyProgressLevel();
-        if (preloadDrawable != null && maybePerformFinishedAnimation) {
-            preloadDrawable.maybePerformFinishedAnimation();
+        if (preloadDrawable != null && oldIcon != null) {
+            preloadDrawable.maybePerformFinishedAnimation(oldIcon, () -> setIcon(originalIcon));
         }
     }
 
@@ -824,12 +827,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
                 != 0) {
             String percentageString = NumberFormat.getPercentInstance()
                     .format(progressLevel * 0.01);
-            if ((info.runtimeStatusFlags & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
+            if ((info.runtimeStatusFlags & FLAG_INSTALL_SESSION_ACTIVE) != 0) {
                 setContentDescription(getContext()
                         .getString(
                             R.string.app_installing_title, info.title, percentageString));
             } else if ((info.runtimeStatusFlags
-                    & ItemInfoWithIcon.FLAG_INCREMENTAL_DOWNLOAD_ACTIVE) != 0) {
+                    & FLAG_INCREMENTAL_DOWNLOAD_ACTIVE) != 0) {
                 setContentDescription(getContext()
                         .getString(
                             R.string.app_downloading_title, info.title, percentageString));
