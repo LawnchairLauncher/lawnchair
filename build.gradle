@@ -14,6 +14,8 @@ plugins {
     id 'dev.rikka.tools.refine' version "3.1.1"
 }
 
+final def FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
+
 allprojects {
     plugins.withType(BasePlugin).configureEach {
         project.android {
@@ -51,9 +53,9 @@ allprojects {
     }
 
     ext.getFrameworkJar = { String name ->
-        def frameworkJar = new File(rootProject.projectDir, 'prebuilts/libs/' + name)
+        def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)
         if (!frameworkJar.exists()) {
-            throw new IllegalArgumentException("Framework jar path doesn't exist")
+            throw new IllegalArgumentException("Framework jar path ${frameworkJar.path} doesn't exist")
         }
         return frameworkJar
     }
@@ -325,8 +327,6 @@ android {
 }
 
 dependencies {
-    final def FRAMEWORK_PREBUILTS_DIR = "prebuilts/libs"
-
     implementation projects.iconloaderlib
     implementation projects.searchuilib
     // Recents lib dependency
