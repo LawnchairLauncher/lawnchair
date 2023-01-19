@@ -1,5 +1,6 @@
 import com.android.build.gradle.BasePlugin
 import org.jetbrains.kotlin.gradle.plugin.KotlinBasePlugin
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
@@ -61,8 +62,8 @@ allprojects {
             tasks.withType(JavaCompile).configureEach {
                 options.bootstrapClasspath = files([frameworkJar] + (options.bootstrapClasspath.files as Iterable<File>))
             }
-            tasks.withType(KotlinCompilationTask).configureEach {
-                it.classpath.from(files([frameworkJar]))
+            tasks.withType(KotlinCompile).configureEach {
+                it.libraries.from(files([frameworkJar]))
             }
         }
     }
