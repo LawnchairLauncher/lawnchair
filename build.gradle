@@ -1,5 +1,5 @@
 import com.android.build.gradle.BasePlugin
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.KotlinBasePlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
@@ -40,10 +40,8 @@ allprojects {
     }
     // Configure Java to use our chosen language level. Kotlin will automatically pick this up.
     // See https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
-    plugins.withType(JavaBasePlugin).configureEach {
-        java.toolchain {
-            languageVersion.set(JavaLanguageVersion.of(8))
-        }
+    plugins.withType(KotlinBasePlugin).configureEach {
+        kotlin.jvmToolchain(8)
     }
 
     tasks.matching {
