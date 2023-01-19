@@ -300,7 +300,7 @@ public abstract class AbstractLauncherUiTest {
     /**
      * Removes all icons from homescreen and hotseat.
      */
-    public void clearHomescreen() throws Throwable {
+    public void clearHomescreen() {
         LauncherSettings.Settings.call(mTargetContext.getContentResolver(),
                 LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
         LauncherSettings.Settings.call(mTargetContext.getContentResolver(),

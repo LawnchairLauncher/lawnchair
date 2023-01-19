@@ -260,6 +260,7 @@ public class DeviceProfile {
     // Whether Taskbar will inset the bottom of apps by taskbarSize.
     public boolean isTaskbarPresentInApps;
     public int taskbarSize;
+    public int transientTaskbarSize;
     public int stashedTaskbarSize;
     public int transientTaskbarMargin;
 
@@ -324,12 +325,12 @@ public class DeviceProfile {
         }
 
         if (isTaskbarPresent) {
+            transientTaskbarSize = res.getDimensionPixelSize(R.dimen.transient_taskbar_size);
+            transientTaskbarMargin = res.getDimensionPixelSize(R.dimen.transient_taskbar_margin);
             if (DisplayController.isTransientTaskbar(context)) {
-                taskbarSize = res.getDimensionPixelSize(R.dimen.transient_taskbar_size);
+                taskbarSize = transientTaskbarSize;
                 stashedTaskbarSize =
                         res.getDimensionPixelSize(R.dimen.transient_taskbar_stashed_size);
-                transientTaskbarMargin =
-                        res.getDimensionPixelSize(R.dimen.transient_taskbar_margin);
             } else {
                 taskbarSize = res.getDimensionPixelSize(R.dimen.taskbar_size);
                 stashedTaskbarSize = res.getDimensionPixelSize(R.dimen.taskbar_stashed_size);
@@ -1383,7 +1384,7 @@ public class DeviceProfile {
     public int getOverviewActionsClaimedSpaceBelow() {
         if (isTaskbarPresent) {
             if (FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get()) {
-                return taskbarSize + transientTaskbarMargin * 2;
+                return transientTaskbarSize + transientTaskbarMargin * 2;
             }
 
             return isGestureMode
