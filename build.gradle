@@ -28,8 +28,8 @@ allprojects {
             }
             // Can remove this once https://issuetracker.google.com/issues/260059413 is fixed.
             compileOptions {
-                sourceCompatibility 9
-                targetCompatibility 9
+                sourceCompatibility JavaVersion.VERSION_1_8
+                targetCompatibility JavaVersion.VERSION_1_8
             }
             lint {
                 abortOnError true
@@ -44,7 +44,7 @@ allprojects {
     // Configure Java to use our chosen language level. Kotlin will automatically pick this up.
     // See https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
     plugins.withType(KotlinBasePlugin).configureEach {
-        kotlin.jvmToolchain(9)
+        kotlin.jvmToolchain(11)
     }
 
     tasks.matching {
