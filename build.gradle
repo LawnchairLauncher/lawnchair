@@ -52,16 +52,11 @@ allprojects {
         notCompatibleWithConfigurationCache("https://github.com/RikkaApps/HiddenApiRefinePlugin/issues/9")
     }
 
-    ext.getFrameworkJar = { String name ->
+    ext.addFrameworkJar = { String name ->
         def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)
         if (!frameworkJar.exists()) {
             throw new IllegalArgumentException("Framework jar path ${frameworkJar.path} doesn't exist")
         }
-        return frameworkJar
-    }
-
-    ext.addFrameworkJar = { String name ->
-        def frameworkJar = getFrameworkJar(name)
         gradle.projectsEvaluated {
             tasks.withType(JavaCompile).configureEach {
                 options.bootstrapClasspath = files([frameworkJar] + (options.bootstrapClasspath.files as Iterable<File>))
