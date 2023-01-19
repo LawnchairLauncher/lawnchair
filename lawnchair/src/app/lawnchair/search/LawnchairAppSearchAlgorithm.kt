@@ -6,6 +6,7 @@ import android.graphics.drawable.Icon
 import android.os.Bundle
 import android.os.Handler
 import android.os.Process
+import androidx.core.os.bundleOf
 import app.lawnchair.allapps.SearchResultView
 import app.lawnchair.launcher
 import app.lawnchair.preferences2.PreferenceManager2
@@ -35,6 +36,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     private val appState = LauncherAppState.getInstance(context)
     private val resultHandler = Handler(Executors.MAIN_EXECUTOR.looper)
     private var enableFuzzySearch = false
+    private var maxResultsCount = 5
     private lateinit var hiddenApps: Set<String>
     private var showHiddenAppsInSearch = false
     private var enableSmartHide = false
@@ -45,6 +47,9 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     init {
         pref2.enableFuzzySearch.onEach(launchIn = coroutineScope) {
             enableFuzzySearch = it
+        }
+        pref2.maxSearchResultCount.onEach(launchIn = coroutineScope) {
+            maxResultsCount = it
         }
         pref2.hiddenApps.onEach(launchIn = coroutineScope) {
             hiddenApps = it
@@ -125,13 +130,12 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     }
 
     private fun fuzzySearch(apps: List<AppInfo>, query: String): List<AppInfo> {
-
         val queryTextLower = query.lowercase(Locale.getDefault())
         val filteredApps = apps.asSequence()
             .filterHiddenApps(queryTextLower)
             .toList()
         val matches = FuzzySearch.extractSorted(
-            queryTextLower, filteredApps, { it.title.toString() }, WeightedRatio(), 65
+            queryTextLower, filteredApps, { it.sectionName + it.title }, WeightedRatio(), 65
         )
 
         return matches.take(maxResultsCount)
@@ -155,14 +159,14 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
             .setIcon(Icon.createWithResource(context, R.drawable.ic_launcher_home))
             .setIntent(PackageManagerHelper.getMarketSearchIntent(context, query))
             .build()
-        val extras = Bundle().apply {
+        val extras = bundleOf(
             if (marketSearchComponent != null) {
-                putString(SearchResultView.EXTRA_ICON_COMPONENT_KEY, marketSearchComponent.toString())
+                SearchResultView.EXTRA_ICON_COMPONENT_KEY to marketSearchComponent.toString()
             } else {
-                putBoolean(SearchResultView.EXTRA_HIDE_ICON, true)
-            }
-            putBoolean(SearchResultView.EXTRA_HIDE_SUBTITLE, true)
-        }
+                SearchResultView.EXTRA_HIDE_ICON to true
+            },
+            SearchResultView.EXTRA_HIDE_SUBTITLE to true
+        )
         return createSearchTarget(id, action, extras)
     }
 
@@ -178,9 +182,5 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         } else {
             filter { it.toComponentKey().toString() !in hiddenApps }
         }
-    }
-
-    companion object {
-        private const val maxResultsCount = 5
     }
 }

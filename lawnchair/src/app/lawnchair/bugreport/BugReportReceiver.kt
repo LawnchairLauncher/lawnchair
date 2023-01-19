@@ -50,7 +50,7 @@ class BugReportReceiver : BroadcastReceiver() {
 
         fun notify(context: Context, report: BugReport, uploading: Boolean = false) {
             val manager: NotificationManager = context.requireSystemService()
-            val notificationId = report.notificationId
+            val notificationId = report.id
             val builder = Notification.Builder(context, notificationChannelId)
                 .setContentTitle(report.getTitle(context))
                 .setContentText(report.description)

@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Lifecycle
 import app.lawnchair.ui.AlertBottomSheetContent
 import app.lawnchair.ui.util.bottomSheetHandler
@@ -80,9 +81,7 @@ fun NotificationDotsPreference(enabled: Boolean, serviceEnabled: Boolean) {
                         }
                     }
                 } else {
-                    val extras = Bundle().apply {
-                        putString(EXTRA_FRAGMENT_ARG_KEY, "notification_badging")
-                    }
+                    val extras = bundleOf(EXTRA_FRAGMENT_ARG_KEY to "notification_badging")
                     val intent = Intent("android.settings.NOTIFICATION_SETTINGS")
                         .putExtra(EXTRA_SHOW_FRAGMENT_ARGS, extras)
                     context.startActivity(intent)
