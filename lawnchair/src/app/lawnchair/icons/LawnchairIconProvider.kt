@@ -261,6 +261,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
 
         init {
             val filter = IntentFilter(ACTION_TIMEZONE_CHANGED)
+            filter.addAction(ACTION_TIME_TICK)
             filter.addAction(ACTION_TIME_CHANGED)
             filter.addAction(ACTION_DATE_CHANGED)
             context.registerReceiver(this, filter, null, handler)
@@ -268,12 +269,17 @@ class LawnchairIconProvider @JvmOverloads constructor(
 
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
-                ACTION_TIMEZONE_CHANGED -> {
-                    iconPack.getClocks().forEach { componentName ->
-                        callback.onAppIconChanged(componentName.packageName, Process.myUserHandle())
+                ACTION_TIMEZONE_CHANGED, ACTION_TIME_CHANGED, ACTION_TIME_TICK -> {
+                    context.getSystemService<UserManager>()?.userProfiles?.forEach { user ->
+                        iconPack.getClocks().forEach { componentName ->
+                            callback.onAppIconChanged(
+                                componentName.packageName,
+                                user
+                            )
+                        }
                     }
                 }
-                ACTION_DATE_CHANGED, ACTION_TIME_CHANGED -> {
+                ACTION_DATE_CHANGED -> {
                     context.getSystemService<UserManager>()?.userProfiles?.forEach { user ->
                         iconPack.getCalendars().forEach { componentName ->
                             callback.onAppIconChanged(componentName.packageName, user)
