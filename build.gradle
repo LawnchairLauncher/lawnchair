@@ -1,7 +1,5 @@
 import com.android.build.gradle.BasePlugin
-import org.jetbrains.kotlin.gradle.plugin.KotlinBasePlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
     id 'com.android.application' version "7.4.0"
