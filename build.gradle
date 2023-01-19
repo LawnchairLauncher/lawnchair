@@ -71,25 +71,6 @@ allprojects {
             }
         }
     }
-
-    ext.replaceFrameworkJar = { String name ->
-        def frameworkJar = getFrameworkJar(name)
-        gradle.projectsEvaluated {
-            tasks.withType(KotlinCompilationTask).configureEach {
-                def originalFiles = [] + it.classpath.files
-                def newFiles = []
-                originalFiles.each { file ->
-                    if (file.path.endsWith('android.jar')) {
-                        newFiles.add(frameworkJar)
-                    } else {
-                        newFiles.add(file)
-                    }
-                }
-                it.classpath.setFrom(files([]))
-                it.classpath.from(files(newFiles))
-            }
-        }
-    }
 }
 
 // todo remove ext block after migrating to version catalog
