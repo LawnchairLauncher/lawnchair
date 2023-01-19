@@ -60,10 +60,10 @@ allprojects {
         }
         gradle.projectsEvaluated {
             tasks.withType(JavaCompile).configureEach {
-                options.bootstrapClasspath = files([frameworkJar] + (options.bootstrapClasspath.files as Iterable<File>))
+                options.bootstrapClasspath = files(frameworkJar, options.bootstrapClasspath)
             }
             tasks.withType(KotlinCompile).configureEach {
-                it.libraries.from(files([frameworkJar]))
+                it.libraries.from(files(frameworkJar))
             }
         }
     }
