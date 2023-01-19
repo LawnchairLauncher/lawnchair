@@ -23,6 +23,7 @@ allprojects {
                 targetSdk 32
                 vectorDrawables.useSupportLibrary = true
             }
+            // Can remove this once https://issuetracker.google.com/issues/260059413 is fixed.
             compileOptions {
                 sourceCompatibility JavaVersion.VERSION_1_8
                 targetCompatibility JavaVersion.VERSION_1_8
@@ -37,10 +38,11 @@ allprojects {
             implementation 'androidx.appcompat:appcompat:1.6.0'
         }
     }
-
-    tasks.withType(KotlinCompilationTask).configureEach {
-        compilerOptions {
-            jvmTarget = JvmTarget.JVM_1_8
+    // Configure Java to use our chosen language level. Kotlin will automatically pick this up.
+    // See https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
+    plugins.withType(JavaBasePlugin).configureEach {
+        java.toolchain {
+            languageVersion.set(JavaLanguageVersion.of(8))
         }
     }
 
