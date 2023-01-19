@@ -110,6 +110,7 @@ class PreferenceViewModel(private val app: Application) : AndroidViewModel(app),
 
     override val ossLibraries: StateFlow<List<OssLibrary>> = flow {
         val ossLibraries = app.getOssLibraries(thirdPartyLicenseMetadataId = R.raw.third_party_license_metadata)
+            .distinctBy { it.name }
         emit(ossLibraries)
     }
         .flowOn(Dispatchers.Default)
