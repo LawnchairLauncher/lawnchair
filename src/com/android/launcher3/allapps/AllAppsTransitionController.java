@@ -25,6 +25,9 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
+import static com.android.launcher3.util.SystemUiController.FLAG_DARK_NAV;
+import static com.android.launcher3.util.SystemUiController.FLAG_LIGHT_NAV;
+import static com.android.launcher3.util.SystemUiController.UI_STATE_ALL_APPS;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
@@ -54,6 +57,7 @@ import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.launcher3.util.MultiValueAlpha;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
 
 /**
@@ -72,6 +76,8 @@ public class AllAppsTransitionController
     public static final float INTERP_COEFF = 1.7f;
     public static final float SWIPE_ALL_APPS_TO_HOME_MIN_SCALE = 0.9f;
     private static final int REVERT_SWIPE_ALL_APPS_TO_HOME_ANIMATION_DURATION_MS = 200;
+
+    private static final float NAV_BAR_COLOR_FORCE_UPDATE_THRESHOLD = 0.1f;
 
     public static final FloatProperty<AllAppsTransitionController> ALL_APPS_PROGRESS =
             new FloatProperty<AllAppsTransitionController>("allAppsProgress") {
@@ -151,6 +157,8 @@ public class AllAppsTransitionController
 
     private final Launcher mLauncher;
     private final AnimatedFloat mAllAppScale = new AnimatedFloat(this::onScaleProgressChanged);
+    private final int mNavScrimFlag;
+
     private boolean mIsVerticalLayout;
 
     // Whether this class should take care of closing the keyboard.
@@ -177,10 +185,13 @@ public class AllAppsTransitionController
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
         DeviceProfile dp = mLauncher.getDeviceProfile();
-        setShiftRange(dp.allAppsShiftRange);
         mProgress = 1f;
         mIsVerticalLayout = dp.isVerticalBarLayout();
         mIsTablet = dp.isTablet;
+        mNavScrimFlag = Themes.getAttrBoolean(l, R.attr.isMainColorDark)
+                ? FLAG_DARK_NAV : FLAG_LIGHT_NAV;
+
+        setShiftRange(dp.allAppsShiftRange);
         mLauncher.addOnDeviceProfileChangeListener(this);
     }
 
@@ -213,6 +224,11 @@ public class AllAppsTransitionController
         mProgress = progress;
         getAppsViewProgressTranslationY().setValue(mProgress * mShiftRange);
         mLauncher.onAllAppsTransition(1 - progress);
+
+        boolean hasScrim = progress < NAV_BAR_COLOR_FORCE_UPDATE_THRESHOLD
+                && mLauncher.getAppsView().getNavBarScrimHeight() > 0;
+        mLauncher.getSystemUiController().updateUiState(
+                UI_STATE_ALL_APPS, hasScrim ? mNavScrimFlag : 0);
     }
 
     public float getProgress() {
