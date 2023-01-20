@@ -377,6 +377,8 @@ public class TaskThumbnailView extends View {
 
     private void updateSplashView(Drawable icon) {
         if (icon == null || icon.getConstantState() == null) {
+            mSplashViewDrawable = null;
+            mSplashView = null;
             return;
         }
         mSplashViewDrawable = icon.getConstantState().newDrawable().mutate();
