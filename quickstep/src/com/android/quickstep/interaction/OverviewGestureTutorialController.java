@@ -154,7 +154,6 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
 
         AnimatorSet animset = new AnimatorSet();
         animset.playTogether(animators);
-        hideFakeTaskbar(/* animateToHotseat= */ false);
         animset.start();
         mRunningWindowAnim = SwipeUpAnimationLogic.RunningWindowAnim.wrap(animset);
     }

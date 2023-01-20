@@ -102,11 +102,11 @@
     <include
         layout="@layout/gesture_tutorial_tablet_mock_taskbar"
         android:id="@+id/gesture_tutorial_fake_taskbar_view"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/gesture_tutorial_mock_taskbar_height"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/gesture_tutorial_taskbar_margin_bottom"/>
 
     <ImageView
         android:id="@+id/gesture_tutorial_edge_gesture_video"
