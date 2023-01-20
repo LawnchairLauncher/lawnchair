@@ -440,7 +440,7 @@
       <string name="hide_from_drawer">Hide from App Drawer</string>
 
     <string name="suggestion_pref_screen_title">Suggestions</string>
-    <string name="n_percent">%1$d%%</string>
+    <string name="n_percent" translatable="false">%1$d%%</string>
 
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Lawnchair Bug Report</string>

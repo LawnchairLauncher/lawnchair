@@ -357,7 +357,6 @@
     <string name="label">Oznaka</string>
     <string name="hide_from_drawer">Sakrij sa liste aplikacija</string>
     <string name="suggestion_pref_screen_title">Predlozi</string>
-    <string name="n_percent">%1$d%%</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Izveštaj o grešci u Lawnchairu</string>
     <string name="crash_report_notif_title">%1$s je otkazao</string>

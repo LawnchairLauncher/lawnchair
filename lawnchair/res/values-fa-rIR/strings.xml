@@ -356,7 +356,6 @@
     <string name="label">نام</string>
     <string name="hide_from_drawer">مخفی‌ در کشوی برنامه‌ها</string>
     <string name="suggestion_pref_screen_title">پیشنهادها</string>
-    <string name="n_percent">%1$d٪</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">گزارش مشکلات Lawnchair</string>
     <string name="crash_report_notif_title">%1$s خطا داد</string>

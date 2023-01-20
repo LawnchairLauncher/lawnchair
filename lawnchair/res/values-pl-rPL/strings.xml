@@ -358,7 +358,6 @@
     <string name="label">Etykieta</string>
     <string name="hide_from_drawer">Ukryj w szufladzie aplikacji</string>
     <string name="suggestion_pref_screen_title">Sugestie</string>
-    <string name="n_percent">%1$d%%</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Raport błędów Lawnchair</string>
     <string name="crash_report_notif_title">%1$s uległ awarii</string>

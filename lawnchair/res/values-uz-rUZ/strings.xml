@@ -356,7 +356,6 @@
     <string name="label">Label</string>
     <string name="hide_from_drawer">Hide from App Drawer</string>
     <string name="suggestion_pref_screen_title">Suggestions</string>
-    <string name="n_percent">%1$d%%</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
     <string name="crash_report_notif_title">%1$s Crashed</string>
