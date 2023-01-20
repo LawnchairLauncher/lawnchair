@@ -391,6 +391,10 @@ public final class FeatureFlags {
             "ENABLE_KEYBOARD_QUICK_SWITCH", true,
             "Enables keyboard quick switching");
 
+    public static final BooleanFlag ENABLE_APP_CLONING_CHANGES_IN_LAUNCHER = getDebugFlag(266177840,
+            "ENABLE_APP_CLONING_CHANGES_IN_LAUNCHER", false,
+            "Removes clone apps from the work profile tab.");
+
     public static class BooleanFlag {
 
         private final boolean mCurrentValue;
