@@ -356,7 +356,6 @@
     <string name="label">নাম</string>
     <string name="hide_from_drawer">অ্যাপ ড্রয়ার থেকে লুকান</string>
     <string name="suggestion_pref_screen_title">পরামর্শ</string>
-    <string name="n_percent">%1$d%%</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Lawnchair বাগ রিপোর্ট</string>
     <string name="crash_report_notif_title">%1$s সমস্যা হয়েছে</string>

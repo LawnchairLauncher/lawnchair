@@ -356,7 +356,6 @@
     <string name="label">Etiket</string>
     <string name="hide_from_drawer">Uygulama Çekmecesini Gizle</string>
     <string name="suggestion_pref_screen_title">Öneriler</string>
-    <string name="n_percent">%1$d%%</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Lawnchair Hata Bildirme</string>
     <string name="crash_report_notif_title">%1$s Çalışmayı Durdurdu</string>

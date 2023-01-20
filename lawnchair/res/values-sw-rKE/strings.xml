@@ -356,7 +356,6 @@
     <string name="label">Lebo</string>
     <string name="hide_from_drawer">Ficha kutoka kwenye Droo ya Programu</string>
     <string name="suggestion_pref_screen_title">Suggestions</string>
-    <string name="n_percent">%1$d%%</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Ripoti ya Hitilafu ya Lawnchair</string>
     <string name="crash_report_notif_title">%1$s Imesimama Ghafla</string>

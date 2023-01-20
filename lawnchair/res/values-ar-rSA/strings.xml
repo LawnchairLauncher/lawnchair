@@ -360,7 +360,6 @@
     <string name="label">العلامة</string>
     <string name="hide_from_drawer">إخفاء من قائمة التطبيقات</string>
     <string name="suggestion_pref_screen_title">اقتراحات</string>
-    <string name="n_percent">%1$d%%</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">تقرير الأخطاء Lawnchair</string>
     <string name="crash_report_notif_title">%1$s توقف عن العمل</string>

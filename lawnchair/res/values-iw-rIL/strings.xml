@@ -358,7 +358,6 @@
     <string name="label">תוית</string>
     <string name="hide_from_drawer">הסתר ממגירת היישומים</string>
     <string name="suggestion_pref_screen_title">המלצות</string>
-    <string name="n_percent">%1$d%%</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">דיווח על תקלה</string>
     <string name="crash_report_notif_title">%1$s קרס</string>
