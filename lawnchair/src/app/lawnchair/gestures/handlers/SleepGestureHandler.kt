@@ -102,11 +102,14 @@ class SleepMethodDeviceAdmin(context: Context) : SleepGestureHandler.SleepMethod
         val devicePolicyManager: DevicePolicyManager = context.requireSystemService()
         if (!devicePolicyManager.isAdminActive(ComponentName(context, SleepDeviceAdmin::class.java))) {
             val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN)
-            intent.putExtra(
-                DevicePolicyManager.EXTRA_DEVICE_ADMIN,
-                ComponentName(context, SleepDeviceAdmin::class.java)
-            )
-            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, launcher.getString(R.string.dt2s_admin_hint))
+                .putExtra(
+                    DevicePolicyManager.EXTRA_DEVICE_ADMIN,
+                    ComponentName(context, SleepDeviceAdmin::class.java)
+                )
+                .putExtra(
+                    DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                    launcher.getString(R.string.dt2s_admin_hint)
+                )
             ComposeBottomSheet.show(launcher) {
                 ServiceWarningDialog(
                     title = R.string.dt2s_admin_hint_title,

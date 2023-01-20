@@ -17,7 +17,6 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="iconPackPackageDefault" translatable="false">""</string>
-    <string name="derived_app_name" tools:override="true" translatable="false">Lawnchair</string>
     <string name="twitter" translatable="false">Twitter</string>
     <string name="github" translatable="false">GitHub</string>
 

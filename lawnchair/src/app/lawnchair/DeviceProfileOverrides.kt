@@ -60,9 +60,9 @@ class DeviceProfileOverrides(context: Context) {
     fun getTextFactors() = TextFactors(preferenceManager2)
 
     data class DBGridInfo(
-        var numHotseatColumns: Int,
-        var numRows: Int,
-        var numColumns: Int,
+        val numHotseatColumns: Int,
+        val numRows: Int,
+        val numColumns: Int,
     ) {
         val dbFile get() = "launcher_${numRows}_${numColumns}_${numHotseatColumns}.db"
 
@@ -74,14 +74,14 @@ class DeviceProfileOverrides(context: Context) {
     }
 
     data class Options(
-        var numAllAppsColumns: Int,
-        var numFolderRows: Int,
-        var numFolderColumns: Int,
+        val numAllAppsColumns: Int,
+        val numFolderRows: Int,
+        val numFolderColumns: Int,
 
-        var iconSizeFactor: Float,
-        var allAppsIconSizeFactor: Float,
+        val iconSizeFactor: Float,
+        val allAppsIconSizeFactor: Float,
 
-        var enableTaskbarOnPhone: Boolean,
+        val enableTaskbarOnPhone: Boolean,
     ) {
         constructor(
             prefs: PreferenceManager,
@@ -117,8 +117,8 @@ class DeviceProfileOverrides(context: Context) {
     }
 
     data class TextFactors(
-        var iconTextSizeFactor: Float,
-        var allAppsIconTextSizeFactor: Float,
+        val iconTextSizeFactor: Float,
+        val allAppsIconTextSizeFactor: Float,
     ) {
         constructor(
             prefs2: PreferenceManager2,

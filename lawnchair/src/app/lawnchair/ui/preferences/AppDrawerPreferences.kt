@@ -101,6 +101,12 @@ fun AppDrawerPreferences() {
                             description = stringResource(id = R.string.fuzzy_search_desc)
                         )
                     }
+                    SliderPreference(
+                        label = stringResource(id = R.string.max_search_result_count_title),
+                        adapter = prefs2.maxSearchResultCount.getAdapter(),
+                        step = 1,
+                        valueRange = 5..15,
+                    )
                 }
             }
         }

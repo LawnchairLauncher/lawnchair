@@ -1,6 +1,6 @@
 plugins {
     id 'com.android.library'
-    id 'kotlin-android'
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
@@ -20,12 +20,14 @@ android {
 }
 
 dependencies {
-    compileOnly fileTree(dir: new File(rootProject.projectDir, 'prebuilts/libs'), include: 'WindowManager-Shell.jar')
-    implementation "androidx.concurrent:concurrent-futures:1.1.0"
-    implementation "androidx.lifecycle:lifecycle-common:2.5.1"
-    implementation "androidx.dynamicanimation:dynamicanimation:1.0.0"
+    compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell.jar')
+
     implementation projects.compatLib
     implementation projects.compatLibVR
     implementation projects.compatLibVS
+
+    implementation "androidx.concurrent:concurrent-futures:1.1.0"
+    implementation "androidx.lifecycle:lifecycle-common:2.5.1"
+    implementation "androidx.dynamicanimation:dynamicanimation:1.0.0"
     implementation "org.json:json:20220924"
 }

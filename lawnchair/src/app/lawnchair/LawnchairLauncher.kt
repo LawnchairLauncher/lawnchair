@@ -241,7 +241,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     override fun setupViews() {
         super.setupViews()
         val launcherRootView = findViewById<LauncherRootView>(R.id.launcher)
-        launcherRootView.setViewTreeLifecycleOwner(this)
+        ViewTreeLifecycleOwner.set(launcherRootView, this)
         launcherRootView.setViewTreeSavedStateRegistryOwner(this)
     }
 
@@ -397,7 +397,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     private fun reloadIconsIfNeeded() {
         if (
             preferenceManager2.alwaysReloadIcons.firstBlocking() &&
-            prefs.iconPackPackage.get().isNotEmpty()
+            (prefs.iconPackPackage.get().isNotEmpty() || prefs.themedIconPackPackage.get().isNotEmpty())
         ) {
             LauncherAppState.getInstance(this).reloadIcons()
         }

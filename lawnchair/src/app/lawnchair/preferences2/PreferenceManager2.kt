@@ -299,6 +299,11 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_fuzzy_search),
     )
 
+    val maxSearchResultCount = preference(
+        key = intPreferencesKey(name = "max_search_result_count"),
+        defaultValue = resourceProvider.getInt(R.dimen.config_default_search_max_result_count),
+    )
+
     val enableSmartspace = preference(
         key = booleanPreferencesKey(name = "enable_smartspace"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_smartspace),
