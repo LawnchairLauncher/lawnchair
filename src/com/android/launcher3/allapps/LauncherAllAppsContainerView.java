@@ -41,7 +41,7 @@ public class LauncherAllAppsContainerView extends ActivityAllAppsContainerView<L
     }
 
     @Override
-    protected int getNavBarScrimHeight(WindowInsets insets) {
+    protected int computeNavBarScrimHeight(WindowInsets insets) {
         if (Utilities.ATLEAST_Q) {
             return insets.getTappableElementInsets().bottom;
         } else {
