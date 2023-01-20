@@ -16,8 +16,11 @@
 package app.lawnchair.search
 
 import android.app.search.SearchTarget
+import android.app.slice.SliceManager
 import android.appwidget.AppWidgetProviderInfo
+import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
+import android.content.pm.ShortcutManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
