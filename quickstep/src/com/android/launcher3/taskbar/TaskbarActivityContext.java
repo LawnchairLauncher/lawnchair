@@ -16,6 +16,7 @@
 package com.android.launcher3.taskbar;
 
 import static android.content.pm.PackageManager.FEATURE_PC;
+import static android.os.Trace.TRACE_TAG_APP;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
@@ -46,6 +47,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Process;
 import android.os.SystemProperties;
+import android.os.Trace;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
@@ -94,6 +96,7 @@ import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.ViewCache;
 import com.android.launcher3.views.ActivityContext;
 import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.rotation.RotationButtonController;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -101,6 +104,7 @@ import com.android.systemui.unfold.updates.RotationChangeProvider;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
 import java.io.PrintWriter;
+import java.util.function.Consumer;
 
 /**
  * The {@link ActivityContext} with which we inflate Taskbar-related Views. This allows UI elements
@@ -265,6 +269,13 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         setTaskbarWindowFullscreen(mIsFullscreen);
 
         dispatchDeviceProfileChanged();
+    }
+
+    @Override
+    public void dispatchDeviceProfileChanged() {
+        super.dispatchDeviceProfileChanged();
+        Trace.instantForTrack(TRACE_TAG_APP, "TaskbarActivityContext#DeviceProfileChanged",
+                getDeviceProfile().toSmallString());
     }
 
     /**
@@ -779,12 +790,12 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 });
             });
         } else if (tag instanceof WorkspaceItemInfo) {
+            // Tapping a launchable icon on Taskbar
             WorkspaceItemInfo info = (WorkspaceItemInfo) tag;
             if (!info.isDisabled() || !ItemClickHandler.handleDisabledItemClicked(info, this)) {
                 TaskbarUIController taskbarUIController = mControllers.uiController;
                 RecentsView recents = taskbarUIController.getRecentsView();
-                if (recents != null
-                        && taskbarUIController.getRecentsView().isSplitSelectionActive()) {
+                if (recents != null && recents.isSplitSelectionActive()) {
                     // If we are selecting a second app for split, launch the split tasks
                     taskbarUIController.triggerSecondAppForSplit(info, info.intent, view);
                 } else {
@@ -811,7 +822,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                             getSystemService(LauncherApps.class)
                                     .startShortcut(packageName, id, null, null, info.user);
                         } else {
-                            startItemInfoActivity(info);
+                            launchFromTaskbarPreservingSplitIfVisible(recents, info);
                         }
 
                         mControllers.uiController.onTaskbarIconLaunched(info);
@@ -826,6 +837,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
             }
         } else if (tag instanceof AppInfo) {
+            // Tapping an item in AllApps
             AppInfo info = (AppInfo) tag;
             TaskbarUIController taskbarUIController = mControllers.uiController;
             RecentsView recents = taskbarUIController.getRecentsView();
@@ -834,9 +846,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 // If we are selecting a second app for split, launch the split tasks
                 taskbarUIController.triggerSecondAppForSplit(info, info.intent, view);
             } else {
-                // Else launch the selected task
-                startItemInfoActivity((AppInfo) tag);
-                mControllers.uiController.onTaskbarIconLaunched((AppInfo) tag);
+                launchFromTaskbarPreservingSplitIfVisible(recents, info);
+                mControllers.uiController.onTaskbarIconLaunched(info);
             }
             mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
         } else if (tag instanceof ItemClickProxy) {
@@ -846,6 +857,31 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         }
 
         AbstractFloatingView.closeAllOpenViews(this);
+    }
+
+    /**
+     * Run when the user taps a Taskbar icon while in Overview. If the tapped app is currently
+     * visible to the user in Overview, or is part of a visible split pair, we expand the TaskView
+     * as if the user tapped on it (preserving the split pair). Otherwise, launch it normally
+     * (potentially breaking a split pair).
+     */
+    private void launchFromTaskbarPreservingSplitIfVisible(RecentsView recents, ItemInfo info) {
+        recents.findLastActiveTaskAndRunCallback(
+                info.getTargetComponent(),
+                (Consumer<Task>) foundTask -> {
+                    if (foundTask != null) {
+                        TaskView foundTaskView =
+                                recents.getTaskViewByTaskId(foundTask.key.id);
+                        if (foundTaskView != null
+                                && foundTaskView.isVisibleToUser()) {
+                            TestLogging.recordEvent(
+                                    TestProtocol.SEQUENCE_MAIN, "start: taskbarAppIcon");
+                            foundTaskView.launchTasks();
+                            return;
+                        }
+                    }
+                    startItemInfoActivity(info);
+                });
     }
 
     private void startItemInfoActivity(ItemInfo info) {
