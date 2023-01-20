@@ -356,7 +356,6 @@
     <string name="label">ലേബൽ</string>
     <string name="hide_from_drawer">ആപ്പ് ഡ്രോയറിൽ നിന്ന് മറയ്ക്കുക</string>
     <string name="suggestion_pref_screen_title">നിർദ്ദേശങ്ങൾ</string>
-    <string name="n_percent">%1$d%%</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">ലോൺചൈറിലെ ബഗ് റിപ്പോർട്ട് ചെയ്യുക</string>
     <string name="crash_report_notif_title">%1$s തകർന്നു</string>

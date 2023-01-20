@@ -356,7 +356,6 @@
     <string name="label">Label</string>
     <string name="hide_from_drawer">Itago mula sa App Drawer</string>
     <string name="suggestion_pref_screen_title">Mga mungkahi</string>
-    <string name="n_percent">%1$d%%</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Ulat sa Lawchair Bug</string>
     <string name="crash_report_notif_title">Nag-crash ang %1$s</string>

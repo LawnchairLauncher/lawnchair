@@ -356,7 +356,6 @@
     <string name="label">Etikett</string>
     <string name="hide_from_drawer">Dölj från applådan</string>
     <string name="suggestion_pref_screen_title">Förslag</string>
-    <string name="n_percent">%1$d%%</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Lawnchair Bugg Report</string>
     <string name="crash_report_notif_title">%1$s Kraschade</string>

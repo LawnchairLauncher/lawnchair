@@ -356,7 +356,6 @@
     <string name="label">Ετικέτα</string>
     <string name="hide_from_drawer">Απόκρυψη από Συρτάρι Εφαρμογών</string>
     <string name="suggestion_pref_screen_title">Προτάσεις</string>
-    <string name="n_percent">%1$d%%</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Αναφορά σφάλματος του Lawnchair</string>
     <string name="crash_report_notif_title">%1$s Κράσαρε</string>

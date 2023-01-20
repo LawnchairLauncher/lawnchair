@@ -358,7 +358,6 @@
     <string name="label">Popisek</string>
     <string name="hide_from_drawer">Skrýt v seznamu aplikací</string>
     <string name="suggestion_pref_screen_title">Návrhy</string>
-    <string name="n_percent">%1$d%%</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Hlášení o chybě v Lawnchair</string>
     <string name="crash_report_notif_title">%1$s přestal fungovat</string>

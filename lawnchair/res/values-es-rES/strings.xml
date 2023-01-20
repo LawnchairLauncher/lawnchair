@@ -356,7 +356,6 @@
     <string name="label">Etiqueta</string>
     <string name="hide_from_drawer">Ocultar del Cajón</string>
     <string name="suggestion_pref_screen_title">Sugerencias</string>
-    <string name="n_percent">%1$d%%</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Reportar error de Lawnchair</string>
     <string name="crash_report_notif_title">%1$s ha dejado de funcionar</string>
