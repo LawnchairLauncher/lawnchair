@@ -453,6 +453,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected final Rect mLastComputedTaskSize = new Rect();
     protected final Rect mLastComputedGridSize = new Rect();
     protected final Rect mLastComputedGridTaskSize = new Rect();
+    private TaskView mSelectedTask = null;
     // How much a task that is directly offscreen will be pushed out due to RecentsView scale/pivot.
     @Nullable
     protected Float mLastComputedTaskStartPushOutDistance = null;
@@ -1084,6 +1085,16 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         super.draw(canvas);
     }
 
+    @Override
+    public boolean requestChildRectangleOnScreen(View child, Rect rectangle, boolean immediate) {
+        if (isModal()) {
+            // Do not scroll when clicking on a modal grid task, as it will already be centered
+            // on screen.
+            return false;
+        }
+        return super.requestChildRectangleOnScreen(child, rectangle, immediate);
+    }
+
     public void addSideTaskLaunchCallback(RunnableList callback) {
         if (mSideTaskLaunchCallback == null) {
             mSideTaskLaunchCallback = new RunnableList();
@@ -1272,7 +1283,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      */
     @Nullable
     public TaskView getTaskViewByTaskId(int taskId) {
-        if (taskId == -1) {
+        if (taskId == INVALID_TASK_ID) {
             return null;
         }
 
@@ -1964,7 +1975,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private void onOrientationChanged() {
         // If overview is in modal state when rotate, reset it to overview state without running
         // animation.
-        setModalStateEnabled(/* isModalState= */ false, /* animate= */ false);
+        setModalStateEnabled(/* taskId= */ INVALID_TASK_ID, /* animate= */ false);
         if (isSplitSelectionActive()) {
             onRotateInSplitSelectionState();
         }
@@ -2037,12 +2048,33 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     /**
-     * Returns the size of task selected to enter modal state.
+     * Sets the last TaskView selected.
      */
-    public Point getSelectedTaskSize() {
-        mSizeStrategy.calculateTaskSize(mActivity, mActivity.getDeviceProfile(),
-                mTempRect);
-        return new Point(mTempRect.width(), mTempRect.height());
+    public void setSelectedTask(int lastSelectedTaskId) {
+        mSelectedTask = getTaskViewByTaskId(lastSelectedTaskId);
+    }
+
+    /**
+     * Returns the bounds of the task selected to enter modal state.
+     */
+    public Rect getSelectedTaskBounds() {
+        if (mSelectedTask == null) {
+            return mLastComputedTaskSize;
+        }
+        return getTaskBounds(mSelectedTask);
+    }
+
+    private Rect getTaskBounds(TaskView taskView) {
+        int selectedPage = indexOfChild(taskView);
+        int primaryScroll = mOrientationHandler.getPrimaryScroll(this);
+        int selectedPageScroll = getScrollForPage(selectedPage);
+        boolean isTopRow = taskView != null && mTopRowIdSet.contains(taskView.getTaskViewId());
+        Rect outRect = new Rect(mLastComputedTaskSize);
+        outRect.offset(
+                -(primaryScroll - (selectedPageScroll + getOffsetFromScrollPosition(selectedPage))),
+                (int) (showAsGrid() && ENABLE_GRID_ONLY_OVERVIEW.get() && !isTopRow
+                        ? mTopBottomRowHeightDiff : 0));
+        return outRect;
     }
 
     /** Gets the last computed task size */
@@ -4166,8 +4198,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     private void updatePivots() {
         if (mOverviewSelectEnabled) {
-            setPivotX(mLastComputedTaskSize.centerX());
-            setPivotY(mLastComputedTaskSize.bottom);
+            getModalTaskSize(mTempRect);
+            Rect selectedTaskPosition = getSelectedTaskBounds();
+
+            Utilities.getPivotsForScalingRectToRect(mTempRect, selectedTaskPosition,
+                    mTempPointF);
+            setPivotX(mTempPointF.x);
+            setPivotY(mTempPointF.y);
         } else {
             getPagedViewOrientedState().getFullScreenScaleAndPivot(mTempRect,
                     mActivity.getDeviceProfile(), mTempPointF);
@@ -4180,11 +4217,17 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         float offset = mAdjacentPageHorizontalOffset;
         float modalOffset = ACCEL_0_75.getInterpolation(mTaskModalness);
         int count = getChildCount();
+        boolean showAsGrid = showAsGrid();
 
         TaskView runningTask = mRunningTaskViewId == -1 || !mRunningTaskTileHidden
                 ? null : getRunningTaskView();
         int midpoint = runningTask == null ? -1 : indexOfChild(runningTask);
         int modalMidpoint = getCurrentPage();
+        boolean isModalGridWithoutFocusedTask =
+                showAsGrid && ENABLE_GRID_ONLY_OVERVIEW.get() && mTaskModalness > 0;
+        if (isModalGridWithoutFocusedTask) {
+            modalMidpoint = indexOfChild(mSelectedTask);
+        }
 
         float midpointOffsetSize = 0;
         float leftOffsetSize = midpoint - 1 >= 0
@@ -4194,7 +4237,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 ? getHorizontalOffsetSize(midpoint + 1, midpoint, offset)
                 : 0;
 
-        boolean showAsGrid = showAsGrid();
         float modalMidpointOffsetSize = 0;
         float modalLeftOffsetSize = 0;
         float modalRightOffsetSize = 0;
@@ -4222,22 +4264,33 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     : i < midpoint
                             ? leftOffsetSize
                             : rightOffsetSize;
+            if (isModalGridWithoutFocusedTask) {
+                gridOffsetSize = getHorizontalOffsetSize(i, modalMidpoint, modalOffset);
+                gridOffsetSize = Math.abs(gridOffsetSize) * (i <= modalMidpoint ? 1 : -1);
+            }
             float modalTranslation = i == modalMidpoint
                     ? modalMidpointOffsetSize
                     : showAsGrid
                             ? gridOffsetSize
                             : i < modalMidpoint ? modalLeftOffsetSize : modalRightOffsetSize;
-            float totalTranslation = translation + modalTranslation;
+            float totalTranslationX = translation + modalTranslation;
             View child = getChildAt(i);
-            FloatProperty translationProperty = child instanceof TaskView
+            FloatProperty translationPropertyX = child instanceof TaskView
                     ? ((TaskView) child).getPrimaryTaskOffsetTranslationProperty()
                     : mOrientationHandler.getPrimaryViewTranslate();
-            translationProperty.set(child, totalTranslation);
+            translationPropertyX.set(child, totalTranslationX);
             if (mEnableDrawingLiveTile && i == getRunningTaskIndex()) {
                 runActionOnRemoteHandles(
                         remoteTargetHandle -> remoteTargetHandle.getTaskViewSimulator()
-                                .taskPrimaryTranslation.value = totalTranslation);
+                                .taskPrimaryTranslation.value = totalTranslationX);
                 redrawLiveTile();
+            }
+
+            if (showAsGrid && ENABLE_GRID_ONLY_OVERVIEW.get() && child instanceof TaskView) {
+                float totalTranslationY = getVerticalOffsetSize(i, modalOffset);
+                FloatProperty translationPropertyY =
+                        ((TaskView) child).getSecondaryTaskOffsetTranslationProperty();
+                translationPropertyY.set(child, totalTranslationY);
             }
         }
         updateCurveProperties();
@@ -4332,6 +4385,38 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         - desiredStart) / mOrientationHandler.getPrimaryScale(this);
             }
             distanceToOffscreen -= mLastComputedTaskEndPushOutDistance;
+        }
+        return distanceToOffscreen * offsetProgress;
+    }
+
+    /**
+     * Computes the vertical distance to offset a given child such that it is completely offscreen.
+     *
+     * @param offsetProgress From 0 to 1 where 0 means no offset and 1 means offset offscreen.
+     */
+    private float getVerticalOffsetSize(int childIndex, float offsetProgress) {
+        if (offsetProgress == 0 || !(showAsGrid() && ENABLE_GRID_ONLY_OVERVIEW.get())
+                || mSelectedTask == null) {
+            // Don't bother calculating everything below if we won't offset vertically.
+            return 0;
+        }
+
+        // First, get the position of the task relative to the top row.
+        TaskView child = getTaskViewAt(childIndex);
+        Rect taskPosition = getTaskBounds(child);
+
+        boolean isSelectedTaskTopRow = mTopRowIdSet.contains(mSelectedTask.getTaskViewId());
+        boolean isChildTopRow = mTopRowIdSet.contains(child.getTaskViewId());
+        // Whether the task should be shifted to the top.
+        boolean isTopShift = !isSelectedTaskTopRow && isChildTopRow;
+        boolean isBottomShift = isSelectedTaskTopRow && !isChildTopRow;
+
+        // Next, calculate the distance to move the task off screen at scale = 1.
+        float distanceToOffscreen = 0;
+        if (isTopShift) {
+            distanceToOffscreen = -taskPosition.bottom;
+        } else if (isBottomShift) {
+            distanceToOffscreen = mActivity.getDeviceProfile().heightPx - taskPosition.top;
         }
         return distanceToOffscreen * offsetProgress;
     }
@@ -4435,9 +4520,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Resets the visuals when exit modal state.
      */
     public void resetModalVisuals() {
-        TaskView taskView = getCurrentPageTaskView();
-        if (taskView != null) {
-            taskView.getThumbnail().getTaskOverlay().resetModalVisuals();
+        if (mSelectedTask != null) {
+            mSelectedTask.getThumbnail().getTaskOverlay().resetModalVisuals();
         }
     }
 
@@ -5439,6 +5523,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (mOverviewSelectEnabled != overviewSelectEnabled) {
             mOverviewSelectEnabled = overviewSelectEnabled;
             updatePivots();
+            if (!mOverviewSelectEnabled) {
+                setSelectedTask(INVALID_TASK_ID);
+            }
         }
     }
 
@@ -5509,7 +5596,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private void setTaskModalness(float modalness) {
         mTaskModalness = modalness;
         updatePageOffsets();
-        if (getCurrentPageTaskView() != null) {
+        if (mSelectedTask != null) {
+            mSelectedTask.setModalness(modalness);
+        } else if (getCurrentPageTaskView() != null) {
             getCurrentPageTaskView().setModalness(modalness);
         }
         // Only show actions view when it's modal for in-place landscape mode.
@@ -5524,7 +5613,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     /** Enables or disables modal state for RecentsView */
-    public abstract void setModalStateEnabled(boolean isModalState, boolean animate);
+    public abstract void setModalStateEnabled(int taskId, boolean animate);
 
     public TaskOverlayFactory getTaskOverlayFactory() {
         return mTaskOverlayFactory;

@@ -15,6 +15,8 @@
  */
 package com.android.quickstep.fallback;
 
+import static android.app.ActivityTaskManager.INVALID_TASK_ID;
+
 import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.fallback.RecentsState.DEFAULT;
 import static com.android.quickstep.fallback.RecentsState.HOME;
@@ -200,8 +202,9 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     }
 
     @Override
-    public void setModalStateEnabled(boolean isModalState, boolean animate) {
-        if (isModalState) {
+    public void setModalStateEnabled(int taskId, boolean animate) {
+        if (taskId != INVALID_TASK_ID) {
+            setSelectedTask(taskId);
             mActivity.getStateManager().goToState(RecentsState.MODAL_TASK, animate);
         } else {
             if (mActivity.isInState(RecentsState.MODAL_TASK)) {
