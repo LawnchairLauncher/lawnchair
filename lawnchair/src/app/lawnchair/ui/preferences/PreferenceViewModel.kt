@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
+import app.lawnchair.ossnotices.OssLibrary
 import app.lawnchair.ossnotices.getOssLibraries
 import com.android.launcher3.R
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +32,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import app.lawnchair.util.getPackageVersionCode
 import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
+import kotlinx.coroutines.flow.StateFlow
 
 private val iconPackIntents = listOf(
     Intent("com.novalauncher.THEME"),
@@ -106,10 +108,11 @@ class PreferenceViewModel(private val app: Application) : AndroidViewModel(app),
         .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.Lazily, listOf())
 
-    override val ossLibraries = flow {
-        val ossLibraries = app.getOssLibraries(thirdPartyLicenseMetadataId = R.raw.third_party_license_metadata)
+    override val ossLibraries: StateFlow<List<OssLibrary>> = flow {
+        val ossLibraries = app.getOssLibraries(R.raw.third_party_license_metadata)
+            .distinctBy { it.name }
         emit(ossLibraries)
     }
         .flowOn(Dispatchers.Default)
-        .stateIn(viewModelScope, SharingStarted.Lazily, null)
+        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 }
