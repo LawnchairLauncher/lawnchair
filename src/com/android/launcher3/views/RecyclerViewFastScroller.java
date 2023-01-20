@@ -58,7 +58,7 @@ import java.util.List;
 public class RecyclerViewFastScroller extends View {
     private static final String TAG = "RecyclerViewFastScroller";
     private static final boolean DEBUG = false;
-    private static final int FASTSCROLL_THRESHOLD_MILLIS = 40;
+    private static final int FASTSCROLL_THRESHOLD_MILLIS = 10;
     private static final int SCROLL_DELTA_THRESHOLD_DP = 4;
 
     // Track is very narrow to target and correctly. This is especially the case if a user is
