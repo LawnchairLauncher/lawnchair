@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.android.launcher3.qsb.QsbContainerView
+<app.lawnchair.qsb.GoogleQsbContainerView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -8,8 +8,8 @@
     android:padding="0dp" >
 
     <fragment
-        android:name="com.android.launcher3.qsb.QsbContainerView$QsbFragment"
+        android:name="app.lawnchair.qsb.GoogleQsbContainerView$QsbFragment"
         android:layout_width="match_parent"
         android:tag="qsb_view"
         android:layout_height="match_parent"/>
-</com.android.launcher3.qsb.QsbContainerView>
+</app.lawnchair.qsb.GoogleQsbContainerView>
