@@ -76,7 +76,6 @@ class LawnchairSearchAdapterProvider(
             LayoutType.EMPTY_DIVIDER to SEARCH_RESULT_DIVIDER,
         )
 
-        @JvmStatic
         fun setFirstItemQuickLaunch(items: List<SearchAdapterItem>) {
             val hasQuickLaunch = items.any { it.searchTarget.extras.getBoolean(EXTRA_QUICK_LAUNCH, false) }
             if (!hasQuickLaunch) {

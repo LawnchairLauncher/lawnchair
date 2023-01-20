@@ -4,8 +4,8 @@ import android.content.Context
 import app.lawnchair.LawnchairApp
 import app.lawnchair.allapps.SearchItemBackground
 import app.lawnchair.preferences.PreferenceManager
-import app.lawnchair.search.SearchTargetCompat.RESULT_TYPE_APPLICATION
-import app.lawnchair.search.SearchTargetCompat.RESULT_TYPE_SHORTCUT
+import app.lawnchair.search.SearchTargetCompat.Companion.RESULT_TYPE_APPLICATION
+import app.lawnchair.search.SearchTargetCompat.Companion.RESULT_TYPE_SHORTCUT
 import com.android.app.search.LayoutType.EMPTY_DIVIDER
 import com.android.app.search.LayoutType.ICON_SINGLE_VERTICAL_TEXT
 import com.android.launcher3.BuildConfig
@@ -13,8 +13,8 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.allapps.AllAppsGridAdapter
 import com.android.launcher3.search.SearchAlgorithm
 
-abstract class LawnchairSearchAlgorithm(
-    val context: Context
+sealed class LawnchairSearchAlgorithm(
+    protected val context: Context
 ) : SearchAlgorithm<AllAppsGridAdapter.AdapterItem> {
 
     private val iconBackground = SearchItemBackground(
