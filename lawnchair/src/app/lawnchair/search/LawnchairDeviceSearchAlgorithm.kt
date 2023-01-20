@@ -39,6 +39,31 @@ class LawnchairDeviceSearchAlgorithm(context: Context) : LawnchairSearchAlgorith
         createSearchSession()
     }
 
+    override fun doSearch(query: String, callback: SearchCallback<AllAppsGridAdapter.AdapterItem>) {
+        activeQuery?.cancel()
+        searchSession ?: return
+        activeQuery = PendingQuery(query, callback)
+        val searchQuery = Query(query, System.currentTimeMillis(), null)
+        searchSession!!.query(searchQuery, Executors.MAIN_EXECUTOR, activeQuery)
+    }
+
+    override fun cancel(interruptActiveRequests: Boolean) {
+        activeQuery?.cancel()
+    }
+
+    override fun destroy() {
+        super.destroy()
+        Executors.UI_HELPER_EXECUTOR.execute {
+            searchSession?.destroy()
+        }
+        prefs.let {
+            it.searchResultShortcuts.removeListener(this)
+            it.searchResultPeople.removeListener(this)
+            it.searchResultPixelTips.removeListener(this)
+            it.searchResultSettings.removeListener(this)
+        }
+    }
+
     private fun createSearchSession() {
         Executors.UI_HELPER_EXECUTOR.execute {
             searchSession?.destroy()
@@ -67,31 +92,6 @@ class LawnchairDeviceSearchAlgorithm(context: Context) : LawnchairSearchAlgorith
             val searchSession = context.requireSystemService<SearchUiManager>()
                 .createSearchSession(searchContext)
             Executors.MAIN_EXECUTOR.post { this.searchSession = searchSession }
-        }
-    }
-
-    override fun doSearch(query: String, callback: SearchCallback<AllAppsGridAdapter.AdapterItem>) {
-        activeQuery?.cancel()
-        searchSession ?: return
-        activeQuery = PendingQuery(query, callback)
-        val searchQuery = Query(query, System.currentTimeMillis(), null)
-        searchSession!!.query(searchQuery, Executors.MAIN_EXECUTOR, activeQuery)
-    }
-
-    override fun cancel(interruptActiveRequests: Boolean) {
-        activeQuery?.cancel()
-    }
-
-    override fun destroy() {
-        super.destroy()
-        Executors.UI_HELPER_EXECUTOR.execute {
-            searchSession?.destroy()
-        }
-        prefs.let {
-            it.searchResultShortcuts.removeListener(this)
-            it.searchResultPeople.removeListener(this)
-            it.searchResultPixelTips.removeListener(this)
-            it.searchResultSettings.removeListener(this)
         }
     }
 
