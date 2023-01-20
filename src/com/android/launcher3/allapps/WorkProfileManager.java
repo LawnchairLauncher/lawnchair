@@ -26,6 +26,7 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
@@ -98,7 +99,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
                 try {
                     mUserManager.requestQuietModeEnabled(!enabled, userProfile);
                 } catch (RuntimeException e) {
-                    Log.e(TAG, "Failed to set quiet mode for user " + userProfile, e);
+                    Toast.makeText(mAllApps.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
