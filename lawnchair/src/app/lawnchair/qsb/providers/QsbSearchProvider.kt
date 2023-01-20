@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import app.lawnchair.preferences2.PreferenceManager2
-import app.lawnchair.qsb.QsbLayout
+import app.lawnchair.qsb.LawnQsbLayout
 import app.lawnchair.qsb.ThemingMethod
 import app.lawnchair.resolveIntent
 import app.lawnchair.util.isPackageInstalled
@@ -142,7 +142,7 @@ sealed class QsbSearchProvider(
                 context.getString(R.string.config_default_qsb_search_provider_id)
             val defaultProvider = fromId(defaultProviderId)
             val isDefaultProviderIntentResolved =
-                QsbLayout.resolveIntent(context, defaultProvider.createSearchIntent())
+                LawnQsbLayout.resolveIntent(context, defaultProvider.createSearchIntent())
 
             // Return the default value from config.xml if the value is valid
             if (isDefaultProviderIntentResolved) {
@@ -156,7 +156,7 @@ sealed class QsbSearchProvider(
             // Return the best default option if the config.xml value is invalid
             return values()
                 .filterNot { it == AppSearch }
-                .firstOrNull { QsbLayout.resolveIntent(context, it.createSearchIntent()) }
+                .firstOrNull { LawnQsbLayout.resolveIntent(context, it.createSearchIntent()) }
                 ?: AppSearch
 
         }

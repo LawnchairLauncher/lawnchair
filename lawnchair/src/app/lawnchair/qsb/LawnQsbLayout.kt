@@ -41,7 +41,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
-class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
+class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
     private val activity: ActivityContext = ActivityContext.lookupContext<BaseActivity>(context)
     private lateinit var gIcon: ImageView

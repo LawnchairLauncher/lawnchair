@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<app.lawnchair.qsb.QsbLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<app.lawnchair.qsb.LawnQsbLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/qsb_widget_height"
@@ -62,4 +62,4 @@
 
     </FrameLayout>
 
-</app.lawnchair.qsb.QsbLayout>
+</app.lawnchair.qsb.LawnQsbLayout>
