@@ -1404,15 +1404,17 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                             (isFling && !isVelocityLeft)) && mCurrentPage > 0) {
                         finalPage = returnToOriginalPage
                                 ? mCurrentPage : mCurrentPage - getPanelCount();
-                        snapToPageWithVelocity(finalPage, velocity);
+                        runOnPageScrollsInitialized(
+                                () -> snapToPageWithVelocity(finalPage, velocity));
                     } else if (((isSignificantMove && isDeltaLeft && !isFling) ||
                             (isFling && isVelocityLeft)) &&
                             mCurrentPage < getChildCount() - 1) {
                         finalPage = returnToOriginalPage
                                 ? mCurrentPage : mCurrentPage + getPanelCount();
-                        snapToPageWithVelocity(finalPage, velocity);
+                        runOnPageScrollsInitialized(
+                                () -> snapToPageWithVelocity(finalPage, velocity));
                     } else {
-                        snapToDestination();
+                        runOnPageScrollsInitialized(this::snapToDestination);
                     }
                 } else {
                     if (!mScroller.isFinished()) {
@@ -1435,7 +1437,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
                         int finalPos = mScroller.getFinalX();
                         mNextPage = getDestinationPage(finalPos);
-                        onNotSnappingToPageInFreeScroll();
+                        runOnPageScrollsInitialized(this::onNotSnappingToPageInFreeScroll);
                     }
                     invalidate();
                 }
@@ -1449,7 +1451,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
         case MotionEvent.ACTION_CANCEL:
             if (mIsBeingDragged) {
-                snapToDestination();
+                runOnPageScrollsInitialized(this::snapToDestination);
             }
             mEdgeGlowLeft.onRelease();
             mEdgeGlowRight.onRelease();
