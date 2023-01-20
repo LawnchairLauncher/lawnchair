@@ -450,7 +450,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         if (mDragInfo != null && mDragInfo.cell != null) {
             CellLayout layout = (CellLayout) (mDragInfo.cell instanceof LauncherAppWidgetHostView
-                    ? dragObject.dragView.getContentViewParent().getParent()
+                    // https://github.com/LawnchairLauncher/lawnchair/issues/3143
+                    && dragObject.dragView.getContentViewParent() != null ? dragObject.dragView.getContentViewParent().getParent()
                     : mDragInfo.cell.getParent().getParent());
             layout.markCellsAsUnoccupiedForView(mDragInfo.cell);
         }
