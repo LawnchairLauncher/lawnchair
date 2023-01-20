@@ -94,7 +94,12 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
                 if (Process.myUserHandle().equals(userProfile)) {
                     continue;
                 }
-                mUserManager.requestQuietModeEnabled(!enabled, userProfile);
+                // https://github.com/LawnchairLauncher/lawnchair/issues/3145
+                try {
+                    mUserManager.requestQuietModeEnabled(!enabled, userProfile);
+                } catch (RuntimeException e) {
+                    Log.e(TAG, "Failed to set quiet mode for user " + userProfile, e);
+                }
             }
         });
     }
