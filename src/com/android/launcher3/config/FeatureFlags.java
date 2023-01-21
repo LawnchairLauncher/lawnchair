@@ -388,6 +388,11 @@ public final class FeatureFlags {
             "ENABLE_MULTI_INSTANCE", false,
             "Enables creation and filtering of multiple task instances in overview");
 
+    public static final BooleanFlag ENABLE_TASKBAR_PINNING = getDebugFlag(
+            "ENABLE_TASKBAR_PINNING", false,
+            "Enables taskbar pinning to allow user to switch between transient and persistent "
+                    + "taskbar flavors");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {

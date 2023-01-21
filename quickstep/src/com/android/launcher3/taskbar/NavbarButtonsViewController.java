@@ -51,7 +51,6 @@ import android.annotation.IdRes;
 import android.annotation.LayoutRes;
 import android.content.pm.ActivityInfo.Config;
 import android.content.res.ColorStateList;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -725,13 +724,6 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
             mPropertyHolders.add(new StatePropertyHolder(
                     mBackButtonAlpha.get(ALPHA_INDEX_SUW),
                     flags -> (flags & FLAG_IME_VISIBLE) == 0));
-
-            // TODO(b/210906568) Dark intensity is currently not propagated during setup, so set
-            //  it based on dark theme for now.
-            int mode = res.getConfiguration().uiMode
-                    & Configuration.UI_MODE_NIGHT_MASK;
-            boolean isDarkTheme = mode == Configuration.UI_MODE_NIGHT_YES;
-            mTaskbarNavButtonDarkIntensity.updateValue(isDarkTheme ? 0 : 1);
         } else if (isInKidsMode) {
             int iconSize = res.getDimensionPixelSize(
                     R.dimen.taskbar_icon_size_kids);
