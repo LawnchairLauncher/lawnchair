@@ -49,6 +49,8 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
     private final AnimatedFloat mNotificationShadeBgTaskbar = new AnimatedFloat(
             this::updateBackgroundAlpha);
     private final AnimatedFloat mImeBgTaskbar = new AnimatedFloat(this::updateBackgroundAlpha);
+    private final AnimatedFloat mAssistantBgTaskbar = new AnimatedFloat(
+            this::updateBackgroundAlpha);
     // Used to hide our background color when someone else (e.g. ScrimView) is handling it.
     private final AnimatedFloat mBgOverride = new AnimatedFloat(this::updateBackgroundAlpha);
 
@@ -82,6 +84,7 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         mKeyguardBgTaskbar.value = 1;
         mNotificationShadeBgTaskbar.value = 1;
         mImeBgTaskbar.value = 1;
+        mAssistantBgTaskbar.value = 1;
         mBgOverride.value = 1;
         updateBackgroundAlpha();
     }
@@ -120,6 +123,10 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         return mImeBgTaskbar;
     }
 
+    public AnimatedFloat getAssistantBgTaskbar() {
+        return mAssistantBgTaskbar;
+    }
+
     public AnimatedFloat getOverrideBackgroundAlpha() {
         return mBgOverride;
     }
@@ -144,7 +151,8 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
     private void updateBackgroundAlpha() {
         final float bgNavbar = mBgNavbar.value;
         final float bgTaskbar = mBgTaskbar.value * mKeyguardBgTaskbar.value
-                * mNotificationShadeBgTaskbar.value * mImeBgTaskbar.value;
+                * mNotificationShadeBgTaskbar.value * mImeBgTaskbar.value
+                * mAssistantBgTaskbar.value;
         mLastSetBackgroundAlpha = mBgOverride.value * Math.max(bgNavbar, bgTaskbar);
         mTaskbarDragLayer.setTaskbarBackgroundAlpha(mLastSetBackgroundAlpha);
 
@@ -196,6 +204,13 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         pw.println(prefix + "\tmBgOffset=" + mBgOffset.value);
         pw.println(prefix + "\tmFolderMargin=" + mFolderMargin);
         pw.println(prefix + "\tmLastSetBackgroundAlpha=" + mLastSetBackgroundAlpha);
+        pw.println(prefix + "\t\tmBgOverride=" + mBgOverride.value);
+        pw.println(prefix + "\t\tmBgNavbar=" + mBgNavbar.value);
+        pw.println(prefix + "\t\tmBgTaskbar=" + mBgTaskbar.value);
+        pw.println(prefix + "\t\tmKeyguardBgTaskbar=" + mKeyguardBgTaskbar.value);
+        pw.println(prefix + "\t\tmNotificationShadeBgTaskbar=" + mNotificationShadeBgTaskbar.value);
+        pw.println(prefix + "\t\tmImeBgTaskbar=" + mImeBgTaskbar.value);
+        pw.println(prefix + "\t\tmAssistantBgTaskbar=" + mAssistantBgTaskbar.value);
     }
 
     /**
