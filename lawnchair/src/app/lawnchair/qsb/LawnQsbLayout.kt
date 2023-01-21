@@ -41,7 +41,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
-class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
+class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
     private val activity: ActivityContext = ActivityContext.lookupContext<BaseActivity>(context)
     private lateinit var gIcon: ImageView
@@ -56,20 +56,18 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
     override fun onFinishInflate() {
         super.onFinishInflate()
 
-        gIcon = ViewCompat.requireViewById<ImageView>(this, R.id.g_icon)
+        gIcon = ViewCompat.requireViewById(this, R.id.g_icon)
         micIcon = ViewCompat.requireViewById(this, R.id.mic_icon)
         lensIcon = ViewCompat.requireViewById(this, R.id.lens_icon)
         inner = ViewCompat.requireViewById(this, R.id.inner)
         preferenceManager = PreferenceManager.getInstance(context)
         preferenceManager2 = PreferenceManager2.getInstance(context)
 
-        val searchProvider = getSearchProvider(context, preferenceManager2)
         setUpBackground()
         clipIconRipples()
 
-        val isGoogle = searchProvider == Google ||
-                searchProvider == GoogleGo
-
+        val searchProvider = getSearchProvider(context, preferenceManager2)
+        val isGoogle = searchProvider == Google || searchProvider == GoogleGo
         val supportsLens = searchProvider == Google
 
         preferenceManager2.themedHotseatQsb.subscribeBlocking(scope = viewAttachedScope) { themed ->

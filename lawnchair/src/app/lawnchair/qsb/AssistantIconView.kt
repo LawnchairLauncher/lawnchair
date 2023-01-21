@@ -12,10 +12,10 @@ import com.android.launcher3.R
 class AssistantIconView(context: Context, attrs: AttributeSet?) : ImageButton(context, attrs) {
 
     init {
-        val provider = QsbLayout.getSearchProvider(context, PreferenceManager2.getInstance(context))
+        val provider = LawnQsbLayout.getSearchProvider(context, PreferenceManager2.getInstance(context))
         val intent = if (provider.supportVoiceIntent) provider.createVoiceIntent() else null
 
-        if (intent == null || !QsbLayout.resolveIntent(context, intent)) isVisible = false
+        if (intent == null || !LawnQsbLayout.resolveIntent(context, intent)) isVisible = false
 
         setOnClickListener {
             context.startActivity(intent)
