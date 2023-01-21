@@ -38,7 +38,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Release APK
-          path: build/outputs/apk/lawnWithQuickstep/release/*.apk
+          path: |
+            build/outputs/apk/lawnWithQuickstep/release/*.apk
+            build/outputs/mapping/lawnWithQuickstepRelease/mapping.txt
 
   send-notifications:
     runs-on: ubuntu-latest
