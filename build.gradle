@@ -378,7 +378,7 @@ protobuf {
         artifact = "com.google.protobuf:protoc:${protocVersion}"
     }
     generateProtoTasks {
-        all().each { task ->
+        all().configureEach { task ->
             task.builtins {
                 remove java
                 java {
