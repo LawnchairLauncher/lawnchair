@@ -309,6 +309,18 @@
     <dimen name="taskbar_button_margin_6_5">75dp</dimen>
     <dimen name="taskbar_button_margin_default">48dp</dimen>
 
+    <!-- Taskbar education tooltip -->
+    <dimen name="taskbar_edu_tooltip_elevation">14dp</dimen>
+    <dimen name="taskbar_edu_tooltip_horizontal_margin">32dp</dimen>
+    <dimen name="taskbar_edu_tooltip_vertical_margin">24dp</dimen>
+    <dimen name="taskbar_edu_tooltip_enter_y_delta">20dp</dimen>
+    <dimen name="taskbar_edu_tooltip_exit_y_delta">-10dp</dimen>
+    <dimen name="taskbar_edu_swipe_lottie_width">348dp</dimen>
+    <dimen name="taskbar_edu_swipe_lottie_height">217dp</dimen>
+    <dimen name="taskbar_edu_features_lottie_width">170dp</dimen>
+    <dimen name="taskbar_edu_features_lottie_height">106dp</dimen>
+    <dimen name="taskbar_edu_features_horizontal_spacing">24dp</dimen>
+
     <!-- Recents overview -->
     <dimen name="recents_filter_icon_size">30dp</dimen>
 

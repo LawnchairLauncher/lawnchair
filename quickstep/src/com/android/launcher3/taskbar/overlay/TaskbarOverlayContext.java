@@ -19,7 +19,6 @@ import android.content.Context;
 import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -30,7 +29,6 @@ import com.android.launcher3.taskbar.TaskbarControllers;
 import com.android.launcher3.taskbar.TaskbarDragController;
 import com.android.launcher3.taskbar.TaskbarStashController;
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsContainerView;
-import com.android.launcher3.util.OnboardingPrefs;
 
 /**
  * Window context for the taskbar overlays such as All Apps and EDU.
@@ -40,7 +38,6 @@ import com.android.launcher3.util.OnboardingPrefs;
  */
 public class TaskbarOverlayContext extends BaseTaskbarContext {
     private final TaskbarActivityContext mTaskbarContext;
-    private final OnboardingPrefs<TaskbarOverlayContext> mOnboardingPrefs;
 
     private final TaskbarOverlayController mOverlayController;
     private final TaskbarDragController mDragController;
@@ -59,7 +56,6 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
         mOverlayController = controllers.taskbarOverlayController;
         mDragController = new TaskbarDragController(this);
         mDragController.init(controllers);
-        mOnboardingPrefs = new OnboardingPrefs<>(this, LauncherPrefs.getPrefs(this));
         mDragLayer = new TaskbarOverlayDragLayer(this);
 
         TaskbarStashController taskbarStashController = controllers.taskbarStashController;
@@ -97,11 +93,6 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
     @Override
     public TaskbarAllAppsContainerView getAppsView() {
         return mDragLayer.findViewById(R.id.apps_view);
-    }
-
-    @Override
-    public OnboardingPrefs<TaskbarOverlayContext> getOnboardingPrefs() {
-        return mOnboardingPrefs;
     }
 
     @Override

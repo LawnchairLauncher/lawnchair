@@ -426,6 +426,11 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             return;
         }
 
+        if (stash && mControllers.taskbarAutohideSuspendController.isSuspended()) {
+            // Avoid stashing if autohide is currently suspended.
+            return;
+        }
+
         if (hasAnyFlag(FLAG_STASHED_IN_APP_AUTO) != stash) {
             updateStateForFlag(FLAG_STASHED_IN_APP_AUTO, stash);
             applyState();

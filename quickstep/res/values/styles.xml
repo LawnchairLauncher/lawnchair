@@ -186,4 +186,16 @@
         <item name="android:textSize">24sp</item>
         <item name="android:lines">2</item>
     </style>
+
+    <style name="TextAppearance.TaskbarEduTooltip.Title" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:fontFamily">google-sans</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="TextAppearance.TaskbarEduTooltip.Subtext" parent="android:TextAppearance.Material.Body1">
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:fontFamily">google-sans-text</item>
+        <item name="android:textSize">14sp</item>
+    </style>
 </resources>
