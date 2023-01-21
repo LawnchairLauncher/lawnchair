@@ -20,7 +20,7 @@ import androidx.core.view.WindowCompat
 import app.lawnchair.ui.preferences.components.SystemUi
 import app.lawnchair.ui.theme.LawnchairTheme
 import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.suspendCancellableCoroutine
 
 class BlankActivity : AppCompatActivity() {
 
@@ -127,12 +127,14 @@ class BlankActivity : AppCompatActivity() {
         }
 
         private suspend fun start(activity: Activity, targetIntent: Intent, extras: Bundle): ActivityResult {
-            return suspendCoroutine { continuation ->
+            return suspendCancellableCoroutine { continuation ->
                 val intent = Intent(activity, BlankActivity::class.java)
                     .putExtras(extras)
                     .putExtra("intent", targetIntent)
                 val resultReceiver = createResultReceiver {
-                    continuation.resume(it)
+                    if (continuation.isActive) {
+                        continuation.resume(it)
+                    }
                 }
                 activity.startActivity(intent.putExtra("callback", resultReceiver))
             }
