@@ -109,8 +109,12 @@ public class TaskbarTranslationController implements TaskbarControllers.Loggable
                 .setStiffness(SpringForce.STIFFNESS_LOW)
                 .build(mTranslationYForSwipe, VALUE);
         mSpringBounce.addListener(forEndCallback(() -> {
-            if (mGestureEnded) {
-                reset();
+            if (!mGestureEnded) {
+                return;
+            }
+            reset();
+            if (mControllers.taskbarStashController.isInAppAndNotStashed()) {
+                mControllers.taskbarEduTooltipController.maybeShowFeaturesEdu();
             }
         }));
         mSpringBounce.start();

@@ -39,11 +39,14 @@ public class TaskbarAutohideSuspendController implements
     public static final int FLAG_AUTOHIDE_SUSPEND_DRAGGING = 1 << 1;
     // User has touched down but has not lifted finger.
     public static final int FLAG_AUTOHIDE_SUSPEND_TOUCHING = 1 << 2;
+    // Taskbar EDU overlay is open above the Taskbar. */
+    public static final int FLAG_AUTOHIDE_SUSPEND_EDU_OPEN = 1 << 3;
 
     @IntDef(flag = true, value = {
             FLAG_AUTOHIDE_SUSPEND_FULLSCREEN,
             FLAG_AUTOHIDE_SUSPEND_DRAGGING,
             FLAG_AUTOHIDE_SUSPEND_TOUCHING,
+            FLAG_AUTOHIDE_SUSPEND_EDU_OPEN,
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface AutohideSuspendFlag {}
@@ -102,6 +105,7 @@ public class TaskbarAutohideSuspendController implements
                 "FLAG_AUTOHIDE_SUSPEND_FULLSCREEN");
         appendFlag(str, flags, FLAG_AUTOHIDE_SUSPEND_DRAGGING, "FLAG_AUTOHIDE_SUSPEND_DRAGGING");
         appendFlag(str, flags, FLAG_AUTOHIDE_SUSPEND_TOUCHING, "FLAG_AUTOHIDE_SUSPEND_TOUCHING");
+        appendFlag(str, flags, FLAG_AUTOHIDE_SUSPEND_EDU_OPEN, "FLAG_AUTOHIDE_SUSPEND_EDU_OPEN");
         return str.toString();
     }
 }
