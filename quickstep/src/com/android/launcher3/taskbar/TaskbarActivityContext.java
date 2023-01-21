@@ -234,7 +234,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new TaskbarTranslationController(this),
                 isDesktopMode
                         ? new DesktopTaskbarRecentAppsController(this)
-                        : TaskbarRecentAppsController.DEFAULT);
+                        : TaskbarRecentAppsController.DEFAULT,
+                new TaskbarEduTooltipController(this));
     }
 
     public void init(@NonNull TaskbarSharedState sharedState) {
@@ -916,6 +917,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      */
     public void onSwipeToUnstashTaskbar() {
         mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(false);
+        mControllers.taskbarEduTooltipController.hide();
     }
 
     /** Returns {@code true} if taskbar All Apps is open. */

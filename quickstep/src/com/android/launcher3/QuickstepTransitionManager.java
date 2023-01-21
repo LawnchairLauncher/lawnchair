@@ -700,7 +700,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             @Override
             public void onAnimationStart(Animator animation) {
                 LauncherTaskbarUIController taskbarController = mLauncher.getTaskbarUIController();
-                if (taskbarController != null && taskbarController.shouldShowEdu()) {
+                if (taskbarController != null && taskbarController.shouldShowEduOnAppLaunch()) {
                     // LAUNCHER_TASKBAR_EDUCATION_SHOWING is set to true here, when the education
                     // flow is about to start, to avoid a race condition with other components
                     // that would show something else to the user as soon as the app is opened.
@@ -716,7 +716,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 }
                 LauncherTaskbarUIController taskbarController = mLauncher.getTaskbarUIController();
                 if (taskbarController != null) {
-                    taskbarController.showEdu();
+                    taskbarController.showEduOnAppLaunch();
                 }
                 openingTargets.release();
             }

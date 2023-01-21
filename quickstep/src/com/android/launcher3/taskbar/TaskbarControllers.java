@@ -58,6 +58,7 @@ public class TaskbarControllers {
     public final TaskbarRecentAppsController taskbarRecentAppsController;
     public final TaskbarTranslationController taskbarTranslationController;
     public final TaskbarOverlayController taskbarOverlayController;
+    public final TaskbarEduTooltipController taskbarEduTooltipController;
 
     @Nullable private LoggableTaskbarController[] mControllersToLog = null;
     @Nullable private BackgroundRendererController[] mBackgroundRendererControllers = null;
@@ -101,7 +102,8 @@ public class TaskbarControllers {
             TaskbarInsetsController taskbarInsetsController,
             VoiceInteractionWindowController voiceInteractionWindowController,
             TaskbarTranslationController taskbarTranslationController,
-            TaskbarRecentAppsController taskbarRecentAppsController) {
+            TaskbarRecentAppsController taskbarRecentAppsController,
+            TaskbarEduTooltipController taskbarEduTooltipController) {
         this.taskbarActivityContext = taskbarActivityContext;
         this.taskbarDragController = taskbarDragController;
         this.navButtonController = navButtonController;
@@ -124,6 +126,7 @@ public class TaskbarControllers {
         this.voiceInteractionWindowController = voiceInteractionWindowController;
         this.taskbarTranslationController = taskbarTranslationController;
         this.taskbarRecentAppsController = taskbarRecentAppsController;
+        this.taskbarEduTooltipController = taskbarEduTooltipController;
     }
 
     /**
@@ -155,6 +158,7 @@ public class TaskbarControllers {
         voiceInteractionWindowController.init(this);
         taskbarRecentAppsController.init(this);
         taskbarTranslationController.init(this);
+        taskbarEduTooltipController.init(this);
 
         mControllersToLog = new LoggableTaskbarController[] {
                 taskbarDragController, navButtonController, navbarButtonsViewController,
@@ -162,7 +166,8 @@ public class TaskbarControllers {
                 taskbarUnfoldAnimationController, taskbarKeyguardController,
                 stashedHandleViewController, taskbarStashController, taskbarEduController,
                 taskbarAutohideSuspendController, taskbarPopupController, taskbarInsetsController,
-                voiceInteractionWindowController, taskbarTranslationController
+                voiceInteractionWindowController, taskbarTranslationController,
+                taskbarEduTooltipController
         };
         mBackgroundRendererControllers = new BackgroundRendererController[] {
                 taskbarDragLayerController, taskbarScrimViewController,
