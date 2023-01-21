@@ -23,7 +23,6 @@ import androidx.core.content.getSystemService
 import app.lawnchair.LawnchairApp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.backup.ui.restoreBackupOpener
-import app.lawnchair.preferences.Versioning
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.OverflowMenu
@@ -107,7 +106,7 @@ fun PreferencesDashboard() {
         val context = LocalContext.current
         PreferenceCategory(
             label = stringResource(R.string.about_label),
-            description = "${context.getString(R.string.derived_app_name)} ${Versioning.majorVersion}",
+            description = "${context.getString(R.string.derived_app_name)} ${BuildConfig.MAJOR_VERSION}",
             iconResource = R.drawable.ic_about,
             route = Routes.ABOUT
         )

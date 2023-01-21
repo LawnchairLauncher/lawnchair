@@ -22,7 +22,6 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -40,7 +39,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.navigation.NavGraphBuilder
-import app.lawnchair.preferences.Versioning
 import app.lawnchair.ui.preferences.about.acknowledgements.licensesGraph
 import app.lawnchair.ui.preferences.components.ClickablePreference
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
@@ -48,6 +46,7 @@ import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.ui.preferences.subRoute
+import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 
 private enum class Role(val descriptionResId: Int) {
@@ -231,13 +230,13 @@ fun About() {
                 style = MaterialTheme.typography.titleLarge,
             )
             Text(
-                text = Versioning.versionName,
+                text = BuildConfig.VERSION_DISPLAY_NAME,
                 style = MaterialTheme.typography.bodyLarge,
                 color = LocalContentColor.current.copy(alpha = ContentAlpha.medium),
                 modifier = Modifier.combinedClickable(
                     onClick = {},
                     onLongClick = {
-                        val commitUrl = "https://github.com/LawnchairLauncher/lawnchair/commit/${Versioning.commitHash}"
+                        val commitUrl = "https://github.com/LawnchairLauncher/lawnchair/commit/${BuildConfig.COMMIT_HASH}"
                         context.startActivity(Intent(Intent.ACTION_VIEW, commitUrl.toUri()))
                     }
                 )
