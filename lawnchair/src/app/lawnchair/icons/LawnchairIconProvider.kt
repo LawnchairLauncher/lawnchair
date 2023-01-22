@@ -67,7 +67,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
             }
             return _themeMap!!
         }
-    val supportsIconTheme get() = themeMap != DISABLED_MAP
+    private val supportsIconTheme get() = themeMap != DISABLED_MAP
 
     init {
         setIconThemeSupported(supportsIconTheme)

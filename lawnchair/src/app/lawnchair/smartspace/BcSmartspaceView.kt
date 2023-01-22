@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlin.math.roundToInt
 
 class BcSmartspaceView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, var previewMode: Boolean = false
+    context: Context, attrs: AttributeSet? = null, private var previewMode: Boolean = false
 ) : FrameLayout(context, attrs) {
 
     private val provider = SmartspaceProvider.INSTANCE.get(context)

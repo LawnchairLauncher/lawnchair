@@ -97,15 +97,15 @@ class LawnchairBackup(
 
     companion object {
         private const val BACKUP_VERSION = 1
+        private const val PREFS_FILE_NAME = "${LauncherFiles.SHARED_PREFERENCES_KEY}.xml"
+        private const val PREFS_DB_FILE_NAME = "preferences"
+        private const val PREFS_DATASTORE_FILE_NAME = "preferences.preferences_pb"
 
         const val INFO_FILE_NAME = "info.pb"
         const val WALLPAPER_FILE_NAME = "wallpaper.png"
         const val SCREENSHOT_FILE_NAME = "screenshot.png"
         const val LAUNCHER_DB_FILE_NAME = "launcher.db"
         const val RESTORED_DB_FILE_NAME = "restored.db"
-        const val PREFS_FILE_NAME = "${LauncherFiles.SHARED_PREFERENCES_KEY}.xml"
-        const val PREFS_DB_FILE_NAME = "preferences"
-        const val PREFS_DATASTORE_FILE_NAME = "preferences.preferences_pb"
 
         const val INCLUDE_LAYOUT_AND_SETTINGS = 1 shl 0
         const val INCLUDE_WALLPAPER = 1 shl 1

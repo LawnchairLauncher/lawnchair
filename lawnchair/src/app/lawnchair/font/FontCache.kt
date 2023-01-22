@@ -125,7 +125,7 @@ class FontCache private constructor(private val context: Context) {
         val sortedVariants by lazy { variants.values.sortedBy { it.familySorter } }
     }
 
-    class TypefaceFamily(val variants: Map<String, Typeface?>) {
+    class TypefaceFamily(private val variants: Map<String, Typeface?>) {
 
         val default = variants.getOrElse("regular") { variants.values.firstOrNull() }
     }
