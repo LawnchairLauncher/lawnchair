@@ -35,6 +35,7 @@ class UploaderService : Service() {
     private suspend fun startUpload() {
         while (uploadQueue.isNotEmpty()) {
             var report = uploadQueue.poll()!!
+            @Suppress("LiftReturnOrAssignment")
             try {
                 report = report.copy(link = UploaderUtils.upload(report))
             } catch (e: Throwable) {

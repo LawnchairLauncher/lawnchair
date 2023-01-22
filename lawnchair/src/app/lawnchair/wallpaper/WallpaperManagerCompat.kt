@@ -10,11 +10,11 @@ import com.android.launcher3.util.MainThreadInitializedObject
 sealed class WallpaperManagerCompat(val context: Context) {
 
     private val listeners = mutableListOf<OnColorsChangedListener>()
+    private val colorHints: Int get() = wallpaperColors?.colorHints ?: 0
     protected val wallpaperManager: WallpaperManager = context.requireSystemService()
 
     abstract val wallpaperColors: WallpaperColorsCompat?
 
-    val colorHints: Int get() = wallpaperColors?.colorHints ?: 0
     val supportsDarkTheme: Boolean get() = (colorHints and HINT_SUPPORTS_DARK_THEME) != 0
 
     fun addOnChangeListener(listener: OnColorsChangedListener) {

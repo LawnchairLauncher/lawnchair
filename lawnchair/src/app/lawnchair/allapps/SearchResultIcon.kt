@@ -78,7 +78,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
             }
             target.shortcutInfo != null -> {
                 allowLongClick = true
-                bindFromShortcutInfo(target.shortcutInfo!!)
+                bindFromShortcutInfo(target.shortcutInfo)
             }
             else -> {
                 allowLongClick = true
