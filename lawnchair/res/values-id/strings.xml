@@ -89,7 +89,6 @@
     <string name="theme_system_default">Sistem</string>
     <string name="theme_follow_wallpaper">Samakan dengan wallpaper</string>
     <string name="quickstep_label">Terbaru</string>
-    <string name="clear_all_as_action_label">Tombol Hapus Semua di Bawah</string>
     <string name="window_corner_radius_label">Tampilan Radius Sudut</string>
     <string name="override_window_corner_radius_label">Radius Sudut Layar Tersesuai</string>
     <string name="window_corner_radius_description">Saat Anda menggesek ke atas untuk membuka Aplikasi Terkini, aplikasi saat ini mengikuti jari Anda, menyusut menjadi kartu. Gunakan penggeser ini untuk menyesuaikan radius sudut kartu saat hampir layar penuh sehingga cocok.</string>
