@@ -97,7 +97,6 @@
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">סמלי המערכת</string>
     <string name="accent_color">צבע הדגשה</string>
-    <string name="done">סיום</string>
     <string name="loading">כעת בטעינה…</string>
     <string name="system">מערכת</string>
     <string name="wallpaper">רקע</string>
