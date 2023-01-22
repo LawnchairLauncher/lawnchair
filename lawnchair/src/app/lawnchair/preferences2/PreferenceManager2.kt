@@ -53,7 +53,7 @@ import kotlinx.serialization.json.Json
 import app.lawnchair.preferences.PreferenceManager as LawnchairPreferenceManager
 import com.android.launcher3.graphics.IconShape as L3IconShape
 
-class PreferenceManager2(private val context: Context) : PreferenceManager {
+class PreferenceManager2 private constructor(private val context: Context) : PreferenceManager {
 
     private val scope = MainScope()
     private val resourceProvider = DynamicResource.provider(context)
