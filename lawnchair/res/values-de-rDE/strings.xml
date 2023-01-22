@@ -104,6 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Symbol-Paket</string>
+    <string name="themed_icon_pack">Symboldesign-Quelle</string>
     <string name="system_icons">System-Symbole</string>
     <string name="themed_icon_title">Symboldesigns</string>
     <string name="themed_icons_off_label">Aus</string>
@@ -265,6 +266,7 @@
     <string name="pref_search_auto_show_keyboard">Tastatur automatisch anzeigen</string>
     <string name="fuzzy_search_title">Unscharfe Suche</string>
     <string name="fuzzy_search_desc">Ungefähre Übereinstimmung für Appsuche.</string>
+    <string name="max_search_result_count_title">Max. Suchergebnisanzahl</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Spalten der App-Übersicht</string>
     <string name="row_height_label">Zeilenhöhe</string>

@@ -44,11 +44,11 @@
     <!-- ExperimentalFeaturesPreferences -->
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">フォントのカスタマイズ</string>
-    <string name="font_picker_description">一部のテキストは変更されません。</string>
-    <string name="smartspace_calendar_label">At a Glance カレンダーカスタマイズ</string>
-    <string name="smartspace_calendar_description">グレゴリオ暦以外の暦で日付を表示できるようにします。</string>
+    <string name="font_picker_description">一部のテキストは変更されません</string>
+    <string name="smartspace_calendar_label">At a Glance カレンダーのカスタマイズ</string>
+    <string name="smartspace_calendar_description">グレゴリオ暦以外の暦で日付を表示できるようにします</string>
     <string name="workspace_increase_max_grid_size_label">ホーム画面のグリッドの最大数を増やす</string>
-    <string name="workspace_increase_max_grid_size_description">ホームスクリーンのグリッド数を10 x 10から20 x 20まで増やします</string>
+    <string name="workspace_increase_max_grid_size_description">ホーム画面のグリッド数を 10x10 から 20x20 まで増やします</string>
     <string name="always_reload_icons_label">常にアイコンを再読み込みする</string>
     <string name="always_reload_icons_description">アイコンパックからキャッシュされたアイコンを使用しないようにする</string>
     <string name="transparent_background_icons">透明なテーマアイコン</string>
@@ -64,12 +64,12 @@
     <string name="auto_adaptive_icons_label">自動アダプティブ アイコン</string>
     <string name="auto_adaptive_icons_description">すべての非アダプティブ アイコンを対象</string>
     <string name="background_lightness_label">背景の明るさ</string>
-    <string name="adaptive_icon_background_description">白色の背景の明るさを100%にする。</string>
+    <string name="adaptive_icon_background_description">白色の背景の明るさを100%にする</string>
     <string name="notification_dots">通知ドット</string>
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">通知の数を表示</string>
     <string name="notification_dots_color">通知ドットの色</string>
-    <string name="notification_dots_text_color">通知ドットの色</string>
+    <string name="notification_dots_text_color">通知カウントの色</string>
     <string name="notification_dots_color_contrast_warning_always">警告：通知ドットとカウンターカラーのコントラストが互いに十分ではありません</string>
     <string name="notification_dots_color_contrast_warning_sometimes">警告：通知ドットとカウンターカラーのコントラストが互いに十分ではない場合があります</string>
     <!-- Notification popup -->
@@ -100,16 +100,17 @@
     <string name="clipboard">クリップボード</string>
     <string name="export_to_clipboard">クリップボードにエクスポート</string>
     <string name="import_from_clipboard">クリップボードからインポート</string>
-    <string name="icon_shape_clipboard_import_error">Clipboard does not contain a valid icon shape</string>
+    <string name="icon_shape_clipboard_import_error">クリップボードに有効なアイコンがありません</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">アイコンパック</string>
+    <string name="themed_icon_pack">テーマのアイコンソース</string>
     <string name="system_icons">システムアイコン</string>
     <string name="themed_icon_title">テーマアイコン</string>
     <string name="themed_icons_off_label">オフ</string>
     <string name="themed_icons_home_label">ホーム画面</string>
     <string name="themed_icons_home_and_drawer_label">ホーム画面 &amp; アプリドロワー</string>
-    <string name="lawnicons_not_installed_description">Lawnicons がインストールされていません。</string>
+    <string name="lawnicons_not_installed_description">Lawnicons がインストールされていません</string>
     <!-- <string name="cancel" /> (unknown source)-->
     <!-- IconPickerPreference -->
     <!-- <string name="icon_shape_label" /> -->
@@ -128,8 +129,8 @@
     <string name="icon_shape_teardrop">水滴型</string>
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">フォントを追加</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF がサポートされています。</string>
-    <string name="pref_fonts_missing_font">フォントが見つかりません。</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF がサポートされています</string>
+    <string name="pref_fonts_missing_font">フォントが見つかりません</string>
     <string name="font_variant_italic">斜体</string>
     <string name="font_weight_thin">Thin</string>
     <string name="font_weight_extra_light">Extra Light</string>
@@ -158,7 +159,7 @@
     <string name="color_sliders">スライダー</string>
     <string name="action_copy">コピー</string>
     <string name="action_paste">貼付け</string>
-    <string name="copied_toast">クリップボードにコピーしました。</string>
+    <string name="copied_toast">クリップボードにコピーしました</string>
     <string name="invalid_color">無効な色</string>
     <string name="launcher_default_color">Lawnchairに管理されています</string>
     <!-- HomeScreenPreferences -->
@@ -189,7 +190,7 @@
     <string name="label_size">ラベルのサイズ</string>
     <string name="reset_custom_icons">カスタムアイコンをリセット</string>
     <string name="reset_custom_icons_confirmation">すべてのカスタムアイコンがリセットされます。続行しますか？</string>
-    <string name="home_screen_text_color">Text Color</string>
+    <string name="home_screen_text_color">テキストの色</string>
     <string name="color_light">ライト</string>
     <string name="color_dark">ダーク</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
@@ -229,7 +230,7 @@
     <string name="smartspace_calendar_persian">ペルシア暦</string>
     <string name="smartspace_preferences">設定</string>
     <string name="smartspace_widget_toggle_label">ホーム画面に表示する</string>
-    <string name="smartspace_widget_toggle_description">At a Glanceは、「Lawnchair」のウィジェットを配置することで、手動で追加することができます。</string>
+    <string name="smartspace_widget_toggle_description">At a Glance は、「Lawnchair」のウィジェットを配置することで、手動で追加することができます</string>
     <string name="smartspace_mode_label">At a Glance のプロバイダー</string>
     <string name="smartspace_mode_lawnchair">Lawnchair</string>
     <string name="smartspace_mode_google">Google</string>
@@ -258,13 +259,14 @@
     <string name="background_opacity">背景の透明度</string>
     <!-- hiddenApps_label -->
     <string name="hidden_apps_label">非表示のアプリ</string>
-    <string name="show_enable_smart_hide">フルネームを入力したときに表示します</string>
+    <string name="show_enable_smart_hide">アプリ名を入力したときに表示します</string>
     <string name="hide_hidden_apps_search">検索結果に表示しない</string>
     <string name="pref_category_search">検索</string>
     <string name="show_app_search_bar">検索バーを表示</string>
     <string name="pref_search_auto_show_keyboard">キーボードを自動的に表示</string>
     <string name="fuzzy_search_title">あいまい検索</string>
-    <string name="fuzzy_search_desc">アプリ検索のおおよその一致。</string>
+    <string name="fuzzy_search_desc">アプリ検索のおおよその一致</string>
+    <string name="max_search_result_count_title">検索結果の最大数</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">アプリドロワーの列</string>
     <string name="row_height_label">行の高さ</string>
@@ -292,8 +294,8 @@
     <string name="gesture_double_tap">ダブルタップをしたとき</string>
     <string name="gesture_swipe_up">上へスワイプしたとき</string>
     <string name="gesture_swipe_down">下へスワイプしたとき</string>
-    <string name="gesture_home_tap">ホームボタンが押されたとき</string>
-    <string name="gesture_back_tap">戻るボタンが押されたとき</string>
+    <string name="gesture_home_tap">ホームボタンをタップしたとき</string>
+    <string name="gesture_back_tap">戻るボタンをタップしたとき</string>
     <string name="gesture_handler_no_op">何もしない</string>
     <string name="gesture_handler_sleep">スリープ状態にする</string>
     <string name="gesture_handler_open_notifications">通知パネルを開く</string>
@@ -314,7 +316,7 @@
     <string name="recents_clear_all">すべてクリア</string>
     <string name="window_corner_radius_label">画面角の丸み</string>
     <string name="override_window_corner_radius_label">カスタムした画面角の丸み</string>
-    <string name="window_corner_radius_description">上にスワイプして「履歴」を開くと、アプリが指に追従して縮小され、カード状に表示されます。画面の角に合うように、カードの角の丸みを調整できます。</string>
+    <string name="window_corner_radius_description">上にスワイプして 履歴 を開くと、アプリが指に追従して縮小され、カード状に表示されます。画面の角に合うように、カードの角の丸みを調整できます。</string>
     <string name="taskbar_label">タスクバー</string>
     <string name="enable_taskbar_experimental">タスクバーを有効化 (実験的)</string>
     <!-- about/About.kt -->
@@ -337,17 +339,17 @@
     <string name="icon_picker_reset_to_default">デフォルトにリセット</string>
     <string name="icon_pack_external_picker">外部選択を開く</string>
     <string name="pick_icon_from_label">アイコンを選択</string>
-    <string name="icon_picker_load_failed">アイコンを読み込めませんでした。</string>
+    <string name="icon_picker_load_failed">アイコンを読み込めませんでした</string>
     <!-- Misc -->
     <string name="all_apps_search_bar_hint">アプリを検索</string>
     <string name="settings_button_text">ホーム設定</string>
-    <string name="item_removed">アイテムを削除しました。</string>
+    <string name="item_removed">アイテムを削除しました</string>
     <string name="all_apps_no_search_results">“<xliff:g example="Android" id="query">%1$s</xliff:g> ”に一致するアプリが見つかりませんでした</string>
     <string name="dt2s_admin_hint_title">管理者権限が必要です</string>
-    <string name="dt2s_admin_hint">ダブルタップでスリープを使用するには、Lawnchairをデバイス管理アプリとして設定する必要があります。「設定を開く」をタップし、「このデバイス管理アプリを有効にする」を有効にしてください。</string>
-    <string name="dt2s_admin_warning">ダブルタップでスリープを解除します。</string>
+    <string name="dt2s_admin_hint">ダブルタップでスリープを使用するには、 Lawnchair をデバイス管理アプリとして設定する必要があります。 設定を開く をタップし、 このデバイス管理アプリを有効にする を有効にしてください。</string>
+    <string name="dt2s_admin_warning">ダブルタップでスリープを解除します</string>
     <string name="dt2s_a11y_hint_title">アクセシビリティサービスを有効にする</string>
-    <string name="dt2s_a11y_hint">ダブルタップでスリープを使用するには、ユーザー補助でLawnchairを有効にする必要があります。「設定を開く」をタップし、「Lawnchair」を選択して「サービスの使用」を有効にしてください。</string>
+    <string name="dt2s_a11y_hint">ダブルタップでスリープを使用するには、ユーザー補助 で Lawnchair を有効にする必要があります。 設定を開く をタップし、 Lawnchair を選択して サービスの使用 を有効にしてください。</string>
     <string name="dt2s_warning_open_settings">設定を開く</string>
     <string name="loading">読み込み中…</string>
     <string name="system">システム</string>
@@ -356,7 +358,7 @@
     <string name="hide_from_drawer">アプリドロワーから隠す</string>
     <string name="suggestion_pref_screen_title">サジェスト</string>
     <!-- Bug reporting -->
-    <string name="lawnchair_bug_report">Lawnchairのバグレポート</string>
+    <string name="lawnchair_bug_report">Lawnchair のバグレポート</string>
     <string name="crash_report_notif_title">%1$s がクラッシュしました</string>
     <string name="action_upload_crash_report">クラッシュログをアップロード</string>
     <string name="action_copy_link">リンクをコピー</string>
@@ -364,10 +366,10 @@
     <string name="dogbin_uploading">アップロード中…</string>
     <string name="bugreport_channel_name">バグレポート</string>
     <string name="status_channel_name">アップロード状況</string>
-    <string name="bugreport_group_summary">%d 件の新しいレポート。</string>
-    <string name="bugreport_group_summary_multiple">新しい複数のレポート。</string>
+    <string name="bugreport_group_summary">%d 件の新しいレポート</string>
+    <string name="bugreport_group_summary_multiple">新しい複数のレポート </string>
     <!-- Search ig -->
-    <string name="show_search_result_types">検索結果を表示</string>
+    <string name="show_search_result_types">検索結果に表示</string>
     <string name="search_pref_result_people_title">人物</string>
     <string name="search_pref_result_shortcuts_title">アプリのショートカット</string>
     <string name="search_pref_result_tips_title">Pixelのヒント</string>
@@ -388,13 +390,13 @@
     <string name="backup_content_layout_and_settings">レイアウトと設定</string>
     <string name="backup_content_wallpaper">壁紙</string>
     <string name="backup_create_success">バックアップを作成しました。</string>
-    <string name="backup_create_error">バックアップの作成に失敗しました。</string>
+    <string name="backup_create_error">バックアップの作成に失敗しました</string>
     <string name="restore_backup">バックアップを復元</string>
     <string name="restore_backup_action">復元</string>
     <string name="what_to_restore">復元する項目</string>
-    <string name="backup_restore_success">バックアップが復元されました。</string>
-    <string name="backup_restore_error">バックアップの復元に失敗しました。</string>
-    <string name="invalid_backup_file">バックアップファイルが無効です。</string>
+    <string name="backup_restore_success">バックアップが復元されました</string>
+    <string name="backup_restore_error">バックアップの復元に失敗しました</string>
+    <string name="invalid_backup_file">バックアップファイルが無効です</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
 </resources>

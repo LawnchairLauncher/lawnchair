@@ -104,6 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Icon Pack</string>
+    <string name="themed_icon_pack">Themed Icon Source</string>
     <string name="system_icons">Icons ng System</string>
     <string name="themed_icon_title">Mga Icon na may tema</string>
     <string name="themed_icons_off_label">Patayin</string>
@@ -265,6 +266,7 @@
     <string name="pref_search_auto_show_keyboard">Awtomatikong Ipakita ang Keyboard</string>
     <string name="fuzzy_search_title">Fuzzy Search</string>
     <string name="fuzzy_search_desc">Tinatayang tugma ng app searches.</string>
+    <string name="max_search_result_count_title">Max Search Result Count</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Mga Haligi ng Drawer ng App</string>
     <string name="row_height_label">Taas ng hilera</string>

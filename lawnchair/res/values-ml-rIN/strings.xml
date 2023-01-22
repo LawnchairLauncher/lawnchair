@@ -104,6 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">ഐക്കൺ പായ്ക്ക്</string>
+    <string name="themed_icon_pack">Themed Icon Source</string>
     <string name="system_icons">സിസ്റ്റം ഐക്കണുകൾ</string>
     <string name="themed_icon_title">തീം ചെയ്ത ഐക്കണുകൾ</string>
     <string name="themed_icons_off_label">Off</string>
@@ -265,6 +266,7 @@
     <string name="pref_search_auto_show_keyboard">കീബോർഡ് സ്വയമേവ കാണിക്കുക</string>
     <string name="fuzzy_search_title">അവ്യക്തമായ തിരയൽ</string>
     <string name="fuzzy_search_desc">ആപ്പ് തിരയലുകളുടെ ഏകദേശ പൊരുത്തപ്പെടുത്തൽ.</string>
+    <string name="max_search_result_count_title">Max Search Result Count</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">ആപ്പ് ഡ്രോയർ കോളങ്ങൾ</string>
     <string name="row_height_label">വരിയുടെ ഉയരം</string>

@@ -104,6 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Набор иконок</string>
+    <string name="themed_icon_pack">Themed Icon Source</string>
     <string name="system_icons">Системные иконки</string>
     <string name="themed_icon_title">Тематические значки</string>
     <string name="themed_icons_off_label">Выкл</string>
@@ -265,6 +266,7 @@
     <string name="pref_search_auto_show_keyboard">Автоматически Показывать Клавиатуру</string>
     <string name="fuzzy_search_title">Поиск по сходству</string>
     <string name="fuzzy_search_desc">Поиск приложений по похожему запросу.</string>
+    <string name="max_search_result_count_title">Макс. число результатов поиска</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Количество столбцов в меню приложений</string>
     <string name="row_height_label">Высота строки</string>

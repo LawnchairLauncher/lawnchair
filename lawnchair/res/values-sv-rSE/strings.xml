@@ -63,8 +63,8 @@
     <string name="icon_shape_label">Ikonform</string>
     <string name="auto_adaptive_icons_label">Automatiska adaptiva ikoner</string>
     <string name="auto_adaptive_icons_description">För alla icke-adaptiva ikoner.</string>
-    <string name="background_lightness_label">Bakgrundens ljusstyrka</string>
-    <string name="adaptive_icon_background_description">Använd 100 % bakgrundsljusstyrka för vitt.</string>
+    <string name="background_lightness_label">Bakgrundens ljushet</string>
+    <string name="adaptive_icon_background_description">Använd 100 % bakgrundsljushet för vitt.</string>
     <string name="notification_dots">Aviseringsprickar</string>
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Visa aviseringsantal</string>
@@ -104,6 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Ikonpaket</string>
+    <string name="themed_icon_pack">Themed Icon Source</string>
     <string name="system_icons">Systemikoner</string>
     <string name="themed_icon_title">Tematiserade ikoner</string>
     <string name="themed_icons_off_label">Av</string>
@@ -129,7 +130,7 @@
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">Lägg till typsnitt</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF stöds.</string>
-    <string name="pref_fonts_missing_font">Typsnitt hittades inte.</string>
+    <string name="pref_fonts_missing_font">Typsnittet hittades inte.</string>
     <string name="font_variant_italic">Kursiv</string>
     <string name="font_weight_thin">Tunn</string>
     <string name="font_weight_extra_light">Extra mager</string>
@@ -151,11 +152,11 @@
     <string name="rgb_green">Grönt</string>
     <string name="rgb_blue">Blått</string>
     <string name="hsb">HSB</string>
-    <string name="hsb_hue">Nyans</string>
+    <string name="hsb_hue">Kulörton</string>
     <string name="hsb_saturation">Mättnad</string>
     <string name="hsb_brightness">Ljushet</string>
     <string name="hex">Hex</string>
-    <string name="color_sliders">Reglerare</string>
+    <string name="color_sliders">Reglage</string>
     <string name="action_copy">Kopiera</string>
     <string name="action_paste">Klistra in</string>
     <string name="copied_toast">Kopierad till urklipp.</string>
@@ -265,6 +266,7 @@
     <string name="pref_search_auto_show_keyboard">Visa tangentbord automatiskt</string>
     <string name="fuzzy_search_title">Luddig sökning</string>
     <string name="fuzzy_search_desc">Ungefärlig matchning för appsökningar.</string>
+    <string name="max_search_result_count_title">Max antal sökresultat</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Kolumner för applådan</string>
     <string name="row_height_label">Rad höjd</string>

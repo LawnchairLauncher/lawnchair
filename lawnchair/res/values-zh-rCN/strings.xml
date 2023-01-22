@@ -104,6 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">图标包</string>
+    <string name="themed_icon_pack">主题图标来源</string>
     <string name="system_icons">系统图标</string>
     <string name="themed_icon_title">带主题的图标</string>
     <string name="themed_icons_off_label">关闭</string>

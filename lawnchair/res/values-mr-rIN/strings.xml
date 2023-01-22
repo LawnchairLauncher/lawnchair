@@ -104,6 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">चिन्ह_गाठोडा</string>
+    <string name="themed_icon_pack">Themed Icon Source</string>
     <string name="system_icons">निरुतीची चिन्हे</string>
     <string name="themed_icon_title">Themed Icons</string>
     <string name="themed_icons_off_label">Off</string>
@@ -265,6 +266,7 @@
     <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
     <string name="fuzzy_search_title">Fuzzy Search</string>
     <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
+    <string name="max_search_result_count_title">Max Search Result Count</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">ॲप कपाटचे खांब</string>
     <string name="row_height_label">Row Height</string>

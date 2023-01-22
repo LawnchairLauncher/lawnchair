@@ -104,6 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Simge Paketi</string>
+    <string name="themed_icon_pack">İkon teması kaynağı</string>
     <string name="system_icons">Sistem Simgeleri</string>
     <string name="themed_icon_title">Temalı Simgeler</string>
     <string name="themed_icons_off_label">Kapat</string>
@@ -265,6 +266,7 @@
     <string name="pref_search_auto_show_keyboard">Klavyeyi Otomatik Göster</string>
     <string name="fuzzy_search_title">Yaklaşık Arama</string>
     <string name="fuzzy_search_desc">Uygulama aramaları için yaklaşık eşleştirme.</string>
+    <string name="max_search_result_count_title">Maksimum Arama Sonucu Sayısı</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Uygulama Çekmecesi Sütunları</string>
     <string name="row_height_label">Satır yüksekliği</string>

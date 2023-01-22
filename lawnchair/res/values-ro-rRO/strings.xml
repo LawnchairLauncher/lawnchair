@@ -89,9 +89,9 @@
     <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
     <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
     <string name="icon_shape_corner">Corner Shape</string>
-    <string name="icon_shape_corner_round">Round</string>
-    <string name="icon_shape_corner_squircle">Smooth</string>
-    <string name="icon_shape_corner_cut">Cut</string>
+    <string name="icon_shape_corner_round">Rotund</string>
+    <string name="icon_shape_corner_squircle">Neted</string>
+    <string name="icon_shape_corner_cut">Decupare</string>
     <string name="icon_shape_top_left">Top Left</string>
     <string name="icon_shape_top_right">Top Right</string>
     <string name="icon_shape_bottom_left">Bottom Left</string>
@@ -104,6 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Pachet de pictograme</string>
+    <string name="themed_icon_pack">Themed Icon Source</string>
     <string name="system_icons">Pictogramele sistemului</string>
     <string name="themed_icon_title">Pictograme tematice</string>
     <string name="themed_icons_off_label">Dezactivat</string>
@@ -265,6 +266,7 @@
     <string name="pref_search_auto_show_keyboard">Afișează automat tastatura</string>
     <string name="fuzzy_search_title">Căutare imprecisă</string>
     <string name="fuzzy_search_desc">Potrivire aproximativă pentru căutarea aplicațiilor.</string>
+    <string name="max_search_result_count_title">Numărul maxim de rezultate pentru căutare</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Coloane în lista de aplicații</string>
     <string name="row_height_label">Înălțimea rândului</string>

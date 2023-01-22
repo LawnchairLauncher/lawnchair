@@ -45,17 +45,17 @@
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">Lettertype aanpassen</string>
     <string name="font_picker_description">Sommige teksten blijven ongewijzigd.</string>
-    <string name="smartspace_calendar_label">Kalender aanpassingen in een oogopslag</string>
+    <string name="smartspace_calendar_label">At a Glance Kalender aanpassingen</string>
     <string name="smartspace_calendar_description">Laat weergeven datum toe in niet-Gregoriaanse kalendersystemen.</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
+    <string name="workspace_increase_max_grid_size_label">Verhoogde Max Startscherm Grid Grootte</string>
     <string name="workspace_increase_max_grid_size_description">Verhoog de maximale toegestane startscherm raster grootte van 10 × 10 tot 20 × 20.</string>
     <string name="always_reload_icons_label">Altijd pictogrammen vernieuwen</string>
     <string name="always_reload_icons_description">Vermijd het gebruik van gecachte pictogrammen van pictogrampakketten</string>
-    <string name="transparent_background_icons">Transparent Themed Icons</string>
-    <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
-    <string name="smartspace_mode_selection">At a Glance Provider selection</string>
+    <string name="transparent_background_icons">Transparante thematische iconen</string>
+    <string name="transparent_background_icons_description">Gebruik transparante achtergrond bij gethematiseerde pictogrammen</string>
+    <string name="smartspace_mode_selection">At a Glance Provider selectie</string>
     <!-- GeneralPreferences -->
-    <string name="home_screen_rotation_label">Startpagina rotatie</string>
+    <string name="home_screen_rotation_label">Startscherm rotatie</string>
     <string name="home_screen_rotaton_description">Wanneer het apparaat is gedraaid.</string>
     <string name="font_label">Lettertype (Experimenteel)</string>
     <!-- <string name="icons" /> -->
@@ -69,9 +69,9 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Toon aantal meldingen</string>
     <string name="notification_dots_color">Meldings-stip kleur</string>
-    <string name="notification_dots_text_color">Notification Count Color</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_text_color">Meldings-telling kleur</string>
+    <string name="notification_dots_color_contrast_warning_always">Waarschuwing: Meldings-stip &amp; Teller kleuren zijn niet voldoende in contrast met elkaar</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Waarschuwing: Meldings-stip &amp; Teller kleuren zijn mogelijk niet altijd voldoende in contrast met elkaar</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Notificatie Toegang Nodig</string>
     <string name="missing_notification_access_description">Notificatie toegang vereist.</string>
@@ -85,25 +85,26 @@
     <string name="theme_follow_wallpaper">Overeenkomen met achtergrond</string>
     <string name="accent_color">Accentkleur</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Custom Icon Shape</string>
-    <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
-    <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
-    <string name="icon_shape_corner">Corner Shape</string>
-    <string name="icon_shape_corner_round">Round</string>
-    <string name="icon_shape_corner_squircle">Smooth</string>
-    <string name="icon_shape_corner_cut">Cut</string>
-    <string name="icon_shape_top_left">Top Left</string>
-    <string name="icon_shape_top_right">Top Right</string>
-    <string name="icon_shape_bottom_left">Bottom Left</string>
-    <string name="icon_shape_bottom_right">Bottom Right</string>
+    <string name="custom_icon_shape">Aangepaste pictogramvorm</string>
+    <string name="custom_icon_shape_create">Maak aangepaste pictogramvorm</string>
+    <string name="custom_icon_shape_edit">Bewerk aangepaste pictogramvorm</string>
+    <string name="icon_shape_corner">Hoek Vorm</string>
+    <string name="icon_shape_corner_round">Rond</string>
+    <string name="icon_shape_corner_squircle">Glad</string>
+    <string name="icon_shape_corner_cut">Knip</string>
+    <string name="icon_shape_top_left">Links boven</string>
+    <string name="icon_shape_top_right">Rechts boven</string>
+    <string name="icon_shape_bottom_left">Links onder</string>
+    <string name="icon_shape_bottom_right">Rechts onder</string>
     <string name="create">Aanmaken</string>
-    <string name="clipboard">Clipboard</string>
-    <string name="export_to_clipboard">Export to Clipboard</string>
-    <string name="import_from_clipboard">Import from Clipboard</string>
-    <string name="icon_shape_clipboard_import_error">Clipboard does not contain a valid icon shape</string>
+    <string name="clipboard">Klembord</string>
+    <string name="export_to_clipboard">Exporteren naar Klembord</string>
+    <string name="import_from_clipboard">Importeren van Klembord</string>
+    <string name="icon_shape_clipboard_import_error">Klembord bevat geen geldige pictogramvorm</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Icoon pakket</string>
+    <string name="themed_icon_pack">Bron van gethematiseerde pictogram</string>
     <string name="system_icons">Systeem iconen</string>
     <string name="themed_icon_title">Thema Iconen</string>
     <string name="themed_icons_off_label">Uitgeschakeld</string>
@@ -116,13 +117,13 @@
     <string name="icon_shape_system">Systeem</string>
     <string name="icon_shape_circle">Cirkel</string>
     <string name="icon_shape_cylinder">Cilinder</string>
-    <string name="icon_shape_diamond">Diamond</string>
+    <string name="icon_shape_diamond">Diamant</string>
     <string name="icon_shape_egg">Ei</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Achthoek</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Gerond Vierkant</string>
-    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_sharp_square">Scherpe Vierkant</string>
     <string name="icon_shape_square">Vierkant</string>
     <string name="icon_shape_squircle">Vierkantcirkel</string>
     <string name="icon_shape_teardrop">Teardrop</string>
@@ -143,7 +144,7 @@
     <string name="reset_font">Reset</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Dynamisch</string>
-    <string name="swatches">Swatches</string>
+    <string name="swatches">Stapels</string>
     <string name="presets">Voorkeursinstellingen</string>
     <string name="custom">Gepersonaliseerd</string>
     <string name="rgb">RGB</string>
@@ -215,9 +216,9 @@
     <string name="smartspace_date_and_time">Datum &amp; Tijd</string>
     <string name="smartspace_date">Datum</string>
     <string name="smartspace_time">Tijd</string>
-    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_format">Tijdsformaat</string>
     <string name="smartspace_time_follow_system">Volg systeem</string>
-    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
+    <string name="smartspace_time_12_hour_format">12-uurs indeling</string>
     <string name="smartspace_time_24_hour_format">24-uurs indeling</string>
     <string name="smartspace_weather">Weer</string>
     <string name="smartspace_battery_status">Batterij status</string>
@@ -265,6 +266,7 @@
     <string name="pref_search_auto_show_keyboard">Toetsenbord Automatisch Weergeven</string>
     <string name="fuzzy_search_title">Fuzzy zoeken</string>
     <string name="fuzzy_search_desc">Geschatte overeenkomst voor app zoekopdrachten.</string>
+    <string name="max_search_result_count_title">Max aantal zoekresultaten</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">App lade kolommen</string>
     <string name="row_height_label">Rij hoogte</string>

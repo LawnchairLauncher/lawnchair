@@ -104,6 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Paquet d\'icones</string>
+    <string name="themed_icon_pack">Font d\'Icona tematitzada</string>
     <string name="system_icons">Icones del Sistema</string>
     <string name="themed_icon_title">Icones tematitzades</string>
     <string name="themed_icons_off_label">Desactivat</string>
@@ -236,10 +237,10 @@
     <string name="smartspace_mode_google_search">Busqueda de Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="hotseat_mode_label">Search Bar Widget</string>
-    <string name="hotseat_mode_disabled">Disabled</string>
+    <string name="hotseat_mode_label">Widget de Barra de buscar</string>
+    <string name="hotseat_mode_disabled">Desactivat</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
-    <string name="hotseat_mode_google_search">Google Search Bar</string>
+    <string name="hotseat_mode_google_search">Barra de cerca de Google</string>
     <string name="search_bar_label">Barra de cerca</string>
     <string name="corner_radius_label">Radi de cantonada</string>
     <string name="apply_accent_color_label">Aplica el color d\'èmfasi</string>
@@ -265,6 +266,7 @@
     <string name="pref_search_auto_show_keyboard">Mostrar teclat automàticament</string>
     <string name="fuzzy_search_title">Cerca aproximada</string>
     <string name="fuzzy_search_desc">Aparellament aproximat per a cerques d\'aplicacions.</string>
+    <string name="max_search_result_count_title">Màxim nombre de resultats a la cerca</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Columnes del calaix d\'aplicacions</string>
     <string name="row_height_label">Alçada de fila</string>

@@ -104,6 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Paquete de iconos</string>
+    <string name="themed_icon_pack">Fuente de iconos temáticos</string>
     <string name="system_icons">Iconos del sistema</string>
     <string name="themed_icon_title">Iconos Temáticos</string>
     <string name="themed_icons_off_label">Apagado</string>
@@ -265,6 +266,7 @@
     <string name="pref_search_auto_show_keyboard">Mostrar teclado automáticamente</string>
     <string name="fuzzy_search_title">Búsqueda Aproximada</string>
     <string name="fuzzy_search_desc">Coincidencia aproximada para búsqueda de aplicaciones.</string>
+    <string name="max_search_result_count_title">Número máximo de resultados de la búsqueda</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Columnas de Cajón de Aplicaciones</string>
     <string name="row_height_label">Altura de Fila</string>

@@ -104,6 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">아이콘 팩</string>
+    <string name="themed_icon_pack">Themed Icon Source</string>
     <string name="system_icons">시스템 아이콘</string>
     <string name="themed_icon_title">테마가 적용된 아이콘</string>
     <string name="themed_icons_off_label">사용 않함</string>
@@ -265,6 +266,7 @@
     <string name="pref_search_auto_show_keyboard">자동으로 키보드 표시</string>
     <string name="fuzzy_search_title">유사 검색어 검색</string>
     <string name="fuzzy_search_desc">앱을 검색할 때 검색어와 유사한 앱을 찾아줍니다.</string>
+    <string name="max_search_result_count_title">최대 검색 결과 수</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">앱 서랍 아이콘 가로 배치 수</string>
     <string name="row_height_label">가로 행 높이</string>

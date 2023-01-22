@@ -104,6 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Sada ikon</string>
+    <string name="themed_icon_pack">Zdroj tematických ikon</string>
     <string name="system_icons">Systémové Ikony</string>
     <string name="themed_icon_title">Ikony s motivy</string>
     <string name="themed_icons_off_label">Vyp.</string>
@@ -265,6 +266,7 @@
     <string name="pref_search_auto_show_keyboard">Automaticky zobrazit klávesnici</string>
     <string name="fuzzy_search_title">Fuzzy hledání</string>
     <string name="fuzzy_search_desc">Přibližná shoda při vyhledávání aplikací.</string>
+    <string name="max_search_result_count_title">Maximální počet výsledků vyhledávání</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Sloupce seznamu aplikací</string>
     <string name="row_height_label">Výška řádku</string>
