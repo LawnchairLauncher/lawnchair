@@ -17,11 +17,11 @@ sealed interface RestoreBackupUiState {
         override val isLoading: Boolean = false
     }
 
-    data object Loading : RestoreBackupUiState {
+    object Loading : RestoreBackupUiState {
         override val isLoading: Boolean = true
     }
 
-    data object Error : RestoreBackupUiState {
+    object Error : RestoreBackupUiState {
         override val isLoading: Boolean = true
     }
 }

@@ -205,7 +205,7 @@ sealed class IconCornerShape {
         abstract val endX: Float
         abstract val endY: Float
 
-        data object TopLeft : Position() {
+        object TopLeft : Position() {
 
             override val startX = 0f
             override val startY = 1f
@@ -215,7 +215,7 @@ sealed class IconCornerShape {
             override val endY = 0f
         }
 
-        data object TopRight : Position() {
+        object TopRight : Position() {
 
             override val startX = 0f
             override val startY = 0f
@@ -225,7 +225,7 @@ sealed class IconCornerShape {
             override val endY = 1f
         }
 
-        data object BottomRight : Position() {
+        object BottomRight : Position() {
 
             override val startX = 1f
             override val startY = 0f
@@ -235,7 +235,7 @@ sealed class IconCornerShape {
             override val endY = 1f
         }
 
-        data object BottomLeft : Position() {
+        object BottomLeft : Position() {
 
             override val startX = 1f
             override val startY = 1f
