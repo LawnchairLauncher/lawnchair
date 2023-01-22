@@ -79,4 +79,16 @@
     <!-- Recents overview -->
     <color name="recents_filter_icon">#333333</color>
 
+    <!-- Lottie light theme colors. -->
+    <color name="lottie_blue400">#669df6</color>
+    <color name="lottie_blue600">#1a73e8</color>
+    <color name="lottie_green400">#5bb974</color>
+    <color name="lottie_green600">#1e8e3e</color>
+    <color name="lottie_grey200">#e8eaed</color>
+    <color name="lottie_grey600">#80868b</color>
+    <color name="lottie_grey700">#5f6368</color>
+    <color name="lottie_red600">#d93025</color>
+    <color name="lottie_yellow400">#fcc934</color>
+    <color name="lottie_yellow600">#f9ab00</color>
+
 </resources>
