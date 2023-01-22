@@ -23,55 +23,35 @@ import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
 /**
- * Helper class to extend to get access to all controllers.
- * Gotta be careful of your relationship with this class though, it can be quite... controlling.
+ * Helper class to extend to get access to all controllers. Gotta be careful of your relationship
+ * with this class though, it can be quite... controlling.
  */
 abstract class TaskbarBaseTestCase {
 
-    @Mock
-    lateinit var taskbarActivityContext: TaskbarActivityContext
-    @Mock
-    lateinit var taskbarDragController: TaskbarDragController
-    @Mock
-    lateinit var navButtonController: TaskbarNavButtonController
-    @Mock
-    lateinit var navbarButtonsViewController: NavbarButtonsViewController
-    @Mock
-    lateinit var rotationButtonController: RotationButtonController
-    @Mock
-    lateinit var taskbarDragLayerController: TaskbarDragLayerController
-    @Mock
-    lateinit var taskbarScrimViewController: TaskbarScrimViewController
-    @Mock
-    lateinit var taskbarViewController: TaskbarViewController
-    @Mock
-    lateinit var taskbarUnfoldAnimationController: TaskbarUnfoldAnimationController
-    @Mock
-    lateinit var taskbarKeyguardController: TaskbarKeyguardController
-    @Mock
-    lateinit var stashedHandleViewController: StashedHandleViewController
-    @Mock
-    lateinit var taskbarStashController: TaskbarStashController
-    @Mock
-    lateinit var taskbarEduController: TaskbarEduController
-    @Mock
-    lateinit var taskbarAutohideSuspendController: TaskbarAutohideSuspendController
-    @Mock
-    lateinit var taskbarPopupController: TaskbarPopupController
+    @Mock lateinit var taskbarActivityContext: TaskbarActivityContext
+    @Mock lateinit var taskbarDragController: TaskbarDragController
+    @Mock lateinit var navButtonController: TaskbarNavButtonController
+    @Mock lateinit var navbarButtonsViewController: NavbarButtonsViewController
+    @Mock lateinit var rotationButtonController: RotationButtonController
+    @Mock lateinit var taskbarDragLayerController: TaskbarDragLayerController
+    @Mock lateinit var taskbarScrimViewController: TaskbarScrimViewController
+    @Mock lateinit var taskbarViewController: TaskbarViewController
+    @Mock lateinit var taskbarUnfoldAnimationController: TaskbarUnfoldAnimationController
+    @Mock lateinit var taskbarKeyguardController: TaskbarKeyguardController
+    @Mock lateinit var stashedHandleViewController: StashedHandleViewController
+    @Mock lateinit var taskbarStashController: TaskbarStashController
+    @Mock lateinit var taskbarEduController: TaskbarEduController
+    @Mock lateinit var taskbarAutohideSuspendController: TaskbarAutohideSuspendController
+    @Mock lateinit var taskbarPopupController: TaskbarPopupController
     @Mock
     lateinit var taskbarForceVisibleImmersiveController: TaskbarForceVisibleImmersiveController
-    @Mock
-    lateinit var taskbarAllAppsController: TaskbarAllAppsController
-    @Mock
-    lateinit var taskbarInsetsController: TaskbarInsetsController
-    @Mock
-    lateinit var voiceInteractionWindowController: VoiceInteractionWindowController
-    @Mock
-    lateinit var taskbarRecentAppsController: TaskbarRecentAppsController
-    @Mock
-    lateinit var taskbarTranslationController: TaskbarTranslationController
-    @Mock
-    lateinit var taskbarOverlayController: TaskbarOverlayController
+    @Mock lateinit var taskbarAllAppsController: TaskbarAllAppsController
+    @Mock lateinit var taskbarInsetsController: TaskbarInsetsController
+    @Mock lateinit var voiceInteractionWindowController: VoiceInteractionWindowController
+    @Mock lateinit var taskbarRecentAppsController: TaskbarRecentAppsController
+    @Mock lateinit var taskbarTranslationController: TaskbarTranslationController
+    @Mock lateinit var taskbarOverlayController: TaskbarOverlayController
+    @Mock lateinit var taskbarEduTooltipController: TaskbarEduTooltipController
 
     lateinit var mTaskbarControllers: TaskbarControllers
 
@@ -85,16 +65,31 @@ abstract class TaskbarBaseTestCase {
          * includes that method to allow mocking it.
          */
         MockitoAnnotations.initMocks(this)
-        mTaskbarControllers = TaskbarControllers(
-                taskbarActivityContext, taskbarDragController, navButtonController,
-                navbarButtonsViewController, rotationButtonController, taskbarDragLayerController,
-                taskbarViewController, taskbarScrimViewController, taskbarUnfoldAnimationController,
-                taskbarKeyguardController, stashedHandleViewController, taskbarStashController,
-                taskbarEduController, taskbarAutohideSuspendController, taskbarPopupController,
-                taskbarForceVisibleImmersiveController, taskbarOverlayController,
-                taskbarAllAppsController, taskbarInsetsController,
-                voiceInteractionWindowController, taskbarTranslationController,
-                taskbarRecentAppsController
-        )
+        mTaskbarControllers =
+            TaskbarControllers(
+                taskbarActivityContext,
+                taskbarDragController,
+                navButtonController,
+                navbarButtonsViewController,
+                rotationButtonController,
+                taskbarDragLayerController,
+                taskbarViewController,
+                taskbarScrimViewController,
+                taskbarUnfoldAnimationController,
+                taskbarKeyguardController,
+                stashedHandleViewController,
+                taskbarStashController,
+                taskbarEduController,
+                taskbarAutohideSuspendController,
+                taskbarPopupController,
+                taskbarForceVisibleImmersiveController,
+                taskbarOverlayController,
+                taskbarAllAppsController,
+                taskbarInsetsController,
+                voiceInteractionWindowController,
+                taskbarTranslationController,
+                taskbarRecentAppsController,
+                taskbarEduTooltipController,
+            )
     }
 }
