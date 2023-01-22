@@ -39,9 +39,7 @@
     <string name="dock_icons">Dock Icons</string>
     <string name="max_folder_columns">Max. Folder Columns</string>
     <string name="max_folder_rows">Max. Folder Rows</string>
-    <string name="home_screen_columns">Home Screen Columns</string>
     <string name="grid">Grid</string>
-    <string name="home_screen_rows">Home Screen Rows</string>
     <string name="icons">Icons</string>
     <string name="icon_size">Icon Size</string>
     <string name="label_size">Label Size</string>
