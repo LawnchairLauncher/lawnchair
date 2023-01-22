@@ -73,7 +73,6 @@
         <item quantity="one">%1$d App</item>
         <item quantity="other">%1$d Apps</item>
     </plurals>
-    <string name="hotseat_qsb_label">Show Search Bar</string>
     <string name="dt2s_admin_hint_title">Admin Permissions Required</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">Double-Tap to Sleep will be turned off.</string>

@@ -72,7 +72,6 @@
     <plurals name="apps_count">
         <item quantity="other">%1$d Aplikasi</item>
     </plurals>
-    <string name="hotseat_qsb_label">Tampilkan Bilah Pencarian</string>
     <string name="dt2s_admin_hint_title">Izin Admin Dibutuhkan</string>
     <string name="dt2s_admin_hint">Untuk menggunakan Ketuk Dua Kali untuk Tidur, atur Lawnchair sebagai aplikasi admin perangkat. Ketuk \"Buka Pengaturan,\" lalu ketuk \"Aktifkan aplikasi admin perangkat ini.\"</string>
     <string name="dt2s_admin_warning">Ketuk Dua Kali untuk Tidur akan dimatikan.</string>
