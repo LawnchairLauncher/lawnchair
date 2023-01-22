@@ -152,7 +152,6 @@
     <string name="show_app_search_bar">Tampilkan Bilah Pencarian</string>
     <string name="lawnchair_bug_report">Laporan Bug Lawnchair</string>
     <string name="crash_report_notif_title">%1$s berhenti</string>
-    <string name="action_upload">Unggah ke Dogbin</string>
     <string name="action_copy_link">Salin Tautan</string>
     <string name="action_copy">Salin</string>
     <string name="copied_toast">Disalin ke papan klip.</string>
