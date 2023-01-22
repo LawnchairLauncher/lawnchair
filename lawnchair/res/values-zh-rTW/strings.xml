@@ -104,6 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">圖示套件</string>
+    <string name="themed_icon_pack">圖示主題色來源</string>
     <string name="system_icons">系統圖示</string>
     <string name="themed_icon_title">圖示套用主題色</string>
     <string name="themed_icons_off_label">關閉</string>
@@ -265,6 +266,7 @@
     <string name="pref_search_auto_show_keyboard">自動顯示鍵盤</string>
     <string name="fuzzy_search_title">模糊搜尋</string>
     <string name="fuzzy_search_desc">找尋名稱相似的應用程式</string>
+    <string name="max_search_result_count_title">搜尋結果數量上限</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">所有應用程式列數</string>
     <string name="row_height_label">行高</string>

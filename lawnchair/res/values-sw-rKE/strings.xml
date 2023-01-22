@@ -104,6 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Kifurushi cha ikoni</string>
+    <string name="themed_icon_pack">Themed Icon Source</string>
     <string name="system_icons">Icons za mfumo</string>
     <string name="themed_icon_title">Aikoni zenye Mandhari</string>
     <string name="themed_icons_off_label">Imezimwa</string>
@@ -265,6 +266,7 @@
     <string name="pref_search_auto_show_keyboard">Onyesha Kibodi kiotomatiki</string>
     <string name="fuzzy_search_title">Utafutaji wa kifuzzy</string>
     <string name="fuzzy_search_desc">Kadirio la kulinganisha kwa utafutaji wa programu.</string>
+    <string name="max_search_result_count_title">Idadi ya juu ya Matokeo ya Utafutaji</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Safu wima za Droo ya Programu</string>
     <string name="row_height_label">Urefu wa safu</string>

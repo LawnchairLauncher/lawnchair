@@ -104,6 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Paket ikona</string>
+    <string name="themed_icon_pack">Themed Icon Source</string>
     <string name="system_icons">Sistemske ikone</string>
     <string name="themed_icon_title">Tematske ikone</string>
     <string name="themed_icons_off_label">Isključeno</string>
@@ -265,6 +266,7 @@
     <string name="pref_search_auto_show_keyboard">Automatski prikazuj tastaturu</string>
     <string name="fuzzy_search_title">Približna pretraga</string>
     <string name="fuzzy_search_desc">Približni rezultati pretrage na osnovu upita.</string>
+    <string name="max_search_result_count_title">Max Search Result Count</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Broj kolona na listi aplikacija</string>
     <string name="row_height_label">Visina reda</string>

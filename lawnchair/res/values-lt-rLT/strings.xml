@@ -104,6 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Piktogramų Paketas</string>
+    <string name="themed_icon_pack">Themed Icon Source</string>
     <string name="system_icons">Sistemos Piktogramos</string>
     <string name="themed_icon_title">Teminės Piktogramos</string>
     <string name="themed_icons_off_label">Išjungtos</string>
@@ -236,10 +237,10 @@
     <string name="smartspace_mode_google_search">Google Paieška</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="hotseat_mode_label">Search Bar Widget</string>
-    <string name="hotseat_mode_disabled">Disabled</string>
+    <string name="hotseat_mode_label">Paieškos Juostos Valdiklis</string>
+    <string name="hotseat_mode_disabled">Išjungta</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
-    <string name="hotseat_mode_google_search">Google Search Bar</string>
+    <string name="hotseat_mode_google_search">Google Paieškos Juosta</string>
     <string name="search_bar_label">Paieškos Juosta</string>
     <string name="corner_radius_label">Kampų Spindulys</string>
     <string name="apply_accent_color_label">Naudoti akcento spalva</string>
@@ -265,6 +266,7 @@
     <string name="pref_search_auto_show_keyboard">Automatiškai Rodyti Klaviatūrą</string>
     <string name="fuzzy_search_title">Apytikslė Paieška</string>
     <string name="fuzzy_search_desc">Apytikslis atitikimas programėlių paieškoms.</string>
+    <string name="max_search_result_count_title">Maksimalus Paieškos Rezultatų Skaičius</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Programų Lentynos Stulpeliai</string>
     <string name="row_height_label">Eilučių Aukštis</string>

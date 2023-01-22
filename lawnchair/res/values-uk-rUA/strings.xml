@@ -104,6 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Набір Значків</string>
+    <string name="themed_icon_pack">Themed Icon Source</string>
     <string name="system_icons">Системні іконки</string>
     <string name="themed_icon_title">Тематичні іконки</string>
     <string name="themed_icons_off_label">Вимкнено</string>
@@ -265,6 +266,7 @@
     <string name="pref_search_auto_show_keyboard">Автоматично показувати клавіатуру</string>
     <string name="fuzzy_search_title">Приблизний Пошук</string>
     <string name="fuzzy_search_desc">Приблизна відповідність для пошуку додатків.</string>
+    <string name="max_search_result_count_title">Max Search Result Count</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Кількість стовпців меню додатків</string>
     <string name="row_height_label">Висота рядка</string>

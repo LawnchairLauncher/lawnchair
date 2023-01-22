@@ -104,6 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Gói biểu tượng</string>
+    <string name="themed_icon_pack">Themed Icon Source</string>
     <string name="system_icons">Biểu tượng hệ thống</string>
     <string name="themed_icon_title">Biểu tượng theo chủ đề</string>
     <string name="themed_icons_off_label">Tắt</string>
@@ -265,6 +266,7 @@
     <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
     <string name="fuzzy_search_title">Tìm kiếm Fuzzy</string>
     <string name="fuzzy_search_desc">Cho kết quả tìm kiếm ứng dụng gần đúng.</string>
+    <string name="max_search_result_count_title">Max Search Result Count</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Số cột của trang ứng dụng</string>
     <string name="row_height_label">Chiều cao hàng</string>

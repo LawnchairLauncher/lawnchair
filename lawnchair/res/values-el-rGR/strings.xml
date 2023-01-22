@@ -104,6 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Πακέτο Εικονιδίων</string>
+    <string name="themed_icon_pack">Πηγή Θεματοποιημένων Εικονιδίων</string>
     <string name="system_icons">Εικονίδια Συστήματος</string>
     <string name="themed_icon_title">Θεματοποιημένα Εικονίδια</string>
     <string name="themed_icons_off_label">Ανενεργό</string>
@@ -265,6 +266,7 @@
     <string name="pref_search_auto_show_keyboard">Αυτόματη Εμφάνιση Πληκτρολογίου</string>
     <string name="fuzzy_search_title">Ασαφής Αναζήτηση</string>
     <string name="fuzzy_search_desc">Κατά προσέγγιση αντιστοίχιση για αναζητήσεις εφαρμογών.</string>
+    <string name="max_search_result_count_title">Μέγιστο Πλήθος Αποτελεσμάτων Αναζήτησης</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Στήλες Συρταριού Εφαρμογών</string>
     <string name="row_height_label">Ύψος Γραμμής</string>
