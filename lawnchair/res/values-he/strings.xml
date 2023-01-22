@@ -141,7 +141,6 @@
     <string name="icon_shape_rounded_square">Rounded Square</string>
     <string name="icon_shape_squircle">Squircle</string>
     <string name="customize_button_text">התאמה אישית</string>
-    <string name="app_title_label">כותרת</string>
     <string name="hide_from_drawer">Hide from App Drawer</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Rounded Corners</string>

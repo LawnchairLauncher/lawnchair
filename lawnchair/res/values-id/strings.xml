@@ -138,7 +138,6 @@
     <string name="icon_shape_rounded_square">Persegi Membulat</string>
     <string name="icon_shape_squircle">Squircle</string>
     <string name="customize_button_text">Kustomisasi</string>
-    <string name="app_title_label">Judul</string>
     <string name="hide_from_drawer">Sembunyikan dari Layar Aplikasi</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Sudut Lengkung</string>
