@@ -21,6 +21,7 @@ import com.android.launcher3.views.OptionsPopupView.OptionItem
 
 open class SmartSpaceHostView(context: Context) : QsbWidgetHostView(context), OnLongClickListener, TouchCompleteListener {
     private val mLauncher: Launcher by lazy { Launcher.getLauncher(context) }
+    @Suppress("LeakingThis")
     private val mLongPressHelper: CheckLongPressHelper = CheckLongPressHelper(this, this)
 
     override fun getErrorView(): View {

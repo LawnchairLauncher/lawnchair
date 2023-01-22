@@ -127,6 +127,7 @@ sealed class BasePreferenceManager(private val context: Context) : SharedPrefere
         private var currentValue: T? = null
 
         init {
+            @Suppress("LeakingThis")
             prefsMap[key] = this
         }
 
@@ -195,6 +196,7 @@ sealed class BasePreferenceManager(private val context: Context) : SharedPrefere
         private var currentValue = 0
 
         init {
+            @Suppress("LeakingThis")
             prefsMap[key] = this
         }
 
@@ -343,6 +345,7 @@ sealed class BasePreferenceManager(private val context: Context) : SharedPrefere
             obj.keys().forEach {
                 valueMap[unflattenKey(it)] = unflattenValue(obj.getString(it))
             }
+            @Suppress("LeakingThis")
             prefsMap[key] = this
         }
 

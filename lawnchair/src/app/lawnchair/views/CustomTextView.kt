@@ -10,6 +10,7 @@ open class CustomTextView @JvmOverloads constructor(
 ) : TextView(context, attrs) {
 
     init {
+        @Suppress("LeakingThis")
         FontManager.INSTANCE.get(context).overrideFont(this, attrs)
     }
 }
