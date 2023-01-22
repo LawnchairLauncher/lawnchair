@@ -58,7 +58,6 @@
     <string name="all_apps_no_search_results">No apps found matching “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
     <string name="background_opacity">שקיפות הרקע</string>
     <string name="background_lightness_label">בהירות הרקע</string>
-    <string name="adaptive_icons">Adaptive Icons</string>
     <string name="adaptive_icon_background_description">Use 100% background lightness for white.</string>
     <string name="auto_adaptive_icons_label">Auto Adaptive Icons</string>
     <string name="auto_adaptive_icons_description">For all non-Adaptive icons.</string>

@@ -58,7 +58,6 @@
     <string name="all_apps_no_search_results">Tidak ada aplikasi yang cocok dengan “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
     <string name="background_opacity">Kegelapan Latar Belakang</string>
     <string name="background_lightness_label">Kecerahan Latar Belakang</string>
-    <string name="adaptive_icons">Ikon Adaptif</string>
     <string name="adaptive_icon_background_description">Gunakan 100% kecerahan latar untuk warna putih.</string>
     <string name="auto_adaptive_icons_label">Ikon Adaptif Otomatis</string>
     <string name="auto_adaptive_icons_description">Untuk semua Ikon Non-Adaptif.</string>
