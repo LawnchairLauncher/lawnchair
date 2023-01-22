@@ -19,6 +19,7 @@ import static android.view.InsetsState.ITYPE_EXTRA_NAVIGATION_BAR;
 
 import static com.android.launcher3.QuickstepTransitionManager.TRANSIENT_TASKBAR_TRANSITION_DURATION;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_EDU_TOOLTIP;
+import static com.android.launcher3.statemanager.BaseState.FLAG_NON_INTERACTIVE;
 import static com.android.launcher3.taskbar.TaskbarEduTooltipControllerKt.TOOLTIP_STEP_FEATURES;
 import static com.android.launcher3.taskbar.TaskbarLauncherStateController.FLAG_RESUMED;
 import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
@@ -181,10 +182,12 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
             }
         }
 
+        // Launcher is resumed during the swipe-to-overview gesture under shell-transitions, so
+        // avoid updating taskbar state in that situation (when it's non-interactive -- or
+        // "background") to avoid premature animations.
         if (ENABLE_SHELL_TRANSITIONS && isResumed
+                && mLauncher.getStateManager().getState().hasFlag(FLAG_NON_INTERACTIVE)
                 && !mLauncher.getStateManager().getState().isTaskbarAlignedWithHotseat(mLauncher)) {
-            // Launcher is resumed, but in a state where taskbar is still independent, so
-            // ignore the state change.
             return null;
         }
 
