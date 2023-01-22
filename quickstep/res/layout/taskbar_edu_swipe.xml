@@ -22,12 +22,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/taskbar_edu_stashing"
-        app:layout_constraintEnd_toEndOf="@id/animation"
-        app:layout_constraintStart_toStartOf="@id/animation"
+        app:layout_constraintEnd_toEndOf="@id/swipe_animation"
+        app:layout_constraintStart_toStartOf="@id/swipe_animation"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animation"
+        android:id="@+id/swipe_animation"
         android:layout_width="@dimen/taskbar_edu_swipe_lottie_width"
         android:layout_height="@dimen/taskbar_edu_swipe_lottie_height"
         android:layout_marginTop="@dimen/taskbar_edu_tooltip_vertical_margin"
@@ -38,6 +38,6 @@
         app:layout_constraintTop_toBottomOf="@id/title"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        app:lottie_rawRes="@raw/taskbar_edu_stashing_transient" />
+        app:lottie_rawRes="@raw/taskbar_edu_stashing" />
 
 </merge>
