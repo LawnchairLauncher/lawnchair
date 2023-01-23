@@ -15,10 +15,14 @@
  */
 package com.android.quickstep;
 
+import static android.app.WindowConfiguration.WINDOWING_MODE_FREEFORM;
 import static android.view.RemoteAnimationTarget.MODE_CLOSING;
 
+import android.app.WindowConfiguration;
 import android.graphics.Rect;
 import android.view.RemoteAnimationTarget;
+
+import com.android.quickstep.views.DesktopTaskView;
 
 /**
  * Extension of {@link RemoteAnimationTargets} with additional information about swipe
@@ -39,5 +43,23 @@ public class RecentsAnimationTargets extends RemoteAnimationTargets {
 
     public boolean hasTargets() {
         return unfilteredApps.length != 0;
+    }
+
+    /**
+     * Check if target apps contain desktop tasks which have windowing mode set to {@link
+     * WindowConfiguration#WINDOWING_MODE_FREEFORM}
+     *
+     * @return {@code true} if at least one target app is a desktop task
+     */
+    public boolean hasDesktopTasks() {
+        if (!DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
+            return false;
+        }
+        for (RemoteAnimationTarget target : apps) {
+            if (target.windowConfiguration.getWindowingMode() == WINDOWING_MODE_FREEFORM) {
+                return true;
+            }
+        }
+        return false;
     }
 }
