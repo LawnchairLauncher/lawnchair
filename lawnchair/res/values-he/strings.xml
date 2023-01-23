@@ -58,13 +58,10 @@
     <string name="all_apps_no_search_results">No apps found matching “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
     <string name="background_opacity">שקיפות הרקע</string>
     <string name="background_lightness_label">בהירות הרקע</string>
-    <string name="adaptive_icons">Adaptive Icons</string>
     <string name="adaptive_icon_background_description">Use 100% background lightness for white.</string>
     <string name="auto_adaptive_icons_label">Auto Adaptive Icons</string>
     <string name="auto_adaptive_icons_description">For all non-Adaptive icons.</string>
     <string name="support_and_pr">Support &amp; PR</string>
-    <string name="workspace_dt2s">הקשה כפולה לכיבוי המסך</string>
-    <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">Design &amp; Development</string>
     <string name="translate">תרגום</string>
     <string name="product">מוצר</string>
@@ -76,7 +73,6 @@
         <item quantity="many">%1$d Apps</item>
         <item quantity="other">%1$d Apps</item>
     </plurals>
-    <string name="hotseat_qsb_label">הצגת סרגל חיפוש</string>
     <string name="dt2s_admin_hint_title">Admin permission required</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
@@ -93,13 +89,11 @@
     <string name="theme_system_default">מערכת</string>
     <string name="theme_follow_wallpaper">התאמה לרקע</string>
     <string name="quickstep_label">אחרונים</string>
-    <string name="clear_all_as_action_label">כפתור ניקוי הכל בתחתית</string>
     <string name="window_corner_radius_label">רדיוס פינות מסך</string>
     <string name="override_window_corner_radius_label">רדיוס פינות מסך מותאם</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">סמלי המערכת</string>
     <string name="accent_color">צבע הדגשה</string>
-    <string name="done">סיום</string>
     <string name="loading">כעת בטעינה…</string>
     <string name="system">מערכת</string>
     <string name="wallpaper">רקע</string>
@@ -142,7 +136,6 @@
     <string name="icon_shape_rounded_square">Rounded Square</string>
     <string name="icon_shape_squircle">Squircle</string>
     <string name="customize_button_text">התאמה אישית</string>
-    <string name="app_title_label">כותרת</string>
     <string name="hide_from_drawer">Hide from App Drawer</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Rounded Corners</string>
@@ -155,7 +148,6 @@
     <string name="show_app_search_bar">הצגת סרגל חיפוש</string>
     <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
     <string name="crash_report_notif_title">%1$s Crashed</string>
-    <string name="action_upload">Upload to Dogbin</string>
     <string name="action_copy_link">העתקת קישור</string>
     <string name="action_copy">העתקה</string>
     <string name="copied_toast">הועתק ללוח הכתיבה.</string>

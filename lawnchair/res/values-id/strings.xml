@@ -58,13 +58,10 @@
     <string name="all_apps_no_search_results">Tidak ada aplikasi yang cocok dengan “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
     <string name="background_opacity">Kegelapan Latar Belakang</string>
     <string name="background_lightness_label">Kecerahan Latar Belakang</string>
-    <string name="adaptive_icons">Ikon Adaptif</string>
     <string name="adaptive_icon_background_description">Gunakan 100% kecerahan latar untuk warna putih.</string>
     <string name="auto_adaptive_icons_label">Ikon Adaptif Otomatis</string>
     <string name="auto_adaptive_icons_description">Untuk semua Ikon Non-Adaptif.</string>
     <string name="support_and_pr">Bantuan &amp; PR</string>
-    <string name="workspace_dt2s">Ketuk Ganda untuk Tidur</string>
-    <string name="smart_space_enable">Tampilkan Widget At a Glance</string>
     <string name="design_and_development">Desain &amp; Pengembangan</string>
     <string name="translate">Terjemah</string>
     <string name="product">Produk</string>
@@ -73,7 +70,6 @@
     <plurals name="apps_count">
         <item quantity="other">%1$d Aplikasi</item>
     </plurals>
-    <string name="hotseat_qsb_label">Tampilkan Bilah Pencarian</string>
     <string name="dt2s_admin_hint_title">Izin Admin Dibutuhkan</string>
     <string name="dt2s_admin_hint">Untuk menggunakan Ketuk Dua Kali untuk Tidur, atur Lawnchair sebagai aplikasi admin perangkat. Ketuk \"Buka Pengaturan,\" lalu ketuk \"Aktifkan aplikasi admin perangkat ini.\"</string>
     <string name="dt2s_admin_warning">Ketuk Dua Kali untuk Tidur akan dimatikan.</string>
@@ -90,13 +86,11 @@
     <string name="theme_system_default">Sistem</string>
     <string name="theme_follow_wallpaper">Samakan dengan wallpaper</string>
     <string name="quickstep_label">Terbaru</string>
-    <string name="clear_all_as_action_label">Tombol Hapus Semua di Bawah</string>
     <string name="window_corner_radius_label">Tampilan Radius Sudut</string>
     <string name="override_window_corner_radius_label">Radius Sudut Layar Tersesuai</string>
     <string name="window_corner_radius_description">Saat Anda menggesek ke atas untuk membuka Aplikasi Terkini, aplikasi saat ini mengikuti jari Anda, menyusut menjadi kartu. Gunakan penggeser ini untuk menyesuaikan radius sudut kartu saat hampir layar penuh sehingga cocok.</string>
     <string name="system_icons">Ikon sistem</string>
     <string name="accent_color">Warna Aksen</string>
-    <string name="done">Selesai</string>
     <string name="loading">Memuat…</string>
     <string name="system">Sistem</string>
     <string name="wallpaper">Wallpaper</string>
@@ -139,7 +133,6 @@
     <string name="icon_shape_rounded_square">Persegi Membulat</string>
     <string name="icon_shape_squircle">Squircle</string>
     <string name="customize_button_text">Kustomisasi</string>
-    <string name="app_title_label">Judul</string>
     <string name="hide_from_drawer">Sembunyikan dari Layar Aplikasi</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Sudut Lengkung</string>
@@ -152,7 +145,6 @@
     <string name="show_app_search_bar">Tampilkan Bilah Pencarian</string>
     <string name="lawnchair_bug_report">Laporan Bug Lawnchair</string>
     <string name="crash_report_notif_title">%1$s berhenti</string>
-    <string name="action_upload">Unggah ke Dogbin</string>
     <string name="action_copy_link">Salin Tautan</string>
     <string name="action_copy">Salin</string>
     <string name="copied_toast">Disalin ke papan klip.</string>

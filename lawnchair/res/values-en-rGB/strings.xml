@@ -39,21 +39,16 @@
     <string name="dock_icons">Dock Icons</string>
     <string name="max_folder_columns">Max. Folder Columns</string>
     <string name="max_folder_rows">Max. Folder Rows</string>
-    <string name="home_screen_columns">Home Screen Columns</string>
     <string name="grid">Grid</string>
-    <string name="home_screen_rows">Home Screen Rows</string>
     <string name="icons">Icons</string>
     <string name="icon_size">Icon Size</string>
     <string name="label_size">Label Size</string>
-    <string name="allow_empty_pages_label">Allow Empty Pages</string>
     <string name="notification_dots">Notification Dots</string>
     <string name="smartspace_preferences">Preferences</string>
     <string name="about_label">About</string>
     <string name="news">News</string>
     <string name="support">Support</string>
     <string name="acknowledgements">Acknowledgements</string>
-    <string name="patryk_description">Manages development and creates the UI. Obsessed with Jetpack Compose indefinitely.</string>
-    <string name="kshitij_description">Writes the core logic for Lawnchair features. Proud member of the Spoingus gang.</string>
     <string name="devops">DevOps</string>
     <string name="quickswitch_maintenance">QuickSwitch Maintenance</string>
     <string name="all_apps_search_bar_hint">Search Apps</string>
@@ -64,7 +59,6 @@
     <string name="all_apps_no_search_results">No apps found matching ‘<xliff:g example="Android" id="query">%1$s</xliff:g>’.</string>
     <string name="background_opacity">Background Opacity</string>
     <string name="background_lightness_label">Background Lightness</string>
-    <string name="adaptive_icons">Adaptive Icons</string>
     <string name="adaptive_icon_background_description">Use 100% background lightness for white.</string>
     <string name="auto_adaptive_icons_label">Auto Adaptive Icons</string>
     <string name="auto_adaptive_icons_description">For all non-Adaptive icons.</string>
