@@ -37,7 +37,7 @@
         app:layout_constraintTop_toBottomOf="@id/title"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        app:lottie_rawRes="@raw/taskbar_edu_splitscreen_transient" />
+        app:lottie_rawRes="@raw/taskbar_edu_splitscreen" />
 
     <TextView
         android:id="@+id/splitscreen_text"
@@ -61,7 +61,7 @@
         app:layout_constraintTop_toBottomOf="@id/title"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        app:lottie_rawRes="@raw/taskbar_edu_suggestions_transient" />
+        app:lottie_rawRes="@raw/taskbar_edu_suggestions" />
 
     <TextView
         android:id="@+id/suggestions_text"
