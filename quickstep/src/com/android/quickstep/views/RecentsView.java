@@ -1351,8 +1351,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (!mActivity.getDeviceProfile().isTablet) {
             mActionsView.updateDisabledFlags(OverviewActionsView.DISABLED_SCROLLING, true);
         }
-        InteractionJankMonitorWrapper.begin(/* view= */ this,
-                InteractionJankMonitorWrapper.CUJ_RECENTS_SCROLLING);
+        if (mOverviewStateEnabled) { // only when in overview
+            InteractionJankMonitorWrapper.begin(/* view= */ this,
+                    InteractionJankMonitorWrapper.CUJ_RECENTS_SCROLLING);
+        }
     }
 
     @Override
