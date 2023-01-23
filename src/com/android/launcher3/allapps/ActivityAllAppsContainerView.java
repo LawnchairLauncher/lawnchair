@@ -233,7 +233,9 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         super.setupHeader();
 
         removeCustomRules(mHeader);
-        if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
+        if (!isSearchSupported()) {
+            layoutWithoutSearchContainer(mHeader, false /* includeTabsMargin */);
+        } else if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
             alignParentTop(mHeader, false /* includeTabsMargin */);
         } else {
             layoutBelowSearchContainer(mHeader, false /* includeTabsMargin */);
