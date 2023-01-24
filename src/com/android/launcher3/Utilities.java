@@ -16,9 +16,6 @@
 
 package com.android.launcher3;
 
-import static android.view.InputDevice.SOURCE_TOUCHSCREEN;
-
-import static com.android.launcher3.config.FeatureFlags.ENABLE_TRACKPAD_GESTURE;
 import static com.android.launcher3.icons.BitmapInfo.FLAG_THEMED;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_ICON_BADGED;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
@@ -723,13 +720,6 @@ public final class Utilities {
                 dp.isLandscape ? STAGE_POSITION_BOTTOM_OR_RIGHT : STAGE_POSITION_TOP_OR_LEFT,
                 STAGE_TYPE_MAIN
         ));
-    }
-
-    public static boolean isTrackpadMotionEvent(MotionEvent event) {
-        // TODO: ideally should use event.getClassification(), but currently only the move
-        // events get assigned the correct classification.
-        return ENABLE_TRACKPAD_GESTURE.get()
-                && (event.getSource() & SOURCE_TOUCHSCREEN) != SOURCE_TOUCHSCREEN;
     }
 
     /** Logs the Scale and Translate properties of a matrix. Ignores skew and perspective. */
