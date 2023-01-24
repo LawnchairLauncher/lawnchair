@@ -211,7 +211,7 @@
     <!-- Label for a button that enters split screen selection mode. [CHAR_LIMIT=20] -->
     <string name="action_split">Split</string>
     <!-- Label for toast with instructions for split screen selection mode. [CHAR_LIMIT=50] -->
-    <string name="toast_split_select_app">Tap another app to use splitscreen</string>
+    <string name="toast_split_select_app">Tap another app to use split screen</string>
     <!-- Label for toast when app selected for split isn't supported. [CHAR_LIMIT=50] -->
     <string name="toast_split_app_unsupported">Choose another app to use split screen</string>
     <!-- Message shown when an action is blocked by a policy enforced by the app or the organization managing the device. [CHAR_LIMIT=NONE] -->

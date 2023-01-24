@@ -296,7 +296,8 @@ public interface TaskShortcutFactory {
                 return null;
             }
 
-            return Collections.singletonList(new FreeformSystemShortcut(R.drawable.ic_split_screen,
+            return Collections.singletonList(new FreeformSystemShortcut(
+                    R.drawable.ic_caption_desktop_button_foreground,
                     R.string.recent_task_option_freeform, activity, taskContainer,
                     LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP));
         }
