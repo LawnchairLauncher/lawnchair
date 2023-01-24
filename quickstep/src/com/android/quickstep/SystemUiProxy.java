@@ -986,4 +986,16 @@ public class SystemUiProxy implements ISystemUiProxy {
             }
         }
     }
+
+    /** Call shell to get number of visible freeform tasks */
+    public int getVisibleDesktopTaskCount() {
+        if (mDesktopMode != null) {
+            try {
+                return mDesktopMode.getVisibleTaskCount();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call getVisibleDesktopTaskCount", e);
+            }
+        }
+        return 0;
+    }
 }
