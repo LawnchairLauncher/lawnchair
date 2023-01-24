@@ -23,23 +23,23 @@ import java.util.Map;
  * The grids represent the workspace to be build by TestWorkspaceBuilder, to see what each character
  * in the board mean refer to {@code CellType}
  */
-public class SimpleReorderCase {
+public class MultipleCellLayoutsSimpleReorder {
 
     /** 5x5 Test
      **/
     private static final String START_BOARD_STR_5x5 = ""
-            + "xxxxx\n"
-            + "--mm-\n"
-            + "--mm-\n"
-            + "-----\n"
-            + "-----";
-    private static final Point MOVE_TO_5x5 = new Point(0, 4);
+            + "xxxxx|-----\n"
+            + "--mm-|-----\n"
+            + "--mm-|-----\n"
+            + "-----|-----\n"
+            + "-----|-----";
+    private static final Point MOVE_TO_5x5 = new Point(8, 3);
     private static final String END_BOARD_STR_5x5 = ""
-            + "xxxxx\n"
-            + "-----\n"
-            + "-----\n"
-            + "mm---\n"
-            + "mm---";
+            + "xxxxx|-----\n"
+            + "-----|-----\n"
+            + "-----|-----\n"
+            + "-----|---mm\n"
+            + "-----|---mm";
     private static final ReorderTestCase TEST_CASE_5x5 = new ReorderTestCase(START_BOARD_STR_5x5,
             MOVE_TO_5x5,
             END_BOARD_STR_5x5);
@@ -47,35 +47,36 @@ public class SimpleReorderCase {
     /** 4x4 Test
      **/
     private static final String START_BOARD_STR_4x4 = ""
-            + "xxxx\n"
-            + "--mm\n"
-            + "--mm\n"
-            + "----";
-    private static final Point MOVE_TO_4x4 = new Point(3, 3);
+            + "xxxx|----\n"
+            + "--mm|----\n"
+            + "--mm|----\n"
+            + "----|----";
+    private static final Point MOVE_TO_4x4 = new Point(5, 3);
     private static final String END_BOARD_STR_4x4 = ""
-            + "xxxx\n"
-            + "----\n"
-            + "--mm\n"
-            + "--mm";
+            + "xxxx|----\n"
+            + "----|----\n"
+            + "----|-mm-\n"
+            + "----|-mm-";
     private static final ReorderTestCase TEST_CASE_4x4 = new ReorderTestCase(START_BOARD_STR_4x4,
             MOVE_TO_4x4,
             END_BOARD_STR_4x4);
 
+
     /** 6x5 Test
      **/
     private static final String START_BOARD_STR_6x5 = ""
-            + "xxxxxx\n"
-            + "-mm---\n"
-            + "-mm---\n"
-            + "------\n"
-            + "------";
-    private static final Point MOVE_TO_6x5 = new Point(4, 3);
+            + "xxxxxx|------\n"
+            + "--m---|------\n"
+            + "------|------\n"
+            + "------|------\n"
+            + "------|------";
+    private static final Point MOVE_TO_6x5 = new Point(10, 4);
     private static final String END_BOARD_STR_6x5 = ""
-            + "xxxxxx\n"
-            + "------\n"
-            + "------\n"
-            + "----mm\n"
-            + "----mm";
+            + "xxxxxx|------\n"
+            + "------|------\n"
+            + "------|------\n"
+            + "------|------\n"
+            + "------|----m-";
     private static final ReorderTestCase TEST_CASE_6x5 = new ReorderTestCase(START_BOARD_STR_6x5,
             MOVE_TO_6x5,
             END_BOARD_STR_6x5);
