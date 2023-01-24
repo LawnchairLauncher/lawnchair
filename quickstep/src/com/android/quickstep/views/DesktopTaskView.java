@@ -18,6 +18,7 @@ package com.android.quickstep.views;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
+import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
 
 import android.content.Context;
@@ -35,6 +36,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.RunnableList;
@@ -295,7 +297,7 @@ public class DesktopTaskView extends TaskView {
     @Override
     public RunnableList launchTasks() {
         SystemUiProxy.INSTANCE.get(getContext()).showDesktopApps();
-        getRecentsView().startHome();
+        Launcher.getLauncher(mActivity).getStateManager().goToState(NORMAL, false /* animated */);
         return null;
     }
 
