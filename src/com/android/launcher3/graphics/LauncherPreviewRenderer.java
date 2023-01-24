@@ -68,6 +68,7 @@ import com.android.launcher3.Hotseat;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -137,7 +138,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
                 new ConcurrentLinkedQueue<>();
 
         public PreviewContext(Context base, InvariantDeviceProfile idp) {
-            super(base, UserCache.INSTANCE, InstallSessionHelper.INSTANCE,
+            super(base, UserCache.INSTANCE, InstallSessionHelper.INSTANCE, LauncherPrefs.INSTANCE,
                     LauncherAppState.INSTANCE, InvariantDeviceProfile.INSTANCE,
                     CustomWidgetManager.INSTANCE, PluginManagerWrapper.INSTANCE,
                     WindowManagerProxy.INSTANCE, DisplayController.INSTANCE);
