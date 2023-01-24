@@ -353,6 +353,9 @@ public final class FeatureFlags {
             "SECONDARY_DRAG_N_DROP_TO_PIN", false,
             "Enable dragging and dropping to pin apps within secondary display");
 
+    public static final BooleanFlag ENABLE_ICON_IN_TEXT_HEADER = getDebugFlag(
+            "ENABLE_ICON_IN_TEXT_HEADER", false, "Show icon in textheader");
+
     public static final BooleanFlag SHOW_DOT_PAGINATION = getDebugFlag(
             "SHOW_DOT_PAGINATION", false, "Enable showing dot pagination in workspace");
 
