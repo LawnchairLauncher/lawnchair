@@ -95,9 +95,13 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Informații despre bara de activități"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Panoul cu informații despre bara de activități s-a afișat"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Panoul cu informații despre bara de activități s-a închis"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"Trage în lateral ca să folosești două aplicații deodată"</string>
+    <!-- no translation found for taskbar_edu_splitscreen (5605512479258053350) -->
+    <skip />
     <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Glisează scurt în sus pentru a afișa bara de activități"</string>
-    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"Bara de activități sugerează aplicații în funcție de rutina ta"</string>
+    <!-- no translation found for taskbar_edu_suggestions (8215044496435527982) -->
+    <skip />
+    <!-- no translation found for taskbar_edu_features (2338325667726857642) -->
+    <skip />
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Înainte"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Înapoi"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Închide"</string>

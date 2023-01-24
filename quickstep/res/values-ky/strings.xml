@@ -22,7 +22,7 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Кадап коюу"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Эркин форма режими"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Акыркы колдонмолор жок"</string>
-    <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Колдонмону пайдалануу жөндөөлөрү"</string>
+    <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Колдонмону пайдалануу параметрлери"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Баарын тазалоо"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Акыркы колдонмолор"</string>
     <string name="task_view_closed" msgid="9170038230110856166">"Тапшырма жабылды"</string>
@@ -95,9 +95,13 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Тапшырмалар панели жөнүндө маалымат"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Тапшырмалар тактасынын окутуу панели көрсөтүлдү"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Тапшырмалар тактасынын окутуу панели жабылды"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"2 колдонмону бир убакта пайдалануу үчүн капталга сүйрөңүз"</string>
+    <!-- no translation found for taskbar_edu_splitscreen (5605512479258053350) -->
+    <skip />
     <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Тапшырмалар тактасын көрүү үчүн экранды өйдө серпиңиз"</string>
-    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"Тапшырмалар тактасы колдонмолорду аракеттериңизге жараша сунуштайт"</string>
+    <!-- no translation found for taskbar_edu_suggestions (8215044496435527982) -->
+    <skip />
+    <!-- no translation found for taskbar_edu_features (2338325667726857642) -->
+    <skip />
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Кийинки"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Артка"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Жабуу"</string>
