@@ -408,6 +408,10 @@ public final class FeatureFlags {
             "Enables receiving unfold animation events from sysui instead of calculating "
                     + "them in launcher process using hinge sensor values.");
 
+    public static final BooleanFlag ENABLE_KEYBOARD_QUICK_SWITCH = getDebugFlag(
+            "ENABLE_KEYBOARD_QUICK_SWITCH", false,
+            "Enables keyboard quick switching");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
