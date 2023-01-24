@@ -282,4 +282,12 @@
     <string name="move_drop_target_top_or_left">Move to top&#47;left</string>
     <!-- Label for moving drop target to the bottom or right side of the screen, depending on orientation (from the Taskbar only). -->
     <string name="move_drop_target_bottom_or_right">Move to bottom&#47;right</string>
+
+    <!-- Label for quick switch tile showing how many more apps are available [CHAR LIMIT=NONE] -->
+    <string name="quick_switch_overflow">{count, plural,
+            =1{Show # more app.}
+            other{Show # more apps.}
+        }</string>
+    <!-- Accessibility label for quick switch tiles showing split tasks [CHAR LIMIT=NONE] -->
+    <string name="quick_switch_split_task"><xliff:g id="app_name_1" example="Chrome">%1$s</xliff:g> and <xliff:g id="app_name_2" example="Gmail">%2$s</xliff:g></string>
 </resources>
