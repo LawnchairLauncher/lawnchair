@@ -124,7 +124,7 @@ public class WorkspaceCellCenterRequest implements TestInformationRequest {
          * Set span Height in cells
          */
         public WorkspaceCellCenterRequest.Builder setSpanY(int y) {
-            this.mCellY = y;
+            this.mSpanY = y;
             return this;
         }
 

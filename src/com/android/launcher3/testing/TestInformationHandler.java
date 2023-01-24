@@ -201,6 +201,13 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 });
             }
 
+            case TestProtocol.REQUEST_WORKSPACE_COLUMNS_ROWS: {
+                return getLauncherUIProperty(Bundle::putParcelable, launcher -> new Point(
+                        InvariantDeviceProfile.INSTANCE.get(mContext).numColumns,
+                        InvariantDeviceProfile.INSTANCE.get(mContext).numRows)
+                );
+            }
+
             case TestProtocol.REQUEST_HOTSEAT_CELL_CENTER: {
                 final HotseatCellCenterRequest request = extra.getParcelable(
                         TestProtocol.TEST_INFO_REQUEST_FIELD);
