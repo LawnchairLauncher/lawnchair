@@ -37,7 +37,7 @@ public class ActiveGestureErrorDetector {
         ON_SETTLED_ON_END_TARGET, START_RECENTS_ANIMATION, FINISH_RECENTS_ANIMATION,
         CANCEL_RECENTS_ANIMATION, SET_ON_PAGE_TRANSITION_END_CALLBACK, CANCEL_CURRENT_ANIMATION,
         CLEANUP_SCREENSHOT, SCROLLER_ANIMATION_ABORTED, TASK_APPEARED, EXPECTING_TASK_APPEARED,
-        FLAG_USING_OTHER_ACTIVITY_INPUT_CONSUMER,
+        FLAG_USING_OTHER_ACTIVITY_INPUT_CONSUMER, LAUNCHER_DESTROYED,
 
         /**
          * These GestureEvents are specifically associated to state flags that get set in
@@ -160,6 +160,13 @@ public class ActiveGestureErrorDetector {
                                 prefix,
                                 /* errorMessage= */ "expecting onTasksAppeared to be called "
                                         + "before/without setting end target to new task",
+                                writer);
+                        break;
+                    case LAUNCHER_DESTROYED:
+                        errorDetected |= printErrorIfTrue(
+                                true,
+                                prefix,
+                                /* errorMessage= */ "Launcher destroyed mid-gesture",
                                 writer);
                         break;
                     case STATE_GESTURE_COMPLETED:

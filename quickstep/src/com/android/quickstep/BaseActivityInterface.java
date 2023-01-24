@@ -123,6 +123,14 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public abstract AnimationFactory prepareRecentsUI(RecentsAnimationDeviceState deviceState,
             boolean activityVisible, Consumer<AnimatorControllerWithResistance> callback);
 
+    /**
+     * Returns {@code true} iff an ongoing navigational gesture should be cancelled on activity
+     * destroy. Otherwise, the MultiStateCallbacks will be paused until the activity is recreated.
+     */
+    public boolean shouldCancelGestureOnDestroy() {
+        return true;
+    }
+
     public abstract ActivityInitListener createActivityInitListener(
             Predicate<Boolean> onInitListener);
 
