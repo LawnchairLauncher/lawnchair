@@ -1351,8 +1351,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (!mActivity.getDeviceProfile().isTablet) {
             mActionsView.updateDisabledFlags(OverviewActionsView.DISABLED_SCROLLING, true);
         }
-        InteractionJankMonitorWrapper.begin(/* view= */ this,
-                InteractionJankMonitorWrapper.CUJ_RECENTS_SCROLLING);
+        if (mOverviewStateEnabled) { // only when in overview
+            InteractionJankMonitorWrapper.begin(/* view= */ this,
+                    InteractionJankMonitorWrapper.CUJ_RECENTS_SCROLLING);
+        }
     }
 
     @Override
@@ -4909,9 +4911,16 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             return;
         }
 
-        RemoteTargetGluer gluer = new RemoteTargetGluer(getContext(), getSizeStrategy());
-        mRemoteTargetHandles = gluer.assignTargetsForSplitScreen(
-                getContext(), recentsAnimationTargets);
+        RemoteTargetGluer gluer;
+        if (DESKTOP_MODE_SUPPORTED && recentsAnimationTargets.hasDesktopTasks()) {
+            gluer = new RemoteTargetGluer(getContext(), getSizeStrategy(), recentsAnimationTargets,
+                    true /* forDesktop */);
+            mRemoteTargetHandles = gluer.assignTargetsForDesktop(recentsAnimationTargets);
+        } else {
+            gluer = new RemoteTargetGluer(getContext(), getSizeStrategy());
+            mRemoteTargetHandles = gluer.assignTargetsForSplitScreen(
+                    getContext(), recentsAnimationTargets);
+        }
         mSplitBoundsConfig = gluer.getSplitBounds();
         // Add release check to the targets from the RemoteTargetGluer and not the targets
         // passed in because in the event we're in split screen, we use the passed in targets
