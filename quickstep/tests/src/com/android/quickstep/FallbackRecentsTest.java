@@ -168,7 +168,6 @@ public class FallbackRecentsTest {
 
     // b/143488140
     //@NavigationModeSwitch
-    @Ignore
     @Test
     public void goToOverviewFromHome() {
         mDevice.pressHome();
@@ -216,7 +215,6 @@ public class FallbackRecentsTest {
 
     // b/143488140
     //@NavigationModeSwitch
-    @Ignore
     @Test
     public void testOverview() {
         startAppFast(getAppPackageName());
