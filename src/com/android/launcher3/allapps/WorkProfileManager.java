@@ -16,11 +16,11 @@
 package com.android.launcher3.allapps;
 
 import static com.android.launcher3.LauncherPrefs.WORK_EDU_STEP;
+import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.MAIN;
+import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.SEARCH;
+import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.WORK;
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_WORK_DISABLED_CARD;
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_WORK_EDU_CARD;
-import static com.android.launcher3.allapps.BaseAllAppsContainerView.AdapterHolder.MAIN;
-import static com.android.launcher3.allapps.BaseAllAppsContainerView.AdapterHolder.SEARCH;
-import static com.android.launcher3.allapps.BaseAllAppsContainerView.AdapterHolder.WORK;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TURN_OFF_WORK_APPS_TAP;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_HAS_SHORTCUT_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_CHANGE_PERMISSION;
@@ -54,7 +54,7 @@ import java.util.ArrayList;
 import java.util.function.Predicate;
 
 /**
- * Companion class for {@link BaseAllAppsContainerView} to manage work tab and personal tab
+ * Companion class for {@link ActivityAllAppsContainerView} to manage work tab and personal tab
  * related
  * logic based on {@link WorkProfileState}?
  */
@@ -79,7 +79,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
     public @interface WorkProfileState { }
 
     private final UserManager mUserManager;
-    private final BaseAllAppsContainerView<?> mAllApps;
+    private final ActivityAllAppsContainerView<?> mAllApps;
     private final Predicate<ItemInfo> mMatcher;
     private final StatsLogManager mStatsLogManager;
 
@@ -89,7 +89,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
     private int mCurrentState;
 
     public WorkProfileManager(
-            UserManager userManager, BaseAllAppsContainerView<?> allApps,
+            UserManager userManager, ActivityAllAppsContainerView allApps,
             StatsLogManager statsLogManager) {
         mUserManager = userManager;
         mAllApps = allApps;
@@ -152,7 +152,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
     }
 
     /**
-     * Creates and attaches for profile toggle button to {@link BaseAllAppsContainerView}
+     * Creates and attaches for profile toggle button to {@link ActivityAllAppsContainerView}
      */
     public boolean attachWorkModeSwitch() {
         if (!mAllApps.getAppsStore().hasModelFlag(
@@ -177,7 +177,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
         return true;
     }
     /**
-     * Removes work profile toggle button from {@link BaseAllAppsContainerView}
+     * Removes work profile toggle button from {@link ActivityAllAppsContainerView}
      */
     public void detachWorkModeSwitch() {
         if (mWorkModeSwitch != null && mWorkModeSwitch.getParent() == mAllApps) {
@@ -195,7 +195,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
         return mWorkModeSwitch;
     }
 
-    private BaseAllAppsContainerView<?>.AdapterHolder getAH() {
+    private ActivityAllAppsContainerView.AdapterHolder getAH() {
         return mAllApps.mAH.get(WORK);
     }
 
