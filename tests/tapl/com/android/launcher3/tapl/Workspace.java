@@ -409,14 +409,26 @@ public final class Workspace extends Home {
     }
 
     static Point getCellCenter(LauncherInstrumentation launcher, int cellX, int cellY) {
-        return launcher.getTestInfo(WorkspaceCellCenterRequest.builder().setCellX(
-                cellX).setCellY(cellY).build()).getParcelable(
-                TestProtocol.TEST_INFO_RESPONSE_FIELD);
+        return launcher.getTestInfo(WorkspaceCellCenterRequest.builder().setCellX(cellX).setCellY(
+                cellY).build()).getParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
+    static Point getCellCenter(LauncherInstrumentation launcher, int cellX, int cellY, int spanX,
+            int spanY) {
+        return launcher.getTestInfo(WorkspaceCellCenterRequest.builder().setCellX(cellX)
+                .setCellY(cellY).setSpanX(spanX).setSpanY(spanY).build())
+                .getParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
     static Point getHotseatCellCenter(LauncherInstrumentation launcher, int cellInd) {
         return launcher.getTestInfo(HotseatCellCenterRequest.builder()
                 .setCellInd(cellInd).build()).getParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
+    /** Returns the number of rows and columns in the workspace */
+    public Point getRowsAndCols() {
+        return mLauncher.getTestInfo(TestProtocol.REQUEST_WORKSPACE_COLUMNS_ROWS).getParcelable(
+                TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
     /**
@@ -455,6 +467,19 @@ public final class Workspace extends Home {
         }
         dragIconToWorkspace(
                 launcher, launchable, dest, expectLongClickEvents, expectDropEvents);
+    }
+
+    static void dragIconToWorkspaceCellPosition(LauncherInstrumentation launcher,
+            Launchable launchable, int cellX, int cellY, int spanX, int spanY,
+            boolean startsActivity, boolean isWidgetShortcut, Runnable expectLongClickEvents) {
+        Runnable expectDropEvents = null;
+        if (startsActivity || isWidgetShortcut) {
+            expectDropEvents = () -> launcher.expectEvent(TestProtocol.SEQUENCE_MAIN,
+                    LauncherInstrumentation.EVENT_START);
+        }
+        dragIconToWorkspaceCellPosition(
+                launcher, launchable, cellX, cellY, spanX, spanY, true, expectLongClickEvents,
+                expectDropEvents);
     }
 
     /**
@@ -513,6 +538,51 @@ public final class Workspace extends Home {
                                 true, downTime, downTime, true,
                                 LauncherInstrumentation.GestureScope.INSIDE));
                 targetDest.x += displayX * (targetDest.x > 0 ? -1 : 1);
+                dragStart = screenEdge;
+            }
+
+            // targetDest.x is now between 0 and displayX so we found the target page,
+            // we just have to put move the icon to the destination and drop it
+            launcher.movePointer(dragStart, targetDest, DEFAULT_DRAG_STEPS, isDecelerating,
+                    downTime, SystemClock.uptimeMillis(), false,
+                    LauncherInstrumentation.GestureScope.INSIDE);
+            launcher.runCallbackIfActive(CALLBACK_HOLD_BEFORE_DROP);
+            dropDraggedIcon(launcher, targetDest, downTime, expectDropEvents);
+        }
+    }
+
+    static void dragIconToWorkspaceCellPosition(
+            LauncherInstrumentation launcher,
+            Launchable launchable,
+            int cellX, int cellY, int spanX, int spanY,
+            boolean isDecelerating,
+            Runnable expectLongClickEvents,
+            @Nullable Runnable expectDropEvents) {
+        try (LauncherInstrumentation.Closable ignored = launcher.addContextLayer(
+                "want to drag icon to workspace")) {
+            Point rowsAndCols = launcher.getWorkspace().getRowsAndCols();
+            int destinationWorkspace = cellX / rowsAndCols.x;
+            cellX = cellX % rowsAndCols.x;
+
+            final long downTime = SystemClock.uptimeMillis();
+            Point dragStart = launchable.startDrag(
+                    downTime,
+                    expectLongClickEvents,
+                    /* runToSpringLoadedState= */ true);
+            Point targetDest = getCellCenter(launcher, cellX, cellY, spanX, spanY);
+            int displayX = launcher.getRealDisplaySize().x;
+
+            // Since the destination can be on another page, we need to drag to the edge first
+            // until we reach the target page
+            for (int i = 0; i < destinationWorkspace; i++) {
+                // Don't drag all the way to the edge to prevent touch events from getting out of
+                //screen bounds.
+                Point screenEdge = new Point(displayX - 1, targetDest.y);
+                Point finalDragStart = dragStart;
+                executeAndWaitForPageScroll(launcher,
+                        () -> launcher.movePointer(finalDragStart, screenEdge, DEFAULT_DRAG_STEPS,
+                                true, downTime, downTime, true,
+                                LauncherInstrumentation.GestureScope.INSIDE));
                 dragStart = screenEdge;
             }
 
