@@ -21,15 +21,12 @@ import static android.content.Intent.ACTION_PACKAGE_CHANGED;
 import static android.content.Intent.ACTION_PACKAGE_REMOVED;
 
 import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVITY;
-import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
 import static com.android.systemui.shared.system.PackageManagerWrapper.ACTION_PREFERRED_ACTIVITY_CHANGED;
 
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -57,9 +54,9 @@ import java.util.function.Consumer;
 public final class OverviewComponentObserver {
     private static final String TAG = "OverviewComponentObserver";
 
-    private final BroadcastReceiver mUserPreferenceChangeReceiver =
+    private final SimpleBroadcastReceiver mUserPreferenceChangeReceiver =
             new SimpleBroadcastReceiver(this::updateOverviewTargets);
-    private final BroadcastReceiver mOtherHomeAppUpdateReceiver =
+    private final SimpleBroadcastReceiver mOtherHomeAppUpdateReceiver =
             new SimpleBroadcastReceiver(this::updateOverviewTargets);
 
     private final Context mContext;
@@ -102,8 +99,7 @@ public final class OverviewComponentObserver {
             mConfigChangesMap.append(fallbackComponent.hashCode(), fallbackInfo.configChanges);
         } catch (PackageManager.NameNotFoundException ignored) { /* Impossible */ }
 
-        mContext.registerReceiver(mUserPreferenceChangeReceiver,
-                new IntentFilter(ACTION_PREFERRED_ACTIVITY_CHANGED));
+        mUserPreferenceChangeReceiver.register(mContext, ACTION_PREFERRED_ACTIVITY_CHANGED);
         updateOverviewTargets();
     }
 
@@ -181,9 +177,8 @@ public final class OverviewComponentObserver {
                 unregisterOtherHomeAppUpdateReceiver();
 
                 mUpdateRegisteredPackage = defaultHome.getPackageName();
-                mContext.registerReceiver(mOtherHomeAppUpdateReceiver, getPackageFilter(
-                        mUpdateRegisteredPackage, ACTION_PACKAGE_ADDED, ACTION_PACKAGE_CHANGED,
-                        ACTION_PACKAGE_REMOVED));
+                mOtherHomeAppUpdateReceiver.registerPkgActions(mContext, mUpdateRegisteredPackage,
+                        ACTION_PACKAGE_ADDED, ACTION_PACKAGE_CHANGED, ACTION_PACKAGE_REMOVED);
             }
         }
         mOverviewChangeListener.accept(mIsHomeAndOverviewSame);
