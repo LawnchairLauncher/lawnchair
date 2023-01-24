@@ -67,6 +67,7 @@ public final class Workspace extends Home {
             "Key event: KeyEvent.*?action=ACTION_UP.*?keyCode=KEYCODE_W"
                     + ".*?metaState=META_CTRL_ON");
     static final Pattern LONG_CLICK_EVENT = Pattern.compile("onWorkspaceItemLongClick");
+    public static final int MAX_WORKSPACE_DRAG_TRIES = 100;
 
     private final UiObject2 mHotseat;
 
@@ -430,6 +431,12 @@ public final class Workspace extends Home {
                 TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
+    /** Returns the index of the current page */
+    static int geCurrentPage(LauncherInstrumentation launcher) {
+        return launcher.getTestInfo(TestProtocol.REQUEST_WORKSPACE_CURRENT_PAGE_INDEX).getInt(
+                TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
     /**
      * Finds folder icons in the current workspace.
      *
@@ -569,21 +576,10 @@ public final class Workspace extends Home {
                     expectLongClickEvents,
                     /* runToSpringLoadedState= */ true);
             Point targetDest = getCellCenter(launcher, cellX, cellY, spanX, spanY);
-            int displayX = launcher.getRealDisplaySize().x;
-
             // Since the destination can be on another page, we need to drag to the edge first
             // until we reach the target page
-            for (int i = 0; i < destinationWorkspace; i++) {
-                // Don't drag all the way to the edge to prevent touch events from getting out of
-                //screen bounds.
-                Point screenEdge = new Point(displayX - 1, targetDest.y);
-                Point finalDragStart = dragStart;
-                executeAndWaitForPageScroll(launcher,
-                        () -> launcher.movePointer(finalDragStart, screenEdge, DEFAULT_DRAG_STEPS,
-                                true, downTime, downTime, true,
-                                LauncherInstrumentation.GestureScope.INSIDE));
-                dragStart = screenEdge;
-            }
+            dragStart = dragToGivenWorkspace(launcher, dragStart, destinationWorkspace,
+                    targetDest.y);
 
             // targetDest.x is now between 0 and displayX so we found the target page,
             // we just have to put move the icon to the destination and drop it
@@ -593,6 +589,45 @@ public final class Workspace extends Home {
             launcher.runCallbackIfActive(CALLBACK_HOLD_BEFORE_DROP);
             dropDraggedIcon(launcher, targetDest, downTime, expectDropEvents);
         }
+    }
+
+    /**
+     * Given a drag that already started at currentPosition, drag the item to the given destination
+     * index defined by destinationWorkspaceIndex.
+     *
+     * @param launcher
+     * @param currentPosition
+     * @param destinationWorkspaceIndex
+     * @param y
+     * @return the finishing position of the drag.
+     */
+    static Point dragToGivenWorkspace(LauncherInstrumentation launcher, Point currentPosition,
+            int destinationWorkspaceIndex, int y) {
+        final long downTime = SystemClock.uptimeMillis();
+        int displayX = launcher.getRealDisplaySize().x;
+        int currentPage = Workspace.geCurrentPage(launcher);
+        int counter = 0;
+        while (currentPage != destinationWorkspaceIndex) {
+            counter++;
+            if (counter > MAX_WORKSPACE_DRAG_TRIES) {
+                throw new RuntimeException(
+                        "Wrong destination workspace index " + destinationWorkspaceIndex
+                                + ", desired workspace was never reached");
+            }
+            // if the destination is greater than current page, set the display edge to be the
+            // right edge. Don't drag all the way to the edge to prevent touch events from
+            // getting out of screen bounds.
+            int displayEdge = destinationWorkspaceIndex > currentPage ? displayX - 1 : 1;
+            Point screenEdge = new Point(displayEdge, y);
+            Point finalDragStart = currentPosition;
+            executeAndWaitForPageScroll(launcher,
+                    () -> launcher.movePointer(finalDragStart, screenEdge, DEFAULT_DRAG_STEPS,
+                            true, downTime, downTime, true,
+                            LauncherInstrumentation.GestureScope.INSIDE));
+            currentPage = Workspace.geCurrentPage(launcher);
+            currentPosition = screenEdge;
+        }
+        return currentPosition;
     }
 
     private static void executeAndWaitForPageScroll(LauncherInstrumentation launcher,
