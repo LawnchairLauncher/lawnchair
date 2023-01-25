@@ -17,7 +17,9 @@ package com.android.launcher3.widget.picker;
 
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
+import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
+import static com.android.launcher3.allapps.AllAppsTransitionController.SWIPE_ALL_APPS_TO_HOME_MIN_SCALE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_SEARCHED;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 
@@ -45,6 +47,7 @@ import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.FloatRange;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -54,6 +57,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.model.UserManagerState;
@@ -262,6 +266,15 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
         updateRecyclerViewVisibility(currentAdapterHolder);
         attachScrollbarToRecyclerView(currentRecyclerView);
+    }
+
+    @Override
+    public void onBackProgressed(@FloatRange(from = 0.0, to = 1.0) float progress) {
+        float deceleratedProgress =
+                Interpolators.PREDICTIVE_BACK_DECELERATED_EASE.getInterpolation(progress);
+        float scaleProgress = SWIPE_ALL_APPS_TO_HOME_MIN_SCALE
+                + (1 - SWIPE_ALL_APPS_TO_HOME_MIN_SCALE) * (1 - deceleratedProgress);
+        SCALE_PROPERTY.set(this, scaleProgress);
     }
 
     private void attachScrollbarToRecyclerView(WidgetsRecyclerView recyclerView) {
@@ -736,12 +749,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     @Override
-    public boolean onBackPressed() {
+    public void onBackInvoked() {
         if (mIsInSearchMode) {
             mSearchBar.reset();
-            return true;
+        } else {
+            super.onBackInvoked();
         }
-        return super.onBackPressed();
     }
 
     @Override
