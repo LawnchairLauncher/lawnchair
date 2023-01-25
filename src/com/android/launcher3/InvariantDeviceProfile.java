@@ -206,8 +206,6 @@ public class InvariantDeviceProfile {
         if (!newGridName.equals(gridName)) {
             LauncherPrefs.getPrefs(context).edit().putString(KEY_IDP_GRID_NAME, newGridName)
                     .apply();
-            Log.d("b/258560494", "InvariantDeviceProfile - setting newGridName: " + newGridName
-                    + ", gridName: " + gridName);
         }
         new DeviceGridState(this).writeToPrefs(context);
 
@@ -455,7 +453,6 @@ public class InvariantDeviceProfile {
     public void setCurrentGrid(Context context, String gridName) {
         Context appContext = context.getApplicationContext();
         LauncherPrefs.getPrefs(appContext).edit().putString(KEY_IDP_GRID_NAME, gridName).apply();
-        Log.d("b/258560494", "setCurrentGrid: " + gridName);
         MAIN_EXECUTOR.execute(() -> onConfigChanged(appContext));
     }
 
@@ -520,10 +517,6 @@ public class InvariantDeviceProfile {
             }
         }
         if (filteredProfiles.isEmpty()) {
-            if (gridName != null) {
-                Log.d("b/258560494", "No matching grid from for gridName: " + gridName
-                        + ", deviceType: " + deviceType);
-            }
             // No grid found, use the default options
             for (DisplayOption option : profiles) {
                 if (option.canBeDefault) {

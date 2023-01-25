@@ -71,7 +71,7 @@ public final class Widget extends Launchable implements WorkspaceDragSource {
     public WidgetResizeFrame dragWidgetToWorkspace() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             return dragWidgetToWorkspace(/* configurable= */ false, /* acceptsConfig= */ false, -1,
-                    -1);
+                    -1, 1, 1);
         }
     }
 
@@ -80,12 +80,12 @@ public final class Widget extends Launchable implements WorkspaceDragSource {
      * cellY and returns the resize frame that is shown after the widget is added.
      */
     @NonNull
-    public WidgetResizeFrame dragWidgetToWorkspace(int cellX, int cellY) {
+    public WidgetResizeFrame dragWidgetToWorkspace(int cellX, int cellY, int spanX, int spanY) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "Dragging widget to workspace cell " + cellX + "," + cellY)) {
             return dragWidgetToWorkspace(/* configurable= */ false, /* acceptsConfig= */ false,
-                    cellX, cellY);
+                    cellX, cellY, spanX, spanY);
         }
     }
 
@@ -98,7 +98,7 @@ public final class Widget extends Launchable implements WorkspaceDragSource {
     public WidgetResizeFrame dragConfigWidgetToWorkspace(boolean acceptsConfig) {
         // TODO(b/239438337, fransebas) add correct event checking for this case
         //try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-        return dragWidgetToWorkspace(/* configurable= */ true, acceptsConfig, -1, -1);
+        return dragWidgetToWorkspace(/* configurable= */ true, acceptsConfig, -1, -1, 1, 1);
         //}
     }
 
@@ -110,18 +110,17 @@ public final class Widget extends Launchable implements WorkspaceDragSource {
      * @param cellX            X position in the CellLayout
      * @param cellY            Y position in the CellLayout
      */
-    private void dragToWorkspace(boolean startsActivity, boolean isWidgetShortcut, int cellX,
-            int cellY) {
+    private void dragToWorkspaceCellPosition(boolean startsActivity, boolean isWidgetShortcut,
+            int cellX, int cellY, int spanX, int spanY) {
         Launchable launchable = getLaunchable();
         LauncherInstrumentation launcher = launchable.mLauncher;
-        Workspace.dragIconToWorkspace(
+        Workspace.dragIconToWorkspaceCellPosition(
                 launcher,
                 launchable,
-                () -> Workspace.getCellCenter(launchable.mLauncher, cellX, cellY),
+                cellX, cellY, spanX, spanY,
                 startsActivity,
                 isWidgetShortcut,
                 launchable::addExpectedEventsForLongClick);
-
     }
 
     /**
@@ -144,13 +143,13 @@ public final class Widget extends Launchable implements WorkspaceDragSource {
      */
     @Nullable
     private WidgetResizeFrame dragWidgetToWorkspace(boolean configurable, boolean acceptsConfig,
-            int cellX, int cellY) {
+            int cellX, int cellY, int spanX, int spanY) {
         if (cellX == -1 || cellY == -1) {
             internalDragToWorkspace(/* startsActivity= */ configurable, /* isWidgetShortcut= */
                     false);
         } else {
-            dragToWorkspace(/* startsActivity= */ configurable, /* isWidgetShortcut= */ false,
-                    cellX, cellY);
+            dragToWorkspaceCellPosition(/* startsActivity= */ configurable, /* isWidgetShortcut= */
+                    false, cellX, cellY, spanX, spanY);
         }
 
         if (configurable) {

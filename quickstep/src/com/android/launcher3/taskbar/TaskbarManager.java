@@ -156,10 +156,14 @@ public class TaskbarManager {
                 } else {
                     // Config change might be handled without re-creating the taskbar
                     if (mTaskbarActivityContext != null) {
-                        if (dp != null && isTaskbarPresent(dp)) {
-                            mTaskbarActivityContext.updateDeviceProfile(dp, mNavMode);
+                        if (dp != null && !isTaskbarPresent(dp)) {
+                            destroyExistingTaskbar();
+                        } else {
+                            if (dp != null && isTaskbarPresent(dp)) {
+                                mTaskbarActivityContext.updateDeviceProfile(dp, mNavMode);
+                            }
+                            mTaskbarActivityContext.onConfigurationChanged(configDiff);
                         }
-                        mTaskbarActivityContext.onConfigurationChanged(configDiff);
                     }
                 }
                 mOldConfig = newConfig;

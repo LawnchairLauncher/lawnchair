@@ -95,9 +95,13 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"ამოცანათა ზოლი: განათლება"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ამოცანების ზოლის სასწავლო არე გამოჩნდა"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ამოცანების ზოლის სასწავლო არე დაიხურა"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"გადაათრიეთ კიდეზე 2 აპის ერთდროულად გამოსაყენებლად"</string>
+    <!-- no translation found for taskbar_edu_splitscreen (5605512479258053350) -->
+    <skip />
     <string name="taskbar_edu_stashing" msgid="2805035263048176462">"მოკლედ გადაფურცლეთ ზემოთ, რომ ამოცანათა ზოლი გამოაჩინოთ"</string>
-    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"ამოცანათა ზოლი გთავაზობთ აპებს თქვენი რუტინის მიხედვით"</string>
+    <!-- no translation found for taskbar_edu_suggestions (8215044496435527982) -->
+    <skip />
+    <!-- no translation found for taskbar_edu_features (2338325667726857642) -->
+    <skip />
     <string name="taskbar_edu_next" msgid="4007618274426775841">"შემდეგი"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"უკან"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"დახურვა"</string>
