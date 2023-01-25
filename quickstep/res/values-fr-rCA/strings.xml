@@ -95,9 +95,13 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Informations sur la barre des tâches"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"La barre des tâches éducatives s\'est affichée"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"La barre des tâches éducatives est fermée"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"Faites glisser vers le côté pour utiliser 2 applis à la fois"</string>
+    <!-- no translation found for taskbar_edu_splitscreen (5605512479258053350) -->
+    <skip />
     <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Faites glisser vers le haut pour afficher la barre de tâches"</string>
-    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"La barre des tâches suggère des applis selon votre routine"</string>
+    <!-- no translation found for taskbar_edu_suggestions (8215044496435527982) -->
+    <skip />
+    <!-- no translation found for taskbar_edu_features (2338325667726857642) -->
+    <skip />
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Suivant"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Retour"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Fermer"</string>

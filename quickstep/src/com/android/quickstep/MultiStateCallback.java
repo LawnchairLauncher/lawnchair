@@ -31,6 +31,7 @@ import com.android.quickstep.util.ActiveGestureLog;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.StringJoiner;
 import java.util.function.Consumer;
 
@@ -51,6 +52,9 @@ public class MultiStateCallback {
     private final String[] mStateNames;
 
     private int mState = 0;
+
+    private boolean mCallbacksPaused = false;
+    private final List<Runnable> mPendingCallbacks = new ArrayList<>();
 
     public MultiStateCallback(String[] stateNames) {
         this(stateNames, stateFlag -> null);
@@ -78,6 +82,24 @@ public class MultiStateCallback {
         }
     }
 
+    /** Pauses callbacks. */
+    public void pauseCallbacks() {
+        mCallbacksPaused = true;
+    }
+
+    /** Immediately queues any callbacks that were pending paused. */
+    public void resumeCallbacks() {
+        if (!mCallbacksPaused) {
+            return;
+        }
+        mCallbacksPaused = false;
+        List<Runnable> queuedCallbacks = new ArrayList<>(mPendingCallbacks);
+        mPendingCallbacks.clear();
+        for (Runnable runnable : queuedCallbacks) {
+            runnable.run();
+        }
+    }
+
     /**
      * Adds the provided state flags to the global state and executes any callbacks as a result.
      */
@@ -99,7 +121,12 @@ public class MultiStateCallback {
             if ((mState & state) == state) {
                 LinkedList<Runnable> callbacks = mCallbacks.valueAt(i);
                 while (!callbacks.isEmpty()) {
-                    callbacks.pollFirst().run();
+                    Runnable cb = callbacks.pollFirst();
+                    if (mCallbacksPaused) {
+                        mPendingCallbacks.add(cb);
+                    } else {
+                        cb.run();
+                    }
                 }
             }
         }
@@ -151,7 +178,11 @@ public class MultiStateCallback {
             if (wasOn != isOn) {
                 ArrayList<Consumer<Boolean>> listeners = mStateChangeListeners.valueAt(i);
                 for (Consumer<Boolean> listener : listeners) {
-                    listener.accept(isOn);
+                    if (mCallbacksPaused) {
+                        mPendingCallbacks.add(() -> listener.accept(isOn));
+                    } else {
+                        listener.accept(isOn);
+                    }
                 }
             }
         }
