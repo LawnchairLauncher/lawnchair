@@ -71,7 +71,8 @@ public class TaskbarOverlayDragLayer extends
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == ACTION_UP && event.getKeyCode() == KEYCODE_BACK) {
             AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
-            if (topView != null && topView.onBackPressed()) {
+            if (topView != null && topView.canHandleBack()) {
+                topView.onBackInvoked();
                 return true;
             }
         }

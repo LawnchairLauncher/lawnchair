@@ -46,7 +46,8 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * Base class for a View which shows a floating UI on top of the launcher UI.
  */
-public abstract class AbstractFloatingView extends LinearLayout implements TouchController {
+public abstract class AbstractFloatingView extends LinearLayout implements TouchController,
+        OnBackPressedHandler {
 
     @IntDef(flag = true, value = {
             TYPE_FOLDER,
@@ -165,10 +166,14 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
 
     protected abstract boolean isOfType(@FloatingViewType int type);
 
-    /** @return Whether the back is consumed. If false, Launcher will handle the back as well. */
-    public boolean onBackPressed() {
-        close(true);
+    /** Return true if this view can consume back press. */
+    public boolean canHandleBack() {
         return true;
+    }
+
+    @Override
+    public void onBackInvoked() {
+        close(true);
     }
 
     @Override
