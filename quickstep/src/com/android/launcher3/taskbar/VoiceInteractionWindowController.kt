@@ -34,10 +34,7 @@ class VoiceInteractionWindowController(val context: TaskbarActivityContext) :
 
                 override fun draw(canvas: Canvas) {
                     super.draw(canvas)
-                    if (
-                        this@VoiceInteractionWindowController.context.isGestureNav &&
-                            controllers.taskbarStashController.isInAppAndNotStashed
-                    ) {
+                    if (controllers.taskbarStashController.isTaskbarVisibleAndNotStashing) {
                         taskbarBackgroundRenderer.draw(canvas)
                     }
                 }
@@ -92,8 +89,6 @@ class VoiceInteractionWindowController(val context: TaskbarActivityContext) :
      * Removes the temporary window and show the TaskbarDragLayer background again.
      */
     private fun moveTaskbarBackgroundToAppropriateLayer(skipAnim: Boolean) {
-        val taskbarBackgroundOverride =
-            controllers.taskbarDragLayerController.overrideBackgroundAlpha
         val moveToLowerLayer = isVoiceInteractionWindowVisible
         val onWindowsSynchronized =
             if (moveToLowerLayer) {
@@ -102,10 +97,10 @@ class VoiceInteractionWindowController(val context: TaskbarActivityContext) :
                     separateWindowForTaskbarBackground,
                     separateWindowLayoutParams
                 );
-                { taskbarBackgroundOverride.updateValue(0f) }
+                { controllers.taskbarDragLayerController.setIsBackgroundDrawnElsewhere(true) }
             } else {
                 // First reapply the original taskbar background, then remove the temporary window.
-                taskbarBackgroundOverride.updateValue(1f);
+                controllers.taskbarDragLayerController.setIsBackgroundDrawnElsewhere(false);
                 { context.removeWindowView(separateWindowForTaskbarBackground) }
             }
 
