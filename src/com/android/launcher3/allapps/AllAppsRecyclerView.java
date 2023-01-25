@@ -299,7 +299,7 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
             return;
         } else if (appsView.mViewPager != null) {
             int currentPage = appsView.mViewPager.getCurrentPage();
-            if (currentPage == BaseAllAppsContainerView.AdapterHolder.WORK) {
+            if (currentPage == ActivityAllAppsContainerView.AdapterHolder.WORK) {
                 // In work A-Z list
                 mgr.logger().withContainerInfo(containerInfo).log((mCumulativeVerticalScroll > 0)
                         ? LAUNCHER_WORK_FAB_BUTTON_COLLAPSE
