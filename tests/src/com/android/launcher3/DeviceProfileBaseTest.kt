@@ -118,6 +118,7 @@ abstract class DeviceProfileBaseTest {
 
                 horizontalMargin = FloatArray(4) { 22f }
 
+                allAppsStyle = R.style.AllAppsStyleDefault
                 allAppsCellSize =
                     listOf(
                             PointF(80f, 104f),
@@ -196,6 +197,7 @@ abstract class DeviceProfileBaseTest {
 
                 horizontalMargin = floatArrayOf(54f, 120f, 54f, 54f)
 
+                allAppsStyle = R.style.AllAppsStyleDefault
                 allAppsCellSize =
                     listOf(
                             PointF(96f, 142f),
@@ -275,6 +277,7 @@ abstract class DeviceProfileBaseTest {
 
                 horizontalMargin = floatArrayOf(21.5f, 21.5f, 22.5f, 30.5f)
 
+                allAppsStyle = R.style.AllAppsStyleDefault
                 allAppsCellSize =
                     listOf(PointF(0f, 0f), PointF(0f, 0f), PointF(68f, 104f), PointF(80f, 104f))
                         .toTypedArray()
