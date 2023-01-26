@@ -143,6 +143,8 @@ public class InvariantDeviceProfile {
 
     public @StyleRes int folderStyle;
 
+    public @StyleRes int cellStyle;
+
     public float[] horizontalMargin;
 
     public PointF[] allAppsCellSize;
@@ -348,6 +350,8 @@ public class InvariantDeviceProfile {
         numFolderRows = closestProfile.numFolderRows;
         numFolderColumns = closestProfile.numFolderColumns;
         folderStyle = closestProfile.folderStyle;
+
+        cellStyle = closestProfile.cellStyle;
 
         isScalable = closestProfile.isScalable;
         devicePaddingId = closestProfile.devicePaddingId;
@@ -783,6 +787,7 @@ public class InvariantDeviceProfile {
         private final int numFolderRows;
         private final int numFolderColumns;
         private final @StyleRes int folderStyle;
+        private final @StyleRes int cellStyle;
 
         private final int numAllAppsColumns;
         private final int numDatabaseAllAppsColumns;
@@ -851,6 +856,9 @@ public class InvariantDeviceProfile {
 
             folderStyle = a.getResourceId(R.styleable.GridDisplayOption_folderStyle,
                     INVALID_RESOURCE_HANDLE);
+
+            cellStyle = a.getResourceId(R.styleable.GridDisplayOption_cellStyle,
+                    R.style.CellStyleDefault);
 
             isScalable = a.getBoolean(
                     R.styleable.GridDisplayOption_isScalable, false);
