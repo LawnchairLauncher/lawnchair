@@ -175,8 +175,9 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         // Note: There should be at most one log per method call. This is enforced implicitly
         // by using if-else statements.
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
-        if (topView != null && topView.onBackPressed()) {
+        if (topView != null && topView.canHandleBack()) {
             // Handled by the floating view.
+            topView.onBackInvoked();
         } else {
             showAppDrawer(false);
         }

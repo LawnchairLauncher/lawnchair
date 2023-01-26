@@ -132,7 +132,6 @@ import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsTransitionController;
-import com.android.launcher3.allapps.BaseAllAppsContainerView;
 import com.android.launcher3.allapps.BaseSearchConfig;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.PropertyListBuilder;
@@ -558,6 +557,61 @@ public class Launcher extends StatefulActivity<LauncherState>
             getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         }
         setTitle(R.string.home_screen);
+    }
+
+    /**
+     * Provide {@link OnBackPressedHandler} in below order:
+     * <ol>
+     *  <li> auto cancel action mode handler
+     *  <li> drag handler
+     *  <li> view handler
+     *  <li> state handler
+     * </ol>
+     *
+     * A back gesture (a single click on back button, or a swipe back gesture that contains a series
+     * of swipe events) should be handled by the same handler from above list. For a new back
+     * gesture, a new handler should be regenerated.
+     *
+     * Note that state handler will always be handling the back press event if the previous 3 don't.
+     */
+    @NonNull
+    protected OnBackPressedHandler getOnBackPressedHandler() {
+        // #1 auto cancel action mode handler
+        if (isInAutoCancelActionMode()) {
+            return this::finishAutoCancelActionMode;
+        }
+
+        // #2 drag handler
+        if (mDragController.isDragging()) {
+            return mDragController::cancelDrag;
+        }
+
+        // #3 view handler
+        AbstractFloatingView topView =
+                AbstractFloatingView.getTopOpenView(Launcher.this);
+        if (topView != null && topView.canHandleBack()) {
+            return topView;
+        }
+
+        // #4 state handler
+        return new OnBackPressedHandler() {
+            @Override
+            public void onBackInvoked() {
+                onStateBack();
+            }
+
+            @Override
+            public void onBackProgressed(
+                    @FloatRange(from = 0.0, to = 1.0) float backProgress) {
+                mStateManager.getState().onBackProgressed(
+                        Launcher.this, backProgress);
+            }
+
+            @Override
+            public void onBackCancelled() {
+                mStateManager.getState().onBackCancelled(Launcher.this);
+            }
+        };
     }
 
     protected LauncherOverlayManager getDefaultOverlay() {
@@ -1642,7 +1696,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     private void showAllAppsWorkTabFromIntent(boolean alreadyOnHome) {
         showAllAppsFromIntent(alreadyOnHome);
-        mAppsView.switchToTab(BaseAllAppsContainerView.AdapterHolder.WORK);
+        mAppsView.switchToTab(ActivityAllAppsContainerView.AdapterHolder.WORK);
     }
 
     /**
@@ -2047,34 +2101,11 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     public void onBackPressed() {
-        if (finishAutoCancelActionMode()) {
-            return;
-        }
-
-        if (mDragController.isDragging()) {
-            mDragController.cancelDrag();
-            return;
-        }
-
-        // Note: There should be at most one log per method call. This is enforced implicitly
-        // by using if-else statements.
-        AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
-        if (topView == null || !topView.onBackPressed()) {
-            // Not handled by the floating view.
-            onStateBack();
-        }
+        getOnBackPressedHandler().onBackInvoked();
     }
 
     protected void onStateBack() {
         mStateManager.getState().onBackPressed(this);
-    }
-
-    protected void onBackProgressed(@FloatRange(from = 0.0, to = 1.0) float backProgress) {
-        mStateManager.getState().onBackProgressed(this, backProgress);
-    }
-
-    protected void onBackCancelled() {
-        mStateManager.getState().onBackCancelled(this);
     }
 
     protected void onScreenOnChanged(boolean isOn) {
