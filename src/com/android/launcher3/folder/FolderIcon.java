@@ -41,6 +41,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.Alarm;
 import com.android.launcher3.BubbleTextView;
@@ -181,8 +182,11 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         return icon;
     }
 
-    public static FolderIcon inflateIcon(int resId, ActivityContext activity, ViewGroup group,
-            FolderInfo folderInfo) {
+    /**
+     * Builds a FolderIcon to be added to the Launcher
+     */
+    public static FolderIcon inflateIcon(int resId, ActivityContext activity,
+            @Nullable ViewGroup group, FolderInfo folderInfo) {
         @SuppressWarnings("all") // suppress dead code warning
         final boolean error = INITIAL_ITEM_ANIMATION_DURATION >= DROP_IN_ANIMATION_DURATION;
         if (error) {
@@ -192,8 +196,10 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         }
 
         DeviceProfile grid = activity.getDeviceProfile();
-        FolderIcon icon = (FolderIcon) LayoutInflater.from(group.getContext())
-                .inflate(resId, group, false);
+        LayoutInflater inflater = (group != null)
+                ? LayoutInflater.from(group.getContext())
+                : activity.getLayoutInflater();
+        FolderIcon icon = (FolderIcon) inflater.inflate(resId, group, false);
 
         icon.setClipToPadding(false);
         icon.mFolderName = icon.findViewById(R.id.folder_icon_name);
