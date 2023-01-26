@@ -299,7 +299,8 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                     R.dimen.floating_rotation_button_taskbar_left_margin,
                     R.dimen.floating_rotation_button_taskbar_bottom_margin,
                     R.dimen.floating_rotation_button_diameter,
-                    R.dimen.key_button_ripple_max_width);
+                    R.dimen.key_button_ripple_max_width,
+                    R.bool.floating_rotation_button_position_left);
             mControllers.rotationButtonController.setRotationButton(mFloatingRotationButton,
                     mRotationButtonListener);
 
