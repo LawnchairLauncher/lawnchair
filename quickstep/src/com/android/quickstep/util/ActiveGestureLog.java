@@ -155,19 +155,27 @@ public class ActiveGestureLog {
     }
 
     public void dump(String prefix, PrintWriter writer) {
+        if (FeatureFlags.ENABLE_GESTURE_ERROR_DETECTION.get()) {
+            writer.println(prefix + "ActiveGestureErrorDetector:");
+            for (int i = 0; i < logs.length; i++) {
+                EventLog eventLog = logs[(nextIndex + i) % logs.length];
+                if (eventLog == null) {
+                    continue;
+                }
+                ActiveGestureErrorDetector.analyseAndDump(prefix + '\t', writer, eventLog);
+            }
+        }
+
         writer.println(prefix + "ActiveGestureLog history:");
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SSSZ  ", Locale.US);
         Date date = new Date();
-        ArrayList<EventLog> eventLogs = new ArrayList<>();
-
         for (int i = 0; i < logs.length; i++) {
             EventLog eventLog = logs[(nextIndex + i) % logs.length];
             if (eventLog == null) {
                 continue;
             }
-            eventLogs.add(eventLog);
-            writer.println(prefix + "\tLogs for logId: " + eventLog.logId);
 
+            writer.println(prefix + "\tLogs for logId: " + eventLog.logId);
             for (EventEntry eventEntry : eventLog.eventEntries) {
                 date.setTime(eventEntry.time);
 
@@ -198,10 +206,6 @@ public class ActiveGestureLog {
                 }
                 writer.println(msg);
             }
-        }
-
-        if (FeatureFlags.ENABLE_GESTURE_ERROR_DETECTION.get()) {
-            ActiveGestureErrorDetector.analyseAndDump(prefix + '\t', writer, eventLogs);
         }
     }
 
