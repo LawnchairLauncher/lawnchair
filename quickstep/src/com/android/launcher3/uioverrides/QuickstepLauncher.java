@@ -84,6 +84,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.OnBackPressedHandler;
 import com.android.launcher3.QuickstepAccessibilityDelegate;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
@@ -638,20 +639,49 @@ public class QuickstepLauncher extends Launcher {
         getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
                 OnBackInvokedDispatcher.PRIORITY_DEFAULT,
                 new OnBackAnimationCallback() {
+
+                    @Nullable OnBackPressedHandler mActiveOnBackPressedHandler;
+
+                    @Override
+                    public void onBackStarted(@NonNull BackEvent backEvent) {
+                        if (mActiveOnBackPressedHandler != null) {
+                            mActiveOnBackPressedHandler.onBackCancelled();
+                        }
+                        mActiveOnBackPressedHandler = getOnBackPressedHandler();
+                        mActiveOnBackPressedHandler.onBackStarted();
+                    }
+
                     @Override
                     public void onBackInvoked() {
-                        onBackPressed();
+                        // Recreate mActiveOnBackPressedHandler if necessary to avoid NPE because:
+                        // 1. b/260636433: In 3-button-navigation mode, onBackStarted() is not
+                        // called on ACTION_DOWN before onBackInvoked() is called in ACTION_UP.
+                        // 2. Launcher#onBackPressed() will call onBackInvoked() without calling
+                        // onBackInvoked() beforehand.
+                        if (mActiveOnBackPressedHandler == null) {
+                            mActiveOnBackPressedHandler = getOnBackPressedHandler();
+                        }
+                        mActiveOnBackPressedHandler.onBackInvoked();
+                        mActiveOnBackPressedHandler = null;
                         TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onBackInvoked");
                     }
 
                     @Override
                     public void onBackProgressed(@NonNull BackEvent backEvent) {
-                        QuickstepLauncher.this.onBackProgressed(backEvent.getProgress());
+                        if (!FeatureFlags.IS_STUDIO_BUILD && mActiveOnBackPressedHandler == null) {
+                            return;
+                        }
+                        mActiveOnBackPressedHandler
+                                .onBackProgressed(backEvent.getProgress());
                     }
 
                     @Override
                     public void onBackCancelled() {
-                        QuickstepLauncher.this.onBackCancelled();
+                        if (!FeatureFlags.IS_STUDIO_BUILD && mActiveOnBackPressedHandler == null) {
+                            return;
+                        }
+                        mActiveOnBackPressedHandler.onBackCancelled();
+                        mActiveOnBackPressedHandler = null;
                     }
                 });
     }

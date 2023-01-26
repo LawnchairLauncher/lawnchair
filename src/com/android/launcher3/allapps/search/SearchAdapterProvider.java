@@ -16,7 +16,6 @@
 
 package com.android.launcher3.allapps.search;
 
-import android.net.Uri;
 import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,12 +34,6 @@ public abstract class SearchAdapterProvider<T extends ActivityContext> extends B
 
     public SearchAdapterProvider(T launcher) {
         mLauncher = launcher;
-    }
-
-    /**
-     * Called from LiveSearchManager to notify slice status updates.
-     */
-    public void onSliceStatusUpdate(Uri sliceUri) {
     }
 
     /**
