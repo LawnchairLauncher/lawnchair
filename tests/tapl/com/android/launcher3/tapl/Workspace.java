@@ -118,11 +118,10 @@ public final class Workspace extends Home {
      *
      * The qsb must already be visible when calling this method.
      */
-    @NonNull
-    public Qsb getQsb() {
+    public HomeQsb getQsb() {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to get the home qsb")) {
-            return new HomeQsb(mLauncher, mHotseat);
+            return new HomeQsb(mLauncher);
         }
     }
 
