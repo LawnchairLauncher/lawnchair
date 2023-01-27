@@ -376,19 +376,19 @@ public class DeviceProfile {
 
         if (inv.folderStyle != INVALID_RESOURCE_HANDLE) {
             TypedArray folderStyle = context.obtainStyledAttributes(inv.folderStyle,
-                    R.styleable.FolderDisplayStyle);
+                    R.styleable.FolderStyle);
             // These are re-set in #updateFolderCellSize if the grid is not scalable
             folderCellHeightPx = folderStyle.getDimensionPixelSize(
-                    R.styleable.FolderDisplayStyle_folderCellHeight, 0);
+                    R.styleable.FolderStyle_folderCellHeight, 0);
             folderCellWidthPx = folderStyle.getDimensionPixelSize(
-                    R.styleable.FolderDisplayStyle_folderCellWidth, 0);
+                    R.styleable.FolderStyle_folderCellWidth, 0);
 
             folderContentPaddingTop = folderStyle.getDimensionPixelSize(
-                    R.styleable.FolderDisplayStyle_folderTopPadding, 0);
+                    R.styleable.FolderStyle_folderTopPadding, 0);
             folderCellLayoutBorderSpacePx = folderStyle.getDimensionPixelSize(
-                    R.styleable.FolderDisplayStyle_folderBorderSpace, 0);
+                    R.styleable.FolderStyle_folderBorderSpace, 0);
             folderFooterHeightPx = folderStyle.getDimensionPixelSize(
-                    R.styleable.FolderDisplayStyle_folderFooterHeight, 0);
+                    R.styleable.FolderStyle_folderFooterHeight, 0);
             folderStyle.recycle();
         } else {
             folderCellLayoutBorderSpacePx = 0;
@@ -407,8 +407,17 @@ public class DeviceProfile {
         mWorkspacePageIndicatorOverlapWorkspace =
                 res.getDimensionPixelSize(R.dimen.workspace_page_indicator_overlap_workspace);
 
-        iconDrawablePaddingOriginalPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_icon_drawable_padding);
+        TypedArray cellStyle;
+        if (inv.cellStyle != INVALID_RESOURCE_HANDLE) {
+            cellStyle = context.obtainStyledAttributes(inv.cellStyle,
+                    R.styleable.CellStyle);
+        } else {
+            cellStyle = context.obtainStyledAttributes(R.style.CellStyleDefault,
+                    R.styleable.CellStyle);
+        }
+        iconDrawablePaddingOriginalPx = cellStyle.getDimensionPixelSize(
+                R.styleable.CellStyle_iconDrawablePadding, 0);
+        cellStyle.recycle();
 
         dropTargetBarSizePx = res.getDimensionPixelSize(R.dimen.dynamic_grid_drop_target_size);
         dropTargetBarTopMarginPx = res.getDimensionPixelSize(R.dimen.drop_target_top_margin);
