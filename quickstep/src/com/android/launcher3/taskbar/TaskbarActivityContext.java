@@ -555,8 +555,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 fromInit);
         mControllers.taskbarViewController.setImeIsVisible(
                 mControllers.navbarButtonsViewController.isImeVisible());
-        mControllers.taskbarViewController.setIsImeSwitcherVisible(
-                mControllers.navbarButtonsViewController.isImeSwitcherVisible());
         int shadeExpandedFlags = SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED
                 | SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
         onNotificationShadeExpandChanged((systemUiStateFlags & shadeExpandedFlags) != 0, fromInit);
