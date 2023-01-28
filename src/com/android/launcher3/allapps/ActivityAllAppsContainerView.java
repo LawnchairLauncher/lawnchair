@@ -143,7 +143,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     private boolean mRebindAdaptersAfterSearchAnimation;
     private int mNavBarScrimHeight = 0;
     private SearchRecyclerView mSearchRecyclerView;
-    private SearchAdapterProvider<?> mMainAdapterProvider;
+    protected SearchAdapterProvider<?> mMainAdapterProvider;
     private View mBottomSheetHandleArea;
     private boolean mHasWorkApps;
     private float[] mBottomSheetCornerRadii;
@@ -202,9 +202,12 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     protected void initContent() {
         mMainAdapterProvider = createMainAdapterProvider();
 
-        mAH.set(AdapterHolder.MAIN, new AdapterHolder(AdapterHolder.MAIN));
-        mAH.set(AdapterHolder.WORK, new AdapterHolder(AdapterHolder.WORK));
-        mAH.set(SEARCH, new AdapterHolder(SEARCH));
+        mAH.set(AdapterHolder.MAIN, new AdapterHolder(AdapterHolder.MAIN,
+                new AlphabeticalAppsList<>(mActivityContext, mAllAppsStore, null)));
+        mAH.set(AdapterHolder.WORK, new AdapterHolder(AdapterHolder.WORK,
+                new AlphabeticalAppsList<>(mActivityContext, mAllAppsStore, mWorkManager)));
+        mAH.set(SEARCH, new AdapterHolder(SEARCH,
+                new AlphabeticalAppsList<>(mActivityContext, null, null)));
 
         getLayoutInflater().inflate(R.layout.all_apps_content, this);
         mHeader = findViewById(R.id.all_apps_header);
@@ -212,9 +215,9 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mBottomSheetHandleArea = findViewById(R.id.bottom_sheet_handle_area);
         mSearchRecyclerView = findViewById(R.id.search_results_list_view);
 
-        // Add the search box next to the header
+        // Add the search box above everything else.
         mSearchContainer = inflateSearchBox();
-        addView(mSearchContainer, indexOfChild(mHeader) + 1);
+        addView(mSearchContainer);
         mSearchUiManager = (SearchUiManager) mSearchContainer;
     }
 
@@ -344,7 +347,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 mAH.get(i).mRecyclerView.scrollToTop();
             }
         }
-        if (isHeaderVisible()) {
+        if (mHeader != null && mHeader.getVisibility() == VISIBLE) {
             mHeader.reset(animate);
         }
         // Reset the base recycler view after transitioning home.
@@ -465,6 +468,16 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             mAH.get(AdapterHolder.WORK).mRecyclerView = null;
         }
         setupHeader();
+
+        if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
+            // Keep the scroller above the search bar.
+            RelativeLayout.LayoutParams scrollerLayoutParams =
+                    (LayoutParams) findViewById(R.id.fast_scroller).getLayoutParams();
+            scrollerLayoutParams.addRule(RelativeLayout.ABOVE, R.id.search_container_all_apps);
+            scrollerLayoutParams.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            scrollerLayoutParams.bottomMargin = getResources().getDimensionPixelSize(
+                    R.dimen.fastscroll_bottom_margin_floating_search);
+        }
 
         mAllAppsStore.registerIconContainer(mAH.get(AdapterHolder.MAIN).mRecyclerView);
         mAllAppsStore.registerIconContainer(mAH.get(AdapterHolder.WORK).mRecyclerView);
@@ -627,10 +640,9 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_TOP);
     }
 
-    protected BaseAllAppsAdapter<T> createAdapter(AlphabeticalAppsList<T> appsList,
-            BaseAdapterProvider[] adapterProviders) {
+    protected BaseAllAppsAdapter<T> createAdapter(AlphabeticalAppsList<T> appsList) {
         return new AllAppsGridAdapter<>(mActivityContext, getLayoutInflater(), appsList,
-                adapterProviders);
+                mMainAdapterProvider);
     }
 
     // TODO(b/216683257): Remove when Taskbar All Apps supports search.
@@ -1001,10 +1013,6 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         return rv == null ? null : rv.getScrollbar();
     }
 
-    public boolean isHeaderVisible() {
-        return mHeader != null && mHeader.getVisibility() == View.VISIBLE;
-    }
-
     /**
      * Adds an update listener to animator that adds springs to the animation.
      */
@@ -1155,15 +1163,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         final Rect mPadding = new Rect();
         AllAppsRecyclerView mRecyclerView;
 
-        AdapterHolder(int type) {
+        AdapterHolder(int type, AlphabeticalAppsList<T> appsList) {
             mType = type;
-            mAppsList = new AlphabeticalAppsList<>(mActivityContext,
-                    isSearch() ? null : mAllAppsStore,
-                    isWork() ? mWorkManager : null);
-            BaseAdapterProvider[] adapterProviders =
-                    new BaseAdapterProvider[]{mMainAdapterProvider};
-
-            mAdapter = createAdapter(mAppsList, adapterProviders);
+            mAppsList = appsList;
+            mAdapter = createAdapter(mAppsList);
             mAppsList.setAdapter(mAdapter);
             mLayoutManager = mAdapter.getLayoutManager();
         }

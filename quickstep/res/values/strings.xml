@@ -231,20 +231,20 @@
     <string name="accessibility_rotate_button">Rotate screen</string>
 
     <!-- ******* Taskbar Edu ******* -->
-    <!-- Accessibility title for the taskbar education window. [CHAR_LIMIT=NONE] -->
+    <!-- Accessibility title for the Taskbar education window. [CHAR_LIMIT=NONE] -->
     <string name="taskbar_edu_a11y_title">Taskbar education</string>
-    <!-- Accessibility text spoken when the taskbar education panel appears [CHAR_LIMIT=NONE] -->
+    <!-- Accessibility text spoken when the Taskbar education panel appears [CHAR_LIMIT=NONE] -->
     <string name="taskbar_edu_opened">Taskbar education appeared</string>
-    <!-- Accessibility text spoken when the taskbar education panel disappears [CHAR_LIMIT=NONE] -->
+    <!-- Accessibility text spoken when the Taskbar education panel disappears [CHAR_LIMIT=NONE] -->
     <string name="taskbar_edu_closed">Taskbar education closed</string>
-    <!-- Text in dialog that lets a user know how they can use the taskbar to use multiple apps at once on their device. [CHAR_LIMIT=60] -->
+    <!-- Text in dialog that lets a user know how they can use the Taskbar to use multiple apps at once on their device. [CHAR_LIMIT=60] -->
     <string name="taskbar_edu_splitscreen">Drag an app to the side to use 2 apps at once</string>
-    <!-- Text in dialog that lets a user know how they can show the taskbar on their device. [CHAR_LIMIT=60] -->
-    <string name="taskbar_edu_stashing">Short swipe up to show the taskbar</string>
-    <!-- Text in dialog that lets a user know how the taskbar suggests apps based on their usage. [CHAR_LIMIT=60] -->
+    <!-- Text in dialog that lets a user know how they can show the Taskbar on their device. [CHAR_LIMIT=60] -->
+    <string name="taskbar_edu_stashing">Slow swipe up to show the Taskbar</string>
+    <!-- Text in dialog that lets a user know how the Taskbar suggests apps based on their usage. [CHAR_LIMIT=60] -->
     <string name="taskbar_edu_suggestions">Get app suggestions based on your routine</string>
-    <!-- Title in dialog that shows a user what they can do with the taskbar. [CHAR_LIMIT=60] -->
-    <string name="taskbar_edu_features">Do more with the taskbar</string>
+    <!-- Title in dialog that shows a user what they can do with the Taskbar. [CHAR_LIMIT=60] -->
+    <string name="taskbar_edu_features">Do more with the Taskbar</string>
     <!-- Text on button to go to the next screen of a tutorial [CHAR_LIMIT=16] -->
     <string name="taskbar_edu_next">Next</string>
     <!-- Text on button to go to the previous screen of a tutorial [CHAR_LIMIT=16] -->
@@ -267,13 +267,13 @@
     <string name="taskbar_button_notifications">Notifications</string>
     <!-- Content description for quick settings button [CHAR_LIMIT=16] -->
     <string name="taskbar_button_quick_settings">Quick Settings</string>
-    <!-- Accessibility title for the taskbar window. [CHAR_LIMIT=NONE] -->
+    <!-- Accessibility title for the Taskbar window. [CHAR_LIMIT=NONE] -->
     <string name="taskbar_a11y_title">Taskbar</string>
-    <!-- Accessibility title for the taskbar window on phones. [CHAR_LIMIT=NONE] -->
+    <!-- Accessibility title for the Taskbar window on phones. [CHAR_LIMIT=NONE] -->
     <string name="taskbar_phone_a11y_title">Navigation bar</string>
 
-    <!-- Label for moving drop target to the top or left side of the screen, depending on orientation (from the taskbar only). -->
+    <!-- Label for moving drop target to the top or left side of the screen, depending on orientation (from the Taskbar only). -->
     <string name="move_drop_target_top_or_left">Move to top&#47;left</string>
-    <!-- Label for moving drop target to the bottom or right side of the screen, depending on orientation (from the taskbar only). -->
+    <!-- Label for moving drop target to the bottom or right side of the screen, depending on orientation (from the Taskbar only). -->
     <string name="move_drop_target_bottom_or_right">Move to bottom&#47;right</string>
 </resources>

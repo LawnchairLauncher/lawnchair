@@ -96,9 +96,6 @@ public final class FeatureFlags {
             "ENABLE_EXPANDING_PAUSE_WORK_BUTTON", false,
             "Expand and collapse pause work button while scrolling");
 
-    public static final BooleanFlag ENABLE_HIDE_HEADER_STATIC = new DeviceFlag(
-            "ENABLE_HIDE_HEADER_STATIC", false, "Hide keyboard suggestion strip");
-
     public static final BooleanFlag COLLECT_SEARCH_HISTORY = new DeviceFlag(
             "COLLECT_SEARCH_HISTORY", false, "Allow launcher to collect search history for log");
 
