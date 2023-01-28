@@ -93,6 +93,8 @@
     -->
     <dimen name="fastscroll_width">58dp</dimen>
     <dimen name="fastscroll_end_margin">-26dp</dimen>
+    <!-- Extra margin between bottom of the scrollbar and the search bar protection layer. -->
+    <dimen name="fastscroll_bottom_margin_floating_search">4dp</dimen>
 
     <!-- PagedView -->
     <dimen name="fling_threshold_velocity">500dp</dimen>
@@ -138,11 +140,6 @@
     <dimen name="arrow_toast_corner_radius">2dp</dimen>
     <dimen name="arrow_toast_elevation">2dp</dimen>
     <dimen name="arrow_toast_arrow_width">10dp</dimen>
-
-    <!-- Search bar in All Apps -->
-    <dimen name="all_apps_header_max_elevation">3dp</dimen>
-    <dimen name="all_apps_header_scroll_to_elevation">16dp</dimen>
-    <dimen name="all_apps_header_shadow_height">6dp</dimen>
 
     <dimen name="all_apps_divider_margin_vertical">8dp</dimen>
 
