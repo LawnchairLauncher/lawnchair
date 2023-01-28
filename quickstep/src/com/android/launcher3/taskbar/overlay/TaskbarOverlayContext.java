@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.taskbar.overlay;
 
+import static android.app.ActivityTaskManager.INVALID_TASK_ID;
+
 import android.content.Context;
 import android.view.View;
 
@@ -28,7 +30,13 @@ import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarControllers;
 import com.android.launcher3.taskbar.TaskbarDragController;
 import com.android.launcher3.taskbar.TaskbarStashController;
+import com.android.launcher3.taskbar.TaskbarUIController;
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsContainerView;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource;
+import com.android.quickstep.views.RecentsView;
+import com.android.systemui.shared.recents.model.Task;
+
+import java.util.function.Consumer;
 
 /**
  * Window context for the taskbar overlays such as All Apps and EDU.
@@ -46,6 +54,7 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
     // We automatically stash taskbar when All Apps is opened in gesture navigation mode.
     private final boolean mWillTaskbarBeVisuallyStashed;
     private final int mStashedTaskbarHeight;
+    private final TaskbarUIController mUiController;
 
     public TaskbarOverlayContext(
             Context windowContext,
@@ -61,6 +70,8 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
         TaskbarStashController taskbarStashController = controllers.taskbarStashController;
         mWillTaskbarBeVisuallyStashed = taskbarStashController.supportsVisualStashing();
         mStashedTaskbarHeight = taskbarStashController.getStashedHeight();
+
+        mUiController = controllers.uiController;
     }
 
     boolean willTaskbarBeVisuallyStashed() {
@@ -108,6 +119,11 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
     @Override
     public PopupDataProvider getPopupDataProvider() {
         return mTaskbarContext.getPopupDataProvider();
+    }
+
+    @Override
+    public void startSplitSelection(SplitSelectSource splitSelectSource) {
+        mUiController.startSplitSelection(splitSelectSource);
     }
 
     @Override

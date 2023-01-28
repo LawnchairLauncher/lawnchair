@@ -70,6 +70,7 @@ import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RunnableList;
+import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.ViewCache;
 
 import java.util.List;
@@ -128,6 +129,12 @@ public interface ActivityContext {
             return LayoutInflater.from(context).cloneInContext(context);
         }
         return null;
+    }
+
+    /** Called when the first app in split screen has been selected */
+    default void startSplitSelection(
+            SplitConfigurationOptions.SplitSelectSource splitSelectSource) {
+        // Overridden, intentionally empty
     }
 
     /**

@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.uioverrides;
 
+import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 import static android.os.Trace.TRACE_TAG_APP;
 import static android.view.WindowManager.LayoutParams.PRIVATE_FLAG_OPTIMIZE_MEASURE;
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
@@ -32,6 +33,7 @@ import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_WIDGET_PICKER_DEPTH;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
@@ -46,8 +48,11 @@ import static com.android.launcher3.testing.shared.TestProtocol.QUICK_SWITCH_STA
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.quickstep.util.SplitAnimationTimings.TABLET_HOME_TO_SPLIT;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.app.ActivityManager;
@@ -57,6 +62,8 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.hardware.SensorManager;
 import android.hardware.devicestate.DeviceStateManager;
 import android.media.permission.SafeCloseable;
@@ -80,6 +87,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.app.viewcapture.ViewCapture;
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -92,6 +100,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.appprediction.PredictionRowView;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -133,6 +142,7 @@ import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.util.PendingSplitSelectInfo;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.widget.LauncherWidgetHolder;
 import com.android.quickstep.OverviewCommandHelper;
@@ -150,9 +160,11 @@ import com.android.quickstep.util.SplitToWorkspaceController;
 import com.android.quickstep.util.SplitWithKeyboardShortcutController;
 import com.android.quickstep.util.TISBindHelper;
 import com.android.quickstep.views.DesktopTaskView;
+import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
+import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.unfold.UnfoldSharedComponent;
 import com.android.systemui.unfold.UnfoldTransitionFactory;
@@ -168,6 +180,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -362,7 +375,7 @@ public class QuickstepLauncher extends Launcher {
         Stream<SystemShortcut.Factory> base = Stream.of(WellbeingModel.SHORTCUT_FACTORY);
         if (ENABLE_SPLIT_FROM_WORKSPACE.get() && mDeviceProfile.isTablet) {
             RecentsView recentsView = getOverviewPanel();
-            // TODO: Pull it out of PagedOrentationHandler for split from workspace.
+            // TODO(b/266482558): Pull it out of PagedOrentationHandler for split from workspace.
             List<SplitPositionOption> positions =
                     recentsView.getPagedOrientationHandler().getSplitPositionOptions(
                             mDeviceProfile);
@@ -547,6 +560,64 @@ public class QuickstepLauncher extends Launcher {
         }
         getWindow().addPrivateFlags(PRIVATE_FLAG_OPTIMIZE_MEASURE);
     }
+
+    @Override
+    public void startSplitSelection(SplitSelectSource splitSelectSource) {
+        RecentsView recentsView = getOverviewPanel();
+        // Check if there is already an instance of this app running, if so, initiate the split
+        // using that.
+        recentsView.findLastActiveTaskAndRunCallback(
+                splitSelectSource.intent.getComponent(),
+                (Consumer<Task>) foundTask -> {
+                    splitSelectSource.alreadyRunningTaskId = foundTask == null
+                            ? INVALID_TASK_ID
+                            : foundTask.key.id;
+                    if (ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+                        startSplitToHome(splitSelectSource);
+                    } else {
+                        recentsView.initiateSplitSelect(splitSelectSource);
+                    }
+                }
+        );
+    }
+
+    /** TODO(b/266482558) Migrate into SplitSelectStateController or someplace split specific. */
+    private void startSplitToHome(
+            SplitSelectSource source) {
+        AbstractFloatingView.closeAllOpenViews(this);
+        int splitPlaceholderSize = getResources().getDimensionPixelSize(
+                R.dimen.split_placeholder_size);
+        int splitPlaceholderInset = getResources().getDimensionPixelSize(
+                R.dimen.split_placeholder_inset);
+        Rect tempRect = new Rect();
+
+        SplitSelectStateController controller = getSplitSelectStateController();
+        controller.setInitialTaskSelect(source.intent, source.position.stagePosition,
+                source.itemInfo, source.splitEvent, source.alreadyRunningTaskId);
+
+        RecentsView recentsView = getOverviewPanel();
+        recentsView.getPagedOrientationHandler().getInitialSplitPlaceholderBounds(
+                splitPlaceholderSize, splitPlaceholderInset, getDeviceProfile(),
+                controller.getActiveSplitStagePosition(), tempRect);
+
+        PendingAnimation anim = new PendingAnimation(TABLET_HOME_TO_SPLIT.getDuration());
+        RectF startingTaskRect = new RectF();
+        final FloatingTaskView floatingTaskView = FloatingTaskView.getFloatingTaskView(this,
+                source.view, null /* thumbnail */, source.drawable, startingTaskRect);
+        floatingTaskView.setAlpha(1);
+        floatingTaskView.addStagingAnimation(anim, startingTaskRect, tempRect,
+                false /* fadeWithThumbnail */, true /* isStagedTask */);
+        controller.setFirstFloatingTaskView(floatingTaskView);
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                getDragLayer().removeView(floatingTaskView);
+                controller.resetState();
+            }
+        });
+        anim.buildAnim().start();
+    }
+
 
     @Override
     protected void onResume() {

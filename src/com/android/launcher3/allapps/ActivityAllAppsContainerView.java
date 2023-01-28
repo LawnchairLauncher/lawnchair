@@ -215,9 +215,9 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mBottomSheetHandleArea = findViewById(R.id.bottom_sheet_handle_area);
         mSearchRecyclerView = findViewById(R.id.search_results_list_view);
 
-        // Add the search box next to the header
+        // Add the search box above everything else.
         mSearchContainer = inflateSearchBox();
-        addView(mSearchContainer, indexOfChild(mHeader) + 1);
+        addView(mSearchContainer);
         mSearchUiManager = (SearchUiManager) mSearchContainer;
     }
 
@@ -468,6 +468,16 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             mAH.get(AdapterHolder.WORK).mRecyclerView = null;
         }
         setupHeader();
+
+        if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
+            // Keep the scroller above the search bar.
+            RelativeLayout.LayoutParams scrollerLayoutParams =
+                    (LayoutParams) findViewById(R.id.fast_scroller).getLayoutParams();
+            scrollerLayoutParams.addRule(RelativeLayout.ABOVE, R.id.search_container_all_apps);
+            scrollerLayoutParams.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            scrollerLayoutParams.bottomMargin = getResources().getDimensionPixelSize(
+                    R.dimen.fastscroll_bottom_margin_floating_search);
+        }
 
         mAllAppsStore.registerIconContainer(mAH.get(AdapterHolder.MAIN).mRecyclerView);
         mAllAppsStore.registerIconContainer(mAH.get(AdapterHolder.WORK).mRecyclerView);

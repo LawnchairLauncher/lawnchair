@@ -77,11 +77,15 @@ public abstract class FastScrollRecyclerView extends RecyclerView  {
         return getPaddingTop();
     }
 
+    public int getScrollBarMarginBottom() {
+        return getPaddingBottom();
+    }
+
     /**
      * Returns the height of the fast scroll bar
      */
     public int getScrollbarTrackHeight() {
-        return mScrollbar.getHeight() - getScrollBarTop() - getPaddingBottom();
+        return mScrollbar.getHeight() - getScrollBarTop() - getScrollBarMarginBottom();
     }
 
     /**
