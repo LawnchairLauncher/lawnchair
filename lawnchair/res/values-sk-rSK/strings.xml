@@ -104,7 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Balíček ikon</string>
-    <string name="themed_icon_pack">Themed Icon Source</string>
+    <string name="themed_icon_pack">Zdroj tematických ikon</string>
     <string name="system_icons">Systémové ikony</string>
     <string name="themed_icon_title">Tematické ikony</string>
     <string name="themed_icons_off_label">Vypnuté</string>
@@ -237,10 +237,10 @@
     <string name="smartspace_mode_google_search">Google Search</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="hotseat_mode_label">Search Bar Widget</string>
-    <string name="hotseat_mode_disabled">Disabled</string>
+    <string name="hotseat_mode_label">Widget vyhľadávacieho panelu</string>
+    <string name="hotseat_mode_disabled">Vypnuté</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
-    <string name="hotseat_mode_google_search">Google Search Bar</string>
+    <string name="hotseat_mode_google_search">Vyhľadávací panel Google</string>
     <string name="search_bar_label">Vyhľadávací panel</string>
     <string name="corner_radius_label">Polomer rohov</string>
     <string name="apply_accent_color_label">Použiť farebný akcent</string>
@@ -266,7 +266,7 @@
     <string name="pref_search_auto_show_keyboard">Automaticky ukázať klávesnicu</string>
     <string name="fuzzy_search_title">Fuzzy Search</string>
     <string name="fuzzy_search_desc">Približná zhoda pre vyhľadávanie aplikácií.</string>
-    <string name="max_search_result_count_title">Max Search Result Count</string>
+    <string name="max_search_result_count_title">Maximálny počet výsledkov vyhľadávania</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Stĺpce v Ponuke aplikácií</string>
     <string name="row_height_label">Výška riadka</string>

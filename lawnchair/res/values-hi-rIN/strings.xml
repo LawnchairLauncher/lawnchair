@@ -104,7 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">चिह्न पैक</string>
-    <string name="themed_icon_pack">Themed Icon Source</string>
+    <string name="themed_icon_pack">थीम्ड चिह्न स्रोत</string>
     <string name="system_icons">सिस्टम चिह्न</string>
     <string name="themed_icon_title">आइकन थीम करें</string>
     <string name="themed_icons_off_label">बंद</string>
@@ -266,7 +266,7 @@
     <string name="pref_search_auto_show_keyboard">स्वत: कीबोर्ड खोलें</string>
     <string name="fuzzy_search_title">अस्पष्ट खोज</string>
     <string name="fuzzy_search_desc">ऐप खोजों के लिए अनुमानित मिलान।</string>
-    <string name="max_search_result_count_title">Max Search Result Count</string>
+    <string name="max_search_result_count_title">अधिकतम खोज परिणाम गणना</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">ऐप ड्रॉअर कॉलम</string>
     <string name="row_height_label">रॉ की ऊंचाई</string>

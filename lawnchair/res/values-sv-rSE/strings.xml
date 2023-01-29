@@ -104,7 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Ikonpaket</string>
-    <string name="themed_icon_pack">Themed Icon Source</string>
+    <string name="themed_icon_pack">Källa till tematiserade ikoner</string>
     <string name="system_icons">Systemikoner</string>
     <string name="themed_icon_title">Tematiserade ikoner</string>
     <string name="themed_icons_off_label">Av</string>
