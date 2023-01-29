@@ -241,7 +241,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     override fun setupViews() {
         super.setupViews()
         val launcherRootView = findViewById<LauncherRootView>(R.id.launcher)
-        ViewTreeLifecycleOwner.set(launcherRootView, this)
+        launcherRootView.setViewTreeLifecycleOwner(this)
         launcherRootView.setViewTreeSavedStateRegistryOwner(this)
     }
 
