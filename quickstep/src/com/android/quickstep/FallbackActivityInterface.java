@@ -88,11 +88,6 @@ public final class FallbackActivityInterface extends
     }
 
     @Override
-    public boolean shouldCancelGestureOnDestroy() {
-        return false;
-    }
-
-    @Override
     public ActivityInitListener createActivityInitListener(
             Predicate<Boolean> onInitListener) {
         return new ActivityInitListener<>((activity, alreadyOnHome) ->
