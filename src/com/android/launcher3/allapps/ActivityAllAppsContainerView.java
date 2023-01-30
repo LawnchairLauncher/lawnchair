@@ -16,6 +16,7 @@
 package com.android.launcher3.allapps;
 
 import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.SEARCH;
+import static com.android.launcher3.allapps.AllAppsTransitionController.SWIPE_ALL_APPS_TO_HOME_MIN_SCALE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_COUNT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_PERSONAL_TAB;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_WORK_TAB;
@@ -26,6 +27,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Outline;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Path.Direction;
@@ -44,12 +46,14 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewOutlineProvider;
 import android.view.WindowInsets;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.Px;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
@@ -502,6 +506,19 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             mViewPager = (AllAppsPagedView) rvContainer;
             mViewPager.initParentViews(this);
             mViewPager.getPageIndicator().setOnActivePageChangedListener(this);
+            mViewPager.setOutlineProvider(new ViewOutlineProvider() {
+                @Override
+                public void getOutline(View view, Outline outline) {
+                    @Px final int bottomOffsetPx =
+                            (int) (ActivityAllAppsContainerView.this.getMeasuredHeight()
+                                    * SWIPE_ALL_APPS_TO_HOME_MIN_SCALE);
+                    outline.setRect(
+                            0,
+                            0,
+                            view.getMeasuredWidth(),
+                            view.getMeasuredHeight() + bottomOffsetPx);
+                }
+            });
 
             mWorkManager.reset();
             post(() -> mAH.get(AdapterHolder.WORK).applyPadding());
