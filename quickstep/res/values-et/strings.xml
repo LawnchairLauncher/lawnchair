@@ -95,13 +95,10 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Tegumiriba tutvustus"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Tegumiriba juhised kuvati"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Tegumiriba juhised on suletud"</string>
-    <!-- no translation found for taskbar_edu_splitscreen (5605512479258053350) -->
-    <skip />
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"2 rakenduse korraga kasutamiseks lohistage rakendus kõrvale"</string>
     <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Tegumiriba kuvamiseks pühkige korraks"</string>
-    <!-- no translation found for taskbar_edu_suggestions (8215044496435527982) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_features (2338325667726857642) -->
-    <skip />
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Hankige oma rutiini põhjal rakenduste soovitusi"</string>
+    <string name="taskbar_edu_features" msgid="2338325667726857642">"Tehke tegumiriba abil enamat"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Järgmine"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Tagasi"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Sule"</string>
