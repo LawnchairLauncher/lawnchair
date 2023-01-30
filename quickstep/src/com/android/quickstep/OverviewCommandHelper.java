@@ -218,7 +218,8 @@ public class OverviewCommandHelper {
                     InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
         }
 
-        GestureState gestureState = mService.createGestureState(GestureState.DEFAULT_STATE);
+        GestureState gestureState = mService.createGestureState(GestureState.DEFAULT_STATE,
+                false /* isTrackpadGesture */);
         gestureState.setHandlingAtomicEvent(true);
         AbsSwipeUpHandler interactionHandler = mService.getSwipeUpHandlerFactory()
                 .newHandler(gestureState, cmd.createTime);
