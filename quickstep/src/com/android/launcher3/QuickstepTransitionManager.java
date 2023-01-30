@@ -90,6 +90,7 @@ import android.provider.Settings;
 import android.util.Pair;
 import android.util.Size;
 import android.view.CrossWindowBlurListeners;
+import android.view.IRemoteAnimationFinishedCallback;
 import android.view.RemoteAnimationAdapter;
 import android.view.RemoteAnimationDefinition;
 import android.view.RemoteAnimationTarget;
@@ -115,6 +116,7 @@ import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.icons.FastBitmapDrawable;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.taskbar.LauncherTaskbarUIController;
@@ -144,6 +146,9 @@ import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.WorkspaceRevealAnim;
 import com.android.quickstep.views.FloatingWidgetView;
 import com.android.quickstep.views.RecentsView;
+import com.android.systemui.animation.ActivityLaunchAnimator;
+import com.android.systemui.animation.DelegateLaunchAnimatorController;
+import com.android.systemui.animation.RemoteAnimationDelegate;
 import com.android.systemui.shared.system.BlurUtils;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -223,7 +228,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     private RemoteAnimationProvider mRemoteAnimationProvider;
     // Strong refs to runners which are cleared when the launcher activity is destroyed
     private RemoteAnimationFactory mWallpaperOpenRunner;
-    private RemoteAnimationFactory mAppLaunchRunner;
     private RemoteAnimationFactory mKeyguardGoingAwayRunner;
 
     private RemoteAnimationFactory mWallpaperOpenTransitionRunner;
@@ -292,9 +296,18 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     public ActivityOptionsWrapper getActivityLaunchOptions(View v) {
         boolean fromRecents = isLaunchingFromRecents(v, null /* targets */);
         RunnableList onEndCallback = new RunnableList();
-        mAppLaunchRunner = new AppLaunchAnimationRunner(v, onEndCallback);
+
+        RemoteAnimationFactory delegateRunner = new AppLaunchAnimationRunner(v, onEndCallback);
+        ItemInfo tag = (ItemInfo) v.getTag();
+        if (tag != null && tag.shouldUseBackgroundAnimation()) {
+            ContainerAnimationRunner containerAnimationRunner =
+                    ContainerAnimationRunner.from(v, mStartingWindowListener);
+            if (containerAnimationRunner != null) {
+                delegateRunner = containerAnimationRunner;
+            }
+        }
         RemoteAnimationRunnerCompat runner = new LauncherAnimationRunner(
-                mHandler, mAppLaunchRunner, true /* startAtFrontOfQueue */);
+                mHandler, delegateRunner, true /* startAtFrontOfQueue */);
 
         // Note that this duration is a guess as we do not know if the animation will be a
         // recents launch or not for sure until we know the opening app targets.
@@ -1164,7 +1177,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             // Also clear strong references to the runners registered with the remote animation
             // definition so we don't have to wait for the system gc
             mWallpaperOpenRunner = null;
-            mAppLaunchRunner = null;
             mKeyguardGoingAwayRunner = null;
         }
     }
@@ -1761,6 +1773,79 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
     }
 
+    /** Remote animation runner to launch an app using System UI's animation library. */
+    private static class ContainerAnimationRunner implements RemoteAnimationFactory {
+
+        /** The delegate runner that handles the actual animation. */
+        private final RemoteAnimationDelegate<IRemoteAnimationFinishedCallback> mDelegate;
+
+        private ContainerAnimationRunner(
+                RemoteAnimationDelegate<IRemoteAnimationFinishedCallback> delegate) {
+            mDelegate = delegate;
+        }
+
+        @Nullable
+        private static ContainerAnimationRunner from(
+                View v, StartingWindowListener startingWindowListener) {
+            View viewToUse = findViewWithBackground(v);
+            if (viewToUse == null) {
+                viewToUse = v;
+            }
+
+            // TODO(b/265134143): create a CUJ type for interaction jank monitoring.
+            ActivityLaunchAnimator.Controller controllerDelegate =
+                    ActivityLaunchAnimator.Controller.fromView(viewToUse, null /* cujType */);
+
+            if (controllerDelegate == null) {
+                return null;
+            }
+
+            // This wrapper allows us to override the default value, telling the controller that the
+            // current window is below the animating window.
+            ActivityLaunchAnimator.Controller controller =
+                    new DelegateLaunchAnimatorController(controllerDelegate) {
+                        @Override
+                        public boolean isBelowAnimatingWindow() {
+                            return true;
+                        }
+                    };
+
+            ActivityLaunchAnimator.Callback callback = task -> ColorUtils.setAlphaComponent(
+                    startingWindowListener.getBackgroundColor(), 255);
+
+            return new ContainerAnimationRunner(
+                    new ActivityLaunchAnimator.AnimationDelegate(controller, callback));
+        }
+
+        /** Finds the closest parent of [view] (inclusive) with a background drawable. */
+        @Nullable
+        private static View findViewWithBackground(View view) {
+            View current = view;
+            while (current.getBackground() == null) {
+                if (!(current.getParent() instanceof View)) {
+                    return null;
+                }
+
+                current = (View) view.getParent();
+            }
+
+            return current;
+        }
+
+        @Override
+        public void onAnimationStart(int transit, RemoteAnimationTarget[] appTargets,
+                RemoteAnimationTarget[] wallpaperTargets, RemoteAnimationTarget[] nonAppTargets,
+                LauncherAnimationRunner.AnimationResult result) {
+            mDelegate.onAnimationStart(
+                    transit, appTargets, wallpaperTargets, nonAppTargets, result);
+        }
+
+        @Override
+        public void onAnimationCancelled(boolean isKeyguardOccluded) {
+            mDelegate.onAnimationCancelled(isKeyguardOccluded);
+        }
+    }
+
     /**
      * Class that holds all the variables for the app open animation.
      */
@@ -1829,8 +1914,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
     }
 
-    private static class StartingWindowListener extends IStartingWindowListener.Stub {
+    private class StartingWindowListener extends IStartingWindowListener.Stub {
         private QuickstepTransitionManager mTransitionManager;
+        private int mBackgroundColor;
 
         public void setTransitionManager(QuickstepTransitionManager transitionManager) {
             mTransitionManager = transitionManager;
@@ -1839,6 +1925,13 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         @Override
         public void onTaskLaunching(int taskId, int supportedType, int color) {
             mTransitionManager.mTaskStartParams.put(taskId, Pair.create(supportedType, color));
+            mBackgroundColor = color;
+        }
+
+        public int getBackgroundColor() {
+            return mBackgroundColor == Color.TRANSPARENT
+                    ? mLauncher.getScrimView().getBackgroundColor()
+                    : mBackgroundColor;
         }
     }
 

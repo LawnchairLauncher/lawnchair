@@ -23,6 +23,7 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.app.ActivityOptions;
+import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -45,6 +46,7 @@ import android.view.WindowInsetsController;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BubbleTextView;
@@ -275,6 +277,29 @@ public interface ActivityContext {
                 }
             });
         }
+    }
+
+
+    /**
+     * Sends a pending intent animating from a view.
+     *
+     * @param v View to animate.
+     * @param intent The pending intent being launched.
+     * @param item Item associated with the view.
+     * @return {@code true} if the intent is sent successfully.
+     */
+    default boolean sendPendingIntentWithAnimation(
+            @NonNull View v, PendingIntent intent, @Nullable ItemInfo item) {
+        Bundle optsBundle = getActivityLaunchOptions(v, item).toBundle();
+        try {
+            intent.send(null, 0, null, null, null, null, optsBundle);
+            return true;
+        } catch (PendingIntent.CanceledException e) {
+            Toast.makeText(v.getContext(),
+                    v.getContext().getResources().getText(R.string.shortcut_not_available),
+                    Toast.LENGTH_SHORT).show();
+        }
+        return false;
     }
 
     /**
