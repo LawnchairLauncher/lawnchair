@@ -478,8 +478,6 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         if (animateToHotseat) {
             mFakeTaskbarViewCallback = () ->
                     mFakeTaskbarView.animateDisappearanceToHotseat(mFakeHotseatView);
-        } else {
-            mFakeTaskbarViewCallback = mFakeTaskbarView::animateDisappearanceToBottom;
         }
         mFakeTaskbarView.post(mFakeTaskbarViewCallback);
     }
@@ -494,8 +492,6 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         if (animateFromHotseat) {
             mFakeTaskbarViewCallback = () ->
                     mFakeTaskbarView.animateAppearanceFromHotseat(mFakeHotseatView);
-        } else {
-            mFakeTaskbarViewCallback = mFakeTaskbarView::animateAppearanceFromBottom;
         }
         mFakeTaskbarView.post(mFakeTaskbarViewCallback);
     }
