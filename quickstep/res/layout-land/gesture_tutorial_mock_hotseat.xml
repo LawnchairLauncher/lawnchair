@@ -31,7 +31,7 @@
 
         app:cardElevation="0dp"
         app:cardCornerRadius="@dimen/gesture_tutorial_hotseat_icon_corner_radius"
-        app:cardBackgroundColor="@color/mock_app_icon_1"
+        app:cardBackgroundColor="@color/mock_app_icon"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintVertical_chainStyle="spread_inside"
         app:layout_constraintTop_toTopOf="parent"
@@ -45,7 +45,7 @@
 
         app:cardElevation="0dp"
         app:cardCornerRadius="@dimen/gesture_tutorial_hotseat_icon_corner_radius"
-        app:cardBackgroundColor="@color/mock_app_icon_2"
+        app:cardBackgroundColor="@color/mock_app_icon"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toBottomOf="@id/hotseat_icon_1"
         app:layout_constraintBottom_toTopOf="@id/hotseat_icon_3"
@@ -58,7 +58,7 @@
 
         app:cardElevation="0dp"
         app:cardCornerRadius="@dimen/gesture_tutorial_hotseat_icon_corner_radius"
-        app:cardBackgroundColor="@color/mock_app_icon_3"
+        app:cardBackgroundColor="@color/mock_app_icon"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toBottomOf="@id/hotseat_icon_2"
         app:layout_constraintBottom_toTopOf="@id/hotseat_icon_4"
@@ -71,7 +71,7 @@
 
         app:cardElevation="0dp"
         app:cardCornerRadius="@dimen/gesture_tutorial_hotseat_icon_corner_radius"
-        app:cardBackgroundColor="@color/mock_app_icon_4"
+        app:cardBackgroundColor="@color/mock_app_icon"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toBottomOf="@id/hotseat_icon_3"
         app:layout_constraintBottom_toBottomOf="parent"
