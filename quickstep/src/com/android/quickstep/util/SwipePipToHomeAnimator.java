@@ -22,27 +22,23 @@ import android.animation.Animator;
 import android.animation.RectEvaluator;
 import android.content.ComponentName;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceControl;
-import android.view.SurfaceSession;
 import android.view.View;
 import android.window.PictureInPictureSurfaceTransaction;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
-import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.util.Themes;
 import com.android.quickstep.TaskAnimationManager;
 import com.android.systemui.shared.pip.PipSurfaceTransactionHelper;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
+import com.android.wm.shell.pip.PipContentOverlay;
 
 /**
  * Subclass of {@link RectFSpringAnim} that animates an Activity to PiP (picture-in-picture) window
@@ -65,7 +61,10 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
     private final Rect mDestinationBounds = new Rect();
     private final PipSurfaceTransactionHelper mSurfaceTransactionHelper;
 
-    /** for calculating transform in {@link #onAnimationUpdate(AppCloseConfig, RectF, float)} */
+    /**
+     * For calculating transform in
+     * {@link #onAnimationUpdate(SurfaceControl.Transaction, RectF, float)}
+     */
     private final RectEvaluator mInsetsEvaluator = new RectEvaluator(new Rect());
     private final Rect mSourceHintRectInsets;
     private final Rect mSourceInsets = new Rect();
@@ -144,31 +143,17 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
             mSourceRectHint.setEmpty();
             mSourceHintRectInsets = null;
 
-            // Create a new overlay layer
-            SurfaceSession session = new SurfaceSession();
-            mContentOverlay = new SurfaceControl.Builder(session)
-                    .setCallsite("SwipePipToHomeAnimator")
-                    .setName("PipContentOverlay")
-                    .setColorLayer()
-                    .build();
-            SurfaceControl.Transaction t = new SurfaceControl.Transaction();
-            t.show(mContentOverlay);
-            t.setLayer(mContentOverlay, Integer.MAX_VALUE);
-            int color = Themes.getColorBackground(view.getContext());
-            float[] bgColor = new float[] {Color.red(color) / 255f, Color.green(color) / 255f,
-                    Color.blue(color) / 255f};
-            t.setColor(mContentOverlay, bgColor);
-            t.setAlpha(mContentOverlay, 0f);
-            t.reparent(mContentOverlay, mLeash);
-            t.apply();
-
+            // Create a new overlay layer. We do not call detach on this instance, it's propagated
+            // to other classes like PipTaskOrganizer / RecentsAnimationController to complete
+            // the cleanup.
+            final PipContentOverlay.PipColorOverlay overlay =
+                    new PipContentOverlay.PipColorOverlay(view.getContext());
+            final SurfaceControl.Transaction tx = new SurfaceControl.Transaction();
+            mContentOverlay = overlay.getLeash();
+            overlay.attach(tx, mLeash);
             addOnUpdateListener((currentRect, progress) -> {
-                float alpha = progress < 0.5f
-                        ? 0
-                        : Utilities.mapToRange(Math.min(progress, 1f), 0.5f, 1f,
-                                0f, 1f, Interpolators.FAST_OUT_SLOW_IN);
-                t.setAlpha(mContentOverlay, alpha);
-                t.apply();
+                overlay.onAnimationUpdate(tx, progress);
+                tx.apply();
             });
         } else {
             mSourceRectHint.set(sourceRectHint);
