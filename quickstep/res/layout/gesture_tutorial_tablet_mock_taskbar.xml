@@ -2,115 +2,240 @@
 <com.android.quickstep.interaction.AnimatedTaskbarView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/gesture_tutorial_mock_taskbar_height">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clipChildren="false">
 
+    <!-- Pill-shaped background -->
     <View
         android:id="@+id/taskbar_background"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/gesture_tutorial_taskbar_color"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/mock_taskbar_background"
+        android:clipToOutline="true"
 
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <!-- Container for the all apps button and app icons -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/icon_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/gesture_tutorial_taskbar_padding"
 
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <androidx.cardview.widget.CardView
+        <!-- All apps button -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/taskbar_all_apps"
+            android:layout_width="@dimen/gesture_tutorial_taskbar_icon_size"
+            android:layout_height="@dimen/gesture_tutorial_taskbar_icon_size"
+            android:layout_marginEnd="@dimen/taskbar_icon_spacing"
+            android:padding="@dimen/gesture_tutorial_taskbar_padding"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/taskbar_icon_1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <!-- 9 mini circles representing the all apps button icon -->
+            <View
+                android:id="@+id/all_apps_mini_1"
+                android:layout_width="@dimen/gesture_tutorial_taskbar_all_apps_mini_size"
+                android:layout_height="@dimen/gesture_tutorial_taskbar_all_apps_mini_size"
+                android:background="@drawable/mock_app_icon"
+                android:clipToOutline="true"
+
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintVertical_chainStyle="spread_inside"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/all_apps_mini_4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/all_apps_mini_2"/>
+
+            <View
+                android:id="@+id/all_apps_mini_2"
+                android:layout_width="@dimen/gesture_tutorial_taskbar_all_apps_mini_size"
+                android:layout_height="@dimen/gesture_tutorial_taskbar_all_apps_mini_size"
+                android:background="@drawable/mock_app_icon"
+                android:clipToOutline="true"
+
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintVertical_chainStyle="spread_inside"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/all_apps_mini_5"
+                app:layout_constraintStart_toEndOf="@id/all_apps_mini_1"
+                app:layout_constraintEnd_toStartOf="@id/all_apps_mini_3"/>
+
+            <View
+                android:id="@+id/all_apps_mini_3"
+                android:layout_width="@dimen/gesture_tutorial_taskbar_all_apps_mini_size"
+                android:layout_height="@dimen/gesture_tutorial_taskbar_all_apps_mini_size"
+                android:background="@drawable/mock_app_icon"
+                android:clipToOutline="true"
+
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintVertical_chainStyle="spread_inside"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/all_apps_mini_6"
+                app:layout_constraintStart_toEndOf="@id/all_apps_mini_2"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <View
+                android:id="@+id/all_apps_mini_4"
+                android:layout_width="@dimen/gesture_tutorial_taskbar_all_apps_mini_size"
+                android:layout_height="@dimen/gesture_tutorial_taskbar_all_apps_mini_size"
+                android:background="@drawable/mock_app_icon"
+                android:clipToOutline="true"
+
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintTop_toBottomOf="@id/all_apps_mini_1"
+                app:layout_constraintBottom_toTopOf="@id/all_apps_mini_7"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/all_apps_mini_5"/>
+
+            <View
+                android:id="@+id/all_apps_mini_5"
+                android:layout_width="@dimen/gesture_tutorial_taskbar_all_apps_mini_size"
+                android:layout_height="@dimen/gesture_tutorial_taskbar_all_apps_mini_size"
+                android:background="@drawable/mock_app_icon"
+                android:clipToOutline="true"
+
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintTop_toBottomOf="@id/all_apps_mini_2"
+                app:layout_constraintBottom_toTopOf="@id/all_apps_mini_8"
+                app:layout_constraintStart_toEndOf="@id/all_apps_mini_4"
+                app:layout_constraintEnd_toStartOf="@id/all_apps_mini_6"/>
+
+            <View
+                android:id="@+id/all_apps_mini_6"
+                android:layout_width="@dimen/gesture_tutorial_taskbar_all_apps_mini_size"
+                android:layout_height="@dimen/gesture_tutorial_taskbar_all_apps_mini_size"
+                android:background="@drawable/mock_app_icon"
+                android:clipToOutline="true"
+
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintTop_toBottomOf="@id/all_apps_mini_3"
+                app:layout_constraintBottom_toTopOf="@id/all_apps_mini_9"
+                app:layout_constraintStart_toEndOf="@id/all_apps_mini_5"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <View
+                android:id="@+id/all_apps_mini_7"
+                android:layout_width="@dimen/gesture_tutorial_taskbar_all_apps_mini_size"
+                android:layout_height="@dimen/gesture_tutorial_taskbar_all_apps_mini_size"
+                android:background="@drawable/mock_app_icon"
+                android:clipToOutline="true"
+
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintTop_toBottomOf="@id/all_apps_mini_4"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/all_apps_mini_8"/>
+
+            <View
+                android:id="@+id/all_apps_mini_8"
+                android:layout_width="@dimen/gesture_tutorial_taskbar_all_apps_mini_size"
+                android:layout_height="@dimen/gesture_tutorial_taskbar_all_apps_mini_size"
+                android:background="@drawable/mock_app_icon"
+                android:clipToOutline="true"
+
+                app:layout_constraintTop_toBottomOf="@id/all_apps_mini_5"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/all_apps_mini_7"
+                app:layout_constraintEnd_toStartOf="@id/all_apps_mini_9"/>
+
+            <View
+                android:id="@+id/all_apps_mini_9"
+                android:layout_width="@dimen/gesture_tutorial_taskbar_all_apps_mini_size"
+                android:layout_height="@dimen/gesture_tutorial_taskbar_all_apps_mini_size"
+                android:background="@drawable/mock_app_icon"
+                android:clipToOutline="true"
+
+                app:layout_constraintTop_toBottomOf="@id/all_apps_mini_6"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/all_apps_mini_8"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- App icons -->
+        <View
             android:id="@+id/taskbar_icon_1"
             android:layout_width="@dimen/gesture_tutorial_taskbar_icon_size"
             android:layout_height="@dimen/gesture_tutorial_taskbar_icon_size"
-            android:layout_marginStart="@dimen/gesture_tutorial_taskbar_padding_start_end"
+            android:layout_marginStart="@dimen/taskbar_icon_spacing"
+            android:layout_marginEnd="@dimen/taskbar_icon_spacing"
+            android:background="@drawable/mock_app_icon"
+            android:clipToOutline="true"
 
-            app:cardElevation="0dp"
-            app:cardCornerRadius="@dimen/gesture_tutorial_taskbar_icon_corner_radius"
-            app:cardBackgroundColor="@color/mock_app_icon_1"
-            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/taskbar_all_apps"
             app:layout_constraintEnd_toStartOf="@id/taskbar_icon_2"/>
 
-        <androidx.cardview.widget.CardView
+        <View
             android:id="@+id/taskbar_icon_2"
             android:layout_width="@dimen/gesture_tutorial_taskbar_icon_size"
             android:layout_height="@dimen/gesture_tutorial_taskbar_icon_size"
+            android:layout_marginStart="@dimen/taskbar_icon_spacing"
+            android:layout_marginEnd="@dimen/taskbar_icon_spacing"
+            android:background="@drawable/mock_app_icon"
+            android:clipToOutline="true"
 
-            app:cardElevation="0dp"
-            app:cardCornerRadius="@dimen/gesture_tutorial_taskbar_icon_corner_radius"
-            app:cardBackgroundColor="@color/mock_app_icon_2"
-            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/taskbar_icon_1"
             app:layout_constraintEnd_toStartOf="@id/taskbar_icon_3"/>
 
-        <androidx.cardview.widget.CardView
+        <View
             android:id="@+id/taskbar_icon_3"
             android:layout_width="@dimen/gesture_tutorial_taskbar_icon_size"
             android:layout_height="@dimen/gesture_tutorial_taskbar_icon_size"
+            android:layout_marginStart="@dimen/taskbar_icon_spacing"
+            android:layout_marginEnd="@dimen/taskbar_icon_spacing"
+            android:background="@drawable/mock_app_icon"
+            android:clipToOutline="true"
 
-            app:cardElevation="0dp"
-            app:cardCornerRadius="@dimen/gesture_tutorial_taskbar_icon_corner_radius"
-            app:cardBackgroundColor="@color/mock_app_icon_3"
-            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/taskbar_icon_2"
             app:layout_constraintEnd_toStartOf="@id/taskbar_icon_4"/>
 
-        <androidx.cardview.widget.CardView
+        <View
             android:id="@+id/taskbar_icon_4"
             android:layout_width="@dimen/gesture_tutorial_taskbar_icon_size"
             android:layout_height="@dimen/gesture_tutorial_taskbar_icon_size"
+            android:layout_marginStart="@dimen/taskbar_icon_spacing"
+            android:layout_marginEnd="@dimen/taskbar_icon_spacing"
+            android:background="@drawable/mock_app_icon"
+            android:clipToOutline="true"
 
-            app:cardElevation="0dp"
-            app:cardCornerRadius="@dimen/gesture_tutorial_taskbar_icon_corner_radius"
-            app:cardBackgroundColor="@color/mock_app_icon_1"
-            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/taskbar_icon_3"
             app:layout_constraintEnd_toStartOf="@id/taskbar_icon_5"/>
 
-        <androidx.cardview.widget.CardView
+        <View
             android:id="@+id/taskbar_icon_5"
             android:layout_width="@dimen/gesture_tutorial_taskbar_icon_size"
             android:layout_height="@dimen/gesture_tutorial_taskbar_icon_size"
+            android:layout_marginStart="@dimen/taskbar_icon_spacing"
+            android:background="@drawable/mock_app_icon"
+            android:clipToOutline="true"
 
-            app:cardElevation="0dp"
-            app:cardCornerRadius="@dimen/gesture_tutorial_taskbar_icon_corner_radius"
-            app:cardBackgroundColor="@color/mock_app_icon_4"
-            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/taskbar_icon_4"
-            app:layout_constraintEnd_toStartOf="@id/taskbar_icon_6"/>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/taskbar_icon_6"
-            android:layout_width="@dimen/gesture_tutorial_taskbar_icon_size"
-            android:layout_height="@dimen/gesture_tutorial_taskbar_icon_size"
-            android:layout_marginEnd="@dimen/gesture_tutorial_taskbar_padding_start_end"
-
-            app:cardElevation="0dp"
-            app:cardCornerRadius="@dimen/gesture_tutorial_taskbar_icon_corner_radius"
-            app:cardBackgroundColor="@color/mock_app_icon_2"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/taskbar_icon_5"
             app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

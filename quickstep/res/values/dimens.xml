@@ -196,9 +196,13 @@
     <integer name="gesture_tutorial_webpage_extra_lines_visibility">0</integer> <!-- VISIBLE -->
 
     <!-- Gesture Tutorial mock taskbar -->
-    <dimen name="gesture_tutorial_taskbar_icon_size">44dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_icon_size">52dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_all_apps_mini_size">7dp</dimen>
     <dimen name="gesture_tutorial_taskbar_icon_corner_radius">100dp</dimen>
-    <dimen name="gesture_tutorial_taskbar_padding_start_end">52dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_corner_radius">100dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_padding">12dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_icon_spacing">24dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_margin_bottom">24dp</dimen>
 
     <!-- All Set page -->
     <dimen name="allset_page_margin_horizontal">40dp</dimen>
