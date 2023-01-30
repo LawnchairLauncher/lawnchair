@@ -487,13 +487,6 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     }
 
     /**
-     * Returns true if IME switcher is visible
-     */
-    public boolean isImeSwitcherVisible() {
-        return (mState & FLAG_SWITCHER_SHOWING) != 0;
-    }
-
-    /**
      * Returns true if the home button is disabled
      */
     public boolean isHomeDisabled() {
