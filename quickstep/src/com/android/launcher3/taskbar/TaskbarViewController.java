@@ -79,9 +79,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     public static final int ALPHA_INDEX_RECENTS_DISABLED = 3;
     public static final int ALPHA_INDEX_NOTIFICATION_EXPANDED = 4;
     public static final int ALPHA_INDEX_ASSISTANT_INVOKED = 5;
-    public static final int ALPHA_INDEX_IME_BUTTON_NAV = 6;
-    public static final int ALPHA_INDEX_SMALL_SCREEN = 7;
-    private static final int NUM_ALPHA_CHANNELS = 8;
+    public static final int ALPHA_INDEX_SMALL_SCREEN = 6;
+    private static final int NUM_ALPHA_CHANNELS = 7;
 
     private final TaskbarActivityContext mActivity;
     private final TaskbarView mTaskbarView;
@@ -198,14 +197,6 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     public void setImeIsVisible(boolean isImeVisible) {
         mTaskbarView.setTouchesEnabled(!isImeVisible
                 || DisplayController.isTransientTaskbar(mActivity));
-    }
-
-    /**
-     * Should be called when the IME switcher visibility changes.
-     */
-    public void setIsImeSwitcherVisible(boolean isImeSwitcherVisible) {
-        mTaskbarIconAlpha.get(ALPHA_INDEX_IME_BUTTON_NAV).setValue(
-                isImeSwitcherVisible ? 0 : 1);
     }
 
     /**
