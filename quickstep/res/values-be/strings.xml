@@ -95,13 +95,10 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Інфармацыя пра панэль задач"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"З\'явілася панэль навучання на панэлі задач"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Панэль навучання на панэлі задач закрыта"</string>
-    <!-- no translation found for taskbar_edu_splitscreen (5605512479258053350) -->
-    <skip />
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Каб карыстацца 2 праграмамі, перацягніце адну з іх убок"</string>
     <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Хутка правядзіце пальцам уверх, каб убачыць панэль задач"</string>
-    <!-- no translation found for taskbar_edu_suggestions (8215044496435527982) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_features (2338325667726857642) -->
-    <skip />
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Атрымлівайце прапановы праграм з улікам вашых дзеянняў"</string>
+    <string name="taskbar_edu_features" msgid="2338325667726857642">"Выкарыстоўвайце магчымасці панэлі задач"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Далей"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Назад"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Закрыць"</string>
