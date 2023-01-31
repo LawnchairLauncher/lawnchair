@@ -77,6 +77,10 @@ public class ScrimView extends View implements Insettable {
         super.setBackgroundColor(color);
     }
 
+    public int getBackgroundColor() {
+        return mBackgroundColor;
+    }
+
     @Override
     public void onVisibilityAggregated(boolean isVisible) {
         super.onVisibilityAggregated(isVisible);

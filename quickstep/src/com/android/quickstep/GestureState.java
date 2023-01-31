@@ -139,6 +139,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     private final BaseActivityInterface mActivityInterface;
     private final MultiStateCallback mStateCallback;
     private final int mGestureId;
+    private boolean mIsTrackpadGesture;
 
     private CachedTaskInfo mRunningTask;
     private GestureEndTarget mEndTarget;
@@ -245,6 +246,20 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
      */
     public int getGestureId() {
         return mGestureId;
+    }
+
+    /**
+     * Sets if the gesture is is from the trackpad.
+     */
+    public void setIsTrackpadGesture(boolean isTrackpadGesture) {
+        mIsTrackpadGesture = isTrackpadGesture;
+    }
+
+    /**
+     * @return if the gesture is from the trackpad.
+     */
+    public boolean isTrackpadGesture() {
+        return mIsTrackpadGesture;
     }
 
     /**

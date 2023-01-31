@@ -272,7 +272,7 @@ public final class FeatureFlags {
 
     public static final BooleanFlag ENABLE_SEARCH_RESULT_LAUNCH_TRANSITION = new DeviceFlag(
             "ENABLE_SEARCH_RESULT_LAUNCH_TRANSITION", false,
-            "Enable option to launch search results using the new standardized transitions");
+            "Enable option to launch search results using the new view container transitions");
 
     public static final BooleanFlag TWO_PREDICTED_ROWS_ALL_APPS_SEARCH = new DeviceFlag(
             "TWO_PREDICTED_ROWS_ALL_APPS_SEARCH", false,

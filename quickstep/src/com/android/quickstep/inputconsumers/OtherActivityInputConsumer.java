@@ -205,7 +205,10 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         }
         int edgeFlags = ev.getEdgeFlags();
         ev.setEdgeFlags(edgeFlags | EDGE_NAV_BAR);
-        mRecentsViewDispatcher.dispatchEvent(ev);
+        // Disable scrolling in RecentsView for trackpad gestures.
+        if (!mGestureState.isTrackpadGesture()) {
+            mRecentsViewDispatcher.dispatchEvent(ev);
+        }
         ev.setEdgeFlags(edgeFlags);
 
         mVelocityTracker.addMovement(ev);
@@ -289,9 +292,16 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
                 if (!mPassedPilferInputSlop) {
                     if (passedSlop) {
-                        if (mDisableHorizontalSwipe
-                                && Math.abs(displacementX) > Math.abs(displacementY)) {
-                            // Horizontal gesture is not allowed in this region
+                        // Horizontal gesture is not allowed in this region
+                        boolean isHorizontalSwipeWhenDisabled =
+                                (mDisableHorizontalSwipe && Math.abs(displacementX) > Math.abs(
+                                        displacementY));
+                        // Do not allow quick switch for trackpad 3-finger gestures
+                        // TODO(b/261815244): might need to impose stronger conditions for the swipe
+                        //  angle
+                        boolean noQuickSwitchForTrackpadGesture = mGestureState.isTrackpadGesture()
+                                && isLikelyToStartNewTask;
+                        if (isHorizontalSwipeWhenDisabled || noQuickSwitchForTrackpadGesture) {
                             forceCancelGesture(ev);
                             break;
                         }
@@ -306,7 +316,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         if (!mPassedWindowMoveSlop) {
                             mPassedWindowMoveSlop = true;
                             mStartDisplacement = Math.min(displacement, -mTouchSlop);
-
                         }
                         notifyGestureStarted(isLikelyToStartNewTask);
                     }

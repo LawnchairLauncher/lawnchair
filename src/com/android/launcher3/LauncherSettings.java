@@ -30,6 +30,20 @@ import com.android.launcher3.model.data.ItemInfo;
 public class LauncherSettings {
 
     /**
+     * Types of animations.
+     */
+    public static final class Animation {
+        /**
+         * The default animation for a given view/item info type.
+         */
+        public static final int DEFAULT = 0;
+        /**
+         * An animation using the view's background.
+         */
+        public static final int VIEW_BACKGROUND = 1;
+    }
+
+    /**
      * Favorites.
      */
     public static final class Favorites implements BaseColumns {
