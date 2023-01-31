@@ -68,7 +68,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
-import com.android.app.viewcapture.ViewCapture;
+import com.android.app.viewcapture.SettingsAwareViewCapture;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
@@ -1208,7 +1208,7 @@ public class TouchInteractionService extends Service
             mTaskbarManager.dumpLogs("", pw);
 
             if (FeatureFlags.CONTINUOUS_VIEW_TREE_CAPTURE.get()) {
-                ViewCapture.getInstance().dump(pw, fd, this);
+                SettingsAwareViewCapture.getInstance(this).dump(pw, fd, this);
             }
         }
     }
