@@ -18,6 +18,7 @@ package com.android.launcher3.taskbar;
 import static android.view.View.AccessibilityDelegate;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_REGION;
+import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
@@ -864,8 +865,8 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         mAreNavButtonsInSeparateWindow = true;
         mContext.getDragLayer().removeView(mNavButtonsView);
         mSeparateWindowParent.addView(mNavButtonsView);
-        WindowManager.LayoutParams windowLayoutParams = mContext.createDefaultWindowLayoutParams();
-        windowLayoutParams.setTitle(NAV_BUTTONS_SEPARATE_WINDOW_TITLE);
+        WindowManager.LayoutParams windowLayoutParams = mContext.createDefaultWindowLayoutParams(
+                TYPE_NAVIGATION_BAR_PANEL, NAV_BUTTONS_SEPARATE_WINDOW_TITLE);
         mContext.addWindowView(mSeparateWindowParent, windowLayoutParams);
 
     }

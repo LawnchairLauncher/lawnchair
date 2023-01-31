@@ -67,7 +67,8 @@ public class TaskbarScrimViewController implements TaskbarControllers.LoggableTa
         final boolean manageMenuExpanded =
                 (stateFlags & SYSUI_STATE_BUBBLES_MANAGE_MENU_EXPANDED) != 0;
         final boolean showScrim = !mControllers.navbarButtonsViewController.isImeVisible()
-                && bubblesExpanded && mControllers.taskbarStashController.isInAppAndNotStashed();
+                && bubblesExpanded
+                && mControllers.taskbarStashController.isTaskbarVisibleAndNotStashing();
         final float scrimAlpha = manageMenuExpanded
                 // When manage menu shows there's the first scrim and second scrim so figure out
                 // what the total transparency would be.

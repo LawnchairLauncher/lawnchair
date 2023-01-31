@@ -242,7 +242,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
     public void init(@NonNull TaskbarSharedState sharedState) {
         mLastRequestedNonFullscreenHeight = getDefaultTaskbarWindowHeight();
-        mWindowLayoutParams = createDefaultWindowLayoutParams();
+        mWindowLayoutParams =
+                createDefaultWindowLayoutParams(TYPE_NAVIGATION_BAR_PANEL, WINDOW_TITLE);
 
         // Initialize controllers after all are constructed.
         mControllers.init(sharedState);
@@ -318,16 +319,12 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         return super.getStatsLogManager();
     }
 
-    /** @see #createDefaultWindowLayoutParams(int) */
-    public WindowManager.LayoutParams createDefaultWindowLayoutParams() {
-        return createDefaultWindowLayoutParams(TYPE_NAVIGATION_BAR_PANEL);
-    }
-
     /**
      * Creates LayoutParams for adding a view directly to WindowManager as a new window.
      * @param type The window type to pass to the created WindowManager.LayoutParams.
+     * @param title The window title to pass to the created WindowManager.LayoutParams.
      */
-    public WindowManager.LayoutParams createDefaultWindowLayoutParams(int type) {
+    public WindowManager.LayoutParams createDefaultWindowLayoutParams(int type, String title) {
         DeviceProfile deviceProfile = getDeviceProfile();
         // Taskbar is on the logical bottom of the screen
         boolean isVerticalBarLayout = TaskbarManager.isPhoneMode(deviceProfile) &&
@@ -347,7 +344,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 type,
                 windowFlags,
                 PixelFormat.TRANSLUCENT);
-        windowLayoutParams.setTitle(WINDOW_TITLE);
+        windowLayoutParams.setTitle(title);
         windowLayoutParams.packageName = getPackageName();
         windowLayoutParams.gravity = !isVerticalBarLayout ?
                 Gravity.BOTTOM :
