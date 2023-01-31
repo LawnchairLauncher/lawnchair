@@ -86,7 +86,7 @@ import androidx.annotation.BinderThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.app.viewcapture.ViewCapture;
+import com.android.app.viewcapture.SettingsAwareViewCapture;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -556,7 +556,7 @@ public class QuickstepLauncher extends Launcher {
         addMultiWindowModeChangedListener(mDepthController);
         initUnfoldTransitionProgressProvider();
         if (FeatureFlags.CONTINUOUS_VIEW_TREE_CAPTURE.get()) {
-            mViewCapture = ViewCapture.getInstance().startCapture(getWindow());
+            mViewCapture = SettingsAwareViewCapture.getInstance(this).startCapture(getWindow());
         }
         getWindow().addPrivateFlags(PRIVATE_FLAG_OPTIMIZE_MEASURE);
     }
