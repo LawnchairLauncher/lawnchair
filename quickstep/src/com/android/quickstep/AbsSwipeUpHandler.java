@@ -1283,6 +1283,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             if (mRecentsAnimationController != null) {
                 mRecentsAnimationController.detachNavigationBarFromApp(true);
             }
+            if (mIsTransientTaskbar) {
+                setDividerShown(false /* shown */, true /* immediate */);
+            }
         } else if (endTarget == RECENTS) {
             if (mRecentsView != null) {
                 int nearestPage = mRecentsView.getDestinationPage();
