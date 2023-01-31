@@ -306,6 +306,7 @@ public class QuickstepModelDelegate extends ModelDelegate {
     }
 
     private void registerPredictor(PredictorState state, AppPredictor predictor) {
+        state.setTargets(Collections.emptyList());
         state.predictor = predictor;
         state.predictor.registerPredictionUpdates(
                 MODEL_EXECUTOR, t -> handleUpdate(state, t));
