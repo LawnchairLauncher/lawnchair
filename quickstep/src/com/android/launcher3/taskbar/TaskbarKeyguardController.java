@@ -90,13 +90,8 @@ public class TaskbarKeyguardController implements TaskbarControllers.LoggableTas
      */
     private void updateIconsForBouncer() {
         boolean disableBack = (mKeyguardSysuiFlags & SYSUI_STATE_BACK_DISABLED) != 0;
-        boolean disableRecent = (mKeyguardSysuiFlags & SYSUI_STATE_OVERVIEW_DISABLED) != 0;
-        boolean disableHome = (mKeyguardSysuiFlags & SYSUI_STATE_HOME_DISABLED) != 0;
-        boolean onlyBackEnabled = !disableBack && disableRecent && disableHome;
-
-        boolean showBackForBouncer = onlyBackEnabled &&
-                mKeyguardManager.isDeviceSecure() &&
-                mBouncerShowing;
+        boolean showBackForBouncer =
+                !disableBack && mKeyguardManager.isDeviceSecure() && mBouncerShowing;
         mNavbarButtonsViewController.setBackForBouncer(showBackForBouncer);
     }
 
