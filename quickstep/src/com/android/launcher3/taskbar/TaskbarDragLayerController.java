@@ -49,6 +49,8 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
     private final AnimatedFloat mNotificationShadeBgTaskbar = new AnimatedFloat(
             this::updateBackgroundAlpha);
     private final AnimatedFloat mImeBgTaskbar = new AnimatedFloat(this::updateBackgroundAlpha);
+    private final AnimatedFloat mAssistantBgTaskbar = new AnimatedFloat(
+            this::updateBackgroundAlpha);
     // Used to hide our background color when someone else (e.g. ScrimView) is handling it.
     private final AnimatedFloat mBgOverride = new AnimatedFloat(this::updateBackgroundAlpha);
 
@@ -60,6 +62,7 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
     private AnimatedFloat mNavButtonDarkIntensityMultiplier;
 
     private float mLastSetBackgroundAlpha;
+    private boolean mIsBackgroundDrawnElsewhere;
 
     public TaskbarDragLayerController(TaskbarActivityContext activity,
             TaskbarDragLayer taskbarDragLayer) {
@@ -81,6 +84,7 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         mKeyguardBgTaskbar.value = 1;
         mNotificationShadeBgTaskbar.value = 1;
         mImeBgTaskbar.value = 1;
+        mAssistantBgTaskbar.value = 1;
         mBgOverride.value = 1;
         updateBackgroundAlpha();
     }
@@ -119,6 +123,10 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         return mImeBgTaskbar;
     }
 
+    public AnimatedFloat getAssistantBgTaskbar() {
+        return mAssistantBgTaskbar;
+    }
+
     public AnimatedFloat getOverrideBackgroundAlpha() {
         return mBgOverride;
     }
@@ -143,7 +151,8 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
     private void updateBackgroundAlpha() {
         final float bgNavbar = mBgNavbar.value;
         final float bgTaskbar = mBgTaskbar.value * mKeyguardBgTaskbar.value
-                * mNotificationShadeBgTaskbar.value * mImeBgTaskbar.value;
+                * mNotificationShadeBgTaskbar.value * mImeBgTaskbar.value
+                * mAssistantBgTaskbar.value;
         mLastSetBackgroundAlpha = mBgOverride.value * Math.max(bgNavbar, bgTaskbar);
         mTaskbarDragLayer.setTaskbarBackgroundAlpha(mLastSetBackgroundAlpha);
 
@@ -168,9 +177,23 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         mTaskbarDragLayer.setCornerRoundness(cornerRoundness);
     }
 
+    /**
+     * Set if another controller is temporarily handling background drawing. In this case we:
+     * - Override our background alpha to be 0.
+     * - Keep the nav bar dark intensity assuming taskbar background is at full alpha.
+     */
+    public void setIsBackgroundDrawnElsewhere(boolean isBackgroundDrawnElsewhere) {
+        mIsBackgroundDrawnElsewhere = isBackgroundDrawnElsewhere;
+        mBgOverride.updateValue(mIsBackgroundDrawnElsewhere ? 0 : 1);
+        updateNavBarDarkIntensityMultiplier();
+    }
+
     private void updateNavBarDarkIntensityMultiplier() {
         // Zero out the app-requested dark intensity when we're drawing our own background.
         float effectiveBgAlpha = mLastSetBackgroundAlpha * (1 - mBgOffset.value);
+        if (mIsBackgroundDrawnElsewhere) {
+            effectiveBgAlpha = 1;
+        }
         mNavButtonDarkIntensityMultiplier.updateValue(1 - effectiveBgAlpha);
     }
 
@@ -181,6 +204,13 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         pw.println(prefix + "\tmBgOffset=" + mBgOffset.value);
         pw.println(prefix + "\tmFolderMargin=" + mFolderMargin);
         pw.println(prefix + "\tmLastSetBackgroundAlpha=" + mLastSetBackgroundAlpha);
+        pw.println(prefix + "\t\tmBgOverride=" + mBgOverride.value);
+        pw.println(prefix + "\t\tmBgNavbar=" + mBgNavbar.value);
+        pw.println(prefix + "\t\tmBgTaskbar=" + mBgTaskbar.value);
+        pw.println(prefix + "\t\tmKeyguardBgTaskbar=" + mKeyguardBgTaskbar.value);
+        pw.println(prefix + "\t\tmNotificationShadeBgTaskbar=" + mNotificationShadeBgTaskbar.value);
+        pw.println(prefix + "\t\tmImeBgTaskbar=" + mImeBgTaskbar.value);
+        pw.println(prefix + "\t\tmAssistantBgTaskbar=" + mAssistantBgTaskbar.value);
     }
 
     /**
