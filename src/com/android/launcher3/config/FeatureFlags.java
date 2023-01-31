@@ -334,6 +334,10 @@ public final class FeatureFlags {
             "ENABLE_DOWNLOAD_APP_UX_V2", true, "Updates the download app UX"
                     + " to have better visuals");
 
+    public static final BooleanFlag ENABLE_DOWNLOAD_APP_UX_V3 = getDebugFlag(
+            "ENABLE_DOWNLOAD_APP_UX_V3", false, "Updates the download app UX"
+            + " to have better visuals, improve contrast, and color");
+
     public static final BooleanFlag ENABLE_TASKBAR_REVISED_THRESHOLDS = getDebugFlag(
             "ENABLE_TASKBAR_REVISED_THRESHOLDS", true,
             "Uses revised thresholds for transient taskbar.");
