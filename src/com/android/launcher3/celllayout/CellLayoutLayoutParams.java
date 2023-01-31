@@ -29,8 +29,6 @@ import androidx.annotation.Nullable;
  */
 public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
 
-    private int mScreenId = -1;
-
     @ViewDebug.ExportedProperty
     private int mCellX;
 
@@ -97,20 +95,17 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
         this.mCellY = source.getCellY();
         this.cellHSpan = source.cellHSpan;
         this.cellVSpan = source.cellVSpan;
-        this.mScreenId = source.getScreenId();
         this.mTmpCellX = source.getTmpCellX();
         this.mTmpCellY = source.getTmpCellY();
         this.useTmpCoords = source.useTmpCoords;
     }
 
-    public CellLayoutLayoutParams(int cellX, int cellY, int cellHSpan, int cellVSpan,
-            int screenId) {
+    public CellLayoutLayoutParams(int cellX, int cellY, int cellHSpan, int cellVSpan) {
         super(CellLayoutLayoutParams.MATCH_PARENT, CellLayoutLayoutParams.MATCH_PARENT);
         this.mCellX = cellX;
         this.mCellY = cellY;
         this.cellHSpan = cellHSpan;
         this.cellVSpan = cellVSpan;
-        this.mScreenId = screenId;
     }
 
     /**
@@ -176,14 +171,6 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
      */
     public String toString() {
         return "(" + this.getCellX() + ", " + this.getCellY() + ")";
-    }
-
-    public int getScreenId() {
-        return mScreenId;
-    }
-
-    public void setScreenId(int screenId) {
-        this.mScreenId = screenId;
     }
 
     /**
