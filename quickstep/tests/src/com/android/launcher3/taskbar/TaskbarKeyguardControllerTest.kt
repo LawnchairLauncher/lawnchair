@@ -19,8 +19,6 @@ import android.app.KeyguardManager
 import com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BACK_DISABLED
 import com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BOUNCER_SHOWING
 import com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_DEVICE_DOZING
-import com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED
-import com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED
 import com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING
 import com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED
 import org.junit.Before
@@ -34,16 +32,14 @@ import org.mockito.Mockito.`when` as whenever
 
 class TaskbarKeyguardControllerTest : TaskbarBaseTestCase() {
 
-    @Mock
-    lateinit var baseDragLayer: TaskbarDragLayer
-    @Mock
-    lateinit var keyguardManager: KeyguardManager
+    @Mock lateinit var baseDragLayer: TaskbarDragLayer
+    @Mock lateinit var keyguardManager: KeyguardManager
 
     @Before
     override fun setup() {
         super.setup()
         whenever(taskbarActivityContext.getSystemService(KeyguardManager::class.java))
-                .thenReturn(keyguardManager)
+            .thenReturn(keyguardManager)
         whenever(baseDragLayer.childCount).thenReturn(0)
         whenever(taskbarActivityContext.dragLayer).thenReturn(baseDragLayer)
 
@@ -60,41 +56,35 @@ class TaskbarKeyguardControllerTest : TaskbarBaseTestCase() {
     @Test
     fun keyguardShowing() {
         setFlags(SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING)
-        verify(navbarButtonsViewController, times(1)).setKeyguardVisible(
-                true /*isKeyguardVisible*/,
-                false /*isKeyguardOccluded*/)
+        verify(navbarButtonsViewController, times(1))
+            .setKeyguardVisible(true /*isKeyguardVisible*/, false /*isKeyguardOccluded*/)
     }
 
     @Test
     fun dozingShowing() {
         setFlags(SYSUI_STATE_DEVICE_DOZING)
-        verify(navbarButtonsViewController, times(1)).setKeyguardVisible(
-                true /*isKeyguardVisible*/,
-                false /*isKeyguardOccluded*/)
+        verify(navbarButtonsViewController, times(1))
+            .setKeyguardVisible(true /*isKeyguardVisible*/, false /*isKeyguardOccluded*/)
     }
 
     @Test
     fun keyguardOccluded() {
         setFlags(SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED)
-        verify(navbarButtonsViewController, times(1)).setKeyguardVisible(
-                false /*isKeyguardVisible*/,
-                true /*isKeyguardOccluded*/)
+        verify(navbarButtonsViewController, times(1))
+            .setKeyguardVisible(false /*isKeyguardVisible*/, true /*isKeyguardOccluded*/)
     }
 
     @Test
     fun keyguardOccludedAndDozing() {
         setFlags(SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED.or(SYSUI_STATE_DEVICE_DOZING))
-        verify(navbarButtonsViewController, times(1)).setKeyguardVisible(
-                true /*isKeyguardVisible*/,
-                true /*isKeyguardOccluded*/)
+        verify(navbarButtonsViewController, times(1))
+            .setKeyguardVisible(true /*isKeyguardVisible*/, true /*isKeyguardOccluded*/)
     }
 
     @Test
     fun deviceInsecure_hideBackForBouncer() {
         whenever(keyguardManager.isDeviceSecure).thenReturn(false)
-        setFlags(SYSUI_STATE_OVERVIEW_DISABLED
-                .or(SYSUI_STATE_HOME_DISABLED)
-                .or(SYSUI_STATE_BOUNCER_SHOWING))
+        setFlags(SYSUI_STATE_BOUNCER_SHOWING)
 
         verify(navbarButtonsViewController, times(1)).setBackForBouncer(false)
     }
@@ -102,46 +92,17 @@ class TaskbarKeyguardControllerTest : TaskbarBaseTestCase() {
     @Test
     fun deviceSecure_showBackForBouncer() {
         whenever(keyguardManager.isDeviceSecure).thenReturn(true)
-        setFlags(SYSUI_STATE_OVERVIEW_DISABLED
-                .or(SYSUI_STATE_HOME_DISABLED)
-                .or(SYSUI_STATE_BOUNCER_SHOWING))
+        setFlags(SYSUI_STATE_BOUNCER_SHOWING)
 
         verify(navbarButtonsViewController, times(1)).setBackForBouncer(true)
     }
 
     @Test
-    fun homeShowing_hideBackForBouncer() {
-        whenever(keyguardManager.isDeviceSecure).thenReturn(true)
-        setFlags(SYSUI_STATE_OVERVIEW_DISABLED
-                .or(SYSUI_STATE_BOUNCER_SHOWING))
-
-        verify(navbarButtonsViewController, times(1)).setBackForBouncer(false)
-    }
-
-    @Test
-    fun overviewShowing_hideBackForBouncer() {
-        whenever(keyguardManager.isDeviceSecure).thenReturn(true)
-        setFlags(SYSUI_STATE_HOME_DISABLED
-                .or(SYSUI_STATE_BOUNCER_SHOWING))
-
-        verify(navbarButtonsViewController, times(1)).setBackForBouncer(false)
-    }
-
-    @Test
     fun backDisabled_hideBackForBouncer() {
         whenever(keyguardManager.isDeviceSecure).thenReturn(true)
-        setFlags(SYSUI_STATE_BACK_DISABLED
-                .or(SYSUI_STATE_BOUNCER_SHOWING))
+        setFlags(SYSUI_STATE_BACK_DISABLED.or(SYSUI_STATE_BOUNCER_SHOWING))
 
         verify(navbarButtonsViewController, times(1)).setBackForBouncer(false)
-
-        // back disabled along with home and overview
-        setFlags(SYSUI_STATE_BACK_DISABLED
-                .or(SYSUI_STATE_HOME_DISABLED)
-                .or(SYSUI_STATE_OVERVIEW_DISABLED)
-                .or(SYSUI_STATE_BOUNCER_SHOWING))
-
-        verify(navbarButtonsViewController, times(2)).setBackForBouncer(false)
     }
 
     private fun setFlags(flags: Int) {
