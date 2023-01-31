@@ -349,10 +349,10 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
 
     /**
-     * Returns whether the taskbar is currently visible and in an app.
+     * Returns whether the taskbar is currently visible and not in the process of being stashed.
      */
-    public boolean isInAppAndNotStashed() {
-        return !mIsStashed && isInApp();
+    public boolean isTaskbarVisibleAndNotStashing() {
+        return !mIsStashed && mControllers.taskbarViewController.areIconsVisible();
     }
 
     public boolean isInApp() {
