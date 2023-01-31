@@ -71,6 +71,17 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
     }
 
     @Override
+    protected int getGestureLottieAnimationId() {
+        // TODO(b/253521660): Change to correct LottieAnimationView
+        return R.raw.home_gesture_tutorial_animation;
+    }
+
+    @Override
+    protected int getSwipeActionColorResId() {
+        return R.color.gesture_overview_tutorial_swipe_rect;
+    }
+
+    @Override
     public void onBackGestureAttempted(BackGestureResult result) {
         if (isGestureCompleted()) {
             return;
