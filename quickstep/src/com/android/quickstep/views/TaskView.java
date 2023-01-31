@@ -1007,6 +1007,11 @@ public class TaskView extends FrameLayout implements Reusable {
         return deviceProfile.isTablet && !isFocusedTask();
     }
 
+    /** Whether this task view represents the desktop */
+    public boolean isDesktopTask() {
+        return false;
+    }
+
     /**
      * Called to animate a smooth transition when going directly from an app into Overview (and
      * vice versa). Icons fade in, and DWB banners slide in with a "shift up" animation.
@@ -1517,7 +1522,7 @@ public class TaskView extends FrameLayout implements Reusable {
             int boxWidth;
             int boxHeight;
             boolean isFocusedTask = isFocusedTask();
-            if (isFocusedTask) {
+            if (isFocusedTask || isDesktopTask()) {
                 // Task will be focused and should use focused task size. Use focusTaskRatio
                 // that is associated with the original orientation of the focused task.
                 boxWidth = taskWidth;
