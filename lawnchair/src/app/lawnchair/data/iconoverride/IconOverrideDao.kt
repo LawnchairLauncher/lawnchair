@@ -14,9 +14,11 @@ interface IconOverrideDao {
     @Query("DELETE FROM iconoverride WHERE target = :target")
     suspend fun delete(target: ComponentKey)
 
+    @RewriteQueriesToDropUnusedColumns
     @Query("SELECT * FROM iconoverride")
     fun observeAll(): Flow<List<IconOverride>>
 
+    @RewriteQueriesToDropUnusedColumns
     @Query("SELECT * FROM iconoverride WHERE target = :target")
     fun observeTarget(target: ComponentKey): Flow<IconOverride?>
 
