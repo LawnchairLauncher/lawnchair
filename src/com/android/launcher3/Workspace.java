@@ -26,6 +26,7 @@ import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
+import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPELEFT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPERIGHT;
@@ -69,6 +70,8 @@ import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
+import com.android.launcher3.celllayout.CellPosMapper;
+import com.android.launcher3.celllayout.CellPosMapper.CellPos;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.dragndrop.DragController;
@@ -585,7 +588,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         }
 
         int cellHSpan = mLauncher.getDeviceProfile().inv.numSearchContainerColumns;
-        CellLayoutLayoutParams lp = new CellLayoutLayoutParams(0, 0, cellHSpan, 1, FIRST_SCREEN_ID);
+        CellLayoutLayoutParams lp = new CellLayoutLayoutParams(0, 0, cellHSpan, 1);
         lp.canReorder = false;
         if (!firstPage.addViewToCellLayout(
                 mFirstPagePinnedItem, 0, R.id.search_container_workspace, lp, true)) {
@@ -642,7 +645,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         // Inflate the cell layout, but do not add it automatically so that we can get the newly
         // created CellLayout.
         CellLayout newScreen = (CellLayout) LayoutInflater.from(getContext()).inflate(
-                        R.layout.workspace_screen, this, false /* attachToRoot */);
+                    R.layout.workspace_screen, this, false /* attachToRoot */);
 
         mWorkspaceScreens.put(screenId, newScreen);
         mScreenOrder.add(insertIndex, screenId);
@@ -664,7 +667,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
             // If the icon was dragged from Hotseat, there is no page pair
             if (isTwoPanelEnabled() && !(mDragSourceInternal.getParent() instanceof Hotseat)) {
-                int pagePairScreenId = getScreenPair(dragObject.dragInfo.screenId);
+                int pagePairScreenId = getScreenPair(getCellPosMapper().mapModelToPresenter(
+                        dragObject.dragInfo).screenId);
                 CellLayout pagePair = mWorkspaceScreens.get(pagePairScreenId);
                 dragSourceChildCount += pagePair.getShortcutsAndWidgets().getChildCount();
             }
@@ -680,7 +684,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                 lastChildOnScreen = true;
             }
             CellLayout cl = (CellLayout) mDragSourceInternal.getParent();
-            if (getLeftmostVisiblePageForIndex(indexOfChild(cl))
+            if (!FOLDABLE_SINGLE_PAGE.get() && getLeftmostVisiblePageForIndex(indexOfChild(cl))
                     == getLeftmostVisiblePageForIndex(getPageCount() - 1)) {
                 childOnFinalScreen = true;
             }
@@ -1954,8 +1958,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     minSpanY = item.minSpanY;
                 }
 
-                droppedOnOriginalCell = item.screenId == screenId && item.container == container
-                        && item.cellX == mTargetCell[0] && item.cellY == mTargetCell[1];
+                CellPos originalPresenterPos = getCellPosMapper().mapModelToPresenter(item);
+                droppedOnOriginalCell = originalPresenterPos.screenId == screenId
+                        && item.container == container
+                        && originalPresenterPos.cellX == mTargetCell[0]
+                        && originalPresenterPos.cellY == mTargetCell[1];
                 droppedOnOriginalCellDuringTransition = droppedOnOriginalCell && mIsSwitchingState;
 
                 // When quickly moving an item, a user may accidentally rearrange their
@@ -3432,6 +3439,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
         return absoluteDelta
                 > deviceProfile.availableWidthPx * SIGNIFICANT_MOVE_SCREEN_WIDTH_PERCENTAGE;
+    }
+
+    @Override
+    public CellPosMapper getCellPosMapper() {
+        return mLauncher.getCellPosMapper();
     }
 
     /**
