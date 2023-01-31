@@ -193,7 +193,7 @@ public class HotseatEduDialog extends AbstractSlideInView<Launcher> implements I
             icon.setEnabled(false);
             icon.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
             icon.verifyHighRes();
-            CellLayoutLayoutParams lp = new CellLayoutLayoutParams(i, 0, 1, 1, -1);
+            CellLayoutLayoutParams lp = new CellLayoutLayoutParams(i, 0, 1, 1);
             mSampleHotseat.addViewToCellLayout(icon, i, info.getViewId(), lp, true);
         }
     }

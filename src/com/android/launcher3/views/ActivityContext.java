@@ -56,6 +56,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
+import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.folder.FolderIcon;
@@ -457,6 +458,10 @@ public interface ActivityContext {
      */
     default boolean onErrorStartingShortcut(Intent intent, ItemInfo info) {
         return false;
+    }
+
+    default CellPosMapper getCellPosMapper() {
+        return CellPosMapper.DEFAULT;
     }
 
     /**

@@ -62,6 +62,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
+import com.android.launcher3.celllayout.CellPosMapper.CellPos;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.PreviewBackground;
@@ -267,7 +268,7 @@ public class CellLayout extends ViewGroup {
         mDragCell[0] = mDragCell[1] = -1;
         mDragCellSpan[0] = mDragCellSpan[1] = -1;
         for (int i = 0; i < mDragOutlines.length; i++) {
-            mDragOutlines[i] = new CellLayoutLayoutParams(0, 0, 0, 0, -1);
+            mDragOutlines[i] = new CellLayoutLayoutParams(0, 0, 0, 0);
         }
         mDragOutlinePaint.setColor(Themes.getAttrColor(context, R.attr.workspaceTextColor));
 
@@ -1084,8 +1085,8 @@ public class CellLayout extends ViewGroup {
             final int oldY = lp.y;
             lp.isLockedToGrid = true;
             if (permanent) {
-                lp.setCellX(info.cellX = cellX);
-                lp.setCellY(info.cellY = cellY);
+                lp.setCellX(cellX);
+                lp.setCellY(cellY);
             } else {
                 lp.setTmpCellX(cellX);
                 lp.setTmpCellY(cellY);
@@ -1627,20 +1628,16 @@ public class CellLayout extends ViewGroup {
             // We do a null check here because the item info can be null in the case of the
             // AllApps button in the hotseat.
             if (info != null && child != dragView) {
-                final boolean requiresDbUpdate = (info.cellX != lp.getTmpCellX()
-                        || info.cellY != lp.getTmpCellY() || info.spanX != lp.cellHSpan
-                        || info.spanY != lp.cellVSpan);
+                CellPos presenterPos = mActivity.getCellPosMapper().mapModelToPresenter(info);
+                final boolean requiresDbUpdate = (presenterPos.cellX != lp.getTmpCellX()
+                        || presenterPos.cellY != lp.getTmpCellY() || info.spanX != lp.cellHSpan
+                        || info.spanY != lp.cellVSpan || presenterPos.screenId != screenId);
 
                 lp.setCellX(lp.getTmpCellX());
-                info.cellX = lp.getTmpCellX();
-                info.cellY = lp.getTmpCellY();
                 lp.setCellY(lp.getTmpCellY());
-                info.spanX = lp.cellHSpan;
-                info.spanY = lp.cellVSpan;
-
                 if (requiresDbUpdate) {
                     Launcher.cast(mActivity).getModelWriter().modifyItemInDatabase(info, container,
-                            screenId, info.cellX, info.cellY, info.spanX, info.spanY);
+                            screenId, lp.getCellX(), lp.getCellY(), lp.cellHSpan, lp.cellVSpan);
                 }
             }
         }
@@ -2792,7 +2789,8 @@ public class CellLayout extends ViewGroup {
         if (view instanceof LauncherAppWidgetHostView
                 && view.getTag() instanceof LauncherAppWidgetInfo) {
             LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) view.getTag();
-            mOccupied.markCells(info.cellX, info.cellY, info.spanX, info.spanY, true);
+            CellPos pos = mActivity.getCellPosMapper().mapModelToPresenter(info);
+            mOccupied.markCells(pos.cellX, pos.cellY, info.spanX, info.spanY, true);
             return;
         }
         if (view == null || view.getParent() != mShortcutsAndWidgets) return;
@@ -2805,7 +2803,8 @@ public class CellLayout extends ViewGroup {
         if (view instanceof LauncherAppWidgetHostView
                 && view.getTag() instanceof LauncherAppWidgetInfo) {
             LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) view.getTag();
-            mOccupied.markCells(info.cellX, info.cellY, info.spanX, info.spanY, false);
+            CellPos pos = mActivity.getCellPosMapper().mapModelToPresenter(info);
+            mOccupied.markCells(pos.cellX, pos.cellY, info.spanX, info.spanY, false);
             return;
         }
         if (view == null || view.getParent() != mShortcutsAndWidgets) return;
@@ -2858,13 +2857,13 @@ public class CellLayout extends ViewGroup {
         final int screenId;
         final int container;
 
-        public CellInfo(View v, ItemInfo info) {
-            cellX = info.cellX;
-            cellY = info.cellY;
+        public CellInfo(View v, ItemInfo info, CellPos cellPos) {
+            cellX = cellPos.cellX;
+            cellY = cellPos.cellY;
             spanX = info.spanX;
             spanY = info.spanY;
             cell = v;
-            screenId = info.screenId;
+            screenId = cellPos.screenId;
             container = info.container;
         }
 
