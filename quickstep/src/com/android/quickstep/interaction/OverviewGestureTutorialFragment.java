@@ -76,7 +76,7 @@ public class OverviewGestureTutorialFragment extends TutorialFragment {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                controller.resetFakeTaskView(false);
+                controller.resetFakeTaskViewFromOverview();
             }
         });
         ArrayList<Animator> animators = new ArrayList<>();
