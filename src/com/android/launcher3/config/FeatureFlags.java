@@ -385,7 +385,7 @@ public final class FeatureFlags {
     );
 
     public static final BooleanFlag ENABLE_TASKBAR_EDU_TOOLTIP = getDebugFlag(
-            "ENABLE_TASKBAR_EDU_TOOLTIP", false,
+            "ENABLE_TASKBAR_EDU_TOOLTIP", true,
             "Enable the tooltip version of the Taskbar education flow.");
 
     public static final BooleanFlag ENABLE_MULTI_INSTANCE = getDebugFlag(
