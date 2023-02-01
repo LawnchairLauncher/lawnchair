@@ -304,7 +304,7 @@
 
     <dimen name="taskbar_nav_threshold_v2">30dp</dimen>
     <dimen name="taskbar_app_window_threshold_v2">100dp</dimen>
-    <dimen name="taskbar_home_overview_threshold_v2">200dp</dimen>
+    <dimen name="taskbar_home_overview_threshold_v2">180dp</dimen>
 
     <!--  Taskbar 3 button spacing  -->
     <dimen name="taskbar_button_space_inbetween">24dp</dimen>
