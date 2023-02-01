@@ -20,6 +20,7 @@ import static com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_UNFOLD_ANIMATI
 import static com.android.launcher3.LauncherAnimUtils.WORKSPACE_SCALE_PROPERTY_FACTORY;
 
 import android.annotation.Nullable;
+import android.os.Trace;
 import android.util.FloatProperty;
 import android.util.MathUtils;
 import android.view.WindowManager;
@@ -54,6 +55,9 @@ public class LauncherUnfoldAnimationController {
     private final NaturalRotationUnfoldProgressProvider mNaturalOrientationProgressProvider;
     private final UnfoldMoveFromCenterHotseatAnimator mUnfoldMoveFromCenterHotseatAnimator;
     private final UnfoldMoveFromCenterWorkspaceAnimator mUnfoldMoveFromCenterWorkspaceAnimator;
+
+    private static final String TRACE_WAIT_TO_HANDLE_UNFOLD_TRANSITION =
+            "waitingOneFrameBeforeHandlingUnfoldAnimation";
 
     @Nullable
     private HorizontalInsettableView mQsbInsettable;
@@ -92,8 +96,18 @@ public class LauncherUnfoldAnimationController {
             mQsbInsettable = (HorizontalInsettableView) hotseat.getQsb();
         }
 
+        handleTransitionOnNextFrame();
+    }
+
+    private void handleTransitionOnNextFrame() {
+        Trace.asyncTraceBegin(Trace.TRACE_TAG_APP,
+                TRACE_WAIT_TO_HANDLE_UNFOLD_TRANSITION, /* cookie= */ 0);
         OneShotPreDrawListener.add(mLauncher.getWorkspace(),
-                () -> mProgressProvider.setReadyToHandleTransition(true));
+                () -> {
+                    Trace.asyncTraceEnd(Trace.TRACE_TAG_APP,
+                            TRACE_WAIT_TO_HANDLE_UNFOLD_TRANSITION, /* cookie= */ 0);
+                    mProgressProvider.setReadyToHandleTransition(true);
+                });
     }
 
     /**
