@@ -31,6 +31,7 @@ import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
+import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
 import com.android.systemui.shared.recents.model.Task;
 
 import java.io.PrintWriter;
@@ -202,12 +203,16 @@ public class TaskbarUIController {
                         // null checks as much. See comments at ag/21152798.
                         if (foundTaskView != null) {
                             // There is already a running app of this type, use that as second app.
+                            // Get index of task (0 or 1), in case it's a GroupedTaskView
+                            int indexOfTask = foundTaskView.getIndexOfTask(foundTask.key.id);
+                            TaskIdAttributeContainer taskAttributes =
+                                    foundTaskView.getTaskIdAttributeContainers()[indexOfTask];
                             recents.confirmSplitSelect(
                                     foundTaskView,
-                                    foundTaskView.getTask(),
-                                    foundTaskView.getIconView().getDrawable(),
-                                    foundTaskView.getThumbnail(),
-                                    foundTaskView.getThumbnail().getThumbnail(),
+                                    taskAttributes.getTask(),
+                                    taskAttributes.getIconView().getDrawable(),
+                                    taskAttributes.getThumbnailView(),
+                                    taskAttributes.getThumbnailView().getThumbnail(),
                                     null /* intent */);
                             return;
                         }
