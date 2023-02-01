@@ -23,8 +23,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/taskbar_edu_features"
-        app:layout_constraintEnd_toEndOf="@id/suggestions_animation"
-        app:layout_constraintStart_toStartOf="@id/splitscreen_animation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.airbnb.lottie.LottieAnimationView
@@ -49,6 +49,35 @@
         app:layout_constraintStart_toStartOf="@id/splitscreen_animation"
         app:layout_constraintTop_toBottomOf="@id/splitscreen_animation" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/settings_edu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="settings_animation,settings_text" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/settings_animation"
+        android:layout_width="@dimen/taskbar_edu_features_lottie_width"
+        android:layout_height="@dimen/taskbar_edu_features_lottie_height"
+        android:layout_marginStart="@dimen/taskbar_edu_features_horizontal_spacing"
+        android:layout_marginTop="@dimen/taskbar_edu_tooltip_vertical_margin"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toEndOf="@id/splitscreen_animation"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/taskbar_edu_settings" />
+
+    <TextView
+        android:id="@+id/settings_text"
+        style="@style/TextAppearance.TaskbarEduTooltip.Subtext"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/taskbar_edu_settings_persistent"
+        app:layout_constraintEnd_toEndOf="@id/settings_animation"
+        app:layout_constraintStart_toStartOf="@id/settings_animation"
+        app:layout_constraintTop_toBottomOf="@id/settings_animation" />
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/suggestions_animation"
         android:layout_width="@dimen/taskbar_edu_features_lottie_width"
@@ -57,7 +86,7 @@
         android:layout_marginTop="@dimen/taskbar_edu_tooltip_vertical_margin"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/splitscreen_animation"
+        app:layout_constraintStart_toEndOf="@id/settings_animation"
         app:layout_constraintTop_toBottomOf="@id/title"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
@@ -73,6 +102,13 @@
         app:layout_constraintStart_toStartOf="@id/suggestions_animation"
         app:layout_constraintTop_toBottomOf="@id/suggestions_animation" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/edu_barrier_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="splitscreen_text,settings_text,suggestions_text" />
+
     <Button
         android:id="@+id/done_button"
         style="@style/TaskbarEdu.Button.Next"
@@ -83,5 +119,5 @@
         android:textColor="?androidprv:attr/textColorOnAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/suggestions_text" />
+        app:layout_constraintTop_toBottomOf="@id/edu_barrier_bottom" />
 </merge>
