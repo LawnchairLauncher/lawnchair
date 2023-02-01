@@ -155,6 +155,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     private int mHeaderColor;
     private int mBottomSheetBackgroundColor;
     private int mTabsProtectionAlpha;
+    @Nullable private AllAppsTransitionController mAllAppsTransitionController;
 
     public ActivityAllAppsContainerView(Context context) {
         this(context, null);
@@ -292,6 +293,11 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         animateToSearchState(goingToSearch, DEFAULT_SEARCH_TRANSITION_DURATION_MS);
     }
 
+    public void setAllAppsTransitionController(
+            AllAppsTransitionController allAppsTransitionController) {
+        mAllAppsTransitionController = allAppsTransitionController;
+    }
+
     private void animateToSearchState(boolean goingToSearch, long durationMs) {
         if (!mSearchTransitionController.isRunning() && goingToSearch == isSearching()) {
             return;
@@ -299,6 +305,9 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         if (goingToSearch) {
             // Fade out the button to pause work apps.
             mWorkManager.onActivePageChanged(SEARCH);
+        } else if (mAllAppsTransitionController != null) {
+            // If exiting search, revert predictive back scale on all apps
+            mAllAppsTransitionController.animateAllAppsToNoScale();
         }
         mSearchTransitionController.animateToSearchState(goingToSearch, durationMs,
                 /* onEndRunnable = */ () -> {
