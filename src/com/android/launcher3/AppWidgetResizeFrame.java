@@ -33,6 +33,7 @@ import androidx.annotation.Px;
 
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
+import com.android.launcher3.celllayout.CellPosMapper.CellPos;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.InstanceId;
@@ -268,10 +269,11 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
         CellLayoutLayoutParams lp = (CellLayoutLayoutParams) mWidgetView.getLayoutParams();
         ItemInfo widgetInfo = (ItemInfo) mWidgetView.getTag();
-        lp.setCellX(widgetInfo.cellX);
-        lp.setTmpCellX(widgetInfo.cellX);
-        lp.setCellY(widgetInfo.cellY);
-        lp.setTmpCellY(widgetInfo.cellY);
+        CellPos presenterPos = mLauncher.getCellPosMapper().mapModelToPresenter(widgetInfo);
+        lp.setCellX(presenterPos.cellX);
+        lp.setTmpCellX(presenterPos.cellX);
+        lp.setCellY(presenterPos.cellY);
+        lp.setTmpCellY(presenterPos.cellY);
         lp.cellHSpan = widgetInfo.spanX;
         lp.cellVSpan = widgetInfo.spanY;
         lp.isLockedToGrid = true;

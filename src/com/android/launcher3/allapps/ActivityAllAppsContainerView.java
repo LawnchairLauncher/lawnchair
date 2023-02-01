@@ -426,6 +426,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             return;
         }
 
+        RecyclerView.ItemDecoration decoration = getMainAdapterProvider().getDecorator();
+        getSearchRecyclerView().removeItemDecoration(decoration);
+        getSearchRecyclerView().addItemDecoration(decoration);
+
         // replaceAppsRVcontainer() needs to use both mUsingTabs value to remove the old view AND
         // showTabs value to create new view. Hence the mUsingTabs new value assignment MUST happen
         // after this call.

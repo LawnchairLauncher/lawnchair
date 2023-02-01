@@ -40,13 +40,10 @@
     <color name="gesture_tutorial_fake_task_view_color">#6DA1FF</color> <!-- Light Blue -->
     <!-- Must contrast gesture_tutorial_fake_wallpaper_color -->
     <color name="gesture_tutorial_fake_previous_task_view_color">#3C4043</color> <!-- Gray -->
-    <color name="gesture_tutorial_taskbar_color">#202124</color>
+    <color name="gesture_tutorial_taskbar_color">#E8EAED</color>
 
     <!-- Mock hotseat -->
-    <color name="mock_app_icon_1">#8AB4F8</color>
-    <color name="mock_app_icon_2">#F28B82</color>
-    <color name="mock_app_icon_3">#FDD663</color>
-    <color name="mock_app_icon_4">#81C995</color>
+    <color name="mock_app_icon">#BDC1C6</color>
     <color name="mock_search_bar">#3C4043</color>
 
     <!-- Mock conversation -->

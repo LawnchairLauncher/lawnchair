@@ -151,7 +151,7 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
     }
 
     override fun dumpLogs(prefix: String?, pw: PrintWriter?) {
-        pw?.println("$(prefix)TaskbarEduController:")
+        pw?.println(prefix + "TaskbarEduTooltipController:")
         pw?.println("$prefix\tisTooltipEnabled=$isTooltipEnabled")
         pw?.println("$prefix\tisOpen=$isOpen")
         pw?.println("$prefix\ttooltipStep=$tooltipStep")
