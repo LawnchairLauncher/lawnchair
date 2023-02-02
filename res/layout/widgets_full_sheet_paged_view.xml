@@ -77,7 +77,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@drawable/widgets_recommendation_background"
+            android:background="@drawable/widgets_surface_background"
             android:paddingVertical="@dimen/recommended_widgets_table_vertical_padding"
             android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
             android:visibility="gone" />
