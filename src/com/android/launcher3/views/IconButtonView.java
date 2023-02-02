@@ -30,6 +30,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
 
+import androidx.annotation.ColorInt;
+
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.FastBitmapDrawable;
@@ -65,6 +67,14 @@ public class IconButtonView extends BubbleTextView {
         }
         try (BaseIconFactory factory = LauncherIcons.obtain(context)) {
             setIcon(new IconDrawable(factory.getWhiteShadowLayer(), tint, fg));
+        }
+    }
+
+    /** Updates the color of the icon's foreground layer. */
+    public void setForegroundTint(@ColorInt int tintColor) {
+        FastBitmapDrawable icon = getIcon();
+        if (icon instanceof IconDrawable) {
+            ((IconDrawable) icon).mFg.setTint(tintColor);
         }
     }
 
