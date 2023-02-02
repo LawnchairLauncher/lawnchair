@@ -1,10 +1,16 @@
 package app.lawnchair.ui.preferences
 
+import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.content.pm.LauncherApps
 import android.os.Process
+import android.provider.Settings
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
@@ -31,12 +37,14 @@ import app.lawnchair.ui.preferences.components.PreferenceCategory
 import app.lawnchair.ui.preferences.components.PreferenceDivider
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.WarningPreference
+import app.lawnchair.util.isDefaultLauncher
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 
 @Composable
 fun PreferencesDashboard() {
+    val context = LocalContext.current
     PreferenceLayout(
         label = stringResource(id = R.string.settings),
         verticalArrangement = Arrangement.Top,
@@ -44,6 +52,11 @@ fun PreferencesDashboard() {
         actions = { PreferencesOverflowMenu() }
     ) {
         if (BuildConfig.DEBUG) PreferencesDebugWarning()
+
+        if (!context.isDefaultLauncher()) {
+            Spacer(modifier = Modifier.height(16.dp))
+            PreferencesSetDefaultLauncherWarning()
+        }
 
         PreferenceCategory(
             label = stringResource(R.string.general_label),
@@ -172,6 +185,27 @@ fun PreferencesDebugWarning() {
         WarningPreference(
             // Don't move to strings.xml, no need to translate this warning
             text = "Warning: You are currently using a development build. These builds WILL contain bugs, broken features, and unexpected crashes. Use at your own risk!"
+        )
+    }
+}
+
+@Composable
+fun PreferencesSetDefaultLauncherWarning() {
+    val context = LocalContext.current
+    Surface(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        shape = MaterialTheme.shapes.large,
+        color = Material3Theme.colorScheme.errorContainer
+    ) {
+        WarningPreference(
+            // Don't move to strings.xml, no need to translate this warning
+            text = stringResource(id = R.string.set_default_launcher_tip),
+            modifier = Modifier.clickable {
+                Intent(Settings.ACTION_HOME_SETTINGS)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    .let { context.startActivity(it) }
+                (context as? Activity)?.finish()
+            }
         )
     }
 }

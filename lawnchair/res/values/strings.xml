@@ -19,6 +19,7 @@
     <string name="iconPackPackageDefault" translatable="false">""</string>
 
     <!-- PreferenceDashboard -->
+    <string name="set_default_launcher_tip">Warning: Lawnchair isn\'t your default launcher, tap this to set me as your default in system settings.</string>
     <string name="settings">Settings</string>
     <string name="general_label">General</string>
     <string name="general_description">Colors, Icon Pack, Notification Dots</string>
