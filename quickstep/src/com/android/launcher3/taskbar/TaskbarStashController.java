@@ -114,7 +114,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     /**
      * The scale TaskbarView animates to when being stashed.
      */
-    private static final float STASHED_TASKBAR_SCALE = 0.5f;
+    private static final float STASHED_TASKBAR_SCALE = 0.3f;
 
     /**
      * How long the hint animation plays, starting on motion down.
@@ -516,8 +516,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         }
         mAnimator = new AnimatorSet();
         addJankMonitorListener(mAnimator, /* appearing= */ !mIsStashed);
-        final float stashTranslation = isPhoneMode() ? 0 :
-                (mUnstashedHeight - mStashedHeight) / 2f;
+        final float stashTranslation = isPhoneMode() ? 0 : (mUnstashedHeight - mStashedHeight);
 
         if (!supportsVisualStashing()) {
             // Just hide/show the icons and background instead of stashing into a handle.
