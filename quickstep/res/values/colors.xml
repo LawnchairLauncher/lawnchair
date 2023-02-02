@@ -42,6 +42,13 @@
     <color name="gesture_tutorial_fake_previous_task_view_color">#3C4043</color> <!-- Gray -->
     <color name="gesture_tutorial_taskbar_color">#E8EAED</color>
 
+    <!-- Redesigned gesture navigation tutorial -->
+    <color name="gesture_home_tutorial_background">#FFB399</color>
+    <color name="gesture_home_tutorial_swipe_up_rect">#3857C7</color>
+    <color name="gesture_back_tutorial_background">#F3A5B9</color>
+    <color name="gesture_back_tutorial_swipe_rect">#217500</color>
+    <color name="gesture_overview_tutorial_swipe_rect">#7E44AD</color>
+
     <!-- Mock hotseat -->
     <color name="mock_app_icon">#BDC1C6</color>
     <color name="mock_search_bar">#3C4043</color>
