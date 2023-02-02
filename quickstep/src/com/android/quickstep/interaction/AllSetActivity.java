@@ -240,6 +240,7 @@ public class AllSetActivity extends Activity {
         maybeResumeOrPauseBackgroundAnimation();
         if (mSwipeProgress.value >= 1) {
             finishAndRemoveTask();
+            dispatchLauncherAnimStartEnd();
         }
     }
 
@@ -251,6 +252,18 @@ public class AllSetActivity extends Activity {
         }
     }
 
+    /**
+     * Should be called when we have successfully reached Launcher, so we dispatch to animation
+     * listeners to ensure the state matches the visual animation that just occurred.
+      */
+    private void dispatchLauncherAnimStartEnd() {
+        if (mLauncherStartAnim != null) {
+            mLauncherStartAnim.dispatchOnStart();
+            mLauncherStartAnim.dispatchOnEnd();
+            mLauncherStartAnim = null;
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -259,6 +272,7 @@ public class AllSetActivity extends Activity {
         if (mBackgroundAnimatorListener != null) {
             mAnimatedBackground.removeAnimatorListener(mBackgroundAnimatorListener);
         }
+        dispatchLauncherAnimStartEnd();
     }
 
     private AnimatedFloat createSwipeUpProxy(GestureState state) {
