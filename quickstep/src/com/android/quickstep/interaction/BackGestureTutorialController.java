@@ -59,6 +59,12 @@ final class BackGestureTutorialController extends TutorialController {
         return getMockAppTaskCurrentPageLayoutResId();
     }
 
+    @Override
+    protected int getGestureLottieAnimationId() {
+        // TODO(b/253521922): Change to correct LottieAnimationView
+        return R.raw.home_gesture_tutorial_animation;
+    }
+
     @LayoutRes
     int getMockAppTaskCurrentPageLayoutResId() {
         return mTutorialFragment.isLargeScreen()
@@ -71,6 +77,11 @@ final class BackGestureTutorialController extends TutorialController {
         return mTutorialFragment.isLargeScreen()
                 ? R.layout.gesture_tutorial_tablet_mock_conversation_list
                 : R.layout.gesture_tutorial_mock_conversation_list;
+    }
+
+    @Override
+    protected int getSwipeActionColorResId() {
+        return R.color.gesture_back_tutorial_swipe_rect;
     }
 
     @Override
