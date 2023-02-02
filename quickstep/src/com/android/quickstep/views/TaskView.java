@@ -600,6 +600,19 @@ public class TaskView extends FrameLayout implements Reusable {
         return mTaskIdContainer[1] != -1;
     }
 
+    /**
+     * Finds the index of a given taskId within this TaskView, or -1 if the TaskView does not
+     * contain it. For grouped tasks (of two), this is 0 or 1; for solo tasks, it is 0.
+     */
+    public int getIndexOfTask(int taskId) {
+        for (int i = 0; i < mTaskIdContainer.length; i++) {
+            if (mTaskIdContainer[i] == taskId) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public TaskThumbnailView getThumbnail() {
         return mSnapshotView;
     }
