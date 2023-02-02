@@ -309,6 +309,9 @@ public final class FeatureFlags {
             "FOLDABLE_WORKSPACE_REORDER", false,
             "In foldables, when reordering the icons and widgets, is now going to use both sides");
 
+    public static final BooleanFlag ENABLE_QUICK_LAUNCH_V3 = new DeviceFlag(
+            "ENABLE_QUICK_LAUNCH_V3", false, "Quick Launch V3");
+
     public static final BooleanFlag ENABLE_WIDGET_PICKER_DEPTH = new DeviceFlag(
             "ENABLE_WIDGET_PICKER_DEPTH", true, "Enable changing depth in widget picker.");
 
@@ -334,6 +337,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_DOWNLOAD_APP_UX_V2 = new DeviceFlag(
             "ENABLE_DOWNLOAD_APP_UX_V2", true, "Updates the download app UX"
                     + " to have better visuals");
+
+    public static final BooleanFlag ENABLE_DOWNLOAD_APP_UX_V3 = getDebugFlag(
+            "ENABLE_DOWNLOAD_APP_UX_V3", false, "Updates the download app UX"
+            + " to have better visuals, improve contrast, and color");
 
     public static final BooleanFlag ENABLE_TASKBAR_REVISED_THRESHOLDS = getDebugFlag(
             "ENABLE_TASKBAR_REVISED_THRESHOLDS", true,
@@ -378,7 +385,7 @@ public final class FeatureFlags {
     );
 
     public static final BooleanFlag ENABLE_TASKBAR_EDU_TOOLTIP = getDebugFlag(
-            "ENABLE_TASKBAR_EDU_TOOLTIP", false,
+            "ENABLE_TASKBAR_EDU_TOOLTIP", true,
             "Enable the tooltip version of the Taskbar education flow.");
 
     public static final BooleanFlag ENABLE_MULTI_INSTANCE = getDebugFlag(
