@@ -397,6 +397,10 @@ public final class FeatureFlags {
             "Enables taskbar pinning to allow user to switch between transient and persistent "
                     + "taskbar flavors");
 
+    public static final BooleanFlag ENABLE_GRID_ONLY_OVERVIEW = getDebugFlag(
+            "ENABLE_GRID_ONLY_OVERVIEW", false,
+            "Enable a grid-only overview without a focused task.");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
