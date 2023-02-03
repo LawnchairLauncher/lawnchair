@@ -20,6 +20,7 @@ import android.graphics.PointF
 import android.graphics.Rect
 import android.util.SparseArray
 import androidx.test.core.app.ApplicationProvider
+import com.android.launcher3.DeviceProfile.DEFAULT_DIMENSION_PROVIDER
 import com.android.launcher3.DeviceProfile.DEFAULT_PROVIDER
 import com.android.launcher3.util.DisplayController.Info
 import com.android.launcher3.util.WindowBounds
@@ -60,7 +61,8 @@ abstract class DeviceProfileBaseTest {
             transposeLayoutWithOrientation,
             useTwoPanels,
             isGestureMode,
-            DEFAULT_PROVIDER
+            DEFAULT_PROVIDER,
+            DEFAULT_DIMENSION_PROVIDER
         )
 
     protected fun initializeVarsForPhone(
