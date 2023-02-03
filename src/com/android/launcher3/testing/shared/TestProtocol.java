@@ -120,7 +120,6 @@ public final class TestProtocol {
     public static final String REQUEST_TASKBAR_ALL_APPS_TOP_PADDING =
             "taskbar-all-apps-top-padding";
     public static final String REQUEST_ALL_APPS_TOP_PADDING = "all-apps-top-padding";
-    public static final String REQUEST_ALL_APPS_BOTTOM_PADDING = "all-apps-bottom-padding";
 
     public static final String REQUEST_WORKSPACE_CELL_LAYOUT_SIZE = "workspace-cell-layout-size";
     public static final String REQUEST_WORKSPACE_CELL_CENTER = "workspace-cell-center";
