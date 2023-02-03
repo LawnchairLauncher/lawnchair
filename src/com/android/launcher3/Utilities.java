@@ -85,7 +85,7 @@ import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -691,37 +691,16 @@ public final class Utilities {
 
     /**
      * Returns a list of screen-splitting options depending on the device orientation (split top for
-     * portrait, split left for landscape, split left and right for landscape tablets, etc.)
+     * portrait, split right for landscape)
      */
     public static List<SplitPositionOption> getSplitPositionOptions(
             DeviceProfile dp) {
-        List<SplitPositionOption> options = new ArrayList<>();
-        // Add both left and right options if we're in tablet mode
-        if (dp.isTablet && dp.isLandscape) {
-            options.add(new SplitPositionOption(
-                    R.drawable.ic_split_left, R.string.split_screen_position_left,
-                    STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
-            options.add(new SplitPositionOption(
-                    R.drawable.ic_split_right, R.string.split_screen_position_right,
-                    STAGE_POSITION_BOTTOM_OR_RIGHT, STAGE_TYPE_MAIN));
-        } else {
-            if (dp.isSeascape()) {
-                // Add left/right options
-                options.add(new SplitPositionOption(
-                        R.drawable.ic_split_right, R.string.split_screen_position_right,
-                        STAGE_POSITION_BOTTOM_OR_RIGHT, STAGE_TYPE_MAIN));
-            } else if (dp.isLandscape) {
-                options.add(new SplitPositionOption(
-                        R.drawable.ic_split_left, R.string.split_screen_position_left,
-                        STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
-            } else {
-                // Only add top option
-                options.add(new SplitPositionOption(
-                        R.drawable.ic_split_top, R.string.split_screen_position_top,
-                        STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
-            }
-        }
-        return options;
+        return Collections.singletonList(new SplitPositionOption(
+                dp.isLandscape ? R.drawable.ic_split_horizontal : R.drawable.ic_split_vertical,
+                R.string.recent_task_option_split_screen,
+                dp.isLandscape ? STAGE_POSITION_BOTTOM_OR_RIGHT : STAGE_POSITION_TOP_OR_LEFT,
+                STAGE_TYPE_MAIN
+        ));
     }
 
     /** Logs the Scale and Translate properties of a matrix. Ignores skew and perspective. */
