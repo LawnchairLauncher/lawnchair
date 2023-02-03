@@ -346,8 +346,9 @@ public final class LauncherActivityInterface extends
             case RECENTS:
                 return OVERVIEW;
             case NEW_TASK:
-            case LAST_TASK:
                 return QUICK_SWITCH;
+            case LAST_TASK:
+                return BACKGROUND_APP;
             case HOME:
             default:
                 return NORMAL;
