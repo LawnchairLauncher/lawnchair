@@ -13,6 +13,7 @@ import org.junit.runner.RunWith
 private val TEST_BOOLEAN_ITEM = LauncherPrefs.nonRestorableItem("1", false)
 private val TEST_STRING_ITEM = LauncherPrefs.nonRestorableItem("2", "( ͡❛ ͜ʖ ͡❛)")
 private val TEST_INT_ITEM = LauncherPrefs.nonRestorableItem("3", -1)
+private val TEST_CONTEXTUAL_ITEM = LauncherPrefs.backedUpItem("4") { true }
 
 @SmallTest
 @RunWith(AndroidJUnit4::class)
@@ -144,5 +145,10 @@ class LauncherPrefsTest {
             remove(TEST_BOOLEAN_ITEM)
             assertThat(get(TEST_BOOLEAN_ITEM)).isEqualTo(TEST_BOOLEAN_ITEM.defaultValue)
         }
+    }
+
+    @Test
+    fun get_contextualItem_returnsCorrectDefault() {
+        assertThat(launcherPrefs.get(TEST_CONTEXTUAL_ITEM)).isTrue()
     }
 }
