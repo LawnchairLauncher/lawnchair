@@ -30,6 +30,7 @@ import static com.android.launcher3.touch.SingleAxisSwipeDetector.VERTICAL;
 import static com.android.launcher3.util.NavigationMode.THREE_BUTTONS;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
+import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MAIN;
 
 import android.content.res.Resources;
 import android.graphics.Matrix;
@@ -57,6 +58,7 @@ import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PortraitPagedViewHandler implements PagedOrientationHandler {
@@ -405,7 +407,26 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public List<SplitPositionOption> getSplitPositionOptions(DeviceProfile dp) {
-        return Utilities.getSplitPositionOptions(dp);
+        if (dp.isTablet) {
+            return Utilities.getSplitPositionOptions(dp);
+        }
+
+        List<SplitPositionOption> options = new ArrayList<>();
+        if (dp.isSeascape()) {
+            options.add(new SplitPositionOption(
+                    R.drawable.ic_split_horizontal, R.string.recent_task_option_split_screen,
+                    STAGE_POSITION_BOTTOM_OR_RIGHT, STAGE_TYPE_MAIN));
+        } else if (dp.isLandscape) {
+            options.add(new SplitPositionOption(
+                    R.drawable.ic_split_horizontal, R.string.recent_task_option_split_screen,
+                    STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
+        } else {
+            // Only add top option
+            options.add(new SplitPositionOption(
+                    R.drawable.ic_split_vertical, R.string.recent_task_option_split_screen,
+                    STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
+        }
+        return options;
     }
 
     @Override
