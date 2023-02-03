@@ -17,14 +17,10 @@ package com.android.launcher3.tapl;
 
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 
-import android.graphics.Rect;
-
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
 
 import com.android.launcher3.testing.shared.TestProtocol;
-
-import java.util.Objects;
 
 public class HomeAllApps extends AllApps {
     private static final String BOTTOM_SHEET_RES_ID = "bottom_sheet_background";
@@ -45,10 +41,10 @@ public class HomeAllApps extends AllApps {
                      mLauncher.addContextLayer("want to switch from all apps to workspace")) {
             UiObject2 allAppsContainer = verifyActiveContainer();
 
-            final Rect searchBoxBounds = Objects.requireNonNull(
-                    mLauncher.getVisibleBounds(getSearchBox(allAppsContainer)));
-            final int startX = searchBoxBounds.centerX();
-            final int startY = searchBoxBounds.bottom;
+            final int startX = allAppsContainer.getVisibleCenter().x;
+            final int startY = mLauncher.getVisibleBounds(getAppListRecycler(allAppsContainer)).top
+                    + getAppsListRecyclerTopPadding()
+                    - mLauncher.getVisibleBounds(allAppsContainer).top + 1;
             final int endY = mLauncher.getDevice().getDisplayHeight();
             LauncherInstrumentation.log(
                     "switchToWorkspace: startY = " + startY + ", endY = " + endY

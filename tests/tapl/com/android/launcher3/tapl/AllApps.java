@@ -34,6 +34,9 @@ import androidx.test.uiautomator.UiObject2;
 
 import com.android.launcher3.testing.shared.TestProtocol;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -102,10 +105,10 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
                 iconCenter.x, iconCenter.y);
     }
 
-    private boolean iconCenterInRecyclerTopPadding(UiObject2 appListRecycler, UiObject2 icon) {
+    private boolean iconCenterInRecyclerTopPadding(UiObject2 appsListRecycler, UiObject2 icon) {
         final Point iconCenter = icon.getVisibleCenter();
 
-        return iconCenter.y <= mLauncher.getVisibleBounds(appListRecycler).top
+        return iconCenter.y <= mLauncher.getVisibleBounds(appsListRecycler).top
                 + getAppsListRecyclerTopPadding();
     }
 
@@ -137,15 +140,11 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
                             bottomGestureStartOnScreen)) {
                         mLauncher.scrollToLastVisibleRow(
                                 allAppsContainer,
-                                mLauncher.getObjectsInContainer(allAppsContainer, "icon")
-                                        .stream()
-                                        .filter(icon ->
-                                                mLauncher.getVisibleBounds(icon).top
-                                                        < bottomGestureStartOnScreen)
-                                        .collect(Collectors.toList()),
+                                getVisibleIcons(allAppsContainer),
                                 mLauncher.getVisibleBounds(appListRecycler).top
                                         + getAppsListRecyclerTopPadding()
-                                        - mLauncher.getVisibleBounds(allAppsContainer).top);
+                                        - mLauncher.getVisibleBounds(allAppsContainer).top,
+                                getAppsListRecyclerBottomPadding());
                         verifyActiveContainer();
                         final int newScroll = getAllAppsScroll();
                         mLauncher.assertTrue(
@@ -175,6 +174,16 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
         }
     }
 
+    @NonNull
+    private List<UiObject2> getVisibleIcons(UiObject2 allAppsContainer) {
+        return mLauncher.getObjectsInContainer(allAppsContainer, "icon")
+                .stream()
+                .filter(icon ->
+                        mLauncher.getVisibleBounds(icon).top
+                                < mLauncher.getBottomGestureStartOnScreen())
+                .collect(Collectors.toList());
+    }
+
     /**
      * Finds an icon. Fails if the icon doesn't exist. Scrolls the app list when needed to make
      * sure the icon is visible.
@@ -196,20 +205,26 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
 
     protected abstract int getAppsListRecyclerTopPadding();
 
+    protected int getAppsListRecyclerBottomPadding() {
+        return mLauncher.getTestInfo(TestProtocol.REQUEST_ALL_APPS_BOTTOM_PADDING)
+                .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
     private void scrollBackToBeginning() {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to scroll back in all apps")) {
             LauncherInstrumentation.log("Scrolling to the beginning");
             final UiObject2 allAppsContainer = verifyActiveContainer();
-            final UiObject2 appListRecycler = getAppListRecycler(allAppsContainer);
+
+            final UiObject2 highestItem = Collections.min(getVisibleIcons(allAppsContainer),
+                    Comparator.comparingInt(i -> mLauncher.getVisibleBounds(i).top));
 
             int attempts = 0;
             final Rect margins = new Rect(
                     /* left= */ 0,
-                    mLauncher.getVisibleBounds(appListRecycler).top
-                            + getAppsListRecyclerTopPadding() + 1,
+                    mLauncher.getVisibleBounds(highestItem).bottom,
                     /* right= */ 0,
-                    /* bottom= */ 5);
+                    /* bottom= */ getAppsListRecyclerBottomPadding());
 
             for (int scroll = getAllAppsScroll();
                     scroll != 0;
@@ -240,7 +255,7 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
                 .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
-    private UiObject2 getAppListRecycler(UiObject2 allAppsContainer) {
+    protected UiObject2 getAppListRecycler(UiObject2 allAppsContainer) {
         return mLauncher.waitForObjectInContainer(allAppsContainer, "apps_list_view");
     }
 

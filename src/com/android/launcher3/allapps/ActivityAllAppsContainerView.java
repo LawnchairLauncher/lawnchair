@@ -473,7 +473,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         }
         setupHeader();
 
-        if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
+        if (isBottomSearchBar()) {
             // Keep the scroller above the search bar.
             RelativeLayout.LayoutParams scrollerLayoutParams =
                     (LayoutParams) findViewById(R.id.fast_scroller).getLayoutParams();
@@ -519,7 +519,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         removeCustomRules(getSearchRecyclerView());
         if (!isSearchSupported()) {
             layoutWithoutSearchContainer(rvContainer, showTabs);
-        } else if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
+        } else if (isBottomSearchBar()) {
             alignParentTop(rvContainer, showTabs);
             alignParentTop(getSearchRecyclerView(), /* tabs= */ false);
             layoutAboveSearchContainer(rvContainer);
@@ -554,7 +554,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         removeCustomRules(mHeader);
         if (!isSearchSupported()) {
             layoutWithoutSearchContainer(mHeader, false /* includeTabsMargin */);
-        } else if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
+        } else if (isBottomSearchBar()) {
             alignParentTop(mHeader, false /* includeTabsMargin */);
         } else {
             layoutBelowSearchContainer(mHeader, false /* includeTabsMargin */);
@@ -591,6 +591,13 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         return ColorUtils.setAlphaComponent(
                 ColorUtils.blendARGB(mScrimColor, mHeaderProtectionColor, blendRatio),
                 (int) (mSearchContainer.getAlpha() * 255));
+    }
+
+    /** @return true if the search bar is at the bottom of the container (as opposed to the top). */
+    private boolean isBottomSearchBar() {
+        return FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()
+                && ((RelativeLayout.LayoutParams) mSearchContainer.getLayoutParams()).getRule(
+                ALIGN_PARENT_BOTTOM) == RelativeLayout.TRUE;
     }
 
     private void layoutBelowSearchContainer(View v, boolean includeTabsMargin) {
@@ -891,7 +898,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             setPadding(grid.workspacePadding.left, 0, grid.workspacePadding.right, 0);
         } else {
             int topPadding = grid.allAppsTopPadding;
-            if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get() && !grid.isTablet) {
+            if (isBottomSearchBar() && !grid.isTablet) {
                 topPadding += getResources().getDimensionPixelSize(
                         R.dimen.all_apps_additional_top_padding_floating_search);
             }
@@ -1092,7 +1099,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         FloatingHeaderView headerView = getFloatingHeaderView();
         if (isTablet) {
             // Start adding header protection if search bar or tabs will attach to the top.
-            if (!FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get() || mUsingTabs) {
+            if (!isBottomSearchBar() || mUsingTabs) {
                 View panel = (View) mBottomSheetBackground;
                 float translationY = ((View) panel.getParent()).getTranslationY();
                 mTmpRectF.set(panel.getLeft(), panel.getTop() + translationY, panel.getRight(),
@@ -1134,7 +1141,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     /** Returns the position of the bottom edge of the header */
     public int getHeaderBottom() {
         int bottom = (int) getTranslationY() + mHeader.getClipTop();
-        if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
+        if (isBottomSearchBar()) {
             if (mActivityContext.getDeviceProfile().isTablet) {
                 return bottom + mBottomSheetBackground.getTop();
             }
