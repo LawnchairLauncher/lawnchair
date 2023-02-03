@@ -550,6 +550,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         }
     }
 
+    public boolean isDestroyed() {
+        return mIsDestroyed;
+    }
+
     public void updateSysuiStateFlags(int systemUiStateFlags, boolean fromInit) {
         mControllers.navbarButtonsViewController.updateStateForSysuiFlags(systemUiStateFlags,
                 fromInit);

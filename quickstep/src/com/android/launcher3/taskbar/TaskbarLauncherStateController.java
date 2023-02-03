@@ -247,6 +247,9 @@ import java.util.StringJoiner;
     }
 
     public Animator applyState(long duration, boolean start) {
+        if (mControllers.taskbarActivityContext.isDestroyed()) {
+            return null;
+        }
         Animator animator = null;
         if (mPrevState == null || mPrevState != mState) {
             // If this is our initial state, treat all flags as changed.
