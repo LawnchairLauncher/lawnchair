@@ -134,7 +134,7 @@ public class LauncherModelHelper {
         setupProvider(LauncherProvider.AUTHORITY, provider);
     }
 
-    protected void setupProvider(String authority, ContentProvider provider) {
+    public void setupProvider(String authority, ContentProvider provider) {
         ProviderInfo providerInfo = new ProviderInfo();
         providerInfo.authority = authority;
         providerInfo.applicationInfo = sandboxContext.getApplicationInfo();
