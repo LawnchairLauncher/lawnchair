@@ -227,10 +227,6 @@ public final class FeatureFlags {
             "ENABLE_ICON_LABEL_AUTO_SCALING", true,
             "Enables scaling/spacing for icon labels to make more characters visible");
 
-    public static final BooleanFlag ENABLE_ALL_APPS_IN_TASKBAR = getDebugFlag(
-            "ENABLE_ALL_APPS_IN_TASKBAR", true,
-            "Enables accessing All Apps from the system Taskbar.");
-
     public static final BooleanFlag ENABLE_ALL_APPS_BUTTON_IN_HOTSEAT = getDebugFlag(
             "ENABLE_ALL_APPS_BUTTON_IN_HOTSEAT", false,
             "Enables displaying the all apps button in the hotseat.");

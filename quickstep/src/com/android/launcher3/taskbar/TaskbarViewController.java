@@ -339,8 +339,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         for (int i = 0; i < mTaskbarView.getChildCount(); i++) {
             View child = mTaskbarView.getChildAt(i);
             int positionInHotseat;
-            boolean isAllAppsButton = FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get()
-                    && child == mTaskbarView.getAllAppsButtonView();
+            boolean isAllAppsButton = child == mTaskbarView.getAllAppsButtonView();
             if (!mIsHotseatIconOnTopWhenAligned) {
                 // When going to home, the EMPHASIZED interpolator in TaskbarLauncherStateController
                 // plays iconAlignment to 1 really fast, therefore moving the fading towards the end
@@ -589,7 +588,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     }
 
     public static final FloatProperty<View> ICON_TRANSLATE_X =
-            new FloatProperty<View>("taskbarAligmentTranslateX") {
+            new FloatProperty<View>("taskbarAlignmentTranslateX") {
 
                 @Override
                 public void setValue(View view, float v) {
