@@ -178,7 +178,7 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     public List<SplitPositionOption> getSplitPositionOptions(DeviceProfile dp) {
         // Add "right" option which is actually the top
         return Collections.singletonList(new SplitPositionOption(
-                R.drawable.ic_split_right, R.string.split_screen_position_right,
+                R.drawable.ic_split_horizontal, R.string.recent_task_option_split_screen,
                 STAGE_POSITION_BOTTOM_OR_RIGHT, STAGE_TYPE_MAIN));
     }
 
