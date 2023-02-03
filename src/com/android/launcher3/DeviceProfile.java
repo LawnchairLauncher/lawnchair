@@ -1411,8 +1411,10 @@ public class DeviceProfile {
 
     /** Gets the space that the overview actions will take, including bottom margin. */
     public int getOverviewActionsClaimedSpace() {
-        return overviewActionsTopMarginPx + overviewActionsHeight
-                + getOverviewActionsClaimedSpaceBelow();
+        int overviewActionsSpace = isTablet && FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get()
+                ? 0
+                : (overviewActionsTopMarginPx + overviewActionsHeight);
+        return overviewActionsSpace + getOverviewActionsClaimedSpaceBelow();
     }
 
     /**

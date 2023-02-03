@@ -46,7 +46,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
 
         fun showForTask(
             taskContainer: TaskIdAttributeContainer,
-            alignSecondRow: Boolean = false
+            alignedOptionIndex: Int = 0
         ): Boolean {
             val activity =
                 BaseDraggingActivity.fromContext<BaseDraggingActivity>(
@@ -59,7 +59,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
                     false
                 ) as TaskMenuViewWithArrow<*>
 
-            return taskMenuViewWithArrow.populateAndShowForTask(taskContainer, alignSecondRow)
+            return taskMenuViewWithArrow.populateAndShowForTask(taskContainer, alignedOptionIndex)
         }
     }
 
@@ -82,9 +82,9 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
         CLOSE_FADE_DURATION = CLOSE_CHILD_FADE_DURATION
     }
 
-    private var alignSecondRow: Boolean = false
-    private val extraSpaceForSecondRowAlignment: Int
-        get() = if (alignSecondRow) optionMeasuredHeight else 0
+    private var alignedOptionIndex: Int = 0
+    private val extraSpaceForRowAlignment: Int
+        get() = optionMeasuredHeight * alignedOptionIndex
     private val menuWidth = context.resources.getDimensionPixelSize(R.dimen.task_menu_width_grid)
 
     private lateinit var taskView: TaskView
@@ -125,7 +125,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
 
     private fun populateAndShowForTask(
         taskContainer: TaskIdAttributeContainer,
-        alignSecondRow: Boolean
+        alignedOptionIndex: Int
     ): Boolean {
         if (isAttachedToWindow) {
             return false
@@ -133,7 +133,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
 
         taskView = taskContainer.taskView
         this.taskContainer = taskContainer
-        this.alignSecondRow = alignSecondRow
+        this.alignedOptionIndex = alignedOptionIndex
         if (!populateMenu()) return false
         addScrim()
         show()
@@ -257,8 +257,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
     }
 
     /**
-     * Orients this container to the left or right of the given icon, aligning with the first option
-     * or second.
+     * Orients this container to the left or right of the given icon, aligning with the desired row.
      *
      * These are the preferred orientations, in order (RTL prefers right-aligned over left):
      * - Right and first option aligned
@@ -298,7 +297,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
         // Offset y so that the arrow and row are center-aligned with the original icon.
         val iconHeight = mTempRect.height()
         val yOffset = (optionMeasuredHeight - iconHeight) / 2
-        var menuStartY = mTempRect.top - yOffset - extraSpaceForSecondRowAlignment
+        var menuStartY = mTempRect.top - yOffset - extraSpaceForRowAlignment
 
         // Insets are added later, so subtract them now.
         menuStartX -= insets.left
@@ -316,8 +315,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
     override fun addArrow() {
         popupContainer.addView(mArrow)
         mArrow.x = getArrowX()
-        mArrow.y =
-            y + (optionMeasuredHeight / 2) - (mArrowHeight / 2) + extraSpaceForSecondRowAlignment
+        mArrow.y = y + (optionMeasuredHeight / 2) - (mArrowHeight / 2) + extraSpaceForRowAlignment
 
         updateArrowColor()
 
