@@ -183,13 +183,12 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             flags -> {
                 boolean inApp = hasAnyFlag(flags, FLAGS_IN_APP);
                 boolean stashedInApp = hasAnyFlag(flags, FLAGS_STASHED_IN_APP);
-                boolean stashedSysUIState = hasAnyFlag(flags, FLAG_STASHED_IN_SYSUI_STATE);
                 boolean stashedLauncherState = hasAnyFlag(flags, FLAG_IN_STASHED_LAUNCHER_STATE);
                 boolean stashedInTaskbarAllApps =
                         hasAnyFlag(flags, FLAG_STASHED_IN_TASKBAR_ALL_APPS);
                 boolean stashedForSmallScreen = hasAnyFlag(flags, FLAG_STASHED_SMALL_SCREEN);
                 return (inApp && stashedInApp) || (!inApp && stashedLauncherState)
-                        || stashedInTaskbarAllApps || stashedForSmallScreen || stashedSysUIState;
+                        || stashedInTaskbarAllApps || stashedForSmallScreen;
             });
 
     public TaskbarStashController(TaskbarActivityContext activity) {
