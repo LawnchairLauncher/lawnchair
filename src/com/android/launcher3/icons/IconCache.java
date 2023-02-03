@@ -484,8 +484,7 @@ public class IconCache extends BaseIconCache {
         WidgetSection widgetSection = WidgetSections.getWidgetSections(mContext)
                 .get(infoInOut.widgetCategory);
         infoInOut.title = mContext.getString(widgetSection.mSectionTitle);
-        infoInOut.contentDescription = mPackageManager.getUserBadgedLabel(
-                infoInOut.title, infoInOut.user);
+        infoInOut.contentDescription = getUserBadgedLabel(infoInOut.title, infoInOut.user);
         final BitmapInfo cachedBitmap = mWidgetCategoryBitmapInfos.get(infoInOut.widgetCategory);
         if (cachedBitmap != null) {
             infoInOut.bitmap = getBadgedIcon(cachedBitmap, infoInOut.user);
