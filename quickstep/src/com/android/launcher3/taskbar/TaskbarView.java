@@ -47,6 +47,7 @@ import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
+import com.android.launcher3.views.IconButtonView;
 
 import java.util.function.Predicate;
 
@@ -80,7 +81,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     private @Nullable FolderIcon mLeaveBehindFolderIcon;
 
     // Only non-null when device supports having an All Apps button.
-    private @Nullable View mAllAppsButton;
+    private @Nullable IconButtonView mAllAppsButton;
 
     // Only non-null when device supports having an All Apps button.
     private @Nullable View mTaskbarDivider;
@@ -125,10 +126,14 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
         if (FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get()
                 && !mActivityContext.getPackageManager().hasSystemFeature(FEATURE_PC)) {
-            mAllAppsButton = LayoutInflater.from(context)
+            mAllAppsButton = (IconButtonView) LayoutInflater.from(context)
                     .inflate(R.layout.taskbar_all_apps_button, this, false);
             mAllAppsButton.setPadding(mItemPadding, mItemPadding, mItemPadding, mItemPadding);
             mAllAppsButton.setScaleX(mIsRtl ? -1 : 1);
+            mAllAppsButton.setForegroundTint(mActivityContext.getColor(
+                    DisplayController.isTransientTaskbar(mActivityContext)
+                            ? R.color.all_apps_button_color
+                            : R.color.all_apps_button_color_dark));
 
             if (FeatureFlags.ENABLE_TASKBAR_PINNING.get()) {
                 mTaskbarDivider = LayoutInflater.from(context).inflate(R.layout.taskbar_divider,
