@@ -170,9 +170,9 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                     flingBackwardY < flingForwardY));
 
             // Test scrolling down to YouTube.
-            assertNotNull("All apps: can't find YouTube", allApps.getAppIcon("YouTube"));
+            assertNotNull("All apps: can't fine YouTube", allApps.getAppIcon("YouTube"));
             // Test scrolling up to Camera.
-            assertNotNull("All apps: can't find Camera", allApps.getAppIcon("Camera"));
+            assertNotNull("All apps: can't fine Camera", allApps.getAppIcon("Camera"));
             // Test failing to find a non-existing app.
             final AllApps allAppsFinal = allApps;
             expectFail("All apps: could find a non-existing app",
@@ -264,7 +264,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
             assertNotNull("AppIcon.launch returned null", app.launch(getAppPackageName()));
             test.executeOnLauncher(launcher -> assertTrue(
                     "Launcher activity is the top activity; expecting another activity to be the "
-                            + "top one",
+                            + "top "
+                            + "one",
                     test.isInLaunchedApp(launcher)));
         } finally {
             allApps.unfreeze();

@@ -78,7 +78,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -1491,24 +1490,19 @@ public final class LauncherInstrumentation {
     }
 
     void scrollToLastVisibleRow(
-            UiObject2 container, Collection<UiObject2> items, int topPaddingInContainer,
-            int appsListBottomPadding) {
-        final UiObject2 lowestItem = Collections.max(items,
-                Comparator.comparingInt(i -> getVisibleBounds(i).top));
+            UiObject2 container, Collection<UiObject2> items, int topPaddingInContainer) {
+        final UiObject2 lowestItem = Collections.max(items, (i1, i2) ->
+                Integer.compare(getVisibleBounds(i1).top, getVisibleBounds(i2).top));
 
         final int itemRowCurrentTopOnScreen = getVisibleBounds(lowestItem).top;
         final Rect containerRect = getVisibleBounds(container);
         final int itemRowNewTopOnScreen = containerRect.top + topPaddingInContainer;
         final int distance = itemRowCurrentTopOnScreen - itemRowNewTopOnScreen + getTouchSlop();
 
-        scrollDownByDistance(container, distance, appsListBottomPadding);
+        scrollDownByDistance(container, distance);
     }
 
     void scrollDownByDistance(UiObject2 container, int distance) {
-        scrollDownByDistance(container, distance, 0);
-    }
-
-    void scrollDownByDistance(UiObject2 container, int distance, int bottomPadding) {
         final Rect containerRect = getVisibleBounds(container);
         final int bottomGestureMarginInContainer = getBottomGestureMarginInContainer(container);
         scroll(
@@ -1518,7 +1512,7 @@ public final class LauncherInstrumentation {
                         0,
                         containerRect.height() - distance - bottomGestureMarginInContainer,
                         0,
-                        bottomGestureMarginInContainer + bottomPadding),
+                        bottomGestureMarginInContainer),
                 /* steps= */ 10,
                 /* slowDown= */ true);
     }
