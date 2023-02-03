@@ -31,7 +31,6 @@
         android:layout_width="@dimen/taskbar_edu_swipe_lottie_width"
         android:layout_height="@dimen/taskbar_edu_swipe_lottie_height"
         android:layout_marginTop="@dimen/taskbar_edu_tooltip_vertical_margin"
-        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
