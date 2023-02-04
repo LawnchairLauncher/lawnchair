@@ -23,6 +23,13 @@
             "matchPackagePatterns": [
                 "com.android.*"
             ]
+        },
+        {
+            "groupName": "dev.rikka.tools.refine",
+            "groupSlug": "refine",
+            "matchPackagePatterns": [
+                "dev.rikka.tools.refine.*"
+            ]
         }
     ]
 }
