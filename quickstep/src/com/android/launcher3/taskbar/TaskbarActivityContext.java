@@ -286,22 +286,20 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      * the icon size
      */
     private void matchDeviceProfile(DeviceProfile originDeviceProfile, Resources resources) {
-        mDeviceProfile = originDeviceProfile.copy(this);
-        // Taskbar should match the number of icons of hotseat
-        mDeviceProfile.numShownHotseatIcons = originDeviceProfile.numShownHotseatIcons;
-        // Same QSB width to have a smooth animation
-        mDeviceProfile.hotseatQsbWidth = originDeviceProfile.hotseatQsbWidth;
-        // Update the size of the icons
-        updateIconSize(resources);
-    }
+        mDeviceProfile = originDeviceProfile.toBuilder(this)
+                .withDimensionsOverride(deviceProfile -> {
+                    // Taskbar should match the number of icons of hotseat
+                    deviceProfile.numShownHotseatIcons = originDeviceProfile.numShownHotseatIcons;
+                    // Same QSB width to have a smooth animation
+                    deviceProfile.hotseatQsbWidth = originDeviceProfile.hotseatQsbWidth;
 
-
-    private void updateIconSize(Resources resources) {
-        mDeviceProfile.iconSizePx = resources.getDimensionPixelSize(
-                DisplayController.isTransientTaskbar(this)
-                    ? R.dimen.transient_taskbar_icon_size
-                    : R.dimen.taskbar_icon_size);
-        mDeviceProfile.updateIconSize(1f, resources);
+                    // Update icon size
+                    deviceProfile.iconSizePx = resources.getDimensionPixelSize(
+                            DisplayController.isTransientTaskbar(TaskbarActivityContext.this)
+                                    ? R.dimen.transient_taskbar_icon_size
+                                    : R.dimen.taskbar_icon_size);
+                    deviceProfile.updateIconSize(1f, resources);
+                }).build();
     }
 
     /**
@@ -547,6 +545,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             mWindowManager.removeViewImmediate(mDragLayer);
             mAddedWindow = false;
         }
+    }
+
+    public boolean isDestroyed() {
+        return mIsDestroyed;
     }
 
     public void updateSysuiStateFlags(int systemUiStateFlags, boolean fromInit) {

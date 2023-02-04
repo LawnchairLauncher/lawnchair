@@ -15,6 +15,8 @@
  */
 package com.android.quickstep.interaction;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL;
+
 import android.annotation.TargetApi;
 import android.graphics.PointF;
 import android.os.Build;
@@ -33,12 +35,16 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
 
     @Override
     public int getIntroductionTitle() {
-        return R.string.home_gesture_intro_title;
+        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                ? R.string.home_gesture_tutorial_title
+                : R.string.home_gesture_intro_title;
     }
 
     @Override
     public int getIntroductionSubtitle() {
-        return R.string.home_gesture_intro_subtitle;
+        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                ? R.string.home_gesture_tutorial_subtitle
+                : R.string.home_gesture_intro_subtitle;
     }
 
     @Override
@@ -57,7 +63,19 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
     protected int getMockAppTaskLayoutResId() {
         return mTutorialFragment.isLargeScreen()
                 ? R.layout.gesture_tutorial_tablet_mock_webpage
-                : R.layout.gesture_tutorial_mock_webpage;
+                : ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                    ? R.layout.swipe_up_gesture_tutorial_shape
+                    : R.layout.gesture_tutorial_mock_webpage;
+    }
+
+    @Override
+    protected int getGestureLottieAnimationId() {
+        return R.raw.home_gesture_tutorial_animation;
+    }
+
+    @Override
+    protected int getSwipeActionColorResId() {
+        return R.color.gesture_home_tutorial_swipe_up_rect;
     }
 
     @Override

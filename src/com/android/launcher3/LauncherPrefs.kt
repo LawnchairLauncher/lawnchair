@@ -8,6 +8,8 @@ import com.android.launcher3.allapps.WorkProfileManager
 import com.android.launcher3.model.DeviceGridState
 import com.android.launcher3.pm.InstallSessionHelper
 import com.android.launcher3.provider.RestoreDbTask
+import com.android.launcher3.states.RotationHelper
+import com.android.launcher3.util.DisplayController
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.android.launcher3.util.Themes
 
@@ -17,31 +19,36 @@ import com.android.launcher3.util.Themes
  */
 class LauncherPrefs(private val context: Context) {
 
+    /** Wrapper around `getInner` for a `ContextualItem` */
+    fun <T : Any> get(item: ContextualItem<T>): T =
+        getInner(item, item.defaultValueFromContext(context))
+
+    /** Wrapper around `getInner` for an `Item` */
+    fun <T : Any> get(item: ConstantItem<T>): T = getInner(item, item.defaultValue)
+
     /**
      * Retrieves the value for an [Item] from [SharedPreferences]. It handles method typing via the
      * default value type, and will throw an error if the type of the item provided is not a
      * `String`, `Boolean`, `Float`, `Int`, `Long`, or `Set<String>`.
      */
     @Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
-    fun <T : Any> get(item: Item<T>): T {
+    private fun <T : Any> getInner(item: Item, default: T): T {
         val sp = context.getSharedPreferences(item.sharedPrefFile, Context.MODE_PRIVATE)
 
-        return when (item.defaultValue::class.java) {
-            String::class.java -> sp.getString(item.sharedPrefKey, item.defaultValue as String)
+        return when (default::class.java) {
+            String::class.java -> sp.getString(item.sharedPrefKey, default as String)
             Boolean::class.java,
-            java.lang.Boolean::class.java ->
-                sp.getBoolean(item.sharedPrefKey, item.defaultValue as Boolean)
+            java.lang.Boolean::class.java -> sp.getBoolean(item.sharedPrefKey, default as Boolean)
             Int::class.java,
-            java.lang.Integer::class.java -> sp.getInt(item.sharedPrefKey, item.defaultValue as Int)
+            java.lang.Integer::class.java -> sp.getInt(item.sharedPrefKey, default as Int)
             Float::class.java,
-            java.lang.Float::class.java ->
-                sp.getFloat(item.sharedPrefKey, item.defaultValue as Float)
+            java.lang.Float::class.java -> sp.getFloat(item.sharedPrefKey, default as Float)
             Long::class.java,
-            java.lang.Long::class.java -> sp.getLong(item.sharedPrefKey, item.defaultValue as Long)
-            Set::class.java -> sp.getStringSet(item.sharedPrefKey, item.defaultValue as Set<String>)
+            java.lang.Long::class.java -> sp.getLong(item.sharedPrefKey, default as Long)
+            Set::class.java -> sp.getStringSet(item.sharedPrefKey, default as Set<String>)
             else ->
                 throw IllegalArgumentException(
-                    "item type: ${item.defaultValue::class.java}" +
+                    "item type: ${default::class.java}" +
                         " is not compatible with sharedPref methods"
                 )
         }
@@ -57,14 +64,14 @@ class LauncherPrefs(private val context: Context) {
      * prepareToPutValue(itemsToValues) for every distinct `SharedPreferences` file present in the
      * provided item configurations.
      */
-    fun put(vararg itemsToValues: Pair<Item<*>, Any>): Unit =
+    fun put(vararg itemsToValues: Pair<Item, Any>): Unit =
         prepareToPutValues(itemsToValues).forEach { it.apply() }
 
     /**
      * Stores the value provided in `SharedPreferences` according to the item configuration provided
      * It is asynchronous, so the caller can't assume that the value put is immediately available.
      */
-    fun <T : Any> put(item: Item<T>, value: T): Unit =
+    fun <T : Any> put(item: Item, value: T): Unit =
         context
             .getSharedPreferences(item.sharedPrefFile, Context.MODE_PRIVATE)
             .edit()
@@ -75,7 +82,7 @@ class LauncherPrefs(private val context: Context) {
      * Synchronously stores all the values provided according to their associated Item
      * configuration.
      */
-    fun putSync(vararg itemsToValues: Pair<Item<*>, Any>): Unit =
+    fun putSync(vararg itemsToValues: Pair<Item, Any>): Unit =
         prepareToPutValues(itemsToValues).forEach { it.commit() }
 
     /**
@@ -86,7 +93,7 @@ class LauncherPrefs(private val context: Context) {
      * items given as part of the itemsToValues parameter
      */
     private fun prepareToPutValues(
-        itemsToValues: Array<out Pair<Item<*>, Any>>
+        itemsToValues: Array<out Pair<Item, Any>>
     ): List<SharedPreferences.Editor> =
         itemsToValues
             .groupBy { it.first.sharedPrefFile }
@@ -108,7 +115,7 @@ class LauncherPrefs(private val context: Context) {
      */
     @Suppress("UNCHECKED_CAST")
     private fun SharedPreferences.Editor.putValue(
-        item: Item<*>,
+        item: Item,
         value: Any
     ): SharedPreferences.Editor =
         when (value::class.java) {
@@ -124,8 +131,7 @@ class LauncherPrefs(private val context: Context) {
             Set::class.java -> putStringSet(item.sharedPrefKey, value as Set<String>)
             else ->
                 throw IllegalArgumentException(
-                    "item type: " +
-                        "${item.defaultValue!!::class} is not compatible with sharedPref methods"
+                    "item type: ${value::class} is not compatible with sharedPref methods"
                 )
         }
 
@@ -134,7 +140,7 @@ class LauncherPrefs(private val context: Context) {
      * `SharedPreferences` files associated with the provided list of items. The listener will need
      * to filter update notifications so they don't activate for non-relevant updates.
      */
-    fun addListener(listener: OnSharedPreferenceChangeListener, vararg items: Item<*>) {
+    fun addListener(listener: OnSharedPreferenceChangeListener, vararg items: Item) {
         items
             .map { it.sharedPrefFile }
             .distinct()
@@ -149,7 +155,7 @@ class LauncherPrefs(private val context: Context) {
      * Stops the listener from getting notified of any more updates to any of the
      * `SharedPreferences` files associated with any of the provided list of [Item].
      */
-    fun removeListener(listener: OnSharedPreferenceChangeListener, vararg items: Item<*>) {
+    fun removeListener(listener: OnSharedPreferenceChangeListener, vararg items: Item) {
         // If a listener is not registered to a SharedPreference, unregistering it does nothing
         items
             .map { it.sharedPrefFile }
@@ -165,7 +171,7 @@ class LauncherPrefs(private val context: Context) {
      * Checks if all the provided [Item] have values stored in their corresponding
      * `SharedPreferences` files.
      */
-    fun has(vararg items: Item<*>): Boolean {
+    fun has(vararg items: Item): Boolean {
         items
             .groupBy { it.sharedPrefFile }
             .forEach { (file, itemsSublist) ->
@@ -179,17 +185,17 @@ class LauncherPrefs(private val context: Context) {
     /**
      * Asynchronously removes the [Item]'s value from its corresponding `SharedPreferences` file.
      */
-    fun remove(vararg items: Item<*>) = prepareToRemove(items).forEach { it.apply() }
+    fun remove(vararg items: Item) = prepareToRemove(items).forEach { it.apply() }
 
     /** Synchronously removes the [Item]'s value from its corresponding `SharedPreferences` file. */
-    fun removeSync(vararg items: Item<*>) = prepareToRemove(items).forEach { it.commit() }
+    fun removeSync(vararg items: Item) = prepareToRemove(items).forEach { it.commit() }
 
     /**
      * Creates `SharedPreferences.Editor` transactions for removing all the provided [Item] values
      * from their respective `SharedPreferences` files. These returned `Editors` can then be
      * committed or applied for synchronous or async behavior.
      */
-    private fun prepareToRemove(items: Array<out Item<*>>): List<SharedPreferences.Editor> =
+    private fun prepareToRemove(items: Array<out Item>): List<SharedPreferences.Editor> =
         items
             .groupBy { it.sharedPrefFile }
             .map { (file, items) ->
@@ -218,16 +224,32 @@ class LauncherPrefs(private val context: Context) {
             backedUpItem(RestoreDbTask.RESTORED_DEVICE_TYPE, InvariantDeviceProfile.TYPE_PHONE)
         @JvmField val APP_WIDGET_IDS = backedUpItem(RestoreDbTask.APPWIDGET_IDS, "")
         @JvmField val OLD_APP_WIDGET_IDS = backedUpItem(RestoreDbTask.APPWIDGET_OLD_IDS, "")
+        @JvmField
+        val ALLOW_ROTATION =
+            backedUpItem(RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY) {
+                RotationHelper.getAllowRotationDefaultValue(DisplayController.INSTANCE.get(it).info)
+            }
 
         @VisibleForTesting
         @JvmStatic
-        fun <T> backedUpItem(sharedPrefKey: String, defaultValue: T): Item<T> =
-            Item(sharedPrefKey, LauncherFiles.SHARED_PREFERENCES_KEY, defaultValue)
+        fun <T> backedUpItem(sharedPrefKey: String, defaultValue: T): ConstantItem<T> =
+            ConstantItem(sharedPrefKey, LauncherFiles.SHARED_PREFERENCES_KEY, defaultValue)
+
+        @JvmStatic
+        fun <T> backedUpItem(
+            sharedPrefKey: String,
+            defaultValueFromContext: (c: Context) -> T
+        ): ContextualItem<T> =
+            ContextualItem(
+                sharedPrefKey,
+                LauncherFiles.SHARED_PREFERENCES_KEY,
+                defaultValueFromContext
+            )
 
         @VisibleForTesting
         @JvmStatic
-        fun <T> nonRestorableItem(sharedPrefKey: String, defaultValue: T): Item<T> =
-            Item(sharedPrefKey, LauncherFiles.DEVICE_PREFERENCES_KEY, defaultValue)
+        fun <T> nonRestorableItem(sharedPrefKey: String, defaultValue: T): ConstantItem<T> =
+            ConstantItem(sharedPrefKey, LauncherFiles.DEVICE_PREFERENCES_KEY, defaultValue)
 
         @Deprecated("Don't use shared preferences directly. Use other LauncherPref methods.")
         @JvmStatic
@@ -251,6 +273,30 @@ class LauncherPrefs(private val context: Context) {
     }
 }
 
-data class Item<T>(val sharedPrefKey: String, val sharedPrefFile: String, val defaultValue: T) {
-    fun to(value: T): Pair<Item<T>, T> = Pair(this, value)
+abstract class Item {
+    abstract val sharedPrefKey: String
+    abstract val sharedPrefFile: String
+
+    fun <T> to(value: T): Pair<Item, T> = Pair(this, value)
+}
+
+data class ConstantItem<T>(
+    override val sharedPrefKey: String,
+    override val sharedPrefFile: String,
+    val defaultValue: T
+) : Item()
+
+data class ContextualItem<T>(
+    override val sharedPrefKey: String,
+    override val sharedPrefFile: String,
+    private val defaultSupplier: (c: Context) -> T
+) : Item() {
+    private var default: T? = null
+
+    fun defaultValueFromContext(context: Context): T {
+        if (default == null) {
+            default = defaultSupplier(context)
+        }
+        return default!!
+    }
 }

@@ -32,12 +32,10 @@
         android:layout_width="@dimen/taskbar_edu_features_lottie_width"
         android:layout_height="@dimen/taskbar_edu_features_lottie_height"
         android:layout_marginTop="@dimen/taskbar_edu_tooltip_vertical_margin"
-        android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title"
         app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_rawRes="@raw/taskbar_edu_splitscreen" />
+        app:lottie_loop="true" />
 
     <TextView
         android:id="@+id/splitscreen_text"
@@ -61,7 +59,6 @@
         android:layout_height="@dimen/taskbar_edu_features_lottie_height"
         android:layout_marginStart="@dimen/taskbar_edu_features_horizontal_spacing"
         android:layout_marginTop="@dimen/taskbar_edu_tooltip_vertical_margin"
-        android:scaleType="centerCrop"
         app:layout_constraintStart_toEndOf="@id/splitscreen_animation"
         app:layout_constraintTop_toBottomOf="@id/title"
         app:lottie_autoPlay="true"
@@ -84,13 +81,11 @@
         android:layout_height="@dimen/taskbar_edu_features_lottie_height"
         android:layout_marginStart="@dimen/taskbar_edu_features_horizontal_spacing"
         android:layout_marginTop="@dimen/taskbar_edu_tooltip_vertical_margin"
-        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/settings_animation"
         app:layout_constraintTop_toBottomOf="@id/title"
         app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_rawRes="@raw/taskbar_edu_suggestions" />
+        app:lottie_loop="true" />
 
     <TextView
         android:id="@+id/suggestions_text"

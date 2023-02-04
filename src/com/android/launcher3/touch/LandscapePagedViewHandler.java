@@ -403,7 +403,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     public List<SplitPositionOption> getSplitPositionOptions(DeviceProfile dp) {
         // Add "left" side of phone which is actually the top
         return Collections.singletonList(new SplitPositionOption(
-                R.drawable.ic_split_left, R.string.split_screen_position_left,
+                R.drawable.ic_split_horizontal, R.string.recent_task_option_split_screen,
                 STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
     }
 

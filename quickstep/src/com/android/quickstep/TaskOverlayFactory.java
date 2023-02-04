@@ -36,6 +36,7 @@ import androidx.annotation.RequiresApi;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
@@ -77,9 +78,11 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         RecentsOrientedState orientedState = taskView.getRecentsView().getPagedViewOrientedState();
         boolean canLauncherRotate = orientedState.isRecentsActivityRotationAllowed();
         boolean isInLandscape = orientedState.getTouchRotation() != ROTATION_0;
+        boolean isTablet = activity.getDeviceProfile().isTablet;
 
         // Add overview actions to the menu when in in-place rotate landscape mode.
-        if (!canLauncherRotate && isInLandscape) {
+        if ((!canLauncherRotate && isInLandscape)
+                || (isTablet && FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get())) {
             // Add screenshot action to task menu.
             List<SystemShortcut> screenshotShortcuts = TaskShortcutFactory.SCREENSHOT
                     .getShortcuts(activity, taskContainer);

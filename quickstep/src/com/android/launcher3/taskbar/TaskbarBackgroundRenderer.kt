@@ -113,7 +113,7 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
             // Approximates the stash/unstash animation to transform the background.
             val scaleFactor = backgroundHeight / maxBackgroundHeight
             val width = transientBackgroundBounds.width()
-            val widthScale = mapToRange(scaleFactor, 0f, 1f, 0.4f, 1f, Interpolators.LINEAR)
+            val widthScale = mapToRange(scaleFactor, 0f, 1f, 0.2f, 1f, Interpolators.LINEAR)
             val newWidth = widthScale * width
             val delta = width - newWidth
             canvas.translate(0f, bottomMargin * ((1f - scaleFactor) / 2f))
