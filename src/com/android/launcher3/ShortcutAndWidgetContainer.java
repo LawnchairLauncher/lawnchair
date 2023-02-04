@@ -38,6 +38,7 @@ import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.NavigableAppWidgetHostView;
 
 public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.FolderIconParent {
@@ -217,6 +218,16 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
 
         int childLeft = lp.x;
         int childTop = lp.y;
+
+        // We want to get the layout position of the widget, but layout() is a final function in
+        // ViewGroup which makes it impossible to be overridden. Overriding onLayout() will have no
+        // effect since it will not be called when the transition is enabled. The only possible
+        // solution here seems to be sending the positions when CellLayout is laying out the views
+        if (child instanceof LauncherAppWidgetHostView widgetView
+                && widgetView.getCellChildViewPreLayoutListener() != null) {
+            widgetView.getCellChildViewPreLayoutListener().notifyBoundChangeOnPreLayout(child,
+                    childLeft, childTop, childLeft + lp.width, childTop + lp.height);
+        }
         child.layout(childLeft, childTop, childLeft + lp.width, childTop + lp.height);
 
         if (lp.dropped) {
