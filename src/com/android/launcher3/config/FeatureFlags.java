@@ -309,9 +309,6 @@ public final class FeatureFlags {
             "FOLDABLE_WORKSPACE_REORDER", false,
             "In foldables, when reordering the icons and widgets, is now going to use both sides");
 
-    public static final BooleanFlag ENABLE_QUICK_LAUNCH_V3 = new DeviceFlag(
-            "ENABLE_QUICK_LAUNCH_V3", false, "Quick Launch V3");
-
     public static final BooleanFlag ENABLE_WIDGET_PICKER_DEPTH = new DeviceFlag(
             "ENABLE_WIDGET_PICKER_DEPTH", true, "Enable changing depth in widget picker.");
 
