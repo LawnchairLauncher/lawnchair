@@ -277,17 +277,6 @@ public class AllAppsTransitionController
         mAllAppScale.updateValue(scaleProgress);
     }
 
-    @Override
-    public void onBackCancelled(LauncherState toState) {
-        if (!mLauncher.isInState(ALL_APPS) || !NORMAL.equals(toState)) {
-            return;
-        }
-
-        // TODO: once ag/20649618 is picked into tm-qpr, we don't need to animate back on cancel
-        // swipe because framework will do that for us in {@link #onBackProgressed}.
-        animateAllAppsToNoScale();
-    }
-
     private void onScaleProgressChanged() {
         final float scaleProgress = mAllAppScale.value;
         SCALE_PROPERTY.set(mLauncher.getAppsView(), scaleProgress);
@@ -310,12 +299,6 @@ public class AllAppsTransitionController
                 restoreClipChildrenOnViewTree(rv, mLauncher.getAppsView());
             }
         }
-    }
-
-    private void animateAllAppsToNoScale() {
-        mAllAppScale.animateToValue(1f)
-                .setDuration(REVERT_SWIPE_ALL_APPS_TO_HOME_ANIMATION_DURATION_MS)
-                .start();
     }
 
     /**

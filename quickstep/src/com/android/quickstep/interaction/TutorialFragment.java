@@ -17,6 +17,8 @@ package com.android.quickstep.interaction;
 
 import static android.view.View.NO_ID;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
@@ -184,7 +186,12 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
         super.onCreateView(inflater, container, savedInstanceState);
 
         mRootView = (RootSandboxLayout) inflater.inflate(
-                R.layout.gesture_tutorial_fragment, container, false);
+                ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                        ? R.layout.redesigned_gesture_tutorial_fragment
+                        : R.layout.gesture_tutorial_fragment,
+                container,
+                false);
+
         mRootView.setOnApplyWindowInsetsListener((view, insets) -> {
             Insets systemInsets = insets.getInsets(WindowInsets.Type.systemBars());
             mEdgeBackGestureHandler.setInsets(systemInsets.left, systemInsets.right);
@@ -333,6 +340,11 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
         if (mTutorialController != null && !isGestureComplete()) {
             mTutorialController.hideFeedback();
         }
+
+        if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
+            mTutorialController.pauseAndHideLottieAnimation();
+        }
+
         // Note: Using logical-or to ensure both functions get called.
         return mEdgeBackGestureHandler.onTouch(view, motionEvent)
                 | mNavBarGestureHandler.onTouch(view, motionEvent);

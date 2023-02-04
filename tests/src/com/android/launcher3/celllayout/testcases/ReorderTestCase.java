@@ -28,13 +28,14 @@ public class ReorderTestCase {
     public Point moveMainTo;
     public List<List<CellLayoutBoard>> mEnd;
 
-    ReorderTestCase(List<CellLayoutBoard> start, Point moveMainTo, List<CellLayoutBoard> ... end) {
+    public ReorderTestCase(List<CellLayoutBoard> start, Point moveMainTo,
+            List<CellLayoutBoard>... end) {
         mStart = start;
         this.moveMainTo = moveMainTo;
         mEnd = Arrays.asList(end);
     }
 
-    ReorderTestCase(String start, Point moveMainTo, String ... end) {
+    public ReorderTestCase(String start, Point moveMainTo, String ... end) {
         mStart = CellLayoutBoard.boardListFromString(start);
         this.moveMainTo = moveMainTo;
         mEnd = Arrays

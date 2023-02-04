@@ -20,6 +20,7 @@ import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_NOSENSOR;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
 import static android.util.DisplayMetrics.DENSITY_DEVICE_STABLE;
 
+import static com.android.launcher3.LauncherPrefs.ALLOW_ROTATION;
 import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.window.WindowManagerProxy.MIN_TABLET_WIDTH;
@@ -63,7 +64,6 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
 
     @Nullable
     private BaseActivity mActivity;
-    private SharedPreferences mSharedPrefs = null;
     private final Handler mRequestOrientationHandler;
 
     private boolean mIgnoreAutoRotateSettings;
@@ -103,17 +103,10 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
         // On large devices we do not handle auto-rotate differently.
         mIgnoreAutoRotateSettings = ignoreAutoRotateSettings;
         if (!mIgnoreAutoRotateSettings) {
-            if (mSharedPrefs == null) {
-                mSharedPrefs = LauncherPrefs.getPrefs(mActivity);
-                mSharedPrefs.registerOnSharedPreferenceChangeListener(this);
-            }
-            mHomeRotationEnabled = mSharedPrefs.getBoolean(ALLOW_ROTATION_PREFERENCE_KEY,
-                    getAllowRotationDefaultValue(info));
+            mHomeRotationEnabled = LauncherPrefs.get(mActivity).get(ALLOW_ROTATION);
+            LauncherPrefs.get(mActivity).addListener(this, ALLOW_ROTATION);
         } else {
-            if (mSharedPrefs != null) {
-                mSharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
-                mSharedPrefs = null;
-            }
+            LauncherPrefs.get(mActivity).removeListener(this, ALLOW_ROTATION);
         }
     }
 
@@ -121,8 +114,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         if (mDestroyed || mIgnoreAutoRotateSettings) return;
         boolean wasRotationEnabled = mHomeRotationEnabled;
-        mHomeRotationEnabled = mSharedPrefs.getBoolean(ALLOW_ROTATION_PREFERENCE_KEY,
-                getAllowRotationDefaultValue(mActivity.getDeviceProfile().getDisplayInfo()));
+        mHomeRotationEnabled = LauncherPrefs.get(mActivity).get(ALLOW_ROTATION);
         if (mHomeRotationEnabled != wasRotationEnabled) {
             notifyChange();
         }
@@ -179,10 +171,8 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
         if (!mDestroyed) {
             mDestroyed = true;
             DisplayController.INSTANCE.get(mActivity).removeChangeListener(this);
+            LauncherPrefs.get(mActivity).removeListener(this, ALLOW_ROTATION);
             mActivity = null;
-            if (mSharedPrefs != null) {
-                mSharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
-            }
         }
     }
 

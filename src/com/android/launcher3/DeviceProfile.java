@@ -57,6 +57,7 @@ import com.android.launcher3.util.WindowBounds;
 
 import java.io.PrintWriter;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 @SuppressLint("NewApi")
 public class DeviceProfile {
@@ -67,6 +68,7 @@ public class DeviceProfile {
 
     public static final PointF DEFAULT_SCALE = new PointF(1.0f, 1.0f);
     public static final ViewScaleProvider DEFAULT_PROVIDER = itemInfo -> DEFAULT_SCALE;
+    public static final Consumer<DeviceProfile> DEFAULT_DIMENSION_PROVIDER = dp -> {};
 
     // Ratio of empty space, qsb should take up to appear visually centered.
     private final float mQsbCenterFactor;
@@ -271,7 +273,8 @@ public class DeviceProfile {
     DeviceProfile(Context context, InvariantDeviceProfile inv, Info info, WindowBounds windowBounds,
             SparseArray<DotRenderer> dotRendererCache, boolean isMultiWindowMode,
             boolean transposeLayoutWithOrientation, boolean isMultiDisplay, boolean isGestureMode,
-            @NonNull final ViewScaleProvider viewScaleProvider) {
+            @NonNull final ViewScaleProvider viewScaleProvider,
+            @NonNull final Consumer<DeviceProfile> dimensionOverrideProvider) {
 
         this.inv = inv;
         this.isLandscape = windowBounds.isLandscape();
@@ -570,6 +573,8 @@ public class DeviceProfile {
                 R.dimen.drag_flingToDeleteMinVelocity);
 
         mViewScaleProvider = viewScaleProvider;
+
+        dimensionOverrideProvider.accept(this);
 
         // This is done last, after iconSizePx is calculated above.
         mDotRendererWorkSpace = createDotRenderer(iconSizePx, dotRendererCache);
@@ -1406,8 +1411,10 @@ public class DeviceProfile {
 
     /** Gets the space that the overview actions will take, including bottom margin. */
     public int getOverviewActionsClaimedSpace() {
-        return overviewActionsTopMarginPx + overviewActionsHeight
-                + getOverviewActionsClaimedSpaceBelow();
+        int overviewActionsSpace = isTablet && FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get()
+                ? 0
+                : (overviewActionsTopMarginPx + overviewActionsHeight);
+        return overviewActionsSpace + getOverviewActionsClaimedSpaceBelow();
     }
 
     /**
@@ -1752,6 +1759,8 @@ public class DeviceProfile {
 
         private SparseArray<DotRenderer> mDotRendererCache;
 
+        private Consumer<DeviceProfile> mOverrideProvider;
+
         public Builder(Context context, InvariantDeviceProfile inv, Info info) {
             mContext = context;
             mInv = inv;
@@ -1788,6 +1797,11 @@ public class DeviceProfile {
             return this;
         }
 
+        public Builder withDimensionsOverride(Consumer<DeviceProfile> overrideProvider) {
+            mOverrideProvider = overrideProvider;
+            return this;
+        }
+
         /**
          * Set the viewScaleProvider for the builder
          *
@@ -1817,9 +1831,12 @@ public class DeviceProfile {
             if (mViewScaleProvider == null) {
                 mViewScaleProvider = DEFAULT_PROVIDER;
             }
+            if (mOverrideProvider == null) {
+                mOverrideProvider = DEFAULT_DIMENSION_PROVIDER;
+            }
             return new DeviceProfile(mContext, mInv, mInfo, mWindowBounds, mDotRendererCache,
                     mIsMultiWindowMode, mTransposeLayoutWithOrientation, mIsMultiDisplay,
-                    mIsGestureMode, mViewScaleProvider);
+                    mIsGestureMode, mViewScaleProvider, mOverrideProvider);
         }
     }
 

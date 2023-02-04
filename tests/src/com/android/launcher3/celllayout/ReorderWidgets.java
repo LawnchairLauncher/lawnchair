@@ -20,12 +20,10 @@ import static org.junit.Assert.assertTrue;
 
 import android.graphics.Point;
 import android.util.Log;
-import android.view.View;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
-import com.android.launcher3.CellLayout;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.celllayout.testcases.FullReorderCase;
 import com.android.launcher3.celllayout.testcases.MoveOutReorderCase;
@@ -38,7 +36,6 @@ import com.android.launcher3.tapl.WidgetResizeFrame;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.rule.ShellCommandRule;
-import com.android.launcher3.views.DoubleShadowBubbleTextView;
 
 import org.junit.Assume;
 import org.junit.Before;
@@ -105,30 +102,7 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
     }
 
     private ArrayList<CellLayoutBoard> workspaceToBoards() {
-        return getFromLauncher(l -> {
-            ArrayList<CellLayoutBoard> boards = new ArrayList<>();
-            int widgetCount = 0;
-            for (CellLayout cellLayout : l.getWorkspace().mWorkspaceScreens) {
-                CellLayoutBoard board = new CellLayoutBoard();
-                int count = cellLayout.getShortcutsAndWidgets().getChildCount();
-                for (int i = 0; i < count; i++) {
-                    View callView = cellLayout.getShortcutsAndWidgets().getChildAt(i);
-                    CellLayoutLayoutParams params =
-                            (CellLayoutLayoutParams) callView.getLayoutParams();
-                    // is icon
-                    if (callView instanceof DoubleShadowBubbleTextView) {
-                        board.addIcon(params.getCellX(), params.getCellY());
-                    } else {
-                        // is widget
-                        board.addWidget(params.getCellX(), params.getCellY(), params.cellHSpan,
-                                params.cellVSpan, (char) ('A' + widgetCount));
-                        widgetCount++;
-                    }
-                }
-                boards.add(board);
-            }
-            return boards;
-        });
+        return getFromLauncher(CellLayoutTestUtils::workspaceToBoards);
     }
 
     private void runTestCase(ReorderTestCase testCase)

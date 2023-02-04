@@ -71,6 +71,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.statemanager.StatefulActivity;
@@ -953,10 +954,20 @@ public class TaskView extends FrameLayout implements Reusable {
     protected boolean showTaskMenuWithContainer(IconView iconView) {
         TaskIdAttributeContainer menuContainer =
                 mTaskIdAttributeContainer[iconView == mIconView ? 0 : 1];
-        if (mActivity.getDeviceProfile().isTablet) {
-            boolean alignSecondRow = getRecentsView().isOnGridBottomRow(menuContainer.getTaskView())
-                    && mActivity.getDeviceProfile().isLandscape;
-            return TaskMenuViewWithArrow.Companion.showForTask(menuContainer, alignSecondRow);
+        DeviceProfile dp = mActivity.getDeviceProfile();
+        if (dp.isTablet) {
+            int alignedOptionIndex = 0;
+            if (getRecentsView().isOnGridBottomRow(menuContainer.getTaskView()) && dp.isLandscape) {
+                if (FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get()) {
+                    // With no focused task, there is less available space below the tasks, so align
+                    // the arrow to the third option in the menu.
+                    alignedOptionIndex = 2;
+                } else  {
+                    // Bottom row of landscape grid aligns arrow to second option to avoid clipping
+                    alignedOptionIndex = 1;
+                }
+            }
+            return TaskMenuViewWithArrow.Companion.showForTask(menuContainer, alignedOptionIndex);
         } else {
             return TaskMenuView.showForTask(menuContainer);
         }
