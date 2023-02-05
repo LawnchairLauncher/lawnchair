@@ -103,13 +103,13 @@
     <string name="icon_shape_clipboard_import_error">A Área de transferência não contem uma forma de ícone personalizado válida</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
-    <string name="icon_pack">Pacote de ícones</string>
-    <string name="themed_icon_pack">Fonte do Ícones Temáticos</string>
+    <string name="icon_pack">Pacotes de ícones</string>
+    <string name="themed_icon_pack">Fonte dos Ícones Temáticos</string>
     <string name="system_icons">Ícones do Sistema</string>
-    <string name="themed_icon_title">Ícones Tematizados</string>
+    <string name="themed_icon_title">Ícones Temáticos</string>
     <string name="themed_icons_off_label">Desligado</string>
     <string name="themed_icons_home_label">Tela inicial</string>
-    <string name="themed_icons_home_and_drawer_label">Tela Inicial &amp; Gaveta de Aplicativos</string>
+    <string name="themed_icons_home_and_drawer_label">Tela Inicial e Gaveta de Aplicativos</string>
     <string name="lawnicons_not_installed_description">Lawnicons não está instalado.</string>
     <!-- <string name="cancel" /> (unknown source)-->
     <!-- IconPickerPreference -->
