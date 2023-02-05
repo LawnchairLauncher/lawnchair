@@ -48,4 +48,4 @@ jobs:
           PR_URL: ${{ github.event.pull_request.html_url }}
         run: |
           gh pr comment $PR_URL --body "No issues found, auto-merging the Crowdin pull request."
-          gh pr merge $PR_URL --auto --rebase --delete-branch
+          gh pr merge $PR_URL --auto --squash --delete-branch
