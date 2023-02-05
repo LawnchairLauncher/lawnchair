@@ -96,7 +96,7 @@ jobs:
 
   crowdin-auto-merge:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.user.login == 'lawnchair-bot' && github.event.pull_request.type == 'opened' && github.event.pull_request.title == 'New Crowdin translations by Github Action'
+    if: github.event.pull_request.user.login == 'lawnchair-bot' && github.event.pull_request.title == 'New Crowdin translations by Github Action'
     needs: build-debug-apk
     steps:
       - env:
