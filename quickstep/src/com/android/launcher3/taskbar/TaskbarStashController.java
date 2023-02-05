@@ -596,6 +596,10 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             }
         }
 
+        if (DisplayController.isTransientTaskbar(mActivity)) {
+            fullLengthAnimatorSet.play(mControllers.taskbarViewController
+                    .createRevealAnimToIsStashed(isStashed));
+        }
         fullLengthAnimatorSet.play(mControllers.stashedHandleViewController
                 .createRevealAnimToIsStashed(isStashed));
         // Return the stashed handle to its default scale in case it was changed as part of the

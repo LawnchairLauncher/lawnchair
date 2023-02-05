@@ -86,7 +86,7 @@ public final class FeatureFlags {
             "ENABLE_DEVICE_SEARCH", true, "Allows on device search in all apps");
 
     public static final BooleanFlag ENABLE_FLOATING_SEARCH_BAR =
-            getDebugFlag("ENABLE_FLOATING_SEARCH_BAR", false,
+            new DeviceFlag("ENABLE_FLOATING_SEARCH_BAR", true,
                     "Keep All Apps search bar at the bottom (but above keyboard if open)");
 
     public static final BooleanFlag ENABLE_HIDE_HEADER = new DeviceFlag("ENABLE_HIDE_HEADER",
@@ -308,9 +308,6 @@ public final class FeatureFlags {
     public static final BooleanFlag FOLDABLE_WORKSPACE_REORDER = getDebugFlag(
             "FOLDABLE_WORKSPACE_REORDER", false,
             "In foldables, when reordering the icons and widgets, is now going to use both sides");
-
-    public static final BooleanFlag ENABLE_QUICK_LAUNCH_V3 = new DeviceFlag(
-            "ENABLE_QUICK_LAUNCH_V3", false, "Quick Launch V3");
 
     public static final BooleanFlag ENABLE_WIDGET_PICKER_DEPTH = new DeviceFlag(
             "ENABLE_WIDGET_PICKER_DEPTH", true, "Enable changing depth in widget picker.");

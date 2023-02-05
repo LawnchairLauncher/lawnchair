@@ -1597,7 +1597,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         final SwipePipToHomeAnimator.Builder builder = new SwipePipToHomeAnimator.Builder()
                 .setContext(mContext)
                 .setTaskId(runningTaskTarget.taskId)
-                .setComponentName(taskInfo.topActivity)
+                .setActivityInfo(taskInfo.topActivityInfo)
                 .setLeash(runningTaskTarget.leash)
                 .setSourceRectHint(
                         runningTaskTarget.taskInfo.pictureInPictureParams.getSourceRectHint())

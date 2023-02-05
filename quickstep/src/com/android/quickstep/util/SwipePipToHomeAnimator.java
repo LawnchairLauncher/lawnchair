@@ -22,9 +22,11 @@ import android.animation.Animator;
 import android.animation.RectEvaluator;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.SystemProperties;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceControl;
@@ -50,7 +52,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
     private static final float END_PROGRESS = 1.0f;
 
     private final int mTaskId;
-    private final ComponentName mComponentName;
+    private final ActivityInfo mActivityInfo;
     private final SurfaceControl mLeash;
     private final Rect mSourceRectHint = new Rect();
     private final Rect mAppBounds = new Rect();
@@ -80,15 +82,16 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
     private boolean mHasAnimationEnded;
 
     /**
-     * An overlay used to mask changes in content when entering PiP for apps that aren't seamless.
+     * Wrapper of {@link SurfaceControl} that is used when entering PiP without valid
+     * source rect hint.
      */
     @Nullable
-    private SurfaceControl mContentOverlay;
+    private PipContentOverlay mPipContentOverlay;
 
     /**
      * @param context {@link Context} provides Launcher resources
      * @param taskId Task id associated with this animator, see also {@link #getTaskId()}
-     * @param componentName Component associated with this animator,
+     * @param activityInfo {@link ActivityInfo} associated with this animator,
      *                      see also {@link #getComponentName()}
      * @param leash {@link SurfaceControl} this animator operates on
      * @param sourceRectHint See the definition in {@link android.app.PictureInPictureParams}
@@ -106,7 +109,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
      */
     private SwipePipToHomeAnimator(@NonNull Context context,
             int taskId,
-            @NonNull ComponentName componentName,
+            @NonNull ActivityInfo activityInfo,
             @NonNull SurfaceControl leash,
             @Nullable Rect sourceRectHint,
             @NonNull Rect appBounds,
@@ -120,7 +123,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
             @NonNull View view) {
         super(startBounds, new RectF(destinationBoundsTransformed), context, null);
         mTaskId = taskId;
-        mComponentName = componentName;
+        mActivityInfo = activityInfo;
         mLeash = leash;
         mAppBounds.set(appBounds);
         mHomeToWindowPositionMap.set(homeToWindowPositionMap);
@@ -146,15 +149,15 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
             // Create a new overlay layer. We do not call detach on this instance, it's propagated
             // to other classes like PipTaskOrganizer / RecentsAnimationController to complete
             // the cleanup.
-            final PipContentOverlay.PipColorOverlay overlay =
-                    new PipContentOverlay.PipColorOverlay(view.getContext());
+            if (SystemProperties.getBoolean(
+                    "persist.wm.debug.enable_pip_app_icon_overlay", false)) {
+                mPipContentOverlay = new PipContentOverlay.PipAppIconOverlay(view.getContext(),
+                        mAppBounds, mActivityInfo);
+            }  else {
+                mPipContentOverlay = new PipContentOverlay.PipColorOverlay(view.getContext());
+            }
             final SurfaceControl.Transaction tx = new SurfaceControl.Transaction();
-            mContentOverlay = overlay.getLeash();
-            overlay.attach(tx, mLeash);
-            addOnUpdateListener((currentRect, progress) -> {
-                overlay.onAnimationUpdate(tx, progress);
-                tx.apply();
-            });
+            mPipContentOverlay.attach(tx, mLeash);
         } else {
             mSourceRectHint.set(sourceRectHint);
             mSourceHintRectInsets = new Rect(sourceRectHint.left - appBounds.left,
@@ -203,6 +206,9 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
     private PictureInPictureSurfaceTransaction onAnimationUpdate(SurfaceControl.Transaction tx,
             RectF currentRect, float progress) {
         currentRect.round(mCurrentBounds);
+        if (mPipContentOverlay != null) {
+            mPipContentOverlay.onAnimationUpdate(tx, mCurrentBounds, progress);
+        }
         final PictureInPictureSurfaceTransaction op;
         if (mSourceHintRectInsets == null) {
             // no source rect hint been set, directly scale the window down
@@ -247,7 +253,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
     }
 
     public ComponentName getComponentName() {
-        return mComponentName;
+        return mActivityInfo.getComponentName();
     }
 
     public Rect getDestinationBounds() {
@@ -256,7 +262,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
 
     @Nullable
     public SurfaceControl getContentOverlay() {
-        return mContentOverlay;
+        return mPipContentOverlay == null ? null : mPipContentOverlay.getLeash();
     }
 
     /** @return {@link PictureInPictureSurfaceTransaction} for the final leash transaction. */
@@ -309,7 +315,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
     public static class Builder {
         private Context mContext;
         private int mTaskId;
-        private ComponentName mComponentName;
+        private ActivityInfo mActivityInfo;
         private SurfaceControl mLeash;
         private Rect mSourceRectHint;
         private Rect mDisplayCutoutInsets;
@@ -333,8 +339,8 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
             return this;
         }
 
-        public Builder setComponentName(ComponentName componentName) {
-            mComponentName = componentName;
+        public Builder setActivityInfo(ActivityInfo activityInfo) {
+            mActivityInfo = activityInfo;
             return this;
         }
 
@@ -418,7 +424,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
                     mAppBounds.inset(mDisplayCutoutInsets);
                 }
             }
-            return new SwipePipToHomeAnimator(mContext, mTaskId, mComponentName, mLeash,
+            return new SwipePipToHomeAnimator(mContext, mTaskId, mActivityInfo, mLeash,
                     mSourceRectHint, mAppBounds,
                     mHomeToWindowPositionMap, mStartBounds, mDestinationBounds,
                     mFromRotation, mDestinationBoundsTransformed,
