@@ -56,7 +56,6 @@ public abstract class BaseUnfoldMoveFromCenterAnimator implements TransitionProg
         mAnimationInProgress = true;
         mMoveFromCenterAnimation.updateDisplayProperties();
         onPrepareViewsForAnimation();
-        onTransitionProgress(0f);
         mRotationChangeProvider.addCallback(mRotationListener);
     }
 
