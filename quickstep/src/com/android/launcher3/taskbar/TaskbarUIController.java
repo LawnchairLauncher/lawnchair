@@ -204,12 +204,11 @@ public class TaskbarUIController {
                         if (foundTaskView != null) {
                             // There is already a running app of this type, use that as second app.
                             // Get index of task (0 or 1), in case it's a GroupedTaskView
-                            int indexOfTask = foundTaskView.getIndexOfTask(foundTask.key.id);
                             TaskIdAttributeContainer taskAttributes =
-                                    foundTaskView.getTaskIdAttributeContainers()[indexOfTask];
+                                    foundTaskView.getTaskAttributesById(foundTask.key.id);
                             recents.confirmSplitSelect(
                                     foundTaskView,
-                                    taskAttributes.getTask(),
+                                    foundTask,
                                     taskAttributes.getIconView().getDrawable(),
                                     taskAttributes.getThumbnailView(),
                                     taskAttributes.getThumbnailView().getThumbnail(),
