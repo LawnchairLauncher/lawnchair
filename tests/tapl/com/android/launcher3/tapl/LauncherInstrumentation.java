@@ -241,7 +241,8 @@ public final class LauncherInstrumentation {
         // Launcher should run in test harness so that custom accessibility protocol between
         // Launcher and TAPL is enabled. In-process tests enable this protocol with a direct call
         // into Launcher.
-        assertTrue("Device must run in a test harness",
+        assertTrue("Device must run in a test harness. "
+                        + "Run `adb shell setprop ro.test_harness 1` to enable it.",
                 TestHelpers.isInLauncherProcess() || ActivityManager.isRunningInTestHarness());
 
         final String testPackage = getContext().getPackageName();
