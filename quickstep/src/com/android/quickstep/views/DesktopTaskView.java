@@ -77,7 +77,8 @@ public class DesktopTaskView extends TaskView {
 
     private static final boolean DEBUG = true;
 
-    private List<Task> mTasks;
+    @NonNull
+    private List<Task> mTasks = new ArrayList<>();
 
     private final ArrayList<TaskThumbnailView> mSnapshotViews = new ArrayList<>();
 
@@ -111,8 +112,6 @@ public class DesktopTaskView extends TaskView {
                 getContext().getTheme()));
         // TODO(b/244348395): this should be wallpaper
         setBackground(mBackground);
-
-        mSnapshotViews.add(mSnapshotView);
     }
 
     @Override
@@ -132,12 +131,9 @@ public class DesktopTaskView extends TaskView {
             }
             Log.d(TAG, sb.toString());
         }
-        if (tasks.isEmpty()) {
-            return;
-        }
         cancelPendingLoadTasks();
 
-        mTasks = tasks;
+        mTasks = new ArrayList<>(tasks);
         mSnapshotViewMap.clear();
 
         // Ensure there are equal number of snapshot views and tasks.
@@ -210,7 +206,8 @@ public class DesktopTaskView extends TaskView {
         if (task != null) {
             return mSnapshotViewMap.get(task.key.id);
         }
-        return null;
+        // Return the place holder snapshot views. Callers expect this to be non-null
+        return mSnapshotView;
     }
 
     @Override
@@ -314,6 +311,11 @@ public class DesktopTaskView extends TaskView {
     public void launchTask(@NonNull Consumer<Boolean> callback, boolean freezeTaskList) {
         launchTasks();
         callback.accept(true);
+    }
+
+    @Override
+    public boolean isDesktopTask() {
+        return true;
     }
 
     @Override
