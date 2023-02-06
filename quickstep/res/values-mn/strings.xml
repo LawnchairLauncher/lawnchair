@@ -61,6 +61,10 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Нүүр лүү очихын тулд шудрах"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Дэлгэцийнхээ доороос дээш шударна уу. Энэ зангаа таныг тогтмол Үндсэн нүүрэнд аваачна."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"2 хуруугаараа дэлгэцийн доороос дээш шударна уу. Энэ зангаа таныг тогтмол Үндсэн нүүрэнд аваачна."</string>
+    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
+    <skip />
+    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
+    <skip />
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Та дэлгэцийн доод булангаас дээш шударна уу."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Суллахаасаа өмнө цонхыг илүү удаан дарж үзнэ үү."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Та чигээрээ шударч, дараа нь түр зогсооно уу."</string>
@@ -84,7 +88,8 @@
     <string name="action_share" msgid="2648470652637092375">"Хуваалцах"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Дэлгэцийн агшин дарах"</string>
     <string name="action_split" msgid="2098009717623550676">"Хуваах"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"Дэлгэц хуваахыг ашиглах бол өөр аппыг товшино уу"</string>
+    <!-- no translation found for toast_split_select_app (8464310533320556058) -->
+    <skip />
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Дэлгэцийг хуваах горим ашиглах өөр апп сонгоно уу"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Энэ үйлдлийг апп эсвэл танай байгууллага зөвшөөрдөггүй"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Навигацын практик хичээлийг алгасах уу?"</string>
@@ -95,13 +100,11 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Ажлын хэсгийн боловсрол"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Боловсролын ажлын талбар гарч ирсэн"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Боловсролын ажлын талбарыг хаасан"</string>
-    <!-- no translation found for taskbar_edu_splitscreen (5605512479258053350) -->
-    <skip />
-    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Ажлын хэсгийг харуулахын тулд бага зэрэг дээш шударна уу"</string>
-    <!-- no translation found for taskbar_edu_suggestions (8215044496435527982) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_features (2338325667726857642) -->
-    <skip />
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"2 аппыг зэрэг ашиглахын тулд аппыг хажуу тийш чирнэ үү"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Ажлын хэсгийг харуулахын тулд аажмаар дээш шударна уу"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Таны хэвшилд тулгуурлан санал болгож буй аппуудыг аваарай"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Ажлын хэсгийг автоматаар хаахын тулд Тохиргоонд зангааны навигацыг асаана уу"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Ажлын хэсгийн тусламжтай илүү ихийг хийгээрэй"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Дараах"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Буцах"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Хаах"</string>
