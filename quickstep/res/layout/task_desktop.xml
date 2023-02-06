@@ -33,7 +33,8 @@
     <com.android.quickstep.views.TaskThumbnailView
         android:id="@+id/snapshot"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
     <com.android.quickstep.views.IconView
         android:id="@+id/icon"
