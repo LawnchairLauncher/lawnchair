@@ -119,14 +119,11 @@ import java.util.StringJoiner;
                     mLauncherState = finalState;
                     updateStateForFlag(FLAG_TRANSITION_STATE_RUNNING, false);
                     applyState();
-                    boolean disallowGlobalDrag = finalState instanceof OverviewState;
+                    boolean finalStateOverview = finalState instanceof OverviewState;
                     boolean disallowLongClick = finalState == LauncherState.OVERVIEW_SPLIT_SELECT;
-                    mControllers.taskbarDragController.setDisallowGlobalDrag(disallowGlobalDrag);
-                    mControllers.taskbarDragController.setDisallowLongClick(disallowLongClick);
-                    mControllers.taskbarAllAppsController.setDisallowGlobalDrag(disallowGlobalDrag);
-                    mControllers.taskbarAllAppsController.setDisallowLongClick(disallowLongClick);
-                    mControllers.taskbarPopupController.setAllowInitialSplitSelection(
-                            disallowGlobalDrag);
+                    com.android.launcher3.taskbar.Utilities.setOverviewDragState(
+                            mControllers, finalStateOverview /*disallowGlobalDrag*/,
+                            disallowLongClick, finalStateOverview /*allowInitialSplitSelection*/);
                 }
             };
 
