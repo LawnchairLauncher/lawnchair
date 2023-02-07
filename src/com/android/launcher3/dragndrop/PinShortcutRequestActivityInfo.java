@@ -44,7 +44,7 @@ import com.android.launcher3.pm.ShortcutConfigActivityInfo;
  * request.
  */
 @TargetApi(Build.VERSION_CODES.O)
-class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
+public class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
 
     // Class name used in the target component, such that it will never represent an
     // actual existing class.
