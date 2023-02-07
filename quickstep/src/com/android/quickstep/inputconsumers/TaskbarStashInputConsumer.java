@@ -18,7 +18,6 @@ package com.android.quickstep.inputconsumers;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
 import static com.android.launcher3.Utilities.squaredHypot;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_REVISED_THRESHOLDS;
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_TOUCHING;
 
 import android.content.Context;
@@ -74,9 +73,7 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
 
         Resources res = context.getResources();
         mUnstashArea = res.getDimensionPixelSize(R.dimen.taskbar_unstash_input_area);
-        int taskbarNavThreshold = res.getDimensionPixelSize(ENABLE_TASKBAR_REVISED_THRESHOLDS.get()
-                ? R.dimen.taskbar_nav_threshold_v2
-                : R.dimen.taskbar_nav_threshold);
+        int taskbarNavThreshold = res.getDimensionPixelSize(R.dimen.taskbar_nav_threshold);
         int screenHeight = taskbarActivityContext.getDeviceProfile().heightPx;
         mTaskbarNavThresholdY = screenHeight - taskbarNavThreshold;
         mIsTaskbarAllAppsOpen =
