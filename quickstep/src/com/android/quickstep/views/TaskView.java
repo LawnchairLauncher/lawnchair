@@ -1184,6 +1184,10 @@ public class TaskView extends FrameLayout implements Reusable {
         mSnapshotView.setSplashAlpha(mTaskThumbnailSplashAlpha);
     }
 
+    protected void refreshTaskThumbnailSplash() {
+        mSnapshotView.refreshSplashView();
+    }
+
     private void setSplitSelectTranslationX(float x) {
         mSplitSelectTranslationX = x;
         applyTranslationX();
