@@ -61,6 +61,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Perbraukite, kad pereitumėte į pagrindinį ekraną"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Perbraukite aukštyn nuo ekrano apačios. Atlikus šį gestą, visada nukreipiama į pagrindinį ekraną."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Perbraukite dviem pirštais nuo ekrano apačios. Šis gestas visada nukreipia į pagrindinį ekraną."</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Eikite į pagrindinį ekraną"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Jei norite bet kada pasiekti pagrindinį ekraną, perbraukite aukštyn iš ekrano apačios"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Turite perbraukti aukštyn nuo apatinio ekrano krašto."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Pabandykite palaikyti langą ilgiau prieš pakeldami pirštą."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Turite tiesiai perbraukti aukštyn, o tada pristabdyti."</string>
@@ -84,7 +86,8 @@
     <string name="action_share" msgid="2648470652637092375">"Bendrinti"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Ekrano kopija"</string>
     <string name="action_split" msgid="2098009717623550676">"Išskaidymo režimas"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"Pal. kitą progr., kad gal. naud. išsk. ekr. rež."</string>
+    <!-- no translation found for toast_split_select_app (8464310533320556058) -->
+    <skip />
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Išskaidyto ekrano režimą naudokite kita programa"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Jūsų organizacijoje arba naudojant šią programą neleidžiama atlikti šio veiksmo"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Praleisti naršymo mokymo programą?"</string>
@@ -96,9 +99,10 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Užduočių juostos patarimai rodomi"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Užduočių juostos patarimai uždaryti"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Nuvilkę programą į šoną vienu metu naudokite dvi programas"</string>
-    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Trumpai perbraukite, kad būtų rodoma užduočių juosta"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Trumpai perbraukite, kad būtų rodoma Užduočių juosta"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Gaukite programų pasiūlymų pagal savo veiklą"</string>
-    <string name="taskbar_edu_features" msgid="2338325667726857642">"Atlikite daugiau naudodami užduočių juostą"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Įjungę naršymą gestais „Nustatymų“ skiltyje automatiškai paslėpkite Užduočių juostą"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Atlikite daugiau naudodami Užduočių juostą"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Kitas"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Atgal"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Uždaryti"</string>

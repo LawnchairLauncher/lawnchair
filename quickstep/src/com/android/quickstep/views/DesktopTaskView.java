@@ -61,20 +61,24 @@ import java.util.function.Consumer;
 // TODO(b/249371338): TaskView needs to be refactored to have better support for N tasks.
 public class DesktopTaskView extends TaskView {
 
+    /** Flag to indicate whether desktop windowing proto 1 is enabled */
+    private static final boolean DESKTOP_IS_PROTO1_ENABLED = SystemProperties.getBoolean(
+            "persist.wm.debug.desktop_mode", false);
+
     /** Flag to indicate whether desktop windowing proto 2 is enabled */
     public static final boolean DESKTOP_IS_PROTO2_ENABLED = SystemProperties.getBoolean(
             "persist.wm.debug.desktop_mode_2", false);
 
     /** Flags to indicate whether desktop mode is available on the device */
     public static final boolean DESKTOP_MODE_SUPPORTED =
-            SystemProperties.getBoolean("persist.wm.debug.desktop_mode", false)
-                    || DESKTOP_IS_PROTO2_ENABLED;
+            DESKTOP_IS_PROTO1_ENABLED || DESKTOP_IS_PROTO2_ENABLED;
 
     private static final String TAG = DesktopTaskView.class.getSimpleName();
 
     private static final boolean DEBUG = true;
 
-    private List<Task> mTasks;
+    @NonNull
+    private List<Task> mTasks = new ArrayList<>();
 
     private final ArrayList<TaskThumbnailView> mSnapshotViews = new ArrayList<>();
 
@@ -108,8 +112,6 @@ public class DesktopTaskView extends TaskView {
                 getContext().getTheme()));
         // TODO(b/244348395): this should be wallpaper
         setBackground(mBackground);
-
-        mSnapshotViews.add(mSnapshotView);
     }
 
     @Override
@@ -129,12 +131,9 @@ public class DesktopTaskView extends TaskView {
             }
             Log.d(TAG, sb.toString());
         }
-        if (tasks.isEmpty()) {
-            return;
-        }
         cancelPendingLoadTasks();
 
-        mTasks = tasks;
+        mTasks = new ArrayList<>(tasks);
         mSnapshotViewMap.clear();
 
         // Ensure there are equal number of snapshot views and tasks.
@@ -207,7 +206,8 @@ public class DesktopTaskView extends TaskView {
         if (task != null) {
             return mSnapshotViewMap.get(task.key.id);
         }
-        return null;
+        // Return the place holder snapshot views. Callers expect this to be non-null
+        return mSnapshotView;
     }
 
     @Override
@@ -311,6 +311,11 @@ public class DesktopTaskView extends TaskView {
     public void launchTask(@NonNull Consumer<Boolean> callback, boolean freezeTaskList) {
         launchTasks();
         callback.accept(true);
+    }
+
+    @Override
+    public boolean isDesktopTask() {
+        return true;
     }
 
     @Override

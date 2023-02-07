@@ -602,16 +602,18 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     /**
-     * Finds the index of a given taskId within this TaskView, or -1 if the TaskView does not
-     * contain it. For grouped tasks (of two), this is 0 or 1; for solo tasks, it is 0.
+     * Returns the TaskIdAttributeContainer corresponding to a given taskId, or null if the TaskView
+     * does not contain a Task with that ID.
      */
-    public int getIndexOfTask(int taskId) {
-        for (int i = 0; i < mTaskIdContainer.length; i++) {
-            if (mTaskIdContainer[i] == taskId) {
-                return i;
+    @Nullable
+    public TaskIdAttributeContainer getTaskAttributesById(int taskId) {
+        for (TaskIdAttributeContainer attributes : mTaskIdAttributeContainer) {
+            if (attributes.getTask().key.id == taskId) {
+                return attributes;
             }
         }
-        return -1;
+
+        return null;
     }
 
     public TaskThumbnailView getThumbnail() {
@@ -1029,6 +1031,11 @@ public class TaskView extends FrameLayout implements Reusable {
     public boolean isGridTask() {
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
         return deviceProfile.isTablet && !isFocusedTask();
+    }
+
+    /** Whether this task view represents the desktop */
+    public boolean isDesktopTask() {
+        return false;
     }
 
     /**
@@ -1541,7 +1548,7 @@ public class TaskView extends FrameLayout implements Reusable {
             int boxWidth;
             int boxHeight;
             boolean isFocusedTask = isFocusedTask();
-            if (isFocusedTask) {
+            if (isFocusedTask || isDesktopTask()) {
                 // Task will be focused and should use focused task size. Use focusTaskRatio
                 // that is associated with the original orientation of the focused task.
                 boxWidth = taskWidth;

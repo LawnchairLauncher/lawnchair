@@ -61,6 +61,10 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"მთავარი გვერდის სანახავად გადაფურცლეთ"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"გადაფურცლეთ ეკრანის ქვედა კიდიდან ზემოთ. ამ ჟესტს ყოველთვის მთავარი გვერდის ეკრანზე გადაყავხართ."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"ორი თითით გადაფურცლეთ ეკრანის ქვედა ნაწილიდან. ეს ჟესტი ყოველთვის მთავარ ეკრანზე გადაგიყვანთ."</string>
+    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
+    <skip />
+    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
+    <skip />
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"გადაფურცლეთ ეკრანის ქვედა კიდიდან ზემოთ."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"უფრო ხანგრძლივად დააჭირეთ თითი ფანჯარას, რომ არ დაიხუროს."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"გადაფურცლეთ პირდაპირ ზემოთ და შემდეგ დააპაუზეთ."</string>
@@ -84,7 +88,8 @@
     <string name="action_share" msgid="2648470652637092375">"გაზიარება"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ეკრანის ანაბეჭდი"</string>
     <string name="action_split" msgid="2098009717623550676">"გაყოფა"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"შეეხეთ სხვა აპს ეკრანის გასაყოფად"</string>
+    <!-- no translation found for toast_split_select_app (8464310533320556058) -->
+    <skip />
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"აირჩიეთ სხვა აპი ეკრანის გასაყოფად"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ეს მოქმედება არ არის დაშვებული აპის ან თქვენი ორგანიზაციის მიერ"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"გსურთ, გამოტოვოთ ნავიგაციის სახელმძღვანელო?"</string>
@@ -96,9 +101,12 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ამოცანების ზოლის სასწავლო არე გამოჩნდა"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ამოცანების ზოლის სასწავლო არე დაიხურა"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"2 აპის ერთდროულად გამოსაყენებლად გადაათრიეთ აპი კიდეზე"</string>
-    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"მოკლედ გადაფურცლეთ ზემოთ, რომ ამოცანათა ზოლი გამოაჩინოთ"</string>
+    <!-- no translation found for taskbar_edu_stashing (5645461372669217294) -->
+    <skip />
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"მიიღეთ აპის შეთავაზებები თქვენი რუტინის მიხედვით"</string>
-    <string name="taskbar_edu_features" msgid="2338325667726857642">"გააკეთეთ მეტი ამოცანათა ზოლის მეშვეობით"</string>
+    <!-- no translation found for taskbar_edu_settings_persistent (1387372982791296151) -->
+    <skip />
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"გააკეთეთ მეტი ამოცანათა ზოლის მეშვეობით"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"შემდეგი"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"უკან"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"დახურვა"</string>
