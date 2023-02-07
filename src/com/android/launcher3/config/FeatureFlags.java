@@ -92,8 +92,8 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_HIDE_HEADER = new DeviceFlag("ENABLE_HIDE_HEADER",
             true, "Hide header on keyboard before typing in all apps");
 
-    public static final BooleanFlag ENABLE_EXPANDING_PAUSE_WORK_BUTTON = new DeviceFlag(
-            "ENABLE_EXPANDING_PAUSE_WORK_BUTTON", false,
+    public static final BooleanFlag ENABLE_EXPANDING_PAUSE_WORK_BUTTON = getDebugFlag(
+            "ENABLE_EXPANDING_PAUSE_WORK_BUTTON", true,
             "Expand and collapse pause work button while scrolling");
 
     public static final BooleanFlag COLLECT_SEARCH_HISTORY = new DeviceFlag(
