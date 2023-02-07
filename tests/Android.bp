@@ -117,3 +117,15 @@ android_test {
     test_config: "Launcher3Tests.xml",
     data: [":Launcher3"]
 }
+
+// Shared between tests and launcher
+android_library {
+    name: "launcher-testing-shared",
+    srcs: [
+        "shared/com/android/launcher3/testing/shared/**/*.java"
+    ],
+    resource_dirs: [ ],
+    manifest: "shared/AndroidManifest.xml",
+    sdk_version: "current",
+    min_sdk_version: min_launcher3_sdk_version,
+ }
