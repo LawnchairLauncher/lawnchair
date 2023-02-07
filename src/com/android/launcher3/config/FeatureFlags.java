@@ -323,6 +323,9 @@ public final class FeatureFlags {
     public static final BooleanFlag POPUP_MATERIAL_U = new DeviceFlag(
             "POPUP_MATERIAL_U", false, "Switch popup UX to use material U");
 
+    public static final BooleanFlag ENABLE_SEARCH_UNINSTALLED_APPS = new DeviceFlag(
+            "ENABLE_SEARCH_UNINSTALLED_APPS", false, "Search uninstalled app results.");
+
     public static final BooleanFlag SHOW_HOME_GARDENING = getDebugFlag(
             "SHOW_HOME_GARDENING", false,
             "Show the new home gardening mode");
