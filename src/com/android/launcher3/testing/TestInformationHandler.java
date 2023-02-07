@@ -232,6 +232,13 @@ public class TestInformationHandler implements ResourceBasedOverride {
                         l -> l.getAppsView().getActiveRecyclerView().getClipBounds().top);
             }
 
+            case TestProtocol.REQUEST_ALL_APPS_BOTTOM_PADDING: {
+                return getLauncherUIProperty(Bundle::putInt,
+                        l -> l.getAppsView().getBottom()
+                                - l.getAppsView().getActiveRecyclerView().getBottom()
+                                + l.getAppsView().getActiveRecyclerView().getPaddingBottom());
+            }
+
             default:
                 return null;
         }
