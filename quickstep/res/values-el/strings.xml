@@ -61,6 +61,10 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Σύρετε για μετάβαση στην αρχική οθόνη"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Σύρετε προς τα πάνω από το κάτω μέρος της οθόνης. Αυτή η κίνηση σάς μεταφέρει πάντα στην αρχ. οθόνη."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Σύρετε από το κάτω άκρο προς τα πάνω με 2 δάχτ. Αυτή η κίνηση σάς μεταφέρει πάντα στην αρχική οθόνη."</string>
+    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
+    <skip />
+    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
+    <skip />
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Φροντίστε να σύρετε προς τα επάνω από το κάτω άκρο της οθόνης."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Δοκιμάστε να κρατήσετε περισσότερο το παράθυρο προτού απελευθερώσετε."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Φροντίστε να σύρετε απευθείας προς τα επάνω και έπειτα κάντε παύση."</string>
@@ -84,7 +88,8 @@
     <string name="action_share" msgid="2648470652637092375">"Κοινοποίηση"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Στιγμιότυπο οθόνης"</string>
     <string name="action_split" msgid="2098009717623550676">"Διαχωρισμός"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"Πατήστε άλλη εφαρμογή για χρήση διαχωρισμού οθόνης"</string>
+    <!-- no translation found for toast_split_select_app (8464310533320556058) -->
+    <skip />
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Επιλέξτε άλλη εφαρμογή για διαχωρισμό οθόνης"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Αυτή η ενέργεια δεν επιτρέπεται από την εφαρμογή ή τον οργανισμό σας."</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Παράβλεψη οδηγού πλοήγησης;"</string>
@@ -95,13 +100,13 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Πληροφορίες χρήσης της Γραμμής εργαλείων"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Η εκπαίδευση για τη γραμμή εργασιών εμφανίστηκε"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Η εκπαίδευση για τη γραμμή εργασιών έκλεισε"</string>
-    <!-- no translation found for taskbar_edu_splitscreen (5605512479258053350) -->
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Σύρετε μια εφαρμ. στην άκρη για χρήση δύο εφαρμ. ταυτόχρονα"</string>
+    <!-- no translation found for taskbar_edu_stashing (5645461372669217294) -->
     <skip />
-    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Σύρετε σύντομα προς τα πάνω για εμφάνιση γραμμής εργαλείων"</string>
-    <!-- no translation found for taskbar_edu_suggestions (8215044496435527982) -->
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Λάβετε προτεινόμενες εφαρμογές με βάση τη ρουτίνα σας"</string>
+    <!-- no translation found for taskbar_edu_settings_persistent (1387372982791296151) -->
     <skip />
-    <!-- no translation found for taskbar_edu_features (2338325667726857642) -->
-    <skip />
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Κάντε περισσότερα με τη Γραμμή εργαλείων"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Επόμενο"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Πίσω"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Κλείσιμο"</string>

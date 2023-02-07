@@ -61,6 +61,10 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Pasatu hatza hasierako pantailara joateko"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Pasatu hatza pantailaren behealdetik gora. Keinu horrek hasierako pantailara eramango zaitu beti."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Pasatu bi hatz pantailaren behealdetik gora. Hasierako pantailara eramango zaitu beti keinu horrek."</string>
+    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
+    <skip />
+    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
+    <skip />
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Ziurtatu hatza pantailaren beheko ertzetik gora pasatzen duzula."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Eduki sakatuta leihoa luzaroago hatza altxatu aurretik."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Ziurtatu hatza zuzen pasatzen duzula gora; ondoren, gelditu."</string>
@@ -84,7 +88,8 @@
     <string name="action_share" msgid="2648470652637092375">"Partekatu"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Atera pantaila-argazki bat"</string>
     <string name="action_split" msgid="2098009717623550676">"Zatitu"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"Sakatu beste aplikazio bat pantaila zatitzeko"</string>
+    <!-- no translation found for toast_split_select_app (8464310533320556058) -->
+    <skip />
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Pantaila zatitua ikusteko, aukeratu beste aplikazio bat"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Aplikazioak edo erakundeak ez du eman ekintza hori gauzatzeko baimena"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Nabigazio-tutoriala saltatu nahi duzu?"</string>
@@ -95,13 +100,13 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Zereginen barra erabiltzeko argibideak"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Agertu egin da zereginen barraren tutoriala"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Itxi egin da zereginen barraren tutoriala"</string>
-    <!-- no translation found for taskbar_edu_splitscreen (5605512479258053350) -->
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Bi aplikazio batera erabiltzeko, arrastatu bat albo batera"</string>
+    <!-- no translation found for taskbar_edu_stashing (5645461372669217294) -->
     <skip />
-    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Ataza-barra ikusteko, pasatu hatza bizkor gora"</string>
-    <!-- no translation found for taskbar_edu_suggestions (8215044496435527982) -->
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Jaso erabileran oinarritutako aplikazioen iradokizunak"</string>
+    <!-- no translation found for taskbar_edu_settings_persistent (1387372982791296151) -->
     <skip />
-    <!-- no translation found for taskbar_edu_features (2338325667726857642) -->
-    <skip />
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Egin gauza gehiago zereginen barrarekin"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Hurrengoa"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Atzera"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Itxi"</string>
