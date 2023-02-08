@@ -1342,6 +1342,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         // Setup Apps
         mAppsView = findViewById(R.id.apps_view);
+        mAppsView.setAllAppsTransitionController(mAllAppsController);
 
         // Setup Scrim
         mScrimView = findViewById(R.id.scrim_view);
