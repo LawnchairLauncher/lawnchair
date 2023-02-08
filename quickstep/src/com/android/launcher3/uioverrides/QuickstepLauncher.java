@@ -800,7 +800,7 @@ public class QuickstepLauncher extends Launcher {
 
     @Override
     public void setResumed() {
-        if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
+        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
             DesktopVisibilityController controller = mDesktopVisibilityController;
             if (controller != null && controller.areFreeformTasksVisible()
                     && !controller.isGestureInProgress()) {
