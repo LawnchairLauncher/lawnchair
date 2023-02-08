@@ -61,10 +61,10 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
 
     @Override
     protected int getMockAppTaskLayoutResId() {
-        return mTutorialFragment.isLargeScreen()
-                ? R.layout.gesture_tutorial_tablet_mock_webpage
-                : ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-                    ? R.layout.swipe_up_gesture_tutorial_shape
+        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                ? R.layout.swipe_up_gesture_tutorial_shape
+                : mTutorialFragment.isLargeScreen()
+                    ? R.layout.gesture_tutorial_tablet_mock_webpage
                     : R.layout.gesture_tutorial_mock_webpage;
     }
 
