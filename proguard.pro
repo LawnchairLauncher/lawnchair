@@ -58,25 +58,27 @@
 -dontwarn sun.misc.Unsafe
 
 # Silence warnings about classes that are available at runtime
--dontwarn android.provider.DeviceConfig
--dontwarn com.android.internal.colorextraction.ColorExtractor$GradientColors
--dontwarn com.android.internal.logging.MetricsLogger
--dontwarn com.android.internal.os.SomeArgs
--dontwarn android.content.pm.ParceledListSlice
--dontwarn com.android.internal.policy.ScreenDecorationsUtils
--dontwarn android.util.StatsEvent
--dontwarn android.service.wallpaper.IWallpaperEngine
--dontwarn android.content.pm.UserInfo
--dontwarn com.android.internal.app.IVoiceInteractionManagerService$Stub
--dontwarn com.android.internal.app.IVoiceInteractionManagerService
--dontwarn com.android.internal.annotations.VisibleForTesting
--dontwarn android.provider.DeviceConfig$OnPropertiesChangedListener
--dontwarn android.util.StatsEvent$Builder
--dontwarn com.android.internal.colorextraction.types.Tonal
--dontwarn android.content.pm.LauncherApps$AppUsageLimit
--dontwarn android.provider.SearchIndexablesContract
--dontwarn android.provider.SearchIndexablesProvider
--dontwarn android.content.pm.IPackageManager
+# These rules are generated automatically by the Android Gradle plugin.
+-dontwarn android.animation.AnimationHandler*
+-dontwarn android.content.om.**
+-dontwarn android.content.pm.**
+-dontwarn android.content.res.**
+-dontwarn android.hardware.devicestate.DeviceStateManager*
+-dontwarn android.provider.**
+-dontwarn android.service.wallpaper.IWallpaperEngine*
+-dontwarn android.util.**
+-dontwarn android.widget.RemoteViews*
+-dontwarn androidx.dynamicanimation.animation.AnimationHandler$FrameCallbackScheduler*
+-dontwarn com.android.internal.**
+-dontwarn com.google.android.collect.Sets*
+-dontwarn com.google.protobuf.nano.**
+-dontwarn dagger.**
+-dontwarn javax.inject.**
+# https://github.com/square/okhttp/blob/339732e3a1b78be5d792860109047f68a011b5eb/okhttp/src/jvmMain/resources/META-INF/proguard/okhttp3.pro#L11-L14
+-dontwarn okhttp3.internal.platform.**
+-dontwarn org.conscrypt.**
+-dontwarn org.bouncycastle.**
+-dontwarn org.openjsse.**
 
 # Preserve Protobuf generated code
 -keep class com.android.launcher3.tracing.nano.LauncherTraceFileProto$* { *; }
@@ -132,86 +134,15 @@
 # @Serializable and @Polymorphic are used at runtime for polymorphic serialization.
 -keepattributes RuntimeVisibleAnnotations,AnnotationDefault
 
-# https://github.com/square/okhttp/blob/339732e3a1b78be5d792860109047f68a011b5eb/okhttp/src/jvmMain/resources/META-INF/proguard/okhttp3.pro#L11-L14
--dontwarn okhttp3.internal.platform.**
--dontwarn org.conscrypt.**
--dontwarn org.bouncycastle.**
--dontwarn org.openjsse.**
-
-# Please add these rules to your existing keep rules in order to suppress warnings.
-# This is generated automatically by the Android Gradle plugin.
--dontwarn android.animation.AnimationHandler$AnimationFrameCallbackProvider
--dontwarn android.animation.AnimationHandler
--dontwarn android.content.om.IOverlayManager$Stub
--dontwarn android.content.om.IOverlayManager
--dontwarn android.content.om.OverlayInfo
--dontwarn android.content.res.CompatibilityInfo
--dontwarn android.hardware.devicestate.DeviceStateManager$DeviceStateCallback
--dontwarn android.hardware.devicestate.DeviceStateManager$FoldStateListener
--dontwarn android.hardware.devicestate.DeviceStateManager
--dontwarn android.provider.DeviceConfig$Properties
--dontwarn android.util.MathUtils
--dontwarn android.util.MergedConfiguration
--dontwarn android.util.PathParser
--dontwarn android.util.Pools$SynchronizedPool
--dontwarn android.util.RotationUtils
--dontwarn android.util.Slog
--dontwarn android.util.SparseSetArray
--dontwarn android.widget.RemoteViews$ColorResources
--dontwarn android.widget.RemoteViews$InteractionHandler
--dontwarn androidx.dynamicanimation.animation.AnimationHandler$FrameCallbackScheduler
--dontwarn com.android.internal.R$styleable
--dontwarn com.android.internal.accessibility.AccessibilityShortcutController
--dontwarn com.android.internal.annotations.GuardedBy
--dontwarn com.android.internal.annotations.VisibleForTesting$Visibility
--dontwarn com.android.internal.graphics.ColorUtils
--dontwarn com.android.internal.graphics.SfVsyncFrameCallbackProvider
--dontwarn com.android.internal.graphics.palette.Palette$Builder
--dontwarn com.android.internal.graphics.palette.Palette$Swatch
--dontwarn com.android.internal.graphics.palette.Palette
--dontwarn com.android.internal.graphics.palette.Quantizer
--dontwarn com.android.internal.graphics.palette.VariationalKMeansQuantizer
--dontwarn com.android.internal.jank.InteractionJankMonitor$Configuration$Builder
--dontwarn com.android.internal.jank.InteractionJankMonitor
--dontwarn com.android.internal.logging.InstanceId
--dontwarn com.android.internal.logging.InstanceIdSequence
--dontwarn com.android.internal.logging.UiEventLogger$UiEventEnum
--dontwarn com.android.internal.logging.UiEventLogger
--dontwarn com.android.internal.logging.UiEventLoggerImpl
--dontwarn com.android.internal.os.IResultReceiver
--dontwarn com.android.internal.policy.AttributeCache
--dontwarn com.android.internal.policy.DecorView$ColorViewAttributes
--dontwarn com.android.internal.policy.DecorView
--dontwarn com.android.internal.policy.DividerSnapAlgorithm$SnapTarget
--dontwarn com.android.internal.policy.DividerSnapAlgorithm
--dontwarn com.android.internal.policy.DockedDividerUtils
--dontwarn com.android.internal.policy.SystemBarUtils
--dontwarn com.android.internal.policy.TaskResizingAlgorithm
--dontwarn com.android.internal.policy.TransitionAnimation
--dontwarn com.android.internal.protolog.BaseProtoLogImpl$LogLevel
--dontwarn com.android.internal.protolog.BaseProtoLogImpl
--dontwarn com.android.internal.protolog.ProtoLogViewerConfigReader
--dontwarn com.android.internal.protolog.common.IProtoLogGroup
--dontwarn com.android.internal.statusbar.IStatusBarService$Stub
--dontwarn com.android.internal.statusbar.IStatusBarService
--dontwarn com.android.internal.view.BaseIWindow
--dontwarn com.android.internal.view.IInputMethodManager$Stub
--dontwarn com.android.internal.view.IInputMethodManager
--dontwarn com.android.internal.view.RotationPolicy
--dontwarn com.google.android.collect.Sets
--dontwarn com.google.protobuf.nano.CodedInputByteBufferNano
--dontwarn com.google.protobuf.nano.CodedOutputByteBufferNano
--dontwarn com.google.protobuf.nano.InternalNano
--dontwarn com.google.protobuf.nano.MessageNano
--dontwarn com.google.protobuf.nano.WireFormatNano
--dontwarn dagger.BindsOptionalOf
--dontwarn dagger.Lazy
--dontwarn dagger.Module
--dontwarn dagger.Provides
--dontwarn dagger.internal.DoubleCheck
--dontwarn dagger.internal.Factory
--dontwarn dagger.internal.Preconditions
--dontwarn javax.inject.Inject
--dontwarn javax.inject.Provider
--dontwarn javax.inject.Qualifier
--dontwarn javax.inject.Scope
+# Serializer for classes with named companion objects are retrieved using `getDeclaredClasses`.
+# If you have any, uncomment and replace classes with those containing named companion objects.
+#-keepattributes InnerClasses # Needed for `getDeclaredClasses`.
+#-if @kotlinx.serialization.Serializable class
+#com.example.myapplication.HasNamedCompanion, # <-- List serializable classes with named companions.
+#com.example.myapplication.HasNamedCompanion2
+#{
+#    static **$* *;
+#}
+#-keepnames class <1>$$serializer { # -keepnames suffices; class is kept when serializer() is kept.
+#    static <1>$$serializer INSTANCE;
+#}
