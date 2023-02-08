@@ -99,9 +99,9 @@ public class CellLayout extends ViewGroup {
     private Point mBorderSpace;
 
     @ViewDebug.ExportedProperty(category = "launcher")
-    private int mCountX;
+    protected int mCountX;
     @ViewDebug.ExportedProperty(category = "launcher")
-    private int mCountY;
+    protected int mCountY;
 
     private boolean mDropPending = false;
 
@@ -111,8 +111,8 @@ public class CellLayout extends ViewGroup {
     @Thunk final int[] mTempLocation = new int[2];
     final PointF mTmpPointF = new PointF();
 
-    private GridOccupancy mOccupied;
-    private GridOccupancy mTmpOccupied;
+    protected GridOccupancy mOccupied;
+    protected GridOccupancy mTmpOccupied;
 
     private OnTouchListener mInterceptTouchListener;
 
@@ -121,7 +121,7 @@ public class CellLayout extends ViewGroup {
 
     private static final int[] BACKGROUND_STATE_ACTIVE = new int[] { android.R.attr.state_active };
     private static final int[] BACKGROUND_STATE_DEFAULT = EMPTY_STATE_SET;
-    private final Drawable mBackground;
+    protected final Drawable mBackground;
 
     // These values allow a fixed measurement to be set on the CellLayout.
     private int mFixedWidth = -1;
@@ -154,7 +154,7 @@ public class CellLayout extends ViewGroup {
     private int mGridVisualizationRoundingRadius;
     private float mGridAlpha = 0f;
     private int mGridColor = 0;
-    private float mSpringLoadedProgress = 0f;
+    protected float mSpringLoadedProgress = 0f;
     private float mScrollProgress = 0f;
 
     // When a drag operation is in progress, holds the nearest cell to the touch point
@@ -164,7 +164,7 @@ public class CellLayout extends ViewGroup {
     private boolean mDragging = false;
 
     private final TimeInterpolator mEaseOutInterpolator;
-    private final ShortcutAndWidgetContainer mShortcutsAndWidgets;
+    protected final ShortcutAndWidgetContainer mShortcutsAndWidgets;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({WORKSPACE, HOTSEAT, FOLDER})
@@ -565,7 +565,7 @@ public class CellLayout extends ViewGroup {
         return mSpringLoadedProgress;
     }
 
-    private void updateBgAlpha() {
+    protected void updateBgAlpha() {
         mBackground.setAlpha((int) (mSpringLoadedProgress * 255));
     }
 
@@ -1662,7 +1662,7 @@ public class CellLayout extends ViewGroup {
      * @param spanY vertical cell span
      * @return the configuration that represents the found reorder
      */
-    private ItemConfiguration closestEmptySpaceReorder(int pixelX, int pixelY, int minSpanX,
+    ItemConfiguration closestEmptySpaceReorder(int pixelX, int pixelY, int minSpanX,
             int minSpanY, int spanX, int spanY) {
         ItemConfiguration solution = new ItemConfiguration();
         int[] result = new int[2];
@@ -2402,8 +2402,15 @@ public class CellLayout extends ViewGroup {
         return true;
     }
 
-    private ItemConfiguration findReorderSolution(int pixelX, int pixelY, int minSpanX, int minSpanY,
-            int spanX, int spanY, int[] direction, View dragView, boolean decX,
+    protected ItemConfiguration findReorderSolution(int pixelX, int pixelY, int minSpanX,
+            int minSpanY, int spanX, int spanY, int[] direction, View dragView, boolean decX,
+            ItemConfiguration solution) {
+        return findReorderSolutionRecursive(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY,
+                direction, dragView, decX, solution);
+    }
+
+    protected ItemConfiguration findReorderSolutionRecursive(int pixelX, int pixelY, int minSpanX,
+            int minSpanY, int spanX, int spanY, int[] direction, View dragView, boolean decX,
             ItemConfiguration solution) {
         // Copy the current state into the solution. This solution will be manipulated as necessary.
         copyCurrentStateToSolution(solution, false);
@@ -2426,11 +2433,11 @@ public class CellLayout extends ViewGroup {
             // We try shrinking the widget down to size in an alternating pattern, shrink 1 in
             // x, then 1 in y etc.
             if (spanX > minSpanX && (minSpanY == spanY || decX)) {
-                return findReorderSolution(pixelX, pixelY, minSpanX, minSpanY, spanX - 1, spanY,
-                        direction, dragView, false, solution);
+                return findReorderSolutionRecursive(pixelX, pixelY, minSpanX, minSpanY, spanX - 1,
+                        spanY, direction, dragView, false, solution);
             } else if (spanY > minSpanY) {
-                return findReorderSolution(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY - 1,
-                        direction, dragView, true, solution);
+                return findReorderSolutionRecursive(pixelX, pixelY, minSpanX, minSpanY, spanX,
+                        spanY - 1, direction, dragView, true, solution);
             }
             solution.isSolution = false;
         } else {
@@ -2443,7 +2450,7 @@ public class CellLayout extends ViewGroup {
         return solution;
     }
 
-    private void copyCurrentStateToSolution(ItemConfiguration solution, boolean temp) {
+    protected void copyCurrentStateToSolution(ItemConfiguration solution, boolean temp) {
         int childCount = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = mShortcutsAndWidgets.getChildAt(i);
@@ -2624,7 +2631,7 @@ public class CellLayout extends ViewGroup {
         return mItemPlacementDirty;
     }
 
-    private static class ItemConfiguration extends CellAndSpan {
+    static class ItemConfiguration extends CellAndSpan {
         final ArrayMap<View, CellAndSpan> map = new ArrayMap<>();
         private final ArrayMap<View, CellAndSpan> savedMap = new ArrayMap<>();
         final ArrayList<View> sortedViews = new ArrayList<>();
