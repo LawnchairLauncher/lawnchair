@@ -261,8 +261,9 @@ public class SplitSelectStateController {
                         getOppositeStagePosition(stagePosition), splitRatio, adapter,
                         shellInstanceId);
             } else {
-                mSystemUiProxy.startIntentsWithLegacyTransition(getPendingIntent(intent1),
-                        options1.toBundle(), getPendingIntent(intent2), null /* options2 */,
+                mSystemUiProxy.startIntentsWithLegacyTransition(
+                        getPendingIntent(intent1), getShortcutInfo(intent1), options1.toBundle(),
+                        getPendingIntent(intent2), getShortcutInfo(intent2), null /* options2 */,
                         stagePosition, splitRatio, adapter, shellInstanceId);
             }
         }
@@ -271,15 +272,13 @@ public class SplitSelectStateController {
     private void launchIntentOrShortcut(Intent intent, ActivityOptions options1, int taskId,
             @StagePosition int stagePosition, float splitRatio, RemoteTransition remoteTransition,
             @Nullable InstanceId shellInstanceId) {
-        PendingIntent pendingIntent = getPendingIntent(intent);
-        final ShortcutInfo shortcutInfo = getShortcutInfo(intent,
-                pendingIntent.getCreatorUserHandle());
+        final ShortcutInfo shortcutInfo = getShortcutInfo(intent);
         if (shortcutInfo != null) {
             mSystemUiProxy.startShortcutAndTask(shortcutInfo,
                     options1.toBundle(), taskId, null /* options2 */, stagePosition,
                     splitRatio, remoteTransition, shellInstanceId);
         } else {
-            mSystemUiProxy.startIntentAndTask(pendingIntent, options1.toBundle(), taskId,
+            mSystemUiProxy.startIntentAndTask(getPendingIntent(intent), options1.toBundle(), taskId,
                     null /* options2 */, stagePosition, splitRatio, remoteTransition,
                     shellInstanceId);
         }
@@ -288,15 +287,13 @@ public class SplitSelectStateController {
     private void launchIntentOrShortcutLegacy(Intent intent, ActivityOptions options1, int taskId,
             @StagePosition int stagePosition, float splitRatio, RemoteAnimationAdapter adapter,
             @Nullable InstanceId shellInstanceId) {
-        PendingIntent pendingIntent = getPendingIntent(intent);
-        final ShortcutInfo shortcutInfo = getShortcutInfo(intent,
-                pendingIntent.getCreatorUserHandle());
+        final ShortcutInfo shortcutInfo = getShortcutInfo(intent);
         if (shortcutInfo != null) {
             mSystemUiProxy.startShortcutAndTaskWithLegacyTransition(shortcutInfo,
                     options1.toBundle(), taskId, null /* options2 */, stagePosition,
                     splitRatio, adapter, shellInstanceId);
         } else {
-            mSystemUiProxy.startIntentAndTaskWithLegacyTransition(pendingIntent,
+            mSystemUiProxy.startIntentAndTaskWithLegacyTransition(getPendingIntent(intent),
                     options1.toBundle(), taskId, null /* options2 */, stagePosition, splitRatio,
                     adapter, shellInstanceId);
         }
@@ -322,7 +319,7 @@ public class SplitSelectStateController {
     }
 
     @Nullable
-    private ShortcutInfo getShortcutInfo(Intent intent, UserHandle userHandle) {
+    private ShortcutInfo getShortcutInfo(Intent intent) {
         if (intent == null || intent.getPackage() == null) {
             return null;
         }
@@ -334,7 +331,7 @@ public class SplitSelectStateController {
 
         try {
             final Context context = mContext.createPackageContextAsUser(
-                    intent.getPackage(), 0 /* flags */, userHandle);
+                    intent.getPackage(), 0 /* flags */, mUser);
             return new ShortcutInfo.Builder(context, shortcutId).build();
         } catch (PackageManager.NameNotFoundException e) {
             Log.w(TAG, "Failed to create a ShortcutInfo for " + intent.getPackage());
