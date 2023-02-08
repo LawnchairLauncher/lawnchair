@@ -319,6 +319,9 @@ public final class FeatureFlags {
     public static final BooleanFlag POPUP_MATERIAL_U = new DeviceFlag(
             "POPUP_MATERIAL_U", false, "Switch popup UX to use material U");
 
+    public static final BooleanFlag ENABLE_SEARCH_UNINSTALLED_APPS = new DeviceFlag(
+            "ENABLE_SEARCH_UNINSTALLED_APPS", false, "Search uninstalled app results.");
+
     public static final BooleanFlag SHOW_HOME_GARDENING = getDebugFlag(
             "SHOW_HOME_GARDENING", false,
             "Show the new home gardening mode");
@@ -334,10 +337,6 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_DOWNLOAD_APP_UX_V3 = getDebugFlag(
             "ENABLE_DOWNLOAD_APP_UX_V3", false, "Updates the download app UX"
             + " to have better visuals, improve contrast, and color");
-
-    public static final BooleanFlag ENABLE_TASKBAR_REVISED_THRESHOLDS = getDebugFlag(
-            "ENABLE_TASKBAR_REVISED_THRESHOLDS", true,
-            "Uses revised thresholds for transient taskbar.");
 
     public static final BooleanFlag FORCE_PERSISTENT_TASKBAR = getDebugFlag(
             "FORCE_PERSISTENT_TASKBAR", false, "Forces taskbar to be persistent, even in gesture"

@@ -176,7 +176,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 MAIN_EXECUTOR.submit(() ->
                         Launcher.ACTIVITY_TRACKER.getCreatedActivity().getRotationHelper()
                                 .forceAllowRotationForTesting(Boolean.parseBoolean(arg)));
-                return null;
+                return response;
 
             case TestProtocol.REQUEST_WORKSPACE_CELL_LAYOUT_SIZE:
                 return getLauncherUIProperty(Bundle::putIntArray, launcher -> {
@@ -230,6 +230,13 @@ public class TestInformationHandler implements ResourceBasedOverride {
             case TestProtocol.REQUEST_ALL_APPS_TOP_PADDING: {
                 return getLauncherUIProperty(Bundle::putInt,
                         l -> l.getAppsView().getActiveRecyclerView().getClipBounds().top);
+            }
+
+            case TestProtocol.REQUEST_ALL_APPS_BOTTOM_PADDING: {
+                return getLauncherUIProperty(Bundle::putInt,
+                        l -> l.getAppsView().getBottom()
+                                - l.getAppsView().getActiveRecyclerView().getBottom()
+                                + l.getAppsView().getActiveRecyclerView().getPaddingBottom());
             }
 
             default:
