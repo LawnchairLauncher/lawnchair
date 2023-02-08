@@ -92,8 +92,8 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_HIDE_HEADER = new DeviceFlag("ENABLE_HIDE_HEADER",
             true, "Hide header on keyboard before typing in all apps");
 
-    public static final BooleanFlag ENABLE_EXPANDING_PAUSE_WORK_BUTTON = new DeviceFlag(
-            "ENABLE_EXPANDING_PAUSE_WORK_BUTTON", false,
+    public static final BooleanFlag ENABLE_EXPANDING_PAUSE_WORK_BUTTON = getDebugFlag(
+            "ENABLE_EXPANDING_PAUSE_WORK_BUTTON", true,
             "Expand and collapse pause work button while scrolling");
 
     public static final BooleanFlag COLLECT_SEARCH_HISTORY = new DeviceFlag(
@@ -322,6 +322,9 @@ public final class FeatureFlags {
 
     public static final BooleanFlag POPUP_MATERIAL_U = new DeviceFlag(
             "POPUP_MATERIAL_U", false, "Switch popup UX to use material U");
+
+    public static final BooleanFlag ENABLE_SEARCH_UNINSTALLED_APPS = new DeviceFlag(
+            "ENABLE_SEARCH_UNINSTALLED_APPS", false, "Search uninstalled app results.");
 
     public static final BooleanFlag SHOW_HOME_GARDENING = getDebugFlag(
             "SHOW_HOME_GARDENING", false,

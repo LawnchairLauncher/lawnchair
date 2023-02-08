@@ -61,6 +61,10 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"ہوم پر جانے کے لیے سوائپ کریں"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"اپنی اسکرین کے نیچے سے اوپر کی طرف سوائپ کریں۔ یہ اشارہ آپ کو ہمیشہ ہوم اسکرین پر لے جاتا ہے۔"</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"اسکرین کے نیچے سے 2 انگلیوں سے اوپر سوائپ کریں۔ یہ اشارہ آپ کو ہمیشہ ہوم اسکرین پر لے جاتا ہے۔"</string>
+    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
+    <skip />
+    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
+    <skip />
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"اس بات کو یقینی بنائیں کہ آپ اسکرین کے نچلے کنارے سے اوپر کی طرف سوائپ کریں۔"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"انگلی اٹھانے سے پہلے ونڈو کو زیادہ دیر تک پکڑنے کی کوشش کریں۔"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"اس بات کو یقینی بنائیں کہ آپ سیدھا اوپر کی طرف سوائپ کریں، پھر موقوف کریں۔"</string>
@@ -84,7 +88,8 @@
     <string name="action_share" msgid="2648470652637092375">"اشتراک کریں"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"اسکرین شاٹ"</string>
     <string name="action_split" msgid="2098009717623550676">"اسپلٹ"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"اسپلٹ اسکرین کا استعمال کرنے کیلئے دوسری ایپ پر تھپتھپائیں"</string>
+    <!-- no translation found for toast_split_select_app (8464310533320556058) -->
+    <skip />
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"اسپلٹ اسکرین کے استعمال کیلئے دوسری ایپ منتخب کریں"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ایپ یا آپ کی تنظیم کی جانب سے اس کارروائی کی اجازت نہیں ہے"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"نیویگیشن کا ٹیوٹوریل نظر انداز کریں؟"</string>
@@ -96,9 +101,10 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ٹاکس بار کا تعلیمی پینل ظاہر ہو گیا"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ٹاسک بار کا تعلیمی پینل بند ہو گیا"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ایک وقت میں 2 ایپس استعمال کرنے کیلئے ایپ سائیڈ پر گھسیٹیں"</string>
-    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"ٹاسک بار دکھانے کے لیے تھوڑا اوپر سوائپ کریں"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"ٹاسک بار دکھانے کے لیے آہستہ سے اوپر سوائپ کریں"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"اپنی روٹین پر مبنی ایپس کی تجاویز حاصل کریں"</string>
-    <string name="taskbar_edu_features" msgid="2338325667726857642">"ٹاسک بار سے بہت کچھ کریں"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"ٹاسک بار کو خودکار طور پر چھپانے کیلئے \'ترتیبات\' میں اشاروں والی نیویگیشن آن کریں"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"ٹاسک بار سے بہت کچھ کریں"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"آگے"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"پیچھے"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"بند کریں"</string>

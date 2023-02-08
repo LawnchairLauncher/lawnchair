@@ -16,7 +16,7 @@
 package com.android.launcher3.uioverrides.touchcontrollers;
 
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.QUICK_SWITCH;
+import static com.android.launcher3.LauncherState.QUICK_SWITCH_FROM_HOME;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
@@ -87,7 +87,7 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
         if ((stateFlags & SYSUI_STATE_OVERVIEW_DISABLED) != 0) {
             return NORMAL;
         }
-        return isDragTowardPositive ? QUICK_SWITCH : NORMAL;
+        return isDragTowardPositive ? QUICK_SWITCH_FROM_HOME : NORMAL;
     }
 
     @Override
@@ -110,7 +110,7 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
 
         // Set RecentView's initial properties for coming in from the side.
         RECENTS_SCALE_PROPERTY.set(mOverviewPanel,
-                QUICK_SWITCH.getOverviewScaleAndOffset(mLauncher)[0] * 0.85f);
+                QUICK_SWITCH_FROM_HOME.getOverviewScaleAndOffset(mLauncher)[0] * 0.85f);
         ADJACENT_PAGE_HORIZONTAL_OFFSET.set(mOverviewPanel, 1f);
         mOverviewPanel.setContentAlpha(1);
 
