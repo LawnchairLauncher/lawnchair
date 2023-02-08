@@ -17,6 +17,8 @@ package com.android.launcher3.taskbar;
 
 import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 
+import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
+
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.MotionEvent;
@@ -73,7 +75,13 @@ public class TaskbarUIController {
     protected void onStashedInAppChanged() { }
 
     /** Called when an icon is launched. */
-    public void onTaskbarIconLaunched(ItemInfo item) { }
+    @CallSuper
+    public void onTaskbarIconLaunched(ItemInfo item) {
+        // When launching from Taskbar, e.g. from Overview, set FLAG_IN_APP immediately instead of
+        // waiting for onPause, to reduce potential visual noise during the app open transition.
+        mControllers.taskbarStashController.updateStateForFlag(FLAG_IN_APP, true);
+        mControllers.taskbarStashController.applyState();
+    }
 
     public View getRootView() {
         return mControllers.taskbarActivityContext.getDragLayer();
@@ -103,7 +111,7 @@ public class TaskbarUIController {
     public void onExpandPip() {
         if (mControllers != null) {
             final TaskbarStashController stashController = mControllers.taskbarStashController;
-            stashController.updateStateForFlag(TaskbarStashController.FLAG_IN_APP, true);
+            stashController.updateStateForFlag(FLAG_IN_APP, true);
             stashController.applyState();
         }
     }
