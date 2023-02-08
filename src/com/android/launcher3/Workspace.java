@@ -501,7 +501,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     }
 
     private boolean isTwoPanelEnabled() {
-        return mLauncher.mDeviceProfile.isTwoPanels;
+        return !FOLDABLE_SINGLE_PAGE.get() && mLauncher.mDeviceProfile.isTwoPanels;
     }
 
     @Override
@@ -663,8 +663,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
         // Inflate the cell layout, but do not add it automatically so that we can get the newly
         // created CellLayout.
+        DeviceProfile dp = mLauncher.getDeviceProfile();
         CellLayout newScreen;
-        if (FOLDABLE_SINGLE_PAGE.get() && isTwoPanelEnabled()) {
+        if (FOLDABLE_SINGLE_PAGE.get() && dp.isTwoPanels) {
             newScreen = (CellLayout) LayoutInflater.from(getContext()).inflate(
                     R.layout.workspace_screen_foldable, this, false /* attachToRoot */);
         } else {
