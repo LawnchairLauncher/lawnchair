@@ -404,6 +404,7 @@ public class DeviceProfile {
         allAppsBorderSpacePx = new Point(
                 pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].x, mMetrics),
                 pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].y, mMetrics));
+        setupAllAppsStyle(context);
 
         workspacePageIndicatorHeight = res.getDimensionPixelSize(
                 R.dimen.workspace_page_indicator_height);
@@ -810,9 +811,6 @@ public class DeviceProfile {
         int cellLayoutHorizontalPadding =
                 (cellLayoutPaddingPx.left + cellLayoutPaddingPx.right) / 2;
         if (isTablet) {
-            allAppsLeftRightPadding =
-                    res.getDimensionPixelSize(R.dimen.all_apps_bottom_sheet_horizontal_padding);
-
             int usedWidth = (allAppsCellWidthPx * numShownAllAppsColumns)
                     + (allAppsBorderSpacePx.x * (numShownAllAppsColumns - 1))
                     + allAppsLeftRightPadding * 2;
@@ -821,6 +819,20 @@ public class DeviceProfile {
             allAppsLeftRightPadding =
                     desiredWorkspaceHorizontalMarginPx + cellLayoutHorizontalPadding;
         }
+    }
+
+    private void setupAllAppsStyle(Context context) {
+        TypedArray allAppsStyle;
+        if (inv.allAppsStyle != INVALID_RESOURCE_HANDLE) {
+            allAppsStyle = context.obtainStyledAttributes(inv.allAppsStyle,
+                    R.styleable.AllAppsStyle);
+        } else {
+            allAppsStyle = context.obtainStyledAttributes(R.style.AllAppsStyleDefault,
+                    R.styleable.AllAppsStyle);
+        }
+        allAppsLeftRightPadding = allAppsStyle.getDimensionPixelSize(
+                R.styleable.AllAppsStyle_horizontalPadding, 0);
+        allAppsStyle.recycle();
     }
 
     /**
@@ -1806,7 +1818,7 @@ public class DeviceProfile {
          * Set the viewScaleProvider for the builder
          *
          * @param viewScaleProvider The viewScaleProvider to be set for the
-         *                                DeviceProfile
+         *                          DeviceProfile
          * @return This builder
          */
         @NonNull
