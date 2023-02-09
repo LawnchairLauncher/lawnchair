@@ -956,6 +956,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
     }
 
+    @Override
+    public void onTaskIconChanged(int taskId) {
+        TaskView taskView = getTaskViewByTaskId(taskId);
+        if (taskView != null) {
+            taskView.refreshTaskThumbnailSplash();
+        }
+    }
+
     /**
      * Update the thumbnail of the task.
      * @param refreshNow Refresh immediately if it's true.
