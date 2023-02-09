@@ -16,6 +16,8 @@ import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Build
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.icons.rounded.TipsAndUpdates
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.Surface
 import androidx.compose.material3.MaterialTheme as Material3Theme
@@ -36,6 +38,7 @@ import app.lawnchair.ui.preferences.components.ClickableIcon
 import app.lawnchair.ui.preferences.components.PreferenceCategory
 import app.lawnchair.ui.preferences.components.PreferenceDivider
 import app.lawnchair.ui.preferences.components.PreferenceLayout
+import app.lawnchair.ui.preferences.components.PreferenceTemplate
 import app.lawnchair.ui.preferences.components.WarningPreference
 import app.lawnchair.util.isDefaultLauncher
 import app.lawnchair.util.restartLauncher
@@ -195,17 +198,29 @@ fun PreferencesSetDefaultLauncherWarning() {
     Surface(
         modifier = Modifier.padding(horizontal = 16.dp),
         shape = MaterialTheme.shapes.large,
-        color = Material3Theme.colorScheme.errorContainer
+        color = Material3Theme.colorScheme.surfaceVariant
     ) {
-        WarningPreference(
-            // Don't move to strings.xml, no need to translate this warning
-            text = stringResource(id = R.string.set_default_launcher_tip),
+        PreferenceTemplate(
             modifier = Modifier.clickable {
                 Intent(Settings.ACTION_HOME_SETTINGS)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     .let { context.startActivity(it) }
                 (context as? Activity)?.finish()
-            }
+            },
+            title = {},
+            description = {
+                Text(
+                    text = stringResource(id = R.string.set_default_launcher_tip),
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            },
+            startWidget = {
+                Icon(
+                    imageVector = Icons.Rounded.TipsAndUpdates,
+                    tint = androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant,
+                    contentDescription = null,
+                )
+            },
         )
     }
 }
