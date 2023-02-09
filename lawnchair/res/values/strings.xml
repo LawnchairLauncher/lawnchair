@@ -496,4 +496,6 @@
 
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
+
+    <string name="system_settings">System Settings</string>
 </resources>
