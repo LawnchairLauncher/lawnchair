@@ -92,6 +92,7 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
 
     @Override
     public void onTaskIconChanged(int taskId) {
+        super.onTaskIconChanged(taskId);
         // If Launcher needs to return to split select state, do it now, after the icon has updated.
         if (mActivity.hasPendingSplitSelectInfo()) {
             PendingSplitSelectInfo recoveryData = mActivity.getPendingSplitSelectInfo();
