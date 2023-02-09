@@ -169,7 +169,10 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
             }
         }
     }
-    override val onBackPressedDispatcher = OnBackPressedDispatcher()
+    override val onBackPressedDispatcher = OnBackPressedDispatcher {
+        @Suppress("DEPRECATION")
+        super.onBackPressed()
+    }
     override val lifecycle: LifecycleRegistry = LifecycleRegistry(this)
     val gestureController by lazy { GestureController(this) }
 
