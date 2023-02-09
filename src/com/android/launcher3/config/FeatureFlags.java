@@ -351,7 +351,7 @@ public final class FeatureFlags {
             "SHOW_DOT_PAGINATION", true, "Enable showing dot pagination in workspace");
 
     public static final BooleanFlag LARGE_SCREEN_WIDGET_PICKER = getDebugFlag(270395809,
-            "LARGE_SCREEN_WIDGET_PICKER", false, "Enable new widget picker that takes "
+            "LARGE_SCREEN_WIDGET_PICKER", true, "Enable new widget picker that takes "
                     + "advantage of large screen format");
 
     public static final BooleanFlag ENABLE_NEW_GESTURE_NAV_TUTORIAL = getDebugFlag(270396257,
