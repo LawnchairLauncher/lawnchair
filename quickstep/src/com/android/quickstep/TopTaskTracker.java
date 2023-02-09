@@ -18,6 +18,7 @@ package com.android.quickstep;
 import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 import static android.app.WindowConfiguration.ACTIVITY_TYPE_ASSISTANT;
 import static android.app.WindowConfiguration.ACTIVITY_TYPE_HOME;
+import static android.app.WindowConfiguration.WINDOWING_MODE_FREEFORM;
 import static android.content.Intent.ACTION_CHOOSER;
 import static android.content.Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS;
 import static android.view.Display.DEFAULT_DISPLAY;
@@ -252,6 +253,15 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
         public boolean isHomeTask() {
             return mTopTask != null && mTopTask.configuration.windowConfiguration
                     .getActivityType() == ACTIVITY_TYPE_HOME;
+        }
+
+        /**
+         * Returns {@code true} if this task windowing mode is set to {@link
+         * android.app.WindowConfiguration#WINDOWING_MODE_FREEFORM}
+         */
+        public boolean isFreeformTask() {
+            return mTopTask != null && mTopTask.configuration.windowConfiguration.getWindowingMode()
+                    == WINDOWING_MODE_FREEFORM;
         }
 
         /**
