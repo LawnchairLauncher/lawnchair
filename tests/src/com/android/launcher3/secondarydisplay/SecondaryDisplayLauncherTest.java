@@ -38,6 +38,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.util.LauncherModelHelper;
+import com.android.launcher3.util.TestUtil;
 
 import org.junit.After;
 import org.junit.Ignore;
@@ -278,10 +279,8 @@ public final class SecondaryDisplayLauncherTest extends AbstractLauncherUiTest {
 
     private void setDragNDropFlag(Boolean status) {
         Context context = new LauncherModelHelper().sandboxContext;
-        context.getSharedPreferences(FeatureFlags.FLAGS_PREF_NAME, Context.MODE_PRIVATE).edit()
-                .putBoolean(FeatureFlags.SECONDARY_DRAG_N_DROP_TO_PIN.key, status)
-                .commit();
-        FeatureFlags.initialize(context);
+        TestUtil.overrideBooleanFlagValue(
+                context, FeatureFlags.SECONDARY_DRAG_N_DROP_TO_PIN, status);
         startSecondaryDisplayActivity();
     }
 }
