@@ -18,7 +18,7 @@ package com.android.launcher3.nonquickstep
 import android.graphics.Rect
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.android.launcher3.DeviceProfileBaseTest
+import com.android.launcher3.FakeInvariantDeviceProfileTest
 import com.android.launcher3.util.WindowBounds
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
@@ -26,7 +26,7 @@ import org.junit.runner.RunWith
 
 @SmallTest
 @RunWith(AndroidJUnit4::class)
-class HotseatWidthCalculationTest : DeviceProfileBaseTest() {
+class HotseatWidthCalculationTest : FakeInvariantDeviceProfileTest() {
 
     /**
      * This is a case when after setting the hotseat, the space needs to be recalculated but it

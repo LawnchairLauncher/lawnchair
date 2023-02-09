@@ -19,7 +19,7 @@ import android.graphics.Rect
 import android.graphics.RectF
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.android.launcher3.DeviceProfileBaseTest
+import com.android.launcher3.FakeInvariantDeviceProfileTest
 import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT
 import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT
 import com.android.quickstep.views.TaskView.FullscreenDrawParams
@@ -36,7 +36,7 @@ import org.mockito.Mockito.mock
 /** Test for FullscreenDrawParams class. */
 @SmallTest
 @RunWith(AndroidJUnit4::class)
-class FullscreenDrawParamsTest : DeviceProfileBaseTest() {
+class FullscreenDrawParamsTest : FakeInvariantDeviceProfileTest() {
 
     private val TASK_SCALE = 0.7f
     private var mThumbnailData: ThumbnailData = mock(ThumbnailData::class.java)
