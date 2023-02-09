@@ -401,4 +401,5 @@
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">系统设置</string>
     <string name="popup_menu">弹出菜单</string>
+    <string name="show_system_settings_entry">显示系统设置入口</string>
 </resources>

@@ -199,6 +199,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
             onSet = { reloadHelper.reloadGrid() },
     )
 
+    val showSystemSettingsEntryOnPopUp = preference(
+        key = booleanPreferencesKey(name = "show_system_settings_entry_on_popup"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_show_system_settings_entry_on_popup),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     val hideAppDrawerSearchBar = preference(
         key = booleanPreferencesKey(name = "hide_app_drawer_search_bar"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_hide_app_drawer_search_bar),
