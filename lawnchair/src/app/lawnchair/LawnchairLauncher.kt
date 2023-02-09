@@ -342,14 +342,6 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
 
     override fun getDefaultOverlay(): LauncherOverlayManager = defaultOverlay
 
-    fun scheduleRecreate() {
-        scheduleFlag(FLAG_RECREATE)
-    }
-
-    fun scheduleRestart() {
-        scheduleFlag(FLAG_RESTART)
-    }
-
     fun recreateIfNotScheduled() {
         if (sRestartFlags == 0) {
             recreate()
@@ -363,13 +355,6 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
                 sRestartFlags = 0
                 recreate()
             }
-        }
-    }
-
-    private fun scheduleFlag(flag: Int) {
-        sRestartFlags = sRestartFlags or flag
-        if (lifecycle.currentState === Lifecycle.State.RESUMED) {
-            restartIfPending()
         }
     }
 
