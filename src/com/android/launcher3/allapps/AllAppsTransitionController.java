@@ -301,6 +301,13 @@ public class AllAppsTransitionController
         }
     }
 
+    /** Animate all apps view to 1f scale. */
+    public void animateAllAppsToNoScale() {
+        mAllAppScale.animateToValue(1f)
+                .setDuration(REVERT_SWIPE_ALL_APPS_TO_HOME_ANIMATION_DURATION_MS)
+                .start();
+    }
+
     /**
      * Creates an animation which updates the vertical transition progress and updates all the
      * dependent UI using various animation events

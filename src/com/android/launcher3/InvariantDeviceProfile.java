@@ -175,6 +175,7 @@ public class InvariantDeviceProfile {
      */
     public int numAllAppsColumns;
     public int numDatabaseAllAppsColumns;
+    public @StyleRes int allAppsStyle;
 
     /**
      * Do not query directly. see {@link DeviceProfile#isScalableGrid}.
@@ -383,6 +384,8 @@ public class InvariantDeviceProfile {
         hotseatColumnSpan = closestProfile.hotseatColumnSpan;
         hotseatBarBottomSpace = displayOption.hotseatBarBottomSpace;
         hotseatQsbSpace = displayOption.hotseatQsbSpace;
+
+        allAppsStyle = closestProfile.allAppsStyle;
 
         numAllAppsColumns = closestProfile.numAllAppsColumns;
         numDatabaseAllAppsColumns = deviceType == TYPE_MULTI_DISPLAY
@@ -789,6 +792,7 @@ public class InvariantDeviceProfile {
         private final @StyleRes int folderStyle;
         private final @StyleRes int cellStyle;
 
+        private final @StyleRes int allAppsStyle;
         private final int numAllAppsColumns;
         private final int numDatabaseAllAppsColumns;
         private final int numHotseatIcons;
@@ -824,6 +828,8 @@ public class InvariantDeviceProfile {
             demoModeLayoutId = a.getResourceId(
                     R.styleable.GridDisplayOption_demoModeLayoutId, defaultLayoutId);
 
+            allAppsStyle = a.getResourceId(R.styleable.GridDisplayOption_allAppsStyle,
+                    R.style.AllAppsStyleDefault);
             numAllAppsColumns = a.getInt(
                     R.styleable.GridDisplayOption_numAllAppsColumns, numColumns);
             numDatabaseAllAppsColumns = a.getInt(

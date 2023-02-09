@@ -628,14 +628,20 @@ public class SystemUiProxy implements ISystemUiProxy {
         }
     }
 
-    public void startIntentsWithLegacyTransition(PendingIntent pendingIntent1, Bundle options1,
-            PendingIntent pendingIntent2, Bundle options2,
-            @SplitConfigurationOptions.StagePosition int sidePosition, float splitRatio,
-            RemoteAnimationAdapter adapter, InstanceId instanceId) {
+    /**
+     * Starts a pair of intents or shortcuts in split-screen using legacy transition. Passing a
+     * non-null shortcut info means to start the app as a shortcut.
+     */
+    public void startIntentsWithLegacyTransition(PendingIntent pendingIntent1,
+            @Nullable ShortcutInfo shortcutInfo1, @Nullable Bundle options1,
+            PendingIntent pendingIntent2, @Nullable ShortcutInfo shortcutInfo2,
+            @Nullable Bundle options2, @SplitConfigurationOptions.StagePosition int sidePosition,
+            float splitRatio, RemoteAnimationAdapter adapter, InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
-                mSplitScreen.startIntentsWithLegacyTransition(pendingIntent1, options1,
-                        pendingIntent2, options2, sidePosition, splitRatio, adapter, instanceId);
+                mSplitScreen.startIntentsWithLegacyTransition(pendingIntent1, shortcutInfo1,
+                        options1, pendingIntent2, shortcutInfo2, options2, sidePosition, splitRatio,
+                        adapter, instanceId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startIntentsWithLegacyTransition");
             }
