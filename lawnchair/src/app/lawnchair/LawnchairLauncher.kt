@@ -84,7 +84,6 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     private val preferenceManager2 by lazy { PreferenceManager2.getInstance(this) }
     private val insetsController by lazy { WindowInsetsControllerCompat(launcher.window, rootView) }
     private val themeProvider by lazy { ThemeProvider.INSTANCE.get(this) }
-    private lateinit var colorScheme: ColorScheme
     private val noStatusBarStateListener = object : StateManager.StateListener<LauncherState> {
         override fun onStateTransitionStart(toState: LauncherState) {
             if (toState is OverviewState) {
@@ -97,7 +96,10 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
             }
         }
     }
+    private lateinit var colorScheme: ColorScheme
     private var hasBackGesture = false
+
+    val gestureController by lazy { GestureController(this) }
 
     override val savedStateRegistry: SavedStateRegistry = savedStateRegistryController.savedStateRegistry
     override val activityResultRegistry = object : ActivityResultRegistry() {
@@ -174,7 +176,6 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         super.onBackPressed()
     }
     override val lifecycle: LifecycleRegistry = LifecycleRegistry(this)
-    val gestureController by lazy { GestureController(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         layoutInflater.factory2 = LawnchairLayoutFactory(this)
@@ -238,9 +239,10 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
 
     override fun setupViews() {
         super.setupViews()
-        val launcherRootView = findViewById<LauncherRootView>(R.id.launcher)
-        launcherRootView.setViewTreeLifecycleOwner(this)
-        launcherRootView.setViewTreeSavedStateRegistryOwner(this)
+        findViewById<LauncherRootView>(R.id.launcher).also {
+            it.setViewTreeLifecycleOwner(this)
+            it.setViewTreeSavedStateRegistryOwner(this)
+        }
     }
 
     override fun collectStateHandlers(out: MutableList<StateManager.StateHandler<*>>) {
@@ -248,16 +250,11 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         out.add(SearchBarStateHandler(this))
     }
 
-    override fun getSupportedShortcuts(): Stream<SystemShortcut.Factory<*>> {
-        return Stream.concat(
-            super.getSupportedShortcuts(),
-            Stream.of(LawnchairShortcut.CUSTOMIZE)
-        )
-    }
+    override fun getSupportedShortcuts(): Stream<SystemShortcut.Factory<*>> =
+        Stream.concat(super.getSupportedShortcuts(), Stream.of(LawnchairShortcut.CUSTOMIZE))
 
-    override fun createSearchAdapterProvider(allapps: AllAppsContainerView): SearchAdapterProvider {
-        return LawnchairSearchAdapterProvider(this, allapps)
-    }
+    override fun createSearchAdapterProvider(allapps: AllAppsContainerView): SearchAdapterProvider =
+        LawnchairSearchAdapterProvider(this, allapps)
 
     override fun updateTheme() {
         if (themeProvider.colorScheme != colorScheme) {
@@ -294,7 +291,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         restartIfPending()
 
         dragLayer.viewTreeObserver.addOnDrawListener(object : ViewTreeObserver.OnDrawListener {
-            var handled = false
+            private var handled = false
 
             override fun onDraw() {
                 if (handled) {
@@ -345,6 +342,20 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
 
     override fun getDefaultOverlay(): LauncherOverlayManager = defaultOverlay
 
+    fun scheduleRecreate() {
+        scheduleFlag(FLAG_RECREATE)
+    }
+
+    fun scheduleRestart() {
+        scheduleFlag(FLAG_RESTART)
+    }
+
+    fun recreateIfNotScheduled() {
+        if (sRestartFlags == 0) {
+            recreate()
+        }
+    }
+
     private fun restartIfPending() {
         when {
             sRestartFlags and FLAG_RESTART != 0 -> lawnchairApp.restart(false)
@@ -359,20 +370,6 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         sRestartFlags = sRestartFlags or flag
         if (lifecycle.currentState === Lifecycle.State.RESUMED) {
             restartIfPending()
-        }
-    }
-
-    fun scheduleRecreate() {
-        scheduleFlag(FLAG_RECREATE)
-    }
-
-    fun scheduleRestart() {
-        scheduleFlag(FLAG_RESTART)
-    }
-
-    fun recreateIfNotScheduled() {
-        if (sRestartFlags == 0) {
-            recreate()
         }
     }
 
