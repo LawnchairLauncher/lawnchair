@@ -20,6 +20,7 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_REGION;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
+import static com.android.launcher3.LauncherAnimUtils.ROTATION_DRAWABLE_PERCENT;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.taskbar.LauncherTaskbarUIController.SYSUI_SURFACE_PROGRESS_INDEX;
@@ -60,6 +61,7 @@ import android.graphics.Region;
 import android.graphics.Region.Op;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.PaintDrawable;
+import android.graphics.drawable.RotateDrawable;
 import android.inputmethodservice.InputMethodService;
 import android.os.Handler;
 import android.util.Property;
@@ -172,10 +174,10 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     // Initialized in init.
     private TaskbarControllers mControllers;
     private boolean mIsImeRenderingNavButtons;
-    private View mA11yButton;
+    private ImageView mA11yButton;
     private int mSysuiStateFlags;
-    private View mBackButton;
-    private View mHomeButton;
+    private ImageView mBackButton;
+    private ImageView mHomeButton;
     private MultiValueAlpha mBackButtonAlpha;
     private MultiValueAlpha mHomeButtonAlpha;
     private FloatingRotationButton mFloatingRotationButton;
@@ -186,7 +188,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     private final ViewTreeObserver.OnComputeInternalInsetsListener mSeparateWindowInsetsComputer =
             this::onComputeInsetsForSeparateWindow;
     private final RecentsHitboxExtender mHitboxExtender = new RecentsHitboxExtender();
-    private View mRecentsButton;
+    private ImageView mRecentsButton;
 
     public NavbarButtonsViewController(TaskbarActivityContext context, FrameLayout navButtonsView) {
         mContext = context;
@@ -353,13 +355,13 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                     return (flags & FLAG_DISABLE_BACK) == 0
                             && ((flags & FLAG_KEYGUARD_VISIBLE) == 0 || showingOnKeyguard);
                 }));
-        boolean isRtl = Utilities.isRtl(mContext.getResources());
         mPropertyHolders.add(new StatePropertyHolder(mBackButton,
-                flags -> (flags & FLAG_IME_VISIBLE) != 0 && !mContext.isNavBarKidsModeActive(),
-                View.ROTATION, isRtl ? 90 : -90, 0));
+                flags -> (flags & FLAG_IME_VISIBLE) != 0,
+                ROTATION_DRAWABLE_PERCENT, 1f, 0f));
         // Translate back button to be at end/start of other buttons for keyguard
         int navButtonSize = mContext.getResources().getDimensionPixelSize(
                 R.dimen.taskbar_nav_buttons_size);
+        boolean isRtl = Utilities.isRtl(mContext.getResources());
         mPropertyHolders.add(new StatePropertyHolder(
                 mBackButton, flags -> (flags & FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE) != 0
                         || (flags & FLAG_KEYGUARD_VISIBLE) != 0,
@@ -734,13 +736,18 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
             int paddingBottom = paddingTop;
 
             // Update icons
-            ((ImageView) mBackButton).setImageDrawable(
-                    mBackButton.getContext().getDrawable(R.drawable.ic_sysbar_back_kids));
-            ((ImageView) mBackButton).setScaleType(ImageView.ScaleType.FIT_CENTER);
+            final RotateDrawable rotateDrawable = new RotateDrawable();
+            rotateDrawable.setDrawable(mContext.getDrawable(R.drawable.ic_sysbar_back_kids));
+            rotateDrawable.setFromDegrees(0f);
+            rotateDrawable.setToDegrees(-90f);
+            mBackButton.setImageDrawable(rotateDrawable);
+            mBackButton.setScaleType(ImageView.ScaleType.FIT_CENTER);
             mBackButton.setPadding(paddingleft, paddingTop, paddingRight, paddingBottom);
-            ((ImageView) mHomeButton).setImageDrawable(
+            mBackButton.setScaleX(Utilities.isRtl(mContext.getResources()) ? -1f : 1f);
+
+            mHomeButton.setImageDrawable(
                     mHomeButton.getContext().getDrawable(R.drawable.ic_sysbar_home_kids));
-            ((ImageView) mHomeButton).setScaleType(ImageView.ScaleType.FIT_CENTER);
+            mHomeButton.setScaleType(ImageView.ScaleType.FIT_CENTER);
             mHomeButton.setPadding(paddingleft, paddingTop, paddingRight, paddingBottom);
 
             // Home button layout
@@ -781,6 +788,12 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
 
             mHomeButton.setOnLongClickListener(null);
         } else if (mContext.isThreeButtonNav()) {
+            final RotateDrawable rotateDrawable = new RotateDrawable();
+            rotateDrawable.setDrawable(mContext.getDrawable(R.drawable.ic_sysbar_back));
+            rotateDrawable.setFromDegrees(0f);
+            rotateDrawable.setToDegrees(Utilities.isRtl(mContext.getResources()) ? 90f : -90f);
+            mBackButton.setImageDrawable(rotateDrawable);
+
             // Setup normal 3 button
             // Add spacing after the end of the last nav button
             FrameLayout.LayoutParams navButtonParams =

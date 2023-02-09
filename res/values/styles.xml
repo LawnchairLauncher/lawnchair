@@ -304,4 +304,8 @@
         <item name="iconDrawablePadding">7dp</item>
     </style>
 
+    <style name="AllAppsStyleDefault">
+        <item name="horizontalPadding">16dp</item>
+    </style>
+
 </resources>

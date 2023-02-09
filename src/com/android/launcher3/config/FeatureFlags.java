@@ -342,10 +342,6 @@ public final class FeatureFlags {
             "ENABLE_DOWNLOAD_APP_UX_V3", false, "Updates the download app UX"
             + " to have better visuals, improve contrast, and color");
 
-    public static final BooleanFlag ENABLE_TASKBAR_REVISED_THRESHOLDS = getDebugFlag(
-            "ENABLE_TASKBAR_REVISED_THRESHOLDS", true,
-            "Uses revised thresholds for transient taskbar.");
-
     public static final BooleanFlag FORCE_PERSISTENT_TASKBAR = getDebugFlag(
             "FORCE_PERSISTENT_TASKBAR", false, "Forces taskbar to be persistent, even in gesture"
                     + " nav mode and when transient taskbar is enabled.");

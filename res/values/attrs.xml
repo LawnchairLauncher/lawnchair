@@ -151,6 +151,9 @@
         <!-- Support attributes in FolderStyle -->
         <attr name="folderStyle" format="reference" />
 
+        <!-- Support attributes in AllAppsStyle. Defaults to AllAppsStyleDefault -->
+        <attr name="allAppsStyle" format="reference" />
+
         <!-- numAllAppsColumns defaults to numColumns, if not specified -->
         <attr name="numAllAppsColumns" format="integer" />
         <!-- Number of columns to use when extending the all-apps size,
@@ -416,6 +419,10 @@
 
     <declare-styleable name="CellStyle">
         <attr name="iconDrawablePadding" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="AllAppsStyle">
+        <attr name="horizontalPadding" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="ShadowDrawable">

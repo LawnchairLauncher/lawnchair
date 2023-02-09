@@ -131,7 +131,6 @@
     <dimen name="all_apps_content_fade_in_offset">150dp</dimen>
     <dimen name="all_apps_tip_bottom_margin">8dp</dimen>
     <dimen name="all_apps_height_extra">6dp</dimen>
-    <dimen name="all_apps_bottom_sheet_horizontal_padding">0dp</dimen>
     <dimen name="all_apps_paged_view_top_padding">40dp</dimen>
 
     <dimen name="all_apps_icon_drawable_padding">8dp</dimen>
