@@ -129,10 +129,7 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
             Interpolators.clampToProgress(
                     Interpolators.mapToProgress(EMPHASIZED_DECELERATE, 0.4f, 1f),
                     ALL_APPS_STATE_TRANSITION_ATOMIC, 1f);
-    public static final Interpolator ALL_APPS_VERTICAL_PROGRESS_MANUAL =
-            Interpolators.clampToProgress(
-                    Interpolators.mapToProgress(LINEAR, ALL_APPS_STATE_TRANSITION_MANUAL, 1f),
-                    ALL_APPS_STATE_TRANSITION_MANUAL, 1f);
+    public static final Interpolator ALL_APPS_VERTICAL_PROGRESS_MANUAL = LINEAR;
 
     // --------
 
