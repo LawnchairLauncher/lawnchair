@@ -82,7 +82,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     private val savedStateRegistryController = SavedStateRegistryController.create(this)
     override val savedStateRegistry: SavedStateRegistry
         get() = savedStateRegistryController.savedStateRegistry
-    private val activityResultRegistry = object : ActivityResultRegistry() {
+    override val activityResultRegistry = object : ActivityResultRegistry() {
         override fun <I : Any?, O : Any?> onLaunch(
             requestCode: Int,
             contract: ActivityResultContract<I, O>,
@@ -151,9 +151,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
             }
         }
     }
-    private val _onBackPressedDispatcher = OnBackPressedDispatcher {
-        super.onBackPressed()
-    }
+    override val onBackPressedDispatcher = OnBackPressedDispatcher()
     val gestureController by lazy { GestureController(this) }
     private val defaultOverlay by lazy { OverlayCallbackImpl(this) }
     private val prefs by lazy { PreferenceManager.getInstance(this) }
@@ -328,7 +326,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     }
 
     override fun onBackPressed() {
-        _onBackPressedDispatcher.onBackPressed()
+        onBackPressedDispatcher.onBackPressed()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -344,17 +342,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         }
     }
 
-    override fun getLifecycle(): Lifecycle {
-        return lifecycleRegistry
-    }
-
-    override fun getActivityResultRegistry(): ActivityResultRegistry {
-        return activityResultRegistry
-    }
-
-    override fun getOnBackPressedDispatcher(): OnBackPressedDispatcher {
-        return _onBackPressedDispatcher
-    }
+    override val lifecycle: Lifecycle = lifecycleRegistry
 
     override fun getDefaultOverlay(): LauncherOverlayManager {
         return defaultOverlay
