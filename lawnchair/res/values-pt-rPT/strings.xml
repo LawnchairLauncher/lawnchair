@@ -104,7 +104,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Pacote de Ícones</string>
-    <string name="themed_icon_pack">Themed Icon Source</string>
+    <string name="themed_icon_pack">Fonte do Ícone Temático</string>
     <string name="system_icons">Ícones de Sistema</string>
     <string name="themed_icon_title">Ícones de Tema</string>
     <string name="themed_icons_off_label">Desligado</string>
