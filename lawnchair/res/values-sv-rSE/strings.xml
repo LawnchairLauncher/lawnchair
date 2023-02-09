@@ -19,7 +19,7 @@
     <string name="settings">Inställningar</string>
     <string name="general_label">Allmänt</string>
     <string name="general_description">Färger, ikonpaket, aviseringsprickar</string>
-    <string name="home_screen_label">Hemskärm</string>
+    <string name="home_screen_label">Startskärm</string>
     <string name="home_screen_description">Flöde, rutnät, ikoner</string>
     <!--
     <string name="smartspace" />
@@ -47,15 +47,15 @@
     <string name="font_picker_description">En del text förblir oförändrad.</string>
     <string name="smartspace_calendar_label">Anpassning av Snabbkoll-kalender</string>
     <string name="smartspace_calendar_description">Tillåt att datum visas i icke-gregorianska kalendersystem.</string>
-    <string name="workspace_increase_max_grid_size_label">Utökad maxstorlek på hemskärmsrutnät</string>
-    <string name="workspace_increase_max_grid_size_description">Utöka den högsta tillåtna storleken på hemskärmsrutnätet från 10 x 10 till 20 x 20.</string>
+    <string name="workspace_increase_max_grid_size_label">Utökad maxstorlek på startskärmsrutnät</string>
+    <string name="workspace_increase_max_grid_size_description">Utöka maxstorleken på startskärmsrutnätet från 10 x 10 till 20 x 20.</string>
     <string name="always_reload_icons_label">Ladda alltid om ikoner</string>
     <string name="always_reload_icons_description">Undvik att använda cachade ikoner från ikonpaket</string>
     <string name="transparent_background_icons">Transparenta tematiserade ikoner</string>
     <string name="transparent_background_icons_description">Använd transparent bakgrund på tematiserade ikoner</string>
     <string name="smartspace_mode_selection">Val av Snabbkoll-leverantör</string>
     <!-- GeneralPreferences -->
-    <string name="home_screen_rotation_label">Rotation av hemskärmen</string>
+    <string name="home_screen_rotation_label">Rotation av startskärmen</string>
     <string name="home_screen_rotaton_description">När enheten roteras.</string>
     <string name="font_label">Typsnitt (experimentellt)</string>
     <!-- <string name="icons" /> -->
@@ -108,8 +108,8 @@
     <string name="system_icons">Systemikoner</string>
     <string name="themed_icon_title">Tematiserade ikoner</string>
     <string name="themed_icons_off_label">Av</string>
-    <string name="themed_icons_home_label">Hemskärm</string>
-    <string name="themed_icons_home_and_drawer_label">Hemskärm &amp; applåda</string>
+    <string name="themed_icons_home_label">Startskärm</string>
+    <string name="themed_icons_home_and_drawer_label">Startskärm &amp; applåda</string>
     <string name="lawnicons_not_installed_description">Lawnicons är inte installerad.</string>
     <!-- <string name="cancel" /> (unknown source)-->
     <!-- IconPickerPreference -->
@@ -164,23 +164,23 @@
     <string name="launcher_default_color">Hanteras av Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
-    <string name="auto_add_shortcuts_label">Lägg till nya appar på hemskärmen</string>
+    <string name="auto_add_shortcuts_label">Lägg till nya appar på startskärmen</string>
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">Flöde</string>
     <string name="minus_one_unavailable">Inget flöde är installerat.</string>
     <string name="wallpaper">Bakgrundsbild</string>
     <string name="wallpaper_scrolling_label">Rulla bakgrundsbild</string>
-    <string name="wallpaper_depth_effect_label">Bakgrundsbild med djuphets effekt</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
-    <string name="show_sys_ui_scrim">Topp skugga</string>
+    <string name="wallpaper_depth_effect_label">Djupeffekt på bakgrundsbild</string>
+    <string name="wallpaper_depth_effect_description">Zooma in och ut på bakgrundsbilden vid övergång mellan startskärmsappens lägen.</string>
+    <string name="show_sys_ui_scrim">Toppskugga</string>
     <string name="layout">Utseende</string>
-    <string name="home_screen_grid">Startskärmens Rutnät</string>
-    <string name="home_screen_lock">Lås hemskärmen</string>
-    <string name="home_screen_lock_description">Förhindrar ändringar på hemskärmen layout.</string>
+    <string name="home_screen_grid">Rutnät på startskärmen</string>
+    <string name="home_screen_lock">Lås startskärm</string>
+    <string name="home_screen_lock_description">Förhindrar ändringar av startskärmens utseende.</string>
     <string name="home_screen_unlock">Lås upp hemkärmen</string>
     <!-- used in popup menu-->
     <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
-    <string name="home_screen_locked">Hemskärmen är låst.</string>
+    <string name="home_screen_locked">Startskärmen är låst.</string>
     <string name="status_bar_label">Statusrad</string>
     <string name="show_status_bar">Visa statusfältet</string>
     <string name="dark_status_bar_label">Mörkt statusfält</string>
@@ -229,7 +229,7 @@
     <string name="smartspace_calendar_gregorian">Gregoriansk</string>
     <string name="smartspace_calendar_persian">Persisk</string>
     <string name="smartspace_preferences">Inställningar</string>
-    <string name="smartspace_widget_toggle_label">Visa på hemskärmen</string>
+    <string name="smartspace_widget_toggle_label">Visa på startskärmen</string>
     <string name="smartspace_widget_toggle_description">Snabbkoll kan läggas till manuellt genom att placera ut \"Lawnchair\"-widgeten.</string>
     <string name="smartspace_mode_label">Snabbkoll-leverantör</string>
     <string name="smartspace_mode_lawnchair">Lawnchair</string>

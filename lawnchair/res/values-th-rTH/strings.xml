@@ -233,8 +233,8 @@
     <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
     <string name="smartspace_mode_label">ผู้ให้บริการข้อมูลโดยย่อ</string>
     <string name="smartspace_mode_lawnchair">Lawnchair</string>
-    <string name="smartspace_mode_google">กูเกิล</string>
-    <string name="smartspace_mode_google_search">Google Search</string>
+    <string name="smartspace_mode_google">Google</string>
+    <string name="smartspace_mode_google_search">แถบค้นหาของ Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
     <string name="hotseat_mode_label">Search Bar Widget</string>
